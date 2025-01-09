@@ -33,6 +33,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -61,7 +63,6 @@ import * as TimelineComponents from './components/components.js';
 import * as TimelineInsights from './components/insights/insights.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {Tracker} from './FreshRecording.js';
-import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
 import * as Overlays from './overlays/overlays.js';
@@ -554,9 +555,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    this.panelToolbar = new UI.Toolbar.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
+    this.panelToolbar = timelineToolbarContainer.createChild('devtools-toolbar', 'timeline-main-toolbar');
     this.panelToolbar.makeWrappable(true);
-    this.panelRightToolbar = new UI.Toolbar.Toolbar('', timelineToolbarContainer);
+    this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
     if (!isNode) {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();
@@ -1104,7 +1105,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
-    this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);
     this.panelToolbar.appendSeparator();
 
     // View
@@ -1251,8 +1251,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         'jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
     this.settingsPane.show(this.element);
 
-    const captureToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);
-    captureToolbar.element.classList.add('flex-auto');
+    const captureToolbar = this.settingsPane.element.createChild('devtools-toolbar');
+    captureToolbar.classList.add('flex-auto');
     captureToolbar.makeVertical();
     captureToolbar.appendToolbarItem(this.createSettingCheckbox(
         this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
@@ -1265,18 +1265,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     throttlingPane.element.classList.add('flex-auto');
     throttlingPane.show(this.settingsPane.element);
 
-    const cpuThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
+    const cpuThrottlingToolbar = throttlingPane.element.createChild('devtools-toolbar');
     cpuThrottlingToolbar.appendText(i18nString(UIStrings.cpu));
     this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
     this.cpuThrottlingSelect.control.setMinWidth(200);
     this.cpuThrottlingSelect.control.setMaxWidth(200);
     cpuThrottlingToolbar.appendToolbarItem(this.cpuThrottlingSelect.control);
 
-    const networkThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
+    const networkThrottlingToolbar = throttlingPane.element.createChild('devtools-toolbar');
     networkThrottlingToolbar.appendText(i18nString(UIStrings.network));
     networkThrottlingToolbar.appendToolbarItem(this.createNetworkConditionsSelectToolbarItem());
 
-    const thirdPartyToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
+    const thirdPartyToolbar = throttlingPane.element.createChild('devtools-toolbar');
     thirdPartyToolbar.makeVertical();
     const thirdPartyCheckbox =
         this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));

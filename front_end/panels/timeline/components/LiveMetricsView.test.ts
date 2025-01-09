@@ -58,7 +58,7 @@ function selectVisibleLog(view: Element, logId: string): void {
 
 function getClearLogButton(view: Element): HTMLElementTagNameMap['devtools-button'] {
   return view.shadowRoot!.querySelector('devtools-live-metrics-logs')!.shadowRoot!.querySelector('.tabbed-pane')!
-      .shadowRoot!.querySelector('.toolbar')!.shadowRoot!.querySelector('devtools-button')!;
+      .shadowRoot!.querySelector('devtools-toolbar devtools-button')!;
 }
 
 function selectDeviceOption(view: Element, deviceOption: string): void {

@@ -33,7 +33,7 @@ describeWithMockConnection('ConsoleView', () => {
 
   it('adds a title to every checkbox label in the settings view', async () => {
     const consoleSettingsCheckboxes =
-        consoleView.element.querySelector('.toolbar')?.shadowRoot?.querySelectorAll('.toolbar-item.checkbox');
+        consoleView.element.querySelector('devtools-toolbar')!.querySelectorAll('.toolbar-item.checkbox');
     if (!consoleSettingsCheckboxes) {
       assert.fail('No checkbox found in console settings');
       return;

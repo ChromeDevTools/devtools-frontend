@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './Toolbar.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -13,7 +15,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import type {ContextMenu} from './ContextMenu.js';
 import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPane.js';
-import {type ItemsProvider, Toolbar, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
+import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation} from './View.js';
 import viewContainersStyles from './viewContainers.css.legacy.js';
@@ -214,11 +216,11 @@ export class ViewManager {
     if (!toolbarItems.length) {
       return null;
     }
-    const toolbar = new Toolbar('');
+    const toolbar = document.createElement('devtools-toolbar');
     for (const item of toolbarItems) {
       toolbar.appendToolbarItem(item);
     }
-    return toolbar.element;
+    return toolbar;
   }
 
   locationNameForViewId(viewId: string): string {

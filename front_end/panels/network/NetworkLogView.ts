@@ -32,6 +32,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -664,8 +666,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     filterBar.filterButton().addEventListener(
         UI.Toolbar.ToolbarButton.Events.CLICK, this.dataGrid.scheduleUpdate.bind(this.dataGrid, true /* isFromUser */));
 
-    this.summaryToolbarInternal = new UI.Toolbar.Toolbar('network-summary-bar', this.element);
-    this.summaryToolbarInternal.element.setAttribute('role', 'status');
+    this.summaryToolbarInternal = this.element.createChild('devtools-toolbar', 'network-summary-bar');
+    this.summaryToolbarInternal.setAttribute('role', 'status');
 
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File], i18nString(UIStrings.dropHarFilesHere), this.handleDrop.bind(this));
@@ -1120,7 +1122,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private setHidden(value: boolean): void {
     this.columnsInternal.setHidden(value);
-    UI.ARIAUtils.setHidden(this.summaryToolbarInternal.element, value);
+    UI.ARIAUtils.setHidden(this.summaryToolbarInternal, value);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

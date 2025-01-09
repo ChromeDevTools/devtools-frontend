@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './legacy.js';
+
 import {
   dispatchClickEvent,
   doubleRaf,
@@ -13,6 +15,22 @@ import * as RenderCoordinator from '../components/render_coordinator/render_coor
 import * as UI from './legacy.js';
 
 describeWithLocale('Toolbar', () => {
+  const {Toolbar} = UI.Toolbar;
+
+  describe('Toolbar', () => {
+    it('can be instantiated via `createElement`', () => {
+      const toolbar = document.createElement('devtools-toolbar');
+
+      assert.instanceOf(toolbar, Toolbar);
+    });
+
+    it('does not attach a shadow root', () => {
+      const toolbar = document.createElement('devtools-toolbar');
+
+      assert.isNull(toolbar.shadowRoot, 'Expected Toolbar to use Light DOM');
+    });
+  });
+
   describe('ToolbarInput', () => {
     it('sets a title on the clear button', async () => {
       const input = new UI.Toolbar.ToolbarInput('placeholder');
@@ -37,16 +55,14 @@ describeWithLocale('Toolbar', () => {
   });
 
   it('can append items into the toolbar', async () => {
-    const div = document.createElement('div');
-    const toolbar = new UI.Toolbar.Toolbar('test-toolbar', div);
-    renderElementIntoDOM(div);
+    const toolbar = renderElementIntoDOM(document.createElement('devtools-toolbar'));
 
     const itemOne = new UI.Toolbar.ToolbarInput('placeholder-item-1');
     toolbar.appendToolbarItem(itemOne);
     const itemTwo = new UI.Toolbar.ToolbarInput('placeholder-item-2');
     toolbar.appendToolbarItem(itemTwo);
 
-    const toolbarInputs = div.querySelector('.toolbar')?.shadowRoot?.querySelectorAll('[data-placeholder]');
+    const toolbarInputs = toolbar.querySelectorAll('[data-placeholder]');
     assert.isOk(toolbarInputs);
     assert.lengthOf(toolbarInputs, 2);
 
@@ -58,16 +74,14 @@ describeWithLocale('Toolbar', () => {
   });
 
   it('can prepend items into the toolbar', async () => {
-    const div = document.createElement('div');
-    const toolbar = new UI.Toolbar.Toolbar('test-toolbar', div);
-    renderElementIntoDOM(div);
+    const toolbar = renderElementIntoDOM(document.createElement('devtools-toolbar'));
 
     const itemOne = new UI.Toolbar.ToolbarInput('placeholder-item-1');
     toolbar.appendToolbarItem(itemOne);
     const itemTwo = new UI.Toolbar.ToolbarInput('placeholder-item-2');
     toolbar.prependToolbarItem(itemTwo);
 
-    const toolbarInputs = div.querySelector('.toolbar')?.shadowRoot?.querySelectorAll('[data-placeholder]');
+    const toolbarInputs = toolbar.querySelectorAll('[data-placeholder]');
     assert.isOk(toolbarInputs);
     assert.lengthOf(toolbarInputs, 2);
 
@@ -80,7 +94,7 @@ describeWithLocale('Toolbar', () => {
   });
 
   it('knows if it has an item in the toolbar', async () => {
-    const toolbar = new UI.Toolbar.Toolbar('test-toolbar');
+    const toolbar = document.createElement('devtools-toolbar');
     const item = new UI.Toolbar.ToolbarInput('placeholder');
     toolbar.appendToolbarItem(item);
     assert.isTrue(toolbar.hasItem(item));
@@ -92,9 +106,7 @@ describeWithLocale('Toolbar', () => {
     function createToolbarWithButton(
         contextMenuHandler: sinon.SinonStubStatic,
         ): UI.Toolbar.ToolbarMenuButton {
-      const div = document.createElement('div');
-      const toolbar = new UI.Toolbar.Toolbar('test-toolbar', div);
-      renderElementIntoDOM(div);
+      const toolbar = renderElementIntoDOM(document.createElement('devtools-toolbar'));
       const menuButton = new UI.Toolbar.ToolbarMenuButton(contextMenuHandler);
       menuButton.setTriggerDelay(0);  // default is 200ms but don't want to slow tests down
       toolbar.appendToolbarItem(menuButton);

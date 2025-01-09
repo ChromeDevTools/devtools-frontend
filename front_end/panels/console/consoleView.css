@@ -44,7 +44,7 @@
   flex: 1 1 auto;
 }
 
-.console-toolbar-container > .toolbar {
+.console-toolbar-container > devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
 }
@@ -60,7 +60,7 @@
   border-bottom: 1px solid var(--sys-color-divider);
 }
 
-.console-settings-pane .toolbar {
+.console-settings-pane devtools-toolbar {
   flex: 1 1;
 }
 

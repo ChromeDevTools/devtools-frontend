@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -183,10 +185,11 @@ export class FilesNavigatorView extends NavigatorView {
             'https://goo.gle/devtools-workspace', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
   `);
 
-    const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
+    const toolbar = document.createElement('devtools-toolbar');
+    toolbar.classList.add('navigator-toolbar');
     void toolbar.appendItemsAtLocation('files-navigator-toolbar').then(() => {
       if (!toolbar.empty()) {
-        this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
+        this.contentElement.insertBefore(toolbar, this.contentElement.firstChild);
       }
     });
   }
@@ -224,9 +227,10 @@ export class OverridesNavigatorView extends NavigatorView {
             'https://goo.gle/devtools-overrides', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
   `);
 
-    this.toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
+    this.toolbar = document.createElement('devtools-toolbar');
+    this.toolbar.classList.add('navigator-toolbar');
 
-    this.contentElement.insertBefore(this.toolbar.element, this.contentElement.firstChild);
+    this.contentElement.insertBefore(this.toolbar, this.contentElement.firstChild);
 
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.PROJECT_CHANGED, this.updateProjectAndUI, this);
@@ -339,7 +343,8 @@ export class SnippetsNavigatorView extends NavigatorView {
             'https://goo.gle/devtools-snippets', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
   `);
 
-    const toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
+    const toolbar = document.createElement('devtools-toolbar');
+    toolbar.classList.add('navigator-toolbar');
     const newButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.newSnippet), 'plus', i18nString(UIStrings.newSnippet), 'sources.new-snippet');
     newButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
@@ -347,7 +352,7 @@ export class SnippetsNavigatorView extends NavigatorView {
           Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString);
     });
     toolbar.appendToolbarItem(newButton);
-    this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
+    this.contentElement.insertBefore(toolbar, this.contentElement.firstChild);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {

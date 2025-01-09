@@ -31,6 +31,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -244,14 +246,14 @@ export class StylePropertiesSection {
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {
         this.newStyleRuleToolbar =
-            new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar new-rule-toolbar', this.element);
+            this.element.createChild('devtools-toolbar', 'sidebar-pane-section-toolbar new-rule-toolbar');
       }
       this.newStyleRuleToolbar.appendToolbarItem(newRuleButton);
-      UI.ARIAUtils.setHidden(this.newStyleRuleToolbar.element, true);
+      UI.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
     }
 
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.editable) {
-      this.fontEditorToolbar = new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar', this.#styleRuleElement);
+      this.fontEditorToolbar = this.#styleRuleElement.createChild('devtools-toolbar', 'sidebar-pane-section-toolbar');
       this.fontEditorSectionManager = new FontEditorSectionManager(this.parentPane.swatchPopoverHelper(), this);
       this.fontEditorButton =
           new UI.Toolbar.ToolbarButton('Font Editor', 'custom-typography', undefined, 'font-editor');
@@ -268,10 +270,10 @@ export class StylePropertiesSection {
 
       if (this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Inline) {
         if (this.newStyleRuleToolbar) {
-          this.newStyleRuleToolbar.element.classList.add('shifted-toolbar');
+          this.newStyleRuleToolbar.classList.add('shifted-toolbar');
         }
       } else {
-        this.fontEditorToolbar.element.classList.add('font-toolbar-hidden');
+        this.fontEditorToolbar.classList.add('font-toolbar-hidden');
       }
     }
 
@@ -354,9 +356,9 @@ export class StylePropertiesSection {
       this.fontEditorSectionManager.registerFontProperty(treeElement);
     }
     if (this.fontEditorToolbar) {
-      this.fontEditorToolbar.element.classList.remove('font-toolbar-hidden');
+      this.fontEditorToolbar.classList.remove('font-toolbar-hidden');
       if (this.newStyleRuleToolbar) {
-        this.newStyleRuleToolbar.element.classList.add('shifted-toolbar');
+        this.newStyleRuleToolbar.classList.add('shifted-toolbar');
       }
     }
   }
@@ -367,10 +369,10 @@ export class StylePropertiesSection {
       return;
     }
     if (this.fontEditorToolbar) {
-      this.fontEditorToolbar.element.classList.add('font-toolbar-hidden');
+      this.fontEditorToolbar.classList.add('font-toolbar-hidden');
     }
     if (this.newStyleRuleToolbar) {
-      this.newStyleRuleToolbar.element.classList.remove('shifted-toolbar');
+      this.newStyleRuleToolbar.classList.remove('shifted-toolbar');
     }
   }
 

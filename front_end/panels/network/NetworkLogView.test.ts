@@ -291,7 +291,7 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.show(document.body);
 
       const toolbar = networkLogView.summaryToolbar();
-      const textElements = toolbar.element.shadowRoot?.querySelectorAll('.toolbar-text');
+      const textElements = toolbar.querySelectorAll('.toolbar-text');
       assert.exists(textElements);
       const textContents = [...textElements].map(item => item.textContent);
       if (inScope) {

@@ -1208,8 +1208,7 @@ ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector,
 
 ElementsTestRunner.addNewRule = function(selector, callback) {
   Elements.ElementsPanel.ElementsPanel.instance()
-      .stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
-      .shadowRoot.querySelector('[aria-label="New Style Rule"]')
+      .stylesWidget.contentElement.querySelector('[aria-label="New Style Rule"]')
       .click();
   TestRunner.addSniffer(
       Elements.StylesSidebarPane.StylesSidebarPane.prototype, 'addBlankSection',

@@ -57,7 +57,7 @@
   user-select: text;
 }
 
-.panel.network .toolbar.network-summary-bar {
+.panel.network devtools-toolbar.network-summary-bar {
   border-bottom: 0;
 }
 

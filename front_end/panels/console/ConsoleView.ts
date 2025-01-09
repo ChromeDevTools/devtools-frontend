@@ -31,6 +31,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -397,7 +399,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.showCorsErrorsSetting = Common.Settings.Settings.instance().moduleSetting('console-shows-cors-errors');
     this.showCorsErrorsSetting.addChangeListener(() => this.updateMessageList());
 
-    const toolbar = new UI.Toolbar.Toolbar('console-main-toolbar', this.consoleToolbarContainer);
+    const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
+    toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     toolbar.makeWrappable(true);
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar),
@@ -413,7 +416,6 @@ export class ConsoleView extends UI.Widget.VBox implements
     toolbar.appendToolbarItem(this.filter.levelMenuButton);
     toolbar.appendToolbarItem(this.progressToolbarItem);
     toolbar.appendSeparator();
-    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
     this.issueCounter.id = 'console-issues-counter';
     this.issueCounter.setAttribute('jslog', `${VisualLogging.counter('issues').track({click: true})}`);
@@ -446,7 +448,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     UI.ARIAUtils.setLabel(settingsPane.element, i18nString(UIStrings.consoleSettings));
     UI.ARIAUtils.markAsGroup(settingsPane.element);
 
-    const settingsToolbarLeft = new UI.Toolbar.Toolbar('', settingsPane.element);
+    const settingsToolbarLeft = settingsPane.element.createChild('devtools-toolbar');
     settingsToolbarLeft.makeVertical();
 
     ConsoleView.appendSettingsCheckboxToToolbar(
@@ -463,7 +465,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarLeft, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
 
-    const settingsToolbarRight = new UI.Toolbar.Toolbar('', settingsPane.element);
+    const settingsToolbarRight = settingsPane.element.createChild('devtools-toolbar');
     settingsToolbarRight.makeVertical();
 
     ConsoleView.appendSettingsCheckboxToToolbar(

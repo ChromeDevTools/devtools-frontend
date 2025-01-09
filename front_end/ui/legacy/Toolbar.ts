@@ -46,9 +46,8 @@ import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
-import toolbarStyles from './toolbar.css.legacy.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel, createShadowRootWithCoreStyles, LongClickController} from './UIUtils.js';
+import {CheckboxLabel, LongClickController} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -71,30 +70,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class Toolbar {
+export class Toolbar extends HTMLElement {
   private items: ToolbarItem[];
-  element: HTMLElement;
   enabled: boolean;
-  private readonly shadowRoot: ShadowRoot;
-  private contentElement: Element;
   private compactLayout = false;
 
-  constructor(className: string, parentElement?: Element) {
+  constructor() {
+    super();
     this.items = [];
-    this.element = parentElement ? parentElement.createChild('div') : document.createElement('div');
-    this.element.className = className;
-    this.element.classList.add('toolbar');
     this.enabled = true;
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: toolbarStyles});
-    this.contentElement = this.shadowRoot.createChild('div', 'toolbar-shadow');
   }
 
   hasCompactLayout(): boolean {
     return this.compactLayout;
-  }
-
-  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
-    this.shadowRoot.adoptedStyleSheets = this.shadowRoot.adoptedStyleSheets.concat(cssFiles);
   }
 
   setCompactLayout(enable: boolean): void {
@@ -148,8 +136,8 @@ export class Toolbar {
       const optionsGlassPane = new GlassPane();
       optionsGlassPane.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
       optionsGlassPane.show(document);
-      const optionsBar = new Toolbar('fill', optionsGlassPane.contentElement);
-      optionsBar.contentElement.classList.add('floating');
+      const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar', 'fill');
+      optionsBar.classList.add('floating');
       const buttonHeight = 26;
 
       const hostButtonPosition = button.element.boxInWindow().relativeToElement(GlassPane.container(document));
@@ -160,13 +148,13 @@ export class Toolbar {
         buttons = buttons.reverse();
       }
 
-      optionsBar.element.style.height = (buttonHeight * buttons.length) + 'px';
+      optionsBar.style.height = (buttonHeight * buttons.length) + 'px';
       if (topNotBottom) {
-        optionsBar.element.style.top = (hostButtonPosition.y - 5) + 'px';
+        optionsBar.style.top = (hostButtonPosition.y - 5) + 'px';
       } else {
-        optionsBar.element.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
+        optionsBar.style.top = (hostButtonPosition.y - (buttonHeight * (buttons.length - 1)) - 6) + 'px';
       }
-      optionsBar.element.style.left = (hostButtonPosition.x - 5) + 'px';
+      optionsBar.style.left = (hostButtonPosition.x - 5) + 'px';
 
       for (let i = 0; i < buttons.length; ++i) {
         buttons[i].element.addEventListener('mousemove', mouseOver, false);
@@ -274,22 +262,22 @@ export class Toolbar {
   }
 
   gripElementForResize(): Element {
-    return this.contentElement;
+    return this;
   }
 
   makeWrappable(growVertically?: boolean): void {
-    this.contentElement.classList.add('wrappable');
+    this.classList.add('wrappable');
     if (growVertically) {
-      this.contentElement.classList.add('toolbar-grow-vertical');
+      this.classList.add('toolbar-grow-vertical');
     }
   }
 
   makeVertical(): void {
-    this.contentElement.classList.add('vertical');
+    this.classList.add('vertical');
   }
 
   renderAsLinks(): void {
-    this.contentElement.classList.add('toolbar-render-as-links');
+    this.classList.add('toolbar-render-as-links');
   }
 
   empty(): boolean {
@@ -310,7 +298,7 @@ export class Toolbar {
     if (!this.enabled) {
       item.applyEnabledState(false);
     }
-    this.contentElement.appendChild(item.element);
+    this.appendChild(item.element);
     this.hideSeparatorDupes();
   }
 
@@ -325,7 +313,7 @@ export class Toolbar {
     if (!this.enabled) {
       item.applyEnabledState(false);
     }
-    this.contentElement.prepend(item.element);
+    this.prepend(item.element);
     this.hideSeparatorDupes();
   }
 
@@ -358,20 +346,7 @@ export class Toolbar {
       item.toolbar = null;
     }
     this.items = [];
-    this.contentElement.removeChildren();
-  }
-
-  setColor(color: string): void {
-    const style = document.createElement('style');
-    style.textContent = '.toolbar-glyph { background-color: ' + color + ' !important }';
-    this.shadowRoot.appendChild(style);
-  }
-
-  setToggledColor(color: string): void {
-    const style = document.createElement('style');
-    style.textContent =
-        '.toolbar-button.toolbar-state-on .toolbar-glyph { background-color: ' + color + ' !important }';
-    this.shadowRoot.appendChild(style);
+    this.removeChildren();
   }
 
   hideSeparatorDupes(): void {
@@ -399,7 +374,7 @@ export class Toolbar {
       lastSeparator.setVisible(false);
     }
 
-    this.element.classList.toggle(
+    this.classList.toggle(
         'hidden',
         lastSeparator !== null && lastSeparator !== undefined && lastSeparator.visible() && !nonSeparatorVisible);
   }
@@ -437,6 +412,9 @@ export class Toolbar {
     }
   }
 }
+
+customElements.define('devtools-toolbar', Toolbar);
+
 export interface ToolbarButtonOptions {
   label?: () => Platform.UIString.LocalizedString;
   showLabel: boolean;
@@ -1325,4 +1303,10 @@ export const enum ToolbarItemLocation {
   MAIN_TOOLBAR_RIGHT = 'main-toolbar-right',
   MAIN_TOOLBAR_LEFT = 'main-toolbar-left',
   STYLES_SIDEBARPANE_TOOLBAR = 'styles-sidebarpane-toolbar',
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'devtools-toolbar': Toolbar;
+  }
 }

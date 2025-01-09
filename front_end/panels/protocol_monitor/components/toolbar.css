@@ -15,7 +15,7 @@
   display: block;
 }
 
-.toolbar {
+devtools-toolbar {
   align-items: center;
   display: flex;
   justify-content: space-between;

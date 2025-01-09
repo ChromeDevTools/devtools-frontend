@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -49,7 +51,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     const mainContainer = new UI.Widget.VBox();
     mainContainer.setMinimumSize(100, 0);
     this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
-    this.storageViewToolbar = new UI.Toolbar.Toolbar('resources-toolbar', mainContainer.element);
+    this.storageViewToolbar = mainContainer.element.createChild('devtools-toolbar', 'resources-toolbar');
     this.splitWidget().setMainWidget(mainContainer);
 
     this.domStorageView = null;
@@ -123,11 +125,11 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.visibleView = view;
 
     this.storageViewToolbar.removeToolbarItems();
-    this.storageViewToolbar.element.classList.toggle('hidden', true);
+    this.storageViewToolbar.classList.toggle('hidden', true);
     if (view instanceof UI.View.SimpleView) {
       void view.toolbarItems().then(items => {
         items.map(item => this.storageViewToolbar.appendToolbarItem(item));
-        this.storageViewToolbar.element.classList.toggle('hidden', !items.length);
+        this.storageViewToolbar.classList.toggle('hidden', !items.length);
       });
     }
   }

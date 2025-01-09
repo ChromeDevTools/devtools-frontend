@@ -188,8 +188,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
-      const toolbar = panel.contentElement.querySelector('.freestyler-right-toolbar');
-      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Settings\']');
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Settings\']');
       assert.instanceOf(button, HTMLElement);
       button.click();
       assert.isTrue(stub.calledWith('chrome-ai'));
@@ -647,8 +646,7 @@ describeWithEnvironment('FreestylerPanel', () => {
           steps: [],
         },
       ]);
-      const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'New chat\']');
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
       assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -685,8 +683,7 @@ describeWithEnvironment('FreestylerPanel', () => {
           steps: [],
         },
       ]);
-      const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'New chat\']');
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
       assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -734,8 +731,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         },
       ]);
 
-      const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
       assert.instanceOf(button, HTMLElement);
       const contextMenu = getMenu(() => {
         dispatchClickEvent(button);
@@ -784,8 +780,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         steps: [],
       },
     ]);
-    const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete local chat\']');
+    const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -822,8 +817,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         steps: [],
       },
     ]);
-    const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete local chat\']');
+    const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -871,8 +865,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       },
     ]);
 
-    let toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    let button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+    let button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
     assert.instanceOf(button, HTMLElement);
     let contextMenu = getMenu(() => {
       dispatchClickEvent(button!);
@@ -888,8 +881,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     contextMenu.discard();
     await drainMicroTasks();
 
-    toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+    button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
     assert.instanceOf(button, HTMLElement);
     contextMenu = getMenu(() => {
       dispatchClickEvent(button);

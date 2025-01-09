@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/split_view/split_view.js';
+import '../../../ui/legacy/legacy.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -372,8 +373,8 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
     const vbox = new UI.Widget.VBox();
 
-    const toolbar = new UI.Toolbar.Toolbar('preloading-toolbar', vbox.contentElement);
-    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    const toolbar = vbox.contentElement.createChild('devtools-toolbar', 'preloading-toolbar');
+    toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 

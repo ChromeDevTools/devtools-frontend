@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import './Toolbar.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -39,7 +41,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
 import tabbedPaneStyles from './tabbedPane.css.legacy.js';
-import {Toolbar} from './Toolbar.js';
+import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
 import {VBox, type Widget} from './Widget.js';
@@ -606,8 +608,8 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!this.rightToolbarInternal || !this.measuredDropDownButtonWidth) {
       return;
     }
-    const leftToolbarWidth = this.leftToolbarInternal?.element.getBoundingClientRect().width ?? 0;
-    const rightToolbarWidth = this.rightToolbarInternal.element.getBoundingClientRect().width;
+    const leftToolbarWidth = this.leftToolbarInternal?.getBoundingClientRect().width ?? 0;
+    const rightToolbarWidth = this.rightToolbarInternal.getBoundingClientRect().width;
     const totalWidth = this.headerElementInternal.getBoundingClientRect().width;
     if (!this.rightToolbarInternal.hasCompactLayout() &&
         totalWidth - rightToolbarWidth - leftToolbarWidth < this.measuredDropDownButtonWidth + 10) {
@@ -944,16 +946,18 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   leftToolbar(): Toolbar {
     if (!this.leftToolbarInternal) {
-      this.leftToolbarInternal = new Toolbar('tabbed-pane-left-toolbar');
-      this.headerElementInternal.insertBefore(this.leftToolbarInternal.element, this.headerElementInternal.firstChild);
+      this.leftToolbarInternal = document.createElement('devtools-toolbar');
+      this.leftToolbarInternal.classList.add('tabbed-pane-left-toolbar');
+      this.headerElementInternal.insertBefore(this.leftToolbarInternal, this.headerElementInternal.firstChild);
     }
     return this.leftToolbarInternal;
   }
 
   rightToolbar(): Toolbar {
     if (!this.rightToolbarInternal) {
-      this.rightToolbarInternal = new Toolbar('tabbed-pane-right-toolbar');
-      this.headerElementInternal.appendChild(this.rightToolbarInternal.element);
+      this.rightToolbarInternal = document.createElement('devtools-toolbar');
+      this.rightToolbarInternal.classList.add('tabbed-pane-right-toolbar');
+      this.headerElementInternal.appendChild(this.rightToolbarInternal);
     }
     return this.rightToolbarInternal;
   }

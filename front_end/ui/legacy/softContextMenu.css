@@ -23,7 +23,7 @@
   padding-right: var(--sys-size-14);
 }
 
-.dockside-title + .toolbar {
+.dockside-title + devtools-toolbar {
   margin-right: -8px;
 }
 

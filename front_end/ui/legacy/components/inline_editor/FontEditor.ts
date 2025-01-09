@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../legacy.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
@@ -350,7 +352,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     field.appendChild(selectLabel);
     field.appendChild(selectInput);
 
-    const deleteToolbar = new UI.Toolbar.Toolbar('', field);
+    const deleteToolbar = field.createChild('devtools-toolbar');
     const deleteButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteS, {PH1: label}), 'bin', undefined, 'delete');
     deleteToolbar.appendToolbarItem(deleteButton);

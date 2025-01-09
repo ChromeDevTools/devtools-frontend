@@ -125,7 +125,7 @@
     justify-content: space-between;
   }
 
-  .toolbar {
+  devtools-toolbar {
     padding: 0;
     height: var(--sys-size-12);
     display: flex;

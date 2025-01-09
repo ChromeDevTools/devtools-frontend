@@ -17,6 +17,6 @@
   color: var(--sys-color-token-subtle);
 }
 
-.toolbar {
+devtools-toolbar {
   border-bottom: 1px solid var(--sys-color-divider);
 }

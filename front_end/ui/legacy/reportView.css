@@ -22,7 +22,7 @@
   padding: 12px 24px;
 }
 
-.report-header .toolbar {
+.report-header devtools-toolbar {
   margin-bottom: -8px;
   margin-top: 5px;
   margin-left: -8px;

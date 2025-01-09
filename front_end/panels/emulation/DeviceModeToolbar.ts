@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -254,10 +256,10 @@ export class DeviceModeToolbar {
 
     const leftContainer = this.elementInternal.createChild('div', 'device-mode-toolbar-spacer');
     leftContainer.createChild('div', 'device-mode-toolbar-spacer');
-    const leftToolbar = new UI.Toolbar.Toolbar('', leftContainer);
+    const leftToolbar = leftContainer.createChild('devtools-toolbar');
     this.fillLeftToolbar(leftToolbar);
 
-    const mainToolbar = new UI.Toolbar.Toolbar('', this.elementInternal);
+    const mainToolbar = this.elementInternal.createChild('devtools-toolbar');
     mainToolbar.makeWrappable();
     this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(
         i18nString(UIStrings.width), {jslogContext: 'width'});
@@ -280,14 +282,14 @@ export class DeviceModeToolbar {
     this.fillMainToolbar(mainToolbar);
 
     const rightContainer = this.elementInternal.createChild('div', 'device-mode-toolbar-spacer');
-    const rightToolbar = new UI.Toolbar.Toolbar('device-mode-toolbar-fixed-size', rightContainer);
+    const rightToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-fixed-size');
     rightToolbar.makeWrappable();
     this.fillRightToolbar(rightToolbar);
-    const modeToolbar = new UI.Toolbar.Toolbar('device-mode-toolbar-fixed-size', rightContainer);
+    const modeToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-fixed-size');
     modeToolbar.makeWrappable();
     this.fillModeToolbar(modeToolbar);
     rightContainer.createChild('div', 'device-mode-toolbar-spacer');
-    const optionsToolbar = new UI.Toolbar.Toolbar('device-mode-toolbar-options', rightContainer);
+    const optionsToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-options');
     optionsToolbar.makeWrappable();
     this.fillOptionsToolbar(optionsToolbar);
 

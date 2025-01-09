@@ -44,17 +44,17 @@
   border-bottom: 1px solid var(--sys-color-divider);
 }
 
-.expandable-view-title .toolbar {
+.expandable-view-title devtools-toolbar {
   margin-top: -3px;
 }
 
-.expandable-view-title > .toolbar {
+.expandable-view-title > devtools-toolbar {
   position: absolute;
   right: 0;
   top: 0;
 }
 
-.expandable-view-title:not(.expanded) .toolbar {
+.expandable-view-title:not(.expanded) devtools-toolbar {
   display: none;
 }
 

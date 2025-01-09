@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -107,7 +109,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.element.classList.add('sources-edit-breakpoint-dialog');
     this.element.setAttribute('jslog', `${VisualLogging.dialog('edit-breakpoint')}`);
     const header = this.contentElement.createChild('div', 'dialog-header');
-    const toolbar = new UI.Toolbar.Toolbar('source-frame-breakpoint-toolbar', header);
+    const toolbar = header.createChild('devtools-toolbar', 'source-frame-breakpoint-toolbar');
     toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
     this.typeSelector = new UI.Toolbar.ToolbarComboBox(

@@ -47,6 +47,6 @@
   color: var(--sys-color-on-surface-error);
 }
 
-.websocket-frame-view .toolbar {
+.websocket-frame-view devtools-toolbar {
   border-bottom: 1px solid var(--sys-color-divider);
 }

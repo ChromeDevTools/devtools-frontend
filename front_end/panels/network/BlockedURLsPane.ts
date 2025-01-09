@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -74,7 +76,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     this.manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, this.update, this);
 
-    this.toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
+    this.toolbar = this.contentElement.createChild('devtools-toolbar');
     this.enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
         i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this),
         'network.enable-request-blocking');
@@ -84,7 +86,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         UI.Toolbar.Toolbar.createActionButtonForId('network.add-network-request-blocking-pattern'));
     this.toolbar.appendToolbarItem(
         UI.Toolbar.Toolbar.createActionButtonForId('network.remove-all-network-request-blocking-patterns'));
-    this.toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    this.toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('blocked-urls');

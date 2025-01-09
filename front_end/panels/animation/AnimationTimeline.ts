@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -302,7 +304,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   private createHeader(): HTMLElement {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
+    const topToolbar = toolbarContainer.createChild('devtools-toolbar', 'animation-timeline-toolbar');
     this.#clearButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'animations.clear');
     this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
@@ -352,7 +354,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     const controls = container.createChild('div', 'animation-controls');
     this.#currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
-    const toolbar = new UI.Toolbar.Toolbar('animation-controls-toolbar', controls);
+    const toolbar = controls.createChild('devtools-toolbar', 'animation-controls-toolbar');
     this.#controlButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.replayTimeline), 'replay', undefined, 'animations.play-replay-pause-animation-group');
     this.#controlButton.element.classList.add('toolbar-state-on');

@@ -137,7 +137,7 @@
   flex: none;
 }
 
-.spectrum-contrast-details div.toolbar.expand {
+.spectrum-contrast-details devtools-toolbar.expand {
   position: absolute;
   right: 6px;
   top: 6px;
@@ -531,13 +531,13 @@ devtools-icon.copy-color-icon {
   visibility: visible;
 }
 
-.palette-panel > div.toolbar {
+.palette-panel > devtools-toolbar {
   position: absolute;
   right: 6px;
   top: 6px;
 }
 
-.palette-panel > div:not(.toolbar) {
+.palette-panel > div {
   flex: 0 0 38px;
   border-bottom: 1px solid var(--sys-color-divider);
   padding: 12px;

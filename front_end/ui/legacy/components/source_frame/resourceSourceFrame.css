@@ -8,7 +8,7 @@
   flex: 1;
 }
 
-.toolbar {
+devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-top: 1px solid var(--sys-color-divider);
 }

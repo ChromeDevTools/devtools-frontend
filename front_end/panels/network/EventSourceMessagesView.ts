@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -66,7 +68,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.element.setAttribute('jslog', `${VisualLogging.pane('event-stream').track({resize: true})}`);
     this.request = request;
 
-    this.mainToolbar = new UI.Toolbar.Toolbar('');
+    this.mainToolbar = this.element.createChild('devtools-toolbar');
 
     this.clearAllButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
     this.clearAllButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.clearMessages, this);
@@ -82,8 +84,6 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
       this.filterTextInput.setValue(filter);
     }
     this.mainToolbar.appendToolbarItem(this.filterTextInput);
-
-    this.element.appendChild(this.mainToolbar.element);
 
     const columns = ([
       {id: 'id', title: i18nString(UIStrings.id), sortable: true, weight: 8},

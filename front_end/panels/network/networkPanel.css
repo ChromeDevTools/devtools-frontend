@@ -151,7 +151,7 @@
   background-color: var(--sys-color-cdt-base-container);
 }
 
-.network-settings-pane .toolbar {
+.network-settings-pane devtools-toolbar {
   flex: 1 1;
 }
 
@@ -164,13 +164,13 @@
   flex: 1 1 auto;
 }
 
-.panel.network .toolbar {
+.panel.network devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
 }
 
 @media (forced-colors: active) {
-  .panel.network .toolbar {
+  .panel.network devtools-toolbar {
     background-color: canvas;
   }
 }

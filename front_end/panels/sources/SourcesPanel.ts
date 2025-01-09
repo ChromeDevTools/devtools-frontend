@@ -28,6 +28,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -875,8 +877,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 
   private createDebugToolbar(): UI.Toolbar.Toolbar {
-    const debugToolbar = new UI.Toolbar.Toolbar('scripts-debug-toolbar');
-    debugToolbar.element.setAttribute(
+    const debugToolbar = document.createElement('devtools-toolbar');
+    debugToolbar.classList.add('scripts-debug-toolbar');
+    debugToolbar.setAttribute(
         'jslog',
         `${VisualLogging.toolbar('debug').track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
 
@@ -1181,7 +1184,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     // Create vertical box with stack.
     const vbox = new UI.Widget.VBox();
-    vbox.element.appendChild(this.debugToolbar.element);
+    vbox.element.appendChild(this.debugToolbar);
     vbox.element.appendChild(this.debugToolbarDrawer);
 
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);

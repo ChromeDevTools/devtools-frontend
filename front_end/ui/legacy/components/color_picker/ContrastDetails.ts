@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../legacy.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -138,7 +140,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       event.consume(false);
     }));
 
-    const expandToolbar = new UI.Toolbar.Toolbar('expand', contrastValueRowContents);
+    const expandToolbar = contrastValueRowContents.createChild('devtools-toolbar', 'expand');
     this.expandButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.showMore), 'chevron-down');
     this.expandButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this.expandButton.element, false);
@@ -163,7 +165,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const bgColorContainer = this.expandedDetails.createChild('div', 'background-color');
 
-    const pickerToolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', bgColorContainer);
+    const pickerToolbar = bgColorContainer.createChild('devtools-toolbar', 'spectrum-eye-dropper');
     this.bgColorPickerButton = new UI.Toolbar.ToolbarToggle(
         i18nString(UIStrings.toggleBackgroundColorPicker), 'color-picker', 'color-picker-filled');
     this.bgColorPickerButton.addEventListener(

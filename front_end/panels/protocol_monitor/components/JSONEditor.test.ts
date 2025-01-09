@@ -500,12 +500,14 @@ describeWithEnvironment('JSONEditor', () => {
       split.setMainWidget(dataGrid);
       split.setSidebarWidget(editorWidget);
       split.toggleSidebar();
+      split.markAsRoot();
+      split.show(renderElementIntoDOM(document.createElement('main')));
       await RenderCoordinator.done();
 
-      // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
-      const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
-          '.toolbar-input-prompt');
-      assert.deepEqual(toolbarInput?.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
+      const toolbarInput =
+          dataGrid.element.shadowRoot!.querySelector('.protocol-monitor-bottom-toolbar')!.querySelector(
+              '.toolbar-input-prompt');
+      assert.deepEqual(toolbarInput!.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
     });
 
     it('should update the selected target inside the input bar', async () => {

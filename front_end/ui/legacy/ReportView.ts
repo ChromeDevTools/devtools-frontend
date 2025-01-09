@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './Toolbar.js';
+
 import type * as Buttons from '../components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import reportViewStyles from './reportView.css.legacy.js';
-import {Toolbar} from './Toolbar.js';
+import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
 
@@ -73,9 +75,7 @@ export class ReportView extends VBox {
   }
 
   createToolbar(): Toolbar {
-    const toolbar = new Toolbar('');
-    this.headerElement.appendChild(toolbar.element);
-    return toolbar;
+    return this.headerElement.createChild('devtools-toolbar');
   }
 
   appendSection(title: string, className?: string, jslogContext?: string): Section {

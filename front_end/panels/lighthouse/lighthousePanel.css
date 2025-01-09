@@ -33,7 +33,7 @@ button.view-trace {
   flex: none;
 }
 
-.lighthouse-settings-pane .toolbar {
+.lighthouse-settings-pane devtools-toolbar {
   flex: 1 1;
 }
 
@@ -42,7 +42,7 @@ button.view-trace {
   flex: none;
 }
 
-.lighthouse-toolbar-container > .toolbar {
+.lighthouse-toolbar-container > devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
 }

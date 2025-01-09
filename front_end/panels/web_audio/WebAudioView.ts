@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -40,11 +42,11 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     // Creates the toolbar.
     const toolbarContainer = this.contentElement.createChild('div', 'web-audio-toolbar-container vbox');
     this.contextSelector = new AudioContextSelector();
-    const toolbar = new UI.Toolbar.Toolbar('web-audio-toolbar', toolbarContainer);
+    const toolbar = toolbarContainer.createChild('devtools-toolbar', 'web-audio-toolbar');
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this.contextSelector.toolbarItem());
-    toolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     // Create content container
     this.contentContainer = this.contentElement.createChild('div', 'web-audio-content-container vbox flex-auto');

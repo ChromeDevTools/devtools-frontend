@@ -379,7 +379,7 @@ text.animation-timeline-grid-label {
   padding: 10px;
 }
 
-.toolbar.animation-controls-toolbar {
+.animation-controls-toolbar {
   flex: 0 0 auto;
 }
 

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -138,7 +140,7 @@ export class CoverageView extends UI.Widget.VBox {
 
     const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
     toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    const toolbar = new UI.Toolbar.Toolbar('coverage-toolbar', toolbarContainer);
+    const toolbar = toolbarContainer.createChild('devtools-toolbar', 'coverage-toolbar');
     toolbar.makeWrappable(true);
 
     this.coverageTypeComboBox = new UI.Toolbar.ToolbarComboBox(
@@ -186,7 +188,7 @@ export class CoverageView extends UI.Widget.VBox {
 
     this.textFilterRegExp = null;
     toolbar.appendSeparator();
-    this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByUrl), 0.4, 1);
+    this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByUrl), 1, 1);
     this.filterInput.setEnabled(false);
     this.filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar.appendToolbarItem(this.filterInput);

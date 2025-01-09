@@ -17,8 +17,7 @@ function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {
 
 function setBreakpointType(
     dialog: Sources.BreakpointEditDialog.BreakpointEditDialog, newType: SDK.DebuggerModel.BreakpointType) {
-  const toolbar = dialog.contentElement.querySelector('.toolbar');
-  const selectElement = toolbar!.shadowRoot!.querySelector('select');
+  const selectElement = dialog.contentElement.querySelector<HTMLSelectElement>('devtools-toolbar select');
   selectElement!.value = newType;
   selectElement!.dispatchEvent(new Event('change'));
 }
@@ -60,7 +59,7 @@ describeWithEnvironment('BreakpointEditDialog', () => {
       const {editorForTest: {editor}} = dialog;
       setCodeMirrorContent(editor, 'x === 5');
 
-      dialog.contentElement.querySelector('devtools-icon')!.click();
+      dialog.contentElement.querySelector<HTMLElement>('.dialog-header > devtools-icon')!.click();
     });
 
     const {committed, condition} = await resultPromise;

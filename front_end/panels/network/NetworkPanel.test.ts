@@ -93,8 +93,7 @@ describeWithMockConnection('NetworkPanel', () => {
 
   it('clears network log on button click', async () => {
     const networkLogResetSpy = sinon.spy(Logs.NetworkLog.NetworkLog.instance(), 'reset');
-    const toolbar = networkPanel.element.querySelector('.network-toolbar-container .toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('[aria-label="Clear network log"]');
+    const button = networkPanel.element.querySelector('[aria-label="Clear network log"]');
     assert.instanceOf(button, HTMLElement);
     button.click();
     await RenderCoordinator.done({waitForWork: true});

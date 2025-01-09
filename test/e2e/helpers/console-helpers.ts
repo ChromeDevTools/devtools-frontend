@@ -60,8 +60,8 @@ export const Level = {
 export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
   await waitFor('.console-main-toolbar');
   const main = await $('.console-main-toolbar');
-  await frontend.evaluate(n => {
-    const deleteButton = n.shadowRoot?.querySelector('.toolbar-input-clear-button') as HTMLElement;
+  await frontend.evaluate(toolbar => {
+    const deleteButton = toolbar.querySelector<HTMLElement>('.toolbar-input-clear-button');
     if (deleteButton) {
       deleteButton.click();
     }
@@ -72,9 +72,9 @@ export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
 export async function filterConsoleMessages(frontend: puppeteer.Page, filter: string) {
   await waitFor('.console-main-toolbar');
   const main = await $('.console-main-toolbar');
-  await frontend.evaluate(n => {
-    const toolbar = n.shadowRoot?.querySelector('.toolbar-input-prompt.text-prompt') as HTMLElement;
-    toolbar.focus();
+  await frontend.evaluate(toolbar => {
+    const prompt = toolbar.querySelector<HTMLElement>('.toolbar-input-prompt.text-prompt');
+    prompt!.focus();
   }, main);
   await pasteText(filter);
   await frontend.keyboard.press('Tab');

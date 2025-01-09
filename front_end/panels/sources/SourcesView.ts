@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -95,9 +97,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     this.toolbarContainerElementInternal = this.element.createChild('div', 'sources-toolbar');
     this.toolbarContainerElementInternal.setAttribute('jslog', `${VisualLogging.toolbar('bottom')}`);
-    this.scriptViewToolbar = new UI.Toolbar.Toolbar('', this.toolbarContainerElementInternal);
-    this.scriptViewToolbar.element.style.flex = 'auto';
-    this.bottomToolbarInternal = new UI.Toolbar.Toolbar('', this.toolbarContainerElementInternal);
+    this.scriptViewToolbar = this.toolbarContainerElementInternal.createChild('devtools-toolbar');
+    this.scriptViewToolbar.style.flex = 'auto';
+    this.bottomToolbarInternal = this.toolbarContainerElementInternal.createChild('devtools-toolbar');
 
     this.toolbarChangedListener = null;
 

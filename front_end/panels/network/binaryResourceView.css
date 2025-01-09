@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.panel.network .toolbar.binary-view-toolbar {
+.panel.network devtools-toolbar.binary-view-toolbar {
   border-top: 1px solid var(--sys-color-divider);
   border-bottom: 0;
   padding-left: 5px;

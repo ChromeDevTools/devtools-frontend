@@ -15,8 +15,7 @@
 }
 
 .coverage-toolbar {
-  display: inline-block;
-  width: 100%;
+  flex: auto;
 }
 
 .coverage-toolbar-summary {

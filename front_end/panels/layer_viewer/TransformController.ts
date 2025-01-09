@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -59,8 +61,9 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     this.minScale = 0;
     this.maxScale = Infinity;
 
-    this.controlPanelToolbar = new UI.Toolbar.Toolbar('transform-control-panel');
-    this.controlPanelToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    this.controlPanelToolbar = document.createElement('devtools-toolbar');
+    this.controlPanelToolbar.classList.add('transform-control-panel');
+    this.controlPanelToolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     this.modeButtons = {};
     if (!disableRotate) {

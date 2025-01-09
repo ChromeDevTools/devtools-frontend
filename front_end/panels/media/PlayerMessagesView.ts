@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -265,7 +267,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   }
 
   private buildToolbar(): void {
-    const toolbar = new UI.Toolbar.Toolbar('media-messages-toolbar', this.headerPanel);
+    const toolbar = this.headerPanel.createChild('devtools-toolbar', 'media-messages-toolbar');
     toolbar.appendText(i18nString(UIStrings.logLevel));
     toolbar.appendToolbarItem(this.createDropdown());
     toolbar.appendSeparator();

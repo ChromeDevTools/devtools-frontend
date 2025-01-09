@@ -832,7 +832,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
   private initToolbar(): void {
     this.panelToolbar = this.transformController.toolbar();
-    this.contentElement.appendChild(this.panelToolbar.element);
+    this.contentElement.appendChild(this.panelToolbar);
     this.showPaintsSetting = this.createVisibilitySetting(
         i18nString(UIStrings.paints), 'frame-viewer-show-paints', false, this.panelToolbar);
     this.showSlowScrollRectsSetting = this.createVisibilitySetting(

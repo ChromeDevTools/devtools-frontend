@@ -21,7 +21,7 @@ interface RenderOptions {
 /**
  * Renders a given element into the DOM. By default it will error if it finds an element already rendered but this can be controlled via the options.
  **/
-export const renderElementIntoDOM = (element: HTMLElement, renderOptions: RenderOptions = {}) => {
+export function renderElementIntoDOM<E extends Element>(element: E, renderOptions: RenderOptions = {}): E {
   const container = document.getElementById(TEST_CONTAINER_ID);
 
   if (!container) {
@@ -35,7 +35,7 @@ export const renderElementIntoDOM = (element: HTMLElement, renderOptions: Render
   }
   container.appendChild(element);
   return element;
-};
+}
 
 function removeChildren(node: Node): void {
   while (true) {

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -69,7 +71,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     this.gridNodeByUrl = new Map();
 
     this.setting = Common.Settings.Settings.instance().moduleSetting('memory-live-heap-profile');
-    const toolbar = new UI.Toolbar.Toolbar('live-heap-profile-toolbar', this.contentElement);
+    const toolbar = this.contentElement.createChild('devtools-toolbar', 'live-heap-profile-toolbar');
     this.toggleRecordAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('live-heap-profile.toggle-recording');
     this.toggleRecordButton =

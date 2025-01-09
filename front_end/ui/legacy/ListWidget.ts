@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './Toolbar.js'; // eslint-disable-line import/no-duplicates
+
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -9,7 +11,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import listWidgetStyles from './listWidget.css.legacy.js';
-import {Toolbar, ToolbarButton} from './Toolbar.js';
+import {ToolbarButton} from './Toolbar.js';  // eslint-disable-line import/no-duplicates
 import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
@@ -176,7 +178,7 @@ export class ListWidget<T> extends VBox {
 
     const buttons = controls.createChild('div', 'controls-buttons');
 
-    const toolbar = new Toolbar('', buttons);
+    const toolbar = buttons.createChild('devtools-toolbar');
 
     const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'edit', undefined, 'edit-item');
     editButton.addEventListener(ToolbarButton.Events.CLICK, onEditClicked.bind(this));

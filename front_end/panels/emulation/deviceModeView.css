@@ -20,17 +20,17 @@
   align-items: stretch;
 }
 
-.device-mode-toolbar .toolbar {
+.device-mode-toolbar devtools-toolbar {
   overflow: hidden;
   flex: 0 100000 auto;
   padding: 0 5px;
 }
 
-.device-mode-toolbar .toolbar.device-mode-toolbar-fixed-size {
+.device-mode-toolbar devtools-toolbar.device-mode-toolbar-fixed-size {
   flex: 0 1 auto;
 }
 
-.device-mode-toolbar-options.toolbar {
+devtools-toolbar.device-mode-toolbar-options {
   position: sticky;
   right: 0;
   flex: none;

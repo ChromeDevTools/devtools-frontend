@@ -32,6 +32,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/legacy/legacy.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -243,10 +245,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
     const panel = new UI.Widget.VBox();
 
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
-    this.panelToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
+    this.panelToolbar = networkToolbarContainer.createChild('devtools-toolbar');
     this.panelToolbar.makeWrappable(true);
-    this.panelToolbar.element.setAttribute('jslog', `${VisualLogging.toolbar('network-main')}`);
-    this.rightToolbar = new UI.Toolbar.Toolbar('', networkToolbarContainer);
+    this.panelToolbar.setAttribute('jslog', `${VisualLogging.toolbar('network-main')}`);
+    this.rightToolbar = networkToolbarContainer.createChild('devtools-toolbar');
 
     this.filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     this.filterBar.show(panel.contentElement);
@@ -465,7 +467,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.networkSettings), 'gear-filled',
         'network-settings'));
 
-    const settingsToolbarLeft = new UI.Toolbar.Toolbar('', this.settingsPane.element);
+    const settingsToolbarLeft = this.settingsPane.element.createChild('devtools-toolbar');
     settingsToolbarLeft.makeVertical();
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this.networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
@@ -474,7 +476,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         this.networkLogShowOverviewSetting, i18nString(UIStrings.showOverviewOfNetworkRequests),
         i18nString(UIStrings.showOverview)));
 
-    const settingsToolbarRight = new UI.Toolbar.Toolbar('', this.settingsPane.element);
+    const settingsToolbarRight = this.settingsPane.element.createChild('devtools-toolbar');
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),

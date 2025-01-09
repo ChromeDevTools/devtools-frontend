@@ -136,8 +136,7 @@ export async function setTextFilter(text: string): Promise<void> {
 export async function getTextFilterContent(): Promise<string> {
   const toolbarHandle = await waitFor('.text-filter');
   const textFilterContent = toolbarHandle.evaluate(toolbar => {
-    const input = toolbar.shadowRoot?.querySelector('[aria-label="Filter"]');
-    return input?.textContent ?? '';
+    return toolbar.querySelector('[aria-label="Filter"]')?.textContent ?? '';
   });
   return textFilterContent;
 }
@@ -146,7 +145,7 @@ export async function clearTextFilter(): Promise<void> {
   const textFilterContent = await getTextFilterContent();
   if (textFilterContent) {
     const toolbarHandle = await waitFor('.text-filter');
-    await click('devtools-button', {root: toolbarHandle});
+    await click('[aria-label="Clear"]', {root: toolbarHandle});
   }
 }
 

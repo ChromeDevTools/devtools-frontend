@@ -33,6 +33,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import './Toolbar.js';
+
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -57,7 +59,7 @@ import textButtonStyles from './textButton.css.legacy.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import themeColorsStyles from './themeColors.css.legacy.js';
 import tokens from './tokens.css.legacy.js';
-import {Toolbar, type ToolbarButton} from './Toolbar.js';
+import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import type {TreeOutline} from './Treeoutline.js';
 import {Widget} from './Widget.js';
@@ -1677,9 +1679,8 @@ export function createInlineButton(toolbarButton: ToolbarButton): Element {
   const element = document.createElement('span');
   const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles});
   element.classList.add('inline-button');
-  const toolbar = new Toolbar('');
+  const toolbar = shadowRoot.createChild('devtools-toolbar');
   toolbar.appendToolbarItem(toolbarButton);
-  shadowRoot.appendChild(toolbar.element);
   return element;
 }
 

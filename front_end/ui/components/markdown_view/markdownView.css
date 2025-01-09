@@ -77,4 +77,5 @@ devtools-code-block {
   color: var(--sys-color-primary);
   outline-offset: 2px;
   text-decoration: underline;
+  cursor: pointer;
 }

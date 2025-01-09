@@ -292,6 +292,17 @@ details {
   height: auto;
 }
 
+details.references {
+  /* This transition is only added because there is no `transitionend` event in
+     JS for the `::details-content` transition. */
+  transition: margin-top var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+}
+
+details.references[open] {
+  /* This transition does not affect the actual UI. */
+  margin-top: 11px;
+}
+
 h2 {
   display: block;
   font-size: var(--sys-size-7);
@@ -353,10 +364,22 @@ h2:focus-visible {
   display: table-cell;
 }
 
+.sources-list x-link.highlighted { /* stylelint-disable-line selector-type-no-unknown */
+  background-color: var(--sys-color-yellow-container);
+}
+
 .references-list {
   padding-left: var(--sys-size-8);
 }
 
 .references-list li {
   padding-left: var(--sys-size-3);
+}
+
+details h3 {
+  font-size: 10px;
+  font-weight: var(--ref-typeface-weight-medium);
+  text-transform: uppercase;
+  color: var(--sys-color-on-surface-subtle);
+  padding-left: var(--sys-size-6);
 }

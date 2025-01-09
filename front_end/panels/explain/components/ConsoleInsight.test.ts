@@ -319,7 +319,7 @@ describeWithEnvironment('ConsoleInsight', () => {
     const markdownView = component.shadowRoot!.querySelector('devtools-markdown-view');
     assert.strictEqual(
         getCleanTextContentFromElements(markdownView!.shadowRoot!, '.message')[0],
-        'This is not [1] a real answer [2] , it is just a test.');
+        'This is not[1] a real answer[2], it is just a test.');
     const details = component.shadowRoot!.querySelector('details');
     assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
     const directCitations = details!.querySelectorAll('ol x-link');
@@ -332,6 +332,13 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.lengthOf(relatedContent, 1);
     assert.strictEqual(relatedContent[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
     assert.strictEqual(relatedContent[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
+
+    assert.isFalse(details?.hasAttribute('open'));
+    assert.isFalse(directCitations[0].classList.contains('highlighted'));
+    const link = markdownView!.shadowRoot?.querySelector('sup x-link') as HTMLElement;
+    link.click();
+    assert.isTrue(details?.hasAttribute('open'));
+    assert.isTrue(directCitations[0].classList.contains('highlighted'));
   });
 
   it('displays training data citations', async () => {

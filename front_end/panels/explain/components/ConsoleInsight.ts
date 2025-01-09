@@ -135,6 +135,10 @@ const UIStrings = {
    * @description The title of the list of references/recitations that were used to generate the insight.
    */
   references: 'Sources and related content',
+  /**
+   * @description Sub-heading for a list of links to URLs which are related to the AI-generated response.
+   */
+  relatedContent: 'Related content',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -195,6 +199,7 @@ type StateData = {
   isPageReloadRecommended: boolean,
   completed: boolean,
   directCitationUrls: string[],
+  highlightIndex?: number,
 }&Host.AidaClient.AidaResponse|{
   type: State.ERROR,
   error: string,
@@ -216,16 +221,15 @@ const markedExtension = {
   name: 'citation',
   level: 'inline',
   start(src: string) {
-    return src.match(/<cite/)?.index;
+    return src.match(/\[\^/)?.index;
   },
   tokenizer(src: string) {
-    const match = src.match(/^<cite href="(\S+)">(\S+)<\/cite>/);
+    const match = src.match(/^\[\^(\d+)\]/);
     if (match) {
       return {
         type: 'citation',
         raw: match[0],
-        linkTarget: match[1],
-        linkText: match[2],
+        linkText: Number(match[1]),
       };
     }
     return false;
@@ -243,10 +247,12 @@ export class ConsoleInsight extends HTMLElement {
 
   #promptBuilder: PublicPromptBuilder;
   #aidaClient: PublicAidaClient;
-  #renderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer();
+  #renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
 
   // Main state.
   #state: StateData;
+  #referenceDetailsRef = LitHtml.Directives.createRef<HTMLDetailsElement>();
+  #areReferenceDetailsOpen = false;
 
   // Rating sub-form state.
   #selectedRating?: boolean;
@@ -264,6 +270,7 @@ export class ConsoleInsight extends HTMLElement {
     this.#aidaClient = aidaClient;
     this.#aidaAvailability = aidaAvailability;
     this.#consoleInsightsEnabledSetting = this.#getConsoleInsightsEnabledSetting();
+    this.#renderer = new MarkdownView.MarkdownView.MarkdownInsightRenderer(this.#citationClickHandler.bind(this));
     this.#marked = new Marked.Marked.Marked({extensions: [markedExtension]});
 
     this.#state = this.#getStateFromAidaAvailability();
@@ -284,6 +291,27 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.focus();
+  }
+
+  #citationClickHandler(index: number): void {
+    if (this.#state.type !== State.INSIGHT || !this.#referenceDetailsRef.value) {
+      return;
+    }
+    this.#state.highlightIndex = index;
+    const areDetailsAlreadyExpanded = this.#referenceDetailsRef.value.open;
+    this.#areReferenceDetailsOpen = true;
+    this.#render();
+
+    const highlightedElement = this.#shadow.querySelector('li .highlighted');
+    if (highlightedElement) {
+      if (areDetailsAlreadyExpanded) {
+        highlightedElement.scrollIntoView({behavior: 'auto'});
+      } else {  // Wait for the details element to open before scrolling.
+        this.#referenceDetailsRef.value.addEventListener('transitionend', () => {
+          highlightedElement.scrollIntoView({behavior: 'auto'});
+        }, {once: true});
+      }
+    }
   }
 
   #getStateFromAidaAvailability(): StateData {
@@ -506,8 +534,7 @@ export class ConsoleInsight extends HTMLElement {
       const result = myRegex.exec(explanationWithCitations);
       if (result && citation.uri) {
         explanationWithCitations = explanationWithCitations.slice(0, result.index) +
-            `<cite href="${citation.uri}">${sortedCitations.length - index}</cite>` +
-            explanationWithCitations.slice(result.index);
+            `[^${sortedCitations.length - index}]` + explanationWithCitations.slice(result.index);
         directCitationUrls.push(citation.uri);
       }
     }
@@ -629,20 +656,27 @@ export class ConsoleInsight extends HTMLElement {
       return LitHtml.nothing;
     }
 
+    const highlightIndex = this.#state.highlightIndex || -1;
     // clang-format off
     return html`
       <ol class="sources-list">
-        ${this.#state.directCitationUrls.map(url => html`
-          <li>
-            <x-link
-              href=${url}
-              class="link"
-              jslog=${VisualLogging.link('references.console-insights').track({click: true})}
-            >
-              ${url}
-            </x-link>
-          </li>
-        `)}
+        ${this.#state.directCitationUrls.map((url, index) => {
+          const linkClasses = LitHtml.Directives.classMap({
+            link: true,
+            highlighted: highlightIndex - 1 === index,
+          });
+          return html`
+            <li>
+              <x-link
+                href=${url}
+                class=${linkClasses}
+                jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+              >
+                ${url}
+              </x-link>
+            </li>
+          `;
+        })}
       </ol>
     `;
     // clang-format on
@@ -672,6 +706,7 @@ export class ConsoleInsight extends HTMLElement {
     }
     // clang-format off
     return html`
+      ${this.#state.directCitationUrls.length ? html`<h3>${i18nString(UIStrings.relatedContent)}</h3>` : LitHtml.nothing}
       <ul class="references-list">
         ${relatedUrls.map(relatedUrl => html`
           <li>
@@ -691,6 +726,17 @@ export class ConsoleInsight extends HTMLElement {
 
   #isSearchRagResponse(metadata: Host.AidaClient.AidaResponseMetadata): boolean {
     return Boolean(metadata.factualityMetadata?.facts.length);
+  }
+
+  #onToggleReferenceDetails(): void {
+    if (this.#referenceDetailsRef.value) {
+      this.#areReferenceDetailsOpen = this.#referenceDetailsRef.value.open;
+      if (!this.#areReferenceDetailsOpen && this.#state.type === State.INSIGHT &&
+          this.#state.highlightIndex !== undefined) {
+        this.#state.highlightIndex = undefined;
+        this.#render();
+      }
+    }
   }
 
   #renderMain(): LitHtml.TemplateResult {
@@ -718,7 +764,7 @@ export class ConsoleInsight extends HTMLElement {
             </devtools-markdown-view>`: this.#state.explanation
           }
           ${this.#isSearchRagResponse(this.#state.metadata) ? html`
-            <details jslog=${VisualLogging.expand('references').track({click: true})}>
+            <details class="references" ${LitHtml.Directives.ref(this.#referenceDetailsRef)} @toggle=${this.#onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
               <summary>${i18nString(UIStrings.references)}</summary>
               ${this.#maybeRenderSources()}
               ${this.#maybeRenderRelatedContent()}
@@ -1063,6 +1109,10 @@ export class ConsoleInsight extends HTMLElement {
       host: this,
     });
     // clang-format on
+
+    if (this.#referenceDetailsRef.value) {
+      this.#referenceDetailsRef.value.open = this.#areReferenceDetailsOpen;
+    }
   }
 }
 

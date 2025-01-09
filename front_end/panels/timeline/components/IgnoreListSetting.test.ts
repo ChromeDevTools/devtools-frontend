@@ -67,20 +67,24 @@ describeWithEnvironment('Ignore List Setting', () => {
       forceNew: true,
       debuggerWorkspaceBinding,
     });
+  });
 
-    ignoreRegex('rule 1');
+  beforeEach(() => {
+    const regexPatterns = getIgnoredRegexes();
+    // There is a default rule `/node_modules/|/bower_components/`, So let's remove it for less confusion.
+    // Also this will clear the ignore list so each test can be individual.
+    regexPatterns.length = 0;
   });
 
   it('Able to render the ignore listed rules', async () => {
+    ignoreRegex('rule 1');
+
     const component = await renderIgnoreListSetting();
     const ignoredRules = getAllRules(component);
 
-    // There is a default rule `/node_modules/|/bower_components/`
-    assert.lengthOf(ignoredRules, 2);
-    assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
+    assert.lengthOf(ignoredRules, 1);
+    assert.deepEqual(ignoredRules[0].regex, 'rule 1');
     assert.isFalse(ignoredRules[0].disabled);
-    assert.deepEqual(ignoredRules[1].regex, 'rule 1');
-    assert.isFalse(ignoredRules[1].disabled);
 
     // Check the remove buttons are rendered
     assert.isNotNull(component.shadowRoot);
@@ -92,48 +96,42 @@ describeWithEnvironment('Ignore List Setting', () => {
   });
 
   it('Able to render the disabled ignore listed rules', async () => {
+    ignoreRegex('rule 1');
     disableIgnoreRegex('rule 1');
 
     const component = await renderIgnoreListSetting();
     const ignoredRules = getAllRules(component);
 
     // There is a default rule `/node_modules/|/bower_components/`
-    assert.lengthOf(ignoredRules, 2);
-    assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
-    assert.isFalse(ignoredRules[0].disabled);
-    assert.deepEqual(ignoredRules[1].regex, 'rule 1');
-    assert.isTrue(ignoredRules[1].disabled);
+    assert.lengthOf(ignoredRules, 1);
+    assert.deepEqual(ignoredRules[0].regex, 'rule 1');
+    assert.isTrue(ignoredRules[0].disabled);
   });
 
   it('Able to toggle the disable status of an ignore listed rules', async () => {
+    ignoreRegex('rule 1');
     const component = await renderIgnoreListSetting();
 
     assert.isNotNull(component.shadowRoot);
     const regexRows = component.shadowRoot.querySelectorAll<HTMLElement>('.regex-row');
-    // "rule 1" is the second in the view.
-    // Now the "rule 1" is disabled (by last test), so click the checkbox, it will be enabled.
-    // Add sanity checks to make sure.
-    const checkboxShadow = regexRows[1].querySelector('dt-checkbox')?.shadowRoot;
-    assert.strictEqual(checkboxShadow?.querySelector('label')?.textContent, 'rule 1');
-    assert.isTrue(isIgnoreRegexDisabled('rule 1'));
-
-    const rule1CheckBox = checkboxShadow?.querySelector('input');
-    rule1CheckBox?.click();
+    // Add sanity checks to make sure the rule is enabled before toggling.
     assert.isFalse(isIgnoreRegexDisabled('rule 1'));
+
+    const rule1CheckBox = regexRows[0].querySelector('dt-checkbox')?.shadowRoot?.querySelector('input');
+    rule1CheckBox?.click();
+    assert.isTrue(isIgnoreRegexDisabled('rule 1'));
   });
 
   it('Able to remove an ignore list rule', async () => {
+    ignoreRegex('rule 1');
     const component = await renderIgnoreListSetting();
 
     assert.isNotNull(component.shadowRoot);
     const regexRows = component.shadowRoot.querySelectorAll<HTMLElement>('.regex-row');
-    // "rule 1" is the second in the view.
-    // Add sanity checks to make sure.
-    const checkboxShadow = regexRows[1].querySelector('dt-checkbox')?.shadowRoot;
-    assert.strictEqual(checkboxShadow?.querySelector('label')?.textContent, 'rule 1');
+    // Add sanity checks to make sure 'rule 1' exists.
     assert.isTrue(isRegexInIgnoredList('rule 1'));
 
-    const rule1RemoveButton = regexRows[1].querySelector('devtools-button');
+    const rule1RemoveButton = regexRows[0].querySelector('devtools-button');
     rule1RemoveButton?.click();
     assert.isFalse(isRegexInIgnoredList('rule 1'));
   });
@@ -166,6 +164,7 @@ describeWithEnvironment('Ignore List Setting', () => {
   });
 
   it('Do not add a duplicate ignore list rule', async () => {
+    ignoreRegex('rule 1');
     disableIgnoreRegex('rule 1');
     assert.isTrue(isIgnoreRegexDisabled('rule 1'));
 
@@ -183,7 +182,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     const newRegexInput = getNewRegexInput(component);
 
     dispatchFocusEvent(newRegexInput);
-    newRegexInput.value = 'rule 2';
+    newRegexInput.value = 'rule 1';
     dispatchInputEvent(newRegexInput);
     await RenderCoordinator.done();
 
@@ -199,6 +198,7 @@ describeWithEnvironment('Ignore List Setting', () => {
 
   it('Show error message for invalid rule', async () => {
     // One example of invalid rule is duplicate input.
+    ignoreRegex('rule 1');
     assert.isTrue(isRegexInIgnoredList('rule 1'));
 
     const component = await renderIgnoreListSetting();
@@ -223,6 +223,7 @@ describeWithEnvironment('Ignore List Setting', () => {
 
   it('Show warning message for valid rule with warning message', async () => {
     // One example of valid rule with warning message is when a rule is disabled and it is added again.
+    ignoreRegex('rule 1');
     disableIgnoreRegex('rule 1');
     assert.isTrue(isIgnoreRegexDisabled('rule 1'));
 
@@ -249,14 +250,13 @@ describeWithEnvironment('Ignore List Setting', () => {
   describe('preview the result', () => {
     it('Add an empty regex when focusing on the input', async () => {
       const regexPatterns = getIgnoredRegexes();
-      // There is a default rule `/node_modules/|/bower_components/`, and the 'rule 1' we added.
-      assert.lengthOf(regexPatterns, 2);
+      assert.lengthOf(regexPatterns, 0);
 
       const component = await renderIgnoreListSetting();
       const newRegexInput = getNewRegexInput(component);
 
       dispatchFocusEvent(newRegexInput);
-      assert.lengthOf(regexPatterns, 3);
+      assert.lengthOf(regexPatterns, 1);
 
       // We need this to simulate the 'finish editing', so it can remove the temp regex. Otherwise the future tests will
       // be messed up.
@@ -266,21 +266,20 @@ describeWithEnvironment('Ignore List Setting', () => {
 
     it('Update the regex when user typing', async () => {
       const regexPatterns = getIgnoredRegexes();
-      // There is a default rule `/node_modules/|/bower_components/`, and the 'rule 1' we added.
-      assert.lengthOf(regexPatterns, 2);
+      assert.lengthOf(regexPatterns, 0);
 
       const component = await renderIgnoreListSetting();
       const newRegexInput = getNewRegexInput(component);
 
       dispatchFocusEvent(newRegexInput);
-      assert.lengthOf(regexPatterns, 3);
+      assert.lengthOf(regexPatterns, 1);
       // After the focus event, the temp regex (last one) is still empty.
-      assert.strictEqual(regexPatterns[2].pattern, '');
+      assert.strictEqual(regexPatterns[0].pattern, '');
       // Simulate user's typing
       newRegexInput.value = 'r';
       dispatchInputEvent(newRegexInput);
       // After the input event, the temp regex (last one) is updated.
-      assert.strictEqual(regexPatterns[2].pattern, 'r');
+      assert.strictEqual(regexPatterns[0].pattern, 'r');
 
       // We need this to simulate the 'finish editing' with empty input, so it can remove the temp regex. Otherwise the
       // future tests will be messed up.
@@ -291,38 +290,37 @@ describeWithEnvironment('Ignore List Setting', () => {
 
     it('Add the regex when user finish typing', async () => {
       const regexPatterns = getIgnoredRegexes();
-      // There is a default rule `/node_modules/|/bower_components/`, and the 'rule 1' we added.
-      assert.lengthOf(regexPatterns, 2);
+      assert.lengthOf(regexPatterns, 0);
 
       const component = await renderIgnoreListSetting();
       const newRegexInput = getNewRegexInput(component);
 
       dispatchFocusEvent(newRegexInput);
-      newRegexInput.value = 'rule 2';
-      assert.lengthOf(regexPatterns, 3);
+      newRegexInput.value = 'rule 1';
+      assert.lengthOf(regexPatterns, 1);
 
       dispatchBlurEvent(newRegexInput);
       // When add a valid rule, the temp regex won't be removed.
-      assert.lengthOf(regexPatterns, 3);
-      assert.strictEqual(regexPatterns[2].pattern, 'rule 2');
+      assert.lengthOf(regexPatterns, 1);
+      assert.strictEqual(regexPatterns[0].pattern, 'rule 1');
     });
 
     it('Remove the invalid regex when user finish typing', async () => {
+      ignoreRegex('rule 1');
       const regexPatterns = getIgnoredRegexes();
-      // There is a default rule `/node_modules/|/bower_components/`, and the 'rule 1', 'rule 2' we added.
-      assert.lengthOf(regexPatterns, 3);
+      assert.lengthOf(regexPatterns, 1);
 
       const component = await renderIgnoreListSetting();
       const newRegexInput = getNewRegexInput(component);
 
       dispatchFocusEvent(newRegexInput);
       // This is a duplicate rule, so it is invalid.
-      newRegexInput.value = 'rule 2';
-      assert.lengthOf(regexPatterns, 4);
+      newRegexInput.value = 'rule 1';
+      assert.lengthOf(regexPatterns, 2);
 
       dispatchBlurEvent(newRegexInput);
       // When add an invalid rule, the temp regex will be removed.
-      assert.lengthOf(regexPatterns, 3);
+      assert.lengthOf(regexPatterns, 1);
     });
 
     it('Clear the input when `Escape` is pressed', async () => {
@@ -330,7 +328,7 @@ describeWithEnvironment('Ignore List Setting', () => {
       const newRegexInput = getNewRegexInput(component);
 
       // This is a duplicate rule, so it is invalid.
-      newRegexInput.value = 'rule 2';
+      newRegexInput.value = 'rule 1';
 
       dispatchKeyDownEvent(newRegexInput, {key: Platform.KeyboardUtilities.ESCAPE_KEY});
       // When add an invalid rule, the temp regex will be removed.

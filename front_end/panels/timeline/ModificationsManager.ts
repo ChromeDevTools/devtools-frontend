@@ -104,8 +104,7 @@ export class ModificationsManager extends EventTarget {
 
   private constructor({parsedTrace, traceBounds, modifications}: ModificationsManagerData) {
     super();
-    const entryToNodeMap = new Map([...parsedTrace.Samples.entryToNode, ...parsedTrace.Renderer.entryToNode]);
-    this.#entriesFilter = new EntriesFilter(entryToNodeMap);
+    this.#entriesFilter = new EntriesFilter(parsedTrace);
     // Create first breadcrumb from the initial full window
     this.#timelineBreadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(traceBounds);
     this.#modifications = modifications || null;

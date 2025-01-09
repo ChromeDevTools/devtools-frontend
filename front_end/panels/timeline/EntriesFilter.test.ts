@@ -27,7 +27,7 @@ function findFirstEntry(
 describeWithEnvironment('EntriesFilter', function() {
   it('parses a stack and returns an empty list of invisible entries', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     assert.deepEqual([], stack?.invisibleEntries());
   });
 
@@ -62,7 +62,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -101,7 +101,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -143,7 +143,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -196,7 +196,7 @@ describeWithEnvironment('EntriesFilter', function() {
          const {endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(entry);
          return endTime <= firstFooCallEndTime;
        });
-       const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+       const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
        if (!stack) {
          throw new Error('EntriesFilter does not exist');
        }
@@ -273,7 +273,7 @@ describeWithEnvironment('EntriesFilter', function() {
       const basicTwoCallEndTime = Trace.Helpers.Timing.eventTimingsMicroSeconds(basicTwoCallEntry).endTime;
       return endTime <= basicTwoCallEndTime;
     });
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -335,7 +335,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -394,7 +394,7 @@ describeWithEnvironment('EntriesFilter', function() {
      * Applying 'undo all actions' should bring the stack to the original state.
      **/
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -487,7 +487,7 @@ describeWithEnvironment('EntriesFilter', function() {
      * This should result in all basicTwo children being removed from the invisible array and stack being in the initial state.
      **/
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -579,7 +579,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return endTime <= firstFooCallEndTime;
     });
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -653,7 +653,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'foo' && entry.dur === 233;
     });
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }
@@ -680,7 +680,7 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.nodeId === 42;
     });
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace);
     if (!stack) {
       throw new Error('EntriesFilter does not exist');
     }

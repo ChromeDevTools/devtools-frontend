@@ -254,6 +254,11 @@ export class CookieControlsView extends UI.Widget.VBox {
   }) {
     super(true, undefined, element);
     this.#view = view;
+
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+
     this.update();
   }
 
@@ -279,6 +284,10 @@ export class CookieControlsView extends UI.Widget.VBox {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url);
       }
     });
+  }
+
+  #onPrimaryPageChanged(): void {
+    UI.InspectorView.InspectorView.instance().removeDebuggedTabReloadRequiredWarning();
   }
 
   override wasShown(): void {

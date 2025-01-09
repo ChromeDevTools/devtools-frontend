@@ -492,9 +492,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               highlight: true,
               delegate: () => {
                 reloadDebuggedTab();
-                if (this.reloadRequiredInfobar) {
-                  this.reloadRequiredInfobar.dispose();
-                }
+                this.removeDebuggedTabReloadRequiredWarning();
               },
               dismiss: false,
               buttonVariant: Buttons.Button.Variant.PRIMARY,
@@ -509,6 +507,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       infobar.setCloseCallback(() => {
         delete this.reloadRequiredInfobar;
       });
+    }
+  }
+
+  removeDebuggedTabReloadRequiredWarning(): void {
+    if (this.reloadRequiredInfobar) {
+      this.reloadRequiredInfobar.dispose();
     }
   }
 

@@ -161,6 +161,16 @@ export class NetworkManager extends SDKModel<EventTypes> {
     Common.Settings.Settings.instance()
         .moduleSetting('cache-disabled')
         .addChangeListener(this.cacheDisabledSettingChanged, this);
+
+    Common.Settings.Settings.instance()
+        .createSetting('cookie-control-override-enabled', undefined)
+        .addChangeListener(this.cookieControlFlagsSettingChanged, this);
+    Common.Settings.Settings.instance()
+        .createSetting('grace-period-mitigation-disabled', undefined)
+        .addChangeListener(this.cookieControlFlagsSettingChanged, this);
+    Common.Settings.Settings.instance()
+        .createSetting('heuristic-mitigation-disabled', undefined)
+        .addChangeListener(this.cookieControlFlagsSettingChanged, this);
   }
 
   static forRequest(request: NetworkRequest): NetworkManager|null {
@@ -311,6 +321,20 @@ export class NetworkManager extends SDKModel<EventTypes> {
 
   private cacheDisabledSettingChanged({data: enabled}: Common.EventTarget.EventTargetEvent<boolean>): void {
     void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: enabled});
+  }
+
+  private cookieControlFlagsSettingChanged(): void {
+    const overridesEnabled =
+        Boolean(Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get());
+    const gracePeriodEnabled =
+        Boolean(Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get());
+    const heuristicEnabled =
+        Boolean(Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get());
+    void this.#networkAgent.invoke_setCookieControls({
+      enableThirdPartyCookieRestriction: overridesEnabled,
+      disableThirdPartyCookieMetadata: gracePeriodEnabled,
+      disableThirdPartyCookieHeuristics: heuristicEnabled,
+    });
   }
 
   override dispose(): void {

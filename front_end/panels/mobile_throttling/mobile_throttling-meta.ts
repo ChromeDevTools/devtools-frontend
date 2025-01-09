@@ -68,6 +68,7 @@ UI.ViewManager.registerViewExtension({
   },
   settings: [
     'custom-network-conditions',
+    'calibrated-cpu-throttling',
   ],
   iconName: 'performance',
 });

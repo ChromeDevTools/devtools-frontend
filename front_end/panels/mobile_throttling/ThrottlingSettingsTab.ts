@@ -4,12 +4,14 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {CalibrationController} from './CalibrationController.js';
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
 const UIStrings = {
@@ -116,15 +118,324 @@ const UIStrings = {
    * @description Label for the column Packet Reordering to indicate it is disabled in the Throttling Settings Tab.
    */
   off: 'Off',
+
+  /**
+   *@description Text in Throttling Settings Tab of the Settings panel
+   */
+  cpuThrottlingPresets: 'CPU throttling presets',
+  /**
+   * @description Button text to prompt the user to run the CPU calibration process.
+   */
+  calibrate: 'Calibrate',
+  /**
+   * @description Button text to prompt the user to re-run the CPU calibration process.
+   */
+  recalibrate: 'Recalibrate',
+  /**
+   * @description Button text to prompt the user if they wish to continue with the CPU calibration process.
+   */
+  continue: 'Continue',
+  /**
+   * @description Button text to allow the user to cancel the CPU calibration process.
+   */
+  cancel: 'Cancel',
+  /**
+   * @description Text to use to indicate that a CPU calibration has not been run yet.
+   */
+  needsCalibration: 'Needs calibration',
+  // TODO(crbug.com/311438112): Add 'Learn more' link.
+  /**
+   *@description Text to explain why the user should run the CPU calibration process.
+   */
+  calibrationCTA:
+      'To use the CPU throttling presets, run the calibration process to determine the ideal throttling rate for your device.',
+  /**
+   *@description Text to explain how the CPU calibration process will work.
+   */
+  calibrationConfirmationPrompt:
+      'Calibration will take ~10 seconds, and temporarily navigate away from your current page. Do you wish to continue?',
+  /**
+   *@description Text to explain an issue that may impact the CPU calibration process.
+   */
+  calibrationWarningHighCPU: 'CPU utilization is too high',
+  /**
+   *@description Text to explain an issue that may impact the CPU calibration process.
+   */
+  calibrationWarningRunningOnBattery: 'Device is running on battery, please plug in charger for best results',
+  /**
+   *@description Text to explain an issue that may impact the CPU calibration process.
+   */
+  calibrationWarningLowBattery: 'Device battery is low (<20%), results may be impacted by CPU throttling',
+  /**
+   * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
+   * @example {2} PH1
+   */
+  dSlowdown: '{PH1}× slowdown',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+/**
+ * This promise resolves after the first compute pressure record is observed.
+ * The object it returns is always up-to-date with the most recent record observed.
+ */
+function createComputePressurePromise(): Promise<{state: string}> {
+  const result = {state: ''};
+
+  return new Promise(resolve => {
+    // @ts-expect-error typescript/lib version needs to be updated.
+    const observer = new PressureObserver(records => {
+      result.state = records.at(-1).state;
+      resolve(result);
+    });
+    observer.observe('cpu', {
+      sampleInterval: 1000,
+    });
+  });
+}
+
+export class CPUThrottlingCard {
+  element: HTMLElement;
+
+  private readonly setting: Common.Settings.Setting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>;
+  private computePressurePromise?: ReturnType<typeof createComputePressurePromise>;
+  private controller?: CalibrationController;
+
+  // UI stuff.
+  private lowTierMobileDeviceEl: HTMLElement;
+  private midTierMobileDeviceEl: HTMLElement;
+  private calibrateEl: HTMLElement;
+  private textEl: HTMLElement;
+  private calibrateButton: Buttons.Button.Button;
+  private cancelButton: Buttons.Button.Button;
+  private progress: UI.ProgressIndicator.ProgressIndicator;
+  private state: 'cta'|'prompting'|'calibrating' = 'cta';
+  private warnings: string[] = [];
+
+  constructor() {
+    this.setting = Common.Settings.Settings.instance().createSetting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>(
+        'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
+
+    const card = new Cards.Card.Card();
+
+    this.lowTierMobileDeviceEl = card.createChild('div', 'cpu-preset-section');
+    this.lowTierMobileDeviceEl.append('Low-tier mobile device');
+    this.lowTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
+
+    this.midTierMobileDeviceEl = card.createChild('div', 'cpu-preset-section');
+    this.midTierMobileDeviceEl.append('Mid-tier mobile device');
+    this.midTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
+
+    this.calibrateEl = card.createChild('div', 'cpu-preset-section cpu-preset-calibrate');
+
+    const buttonContainerEl = this.calibrateEl.createChild('div', 'button-container');
+
+    this.calibrateButton = new Buttons.Button.Button();
+    this.calibrateButton.classList.add('calibrate-button');
+    this.calibrateButton.data = {
+      variant: Buttons.Button.Variant.PRIMARY,
+      jslogContext: 'throttling.calibrate',
+    };
+    this.calibrateButton.addEventListener('click', () => this.calibrateButtonClicked());
+    buttonContainerEl.append(this.calibrateButton);
+
+    this.cancelButton = new Buttons.Button.Button();
+    this.cancelButton.classList.add('cancel-button');
+    this.cancelButton.data = {
+      variant: Buttons.Button.Variant.OUTLINED,
+      jslogContext: 'throttling.calibrate-cancel',
+    };
+    this.cancelButton.textContent = i18nString(UIStrings.cancel);
+    this.cancelButton.addEventListener('click', () => this.cancelButtonClicked());
+    buttonContainerEl.append(this.cancelButton);
+
+    this.textEl = this.calibrateEl.createChild('div', 'text-container');
+
+    this.progress = new UI.ProgressIndicator.ProgressIndicator({showStopButton: false});
+    this.calibrateEl.append(this.progress.element);
+
+    card.data = {
+      heading: i18nString(UIStrings.cpuThrottlingPresets),
+      content: [this.lowTierMobileDeviceEl, this.midTierMobileDeviceEl, this.calibrateEl],
+    };
+    this.element = card;
+
+    this.updateState();
+  }
+
+  wasShown(): void {
+    this.computePressurePromise = createComputePressurePromise();
+    this.state = 'cta';
+    this.updateState();
+  }
+
+  willHide(): void {
+    this.computePressurePromise = undefined;
+    if (this.controller) {
+      this.controller.abort();
+    }
+  }
+
+  private updateState(): void {
+    if (this.state !== 'calibrating') {
+      this.controller = undefined;
+    }
+
+    const result = this.setting.get();
+    const hasCalibrated = result.low || result.mid;
+
+    this.calibrateButton.style.display = 'none';
+    this.textEl.style.display = 'none';
+    this.cancelButton.style.display = 'none';
+    this.progress.element.style.display = 'none';
+
+    if (this.state === 'cta') {
+      this.calibrateButton.style.display = '';
+      this.calibrateButton.textContent =
+          hasCalibrated ? i18nString(UIStrings.recalibrate) : i18nString(UIStrings.calibrate);
+
+      this.textEl.style.display = '';
+      this.textEl.textContent = '';
+      this.textEl.append(this.createTextWithIcon(i18nString(UIStrings.calibrationCTA), 'info'));
+    } else if (this.state === 'prompting') {
+      this.calibrateButton.style.display = '';
+      this.calibrateButton.textContent = i18nString(UIStrings.continue);
+
+      this.cancelButton.style.display = '';
+
+      this.textEl.style.display = '';
+      this.textEl.textContent = '';
+      for (const warning of this.warnings) {
+        this.textEl.append(this.createTextWithIcon(warning, 'warning'));
+      }
+      this.textEl.append(this.createTextWithIcon(i18nString(UIStrings.calibrationConfirmationPrompt), 'info'));
+    } else if (this.state === 'calibrating') {
+      this.cancelButton.style.display = '';
+      this.progress.element.style.display = '';
+    }
+
+    const resultToString = (result: number|SDK.CPUThrottlingManager.CalibrationError|undefined): string => {
+      if (result === undefined) {
+        return i18nString(UIStrings.needsCalibration);
+      }
+
+      if (typeof result === 'string') {
+        return SDK.CPUThrottlingManager.calibrationErrorToString(result);
+      }
+
+      // Shouldn't happen, but let's not throw an error (.toFixed) if the setting
+      // somehow was saved with a non-number.
+      if (typeof result !== 'number') {
+        return `Invalid: ${result}`;
+      }
+
+      return i18nString(UIStrings.dSlowdown, {PH1: result.toFixed(1)});
+    };
+
+    const setPresetResult =
+        (element: HTMLElement|null, result: number|SDK.CPUThrottlingManager.CalibrationError|undefined): void => {
+          if (!element) {
+            throw new Error('expected HTMLElement');
+          }
+
+          element.textContent = resultToString(result);
+          element.classList.toggle('not-calibrated', result === undefined);
+        };
+
+    setPresetResult(this.lowTierMobileDeviceEl.querySelector('.cpu-preset-result'), result.low);
+    setPresetResult(this.midTierMobileDeviceEl.querySelector('.cpu-preset-result'), result.mid);
+  }
+
+  private createTextWithIcon(text: string, icon: string): HTMLElement {
+    const el = document.createElement('div');
+    el.classList.add('text-with-icon');
+    el.append(IconButton.Icon.create(icon));
+    el.append(text);
+    return el;
+  }
+
+  private async getCalibrationWarnings(): Promise<string[]> {
+    const warnings = [];
+
+    if (this.computePressurePromise) {
+      const computePressure = await this.computePressurePromise;
+      if (computePressure.state === 'critical' || computePressure.state === 'serious') {
+        warnings.push(i18nString(UIStrings.calibrationWarningHighCPU));
+      }
+    }
+
+    // @ts-expect-error typescript/lib version needs to be updated.
+    const battery = await navigator.getBattery();
+    if (!battery.charging) {
+      warnings.push(i18nString(UIStrings.calibrationWarningRunningOnBattery));
+    } else if (battery.level < 0.2) {
+      warnings.push(i18nString(UIStrings.calibrationWarningLowBattery));
+    }
+
+    return warnings;
+  }
+
+  private async calibrateButtonClicked(): Promise<void> {
+    if (this.state === 'cta') {
+      this.warnings = await this.getCalibrationWarnings();
+      this.state = 'prompting';
+      this.updateState();
+    } else if (this.state === 'prompting') {
+      this.state = 'calibrating';
+      this.updateState();
+      void this.runCalibration();
+    }
+  }
+
+  private cancelButtonClicked(): void {
+    if (this.controller) {
+      this.controller.abort();
+    } else {
+      this.state = 'cta';
+      this.updateState();
+    }
+  }
+
+  private async runCalibration(): Promise<void> {
+    this.progress.setWorked(0);
+    this.progress.setTotalWork(1);
+
+    this.controller = new CalibrationController();
+
+    try {
+      if (!await this.controller.start()) {
+        console.error('Calibration failed to start');
+        return;
+      }
+
+      for await (const result of this.controller.iterator()) {
+        this.progress.setWorked(result.progress);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await this.controller.end();
+    }
+
+    const result = this.controller.result();
+    if (result && (result.low || result.mid)) {
+      this.setting.set(result);
+      // Let the user bask in the glory of a 100% progress bar, for a bit.
+      this.progress.setWorked(1);
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    this.state = 'cta';
+    this.updateState();
+  }
+}
 
 export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     UI.ListWidget.Delegate<SDK.NetworkManager.Conditions> {
   private readonly list: UI.ListWidget.ListWidget<SDK.NetworkManager.Conditions>;
   private readonly customSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   private editor?: UI.ListWidget.Editor<SDK.NetworkManager.Conditions>;
+  private cpuThrottlingCard: CPUThrottlingCard;
 
   constructor() {
     super(true);
@@ -134,6 +445,9 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     const settingsContent =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
     settingsContent.classList.add('settings-card-container', 'throttling-conditions-settings');
+
+    this.cpuThrottlingCard = new CPUThrottlingCard();
+    settingsContent.append(this.cpuThrottlingCard.element);
 
     const addButton = new Buttons.Button.Button();
     addButton.classList.add('add-conditions-button');
@@ -163,9 +477,15 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
   override wasShown(): void {
     super.wasShown();
+    this.cpuThrottlingCard.wasShown();
     this.list.registerCSSFiles([throttlingSettingsTabStyles]);
     this.registerCSSFiles([throttlingSettingsTabStyles]);
     this.conditionsUpdated();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.cpuThrottlingCard.willHide();
   }
 
   private conditionsUpdated(): void {

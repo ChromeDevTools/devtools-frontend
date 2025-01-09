@@ -1516,6 +1516,7 @@ grd_files_debug_sources = [
   "front_end/panels/media/playerListView.css.js",
   "front_end/panels/media/playerMessagesView.css.js",
   "front_end/panels/media/playerPropertiesView.css.js",
+  "front_end/panels/mobile_throttling/CalibrationController.js",
   "front_end/panels/mobile_throttling/MobileThrottlingSelector.js",
   "front_end/panels/mobile_throttling/NetworkPanelIndicator.js",
   "front_end/panels/mobile_throttling/NetworkThrottlingSelector.js",

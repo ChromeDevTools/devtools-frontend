@@ -3,21 +3,53 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../i18n/i18n.js';
 
 import {EmulationModel} from './EmulationModel.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
+
+const UIStrings = {
+  /**
+   * @description Text label for a menu item indicating that no throttling is applied.
+   */
+  noThrottling: 'No throttling',
+  /**
+   * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
+   * @example {2} PH1
+   */
+  dSlowdown: '{PH1}× slowdown',
+  /**
+   * @description Text label for a menu item indicating an average mobile device.
+   */
+  calibratedMidTierMobile: 'Mid-tier mobile',
+  /**
+   * @description Text label for a menu item indicating a below-average mobile device.
+   */
+  calibratedLowTierMobile: 'Low-tier mobile',
+  /**
+   * @description Text label indicating why an option is not available, because the user's device is not fast enough to emulate a device.
+   */
+  calibrationErrorDeviceTooWeak: 'Device is not powerful enough',
+};
+const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 let throttlingManagerInstance: CPUThrottlingManager;
 
 export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     SDKModelObserver<EmulationModel> {
-  #cpuThrottlingRateInternal: number;
+  #cpuThrottlingOptionInternal: CPUThrottlingOption;
+  #calibratedThrottlingSetting: Common.Settings.Setting<CalibratedCPUThrottling>;
   #hardwareConcurrencyInternal?: number;
   #pendingMainTargetPromise?: (r: number) => void;
 
   private constructor() {
     super();
-    this.#cpuThrottlingRateInternal = CPUThrottlingRates.NO_THROTTLING;
+    this.#cpuThrottlingOptionInternal = NoThrottlingOption;
+    this.#calibratedThrottlingSetting = Common.Settings.Settings.instance().createSetting<CalibratedCPUThrottling>(
+        'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
+    this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
     TargetManager.instance().observeModels(EmulationModel, this);
   }
 
@@ -31,19 +63,43 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   cpuThrottlingRate(): number {
-    return this.#cpuThrottlingRateInternal;
+    return this.#cpuThrottlingOptionInternal.rate();
   }
 
-  setCPUThrottlingRate(rate: number): void {
-    if (rate === this.#cpuThrottlingRateInternal) {
+  cpuThrottlingOption(): CPUThrottlingOption {
+    return this.#cpuThrottlingOptionInternal;
+  }
+
+  #onCalibratedSettingChanged(): void {
+    // If a calibrated option is selected, need to propagate new rate.
+    const currentOption = this.#cpuThrottlingOptionInternal;
+    if (!currentOption.calibratedDeviceType) {
       return;
     }
 
-    this.#cpuThrottlingRateInternal = rate;
-    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
-      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);
+    const rate = this.#cpuThrottlingOptionInternal.rate();
+    if (rate === 0) {
+      // This calibrated option is no longer valid.
+      this.setCPUThrottlingOption(NoThrottlingOption);
+      return;
     }
-    this.dispatchEventToListeners(Events.RATE_CHANGED, this.#cpuThrottlingRateInternal);
+
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+      void emulationModel.setCPUThrottlingRate(rate);
+    }
+    this.dispatchEventToListeners(Events.RATE_CHANGED, rate);
+  }
+
+  setCPUThrottlingOption(option: CPUThrottlingOption): void {
+    if (option === this.#cpuThrottlingOptionInternal) {
+      return;
+    }
+
+    this.#cpuThrottlingOptionInternal = option;
+    for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
+      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOptionInternal.rate());
+    }
+    this.dispatchEventToListeners(Events.RATE_CHANGED, this.#cpuThrottlingOptionInternal.rate());
   }
 
   setHardwareConcurrency(concurrency: number): void {
@@ -98,8 +154,8 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   modelAdded(emulationModel: EmulationModel): void {
-    if (this.#cpuThrottlingRateInternal !== CPUThrottlingRates.NO_THROTTLING) {
-      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);
+    if (this.#cpuThrottlingOptionInternal !== NoThrottlingOption) {
+      void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingOptionInternal.rate());
     }
     if (this.#hardwareConcurrencyInternal !== undefined) {
       void emulationModel.setHardwareConcurrency(this.#hardwareConcurrencyInternal);
@@ -134,9 +190,93 @@ export function throttlingManager(): CPUThrottlingManager {
 
 export enum CPUThrottlingRates {
   NO_THROTTLING = 1,
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
-  MidTierMobile = 4,
-  // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
-  LowEndMobile = 6,
+  MID_TIER_MOBILE = 4,
+  LOW_TIER_MOBILE = 6,
   EXTRA_SLOW = 20,
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
+  MidTierMobile = MID_TIER_MOBILE,
+  // eslint-disable-next-line @typescript-eslint/naming-convention -- Used by web_tests.
+  LowEndMobile = LOW_TIER_MOBILE,
+}
+
+export type CalibratedDeviceType = 'low-tier-mobile'|'mid-tier-mobile';
+
+export interface CPUThrottlingOption {
+  title: () => string;
+  rate: () => number;
+  calibratedDeviceType?: CalibratedDeviceType;
+  jslogContext: string;
+}
+
+function makeFixedPresetThrottlingOption(rate: CPUThrottlingRates): CPUThrottlingOption {
+  return {
+    title: rate === 1 ? i18nLazyString(UIStrings.noThrottling) : i18nLazyString(UIStrings.dSlowdown, {PH1: rate}),
+    rate: () => rate,
+    jslogContext: rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`,
+  };
+}
+
+export const NoThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.NO_THROTTLING);
+export const MidTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.MID_TIER_MOBILE);
+export const LowTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.LOW_TIER_MOBILE);
+export const ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
+
+function makeCalibratedThrottlingOption(calibratedDeviceType: CalibratedDeviceType): CPUThrottlingOption {
+  const getSettingValue = (): number|CalibrationError|null => {
+    const setting = Common.Settings.Settings.instance().createSetting<CalibratedCPUThrottling>(
+        'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
+    const value = setting.get();
+    if (calibratedDeviceType === 'low-tier-mobile') {
+      return value.low ?? null;
+    }
+    if (calibratedDeviceType === 'mid-tier-mobile') {
+      return value.mid ?? null;
+    }
+    return null;
+  };
+
+  return {
+    title(): string {
+      const typeString = calibratedDeviceType === 'low-tier-mobile' ? i18nString(UIStrings.calibratedLowTierMobile) :
+                                                                      i18nString(UIStrings.calibratedMidTierMobile);
+
+      const value = getSettingValue();
+      if (typeof value === 'number') {
+        return `${typeString} – ${value.toFixed(1)}×`;
+      }
+
+      return typeString;
+    },
+    rate(): number {
+      const value = getSettingValue();
+      if (typeof value === 'number') {
+        return value;
+      }
+      return 0;
+    },
+    calibratedDeviceType,
+    jslogContext: `cpu-throttled-calibrated-${calibratedDeviceType}`,
+  };
+}
+
+export const CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption('low-tier-mobile');
+export const CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption('mid-tier-mobile');
+
+export interface CalibratedCPUThrottling {
+  /** Either the CPU multiplier, or an error code for why it could not be determined. */
+  low?: number|CalibrationError;
+  mid?: number|CalibrationError;
+}
+
+export enum CalibrationError {
+  DEVICE_TOO_WEAK = 'DEVICE_TOO_WEAK',
+}
+
+export function calibrationErrorToString(error: CalibrationError): string {
+  if (error === CalibrationError.DEVICE_TOO_WEAK) {
+    return i18nString(UIStrings.calibrationErrorDeviceTooWeak);
+  }
+
+  return error;
 }

@@ -121,3 +121,35 @@
   align-items: center;
   gap: var(--sys-size-9);
 }
+
+.cpu-preset-section {
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cpu-preset-result.not-calibrated {
+  font-style: italic;
+}
+
+.cpu-preset-calibrate {
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cpu-preset-calibrate .button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.cpu-preset-calibrate .text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.text-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

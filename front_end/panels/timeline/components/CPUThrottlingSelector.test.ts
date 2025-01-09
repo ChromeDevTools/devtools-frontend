@@ -19,7 +19,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
   });
 
-  it('renders all CPU throttling presets', async () => {
+  it('renders all CPU throttling options', async () => {
     const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
     renderElementIntoDOM(view);
 
@@ -27,7 +27,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
 
-    assert.lengthOf(menuItems, 4);
+    assert.lengthOf(menuItems, 7);
 
     assert.strictEqual(menuItems[0].value, 1);
     assert.isTrue(menuItems[0].selected);
@@ -44,6 +44,14 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     assert.strictEqual(menuItems[3].value, 20);
     assert.isFalse(menuItems[3].selected);
     assert.match(menuItems[3].innerText, /20× slowdown/);
+
+    assert.strictEqual(menuItems[4].value, 'low-tier-mobile');
+    assert.isFalse(menuItems[4].selected);
+    assert.match(menuItems[4].innerText, /Low-tier mobile/);
+
+    assert.strictEqual(menuItems[5].value, 'mid-tier-mobile');
+    assert.isFalse(menuItems[5].selected);
+    assert.match(menuItems[5].innerText, /Mid-tier mobile/);
   });
 
   it('updates CPU throttling manager on change', async () => {
@@ -74,7 +82,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     assert.isTrue(menuItems[0].selected);
 
-    cpuThrottlingManager.setCPUThrottlingRate(6);
+    cpuThrottlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.LowTierThrottlingOption);
     await RenderCoordinator.done();
 
     assert.isTrue(menuItems[2].selected);
@@ -82,7 +90,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
   it('reacts to changes in CPU throttling manager when it is unmounted and then remounted', async () => {
     const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
     // Change the conditions before the component is put into the DOM.
-    cpuThrottlingManager.setCPUThrottlingRate(6);
+    cpuThrottlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.LowTierThrottlingOption);
 
     renderElementIntoDOM(view);
     await RenderCoordinator.done();

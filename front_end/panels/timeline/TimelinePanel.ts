@@ -778,7 +778,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #onFieldDataChanged(): void {
     const recs = Utils.Helpers.getThrottlingRecommendations();
-    this.cpuThrottlingSelect?.updateRecommendedRate(recs.cpuRate);
+    this.cpuThrottlingSelect?.updateRecommendedOption(recs.cpuOption);
     this.networkThrottlingSelect?.updateRecommendedConditions(recs.networkConditions);
   }
 

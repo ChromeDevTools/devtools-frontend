@@ -606,7 +606,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-cpu-throttling-selector .recommendedRate=${recs.cpuRate}></devtools-cpu-throttling-selector>
+        <devtools-cpu-throttling-selector .recommendedOption=${recs.cpuOption}></devtools-cpu-throttling-selector>
       </div>
       <div class="environment-option">
         <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>

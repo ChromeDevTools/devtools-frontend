@@ -40,6 +40,10 @@
   background: var(--sys-color-token-subtle);
 }
 
+.is-disabled-item {
+  opacity: 60%;
+}
+
 :host(:hover:not(.prevents-close)) .menu-item,
 :host(:focus-visible:not(.prevents-close)) .menu-item {
   background: var(--sys-color-state-hover-on-subtle);

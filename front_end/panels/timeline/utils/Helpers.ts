@@ -6,7 +6,7 @@ import '../../../ui/components/markdown_view/markdown_view.js';
 
 import type * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -14,11 +14,17 @@ import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js'
 
 const {html} = LitHtml;
 
-export function getThrottlingRecommendations():
-    {cpuRate: number|null, networkConditions: SDK.NetworkManager.Conditions|null} {
-  const cpuRate = 4;  // TODO(crbug.com/311438112): suggest "mid-tier" mobile device when implemented.
-  let networkConditions = null;
+export function getThrottlingRecommendations(): {
+  cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption|null,
+  networkConditions: SDK.NetworkManager.Conditions|null,
+} {
+  let cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption =
+      SDK.CPUThrottlingManager.CalibratedMidTierMobileThrottlingOption;
+  if (cpuOption.rate() === 0) {
+    cpuOption = SDK.CPUThrottlingManager.MidTierThrottlingOption;
+  }
 
+  let networkConditions = null;
   const response = CrUXManager.CrUXManager.instance().getSelectedFieldMetricData('round_trip_time');
   if (response?.percentiles) {
     const rtt = Number(response.percentiles.p75);
@@ -26,7 +32,7 @@ export function getThrottlingRecommendations():
   }
 
   return {
-    cpuRate,
+    cpuOption,
     networkConditions,
   };
 }

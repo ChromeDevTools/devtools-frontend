@@ -401,7 +401,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
     toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    toolbar.makeWrappable(true);
+    toolbar.wrappable = true;
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar),
         i18nString(UIStrings.consoleSidebarShown), i18nString(UIStrings.consoleSidebarHidden), 'console-sidebar'));
@@ -449,7 +449,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     UI.ARIAUtils.markAsGroup(settingsPane.element);
 
     const settingsToolbarLeft = settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarLeft.makeVertical();
+    settingsToolbarLeft.orientation = 'vertical';
 
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarLeft, this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title(),
@@ -466,7 +466,7 @@ export class ConsoleView extends UI.Widget.VBox implements
         settingsToolbarLeft, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
 
     const settingsToolbarRight = settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarRight.makeVertical();
+    settingsToolbarRight.orientation = 'vertical';
 
     ConsoleView.appendSettingsCheckboxToToolbar(
         settingsToolbarRight, monitoringXHREnabledSetting, i18nString(UIStrings.logXMLHttpRequests));

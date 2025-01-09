@@ -70,15 +70,103 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * Custom element for toolbars.
+ *
+ * By default, toolbars are horizontal. To create a vertical toolbar, you need
+ * to set the value of the `"orientation"` attribute to `"vertical"`.
+ * ```js
+ * const toolbar = document.createElement('devtools-toolbar');
+ * toolbar.orientation = 'vertical';
+ * ```
+ *
+ * @attr orientation - The toolbar orientation, which can be either `"horizontal"`
+ *                     (the default) or `"vertical"`. Any changes to this attribute
+ *                     are also reflected to the `"aria-orientation"` attribute.
+ * @attr wrappable - If present the toolbar items will wrap to a new row and the
+ *                   toolbar height increases.
+ * @prop {string} wrappable - The `"wrappable"` attribute is reflected as property.
+ * @prop {boolean} wrappable - The `"wrappable"` attribute is reflected as property.
+ */
 export class Toolbar extends HTMLElement {
-  private items: ToolbarItem[];
-  enabled: boolean;
+  static readonly observedAttributes = ['orientation'];
+
+  private items: ToolbarItem[] = [];
+  enabled: boolean = true;
   private compactLayout = false;
 
-  constructor() {
-    super();
-    this.items = [];
-    this.enabled = true;
+  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void {
+    if (oldValue === newValue) {
+      return;
+    }
+    switch (name) {
+      case 'orientation': {
+        if (newValue !== 'vertical') {
+          newValue = 'horizontal';
+        }
+        this.ariaOrientation = newValue;
+        break;
+      }
+    }
+  }
+
+  connectedCallback(): void {
+    if (!this.hasAttribute('orientation')) {
+      this.setAttribute('orientation', 'horizontal');
+    }
+    if (!this.hasAttribute('aria-orientation')) {
+      this.setAttribute('aria-orientation', this.orientation);
+    }
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'toolbar');
+    }
+  }
+
+  /**
+   * Yields the current orientation of this toolbar, which can be either
+   * `"horizontal"` (the default) or `"vertical"` by checking the value
+   * of the `"orientation"` attribute.
+   *
+   * @return `"horizontal"` or `"vertical"`.
+   */
+  get orientation(): 'horizontal'|'vertical' {
+    return this.getAttribute('orientation') === 'vertical' ? 'vertical' : 'horizontal';
+  }
+
+  /**
+   * Changes the orientation of this toolbar by changing the value of the
+   * `"orientation"` attribute to `orientation`.
+   *
+   * This change is also reflected on the `"aria-orientation"` attribute.
+   *
+   * @param orientation the new orientitation.
+   */
+  set orientation(orientation: 'horizontal'|'vertical') {
+    this.setAttribute('orientation', orientation);
+  }
+
+  /**
+   * Returns whether this toolbar is wrappable.
+   *
+   * @return `true` if the `"wrappable"` attribute is present on this toolbar,
+   *         otherwise `false`.
+   */
+  get wrappable(): boolean {
+    return this.hasAttribute('wrappable');
+  }
+
+  /**
+   * Changes the value of the `"wrappable"` attribute on this toolbar.
+   *
+   * @param wrappable `true` to make the toolbar items wrap to a new row and
+   *                  have the toolbar height adjust.
+   */
+  set wrappable(wrappable: boolean) {
+    if (wrappable) {
+      this.setAttribute('wrappable', '');
+    } else {
+      this.removeAttribute('wrappable');
+    }
   }
 
   hasCompactLayout(): boolean {
@@ -259,17 +347,6 @@ export class Toolbar extends HTMLElement {
   static createActionButtonForId(actionId: string, options?: ToolbarButtonOptions): ToolbarButton {
     const action = ActionRegistry.instance().getAction(actionId);
     return Toolbar.createActionButton(action, options);
-  }
-
-  makeWrappable(growVertically?: boolean): void {
-    this.classList.add('wrappable');
-    if (growVertically) {
-      this.classList.add('toolbar-grow-vertical');
-    }
-  }
-
-  makeVertical(): void {
-    this.classList.add('vertical');
   }
 
   empty(): boolean {

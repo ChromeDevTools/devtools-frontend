@@ -260,7 +260,7 @@ export class DeviceModeToolbar {
     this.fillLeftToolbar(leftToolbar);
 
     const mainToolbar = this.elementInternal.createChild('devtools-toolbar');
-    mainToolbar.makeWrappable();
+    mainToolbar.wrappable = true;
     this.widthInput = new EmulationComponents.DeviceSizeInputElement.SizeInputElement(
         i18nString(UIStrings.width), {jslogContext: 'width'});
     this.widthInput.addEventListener('sizechanged', ({size: width}) => {
@@ -283,14 +283,14 @@ export class DeviceModeToolbar {
 
     const rightContainer = this.elementInternal.createChild('div', 'device-mode-toolbar-spacer');
     const rightToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-fixed-size');
-    rightToolbar.makeWrappable();
+    rightToolbar.wrappable = true;
     this.fillRightToolbar(rightToolbar);
     const modeToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-fixed-size');
-    modeToolbar.makeWrappable();
+    modeToolbar.wrappable = true;
     this.fillModeToolbar(modeToolbar);
     rightContainer.createChild('div', 'device-mode-toolbar-spacer');
     const optionsToolbar = rightContainer.createChild('devtools-toolbar', 'device-mode-toolbar-options');
-    optionsToolbar.makeWrappable();
+    optionsToolbar.wrappable = true;
     this.fillOptionsToolbar(optionsToolbar);
 
     this.emulatedDevicesList = EmulationModel.EmulatedDevices.EmulatedDevicesList.instance();

@@ -773,19 +773,23 @@ devtools-toolbar {
 
   --toolbar-height: 26px;
 
-  &.wrappable {
+  &[wrappable] {
     flex-wrap: wrap;
     overflow: visible;
-  }
-
-  &.toolbar-grow-vertical {
     height: initial;
   }
 
-  &.vertical {
+  &[orientation="vertical"] {
     flex-direction: column;
     height: auto;
     align-items: flex-start;
+
+    & > .toolbar-item {
+      height: auto;
+      min-height: var(--toolbar-height);
+      white-space: normal;
+
+    }
   }
 
   .toolbar-item {
@@ -820,12 +824,6 @@ devtools-toolbar {
   .toolbar-item,
   .toolbar-item .devtools-link {
     color: var(--icon-default);
-  }
-
-  &.vertical .toolbar-item {
-    height: auto;
-    min-height: var(--toolbar-height);
-    white-space: normal;
   }
 
   devtools-issue-counter.toolbar-item {

@@ -556,7 +556,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.panelToolbar = timelineToolbarContainer.createChild('devtools-toolbar', 'timeline-main-toolbar');
-    this.panelToolbar.makeWrappable(true);
+    this.panelToolbar.wrappable = true;
     this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
     if (!isNode) {
       this.createSettingsPane();
@@ -1253,7 +1253,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const captureToolbar = this.settingsPane.element.createChild('devtools-toolbar');
     captureToolbar.classList.add('flex-auto');
-    captureToolbar.makeVertical();
+    captureToolbar.orientation = 'vertical';
     captureToolbar.appendToolbarItem(this.createSettingCheckbox(
         this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
     captureToolbar.appendToolbarItem(
@@ -1277,7 +1277,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     networkThrottlingToolbar.appendToolbarItem(this.createNetworkConditionsSelectToolbarItem());
 
     const thirdPartyToolbar = throttlingPane.element.createChild('devtools-toolbar');
-    thirdPartyToolbar.makeVertical();
+    thirdPartyToolbar.orientation = 'vertical';
     const thirdPartyCheckbox =
         this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
 

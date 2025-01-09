@@ -246,7 +246,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
     this.panelToolbar = networkToolbarContainer.createChild('devtools-toolbar');
-    this.panelToolbar.makeWrappable(true);
+    this.panelToolbar.wrappable = true;
     this.panelToolbar.setAttribute('jslog', `${VisualLogging.toolbar('network-main')}`);
     this.rightToolbar = networkToolbarContainer.createChild('devtools-toolbar');
 
@@ -468,7 +468,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         'network-settings'));
 
     const settingsToolbarLeft = this.settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarLeft.makeVertical();
+    settingsToolbarLeft.orientation = 'vertical';
     settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this.networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
         i18nString(UIStrings.useLargeRequestRows)));
@@ -477,7 +477,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         i18nString(UIStrings.showOverview)));
 
     const settingsToolbarRight = this.settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarRight.makeVertical();
+    settingsToolbarRight.orientation = 'vertical';
     settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
         i18nString(UIStrings.groupRequestsByTopLevelRequest), i18nString(UIStrings.groupByFrame)));

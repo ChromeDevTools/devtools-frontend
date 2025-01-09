@@ -133,7 +133,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     toolbarContainerLeft.setAttribute('jslog', `${VisualLogging.toolbar('profiles-sidebar')}`);
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = toolbarContainerLeft.createChild('devtools-toolbar');
-    toolbar.makeWrappable(true);
+    toolbar.wrappable = true;
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction(recordingActionId);
     this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
     toolbar.appendToolbarItem(this.toggleRecordButton);
@@ -148,7 +148,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     this.profileViewToolbar = this.toolbarElement.createChild('devtools-toolbar');
-    this.profileViewToolbar.makeWrappable(true);
+    this.profileViewToolbar.wrappable = true;
     this.profileViewToolbar.setAttribute('jslog', `${VisualLogging.toolbar('profile-view')}`);
 
     this.profileGroups = {};

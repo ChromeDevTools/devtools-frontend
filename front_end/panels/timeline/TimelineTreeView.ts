@@ -225,7 +225,7 @@ export class TimelineTreeView extends
     const mainView = new UI.Widget.VBox();
     const toolbar = mainView.element.createChild('devtools-toolbar');
     toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    toolbar.makeWrappable(true);
+    toolbar.wrappable = true;
     this.populateToolbar(toolbar);
 
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({

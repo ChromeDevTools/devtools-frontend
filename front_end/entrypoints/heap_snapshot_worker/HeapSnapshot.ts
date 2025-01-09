@@ -715,9 +715,6 @@ const BITMASK_FOR_DOM_LINK_STATE = 3;
 // The class index is stored in the upper 30 bits of the detachedness field.
 const SHIFT_FOR_CLASS_INDEX = 2;
 
-// The maximum number of results produced by inferInterfaceDefinitions.
-const MAX_INTERFACE_COUNT = 1000;
-
 // After this many properties, inferInterfaceDefinitions can stop adding more
 // properties to an interface definition if the name is getting too long.
 const MIN_INTERFACE_PROPERTY_COUNT = 1;
@@ -731,6 +728,11 @@ const MAX_INTERFACE_NAME_LENGTH = 120;
 // least this many objects. There's no point in defining interfaces which match
 // only a single object.
 const MIN_OBJECT_COUNT_PER_INTERFACE = 2;
+
+// Each interface definition produced by inferInterfaceDefinitions should
+// match at least 1 out of 1000 Objects in the heap. Otherwise, we end up with a
+// long tail of unpopular interfaces that don't help analysis.
+const MIN_OBJECT_PROPORTION_PER_INTERFACE = 1000;
 
 export abstract class HeapSnapshot {
   nodes: Platform.TypedArrayUtilities.BigUint32Array;
@@ -2017,11 +2019,13 @@ export abstract class HeapSnapshot {
     }
     // A map from interface names to their definitions.
     const candidates = new Map<string, InterfaceDefinitionCandidate>();
+    let totalObjectCount = 0;
     for (let it = this.allNodes(); it.hasNext(); it.next()) {
       const node = it.item();
       if (!this.isPlainJSObject(node)) {
         continue;
       }
+      ++totalObjectCount;
       let interfaceName = '{';
       const properties: string[] = [];
       for (let edgeIt = node.edges(); edgeIt.hasNext(); edgeIt.next()) {
@@ -2041,7 +2045,7 @@ export abstract class HeapSnapshot {
         interfaceName += formattedEdgeName;
         properties.push(edgeName);
       }
-      // The empty interface is not a very meaningful, and can be sort of misleading
+      // The empty interface is not very meaningful, and can be sort of misleading
       // since someone might incorrectly interpret it as objects with no properties.
       if (properties.length === 0) {
         continue;
@@ -2063,10 +2067,10 @@ export abstract class HeapSnapshot {
     const sortedCandidates = Array.from(candidates.values());
     sortedCandidates.sort((a, b) => b.count - a.count);
     const result: InterfaceDefinition[] = [];
-    const maxResultSize = Math.min(sortedCandidates.length, MAX_INTERFACE_COUNT);
-    for (let i = 0; i < maxResultSize; ++i) {
+    const minCount = Math.max(MIN_OBJECT_COUNT_PER_INTERFACE, totalObjectCount / MIN_OBJECT_PROPORTION_PER_INTERFACE);
+    for (let i = 0; i < sortedCandidates.length; ++i) {
       const candidate = sortedCandidates[i];
-      if (candidate.count < MIN_OBJECT_COUNT_PER_INTERFACE) {
+      if (candidate.count < minCount) {
         break;
       }
       result.push(candidate);

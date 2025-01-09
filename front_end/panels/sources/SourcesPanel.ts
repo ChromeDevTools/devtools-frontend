@@ -1215,7 +1215,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       void this.sidebarPaneStack.showView(this.callstackPane);
       this.extensionSidebarPanesContainer = this.sidebarPaneStack;
       this.sidebarPaneView = vbox;
-      this.splitWidget.uninstallResizer(this.debugToolbar.gripElementForResize());
+      this.splitWidget.uninstallResizer(this.debugToolbar);
     } else {
       const splitWidget =
           new UI.SplitWidget.SplitWidget(true, true, 'sources-panel-debugger-sidebar-split-view-state', 0.5);
@@ -1230,7 +1230,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this.tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this.splitWidget.installResizer(this.tabbedLocationHeader);
-      this.splitWidget.installResizer(this.debugToolbar.gripElementForResize());
+      this.splitWidget.installResizer(this.debugToolbar);
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this.watchSidebarPane);
       tabbedLocation.appendApplicableItems('sources.sidebar-tabs');

@@ -261,10 +261,6 @@ export class Toolbar extends HTMLElement {
     return Toolbar.createActionButton(action, options);
   }
 
-  gripElementForResize(): Element {
-    return this;
-  }
-
   makeWrappable(growVertically?: boolean): void {
     this.classList.add('wrappable');
     if (growVertically) {
@@ -274,10 +270,6 @@ export class Toolbar extends HTMLElement {
 
   makeVertical(): void {
     this.classList.add('vertical');
-  }
-
-  renderAsLinks(): void {
-    this.classList.add('toolbar-render-as-links');
   }
 
   empty(): boolean {
@@ -489,10 +481,6 @@ export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> 
     if (this.toolbar && !(this instanceof ToolbarSeparator)) {
       this.toolbar.hideSeparatorDupes();
     }
-  }
-
-  setRightAligned(alignRight: boolean): void {
-    this.element.classList.toggle('toolbar-item-right-aligned', alignRight);
   }
 
   setCompactLayout(_enable: boolean): void {

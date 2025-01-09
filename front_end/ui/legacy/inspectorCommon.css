@@ -934,23 +934,7 @@ devtools-toolbar {
     text-align: right;
   }
 
-  .toolbar-render-as-links * {
-    font-weight: initial;
-    color: var(--sys-color-primary);
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .toolbar-render-as-links button {
-    height: 15px;
-    margin: 2px;
-  }
-
-  .toolbar-render-as-links button:focus-visible {
-    outline: auto 5px -webkit-focus-ring-color;
-  }
-
-  :not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-dropdown):focus-visible::before {
+  .toolbar-button:not(.toolbar-has-dropdown):focus-visible::before {
     position: absolute;
     inset: 2px;
     background-color: var(--sys-color-state-focus-highlight);
@@ -1020,11 +1004,11 @@ devtools-toolbar {
     color: var(--sys-color-primary-bright);
   }
 
-  :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
+  .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
     color: var(--sys-color-on-surface);
   }
 
-  :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text {
+  .toolbar-button:enabled:hover:not(:active) .toolbar-text {
     color: var(--sys-color-on-surface);
   }
 
@@ -1251,8 +1235,8 @@ devtools-toolbar {
       color: Highlight;
     }
 
-    :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text,
-    :not(.toolbar-render-as-links) .toolbar-button:enabled:focus:not(:active) .toolbar-text {
+    .toolbar-button:enabled:hover:not(:active) .toolbar-text,
+    .toolbar-button:enabled:focus:not(:active) .toolbar-text {
       color: HighlightText;
     }
 
@@ -1260,7 +1244,7 @@ devtools-toolbar {
       color: GrayText;
     }
 
-    :not(.toolbar-render-as-links) .toolbar-button:disabled .toolbar-glyph {
+    .toolbar-button:disabled .toolbar-glyph {
       color: GrayText;
     }
 
@@ -1269,9 +1253,9 @@ devtools-toolbar {
       color: Highlight;
     }
 
-    :not(.toolbar-render-as-links) .toolbar-button:enabled:hover .toolbar-glyph,
-    :not(.toolbar-render-as-links) .toolbar-button:enabled:focus .toolbar-glyph,
-    :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph,
+    .toolbar-button:enabled:hover .toolbar-glyph,
+    .toolbar-button:enabled:focus .toolbar-glyph,
+    .toolbar-button:enabled:hover:not(:active) .toolbar-glyph,
     .toolbar-button:enabled:hover devtools-icon,
     .toolbar-button:enabled:focus devtools-icon {
       color: HighlightText;

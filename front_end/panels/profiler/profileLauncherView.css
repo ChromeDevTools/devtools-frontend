@@ -122,8 +122,7 @@
 
   .profile-memory-usage-item-trend,
   .profile-memory-usage-item-trend.increasing,
-  .profile-launcher-view-content button.running,
-  body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
+  .profile-launcher-view-content button.running {
     color: ButtonText;
   }
 

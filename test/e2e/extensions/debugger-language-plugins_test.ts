@@ -252,7 +252,7 @@ describe('The Debugger Language Plugins', () => {
     await addDummyExternalDWARFInfo('global_variable.wasm');
     await openFileInEditor('global_variable.wat');
 
-    const toolbarLink = await waitFor('.toolbar-item .devtools-link');
+    const toolbarLink = await waitFor('devtools-toolbar .devtools-link');
     const toolbarLinkText = await toolbarLink.evaluate(({textContent}) => textContent);
     assert.strictEqual(toolbarLinkText, 'global_variable.wasm');
 

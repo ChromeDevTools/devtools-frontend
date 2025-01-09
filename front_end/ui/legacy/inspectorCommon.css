@@ -784,7 +784,7 @@ devtools-toolbar {
     height: auto;
     align-items: flex-start;
 
-    & > .toolbar-item {
+    & > * {
       height: auto;
       min-height: var(--toolbar-height);
       white-space: normal;
@@ -792,7 +792,7 @@ devtools-toolbar {
     }
   }
 
-  .toolbar-item {
+  & > * {
     position: relative;
     display: flex;
     background-color: transparent;
@@ -805,6 +805,7 @@ devtools-toolbar {
     white-space: pre;
     overflow: hidden;
     max-width: 100%;
+    color: var(--icon-default);
 
     /* Some toolbars have a different cursor on hover (for example, resizeable
      * ones which can be clicked + dragged to move). But we want to make sure
@@ -813,22 +814,21 @@ devtools-toolbar {
      * have to click + drag only on empty space. See crbug.com/371838044 for
      * an example. */
     cursor: default;
+
+    & .devtools-link {
+      color: var(--icon-default);
+    }
+  }
+
+  & > devtools-issue-counter {
+    margin-top: -4px;
+    padding-left: 1px;
   }
 
   devtools-adorner.fix-perf-icon {
     --override-adorner-text-color: transparent;
     --override-adorner-border-color: transparent;
     --override-adorner-background-color: transparent;
-  }
-
-  .toolbar-item,
-  .toolbar-item .devtools-link {
-    color: var(--icon-default);
-  }
-
-  devtools-issue-counter.toolbar-item {
-    margin-top: -4px;
-    padding-left: 1px;
   }
 
   devtools-issue-counter.main-toolbar {
@@ -1020,55 +1020,58 @@ devtools-toolbar {
 
   /* Checkbox */
 
-  .toolbar-item.checkbox {
+  & > .checkbox {
     padding: 0 5px 0 0;
   }
 
   /* Select */
 
-  .toolbar-select-container {
+  & > .toolbar-select-container {
     display: inline-flex;
     flex-shrink: 0;
     padding-left: 2px;
-  }
 
-  select.toolbar-item {
-    min-width: var(--sys-size-14);
-    appearance: none;
-    padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
-    margin-right: -10px;
-    position: relative;
-    height: var(--sys-size-9);
-    border-radius: var(--sys-shape-corner-extra-small);
+    & > select {
+      min-width: var(--sys-size-14);
+      appearance: none;
+      padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
+      margin-right: -10px;
+      position: relative;
+      height: var(--sys-size-9);
+      color: inherit;
+      border: inherit;
+      border-radius: var(--sys-shape-corner-extra-small);
+      background-color: inherit;
 
-    &:disabled {
-      opacity: 100%;
-      pointer-events: none;
-      background-color: var(--sys-color-state-disabled-container);
-      color: var(--sys-color-state-disabled);
-
-      & + .toolbar-dropdown-arrow {
+      &:disabled {
+        opacity: 100%;
+        pointer-events: none;
+        background-color: var(--sys-color-state-disabled-container);
         color: var(--sys-color-state-disabled);
+
+        & + .toolbar-dropdown-arrow {
+          color: var(--sys-color-state-disabled);
+        }
+      }
+
+      &:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+      }
+
+      &:active {
+        background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+      }
+
+      &:hover:active {
+        background:
+          linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+          linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
       }
     }
-
-    &:hover {
-      background-color: var(--sys-color-state-hover-on-subtle);
-    }
-
-    &:active {
-      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
-    }
-
-    &:hover:active {
-      background:
-        linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
-        linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
-    }
   }
 
-  button.toolbar-item:focus-visible,
-  select.toolbar-item:focus-visible {
+  & > button:focus-visible,
+  & > .toolbar-select-container > select:focus-visible {
     outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 
     &.toolbar-has-dropdown {
@@ -1076,7 +1079,7 @@ devtools-toolbar {
     }
   }
 
-  select.toolbar-item:focus-visible > * {
+  & > .toolbar-select-container > select:focus-visible > * {
     background: var(--sys-color-cdt-base-container);
     border-radius: 7px;
   }
@@ -1171,17 +1174,17 @@ devtools-toolbar {
     left: -2px;
   }
 
-  &:not(.floating) .toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
+  &:not(.floating) > :last-child:not(:first-child, .toolbar-select-container) {
     flex-shrink: 1;
     justify-content: left;
   }
 
-  &:not(.floating) .toolbar-button.toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
+  &:not(.floating) > .toolbar-button:last-child:not(:first-child, .toolbar-select-container) {
     justify-content: left;
     margin-right: 2px;
   }
 
-  .toolbar-item.highlight::before {
+  & > .highlight::before {
     content: "";
     position: absolute;
     inset: 2px;
@@ -1190,7 +1193,7 @@ devtools-toolbar {
     z-index: -1;
   }
 
-  .toolbar-item.highlight:focus-visible {
+  & > .highlight:focus-visible {
     background: var(--sys-color-tonal-container);
 
     & > .title {
@@ -1208,7 +1211,7 @@ devtools-toolbar {
       color: Graytext;
     }
 
-    .toolbar-item,
+    devtools-toolbar > *,
     .toolbar-text {
       color: ButtonText;
     }
@@ -1217,8 +1220,8 @@ devtools-toolbar {
       color: Graytext;
     }
 
-    select.toolbar-item:disabled,
-    select.toolbar-item:disabled + .toolbar-dropdown-arrow {
+    devtools-toolbar > .toolbar-select-container > select:disabled,
+    devtools-toolbar > .toolbar-select-container > select:disabled + .toolbar-dropdown-arrow {
       opacity: 100%;
       color: Graytext;
     }
@@ -1276,7 +1279,7 @@ devtools-toolbar {
       box-shadow: var(--legacy-focus-ring-active-shadow);
     }
 
-    .toolbar-item .devtools-link {
+    devtools-toolbar .devtools-link {
       color: linktext;
     }
 

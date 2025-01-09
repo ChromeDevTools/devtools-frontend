@@ -257,7 +257,7 @@ export class Toolbar extends HTMLElement {
           return;
         }
         if (e.target instanceof HTMLElement) {
-          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
+          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-button');
           buttonElement.classList.add('emulate-active');
         }
       }
@@ -267,7 +267,7 @@ export class Toolbar extends HTMLElement {
           return;
         }
         if (e.target instanceof HTMLElement) {
-          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-item');
+          const buttonElement = e.target.enclosingNodeOrSelfWithClass('toolbar-button');
           buttonElement.classList.remove('emulate-active');
         }
       }
@@ -508,7 +508,6 @@ export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> 
   constructor(element: Element) {
     super();
     this.element = (element as HTMLElement);
-    this.element.classList.add('toolbar-item');
     this.visibleInternal = true;
     this.enabled = true;
 
@@ -1147,7 +1146,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     const element = document.createElement('span');
     element.classList.add('toolbar-select-container');
     super(element);
-    this.selectElementInternal = this.element.createChild('select', 'toolbar-item');
+    this.selectElementInternal = this.element.createChild('select');
     const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler) {

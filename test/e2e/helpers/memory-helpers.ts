@@ -402,7 +402,7 @@ export async function restoreIgnoredRetainers() {
 }
 
 export async function setFilterDropdown(filter: string) {
-  const select = await waitFor('select.toolbar-item[aria-label="Filter"]');
+  const select = await waitFor('devtools-toolbar select[aria-label="Filter"]');
   await select.select(filter);
 }
 

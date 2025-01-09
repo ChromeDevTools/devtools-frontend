@@ -160,7 +160,9 @@ export class CookieControlsView extends UI.Widget.VBox {
             .disabled=${Boolean(enterpriseEnabledSetting.get())}
             @switchchange=${(e: Event)=>{
                 input.inputChanged((e.target as HTMLInputElement).checked, toggleEnabledSetting);
-              }}>
+              }}
+            jslog=${VisualLogging.toggle(toggleEnabledSetting.name).track({click: true})}
+          >
           </devtools-switch>
         </div>
       </div>
@@ -175,6 +177,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             @change=${(e: Event)=>{
               input.inputChanged((e.target as HTMLInputElement).checked, gracePeriodDisabledSetting);
             }}
+            jslog=${VisualLogging.toggle(gracePeriodDisabledSetting.name).track({click: true})}
           >
           <div class="text">
             <div class="body">${i18nString(UIStrings.gracePeriodTitle)}</div>
@@ -197,6 +200,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             @change=${(e: Event)=>{
               input.inputChanged((e.target as HTMLInputElement).checked, heuristicsDisabledSetting);
             }}
+            jslog=${VisualLogging.toggle(heuristicsDisabledSetting.name).track({click: true})}
           >
           <div class="text">
             <div class="body">${i18nString(UIStrings.heuristicTitle)}</div>

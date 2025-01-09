@@ -4,8 +4,8 @@
 import * as UI from '../../ui/legacy/legacy.js';
 
 export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  constructor(title: string = '', expandable: boolean = false) {
-    super(title, expandable);
+  constructor(title: string = '', expandable: boolean = false, jslogContext?: string|number) {
+    super(title, expandable, jslogContext);
     UI.ARIAUtils.setLabel(this.listItemElement, title);
   }
 }

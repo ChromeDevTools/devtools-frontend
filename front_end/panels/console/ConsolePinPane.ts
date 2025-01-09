@@ -344,7 +344,9 @@ export class ConsolePin {
   appendToContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     if (this.lastResult && !('error' in this.lastResult) && this.lastResult.object) {
       contextMenu.appendApplicableItems(this.lastResult.object);
-      // Prevent result from being released manually. It will release along with 'console' group.
+      // Prevent result from being released automatically, since it may be used by
+      // the context menu action. It will be released when the console is cleared,
+      // where we release the 'live-expression' object group.
       this.lastResult = null;
     }
   }
@@ -359,7 +361,7 @@ export class ConsolePin {
     const timeout = throwOnSideEffect ? 250 : undefined;
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.JavaScriptREPL.evaluateAndBuildPreview(
-        text, throwOnSideEffect, true /* replMode */, timeout, !isEditing /* allowErrors */, 'console',
+        text, throwOnSideEffect, true /* replMode */, timeout, !isEditing /* allowErrors */, 'live-expression',
         true /* awaitPromise */, true /* silent */);
     if (this.lastResult && this.lastExecutionContext) {
       this.lastExecutionContext.runtimeModel.releaseEvaluationResult(this.lastResult);

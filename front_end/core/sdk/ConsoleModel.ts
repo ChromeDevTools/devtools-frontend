@@ -403,6 +403,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     }
     for (const runtimeModel of TargetManager.instance().models(RuntimeModel)) {
       runtimeModel.discardConsoleEntries();
+      // Runtime.discardConsoleEntries implies Runtime.releaseObjectGroup('console').
+      runtimeModel.releaseObjectGroup('live-expression');
     }
     for (const target of TargetManager.instance().targets()) {
       target.model(ConsoleModel)?.clear();

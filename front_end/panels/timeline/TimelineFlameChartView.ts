@@ -896,7 +896,11 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
 
     const visibleWindow = event.state.milli.timelineTraceWindow;
-    const shouldAnimate = Boolean(event.options.shouldAnimate);
+
+    // If the user has set a preference for reduced motion, we disable any animations.
+    const userHasReducedMotionSet = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const shouldAnimate = Boolean(event.options.shouldAnimate) && !userHasReducedMotionSet;
+
     this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);

@@ -28,11 +28,11 @@ const UIStrings = {
   /**
    *@description Explanation in the view's header about the purpose of this controls tool
    */
-  viewExplanation: 'Test how this site will perform if a user chooses to restrict third-party cookies in Chrome',
+  viewExplanation: 'Test how this site will perform if third-party cookies are limited in Chrome',
   /**
    *@description Title in the card within the controls tool
    */
-  cardTitle: 'Temporarily restrict third-party cookies',
+  cardTitle: 'Temporarily limit third-party cookies',
   /**
    *@description Disclaimer beneath the card title to tell the user that the controls will only persist while devtools is open
    */

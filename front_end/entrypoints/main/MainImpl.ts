@@ -1017,9 +1017,7 @@ let settingsButtonProviderInstance: SettingsButtonProvider;
 export class SettingsButtonProvider implements UI.Toolbar.Provider {
   readonly #settingsButton: UI.Toolbar.ToolbarButton;
   private constructor() {
-    const settingsActionId = 'settings.show';
-    this.#settingsButton =
-        UI.Toolbar.Toolbar.createActionButtonForId(settingsActionId, {showLabel: false, userActionCode: undefined});
+    this.#settingsButton = UI.Toolbar.Toolbar.createActionButton('settings.show');
   }
 
   static instance(opts: {

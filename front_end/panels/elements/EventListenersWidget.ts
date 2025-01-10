@@ -105,7 +105,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.eventListenersView.show(this.element);
     this.element.setAttribute('jslog', `${VisualLogging.pane('elements.event-listeners').track({resize: true})}`);
 
-    this.toolbarItemsInternal.push(UI.Toolbar.Toolbar.createActionButtonForId('elements.refresh-event-listeners'));
+    this.toolbarItemsInternal.push(UI.Toolbar.Toolbar.createActionButton('elements.refresh-event-listeners'));
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),
         i18nString(UIStrings.ancestors)));

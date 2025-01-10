@@ -115,7 +115,6 @@ export class CommandMenu {
         }
       },
       availableHandler,
-      userActionCode: undefined,
       deprecationWarning: setting.deprecation?.warning,
     });
 
@@ -202,7 +201,6 @@ export class CommandMenu {
         title: view.commandPrompt(),
         tags: view.tags() || '',
         category,
-        userActionCode: undefined,
         id: view.viewId(),
       };
       this.commandsInternal.push(CommandMenu.createRevealViewCommand(options));
@@ -274,9 +272,7 @@ export class CommandMenuProvider extends Provider {
       if (!category) {
         continue;
       }
-
-      const options: ActionCommandOptions = {action, userActionCode: undefined};
-      this.commands.push(CommandMenu.createActionCommand(options));
+      this.commands.push(CommandMenu.createActionCommand({action}));
     }
 
     for (const command of allCommands) {

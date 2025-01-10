@@ -1969,7 +1969,6 @@ UI.Toolbar.registerToolbarItem({
   actionId: 'sources.add-folder-to-workspace',
   location: UI.Toolbar.ToolbarItemLocation.FILES_NAVIGATION_TOOLBAR,
   label: i18nLazyString(UIStrings.addFolder),
-  showLabel: true,
   loadItem: undefined,
   order: undefined,
   separator: undefined,

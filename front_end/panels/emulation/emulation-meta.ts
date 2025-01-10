@@ -188,7 +188,6 @@ UI.Toolbar.registerToolbarItem({
   condition: Root.Runtime.conditions.canDock,
   location: UI.Toolbar.ToolbarItemLocation.MAIN_TOOLBAR_LEFT,
   order: 1,
-  showLabel: undefined,
   loadItem: undefined,
   separator: undefined,
 });

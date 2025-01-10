@@ -47,6 +47,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 function diffStats(diff: Diff.Diff.DiffArray): string {
   const insertions =
@@ -98,16 +99,13 @@ export class ChangesView extends UI.Widget.VBox {
 
     this.toolbar = mainWidget.element.createChild('devtools-toolbar', 'changes-toolbar');
     this.toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
-    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.revert'));
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('changes.revert'));
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);
 
     this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
-    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.copy', {
-      showLabel: true,
-      label() {
-        return i18nString(UIStrings.copy);
-      },
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('changes.copy', {
+      label: i18nLazyString(UIStrings.copy),
     }));
 
     this.hideDiff(i18nString(UIStrings.noChanges));

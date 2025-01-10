@@ -83,9 +83,9 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     this.toolbar.appendToolbarItem(this.enabledCheckbox);
     this.toolbar.appendSeparator();
     this.toolbar.appendToolbarItem(
-        UI.Toolbar.Toolbar.createActionButtonForId('network.add-network-request-blocking-pattern'));
+        UI.Toolbar.Toolbar.createActionButton('network.add-network-request-blocking-pattern'));
     this.toolbar.appendToolbarItem(
-        UI.Toolbar.Toolbar.createActionButtonForId('network.remove-all-network-request-blocking-patterns'));
+        UI.Toolbar.Toolbar.createActionButton('network.remove-all-network-request-blocking-patterns'));
     this.toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
 
     this.list = new UI.ListWidget.ListWidget(this);

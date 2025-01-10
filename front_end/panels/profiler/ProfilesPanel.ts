@@ -138,14 +138,14 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
     toolbar.appendToolbarItem(this.toggleRecordButton);
 
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('profiler.clear-all'));
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('profiler.clear-all'));
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('profiler.load-from-file'));
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('profiler.load-from-file'));
     this.#saveToFileAction = UI.ActionRegistry.ActionRegistry.instance().getAction('profiler.save-to-file');
     this.#saveToFileAction.setEnabled(false);
     toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.#saveToFileAction));
     toolbar.appendSeparator();
-    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
+    toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('components.collect-garbage'));
 
     this.profileViewToolbar = this.toolbarElement.createChild('devtools-toolbar');
     this.profileViewToolbar.wrappable = true;

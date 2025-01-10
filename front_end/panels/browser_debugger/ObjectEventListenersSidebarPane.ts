@@ -27,7 +27,7 @@ export class ObjectEventListenersSidebarPane extends UI.ThrottledWidget.Throttle
   }
 
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    const refreshButton = UI.Toolbar.Toolbar.createActionButtonForId('browser-debugger.refresh-global-event-listeners');
+    const refreshButton = UI.Toolbar.Toolbar.createActionButton('browser-debugger.refresh-global-event-listeners');
     refreshButton.setSize(Buttons.Button.Size.SMALL);
     return [refreshButton];
   }

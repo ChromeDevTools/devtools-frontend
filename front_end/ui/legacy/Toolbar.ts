@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -233,24 +232,21 @@ export class Toolbar extends HTMLElement {
     }
   }
 
-  static createActionButton(action: Action, options: ToolbarButtonOptions|undefined = TOOLBAR_BUTTON_DEFAULT_OPTIONS):
-      ToolbarButton {
-    const button = (action.toggleable() && !options?.ignoreToggleable) ? makeToggle() : makeButton();
+  static createActionButton(action: Action, options?: ToolbarButtonOptions): ToolbarButton;
+  static createActionButton(actionId: string, options?: ToolbarButtonOptions): ToolbarButton;
+  static createActionButton(actionOrActionId: Action|string, options: ToolbarButtonOptions = {}): ToolbarButton {
+    const action =
+        typeof actionOrActionId === 'string' ? ActionRegistry.instance().getAction(actionOrActionId) : actionOrActionId;
 
-    if (options.showLabel) {
-      button.setText(options.label?.() || action.title());
+    const button = action.toggleable() ? makeToggle() : makeButton();
+
+    if (options.label) {
+      button.setText(options.label() || action.title());
     }
 
-    let handler = (): void => {
+    const handler = (): void => {
       void action.execute();
     };
-    if (options.userActionCode) {
-      const actionCode = options.userActionCode;
-      handler = () => {
-        Host.userMetrics.actionTaken(actionCode);
-        void action.execute();
-      };
-    }
     button.addEventListener(ToolbarButton.Events.CLICK, handler, action);
     action.addEventListener(ActionEvents.ENABLED, enabledChanged);
     button.setEnabled(action.enabled());
@@ -285,11 +281,6 @@ export class Toolbar extends HTMLElement {
     function enabledChanged(event: Common.EventTarget.EventTargetEvent<boolean>): void {
       button.setEnabled(event.data);
     }
-  }
-
-  static createActionButtonForId(actionId: string, options?: ToolbarButtonOptions): ToolbarButton {
-    const action = ActionRegistry.instance().getAction(actionId);
-    return Toolbar.createActionButton(action, options);
   }
 
   empty(): boolean {
@@ -402,13 +393,12 @@ export class Toolbar extends HTMLElement {
 
     const filtered = extensions.filter(e => e.location === location);
     const items = await Promise.all(filtered.map(extension => {
-      const {separator, actionId, showLabel, label, loadItem} = extension;
+      const {separator, actionId, label, loadItem} = extension;
       if (separator) {
         return new ToolbarSeparator();
       }
       if (actionId) {
-        return Toolbar.createActionButtonForId(
-            actionId, {label, showLabel: Boolean(showLabel), userActionCode: undefined});
+        return Toolbar.createActionButton(actionId, {label});
       }
       // TODO(crbug.com/1134103) constratint the case checked with this if using TS type definitions once UI is TS-authored.
       if (!loadItem) {
@@ -429,15 +419,7 @@ customElements.define('devtools-toolbar', Toolbar);
 
 export interface ToolbarButtonOptions {
   label?: () => Platform.UIString.LocalizedString;
-  showLabel: boolean;
-  userActionCode?: Host.UserMetrics.Action;
-  ignoreToggleable?: boolean;
 }
-
-const TOOLBAR_BUTTON_DEFAULT_OPTIONS: ToolbarButtonOptions = {
-  showLabel: false,
-  userActionCode: undefined,
-};
 
 // We need any here because Common.ObjectWrapper.ObjectWrapper is invariant in T.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1294,7 +1276,6 @@ export interface ToolbarItemRegistration {
   location: ToolbarItemLocation;
   separator?: boolean;
   label?: () => Platform.UIString.LocalizedString;
-  showLabel?: boolean;
   actionId?: string;
   condition?: Root.Runtime.Condition;
   loadItem?: (() => Promise<Provider>);

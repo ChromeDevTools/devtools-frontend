@@ -2202,7 +2202,7 @@ let buttonProviderInstance: ButtonProvider;
 export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this.button = UI.Toolbar.Toolbar.createActionButtonForId('elements.new-style-rule');
+    this.button = UI.Toolbar.Toolbar.createActionButton('elements.new-style-rule');
     this.button.setLongClickable(true);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));

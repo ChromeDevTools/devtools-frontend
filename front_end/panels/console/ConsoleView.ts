@@ -441,47 +441,46 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.selfXssWarningDisabledSetting = Common.Settings.Settings.instance().createSetting(
         'disable-self-xss-warning', false, Common.Settings.SettingStorageType.SYNCED);
 
-    const settingsPane = new UI.Widget.HBox();
-    settingsPane.show(this.contentsElement);
-    settingsPane.element.classList.add('console-settings-pane');
+    const settingsPane = this.contentsElement.createChild('div', 'console-settings-pane');
+    UI.ARIAUtils.setLabel(settingsPane, i18nString(UIStrings.consoleSettings));
+    UI.ARIAUtils.markAsGroup(settingsPane);
 
-    UI.ARIAUtils.setLabel(settingsPane.element, i18nString(UIStrings.consoleSettings));
-    UI.ARIAUtils.markAsGroup(settingsPane.element);
-
-    const settingsToolbarLeft = settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarLeft.orientation = 'vertical';
-
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, this.filter.hideNetworkMessagesSetting, this.filter.hideNetworkMessagesSetting.title(),
-        i18nString(UIStrings.hideNetwork));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, 'preserve-console-log', i18nString(UIStrings.doNotClearLogOnPageReload),
-        i18nString(UIStrings.preserveLog));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, this.filter.filterByExecutionContextSetting,
-        i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext), i18nString(UIStrings.selectedContextOnly));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, this.groupSimilarSetting, i18nString(UIStrings.groupSimilarMessagesInConsole));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarLeft, this.showCorsErrorsSetting, i18nString(UIStrings.showCorsErrorsInConsole));
-
-    const settingsToolbarRight = settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarRight.orientation = 'vertical';
-
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, monitoringXHREnabledSetting, i18nString(UIStrings.logXMLHttpRequests));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, 'console-eager-eval', i18nString(UIStrings.eagerlyEvaluateTextInThePrompt));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, this.consoleHistoryAutocompleteSetting, i18nString(UIStrings.autocompleteFromHistory));
-    ConsoleView.appendSettingsCheckboxToToolbar(
-        settingsToolbarRight, 'console-user-activation-eval', i18nString(UIStrings.treatEvaluationAsUserActivation));
+    const consoleEagerEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-eager-eval');
+    const preserveConsoleLogSetting = Common.Settings.Settings.instance().moduleSetting('preserve-console-log');
+    const userActivationEvalSetting = Common.Settings.Settings.instance().moduleSetting('console-user-activation-eval');
+    settingsPane.append(
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.hideNetwork), this.filter.hideNetworkMessagesSetting,
+            this.filter.hideNetworkMessagesSetting.title()),
+        UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.logXMLHttpRequests), monitoringXHREnabledSetting),
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.preserveLog), preserveConsoleLogSetting,
+            i18nString(UIStrings.doNotClearLogOnPageReload)),
+        UI.SettingsUI.createSettingCheckbox(
+            consoleEagerEvalSetting.title(), consoleEagerEvalSetting,
+            i18nString(UIStrings.eagerlyEvaluateTextInThePrompt)),
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.selectedContextOnly), this.filter.filterByExecutionContextSetting,
+            i18nString(UIStrings.onlyShowMessagesFromTheCurrentContext)),
+        UI.SettingsUI.createSettingCheckbox(
+            this.consoleHistoryAutocompleteSetting.title(), this.consoleHistoryAutocompleteSetting,
+            i18nString(UIStrings.autocompleteFromHistory)),
+        UI.SettingsUI.createSettingCheckbox(
+            this.groupSimilarSetting.title(), this.groupSimilarSetting,
+            i18nString(UIStrings.groupSimilarMessagesInConsole)),
+        UI.SettingsUI.createSettingCheckbox(
+            userActivationEvalSetting.title(), userActivationEvalSetting,
+            i18nString(UIStrings.treatEvaluationAsUserActivation)),
+        UI.SettingsUI.createSettingCheckbox(
+            this.showCorsErrorsSetting.title(), this.showCorsErrorsSetting,
+            i18nString(UIStrings.showCorsErrorsInConsole)),
+    );
 
     if (!this.showSettingsPaneSetting.get()) {
-      settingsPane.element.classList.add('hidden');
+      settingsPane.classList.add('hidden');
     }
     this.showSettingsPaneSetting.addChangeListener(
-        () => settingsPane.element.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
+        () => settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
 
     this.pinPane = new ConsolePinPane(liveExpressionButton, () => this.prompt.focus());
     this.pinPane.element.classList.add('console-view-pinpane');
@@ -583,22 +582,6 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.issueToolbarThrottle = new Common.Throttler.Throttler(100);
     issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED, this.#onIssuesCountUpdateBound);
-  }
-
-  static appendSettingsCheckboxToToolbar(
-      toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string,
-      title: Common.UIString.LocalizedString,
-      alternateTitle?: Common.UIString.LocalizedString): UI.Toolbar.ToolbarSettingCheckbox {
-    let setting: Common.Settings.Setting<boolean>;
-    if (typeof settingOrSetingName === 'string') {
-      setting = Common.Settings.Settings.instance().moduleSetting(settingOrSetingName);
-    } else {
-      setting = settingOrSetingName;
-    }
-
-    const checkbox = new UI.Toolbar.ToolbarSettingCheckbox(setting, title, alternateTitle);
-    toolbar.appendToolbarItem(checkbox);
-    return checkbox;
   }
 
   static instance(opts?: {forceNew: boolean, viewportThrottlerTimeout?: number}): ConsoleView {

@@ -403,7 +403,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly searchableViewInternal: UI.SearchableView.SearchableView;
   private showSettingsPaneButton!: UI.Toolbar.ToolbarSettingToggle;
   private showSettingsPaneSetting!: Common.Settings.Setting<boolean>;
-  private settingsPane!: UI.Widget.Widget;
+  private settingsPane?: HTMLElement;
   private controller!: TimelineController|null;
   private cpuProfiler!: SDK.CPUProfilerModel.CPUProfilerModel|null;
   private clearButton!: UI.Toolbar.ToolbarButton;
@@ -1245,39 +1245,30 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
 
-    this.settingsPane = new UI.Widget.HBox();
-    this.settingsPane.element.classList.add('timeline-settings-pane');
-    this.settingsPane.element.setAttribute(
-        'jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
-    this.settingsPane.show(this.element);
+    this.settingsPane = this.element.createChild('div', 'timeline-settings-pane');
+    this.settingsPane.setAttribute('jslog', `${VisualLogging.pane('timeline-settings-pane').track({resize: true})}`);
 
-    const captureToolbar = this.settingsPane.element.createChild('devtools-toolbar');
-    captureToolbar.classList.add('flex-auto');
-    captureToolbar.orientation = 'vertical';
-    captureToolbar.appendToolbarItem(this.createSettingCheckbox(
-        this.disableCaptureJSProfileSetting, i18nString(UIStrings.disablesJavascriptSampling)));
-    captureToolbar.appendToolbarItem(
-        this.createSettingCheckbox(this.captureLayersAndPicturesSetting, i18nString(UIStrings.capturesAdvancedPaint)));
-    captureToolbar.appendToolbarItem(
-        this.createSettingCheckbox(this.captureSelectorStatsSetting, i18nString(UIStrings.capturesSelectorStats)));
+    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+        this.disableCaptureJSProfileSetting.title(), this.disableCaptureJSProfileSetting,
+        i18nString(UIStrings.disablesJavascriptSampling)));
 
-    const throttlingPane = new UI.Widget.VBox();
-    throttlingPane.element.classList.add('flex-auto');
-    throttlingPane.show(this.settingsPane.element);
-
-    const cpuThrottlingToolbar = throttlingPane.element.createChild('devtools-toolbar');
-    cpuThrottlingToolbar.appendText(i18nString(UIStrings.cpu));
+    const cpuThrottlingPane = this.settingsPane.createChild('div');
+    cpuThrottlingPane.append(i18nString(UIStrings.cpu));
     this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
-    this.cpuThrottlingSelect.control.setMinWidth(200);
-    this.cpuThrottlingSelect.control.setMaxWidth(200);
-    cpuThrottlingToolbar.appendToolbarItem(this.cpuThrottlingSelect.control);
+    cpuThrottlingPane.append(this.cpuThrottlingSelect.control.element);
 
-    const networkThrottlingToolbar = throttlingPane.element.createChild('devtools-toolbar');
-    networkThrottlingToolbar.appendText(i18nString(UIStrings.network));
-    networkThrottlingToolbar.appendToolbarItem(this.createNetworkConditionsSelectToolbarItem());
+    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+        this.captureLayersAndPicturesSetting.title(), this.captureLayersAndPicturesSetting,
+        i18nString(UIStrings.capturesAdvancedPaint)));
 
-    const thirdPartyToolbar = throttlingPane.element.createChild('devtools-toolbar');
-    thirdPartyToolbar.orientation = 'vertical';
+    const networkThrottlingPane = this.settingsPane.createChild('div');
+    networkThrottlingPane.append(i18nString(UIStrings.network));
+    networkThrottlingPane.append(this.createNetworkConditionsSelectToolbarItem().element);
+
+    this.settingsPane.append(UI.SettingsUI.createSettingCheckbox(
+        this.captureSelectorStatsSetting.title(), this.captureSelectorStatsSetting,
+        i18nString(UIStrings.capturesSelectorStats)));
+
     const thirdPartyCheckbox =
         this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
 
@@ -1288,7 +1279,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // not apply.
     localLink.style.marginLeft = '5px';
     thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
-    thirdPartyToolbar.appendToolbarItem(thirdPartyCheckbox);
+    this.settingsPane.append(thirdPartyCheckbox.element);
 
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
@@ -1296,8 +1287,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.networkConditions));
-    toolbarItem.setMinWidth(200);
-    toolbarItem.setMaxWidth(200);
     this.networkThrottlingSelect =
         MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(
             toolbarItem.selectElement());
@@ -1541,10 +1530,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     if (this.showSettingsPaneSetting.get()) {
       this.showSettingsPaneButton.setToggled(true);
-      this.settingsPane.showWidget();
+      this.settingsPane?.classList.remove('hidden');
     } else {
       this.showSettingsPaneButton.setToggled(false);
-      this.settingsPane.hideWidget();
+      this.settingsPane?.classList.add('hidden');
     }
   }
 
@@ -2255,7 +2244,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Hide pane settings in trace view to conserve UI space, but preserve underlying setting.
     this.showSettingsPaneButton?.setToggled(false);
-    this.settingsPane?.hideWidget();
+    this.settingsPane?.classList.add('hidden');
   }
 
   async loadingStarted(): Promise<void> {

@@ -207,7 +207,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
   private readonly panelToolbar: UI.Toolbar.Toolbar;
   private readonly rightToolbar: UI.Toolbar.Toolbar;
   private readonly filterBar: UI.FilterBar.FilterBar;
-  private readonly settingsPane: UI.Widget.HBox;
   private showSettingsPaneSetting: Common.Settings.Setting<boolean>;
   private readonly filmStripPlaceholderElement: HTMLElement;
   private readonly overviewPane: PerfUI.TimelineOverviewPane.TimelineOverviewPane;
@@ -254,13 +253,28 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.filterBar.show(panel.contentElement);
     this.filterBar.addEventListener(UI.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
 
-    this.settingsPane = new UI.Widget.HBox();
-    this.settingsPane.element.classList.add('network-settings-pane');
-    this.settingsPane.show(panel.contentElement);
+    const settingsPane = panel.contentElement.createChild('div', 'network-settings-pane');
+    settingsPane.append(
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.useLargeRequestRows), this.networkLogLargeRowsSetting,
+            i18nString(UIStrings.showMoreInformationInRequestRows)),
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.groupByFrame),
+            Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
+            i18nString(UIStrings.groupRequestsByTopLevelRequest)),
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.showOverview), this.networkLogShowOverviewSetting,
+            i18nString(UIStrings.showOverviewOfNetworkRequests)),
+        UI.SettingsUI.createSettingCheckbox(
+            i18nString(UIStrings.captureScreenshots), this.networkRecordFilmStripSetting,
+            i18nString(UIStrings.captureScreenshotsWhenLoadingA)),
+
+    );
     this.showSettingsPaneSetting =
         Common.Settings.Settings.instance().createSetting('network-show-settings-toolbar', false);
-    this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
-    this.updateSettingsPaneVisibility();
+    settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get());
+    this.showSettingsPaneSetting.addChangeListener(
+        () => settingsPane.classList.toggle('hidden', !this.showSettingsPaneSetting.get()));
 
     this.filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
 
@@ -467,24 +481,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
         this.showSettingsPaneSetting, 'gear', i18nString(UIStrings.networkSettings), 'gear-filled',
         'network-settings'));
 
-    const settingsToolbarLeft = this.settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarLeft.orientation = 'vertical';
-    settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.networkLogLargeRowsSetting, i18nString(UIStrings.showMoreInformationInRequestRows),
-        i18nString(UIStrings.useLargeRequestRows)));
-    settingsToolbarLeft.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.networkLogShowOverviewSetting, i18nString(UIStrings.showOverviewOfNetworkRequests),
-        i18nString(UIStrings.showOverview)));
-
-    const settingsToolbarRight = this.settingsPane.element.createChild('devtools-toolbar');
-    settingsToolbarRight.orientation = 'vertical';
-    settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        Common.Settings.Settings.instance().moduleSetting('network.group-by-frame'),
-        i18nString(UIStrings.groupRequestsByTopLevelRequest), i18nString(UIStrings.groupByFrame)));
-    settingsToolbarRight.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
-        this.networkRecordFilmStripSetting, i18nString(UIStrings.captureScreenshotsWhenLoadingA),
-        i18nString(UIStrings.captureScreenshots)));
-
     const exportHarContextMenu = (contextMenu: UI.ContextMenu.ContextMenu): void => {
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.exportHarSanitized),
@@ -524,10 +520,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
     };
     networkShowOptionsToGenerateHarWithSensitiveData.addChangeListener(updateShowOptionsToGenerateHarWithSensitiveData);
     updateShowOptionsToGenerateHarWithSensitiveData();
-  }
-
-  private updateSettingsPaneVisibility(): void {
-    this.settingsPane.element.classList.toggle('hidden', !this.showSettingsPaneSetting.get());
   }
 
   private createThrottlingConditionsSelect(): UI.Toolbar.ToolbarComboBox {

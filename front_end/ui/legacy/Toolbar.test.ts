@@ -49,38 +49,6 @@ describeWithLocale('Toolbar', () => {
       });
     });
 
-    describe('orientation', () => {
-      it('defaults to `horizontal`', () => {
-        const toolbar = document.createElement('devtools-toolbar');
-
-        assert.strictEqual(toolbar.orientation, 'horizontal');
-      });
-
-      it('can be changed to `vertical`', () => {
-        const toolbar = document.createElement('devtools-toolbar');
-
-        toolbar.orientation = 'vertical';
-
-        assert.strictEqual(toolbar.orientation, 'vertical');
-      });
-
-      it('reflects changes onto the `orientation` attribute', () => {
-        const toolbar = document.createElement('devtools-toolbar');
-
-        toolbar.orientation = 'vertical';
-
-        assert.strictEqual(toolbar.getAttribute('orientation'), 'vertical');
-      });
-
-      it('reflects changes onto the `aria-orientation` attribute', () => {
-        const toolbar = document.createElement('devtools-toolbar');
-
-        toolbar.orientation = 'vertical';
-
-        assert.strictEqual(toolbar.ariaOrientation, 'vertical');
-      });
-    });
-
     describe('wrappable', () => {
       it('defaults to off', () => {
         const toolbar = document.createElement('devtools-toolbar');

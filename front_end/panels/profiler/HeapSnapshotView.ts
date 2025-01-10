@@ -1315,9 +1315,8 @@ export class HeapSnapshotProfileType extends
   override customContent(): Element|null {
     const showOptionToExposeInternalsInHeapSnapshot =
         Root.Runtime.experiments.isEnabled('show-option-tp-expose-internals-in-heap-snapshot');
-    const omitParagraphElement = true;
-    const exposeInternalsInHeapSnapshotCheckbox = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.exposeInternals), this.exposeInternals, omitParagraphElement);
+    const exposeInternalsInHeapSnapshotCheckbox =
+        UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.exposeInternals), this.exposeInternals);
     this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox as UI.UIUtils.CheckboxLabel;
     return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;
   }
@@ -1513,7 +1512,7 @@ export class TrackingHeapSnapshotProfileType extends
 
   override customContent(): Element|null {
     const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal, true);
+        i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
     this.customContentInternal = (checkboxSetting as UI.UIUtils.CheckboxLabel);
     return checkboxSetting;
   }

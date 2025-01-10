@@ -147,12 +147,11 @@
 }
 
 .network-settings-pane {
+  display: grid;
+  grid-template-columns: 50% 50%;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-}
-
-.network-settings-pane devtools-toolbar {
-  flex: 1 1;
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .network-toolbar-container {

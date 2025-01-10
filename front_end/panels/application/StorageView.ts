@@ -252,7 +252,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     clearButtonSection.appendChild(this.clearButton);
 
     const includeThirdPartyCookiesCheckbox = UI.SettingsUI.createSettingCheckbox(
-        i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting, true);
+        i18nString(UIStrings.includingThirdPartyCookies), this.includeThirdPartyCookiesSetting);
     includeThirdPartyCookiesCheckbox.classList.add('include-third-party-cookies');
     clearButtonSection.appendChild(includeThirdPartyCookiesCheckbox);
 
@@ -280,7 +280,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const row = section.appendRow();
     const setting = this.settings.get(settingName);
     if (setting) {
-      row.appendChild(UI.SettingsUI.createSettingCheckbox(title, setting, true));
+      row.appendChild(UI.SettingsUI.createSettingCheckbox(title, setting));
     }
   }
 

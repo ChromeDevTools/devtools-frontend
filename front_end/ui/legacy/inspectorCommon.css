@@ -782,19 +782,6 @@ devtools-toolbar {
     height: initial;
   }
 
-  &[orientation="vertical"] {
-    flex-direction: column;
-    height: auto;
-    align-items: flex-start;
-
-    & > * {
-      height: auto;
-      min-height: var(--toolbar-height);
-      white-space: normal;
-
-    }
-  }
-
   & > * {
     position: relative;
     display: flex;

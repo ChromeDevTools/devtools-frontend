@@ -242,3 +242,7 @@ Contains a page load that has two frames (main frame + iframe). There are two im
 - the main frame loads placeholder.co/100.jpg and placeholder.co/1000.jpg
 
 This trace is used to verify the fix for a bug [crbug.com/384000716] where we incorrectly associated image requests to the wrong navigation when calculating the LCP image.
+
+### lcp-lates-paint-event
+
+This is a trace where a `LargestImagePaint` event occurs after the last `largestContentfulPaint::Candidate` event.

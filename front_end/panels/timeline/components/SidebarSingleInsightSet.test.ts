@@ -96,11 +96,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     // Does not include "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
-      'LCP request discovery',
       'Layout shift culprits',
       'Improve image delivery',
       'Third parties',
       'INP by phase',
+      'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
@@ -113,6 +113,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     // Does not include "font display", which is experimental.
     assert.deepEqual(passedInsightTitles, [
       'INP by phase',
+      'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
@@ -142,12 +143,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     // Includes "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
-      'LCP request discovery',
       'Layout shift culprits',
       'Improve image delivery',
       'Font display',
       'Third parties',
       'INP by phase',
+      'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
@@ -160,6 +161,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     });
     assert.deepEqual(passedInsightTitles, [
       'INP by phase',
+      'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',

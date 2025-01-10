@@ -286,8 +286,9 @@ export const waitForNone =
                                }, asyncScope), `Waiting for no elements to match selector '${selector}'`);
 };
 
-export const waitForAria = (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
-  return waitFor(selector, root, asyncScope, 'aria');
+export const waitForAria = <ElementType extends Element = Element>(
+    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+  return waitFor<ElementType>(selector, root, asyncScope, 'aria');
 };
 
 export const waitForAriaNone = (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {

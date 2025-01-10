@@ -167,6 +167,7 @@ devtools_entrypoint("bundle") {
     "../../services/window_bounds/*",
     "../../testing/*",
     "../components/data_grid:*",
+    "../components/docs/combo_box/*",
     "../components/docs/performance_panel/*",
     "../components/docs/radio_button/*",
     "../components/docs/slider/*",

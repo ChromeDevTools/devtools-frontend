@@ -1183,7 +1183,6 @@ export function createHistoryInput(type = 'search', className?: string): HTMLInp
 
 export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {
   const select = document.createElement('select');
-  select.classList.add('chrome-select');
   ARIAUtils.setLabel(select, name);
   for (const option of options) {
     if (option instanceof Map) {

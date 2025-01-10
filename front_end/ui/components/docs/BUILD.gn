@@ -16,6 +16,7 @@ group("docs") {
     "./breadcrumbs_perf",
     "./button",
     "./color_swatch",
+    "./combo_box",
     "./computed_style_property",
     "./computed_style_trace",
     "./console_insight",

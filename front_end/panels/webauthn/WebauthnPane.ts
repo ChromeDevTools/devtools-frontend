@@ -585,7 +585,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     const protocolSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.protocol), 'authenticator-option-label');
     protocolGroup.appendChild(protocolSelectTitle);
-    this.#protocolSelect = protocolGroup.createChild('select', 'chrome-select');
+    this.#protocolSelect = protocolGroup.createChild('select');
     this.#protocolSelect.setAttribute('jslog', `${VisualLogging.dropDown('protocol').track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, (this.#protocolSelect as Element));
     Object.values(PROTOCOL_AUTHENTICATOR_VALUES).sort().forEach((option: Protocol.WebAuthn.AuthenticatorProtocol) => {
@@ -600,7 +600,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     const transportSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.transport), 'authenticator-option-label');
     transportGroup.appendChild(transportSelectTitle);
-    this.transportSelect = transportGroup.createChild('select', 'chrome-select');
+    this.transportSelect = transportGroup.createChild('select');
     this.transportSelect.setAttribute('jslog', `${VisualLogging.dropDown('transport').track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(transportSelectTitle, (this.transportSelect as Element));
     // transportSelect will be populated in updateNewAuthenticatorSectionOptions.

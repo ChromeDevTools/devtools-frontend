@@ -64,7 +64,7 @@
   border-top: 1px solid var(--sys-color-divider);
 }
 
-.chrome-select.font-editor-select {
+select.font-editor-select {
   min-width: 50px;
   min-height: 27px;
 }

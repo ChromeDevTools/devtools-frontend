@@ -1143,12 +1143,9 @@ export class ToolbarComboBox extends ToolbarItem<void> {
   protected selectElementInternal: HTMLSelectElement;
 
   constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string, jslogContext?: string) {
-    const element = document.createElement('span');
-    element.classList.add('toolbar-select-container');
+    const element = document.createElement('select');
     super(element);
-    this.selectElementInternal = this.element.createChild('select');
-    const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
-    this.element.appendChild(dropdownArrowIcon);
+    this.selectElementInternal = element;
     if (changeHandler) {
       this.selectElementInternal.addEventListener('change', changeHandler, false);
     }

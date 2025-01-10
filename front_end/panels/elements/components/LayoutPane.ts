@@ -496,7 +496,6 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     const onEnumSettingChange = this.#onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
       <select
-        class="chrome-select"
         data-input="true"
         jslog=${VisualLogging.dropDown().track({change: true}).context(setting.name)}
         @change=${onEnumSettingChange}>

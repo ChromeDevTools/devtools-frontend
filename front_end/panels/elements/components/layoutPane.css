@@ -114,7 +114,7 @@
   flex: none;
 }
 
-.chrome-select {
+select {
   min-width: 0;
   max-width: 150px;
 }

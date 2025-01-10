@@ -80,7 +80,7 @@ const createSettingSelect = function(
   const settingSelectElement = container.createChild('p');
   settingSelectElement.classList.add('settings-select');
   const label = settingSelectElement.createChild('label');
-  const select = settingSelectElement.createChild('select', 'chrome-select');
+  const select = settingSelectElement.createChild('select');
   label.textContent = name;
   if (subtitle) {
     container.classList.add('chrome-select-label');

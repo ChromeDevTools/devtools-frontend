@@ -134,7 +134,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     // clang-format off
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
-      <select class="chrome-select"
+      <select
         jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
         style="border: none; background-color: transparent; cursor: pointer;"
         data-endianness="true" @change=${onEnumSettingChange}>

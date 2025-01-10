@@ -874,7 +874,6 @@ export class LinkHandlerSettingUI implements UI.SettingsUI.SettingUI {
 
   private constructor() {
     this.element = document.createElement('select');
-    this.element.classList.add('chrome-select');
     this.element.addEventListener('change', this.onChange.bind(this), false);
     this.update();
   }

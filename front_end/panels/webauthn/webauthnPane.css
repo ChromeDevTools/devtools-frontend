@@ -52,7 +52,7 @@
   margin: 0;
 }
 
-.webauthn-pane .chrome-select {
+.webauthn-pane select {
   width: 120px;
 }
 /* Active Authenticator Section */

@@ -450,7 +450,9 @@ input[type="range"]:disabled::-webkit-slider-thumb {
   text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.chrome-select {
+/* Combo boxes */
+
+select {
   appearance: none;
   user-select: none;
   width: var(--sys-size-22);
@@ -466,38 +468,39 @@ input[type="range"]:disabled::-webkit-slider-thumb {
   background-color: transparent;
   background-position: right center;
   background-repeat: no-repeat;
-}
 
-.chrome-select:disabled {
-  opacity: 100%;
-  border: var(--sys-size-1) solid transparent;
-  color: var(--sys-color-state-disabled);
-  background-color: var(--sys-color-state-disabled-container);
-}
-
-.chrome-select:enabled {
-  &:hover {
-    background-color: var(--sys-color-state-hover-on-subtle);
+  &:disabled {
+    opacity: 100%;
+    border-color: transparent;
+    color: var(--sys-color-state-disabled);
+    background-color: var(--sys-color-state-disabled-container);
+    pointer-events: none;;
   }
 
-  &:active {
-    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
-  }
+  &:enabled {
+    &:hover {
+      background-color: var(--sys-color-state-hover-on-subtle);
+    }
 
-  &:hover:active {
-    /* stylelint-disable plugin/use_theme_colors */
-    background:
-      var(--combobox-dropdown-arrow),
-      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
-      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
-    /* stylelint-enable plugin/use_theme_colors */
-    background-position: right center;
-    background-repeat: no-repeat;
-  }
+    &:active {
+      background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+    }
 
-  &:focus {
-    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-    outline-offset: -1px;
+    &:hover:active {
+      /* stylelint-disable plugin/use_theme_colors */
+      background:
+        var(--combobox-dropdown-arrow),
+        linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+        linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+      /* stylelint-enable plugin/use_theme_colors */
+      background-position: right center;
+      background-repeat: no-repeat;
+    }
+
+    &:focus {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: -1px;
+    }
   }
 }
 
@@ -537,8 +540,8 @@ input[type="range"]:disabled::-webkit-slider-thumb {
   margin: 0;
 }
 
-.chrome-select optgroup,
-.chrome-select option {
+select optgroup,
+select option {
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
 }
@@ -655,7 +658,7 @@ button.link:focus-visible {
 
 @media (forced-colors: active) {
   .dimmed,
-  .chrome-select:disabled {
+  select:disabled {
     opacity: 100%;
   }
 
@@ -799,7 +802,6 @@ devtools-toolbar {
     flex: none;
     align-items: center;
     justify-content: center;
-    padding: 0;
     height: var(--toolbar-height);
     border: none;
     white-space: pre;
@@ -818,6 +820,10 @@ devtools-toolbar {
     & .devtools-link {
       color: var(--icon-default);
     }
+  }
+
+  & > :not(select) {
+    padding: 0;
   }
 
   & > devtools-issue-counter {
@@ -840,10 +846,6 @@ devtools-toolbar {
     pointer-events: none;
     flex: none;
     top: 2px;
-  }
-
-  .toolbar-select-container .toolbar-dropdown-arrow {
-    left: -7px;
   }
 
   .toolbar-button.dark-text .toolbar-dropdown-arrow {
@@ -1026,62 +1028,9 @@ devtools-toolbar {
 
   /* Select */
 
-  & > .toolbar-select-container {
-    display: inline-flex;
-    flex-shrink: 0;
-    padding-left: 2px;
-
-    & > select {
-      min-width: var(--sys-size-14);
-      appearance: none;
-      padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
-      margin-right: -10px;
-      position: relative;
-      height: var(--sys-size-9);
-      color: inherit;
-      border: inherit;
-      border-radius: var(--sys-shape-corner-extra-small);
-      background-color: inherit;
-
-      &:disabled {
-        opacity: 100%;
-        pointer-events: none;
-        background-color: var(--sys-color-state-disabled-container);
-        color: var(--sys-color-state-disabled);
-
-        & + .toolbar-dropdown-arrow {
-          color: var(--sys-color-state-disabled);
-        }
-      }
-
-      &:hover {
-        background-color: var(--sys-color-state-hover-on-subtle);
-      }
-
-      &:active {
-        background-color: var(--sys-color-state-ripple-neutral-on-subtle);
-      }
-
-      &:hover:active {
-        background:
-          linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
-          linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
-      }
-    }
-  }
-
-  & > button:focus-visible,
-  & > .toolbar-select-container > select:focus-visible {
-    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-
-    &.toolbar-has-dropdown {
-      background: none;
-    }
-  }
-
-  & > .toolbar-select-container > select:focus-visible > * {
-    background: var(--sys-color-cdt-base-container);
-    border-radius: 7px;
+  & > select {
+    height: var(--sys-size-9);
+    min-width: var(--sys-size-14);
   }
 
   /* Input */
@@ -1174,12 +1123,12 @@ devtools-toolbar {
     left: -2px;
   }
 
-  &:not(.floating) > :last-child:not(:first-child, .toolbar-select-container) {
+  &:not(.floating) > :last-child:not(:first-child, select) {
     flex-shrink: 1;
     justify-content: left;
   }
 
-  &:not(.floating) > .toolbar-button:last-child:not(:first-child, .toolbar-select-container) {
+  &:not(.floating) > .toolbar-button:last-child:not(:first-child, select) {
     justify-content: left;
     margin-right: 2px;
   }
@@ -1220,8 +1169,7 @@ devtools-toolbar {
       color: Graytext;
     }
 
-    devtools-toolbar > .toolbar-select-container > select:disabled,
-    devtools-toolbar > .toolbar-select-container > select:disabled + .toolbar-dropdown-arrow {
+    devtools-toolbar > select:disabled {
       opacity: 100%;
       color: Graytext;
     }

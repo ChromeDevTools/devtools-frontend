@@ -55,7 +55,7 @@
   color: transparent !important; /* stylelint-disable-line declaration-no-important */
 }
 
-.sensors-view .chrome-select {
+.sensors-view select {
   width: 200px;
 }
 

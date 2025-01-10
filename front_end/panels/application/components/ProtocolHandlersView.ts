@@ -9,7 +9,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
-// inspectorCommonStyles is imported for the chrome-select class that is used for the dropdown
+// inspectorCommonStyles is imported for the <select> styling that is used for the dropdown
 // eslint-disable-next-line rulesdir/es-modules-import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -137,7 +137,7 @@ export class ProtocolHandlersView extends HTMLElement {
                  })}>${p.protocol}://</option>`);
     return html`
        <div class="protocol-handlers-row">
-        <select class="chrome-select protocol-select" @change=${this.#handleProtocolSelect} aria-label=${
+        <select class="protocol-select" @change=${this.#handleProtocolSelect} aria-label=${
         i18nString(UIStrings.dropdownLabel)}>
            ${protocolOptions}
         </select>

@@ -435,8 +435,18 @@ HeapProfilerTestRunner.checkArrayIsSorted = function(contents, sortType, sortOrd
     return (a < b ? -1 : (a > b ? 1 : 0));
   }
 
-  function parseSize(size) {
-    return parseInt(size.replace(/[\xa0,]/g, ''), 10);
+  function parseSize(str) {
+    const number = parseFloat(str);
+    if (str.includes('kB')) {
+      return number * 1000;
+    }
+    if (str.includes('MB')) {
+      return number * 1000 * 1000;
+    }
+    if (str.includes('GB')) {
+      return number * 1000 * 1000 * 1000;
+    }
+    return number;
   }
 
   const extractor = {

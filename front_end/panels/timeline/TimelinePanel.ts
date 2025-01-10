@@ -1146,18 +1146,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
     }
-
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
-      this.#setupNavigationSetting();
-      this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
-      const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
-      dialogToolbarItem.element.setAttribute(
-          'jslog', `${VisualLogging.action().track({click: true}).context('timeline.shortcuts-dialog-toggle')}`);
-      this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
-      // The setting could have been changed from the Devtools Settings. Therefore, we
-      // need to update the radio buttons selection when the dialog is open.
-      this.#shortcutsDialog.addEventListener('click', this.#updateNavigationSettingSelection.bind(this));
-    }
   }
 
   #setupNavigationSetting(): HTMLElement {
@@ -1165,6 +1153,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const hideTheDialogForTests: string|null = localStorage.getItem('hide-shortcuts-dialog-for-test');
     const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
 
+    this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
+    // Add the shortcuts dialog button to the toolbar.
+    const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
+    dialogToolbarItem.element.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('timeline.shortcuts-dialog-toggle')}`);
+
+    this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
+    this.#updateNavigationSettingSelection();
+    // The setting could have been changed from the Devtools Settings. Therefore, we
+    // need to update the radio buttons selection when the dialog is open.
+    this.#shortcutsDialog.addEventListener('click', this.#updateNavigationSettingSelection.bind(this));
     this.#shortcutsDialog.data = {
       shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic'),
       open: !userHadShortcutsDialogOpenedOnce && hideTheDialogForTests !== 'true' &&
@@ -2090,9 +2089,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#showSidebarIfRequired();
 
-    // When the timeline is loaded for the first time, log what navigation setting is selected.
-    // This will allow us to get an estimate number of people using each option.
-    if (this.#traceEngineModel.size() === 1) {
+    // When the timeline is loaded for the first time, setup the shortcuts dialog and log what navigation setting is selected.
+    // Logging the setting on the first timeline load will allow us to get an estimate number of people using each option.
+    if (this.#traceEngineModel.size() === 1 &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
+      this.#setupNavigationSetting();
       if (Common.Settings.moduleSetting('flamechart-selected-navigation').get() === 'classic') {
         Host.userMetrics.navigationSettingAtFirstTimelineLoad(
             Host.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE);

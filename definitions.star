@@ -1,1 +1,1 @@
-versions = {"beta": "6834", "stable": "6778", "extended": "6723"}
+versions = {"beta": "6943", "stable": "6834", "extended": "6834"}

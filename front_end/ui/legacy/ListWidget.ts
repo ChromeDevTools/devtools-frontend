@@ -2,19 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './Toolbar.js'; // eslint-disable-line import/no-duplicates
+import './Toolbar.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as LitHtml from '../lit-html/lit-html.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import listWidgetStyles from './listWidget.css.legacy.js';
-import {ToolbarButton} from './Toolbar.js';  // eslint-disable-line import/no-duplicates
 import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
+
+const {html, render} = LitHtml;
 
 const UIStrings = {
   /**
@@ -174,19 +176,27 @@ export class ListWidget<T> extends VBox {
     const controls = document.createElement('div');
     controls.classList.add('controls-container');
     controls.classList.add('fill');
-    controls.createChild('div', 'controls-gradient');
 
-    const buttons = controls.createChild('div', 'controls-buttons');
-
-    const toolbar = buttons.createChild('devtools-toolbar');
-
-    const editButton = new ToolbarButton(i18nString(UIStrings.editString), 'edit', undefined, 'edit-item');
-    editButton.addEventListener(ToolbarButton.Events.CLICK, onEditClicked.bind(this));
-    toolbar.appendToolbarItem(editButton);
-
-    const removeButton = new ToolbarButton(i18nString(UIStrings.removeString), 'bin', undefined, 'remove-item');
-    removeButton.addEventListener(ToolbarButton.Events.CLICK, onRemoveClicked.bind(this));
-    toolbar.appendToolbarItem(removeButton);
+    // clang-format off
+    render(html`
+      <div class="controls-gradient"></div>
+      <div class="controls-buttons">
+        <devtools-toolbar>
+          <devtools-button class=toolbar-button
+                           .iconName=${'edit'}
+                           .jslogContext=${'edit-item'}
+                           .title=${i18nString(UIStrings.editString)}
+                           .variant=${Buttons.Button.Variant.ICON}
+                           @click=${onEditClicked}></devtools-button>
+          <devtools-button class=toolbar-button
+                           .iconName=${'bin'}
+                           .jslogContext=${'remove-item'}
+                           .title=${i18nString(UIStrings.removeString)}
+                           .variant=${Buttons.Button.Variant.ICON}
+                           @click=${onRemoveClicked}></devtools-button>
+        </devtools-toolbar>
+      </div>`, controls, {host: this});
+    // clang-format on
 
     return controls;
 

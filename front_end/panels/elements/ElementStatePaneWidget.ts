@@ -64,6 +64,7 @@ enum SpecificPseudoStates {
   INDETERMINATE = 'indeterminate',
   PLACEHOLDER_SHOWN = 'placeholder-shown',
   AUTOFILL = 'autofill',
+  OPEN = 'open',
 }
 
 export class ElementStatePaneWidget extends UI.Widget.Widget {
@@ -218,6 +219,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         SpecificPseudoStates.PLACEHOLDER_SHOWN, createElementStateCheckbox(SpecificPseudoStates.PLACEHOLDER_SHOWN));
     this.specificPseudoStateDivs.set(
         SpecificPseudoStates.AUTOFILL, createElementStateCheckbox(SpecificPseudoStates.AUTOFILL));
+    this.specificPseudoStateDivs.set(SpecificPseudoStates.OPEN, createElementStateCheckbox(SpecificPseudoStates.OPEN));
 
     this.specificPseudoStateDivs.forEach(div => {
       elementSpecificContainer.appendChild(div);
@@ -413,6 +415,12 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       hideSpecificCheckbox(SpecificPseudoStates.AUTOFILL, false);
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.AUTOFILL, true);
+    }
+
+    if (isElementOfTypes(node, ['input', 'select', 'dialog', 'details'])) {
+      hideSpecificCheckbox(SpecificPseudoStates.OPEN, false);
+    } else {
+      hideSpecificCheckbox(SpecificPseudoStates.OPEN, true);
     }
 
     this.specificHeader.hidden = showedACheckbox ? false : true;

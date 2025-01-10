@@ -16,24 +16,10 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
   let view: Elements.ElementStatePaneWidget.ElementStatePaneWidget;
 
   const pseudoClasses = [
-    'enabled',
-    'disabled',
-    'valid',
-    'invalid',
-    'user-valid',
-    'user-invalid',
-    'required',
-    'optional',
-    'read-only',
-    'read-write',
-    'in-range',
-    'out-of-range',
-    'visited',
-    'link',
-    'checked',
-    'indeterminate',
-    'placeholder-shown',
-    'autofill',
+    'enabled',       'disabled',          'valid',    'invalid',   'user-valid',
+    'user-invalid',  'required',          'optional', 'read-only', 'read-write',
+    'in-range',      'out-of-range',      'visited',  'link',      'checked',
+    'indeterminate', 'placeholder-shown', 'autofill', 'open',
   ];
 
   beforeEach(() => {
@@ -165,6 +151,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
           'read-only',
           'placeholder-shown',
           'autofill',
+          'open',
         ],
     );
   });
@@ -241,7 +228,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
   it('Shows the specific pseudo-classes for select', async () => {
     await assertExpectedPseudoClasses(
         'select',
-        ['disabled', 'valid', 'invalid', 'user-valid', 'user-invalid', 'required', 'read-write'],
+        ['disabled', 'valid', 'invalid', 'user-valid', 'user-invalid', 'required', 'read-write', 'open'],
     );
   });
 
@@ -342,6 +329,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
           'autofill',
           'checked',
           'indeterminate',
+          'open',
         ],
         false,
         ['type', 'checkbox'],
@@ -360,6 +348,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
           'autofill',
           'checked',
           'indeterminate',
+          'open',
         ],
         false,
         ['type', 'radio'],

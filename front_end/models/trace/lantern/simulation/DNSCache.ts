@@ -22,8 +22,8 @@ class DNSCache {
     this.resolvedDomainNames = new Map();
   }
 
-  getTimeUntilResolution(request: Lantern.NetworkRequest, options?: {requestedAt: number, shouldUpdateCache: boolean}):
-      number {
+  getTimeUntilResolution(
+      request: Lantern.NetworkRequest, options?: {requestedAt?: number, shouldUpdateCache?: boolean}): number {
     const {requestedAt = 0, shouldUpdateCache = false} = options || {};
 
     const domain = request.parsedURL.host;

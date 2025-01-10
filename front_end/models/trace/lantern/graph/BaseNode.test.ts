@@ -2,14 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-nocheck TODO(crbug.com/348449529)
-
 import * as Lantern from '../lantern.js';
 
 const {BaseNode, NetworkNode} = Lantern.Graph;
 
-function sortedById(nodeArray: Lantern.Node[]) {
+function sortedById(nodeArray: Lantern.Graph.Node[]) {
   return nodeArray.sort((node1, node2) => node1.id.localeCompare(node2.id));
+}
+
+/**
+ * In the real implementation we pass around Node<T>, which are either CPUNodes
+ * or NetworkNodes. Rather than construct those for these tests, which don't
+ * need real nodes, we instead create BaseNodes and cast them to satisfy TS.
+ */
+function makeFakeNode(name: string): Lantern.Graph.Node {
+  return new BaseNode(name) as Lantern.Graph.Node;
 }
 
 function createComplexGraph() {
@@ -19,14 +26,14 @@ function createComplexGraph() {
   //  \ /     \
   //   C       G - H
 
-  const nodeA = new BaseNode('A');
-  const nodeB = new BaseNode('B');
-  const nodeC = new BaseNode('C');
-  const nodeD = new BaseNode('D');
-  const nodeE = new BaseNode('E');
-  const nodeF = new BaseNode('F');
-  const nodeG = new BaseNode('G');
-  const nodeH = new BaseNode('H');
+  const nodeA = makeFakeNode('A');
+  const nodeB = makeFakeNode('B');
+  const nodeC = makeFakeNode('C');
+  const nodeD = makeFakeNode('D');
+  const nodeE = makeFakeNode('E');
+  const nodeF = makeFakeNode('F');
+  const nodeG = makeFakeNode('G');
+  const nodeH = makeFakeNode('H');
 
   nodeA.addDependent(nodeB);
   nodeA.addDependent(nodeC);
@@ -52,15 +59,15 @@ function createComplexGraph() {
 describe('BaseNode', () => {
   describe('#constructor', () => {
     it('should set the ID', () => {
-      const node = new BaseNode('foo');
+      const node = makeFakeNode('foo');
       assert.strictEqual(node.id, 'foo');
     });
   });
 
   describe('.addDependent', () => {
     it('should add the correct edge', () => {
-      const nodeA = new BaseNode('1');
-      const nodeB = new BaseNode('2');
+      const nodeA = makeFakeNode('1');
+      const nodeB = makeFakeNode('2');
       nodeA.addDependent(nodeB);
 
       assert.deepEqual(nodeA.getDependents(), [nodeB]);
@@ -70,8 +77,8 @@ describe('BaseNode', () => {
 
   describe('.addDependency', () => {
     it('should add the correct edge', () => {
-      const nodeA = new BaseNode('1');
-      const nodeB = new BaseNode('2');
+      const nodeA = makeFakeNode('1');
+      const nodeB = makeFakeNode('2');
       nodeA.addDependency(nodeB);
 
       assert.deepEqual(nodeA.getDependencies(), [nodeB]);
@@ -79,7 +86,7 @@ describe('BaseNode', () => {
     });
 
     it('throw when trying to add a dependency on itself', () => {
-      const nodeA = new BaseNode('1');
+      const nodeA = makeFakeNode('1');
       expect(() => nodeA.addDependency(nodeA)).to.throw();
     });
   });
@@ -121,8 +128,8 @@ describe('BaseNode', () => {
 
   describe('.cloneWithoutRelationships', () => {
     it('should create a copy', () => {
-      const node = new BaseNode('1');
-      const neighbor = new BaseNode('2');
+      const node = makeFakeNode('1');
+      const neighbor = makeFakeNode('2');
       node.addDependency(neighbor);
       const clone = node.cloneWithoutRelationships();
 
@@ -132,9 +139,9 @@ describe('BaseNode', () => {
     });
 
     it('should copy isMainDocument', () => {
-      const node = new BaseNode('1');
+      const node = makeFakeNode('1');
       node.setIsMainDocument(true);
-      const networkNode = new NetworkNode({});
+      const networkNode = new NetworkNode({} as Lantern.Types.NetworkRequest);
       networkNode.setIsMainDocument(true);
 
       assert.isOk(node.cloneWithoutRelationships().isMainDocument());
@@ -144,8 +151,8 @@ describe('BaseNode', () => {
 
   describe('.cloneWithRelationships', () => {
     it('should create a copy of a basic graph', () => {
-      const node = new BaseNode('1');
-      const neighbor = new BaseNode('2');
+      const node = makeFakeNode('1');
+      const neighbor = makeFakeNode('2');
       node.addDependency(neighbor);
       const clone = node.cloneWithRelationships();
 
@@ -188,12 +195,12 @@ describe('BaseNode', () => {
       //   C - D - E - F
       //  /             \
       // A - - - - - - - B
-      const nodeA = new BaseNode('A');
-      const nodeB = new BaseNode('B');
-      const nodeC = new BaseNode('C');
-      const nodeD = new BaseNode('D');
-      const nodeE = new BaseNode('E');
-      const nodeF = new BaseNode('F');
+      const nodeA = makeFakeNode('A');
+      const nodeB = makeFakeNode('B');
+      const nodeC = makeFakeNode('C');
+      const nodeD = makeFakeNode('D');
+      const nodeE = makeFakeNode('E');
+      const nodeF = makeFakeNode('F');
 
       nodeA.addDependent(nodeB);
       nodeF.addDependent(nodeB);
@@ -238,7 +245,7 @@ describe('BaseNode', () => {
       const graph = createComplexGraph();
       assert.throws(
           // clone from root to nodeB, but called on nodeD
-          _ => graph.nodeD.cloneWithRelationships(node => node.id === 'B'),
+          () => graph.nodeD.cloneWithRelationships(node => node.id === 'B'),
           /^Cloned graph missing node$/,
       );
     });
@@ -247,7 +254,7 @@ describe('BaseNode', () => {
   describe('.traverse', () => {
     it('should visit every dependent node', () => {
       const graph = createComplexGraph();
-      const ids = [];
+      const ids: string[] = [];
       graph.nodeA.traverse(node => ids.push(node.id));
 
       assert.deepEqual(ids, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']);
@@ -255,7 +262,7 @@ describe('BaseNode', () => {
 
     it('should include a shortest traversal path to every dependent node', () => {
       const graph = createComplexGraph();
-      const paths = [];
+      const paths: string[][] = [];
       graph.nodeA.traverse((node, traversalPath) => {
         assert.strictEqual(node.id, traversalPath[0].id);
         paths.push(traversalPath.map(node => node.id));
@@ -275,7 +282,7 @@ describe('BaseNode', () => {
 
     it('should respect getNext', () => {
       const graph = createComplexGraph();
-      const ids = [];
+      const ids: string[] = [];
       graph.nodeF.traverse(
           node => ids.push(node.id),
           node => node.getDependencies(),
@@ -295,9 +302,9 @@ describe('BaseNode', () => {
       //   B
       //  / \
       // A - C
-      const nodeA = new BaseNode('A');
-      const nodeB = new BaseNode('B');
-      const nodeC = new BaseNode('C');
+      const nodeA = makeFakeNode('A');
+      const nodeB = makeFakeNode('B');
+      const nodeC = makeFakeNode('C');
 
       nodeA.addDependent(nodeC);
       nodeA.addDependent(nodeB);
@@ -308,9 +315,9 @@ describe('BaseNode', () => {
 
     it('should return true for basic cycles', () => {
       // A - B - C - A!
-      const nodeA = new BaseNode('A');
-      const nodeB = new BaseNode('B');
-      const nodeC = new BaseNode('C');
+      const nodeA = makeFakeNode('A');
+      const nodeB = makeFakeNode('B');
+      const nodeC = makeFakeNode('C');
 
       nodeA.addDependent(nodeB);
       nodeB.addDependent(nodeC);
@@ -323,9 +330,9 @@ describe('BaseNode', () => {
       //       A!
       //      /
       // A - B - C
-      const nodeA = new BaseNode('A');
-      const nodeB = new BaseNode('B');
-      const nodeC = new BaseNode('C');
+      const nodeA = makeFakeNode('A');
+      const nodeB = makeFakeNode('B');
+      const nodeC = makeFakeNode('C');
 
       nodeA.addDependent(nodeB);
       nodeB.addDependent(nodeC);
@@ -338,14 +345,14 @@ describe('BaseNode', () => {
       //   B - D - F - G - C!
       //  /      /
       // A - - C - E - H
-      const nodeA = new BaseNode('A');
-      const nodeB = new BaseNode('B');
-      const nodeC = new BaseNode('C');
-      const nodeD = new BaseNode('D');
-      const nodeE = new BaseNode('E');
-      const nodeF = new BaseNode('F');
-      const nodeG = new BaseNode('G');
-      const nodeH = new BaseNode('H');
+      const nodeA = makeFakeNode('A');
+      const nodeB = makeFakeNode('B');
+      const nodeC = makeFakeNode('C');
+      const nodeD = makeFakeNode('D');
+      const nodeE = makeFakeNode('E');
+      const nodeF = makeFakeNode('F');
+      const nodeG = makeFakeNode('G');
+      const nodeH = makeFakeNode('H');
 
       nodeA.addDependent(nodeB);
       nodeA.addDependent(nodeC);
@@ -368,11 +375,11 @@ describe('BaseNode', () => {
     });
 
     it('works for very large graphs', () => {
-      const root = new BaseNode('root');
+      const root = makeFakeNode('root');
 
       let lastNode = root;
       for (let i = 0; i < 10000; i++) {
-        const nextNode = new BaseNode(`child${i}`);
+        const nextNode = makeFakeNode(`child${i}`);
         lastNode.addDependent(nextNode);
         lastNode = nextNode;
       }

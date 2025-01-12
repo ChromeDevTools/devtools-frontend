@@ -157,15 +157,12 @@
 .network-toolbar-container {
   display: flex;
   flex: none;
-}
-
-.network-toolbar-container > :first-child {
-  flex: 1 1 auto;
-}
-
-.panel.network devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: 1px solid var(--sys-color-divider);
+
+  & > :first-child {
+    flex: 1 1 auto;
+  }
 }
 
 @media (forced-colors: active) {

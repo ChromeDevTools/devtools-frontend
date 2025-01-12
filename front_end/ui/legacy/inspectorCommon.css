@@ -1009,7 +1009,7 @@ devtools-toolbar {
 
   /* Checkbox */
 
-  & > .checkbox {
+  & > dt-checkbox {
     padding: 0 5px 0 0;
   }
 

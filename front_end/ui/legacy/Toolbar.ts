@@ -1215,11 +1215,9 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 
   constructor(
       text: Common.UIString.LocalizedString, tooltip?: Common.UIString.LocalizedString,
-      listener?: ((arg0: MouseEvent) => void), jslogContext?: string, small?: boolean) {
+      listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
     super(CheckboxLabel.create(text));
-    this.element.classList.add('checkbox');
     this.inputElement = (this.element as CheckboxLabel).checkboxElement;
-    this.inputElement.classList.toggle('small', small);
     if (tooltip) {
       // install on the checkbox
       Tooltip.install(this.inputElement, tooltip);

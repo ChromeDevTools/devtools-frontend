@@ -78,8 +78,7 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.strictEqual(
         disclaimers[3].textContent,
         'These features send relevant data to Google. Google collects this data and feedback to improve its products and services with the help of human reviewers. Avoid sharing sensitive or personal information.');
-    assert.strictEqual(
-        disclaimers[7].textContent, 'Depending on your region, Google may refrain from data collection.');
+    assert.strictEqual(disclaimers[5].textContent, 'Depending on your region, Google may refrain from data collection');
 
     const settingCards = view.shadowRoot.querySelectorAll('.setting-card h2');
     const settingNames = Array.from(settingCards).map(element => element.textContent);
@@ -111,10 +110,10 @@ describeWithEnvironment('AISettingsTab', () => {
     const disclaimers = view.shadowRoot.querySelectorAll('.shared-disclaimer .disclaimer-list div');
     assert.strictEqual(
         disclaimers[3].textContent,
-        'Usage data will be retained for up to 18 months and stored in such a way that Google can’t tell who provided it.');
+        'Your content will not be used by human reviewers to improve AI. Your organization may change these settings at any time.');
     assert.strictEqual(
         disclaimers[5].textContent,
-        'Your content will not be used by human reviewers to improve AI. Your organization may change these settings at any time. Depending on your Google account management and/or region, Google may refrain from data collection.');
+        'Depending on your Google account management and/or region, Google may refrain from data collection');
     stub.restore();
   });
 

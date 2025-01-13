@@ -33,7 +33,7 @@ const UIStrings = {
    *@description Text describing a fact to consider when using AI features
    */
   experimentalFeatures:
-      'These features are experimental. They use generative AI and may provide inaccurate or offensive information that doesn’t represent Google’s views.',
+      'These features use generative AI and may provide inaccurate or offensive information that doesn’t represent Google’s views',
   /**
    *@description Text describing a fact to consider when using AI features
    */
@@ -42,17 +42,18 @@ const UIStrings = {
   /**
    *@description Text describing a fact to consider when using AI features
    */
-  retainData:
-      'Usage data will be retained for up to 18 months and stored in such a way that Google can’t tell who provided it.',
+  sendsDataToGoogleNoLogging:
+      'Your content will not be used by human reviewers to improve AI. Your organization may change these settings at any time.',
+
   /**
    *@description Text describing a fact to consider when using AI features
    */
-  dataCollection: 'Depending on your region, Google may refrain from data collection.',
+  dataCollection: 'Depending on your region, Google may refrain from data collection',
   /**
    *@description Text describing a fact to consider when using AI features
    */
   dataCollectionNoLogging:
-      'Your content will not be used by human reviewers to improve AI. Your organization may change these settings at any time. Depending on your Google account management and/or region, Google may refrain from data collection.',
+      'Depending on your Google account management and/or region, Google may refrain from data collection',
   /**
    *@description Text describing the 'Console Insights' feature
    */
@@ -336,8 +337,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     const bulletPoints = [
       {icon: 'psychiatry', text: i18nString(UIStrings.experimentalFeatures)},
-      ...noLogging ? [] : [{icon: 'google', text: i18nString(UIStrings.sendsDataToGoogle)}],
-      {icon: 'calendar-today', text: i18nString(UIStrings.retainData)},
+      {
+        icon: 'google',
+        text: noLogging ? i18nString(UIStrings.sendsDataToGoogleNoLogging) : i18nString(UIStrings.sendsDataToGoogle),
+      },
       {
         icon: 'corporate-fare',
         text: noLogging ? i18nString(UIStrings.dataCollectionNoLogging) : i18nString(UIStrings.dataCollection),

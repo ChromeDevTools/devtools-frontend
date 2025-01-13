@@ -152,6 +152,9 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "পাৰছিষ্টেঞ্চ"
   },
+  "core/common/SettingRegistration.ts | privacy": {
+    "message": "গোপনীয়তা"
+  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "ৰেণ্ডাৰিং"
   },
@@ -267,7 +270,7 @@
     "message": "With ব্লক"
   },
   "core/sdk/NetworkManager.ts | fast4G": {
-    "message": "দ্ৰুত 4G"
+    "message": "দ্ৰুত 3G"
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "লেহেমীয়া 4G"
@@ -436,6 +439,12 @@
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "নিৰীক্ষণ কৰা পৃষ্ঠাখন পুনৰ ল’ড কৰাৰ বাবে ল’ড কৰা বাতিল হৈছে"
+  },
+  "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
+    "message": "লগ ল’ড কৰাত আসোঁৱাহ হৈছে"
+  },
+  "core/sdk/RehydratingConnection.ts | noHostWindow": {
+    "message": "হ’ষ্টৰ ৱিণ্ড বিচাৰিব নোৱাৰি"
   },
   "core/sdk/RehydratingConnection.ts | noSourceText": {
     "message": "কোনো উৎস পাঠ নাই"
@@ -1121,6 +1130,9 @@
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "নেটৱৰ্ক এণ্ডপইণ্ট নিৰ্দিষ্ট কৰক আৰু DevToolsএ ইয়াৰ সৈতে স্বয়ংক্ৰিয়ভাৱে সংযোগ কৰিব। অধিক জানিবলৈ {PH1} পঢ়ক।"
   },
+  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+    "message": "বিকাশকৰ্তাৰ সঁজুলি - Node.js: {PH1}"
+  },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "মুখ্য"
   },
@@ -1147,9 +1159,6 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "CORS Access-Control-Allow-Headersৰ নিয়ন্ত্ৰণত ৱাইল্ডকাৰ্ড চিহ্নৰ (*) দ্বাৰা কৰ্তৃত্ব প্ৰদান সামৰি লোৱা নহ’ব।"
-  },
-  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
-    "message": ":--customstatename অপ্ৰচলিত। ইয়াৰ পৰিৱৰ্তে অনুগ্ৰহ কৰি :state(customstatename) বাক্যবিন্যাস ব্যৱহাৰ কৰক।"
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "ডিফ’ল্ট কাষ্ট একত্ৰীকৰণ অক্ষম কৰিবলৈ -internal-media-controls-overlay-cast-button বাছনি কৰ্তা ব্যৱহাৰ কৰাৰ পৰিবৰ্তে disableRemotePlayback এট্ৰিবিউট ব্যৱহাৰ কৰিব লাগে।"
@@ -1301,11 +1310,11 @@
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "অনুষ্ঠান শুনোতাক আপল’ড কৰাটো অপ্ৰচলিত হৈছে আৰু সেয়া আঁতৰোৱা হ’ব।"
   },
-  "generated/Deprecation.ts | V8GPUAdapter_RequestAdapterInfo_Method": {
-    "message": "GPUAdapter requestAdapterInfo() পদ্ধতিটো অপ্ৰচলিত, তাৰ পৰিৱৰ্তে GPUAdapter info এট্ৰিবিউটটো ব্যৱহাৰ কৰক।"
-  },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "SharedArrayBuffer ব্যৱহাৰ কৰি থাকিবলৈ ক্ৰছ-অৰিজিন পৃথকীকৰণত এক্সটেনশ্বনসমূহ অপ্ট ইন কৰিব লাগে। https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/ চাওক।"
+  },
+  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
+    "message": "WebGPUৰ সীমা maxInterStageShaderComponents অপ্ৰচলিত, তাৰ সলনি WebGPUৰ সীমা maxInterStageShaderVariables ব্যৱহাৰ কৰক।"
   },
   "generated/Deprecation.ts | WebSQL": {
     "message": "ৱেবৰ SQL অপ্ৰচলিত কৰা হৈছে। অনুগ্ৰহ কৰি SQLite WebAssembly অথবা Indexed Database ব্যৱহাৰ কৰক"
@@ -1369,6 +1378,9 @@
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit বিফল হৈছে: {PH1}"
+  },
+  "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
+    "message": "ক্ষেত্ৰৰ ডেটাখিনি বৰ্তমানৰ পৃষ্ঠাখনৰ সলনি অন্য এটা URLৰ বাবে কনফিগাৰ কৰা হৈছে।"
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "ডিভাইচ পিক্সেলৰ অনুপাত এটা নম্বৰ অথবা খালী হ’বই লাগিব।"
@@ -1547,6 +1559,9 @@
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "কম্প্ৰেশ্বন ডিক্সনাৰী ট্ৰান্সপ’ৰ্ট"
   },
+  "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
+    "message": "পৃষ্ঠাখন ল’ড হোৱাৰ পাছত এটা নতুন ডিভাইচ ছিমুলেট কৰাটোৱে LCPত প্ৰভাৱ পেলাব পাৰে। সঠিক LCP ডেটাৰ বাবে এটা নতুন ডিভাইচ ছিমুলেট কৰাৰ পাছত পৃষ্ঠাখন পুনৰ ল’ড কৰক"
+  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<বেনামী>"
   },
@@ -1694,6 +1709,12 @@
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "লে’আউট স্থানান্তৰণৰ কাৰণ"
   },
+  "models/trace/insights/DOMSize.ts | description": {
+    "message": "ডাঙৰ DOMএ মেম’ৰীৰ ব্যৱহাৰ বঢ়াব, ষ্টাইলৰ গণনা দীঘলীয়া কৰিব আৰু দামী লে’আউটৰ ৰিফ্ল’ সৃষ্টি কৰিব, যি পৃষ্ঠাখনৰ সঁহাৰি দিয়াৰ ক্ষমতাক প্ৰভাৱিত কৰিব। [অত্যধিক DOMৰ আকাৰ কেনেকৈ এৰাই চলিব লাগে জানক](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)।"
+  },
+  "models/trace/insights/DOMSize.ts | title": {
+    "message": "DOMৰ আকাৰ অপ্টিমাইজ কৰক"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "আপোনাৰ প্ৰথম নেটৱৰ্কৰ অনুৰোধ আটাইতকৈ বেছি গুৰুত্বপূৰ্ণ।  ৰিডাইৰেক্ট এৰি চলি ইয়াৰ বিলম্বতা হ্ৰাস কৰক, দ্ৰুত ছাৰ্ভাৰৰ সঁহাৰি আৰু পাঠৰ সংকোচন নিশ্চিত কৰি।"
   },
@@ -1705,6 +1726,24 @@
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "ফণ্ট ডিছপ্লে’"
+  },
+  "models/trace/insights/ImageDelivery.ts | description": {
+    "message": "প্ৰতিচ্ছবিৰ ডাউনল’ডৰ সময় কমোৱাটোৱে পৃষ্ঠাখন আৰু LCP ল’ড হোৱাৰ লক্ষ্য কৰা সময় কমাব পাৰে। [প্ৰতিচ্ছবিৰ আকাৰ অপ্টিমাইজ কৰাৰ বিষয়ে অধিক জানক](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "models/trace/insights/ImageDelivery.ts | title": {
+    "message": "প্ৰতিচ্ছবিৰ ডেলিভাৰী উন্নত কৰক"
+  },
+  "models/trace/insights/ImageDelivery.ts | useCompression": {
+    "message": "প্ৰতিচ্ছবিৰ সংকোচনৰ উপাদান বৃদ্ধি কৰাটোৱে এই প্ৰতিচ্ছবিখনৰ ডাউনল’ডৰ আকাৰ উন্নত কৰিব। (আনুমানিক {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useModernFormat": {
+    "message": "আধুনিক প্ৰতিচ্ছবিৰ ফৰ্মেট (WebP, AVIF) ব্যৱহাৰ কৰা বা প্ৰতিচ্ছবি সংকোচন বৃদ্ধি কৰাটোৱে এই প্ৰতিচ্ছবিখনৰ ডাউনল’ডৰ আকাৰ  উন্নত কৰিব। (আনুমানিক {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
+    "message": "এই প্ৰদৰ্শিত ডাইমেনশ্বনৰ ({PH3}) বাবে এই প্ৰতিচ্ছবিৰ ফাইলটোৰ আকাৰ যিমান হ’ব লাগে ({PH2}) তাতকৈ অধিক ডাঙৰ। প্ৰতিচ্ছবিৰ ডাউনল’ডৰ আকাৰ কমাবলৈ সঁহাৰিসূচক প্ৰতিচ্ছবি ব্যৱহাৰ কৰক। (আনুমানিক {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
+    "message": "GIFsৰ সলনি ভিডিঅ’ৰ ফৰ্মেট ব্যৱহাৰ কৰাতোৱে এনিমেশ্বন কৰা সমলৰ ডাউনল’ডৰ আকাৰ উন্নত কৰিব পাৰে। (আনুমানিক {PH1})"
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "আটাইতকৈ দীঘলীয়া পৰ্যায়ৰ জৰিয়তে অনুসন্ধান আৰম্ভ কৰক। [বিলম্বতা মিনিমাইজ কৰিব পাৰি](https://web.dev/articles/optimize-inp#optimize_interactions)। প্ৰক্ৰিয়াকৰণৰ সময় অৱধি কম কৰিবলৈ, [প্ৰধান থ্ৰেডৰ মূল্য অপ্টিমাইজ কৰক](https://web.dev/articles/optimize-long-tasks), সঘনাই JS।"
@@ -1743,10 +1782,10 @@
     "message": "তৃতীয় পক্ষ"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "পৃষ্ঠাৰ ভিউপ’ৰ্ট ম’বাইল-অপ্টিমাইজ কৰা হোৱা নাই, গতিকে টেপৰ ভাব-বিনিময় [৩০০ মিছে বিলম্ব](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) হ’ব পাৰে।"
+    "message": "ভিউপ’ৰ্টটো ম’বাইলৰ বাবে অপ্টিমাইজ নকৰিলে টেব কৰাৰ কাৰ্যটো [৩০০ এমএছ পৰ্যন্ত বিলম্ব](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) হ’ব পাৰে।"
   },
   "models/trace/insights/Viewport.ts | title": {
-    "message": "ভিউপ’ৰ্ট ম’বাইলৰ বাবে অপ্টিমাইজ কৰা হোৱা নাই"
+    "message": "ম’বাইলৰ বাবে ভিউপ’ৰ্ট অপ্টিমাইজ কৰক"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(সূচক)"
@@ -2171,6 +2210,87 @@
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "সাধ্য সুবিধা দেখুৱাওক"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
+    "message": "চাট মচা হৈছে"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | clearChatHistory": {
+    "message": "স্থানীয় চাট মচক"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
+    "message": "স্থানীয় চাট মচক"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | help": {
+    "message": "সহায়"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | history": {
+    "message": "ইতিহাস"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
+    "message": "নতুন চাট"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChatCreated": {
+    "message": "নতুন চাট সৃষ্টি কৰা হৈছে"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
+    "message": "কোনো পূৰ্বৰ বাৰ্তালাপ নাই"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
+    "message": "মতামত পঠিয়াওক"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | settings": {
+    "message": "ছেটিং"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
+    "message": "AI সহায়ক"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
+    "message": "AIক সোধক"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
+    "message": "AI সহায়ক সক্ষম কৰক"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
+    "message": "এই সুবিধাটো আপোনাৰ অঞ্চলত উপলব্ধ নহয়।"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
+    "message": "এই ছেটিংটো আপোনাৰ প্ৰশাসকে পৰিচালনা কৰে।"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
+    "message": "AI সহায়ক দেখুৱাওক"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
+    "message": "এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ বিকাশকৰ্তাৰ সঁজুলিৰ ছেটিঙত আপোনাৰ ভাষাৰ অগ্ৰাধিকাৰ ইংৰাজী হিচাপে ছেট কৰক।"
+  },
+  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
+    "message": "প্ৰশ্ন সুধিবলৈ ওপৰত দিয়া পদক্ষেপসমূহ অনুসৰণ কৰক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
+    "message": "এইটো এটা পৰীক্ষামূলক AI সুবিধা আৰু এইটোৱে সদায়েই শুদ্ধ ফলাফল নিদিয়ে।"
+  },
+  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+    "message": "বিকাশকৰ্তাৰ সঁজুলিত AIৰ বিষয়ে জানক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
+    "message": "আপুনি নিজৰ Google একাউণ্টটোৰ জৰিয়তে Chromeত ছাইন ইন কৰিলেহে এই সুবিধাটো উপলব্ধ হয়"
+  },
+  "panels/ai_assistance/components/ChatView.ts | offline": {
+    "message": "আপোনাৰ ইণ্টাৰনেট সংযোগ পৰীক্ষা কৰক আৰু পুনৰ চেষ্টা কৰক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+    "message": "ছেটিঙত AI সহায়ক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+    "message": "CSSৰ শৈলী বুজাৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+    "message": "শৈলী আৰু নেটৱৰ্কৰ অনুৰোধৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ, কাৰ্যদক্ষতা আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
+  },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "এনিমেশ্বনৰ পূৰ্বদৰ্শন {PH1}"
   },
@@ -2379,7 +2499,7 @@
     "message": "পৃষ্ঠাখন এটা সুৰক্ষিত উৎসৰ পৰা আগবঢ়োৱা হোৱা নাই"
   },
   "panels/application/AppManifestView.ts | platform": {
-    "message": "প্লেটফ’ৰ্ম"
+    "message": "প্লেটফৰ্ম"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "'prefer_related_applications' কেৱল Chrome বিটা আৰু Androidত সুস্থিৰ চেনেলত সমৰ্থিত হয়।"
@@ -4148,6 +4268,9 @@
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
     "message": "URL"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | automaticallyFellBackToPrefetch": {
+    "message": "(আহৰণ কৰাৰ পূৰ্বৰ অৱস্থালৈ স্বয়ংক্ৰিয়ভাৱে ফলবেক হয়)"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
     "message": "প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠা পৰীক্ষা কৰিবলৈ ক্লিক কৰক"
   },
@@ -4159,6 +4282,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "অনুমানৰ ভিত্তিত ল’ড কৰিব পৰা নগ’ল।"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFallbackToPrefetch": {
+    "message": "অনুমানৰ ভিত্তিত কৰা ল’ড বিফল হৈছে, কিন্তু আহৰণৰ পূৰ্বৰ ফলবেক সফল হৈছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
     "message": "অনুমানৰ ভিত্তিত ল’ড কৰা প্ৰয়াসটো এতিয়ালৈকে আৰম্ভ কৰা হোৱা নাই।"
@@ -4243,6 +4369,9 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "কাৰ্য"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | prefetchFallbackReady": {
+    "message": "(আহৰণৰ পূৰ্বৰ ফলবেক সাজু)"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
     "message": "নিয়মৰ ছেট"
@@ -5621,6 +5750,12 @@
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "বিকাশকৰ্তাৰ সঁজুলিটোৰ সলনি আপুনি নিৰীক্ষণ কৰা ৱেবছাইটটোৰ জৰিয়তে HTTP(S) বিকাশকৰ্তাৰ সম্পদসমূহ ল’ড কৰক"
   },
+  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
+    "message": "কোনো উৎস মিলা নাই"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# টা উৎসৰ মিল}one{# টা উৎসৰ মিল}other{# টা উৎসৰ মিল}}"
+  },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# টা উৎস}one{# টা উৎস}other{# টা উৎস}}"
   },
@@ -5713,6 +5848,9 @@
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "উপাদানৰ স্থিতি ট’গল কৰক"
+  },
+  "panels/elements/ElementsPanel.ts | adornerSettings": {
+    "message": "প্ৰতীকৰ ছেটিং"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "গণনা কৰা শৈলী"
@@ -5875,9 +6013,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<মানটো বহুত ডাঙৰ কাৰণে সম্পাদনা কৰিব নোৱাৰি>"
-  },
-  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
-    "message": "প্ৰতীকৰ ছেটিং…"
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "পৃষ্ঠা DOM"
@@ -6109,12 +6244,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "উপেক্ষিত"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
-    "message": "বন্ধ কৰক"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "প্ৰতীক দেখুৱাওক"
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "এংকৰ ন’ডলৈ পোনপটীয়াকৈ যাওক"
@@ -6503,6 +6632,9 @@
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "এটা নতুন টেবত খোলে"
   },
+  "panels/explain/components/ConsoleInsight.ts | references": {
+    "message": "উৎস আৰু প্ৰাসংগিক সমল"
+  },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "প্ৰাসংগিক ক’ড"
   },
@@ -6543,94 +6675,13 @@
     "message": "এই সকীয়নিটো বুজক"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "এই সুবিধাটো আপোনাৰ অঞ্চলত উপলব্ধ নহয়"
+    "message": "এই সুবিধাটো আপোনাৰ অঞ্চলত উপলব্ধ নহয়।"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "এই ছেটিংটো আপোনাৰ প্ৰশাসকে পৰিচালনা কৰে"
+    "message": "এই ছেটিংটো আপোনাৰ প্ৰশাসকে পৰিচালনা কৰে।"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ বিকাশকৰ্তাৰ সঁজুলিৰ ছেটিঙত আপোনাৰ ভাষাৰ অগ্ৰাধিকাৰ ইংৰাজী হিচাপে ছেট কৰক"
-  },
-  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
-    "message": "চাট মচা হৈছে"
-  },
-  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
-    "message": "চাটৰ ইতিহাস মচক"
-  },
-  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
-    "message": "চাট মচক"
-  },
-  "panels/freestyler/FreestylerPanel.ts | help": {
-    "message": "সহায়"
-  },
-  "panels/freestyler/FreestylerPanel.ts | history": {
-    "message": "ইতিহাস"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChat": {
-    "message": "নতুন চাট"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
-    "message": "নতুন চাট সৃষ্টি কৰা হৈছে"
-  },
-  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
-    "message": "কোনো পূৰ্বৰ বাৰ্তালাপ নাই"
-  },
-  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
-    "message": "মতামত পঠিয়াওক"
-  },
-  "panels/freestyler/FreestylerPanel.ts | settings": {
-    "message": "ছেটিং"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
-    "message": "প্ৰশ্ন সুধিবলৈ ওপৰত দিয়া পদক্ষেপসমূহ অনুসৰণ কৰক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
-    "message": "এইটো এটা পৰীক্ষামূলক AI সুবিধা আৰু এইটোৱে সদায়েই শুদ্ধ ফলাফল নিদিয়ে।"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
-    "message": "বিকাশকৰ্তাৰ সঁজুলিত AIৰ বিষয়ে জানক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
-    "message": "আপুনি নিজৰ Google একাউণ্টটোৰ জৰিয়তে Chromeত ছাইন ইন কৰিলেহে এই সুবিধাটো উপলব্ধ হয়"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
-    "message": "আপোনাৰ ইণ্টাৰনেট সংযোগ পৰীক্ষা কৰক আৰু পুনৰ চেষ্টা কৰক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
-    "message": "ছেটিঙত AI সহায়ক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
-    "message": "CSSৰ শৈলী বুজাৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
-    "message": "শৈলী আৰু নেটৱৰ্কৰ অনুৰোধৰ ক্ষেত্ৰত সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "শৈলী, নেটৱৰ্ক, অনুৰোধ, কাৰ্যদক্ষতা আৰু ফাইলৰ ক্ষেত্ৰত অধিক সহায় পাবলৈ {PH1} অন কৰক"
-  },
-  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
-    "message": "AI সহায়ক"
-  },
-  "panels/freestyler/freestyler-meta.ts | askAi": {
-    "message": "AIক সোধক"
-  },
-  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
-    "message": "AI সহায়ক সক্ষম কৰক"
-  },
-  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
-    "message": "এই সুবিধাটো আপোনাৰ অঞ্চলত উপলব্ধ নহয়"
-  },
-  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
-    "message": "এই ছেটিংটো আপোনাৰ প্ৰশাসকে পৰিচালনা কৰে"
-  },
-  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
-    "message": "AI সহায়ক দেখুৱাওক"
-  },
-  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
-    "message": "এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ বিকাশকৰ্তাৰ সঁজুলিৰ ছেটিঙত আপোনাৰ ভাষাৰ অগ্ৰাধিকাৰ ইংৰাজী হিচাপে ছেট কৰক"
+    "message": "এই সুবিধাটো ব্যৱহাৰ কৰিবলৈ বিকাশকৰ্তাৰ সঁজুলিৰ ছেটিঙত আপোনাৰ ভাষাৰ অগ্ৰাধিকাৰ ইংৰাজী হিচাপে ছেট কৰক।"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "অৱৰোধ কৰা সম্পদ"
@@ -7769,9 +7820,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
     "message": "CPU থ্ৰ’টলিং সক্ষম কৰা হৈছে"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× গতি কম কৰক"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "ডিফ’ল্ট মান অতিক্ৰম কৰিলে ছিষ্টেমৰ কাৰ্যক্ষমতা কমিব পাৰে।"
   },
@@ -7784,11 +7832,11 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "navigator.hardwareConcurrencyএ ৰিপ’ৰ্ট কৰা মান অ’ভাৰৰাইড কৰক"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "কোনো থ্ৰ'টলিং নাই"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "অফলাইন হৈ আছে"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
+    "message": "{PH1} - চুপাৰিছ কৰা"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "ডিফ’ল্টলৈ ৰিছেট কৰক"
@@ -7808,9 +7856,6 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
     "message": "দ্ৰুত 3G আৰু 4x CPUৰ গতি কম কৰা"
   },
-  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "কম সুবিধা থকা ম’বাইল"
-  },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "মাজৰ টিয়েৰৰ ম’বাইল"
   },
@@ -7818,7 +7863,7 @@
     "message": "কোনো ইণ্টাৰনেট সংযোগ নাই"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "কোনো থ্ৰ'টলিং নাই"
+    "message": "কোনো CPU আৰু কোনো নেটৱৰ্ক থ্ৰ’টলিং"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
     "message": "লেহেমীয়া 3G আৰু 6x CPUৰ গতি কম হোৱা"
@@ -8587,6 +8632,9 @@
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "পৃষ্ঠা পুনৰ ল’ড কৰাত / নেভিগেশ্বন কৰাত লগ নমচিব"
+  },
+  "panels/network/NetworkPanel.ts | exportHar": {
+    "message": "HAR আমদানি কৰক (ছেনিটাইজ কৰা বা ছেনিটাইজ নকৰা ডেটাৰ সৈতে)"
   },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
     "message": "HAR (ছেনিটাইজ কৰা) ৰপ্তানি কৰক..."
@@ -10520,11 +10568,65 @@
   "panels/search/SearchView.ts | searching": {
     "message": "সন্ধান কৰি থকা হৈছে…"
   },
+  "panels/security/CookieControlsView.ts | cardDisclaimer": {
+    "message": "যেতিয়া বিকাশকৰ্তাৰ সঁজুলি খোলা থাকে"
+  },
+  "panels/security/CookieControlsView.ts | cardTitle": {
+    "message": "তৃতীয় পক্ষৰ কুকি অস্থায়ীভাৱে সীমিত কৰক"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
+    "message": "আপোনাৰ প্ৰতিষ্ঠানে এই ছাইটটোৰ বাবে তৃতীয় পক্ষৰ কুকিৰ এক্সেছ পৰিচালনা কৰে"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
+    "message": "এই ছেটিংটো আপোনাৰ প্ৰতিষ্ঠানে পৰিচালনা কৰে"
+  },
+  "panels/security/CookieControlsView.ts | exceptions": {
+    "message": "ব্যতিক্ৰম"
+  },
+  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
+    "message": "তৃতীয় পক্ষৰ কুকিসমূহলৈ এক্সেছ দিয়া পৰিস্থিতিসমূহ"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriod": {
+    "message": "গ্ৰে’চ পিৰিয়ড"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
+    "message": "যদি এই ছাইটটো বা ইয়াত এম্বেড কৰা {PH1}ত পঞ্জীয়ন কৰা আছে, তেতিয়া ছাইটটোৱে তৃতীয় পক্ষৰ কুকি এক্সেছ কৰিব পাৰে"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
+    "message": "তৃতীয় পক্ষৰ কুকিৰ গ্ৰে’চ পিৰিয়ড"
+  },
+  "panels/security/CookieControlsView.ts | heuristicExplanation": {
+    "message": "পপ-আপ বা ৰিডাইৰেক্টৰ দৰে {PH1}ত, এই ছাইটটোত এম্বেড কৰা এটা ছাইটে তৃতীয় পক্ষৰ কুকি এক্সেছ কৰিব পাৰে"
+  },
+  "panels/security/CookieControlsView.ts | heuristicTitle": {
+    "message": "ব্যতিক্ৰমৰ ভিত্তিক হিউৰিছটিক্স"
+  },
+  "panels/security/CookieControlsView.ts | scenarios": {
+    "message": "পূৰ্বনিৰ্ধাৰিত পৰিস্থিতি"
+  },
+  "panels/security/CookieControlsView.ts | siteReloadMessage": {
+    "message": "আপুনি আপডে’ট কৰা নিয়ন্ত্ৰণসমূহ প্ৰয়োগ কৰিবলৈ, পৃষ্ঠাখন পুনৰ ল’ড কৰক"
+  },
+  "panels/security/CookieControlsView.ts | viewDetails": {
+    "message": "সবিশেষ চাওক"
+  },
+  "panels/security/CookieControlsView.ts | viewExplanation": {
+    "message": "কোনো ব্যৱহাৰকাৰীয়ে Chromeত তৃতীয় পক্ষৰ কুকি সীমিত কৰিবলৈ এই ছাইটটোৱে কেনেকৈ কাৰ্যদক্ষতা প্ৰদৰ্শন কৰে চাওক"
+  },
+  "panels/security/CookieControlsView.ts | viewTitle": {
+    "message": "নিয়ন্ত্ৰণ"
+  },
+  "panels/security/CookieReportView.ts | adCookieTypeString": {
+    "message": "বিজ্ঞাপন"
+  },
   "panels/security/CookieReportView.ts | allowed": {
     "message": "অনুমতি দিয়া হৈছে"
   },
   "panels/security/CookieReportView.ts | allowedByException": {
     "message": "ব্যতিক্ৰম অনুসৰি অনুমতি দিয়ক"
+  },
+  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
+    "message": "বিশ্লেষণাত্মক পৰিসংখ্যা"
   },
   "panels/security/CookieReportView.ts | blocked": {
     "message": "অৱৰোধিত"
@@ -10532,11 +10634,104 @@
   "panels/security/CookieReportView.ts | body": {
     "message": "তৃতীয়-পক্ষৰ কুকিসমূহ ব্যৱহাৰকাৰীয়ে প্ৰতিবন্ধিত কৰিব পাৰে, সেইসমূহৰ ছেটিঙৰ ওপৰত নিৰ্ভৰ কৰি। যদি কোনো ব্যৱহাৰকাৰীয়ে কুকি প্ৰতিবন্ধিত কৰিবলৈ বাছনি কৰে, তেন্তে সেই ছাইটোৱে তেওঁৰ বাবে কাম নকৰিব পাৰে।"
   },
+  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
+    "message": "CDN"
+  },
+  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
+    "message": "সন্মতি প্ৰদানকাৰী"
+  },
+  "panels/security/CookieReportView.ts | contentCookieTypeString": {
+    "message": "সমল"
+  },
+  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
+    "message": "গ্ৰাহকৰ সফলতা"
+  },
+  "panels/security/CookieReportView.ts | domain": {
+    "message": "ড’মেইন"
+  },
+  "panels/security/CookieReportView.ts | emptyReport": {
+    "message": "কুকিৰ কোনো সমস্যা নাই"
+  },
+  "panels/security/CookieReportView.ts | emptyReportExplanation": {
+    "message": "তৃতীয় পক্ষৰ কুকিৰ কোনো সমস্যা বিচাৰি পোৱা নাই"
+  },
+  "panels/security/CookieReportView.ts | gitHubResource": {
+    "message": "তৃতীয় পক্ষৰ ছাইটৰ পৰা {PH1} পৰ্যালোচনা কৰক।"
+  },
+  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
+    "message": "Github"
+  },
+  "panels/security/CookieReportView.ts | gracePeriod": {
+    "message": "{PH1} পৰ্যালোচনা কৰক। গ্ৰে’চ পিৰিয়ডৰ ব্যতিক্ৰমটো সক্ৰিয় হৈ আছে।"
+  },
+  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
+    "message": "গ্ৰে’চ পিৰিয়ড"
+  },
+  "panels/security/CookieReportView.ts | guidance": {
+    "message": "নিৰ্দেশনা"
+  },
+  "panels/security/CookieReportView.ts | heuristics": {
+    "message": "পাছত কাৰ্যব্যৱস্থা লোৱাৰ প্ৰয়োজন। হিউৰিছটিক্স ভিত্তিক ব্যতিক্ৰমটো সক্ৰিয়"
+  },
+  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
+    "message": "হিউৰিছটিক্স"
+  },
+  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
+    "message": "হ’ষ্টিং"
+  },
   "panels/security/CookieReportView.ts | learnMoreLink": {
     "message": "তৃতীয়-পক্ষৰ কুকিসমূহ কেনেকৈ ব্যৱহাৰ কৰা হয় সেই বিষয়ে অধিক জানক"
   },
+  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
+    "message": "মাৰ্কেটিং"
+  },
+  "panels/security/CookieReportView.ts | name": {
+    "message": "নাম"
+  },
+  "panels/security/CookieReportView.ts | other": {
+    "message": "অধিক তথ্যৰ বাবে তৃতীয় পক্ষৰ ছাইটৰ সৈতে যোগাযোগ কৰক"
+  },
+  "panels/security/CookieReportView.ts | otherCookieTypeString": {
+    "message": "অন্য"
+  },
+  "panels/security/CookieReportView.ts | otherInsightTypeString": {
+    "message": "অন্য"
+  },
+  "panels/security/CookieReportView.ts | platform": {
+    "message": "প্লেটফৰ্ম"
+  },
+  "panels/security/CookieReportView.ts | recommendation": {
+    "message": "চুপাৰিছ"
+  },
+  "panels/security/CookieReportView.ts | report": {
+    "message": "তৃতীয় পক্ষৰ কুকিৰ ৰিপ’ৰ্ট"
+  },
+  "panels/security/CookieReportView.ts | reportedIssues": {
+    "message": "অভিযোগ কৰা সমস্যা"
+  },
+  "panels/security/CookieReportView.ts | socialCookieTypeString": {
+    "message": "সামাজিক"
+  },
+  "panels/security/CookieReportView.ts | status": {
+    "message": "স্থিতি"
+  },
+  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
+    "message": "Tag Manager"
+  },
   "panels/security/CookieReportView.ts | title": {
     "message": "তৃতীয় পক্ষৰ কুকি"
+  },
+  "panels/security/CookieReportView.ts | type": {
+    "message": "প্ৰকাৰ"
+  },
+  "panels/security/CookieReportView.ts | unknown": {
+    "message": "অজ্ঞাত"
+  },
+  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
+    "message": "ইউটিলিটি"
+  },
+  "panels/security/CookieReportView.ts | videoCookieTypeString": {
+    "message": "ভিডিঅ’"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2}ৰ জৰিয়তে {PH1}"
@@ -10841,6 +11036,9 @@
   "panels/security/SecurityPanelSidebar.ts | cookieReport": {
     "message": "তৃতীয় পক্ষৰ কুকি"
   },
+  "panels/security/SecurityPanelSidebar.ts | flagControls": {
+    "message": "নিয়ন্ত্ৰণ"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "মুখ্য উৎস"
   },
@@ -11117,17 +11315,20 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "ব্যৱহাৰকাৰী নিস্ক্ৰিয়, স্ক্ৰীন আনলক কৰা আছে"
   },
-  "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "Googleএ আপোনাৰ Google একাউণ্টৰ পৰিচালনা আৰু/বা অঞ্চলৰ ওপৰত ভিত্তি কৰি ডেটা সংগ্ৰহৰ পৰা বিৰত থাকিব পাৰে। আপোনাৰ প্ৰতিষ্ঠানৰ ছেটিংসমূহৰ ওপৰত নিৰ্ভৰ কৰি, পৰিচালিত ব্যৱহাৰকাৰীসকলৰ বাবে উপলব্ধ সুবিধাবোৰ পৃথক হ’ব পাৰে।"
-  },
   "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "এই সুবিধাটো কেৱল ১৮ বছৰ বা তাতকৈ অধিক বয়সৰ ব্যৱহাৰকাৰীৰ বাবেহে উপলব্ধ"
+    "message": "এই সুবিধাটো কেৱল ১৮ বছৰ বা তাতকৈ অধিক বয়সৰ ব্যৱহাৰকাৰীৰ বাবেহে উপলব্ধ।"
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "AIৰ জৰিয়তে আপোনাৰ উৎপাদনশীলতা বৃদ্ধি কৰক"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "কনছ’ল বাৰ্তা, জড়িত হৈ থকা ষ্টেক ট্ৰে’চ, সম্পৰ্কিত উৎস ক’ড আৰু জড়িত হৈ থকা নেটৱৰ্কৰ হেডাৰ ব্যাখ্যা সৃষ্টি কৰিবলৈ Googleলৈ পঠিওৱা হয়। এই সুবিধাটো উন্নত কৰিবলৈ এই ডেটাখিনি মানৱ পৰ্যালোচকে চাব পাৰে।"
+  },
+  "panels/settings/AISettingsTab.ts | dataCollection": {
+    "message": "আপোনাৰ অঞ্চলটোৰ ওপৰত নিৰ্ভৰ কৰি, Googleএ ডেটা সংগ্ৰহৰ পৰা বিৰত থাকিব পাৰে।"
+  },
+  "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
+    "message": "আপোনাৰ সমল মানৱ পৰ্যালোচকে AI উন্নত কৰিবলৈ ব্যৱহাৰ নকৰে। আপোনাৰ প্ৰতিষ্ঠানে এই ছেটিংসমূহ যিকোনো সময়তে সলনি কৰিব পাৰে। Googleএ আপোনাৰ Google একাউণ্টৰ পৰিচালনা আৰু/বা অঞ্চলৰ ওপৰত ভিত্তি কৰি ডেটা সংগ্ৰহৰ পৰা বিৰত থাকিব পাৰে।"
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "AI সহায়ক সক্ষম কৰক"
@@ -11189,9 +11390,6 @@
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "এই সমস্যাসমূহ সমাধান কৰিবলৈ পৰামৰ্শ আৰু ক’ডৰ নমুনা লাভ কৰক"
   },
-  "panels/settings/AISettingsTab.ts | retainData": {
-    "message": "ব্যৱহাৰৰ ডেটা ১৮ মাহলৈকে ৰখা হ’ব আৰু এনেকুৱা ধৰণে ষ্ট’ৰ কৰা হ’ব যে Googleএ সেয়া কোনে প্ৰদান কৰিছে সেয়া ক’ব নোৱাৰে।"
-  },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
     "message": "এই সুবিধাসমূহে Googleলৈ প্ৰাসংগিক ডেটা পঠিয়ায়। Googleএ মানৱ পৰ্যালোচকৰ সহায়ত ইয়াৰ উৎপাদন আৰু সেৱা উন্নত কৰিবলৈ এই ডেটা আৰু মতামত সংগ্ৰহ কৰে। সংবেদনশীল বা ব্যক্তিগত তথ্য শ্বেয়াৰ নকৰিব।"
   },
@@ -11217,7 +11415,7 @@
     "message": "স্ক্ৰিপ্টখনৰ URLৰ বাবে এটা স্বাভাৱিক অভিব্যক্তি যোগ দিয়ক"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "regex নিয়ম যোগ দিয়ক..."
+    "message": "regex নিয়ম যোগ দিয়ক"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "সম্পদৰ মেপৰ পৰা জ্ঞাত তৃতীয় পক্ষৰ লিপি"
@@ -11247,7 +11445,7 @@
     "message": "সক্ষম কৰিলে, ডিবাগাৰে উপেক্ষিত সূচীত থকা স্ক্ৰিপ্টসমূহ এৰি যাব আৰু কেৱল সেইসমূহক প্ৰভাৱিত কৰা ব্যতিক্ৰমসমূহ উপেক্ষা কৰিব আৰু পাৰ্ফৰমেন্স পেনেলে মিলা ফ্লে’মচাৰ্ট বস্তুবোৰ সংকোচন কৰিব।"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "''{PH1}''ৰ সৈতে নাম মিলা স্ক্ৰিপ্ট উপেক্ষা কৰক"
+    "message": "’’{PH1}’’ৰ সৈতে নাম মিলা স্ক্ৰিপ্ট উপেক্ষা কৰক"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
     "message": "অধিক জানক"
@@ -11331,7 +11529,7 @@
     "message": "অধিক জানক"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "সকীয়নি: এই ফিল্টাৰটোৰ সৈতে কোনো পৰীক্ষণৰ মিল নাই"
+    "message": "কোনো সম্পৰীক্ষাৰ ফিল্টাৰৰ সৈতে মিলা নাই"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "এটা অথবা একাধিক ছেটিং সলনি কৰা হৈছে, যিবোৰে কাম কৰিবলৈ এবাৰ পুনৰ ল’ড কৰিব লাগিব।"
@@ -11370,7 +11568,7 @@
     "message": "এই ছেটিংটো অন কৰিবলৈ আপুনি Chrome ছিংক সক্ষম কৰিবই লাগিব।"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "কাষ্টম কৰা ডিভাইচ যোগ দিয়ক..."
+    "message": "কাষ্টম কৰা ডিভাইচ যোগ দিয়ক"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "কাষ্টম ডিভাইচ"
@@ -12599,9 +12797,6 @@
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | Dms": {
-    "message": "{PH1} মি.ছে."
-  },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
     "message": "আটাইবোৰ"
   },
@@ -12666,7 +12861,7 @@
     "message": "মুখ্য — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
-    "message": "উপেক্ষাৰ সূচীত"
+    "message": "উপেক্ষাৰ সূচীত ({rule})"
   },
   "panels/timeline/ThreadAppender.ts | raster": {
     "message": "ৰাষ্টেৰ"
@@ -12724,9 +12919,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "পেইণ্ট প্ৰ’ফাইলাৰ"
-  },
-  "panels/timeline/TimelineDetailsView.ts | rangeSS": {
-    "message": "পৰিসৰ:  {PH1} – {PH2}"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
     "message": "বাছনিকৰ্তাৰ পৰিসংখ্যা"
@@ -12788,32 +12980,20 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "বৰ্তমানৰ ছেশ্বন: {PH1}। {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
+    "message": "{PH1}× গতি কম কৰক"
+  },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "লাইভ মেট্ৰিক্স"
   },
-  "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
-    "message": "(কোনো ৰেকৰ্ডিং নাই)"
+  "panels/timeline/TimelineHistoryManager.ts | nodeLandingPageTitle": {
+    "message": "নতুন ৰেকৰ্ডিং"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} #{PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "টাইমলাইনৰ ছেশ্বন বাছনি কৰক"
-  },
-  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
-    "message": "ৰেকৰ্ডিঙৰ পাছত ৰূপৰেখাত পচন্দৰ এটা ক্ষেত্ৰ টানি আনি বাছনি কৰক। তাৰ পাছত মাউছহুইল অথবা {PH1} কীৰ সৈতে টাইমলাইনটো জুম আৰু পেন কৰক। {PH2}"
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "ৰেকৰ্ড কৰা বুটামটোত {PH1} ক্লিক কৰক অথবা এটা নতুন ৰেকৰ্ডিং আৰম্ভ কৰিবলৈ {PH2}ত টিপক।"
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "পুনৰ ল’ড কৰা বুটামটোত {PH1} ক্লিক কৰক অথবা ল’ড কৰা পৃষ্ঠাখন ৰেকৰ্ড কৰিবলৈ {PH2}ত টিপক।"
-  },
-  "panels/timeline/TimelineLandingPage.ts | learnmore": {
-    "message": "অধিক জানক"
-  },
-  "panels/timeline/TimelineLandingPage.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "বিকৃত টাইমলাইন ডেটা: {PH1}"
@@ -12862,6 +13042,9 @@
   },
   "panels/timeline/TimelinePanel.ts | description": {
     "message": "বিৱৰণ"
+  },
+  "panels/timeline/TimelinePanel.ts | dimThirdParties": {
+    "message": "Dim ৩য় পক্ষ"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScriptৰ নমুনা অক্ষম কৰক"
@@ -12923,9 +13106,6 @@
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "নেটৱৰ্কৰ চৰ্তাৱলী"
   },
-  "panels/timeline/TimelinePanel.ts | performanceExtension": {
-    "message": "এক্সটেনশ্বনৰ ডেটা"
-  },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "প্ৰক্ৰিয়া চলোৱা হ’ল"
   },
@@ -12956,6 +13136,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "বাছনি মচা হ’ল"
   },
+  "panels/timeline/TimelinePanel.ts | showCustomtracks": {
+    "message": "কাষ্টম ট্ৰেকসমূহ দেখুৱাওক"
+  },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "কাৰ্যদক্ষতাৰ পেনেলটোৰ এক্সটেনশ্বনে যোগ দিয়া ডেটা দেখুৱাওক"
   },
@@ -12971,9 +13154,6 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "কাৰ্যদক্ষতাৰ ছাইডবাৰ দেখুওৱা হৈছে"
   },
-  "panels/timeline/TimelinePanel.ts | ssec": {
-    "message": "{PH1} ছেকেণ্ড"
-  },
   "panels/timeline/TimelinePanel.ts | status": {
     "message": "স্থিতি"
   },
@@ -12985,6 +13165,18 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "সময়"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
+    "message": "ক্ষিপ্ৰভাৱে টাইমলাইন জুম ইন/আউট কৰা"
+  },
+  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
+    "message": "টাইমলাইনৰ সোঁ/বাওঁ"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
+    "message": "টাইমলাইনৰ ওপৰ/তল"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
+    "message": "টাইমলাইন জুম ইন/আউট কৰা"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "টেবুল প্ৰতিলিপি কৰক"
@@ -13033,9 +13225,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome এক্সটেনশ্বন অ’ভাৰহেড]"
-  },
-  "panels/timeline/TimelineTreeView.ts | fms": {
-    "message": "{PH1} মি.ছে."
   },
   "panels/timeline/TimelineTreeView.ts | groupBy": {
     "message": "এইদৰে গোটত বিভক্ত কৰক"
@@ -13541,11 +13730,11 @@
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "CPU থ্ৰট’লিং: {PH1}"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
-    "message": "{PH1}× গতি কম কৰক"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} - চুপাৰিছ কৰা"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | noThrottling": {
-    "message": "কোনো থ্ৰ’টলিং নাই"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "প্ৰকৃত ব্যৱহাৰকাৰীৰ পৰিবেশ ছিমুলে’ট কৰিবলৈ ছেটিং সলনি কৰাৰ কথা বিবেচনা কৰক"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "বলপূৰ্বকভাৱে চলোৱা ৰিফ্ল’"
@@ -13557,7 +13746,7 @@
     "message": "দীঘলীয়া ভাব-বিনিময়"
   },
   "panels/timeline/components/DetailsView.ts | longTask": {
-    "message": "দীঘলীয়া কাৰ্য"
+    "message": "দীঘল কাৰ্য"
   },
   "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} হৈছে এটা কাৰ্যক্ষমতা হ্ৰাস কৰা সম্ভাব্য প্ৰতিবন্ধকতা।"
@@ -13577,14 +13766,8 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket প্ৰ্ৰ’টকল"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | add": {
-    "message": "যোগ দিয়ক"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "উচ্চখাপৰ"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
-    "message": "\"{PH1}\" ইতিমধ্যে এটা উৎপাদনৰ উৎসৰ সৈতে মেপ কৰা হৈছে।"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "বাতিল কৰক"
@@ -13594,15 +13777,6 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "ক্ষেত্ৰৰ ডেটা আহৰণ কৰাটো কনফিগাৰ কৰক"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
-    "message": "মচক"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
-    "message": "বিকাশৰ উৎস"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
-    "message": "বিকাশৰ উৎস: {PH1}"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome UXৰ ৰিপ’ৰ্টত এই পৃষ্ঠাখনৰ বাবে পৰ্যাপ্ত পৰিমাণে বাস্তৱিক গতিৰ ডেটা নাই।"
@@ -13631,12 +13805,6 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "গোপনীয়তা সদৰীকৰণ"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
-    "message": "উৎপাদনৰ উৎস"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
-    "message": "উৎপাদনৰ উৎস: {PH1}"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "ছেট আপ কৰক"
   },
@@ -13645,6 +13813,39 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "DevTools খোলা থাকিলে, আপুনি চোৱা URLসমূহ ক্ষেত্ৰৰ ডেটা সম্পৰ্কীয় প্ৰশ্ন সুধিবলৈ Googleলৈ পঠিওৱা হয়। এই অনুৰোধসমূহ আপোনাৰ Google একাউণ্টৰ সৈতে ৰখা নহয়।"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
+    "message": "লিপিৰ URLৰ বাবে এটা স্বাভাৱিক অভিব্যক্তি যোগ দিয়ক"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreList": {
+    "message": "উপেক্ষিত সূচী"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreListDescription": {
+    "message": "ফ্লেম চাৰ্টৰ পৰা মিল থকা লিপি আঁতৰাবলৈ নিয়মীয়া অভিব্যক্তিৰ নিয়মসমূহ যোগ দিয়ক।"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchNewRegex": {
+    "message": "নতুন regexৰ সৈতে নাম মিলা লিপিসমূহ উপেক্ষা কৰক"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
+    "message": "’’{regex}’’ৰ সৈতে নাম মিলা স্ক্ৰিপ্ট উপেক্ষা কৰক"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
+    "message": "নিয়ম ইতিমধ্যে আছে"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
+    "message": "এই নিয়মটো ইতিমধ্যে আছে কিন্তু ইয়াক অক্ষম কৰা হৈছে। এই মানটো ছেভ কৰাটোৱে নিয়মটো পুনৰ সক্ষম কৰিব"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
+    "message": "নিয়মৰ ক্ষেত্ৰ খালী থাকিব নোৱাৰে"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
+    "message": "নিয়মটো এটা মান্য স্বাভাৱিক অভিব্যক্তি হ’বই লাগিব"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
+    "message": "regexটো আঁতৰাওক: ’’{regex}’’"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
+    "message": "উপেক্ষিত সূচীৰ ছেটিঙৰ ডায়লগ দেখুৱাওক"
   },
   "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
     "message": "ইনপুটৰ বিলম্ব"
@@ -13784,6 +13985,12 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "পৰৱৰ্তী পদক্ষেপ"
   },
+  "panels/timeline/components/LiveMetricsView.ts | nodeClickToRecord": {
+    "message": "সংযুক্ত Node প্ৰক্ৰিয়াটোৰ কাৰ্যদক্ষতাৰ টাইমলাইন ৰেকৰ্ড কৰক।"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | nodePerformanceTimeline": {
+    "message": "Nodeৰ কাৰ্যদক্ষতা"
+  },
   "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
     "message": "পৰ্যাপ্ত ডেটা নাই"
   },
@@ -13808,9 +14015,6 @@
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "প্ৰক্ৰিয়াকৰণৰ সময় অৱধি"
   },
-  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
-    "message": "প্ৰকৃত ব্যৱহাৰকাৰীৰ পৰিৱেশ"
-  },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "উৎস ল’ড হোৱাত বিলম্ব হোৱা"
   },
@@ -13832,9 +14036,6 @@
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "INPৰ ভাব-বিনিময়লৈ যাওক।"
   },
-  "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
-    "message": "অন্য ডিভাইচসমূহ ছিমুলে’ট কৰক"
-  },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "টেবলেট"
   },
@@ -13854,7 +14055,7 @@
     "message": "URL: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
-    "message": "ডিভাইচ টুলবাৰটো {PH1}ত ব্যৱহাৰ কৰক।"
+    "message": "[ডিভাইচৰ টুলবাৰ](https://developer.chrome.com/docs/devtools/device-mode) ব্যৱহাৰ কৰক আৰু প্ৰকৃত ব্যৱহাৰকাৰীৰ পৰিৱেশ ছিমুলে’ট কৰিবলৈ থ্ৰ’টলিং কনফিগাৰ কৰক আৰু কাৰ্যদক্ষতাৰ অধিক সমস্যা চিনাক্ত কৰক।"
   },
   "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
     "message": "নিকৃষ্ট ক্লাষ্টাৰ"
@@ -14036,9 +14237,6 @@
   "panels/timeline/components/NetworkRequestDetails.ts | no": {
     "message": "নহয়"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | preview": {
-    "message": "পূৰ্বদৰ্শন"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "অগ্ৰাধিকাৰ"
   },
@@ -14090,8 +14288,32 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "প্ৰিছেট"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} - চুপাৰিছ কৰা"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "প্ৰকৃত ব্যৱহাৰকাৰীৰ পৰিবেশ ছিমুলে’ট কৰিবলৈ ছেটিং সলনি কৰাৰ কথা বিবেচনা কৰক"
+  },
+  "panels/timeline/components/OriginMap.ts | alreadyMapped": {
+    "message": "\"{PH1}\" ইতিমধ্যে এটা উৎপাদনৰ উৎসৰ সৈতে মেপ কৰা হৈছে।"
+  },
+  "panels/timeline/components/OriginMap.ts | developmentOrigin": {
+    "message": "বিকাশৰ উৎস"
+  },
+  "panels/timeline/components/OriginMap.ts | invalidOrigin": {
+    "message": "\"{PH1}\" মান্য উৎস বা URL নহয়।"
+  },
+  "panels/timeline/components/OriginMap.ts | pageHasNoData": {
+    "message": "Chrome UXৰ ৰিপ’ৰ্টত এই পৃষ্ঠাখনৰ বাবে পৰ্যাপ্ত পৰিমাণে বাস্তৱিক ব্যৱহাৰকাৰীৰ ডেটা নাই।"
+  },
+  "panels/timeline/components/OriginMap.ts | productionOrigin": {
+    "message": "উৎপাদনৰ উৎস"
+  },
   "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
     "message": "অন্তৰ্দৃষ্টি"
+  },
+  "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
+    "message": "অন্তৰ্দৃষ্টি: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "নিজৰ আৰু অন্যৰ বাবে এটা ট্ৰে’চ এন’টেট কৰক"
@@ -14141,11 +14363,29 @@
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} স্ক’ৰ"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
+    "message": "পাছ কৰা ইনছাইট ({PH1})"
+  },
+  "panels/timeline/components/TimelineSummary.ts | rangeSS": {
+    "message": "পৰিসৰ:  {PH1} – {PH2}"
+  },
+  "panels/timeline/components/TimelineSummary.ts | total": {
+    "message": "মুঠ"
+  },
   "panels/timeline/components/Utils.ts | fms": {
     "message": "{PH1}[মিছে]()"
   },
   "panels/timeline/components/Utils.ts | fs": {
     "message": "{PH1}[ছে]()"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
+    "message": "আনুমানিক ৰাহি: {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
+    "message": "আনুমানিক ৰাহি: {PH1} আৰু {PH2}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
+    "message": "{PH1}ৰ সবিশেষ চাওক"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "এনিমেশ্বন"
@@ -14159,6 +14399,12 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "লে’আউট স্থানান্তৰণৰ ক্লাষ্টাৰ @ {PH1}"
   },
+  "panels/timeline/components/insights/CLSCulprits.ts | noCulprits": {
+    "message": "লে’আউটৰ কোনো সমস্যা পোৱা নগ’ল"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "লে’আউটৰ কোনো শ্বিফ্ট নাই"
+  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "শীৰ্ষৰ লে’আউট স্থানান্তৰণৰ সমস্যা সৃষ্টিকাৰী"
   },
@@ -14170,6 +14416,9 @@
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "নিকৃষ্ট লে’আউট স্থানান্তৰণ ক্লাষ্টাৰ"
+  },
+  "panels/timeline/components/insights/DOMSize.ts | noLargeRenderTasks": {
+    "message": "DOMৰ আকাৰে কোনো ৰেণ্ডাৰিং কাৰ্যত প্ৰভাৱ পেলোৱা নাই"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "অন্তৰ্দৃষ্টিৰ পৰীক্ষা বিফল হৈছে: {PH1}"
@@ -14210,11 +14459,23 @@
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "অপচয় কৰা সময়"
   },
+  "panels/timeline/components/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "অপ্টিমাইজ কৰিব পৰা কোনো প্ৰতিচ্ছবি নাই"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "ফাইলৰ আকাৰ অপ্টিমাইজ কৰক"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | others": {
+    "message": "অন্য {PH1} টা"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "সময় অৱধি"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "ইনপুটৰ বিলম্ব"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "কোনো ভাব-বিনিময়ৰ চিনাক্ত কৰা হোৱা নাই"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "পৰ্যায়"
@@ -14237,6 +14498,12 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP ছবি আটাইতকৈ আগতীয়াকৈ আৰম্ভণিৰ সময়ৰ {PH1} পাছত ল’ড হৈছে।"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcp": {
+    "message": "কোনো LCP চিনাক্ত কৰা নাই"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "LCP কোনো প্ৰতিচ্ছবি নোহোৱাৰ বাবে কোনো LCP উৎস চিনাক্ত কৰা হোৱা নাই"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "অনুৰোধটো প্ৰাৰম্ভিক নথিত আনে বিচাৰি পাব পৰা"
   },
@@ -14245,6 +14512,9 @@
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "উপাদান ৰেণ্ডাৰ কৰাত বিলম্ব হোৱা"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | noLcp": {
+    "message": "কোনো LCP চিনাক্ত কৰা নাই"
   },
   "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
     "message": "LCPৰ %"
@@ -14264,11 +14534,17 @@
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "সময় অৱধি"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "এই নেভিগেশ্বনৰ বাবে কোনো ৰেণ্ডাৰ অৱৰোধৰ অনুৰোধ নাই"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "অনুৰোধ কৰক"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "পাৰ হোৱা সময়"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "CSS বাছনিকৰ্তাৰ কোনো ডেটা পোৱা নগ’ল। কাৰ্যদক্ষতাৰ পেনেলৰ ছেটিঙত CSS বাছনিকৰ্তাৰ পৰিসংখ্যা সক্ষম কৰিব লাগিব।"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
     "message": "মিলোৱাৰ প্ৰয়াস"
@@ -14290,6 +14566,9 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "স্থানান্তৰণৰ আকাৰ"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | noThirdParties": {
+    "message": "কোনো তৃতীয় পক্ষ বিচাৰি পোৱা নাই"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "প্ৰৱিষ্টিৰ মাজত থকা লিংক"
@@ -14410,6 +14689,9 @@
   },
   "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
     "message": "ইণ্টাৰছেকশ্বন গণনা কৰক"
+  },
+  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
+    "message": "কনছ’লৰ কাম কৰক"
   },
   "panels/timeline/utils/EntryStyles.ts | consoleTime": {
     "message": "কনছ’লৰ সময়"
@@ -14711,6 +14993,18 @@
   "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
     "message": "XHR readyStateৰ সলনি"
   },
+  "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
+    "message": "উৎসৰ মেপত ignoreList হিচাপে চিহ্নিত কৰিছে"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipAnonymousScripts": {
+    "message": "বেনামী লিপি"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipContentScripts": {
+    "message": "সমলৰ লিপি"
+  },
+  "panels/timeline/utils/IgnoreList.ts | unknown": {
+    "message": "অজ্ঞাত"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "অনুৰোধ কৰা সমল আৰু হে’ডাৰ দুয়োটাই অ’ভাৰৰাইড কৰা"
   },
@@ -14861,11 +15155,8 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
-  "panels/whats_new/ReleaseNoteView.ts | close": {
-    "message": "বন্ধ কৰক"
-  },
-  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
-    "message": "অধিক জানক"
+  "panels/whats_new/ReleaseNoteView.ts | seeFeatures": {
+    "message": "আটাইবোৰ নতুন সুবিধা চাওক"
   },
   "panels/whats_new/whats_new-meta.ts | bug": {
     "message": "বাগ"
@@ -14907,7 +15198,7 @@
     "message": "অধঃক্ৰমিক"
   },
   "ui/components/data_grid/DataGrid.ts | sortNone": {
-    "message": "একো নাই"
+    "message": "নাই"
   },
   "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
     "message": "{PH1} ঊৰ্ধ্বক্ৰমত সজোৱা হৈছে"
@@ -14918,10 +15209,7 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} অনুসৰি সজোৱাটা বাতিল কৰা হৈছে"
   },
-  "ui/components/dialogs/IconDialog.ts | close": {
-    "message": "বন্ধ কৰক"
-  },
-  "ui/components/dialogs/ShortcutDialog.ts | close": {
+  "ui/components/dialogs/Dialog.ts | close": {
     "message": "বন্ধ কৰক"
   },
   "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
@@ -15161,6 +15449,9 @@
   "ui/legacy/InspectorView.ts | panels": {
     "message": "পেনেল"
   },
+  "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
+    "message": "পুনৰ ল’ড কৰক"
+  },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "DevTools পুনৰ ল’ড কৰক"
   },
@@ -15301,6 +15592,12 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "অধিক টেব"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabLeft": {
+    "message": "বাওঁফাললৈ নিয়ক"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabRight": {
+    "message": "সোঁফাললৈ নিয়ক"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "পূৰ্বদৰ্শনৰ সুবিধা"
@@ -15741,7 +16038,7 @@
     "message": "এন’টেশ্বন মচক"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "ট্ৰেক কনফিগাৰ কৰক…"
+    "message": "ট্ৰেক কনফিগাৰ কৰক"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "{PH2}ৰ ভিতৰত এটা {PH1} অনুষ্ঠান বাছনি কৰা হ’ল। এই অনুষ্ঠানটোত ফ’কাছ কৰিবলৈ \"এণ্টাৰ\" টিপক।"
@@ -15797,11 +16094,14 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "মুঠ"
   },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
+    "message": "ক্লাছিক"
+  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | collectGarbage": {
     "message": "আৱৰ্জনা সংগ্ৰহ কৰক"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
-    "message": "ফ্লেইমচাৰ্ট মাউছ হুইলৰ কাৰ্য:"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
+    "message": "ফ্লেইমচাৰ্ট প্ৰাথমিক নেভিগেশ্বন:"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
     "message": "লাইভ মেম’ৰী আৱণ্টনৰ ঘোষণা লুকুৱাওক"
@@ -15809,14 +16109,11 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
     "message": "লাইভ মেম’ৰি আৱণ্টনৰ টোকা"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
-    "message": "স্ক্ৰ’ল কৰক"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
+    "message": "আধুনিক"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
     "message": "লাইভ মেম’ৰি আবণ্টনৰ এন’টেশ্বন দেখুৱাওক"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
-    "message": "জুম কৰক"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "নিৰ্দেশনা"

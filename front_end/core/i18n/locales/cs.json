@@ -152,6 +152,9 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "Přetrvávání"
   },
+  "core/common/SettingRegistration.ts | privacy": {
+    "message": "Ochrana soukromí"
+  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "Výpočet rozvržení"
   },
@@ -436,6 +439,12 @@
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Načítání bylo zrušeno, protože byla kontrolovaná stránka načtena znovu"
+  },
+  "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
+    "message": "Při načítání protokolu došlo k chybě"
+  },
+  "core/sdk/RehydratingConnection.ts | noHostWindow": {
+    "message": "Okno hostitele nelze najít"
   },
   "core/sdk/RehydratingConnection.ts | noSourceText": {
     "message": "Zdrojový text není k dispozici"
@@ -1121,6 +1130,9 @@
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Zadejte koncový bod sítě a DevTools se k němu připojí automaticky. Další informace najdete v {PH1}."
   },
+  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+    "message": "DevTools – Node.js: {PH1}"
+  },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Hlavní"
   },
@@ -1147,9 +1159,6 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Zástupný symbol (*) se při zpracování záhlaví Access-Control-Allow-Headers pro CORS nevztahuje na záhlaví Authorization."
-  },
-  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
-    "message": "Syntaxe :--customstatename je zastaralá. Použijte místo ní syntaxi :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Namísto selektoru -internal-media-controls-overlay-cast-button byste k vypnutí výchozí integrace funkce Cast měli použít atribut disableRemotePlayback."
@@ -1301,11 +1310,11 @@
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Posluchače události „unload“ jsou zastaralé a budou odstraněny."
   },
-  "generated/Deprecation.ts | V8GPUAdapter_RequestAdapterInfo_Method": {
-    "message": "Metoda requestAdapterInfo() rozhraní GPUAdapter je zastaralá, použijte místo ní atribut info rozhraní GPUAdapter."
-  },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Pokud v rozšířeních chcete používat technologii SharedArrayBuffer, je u nich potřeba aktivovat izolaci od jiných zdrojů. Viz https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
+    "message": "Limit WebGPU maxInterStageShaderComponents je zastaralý, použijte místo něj limit WebGPU maxInterStageShaderVariables."
   },
   "generated/Deprecation.ts | WebSQL": {
     "message": "Technologie Web SQL je zastaralá. Použijte SQLite WebAssembly nebo rozhraní Indexed Database"
@@ -1369,6 +1378,9 @@
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Akce LiveEdit selhala: {PH1}"
+  },
+  "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
+    "message": "Data z terénu jsou nakonfigurována pro jinou adresu URL, než je aktuální stránka."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Poměr pixelů zařízení musí být číslo nebo musí být prázdný."
@@ -1547,6 +1559,9 @@
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Compression Dictionary Transport"
   },
+  "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
+    "message": "Simulace nového zařízení po načtení stránky může mít vliv na LCP. Po simulaci nového zařízení znovu načtěte stránku, abyste získali přesná data LCP."
+  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymní>"
   },
@@ -1694,6 +1709,12 @@
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Viníci změny rozvržení"
   },
+  "models/trace/insights/DOMSize.ts | description": {
+    "message": "Velký model DOM povede k většímu využití paměti, prodloužení výpočtů stylů a náročným přeformátováváním rozvržení, což bude mít dopad na responzivnost stránky. [Jak předejít nadměrné velikosti modelu DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "models/trace/insights/DOMSize.ts | title": {
+    "message": "Optimalizujte velikost modelu DOM"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "První síťový požadavek je nejdůležitější.  Snižte jeho latenci tím, že nebudete používat přesměrování, zajistíte rychlou odezvu serveru a zapnete kompresi textu."
   },
@@ -1705,6 +1726,24 @@
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Zobrazení písma"
+  },
+  "models/trace/insights/ImageDelivery.ts | description": {
+    "message": "Snížení doby stahování obrázků může zlepšit vnímanou dobu načítání stránky a LCP. [Další informace o optimalizaci velikosti obrázku](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "models/trace/insights/ImageDelivery.ts | title": {
+    "message": "Zlepšete zobrazování obrázků"
+  },
+  "models/trace/insights/ImageDelivery.ts | useCompression": {
+    "message": "Zvýšení faktoru komprese obrázku by mohlo snížit jeho stahovanou velikost. (Odh. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useModernFormat": {
+    "message": "Stahovanou velikost tohoto obrázku by mohlo snížit použití moderního formátu (WebP, AVIF) nebo zvýšení komprese. (Odh. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
+    "message": "Tento obrázkový soubor je větší ({PH2}), než je pro zobrazované rozměry ({PH3}) potřeba. Použijte responzivní obrázky, abyste snížili stahovanou velikost obrázků. (Odh. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
+    "message": "Použití video formátů místo GIF může snížit stahovanou velikost animovaného obsahu. (Odh. {PH1})"
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Začněte zkoumat nejdelší fází. [Zpoždění lze minimalizovat](https://web.dev/articles/optimize-inp#optimize_interactions). Dobu zpracování můžete zkrátit [optimalizací nákladů na hlavní vlákno](https://web.dev/articles/optimize-long-tasks) (často jím bývá JavaScript)."
@@ -1743,10 +1782,10 @@
     "message": "Třetí strany"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Zobrazená oblast stránky není optimalizována pro mobily. Interakce klepnutím proto mohou být [zpožděny až o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Pokud zobrazovaná oblast není optimalizovaná pro mobily, mohou být interakce klepnutím [až o 300 ms zpožděny](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
   },
   "models/trace/insights/Viewport.ts | title": {
-    "message": "Zobrazovaná oblast není optimalizovaná pro mobilní zařízení"
+    "message": "Optimalizujte zobrazovanou oblast pro mobily"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(index)"
@@ -2170,6 +2209,87 @@
   },
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Zobrazit přístupnost"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
+    "message": "Chat byl smazán"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | clearChatHistory": {
+    "message": "Vymazat místní chaty"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
+    "message": "Smazat místní chat"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | help": {
+    "message": "Nápověda"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | history": {
+    "message": "Historie"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
+    "message": "Nový chat"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChatCreated": {
+    "message": "Byl vytvořen nový chat"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
+    "message": "Žádné předchozí konverzace"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
+    "message": "Odeslat zpětnou vazbu"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | settings": {
+    "message": "Nastavení"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
+    "message": "Pomoc od AI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
+    "message": "Zeptejte se AI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
+    "message": "Zapnout pomoc od AI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
+    "message": "Tato funkce není ve vaší oblasti dostupná."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
+    "message": "Toto nastavení spravuje administrátor."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
+    "message": "Zobrazit pomoc od AI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
+    "message": "Pokud chcete používat tuto funkci, vyberte v nastavení Nástrojů pro vývojáře jako jazyk angličtinu."
+  },
+  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
+    "message": "Pokud se na něco chcete zeptat, postupujte podle pokynů výše"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
+    "message": "Toto je experimentální funkce založená na umělé inteligenci a nemusí vždy fungovat správně."
+  },
+  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+    "message": "Informace o AI v Nástrojích pro vývojáře"
+  },
+  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
+    "message": "Tato funkce je k dispozici, jen když jste do Chromu přihlášeni pomocí svého účtu Google."
+  },
+  "panels/ai_assistance/components/ChatView.ts | offline": {
+    "message": "Zkontrolujte připojení k internetu a zkuste to znovu"
+  },
+  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+    "message": "Pomoc od AI v Nastavení"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+    "message": "Pokud chcete získat nápovědu ke stylům CSS, zapněte {PH1}"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+    "message": "Pokud chcete získat nápovědu ke stylům a síťovým požadavkům, zapněte {PH1}."
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Pokud chcete získat nápovědu ke stylům, síťovým požadavkům a souborům, zapněte {PH1}."
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Pokud chcete získat nápovědu ke stylům, síťovým požadavkům, výkonu a souborům, zapněte {PH1}."
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Náhled animace {PH1}"
@@ -4148,6 +4268,9 @@
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
     "message": "URL"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | automaticallyFellBackToPrefetch": {
+    "message": "(jako záložní se automaticky použilo předběžné načtení)"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
     "message": "Kliknutím prozkoumáte předběžně vykreslenou stránku"
   },
@@ -4159,6 +4282,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Spekulativní načtení selhalo."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFallbackToPrefetch": {
+    "message": "Spekulativní načtení se nezdařilo, ale návrat k předběžnému načtení se zdařil."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
     "message": "K pokusu o spekulativní načtení ještě nedošlo."
@@ -4243,6 +4369,9 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Akce"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | prefetchFallbackReady": {
+    "message": "Je připravena záložní možnost předběžného načtení"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
     "message": "Sada pravidel"
@@ -5621,6 +5750,12 @@
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Načíst vývojářské zdroje HTTP(S) přes kontrolovaný web, nikoliv přes Nástroje pro vývojáře"
   },
+  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
+    "message": "Žádné odpovídající zdroje"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# odpovídající zdroj}few{# odpovídající zdroje}many{# odpovídajícího zdroje}other{# odpovídajících zdrojů}}"
+  },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# zdroj}few{# zdroje}many{# zdroje}other{# zdrojů}}"
   },
@@ -5713,6 +5848,9 @@
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Přepnout stav prvku"
+  },
+  "panels/elements/ElementsPanel.ts | adornerSettings": {
+    "message": "Nastavení odznaků"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Vypočteno"
@@ -5875,9 +6013,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<hodnota je na úpravu příliš velká>"
-  },
-  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
-    "message": "Nastavení odznaku…"
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM stránky"
@@ -6109,12 +6244,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorováno"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
-    "message": "Zavřít"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Ukázat odznaky"
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "Přejít na kotevní uzel"
@@ -6381,7 +6510,7 @@
     "message": "Šířka"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "Míra přiblížení"
+    "message": "Přiblížit"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Úplnou výšku zapnete dvojitým kliknutím"
@@ -6503,6 +6632,9 @@
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(otevře se na nové kartě)"
   },
+  "panels/explain/components/ConsoleInsight.ts | references": {
+    "message": "Zdroje a související obsah"
+  },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Související kód"
   },
@@ -6543,94 +6675,13 @@
     "message": "Nechte si toto upozornění vysvětlit"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Tato funkce není ve vaší oblasti dostupná"
+    "message": "Tato funkce není ve vaší oblasti dostupná."
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "Toto nastavení spravuje administrátor"
+    "message": "Toto nastavení spravuje administrátor."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Pokud chcete používat tuto funkci, vyberte v nastavení Nástrojů pro vývojáře jako jazyk angličtinu"
-  },
-  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
-    "message": "Chat byl smazán"
-  },
-  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
-    "message": "Vymazat historii chatu"
-  },
-  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
-    "message": "Smazat chat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | help": {
-    "message": "Nápověda"
-  },
-  "panels/freestyler/FreestylerPanel.ts | history": {
-    "message": "Historie"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChat": {
-    "message": "Nový chat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
-    "message": "Byl vytvořen nový chat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
-    "message": "Žádné předchozí konverzace"
-  },
-  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
-    "message": "Odeslat zpětnou vazbu"
-  },
-  "panels/freestyler/FreestylerPanel.ts | settings": {
-    "message": "Nastavení"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
-    "message": "Pokud se na něco chcete zeptat, postupujte podle pokynů výše"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
-    "message": "Toto je experimentální funkce založená na umělé inteligenci a nemusí vždy fungovat správně."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
-    "message": "Informace o AI v Nástrojích pro vývojáře"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
-    "message": "Tato funkce je k dispozici, jen když jste do Chromu přihlášeni pomocí svého účtu Google."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
-    "message": "Zkontrolujte připojení k internetu a zkuste to znovu"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
-    "message": "Pomoc od AI v Nastavení"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
-    "message": "Pokud chcete získat nápovědu ke stylům CSS, zapněte {PH1}"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
-    "message": "Pokud chcete získat nápovědu ke stylům a síťovým požadavkům, zapněte {PH1}."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Pokud chcete získat nápovědu ke stylům, síťovým požadavkům a souborům, zapněte {PH1}."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Pokud chcete získat nápovědu ke stylům, síťovým požadavkům, výkonu a souborům, zapněte {PH1}."
-  },
-  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
-    "message": "Pomoc od AI"
-  },
-  "panels/freestyler/freestyler-meta.ts | askAi": {
-    "message": "Zeptejte se AI"
-  },
-  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
-    "message": "Zapnout pomoc od AI"
-  },
-  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
-    "message": "Tato funkce není ve vaší oblasti dostupná"
-  },
-  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
-    "message": "Toto nastavení spravuje administrátor"
-  },
-  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
-    "message": "Zobrazit pomoc od AI"
-  },
-  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
-    "message": "Pokud chcete používat tuto funkci, vyberte v nastavení Nástrojů pro vývojáře jako jazyk angličtinu"
+    "message": "Pokud chcete používat tuto funkci, vyberte v nastavení Nástrojů pro vývojáře jako jazyk angličtinu."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Blokovaný zdroj"
@@ -7769,9 +7820,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
     "message": "Je povoleno omezení CPU"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1}× zpomalení"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Překročení výchozí hodnoty může snížit výkon systému."
   },
@@ -7784,11 +7832,11 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "Přepsat hodnotu, kterou uvádí navigator.hardwareConcurrency"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "Bez omezení"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Offline"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
+    "message": "{PH1} – doporučeno"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "Resetovat na výchozí hodnotu"
@@ -7808,9 +7856,6 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
     "message": "Zpomalení rychlého 3G a 4x CPU"
   },
-  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "Mobily nižší třídy"
-  },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "Mobily střední třídy"
   },
@@ -7818,7 +7863,7 @@
     "message": "Nejste připojeni k internetu"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "Bez omezení"
+    "message": "Bez omezení procesoru a sítě"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
     "message": "Zpomalení pomalé 3G a 6x CPU"
@@ -8587,6 +8632,9 @@
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Nemazat protokol při opětovném načtení stránky / navigaci"
+  },
+  "panels/network/NetworkPanel.ts | exportHar": {
+    "message": "Exportovat HAR (buď bez citlivých dat, nebo s nimi)"
   },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
     "message": "Exportovat HAR (bez citlivých dat)…"
@@ -10520,11 +10568,65 @@
   "panels/search/SearchView.ts | searching": {
     "message": "Vyhledávání…"
   },
+  "panels/security/CookieControlsView.ts | cardDisclaimer": {
+    "message": "Jen když jsou otevřené nástroje pro vývojáře"
+  },
+  "panels/security/CookieControlsView.ts | cardTitle": {
+    "message": "Dočasně omezit soubory cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
+    "message": "Přístup tohoto webu k souborům cookie třetích stran spravuje vaše organizace"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
+    "message": "Toto nastavení spravuje vaše organizace"
+  },
+  "panels/security/CookieControlsView.ts | exceptions": {
+    "message": "Výjimky"
+  },
+  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
+    "message": "Situace, ve kterých se uděluje přístup k souborům cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriod": {
+    "message": "dodatečné lhůtě"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
+    "message": "Pokud je tento web nebo web na něm vložený zaregistrován k {PH1}, může přistupovat k souborům cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
+    "message": "Dodatečná lhůta pro soubory cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | heuristicExplanation": {
+    "message": "V {PH1}, jako jsou vyskakovací okna nebo přesměrování, může web vložený na tento web přistupovat k souborům cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | heuristicTitle": {
+    "message": "Výjimka založená na heuristice"
+  },
+  "panels/security/CookieControlsView.ts | scenarios": {
+    "message": "předdefinovaných situacích"
+  },
+  "panels/security/CookieControlsView.ts | siteReloadMessage": {
+    "message": "Pokud chcete použít aktualizované ovládací prvky, znovu načtěte stránku"
+  },
+  "panels/security/CookieControlsView.ts | viewDetails": {
+    "message": "Zobrazit podrobnosti"
+  },
+  "panels/security/CookieControlsView.ts | viewExplanation": {
+    "message": "Vyzkoušejte, jak bude tento web fungovat uživatelům, kteří v Chromu omezí soubory cookie třetích stran"
+  },
+  "panels/security/CookieControlsView.ts | viewTitle": {
+    "message": "Ovládací prvky"
+  },
+  "panels/security/CookieReportView.ts | adCookieTypeString": {
+    "message": "Reklama"
+  },
   "panels/security/CookieReportView.ts | allowed": {
     "message": "Povoleno"
   },
   "panels/security/CookieReportView.ts | allowedByException": {
     "message": "Povoleno výjimkou"
+  },
+  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
+    "message": "Analýzy"
   },
   "panels/security/CookieReportView.ts | blocked": {
     "message": "Zablokováno"
@@ -10532,11 +10634,104 @@
   "panels/security/CookieReportView.ts | body": {
     "message": "Soubory cookie třetích stran, které mohou uživatelé v nastavení omezit. Pokud uživatel omezí soubory cookie, tento web mu nemusí fungovat."
   },
+  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
+    "message": "CDN"
+  },
+  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
+    "message": "Poskytovatel souhlasu"
+  },
+  "panels/security/CookieReportView.ts | contentCookieTypeString": {
+    "message": "Obsah"
+  },
+  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
+    "message": "Úspěch zákazníka"
+  },
+  "panels/security/CookieReportView.ts | domain": {
+    "message": "Doména"
+  },
+  "panels/security/CookieReportView.ts | emptyReport": {
+    "message": "Nezůstal ani drobek"
+  },
+  "panels/security/CookieReportView.ts | emptyReportExplanation": {
+    "message": "Nebyly zjištěny žádné problémy se soubory cookie třetích stran"
+  },
+  "panels/security/CookieReportView.ts | gitHubResource": {
+    "message": "Přečtěte si {PH1} od webu třetí strany."
+  },
+  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
+    "message": "GitHub"
+  },
+  "panels/security/CookieReportView.ts | gracePeriod": {
+    "message": "Zkontrolujte {PH1}. Je aktivní výjimečná dodatečná lhůta."
+  },
+  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
+    "message": "Dodatečná lhůta"
+  },
+  "panels/security/CookieReportView.ts | guidance": {
+    "message": "pokyny"
+  },
+  "panels/security/CookieReportView.ts | heuristics": {
+    "message": "Později bude potřeba provést akci. Výjimka založená na heuristice je aktivní"
+  },
+  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
+    "message": "Heuristika"
+  },
+  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
+    "message": "Hosting"
+  },
   "panels/security/CookieReportView.ts | learnMoreLink": {
     "message": "Další informace o používání souborů cookie třetích stran"
   },
+  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
+    "message": "Marketing"
+  },
+  "panels/security/CookieReportView.ts | name": {
+    "message": "Název"
+  },
+  "panels/security/CookieReportView.ts | other": {
+    "message": "Další informace najdete na webu třetí strany"
+  },
+  "panels/security/CookieReportView.ts | otherCookieTypeString": {
+    "message": "Jiné"
+  },
+  "panels/security/CookieReportView.ts | otherInsightTypeString": {
+    "message": "Jiné"
+  },
+  "panels/security/CookieReportView.ts | platform": {
+    "message": "Platforma"
+  },
+  "panels/security/CookieReportView.ts | recommendation": {
+    "message": "Doporučení"
+  },
+  "panels/security/CookieReportView.ts | report": {
+    "message": "Přehled souborů cookie třetích stran"
+  },
+  "panels/security/CookieReportView.ts | reportedIssues": {
+    "message": "nahlášené problémy"
+  },
+  "panels/security/CookieReportView.ts | socialCookieTypeString": {
+    "message": "Sociální sítě"
+  },
+  "panels/security/CookieReportView.ts | status": {
+    "message": "Stav"
+  },
+  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
+    "message": "Správce značek"
+  },
   "panels/security/CookieReportView.ts | title": {
     "message": "Soubory cookie třetích stran"
+  },
+  "panels/security/CookieReportView.ts | type": {
+    "message": "Typ"
+  },
+  "panels/security/CookieReportView.ts | unknown": {
+    "message": "Neznámé"
+  },
+  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
+    "message": "Funkce"
+  },
+  "panels/security/CookieReportView.ts | videoCookieTypeString": {
+    "message": "Video"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} s {PH2}"
@@ -10841,6 +11036,9 @@
   "panels/security/SecurityPanelSidebar.ts | cookieReport": {
     "message": "Soubory cookie třetích stran"
   },
+  "panels/security/SecurityPanelSidebar.ts | flagControls": {
+    "message": "Ovládací prvky"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Hlavní původní doména"
   },
@@ -11117,17 +11315,20 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Uživatel aktivní, obrazovka uzamčena"
   },
-  "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "V závislosti na vaší správě účtu Google a/nebo oblasti může společnost Google od shromažďování dat upustit. Funkce dostupné spravovaným uživatelům se mohou lišit v závislosti na nastavení organizace."
-  },
   "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "Tato funkce je dostupná pouze uživatelům starším 18 let"
+    "message": "Tato funkce je dostupná pouze uživatelům starším 18 let."
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Buďte produktivnější díky AI"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Zpráva z konzole, související trasování zásobníku, související zdrojový kód a související síťová záhlaví se odesílají do Googlu, aby vygeneroval vysvětlení. Tato data mohou vidět kontroloři, kteří tuto funkci pomáhají zlepšovat."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollection": {
+    "message": "V závislosti na vaší oblasti může společnost Google od shromažďování dat upustit."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
+    "message": "Váš obsah nebudou používat kontroloři k vylepšování umělé inteligence. Vaše organizace může tato nastavení kdykoli změnit. V závislosti na vaší správě účtu Google a/nebo oblasti může společnost Google od shromažďování dat upustit."
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Zapnout pomoc od AI"
@@ -11189,9 +11390,6 @@
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "Získejte návrhy a ukázky kódu k řešení těchto problémů"
   },
-  "panels/settings/AISettingsTab.ts | retainData": {
-    "message": "Údaje o využití budou uchovávány po dobu až 18 měsíců a uloženy tak, aby Google nemohl zjistit, kdo je poskytl."
-  },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
     "message": "Tyto funkce odesílají relevantní data do Googlu. Google tato data a zpětnou vazbu shromažďuje za účelem zlepšování svých produktů a služeb s pomocí kontrolorů. Nesdílejte citlivé ani osobní údaje."
   },
@@ -11217,7 +11415,7 @@
     "message": "Přidejte pravidlo s regulárním výrazem pro adresu URL skriptu"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "Přidat pravidlo s regulárním výrazem…"
+    "message": "Přidat pravidlo s regulárním výrazem"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Známé skripty třetích stran z map zdrojů"
@@ -11247,7 +11445,7 @@
     "message": "Když je tato možnost zapnutá, přeskakuje ladicí program skripty na seznamu ignorovaných a ignoruje výjimky, které mají vliv pouze na ně, a odpovídající položky se na panelu Výkon sbalí."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignorovat skripty, jejichž názvy odpovídají vzoru {PH1}"
+    "message": "Ignorovat skripty, jejichž názvy odpovídají výrazu {PH1}"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
     "message": "Další informace"
@@ -11259,7 +11457,7 @@
     "message": "Pravidlo již existuje"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "Pravidlo nemůže být prázdné"
+    "message": "Pravidlo nesmí být prázdné"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Pravidlo musí být platný regulární výraz"
@@ -11331,7 +11529,7 @@
     "message": "Další informace"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "Upozornění: Filtru neodpovídají žádné experimenty"
+    "message": "Filtru neodpovídají žádné experimenty"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Změnilo se jedno nebo více nastavení, což vyžaduje opětovné načtení, aby se změny projevily."
@@ -11370,7 +11568,7 @@
     "message": "Pokud toto nastavení chcete zapnout, musíte aktivovat synchronizaci Chromu."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Přidat vlastní zařízení…"
+    "message": "Přidat vlastní zařízení"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "Vlastní zařízení"
@@ -12599,9 +12797,6 @@
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | Dms": {
-    "message": "{PH1} ms"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
     "message": "Vše"
   },
@@ -12666,7 +12861,7 @@
     "message": "Hlavní — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
-    "message": "Na seznamu ignorovaných"
+    "message": "Na seznamu ignorovaných ({rule})"
   },
   "panels/timeline/ThreadAppender.ts | raster": {
     "message": "Rastr"
@@ -12724,9 +12919,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Profiler vykreslování"
-  },
-  "panels/timeline/TimelineDetailsView.ts | rangeSS": {
-    "message": "Rozsah:  {PH1} – {PH2}"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
     "message": "Statistiky selektorů"
@@ -12788,32 +12980,20 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Aktuální relace: {PH1} {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
+    "message": "{PH1}× zpomalení"
+  },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Živé metriky"
   },
-  "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
-    "message": "(žádné záznamy)"
+  "panels/timeline/TimelineHistoryManager.ts | nodeLandingPageTitle": {
+    "message": "Nový záznam"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} č. {PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Výběr relace časové osy"
-  },
-  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Po pořízení záznamu vyberte přetažením oblast zájmu. Poté časovou osu přibližujte a posouvejte kolečkem myši nebo klávesami {PH1}. {PH2}"
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Nový záznam zahájíte kliknutím na tlačítko záznamu {PH1} nebo stisknutím {PH2}."
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Pokud chcete zaznamenat načítání stránky, klikněte na tlačítko opětovného načtení {PH1} nebo stiskněte {PH2}."
-  },
-  "panels/timeline/TimelineLandingPage.ts | learnmore": {
-    "message": "Další informace"
-  },
-  "panels/timeline/TimelineLandingPage.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Data časové osy v nesprávném formátu: {PH1}"
@@ -12862,6 +13042,9 @@
   },
   "panels/timeline/TimelinePanel.ts | description": {
     "message": "Popis"
+  },
+  "panels/timeline/TimelinePanel.ts | dimThirdParties": {
+    "message": "Ztlumit třetí strany"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Zakázat ukázky JavaScriptu"
@@ -12923,9 +13106,6 @@
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "Síťové podmínky"
   },
-  "panels/timeline/TimelinePanel.ts | performanceExtension": {
-    "message": "Data rozšíření"
-  },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "Zpracováno"
   },
@@ -12956,6 +13136,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Výběr byl zrušen"
   },
+  "panels/timeline/TimelinePanel.ts | showCustomtracks": {
+    "message": "Zobrazit vlastní dráhy"
+  },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Zobrazit data přidaná rozšířeními panelu Výkon"
   },
@@ -12971,9 +13154,6 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "Postranní panel výkonu je zobrazen"
   },
-  "panels/timeline/TimelinePanel.ts | ssec": {
-    "message": "{PH1} s"
-  },
   "panels/timeline/TimelinePanel.ts | status": {
     "message": "Stav"
   },
@@ -12985,6 +13165,18 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Čas"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
+    "message": "Rychlé přiblížení/oddálení časové osy"
+  },
+  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
+    "message": "Časová osa vpravo/vlevo"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
+    "message": "Časová osa nahoru/dolů"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
+    "message": "Přiblížení/oddálení časové osy"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Zkopírovat tabulku"
@@ -13033,9 +13225,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Režie rozšíření prohlížeče Chrome]"
-  },
-  "panels/timeline/TimelineTreeView.ts | fms": {
-    "message": "{PH1} ms"
   },
   "panels/timeline/TimelineTreeView.ts | groupBy": {
     "message": "Seskupit podle"
@@ -13541,11 +13730,11 @@
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "Omezení procesoru: {PH1}"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
-    "message": "{PH1}× zpomalení"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – doporučeno"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | noThrottling": {
-    "message": "Bez omezení"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Zvažte změnu nastavení k simulaci prostředí skutečných uživatelů"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Vynucené přeformátování"
@@ -13577,14 +13766,8 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protokol WebSocket"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | add": {
-    "message": "Přidat"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Pokročilé"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
-    "message": "Zdroj {PH1} je už namapován jako produkční."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Zrušit"
@@ -13594,15 +13777,6 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Konfigurace načítání dat z terénu"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
-    "message": "Smazat"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
-    "message": "Zdroj pro vývoj"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
-    "message": "Zdroj pro vývoj: {PH1}"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Přehled uživatelských dojmů pro Chrome nemá pro tuto stránku k dispozici dostatek dat o rychlosti v reálném světě."
@@ -13631,12 +13805,6 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Prohlášení o ochraně soukromí"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
-    "message": "Produkční zdroj"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
-    "message": "Produkční zdroj: {PH1}"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Nastavit"
   },
@@ -13645,6 +13813,39 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Když jsou otevřené nástroje DevTools, odesílají se navštívené adresy URL do Googlu k získání dat z terénu. Tyto požadavky nejsou spojeny s vaším účtem Google."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
+    "message": "Přidejte pravidlo s regulárním výrazem pro adresu URL skriptu"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreList": {
+    "message": "Seznam ignorovaných"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreListDescription": {
+    "message": "Přidejte pravidla s regulárními výrazy k odstranění odpovídajících skriptů z grafu flamechart."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchNewRegex": {
+    "message": "Ignorovat skripty, jejichž názvy odpovídají novému regulárnímu výrazu"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
+    "message": "Ignorovat skripty, jejichž názvy odpovídají výrazu {regex}"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
+    "message": "Pravidlo již existuje"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
+    "message": "Toto pravidlo už existuje, ale je vypnuté. Uložením této hodnoty ho znovu zapnete"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
+    "message": "Pravidlo nesmí být prázdné"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
+    "message": "Pravidlo musí být platný regulární výraz"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
+    "message": "Odstranit regulární výraz: {regex}"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
+    "message": "Zobrazit dialogové okno nastavení seznamu ignorovaných"
   },
   "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
     "message": "Zpoždění vstupu"
@@ -13784,6 +13985,12 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Další kroky"
   },
+  "panels/timeline/components/LiveMetricsView.ts | nodeClickToRecord": {
+    "message": "Zaznamenejte časovou osu výkonu procesu připojeného procesu Node."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | nodePerformanceTimeline": {
+    "message": "Výkon procesu Node"
+  },
   "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
     "message": "Nedostatek dat"
   },
@@ -13808,9 +14015,6 @@
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Doba zpracovávání"
   },
-  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
-    "message": "Skutečná uživatelská prostředí"
-  },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Zpoždění načtení zdroje"
   },
@@ -13832,9 +14036,6 @@
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Přejít na interakci INP."
   },
-  "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
-    "message": "simulovat různá zařízení"
-  },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tablet"
   },
@@ -13854,7 +14055,7 @@
     "message": "URL: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
-    "message": "Pomocí panelu nástrojů zařízení můžete {PH1}."
+    "message": "Použijte [panel nástrojů zařízení](https://developer.chrome.com/docs/devtools/device-mode) a nakonfigurujte omezení, abyste simulovali skutečná uživatelská prostředí a odhalili další problémy s výkonem."
   },
   "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
     "message": "Nejhorší klastr"
@@ -14036,9 +14237,6 @@
   "panels/timeline/components/NetworkRequestDetails.ts | no": {
     "message": "Ne"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | preview": {
-    "message": "Náhled"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Priorita"
   },
@@ -14090,8 +14288,32 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Předvolby"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} – doporučeno"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Zvažte změnu nastavení k simulaci prostředí skutečných uživatelů"
+  },
+  "panels/timeline/components/OriginMap.ts | alreadyMapped": {
+    "message": "Zdroj {PH1} je už namapován jako produkční."
+  },
+  "panels/timeline/components/OriginMap.ts | developmentOrigin": {
+    "message": "Zdroj pro vývoj"
+  },
+  "panels/timeline/components/OriginMap.ts | invalidOrigin": {
+    "message": "„{PH1}“ není platný zdroj ani adresa URL."
+  },
+  "panels/timeline/components/OriginMap.ts | pageHasNoData": {
+    "message": "Chrome UX Report nemá pro tuto stránku dostatek dat od skutečných uživatelů."
+  },
+  "panels/timeline/components/OriginMap.ts | productionOrigin": {
+    "message": "Produkční zdroj"
+  },
   "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
     "message": "Statistiky"
+  },
+  "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
+    "message": "Doporučení: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Opatřete trasování pro sebe i ostatní poznámkami"
@@ -14141,11 +14363,29 @@
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} skóre"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
+    "message": "Splněné statistiky ({PH1})"
+  },
+  "panels/timeline/components/TimelineSummary.ts | rangeSS": {
+    "message": "Rozsah:  {PH1} – {PH2}"
+  },
+  "panels/timeline/components/TimelineSummary.ts | total": {
+    "message": "Celkem"
+  },
   "panels/timeline/components/Utils.ts | fms": {
     "message": "{PH1}[ms]()"
   },
   "panels/timeline/components/Utils.ts | fs": {
     "message": "{PH1}[s]()"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
+    "message": "Odhadovaná úspora: {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
+    "message": "Odh. úspora: {PH1} a {PH2}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
+    "message": "Zobrazit podrobnosti o: {PH1}"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "Animace"
@@ -14159,6 +14399,12 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "Klastr změn rozvržení @ {PH1}"
   },
+  "panels/timeline/components/insights/CLSCulprits.ts | noCulprits": {
+    "message": "Nepodařilo se zjistit žádné viníky změny rozvržení"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "Žádné změny rozvržení"
+  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "Hlavní viníci změn rozvržení"
   },
@@ -14170,6 +14416,9 @@
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Nejhorší klastr změn rozvržení"
+  },
+  "panels/timeline/components/insights/DOMSize.ts | noLargeRenderTasks": {
+    "message": "Velikost modelu DOM nemá vliv na žádné úlohy vykreslování"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "Kontrola statistik nebyla úspěšně splněna: {PH1}"
@@ -14210,11 +14459,23 @@
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Ztracený čas"
   },
+  "panels/timeline/components/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "Žádné optimalizovatelné obrázky"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Optimalizujte velikost souboru"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | others": {
+    "message": "Ještě {PH1}"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Trvání"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "Zpoždění vstupu"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "Nebyly zjištěny žádné interakce"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "Fáze"
@@ -14237,6 +14498,12 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "Obrázek spojený s LCP se načetl {PH1} po prvním počátečním bodu."
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcp": {
+    "message": "Metrika LCP nebyla zjištěna"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "Zdroj spojený s LCP nebyl zjištěn, protože LCP není spojeno s obrázkem"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "Požadavek lze zjistit v původním dokumentu"
   },
@@ -14245,6 +14512,9 @@
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Zpoždění vykreslení prvku"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | noLcp": {
+    "message": "Metrika LCP nebyla zjištěna"
   },
   "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
     "message": "% LCP"
@@ -14264,11 +14534,17 @@
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "Trvání"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "U této navigace nebyly zjištěny žádné požadavky blokující vykreslování"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Požadavek"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Uplynulý čas"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "Nebyla nalezena žádná data selektorů CSS. Statistiky selektorů CSS je potřeba zapnout v nastavení panelu výkonu."
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
     "message": "Pokusy o nalezení shody"
@@ -14290,6 +14566,9 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "Velikost přenosu"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | noThirdParties": {
+    "message": "Nebyly nalezeny žádné třetí strany"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Propojení mezi položkami"
@@ -14411,6 +14690,9 @@
   "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
     "message": "Výpočet průsečíků"
   },
+  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
+    "message": "Spuštění úlohy konzole"
+  },
   "panels/timeline/utils/EntryStyles.ts | consoleTime": {
     "message": "Čas konzole"
   },
@@ -14481,7 +14763,7 @@
     "message": "Spuštění zpětného volání při nečinnosti"
   },
   "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
-    "message": "První vykreslení obsahu"
+    "message": "First Contentful Paint"
   },
   "panels/timeline/utils/EntryStyles.ts | firstPaint": {
     "message": "První vykreslení"
@@ -14523,7 +14805,7 @@
     "message": "Rámec JavaScriptu"
   },
   "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Vykreslení největšího obsahu"
+    "message": "Largest Contentful Paint"
   },
   "panels/timeline/utils/EntryStyles.ts | layerize": {
     "message": "Rozdělení na vrstvy"
@@ -14711,6 +14993,18 @@
   "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
     "message": "Změna vlastnosti readyState požadavku XHR"
   },
+  "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
+    "message": "Označeno v mapě zdrojů pomocí seznamu ignorovaných"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipAnonymousScripts": {
+    "message": "Anonymní skript"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipContentScripts": {
+    "message": "Obsahový skript"
+  },
+  "panels/timeline/utils/IgnoreList.ts | unknown": {
+    "message": "Neznámé"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Obsah požadavku i záhlaví jsou přepsány"
   },
@@ -14861,11 +15155,8 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
-  "panels/whats_new/ReleaseNoteView.ts | close": {
-    "message": "Zavřít"
-  },
-  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
-    "message": "Další informace"
+  "panels/whats_new/ReleaseNoteView.ts | seeFeatures": {
+    "message": "Zobrazit všechny nové funkce"
   },
   "panels/whats_new/whats_new-meta.ts | bug": {
     "message": "chyba"
@@ -14918,10 +15209,7 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Řazení podle sloupce {PH1} bylo zrušeno"
   },
-  "ui/components/dialogs/IconDialog.ts | close": {
-    "message": "Zavřít"
-  },
-  "ui/components/dialogs/ShortcutDialog.ts | close": {
+  "ui/components/dialogs/Dialog.ts | close": {
     "message": "Zavřít"
   },
   "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
@@ -15161,6 +15449,9 @@
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Panely"
   },
+  "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
+    "message": "Načíst znovu"
+  },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Znovu načíst DevTools"
   },
@@ -15301,6 +15592,12 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "Další karty"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabLeft": {
+    "message": "Přesunout doleva"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabRight": {
+    "message": "Přesunout doprava"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Náhled funkce"
@@ -15741,7 +16038,7 @@
     "message": "Odstranit poznámky"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "Konfigurovat kanály…"
+    "message": "Nakonfigurovat dráhy"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "Je vybrána událost {PH1} ve skupině {PH2}. Pokud na ni chcete přejít, stiskněte Enter."
@@ -15797,11 +16094,14 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "Celkem"
   },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
+    "message": "Klasické"
+  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | collectGarbage": {
     "message": "Uvolnit paměť"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
-    "message": "Akce kolečka myši v grafu Flamechart:"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
+    "message": "Navigace v grafu flamechart:"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
     "message": "Skrýt aktivní poznámky k alokaci paměti"
@@ -15809,14 +16109,11 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
     "message": "Aktivní poznámky k alokaci paměti"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
-    "message": "Posunutí"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
+    "message": "Moderní"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
     "message": "Zobrazit aktivní poznámky k přidělování paměti"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
-    "message": "Míra přiblížení"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Příkaz"

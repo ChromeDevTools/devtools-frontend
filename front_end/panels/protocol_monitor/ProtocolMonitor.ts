@@ -747,9 +747,10 @@ export class InfoWidget extends UI.Widget.VBox {
     selectedTab: 'request'|'response'|undefined,
   }|null): void {
     if (!data || !data.request || !data.response || !data.target) {
-      this.tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
       this.tabbedPane.changeTabView(
-          'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
+          'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), ''));
+      this.tabbedPane.changeTabView(
+          'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), ''));
       return;
     }
 

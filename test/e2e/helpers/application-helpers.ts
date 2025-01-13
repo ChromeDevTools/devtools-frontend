@@ -67,7 +67,7 @@ export async function navigateToStorage() {
 
 export async function navigateToOpenedWindows() {
   await doubleClickTreeItem('[aria-label="Opened Windows"]');
-  await waitFor('.empty-view');
+  await waitFor('.empty-state');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame > TreeItem: opened-windows'),
     veImpressionsUnder(
@@ -82,7 +82,7 @@ export async function navigateToWebWorkers() {
       [veImpression('TreeItem', 'web-workers')])]);
   await doubleClickTreeItem(WEB_WORKERS_SELECTOR);
   await waitFor(`${WEB_WORKERS_SELECTOR} + ol li:first-child`);
-  await waitFor('.empty-view');
+  await waitFor('.empty-state');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame > TreeItem: web-workers'),
     veImpressionsUnder(
@@ -96,7 +96,7 @@ export async function navigateToFrameServiceWorkers(frameName: string) {
 
   await doubleClickTreeItem(SERVICE_WORKERS_SELECTOR);
   await waitFor(`${SERVICE_WORKERS_SELECTOR} + ol li:first-child`);
-  await waitFor('.empty-view');
+  await waitFor('.empty-state');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame > TreeItem: service-workers'),
     veImpressionsUnder(

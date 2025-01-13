@@ -36,7 +36,7 @@ describeWithEnvironment('DataGridWithPreview', () => {
       fakeFn: async (key: string, value: string) => {
         assert.strictEqual(key, expectedKey);
         assert.strictEqual(value, expectedValue);
-        return new UI.EmptyWidget.EmptyWidget(`${key}:${value}`);
+        return new UI.EmptyWidget.EmptyWidget(`${key}:${value}`, '');
       },
     });
   };

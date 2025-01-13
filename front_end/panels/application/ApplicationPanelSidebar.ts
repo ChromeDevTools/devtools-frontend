@@ -1116,7 +1116,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     const icon = IconButton.Icon.create('document');
     this.setLeadingIcons([icon]);
     self.onInvokeElement(this.listItemElement, this.onInvoke.bind(this));
-    const emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected));
+    const emptyView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noManifestDetected), '');
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     const reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
     this.view = new AppManifestView(emptyView, reportView, new Common.Throttler.Throttler(1000));
@@ -1856,13 +1856,13 @@ export class StorageCategoryView extends UI.Widget.VBox {
     super();
 
     this.element.classList.add('storage-view');
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('');
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
     this.linkElement = null;
     this.emptyWidget.show(this.element);
   }
 
-  setText(text: string): void {
-    this.emptyWidget.text = text;
+  setHeader(header: string): void {
+    this.emptyWidget.header = header;
   }
 
   setLink(link: Platform.DevToolsPath.UrlString|null): void {
@@ -2364,7 +2364,8 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
       if (view) {
         return view;
       }
-      return new UI.EmptyWidget.EmptyWidget(this.resource.url);
+
+      return new UI.EmptyWidget.EmptyWidget('', this.resource.url);
     });
     return this.previewPromise;
   }

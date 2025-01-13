@@ -54,10 +54,6 @@ const UIStrings = {
    */
   explainLocalOverrides: 'Override network requests and web content locally to mock remote resources',
   /**
-   *@description Text that is usually a hyperlink to more documentation
-   */
-  learnMore: 'Learn more',
-  /**
    *@description Tooltip text that appears when hovering over the largeicon clear button in the Sources Navigator of the Sources panel
    */
   clearConfiguration: 'Clear configuration',
@@ -176,14 +172,9 @@ export class NetworkNavigatorView extends NavigatorView {
 export class FilesNavigatorView extends NavigatorView {
   constructor() {
     super('navigator-files');
-    const placeholder = new UI.EmptyWidget.EmptyWidget('');
+    const placeholder = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.explainWorkspace));
     this.setPlaceholder(placeholder);
-    placeholder.appendParagraph().appendChild(UI.Fragment.html`
-  <div>${i18nString(UIStrings.explainWorkspace)}</div><br />
-  ${
-        UI.XLink.XLink.create(
-            'https://goo.gle/devtools-workspace', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
-  `);
+    placeholder.appendLink('https://goo.gle/devtools-workspace' as Platform.DevToolsPath.UrlString);
 
     const toolbar = document.createElement('devtools-toolbar');
     toolbar.classList.add('navigator-toolbar');
@@ -218,14 +209,9 @@ export class OverridesNavigatorView extends NavigatorView {
   private readonly toolbar: UI.Toolbar.Toolbar;
   private constructor() {
     super('navigator-overrides');
-    const placeholder = new UI.EmptyWidget.EmptyWidget('');
+    const placeholder = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.explainLocalOverrides));
     this.setPlaceholder(placeholder);
-    placeholder.appendParagraph().appendChild(UI.Fragment.html`
-  <div>${i18nString(UIStrings.explainLocalOverrides)}</div><br />
-  ${
-        UI.XLink.XLink.create(
-            'https://goo.gle/devtools-overrides', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
-  `);
+    placeholder.appendLink('https://goo.gle/devtools-overrides' as Platform.DevToolsPath.UrlString);
 
     this.toolbar = document.createElement('devtools-toolbar');
     this.toolbar.classList.add('navigator-toolbar');
@@ -315,15 +301,10 @@ export class OverridesNavigatorView extends NavigatorView {
 export class ContentScriptsNavigatorView extends NavigatorView {
   constructor() {
     super('navigator-content-scripts');
-    const placeholder = new UI.EmptyWidget.EmptyWidget('');
+    const placeholder = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.explainContentScripts));
     this.setPlaceholder(placeholder);
-    placeholder.appendParagraph().appendChild(UI.Fragment.html`
-  <div>${i18nString(UIStrings.explainContentScripts)}</div><br />
-  ${
-        UI.XLink.XLink.create(
-            'https://developer.chrome.com/extensions/content_scripts', i18nString(UIStrings.learnMore), undefined,
-            undefined, 'learn-more')}
-  `);
+    placeholder.appendLink(
+        'https://developer.chrome.com/extensions/content_scripts' as Platform.DevToolsPath.UrlString);
   }
 
   override acceptProject(project: Workspace.Workspace.Project): boolean {
@@ -334,14 +315,9 @@ export class ContentScriptsNavigatorView extends NavigatorView {
 export class SnippetsNavigatorView extends NavigatorView {
   constructor() {
     super('navigator-snippets');
-    const placeholder = new UI.EmptyWidget.EmptyWidget('');
+    const placeholder = new UI.EmptyWidget.EmptyWidget('', UIStrings.explainSnippets);
     this.setPlaceholder(placeholder);
-    placeholder.appendParagraph().appendChild(UI.Fragment.html`
-  <div>${i18nString(UIStrings.explainSnippets)}</div><br />
-  ${
-        UI.XLink.XLink.create(
-            'https://goo.gle/devtools-snippets', i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more')}
-  `);
+    placeholder.appendLink('https://goo.gle/devtools-snippets' as Platform.DevToolsPath.UrlString);
 
     const toolbar = document.createElement('devtools-toolbar');
     toolbar.classList.add('navigator-toolbar');

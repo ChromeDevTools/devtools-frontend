@@ -119,12 +119,12 @@ export class RequestResponseView extends UI.Widget.VBox {
   async createPreview(): Promise<UI.Widget.Widget> {
     const contentData = await this.request.requestStreamingContent();
     if (TextUtils.StreamingContentData.isError(contentData)) {
-      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData), contentData.error);
     }
 
     const sourceView = RequestResponseView.#sourceViewForRequest(this.request, contentData);
     if (!sourceView || this.request.statusCode === 204) {
-      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData), '');
     }
 
     return sourceView;

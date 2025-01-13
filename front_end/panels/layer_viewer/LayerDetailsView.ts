@@ -182,7 +182,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectALayerToSeeItsDetails));
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectALayerToSeeItsDetails));
     this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
 
     this.buildContent();

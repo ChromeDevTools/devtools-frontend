@@ -237,7 +237,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     mainContainer.setMinimumSize(0, 72);
     this.splitWidget.setMainWidget(mainContainer);
 
-    this.frameEmptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectMessageToBrowseItsContent));
+    this.frameEmptyWidget = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectMessageToBrowseItsContent));
     this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
 
     this.selectedNode = null;

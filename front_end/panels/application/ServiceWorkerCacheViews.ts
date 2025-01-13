@@ -191,7 +191,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       this.preview.detach();
     }
     if (!preview) {
-      preview = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACacheEntryAboveToPreview));
+      preview = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectACacheEntryAboveToPreview));
     }
     this.preview = preview;
     this.preview.show(this.previewPanel.element);

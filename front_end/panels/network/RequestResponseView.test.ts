@@ -27,7 +27,7 @@ describeWithEnvironment('RequestResponseView', () => {
     request.mimeType = 'application/wasm';
     request.finished = true;
 
-    const mockedSourceView = new UI.EmptyWidget.EmptyWidget('<disassembled WASM>');
+    const mockedSourceView = new UI.EmptyWidget.EmptyWidget('<disassembled WASM>', '');
     const viewStub = sinon.stub(SourceFrame.ResourceSourceFrame.ResourceSourceFrame, 'createSearchableView')
                          .returns(mockedSourceView);
 

@@ -120,7 +120,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     this.showFilteredOutCookiesSetting = Common.Settings.Settings.instance().createSetting(
         'show-filtered-out-request-cookies', /* defaultValue */ false);
 
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoCookies));
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoCookies), '');
     this.emptyWidget.show(this.element);
 
     this.requestCookiesTitle = this.element.createChild('div');

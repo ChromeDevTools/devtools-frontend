@@ -30,7 +30,7 @@ describeWithMockConnection('AppManifestView', () => {
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
-    emptyView = new UI.EmptyWidget.EmptyWidget('');
+    emptyView = new UI.EmptyWidget.EmptyWidget('', '');
     reportView = new UI.ReportView.ReportView('');
     throttler = new Common.Throttler.Throttler(0);
   });

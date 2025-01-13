@@ -4,28 +4,7 @@
  * found in the LICENSE file.
  */
 
-.empty-bold-text {
-  display: block;
-  font-size: 1.5em;
-  margin: 0.83em 0;
-  font-weight: bold;
-}
-
-.empty-view {
-  color: var(--sys-color-token-subtle);
-  padding: 30px;
-  text-align: center;
-  min-width: 70px;
-}
-
 .empty-view-scroller {
   justify-content: center;
   overflow: auto;
-}
-
-.empty-view p {
-  white-space: initial;
-  line-height: 18px;
-  max-width: 300px;
-  flex-shrink: 0;
 }

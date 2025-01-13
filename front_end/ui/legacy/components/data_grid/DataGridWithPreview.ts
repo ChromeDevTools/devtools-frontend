@@ -275,7 +275,7 @@ export class DataGridWithPreview {
       this.#preview.detach();
     }
     if (!preview) {
-      preview = new EmptyWidget.EmptyWidget(i18nString(UIStrings.selectAValueToPreview));
+      preview = new EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectAValueToPreview));
     }
     this.#previewValue = value;
     this.#preview = preview;

@@ -154,7 +154,7 @@ describe('The Application Tab', () => {
 
     // Make sure that the preview resets
     await waitForFunction(async () => {
-      const previewValueNode2 = await waitFor('.empty-view');
+      const previewValueNode2 = await waitFor('.empty-state');
       const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
 
       return previewValue2.match(/Select a cookie to preview its value/);

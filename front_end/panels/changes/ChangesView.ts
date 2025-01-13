@@ -80,7 +80,7 @@ export class ChangesView extends UI.Widget.VBox {
     splitWidget.setMainWidget(mainWidget);
     splitWidget.show(this.contentElement);
 
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('');
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
     this.emptyWidget.show(mainWidget.element);
 
     this.workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
@@ -226,7 +226,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffStats.setText('');
     this.toolbar.setEnabled(false);
     this.diffContainer.style.display = 'none';
-    this.emptyWidget.text = message;
+    this.emptyWidget.header = message;
     this.emptyWidget.showWidget();
   }
 

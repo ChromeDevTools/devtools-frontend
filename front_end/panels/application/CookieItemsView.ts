@@ -199,7 +199,7 @@ export class CookieItemsView extends StorageItemsView {
     this.splitWidget.installResizer(resizer);
 
     this.previewWidget = new CookiePreviewWidget();
-    this.emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.selectACookieToPreviewItsValue));
+    this.emptyWidget = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectACookieToPreviewItsValue));
     this.emptyWidget.show(this.previewPanel.contentElement);
 
     this.onlyIssuesFilterUI = new UI.Toolbar.ToolbarCheckbox(

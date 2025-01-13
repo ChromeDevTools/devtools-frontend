@@ -38,14 +38,14 @@ export class PreviewFactory {
 
     const contentData = await provider.requestContentData();
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
-      return new UI.EmptyWidget.EmptyWidget(contentData.error);
+      return new UI.EmptyWidget.EmptyWidget('', contentData.error);
     }
     if (!contentData.isTextContent) {
       return null;
     }
 
     if (!contentData.text) {
-      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToPreview));
+      return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.nothingToPreview), '');
     }
 
     const parsedXML = XMLView.parseXML(contentData.text, contentData.mimeType);

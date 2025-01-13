@@ -91,7 +91,7 @@ div:has(.settings-select) + div:has(.settings-select) {
   > devtools-button {
     min-width: var(--sys-size-31);
     max-width: var(--sys-size-35);
-    width: 100%;
+    width: calc(100% - var(--sys-size-5));
     margin-left: var(--sys-size-5);
   }
 }

@@ -102,10 +102,6 @@ circle.animation-keyframe-point:active {
   flex: 0 0 auto;
 }
 
-.animation-timeline-toolbar {
-  display: inline-block;
-}
-
 .animation-timeline-header {
   height: 28px;
   border-bottom: 1px solid var(--sys-color-divider);

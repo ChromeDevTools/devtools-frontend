@@ -28,9 +28,7 @@ export class AICallTree {
   ) {
   }
 
-  static from(
-      selectedEvent: Trace.Types.Events.Event, events: Trace.Types.Events.Event[],
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree {
+  static from(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree {
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
 
     const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(

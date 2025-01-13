@@ -17,7 +17,7 @@ describeWithEnvironment('AICallTree', () => {
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, mainEvents, parsedTrace);
+    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, parsedTrace);
     const expectedData = '\n' +
         `
 
@@ -70,7 +70,7 @@ self: 0.2
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, mainEvents, parsedTrace);
+    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, parsedTrace);
 
     // We don't need to validate the whole tree, just that it has recursion
     const treeStr = callTree.serialize();
@@ -88,7 +88,7 @@ self: 0.2
     if (!tinyEvent) {
       throw new Error('Could not find expected event.');
     }
-    const tinyStr = Utils.AICallTree.AICallTree.from(tinyEvent, mainEvents, parsedTrace).serialize();
+    const tinyStr = Utils.AICallTree.AICallTree.from(tinyEvent, parsedTrace).serialize();
     assert.strictEqual(tinyStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
@@ -102,7 +102,7 @@ Node: 5 – get storage`.trim());
     if (!evaluateEvent) {
       throw new Error('Could not find expected event.');
     }
-    const treeStr = Utils.AICallTree.AICallTree.from(evaluateEvent, mainEvents, parsedTrace).serialize();
+    const treeStr = Utils.AICallTree.AICallTree.from(evaluateEvent, parsedTrace).serialize();
     assert.strictEqual(treeStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
@@ -117,7 +117,7 @@ Node: 6 – H.la`.trim());
     if (!compileEvent) {
       throw new Error('Could not find expected event.');
     }
-    const compileStr = Utils.AICallTree.AICallTree.from(compileEvent, mainEvents, parsedTrace).serialize();
+    const compileStr = Utils.AICallTree.AICallTree.from(compileEvent, parsedTrace).serialize();
     assert.strictEqual(compileStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML

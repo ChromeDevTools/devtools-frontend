@@ -115,8 +115,7 @@ describeWithEnvironment('PerformanceAgent', () => {
       // A basic Layout.
       const layoutEvt = parsedTrace.Renderer.allTraceEntries.find(event => event.ts === 465457096322);
       assert.exists(layoutEvt);
-      const aiCallTree =
-          TimelineUtils.AICallTree.AICallTree.from(layoutEvt, parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.from(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);
 
       async function* generateAnswer() {

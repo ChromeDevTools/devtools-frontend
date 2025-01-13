@@ -225,8 +225,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         if (!event || !this.parsedTrace) {
           return;
         }
-        const allEvents = Array.from(this.entryData.values());
-        const aiCallTree = Utils.AICallTree.AICallTree.from(event, allEvents, this.parsedTrace);
+        const aiCallTree = Utils.AICallTree.AICallTree.from(event, this.parsedTrace);
 
         // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
         UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);

@@ -89,6 +89,19 @@ const UIStrings = {
     +*@description Button with the enterpise disclaimer that takes the user to the relevant enterprise cookie chrome setting
    */
   viewDetails: 'View details',
+  /**
+   *@description Text shown when the Third-party Cookie Metadata Grants flag or Third-party Cookie Heuristics Grants flag is disabled with a link to the flag in chrome://flags/.
+   *@example {#tpcd-heuristics-grants} PH1
+   */
+  enableFlag: 'To use this, set {PH1} to Default',
+  /**
+   *@description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Metadata Grants flag.
+   */
+  tpcdMetadataGrants: '#tpcd-metadata-grants',
+  /**
+   *@description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
+   */
+  tpcdHeuristicsGrants: '#tpcd-heuristics-grants',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
@@ -158,9 +171,7 @@ export class CookieControlsView extends UI.Widget.VBox {
           <devtools-switch
             .checked=${Boolean(toggleEnabledSetting.get())}
             .disabled=${Boolean(enterpriseEnabledSetting.get())}
-            @switchchange=${(e: Event)=>{
-                input.inputChanged((e.target as HTMLInputElement).checked, toggleEnabledSetting);
-              }}
+            @switchchange=${()=>{input.inputChanged(!toggleEnabledSetting.get(), toggleEnabledSetting);}}
             jslog=${VisualLogging.toggle(toggleEnabledSetting.name).track({click: true})}
           >
           </devtools-switch>
@@ -168,46 +179,66 @@ export class CookieControlsView extends UI.Widget.VBox {
       </div>
     `;
 
+    const gracePeriodControlDisabled =
+        (thirdPartyControlsDict ? (!thirdPartyControlsDict.thirdPartyCookieMetadataEnabled) : false) ||
+        enterpriseEnabledSetting.get() || !toggleEnabledSetting.get();
     const gracePeriodControl = html`
       <div class="card-row">
         <label class='checkbox-label'>
           <input type='checkbox'
-            .disabled=${Boolean(enterpriseEnabledSetting.get()) || !Boolean(toggleEnabledSetting.get())}
-            .checked=${Boolean(toggleEnabledSetting.get()) && !Boolean(gracePeriodDisabledSetting.get())}
-            @change=${(e: Event)=>{
-              input.inputChanged((e.target as HTMLInputElement).checked, gracePeriodDisabledSetting);
-            }}
+            .disabled=${gracePeriodControlDisabled}
+            .checked=${!gracePeriodControlDisabled && !Boolean(gracePeriodDisabledSetting.get())}
+            @change=${()=>{input.inputChanged(!gracePeriodDisabledSetting.get(), gracePeriodDisabledSetting);}}
             jslog=${VisualLogging.toggle(gracePeriodDisabledSetting.name).track({click: true})}
           >
-          <div class="text">
+          <div class=${gracePeriodControlDisabled ? 'text faded': 'text'}>
             <div class="body">${i18nString(UIStrings.gracePeriodTitle)}</div>
             <div class="body">
-              ${i18nFormatString(UIStrings.gracePeriodExplanation, {
-                  PH1: Boolean(enterpriseEnabledSetting.get()) ? i18nString(UIStrings.gracePeriod) :  UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
-                })}
+              ${Boolean(enterpriseEnabledSetting.get()) ?
+                  i18nFormatString(UIStrings.gracePeriodExplanation, {
+                    PH1: i18nString(UIStrings.gracePeriod),
+                  }) :
+                (thirdPartyControlsDict ? !thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled: false) ?
+                  i18nFormatString(UIStrings.enableFlag, {
+                    PH1: UI.Fragment.html`<x-link class="x-link" href="chrome://flags/#tpcd-metadata-grants" jslog=${VisualLogging.link('metadata-grants-flag-link').track({click: true})}>${i18nString(UIStrings.tpcdMetadataGrants)}</x-link>`,
+                  }) :
+                i18nFormatString(UIStrings.gracePeriodExplanation, {
+                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
+                })
+              }
             </div>
           </div>
         </label>
       </div>
     `;
 
+    const heuristicsControlDisabled =
+        (thirdPartyControlsDict ? (!thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled) : false) ||
+        enterpriseEnabledSetting.get() || !toggleEnabledSetting.get();
     const heuristicControl = html`
       <div class="card-row">
         <label class='checkbox-label'>
           <input type='checkbox'
-            .disabled=${Boolean(enterpriseEnabledSetting.get()) || !Boolean(toggleEnabledSetting.get())}
-            .checked=${Boolean(toggleEnabledSetting.get() && !Boolean(heuristicsDisabledSetting.get()))}
-            @change=${(e: Event)=>{
-              input.inputChanged((e.target as HTMLInputElement).checked, heuristicsDisabledSetting);
-            }}
+            .disabled=${heuristicsControlDisabled}
+            .checked=${!heuristicsControlDisabled && !Boolean(heuristicsDisabledSetting.get())}
+            @change=${()=>{input.inputChanged(!heuristicsDisabledSetting.get(), heuristicsDisabledSetting);}}
             jslog=${VisualLogging.toggle(heuristicsDisabledSetting.name).track({click: true})}
           >
-          <div class="text">
+          <div class=${heuristicsControlDisabled ? 'text faded': 'text'}>
             <div class="body">${i18nString(UIStrings.heuristicTitle)}</div>
             <div class="body">
-              ${i18nFormatString(UIStrings.heuristicExplanation, {
-                  PH1: Boolean(enterpriseEnabledSetting.get()) ? i18nString(UIStrings.scenarios) : UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
-                })}
+              ${Boolean(enterpriseEnabledSetting.get()) ?
+                i18nFormatString(UIStrings.heuristicExplanation, {
+                  PH1: i18nString(UIStrings.scenarios),
+                }) :
+                (thirdPartyControlsDict ? !thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled: false) ?
+                  i18nFormatString(UIStrings.enableFlag, {
+                    PH1: UI.Fragment.html`<x-link class="x-link" href="chrome://flags/#tpcd-heuristics-grants" jslog=${VisualLogging.link('heuristics-grants-flag-link').track({click: true})}>${i18nString(UIStrings.tpcdHeuristicsGrants)}</x-link>`,
+                  }) :
+                i18nFormatString(UIStrings.heuristicExplanation, {
+                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
+                })
+              }
             </div>
           </div>
         </label>

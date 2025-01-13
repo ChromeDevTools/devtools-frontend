@@ -99,3 +99,7 @@
 input[type="checkbox"] {
   flex-shrink: 0;
 }
+
+.faded {
+  color: var(--sys-color-token-subtle);
+}

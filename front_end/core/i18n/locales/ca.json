@@ -152,6 +152,9 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "Persistència"
   },
+  "core/common/SettingRegistration.ts | privacy": {
+    "message": "Privadesa"
+  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "S'està renderitzant"
   },
@@ -436,6 +439,12 @@
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "La càrrega s'ha cancel·lat perquè la pàgina inspeccionada s'ha tornat a carregar"
+  },
+  "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
+    "message": "Hi ha hagut un error en carregar el registre"
+  },
+  "core/sdk/RehydratingConnection.ts | noHostWindow": {
+    "message": "No es troba la finestra de l'amfitrió"
   },
   "core/sdk/RehydratingConnection.ts | noSourceText": {
     "message": "No hi ha text d'origen disponible"
@@ -1121,6 +1130,9 @@
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Especifica el punt final de la xarxa i DevTools s'hi connectarà automàticament. Llegeix {PH1} per obtenir més informació."
   },
+  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+    "message": "DevTools - Node.js: {PH1}"
+  },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Principal"
   },
@@ -1147,9 +1159,6 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "El símbol del comodí (*) no cobrirà l'autorització a la gestió de la capçalera Access-Control-Allow-Headers a CORS."
-  },
-  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
-    "message": ":--customstatename està obsolet. Utilitza la sintaxi :state(customstatename)."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "S'ha d'utilitzar l'atribut disableRemotePlayback per desactivar la integració de Cast predeterminada en lloc de fer servir el selector -internal-media-controls-overlay-cast-button."
@@ -1301,11 +1310,11 @@
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Els detectors d'esdeveniments unload estan obsolets i se suprimiran."
   },
-  "generated/Deprecation.ts | V8GPUAdapter_RequestAdapterInfo_Method": {
-    "message": "El mètode requestAdapterInfo() de GPUAdapter està obsolet. Substitueix-lo per l'atribut info de GPUAdapter."
-  },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Les extensions han d'activar l'aïllament d'altres orígens per continuar utilitzant SharedArrayBuffer. Consulta https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
+    "message": "El límit de WebGPU maxInterStageShaderComponents està obsolet. Substitueix-lo pel límit de WebGPU maxInterStageShaderVariables."
   },
   "generated/Deprecation.ts | WebSQL": {
     "message": "Web SQL està obsolet. Utilitza SQLite WebAssembly o la base de dades indexada."
@@ -1369,6 +1378,9 @@
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "LiveEdit ha fallat: {PH1}"
+  },
+  "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
+    "message": "Les dades de camp estan configurades per a un URL diferent del de la pàgina actual."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "La relació de píxels del dispositiu ha de ser un número o ha d'estar en blanc."
@@ -1547,6 +1559,9 @@
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Transport de diccionaris de compressió"
   },
+  "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
+    "message": "Simular un dispositiu nou després que es carregui la pàgina pot afectar l'LCP. Torna a carregar la pàgina després de simular un dispositiu nou per obtenir dades precises de l'LCP."
+  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anònim>"
   },
@@ -1694,6 +1709,12 @@
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Causants del canvi de disseny"
   },
+  "models/trace/insights/DOMSize.ts | description": {
+    "message": "Un DOM gran augmentarà l'ús de memòria, provocarà càlculs d'estil més llargs i produirà reinicis de reflux del disseny costosos que afecten la capacitat de resposta de la pàgina. [Obtén informació sobre com pots evitar una mida del DOM massa gran](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "models/trace/insights/DOMSize.ts | title": {
+    "message": "Optimitza la mida del DOM"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "La primera sol·licitud de xarxa és la més important.  Per reduir-ne la latència, evita les redireccions, assegura't que el servidor respongui amb rapidesa i activa la compressió de text."
   },
@@ -1705,6 +1726,24 @@
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Visualització de la font"
+  },
+  "models/trace/insights/ImageDelivery.ts | description": {
+    "message": "Reduir el temps de baixada de les imatges pot millorar el temps de càrrega percebut de la pàgina i l'LCP. [Més informació sobre com pots optimitzar la mida de les imatges](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "models/trace/insights/ImageDelivery.ts | title": {
+    "message": "Millora la publicació d'imatges"
+  },
+  "models/trace/insights/ImageDelivery.ts | useCompression": {
+    "message": "Augmentar el factor de compressió de la imatge podria millorar la mida de baixada d'aquesta imatge (estimació: {PH1})."
+  },
+  "models/trace/insights/ImageDelivery.ts | useModernFormat": {
+    "message": "Utilitzar un format d'imatge modern (WebP, AVIF) o augmentar la compressió de la imatge podria millorar la mida de baixada d'aquesta imatge (estimació: {PH1})."
+  },
+  "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
+    "message": "Aquest fitxer d'imatge és més gran del que hauria de ser ({PH2}) per a les seves dimensions mostrades ({PH3}). Utilitza imatges responsives per reduir la mida de baixada de la imatge (estimació: {PH1})."
+  },
+  "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
+    "message": "Utilitzar formats de vídeo en comptes de GIF pot millorar la mida de baixada del contingut animat (estimació: {PH1})."
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Comença a investigar amb la fase més llarga. [Els retards es poden minimitzar](https://web.dev/articles/optimize-inp#optimize_interactions). Per reduir la durada del processament, [optimitza els costos del fil principal](https://web.dev/articles/optimize-long-tasks), sovint JavaScript."
@@ -1743,10 +1782,10 @@
     "message": "Tercers"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "La finestra gràfica de la pàgina no està optimitzada per a mòbils, de manera que les interaccions amb tocs poden [retardar-se fins a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Les interaccions amb tocs poden [retardar-se fins a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) si la finestra gràfica no està optimitzada per a mòbils."
   },
   "models/trace/insights/Viewport.ts | title": {
-    "message": "La finestra gràfica no està optimitzada per a mòbils"
+    "message": "Optimitza la finestra gràfica per a mòbils"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(índex)"
@@ -2170,6 +2209,87 @@
   },
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Mostra l'accessibilitat"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
+    "message": "S'ha suprimit el xat"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | clearChatHistory": {
+    "message": "Esborra els xats locals"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
+    "message": "Suprimeix el xat local"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | help": {
+    "message": "Ajuda"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | history": {
+    "message": "Historial"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
+    "message": "Xat nou"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChatCreated": {
+    "message": "S'ha creat un xat nou"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
+    "message": "No hi ha converses anteriors"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
+    "message": "Envia suggeriments"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | settings": {
+    "message": "Configuració"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
+    "message": "Assistència d'IA"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
+    "message": "Pregunta a la IA"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
+    "message": "Activa l'assistència d'IA"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
+    "message": "Aquesta funció no està disponible a la teva regió."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
+    "message": "El teu administrador gestiona aquesta opció de configuració."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
+    "message": "Mostra l'assistència d'IA"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
+    "message": "Per utilitzar aquesta funció, canvia a l'anglès la teva preferència d'idioma a Configuració de DevTools."
+  },
+  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
+    "message": "Segueix els passos anteriors per fer una pregunta"
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
+    "message": "Aquesta funció d'IA és experimental i no sempre l'encertarà."
+  },
+  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+    "message": "Informació sobre la IA a DevTools"
+  },
+  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
+    "message": "Aquesta funció només està disponible quan tens la sessió iniciada a Chrome amb el teu Compte de Google"
+  },
+  "panels/ai_assistance/components/ChatView.ts | offline": {
+    "message": "Comprova la connexió a Internet i torna-ho a provar"
+  },
+  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+    "message": "Assistència d'IA a Configuració"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+    "message": "Activa {PH1} per obtenir ajuda i entendre els estils de CSS"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+    "message": "Activa {PH1} per obtenir ajuda amb les sol·licituds de xarxa i els estils"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa i els fitxers"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa, el rendiment i els fitxers"
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Previsualització d'animació {PH1}"
@@ -4148,6 +4268,9 @@
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
     "message": "URL"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | automaticallyFellBackToPrefetch": {
+    "message": "(s'ha tornat a la recollida prèvia automàticament)"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
     "message": "Fes clic per inspeccionar la pàgina renderitzada prèviament"
   },
@@ -4159,6 +4282,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "La càrrega especulativa ha fallat."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFallbackToPrefetch": {
+    "message": "La càrrega especulativa ha fallat, però l'alternativa de recollida prèvia ha funcionat."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
     "message": "L'intent de càrrega especulativa encara no s'ha activat."
@@ -4243,6 +4369,9 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Acció"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | prefetchFallbackReady": {
+    "message": "L'alternativa de recollida prèvia està a punt"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
     "message": "Conjunt de regles"
@@ -5621,6 +5750,12 @@
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Carrega els recursos HTTP(S) del desenvolupador mitjançant el lloc web que inspecciones, no a través de DevTools"
   },
+  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
+    "message": "No hi ha cap recurs coincident"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{Coincideix # recurs}other{Coincideixen # recursos}}"
+  },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# recurs}other{# recursos}}"
   },
@@ -5713,6 +5848,9 @@
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Commuta l'estat de l'element"
+  },
+  "panels/elements/ElementsPanel.ts | adornerSettings": {
+    "message": "Configuració de la insígnia"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Calculats"
@@ -5875,9 +6013,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<el valor és massa llarg per editar-lo>"
-  },
-  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
-    "message": "Configuració de la insígnia…"
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "DOM de pàgina"
@@ -6109,12 +6244,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorat"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
-    "message": "Tanca"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Mostra les insígnies"
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "Salta al node àncora"
@@ -6381,7 +6510,7 @@
     "message": "Amplada"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "Zoom"
+    "message": "Amplia"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Fes doble clic per ocupar l'alçada completa"
@@ -6503,6 +6632,9 @@
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(s'obre en una pestanya nova)"
   },
+  "panels/explain/components/ConsoleInsight.ts | references": {
+    "message": "Fonts i contingut relacionat"
+  },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Codi relacionat"
   },
@@ -6543,94 +6675,13 @@
     "message": "Entén aquest advertiment"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Aquesta funció no està disponible a la teva regió"
+    "message": "Aquesta funció no està disponible a la teva regió."
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "El teu administrador gestiona aquesta opció de configuració"
+    "message": "El teu administrador gestiona aquesta opció de configuració."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Per utilitzar aquesta funció, canvia a l'anglès la teva preferència d'idioma a Configuració de DevTools"
-  },
-  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
-    "message": "S'ha suprimit el xat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
-    "message": "Esborra l'historial de xat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
-    "message": "Suprimeix el xat"
-  },
-  "panels/freestyler/FreestylerPanel.ts | help": {
-    "message": "Ajuda"
-  },
-  "panels/freestyler/FreestylerPanel.ts | history": {
-    "message": "Historial"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChat": {
-    "message": "Xat nou"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
-    "message": "S'ha creat un xat nou"
-  },
-  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
-    "message": "No hi ha converses anteriors"
-  },
-  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
-    "message": "Envia suggeriments"
-  },
-  "panels/freestyler/FreestylerPanel.ts | settings": {
-    "message": "Configuració"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
-    "message": "Segueix els passos anteriors per fer una pregunta"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
-    "message": "Aquesta funció d'IA és experimental i no sempre l'encertarà."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
-    "message": "Informació sobre la IA a DevTools"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
-    "message": "Aquesta funció només està disponible quan tens la sessió iniciada a Chrome amb el teu Compte de Google"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
-    "message": "Comprova la connexió a Internet i torna-ho a provar"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
-    "message": "Assistència d'IA a Configuració"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
-    "message": "Activa {PH1} per obtenir ajuda i entendre els estils de CSS"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
-    "message": "Activa {PH1} per obtenir ajuda amb les sol·licituds de xarxa i els estils"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa i els fitxers"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Activa {PH1} per obtenir ajuda amb els estils, les sol·licituds de xarxa, el rendiment i els fitxers"
-  },
-  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
-    "message": "Assistència d'IA"
-  },
-  "panels/freestyler/freestyler-meta.ts | askAi": {
-    "message": "Pregunta a la IA"
-  },
-  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
-    "message": "Activa l'assistència d'IA"
-  },
-  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
-    "message": "Aquesta funció no està disponible a la teva regió"
-  },
-  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
-    "message": "El teu administrador gestiona aquesta opció de configuració"
-  },
-  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
-    "message": "Mostra l'assistència d'IA"
-  },
-  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
-    "message": "Per utilitzar aquesta funció, canvia a l'anglès la teva preferència d'idioma a Configuració de DevTools"
+    "message": "Per utilitzar aquesta funció, canvia a l'anglès la teva preferència d'idioma a Configuració de DevTools."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Recurs bloquejat"
@@ -7769,9 +7820,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
     "message": "La limitació de la CPU està activada"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} vegades més lenta"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Superar el valor predeterminat pot empitjorar el rendiment del sistema."
   },
@@ -7784,11 +7832,11 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "Anul·la el valor registrat per navigator.hardwareConcurrency"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "Sense limitació"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Sense connexió"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
+    "message": "{PH1} (opció recomanada)"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "Restableix al valor predeterminat"
@@ -7808,9 +7856,6 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
     "message": "3G ràpid i retenció 4x de CPU"
   },
-  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "Mòbil de gamma baixa"
-  },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "Mòbil de nivell mitjà"
   },
@@ -7818,7 +7863,7 @@
     "message": "Sense connectivitat a Internet"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "Sense limitació"
+    "message": "Sense limitació de CPU ni de xarxa"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
     "message": "3G lent i retenció 6x de CPU"
@@ -8587,6 +8632,9 @@
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "No esborris el registre en tornar a carregar la pàgina o en navegar-hi"
+  },
+  "panels/network/NetworkPanel.ts | exportHar": {
+    "message": "Exporta HAR (sanejat o amb dades sensibles)"
   },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
     "message": "Exporta HAR (sanejat)..."
@@ -10520,11 +10568,65 @@
   "panels/search/SearchView.ts | searching": {
     "message": "S'està cercant…"
   },
+  "panels/security/CookieControlsView.ts | cardDisclaimer": {
+    "message": "Només quan DevTools estigui obert"
+  },
+  "panels/security/CookieControlsView.ts | cardTitle": {
+    "message": "Restricció temporal de les galetes de tercers"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
+    "message": "La teva organització gestiona l'accés a les galetes de tercers per a aquest lloc web"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
+    "message": "La teva organització gestiona aquesta opció de configuració"
+  },
+  "panels/security/CookieControlsView.ts | exceptions": {
+    "message": "Excepcions"
+  },
+  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
+    "message": "Escenaris que concedeixen accés a les galetes de tercers"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriod": {
+    "message": "període de gràcia"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
+    "message": "Si aquest lloc web o un lloc web inserit en aquest està inscrit al {PH1}, el lloc web podrà accedir a les galetes de tercers"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
+    "message": "Període de gràcia de les galetes de tercers"
+  },
+  "panels/security/CookieControlsView.ts | heuristicExplanation": {
+    "message": "En {PH1}, com ara finestres emergents o redireccions, un lloc web inserit en aquest lloc web pot accedir a galetes de tercers"
+  },
+  "panels/security/CookieControlsView.ts | heuristicTitle": {
+    "message": "Excepció basada en heurística"
+  },
+  "panels/security/CookieControlsView.ts | scenarios": {
+    "message": "escenaris predefinits"
+  },
+  "panels/security/CookieControlsView.ts | siteReloadMessage": {
+    "message": "Per aplicar els controls actualitzats, torna a carregar la pàgina"
+  },
+  "panels/security/CookieControlsView.ts | viewDetails": {
+    "message": "Mostra els detalls"
+  },
+  "panels/security/CookieControlsView.ts | viewExplanation": {
+    "message": "Prova com funcionarà aquest lloc web si un usuari decideix restringir les galetes de tercers a Chrome"
+  },
+  "panels/security/CookieControlsView.ts | viewTitle": {
+    "message": "Controls"
+  },
+  "panels/security/CookieReportView.ts | adCookieTypeString": {
+    "message": "Publicitat"
+  },
   "panels/security/CookieReportView.ts | allowed": {
     "message": "Permesa"
   },
   "panels/security/CookieReportView.ts | allowedByException": {
     "message": "Permesa per excepció"
+  },
+  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
+    "message": "Analítiques"
   },
   "panels/security/CookieReportView.ts | blocked": {
     "message": "Bloquejada"
@@ -10532,11 +10634,104 @@
   "panels/security/CookieReportView.ts | body": {
     "message": "Galetes de tercers que els usuaris poden restringir, en funció de la seva configuració. Si un usuari decideix restringir les galetes, és possible que aquest lloc web no li funcioni."
   },
+  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
+    "message": "CDN"
+  },
+  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
+    "message": "Proveïdor de consentiment"
+  },
+  "panels/security/CookieReportView.ts | contentCookieTypeString": {
+    "message": "Contingut"
+  },
+  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
+    "message": "Èxit del client"
+  },
+  "panels/security/CookieReportView.ts | domain": {
+    "message": "Domini"
+  },
+  "panels/security/CookieReportView.ts | emptyReport": {
+    "message": "No hi ha cap problema"
+  },
+  "panels/security/CookieReportView.ts | emptyReportExplanation": {
+    "message": "No s'ha trobat cap problema amb les galetes de tercers"
+  },
+  "panels/security/CookieReportView.ts | gitHubResource": {
+    "message": "Revisa les {PH1} d'un lloc web de tercers."
+  },
+  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
+    "message": "GitHub"
+  },
+  "panels/security/CookieReportView.ts | gracePeriod": {
+    "message": "Revisa {PH1}. L'excepció del període de gràcia està activa."
+  },
+  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
+    "message": "Període de gràcia"
+  },
+  "panels/security/CookieReportView.ts | guidance": {
+    "message": "indicacions"
+  },
+  "panels/security/CookieReportView.ts | heuristics": {
+    "message": "Acció necessària més endavant. L'excepció basada en heurística està activa"
+  },
+  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
+    "message": "Heurística"
+  },
+  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
+    "message": "Allotjament"
+  },
   "panels/security/CookieReportView.ts | learnMoreLink": {
     "message": "Més informació sobre com s'utilitzen les galetes de tercers"
   },
+  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
+    "message": "Màrqueting"
+  },
+  "panels/security/CookieReportView.ts | name": {
+    "message": "Nom"
+  },
+  "panels/security/CookieReportView.ts | other": {
+    "message": "Contacta amb el lloc web de tercers per obtenir més informació"
+  },
+  "panels/security/CookieReportView.ts | otherCookieTypeString": {
+    "message": "Altres"
+  },
+  "panels/security/CookieReportView.ts | otherInsightTypeString": {
+    "message": "Altres"
+  },
+  "panels/security/CookieReportView.ts | platform": {
+    "message": "Plataforma"
+  },
+  "panels/security/CookieReportView.ts | recommendation": {
+    "message": "Recomanació"
+  },
+  "panels/security/CookieReportView.ts | report": {
+    "message": "Informe de galetes de tercers"
+  },
+  "panels/security/CookieReportView.ts | reportedIssues": {
+    "message": "problemes notificats"
+  },
+  "panels/security/CookieReportView.ts | socialCookieTypeString": {
+    "message": "Social"
+  },
+  "panels/security/CookieReportView.ts | status": {
+    "message": "Estat"
+  },
+  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
+    "message": "Tag Manager"
+  },
   "panels/security/CookieReportView.ts | title": {
     "message": "Galetes de tercers"
+  },
+  "panels/security/CookieReportView.ts | type": {
+    "message": "Tipus"
+  },
+  "panels/security/CookieReportView.ts | unknown": {
+    "message": "Desconegut"
+  },
+  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
+    "message": "Utilitat"
+  },
+  "panels/security/CookieReportView.ts | videoCookieTypeString": {
+    "message": "Vídeo"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} amb {PH2}"
@@ -10841,6 +11036,9 @@
   "panels/security/SecurityPanelSidebar.ts | cookieReport": {
     "message": "Galetes de tercers"
   },
+  "panels/security/SecurityPanelSidebar.ts | flagControls": {
+    "message": "Controls"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Origen principal"
   },
@@ -11117,17 +11315,20 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Usuari inactiu; pantalla desbloquejada"
   },
-  "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "És possible que Google s'abstingui de recollir dades en funció de la gestió del teu Compte de Google o de la regió. Segons la configuració de la teva organització, les funcions disponibles per als usuaris gestionats poden variar."
-  },
   "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "Aquesta funció només està disponible per als usuaris majors de 18 anys"
+    "message": "Aquesta funció només està disponible per als usuaris majors de 18 anys."
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Augmenta la teva productivitat amb la IA"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "El missatge de la consola, la traça de la pila associada, el codi font relacionat i els encapçalaments de xarxa associats s'envien a Google per generar explicacions. És possible que revisors humans vegin aquestes dades per millorar aquesta funció."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollection": {
+    "message": "És possible que Google s'abstingui de recollir dades en funció de la teva regió."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
+    "message": "Els revisors humans no utilitzaran el teu contingut per millorar la IA. La teva organització pot canviar aquestes opcions de configuració en qualsevol moment. És possible que Google s'abstingui de recollir dades en funció de la gestió del teu Compte de Google o de la regió."
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Activa l'assistència d'IA"
@@ -11189,9 +11390,6 @@
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "Rep suggeriments i codis d'exemple per solucionar aquests problemes"
   },
-  "panels/settings/AISettingsTab.ts | retainData": {
-    "message": "Les dades d'ús es conservaran durant un màxim de 18 mesos i s'emmagatzemaran de manera que Google no pugui saber qui les ha proporcionat."
-  },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
     "message": "Aquestes funcions envien dades rellevants a Google. Google recull aquestes dades i suggeriments per millorar els seus productes i serveis amb l'ajuda de revisors humans. Evita compartir informació personal o sensible."
   },
@@ -11217,7 +11415,7 @@
     "message": "Afegeix una regla d'expressió regular per a l'URL de l'script"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "Afegeix una regla d'expressió regular..."
+    "message": "Afegeix una regla d'expressió regular"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Scripts de tercers coneguts de mapes d'origen"
@@ -11247,7 +11445,7 @@
     "message": "Quan aquesta opció estigui activada, el depurador ometrà els scripts de la llista d'elements ignorats, ignorarà les excepcions que només els afectin i el tauler Rendiment replegarà els elements del gràfic de flames coincidents."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Ignora scripts el noms dels quals coincideixin amb \"{PH1}\""
+    "message": "Ignora scripts els noms dels quals coincideixin amb \"{PH1}\""
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
     "message": "Més informació"
@@ -11331,7 +11529,7 @@
     "message": "Més informació"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "Advertiment: no hi ha cap experiment que coincideixi amb el filtre"
+    "message": "No hi ha cap experiment que coincideixi amb el filtre"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Una o més opcions de configuració han canviat i s'ha de tornar a carregar DevTools perquè el canvi es faci efectiu."
@@ -11370,7 +11568,7 @@
     "message": "Per activar aquesta opció de configuració, has d'activar Sincronització de Chrome."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Afegeix un dispositiu personalitzat..."
+    "message": "Afegeix un dispositiu personalitzat"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "Dispositius personalitzats"
@@ -12599,9 +12797,6 @@
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1}-{PH2}]"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | Dms": {
-    "message": "{PH1} ms"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
     "message": "Tot"
   },
@@ -12666,7 +12861,7 @@
     "message": "Principal - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
-    "message": "A la llista d'elements ignorats"
+    "message": "A la llista d'elements ignorats ({rule})"
   },
   "panels/timeline/ThreadAppender.ts | raster": {
     "message": "Ràster"
@@ -12724,9 +12919,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Analitzador de rendiment de la renderització"
-  },
-  "panels/timeline/TimelineDetailsView.ts | rangeSS": {
-    "message": "Interval: {PH1}-{PH2}"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
     "message": "Estadístiques del selector"
@@ -12788,32 +12980,20 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Sessió actual: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
+    "message": "{PH1} vegades més lent"
+  },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Mètriques en temps real"
   },
-  "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
-    "message": "(no hi ha cap gravació)"
+  "panels/timeline/TimelineHistoryManager.ts | nodeLandingPageTitle": {
+    "message": "Gravació nova"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} núm. {PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Selecciona una sessió de la cronologia"
-  },
-  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Després de gravar, arrossega per seleccionar una àrea d'interès a la visió general. A continuació, fes zoom i desplaça't per la cronologia amb la roda del ratolí o amb les tecles {PH1}. {PH2}"
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Fes clic al botó de gravació {PH1} o prem {PH2} per iniciar una gravació."
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Fes clic al botó {PH1} per tornar a carregar o prem {PH2} per gravar la càrrega de la pàgina."
-  },
-  "panels/timeline/TimelineLandingPage.ts | learnmore": {
-    "message": "Més informació"
-  },
-  "panels/timeline/TimelineLandingPage.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Format incorrecte de les dades de la cronologia: {PH1}"
@@ -12862,6 +13042,9 @@
   },
   "panels/timeline/TimelinePanel.ts | description": {
     "message": "Descripció"
+  },
+  "panels/timeline/TimelinePanel.ts | dimThirdParties": {
+    "message": "Tercers de DIM"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Desactiva les mostres de JavaScript"
@@ -12923,9 +13106,6 @@
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "Condicions de la xarxa"
   },
-  "panels/timeline/TimelinePanel.ts | performanceExtension": {
-    "message": "Dades de les extensions"
-  },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "Processat"
   },
@@ -12956,6 +13136,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "S'ha esborrat la selecció"
   },
+  "panels/timeline/TimelinePanel.ts | showCustomtracks": {
+    "message": "Mostra els canals personalitzats"
+  },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Mostra les dades que les extensions del tauler Rendiment han afegit"
   },
@@ -12971,9 +13154,6 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "Es mostra la barra lateral Rendiment"
   },
-  "panels/timeline/TimelinePanel.ts | ssec": {
-    "message": "{PH1} s"
-  },
   "panels/timeline/TimelinePanel.ts | status": {
     "message": "Estat"
   },
@@ -12985,6 +13165,18 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Hora"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
+    "message": "Ampliació o reducció ràpida de la cronologia"
+  },
+  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
+    "message": "Cronologia a la dreta o a l'esquerra"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
+    "message": "Cronologia a dalt o a baix"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
+    "message": "Ampliació o reducció de la cronologia"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Copia la taula"
@@ -13033,9 +13225,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Temps de rendiment de les extensions de Chrome]"
-  },
-  "panels/timeline/TimelineTreeView.ts | fms": {
-    "message": "{PH1} ms"
   },
   "panels/timeline/TimelineTreeView.ts | groupBy": {
     "message": "Agrupa per"
@@ -13541,11 +13730,11 @@
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "Limitació de CPU: {PH1}"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
-    "message": "{PH1} vegades més lent"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (opció recomanada)"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | noThrottling": {
-    "message": "Sense limitació"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Et recomanem que canviïs la configuració per simular entorns d'usuaris reals"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Reinici de reflux forçat"
@@ -13577,14 +13766,8 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Protocol WebSocket"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | add": {
-    "message": "Afegeix"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Configuració avançada"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
-    "message": "{PH1} ja s'ha mapat a un origen de producció."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Cancel·la"
@@ -13594,15 +13777,6 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Configura la recollida de dades de camp"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
-    "message": "Suprimeix"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
-    "message": "Origen del desenvolupament"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
-    "message": "Origen del desenvolupament: {PH1}"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "L'informe EU de Chrome no té prou dades sobre la velocitat real d'aquesta pàgina."
@@ -13631,12 +13805,6 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Comunicació sobre la privadesa"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
-    "message": "Origen de producció"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
-    "message": "Origen de producció: {PH1}"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Configura"
   },
@@ -13645,6 +13813,39 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Quan DevTools estigui obert, els URL que visitis s'enviaran a Google perquè pugui consultar dades dels camps. Aquestes sol·licituds no estan vinculades al teu Compte de Google."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
+    "message": "Afegeix una regla d'expressió regular per a l'URL de l'script"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreList": {
+    "message": "Llista d'elements ignorats"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreListDescription": {
+    "message": "Afegeix regles d'expressió regular per retirar els scripts coincidents del gràfic de flames."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchNewRegex": {
+    "message": "Ignora scripts els noms dels quals coincideixin amb l'expressió regular nova"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
+    "message": "Ignora scripts els noms dels quals coincideixin amb \"{regex}\""
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
+    "message": "La regla ja existeix"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
+    "message": "Aquesta regla ja existeix, però està desactivada. Si deses aquest valor, la regla es tornarà a activar."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
+    "message": "La regla no pot ser buida"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
+    "message": "La regla ha de ser una expressió regular vàlida"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
+    "message": "Suprimeix l'expressió regular: ''{regex}''"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
+    "message": "Mostra el quadre de diàleg de configuració de la llista d'elements ignorats"
   },
   "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
     "message": "Retard respecte a la interacció"
@@ -13784,6 +13985,12 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Passos següents"
   },
+  "panels/timeline/components/LiveMetricsView.ts | nodeClickToRecord": {
+    "message": "Registra una cronologia de rendiment del procés de Node connectat."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | nodePerformanceTimeline": {
+    "message": "Rendiment de Node"
+  },
   "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
     "message": "No hi ha prou dades"
   },
@@ -13808,9 +14015,6 @@
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Durada del processament"
   },
-  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
-    "message": "Entorns d'usuaris reals"
-  },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Retard en la càrrega dels recursos"
   },
@@ -13832,9 +14036,6 @@
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Ves a la interacció associada amb la INP."
   },
-  "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
-    "message": "simula diferents dispositius"
-  },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Tauleta"
   },
@@ -13854,7 +14055,7 @@
     "message": "URL: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
-    "message": "Utilitza la barra d'eines del dispositiu per {PH1}."
+    "message": "Utilitza la [barra d'eines del dispositiu](https://developer.chrome.com/docs/devtools/device-mode) i configura la limitació per simular entorns d'usuaris reals i identificar més problemes de rendiment."
   },
   "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
     "message": "El pitjor clúster"
@@ -14036,9 +14237,6 @@
   "panels/timeline/components/NetworkRequestDetails.ts | no": {
     "message": "No"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | preview": {
-    "message": "Previsualitza"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Prioritat"
   },
@@ -14090,8 +14288,32 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Valors predefinits"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (opció recomanada)"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Et recomanem que canviïs la configuració per simular entorns d'usuaris reals"
+  },
+  "panels/timeline/components/OriginMap.ts | alreadyMapped": {
+    "message": "{PH1} ja s'ha mapat a un origen de producció."
+  },
+  "panels/timeline/components/OriginMap.ts | developmentOrigin": {
+    "message": "Origen del desenvolupament"
+  },
+  "panels/timeline/components/OriginMap.ts | invalidOrigin": {
+    "message": "{PH1} no és un origen o URL vàlid."
+  },
+  "panels/timeline/components/OriginMap.ts | pageHasNoData": {
+    "message": "L'informe EU de Chrome no té prou dades d'usuaris reals per a aquesta pàgina."
+  },
+  "panels/timeline/components/OriginMap.ts | productionOrigin": {
+    "message": "Origen de producció"
+  },
   "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
     "message": "Valoració"
+  },
+  "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
+    "message": "Estadística: {PH1}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Anota una traça per a tu i per a altres persones"
@@ -14141,11 +14363,29 @@
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: puntuació {PH3} ({PH2})"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
+    "message": "Estadístiques superades ({PH1})"
+  },
+  "panels/timeline/components/TimelineSummary.ts | rangeSS": {
+    "message": "Interval: {PH1}-{PH2}"
+  },
+  "panels/timeline/components/TimelineSummary.ts | total": {
+    "message": "Total"
+  },
   "panels/timeline/components/Utils.ts | fms": {
     "message": "{PH1} [ms]()"
   },
   "panels/timeline/components/Utils.ts | fs": {
     "message": "{PH1} [s]()"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
+    "message": "Estalvi estimat: {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
+    "message": "Estalvi estimat: {PH1} i {PH2}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
+    "message": "Consulta els detalls sobre {PH1}"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "Animació"
@@ -14159,6 +14399,12 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "Clúster de canvi de disseny als {PH1}"
   },
+  "panels/timeline/components/insights/CLSCulprits.ts | noCulprits": {
+    "message": "No s'ha detectat cap causant del canvi de disseny"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "No hi ha canvis de disseny"
+  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "Principals causants del canvi de disseny"
   },
@@ -14170,6 +14416,9 @@
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Pitjor clúster de canvi de disseny"
+  },
+  "panels/timeline/components/insights/DOMSize.ts | noLargeRenderTasks": {
+    "message": "No hi ha tasques de renderització afectades per la mida del DOM"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "La comprovació de les estadístiques ha fallat: {PH1}"
@@ -14210,11 +14459,23 @@
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Temps perdut"
   },
+  "panels/timeline/components/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "No hi ha cap imatge que es pugui optimitzar"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Optimitza la mida del fitxer"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | others": {
+    "message": "{PH1} més"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Durada"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "Retard respecte a la interacció"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "No s'ha detectat cap interacció"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "Fase"
@@ -14237,6 +14498,12 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "La imatge LCP s'ha carregat {PH1} després del primer punt d'inici."
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcp": {
+    "message": "No s'ha detectat cap LCP"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "No s'ha detectat cap recurs de l'LCP perquè l'LCP no és una imatge"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "La sol·licitud és visible al document inicial"
   },
@@ -14245,6 +14512,9 @@
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Retard en la renderització de l'element"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | noLcp": {
+    "message": "No s'ha detectat cap LCP"
   },
   "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
     "message": "% de l'LCP"
@@ -14264,11 +14534,17 @@
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "Durada"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "No hi ha sol·licituds de bloqueig de la renderització per a aquesta navegació"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Sol·licitud"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Temps transcorregut"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "No s'han trobat dades del selector CSS. Les estadístiques del selector CSS s'han d'activar a la configuració del tauler de rendiment."
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
     "message": "Intents de coincidència"
@@ -14290,6 +14566,9 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "Mida de la transferència"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | noThirdParties": {
+    "message": "No s'ha trobat cap tercer"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Enllaços entre entrades"
@@ -14410,6 +14689,9 @@
   },
   "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
     "message": "Calcula les interseccions"
+  },
+  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
+    "message": "Executa la tasca de la consola"
   },
   "panels/timeline/utils/EntryStyles.ts | consoleTime": {
     "message": "Temps de la consola"
@@ -14711,6 +14993,18 @@
   "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
     "message": "Canvi de readyState a XHR"
   },
+  "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
+    "message": "Marcat amb ignoreList al mapa d'origen"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipAnonymousScripts": {
+    "message": "Script anònim"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipContentScripts": {
+    "message": "Script de contingut"
+  },
+  "panels/timeline/utils/IgnoreList.ts | unknown": {
+    "message": "Desconegut"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "El contingut i les capçaleres de les sol·licituds s'anul·len"
   },
@@ -14861,11 +15155,8 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
-  "panels/whats_new/ReleaseNoteView.ts | close": {
-    "message": "Tanca"
-  },
-  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
-    "message": "Més informació"
+  "panels/whats_new/ReleaseNoteView.ts | seeFeatures": {
+    "message": "Mostra totes les funcions noves"
   },
   "panels/whats_new/whats_new-meta.ts | bug": {
     "message": "error"
@@ -14918,10 +15209,7 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "S'ha cancel·lat l'ordenació de: {PH1}"
   },
-  "ui/components/dialogs/IconDialog.ts | close": {
-    "message": "Tanca"
-  },
-  "ui/components/dialogs/ShortcutDialog.ts | close": {
+  "ui/components/dialogs/Dialog.ts | close": {
     "message": "Tanca"
   },
   "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
@@ -15161,6 +15449,9 @@
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Taulers"
   },
+  "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
+    "message": "Torna a carregar"
+  },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Torna a carregar DevTools"
   },
@@ -15301,6 +15592,12 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "Més pestanyes"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabLeft": {
+    "message": "Mou cap a l'esquerra"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabRight": {
+    "message": "Mou cap a la dreta"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Funció de previsualització"
@@ -15741,7 +16038,7 @@
     "message": "Suprimeix les anotacions"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "Configura els canals…"
+    "message": "Configura els canals"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "S'ha seleccionat un esdeveniment de {PH1} dins de {PH2}. Prem Retorn per posar el focus en aquest esdeveniment."
@@ -15797,11 +16094,14 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "Total"
   },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
+    "message": "Clàssic"
+  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | collectGarbage": {
     "message": "Recull la brossa"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
-    "message": "Acció de la rodeta del ratolí al gràfic de flames:"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
+    "message": "Navegació pel gràfic de flames:"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
     "message": "Amaga les anotacions actives de l'assignació de memòria"
@@ -15809,14 +16109,11 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
     "message": "Anotacions d'assignació de memòria activa"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
-    "message": "Desplaça"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
+    "message": "Modern"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
     "message": "Mostra les anotacions d'assignació de memòria activa"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
-    "message": "Amplia"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Ordre"

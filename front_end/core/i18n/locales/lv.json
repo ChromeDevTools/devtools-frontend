@@ -152,6 +152,9 @@
   "core/common/SettingRegistration.ts | persistence": {
     "message": "Pastāvīgums"
   },
+  "core/common/SettingRegistration.ts | privacy": {
+    "message": "Konfidencialitāte"
+  },
   "core/common/SettingRegistration.ts | rendering": {
     "message": "Atveide"
   },
@@ -436,6 +439,12 @@
   },
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Ielāde tika atcelta, jo pārbaudītā lapa tika ielādēta atkārtoti."
+  },
+  "core/sdk/RehydratingConnection.ts | errorLoadingLog": {
+    "message": "Ielādējot žurnālu, radās kļūda"
+  },
+  "core/sdk/RehydratingConnection.ts | noHostWindow": {
+    "message": "Nevar atrast saimniekdatora logu"
   },
   "core/sdk/RehydratingConnection.ts | noSourceText": {
     "message": "Avota teksts nav pieejams"
@@ -1121,6 +1130,9 @@
   "entrypoints/node_app/NodeConnectionsPanel.ts | specifyNetworkEndpointAnd": {
     "message": "Norādiet tīkla galapunktu, un Izstrādātāja rīki automātiski izveidos savienojumu ar to. Plašāka informācija: {PH1}."
   },
+  "entrypoints/node_app/NodeMain.ts | NodejsTitleS": {
+    "message": "Izstrādātāja rīki — Node.js: {PH1}"
+  },
   "entrypoints/node_app/NodeMain.ts | main": {
     "message": "Galvenais"
   },
@@ -1147,9 +1159,6 @@
   },
   "generated/Deprecation.ts | AuthorizationCoveredByWildcard": {
     "message": "Authorization will not be covered by the wildcard symbol (*) in CORS Access-Control-Allow-Headers handling."
-  },
-  "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
-    "message": "Sintakse “:--customstatename” vairs netiek atbalstīta. Tās vietā, lūdzu, izmantojiet sintaksi “:state(customstatename)”."
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "The disableRemotePlayback attribute should be used in order to disable the default Cast integration instead of using -internal-media-controls-overlay-cast-button selector."
@@ -1301,11 +1310,11 @@
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "Ielādes atcelšanas notikumu uztvērēju darbība ir pārtraukta, un tie tiks noņemti."
   },
-  "generated/Deprecation.ts | V8GPUAdapter_RequestAdapterInfo_Method": {
-    "message": "GPUAdapter metodes “requestAdapterInfo()” darbība ir pārtraukta. Tās vietā izmantojiet GPUAdapter atribūtu “info”."
-  },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
+  },
+  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
+    "message": "WebGPU ierobežojums maxInterStageShaderComponents vairs netiek izmantots. Tā vietā izmantojiet WebGPU ierobežojumu maxInterStageShaderVariables."
   },
   "generated/Deprecation.ts | WebSQL": {
     "message": "Saskarne Web SQL vairs netiek izmantota. Lūdzu, izmantojiet SQLite WebAssembly vai Indexed Database."
@@ -1369,6 +1378,9 @@
   },
   "models/bindings/ResourceScriptMapping.ts | liveEditFailed": {
     "message": "Nesekmīga funkcijas LiveEdit izpilde: {PH1}"
+  },
+  "models/crux-manager/CrUXManager.ts | fieldOverrideWarning": {
+    "message": "Lauka dati ir konfigurēti citam URL, nevis pašreizējai lapai."
   },
   "models/emulation/DeviceModeModel.ts | devicePixelRatioMustBeANumberOr": {
     "message": "Ierīces pikseļu attiecības vērtībai jābūt skaitlim vai laukam jābūt tukšam."
@@ -1547,6 +1559,9 @@
   "models/issues_manager/SharedDictionaryIssue.ts | compressionDictionaryTransport": {
     "message": "Saspiešanas vārdnīcas pārvietošana"
   },
+  "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
+    "message": "Jaunas ierīces simulēšana pēc lapas ielādes var ietekmēt LCP. Lai iegūtu precīzus LCP datus, pēc jaunas ierīces simulēšanas atkārtoti ielādējiet lapu."
+  },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymous>"
   },
@@ -1694,6 +1709,12 @@
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Izkārtojuma nobīdes cēloņi"
   },
+  "models/trace/insights/DOMSize.ts | description": {
+    "message": "Liels DOM palielina atmiņas lietojumu, paildzina stila aprēķinus un izraisa dārgu izkārtojuma plūdumu sakārtošanu, kas ietekmē lapas reaģētspēju. [Uzziniet, kā izvairīties no pārmērīga DOM lieluma](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "models/trace/insights/DOMSize.ts | title": {
+    "message": "DOM lieluma optimizācija"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "Jūsu pirmais tīkla pieprasījums ir vissvarīgākais.  Samaziniet latentumu, novēršot novirzīšanu, nodrošinot ātru servera atbildi un iespējojot teksta saspiešanu."
   },
@@ -1705,6 +1726,24 @@
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Fonta attēlojums"
+  },
+  "models/trace/insights/ImageDelivery.ts | description": {
+    "message": "Samazinot attēlu lejupielādes laiku, var tikt uzlabots lapas ielādes laiks un LCP. [Uzziniet vairāk par attēlu lieluma optimizāciju](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
+  },
+  "models/trace/insights/ImageDelivery.ts | title": {
+    "message": "Attēlu piegādes uzlabošana"
+  },
+  "models/trace/insights/ImageDelivery.ts | useCompression": {
+    "message": "Attēla saspiešanas koeficienta palielināšana var uzlabot šī attēla lejupielādes lielumu. (Apt. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useModernFormat": {
+    "message": "Modernu attēla formātu (WebP, AVIF) izmantošana vai attēlu saspiešanas palielināšana varētu uzlabot šī attēla lejupielādes lielumu. (Apt. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
+    "message": "Šī attēla faila lielums ({PH2}) pārsniedz attēlošanai vajadzīgo lielumu ({PH3}). Izmantojiet adaptīvos attēlus, lai samazinātu attēla lejupielādes lielumu. (Apt. {PH1})"
+  },
+  "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
+    "message": "Izmantojot video formātus, nevis GIF attēlus, var uzlabot animēta satura lejupielādes lielumu. (Apt. {PH1})"
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Vispirms izpētiet garāko posmu. [Aizkaves var samazināt](https://web.dev/articles/optimize-inp#optimize_interactions). Lai samazinātu apstrādes ilgumu, [optimizējiet galvenā pavediena izmaksas](https://web.dev/articles/optimize-long-tasks) (parasti JS)."
@@ -1743,10 +1782,10 @@
     "message": "Trešās puses"
   },
   "models/trace/insights/Viewport.ts | description": {
-    "message": "Lapas skatvieta nav optimizēta mobilajām ierīcēm, tāpēc mijiedarbība ar pieskārieniem var būt [aizkavēta līdz pat 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Ja skatvieta nav optimizēta mobilajām ierīcēm, mijiedarbībā ar pieskārieniem var būt [aizkave līdz pat 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
   },
   "models/trace/insights/Viewport.ts | title": {
-    "message": "Skatvieta nav optimizēta mobilajām ierīcēm"
+    "message": "Skatvietas optimizācija mobilajām ierīcēm"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indekss)"
@@ -2170,6 +2209,87 @@
   },
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Rādīt rīku Pieejamība"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | chatDeleted": {
+    "message": "Saruna ir izdzēsta"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | clearChatHistory": {
+    "message": "Notīrīt lokālos tērzēšanas ziņojumus"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
+    "message": "Dzēst lokālās tērzēšanas sarunas"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | help": {
+    "message": "Palīdzība"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | history": {
+    "message": "Vēsture"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
+    "message": "Jauna saruna"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | newChatCreated": {
+    "message": "Izveidota jauna tērzēšanas saruna"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | noPastConversations": {
+    "message": "Nav iepriekšēju sarunu"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | sendFeedback": {
+    "message": "Sūtīt atsauksmes"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | settings": {
+    "message": "Iestatījumi"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | aiAssistance": {
+    "message": "MI palīdzība"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | askAi": {
+    "message": "Jautāt MI"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | enableAiAssistance": {
+    "message": "Iespējot MI palīdzību"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | geoRestricted": {
+    "message": "Šī funkcija nav pieejama jūsu reģionā."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | policyRestricted": {
+    "message": "Šo iestatījumu pārvalda jūsu administrators."
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | showAiAssistance": {
+    "message": "Rādīt MI palīdzību"
+  },
+  "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
+    "message": "Lai izmantotu šo funkciju, izstrādātāja rīku iestatījumos valodas preferencei iestatiet angļu valodu."
+  },
+  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
+    "message": "Lai uzdotu jautājumu, veiciet iepriekš minētās darbības."
+  },
+  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
+    "message": "Šī MI funkcija ir eksperimentāla un ne vienmēr darbojas pareizi."
+  },
+  "panels/ai_assistance/components/ChatView.ts | learnAbout": {
+    "message": "Uzzināt vairāk par MI izstrādātāja rīkos"
+  },
+  "panels/ai_assistance/components/ChatView.ts | notLoggedIn": {
+    "message": "Šī funkcija ir pieejama tikai pēc pierakstīšanās pārlūkā Chrome ar Google kontu."
+  },
+  "panels/ai_assistance/components/ChatView.ts | offline": {
+    "message": "Pārbaudiet interneta savienojumu un mēģiniet vēlreiz"
+  },
+  "panels/ai_assistance/components/ChatView.ts | settingsLink": {
+    "message": "MI palīdzība iestatījumos"
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStyles": {
+    "message": "Lai saņemtu palīdzību saistībā ar CSS stilu izprašanu, ieslēdziet funkciju {PH1}."
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesAndRequests": {
+    "message": "Lai saņemtu palīdzību saistībā ar stiliem un tīkla pieprasījumiem, ieslēdziet funkciju {PH1}."
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem un failiem, ieslēdziet funkciju {PH1}."
+  },
+  "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem, veiktspēju un failiem, ieslēdziet funkciju {PH1}."
   },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Animācijas priekšskatījums {PH1}"
@@ -4148,6 +4268,9 @@
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
     "message": "URL"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | automaticallyFellBackToPrefetch": {
+    "message": "(automātiski tika izmantota atkāpšanās iespēja — priekšienešana)"
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
     "message": "Noklikšķiniet, lai pārbaudītu iepriekš atveidotu lapu"
   },
@@ -4159,6 +4282,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Spekulatīvā ielāde neizdevās."
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFallbackToPrefetch": {
+    "message": "Spekulatīvā ielāde neizdevās, taču tika sekmīgi izmantota atkāpšanās iespēja — priekšienešana."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
     "message": "Spekulatīvas ielādes mēģinājums vēl nav aktivizēts."
@@ -4243,6 +4369,9 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Darbība"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | prefetchFallbackReady": {
+    "message": "Priekšienešanas atkāpšanās iespēja ir gatava"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
     "message": "Kārtula ir iestatīta"
@@ -5621,6 +5750,12 @@
   "panels/developer_resources/DeveloperResourcesView.ts | loadHttpsDeveloperResources": {
     "message": "Ielādēt HTTP(S) izstrādātāju resursus, izmantojot pārbaudāmo vietni, nevis izstrādātāja rīkus"
   },
+  "panels/developer_resources/DeveloperResourcesView.ts | noResourceMatches": {
+    "message": "Nav atbilstošu resursu"
+  },
+  "panels/developer_resources/DeveloperResourcesView.ts | numberOfResourceMatch": {
+    "message": "{n,plural, =1{# atbilstošs resurss}zero{# atbilstošu resursu}one{# atbilstošs resurss}other{# atbilstoši resursi}}"
+  },
   "panels/developer_resources/DeveloperResourcesView.ts | resources": {
     "message": "{n,plural, =1{# resurss}zero{# resursu}one{# resurss}other{# resursi}}"
   },
@@ -5713,6 +5848,9 @@
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Pārslēgt elementa statusu"
+  },
+  "panels/elements/ElementsPanel.ts | adornerSettings": {
+    "message": "Emblēmu iestatījumi"
   },
   "panels/elements/ElementsPanel.ts | computed": {
     "message": "Aprēķinātie"
@@ -5875,9 +6013,6 @@
   },
   "panels/elements/ElementsTreeElement.ts | valueIsTooLargeToEdit": {
     "message": "<value is too large to edit>"
-  },
-  "panels/elements/ElementsTreeOutline.ts | adornerSettings": {
-    "message": "Emblēmu iestatījumi…"
   },
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Lapas DOM"
@@ -6109,12 +6244,6 @@
   },
   "panels/elements/components/AccessibilityTreeNode.ts | ignored": {
     "message": "Ignorēts"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | closeButton": {
-    "message": "Aizvērt"
-  },
-  "panels/elements/components/AdornerSettingsPane.ts | settingsTitle": {
-    "message": "Rādīt emblēmas"
   },
   "panels/elements/components/AnchorFunctionLinkSwatch.ts | jumpToAnchorNode": {
     "message": "Pāriet uz enkura mezglu"
@@ -6381,7 +6510,7 @@
     "message": "Platums"
   },
   "panels/emulation/DeviceModeToolbar.ts | zoom": {
-    "message": "Tālummaiņa"
+    "message": "Tuvināt"
   },
   "panels/emulation/DeviceModeView.ts | doubleclickForFullHeight": {
     "message": "Lai atvērtu pilna ekrāna augstumā, veiciet dubultklikšķi."
@@ -6503,6 +6632,9 @@
   "panels/explain/components/ConsoleInsight.ts | opensInNewTab": {
     "message": "(saite tiks atvērta jaunā cilnē)"
   },
+  "panels/explain/components/ConsoleInsight.ts | references": {
+    "message": "Avoti un saistīts saturs"
+  },
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "Saistītais kods"
   },
@@ -6543,93 +6675,12 @@
     "message": "Brīdinājuma skaidrojums"
   },
   "panels/explain/explain-meta.ts | geoRestricted": {
-    "message": "Šī funkcija nav pieejama jūsu reģionā"
+    "message": "Šī funkcija nav pieejama jūsu reģionā."
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "Šo iestatījumu pārvalda jūsu administrators"
+    "message": "Šo iestatījumu pārvalda jūsu administrators."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Lai izmantotu šo funkciju, izstrādātāja rīku iestatījumos valodas preferencei iestatiet angļu valodu."
-  },
-  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
-    "message": "Saruna ir izdzēsta"
-  },
-  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
-    "message": "Notīrīt tērzēšanas vēsturi"
-  },
-  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
-    "message": "Dzēst sarunu"
-  },
-  "panels/freestyler/FreestylerPanel.ts | help": {
-    "message": "Palīdzība"
-  },
-  "panels/freestyler/FreestylerPanel.ts | history": {
-    "message": "Vēsture"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChat": {
-    "message": "Jauna saruna"
-  },
-  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
-    "message": "Izveidota jauna tērzēšanas saruna"
-  },
-  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
-    "message": "Nav iepriekšēju sarunu"
-  },
-  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
-    "message": "Sūtīt atsauksmes"
-  },
-  "panels/freestyler/FreestylerPanel.ts | settings": {
-    "message": "Iestatījumi"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
-    "message": "Lai uzdotu jautājumu, veiciet iepriekš minētās darbības."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
-    "message": "Šī MI funkcija ir eksperimentāla un ne vienmēr darbojas pareizi."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
-    "message": "Uzzināt vairāk par MI izstrādātāja rīkos"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
-    "message": "Šī funkcija ir pieejama tikai pēc pierakstīšanās pārlūkā Chrome ar Google kontu."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
-    "message": "Pārbaudiet interneta savienojumu un mēģiniet vēlreiz"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
-    "message": "MI palīdzība iestatījumos"
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
-    "message": "Lai saņemtu palīdzību saistībā ar CSS stilu izprašanu, ieslēdziet funkciju {PH1}."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem un tīkla pieprasījumiem, ieslēdziet funkciju {PH1}."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem un failiem, ieslēdziet funkciju {PH1}."
-  },
-  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
-    "message": "Lai saņemtu palīdzību saistībā ar stiliem, tīkla pieprasījumiem, veiktspēju un failiem, ieslēdziet funkciju {PH1}."
-  },
-  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
-    "message": "MI palīdzība"
-  },
-  "panels/freestyler/freestyler-meta.ts | askAi": {
-    "message": "Jautāt MI"
-  },
-  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
-    "message": "Iespējot MI palīdzību"
-  },
-  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
-    "message": "Šī funkcija nav pieejama jūsu reģionā"
-  },
-  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
-    "message": "Šo iestatījumu pārvalda jūsu administrators"
-  },
-  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
-    "message": "Rādīt MI palīdzību"
-  },
-  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
     "message": "Lai izmantotu šo funkciju, izstrādātāja rīku iestatījumos valodas preferencei iestatiet angļu valodu."
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
@@ -7769,9 +7820,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottlingIsEnabled": {
     "message": "Centrālā procesora ierobežošana ir iespējota"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | dSlowdown": {
-    "message": "{PH1} × palēninājums"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | excessConcurrency": {
     "message": "Pārsniedzot noklusējuma vērtību, var pasliktināties sistēmas veiktspēja."
   },
@@ -7784,11 +7832,11 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
     "message": "Ignorēt vērtību, ko norāda parametrs navigator.hardwareConcurrency"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
-    "message": "Bez ierobežošanas"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "Bezsaistē"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
+    "message": "{PH1} (ieteicams)"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "Atiestatīt uz noklusējuma vērtību"
@@ -7808,9 +7856,6 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
     "message": "Ātrs 3G un centrālā procesora palēnināšana 4 reizes"
   },
-  "panels/mobile_throttling/ThrottlingPresets.ts | lowendMobile": {
-    "message": "Zemākās klases mobilās ierīces"
-  },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "Vidēja līmeņa mobilā ierīce"
   },
@@ -7818,7 +7863,7 @@
     "message": "Nav interneta savienojuma"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | noThrottling": {
-    "message": "Bez ierobežošanas"
+    "message": "Nav centrālā procesora un tīkla ierobežošanas"
   },
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
     "message": "Lēns 3G un centrālā procesora palēnināšana 6 reizes"
@@ -8588,6 +8633,9 @@
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Nenotīrīt žurnālu, atkārtoti ielādējot lapu/pārvietojoties"
   },
+  "panels/network/NetworkPanel.ts | exportHar": {
+    "message": "Eksportēt HAR (notīrītu vai ar sensitīviem datiem)"
+  },
   "panels/network/NetworkPanel.ts | exportHarSanitized": {
     "message": "Eksportēt HAR (notirītu)"
   },
@@ -9000,7 +9048,7 @@
     "message": "Iezīme"
   },
   "panels/network/SignedExchangeInfoView.ts | learnmore": {
-    "message": "Uzzināt vairāk"
+    "message": "Uzzināt vairāk"
   },
   "panels/network/SignedExchangeInfoView.ts | requestUrl": {
     "message": "Pieprasījuma URL"
@@ -10520,11 +10568,65 @@
   "panels/search/SearchView.ts | searching": {
     "message": "Notiek meklēšana…"
   },
+  "panels/security/CookieControlsView.ts | cardDisclaimer": {
+    "message": "Tikai tad, kad ir atvērti izstrādātāja rīki"
+  },
+  "panels/security/CookieControlsView.ts | cardTitle": {
+    "message": "Īslaicīga trešo pušu sīkfailu ierobežošana"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
+    "message": "Jūsu organizācija pārvalda šīs vietnes piekļuvi trešo pušu sīkfailiem"
+  },
+  "panels/security/CookieControlsView.ts | enterpriseTooltip": {
+    "message": "Šo iestatījumu pārvalda jūsu organizācija"
+  },
+  "panels/security/CookieControlsView.ts | exceptions": {
+    "message": "Izņēmumi"
+  },
+  "panels/security/CookieControlsView.ts | exceptionsExplanation": {
+    "message": "Scenāriji, kuros tiek piešķirta piekļuve trešo pušu sīkfailiem"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriod": {
+    "message": "pagarinājuma periods"
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodExplanation": {
+    "message": "Ja šai vietnei vai tajā iegultajai vietnei ir piešķirts {PH1}, vietne var piekļūt trešo pušu sīkfailiem."
+  },
+  "panels/security/CookieControlsView.ts | gracePeriodTitle": {
+    "message": "Trešo pušu sīkfailu pagarinājuma periods"
+  },
+  "panels/security/CookieControlsView.ts | heuristicExplanation": {
+    "message": "{PH1}, piemēram, kad tiek rādīti uznirstošie elementi vai notiek novirzīšana, šajā vietnē iegulta vietne var piekļūt trešās puses sīkfailiem."
+  },
+  "panels/security/CookieControlsView.ts | heuristicTitle": {
+    "message": "Ar heiristiku pamatots izņēmums"
+  },
+  "panels/security/CookieControlsView.ts | scenarios": {
+    "message": "Iepriekš definētos scenārijos"
+  },
+  "panels/security/CookieControlsView.ts | siteReloadMessage": {
+    "message": "Lai lietotu atjauninātās vadīklas, atkārtoti ielādējiet lapu"
+  },
+  "panels/security/CookieControlsView.ts | viewDetails": {
+    "message": "Skatīt informāciju"
+  },
+  "panels/security/CookieControlsView.ts | viewExplanation": {
+    "message": "Testējiet šīs vietnes veiktspēju, kad lietotājs izvēlas ierobežot trešo pušu sīkfailus pārlūkā Chrome."
+  },
+  "panels/security/CookieControlsView.ts | viewTitle": {
+    "message": "Vadīklas"
+  },
+  "panels/security/CookieReportView.ts | adCookieTypeString": {
+    "message": "Reklamēšana"
+  },
   "panels/security/CookieReportView.ts | allowed": {
     "message": "Atļauts"
   },
   "panels/security/CookieReportView.ts | allowedByException": {
     "message": "Atļauts ar izņēmumu"
+  },
+  "panels/security/CookieReportView.ts | analyticsCookieTypeString": {
+    "message": "Analīze"
   },
   "panels/security/CookieReportView.ts | blocked": {
     "message": "Bloķēts"
@@ -10532,11 +10634,104 @@
   "panels/security/CookieReportView.ts | body": {
     "message": "Trešo pušu sīkfaili, kuru izmantošanu lietotāji var ierobežot atbilstoši saviem iestatījumiem. Ja lietotājs izvēlas ierobežot sīkfailu izmantošanu, šī vietne attiecīgā lietotāja ierīcē var nedarboties."
   },
+  "panels/security/CookieReportView.ts | cdnCookieTypeString": {
+    "message": "CDN"
+  },
+  "panels/security/CookieReportView.ts | consentProviderCookieTypeString": {
+    "message": "Piekrišanas sniedzējs"
+  },
+  "panels/security/CookieReportView.ts | contentCookieTypeString": {
+    "message": "Saturs"
+  },
+  "panels/security/CookieReportView.ts | customerSuccessCookieTypeString": {
+    "message": "Klientu panākumi"
+  },
+  "panels/security/CookieReportView.ts | domain": {
+    "message": "Domēns"
+  },
+  "panels/security/CookieReportView.ts | emptyReport": {
+    "message": "Nav sīkfailu problēmu"
+  },
+  "panels/security/CookieReportView.ts | emptyReportExplanation": {
+    "message": "Netika konstatētas ar trešās puses sīkfailiem saistītas problēmas"
+  },
+  "panels/security/CookieReportView.ts | gitHubResource": {
+    "message": "Pārskatiet šo trešās puses vietnes sīkfailu: {PH1}."
+  },
+  "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
+    "message": "GitHub"
+  },
+  "panels/security/CookieReportView.ts | gracePeriod": {
+    "message": "Pārskatiet {PH1}. Pagarinājuma perioda izņēmums ir aktīvs."
+  },
+  "panels/security/CookieReportView.ts | gracePeriodInsightTypeString": {
+    "message": "Pagarinājuma periods"
+  },
+  "panels/security/CookieReportView.ts | guidance": {
+    "message": "norādes"
+  },
+  "panels/security/CookieReportView.ts | heuristics": {
+    "message": "Vēlāk būs jāveic darbība. Heiristikas izņēmums ir aktīvs."
+  },
+  "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
+    "message": "Heiristika"
+  },
+  "panels/security/CookieReportView.ts | hostingCookieTypeString": {
+    "message": "Mitināšana"
+  },
   "panels/security/CookieReportView.ts | learnMoreLink": {
     "message": "Uzzināt vairāk par to, kā tiek izmantoti trešo pušu sīkfaili"
   },
+  "panels/security/CookieReportView.ts | marketingCookieTypeString": {
+    "message": "Mārketings"
+  },
+  "panels/security/CookieReportView.ts | name": {
+    "message": "Nosaukums"
+  },
+  "panels/security/CookieReportView.ts | other": {
+    "message": "Lai iegūtu plašāku informāciju, sazinieties ar trešās puses vietni."
+  },
+  "panels/security/CookieReportView.ts | otherCookieTypeString": {
+    "message": "Cits"
+  },
+  "panels/security/CookieReportView.ts | otherInsightTypeString": {
+    "message": "Cits"
+  },
+  "panels/security/CookieReportView.ts | platform": {
+    "message": "Platforma"
+  },
+  "panels/security/CookieReportView.ts | recommendation": {
+    "message": "Ieteikums"
+  },
+  "panels/security/CookieReportView.ts | report": {
+    "message": "Trešās puses sīkfailu pārskats"
+  },
+  "panels/security/CookieReportView.ts | reportedIssues": {
+    "message": "problēmas, par kurām tika ziņots"
+  },
+  "panels/security/CookieReportView.ts | socialCookieTypeString": {
+    "message": "Sociālie tīkli"
+  },
+  "panels/security/CookieReportView.ts | status": {
+    "message": "Statuss"
+  },
+  "panels/security/CookieReportView.ts | tagManagerCookieTypeString": {
+    "message": "Tagu pārvaldnieks"
+  },
   "panels/security/CookieReportView.ts | title": {
     "message": "Trešo pušu sīkfaili"
+  },
+  "panels/security/CookieReportView.ts | type": {
+    "message": "Tips"
+  },
+  "panels/security/CookieReportView.ts | unknown": {
+    "message": "Nezināma"
+  },
+  "panels/security/CookieReportView.ts | utilityCookieTypeString": {
+    "message": "Utilīta"
+  },
+  "panels/security/CookieReportView.ts | videoCookieTypeString": {
+    "message": "Video"
   },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} ar {PH2}"
@@ -10841,6 +11036,9 @@
   "panels/security/SecurityPanelSidebar.ts | cookieReport": {
     "message": "Trešo pušu sīkfaili"
   },
+  "panels/security/SecurityPanelSidebar.ts | flagControls": {
+    "message": "Vadīklas"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Galvenais avots"
   },
@@ -11117,17 +11315,20 @@
   "panels/sensors/sensors-meta.ts | userIdleScreenUnlocked": {
     "message": "Lietotājs ir īslaicīgi neaktīvs, ekrāns atbloķēts"
   },
-  "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "Atkarībā no jūsu Google konta pārziņa sniegtajām atļaujām un/vai reģiona Google var atturēties no datu vākšanas. Pārvaldītiem lietotājiem pieejamās funkcijas var atšķirties atkarībā no organizācijas izvēlētajiem iestatījumiem."
-  },
   "panels/settings/AISettingsTab.ts | ageRestricted": {
-    "message": "Šī funkcija ir pieejama tikai lietotājiem, kuri sasnieguši 18 gadu vecumu"
+    "message": "Šī funkcija ir pieejama tikai lietotājiem, kuri sasnieguši 18 gadu vecumu."
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Palieliniet produktivitāti, izmantojot MI"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Konsoles ziņojums, saistītais steka trasējums, pirmkods un tīkla galvenes tiek nosūtītas uzņēmumam Google skaidrojumu ģenerēšanai. Šos datus var skatīt pārskatītāji, lai uzlabotu šo funkciju."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollection": {
+    "message": "Atkarībā no jūsu reģiona Google var atturēties no datu vākšanas."
+  },
+  "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
+    "message": "Pārskatītāji neizmantos jūsu saturu, lai uzlabotu MI. Jūsu organizācija var jebkurā laikā mainīt šos iestatījumus. Atkarībā no jūsu Google konta pārziņa sniegtajām atļaujām un/vai reģiona Google var atturēties no datu vākšanas."
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "Iespējot MI palīdzību"
@@ -11189,9 +11390,6 @@
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "Varat saņemt ieteikumus un kodu paraugus šīs problēmas novēršanai"
   },
-  "panels/settings/AISettingsTab.ts | retainData": {
-    "message": "Lietojuma dati tiks saglabāti līdz 18 mēnešiem un glabāti tādā veidā, ka Google nevarēs noteikt, kas tos sniedza."
-  },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
     "message": "Izmantojot šīs funkcijas, uz Google serveriem tiek sūtīti atbilstoši dati. Google vāc šos datus un atsauksmes, lai ar pārskatītāju palīdzību uzlabotu savus produktus un pakalpojumus. Nenorādiet sensitīvu vai personas informāciju."
   },
@@ -11217,7 +11415,7 @@
     "message": "Pievienojiet skripta URL regulārās izteiksmes kārtulu"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "Pievienot regulārās izteiksmes kārtulu…"
+    "message": "Pievienot regulārās izteiksmes kārtulu"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Zināmi trešo pušu skripti no avota kartēm"
@@ -11247,7 +11445,7 @@
     "message": "Ja šis iestatījums ir iespējots, atkļūdotājs izlaidīs skriptus, kas ir iekļauti ignorējamo skriptu sarakstā, un ignorēs izņēmumus, kas ietekmē tikai attiecīgos skriptus. Panelī Veiktspēja tiks sakļauti atbilstošie detalizētās diagrammas vienumi."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
-    "message": "Tādu skriptu ignorēšana, kuru nosaukumi atbilst rakstam “{PH1}”"
+    "message": "Tādu skriptu ignorēšana, kuru nosaukumi atbilst “{PH1}”"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | learnMore": {
     "message": "Uzzināt vairāk"
@@ -11256,10 +11454,10 @@
     "message": "Pievienojiet skripta URL regulārās izteiksmes kārtulu"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
-    "message": "Kārtula jau pastāv."
+    "message": "Kārtula jau pastāv"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "Kārtulas lauks nedrīkst būt tukšs."
+    "message": "Kārtulas lauks nedrīkst būt tukšs"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
     "message": "Kārtulai ir jābūt derīgai regulārajai izteiksmei."
@@ -11331,7 +11529,7 @@
     "message": "Uzzināt vairāk"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "Brīdinājums: neviens eksperiments neatbilst filtram"
+    "message": "Neviens eksperiments neatbilst filtram"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Viens vai vairāki iestatījumi ir mainījušies, tāpēc jāveic atkārtota ielāde."
@@ -11370,7 +11568,7 @@
     "message": "Lai ieslēgtu šo iestatījumu, jums ir jāiespējo Chrome sinhronizācija."
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
-    "message": "Pievienot pielāgotu ierīci..."
+    "message": "Pievienot pielāgotu ierīci"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
     "message": "Pielāgotas ierīces"
@@ -11397,7 +11595,7 @@
     "message": "Ierīces pikseļu attiecība"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
-    "message": "Augstums"
+    "message": "Garums"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | userAgentString": {
     "message": "Lietotāja aģenta virkne"
@@ -12599,9 +12797,6 @@
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1}–{PH2}]"
   },
-  "panels/timeline/EventsTimelineTreeView.ts | Dms": {
-    "message": "{PH1} ms"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
     "message": "Visi"
   },
@@ -12666,7 +12861,7 @@
     "message": "Galvenais — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | onIgnoreList": {
-    "message": "Iekļauts ignorēto sarakstā"
+    "message": "Iekļauts ignorēto sarakstā ({rule})"
   },
   "panels/timeline/ThreadAppender.ts | raster": {
     "message": "Rastrs"
@@ -12724,9 +12919,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Gleznošanas profilētājs"
-  },
-  "panels/timeline/TimelineDetailsView.ts | rangeSS": {
-    "message": "Diapazons: {PH1}—{PH2}"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
     "message": "Atlasītāja statistika"
@@ -12788,32 +12980,20 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "Pašreizējā sesija: {PH1}. {PH2}"
   },
+  "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
+    "message": "{PH1}× palēninājums"
+  },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Reāllaika rādītāji"
   },
-  "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
-    "message": "(nav ierakstu)"
+  "panels/timeline/TimelineHistoryManager.ts | nodeLandingPageTitle": {
+    "message": "Jauns ieraksts"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} (#{PH2})"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Atlasīt laika skalsas sesiju"
-  },
-  "panels/timeline/TimelineLandingPage.ts | afterRecordingSelectAnAreaOf": {
-    "message": "Pēc ierakstīšanas kopsavilkuma skatā atlasiet interesējošo apgabalu, to velkot. Pēc tam pielāgojiet tālummaiņu un pārvietojiet laika grafiku, izmantojot peles ritenīti vai taustiņu kombināciju {PH1}. {PH2}"
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Lai sāktu jaunu ierakstu, noklikšķiniet uz ierakstīšanas pogas {PH1} vai izmantojiet taustiņu kombināciju {PH2}."
-  },
-  "panels/timeline/TimelineLandingPage.ts | clickTheReloadButtonSOrHitSTo": {
-    "message": "Lai ierakstītu lapas ielādi, noklikšķiniet uz atkārtotas ielādes pogas {PH1} vai izmantojiet taustiņu kombināciju {PH2}."
-  },
-  "panels/timeline/TimelineLandingPage.ts | learnmore": {
-    "message": "Uzzināt vairāk"
-  },
-  "panels/timeline/TimelineLandingPage.ts | wasd": {
-    "message": "WASD"
   },
   "panels/timeline/TimelineLoader.ts | malformedTimelineDataS": {
     "message": "Nepareizi veidoti laika grafika dati: {PH1}"
@@ -12862,6 +13042,9 @@
   },
   "panels/timeline/TimelinePanel.ts | description": {
     "message": "Apraksts"
+  },
+  "panels/timeline/TimelinePanel.ts | dimThirdParties": {
+    "message": "Aptumšot trešo pušu saturu"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Atspējot JavaScript paraugus"
@@ -12923,9 +13106,6 @@
   "panels/timeline/TimelinePanel.ts | networkConditions": {
     "message": "Tīkla nosacījumi"
   },
-  "panels/timeline/TimelinePanel.ts | performanceExtension": {
-    "message": "Paplašinājumu dati"
-  },
   "panels/timeline/TimelinePanel.ts | processed": {
     "message": "Apstrādāts"
   },
@@ -12956,6 +13136,9 @@
   "panels/timeline/TimelinePanel.ts | selectionCleared": {
     "message": "Atlase noņemta"
   },
+  "panels/timeline/TimelinePanel.ts | showCustomtracks": {
+    "message": "Rādīt pielāgotus ierakstus"
+  },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Rādīt veiktspējas paneļa paplašinājumu pievienotos datus"
   },
@@ -12971,9 +13154,6 @@
   "panels/timeline/TimelinePanel.ts | sidebarShown": {
     "message": "Veiktspējas sānjosla tiek rādīta"
   },
-  "panels/timeline/TimelinePanel.ts | ssec": {
-    "message": "{PH1} s"
-  },
   "panels/timeline/TimelinePanel.ts | status": {
     "message": "Statuss"
   },
@@ -12985,6 +13165,18 @@
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Laiks"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
+    "message": "Laika skalas ātra tuvināšana vai tālināšana"
+  },
+  "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
+    "message": "Laika skalas pārvietošana pa kreisi vai pa labi"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
+    "message": "Laika grafika pārvietošana uz augšu/leju"
+  },
+  "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
+    "message": "Laika skalas tuvināšana vai tālināšana"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Kopēt tabulu"
@@ -13033,9 +13225,6 @@
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome paplašinājumu virstēriņš]"
-  },
-  "panels/timeline/TimelineTreeView.ts | fms": {
-    "message": "{PH1} ms"
   },
   "panels/timeline/TimelineTreeView.ts | groupBy": {
     "message": "Grupēt pēc:"
@@ -13541,11 +13730,11 @@
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "Centrālā procesora ierobežošana: {PH1}"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | dSlowdown": {
-    "message": "{PH1}× palēninājums"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (ieteicams)"
   },
-  "panels/timeline/components/CPUThrottlingSelector.ts | noThrottling": {
-    "message": "Bez ierobežošanas"
+  "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Ieteicams mainīt iestatījumu, lai simulētu īstu lietotāju vidi"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
     "message": "Plūduma piespiedu pārkārtošana"
@@ -13577,14 +13766,8 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokols"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | add": {
-    "message": "Pievienot"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | advanced": {
     "message": "Papildu"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | alreadyMapped": {
-    "message": "Vietne “{PH1}” jau ir saistīta ar produkcijas versijas avotu."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | cancel": {
     "message": "Atcelt"
@@ -13595,15 +13778,6 @@
   "panels/timeline/components/FieldSettingsDialog.ts | configureFieldData": {
     "message": "Lauka datu izgūšanas konfigurēšana"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | delete": {
-    "message": "Dzēst"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOrigin": {
-    "message": "Izstrādes versijas avots"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | developmentOriginValue": {
-    "message": "Izstrādes versijas avots: {PH1}"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
     "message": "Chrome LP ziņojumā nav pietiekami daudz reālo ātruma datu šai lapai."
   },
@@ -13611,7 +13785,7 @@
     "message": "Izgūstiet apkopotus ievāktos datus no {PH1}, lai varētu nodrošināt lokālo mērījumu kontekstuālu informāciju par to, kāda ir īsto lietotāju pieredze vietnē."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
-    "message": "{PH1} nav derīgs avots vai URL."
+    "message": "{PH1} nav derīgs avots vai URL."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
     "message": "Iestatiet izstrādes versijas avotu, lai automātiski iegūtu atbilstošos ievāktos datus par tās produkcijas versijas avotu."
@@ -13631,12 +13805,6 @@
   "panels/timeline/components/FieldSettingsDialog.ts | privacyDisclosure": {
     "message": "Paziņojums par konfidencialitāti"
   },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOrigin": {
-    "message": "Produkcijas versijas avots"
-  },
-  "panels/timeline/components/FieldSettingsDialog.ts | productionOriginValue": {
-    "message": "Produkcijas versijas avots: {PH1}"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | setUp": {
     "message": "Iestatīt"
   },
@@ -13645,6 +13813,39 @@
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
     "message": "Kad būs atvērti izstrādātāja rīki, jūsu apmeklētie vietrāži URL tiks nosūtīti Google serveriem, lai pieprasītu lauka datus. Šie pieprasījumi netiek saistīti ar jūsu Google kontu."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
+    "message": "Pievienot skripta URL regulārās izteiksmes kārtulu"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreList": {
+    "message": "Ignorēšanas saraksts"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreListDescription": {
+    "message": "Pievienojiet regulārās izteiksmes kārtulas, lai no detalizētās diagrammas noņemtu atbilstošos skriptus."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchNewRegex": {
+    "message": "Ignorēt skriptus, kuru nosaukumi atbilst jaunajai regulārajai izteiksmei"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | ignoreScriptsWhoseNamesMatchS": {
+    "message": "Tādu skriptu ignorēšana, kuru nosaukumi atbilst “{regex}”"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExists": {
+    "message": "Kārtula jau pastāv"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternAlreadyExistsWillBeEnables": {
+    "message": "Šī kārtula jau pastāv, taču tā ir atspējota. Ja saglabāsiet šo vērtību, kārtula tiks atkārtoti iespējota."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternCannotBeEmpty": {
+    "message": "Kārtulas lauks nedrīkst būt tukšs"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | patternMustBeAValidRegular": {
+    "message": "Kārtulai ir jābūt derīgai regulārajai izteiksmei."
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | removeRegex": {
+    "message": "Noņemt regulāro izteiksmi “{regex}”"
+  },
+  "panels/timeline/components/IgnoreListSetting.ts | showIgnoreListSettingDialog": {
+    "message": "Rādīt ignorēšanas saraksta iestatīšanas dialoglodziņu"
   },
   "panels/timeline/components/InteractionBreakdown.ts | inputDelay": {
     "message": "Ievades aizkave"
@@ -13784,6 +13985,12 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Nākamās darbības"
   },
+  "panels/timeline/components/LiveMetricsView.ts | nodeClickToRecord": {
+    "message": "Ierakstiet saistītā mezgla procesa veiktspējas laika skalu."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | nodePerformanceTimeline": {
+    "message": "Mezglu veiktspēja"
+  },
   "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
     "message": "Nepietiekami dati"
   },
@@ -13808,9 +14015,6 @@
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Apstrādes ilgums"
   },
-  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
-    "message": "Īstu lietotāju vides"
-  },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Resursa ielādes aizkave"
   },
@@ -13832,9 +14036,6 @@
   "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
     "message": "Varat pāriet uz INP mijiedarbību."
   },
-  "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
-    "message": "Simulēt dažādās ierīcēs"
-  },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Planšetdators"
   },
@@ -13854,7 +14055,7 @@
     "message": "URL: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
-    "message": "Izmantojiet ierīces rīkjoslu šādai dsrbībai: {PH1}."
+    "message": "Izmantojiet [ierīces rīkjoslu](https://developer.chrome.com/docs/devtools/device-mode) un konfigurējiet ierobežošanu, lai simulētu reālu lietotāju vidi un identificētu vairāk veiktspējas problēmu."
   },
   "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
     "message": "Vissliktākā kopa"
@@ -14036,9 +14237,6 @@
   "panels/timeline/components/NetworkRequestDetails.ts | no": {
     "message": "Nē"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | preview": {
-    "message": "Priekšskatīt"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Prioritāte"
   },
@@ -14090,8 +14288,32 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Pirmsiestatījumi"
   },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
+    "message": "{PH1} (ieteicams)"
+  },
+  "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
+    "message": "Ieteicams mainīt iestatījumu, lai simulētu īstu lietotāju vidi"
+  },
+  "panels/timeline/components/OriginMap.ts | alreadyMapped": {
+    "message": "Vietne “{PH1}” jau ir saistīta ar produkcijas versijas avotu."
+  },
+  "panels/timeline/components/OriginMap.ts | developmentOrigin": {
+    "message": "Izstrādes versijas avots"
+  },
+  "panels/timeline/components/OriginMap.ts | invalidOrigin": {
+    "message": "{PH1} nav derīgs avots vai URL."
+  },
+  "panels/timeline/components/OriginMap.ts | pageHasNoData": {
+    "message": "Chrome LP ziņojumā nav pietiekami daudz šīs lapas reālo lietotāju datu."
+  },
+  "panels/timeline/components/OriginMap.ts | productionOrigin": {
+    "message": "Produkcijas versijas avots"
+  },
   "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
     "message": "Ieskats"
+  },
+  "panels/timeline/components/RelatedInsightChips.ts | insightWithName": {
+    "message": "Ieskats “{PH1}”"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
     "message": "Pievienojiet anotācijas gan saviem, gan citu lietotāju izsekošanas datiem"
@@ -14141,11 +14363,29 @@
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} ({PH3} rezultāts)"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
+    "message": "Pārbaudītie ieskati ({PH1})"
+  },
+  "panels/timeline/components/TimelineSummary.ts | rangeSS": {
+    "message": "Diapazons: {PH1}—{PH2}"
+  },
+  "panels/timeline/components/TimelineSummary.ts | total": {
+    "message": "Kopā"
+  },
   "panels/timeline/components/Utils.ts | fms": {
     "message": "{PH1}[ms]()"
   },
   "panels/timeline/components/Utils.ts | fs": {
     "message": "{PH1}[s]()"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavings": {
+    "message": "Aptuvenais ietaupījums: {PH1}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | estimatedSavingsTimingAndBytes": {
+    "message": "Aptuvenais ietaupījums: {PH1} un {PH2}"
+  },
+  "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
+    "message": "Skatīt detalizētu informāciju par ieskatu “{PH1}”"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "Animācija"
@@ -14159,6 +14399,12 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "Izkārtojuma nobīdes kopas sākuma laiks: {PH1}"
   },
+  "panels/timeline/components/insights/CLSCulprits.ts | noCulprits": {
+    "message": "Nevarēja noteikt izkārtojuma nobīdes cēloņus"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "Nav izkārtojuma nobīžu"
+  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "Galvenie izkārtojuma nobīdes cēloņi"
   },
@@ -14170,6 +14416,9 @@
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Sliktākās izkārtojuma nobīdes kopa"
+  },
+  "panels/timeline/components/insights/DOMSize.ts | noLargeRenderTasks": {
+    "message": "Nav neviena atveidošanas uzdevuma, ko ietekmē DOM lielums"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "Ieskata pārbaude nesekmīga: {PH1}"
@@ -14210,11 +14459,23 @@
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Nelietderīgi izmantots laiks"
   },
+  "panels/timeline/components/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "Nav optimizējamu attēlu"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Faila lieluma optimizācija"
+  },
+  "panels/timeline/components/insights/ImageDelivery.ts | others": {
+    "message": "Vēl {PH1}"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Ilgums"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "Ievades aizkave"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "Nav konstatēta mijiedarbība"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "Fāze"
@@ -14237,6 +14498,12 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
     "message": "LCP attēls tika ielādēts {PH1} pēc agrākā sākumpunkta."
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcp": {
+    "message": "Netika konstatēts LCP"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "Netika konstatēts neviens LCP resurss, jo LCP nav attēls"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "Pieprasījums ir atrodams sākotnējā dokumentā"
   },
@@ -14245,6 +14512,9 @@
   },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Elementa atveidošanas aizkave"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | noLcp": {
+    "message": "Netika konstatēts LCP"
   },
   "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
     "message": "% no LCP"
@@ -14264,11 +14534,17 @@
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "Ilgums"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "Šai navigācijai nav atveidošanas bloķēšanas pieprasījumu"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Pieprasījums"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Patērētais laiks"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "Netika atrasti CSS atlasītāja dati. Veiktspējas paneļa iestatījumos ir jāiespējo CSS atlasītāja statistika."
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
     "message": "Mēģinājumi noteikt atbilstību"
@@ -14290,6 +14566,9 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "Pārsūtīto failu lielums"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | noThirdParties": {
+    "message": "Netika atrasts trešās puses saturs"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Saiknes starp ierakstiem"
@@ -14410,6 +14689,9 @@
   },
   "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
     "message": "Krustpunktu aprēķināšana"
+  },
+  "panels/timeline/utils/EntryStyles.ts | consoleTaskRun": {
+    "message": "Izpildīt konsoles uzdevumu"
   },
   "panels/timeline/utils/EntryStyles.ts | consoleTime": {
     "message": "Konsoles laiks"
@@ -14711,6 +14993,18 @@
   "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
     "message": "XHR readyState izmaiņas"
   },
+  "panels/timeline/utils/IgnoreList.ts | skip3rdPartyScripts": {
+    "message": "Avota kartē atzīmēts ar parametru ignoreList"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipAnonymousScripts": {
+    "message": "Anonīms skripts"
+  },
+  "panels/timeline/utils/IgnoreList.ts | skipContentScripts": {
+    "message": "Satura skripts"
+  },
+  "panels/timeline/utils/IgnoreList.ts | unknown": {
+    "message": "Nezināma"
+  },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Tiek ignorēts gan pieprasījuma saturs, gan galvenes"
   },
@@ -14861,11 +15155,8 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
-  "panels/whats_new/ReleaseNoteView.ts | close": {
-    "message": "Aizvērt"
-  },
-  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
-    "message": "Uzzināt vairāk"
+  "panels/whats_new/ReleaseNoteView.ts | seeFeatures": {
+    "message": "Skatīt visas jaunās funkcijas"
   },
   "panels/whats_new/whats_new-meta.ts | bug": {
     "message": "kļūda"
@@ -14918,10 +15209,7 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Slejas “{PH1}” kārtošana ir atcelta"
   },
-  "ui/components/dialogs/IconDialog.ts | close": {
-    "message": "Aizvērt"
-  },
-  "ui/components/dialogs/ShortcutDialog.ts | close": {
+  "ui/components/dialogs/Dialog.ts | close": {
     "message": "Aizvērt"
   },
   "ui/components/dialogs/ShortcutDialog.ts | dialogTitle": {
@@ -15161,6 +15449,9 @@
   "ui/legacy/InspectorView.ts | panels": {
     "message": "Paneļi"
   },
+  "ui/legacy/InspectorView.ts | reloadDebuggedTab": {
+    "message": "Atkārtoti ielādēt"
+  },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
     "message": "Atkārtoti ielādēt izstrādātāja rīkus"
   },
@@ -15301,6 +15592,12 @@
   },
   "ui/legacy/TabbedPane.ts | moreTabs": {
     "message": "Citas cilnes"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabLeft": {
+    "message": "Pārvietot pa kreisi"
+  },
+  "ui/legacy/TabbedPane.ts | moveTabRight": {
+    "message": "Pārvietot pa labi"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
     "message": "Priekšskatījuma funkcija"
@@ -15741,7 +16038,7 @@
     "message": "Dzēst piezīmes"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
-    "message": "Notiek ierakstu konfigurēšana…"
+    "message": "Konfigurēt kanālus"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
     "message": "Atlasīts grupas “{PH2}” notikums “{PH1}”. Lai izceltu šo notikumu, nospiediet taustiņu Enter."
@@ -15797,11 +16094,14 @@
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "Kopsumma"
   },
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
+    "message": "Klasiskā"
+  },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | collectGarbage": {
     "message": "Novākt drazas"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartMouseWheelAction": {
-    "message": "Peles ritentiņa darbība liesmu diagrammā:"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | flamechartSelectedNavigation": {
+    "message": "Pārvietošanās detalizētajā diagrammā"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | hideLiveMemoryAllocation": {
     "message": "Slēpt dinamiskās atmiņas piešķiršanas anotācijas"
@@ -15809,14 +16109,11 @@
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | liveMemoryAllocationAnnotations": {
     "message": "Aktīvās atmiņas piešķiršanas anotācijas"
   },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | scroll": {
-    "message": "Ritināšana"
+  "ui/legacy/components/perf_ui/perf_ui-meta.ts | modern": {
+    "message": "Moderna"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | showLiveMemoryAllocation": {
     "message": "Rādīt dinamiskās atmiņas piešķiršanas anotācijas"
-  },
-  "ui/legacy/components/perf_ui/perf_ui-meta.ts | zoom": {
-    "message": "Tuvināt"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | command": {
     "message": "Komanda"

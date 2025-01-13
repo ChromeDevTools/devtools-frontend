@@ -6,6 +6,7 @@ const puppeteer = require('puppeteer-core');
 const yargs = require('yargs');
 const fs = require('fs');
 const path = require('path');
+const {parseComment} = require('./auto-run-helpers');
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';
 
@@ -104,32 +105,6 @@ class Example {
   }
 
   async #generateMetadata(page) {
-    function splitComment(comment) {
-      let isAnswer = false;
-      const question = [];
-      const answer = [];
-      for (let line of comment.split('\n')) {
-        line = line.trim();
-
-        if (line.startsWith('#')) {
-          isAnswer = true;
-        }
-
-        if (isAnswer) {
-          if (line.startsWith('#')) {
-            line = line.substring(1).trim();
-          }
-          answer.push(line);
-        } else {
-          question.push(line);
-        }
-      }
-      return {
-        answer: answer.join('\n'),
-        question: question.join(' '),
-      };
-    }
-
     let comments = await page.evaluate(() => {
       function collectComments(root) {
         const walker = document.createTreeWalker(
@@ -161,7 +136,7 @@ class Example {
       globalThis.__commentElements = results;
       return results.map(result => result.comment);
     });
-    comments = comments.map(comment => splitComment(comment));
+    comments = comments.map(comment => parseComment(comment));
     // Only get the first comment for now.
     const comment = comments[0];
     const queries = [comment.question];

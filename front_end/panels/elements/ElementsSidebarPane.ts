@@ -17,6 +17,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
     this.element.classList.add('flex-none');
     this.computedStyleModelInternal = computedStyleModel;
     this.computedStyleModelInternal.addEventListener(Events.CSS_MODEL_CHANGED, this.onCSSModelChanged, this);
+    this.computedStyleModelInternal.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.onComputedStyleChanged, this);
 
     this.updateThrottler = new Common.Throttler.Throttler(100);
     this.updateWhenVisible = false;
@@ -58,5 +59,8 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
   }
 
   onCSSModelChanged(_event: Common.EventTarget.EventTargetEvent<CSSModelChangedEvent|null>): void {
+  }
+
+  onComputedStyleChanged(): void {
   }
 }

@@ -741,6 +741,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       cssPropertyRegistrations: [],
       activePositionFallbackIndex: -1,
       fontPaletteValuesRule: undefined,
+      animationStylesPayload: [],
+      transitionsStylePayload: null,
+      inheritedAnimatedPayload: [],
     });
   }
 

@@ -623,6 +623,13 @@ export class StylePropertiesSection {
       return this.matchedStyles.isInherited(this.styleInternal) ? i18nString(UIStrings.styleAttribute) :
                                                                   'element.style';
     }
+    if (this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Transition) {
+      return 'transitions style';
+    }
+
+    if (this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Animation) {
+      return this.styleInternal.animationName() ? `${this.styleInternal.animationName()} animation` : 'animation style';
+    }
     if (node && this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Attributes) {
       return i18nString(UIStrings.sattributesStyle, {PH1: node.nodeNameInCorrectCase()});
     }

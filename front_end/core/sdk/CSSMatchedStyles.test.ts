@@ -48,6 +48,9 @@ function createMatchedStyles(
     cssPropertyRegistrations: [],
     fontPaletteValuesRule: undefined,
     activePositionFallbackIndex: -1,
+    animationStylesPayload: [],
+    transitionsStylePayload: null,
+    inheritedAnimatedPayload: [],
     ...payload,
   });
 }

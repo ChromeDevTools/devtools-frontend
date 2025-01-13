@@ -13,7 +13,15 @@ import type {Edit} from './CSSModel.js';
 import {stripComments} from './CSSPropertyParser.js';
 import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
-export class CSSProperty {
+export const enum Events {
+  LOCAL_VALUE_UPDATED = 'localValueUpdated',
+}
+
+export interface EventTypes {
+  [Events.LOCAL_VALUE_UPDATED]: void;
+}
+
+export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   ownerStyle: CSSStyleDeclaration;
   index: number;
   name: string;
@@ -34,6 +42,7 @@ export class CSSProperty {
       ownerStyle: CSSStyleDeclaration, index: number, name: string, value: string, important: boolean,
       disabled: boolean, parsedOk: boolean, implicit: boolean, text?: string|null, range?: Protocol.CSS.SourceRange,
       longhandProperties?: Protocol.CSS.CSSProperty[]) {
+    super();
     this.ownerStyle = ownerStyle;
     this.index = index;
     this.name = name;
@@ -286,6 +295,12 @@ export class CSSProperty {
   setValue(newValue: string, majorChange: boolean, overwrite: boolean, userCallback?: ((arg0: boolean) => void)): void {
     const text = this.name + ': ' + newValue + (this.important ? ' !important' : '') + ';';
     void this.setText(text, majorChange, overwrite).then(userCallback);
+  }
+
+  // Updates the value stored locally and emits an event to signal its update.
+  setLocalValue(value: string): void {
+    this.value = value;
+    this.dispatchEventToListeners(Events.LOCAL_VALUE_UPDATED);
   }
 
   async setDisabled(disabled: boolean): Promise<boolean> {

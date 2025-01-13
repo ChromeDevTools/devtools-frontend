@@ -165,6 +165,7 @@ function queryMatches(style: CSSStyleDeclaration): boolean {
 export interface CSSMatchedStylesPayload {
   cssModel: CSSModel;
   node: DOMNode;
+  activePositionFallbackIndex: number;
   inlinePayload: Protocol.CSS.CSSStyle|null;
   attributesPayload: Protocol.CSS.CSSStyle|null;
   matchedPayload: Protocol.CSS.RuleMatch[];
@@ -177,7 +178,9 @@ export interface CSSMatchedStylesPayload {
   propertyRules: Protocol.CSS.CSSPropertyRule[];
   cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[];
   fontPaletteValuesRule: Protocol.CSS.CSSFontPaletteValuesRule|undefined;
-  activePositionFallbackIndex: number;
+  animationStylesPayload: Protocol.CSS.CSSAnimationStyle[];
+  transitionsStylePayload: Protocol.CSS.CSSStyle|null;
+  inheritedAnimatedPayload: Protocol.CSS.InheritedAnimatedStyleEntry[];
 }
 
 export class CSSRegisteredProperty {
@@ -305,14 +308,18 @@ export class CSSMatchedStyles {
     attributesPayload,
     pseudoPayload,
     inheritedPseudoPayload,
+    animationStylesPayload,
+    transitionsStylePayload,
+    inheritedAnimatedPayload,
   }: CSSMatchedStylesPayload): Promise<void> {
     matchedPayload = cleanUserAgentPayload(matchedPayload);
     for (const inheritedResult of inheritedPayload) {
       inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
     }
 
-    this.#mainDOMCascade =
-        await this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
+    this.#mainDOMCascade = await this.buildMainCascade(
+        inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload,
+        transitionsStylePayload, inheritedAnimatedPayload);
     [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] =
         this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload);
 
@@ -330,9 +337,14 @@ export class CSSMatchedStyles {
   }
 
   private async buildMainCascade(
-      inlinePayload: Protocol.CSS.CSSStyle|null, attributesPayload: Protocol.CSS.CSSStyle|null,
+      inlinePayload: Protocol.CSS.CSSStyle|null,
+      attributesPayload: Protocol.CSS.CSSStyle|null,
       matchedPayload: Protocol.CSS.RuleMatch[],
-      inheritedPayload: Protocol.CSS.InheritedStyleEntry[]): Promise<DOMInheritanceCascade> {
+      inheritedPayload: Protocol.CSS.InheritedStyleEntry[],
+      animationStylesPayload: Protocol.CSS.CSSAnimationStyle[],
+      transitionsStylePayload: Protocol.CSS.CSSStyle|null,
+      inheritedAnimatedPayload: Protocol.CSS.InheritedAnimatedStyleEntry[],
+      ): Promise<DOMInheritanceCascade> {
     const nodeCascades: NodeCascade[] = [];
 
     const nodeStyles: CSSStyleDeclaration[] = [];
@@ -346,7 +358,22 @@ export class CSSMatchedStyles {
       nodeStyles.push(style);
     }
 
-    // Inline style has the greatest specificity.
+    // Transition styles take precedence over animation styles & inline styles.
+    if (transitionsStylePayload) {
+      const style = new CSSStyleDeclaration(this.#cssModelInternal, null, transitionsStylePayload, Type.Transition);
+      this.#nodeForStyleInternal.set(style, this.#nodeInternal);
+      nodeStyles.push(style);
+    }
+
+    // Animation styles take precedence over inline styles.
+    for (const animationsStyle of animationStylesPayload) {
+      const style = new CSSStyleDeclaration(
+          this.#cssModelInternal, null, animationsStyle.style, Type.Animation, animationsStyle.name);
+      this.#nodeForStyleInternal.set(style, this.#nodeInternal);
+      nodeStyles.push(style);
+    }
+
+    // Inline style takes precedence over regular and inherited rules.
     if (inlinePayload && this.#nodeInternal.nodeType() === Node.ELEMENT_NODE) {
       const style = new CSSStyleDeclaration(this.#cssModelInternal, null, inlinePayload, Type.Inline);
       this.#nodeForStyleInternal.set(style, this.#nodeInternal);
@@ -385,9 +412,35 @@ export class CSSMatchedStyles {
     for (let i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
       const inheritedStyles = [];
       const entryPayload = inheritedPayload[i];
+      const inheritedAnimatedEntryPayload = inheritedAnimatedPayload[i];
       const inheritedInlineStyle = entryPayload.inlineStyle ?
           new CSSStyleDeclaration(this.#cssModelInternal, null, entryPayload.inlineStyle, Type.Inline) :
           null;
+      const inheritedTransitionsStyle = inheritedAnimatedEntryPayload?.transitionsStyle ?
+          new CSSStyleDeclaration(
+              this.#cssModelInternal, null, inheritedAnimatedEntryPayload?.transitionsStyle, Type.Transition) :
+          null;
+      const inheritedAnimationStyles =
+          inheritedAnimatedEntryPayload?.animationStyles?.map(
+              animationStyle => new CSSStyleDeclaration(
+                  this.#cssModelInternal, null, animationStyle.style, Type.Animation, animationStyle.name)) ??
+          [];
+      if (inheritedTransitionsStyle && containsInherited(inheritedTransitionsStyle)) {
+        this.#nodeForStyleInternal.set(inheritedTransitionsStyle, parentNode);
+        inheritedStyles.push(inheritedTransitionsStyle);
+        this.#inheritedStyles.add(inheritedTransitionsStyle);
+      }
+
+      for (const inheritedAnimationsStyle of inheritedAnimationStyles) {
+        if (!containsInherited(inheritedAnimationsStyle)) {
+          continue;
+        }
+
+        this.#nodeForStyleInternal.set(inheritedAnimationsStyle, parentNode);
+        inheritedStyles.push(inheritedAnimationsStyle);
+        this.#inheritedStyles.add(inheritedAnimationsStyle);
+      }
+
       if (inheritedInlineStyle && containsInherited(inheritedInlineStyle)) {
         this.#nodeForStyleInternal.set(inheritedInlineStyle, parentNode);
         inheritedStyles.push(inheritedInlineStyle);
@@ -658,6 +711,20 @@ export class CSSMatchedStyles {
   nodeStyles(): CSSStyleDeclaration[] {
     Platform.assertNotNullOrUndefined(this.#mainDOMCascade);
     return this.#mainDOMCascade.styles();
+  }
+
+  inheritedStyles(): CSSStyleDeclaration[] {
+    return this.#mainDOMCascade?.styles().filter(style => this.isInherited(style)) ?? [];
+  }
+
+  animationStyles(): CSSStyleDeclaration[] {
+    return this.#mainDOMCascade?.styles().filter(style => !this.isInherited(style) && style.type === Type.Animation) ??
+        [];
+  }
+
+  transitionsStyle(): CSSStyleDeclaration|null {
+    return this.#mainDOMCascade?.styles().find(style => !this.isInherited(style) && style.type === Type.Transition) ??
+        null;
   }
 
   registeredProperties(): CSSRegisteredProperty[] {

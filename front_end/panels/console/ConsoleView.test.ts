@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -11,7 +12,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {findMenuItemWithLabel, getContextMenuForElement} from '../../testing/ContextMenuHelpers.js';
 import {dispatchPasteEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../testing/ExpectStubCall.js';
+import {expectCall, expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
@@ -81,6 +82,30 @@ describeWithMockConnection('ConsoleView', () => {
     assert.isTrue(fileManager.save.calledOnceWith(FILENAME, '', true, false));
     await fileManagerCloseCall;
     assert.isTrue(fileManager.append.calledOnceWith(FILENAME, sinon.match('message 1\nmessage 2\n')));
+  });
+
+  it('can copy to clipboard', async () => {
+    const tabTarget = createTarget({type: SDK.Target.Type.TAB});
+    createTarget({parentTarget: tabTarget, subtype: 'prerender'});
+    const target = createTarget({parentTarget: tabTarget});
+
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assert.exists(consoleModel);
+    consoleModel.addMessage(createConsoleMessage(target, 'message 1'));
+    consoleModel.addMessage(createConsoleMessage(target, 'message 2'));
+    const messagesElement = consoleView.element.querySelector('#console-messages');
+    assert.exists(messagesElement);
+
+    const contextMenu = getContextMenuForElement(messagesElement);
+    const copy = findMenuItemWithLabel(contextMenu.saveSection(), 'Copy console');
+    assert.exists(copy);
+
+    const copyText = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'copyText').resolves();
+    contextMenu.invokeHandler(copy.id());
+    await expectCalled(copyText);
+    assert.strictEqual(copyText.callCount, 1);
+    assert.deepEqual(copyText.lastCall.args, ['message 1\nmessage 2\n']);
+    copyText.resetHistory();
   });
 
   async function getConsoleMessages() {

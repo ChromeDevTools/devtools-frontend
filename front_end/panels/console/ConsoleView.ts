@@ -179,6 +179,10 @@ const UIStrings = {
    */
   saveAs: 'Save as...',
   /**
+   *@description Text to copy Console log to clipboard
+   */
+  copyConsole: 'Copy console',
+  /**
    *@description A context menu item in the Console View of the Console panel
    */
   copyVisibleStyledSelection: 'Copy visible styled selection',
@@ -1120,6 +1124,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     contextMenu.defaultSection().appendAction('console.clear');
     contextMenu.defaultSection().appendAction('console.clear.history');
     contextMenu.saveSection().appendItem(
+        i18nString(UIStrings.copyConsole), this.copyConsole.bind(this), {jslogContext: 'copy-console'});
+    contextMenu.saveSection().appendItem(
         i18nString(UIStrings.saveAs), this.saveConsole.bind(this), {jslogContext: 'save-as'});
     if (this.element.hasSelection()) {
       contextMenu.clipboardSection().appendItem(
@@ -1173,6 +1179,15 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     void stream.close();
     progressIndicator.done();
+  }
+
+  private async copyConsole(): Promise<void> {
+    const messageContents: Array<string> = [];
+    for (let i = 0; i < this.itemCount(); i++) {
+      const message = (this.itemElement(i) as ConsoleViewMessage);
+      messageContents.push(message.toExportString());
+    }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(messageContents.join('\n') + '\n');
   }
 
   private tryToCollapseMessages(viewMessage: ConsoleViewMessage, lastMessage?: ConsoleViewMessage): boolean {

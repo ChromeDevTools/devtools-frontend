@@ -881,6 +881,7 @@ export const knownContextValues = new Set([
   'copy-as-powershell',
   'copy-as-utf',
   'copy-color',
+  'copy-console',
   'copy-css-declaration-as-js',
   'copy-declaration',
   'copy-element',

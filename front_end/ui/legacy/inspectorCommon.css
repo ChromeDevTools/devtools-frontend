@@ -554,6 +554,37 @@ select option {
   white-space: nowrap;
 }
 
+/* General empty state styles */
+.empty-state {
+  margin: var(--sys-size-5);
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  min-height: fit-content;
+  min-width: fit-content;
+
+  > * {
+    max-width: var(--sys-size-29);
+  }
+
+  .header {
+    font: var(--sys-typescale-headline5);
+    margin-bottom: var(--sys-size-3);
+  }
+
+  .description {
+    font: var(--sys-typescale-body4-regular);
+    color: var(--sys-color-on-surface-subtle);
+
+    > x-link {  /* stylelint-disable-line selector-type-no-unknown */
+      margin-left: var(--sys-size-3);
+    }
+  }
+}
+
 dt-icon-label {
   flex: none;
 }

@@ -16,7 +16,6 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
     #remoteAddress;
     #status;
     #statusText;
-    #url;
     #fromDiskCache;
     #fromServiceWorker;
     #headers = {};
@@ -32,7 +31,6 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
         this.#statusText =
             this.#parseStatusTextFromExtraInfo(extraInfo) ||
                 responsePayload.statusText;
-        this.#url = request.url();
         this.#fromDiskCache = !!responsePayload.fromDiskCache;
         this.#fromServiceWorker = !!responsePayload.fromServiceWorker;
         this.#status = extraInfo ? extraInfo.statusCode : responsePayload.status;
@@ -73,7 +71,7 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
         return this.#remoteAddress;
     }
     url() {
-        return this.#url;
+        return this.#request.url();
     }
     status() {
         return this.#status;

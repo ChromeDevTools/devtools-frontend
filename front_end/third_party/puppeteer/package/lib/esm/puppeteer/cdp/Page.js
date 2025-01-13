@@ -74,7 +74,6 @@ import { isTargetClosedError } from './Connection.js';
 import { Coverage } from './Coverage.js';
 import { CdpDialog } from './Dialog.js';
 import { EmulationManager } from './EmulationManager.js';
-import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { FrameManager } from './FrameManager.js';
 import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
@@ -739,10 +738,8 @@ export class CdpPage extends Page {
         const env_2 = { stack: [], error: void 0, hasError: false };
         try {
             const { fromSurface, omitBackground, optimizeForSpeed, quality, clip: userClip, type, captureBeyondViewport, } = options;
-            const isFirefox = this.target()._targetManager() instanceof FirefoxTargetManager;
             const stack = __addDisposableResource(env_2, new AsyncDisposableStack(), true);
-            // Firefox omits background by default; it's not configurable.
-            if (!isFirefox && omitBackground && (type === 'png' || type === 'webp')) {
+            if (omitBackground && (type === 'png' || type === 'webp')) {
                 await this.#emulationManager.setTransparentBackgroundColor();
                 stack.defer(async () => {
                     await this.#emulationManager
@@ -760,13 +757,12 @@ export class CdpPage extends Page {
                 });
                 clip = getIntersectionRect(clip, viewport);
             }
-            // We need to do these spreads because Firefox doesn't allow unknown options.
             const { data } = await this.#primaryTargetClient.send('Page.captureScreenshot', {
                 format: type,
-                ...(optimizeForSpeed ? { optimizeForSpeed } : {}),
+                optimizeForSpeed,
+                fromSurface,
                 ...(quality !== undefined ? { quality: Math.round(quality) } : {}),
                 ...(clip ? { clip: { ...clip, scale: clip.scale ?? 1 } } : {}),
-                ...(!fromSurface ? { fromSurface } : {}),
                 captureBeyondViewport,
             });
             return data;

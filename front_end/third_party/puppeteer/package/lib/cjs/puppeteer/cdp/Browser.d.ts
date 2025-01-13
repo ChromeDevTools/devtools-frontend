@@ -12,15 +12,15 @@ import type { Viewport } from '../common/Viewport.js';
 import { CdpBrowserContext } from './BrowserContext.js';
 import type { Connection } from './Connection.js';
 import { type CdpTarget } from './Target.js';
-import { type TargetManager } from './TargetManager.js';
+import { TargetManager } from './TargetManager.js';
 /**
  * @internal
  */
 export declare class CdpBrowser extends BrowserBase {
     #private;
     readonly protocol = "cdp";
-    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean): Promise<CdpBrowser>;
-    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean);
+    static _create(connection: Connection, contextIds: string[], acceptInsecureCerts: boolean, defaultViewport?: Viewport | null, downloadBehavior?: DownloadBehavior, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean): Promise<CdpBrowser>;
+    constructor(connection: Connection, contextIds: string[], defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean);
     _attach(downloadBehavior: DownloadBehavior | undefined): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;

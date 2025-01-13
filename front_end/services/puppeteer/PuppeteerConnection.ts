@@ -79,7 +79,6 @@ export class PuppeteerConnectionHelper {
     const puppeteerConnection = new PuppeteerConnection('', transport);
 
     const browserPromise = puppeteer.Browser._create(
-        'chrome',
         puppeteerConnection,
         [] /* contextIds */,
         false /* ignoreHTTPSErrors */,

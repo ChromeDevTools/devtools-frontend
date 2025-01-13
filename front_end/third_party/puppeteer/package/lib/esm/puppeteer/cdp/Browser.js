@@ -6,16 +6,15 @@
 import { Browser as BrowserBase, } from '../api/Browser.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { CdpBrowserContext } from './BrowserContext.js';
-import { ChromeTargetManager } from './ChromeTargetManager.js';
-import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { DevToolsTarget, InitializationStatus, OtherTarget, PageTarget, WorkerTarget, } from './Target.js';
+import { TargetManager } from './TargetManager.js';
 /**
  * @internal
  */
 export class CdpBrowser extends BrowserBase {
     protocol = 'cdp';
-    static async _create(product, connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
-        const browser = new CdpBrowser(product, connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
+    static async _create(connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+        const browser = new CdpBrowser(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
@@ -33,9 +32,8 @@ export class CdpBrowser extends BrowserBase {
     #defaultContext;
     #contexts = new Map();
     #targetManager;
-    constructor(product, connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    constructor(connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         super();
-        product = product || 'chrome';
         this.#defaultViewport = defaultViewport;
         this.#process = process;
         this.#connection = connection;
@@ -46,12 +44,7 @@ export class CdpBrowser extends BrowserBase {
                     return true;
                 });
         this.#setIsPageTargetCallback(isPageTargetCallback);
-        if (product === 'firefox') {
-            this.#targetManager = new FirefoxTargetManager(connection, this.#createTarget, this.#targetFilterCallback);
-        }
-        else {
-            this.#targetManager = new ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
-        }
+        this.#targetManager = new TargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
             this.#contexts.set(contextId, new CdpBrowserContext(this.#connection, this, contextId));

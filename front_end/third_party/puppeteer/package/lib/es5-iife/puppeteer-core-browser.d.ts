@@ -376,12 +376,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
 }
 
 /**
- * @deprecated Use {@link ConnectOptions}.
- * @public
- */
-export declare type BrowserConnectOptions = ConnectOptions;
-
-/**
  * {@link BrowserContext} represents individual user contexts within a
  * {@link Browser | browser}.
  *
@@ -642,12 +636,6 @@ export declare interface BrowserEvents extends Record<EventType, unknown> {
     [BrowserEvent.TargetChanged]: Target;
 
 }
-
-/**
- * @deprecated Use {@link LaunchOptions}.
- * @public
- */
-export declare type BrowserLaunchArgumentOptions = LaunchOptions;
 
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
@@ -6946,7 +6934,6 @@ declare namespace Puppeteer_2 {
         SupportedWebDriverCapability,
         SupportedWebDriverCapabilities,
         ConnectOptions,
-        BrowserConnectOptions,
         ConsoleMessageLocation,
         ConsoleMessageType,
         ConsoleMessage,
@@ -6997,9 +6984,6 @@ declare namespace Puppeteer_2 {
         DownloadBehavior,
         ChromeReleaseChannel,
         LaunchOptions,
-        BrowserLaunchArgumentOptions,
-        PuppeteerNodeLaunchOptions,
-        PuppeteerLaunchOptions,
         BrowserLauncher,
         PuppeteerNode,
         ScreenRecorder
@@ -7020,12 +7004,6 @@ export declare class PuppeteerError extends Error {
 
 
 }
-
-/**
- * @deprecated Use {@link LaunchOptions}.
- * @public
- */
-export declare type PuppeteerLaunchOptions = LaunchOptions;
 
 /**
  * @public
@@ -7189,12 +7167,6 @@ export declare class PuppeteerNode extends Puppeteer {
      */
     trimCache(): Promise<void>;
 }
-
-/**
- * @deprecated Use {@link LaunchOptions}.
- * @public
- */
-export declare type PuppeteerNodeLaunchOptions = LaunchOptions;
 
 /**
  * @public

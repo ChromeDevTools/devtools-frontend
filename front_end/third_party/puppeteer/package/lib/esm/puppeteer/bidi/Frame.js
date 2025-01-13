@@ -342,6 +342,9 @@ let BidiFrame = (() => {
                     if (error.message.includes('navigation canceled')) {
                         return;
                     }
+                    if (error.message.includes('Navigation was aborted by another navigation')) {
+                        return;
+                    }
                     throw error;
                 }),
             ]).catch(rewriteNavigationError(url, options.timeout ?? this.timeoutSettings.navigationTimeout()));

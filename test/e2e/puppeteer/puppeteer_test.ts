@@ -76,7 +76,6 @@ describe('Puppeteer', () => {
       // https://github.com/puppeteer/puppeteer/blob/f63a123ecef86693e6457b07437a96f108f3e3c5/src/common/BrowserConnector.ts#L72
       const connection = new puppeteer.Connection('', transport);
       const browserPromise = puppeteer.Browser._create(
-        'chrome',
         connection,
         [],
         false,

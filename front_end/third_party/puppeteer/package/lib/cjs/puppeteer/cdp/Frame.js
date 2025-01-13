@@ -47,7 +47,6 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Accessibility_js_1 = require("./Accessibility.js");
-const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
 const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
@@ -334,10 +333,6 @@ let CdpFrame = (() => {
             throw new Errors_js_1.UnsupportedOperation();
         }
         async frameElement() {
-            const isFirefox = this.page().target()._targetManager() instanceof FirefoxTargetManager_js_1.FirefoxTargetManager;
-            if (isFirefox) {
-                return await super.frameElement();
-            }
             const parent = this.parentFrame();
             if (!parent) {
                 return null;

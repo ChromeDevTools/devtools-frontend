@@ -172,10 +172,11 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 
     this.dialog = new UI.Dialog.Dialog('quick-open');
     UI.ARIAUtils.setLabel(this.dialog.contentElement, dialogTitle);
-    this.dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
+    this.dialog.setMaxContentSize(new UI.Geometry.Size(576, 320));
     this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     this.dialog.setContentPosition(null, 22);
-    this.dialog.contentElement.style.setProperty('border-radius', '4px');
+    this.dialog.contentElement.style.setProperty('border-radius', 'var(--sys-shape-corner-medium)');
+    this.dialog.contentElement.style.setProperty('box-shadow', 'var(--sys-elevation-level3)');
     this.show(this.dialog.contentElement);
     UI.ARIAUtils.setExpanded(this.contentElement, true);
     void this.dialog.once(UI.Dialog.Events.HIDDEN).then(() => {

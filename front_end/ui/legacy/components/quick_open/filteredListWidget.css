@@ -12,33 +12,35 @@
 }
 
 .hbox {
-  flex: 0 0 40px;
+  flex: 0 0 var(--sys-size-14);
+  padding: 0 var(--sys-size-8);
+  gap: var(--sys-size-3);
   align-items: center;
 }
 
 .filtered-list-widget-hint {
-  color: var(--sys-color-token-subtle);
-  padding: 12px;
+  color: var(--sys-color-on-surface-subtle);
+  font-size: var(--sys-typescale-body4-size);
+  line-height: 18px;
 }
 
 devtools-text-prompt {
   flex-grow: 1;
-  font-size: 14px;
+  font-size: var(--sys-typescale-body3-size);
+  gap: var(--sys-size-3);
   font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
-  line-height: 16px;
-  padding: 12px;
+  line-height: var(--sys-typescale-body3-line-height);
 }
 
 .filtered-list-widget-progress {
   flex: none;
-  background: rgb(0 0 0 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-  height: 1px;
+  background: var(--sys-color-divider);
+  height: var(--sys-size-1);
 }
 
 .filtered-list-widget-progress-bar {
   background-color: var(--sys-color-primary-bright);
-  height: 2px;
+  height: var(--sys-size-2);
   width: 100%;
   transform: scaleX(0);
   transform-origin: top left;
@@ -59,20 +61,19 @@ devtools-text-prompt {
 .filtered-list-widget-item-wrapper {
   color: var(--sys-color-on-surface);
   display: flex;
-  border-bottom: 1px solid var(--sys-color-divider);
   font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 0 var(--sys-size-7);
+  gap: var(--sys-size-7);
+  height: var(--sys-size-14);
 }
 
 .filtered-list-widget-item-wrapper devtools-icon {
   align-self: center;
   flex: none;
-  padding-right: 8px;
 }
 
 .filtered-list-widget-item-wrapper.selected {
-  background-color: var(--sys-color-tonal-container);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .filtered-list-widget-item {
@@ -80,12 +81,12 @@ devtools-text-prompt {
   overflow: hidden;
   text-overflow: ellipsis;
   align-self: center;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   flex: auto;
 }
 
-.filtered-list-widget-item.is-ignore-listed {
-  opacity: 50%;
+.filtered-list-widget-item.is-ignore-listed * {
+  color: var(--sys-color-state-disabled);
 }
 
 .filtered-list-widget-item.two-rows span.highlight {
@@ -131,19 +132,10 @@ devtools-text-prompt {
   color: var(--sys-color-token-subtle);
 }
 
-.filtered-list-widget-item-wrapper.selected .deprecated-tag {
-  color: var(--sys-color-on-tonal-container);
-}
 
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
   color: var(--sys-color-on-tonal-container);
   background-color: var(--sys-color-state-focus-select);
-}
-
-.filtered-list-widget-item-wrapper.selected .filtered-list-widget-title,
-.filtered-list-widget-item-wrapper.selected .filtered-list-widget-subtitle,
-.filtered-list-widget-item-wrapper.selected .tag {
-  color: var(--sys-color-on-tonal-container);
 }
 
 .filtered-list-widget-item.one-row {
@@ -159,13 +151,13 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.two-rows {
-  height: 45px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  display: grid;
+  align-content: center;
+  gap: var(--sys-size-2);
 }
 
 .filtered-list-widget-item.two-rows .filtered-list-widget-title {
-  font-weight: bold;
+  font-weight: var(--ref-typeface-weight-bold);
 }
 
 .not-found-text {

@@ -207,6 +207,7 @@ grd_files_release_sources = [
   "front_end/Images/navigationControls.png",
   "front_end/Images/navigationControls_2x.png",
   "front_end/Images/network-settings.svg",
+  "front_end/Images/node-stack-icon.svg",
   "front_end/Images/nodeIcon.avif",
   "front_end/Images/open-externally.svg",
   "front_end/Images/override.svg",

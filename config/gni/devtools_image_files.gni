@@ -207,6 +207,7 @@ devtools_svg_sources = [
   "mop.svg",
   "mouse.svg",
   "network-settings.svg",
+  "node-stack-icon.svg",
   "open-externally.svg",
   "override.svg",
   "palette.svg",

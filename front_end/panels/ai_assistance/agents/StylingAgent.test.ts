@@ -467,6 +467,7 @@ c`;
 * It has a next sibling and it is an element node
 * It has a previous sibling and it is a non element node
 * Its parent's selector is \`div#grandparentElement\`
+* Its parent is a non element node
 * Its parent has only 1 child element node
 * Its parent has only 1 child text node`;
 

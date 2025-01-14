@@ -1100,14 +1100,13 @@ describeWithEnvironment('JSONEditor', () => {
          ];
          await jsonEditor.updateComplete;
 
-         const toolbar = jsonEditor.renderRoot.querySelector('devtools-pm-toolbar');
+         const toolbar = jsonEditor.renderRoot.querySelector('devtools-toolbar');
          if (!toolbar) {
            throw Error('No toolbar found !');
          }
-         const event = new ProtocolComponents.Toolbar.SendCommandEvent();
          const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+         dispatchClickEvent(toolbar.querySelector('devtools-button[title^="Send command"]')!);
 
-         toolbar.dispatchEvent(event);
          const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
 
          const expectedParameters = {
@@ -1188,12 +1187,11 @@ describeWithEnvironment('JSONEditor', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'copyText',
         ));
-    const toolbar = jsonEditor.renderRoot.querySelector('devtools-pm-toolbar');
+    const toolbar = jsonEditor.renderRoot.querySelector('devtools-toolbar');
     if (!toolbar) {
       throw Error('No toolbar found !');
     }
-    const event = new ProtocolComponents.Toolbar.CopyCommandEvent();
-    toolbar.dispatchEvent(event);
+    dispatchClickEvent(toolbar.querySelector('devtools-button[title="Copy command"]')!);
     const [text] = await copyText;
 
     assert.strictEqual(JSON.stringify({command: 'Test.test', parameters: {test: 'test'}}), text);

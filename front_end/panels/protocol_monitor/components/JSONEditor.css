@@ -12,7 +12,8 @@
 }
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
@@ -88,4 +89,8 @@ ul {
 .row:hover .add-button,
 .row:hover .clear-button {
   opacity: 100%;
+}
+
+devtools-toolbar {
+  border-top: 1px solid var(--sys-color-divider);
 }

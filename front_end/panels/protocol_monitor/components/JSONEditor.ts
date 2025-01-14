@@ -1,9 +1,9 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/menus/menus.js';
-import './Toolbar.js';
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -40,6 +40,18 @@ const UIStrings = {
    *@description The title of a button to add custom key/value pairs to object parameters with no keys defined
    */
   addCustomProperty: 'Add custom property',
+  /**
+   * @description The title of a the button that sends a CDP command.
+   */
+  sendCommandCtrlEnter: 'Send command - Ctrl+Enter',
+  /**
+   * @description The title of a the button that sends a CDP command.
+   */
+  sendCommandCmdEnter: 'Send command - ⌘+Enter',
+  /**
+   * @description he title of a the button that copies a CDP command.
+   */
+  copyCommand: 'Copy command',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/components/JSONEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -172,6 +184,7 @@ export class JSONEditor extends LitElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
+    UI.UIUtils.injectCoreStyles(this.shadowRoot as ShadowRoot);
     this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(
         this, event => this.#handlePopoverDescriptions(event), 'protocol-monitor.hint');
     this.#hintPopoverHelper.setDisableOnClick(true);
@@ -1133,7 +1146,19 @@ export class JSONEditor extends LitElement {
         ${this.#renderParameters(this.parameters)}
       ` : nothing}
     </div>
-    <devtools-pm-toolbar @copycommand=${this.#copyToClipboard} @commandsent=${this.#handleCommandSend}></devtools-pm-toolbar>`;
+    <devtools-toolbar>
+      <devtools-button title=${i18nString(UIStrings.copyCommand)}
+                       .iconName=${'copy'}
+                       .jslogContext=${'protocol-monitor.copy-command'}
+                       .variant=${Buttons.Button.Variant.TOOLBAR}
+                       @click=${this.#copyToClipboard}></devtools-button>
+        <div class=toolbar-spacer></div>
+      <devtools-button title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
+                       .iconUrl=${'send'}
+                       jslogContext=${'protocol-monitor.send-command'}
+                       .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
+                       @click=${this.#handleCommandSend}></devtools-button>
+    </devtools-toolbar>`;
     // clang-format on
   }
 }

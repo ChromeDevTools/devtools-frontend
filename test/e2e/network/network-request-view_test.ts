@@ -15,6 +15,7 @@ import {
   getResourcesPath,
   getTextContent,
   pasteText,
+  readClipboard,
   step,
   typeText,
   waitFor,
@@ -22,7 +23,6 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {triggerLocalFindDialog} from '../helpers/memory-helpers.js';
 import {
@@ -487,6 +487,20 @@ describe('The Network Request view', () => {
     ].flat();
 
     assertOutlineMatches(expectedPayloadContent, payloadOutlineText);
+
+    // Context menu to copy single parsed entry.
+    const parsedEntry = await waitForElementWithTextContent('alpha');
+    await parsedEntry.click({button: 'right'});
+    await (await waitForElementWithTextContent('Copy value')).click();
+    assert.strictEqual(await readClipboard(), 'alpha');
+
+    // Context menu to copy the raw payload.
+    const viewSource = await waitForElementWithTextContent('view source');
+    await viewSource.click();
+    const source = await waitForElementWithTextContent('id=42&param=a%20b');
+    await source.click({button: 'right'});
+    await (await waitForElementWithTextContent('Copy')).click();
+    assert.strictEqual(await readClipboard(), 'id=42&param=a%20b');
   });
 
   it('shows raw headers', async () => {

@@ -824,3 +824,11 @@ export async function raf(page: puppeteer.Page): Promise<void> {
     return new Promise(resolve => window.requestAnimationFrame(resolve));
   });
 }
+
+export async function readClipboard() {
+  const {frontend, browser} = getBrowserAndPages();
+  await browser.defaultBrowserContext().overridePermissions(frontend.url(), ['clipboard-read']);
+  const clipboard = await frontend.evaluate(async () => navigator.clipboard.readText());
+  await browser.defaultBrowserContext().clearPermissionOverrides();
+  return clipboard;
+}

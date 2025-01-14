@@ -139,7 +139,7 @@ class Example {
     comments = comments.map(comment => parseComment(comment));
     // Only get the first comment for now.
     const comment = comments[0];
-    const queries = [comment.question];
+    const queries = [comment.prompt];
     if (yargsObject.includeFollowUp) {
       queries.push(DEFAULT_FOLLOW_UP_QUERY);
     }
@@ -147,7 +147,7 @@ class Example {
     return {
       idx: 0,
       queries,
-      explanation: comment.answer,
+      explanation: comment.explanation,
     };
   }
 

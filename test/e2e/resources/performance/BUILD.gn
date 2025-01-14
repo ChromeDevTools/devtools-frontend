@@ -16,6 +16,7 @@ copy_to_gen("performance") {
     "selectorStats/page-with-style.css",
     "selectorStats/page-with-style.html",
     "timeline/treeView-test-trace.json",
+    "timeline/web.dev-trace.json.gz",
     "wasm/mainWasm_profile.json",
     "wasm/profiling.html",
     "wasm/profiling.wasm",

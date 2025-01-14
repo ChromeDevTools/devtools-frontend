@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 const puppeteer = require('puppeteer-core');
-const yargs = require('yargs');
+const yargs = require('yargs/yargs');
+const {hideBin} = require('yargs/helpers');
 const fs = require('fs');
 const path = require('path');
 const {parseComment} = require('./auto-run-helpers');
@@ -17,36 +18,31 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-/* clang-format off */
-/** @type {import('./types').YargsInput} */
-const yargsObject = yargs
-  .option('example-urls', {
-    string: true,
-    type: 'array',
-    demandOption: true,
-  })
-  .option('parallel', {
-    boolean: true,
-    default: true,
-  })
-  .option('label', {
-    string: true,
-    default: 'run'
-  })
-  .option('include-follow-up', {
-    boolean: true,
-    default: false,
-  })
-  .argv;
-/* clang-format on */
+const userArgs = yargs(hideBin(process.argv))
+                     .option('example-urls', {
+                       string: true,
+                       type: 'array',
+                       demandOption: true,
+                     })
+                     .option('parallel', {
+                       boolean: true,
+                       default: true,
+                     })
+                     .option('label', {string: true, default: 'run'})
+                     .option('include-follow-up', {
+                       boolean: true,
+                       default: false,
+                     })
+                     .parseSync();
 
 const OUTPUT_DIR = path.resolve(__dirname, 'data');
-const {exampleUrls, label} = yargsObject;
 
 class Logger {
   /** @type {import('./types').Logs} */
   #logs = {};
-  #updateElapsedTimeInterval = 0;
+  /** @type {NodeJS.Timeout|null} */
+  #updateElapsedTimeInterval = null;
+
   constructor() {
     this.#updateElapsedTimeInterval = setInterval(() => {
       this.#updateElapsedTime();
@@ -67,10 +63,20 @@ class Logger {
     }
   }
 
+  /**
+   * Formats an error object for display.
+   * @param {Error} err The error object to format.
+   * @return {string} The formatted error string.
+   */
   formatError(err) {
-    return `${err.stack}${err.cause ? `\n${err.cause.stack}` : ''}`;
+    const stack = typeof err.cause === 'object' && err.cause && 'stack' in err.cause ? err.cause.stack : '';
+    return `${err.stack}${err.cause ? `\n${stack}` : ''}`;
   }
 
+  /**
+   * Logs a header message to the console.
+   * @param {string} text The header text to log.
+   */
   head(text) {
     this.log('head', -1, `${text}\n`);
   }
@@ -87,25 +93,46 @@ class Logger {
   }
 
   destroy() {
-    clearInterval(this.#updateElapsedTimeInterval);
+    if (this.#updateElapsedTimeInterval) {
+      clearInterval(this.#updateElapsedTimeInterval);
+    }
   }
 }
 
 class Example {
+  /** @type {string} */
   #url;
+  /** @type {puppeteer.Browser} */
   #browser;
-  #ready;
-  #page;
-  #devtoolsPage;
-  #queries;
-  #explanation;
+  /** @type {boolean} */
+  #ready = false;
+  /** @type {puppeteer.Page|null} **/
+  #page = null;
+  /** @type {puppeteer.Page|null} **/
+  #devtoolsPage = null;
+  /** @type {Array<string>} **/
+  #queries = [];
+  /** @type {string} **/
+  #explanation = '';
+  /**
+   * @param {string} url
+   * @param {puppeteer.Browser} browser
+   */
   constructor(url, browser) {
     this.#url = url;
     this.#browser = browser;
   }
 
+  /**
+   * @param {puppeteer.Page} page
+   */
   async #generateMetadata(page) {
-    let comments = await page.evaluate(() => {
+    /** @type {Array<string>} */
+    const commentStringsFromPage = await page.evaluate(() => {
+      /**
+       * @param {Node|ShadowRoot} root
+       * @return {Array<{comment: string, commentElement: Comment, targetElement: Element|null}>}
+       */
       function collectComments(root) {
         const walker = document.createTreeWalker(
             root,
@@ -114,8 +141,12 @@ class Example {
         const results = [];
         while (walker.nextNode()) {
           const comment = walker.currentNode;
+          if (!(comment instanceof Comment)) {
+            continue;
+          }
+
           results.push({
-            comment: comment.textContent.trim(),
+            comment: comment.textContent?.trim() ?? '',
             commentElement: comment,
             targetElement: comment.nextElementSibling,
           });
@@ -129,18 +160,19 @@ class Example {
       const results = [...collectComments(document.documentElement)];
       while (elementWalker.nextNode()) {
         const el = elementWalker.currentNode;
-        if ('shadowRoot' in el && el.shadowRoot) {
+        if (el instanceof Element && 'shadowRoot' in el && el.shadowRoot) {
           results.push(...collectComments(el.shadowRoot));
         }
       }
+      // @ts-expect-error
       globalThis.__commentElements = results;
       return results.map(result => result.comment);
     });
-    comments = comments.map(comment => parseComment(comment));
+    const comments = commentStringsFromPage.map(comment => parseComment(comment));
     // Only get the first comment for now.
     const comment = comments[0];
     const queries = [comment.prompt];
-    if (yargsObject.includeFollowUp) {
+    if (userArgs.includeFollowUp) {
       queries.push(DEFAULT_FOLLOW_UP_QUERY);
     }
 
@@ -152,7 +184,7 @@ class Example {
   }
 
   id() {
-    return this.#url.split('/').pop().replace('.html', '');
+    return this.#url.split('/').pop()?.replace('.html', '') ?? 'unknown-id';
   }
 
   isReady() {
@@ -175,6 +207,7 @@ class Example {
     this.log('[Info]: Running...');
     // Strip comments to prevent LLM from seeing it.
     await page.evaluate(() => {
+      // @ts-expect-error we don't type globalThis.__commentElements
       for (const {commentElement} of globalThis.__commentElements) {
         commentElement.remove();
       }
@@ -226,36 +259,53 @@ class Example {
       this.#ready = true;
     } catch (err) {
       this.#ready = false;
-      this.error(`Preparation failed.\n${logger.formatError(err)}`);
+      this.error(`Preparation failed.\n${err instanceof Error ? logger.formatError(err) : err}`);
     }
   }
 
   async execute() {
+    if (!this.#devtoolsPage) {
+      throw new Error('Cannot execute without DevTools page.');
+    }
+    if (!this.#page) {
+      throw new Error('Cannot execute without target page');
+    }
     const executionStartTime = performance.now();
     await this.#devtoolsPage.waitForFunction(() => {
       return 'setDebugFreestylerEnabled' in window;
     });
 
     await this.#devtoolsPage.evaluate(() => {
+      // @ts-ignore this is run in the DevTools page context where this function does exist.
       setDebugFreestylerEnabled(true);
     });
 
+    /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
     const results = [];
 
     /**
-     * @returns {Promise<import('./types').ExecutedExample>}
+     * @param {string} query
+     * @returns {Promise<import('./types').IndividualPromptRequestResponse[]>}
      */
     const prompt = async query => {
-      await this.#devtoolsPage.locator('aria/Ask a question about the selected element').click();
+      if (!this.#devtoolsPage) {
+        throw new Error('Cannot prompt without DevTools page.');
+      }
+      const devtoolsPage = this.#devtoolsPage;
+      await devtoolsPage.locator('aria/Ask a question about the selected element').click();
 
-      await this.#devtoolsPage.locator('aria/Ask a question about the selected element').fill(query);
+      await devtoolsPage.locator('aria/Ask a question about the selected element').fill(query);
 
       const abort = new AbortController();
+      /**
+       * @param {AbortSignal} signal AbortSignal to stop the operation.
+       */
       const autoAcceptEvals = async signal => {
         while (!signal.aborted) {
-          await this.#devtoolsPage.locator('aria/Continue').click({signal});
+          await devtoolsPage.locator('aria/Continue').click({signal});
         }
       };
+
       autoAcceptEvals(abort.signal).catch(err => {
         if (err.message === 'This operation was aborted') {
           return;
@@ -264,23 +314,27 @@ class Example {
       });
 
       const done = this.#devtoolsPage.evaluate(() => {
-        return new Promise(resolve => {
+        return /** @type {Promise<void>} */ (new Promise(resolve => {
           window.addEventListener('freestylerdone', () => {
             resolve();
           }, {
             once: true,
           });
-        });
+        }));
       });
 
-      await this.#devtoolsPage.keyboard.press('Enter');
+      await devtoolsPage.keyboard.press('Enter');
       await done;
       abort.abort();
 
-      /** @type {import('./types').IndividualPromptRequestResponse[]} */
-      const results = JSON.parse(await this.#devtoolsPage.evaluate(() => {
+      const logs = await devtoolsPage.evaluate(() => {
         return localStorage.getItem('freestylerStructuredLog');
-      }));
+      });
+      if (!logs) {
+        throw new Error('No freestylerStructuredLog entries were found.');
+      }
+      /** @type {import('./types').IndividualPromptRequestResponse[]} */
+      const results = JSON.parse(logs);
 
       return results.map(r => ({...r, exampleId: this.id()}));
     };
@@ -299,18 +353,24 @@ class Example {
     return {results, metadata: {exampleId: this.id(), explanation: this.#explanation}};
   }
 
+  /**
+   * @param {string} text
+   */
   log(text) {
-    const indexOfExample = exampleUrls.indexOf(this.#url);
+    const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url, indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`);
+        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`);
   }
 
+  /**
+   * @param {string} text
+   */
   error(text) {
-    const indexOfExample = exampleUrls.indexOf(this.#url);
+    const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
     logger.log(
         this.#url, indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`);
+        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`);
   }
 }
 
@@ -318,7 +378,7 @@ const logger = new Logger();
 
 /**
  * @param {Example[]} examples
- * @return {Promise<RunResult>}
+ * @return {Promise<import('./types').RunResult>}
  */
 async function runInParallel(examples) {
   logger.head('Preparing examples...');
@@ -327,7 +387,9 @@ async function runInParallel(examples) {
   }
 
   logger.head('Running examples...');
+  /** @type {Array<import('./types').IndividualPromptRequestResponse>} **/
   const allExampleResults = [];
+  /** @type {Array<import('./types').ExampleMetadata>} **/
   const metadata = [];
   await Promise.all(examples.filter(example => example.isReady()).map(async example => {
     try {
@@ -335,7 +397,7 @@ async function runInParallel(examples) {
       allExampleResults.push(...results);
       metadata.push(singleMetadata);
     } catch (err) {
-      example.error(`There is an error, skipping it.\n${logger.formatError(err)}`);
+      example.error(`There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`);
     }
   }));
 
@@ -347,10 +409,10 @@ async function runInParallel(examples) {
  * @return {Promise<import('./types').RunResult>}
  */
 async function runSequentially(examples) {
-  /** @type {import('./types').ExecutedExample[]} */
+  /** @type {import('./types').IndividualPromptRequestResponse[]} */
   const allExampleResults = [];
 
-  /** @type {import('./types').ExampleMetadata} */
+  /** @type {import('./types').ExampleMetadata[]} */
   const metadata = [];
   logger.head('Running examples sequentially...');
   for (const example of examples) {
@@ -364,7 +426,7 @@ async function runSequentially(examples) {
       allExampleResults.push(...results);
       metadata.push(singleMetadata);
     } catch (err) {
-      example.error(`There is an error, skipping it.\n${logger.formatError(err)}`);
+      example.error(`There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`);
     }
   }
 
@@ -397,17 +459,17 @@ async function main() {
       await page.close();
     }
   } catch (err) {
-    logger.head(`There was an error closing pages\n${err.stack}`);
+    logger.head(`There was an error closing pages\n${err instanceof Error ? err.stack : err}`);
   }
 
   logger.head('Preparing examples...');
-  const examples = exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
+  const examples = userArgs.exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
   /** @type {import('./types').IndividualPromptRequestResponse[]} */
   let allExampleResults = [];
   /** @type {import('./types').ExampleMetadata[]} */
   let metadata = [];
 
-  if (yargsObject.parallel) {
+  if (userArgs.parallel) {
     ({allExampleResults, metadata} = await runInParallel(examples));
   } else {
     ({allExampleResults, metadata} = await runSequentially(examples));
@@ -415,13 +477,21 @@ async function main() {
 
   await browser.disconnect();
 
+  /**
+   * When multiple examples are run, the structure of this object is that
+   * the metadata is an array with one item per example that defines the
+   * example ID and the explanation.
+   * `examples` is an array of all requests & responses across all the
+   * examples. Each has an `exampleId` field to allow it to be assigned to
+   * an individaul example.
+   */
   const output = {
     metadata,
     examples: allExampleResults,
   };
 
   const dateSuffix = new Date().toISOString().slice(0, 19);
-  const outputPath = path.resolve(OUTPUT_DIR, `${label}-${dateSuffix}.json`);
+  const outputPath = path.resolve(OUTPUT_DIR, `${userArgs.label}-${dateSuffix}.json`);
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }

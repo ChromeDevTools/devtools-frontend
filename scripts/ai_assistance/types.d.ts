@@ -9,7 +9,7 @@ import {AidaRequest} from '../../front_end/core/host/AidaClient.ts'
  * The result of running auto_freestyler against all the provided examples.
  */
 export interface RunResult {
-  allExampleResults: ExecutedExample[];
+  allExampleResults: IndividualPromptRequestResponse[];
   metadata: ExampleMetadata[]
 }
 

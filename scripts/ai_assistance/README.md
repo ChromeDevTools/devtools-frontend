@@ -35,7 +35,7 @@ node scripts/ai_assistance/auto-run.js --label title-change --example-urls <exam
 
 ## Evaluating the results
 **Steps**
-1. Serve the `scripts/run` folder by using a simple file server. For example:
+1. Serve the `scripts/ai_assistance` folder by using a simple file server. For example:
 ```
 python3 -m http.server
 ```

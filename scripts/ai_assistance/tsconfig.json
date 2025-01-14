@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "module": "node16",
+    "checkJs": true,
+    "allowJs": true,
+    "moduleResolution": "Node16"
+  },
+  "include": [
+    "./auto-run-helpers.js",
+    "./auto-run.js",
+    "./auto-run.test.js",
+  ]
+}

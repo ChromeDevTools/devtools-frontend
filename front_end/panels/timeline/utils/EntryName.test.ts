@@ -37,6 +37,21 @@ describeWithEnvironment('EntryName', () => {
     assert.strictEqual(name, 'Event: click');
   });
 
+  it('correctly titles layout shifts', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
+    const title = Utils.EntryName.nameForEntry(shifts[0]);
+    assert.strictEqual(title, 'Layout shift');
+  });
+
+  it('correctly titles animation events', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz');
+    const animation = parsedTrace.Animations.animations.at(0);
+    assert.isOk(animation);
+    const title = Utils.EntryName.nameForEntry(animation);
+    assert.strictEqual(title, 'Animation');
+  });
+
   it('uses the names defined in the entry styles', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const entry = parsedTrace.Renderer.allTraceEntries.find(e => e.name === Trace.Types.Events.Name.RUN_TASK);

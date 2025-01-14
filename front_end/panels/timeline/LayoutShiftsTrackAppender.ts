@@ -129,16 +129,6 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     return renderingColor;
   }
 
-  /**
-   * Gets the title an event added by this appender should be rendered with.
-   */
-  titleForEvent(event: Trace.Types.Events.Event): string {
-    if (Trace.Types.Events.isLayoutShift(event)) {
-      return i18nString(UIStrings.layoutShift);
-    }
-    return '';
-  }
-
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
     const score = Trace.Types.Events.isLayoutShift(event)       ? event.args.data?.weighted_score_delta ?? 0 :
         Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ? event.clusterCumulativeScore :

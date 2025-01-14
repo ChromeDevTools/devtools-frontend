@@ -35,6 +35,10 @@ const UIStrings = {
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   wsConnectionClosed: 'WebSocket closed',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
+  layoutShift: 'Layout shift',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/EntryName.ts', UIStrings);
@@ -97,6 +101,14 @@ export function nameForEntry(
 
   if (Trace.Types.Events.isSyntheticInteraction(entry)) {
     return nameForInteractionEvent(entry);
+  }
+
+  if (Trace.Types.Events.isLayoutShift(entry)) {
+    return i18nString(UIStrings.layoutShift);
+  }
+
+  if (Trace.Types.Events.isSyntheticAnimation(entry) && entry.args.data.beginEvent.args.data.displayName) {
+    return entry.args.data.beginEvent.args.data.displayName;
   }
 
   const eventStyleCustomName = getEventStyle(entry.name as Trace.Types.Events.Name)?.title;

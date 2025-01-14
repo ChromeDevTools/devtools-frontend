@@ -68,7 +68,7 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
   });
 
-  describe('colorForEvent and titleForEvent', function() {
+  describe('colorForEvent', function() {
     before(() => {
       // Rather than use the real colours here and burden the test with having to
       // inject loads of CSS, we fake out the colours. this is fine for our tests as

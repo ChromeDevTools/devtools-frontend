@@ -73,13 +73,6 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     }
   });
 
-  it('returns the correct title for a layout shift', async function() {
-    const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
-    const title = layoutShiftsTrackAppender.titleForEvent(shifts[0]);
-    assert.strictEqual(title, 'Layout shift');
-  });
-
   it('shows "Layout shift" tooltip on hover', async function() {
     const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-no-nav.json.gz');
     const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);

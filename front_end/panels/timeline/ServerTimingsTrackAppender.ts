@@ -85,8 +85,4 @@ export class ServerTimingsTrackAppender implements TrackAppender {
   colorForEvent(): string {
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--ref-palette-primary70');
   }
-
-  titleForEvent(event: Trace.Types.Events.Event): string {
-    return event.name;
-  }
 }

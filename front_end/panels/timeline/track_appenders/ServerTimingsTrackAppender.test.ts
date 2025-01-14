@@ -80,7 +80,7 @@ describeWithEnvironment('ServerTimingsTrackAppender', function() {
     });
   });
 
-  describe('colorForEvent and titleForEvent', function() {
+  describe('colorForEvent', function() {
     before(() => {
       // Rather than use the real colours here and burden the test with having to
       // inject loads of CSS, we fake out the colours. this is fine for our tests as
@@ -106,11 +106,8 @@ describeWithEnvironment('ServerTimingsTrackAppender', function() {
       ThemeSupport.ThemeSupport.clearThemeCache();
     });
     it('returns the correct color and title for server timing events', function() {
-      const serverTimings = parsedTrace.ServerTimings.serverTimings;
-      for (const event of serverTimings) {
-        assert.strictEqual(serverTimingsTrackAppender.titleForEvent(event), event.name);
-        assert.strictEqual(serverTimingsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
-      }
+      // Each event has the same color so we don't need to pass one in.
+      assert.strictEqual(serverTimingsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
     });
   });
 });

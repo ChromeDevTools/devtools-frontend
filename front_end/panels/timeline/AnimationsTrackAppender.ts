@@ -69,9 +69,4 @@ export class AnimationsTrackAppender implements TrackAppender {
   colorForEvent(): string {
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
   }
-
-  titleForEvent(event: Trace.Types.Events.SyntheticAnimationPair): string {
-    const {displayName} = event.args.data.beginEvent.args.data;
-    return displayName || event.name;
-  }
 }

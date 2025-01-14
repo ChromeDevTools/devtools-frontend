@@ -632,10 +632,6 @@ export class TargetBase {
     return this.getAgent('CSS');
   }
 
-  databaseAgent(): ProtocolProxyApi.DatabaseApi {
-    return this.getAgent('Database');
-  }
-
   debuggerAgent(): ProtocolProxyApi.DebuggerApi {
     return this.getAgent('Debugger');
   }
@@ -818,10 +814,6 @@ export class TargetBase {
 
   registerCSSDispatcher(dispatcher: ProtocolProxyApi.CSSDispatcher): void {
     this.registerDispatcher('CSS', dispatcher);
-  }
-
-  registerDatabaseDispatcher(dispatcher: ProtocolProxyApi.DatabaseDispatcher): void {
-    this.registerDispatcher('Database', dispatcher);
   }
 
   registerBackgroundServiceDispatcher(dispatcher: ProtocolProxyApi.BackgroundServiceDispatcher): void {

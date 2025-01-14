@@ -537,6 +537,7 @@ export const generatedProperties = [
    "mask-repeat",
    "mask-size",
    "mask-type",
+   "masonry-auto-tracks",
    "masonry-direction",
    "masonry-fill",
    "masonry-slack",
@@ -2762,6 +2763,14 @@ export const generatedProperties = [
    "alpha"
   ],
   "name": "mask-type"
+ },
+ {
+  "keywords": [
+   "auto",
+   "min-content",
+   "max-content"
+  ],
+  "name": "masonry-auto-tracks"
  },
  {
   "keywords": [
@@ -5554,6 +5563,13 @@ export const generatedPropertyValues = {
   "values": [
    "luminance",
    "alpha"
+  ]
+ },
+ "masonry-auto-tracks": {
+  "values": [
+   "auto",
+   "min-content",
+   "max-content"
   ]
  },
  "masonry-direction": {

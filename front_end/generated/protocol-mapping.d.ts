@@ -161,7 +161,6 @@ export namespace ProtocolMapping {
     'DOMStorage.domStorageItemRemoved': [Protocol.DOMStorage.DomStorageItemRemovedEvent];
     'DOMStorage.domStorageItemUpdated': [Protocol.DOMStorage.DomStorageItemUpdatedEvent];
     'DOMStorage.domStorageItemsCleared': [Protocol.DOMStorage.DomStorageItemsClearedEvent];
-    'Database.addDatabase': [Protocol.Database.AddDatabaseEvent];
     /**
      * Notification sent after the virtual time budget for the current VirtualTimePolicy has run out.
      */
@@ -2093,28 +2092,6 @@ export namespace ProtocolMapping {
     'DOMStorage.setDOMStorageItem': {
       paramsType: [Protocol.DOMStorage.SetDOMStorageItemRequest];
       returnType: void;
-    };
-    /**
-     * Disables database tracking, prevents database events from being sent to the client.
-     */
-    'Database.disable': {
-      paramsType: [];
-      returnType: void;
-    };
-    /**
-     * Enables database tracking, database events will now be delivered to the client.
-     */
-    'Database.enable': {
-      paramsType: [];
-      returnType: void;
-    };
-    'Database.executeSQL': {
-      paramsType: [Protocol.Database.ExecuteSQLRequest];
-      returnType: Protocol.Database.ExecuteSQLResponse;
-    };
-    'Database.getDatabaseTableNames': {
-      paramsType: [Protocol.Database.GetDatabaseTableNamesRequest];
-      returnType: Protocol.Database.GetDatabaseTableNamesResponse;
     };
     /**
      * Clears the overridden Device Orientation.

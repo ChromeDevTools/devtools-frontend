@@ -7509,7 +7509,7 @@ export const NativeFunctions = [
   },
   {
     name: "setStatus",
-    signatures: [["status"]]
+    signatures: [["status","?options"]]
   },
   {
     name: "PasswordCredential",
@@ -7897,6 +7897,10 @@ export const NativeFunctions = [
   },
   {
     name: "lesserOrEqual",
+    signatures: [["a","b","?options"]]
+  },
+  {
+    name: "notEqual",
     signatures: [["a","b","?options"]]
   },
   {

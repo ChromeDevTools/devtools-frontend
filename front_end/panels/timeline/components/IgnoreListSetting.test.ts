@@ -71,7 +71,7 @@ describeWithEnvironment('Ignore List Setting', () => {
 
   beforeEach(() => {
     const regexPatterns = getIgnoredRegexes();
-    // There is a default rule `/node_modules/|/bower_components/`, So let's remove it for less confusion.
+    // There is a default rule `/node_modules/|^node:`, So let's remove it for less confusion.
     // Also this will clear the ignore list so each test can be individual.
     regexPatterns.length = 0;
   });

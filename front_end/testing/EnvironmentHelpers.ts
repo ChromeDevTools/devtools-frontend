@@ -157,8 +157,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'skip-anonymous-scripts', false),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'enable-ignore-listing', true),
     createSettingValue(
-        Common.Settings.SettingCategory.DEBUGGER, 'skip-stack-frames-pattern', '/node_modules/|/bower_components/',
-        Common.Settings.SettingType.REGEX),
+        Common.Settings.SettingCategory.DEBUGGER, 'skip-stack-frames-pattern',
+        '/node_modules/|^node:', Common.Settings.SettingType.REGEX),
     createSettingValue(Common.Settings.SettingCategory.DEBUGGER, 'navigator-group-by-folder', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),

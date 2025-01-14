@@ -111,6 +111,8 @@ export class JavaScriptFormatter {
   }
 
   #afterVisit(node: Acorn.ESTree.Node): void {
+    // ${expressions} within a template literal need space enforced.
+    const restore = this.#builder.setEnforceSpaceBetweenWords(node.type !== 'TemplateElement');
     let token;
     while ((token = this.#tokenizer.peekToken()) && token.start < node.end) {
       const token = (this.#tokenizer.nextToken() as TokenOrComment);
@@ -118,9 +120,7 @@ export class JavaScriptFormatter {
       this.#push(token, format);
     }
     this.#push(null, this.#finishNode(node));
-    if (node.type === 'TemplateLiteral') {
-      this.#builder.setEnforceSpaceBetweenWords(true);
-    }
+    this.#builder.setEnforceSpaceBetweenWords(restore || node.type === 'TemplateLiteral');
   }
 
   #inForLoopHeader(node: Acorn.ESTree.Node): boolean {

@@ -766,7 +766,17 @@ function formatted2() {
   });
 
   it('formats template literals correctly', () => {
-    const formattedCode = formatJavaScript('`foo${bar}`');
-    assert.strictEqual(formattedCode, '`foo${bar}`\n');
+    const formattedCode = formatJavaScript('`foo${bar}foo${bar}`');
+    assert.strictEqual(formattedCode, '`foo${bar}foo${bar}`\n');
+  });
+
+  it('formats template literals with nested JS expressions correctly', () => {
+    const formattedCode = formatJavaScript('`${function(){let a}}`');
+    assert.strictEqual(
+        formattedCode,
+        '`${function() {\n' +
+            '  let a\n' +
+            '}\n' +
+            '}`\n');
   });
 });

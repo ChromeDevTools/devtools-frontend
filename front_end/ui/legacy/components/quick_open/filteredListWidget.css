@@ -70,6 +70,8 @@ devtools-text-prompt {
 .filtered-list-widget-item-wrapper devtools-icon {
   align-self: center;
   flex: none;
+  width: 18px;
+  height: 18px;
 }
 
 .filtered-list-widget-item-wrapper.selected {
@@ -119,10 +121,8 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item-wrapper .tag {
-  padding: 0 12px;
-  border-radius: 4px;
-  line-height: 24px;
-  height: 24px;
+  font-size: var(--sys-typescale-body5-size);
+  line-height: var(--sys-typescale-headline5-line-height);
   align-self: center;
   flex-shrink: 0;
 }
@@ -139,15 +139,13 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.one-row {
-  height: 36px;
-  line-height: 20px;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  line-height: var(--sys-typescale-body3-line-height);
+  align-content: center;
   display: flex;
 }
 
 .filtered-list-widget-item.one-row .filtered-list-widget-title {
-  padding-right: 8px;
+  display: flex;
 }
 
 .filtered-list-widget-item.two-rows {

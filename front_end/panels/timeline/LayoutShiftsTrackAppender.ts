@@ -211,6 +211,18 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     return Utils.ImageCache.preload(screenshots);
   }
 
+  titleForEvent(_event: Trace.Types.Events.Event): string {
+    /**
+     * This method defines the titles drawn on the track for the events in this
+     * appender. In the case of the Layout Shifts, we do not draw any titles. We
+     * draw layout shifts which are represented as diamonds, and clusters, which
+     * are represented as the purple lines through the diamonds. We do not want
+     * to put any text on top of these, hence overriding this method to return
+     * the empty string.
+     */
+    return '';
+  }
+
   static createShiftViz(
       event: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       maxSize: UI.Geometry.Size): HTMLElement|undefined {

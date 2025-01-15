@@ -637,11 +637,14 @@ export class CompatibilityTracksAppender {
       throw new Error('Track not found for level');
     }
 
-    // Historically all tracks would have a titleForEvent() method.
-    // However, we are working on migrating all event title logic into one place (components/EntryName)
-    // TODO(crbug.com/365047728):
-    // Once this migration is complete, no tracks will have a custom
-    // titleForEvent method and we can remove titleForEvent entirely.
+    // Historically all tracks would have a titleForEvent() method. However a
+    // lot of these were duplicated so we worked on removing them in favour of
+    // the EntryName.nameForEntry method called below (see crbug.com/365047728).
+    // However, sometimes an appender needs to customise the titles slightly;
+    // for example the LayoutShiftsTrackAppender does not show any titles as we
+    // use diamonds to represent layout shifts.
+    // So whilst we expect most appenders to not define this method, we do
+    // allow appenders to override it.
     if (track.titleForEvent) {
       return track.titleForEvent(event);
     }

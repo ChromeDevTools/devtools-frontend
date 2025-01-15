@@ -2,25 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/icon_button/icon_button.js';
-import '../../../ui/components/menus/menus.js';
+import '../../ui/components/icon_button/icon_button.js';
+import '../../ui/components/menus/menus.js';
 
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import * as ElementsComponents from '../../elements/components/components.js';
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
+import type * as Menus from '../../ui/components/menus/menus.js';
+import * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as ElementsComponents from '../elements/components/components.js';
 
 import editorWidgetStyles from './JSONEditor.css.js';
 
-const {html, Decorators, LitElement, Directives, nothing} = LitHtml;
-const {customElement, property, state} = Decorators;
+const {html, render, Directives, nothing} = LitHtml;
 const {live, classMap, repeat} = Directives;
 
 const UIStrings = {
@@ -53,14 +53,8 @@ const UIStrings = {
    */
   copyCommand: 'Copy command',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/components/JSONEditor.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/JSONEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-json-editor': JSONEditor;
-  }
-}
 
 export const enum ParameterType {
   STRING = 'string',
@@ -112,20 +106,6 @@ export interface Command {
   targetId?: string;
 }
 
-/**
- * Parents should listen for this event and register the listeners provided by
- * this event"
- */
-export class SubmitEditorEvent extends Event {
-  static readonly eventName = 'submiteditor';
-  readonly data: Command;
-
-  constructor(data: Command) {
-    super(SubmitEditorEvent.eventName);
-    this.data = data;
-  }
-}
-
 const splitDescription = (description: string): [string, string] => {
   // If the description is too long we make the UI a bit better by highlighting the first sentence
   // which contains the most informations.
@@ -152,41 +132,114 @@ export function suggestionFilter(option: string, query: string): boolean {
   return option.toLowerCase().includes(query.toLowerCase());
 }
 
-@customElement('devtools-json-editor')
-export class JSONEditor extends LitElement {
-  static override styles = [editorWidgetStyles];
-  @property({attribute: false})
-  declare metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
-  @property({attribute: false}) declare typesByName: Map<string, Parameter[]>;
-  @property({attribute: false}) declare enumsByName: Map<string, Record<string, string>>;
-  @state() declare parameters: Parameter[];
-  @state() declare targets: SDK.Target.Target[];
-  @state() command: string = '';
-  @state() targetId?: string;
+export const enum Events {
+  SUBMIT_EDITOR = 'submiteditor',
+}
 
+export interface EventTypes {
+  [Events.SUBMIT_EDITOR]: Command;
+}
+
+export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+  #metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
+  #typesByName: Map<string, Parameter[]>;
+  #enumsByName: Map<string, Record<string, string>>;
+  #parameters: Parameter[] = [];
+  #targets: SDK.Target.Target[] = [];
+  #command: string = '';
+  #targetId?: string;
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
 
-  constructor() {
-    super();
-    this.parameters = [];
-    this.targets = [];
-    this.addEventListener('keydown', event => {
+  constructor(
+      metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>,
+      typesByName: Map<string, Parameter[]>,
+      enumsByName: Map<string, Record<string, string>>,
+  ) {
+    super(/* useShadowDom=*/ true);
+    this.#metadataByCommand = metadataByCommand;
+    this.#typesByName = typesByName;
+    this.#enumsByName = enumsByName;
+    this.contentElement.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         this.#handleParameterInputKeydown(event);
-        this.dispatchEvent(new SubmitEditorEvent({
-          command: this.command,
-          parameters: this.getParameters(),
-          targetId: this.targetId,
-        }));
+        this.#handleCommandSend();
       }
     });
   }
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-    UI.UIUtils.injectCoreStyles(this.shadowRoot as ShadowRoot);
+  get metadataByCommand(): Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> {
+    return this.#metadataByCommand;
+  }
+
+  set metadataByCommand(metadataByCommand:
+                            Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>) {
+    this.#metadataByCommand = metadataByCommand;
+    this.update();
+  }
+
+  get typesByName(): Map<string, Parameter[]> {
+    return this.#typesByName;
+  }
+
+  set typesByName(typesByName: Map<string, Parameter[]>) {
+    this.#typesByName = typesByName;
+    this.update();
+  }
+
+  get enumsByName(): Map<string, Record<string, string>> {
+    return this.#enumsByName;
+  }
+
+  set enumsByName(enumsByName: Map<string, Record<string, string>>) {
+    this.#enumsByName = enumsByName;
+    this.update();
+  }
+
+  get parameters(): Parameter[] {
+    return this.#parameters;
+  }
+
+  set parameters(parameters: Parameter[]) {
+    this.#parameters = parameters;
+    this.update();
+  }
+
+  get targets(): SDK.Target.Target[] {
+    return this.#targets;
+  }
+
+  set targets(targets: SDK.Target.Target[]) {
+    this.#targets = targets;
+    this.update();
+  }
+
+  get command(): string {
+    return this.#command;
+  }
+
+  set command(command: string) {
+    if (this.#command !== command) {
+      this.#command = command;
+      this.update();
+    }
+  }
+
+  get targetId(): string|undefined {
+    return this.#targetId;
+  }
+
+  set targetId(targetId: string|undefined) {
+    if (this.#targetId !== targetId) {
+      this.#targetId = targetId;
+      this.update();
+    }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([editorWidgetStyles]);
     this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(
-        this, event => this.#handlePopoverDescriptions(event), 'protocol-monitor.hint');
+        this.contentElement, event => this.#handlePopoverDescriptions(event), 'protocol-monitor.hint');
     this.#hintPopoverHelper.setDisableOnClick(true);
     this.#hintPopoverHelper.setTimeout(300);
     this.#hintPopoverHelper.setHasPadding(true);
@@ -194,10 +247,11 @@ export class JSONEditor extends LitElement {
     targetManager.addEventListener(
         SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#handleAvailableTargetsChanged, this);
     this.#handleAvailableTargetsChanged();
+    this.update();
   }
 
-  override disconnectedCallback(): void {
-    super.disconnectedCallback();
+  override willHide(): void {
+    super.willHide();
     this.#hintPopoverHelper?.hidePopover();
     this.#hintPopoverHelper?.dispose();
     const targetManager = SDK.TargetManager.TargetManager.instance();
@@ -293,7 +347,7 @@ export class JSONEditor extends LitElement {
       }
     }
 
-    this.requestUpdate();
+    this.update();
   }
 
   #convertObjectToParameterSchema(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]):
@@ -474,11 +528,11 @@ export class JSONEditor extends LitElement {
   }
 
   #handleCommandSend(): void {
-    this.dispatchEvent(new SubmitEditorEvent({
+    this.dispatchEventToListeners(Events.SUBMIT_EDITOR, {
       command: this.command,
       parameters: this.getParameters(),
       targetId: this.targetId,
-    }));
+    });
   }
 
   populateParametersForCommandWithDefaultValues(): void {
@@ -590,7 +644,7 @@ export class JSONEditor extends LitElement {
       object.isCorrectType = this.#isValueOfCorrectType(object, value);
     }
     // Needed to render the delete button for object parameters
-    this.requestUpdate();
+    this.update();
   };
 
   #saveNestedObjectParameterKey = (event: Event): void => {
@@ -606,7 +660,7 @@ export class JSONEditor extends LitElement {
     const {parameter} = this.#getChildByPath(pathArray);
     parameter.name = value;
     // Needed to render the delete button for object parameters
-    this.requestUpdate();
+    this.update();
   };
 
   #handleParameterInputKeydown = (event: KeyboardEvent): void => {
@@ -630,7 +684,7 @@ export class JSONEditor extends LitElement {
     const object = this.#getChildByPath(pathArray).parameter;
     object.isCorrectType = true;
 
-    this.requestUpdate();
+    this.update();
   }
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
@@ -774,7 +828,7 @@ export class JSONEditor extends LitElement {
         parameter.value = defaultValueByType.get(parameter.type);
         break;
     }
-    this.requestUpdate();
+    this.update();
   }
 
   #handleClearParameter(parameter: Parameter, isParentArray?: boolean): void {
@@ -805,7 +859,7 @@ export class JSONEditor extends LitElement {
         break;
     }
 
-    this.requestUpdate();
+    this.update();
   }
 
   #handleDeleteParameter(parameter: Parameter, parentParameter: Parameter): void {
@@ -822,7 +876,7 @@ export class JSONEditor extends LitElement {
         parentParameter.value[i].name = String(i);
       }
     }
-    this.requestUpdate();
+    this.update();
   }
 
   #renderTargetSelectorRow(): LitHtml.TemplateResult|undefined {
@@ -861,7 +915,7 @@ export class JSONEditor extends LitElement {
 
   #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     this.targetId = event.itemValue as string;
-    this.requestUpdate();
+    this.update();
   }
 
   #computeDropdownValues(parameter: Parameter): string[] {
@@ -899,15 +953,13 @@ export class JSONEditor extends LitElement {
   #renderWarningIcon(): LitHtml.TemplateResult|undefined {
     return html`<devtools-icon
     .data=${{
-      iconName: 'warning-filled',
-      color: 'var(--icon-warning)',
-      width: '14px',
-      height: '14px',
-      }
-      }
+    iconName:
+      'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px',
+    }
+    }
     class=${classMap({
-        'warning-icon': true,
-      })}
+      'warning-icon': true,
+    })}
   >
   </devtools-icon>`;
   }
@@ -1122,9 +1174,9 @@ export class JSONEditor extends LitElement {
     // clang-format on
   }
 
-  override render(): LitHtml.TemplateResult {
+  override doUpdate(): void {
     // clang-format off
-    return html`
+    render(html`
     <div class="wrapper">
       ${this.#renderTargetSelectorRow()}
       <div class="row attribute padded">
@@ -1146,7 +1198,7 @@ export class JSONEditor extends LitElement {
         ${this.#renderParameters(this.parameters)}
       ` : nothing}
     </div>
-    <devtools-toolbar>
+    <devtools-toolbar class="protocol-monitor-sidebar-toolbar">
       <devtools-button title=${i18nString(UIStrings.copyCommand)}
                        .iconName=${'copy'}
                        .jslogContext=${'protocol-monitor.copy-command'}
@@ -1158,7 +1210,7 @@ export class JSONEditor extends LitElement {
                        jslogContext=${'protocol-monitor.send-command'}
                        .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
                        @click=${this.#handleCommandSend}></devtools-button>
-    </devtools-toolbar>`;
+    </devtools-toolbar>`, this.contentElement, {host: this});
     // clang-format on
   }
 }

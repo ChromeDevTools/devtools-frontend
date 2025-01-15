@@ -91,6 +91,6 @@ ul {
   opacity: 100%;
 }
 
-devtools-toolbar {
+.protocol-monitor-sidebar-toolbar {
   border-top: 1px solid var(--sys-color-divider);
 }

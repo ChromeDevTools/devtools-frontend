@@ -2,37 +2,32 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import {
   dispatchClickEvent,
   dispatchKeyDownEvent,
   dispatchMouseMoveEvent,
-  getEventPromise,
   raf,
-  renderElementIntoDOM,
-} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../../testing/ExpectStubCall.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as ProtocolMonitor from '../protocol_monitor.js';
+  renderElementIntoDOM
+} from '../../testing/DOMHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
+import * as Menus from '../../ui/components/menus/menus.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import type * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import * as ProtocolComponents from './components.js';
+import * as ProtocolMonitor from './protocol_monitor.js';
 
 describeWithEnvironment('JSONEditor', () => {
   const renderJSONEditor = () => {
-    const jsonEditor = new ProtocolComponents.JSONEditor.JSONEditor();
-    jsonEditor.metadataByCommand = new Map();
-    jsonEditor.typesByName = new Map();
-    jsonEditor.enumsByName = new Map();
-    jsonEditor.connectedCallback();
-    renderElementIntoDOM(jsonEditor);
+    const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
+    jsonEditor.markAsRoot();
+    jsonEditor.show(renderElementIntoDOM(document.createElement('main')));
     return jsonEditor;
   };
 
-  const populateMetadata = async (jsonEditor: ProtocolComponents.JSONEditor.JSONEditor) => {
+  const populateMetadata = async (jsonEditor: ProtocolMonitor.JSONEditor.JSONEditor) => {
     const mockDomain = [
       {
         domain: 'Test',
@@ -232,7 +227,7 @@ describeWithEnvironment('JSONEditor', () => {
   };
 
   const renderSuggestionBox = async (
-      command: string, jsonEditor: ProtocolComponents.JSONEditor.JSONEditor,
+      command: string, jsonEditor: ProtocolMonitor.JSONEditor.JSONEditor,
       enumsByName?: Map<string, Record<string, string>>) => {
     jsonEditor.command = command;
     if (enumsByName) {
@@ -241,7 +236,7 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.populateParametersForCommandWithDefaultValues();
     await jsonEditor.updateComplete;
 
-    const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
+    const inputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
     // inputs[0] corresponds to the devtools-suggestion-input of the command
     const suggestionInput = inputs[1];
     // Reset the value to empty string because for boolean it will be set to false by default and the correct suggestions will not show
@@ -272,7 +267,7 @@ describeWithEnvironment('JSONEditor', () => {
   const renderEditorForCommand = async(command: string, parameters: {[paramName: string]: unknown}): Promise<{
     inputs: NodeListOf<SuggestionInput.SuggestionInput.SuggestionInput>,
     displayedCommand: string,
-    jsonEditor: ProtocolComponents.JSONEditor.JSONEditor,
+    jsonEditor: ProtocolMonitor.JSONEditor.JSONEditor,
   }> => {
     const typesByName = new Map();
     typesByName.set('string', [
@@ -288,7 +283,7 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.displayCommand(command, parameters);
 
     await jsonEditor.updateComplete;
-    const shadowRoot = jsonEditor.renderRoot;
+    const shadowRoot = jsonEditor.contentElement;
     const inputs = shadowRoot.querySelectorAll('devtools-suggestion-input');
     const displayedCommand = jsonEditor.command;
     return {inputs, displayedCommand, jsonEditor};
@@ -302,10 +297,10 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.populateParametersForCommandWithDefaultValues();
     await jsonEditor.updateComplete;
 
-    const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+    const param = jsonEditor.contentElement.querySelector('[data-paramId]');
     await renderHoveredElement(param);
 
-    const setDefaultValueButton = jsonEditor.renderRoot.querySelector('devtools-button');
+    const setDefaultValueButton = jsonEditor.contentElement.querySelector('devtools-button');
     if (!setDefaultValueButton) {
       throw new Error('No button');
     }
@@ -316,7 +311,7 @@ describeWithEnvironment('JSONEditor', () => {
 
     await jsonEditor.updateComplete;
 
-    const input = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
+    const input = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
     const paramInput = input[1];
 
     if (!paramInput) {
@@ -336,7 +331,7 @@ describeWithEnvironment('JSONEditor', () => {
     await jsonEditor.updateComplete;
 
     // inputs[0] corresponds to the devtools-suggestion-input of the command
-    const input = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input')[1];
+    const input = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input')[1];
     if (!input) {
       throw Error('No editable content displayed');
     }
@@ -345,7 +340,7 @@ describeWithEnvironment('JSONEditor', () => {
     input.focus();
     input.blur();
     await jsonEditor.updateComplete;
-    const warningIcon = jsonEditor.renderRoot.querySelector('devtools-icon');
+    const warningIcon = jsonEditor.contentElement.querySelector('devtools-icon');
     if (!warningIcon) {
       throw Error('No icon displayed');
     }
@@ -423,7 +418,7 @@ describeWithEnvironment('JSONEditor', () => {
          jsonEditor.displayCommand(command, parameters);
 
          await jsonEditor.updateComplete;
-         const shadowRoot = jsonEditor.renderRoot;
+         const shadowRoot = jsonEditor.contentElement;
          const displayedParameters = shadowRoot.querySelectorAll('.parameter');
          // Two parameters (test and test2) should be displayed because in the metadata, Test.test5 accepts two parameters
          assert.lengthOf(displayedParameters, 2);
@@ -490,7 +485,7 @@ describeWithEnvironment('JSONEditor', () => {
       jsonEditor.parameters = [
         {
           name: 'test',
-          type: ProtocolComponents.JSONEditor.ParameterType.STRING,
+          type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
           description: 'test',
           optional: false,
           value: 'test',
@@ -568,12 +563,12 @@ describeWithEnvironment('JSONEditor', () => {
           typeRef: 'string',
           description: 'test.',
         },
-      ] as ProtocolComponents.JSONEditor.Parameter[];
+      ] as ProtocolMonitor.JSONEditor.Parameter[];
       const jsonEditor = renderJSONEditor();
 
       jsonEditor.parameters = inputParameters;
       await jsonEditor.updateComplete;
-      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      const param = jsonEditor.contentElement.querySelector('[data-paramId]');
 
       await renderHoveredElement(param);
       const popupContent = serializePopupContent();
@@ -589,7 +584,7 @@ describeWithEnvironment('JSONEditor', () => {
       jsonEditor.command = cdpCommand;
       await jsonEditor.updateComplete;
 
-      const command = jsonEditor.renderRoot.querySelector('.command');
+      const command = jsonEditor.contentElement.querySelector('.command');
       await renderHoveredElement(command);
 
       const popupContent = serializePopupContent();
@@ -641,10 +636,10 @@ describeWithEnvironment('JSONEditor', () => {
 
       await jsonEditor.updateComplete;
 
-      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      const param = jsonEditor.contentElement.querySelector('[data-paramId]');
       await renderHoveredElement(param);
 
-      const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+      const addParamButton = jsonEditor.contentElement.querySelector('devtools-button[title="Add a parameter"]');
       if (!addParamButton) {
         throw new Error('No button');
       }
@@ -655,7 +650,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       await jsonEditor.updateComplete;
 
-      const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
+      const inputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
       // inputs[0] corresponds to the devtools-suggestion-input of the command
       const suggestionInput = inputs[1];
       // Reset the value to empty string because for boolean it will be set to false by default and the correct suggestions will not show
@@ -767,11 +762,11 @@ describeWithEnvironment('JSONEditor', () => {
          jsonEditor.populateParametersForCommandWithDefaultValues();
          await jsonEditor.updateComplete;
 
-         const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+         const param = jsonEditor.contentElement.querySelector('[data-paramId]');
          await renderHoveredElement(param);
 
          const showDefaultValuesButton =
-             jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+             jsonEditor.contentElement.querySelector('devtools-button[title="Add a parameter"]');
          if (!showDefaultValuesButton) {
            throw new Error('No button');
          }
@@ -784,7 +779,7 @@ describeWithEnvironment('JSONEditor', () => {
          await jsonEditor.updateComplete;
 
          // The -1 is need to not take into account the input for the command
-         const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+         const numberOfInputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input').length - 1;
 
          assert.deepEqual(numberOfInputs, 2);
        });
@@ -806,11 +801,11 @@ describeWithEnvironment('JSONEditor', () => {
          const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(JSON.stringify(cdpCommand));
          const {jsonEditor} = await renderEditorForCommand(command, parameters);
 
-         const param = jsonEditor.renderRoot.querySelector('[data-paramId=\'test3\']');
+         const param = jsonEditor.contentElement.querySelector('[data-paramId=\'test3\']');
 
          await renderHoveredElement(param);
 
-         const setDefaultValueButton = jsonEditor.renderRoot.querySelector('devtools-button');
+         const setDefaultValueButton = jsonEditor.contentElement.querySelector('devtools-button');
 
          if (!setDefaultValueButton) {
            throw new Error('No button');
@@ -822,7 +817,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          await jsonEditor.updateComplete;
 
-         const input = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
+         const input = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
          const values = [input[1].value, input[2].value];
 
          const expectedValues = ['', ''];
@@ -846,15 +841,15 @@ describeWithEnvironment('JSONEditor', () => {
       ];
 
       const jsonEditor = renderJSONEditor();
-      jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
+      jsonEditor.parameters = inputParameters as ProtocolMonitor.JSONEditor.Parameter[];
       await jsonEditor.updateComplete;
 
-      const param = jsonEditor.renderRoot.querySelector('[data-paramId=\'arrayParam\']');
+      const param = jsonEditor.contentElement.querySelector('[data-paramId=\'arrayParam\']');
 
       await renderHoveredElement(param);
 
       const setDefaultValueButton =
-          jsonEditor.renderRoot.querySelector('devtools-button[title="Reset to default value"]');
+          jsonEditor.contentElement.querySelector('devtools-button[title="Reset to default value"]');
 
       if (!setDefaultValueButton) {
         throw new Error('No button');
@@ -893,10 +888,11 @@ describeWithEnvironment('JSONEditor', () => {
       jsonEditor.populateParametersForCommandWithDefaultValues();
       await jsonEditor.updateComplete;
 
-      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      const param = jsonEditor.contentElement.querySelector('[data-paramId]');
       await renderHoveredElement(param);
 
-      const showDefaultValuesButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+      const showDefaultValuesButton =
+          jsonEditor.contentElement.querySelector('devtools-button[title="Add a parameter"]');
       if (!showDefaultValuesButton) {
         throw new Error('No button');
       }
@@ -909,7 +905,7 @@ describeWithEnvironment('JSONEditor', () => {
       await jsonEditor.updateComplete;
 
       await renderHoveredElement(param);
-      const clearButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Reset to default value"]');
+      const clearButton = jsonEditor.contentElement.querySelector('devtools-button[title="Reset to default value"]');
 
       if (!clearButton) {
         throw new Error('No clear button');
@@ -922,7 +918,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       await jsonEditor.updateComplete;
       // The -1 is need to not take into account the input for the command
-      const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+      const numberOfInputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input').length - 1;
 
       assert.deepEqual(numberOfInputs, 0);
     });
@@ -950,10 +946,10 @@ describeWithEnvironment('JSONEditor', () => {
       };
 
       const jsonEditor = renderJSONEditor();
-      jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
+      jsonEditor.parameters = inputParameters as ProtocolMonitor.JSONEditor.Parameter[];
       await jsonEditor.updateComplete;
 
-      const shadowRoot = jsonEditor.renderRoot;
+      const shadowRoot = jsonEditor.contentElement;
 
       const parameterIndex = 0;
       const deleteButtons = shadowRoot.querySelectorAll('devtools-button[title="Delete parameter"]');
@@ -975,10 +971,10 @@ describeWithEnvironment('JSONEditor', () => {
       jsonEditor.populateParametersForCommandWithDefaultValues();
       await jsonEditor.updateComplete;
 
-      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      const param = jsonEditor.contentElement.querySelector('[data-paramId]');
       await renderHoveredElement(param);
 
-      const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+      const addParamButton = jsonEditor.contentElement.querySelector('devtools-button[title="Add a parameter"]');
       if (!addParamButton) {
         throw new Error('No button');
       }
@@ -994,7 +990,7 @@ describeWithEnvironment('JSONEditor', () => {
       await jsonEditor.updateComplete;
 
       // The -1 is need to not take into account the input for the command
-      const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+      const numberOfInputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input').length - 1;
 
       assert.deepEqual(numberOfInputs, 2);
     });
@@ -1075,14 +1071,15 @@ describeWithEnvironment('JSONEditor', () => {
            },
          };
 
-         jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
-         const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+         jsonEditor.parameters = inputParameters as ProtocolMonitor.JSONEditor.Parameter[];
 
-         dispatchKeyDownEvent(jsonEditor, {key: 'Enter', ctrlKey: true, metaKey: true});
+         const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
 
-         const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+         dispatchKeyDownEvent(jsonEditor.contentElement, {key: 'Enter', ctrlKey: true, metaKey: true});
 
-         assert.deepEqual(response.data.parameters, expectedParameters);
+         const response = await promise;
+
+         assert.deepEqual(response.parameters, expectedParameters);
        });
 
     it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command via the send button',
@@ -1092,7 +1089,7 @@ describeWithEnvironment('JSONEditor', () => {
          jsonEditor.parameters = [
            {
              name: 'testName',
-             type: ProtocolComponents.JSONEditor.ParameterType.STRING,
+             type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
              description: 'test',
              optional: false,
              value: 'testValue',
@@ -1100,20 +1097,22 @@ describeWithEnvironment('JSONEditor', () => {
          ];
          await jsonEditor.updateComplete;
 
-         const toolbar = jsonEditor.renderRoot.querySelector('devtools-toolbar');
+         const toolbar = jsonEditor.contentElement.querySelector('devtools-toolbar');
          if (!toolbar) {
            throw Error('No toolbar found !');
          }
-         const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+
+         const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
+
          dispatchClickEvent(toolbar.querySelector('devtools-button[title^="Send command"]')!);
 
-         const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+         const response = await promise;
 
          const expectedParameters = {
            testName: 'testValue',
          };
 
-         assert.deepEqual(response.data.parameters, expectedParameters);
+         assert.deepEqual(response.parameters, expectedParameters);
        });
   });
 
@@ -1149,8 +1148,8 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.command = cdpCommand;
     await jsonEditor.updateComplete;
 
-    const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
-    const addButtons = jsonEditor.renderRoot.querySelectorAll('devtools-button[title="Add a parameter"]');
+    const inputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input');
+    const addButtons = jsonEditor.contentElement.querySelectorAll('devtools-button[title="Add a parameter"]');
 
     assert.lengthOf(inputs, 1);
     assert.lengthOf(addButtons, 0);
@@ -1162,7 +1161,7 @@ describeWithEnvironment('JSONEditor', () => {
     const targetId = 'target1';
     const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent('target1');
 
-    const shadowRoot = jsonEditor.renderRoot;
+    const shadowRoot = jsonEditor.contentElement;
     const selectMenu = shadowRoot.querySelector('devtools-select-menu');
     selectMenu?.dispatchEvent(event);
     const expectedId = jsonEditor.targetId;
@@ -1176,7 +1175,7 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.parameters = [
       {
         name: 'test',
-        type: ProtocolComponents.JSONEditor.ParameterType.STRING,
+        type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
         description: 'test',
         optional: false,
         value: 'test',
@@ -1187,7 +1186,7 @@ describeWithEnvironment('JSONEditor', () => {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'copyText',
         ));
-    const toolbar = jsonEditor.renderRoot.querySelector('devtools-toolbar');
+    const toolbar = jsonEditor.contentElement.querySelector('devtools-toolbar');
     if (!toolbar) {
       throw Error('No toolbar found !');
     }
@@ -1248,7 +1247,7 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.command = command;
     jsonEditor.populateParametersForCommandWithDefaultValues();
     await jsonEditor.updateComplete;
-    const shadowRoot = jsonEditor.renderRoot;
+    const shadowRoot = jsonEditor.contentElement;
     const parameters = shadowRoot.querySelectorAll('.parameter');
     // This expected value is equal to 6 because there are 5 different parameters inside typesByName + 1
     // for the name of the parameter (traceConfig)
@@ -1279,12 +1278,12 @@ describeWithEnvironment('JSONEditor', () => {
        jsonEditor.command = command;
        jsonEditor.populateParametersForCommandWithDefaultValues();
        await jsonEditor.updateComplete;
-       const shadowRoot = jsonEditor.renderRoot;
+       const shadowRoot = jsonEditor.contentElement;
        const parameters = shadowRoot.querySelector('.parameter');
 
        await renderHoveredElement(parameters);
 
-       const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add custom property"]');
+       const addParamButton = jsonEditor.contentElement.querySelector('devtools-button[title="Add custom property"]');
        if (!addParamButton) {
          throw new Error('No button');
        }
@@ -1327,12 +1326,12 @@ describeWithEnvironment('JSONEditor', () => {
        editors[4].blur();
        await jsonEditor.updateComplete;
 
-       const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+       const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
 
        // We send the command
-       dispatchKeyDownEvent(jsonEditor, {key: 'Enter', ctrlKey: true, metaKey: true});
+       dispatchKeyDownEvent(jsonEditor.contentElement, {key: 'Enter', ctrlKey: true, metaKey: true});
 
-       const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+       const response = await promise;
 
        const expectedParameters = {
          NoTypeRef: {
@@ -1341,7 +1340,7 @@ describeWithEnvironment('JSONEditor', () => {
          },
        };
 
-       assert.deepEqual(response.data.parameters, expectedParameters);
+       assert.deepEqual(response.parameters, expectedParameters);
      });
 
   it('should show the custom editor for an object param that has no type ref', async () => {
@@ -1352,12 +1351,12 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.command = command;
     jsonEditor.populateParametersForCommandWithDefaultValues();
     await jsonEditor.updateComplete;
-    const shadowRoot = jsonEditor.renderRoot;
+    const shadowRoot = jsonEditor.contentElement;
     const parameters = shadowRoot.querySelector('.parameter');
 
     await renderHoveredElement(parameters);
 
-    const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add custom property"]');
+    const addParamButton = jsonEditor.contentElement.querySelector('devtools-button[title="Add custom property"]');
     if (!addParamButton) {
       throw new Error('No button');
     }
@@ -1374,16 +1373,16 @@ describeWithEnvironment('JSONEditor', () => {
     await jsonEditor.updateComplete;
     // The -1 is need to not take into account the input for the command
 
-    const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+    const numberOfInputs = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input').length - 1;
 
     assert.deepEqual(numberOfInputs, 4);
   });
 
   describe('Command suggestion filter', () => {
     it('filters the commands by substring match', async () => {
-      assert(ProtocolComponents.JSONEditor.suggestionFilter('Test', 'Tes'));
-      assert(ProtocolComponents.JSONEditor.suggestionFilter('Test', 'est'));
-      assert(!ProtocolComponents.JSONEditor.suggestionFilter('Test', 'dest'));
+      assert(ProtocolMonitor.JSONEditor.suggestionFilter('Test', 'Tes'));
+      assert(ProtocolMonitor.JSONEditor.suggestionFilter('Test', 'est'));
+      assert(!ProtocolMonitor.JSONEditor.suggestionFilter('Test', 'dest'));
     });
   });
 });

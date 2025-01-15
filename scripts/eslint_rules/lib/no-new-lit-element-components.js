@@ -5,7 +5,6 @@
 
 const allowedPaths = [
   'front_end/panels/recorder/',
-  'front_end/panels/protocol_monitor/components/',
   'front_end/ui/components/suggestion_input/',
 ];
 module.exports = {

@@ -60,6 +60,7 @@ devtools_entrypoint("bundle") {
     "../../panels/emulation/*",
     "../../panels/network/*",
     "../../panels/profiler/*",
+    "../../panels/protocol_monitor/*",
     "../../panels/recorder/*",
     "../../panels/sources/*",
     "../../panels/timeline/*",

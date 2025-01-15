@@ -19,7 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as Components from './components/components.js';
+import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
 import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {html} = LitHtml;
@@ -134,10 +134,9 @@ const timeRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.Template
 };
 
 export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
-    Map<string, {parameters: Components.JSONEditor.Parameter[], description: string, replyArgs: string[]}> => {
-      const metadataByCommand:
-          Map<string, {parameters: Components.JSONEditor.Parameter[], description: string, replyArgs: string[]}> =
-              new Map();
+    Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> => {
+      const metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> =
+          new Map();
       for (const domain of domains) {
         for (const command of Object.keys(domain.metadata)) {
           metadataByCommand.set(command, domain.metadata[command]);
@@ -169,7 +168,7 @@ export interface LogMessage {
 export interface ProtocolDomain {
   readonly domain: string;
   readonly metadata: {
-    [commandName: string]: {parameters: Components.JSONEditor.Parameter[], description: string, replyArgs: string[]},
+    [commandName: string]: {parameters: Parameter[], description: string, replyArgs: string[]},
   };
 }
 
@@ -779,23 +778,21 @@ export const enum Events {
 }
 
 export interface EventTypes {
-  [Events.COMMAND_SENT]: Components.JSONEditor.Command;
-  [Events.COMMAND_CHANGE]: Components.JSONEditor.Command;
+  [Events.COMMAND_SENT]: Command;
+  [Events.COMMAND_CHANGE]: Command;
 }
 
 export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  readonly jsonEditor: Components.JSONEditor.JSONEditor;
+  readonly jsonEditor: JSONEditor;
   constructor() {
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
-    this.jsonEditor = new Components.JSONEditor.JSONEditor();
-    this.jsonEditor.metadataByCommand = metadataByCommand;
-    this.jsonEditor.typesByName = typesByName as Map<string, Components.JSONEditor.Parameter[]>;
-    this.jsonEditor.enumsByName = enumsByName;
-    this.element.append(this.jsonEditor);
-    this.jsonEditor.addEventListener(Components.JSONEditor.SubmitEditorEvent.eventName, (event: Event) => {
-      this.dispatchEventToListeners(Events.COMMAND_SENT, (event as Components.JSONEditor.SubmitEditorEvent).data);
-    });
+    this.jsonEditor = new JSONEditor(metadataByCommand, typesByName as Map<string, Parameter[]>, enumsByName);
+    this.jsonEditor.show(this.element);
+    this.jsonEditor.addEventListener(
+        JSONEditorEvents.SUBMIT_EDITOR,
+        ({data}: Common.EventTarget.EventTargetEvent<Command>) =>
+            this.dispatchEventToListeners(Events.COMMAND_SENT, data));
   }
 }
 

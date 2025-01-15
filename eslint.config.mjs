@@ -634,7 +634,6 @@ export default [
   {
     files: [
       'front_end/panels/recorder/**/*.ts',
-      'front_end/panels/protocol_monitor/**/*.ts',
       'front_end/ui/components/suggestion_input/*.ts',
     ],
     rules: {

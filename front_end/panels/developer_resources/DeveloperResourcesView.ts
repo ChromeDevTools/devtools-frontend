@@ -83,7 +83,9 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    toolbarContainer.role = 'toolbar';
     const toolbar = toolbarContainer.createChild('devtools-toolbar', 'developer-resource-view-toolbar');
+    toolbar.role = 'presentation';
 
     this.textFilterRegExp = null;
     this.filterInput = new UI.Toolbar.ToolbarFilter(i18nString(UIStrings.filterByText), 1);

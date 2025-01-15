@@ -244,10 +244,13 @@ export class NetworkPanel extends UI.Panel.Panel implements
     const panel = new UI.Widget.VBox();
 
     const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
+    networkToolbarContainer.role = 'toolbar';
     this.panelToolbar = networkToolbarContainer.createChild('devtools-toolbar');
+    this.panelToolbar.role = 'presentation';
     this.panelToolbar.wrappable = true;
     this.panelToolbar.setAttribute('jslog', `${VisualLogging.toolbar('network-main')}`);
     this.rightToolbar = networkToolbarContainer.createChild('devtools-toolbar');
+    this.rightToolbar.role = 'presentation';
 
     this.filterBar = new UI.FilterBar.FilterBar('network-panel', true);
     this.filterBar.show(panel.contentElement);

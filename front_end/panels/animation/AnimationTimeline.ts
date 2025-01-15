@@ -304,7 +304,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   private createHeader(): HTMLElement {
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     toolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    toolbarContainer.role = 'toolbar';
     const topToolbar = toolbarContainer.createChild('devtools-toolbar', 'animation-timeline-toolbar');
+    topToolbar.role = 'presentation';
     this.#clearButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'animations.clear');
     this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {

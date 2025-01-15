@@ -1591,8 +1591,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   private createStylesSidebarToolbar(): HTMLElement {
     const container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
+    container.role = 'toolbar';
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const toolbar = hbox.createChild('devtools-toolbar', 'styles-pane-toolbar');
+    toolbar.role = 'presentation';
     const filterInput = new UI.Toolbar.ToolbarFilter(undefined, 1, 1, undefined, undefined, false);
     filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar.appendToolbarItem(filterInput);

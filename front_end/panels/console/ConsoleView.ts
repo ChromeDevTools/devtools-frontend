@@ -340,6 +340,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
 
     this.consoleToolbarContainer = this.element.createChild('div', 'console-toolbar-container');
+    this.consoleToolbarContainer.role = 'toolbar';
     this.splitWidget = new UI.SplitWidget.SplitWidget(
         true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
     this.splitWidget.setMainWidget(this.searchableViewInternal);
@@ -405,6 +406,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const toolbar = this.consoleToolbarContainer.createChild('devtools-toolbar', 'console-main-toolbar');
     toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    toolbar.role = 'presentation';
     toolbar.wrappable = true;
     toolbar.appendToolbarItem(this.splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showConsoleSidebar), i18nString(UIStrings.hideConsoleSidebar),

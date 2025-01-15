@@ -262,8 +262,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #createToolbar(): void {
     const toolbarContainer = this.contentElement.createChild('div', 'toolbar-container');
     toolbarContainer.setAttribute('jslog', VisualLogging.toolbar().toString());
+    toolbarContainer.role = 'toolbar';
     const leftToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-left-toolbar');
+    leftToolbar.role = 'presentation';
     const rightToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-right-toolbar');
+    rightToolbar.role = 'presentation';
 
     this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#handleNewChatRequest.bind(this));
     leftToolbar.appendToolbarItem(this.#newChatButton);

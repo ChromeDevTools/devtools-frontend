@@ -555,9 +555,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);
+    timelineToolbarContainer.role = 'toolbar';
     this.panelToolbar = timelineToolbarContainer.createChild('devtools-toolbar', 'timeline-main-toolbar');
+    this.panelToolbar.role = 'presentation';
     this.panelToolbar.wrappable = true;
     this.panelRightToolbar = timelineToolbarContainer.createChild('devtools-toolbar');
+    this.panelRightToolbar.role = 'presentation';
     if (!isNode) {
       this.createSettingsPane();
       this.updateShowSettingsToolbarButton();

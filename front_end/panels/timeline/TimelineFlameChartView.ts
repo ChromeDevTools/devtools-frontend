@@ -41,6 +41,7 @@ import {
 } from './TimelineSelection.js';
 import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -154,6 +155,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #onMainEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #currentSelection: TimelineSelection|null = null;
+  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -1021,6 +1023,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
     this.setMarkers(newParsedTrace);
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
   }
 
   setInsights(
@@ -1077,6 +1080,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       selectedEvents: this.#selectedEvents,
       traceInsightsSets: this.#traceInsightSets,
       eventToRelatedInsightsMap: this.#eventToRelatedInsightsMap,
+      entityMapper: this.#entityMapper,
     });
   }
 

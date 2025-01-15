@@ -25,7 +25,7 @@ describeWithEnvironment('ThirdParties', function() {
     ]);
 
     const requestsByEntityResult = [...insight.requestsByEntity.entries()].map(([entity, requests]) => {
-      return [entity.name, requests.map(r => r.args.data.url)];
+      return [entity.name, requests.map(r => r?.args?.data?.url)];
     });
     assert.deepEqual(
         requestsByEntityResult,
@@ -75,7 +75,7 @@ describeWithEnvironment('ThirdParties', function() {
     ]);
 
     const requestsByEntityResult = [...insight.requestsByEntity.entries()].map(([entity, requests]) => {
-      return [entity.name, requests.map(r => r.args.data.url)];
+      return [entity.name, requests.map(r => r?.args?.data?.url)];
     });
     assert.deepEqual(
         requestsByEntityResult,

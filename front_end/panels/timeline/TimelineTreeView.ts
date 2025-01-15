@@ -19,6 +19,7 @@ import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
+import type {ThirdPartyTreeViewWidget} from './ThirdPartyTreeView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {rangeForSelection, type TimelineSelection} from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -172,6 +173,7 @@ export class TimelineTreeView extends
   private regexButton: UI.Toolbar.ToolbarToggle|undefined;
   private matchWholeWord: UI.Toolbar.ToolbarToggle|undefined;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   #lastHighlightedEvent: HTMLElement|null = null;
   eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
 
@@ -198,11 +200,17 @@ export class TimelineTreeView extends
   setModelWithEvents(
       selectedEvents: Trace.Types.Events.Event[]|null,
       parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null,
+      entityMappings: Utils.EntityMapper.EntityMapper|null = null,
       ): void {
     this.#parsedTrace = parsedTrace;
     this.#selectedEvents = selectedEvents;
+    this.#entityMapper = entityMappings;
+    this.refreshTree();
   }
 
+  entityMapper(): Utils.EntityMapper.EntityMapper|null {
+    return this.#entityMapper;
+  }
   parsedTrace(): Trace.Handlers.Types.ParsedTrace|null {
     return this.#parsedTrace;
   }
@@ -424,13 +432,21 @@ export class TimelineTreeView extends
          DataGrid.DataGrid.ColumnDescriptor));
   }
 
-  private sortingChanged(): void {
+  sortingChanged(): void {
     const columnId = this.dataGrid.sortColumnId();
     if (!columnId) {
       return;
     }
-    let sortFunction;
+    const sortFunction = this.getSortingFunction(columnId);
+    if (sortFunction) {
+      this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
+    }
+  }
 
+  // Gets the sorting function for the tree view nodes.
+  getSortingFunction(columnId: string):
+      ((a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
+        b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number)|null {
     const compareNameSortFn =
         (a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
          b: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>): number => {
@@ -438,11 +454,7 @@ export class TimelineTreeView extends
           const nodeB = (b as TreeGridNode);
           const eventA = nodeA.profileNode.event;
           const eventB = nodeB.profileNode.event;
-          // Should not happen, but guard against the nodes not having events.
           if (!eventA || !eventB) {
-            return 0;
-          }
-          if (!this.#parsedTrace) {
             return 0;
           }
           const nameA = this.#eventNameForSorting(eventA);
@@ -452,22 +464,18 @@ export class TimelineTreeView extends
 
     switch (columnId) {
       case 'start-time':
-        sortFunction = compareStartTime;
-        break;
+        return compareStartTime;
       case 'self':
-        sortFunction = compareSelfTime;
-        break;
+        return compareSelfTime;
       case 'total':
-        sortFunction = compareTotalTime;
-        break;
+        return compareTotalTime;
       case 'activity':
-        sortFunction = compareNameSortFn;
-        break;
+      case 'site':
+        return compareNameSortFn;
       default:
         console.assert(false, 'Unknown sort field: ' + columnId);
-        return;
+        return null;
     }
-    this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
 
     function compareSelfTime(
         a: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>,
@@ -665,7 +673,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   }
 
   override createCell(columnId: string): HTMLElement {
-    if (columnId === 'activity') {
+    if (columnId === 'activity' || columnId === 'site') {
       return this.createNameCell(columnId);
     }
     return this.createValueCell(columnId) || super.createCell(columnId);
@@ -687,8 +695,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         iconContainer.insertBefore(info.icon, icon);
       }
     } else if (event) {
-      const parsedTrace = this.treeView.parsedTrace();
       name.textContent = TimelineUIUtils.eventTitle(event);
+      const parsedTrace = this.treeView.parsedTrace();
       const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
       const linkifier = this.treeView.linkifier;
       const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
@@ -706,7 +714,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   }
 
   private createValueCell(columnId: string): HTMLElement|null {
-    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'start-time') {
+    if (columnId !== 'self' && columnId !== 'total' && columnId !== 'start-time' && columnId !== 'transfer-size') {
       return null;
     }
 
@@ -714,6 +722,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let value: number;
     let maxTime: number|undefined;
     let event: Trace.Types.Events.Event|null;
+    let isSize = false;
+    const thirdPartyView = this.treeView as ThirdPartyTreeViewWidget;
     switch (columnId) {
       case 'start-time': {
         event = this.profileNode.event;
@@ -735,14 +745,25 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         maxTime = this.maxTotalTime;
         showPercents = true;
         break;
+      case 'transfer-size':
+        value = thirdPartyView.extractThirdPartySummary(this.profileNode).transferSize;
+        isSize = true;
+        break;
       default:
         return null;
     }
     const cell = this.createTD(columnId);
     cell.className = 'numeric-column';
-    cell.setAttribute('title', i18n.TimeUtilities.preciseMillisToString(value, 4));
-    const textDiv = cell.createChild('div');
-    textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(value, 1);
+    let textDiv;
+    if (!isSize) {
+      cell.setAttribute('title', i18n.TimeUtilities.preciseMillisToString(value, 4));
+      textDiv = cell.createChild('div');
+      textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(value, 1);
+    } else {
+      cell.setAttribute('title', i18n.ByteUtilities.bytesToString(value));
+      textDiv = cell.createChild('div');
+      textDiv.createChild('span').textContent = i18n.ByteUtilities.bytesToString(value);
+    }
 
     if (showPercents && this.treeView.exposePercentages()) {
       textDiv.createChild('span', 'percent-column').textContent =

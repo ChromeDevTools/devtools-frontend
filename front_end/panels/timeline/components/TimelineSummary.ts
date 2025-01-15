@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Trace from '../../../models/trace/trace.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import timelineSummaryStyles from './timelineSummary.css.js';
@@ -35,18 +37,17 @@ export interface SummaryTableData {
   rangeStart: number;
   rangeEnd: number;
   categories: CategoryData[];
+  selectedEvents: Trace.Types.Events.Event[];
 }
 
 export class TimelineSummary extends HTMLElement {
-  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #shadow =
+      UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: [timelineSummaryStyles], delegatesFocus: undefined});
+
   #rangeStart = 0;
   #rangeEnd = 0;
   #total = 0;
   #categories: CategoryData[] = [];
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [timelineSummaryStyles];
-  }
 
   set data(data: SummaryTableData) {
     this.#total = data.total;
@@ -59,33 +60,36 @@ export class TimelineSummary extends HTMLElement {
   #render(): void {
     // clang-format off
     const output = html`
-        <div class="timeline-summary">
-            <div class="summary-range">${i18nString(UIStrings.rangeSS, {PH1: i18n.TimeUtilities.millisToString(this.#rangeStart), PH2: i18n.TimeUtilities.millisToString(this.#rangeEnd)})}</div>
-            <div class="category-summary">
-                ${this.#categories.map(category => {
-                    return html`
-                        <div class="category-row">
-                        <div class="category-swatch" style="background-color: ${category.color};"></div>
-                        <div class="category-name">${category.title}</div>
-                        <div class="category-value">
-                            ${i18n.TimeUtilities.preciseMillisToString(category.value)}
-                            <div class="background-bar-container">
-                                <div class="background-bar" style='width: ${(category.value * 100 / this.#total).toFixed(1)}%;'></div>
-                            </div>
-                        </div>
-                        </div>`;
-                })}
-                <div class="category-row">
-                    <div class="category-swatch"></div>
-                    <div class="category-name">${i18nString(UIStrings.total)}</div>
-                    <div class="category-value">
-                        ${i18n.TimeUtilities.preciseMillisToString(this.#total)}
-                        <div class="background-bar-container">
-                            <div class="background-bar"></div>
-                        </div>
-                    </div>
+          <div class="timeline-summary">
+              <div class="summary-range">${i18nString(UIStrings.rangeSS, {PH1: i18n.TimeUtilities.millisToString(this.#rangeStart), PH2: i18n.TimeUtilities.millisToString(this.#rangeEnd)})}</div>
+              <div class="category-summary">
+                  ${this.#categories.map(category => {
+                      return html`
+                          <div class="category-row">
+                          <div class="category-swatch" style="background-color: ${category.color};"></div>
+                          <div class="category-name">${category.title}</div>
+                          <div class="category-value">
+                              ${i18n.TimeUtilities.preciseMillisToString(category.value)}
+                              <div class="background-bar-container">
+                                  <div class="background-bar" style='width: ${(category.value * 100 / this.#total).toFixed(1)}%;'></div>
+                              </div>
+                          </div>
+                          </div>`;
+                  })}
+                  <div class="category-row">
+                      <div class="category-swatch"></div>
+                      <div class="category-name">${i18nString(UIStrings.total)}</div>
+                      <div class="category-value">
+                          ${i18n.TimeUtilities.preciseMillisToString(this.#total)}
+                          <div class="background-bar-container">
+                              <div class="background-bar"></div>
+                          </div>
+                      </div>
+                  </div>
                 </div>
-            </div>
+          </div>
+          </div>
+          <div class="third-party-table"><slot name="third-party-table"></slot></div>
         </div>`;
     // clang-format on
     render(output, this.#shadow, {host: this});

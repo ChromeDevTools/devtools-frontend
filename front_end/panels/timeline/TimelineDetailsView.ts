@@ -16,6 +16,7 @@ import * as TimelineComponents from './components/components.js';
 import {EventsTimelineTreeView} from './EventsTimelineTreeView.js';
 import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
+import {ThirdPartyTreeViewWidget} from './ThirdPartyTreeView.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
@@ -28,6 +29,7 @@ import {
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -66,7 +68,7 @@ export class TimelineDetailsView extends
   private readonly detailsLinkifier: Components.Linkifier.Linkifier;
   private tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly defaultDetailsWidget: UI.Widget.VBox;
-  private readonly defaultDetailsContentElement: HTMLElement;
+  private defaultDetailsContentWidget: UI.Widget.VBox;
   private rangeDetailViews: Map<string, TimelineTreeView>;
   #selectedEvents?: Trace.Types.Events.Event[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
@@ -84,6 +86,8 @@ export class TimelineDetailsView extends
   #layoutShiftDetails: TimelineComponents.LayoutShiftDetails.LayoutShiftDetails;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #relatedInsightChips = new TimelineComponents.RelatedInsightChips.RelatedInsightChips();
+  #thirdPartyTree = new ThirdPartyTreeViewWidget();
+  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -100,8 +104,7 @@ export class TimelineDetailsView extends
     this.defaultDetailsWidget = new UI.Widget.VBox();
     this.defaultDetailsWidget.element.classList.add('timeline-details-view');
     this.defaultDetailsWidget.element.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
-    this.defaultDetailsContentElement =
-        this.defaultDetailsWidget.element.createChild('div', 'timeline-details-view-body vbox');
+    this.defaultDetailsContentWidget = this.#createContentWidget();
     this.appendTab(Tab.Details, i18nString(UIStrings.summary), this.defaultDetailsWidget);
     this.setPreferredTab(Tab.Details);
 
@@ -138,6 +141,13 @@ export class TimelineDetailsView extends
     this.lazySelectorStatsView = null;
   }
 
+  #createContentWidget(): UI.Widget.VBox {
+    const defaultDetailsContentWidget = new UI.Widget.VBox();
+    defaultDetailsContentWidget.element.classList.add('timeline-details-view-body');
+    defaultDetailsContentWidget.show(this.defaultDetailsWidget.element);
+    return defaultDetailsContentWidget;
+  }
+
   private selectorStatsView(): TimelineSelectorStatsView {
     if (this.lazySelectorStatsView) {
       return this.lazySelectorStatsView;
@@ -150,7 +160,7 @@ export class TimelineDetailsView extends
   }
 
   getDetailsContentElementForTest(): HTMLElement {
-    return this.defaultDetailsContentElement;
+    return this.defaultDetailsContentWidget.element;
   }
 
   revealEventInTreeView(event: Trace.Types.Events.Event|null): void {
@@ -182,6 +192,7 @@ export class TimelineDetailsView extends
     selectedEvents: Trace.Types.Events.Event[]|null,
     traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
     eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
+    entityMapper: Utils.EntityMapper.EntityMapper|null,
   }): Promise<void> {
     if (this.#parsedTrace !== data.parsedTrace) {
       // Clear the selector stats view, so the next time the user views it we
@@ -192,6 +203,7 @@ export class TimelineDetailsView extends
     }
     if (data.parsedTrace) {
       this.#filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
+      this.#entityMapper = new Utils.EntityMapper.EntityMapper(data.parsedTrace);
     }
     this.#selectedEvents = data.selectedEvents;
     this.#traceInsightsSets = data.traceInsightsSets;
@@ -203,6 +215,8 @@ export class TimelineDetailsView extends
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(data.selectedEvents, data.parsedTrace);
     }
+    // Set the 3p tree model.
+    this.#thirdPartyTree.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
     await this.setSelection(null);
@@ -215,22 +229,28 @@ export class TimelineDetailsView extends
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
-    this.defaultDetailsContentElement.removeChildren();
-    this.defaultDetailsContentElement.appendChild(node);
+    this.defaultDetailsContentWidget.detach();
+    this.defaultDetailsContentWidget = this.#createContentWidget();
+    this.defaultDetailsContentWidget.contentElement.appendChild(node);
     if (this.#relatedInsightChips) {
-      this.defaultDetailsContentElement.appendChild(this.#relatedInsightChips);
+      this.defaultDetailsContentWidget.contentElement.appendChild(this.#relatedInsightChips);
     }
   }
 
   private updateContents(): void {
+    const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
+    if (!traceBoundsState) {
+      return;
+    }
+    const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
+    // Update the view that we currently have selected.
     const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
     if (view) {
-      const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
-      if (!traceBoundsState) {
-        return;
-      }
-      const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
       view.updateContents(this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
+    } else {
+      // If no view, we must be in the summary tab, update the 3p tree.
+      this.#thirdPartyTree.updateContents(
+          this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
     }
   }
 
@@ -471,7 +491,7 @@ export class TimelineDetailsView extends
 
   private updateSelectedRangeStats(
       startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
-    if (!this.#selectedEvents || !this.#parsedTrace) {
+    if (!this.#selectedEvents || !this.#parsedTrace || !this.#entityMapper) {
       return;
     }
 
@@ -479,7 +499,8 @@ export class TimelineDetailsView extends
     const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.#selectedEvents, startTime, endTime);
     const startOffset = startTime - minBoundsMilli;
     const endOffset = endTime - minBoundsMilli;
-    const summaryDetails = TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset);
+    const summaryDetails = TimelineUIUtils.generateSummaryDetails(
+        aggregatedStats, startOffset, endOffset, this.#selectedEvents, this.#thirdPartyTree);
     this.setContent(summaryDetails);
 
     // Find all recalculate style events data from range

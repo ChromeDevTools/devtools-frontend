@@ -22,6 +22,7 @@ describeWithMockConnection('TimelineSummary', () => {
       rangeEnd: 110,
       total: 110,
       categories,
+      selectedEvents: [],
     };
 
     categories.push({title: 'Total', value: 110, color: 'yellow'});
@@ -50,6 +51,7 @@ describeWithMockConnection('TimelineSummary', () => {
       rangeEnd: 110,
       total: 110,
       categories,
+      selectedEvents: [],
     };
 
     categories.push({title: 'Total', value: 110, color: 'grey'});

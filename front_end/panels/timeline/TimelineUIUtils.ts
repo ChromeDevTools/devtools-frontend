@@ -57,6 +57,7 @@ import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {targetForEvent} from './TargetForEvent.js';
+import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {selectionFromEvent} from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
@@ -2264,8 +2265,10 @@ export class TimelineUIUtils {
     return element;
   }
   // Generates a Summary component given a aggregated stats for categories.
-  static generateSummaryDetails(aggregatedStats: Record<string, number>, rangeStart: number, rangeEnd: number):
-      Element {
+  static generateSummaryDetails(
+      aggregatedStats: Record<string, number>, rangeStart: number, rangeEnd: number,
+      selectedEvents: Trace.Types.Events.Event[],
+      thirdPartyTree: ThirdPartyTreeView.ThirdPartyTreeViewWidget): Element {
     let total = 0;
     // Calculate total of all categories.
     for (const categoryName in aggregatedStats) {
@@ -2275,7 +2278,6 @@ export class TimelineUIUtils {
     const element = document.createElement('div');
     element.classList.add('timeline-details-view-summary');
 
-    const summaryTable = new TimelineComponents.TimelineSummary.TimelineSummary();
     let categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
 
     // Get stats values from categories.
@@ -2297,14 +2299,29 @@ export class TimelineUIUtils {
     categories = categories.sort((a, b) => b.value - a.value);
     const start = Trace.Types.Timing.MilliSeconds(rangeStart);
     const end = Trace.Types.Timing.MilliSeconds(rangeEnd);
+    const summaryTable = new TimelineComponents.TimelineSummary.TimelineSummary();
     summaryTable.data = {
       rangeStart: start,
       rangeEnd: end,
       total,
       categories,
+      selectedEvents,
     };
     const summaryTableContainer = element.createChild('div');
     summaryTableContainer.appendChild(summaryTable);
+
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
+      return element;
+    }
+
+    const treeView = new ThirdPartyTreeView.ThirdPartyTreeView();
+    treeView.treeView = thirdPartyTree;
+    const treeSlot = document.createElement('slot');
+    treeSlot.name = 'third-party-table';
+    treeSlot.append(treeView);
+    if (summaryTable.shadowRoot) {
+      summaryTable.shadowRoot?.appendChild(treeSlot);
+    }
     return element;
   }
 

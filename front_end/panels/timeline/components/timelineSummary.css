@@ -62,3 +62,37 @@
   background-color: var(--sys-color-surface-yellow);
   border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
 }
+
+.data-container {
+  height: 200px;
+}
+
+.timeline-tree-view .data-grid {
+  border-top: none !important; /* stylelint-disable-line declaration-no-important */
+
+  tr .numeric-column,
+  tr .site-column {
+    border-left: none;
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  }
+
+  .bottom-filler-td,
+  th.sortable {
+    border-left: none;
+  }
+
+  th {
+    background-color: var(--sys-color-cdt-base-container);
+  }
+}
+
+.widget.vbox.timeline-tree-view {
+  height: var(--sys-size-25);
+  max-width: var(--sys-size-35);
+}
+
+.third-party-table {
+  display: flex;
+  padding: var(--sys-size-4) var(--sys-size-8) var(--sys-size-4);
+  gap: var(--sys-size-5);
+}

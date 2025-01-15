@@ -16,8 +16,8 @@ export interface Summary {
 
 export interface SummaryMaps {
   byEntity: Map<Entity, Summary>;
-  byRequest: Map<Types.Events.SyntheticNetworkRequest, Summary>;
-  requestsByEntity: Map<Entity, Types.Events.SyntheticNetworkRequest[]>;
+  byEvent: Map<Types.Events.Event, Summary>;
+  eventsByEntity: Map<Entity, Types.Events.Event[]>;
 }
 
 function getSelfTimeByUrl(
@@ -109,7 +109,7 @@ function getSummaryMap(
     requestsByEntity.set(entity, entityRequests);
   }
 
-  return {byEntity, byRequest, requestsByEntity};
+  return {byEntity, byEvent: byRequest, eventsByEntity: requestsByEntity};
 }
 
 export function getSummariesAndEntitiesForTraceBounds(
@@ -131,4 +131,75 @@ export function getSummariesAndEntitiesForTraceBounds(
   const summaries = getSummaryMap(reqs, entityByRequest, selfTimeByUrl);
 
   return {summaries, entityByRequest, madeUpEntityCache};
+}
+
+function getSummaryMapWithMapping(
+    events: Types.Events.Event[], entityByEvent: Map<Types.Events.Event, Handlers.Helpers.Entity>,
+    selfTimeByUrl: Map<string, number>, eventsByEntity: Map<Handlers.Helpers.Entity, Types.Events.Event[]>,
+    parsedTrace: Handlers.Types.ParsedTrace): SummaryMaps {
+  const byEvent = new Map<Types.Events.Event, Summary>();
+  const byEntity = new Map<Handlers.Helpers.Entity, Summary>();
+  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.MicroSeconds(0)};
+
+  for (const event of events) {
+    const url = Handlers.Helpers.getNonResolvedURL(event, parsedTrace) ?? '';
+    const urlSummary = byEvent.get(event) || {...defaultSummary};
+    if (Types.Events.isSyntheticNetworkRequest(event)) {
+      urlSummary.transferSize += event.args.data.encodedDataLength;
+    }
+    urlSummary.mainThreadTime = Types.Timing.MicroSeconds(urlSummary.mainThreadTime + (selfTimeByUrl.get(url) ?? 0));
+    byEvent.set(event, urlSummary);
+  }
+
+  // Map each request's stat to a particular entity.
+  for (const [request, requestSummary] of byEvent.entries()) {
+    const entity = entityByEvent.get(request);
+    if (!entity) {
+      byEvent.delete(request);
+      continue;
+    }
+
+    const entitySummary = byEntity.get(entity) || {...defaultSummary};
+    entitySummary.transferSize += requestSummary.transferSize;
+    entitySummary.mainThreadTime =
+        Types.Timing.MicroSeconds(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
+    byEntity.set(entity, entitySummary);
+  }
+
+  return {byEntity, byEvent, eventsByEntity};
+}
+
+export function getSummariesAndEntitiesWithMapping(
+    parsedTrace: Handlers.Types.ParsedTrace, traceBounds: Types.Timing.TraceWindowMicroSeconds,
+    entityMapping: Handlers.Helpers.EntityMappings): {
+  summaries: SummaryMaps,
+  entityByEvent: Map<Types.Events.Event, Handlers.Helpers.Entity>,
+} {
+  const entityByEvent = new Map(entityMapping.entityByEvent);
+  const eventsByEntity = new Map(entityMapping.eventsByEntity);
+
+  // Consider events only in bounds.
+  const entityByEventArr = Array.from(entityByEvent.entries());
+  const filteredEntries = entityByEventArr.filter(([event]) => {
+    return Helpers.Timing.eventIsInBounds(event, traceBounds);
+  });
+  const entityByEventFiltered = new Map(filteredEntries);
+
+  // Consider events only in bounds.
+  const eventsByEntityArr = Array.from(eventsByEntity.entries());
+  const filtered = eventsByEntityArr.filter(([, events]) => {
+    events.map(event => {
+      return Helpers.Timing.eventIsInBounds(event, traceBounds);
+    });
+    return events.length > 0;
+  });
+  const eventsByEntityFiltered = new Map(filtered);
+
+  const allEvents = Array.from(entityByEvent.keys());
+  const selfTimeByUrl = getSelfTimeByUrl(parsedTrace, traceBounds);
+  // TODO(crbug.com/352244718): re-work to still collect main thread activity if no request is present
+  const summaries =
+      getSummaryMapWithMapping(allEvents, entityByEventFiltered, selfTimeByUrl, eventsByEntityFiltered, parsedTrace);
+
+  return {summaries, entityByEvent: entityByEventFiltered};
 }

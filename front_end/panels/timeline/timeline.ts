@@ -23,6 +23,7 @@ import * as NetworkTrackAppender from './NetworkTrackAppender.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
 import * as ServerTimingsTrackAppender from './ServerTimingsTrackAppender.js';
 import * as TargetForEvent from './TargetForEvent.js';
+import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import * as ThreadAppender from './ThreadAppender.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
@@ -67,6 +68,7 @@ export {
   SaveFileFormatter,
   ServerTimingsTrackAppender,
   TargetForEvent,
+  ThirdPartyTreeView,
   ThreadAppender,
   TimelineController,
   TimelineDetailsView,

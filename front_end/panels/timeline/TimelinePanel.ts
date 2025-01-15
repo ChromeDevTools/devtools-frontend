@@ -2126,11 +2126,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#restoreSidebarVisibilityOnTraceLoad = false;
   }
 
+  // Activates or disables dimming when checkbox is clicked.
   #dimThirdPartiesIfRequired(traceIndex: number): void {
     const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
     if (!parsedTrace) {
       return;
     }
+    const checkboxState = this.#dimThirdPartiesSetting?.get() ?? false;
+    this.flameChart.setActiveThirdPartyDimmingSetting(checkboxState);
     const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
     if (this.#dimThirdPartiesSetting?.get() && thirdPartyEvents.length) {
       this.flameChart.dimEvents(thirdPartyEvents);

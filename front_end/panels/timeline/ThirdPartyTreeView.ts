@@ -154,6 +154,19 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     }
   }
 
+  override onHover(node: Trace.Extras.TraceTree.Node|null): void {
+    const entityMappings = this.entityMapper();
+    if (!entityMappings || !node?.event) {
+      return;
+    }
+    const nodeEntity = entityMappings.entityForEvent(node.event);
+    if (!nodeEntity) {
+      return;
+    }
+    const eventsForEntity = entityMappings.eventsForEntity(nodeEntity);
+    this.dispatchEventToListeners(TimelineTreeView.TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, eventsForEntity);
+  }
+
   displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
     name: string,
     color: string,

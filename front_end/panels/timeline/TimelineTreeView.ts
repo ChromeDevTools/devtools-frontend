@@ -247,6 +247,8 @@ export class TimelineTreeView extends
     this.dataGrid.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener(
         'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null));
+    this.dataGrid.element.addEventListener(
+        'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, null));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OPENED_NODE, this.onGridNodeOpened, this);
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.setRowContextMenuCallback(this.onContextMenu.bind(this));
@@ -643,10 +645,12 @@ export class TimelineTreeView extends
 export namespace TimelineTreeView {
   export const enum Events {
     TREE_ROW_HOVERED = 'TreeRowHovered',
+    THIRD_PARTY_ROW_HOVERED = 'ThirdPartyRowHovered',
   }
 
   export interface EventTypes {
     [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
+    [Events.THIRD_PARTY_ROW_HOVERED]: Trace.Types.Events.Event[]|null;
   }
 }
 

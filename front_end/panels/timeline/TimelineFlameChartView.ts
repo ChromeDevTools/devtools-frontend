@@ -156,6 +156,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #currentSelection: TimelineSelection|null = null;
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
+  #activeThirdPartyDimmingSetting: boolean = false;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -358,8 +359,21 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       if (events) {
         this.#dimInsightRelatedEvents(events);
       } else {
-        this.mainFlameChart.disableDimming();
-        this.networkFlameChart.disableDimming();
+        this.disableAllDimming();
+      }
+    });
+
+    this.detailsView.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
+      if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
+        return;
+      }
+
+      const entityEvents = node.data;
+      if (entityEvents && entityEvents.length) {
+        // Dim events not related to third party entity.
+        this.#dimUnrelatedEvents(entityEvents, false);
+      } else {
+        this.disableAllDimming();
       }
     });
 
@@ -417,6 +431,38 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.networkFlameChart.enableDimming(relatedNetworkIndices, false /** shouldAddOutlines */);
   }
 
+  /**
+   * dimUnrelatedEvents calls for dimming of all events except the relatedEvents provided.
+   *
+   * @param relatedEvents
+   * @param shouldAddOutlines whether to add outlines to add an outline ot events that are undimmed.
+   * Currently this is being used by dimming from 3rd parties and insight related events dimming.
+   * We don't use outlines for 3rd party dimming, since outlines can add a lot of noise.
+   */
+  #dimUnrelatedEvents(relatedEvents: Trace.Types.Events.Event[], shouldAddOutlines: boolean): void {
+    const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
+    const relatedNetworkIndices = relatedEvents.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
+
+    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices, shouldAddOutlines);
+    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices, shouldAddOutlines);
+  }
+
+  setActiveThirdPartyDimmingSetting(active: boolean): void {
+    this.#activeThirdPartyDimmingSetting = active;
+  }
+
+  // This wraps disabling dimming to include a check for 3p checkbox.
+  disableAllDimming(): void {
+    this.mainFlameChart.disableDimming();
+    this.networkFlameChart.disableDimming();
+
+    // If 3p checkbox is enabled, we should dim again.
+    if (this.#activeThirdPartyDimmingSetting) {
+      const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
+      this.dimEvents(thirdPartyEvents);
+    }
+  }
+
   #dimInsightRelatedEvents(relatedEvents: Trace.Types.Events.Event[]): void {
     // Dim all events except those related to the active insight.
     const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
@@ -463,13 +509,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
       relevantEvents.push(...provider.search(bounds).map(r => r.index));
     }
-    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices);
-    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices);
-  }
-
-  disableAllDimming(): void {
-    this.mainFlameChart.disableDimming();
-    this.networkFlameChart.disableDimming();
+    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices, true);
+    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices, true);
   }
 
   #sortMarkersForPreferredVisualOrder(markers: Trace.Types.Events.Event[]): void {
@@ -627,8 +668,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
     if (!this.#activeInsight) {
-      this.mainFlameChart.disableDimming();
-      this.networkFlameChart.disableDimming();
+      this.disableAllDimming();
     }
   }
 

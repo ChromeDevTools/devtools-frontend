@@ -128,6 +128,9 @@ export class TimelineDetailsView extends
           TimelineTreeView.Events.TREE_ROW_HOVERED,
           node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.data));
     });
+    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
+      this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node.data);
+    });
 
     this.#networkRequestDetails =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);

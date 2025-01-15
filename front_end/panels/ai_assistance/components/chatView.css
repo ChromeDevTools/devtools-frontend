@@ -73,14 +73,9 @@
       height: 100%;
       box-shadow: 0 -3px 2px -2px var(--app-color-ai-assistance-input-divider);
       animation: reveal;
+      opacity: 0%;
       /* stylelint-disable-next-line property-no-unknown */
       animation-timeline: --scroll-timeline;
-      animation-fill-mode: both;
-
-      --visibility-if-can-scroll: var(--can-scroll) visible;
-      --visibility-if-cant-scroll: hidden;
-
-      visibility: var(--visibility-if-can-scroll, var(--visibility-if-cant-scroll));
     }
   }
 }
@@ -528,9 +523,6 @@ main {
 
   /* stylelint-disable-next-line property-no-unknown */
   scroll-timeline: --scroll-timeline y;
-  animation: detect-scroll;
-  /* stylelint-disable-next-line property-no-unknown */
-  animation-timeline: --scroll-timeline;
 }
 
 .empty-state-container {
@@ -689,9 +681,4 @@ main {
   100% {
     opacity: 0%;
   }
-}
-
-@keyframes detect-scroll {
-  from,
-  to { --can-scroll: ; }
 }

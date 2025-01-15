@@ -174,7 +174,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   set metadataByCommand(metadataByCommand:
                             Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>) {
     this.#metadataByCommand = metadataByCommand;
-    this.update();
+    this.requestUpdate();
   }
 
   get typesByName(): Map<string, Parameter[]> {
@@ -183,7 +183,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   set typesByName(typesByName: Map<string, Parameter[]>) {
     this.#typesByName = typesByName;
-    this.update();
+    this.requestUpdate();
   }
 
   get enumsByName(): Map<string, Record<string, string>> {
@@ -192,7 +192,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   set enumsByName(enumsByName: Map<string, Record<string, string>>) {
     this.#enumsByName = enumsByName;
-    this.update();
+    this.requestUpdate();
   }
 
   get parameters(): Parameter[] {
@@ -201,7 +201,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   set parameters(parameters: Parameter[]) {
     this.#parameters = parameters;
-    this.update();
+    this.requestUpdate();
   }
 
   get targets(): SDK.Target.Target[] {
@@ -210,7 +210,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   set targets(targets: SDK.Target.Target[]) {
     this.#targets = targets;
-    this.update();
+    this.requestUpdate();
   }
 
   get command(): string {
@@ -220,7 +220,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   set command(command: string) {
     if (this.#command !== command) {
       this.#command = command;
-      this.update();
+      this.requestUpdate();
     }
   }
 
@@ -231,7 +231,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   set targetId(targetId: string|undefined) {
     if (this.#targetId !== targetId) {
       this.#targetId = targetId;
-      this.update();
+      this.requestUpdate();
     }
   }
 
@@ -247,7 +247,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     targetManager.addEventListener(
         SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, this.#handleAvailableTargetsChanged, this);
     this.#handleAvailableTargetsChanged();
-    this.update();
+    this.requestUpdate();
   }
 
   override willHide(): void {
@@ -347,7 +347,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       }
     }
 
-    this.update();
+    this.requestUpdate();
   }
 
   #convertObjectToParameterSchema(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]):
@@ -644,7 +644,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       object.isCorrectType = this.#isValueOfCorrectType(object, value);
     }
     // Needed to render the delete button for object parameters
-    this.update();
+    this.requestUpdate();
   };
 
   #saveNestedObjectParameterKey = (event: Event): void => {
@@ -660,7 +660,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const {parameter} = this.#getChildByPath(pathArray);
     parameter.name = value;
     // Needed to render the delete button for object parameters
-    this.update();
+    this.requestUpdate();
   };
 
   #handleParameterInputKeydown = (event: KeyboardEvent): void => {
@@ -684,7 +684,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const object = this.#getChildByPath(pathArray).parameter;
     object.isCorrectType = true;
 
-    this.update();
+    this.requestUpdate();
   }
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
@@ -828,7 +828,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         parameter.value = defaultValueByType.get(parameter.type);
         break;
     }
-    this.update();
+    this.requestUpdate();
   }
 
   #handleClearParameter(parameter: Parameter, isParentArray?: boolean): void {
@@ -859,7 +859,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         break;
     }
 
-    this.update();
+    this.requestUpdate();
   }
 
   #handleDeleteParameter(parameter: Parameter, parentParameter: Parameter): void {
@@ -876,7 +876,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         parentParameter.value[i].name = String(i);
       }
     }
-    this.update();
+    this.requestUpdate();
   }
 
   #renderTargetSelectorRow(): LitHtml.TemplateResult|undefined {
@@ -915,7 +915,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     this.targetId = event.itemValue as string;
-    this.update();
+    this.requestUpdate();
   }
 
   #computeDropdownValues(parameter: Parameter): string[] {
@@ -1174,7 +1174,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // clang-format on
   }
 
-  override doUpdate(): void {
+  override performUpdate(): void {
     // clang-format off
     render(html`
     <div class="wrapper">

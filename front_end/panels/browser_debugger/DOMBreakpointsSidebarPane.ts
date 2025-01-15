@@ -366,7 +366,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.update();
   }
 
-  override update(): void {
+  update(): void {
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
     if (this.#highlightedBreakpoint) {
       const oldHighlightedBreakpoint = this.#highlightedBreakpoint;

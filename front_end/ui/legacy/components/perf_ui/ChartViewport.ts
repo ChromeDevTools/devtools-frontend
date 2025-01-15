@@ -481,7 +481,7 @@ export class ChartViewport extends UI.Widget.VBox {
     });
   }
 
-  override update(): void {
+  update(): void {
     this.delegate.update();
   }
 

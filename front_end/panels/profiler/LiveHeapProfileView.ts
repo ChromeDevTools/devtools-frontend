@@ -206,7 +206,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     } while (this.currentPollId === pollId);
   }
 
-  override update(
+  update(
       isolates: SDK.IsolateManager.Isolate[] = [],
       profiles: (Protocol.HeapProfiler.SamplingHeapProfile|null)[] = []): void {
     const dataByUrl = new Map<string, {

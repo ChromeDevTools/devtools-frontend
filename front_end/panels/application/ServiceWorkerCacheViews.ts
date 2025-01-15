@@ -287,7 +287,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     node.remove();
   }
 
-  override update(cache: SDK.ServiceWorkerCacheModel.Cache|null = null): void {
+  update(cache: SDK.ServiceWorkerCacheModel.Cache|null = null): void {
     if (!cache) {
       return;
     }

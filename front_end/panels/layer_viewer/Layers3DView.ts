@@ -738,7 +738,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     }
   }
 
-  override update(): void {
+  update(): void {
     if (!this.isShowing()) {
       this.needsUpdate = true;
       return;

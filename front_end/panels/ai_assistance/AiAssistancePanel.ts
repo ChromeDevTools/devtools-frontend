@@ -610,7 +610,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     void this.doUpdate();
   };
 
-  override async doUpdate(): Promise<void> {
+  async doUpdate(): Promise<void> {
     this.#updateToolbarState();
     this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
   }

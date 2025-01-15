@@ -109,7 +109,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   }) {
     super(true, undefined, element);
     this.#view = view;
-    this.update();
+    this.requestUpdate();
   }
 
   static async getFileContent(): Promise<string> {
@@ -123,7 +123,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     }
   }
 
-  override async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     const markdownContent = await getMarkdownContent();
     this.#view(
         {

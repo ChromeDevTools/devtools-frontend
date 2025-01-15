@@ -582,7 +582,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   }) {
     super('security');
 
-    void this.doUpdate();
+    this.update();
 
     this.sidebar.setMinimumSize(100, 25);
     this.sidebar.element.classList.add('panel-sidebar');
@@ -642,7 +642,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     return certificateButton;
   }
 
-  override async doUpdate(): Promise<void> {
+  update(): void {
     this.view({panel: this}, this, this.contentElement);
   }
 

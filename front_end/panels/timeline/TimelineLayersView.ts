@@ -68,7 +68,7 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
     }
   }
 
-  override update(): void {
+  update(): void {
     if (this.frameLayerTree) {
       void this.frameLayerTree.layerTreePromise().then(layerTree => this.layerViewHost.setLayerTree(layerTree));
     }

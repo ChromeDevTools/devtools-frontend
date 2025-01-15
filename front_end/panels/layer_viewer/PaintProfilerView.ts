@@ -242,7 +242,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
-  override update(): void {
+  update(): void {
     this.canvas.width = this.canvasContainer.clientWidth * window.devicePixelRatio;
     this.canvas.height = this.canvasContainer.clientHeight * window.devicePixelRatio;
     this.samplesPerBar = 0;

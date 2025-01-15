@@ -35,7 +35,7 @@ export class DataGridControllerIntegrator extends UI.Widget.VBox {
     return this.#data;
   }
 
-  override update(data?: Readonly<DataGridControllerData>): void {
+  update(data?: Readonly<DataGridControllerData>): void {
     if (!data) {
       return;
     }

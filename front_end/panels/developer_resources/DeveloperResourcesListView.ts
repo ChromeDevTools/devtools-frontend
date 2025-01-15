@@ -145,7 +145,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     }
   }
 
-  override update(items: Iterable<SDK.PageResourceLoader.PageResource> = []): void {
+  update(items: Iterable<SDK.PageResourceLoader.PageResource> = []): void {
     let hadUpdates = false;
     const rootNode = this.dataGrid.rootNode();
     for (const item of items) {

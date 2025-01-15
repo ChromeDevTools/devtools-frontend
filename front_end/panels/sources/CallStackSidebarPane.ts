@@ -202,11 +202,11 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     }
   }
 
-  override update(): void {
+  update(): void {
     void this.updateThrottler.schedule(() => this.doUpdate());
   }
 
-  override async doUpdate(): Promise<void> {
+  async doUpdate(): Promise<void> {
     this.locationPool.disposeAll();
 
     this.callFrameWarningsElement.classList.add('hidden');

@@ -8,7 +8,7 @@ export class Throttler {
   readonly #timeout: number;
   #isRunningProcess: boolean;
   #asSoonAsPossible: boolean;
-  #process: (() => (Promise<unknown>))|null;
+  #process: (() => (void|Promise<unknown>))|null;
   #lastCompleteTime: number;
   #schedulePromise: Promise<unknown>;
   #scheduleResolve!: (value: unknown) => void;
@@ -39,7 +39,7 @@ export class Throttler {
     // For sniffing in tests.
   }
 
-  get process(): (() => (Promise<unknown>))|null {
+  get process(): (() => (void|Promise<unknown>))|null {
     return this.#process;
   }
 
@@ -63,7 +63,7 @@ export class Throttler {
     this.#process = null;
   }
 
-  schedule(process: () => (Promise<unknown>), scheduling = Scheduling.DEFAULT): Promise<void> {
+  schedule(process: () => (void|Promise<unknown>), scheduling = Scheduling.DEFAULT): Promise<void> {
     // Deliberately skip previous #process.
     this.#process = process;
 

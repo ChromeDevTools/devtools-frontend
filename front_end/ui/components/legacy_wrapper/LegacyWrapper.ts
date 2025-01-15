@@ -47,7 +47,7 @@ legacyWrapper<T extends Constructor<UI.Widget.Widget>, Component extends Wrappab
       this.#component.willHide();
     }
 
-    override async doUpdate(): Promise<void> {
+    override async performUpdate(): Promise<void> {
       await this.#component.render();
     }
 

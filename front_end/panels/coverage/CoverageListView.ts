@@ -195,7 +195,7 @@ export class CoverageListView extends UI.Widget.VBox {
     this.setDefaultFocusedChild(dataGridWidget);
   }
 
-  override update(coverageInfo: URLCoverageInfo[] = []): void {
+  update(coverageInfo: URLCoverageInfo[] = []): void {
     let hadUpdates = false;
     const maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
     const rootNode = this.dataGrid.rootNode();

@@ -595,7 +595,7 @@ export class Ruler extends UI.Widget.VBox {
     void this.throttler.schedule(this.update.bind(this));
   }
 
-  override update(): Promise<void> {
+  update(): void {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const size = this.horizontal ? this.contentElementInternal.offsetWidth : this.contentElementInternal.offsetHeight;
 
@@ -659,7 +659,6 @@ export class Ruler extends UI.Widget.VBox {
     }
 
     this.count = count;
-    return Promise.resolve();
   }
 
   private onMarkerClick(size: number): void {

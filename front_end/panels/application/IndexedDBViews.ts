@@ -474,7 +474,7 @@ export class IDBDataView extends UI.View.SimpleView {
     this.updateData(true);
   }
 
-  override update(objectStore: ObjectStore|null = null, index: Index|null = null): void {
+  update(objectStore: ObjectStore|null = null, index: Index|null = null): void {
     if (!objectStore) {
       return;
     }

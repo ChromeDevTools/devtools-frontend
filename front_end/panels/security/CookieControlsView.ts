@@ -294,10 +294,10 @@ export class CookieControlsView extends UI.Widget.VBox {
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.#onPrimaryPageChanged, this);
 
-    this.update();
+    this.requestUpdate();
   }
 
-  override async doUpdate(): Promise<void> {
+  override performUpdate(): void {
     this.#view(this, this, this.contentElement);
   }
 
@@ -305,7 +305,7 @@ export class CookieControlsView extends UI.Widget.VBox {
     setting.set(newValue);
     UI.InspectorView.InspectorView.instance().displayDebuggedTabReloadRequiredWarning(
         i18nString(UIStrings.siteReloadMessage));
-    this.update();
+    this.requestUpdate();
   }
 
   openChromeCookieSettings(): void {

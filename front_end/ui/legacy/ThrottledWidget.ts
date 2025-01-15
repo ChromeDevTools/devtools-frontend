@@ -16,11 +16,11 @@ export class ThrottledWidget extends VBox {
     this.updateWhenVisible = false;
   }
 
-  protected override doUpdate(): Promise<void> {
+  protected doUpdate(): Promise<void> {
     return Promise.resolve();
   }
 
-  override update(): void {
+  update(): void {
     this.updateWhenVisible = !this.isShowing();
     if (this.updateWhenVisible) {
       return;

@@ -302,7 +302,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     }
   }
 
-  override update(): void {
+  update(): void {
     if (this.editingItem) {
       this.stopEditing(this.editingItem);
     }

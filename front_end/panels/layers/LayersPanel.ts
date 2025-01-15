@@ -153,7 +153,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     void this.updateThrottler.schedule(this.update.bind(this));
   }
 
-  override update(): Promise<void> {
+  update(): void {
     if (this.model) {
       this.layerViewHost.setLayerTree(this.model.layerTree());
       const resourceModel = this.model.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -166,7 +166,6 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
         }
       }
     }
-    return Promise.resolve();
   }
 
   private onLayerPainted({data: layer}: Common.EventTarget.EventTargetEvent<SDK.LayerTreeBase.Layer>): void {

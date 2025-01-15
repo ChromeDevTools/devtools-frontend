@@ -322,26 +322,26 @@ export class CookieReportView extends UI.Widget.VBox {
       }
     }
 
-    this.update();
+    this.requestUpdate();
   }
 
-  override async doUpdate(): Promise<void> {
+  override performUpdate(): void {
     this.gridData = this.#buildNodes();
     this.#view(this, this, this.contentElement);
   }
 
   onFilterChanged(): void {
-    this.update();
+    this.requestUpdate();
   }
 
   onSortingChanged(): void {
-    this.update();
+    this.requestUpdate();
   }
 
   #onPrimaryPageChanged(): void {
     this.#cookieRows.clear();
     this.namedBitSetFilterUI = undefined;
-    this.update();
+    this.requestUpdate();
   }
 
   #onIssueEventReceived(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
@@ -350,7 +350,7 @@ export class CookieReportView extends UI.Widget.VBox {
         return;
       }
       this.#onIssueAdded(event.data.issue);
-      this.update();
+      this.requestUpdate();
     }
   }
 

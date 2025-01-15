@@ -64,7 +64,7 @@ export class LayersWidget extends UI.Widget.Widget {
     return this.update();
   }
 
-  override async update(): Promise<void> {
+  async update(): Promise<void> {
     if (!this.isShowing()) {
       return;
     }

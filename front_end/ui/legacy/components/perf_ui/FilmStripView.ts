@@ -90,7 +90,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     return element;
   }
 
-  override update(): void {
+  update(): void {
     const frames = this.#filmStrip?.frames;
     if (!frames || frames.length < 1) {
       return;

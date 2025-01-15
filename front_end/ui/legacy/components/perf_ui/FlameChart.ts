@@ -3937,7 +3937,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.scheduleUpdate();
   }
 
-  override update(): void {
+  update(): void {
     if (!this.timelineData()) {
       return;
     }

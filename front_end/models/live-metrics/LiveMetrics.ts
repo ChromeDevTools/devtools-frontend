@@ -46,9 +46,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #target?: SDK.Target.Target;
   #scriptIdentifier?: Protocol.Page.ScriptIdentifier;
   #lastResetContextId?: Protocol.Runtime.ExecutionContextId;
-  #lcpValue?: LCPValue;
-  #clsValue?: CLSValue;
-  #inpValue?: INPValue;
+  #lcpValue?: LcpValue;
+  #clsValue?: ClsValue;
+  #inpValue?: InpValue;
   #interactions: InteractionMap = new Map();
   #interactionsByGroupId = new Map<Spec.InteractionEntryGroupId, Interaction[]>();
   #layoutShifts: LayoutShift[] = [];
@@ -70,15 +70,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return liveMetricsInstance;
   }
 
-  get lcpValue(): LCPValue|undefined {
+  get lcpValue(): LcpValue|undefined {
     return this.#lcpValue;
   }
 
-  get clsValue(): CLSValue|undefined {
+  get clsValue(): ClsValue|undefined {
     return this.#clsValue;
   }
 
-  get inpValue(): INPValue|undefined {
+  get inpValue(): InpValue|undefined {
     return this.#inpValue;
   }
 
@@ -261,7 +261,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     switch (webVitalsEvent.name) {
       case 'LCP': {
         const warnings: string[] = [];
-        const lcpEvent: LCPValue = {
+        const lcpEvent: LcpValue = {
           value: webVitalsEvent.value,
           phases: webVitalsEvent.phases,
           warnings,
@@ -281,7 +281,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         break;
       }
       case 'CLS': {
-        const event: CLSValue = {
+        const event: ClsValue = {
           value: webVitalsEvent.value,
           clusterShiftIds: webVitalsEvent.clusterShiftIds,
         };
@@ -289,7 +289,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         break;
       }
       case 'INP': {
-        const inpEvent: INPValue = {
+        const inpEvent: InpValue = {
           value: webVitalsEvent.value,
           phases: webVitalsEvent.phases,
           interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
@@ -586,17 +586,17 @@ export interface NodeRef {
   link: Node;
 }
 
-export interface LCPValue extends MetricValue {
-  phases: Spec.LCPPhases;
+export interface LcpValue extends MetricValue {
+  phases: Spec.LcpPhases;
   nodeRef?: NodeRef;
 }
 
-export interface INPValue extends MetricValue {
-  phases: Spec.INPPhases;
+export interface InpValue extends MetricValue {
+  phases: Spec.InpPhases;
   interactionId: InteractionId;
 }
 
-export interface CLSValue extends MetricValue {
+export interface ClsValue extends MetricValue {
   clusterShiftIds: Spec.UniqueLayoutShiftId[];
 }
 
@@ -613,15 +613,15 @@ export interface Interaction {
   duration: number;
   startTime: number;
   nextPaintTime: number;
-  phases: Spec.INPPhases;
+  phases: Spec.InpPhases;
   longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
   nodeRef?: NodeRef;
 }
 
 export interface StatusEvent {
-  lcp?: LCPValue;
-  cls?: CLSValue;
-  inp?: INPValue;
+  lcp?: LcpValue;
+  cls?: ClsValue;
+  inp?: InpValue;
   interactions: InteractionMap;
   layoutShifts: LayoutShift[];
 }

@@ -20,6 +20,7 @@ rulesdirPlugin.RULES_DIR = join(
  */
 export default [
   {
+    name: 'Ignore list',
     ignores: [
       'front_end/diff/diff_match_patch.jD',
       'front_end/models/javascript_metadata/NativeFunctions.js',
@@ -35,7 +36,7 @@ export default [
       // own.
       'front_end/third_party/*/package/',
       // Any JS files are also not authored by devtools-frontend, so we ignore those.
-      'front_end/third_party/**/*.js',
+      'front_end/third_party/**/*',
       // Lighthouse doesn't have a package/ folder but has other nested folders, so
       // we ignore any folders within the lighthouse directory.
       'front_end/third_party/lighthouse/*/',
@@ -46,6 +47,8 @@ export default [
       'front_end/third_party/lit/src/*.ts',
       // @puppeteer/replay is auto-generated.
       'front_end/third_party/puppeteer-replay/**/*.ts',
+      // Third party code we did not author for extensions
+      'extensions/cxx_debugging/third_party/**/*',
 
       '**/node_modules',
       'scripts/build/typescript/tests',
@@ -268,28 +271,15 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
     rules: {
-      // Forbids interfaces starting with an I prefix.
-      '@typescript-eslint/naming-convention': [
-        'error',
-        {
-          selector: 'interface',
-          format: ['PascalCase'],
-
-          custom: {
-            regex: '^I[A-Z]',
-            match: false,
-          },
-        },
-      ],
       '@typescript-eslint/no-explicit-any': [
         'error',
         {
@@ -375,6 +365,16 @@ export default [
 
       '@typescript-eslint/naming-convention': [
         'error',
+        // Forbids interfaces starting with an I prefix.
+        {
+          selector: 'interface',
+          format: ['PascalCase'],
+
+          custom: {
+            regex: '^I[A-Z]',
+            match: false,
+          },
+        },
         {
           selector: [
             'function',
@@ -464,12 +464,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],
@@ -621,6 +621,7 @@ export default [
     },
   },
   {
+    name: 'Use private class members rule',
     files: [
       'front_end/panels/**/components/*.ts',
       'front_end/ui/components/**/*.ts',
@@ -632,6 +633,7 @@ export default [
     },
   },
   {
+    name: 'Ignore private class members rule',
     files: [
       'front_end/panels/recorder/**/*.ts',
       'front_end/ui/components/suggestion_input/*.ts',
@@ -642,6 +644,7 @@ export default [
     },
   },
   {
+    name: 'Supported CSS properties rules',
     files: ['front_end/generated/SupportedCSSProperties.js'],
     rules: {
       'rulesdir/jslog-context-list': 'error',
@@ -676,6 +679,7 @@ export default [
     },
   },
   {
+    name: 'Traces import rule',
     files: ['front_end/models/trace/handlers/**/*.ts'],
     rules: {
       'rulesdir/no-imports-in-directory': [
@@ -689,6 +693,7 @@ export default [
     },
   },
   {
+    name: 'Recorder injected code',
     files: ['front_end/panels/recorder/injected/**/*.ts'],
     rules: {
       // The code is rolled up and tree-shaken independently from the regular entrypoints.

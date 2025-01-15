@@ -294,9 +294,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #isNode: boolean = false;
 
-  #lcpValue?: LiveMetrics.LCPValue;
-  #clsValue?: LiveMetrics.CLSValue;
-  #inpValue?: LiveMetrics.INPValue;
+  #lcpValue?: LiveMetrics.LcpValue;
+  #clsValue?: LiveMetrics.ClsValue;
+  #inpValue?: LiveMetrics.InpValue;
   #interactions: LiveMetrics.InteractionMap = new Map();
   #layoutShifts: LiveMetrics.LayoutShift[] = [];
 

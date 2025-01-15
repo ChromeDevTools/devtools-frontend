@@ -135,7 +135,7 @@ function initialize(): void {
   });
 
   onLCP(metric => {
-    const event: Spec.LCPChangeEvent = {
+    const event: Spec.LcpChangeEvent = {
       name: 'LCP',
       value: metric.value,
       phases: {
@@ -154,7 +154,7 @@ function initialize(): void {
   }, {reportAllChanges: true});
 
   onCLS(metric => {
-    const event: Spec.CLSChangeEvent = {
+    const event: Spec.ClsChangeEvent = {
       name: 'CLS',
       value: metric.value,
       clusterShiftIds: metric.entries.map(Spec.getUniqueLayoutShiftId),
@@ -163,7 +163,7 @@ function initialize(): void {
   }, {reportAllChanges: true});
 
   onINP(metric => {
-    const event: Spec.INPChangeEvent = {
+    const event: Spec.InpChangeEvent = {
       name: 'INP',
       value: metric.value,
       phases: {

@@ -3916,7 +3916,8 @@ launch: (options?: Puppeteer_2.LaunchOptions) => Promise<Puppeteer_2.Browser>;
  */
 export declare interface LaunchOptions extends ConnectOptions {
     /**
-     * Chrome Release Channel
+     * If specified for Chrome, looks for a regular Chrome installation at a known
+     * system location instead of using the bundled Chrome binary.
      */
     channel?: ChromeReleaseChannel;
     /**

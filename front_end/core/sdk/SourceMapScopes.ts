@@ -84,6 +84,11 @@ export interface Position {
   column: number;
 }
 
+/** @returns 0 if both positions are equal, a negative number if a < b and a positive number if a > b */
+export function comparePositions(a: Position, b: Position): number {
+  return a.line - b.line || a.column - b.column;
+}
+
 export interface OriginalPosition extends Position {
   sourceIndex: number;
 }

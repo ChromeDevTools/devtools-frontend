@@ -155,8 +155,8 @@ export class CookieControlsView extends UI.Widget.VBox {
       <div class="card-header">
         <div class="lhs">
           <div class="text">
-            <div class="card-title">${i18nString(UIStrings.cardTitle)}</div>
-            <div class="body">${i18nString(UIStrings.cardDisclaimer)}</div>
+            <div class="card-title main-text">${i18nString(UIStrings.cardTitle)}</div>
+            <div class="body subtext">${i18nString(UIStrings.cardDisclaimer)}</div>
           </div>
           ${Boolean(enterpriseEnabledSetting.get()) ? html `
             <devtools-icon
@@ -191,9 +191,9 @@ export class CookieControlsView extends UI.Widget.VBox {
             @change=${()=>{input.inputChanged(!gracePeriodDisabledSetting.get(), gracePeriodDisabledSetting);}}
             jslog=${VisualLogging.toggle(gracePeriodDisabledSetting.name).track({click: true})}
           >
-          <div class=${gracePeriodControlDisabled ? 'text faded': 'text'}>
-            <div class="body">${i18nString(UIStrings.gracePeriodTitle)}</div>
-            <div class="body">
+          <div class="text">
+            <div class="body main-text">${i18nString(UIStrings.gracePeriodTitle)}</div>
+            <div class="body subtext">
               ${Boolean(enterpriseEnabledSetting.get()) ?
                   i18nFormatString(UIStrings.gracePeriodExplanation, {
                     PH1: i18nString(UIStrings.gracePeriod),
@@ -224,9 +224,9 @@ export class CookieControlsView extends UI.Widget.VBox {
             @change=${()=>{input.inputChanged(!heuristicsDisabledSetting.get(), heuristicsDisabledSetting);}}
             jslog=${VisualLogging.toggle(heuristicsDisabledSetting.name).track({click: true})}
           >
-          <div class=${heuristicsControlDisabled ? 'text faded': 'text'}>
-            <div class="body">${i18nString(UIStrings.heuristicTitle)}</div>
-            <div class="body">
+          <div class='text'>
+            <div class="body main-text">${i18nString(UIStrings.heuristicTitle)}</div>
+            <div class="body subtext">
               ${Boolean(enterpriseEnabledSetting.get()) ?
                 i18nFormatString(UIStrings.heuristicExplanation, {
                   PH1: i18nString(UIStrings.scenarios),
@@ -273,8 +273,8 @@ export class CookieControlsView extends UI.Widget.VBox {
               ${cardHeader}
               <div>
                 <div class="card-row text">
-                  <div class="card-row-title">${i18nString(UIStrings.exceptions)}</div>
-                  <div class="body">${i18nString(UIStrings.exceptionsExplanation)}</div>
+                  <div class="card-row-title main-text">${i18nString(UIStrings.exceptions)}</div>
+                  <div class="body subtext">${i18nString(UIStrings.exceptionsExplanation)}</div>
                 </div>
                 ${gracePeriodControl}
                 ${heuristicControl}

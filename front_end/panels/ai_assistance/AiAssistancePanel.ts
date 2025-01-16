@@ -196,6 +196,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
+  #mutex = new Common.Mutex.Mutex();
 
   #newChatButton =
       new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newChat), 'plus', undefined, 'freestyler.new-chat');
@@ -859,6 +860,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!this.#currentAgent) {
       return;
     }
+    // Cancel any previous in-flight conversation.
+    this.#cancel();
     this.#runAbortController = new AbortController();
     const signal = this.#runAbortController.signal;
     const context = this.#getConversationContext();
@@ -878,124 +881,129 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #doConversation(generator: AsyncGenerator<ResponseData, void, void>): Promise<void> {
-    let systemMessage: ModelChatMessage = {
-      entity: ChatMessageEntity.MODEL,
-      steps: [],
-    };
-    let step: Step = {isLoading: true};
-    this.#viewProps.isLoading = true;
-    for await (const data of generator) {
-      step.sideEffect = undefined;
-      switch (data.type) {
-        case ResponseType.USER_QUERY: {
-          this.#viewProps.messages.push({
-            entity: ChatMessageEntity.USER,
-            text: data.query,
-          });
-          systemMessage = {
-            entity: ChatMessageEntity.MODEL,
-            steps: [],
-          };
-          this.#viewProps.messages.push(systemMessage);
-          break;
-        }
-        case ResponseType.QUERYING: {
-          step = {isLoading: true};
-          if (!systemMessage.steps.length) {
-            systemMessage.steps.push(step);
+    const release = await this.#mutex.acquire();
+    try {
+      let systemMessage: ModelChatMessage = {
+        entity: ChatMessageEntity.MODEL,
+        steps: [],
+      };
+      let step: Step = {isLoading: true};
+      this.#viewProps.isLoading = true;
+      for await (const data of generator) {
+        step.sideEffect = undefined;
+        switch (data.type) {
+          case ResponseType.USER_QUERY: {
+            this.#viewProps.messages.push({
+              entity: ChatMessageEntity.USER,
+              text: data.query,
+            });
+            systemMessage = {
+              entity: ChatMessageEntity.MODEL,
+              steps: [],
+            };
+            this.#viewProps.messages.push(systemMessage);
+            break;
           }
+          case ResponseType.QUERYING: {
+            step = {isLoading: true};
+            if (!systemMessage.steps.length) {
+              systemMessage.steps.push(step);
+            }
 
-          break;
-        }
-        case ResponseType.CONTEXT: {
-          step.title = data.title;
-          step.contextDetails = data.details;
-          step.isLoading = false;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
+            break;
           }
-          break;
-        }
-        case ResponseType.TITLE: {
-          step.title = data.title;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
+          case ResponseType.CONTEXT: {
+            step.title = data.title;
+            step.contextDetails = data.details;
+            step.isLoading = false;
+            if (systemMessage.steps.at(-1) !== step) {
+              systemMessage.steps.push(step);
+            }
+            break;
           }
-          break;
-        }
-        case ResponseType.THOUGHT: {
-          step.isLoading = false;
-          step.thought = data.thought;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
+          case ResponseType.TITLE: {
+            step.title = data.title;
+            if (systemMessage.steps.at(-1) !== step) {
+              systemMessage.steps.push(step);
+            }
+            break;
           }
-          break;
-        }
-        case ResponseType.SIDE_EFFECT: {
-          step.isLoading = false;
-          step.code = data.code;
-          step.sideEffect = {
-            onAnswer: data.confirm,
-          };
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
+          case ResponseType.THOUGHT: {
+            step.isLoading = false;
+            step.thought = data.thought;
+            if (systemMessage.steps.at(-1) !== step) {
+              systemMessage.steps.push(step);
+            }
+            break;
           }
-          break;
-        }
-        case ResponseType.ACTION: {
-          step.isLoading = false;
-          step.code = data.code;
-          step.output = data.output;
-          step.canceled = data.canceled;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
+          case ResponseType.SIDE_EFFECT: {
+            step.isLoading = false;
+            step.code = data.code;
+            step.sideEffect = {
+              onAnswer: data.confirm,
+            };
+            if (systemMessage.steps.at(-1) !== step) {
+              systemMessage.steps.push(step);
+            }
+            break;
           }
-          break;
-        }
-        case ResponseType.ANSWER: {
-          systemMessage.suggestions = data.suggestions;
-          systemMessage.answer = data.text;
-          systemMessage.rpcId = data.rpcId;
-          // When there is an answer without any thinking steps, we don't want to show the thinking step.
-          if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
-            systemMessage.steps.pop();
+          case ResponseType.ACTION: {
+            step.isLoading = false;
+            step.code = data.code;
+            step.output = data.output;
+            step.canceled = data.canceled;
+            if (systemMessage.steps.at(-1) !== step) {
+              systemMessage.steps.push(step);
+            }
+            break;
           }
-          step.isLoading = false;
-          break;
-        }
-        case ResponseType.ERROR: {
-          systemMessage.error = data.error;
-          systemMessage.rpcId = undefined;
-          const lastStep = systemMessage.steps.at(-1);
-          if (lastStep) {
-            // Mark the last step as cancelled to make the UI feel better.
-            if (data.error === ErrorType.ABORT) {
-              lastStep.canceled = true;
-              // If error happens while the step is still loading remove it.
-            } else if (lastStep.isLoading) {
+          case ResponseType.ANSWER: {
+            systemMessage.suggestions = data.suggestions;
+            systemMessage.answer = data.text;
+            systemMessage.rpcId = data.rpcId;
+            // When there is an answer without any thinking steps, we don't want to show the thinking step.
+            if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
               systemMessage.steps.pop();
             }
+            step.isLoading = false;
+            break;
           }
-          if (data.error === ErrorType.BLOCK) {
-            systemMessage.answer = undefined;
+          case ResponseType.ERROR: {
+            systemMessage.error = data.error;
+            systemMessage.rpcId = undefined;
+            const lastStep = systemMessage.steps.at(-1);
+            if (lastStep) {
+              // Mark the last step as cancelled to make the UI feel better.
+              if (data.error === ErrorType.ABORT) {
+                lastStep.canceled = true;
+                // If error happens while the step is still loading remove it.
+              } else if (lastStep.isLoading) {
+                systemMessage.steps.pop();
+              }
+            }
+            if (data.error === ErrorType.BLOCK) {
+              systemMessage.answer = undefined;
+            }
           }
+        }
+
+        void this.doUpdate();
+
+        // This handles scrolling to the bottom for live conversations when:
+        // * User submits the query & the context step is shown.
+        // * There is a side effect dialog  shown.
+        if (!this.#viewProps.isReadOnly &&
+            (data.type === ResponseType.CONTEXT || data.type === ResponseType.SIDE_EFFECT)) {
+          this.#viewOutput.chatView?.scrollToBottom();
         }
       }
 
+      this.#viewProps.isLoading = false;
+      this.#viewOutput.chatView?.finishTextAnimations();
       void this.doUpdate();
-
-      // This handles scrolling to the bottom for live conversations when:
-      // * User submits the query & the context step is shown.
-      // * There is a side effect dialog  shown.
-      if (!this.#viewProps.isReadOnly &&
-          (data.type === ResponseType.CONTEXT || data.type === ResponseType.SIDE_EFFECT)) {
-        this.#viewOutput.chatView?.scrollToBottom();
-      }
+    } finally {
+      release();
     }
-
-    this.#viewProps.isLoading = false;
-    this.#viewOutput.chatView?.finishTextAnimations();
-    void this.doUpdate();
   }
 }
 

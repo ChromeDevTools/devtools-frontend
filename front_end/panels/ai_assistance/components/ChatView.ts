@@ -484,11 +484,6 @@ export class ChatView extends HTMLElement {
     }
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const isConsentView = this.#props.state === State.CONSENT_VIEW;
-    const showsSideEffects = this.#props.messages.some(message => {
-      return message.entity === ChatMessageEntity.MODEL && message.steps.some(step => {
-        return Boolean(step.sideEffect);
-      });
-    });
 
     if (!isAidaAvailable || isConsentView || !this.#props.agentType) {
       return true;
@@ -498,19 +493,7 @@ export class ChatView extends HTMLElement {
       return true;
     }
 
-    // Agent-specific input disabled rules.
-    switch (this.#props.agentType) {
-      case AgentType.STYLING:
-        return showsSideEffects;
-      case AgentType.NETWORK:
-        return false;
-      case AgentType.FILE:
-        return false;
-      case AgentType.PERFORMANCE:
-        return false;
-      case AgentType.PATCH:
-        return false;
-    }
+    return false;
   };
 
   #handleMessageContainerRef(el: Element|undefined): void {
@@ -560,14 +543,14 @@ export class ChatView extends HTMLElement {
       return;
     }
 
+    // Go to a new line only when Shift + Enter is pressed.
     if (ev.key === 'Enter' && !ev.shiftKey) {
-      // Do not go to a new line whenever Shift + Enter is pressed.
       ev.preventDefault();
-      // Only submit the text when there isn't a request already in flight.
-      if (!this.#props.isLoading) {
-        this.#props.onTextSubmit(ev.target.value);
-        ev.target.value = '';
+      if (!ev.target || !ev.target.value) {
+        return;
       }
+      this.#props.onTextSubmit(ev.target.value);
+      ev.target.value = '';
     }
   };
 

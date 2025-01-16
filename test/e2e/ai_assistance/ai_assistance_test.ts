@@ -144,7 +144,7 @@ describe('AI Assistance', function() {
     };
   }
 
-  async function submitAndWaitTillDone(): Promise<Array<Log>> {
+  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Array<Log>> {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
@@ -154,12 +154,21 @@ describe('AI Assistance', function() {
       });
     });
     await frontend.keyboard.press('Enter');
+
+    if (waitForSideEffect) {
+      await frontend.waitForSelector('aria/Continue');
+      return JSON.parse(await frontend.evaluate((): string => {
+        return localStorage.getItem('freestylerStructuredLog') as string;
+      })) as Array<Log>;
+    }
+
     const abort = new AbortController();
     async function autoAcceptEvals(signal: AbortSignal) {
       while (!signal.aborted) {
         await frontend.locator('aria/Continue').click({signal});
       }
     }
+    // Click continue once without sending abort signal.
     autoAcceptEvals(abort.signal).catch(() => {});
     await done;
     abort.abort();
@@ -174,8 +183,16 @@ describe('AI Assistance', function() {
     resource?: string,
     node?: string,
     iframeId?: string,
+    waitForSideEffect?: boolean,
   }) {
-    const {messages, query, resource = '../resources/recorder/recorder.html', node = 'div', iframeId} = options;
+    const {
+      messages,
+      query,
+      resource = '../resources/recorder/recorder.html',
+      node = 'div',
+      iframeId,
+      waitForSideEffect
+    } = options;
 
     await setupMocks(
         {
@@ -196,6 +213,7 @@ describe('AI Assistance', function() {
       iframeId,
       query,
       messages,
+      waitForSideEffect,
     });
   }
 
@@ -204,13 +222,14 @@ describe('AI Assistance', function() {
     messages: string[],
     node?: string,
     iframeId?: string,
+    waitForSideEffect?: boolean,
   }) {
-    const {messages, query, node = 'div', iframeId} = options;
+    const {messages, query, node = 'div', iframeId, waitForSideEffect} = options;
 
     await resetMockMessages(messages);
     await inspectNode(node, iframeId);
     await typeQuery(query);
-    return await submitAndWaitTillDone();
+    return await submitAndWaitTillDone(waitForSideEffect);
   }
 
   it('gets data about elements', async () => {
@@ -374,6 +393,58 @@ STOP`,
 
     assert.deepEqual(result.at(-1)!.request.current_message.parts[0], {
       text: 'OBSERVATION: {"title":"I have a title"}',
+    });
+  });
+
+  it('aborts ongoing conversation if new input is submitted by pressing enter', async () => {
+    await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'blue' });
+STOP`,
+      ],
+      node: 'div',
+      waitForSideEffect: true,
+    });
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      // @ts-ignore page context.
+      return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgba(0, 0, 0, 0)';
+    });
+
+    const messages = [
+      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'green' });
+STOP`,
+      'ANSWER: changed styles',
+    ];
+    await resetMockMessages(messages);
+    await inspectNode('div');
+    await typeQuery('Change the background color for this element to green');
+    const {frontend} = getBrowserAndPages();
+    const done = frontend.evaluate(() => {
+      return new Promise(resolve => {
+        window.addEventListener('freestylerdone', resolve, {
+          once: true,
+        });
+      });
+    });
+    await frontend.keyboard.press('Enter');
+    await await frontend.locator('aria/Continue').click();
+    await done;
+
+    await target.bringToFront();
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    await target.waitForFunction(() => {
+      // @ts-ignore page context.
+      return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
 });

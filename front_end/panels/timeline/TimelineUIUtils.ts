@@ -557,6 +557,10 @@ const UIStrings = {
    * @description Label for a string that describes the priority at which a task was scheduled, like 'background' for low-priority tasks, and 'user-blocking' for high priority.
    */
   priority: 'Priority',
+  /**
+   * @description Text to refer to a 3rd Party entity.
+   */
+  entity: '3rd party entity',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1088,6 +1092,7 @@ export class TimelineUIUtils {
       event: Trace.Types.Events.Event,
       linkifier: LegacyComponents.Linkifier.Linkifier,
       detailed: boolean,
+      entityMapper: Utils.EntityMapper.EntityMapper|null,
       ): Promise<DocumentFragment> {
     const maybeTarget = targetForEvent(parsedTrace, event);
     const {duration} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
@@ -1660,6 +1665,12 @@ export class TimelineUIUtils {
       contentHelper.addSection(i18nString(UIStrings.preview));
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       contentHelper.appendElementRow('', event[previewElementSymbol]);
+    }
+
+    // Third party entity
+    const entity = entityMapper?.entityForEvent(event);
+    if (entity) {
+      contentHelper.appendTextRow(i18nString(UIStrings.entity), entity.name);
     }
 
     const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);

@@ -92,6 +92,10 @@ const UIStrings = {
    *@description Text that refers to if the network request is render blocking
    */
   renderBlocking: 'Render blocking',
+  /**
+   * @description Text to refer to a 3rd Party entity.
+   */
+  entity: '3rd party entity',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -104,6 +108,7 @@ export class NetworkRequestDetails extends HTMLElement {
   #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLImageElement>();
   #linkifier: LegacyComponents.Linkifier.Linkifier;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
   constructor(linkifier: LegacyComponents.Linkifier.Linkifier) {
     super();
     this.#linkifier = linkifier;
@@ -115,13 +120,14 @@ export class NetworkRequestDetails extends HTMLElement {
 
   async setData(
       parsedTrace: Trace.Handlers.Types.ParsedTrace, networkRequest: Trace.Types.Events.SyntheticNetworkRequest,
-      maybeTarget: SDK.Target.Target|null): Promise<void> {
+      maybeTarget: SDK.Target.Target|null, entityMapper: TimelineUtils.EntityMapper.EntityMapper|null): Promise<void> {
     if (this.#networkRequest === networkRequest && parsedTrace === this.#parsedTrace) {
       return;
     }
     this.#parsedTrace = parsedTrace;
     this.#networkRequest = networkRequest;
     this.#maybeTarget = maybeTarget;
+    this.#entityMapper = entityMapper;
     await this.#render();
   }
 
@@ -201,6 +207,17 @@ export class NetworkRequestDetails extends HTMLElement {
         this.#networkRequest.args.data.syntheticData.isDiskCached;
     return this.#renderRow(
         i18nString(UIStrings.fromCache), cached ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));
+  }
+
+  #renderThirdPartyEntity(): LitHtml.TemplateResult|null {
+    if (!this.#entityMapper || !this.#networkRequest) {
+      return null;
+    }
+    const entity = this.#entityMapper.entityForEvent(this.#networkRequest);
+    if (!entity) {
+      return null;
+    }
+    return this.#renderRow(i18nString(UIStrings.entity), entity.name);
   }
 
   #renderEncodedDataLength(): LitHtml.TemplateResult|null {
@@ -325,6 +342,7 @@ export class NetworkRequestDetails extends HTMLElement {
           ${this.#renderRow(i18nString(UIStrings.decodedBody), i18n.ByteUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
           ${this.#renderBlockingRow()}
           ${this.#renderFromCache()}
+          ${this.#renderThirdPartyEntity()}
         </div>
         <div class="network-request-details-col">
           <div class="timing-rows">

@@ -23,11 +23,12 @@ async function renderDetails() {
   }
 
   const {parsedTrace} = await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'lcp-images.json.gz');
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const networkEvent = parsedTrace.NetworkRequests.byTime[0];
   const maybeTarget = Timeline.TargetForEvent.targetForEvent(parsedTrace, networkEvent);
 
   const details = new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(detailsLinkifier);
-  await details.setData(parsedTrace, networkEvent, maybeTarget);
+  await details.setData(parsedTrace, networkEvent, maybeTarget, entityMapper);
 
   container.appendChild(details);
 }

@@ -263,11 +263,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       await resolver.install();
 
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          profileCall,
-          new Components.Linkifier.Linkifier(),
-          false,
-      );
+          parsedTrace, profileCall, new Components.Linkifier.Linkifier(), false, null);
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.exists(stackTraceData);
       assert.isTrue(stackTraceData[0].startsWith('someFunction @'));
@@ -320,6 +316,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           functionCall,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const detailsData = getRowDataForDetailsElement(details).at(0);
       assert.exists(detailsData);
@@ -506,6 +503,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           task,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
       assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(10, 10, 10)');
@@ -547,6 +545,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           interactionEvent,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -586,6 +585,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           event,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -626,6 +626,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           updateLayoutTreeEvent,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -687,6 +688,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           mark,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -709,6 +711,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           measure,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -736,6 +739,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           compileEvent,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -798,6 +802,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           layoutShift,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(
@@ -833,6 +838,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           extensionEntry,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details).slice(0, 2);
       assert.deepEqual(
@@ -860,6 +866,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           extensionMark,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details)[0];
       assert.deepEqual(
@@ -895,6 +902,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           profileCalls[0],
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.exists(stackTraceData);
@@ -922,6 +930,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           scheduleStyleRecalcs[1],
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.deepEqual(
@@ -959,6 +968,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           stylesRecalc[3],
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const stackTraceData = getStackTraceForDetailsElement(details);
       assert.deepEqual(
@@ -987,6 +997,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           extensionMarker,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
       assert.exists(markerStackTraceData);
@@ -1005,6 +1016,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           extensionTrackEntry,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
@@ -1038,6 +1050,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           performanceMark,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const markStackTraceData = getStackTraceForDetailsElement(markDetails);
       assert.deepEqual(
@@ -1050,6 +1063,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           performanceMeasure,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const measureStackTraceData = getStackTraceForDetailsElement(measureDetails);
       assert.deepEqual(
@@ -1071,6 +1085,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           longTask,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(
@@ -1100,6 +1115,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
              sendHandshake,
              new Components.Linkifier.Linkifier(),
              false,
+             null,
          );
          const rowData = getRowDataForDetailsElement(details);
          const expectedRowData = [
@@ -1130,6 +1146,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
              sendHandshake,
              new Components.Linkifier.Linkifier(),
              false,
+             null,
          );
          const rowData = getRowDataForDetailsElement(details);
          const expectedRowData = [
@@ -1156,6 +1173,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           event,
           new Components.Linkifier.Linkifier(),
           true,
+          null,
       );
       const pieChartData = getPieChartDataForDetailsElement(details);
 
@@ -1181,6 +1199,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           serverTiming,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
@@ -1201,6 +1220,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           scheduleEvent,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(scheduleDetails);
       assert.deepEqual(rowData, [
@@ -1224,6 +1244,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           runEvent,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const rowData = getRowDataForDetailsElement(runDetails);
       assert.deepEqual(rowData, [
@@ -1248,6 +1269,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           jsCall,
           new Components.Linkifier.Linkifier(),
           false,
+          null,
       );
       const container = document.createElement('div');
       renderElementIntoDOM(container);
@@ -1275,6 +1297,28 @@ describeWithMockConnection('TimelineUIUtils', function() {
             },
           ],
       );
+    });
+  });
+
+  it('renders 3p details for profile call properly', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    const jsCall = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'z');
+    assert.exists(jsCall);
+
+    const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+        parsedTrace,
+        jsCall,
+        new Components.Linkifier.Linkifier(),
+        true,
+        entityMapper,
+    );
+
+    const rowData = getRowDataForDetailsElement(details)[2];
+    assert.deepEqual(rowData, {
+      title: '3rd party entity',
+      value: 'Google Analytics',
     });
   });
 

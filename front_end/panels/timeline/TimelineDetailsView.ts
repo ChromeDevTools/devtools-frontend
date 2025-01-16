@@ -343,7 +343,7 @@ export class TimelineDetailsView extends
       return;
     }
     const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
-    await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget);
+    await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget, this.#entityMapper);
     this.#relatedInsightChips.activeEvent = networkRequest;
     if (this.#eventToRelatedInsightsMap) {
       this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
@@ -372,8 +372,8 @@ export class TimelineDetailsView extends
     }
 
     // Otherwise, build the generic trace event details UI.
-    const traceEventDetails =
-        await TimelineUIUtils.buildTraceEventDetails(this.#parsedTrace, event, this.detailsLinkifier, true);
+    const traceEventDetails = await TimelineUIUtils.buildTraceEventDetails(
+        this.#parsedTrace, event, this.detailsLinkifier, true, this.#entityMapper);
     this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
   }
 

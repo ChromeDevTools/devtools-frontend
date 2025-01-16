@@ -707,6 +707,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       entryToNode: new Map(),
       extensionMarkers: [],
       extensionTrackData: [],
+      syntheticConsoleEntriesForTimingsTrack: [],
     },
     Frames: {
       frames: [],

@@ -1394,14 +1394,21 @@ export interface ConsoleTimeStamp extends Event {
   ph: Phase.COMPLETE;
   args: Args&{
     data: ArgsData & {
+      // The console.timeStamp allows to pass integers as values as well
+      // as strings
       name: string | number,
       start?: string|number,
       end?: string|number,
-      trackName?: string|number,
+      track?: string|number,
       trackGroup?: string|number,
       color?: string|number,
     },
   };
+}
+
+export interface SyntheticConsoleTimeStamp extends Event, SyntheticBased {
+  cat: 'disabled-by-default-v8.inspector';
+  ph: Phase.COMPLETE;
 }
 
 /** ChromeFrameReporter args for PipelineReporter event.

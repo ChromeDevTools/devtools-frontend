@@ -6,6 +6,7 @@ export * as AnimationFrames from './AnimationFramesHandler.js';
 export * as Animations from './AnimationHandler.js';
 export * as AsyncJSCalls from './AsyncJSCallsHandler.js';
 export * as AuctionWorklets from './AuctionWorkletsHandler.js';
+export * as DOMStats from './DOMStatsHandler.js';
 export * as ExtensionTraceData from './ExtensionTraceDataHandler.js';
 export * as Flows from './FlowsHandler.js';
 export * as Frames from './FramesHandler.js';

@@ -607,6 +607,9 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       animationFrames: [],
       presentationForFrame: new Map(),
     },
+    DOMStats: {
+      domStatsByFrameId: new Map(),
+    },
     LayoutShifts: {
       clusters: [],
       clustersByNavigationId: new Map(),

@@ -752,6 +752,26 @@ export interface Instant extends Event {
   s: Scope;
 }
 
+export interface DOMStats extends Instant {
+  name: 'DOMStats';
+  args: Args&{
+    data: ArgsData & {
+      frame: string,
+      totalElements: number,
+      maxChildren?: {
+        nodeId: Protocol.DOM.BackendNodeId,
+        nodeName: string,
+        numChildren: number,
+      },
+      maxDepth?: {
+        nodeId: Protocol.DOM.BackendNodeId,
+        nodeName: string,
+        depth: number,
+      },
+    },
+  };
+}
+
 export interface UpdateCounters extends Instant {
   name: 'UpdateCounters';
   args: Args&{
@@ -1986,6 +2006,10 @@ export function isHandlePostMessage(event: Event): event is HandlePostMessage {
 
 export function isUpdateCounters(event: Event): event is UpdateCounters {
   return event.name === 'UpdateCounters';
+}
+
+export function isDOMStats(event: Event): event is DOMStats {
+  return event.name === 'DOMStats';
 }
 
 export function isThreadName(

@@ -57,6 +57,7 @@ copy_to_gen("traces") {
     "missing-process-data.json.gz",
     "missing-tracing-start.json.gz",
     "missing-url.json.gz",
+    "multi-frame-dom-stats.json.gz",
     "multiple-lcp-main-frame.json.gz",
     "multiple-navigations-render-blocking.json.gz",
     "multiple-navigations-same-id.json.gz",

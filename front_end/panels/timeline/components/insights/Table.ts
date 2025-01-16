@@ -43,7 +43,7 @@ export interface TableData {
 }
 
 export interface TableDataRow {
-  values: Array<string|LitHtml.LitTemplate>;
+  values: Array<number|string|LitHtml.LitTemplate>;
   overlays?: Overlays.Overlays.TimelineOverlay[];
 }
 

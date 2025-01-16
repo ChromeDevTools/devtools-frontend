@@ -18,7 +18,7 @@ const UIStrings = {
    * @description Description of an insight that recommends reducing the size of the DOM tree as a means to improve page responsiveness. "DOM" is an acronym and should not be translated. "layout reflows" are when the browser will recompute the layout of content on the page.
    */
   description:
-      'A large DOM will increase memory usage, cause longer style calculations, and produce costly layout reflows which impact page responsiveness. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/).',
+      'A large DOM can increase the duration of style calculations and layout reflows, impacting page responsiveness. A large DOM will also increase memory usage. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/).',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DOMSize.ts', UIStrings);
@@ -29,10 +29,11 @@ const DOM_UPDATE_LIMIT = 800;
 export type DOMSizeInsightModel = InsightModel<{
   largeLayoutUpdates: Types.Events.Layout[],
   largeStyleRecalcs: Types.Events.UpdateLayoutTree[],
+  maxDOMStats?: Types.Events.DOMStats,
 }>;
 
-export function deps(): ['Renderer', 'AuctionWorklets'] {
-  return ['Renderer', 'AuctionWorklets'];
+export function deps(): ['Renderer', 'AuctionWorklets', 'DOMStats'] {
+  return ['Renderer', 'AuctionWorklets', 'DOMStats'];
 }
 
 function finalize(partialModel: Omit<DOMSizeInsightModel, 'title'|'description'|'category'|'shouldShow'>):
@@ -114,8 +115,17 @@ export function generateInsight(
     }
   }
 
+  const domStatsEvents = parsedTrace.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
+  let maxDOMStats: Types.Events.DOMStats|undefined;
+  for (const domStats of domStatsEvents) {
+    if (!maxDOMStats || domStats.args.data.totalElements > maxDOMStats.args.data.totalElements) {
+      maxDOMStats = domStats;
+    }
+  }
+
   return finalize({
     largeLayoutUpdates,
     largeStyleRecalcs,
+    maxDOMStats,
   });
 }

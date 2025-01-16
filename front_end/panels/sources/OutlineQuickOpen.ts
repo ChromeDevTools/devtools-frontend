@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -312,6 +313,8 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 
   override renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
     const item = this.items[itemIndex];
+    const icon = IconButton.Icon.create('deployed');
+    titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query);
 

@@ -67,15 +67,15 @@ const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperRe
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DeveloperResourcesListView extends UI.Widget.VBox {
-  private readonly nodeForItem: Map<SDK.PageResourceLoader.PageResource, GridNode>;
-  private readonly isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean;
-  private highlightRegExp: RegExp|null;
-  private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
+  readonly #nodeForItem: Map<SDK.PageResourceLoader.PageResource, GridNode>;
+  readonly #isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean;
+  #highlightRegExp: RegExp|null;
+  #dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
   constructor(isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean) {
     super(true);
-    this.nodeForItem = new Map();
-    this.isVisibleFilter = isVisibleFilter;
-    this.highlightRegExp = null;
+    this.#nodeForItem = new Map();
+    this.#isVisibleFilter = isVisibleFilter;
+    this.#highlightRegExp = null;
 
     const columns = [
       {id: 'status', title: i18nString(UIStrings.status), width: '60px', fixedWidth: true, sortable: true},
@@ -97,39 +97,39 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         sortable: true,
       },
     ] as DataGrid.DataGrid.ColumnDescriptor[];
-    this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
+    this.#dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.developerResources),
       columns,
       editCallback: undefined,
       refreshCallback: undefined,
       deleteCallback: undefined,
     });
-    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
-    this.dataGrid.setStriped(true);
-    this.dataGrid.element.classList.add('flex-auto');
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
-    this.dataGrid.setRowContextMenuCallback(this.populateContextMenu.bind(this));
+    this.#dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
+    this.#dataGrid.setStriped(true);
+    this.#dataGrid.element.classList.add('flex-auto');
+    this.#dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.#sortingChanged, this);
+    this.#dataGrid.setRowContextMenuCallback(this.#populateContextMenu.bind(this));
 
-    const dataGridWidget = this.dataGrid.asWidget();
+    const dataGridWidget = this.#dataGrid.asWidget();
     dataGridWidget.show(this.contentElement);
     this.setDefaultFocusedChild(dataGridWidget);
   }
 
   select(item: SDK.PageResourceLoader.PageResource): void {
-    const node = this.nodeForItem.get(item);
+    const node = this.#nodeForItem.get(item);
     if (node) {
       node.select();
     }
   }
 
   selectedItem(): SDK.PageResourceLoader.PageResource|null {
-    if (!this.dataGrid.selectedNode) {
+    if (!this.#dataGrid.selectedNode) {
       return null;
     }
-    return (this.dataGrid.selectedNode as GridNode).item;
+    return (this.#dataGrid.selectedNode as GridNode).item;
   }
 
-  private populateContextMenu(
+  #populateContextMenu(
       contextMenu: UI.ContextMenu.ContextMenu,
       gridNode: DataGrid.DataGrid.DataGridNode<
           DataGrid.ViewportDataGrid.ViewportDataGridNode<DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>>>):
@@ -147,40 +147,40 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
 
   update(items: Iterable<SDK.PageResourceLoader.PageResource> = []): void {
     let hadUpdates = false;
-    const rootNode = this.dataGrid.rootNode();
+    const rootNode = this.#dataGrid.rootNode();
     for (const item of items) {
-      let node = this.nodeForItem.get(item);
+      let node = this.#nodeForItem.get(item);
       if (node) {
-        if (this.isVisibleFilter(node.item)) {
+        if (this.#isVisibleFilter(node.item)) {
           hadUpdates = node.refreshIfNeeded() || hadUpdates;
         }
         continue;
       }
       node = new GridNode(item);
-      this.nodeForItem.set(item, node);
-      if (this.isVisibleFilter(node.item)) {
+      this.#nodeForItem.set(item, node);
+      if (this.#isVisibleFilter(node.item)) {
         rootNode.appendChild(node);
         hadUpdates = true;
       }
     }
     if (hadUpdates) {
-      this.sortingChanged();
+      this.#sortingChanged();
     }
   }
 
   reset(): void {
-    this.nodeForItem.clear();
-    this.dataGrid.rootNode().removeChildren();
+    this.#nodeForItem.clear();
+    this.#dataGrid.rootNode().removeChildren();
   }
 
   updateFilterAndHighlight(highlightRegExp: RegExp|null): void {
-    this.highlightRegExp = highlightRegExp;
+    this.#highlightRegExp = highlightRegExp;
     let hadTreeUpdates = false;
-    for (const node of this.nodeForItem.values()) {
-      const shouldBeVisible = this.isVisibleFilter(node.item);
+    for (const node of this.#nodeForItem.values()) {
+      const shouldBeVisible = this.#isVisibleFilter(node.item);
       const isVisible = Boolean(node.parent);
       if (shouldBeVisible) {
-        node.setHighlight(this.highlightRegExp);
+        node.setHighlight(this.#highlightRegExp);
       }
       if (shouldBeVisible === isVisible) {
         continue;
@@ -189,20 +189,20 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       if (!shouldBeVisible) {
         node.remove();
       } else {
-        this.dataGrid.rootNode().appendChild(node);
+        this.#dataGrid.rootNode().appendChild(node);
       }
     }
     if (hadTreeUpdates) {
-      this.sortingChanged();
+      this.#sortingChanged();
     }
   }
 
   getNumberOfVisibleItems(): number {
-    return this.dataGrid.rootNode().children.length;
+    return this.#dataGrid.rootNode().children.length;
   }
 
-  private sortingChanged(): void {
-    const columnId = this.dataGrid.sortColumnId();
+  #sortingChanged(): void {
+    const columnId = this.#dataGrid.sortColumnId();
     if (!columnId) {
       return;
     }
@@ -212,7 +212,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                               arg1: DataGrid.SortableDataGrid.SortableDataGridNode<GridNode>) => number) |
         null;
     if (sortFunction) {
-      this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
+      this.#dataGrid.sortNodes(sortFunction, !this.#dataGrid.isSortOrderAscending());
     }
   }
   override wasShown(): void {
@@ -223,18 +223,18 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
 
 class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
   item: SDK.PageResourceLoader.PageResource;
-  private highlightRegExp: RegExp|null;
+  #highlightRegExp: RegExp|null;
   constructor(item: SDK.PageResourceLoader.PageResource) {
     super();
     this.item = item;
-    this.highlightRegExp = null;
+    this.#highlightRegExp = null;
   }
 
   setHighlight(highlightRegExp: RegExp|null): void {
-    if (this.highlightRegExp === highlightRegExp) {
+    if (this.#highlightRegExp === highlightRegExp) {
       return;
     }
-    this.highlightRegExp = highlightRegExp;
+    this.#highlightRegExp = highlightRegExp;
     this.refresh();
   }
 
@@ -254,8 +254,8 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         const splitURL = /^(.*)(\/[^/]*)$/.exec(this.item.url);
         prefix.textContent = splitURL ? splitURL[1] : this.item.url;
         suffix.textContent = splitURL ? splitURL[2] : '';
-        if (this.highlightRegExp) {
-          this.highlight(outer, this.item.url);
+        if (this.#highlightRegExp) {
+          this.#highlight(outer, this.item.url);
         }
         this.setCellAccessibleName(this.item.url, cell, columnId);
         break;
@@ -297,8 +297,8 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
         cell.classList.add('error-message');
         if (this.item.errorMessage) {
           cell.textContent = this.item.errorMessage;
-          if (this.highlightRegExp) {
-            this.highlight(cell, this.item.errorMessage);
+          if (this.#highlightRegExp) {
+            this.#highlight(cell, this.item.errorMessage);
           }
         }
         break;
@@ -307,11 +307,11 @@ class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> 
     return cell;
   }
 
-  private highlight(element: Element, textContent: string): void {
-    if (!this.highlightRegExp) {
+  #highlight(element: Element, textContent: string): void {
+    if (!this.#highlightRegExp) {
       return;
     }
-    const matches = this.highlightRegExp.exec(textContent);
+    const matches = this.#highlightRegExp.exec(textContent);
     if (!matches || !matches.length) {
       return;
     }

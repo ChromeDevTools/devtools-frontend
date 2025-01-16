@@ -1263,6 +1263,16 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.mainFlameChart.setSelectedEntry(mainIndex);
     this.networkFlameChart.setSelectedEntry(networkIndex);
 
+    // Set the context's "flavor" to be the AI Call Tree of the active event.
+    // This is listened to by the AI Assistance panel.
+    if (selectionIsEvent(selection) && this.#parsedTrace) {
+      // TODO: should we cache this?
+      const aiCallTree = Utils.AICallTree.AICallTree.from(selection.event, this.#parsedTrace);
+      UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+    } else {
+      UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
+    }
+
     // Clear any existing entry selection.
     this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
     // If:

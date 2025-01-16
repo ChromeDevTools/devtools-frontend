@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
 
@@ -130,8 +131,25 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
   }
 
   override getOrigin(): string {
-    // TODO: implement cross-origin checks for the PerformanceAgent.
-    return '';
+    const selectedEvent = this.#callTree.selectedNode.event;
+    // Get the non-resolved (ignore sourcemaps) URL for the event. We use the
+    // non-resolved URL as in the context of the AI Assistance panel, we care
+    // about the origin it was served on.
+    const nonResolvedURL = Trace.Handlers.Helpers.getNonResolvedURL(selectedEvent, this.#callTree.parsedTrace);
+    if (nonResolvedURL) {
+      const origin = Common.ParsedURL.ParsedURL.extractOrigin(nonResolvedURL);
+      if (origin) {  // origin could be the empty string.
+        return origin;
+      }
+    }
+    // Generate a random "origin". We do this rather than return an empty
+    // string or some "unknown" string so that each event without a definite
+    // URL is considered a new, standalone origin. This is safer from a privacy
+    // & security perspective, else we risk bucketing events together that
+    // should not be. We also don't want to make it entirely random so we
+    // cannot calculate it deterministically.
+    const uuid = `${selectedEvent.name}_${selectedEvent.pid}_${selectedEvent.tid}_${selectedEvent.ts}`;
+    return uuid;
   }
 
   override getItem(): TimelineUtils.AICallTree.AICallTree {

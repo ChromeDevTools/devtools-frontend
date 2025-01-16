@@ -72,6 +72,10 @@ devtools-text-prompt {
   flex: none;
   width: 18px;
   height: 18px;
+
+  &.snippet {
+    color: var(--sys-color-orange-bright);
+  }
 }
 
 .filtered-list-widget-item-wrapper.selected {
@@ -96,7 +100,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.one-row span.highlight {
-  font-weight: bold;
+  font-weight: var(--ref-typeface-weight-bold);
 }
 
 .filtered-list-widget-item .filtered-list-widget-title {
@@ -130,12 +134,6 @@ devtools-text-prompt {
 .filtered-list-widget-item-wrapper .deprecated-tag {
   font-size: 11px;
   color: var(--sys-color-token-subtle);
-}
-
-
-.filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
-  color: var(--sys-color-on-tonal-container);
-  background-color: var(--sys-color-state-focus-select);
 }
 
 .filtered-list-widget-item.one-row {

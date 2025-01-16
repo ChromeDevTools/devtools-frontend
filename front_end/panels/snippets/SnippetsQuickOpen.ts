@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 
 import {evaluateScriptSnippet, findSnippetsProject} from './ScriptSnippetFileSystem.js';
 
@@ -77,8 +78,9 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   }
 
   override renderItem(itemIndex: number, query: string, titleElement: Element, _subtitleElement: Element): void {
+    const icon = IconButton.Icon.create('snippet', 'snippet');
+    titleElement.parentElement?.parentElement?.insertBefore(icon, titleElement.parentElement);
     titleElement.textContent = this.snippets[itemIndex].name();
-    titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.FilteredListWidget.highlightRanges(titleElement, query, true);
   }
 }

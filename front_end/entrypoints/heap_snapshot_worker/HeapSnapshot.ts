@@ -3408,8 +3408,10 @@ export class JSHeapSnapshot extends HeapSnapshot {
     const nodeCodeType = this.nodeCodeType;
     const nodeConsStringType = this.nodeConsStringType;
     const nodeSlicedStringType = this.nodeSlicedStringType;
-    const distances = this.nodeDistances;
+    const nodeHiddenType = this.nodeHiddenType;
+    const nodeStringType = this.nodeStringType;
     let sizeNative = 0;
+    let sizeTypedArrays = 0;
     let sizeCode = 0;
     let sizeStrings = 0;
     let sizeJSArrays = 0;
@@ -3417,31 +3419,39 @@ export class JSHeapSnapshot extends HeapSnapshot {
     const node = this.rootNode();
     for (let nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
       const nodeSize = nodes.getValue(nodeIndex + nodeSizeOffset);
-      const ordinal = nodeIndex / nodeFieldCount;
-      if (distances[ordinal] >= HeapSnapshotModel.HeapSnapshotModel.baseSystemDistance) {
+      const nodeType = nodes.getValue(nodeIndex + nodeTypeOffset);
+      if (nodeType === nodeHiddenType) {
         sizeSystem += nodeSize;
         continue;
       }
-      const nodeType = nodes.getValue(nodeIndex + nodeTypeOffset);
       node.nodeIndex = nodeIndex;
       if (nodeType === nodeNativeType) {
         sizeNative += nodeSize;
+        if (node.rawName() === 'system / JSArrayBufferData') {
+          sizeTypedArrays += nodeSize;
+        }
       } else if (nodeType === nodeCodeType) {
         sizeCode += nodeSize;
-      } else if (nodeType === nodeConsStringType || nodeType === nodeSlicedStringType || node.type() === 'string') {
+      } else if (nodeType === nodeConsStringType || nodeType === nodeSlicedStringType || nodeType === nodeStringType) {
         sizeStrings += nodeSize;
       } else if (node.rawName() === 'Array') {
         sizeJSArrays += this.calculateArraySize(node);
       }
     }
-    this.#statistics = new HeapSnapshotModel.HeapSnapshotModel.Statistics();
-    this.#statistics.total = this.totalSize;
-    this.#statistics.v8heap = this.totalSize - sizeNative;
-    this.#statistics.native = sizeNative;
-    this.#statistics.code = sizeCode;
-    this.#statistics.jsArrays = sizeJSArrays;
-    this.#statistics.strings = sizeStrings;
-    this.#statistics.system = sizeSystem;
+    this.#statistics = {
+      total: this.totalSize,
+      native: {
+        total: sizeNative,
+        typedArrays: sizeTypedArrays,
+      },
+      v8heap: {
+        total: this.totalSize - sizeNative,
+        code: sizeCode,
+        jsArrays: sizeJSArrays,
+        strings: sizeStrings,
+        system: sizeSystem,
+      }
+    };
   }
 
   private calculateArraySize(node: HeapSnapshotNode): number {

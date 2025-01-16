@@ -246,16 +246,10 @@ export class StaticData {
   }
 }
 
-export class Statistics {
-  total!: number;
-  v8heap!: number;
-  native!: number;
-  code!: number;
-  jsArrays!: number;
-  strings!: number;
-  system!: number;
-  constructor() {
-  }
+export interface Statistics {
+  total: number;
+  native: {total: number, typedArrays: number};
+  v8heap: {total: number, code: number, jsArrays: number, strings: number, system: number};
 }
 
 export class NodeFilter {

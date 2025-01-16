@@ -197,7 +197,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
           .selected=${this.#data.activeInsight?.model === model}
           .model=${model}
           .bounds=${insightSet.bounds}
-          .insightSetKey=${insightSetKey}
+          .insightSetKey=${insightSetKey}>
         </${componentClass.litTagName}>
       </div>`;
       // clang-format on

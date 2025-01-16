@@ -698,6 +698,23 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       if (info.icon) {
         iconContainer.insertBefore(info.icon, icon);
       }
+
+      // Include badges with the name, if relevant.
+      if (columnId === 'site' && (this.treeView as ThirdPartyTreeViewWidget)) {
+        const thirdPartyTree = (this.treeView as ThirdPartyTreeViewWidget);
+        let badgeText = '';
+
+        if (thirdPartyTree.nodeIsFirstParty(this.profileNode)) {
+          badgeText = '1st party';
+        } else if (thirdPartyTree.nodeIsExtension(this.profileNode)) {
+          badgeText = 'Extension';
+        }
+
+        if (badgeText) {
+          const badge = container.createChild('div', 'entity-badge');
+          badge.createChild('div', 'entity-badge-name').textContent = badgeText;
+        }
+      }
     } else if (event) {
       name.textContent = TimelineUIUtils.eventTitle(event);
       const parsedTrace = this.treeView.parsedTrace();

@@ -96,3 +96,26 @@
   padding: var(--sys-size-4) var(--sys-size-8) var(--sys-size-4);
   gap: var(--sys-size-5);
 }
+
+.name-container {
+  display: flex;
+  align-items: center;
+}
+
+.entity-badge {
+  margin-left: var(--sys-size-4);
+}
+
+.entity-badge-name {
+  font-weight: var(--ref-typeface-weight-bold);
+  padding-left: var(--sys-size-3);
+  padding-right: var(--sys-size-3);
+  background-color: var(--sys-color-tonal-container);
+  border-radius: var(--sys-shape-corner-extra-small);
+}
+
+.activity-name {
+  text-overflow: ellipsis;
+  overflow: inherit;
+  max-width: 60%;
+}

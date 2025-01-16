@@ -97,7 +97,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         {
           id: 'site',
           title: i18nString(UIStrings.firstOrThirdPartyName),
-          width: '80px',
+          width: '100px',
           fixedWidth: true,
           sortable: true,
         },
@@ -196,6 +196,24 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       return {transferSize: 0, mainThreadTime: Trace.Types.Timing.MicroSeconds(0)};
     }
     return {transferSize: summary.transferSize, mainThreadTime: summary.mainThreadTime};
+  }
+
+  nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean {
+    const mapper = this.entityMapper();
+    if (!mapper) {
+      return false;
+    }
+    const firstParty = mapper.firstPartyEntity();
+    return firstParty === mapper.entityForEvent(node.event);
+  }
+
+  nodeIsExtension(node: Trace.Extras.TraceTree.Node): boolean {
+    const mapper = this.entityMapper();
+    if (!mapper) {
+      return false;
+    }
+    const entity = mapper.entityForEvent(node.event);
+    return Boolean(entity) && entity?.category === 'Chrome Extension';
   }
 }
 

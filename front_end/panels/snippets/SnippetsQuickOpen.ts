@@ -22,6 +22,10 @@ const UIStrings = {
    *@description Text for suggestion of run a code snippet
    */
   snippet: 'Snippet',
+  /**
+   *@description Text for help title of run code snippet menu
+   */
+  runSnippet: 'Run snippet',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/SnippetsQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -88,8 +92,8 @@ export class SnippetsQuickOpen extends QuickOpen.FilteredListWidget.Provider {
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '!',
   iconName: 'exclamation',
-  iconWidth: '20px',
   provider: () => Promise.resolve(SnippetsQuickOpen.instance()),
+  helpTitle: i18nLazyString(UIStrings.runSnippet),
   titlePrefix: i18nLazyString(UIStrings.run),
   titleSuggestion: i18nLazyString(UIStrings.snippet),
 });

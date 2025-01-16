@@ -417,6 +417,10 @@ const UIStrings = {
    */
   symbol: 'Symbol',
   /**
+   *@description Text for help title of go to symbol menu
+   */
+  goToSymbol: 'Go to symbol',
+  /**
    *@description Text for command prefix of open a file
    */
   open: 'Open',
@@ -425,8 +429,12 @@ const UIStrings = {
    */
   file: 'File',
   /**
+   *@description Text for help title of open file menu
+   */
+  openFile: 'Open file',
+  /**
    * @description  Title of a setting under the Sources category in Settings. If this option is off,
-   * the sources panel will not be automatically be focsed whenever the application hits a breakpoint
+   * the sources panel will not be automatically be focused whenever the application hits a breakpoint
    * and comes to a halt.
    */
   disableAutoFocusOnDebuggerPaused: 'Do not focus Sources panel when triggering a breakpoint',
@@ -2019,11 +2027,11 @@ UI.ContextMenu.registerItem({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '@',
   iconName: 'symbol',
-  iconWidth: '20px',
   async provider() {
     const Sources = await loadSourcesModule();
     return new Sources.OutlineQuickOpen.OutlineQuickOpen();
   },
+  helpTitle: i18nLazyString(UIStrings.goToSymbol),
   titlePrefix: i18nLazyString(UIStrings.goTo),
   titleSuggestion: i18nLazyString(UIStrings.symbol),
 });
@@ -2031,11 +2039,11 @@ QuickOpen.FilteredListWidget.registerProvider({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: ':',
   iconName: 'colon',
-  iconWidth: '20px',
   async provider() {
     const Sources = await loadSourcesModule();
     return new Sources.GoToLineQuickOpen.GoToLineQuickOpen();
   },
+  helpTitle: i18nLazyString(UIStrings.goToLine),
   titlePrefix: i18nLazyString(UIStrings.goTo),
   titleSuggestion: i18nLazyString(UIStrings.line),
 });
@@ -2043,11 +2051,11 @@ QuickOpen.FilteredListWidget.registerProvider({
 QuickOpen.FilteredListWidget.registerProvider({
   prefix: '',
   iconName: 'document',
-  iconWidth: '20px',
   async provider() {
     const Sources = await loadSourcesModule();
     return new Sources.OpenFileQuickOpen.OpenFileQuickOpen();
   },
+  helpTitle: i18nLazyString(UIStrings.openFile),
   titlePrefix: i18nLazyString(UIStrings.open),
   titleSuggestion: i18nLazyString(UIStrings.file),
 });

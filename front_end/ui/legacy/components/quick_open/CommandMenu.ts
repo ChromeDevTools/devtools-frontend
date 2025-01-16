@@ -31,6 +31,10 @@ const UIStrings = {
    */
   command: 'Command',
   /**
+   * @description Text for help title of run command menu
+   */
+  runCommand: 'Run command',
+  /**
    * @description Hint text to indicate that a selected command is deprecated
    */
   deprecated: '— deprecated',
@@ -433,8 +437,8 @@ export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate 
 registerProvider({
   prefix: '>',
   iconName: 'chevron-right',
-  iconWidth: '20px',
   provider: () => Promise.resolve(new CommandMenuProvider()),
+  helpTitle: () => i18nString(UIStrings.runCommand),
   titlePrefix: () => i18nString(UIStrings.run),
   titleSuggestion: () => i18nString(UIStrings.command),
 });

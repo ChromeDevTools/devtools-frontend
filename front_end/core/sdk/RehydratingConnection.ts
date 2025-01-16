@@ -26,7 +26,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as i18n from '../i18n/i18n.js';
-import {UserVisibleError} from '../platform/platform.js';
+import type * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
@@ -68,11 +68,13 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   onMessage: ((arg0: Object) => void)|null = null;
   traceEvents: unknown[] = [];
   sessions: Map<number, RehydratingSessionBase> = new Map();
+  #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow: Window&typeof globalThis;
   #onReceiveHostWindowPayloadBound = this.#onReceiveHostWindowPayload.bind(this);
 
-  constructor() {
+  constructor(onConnectionLost: (message: Platform.UIString.LocalizedString) => void) {
     // If we're invoking this class, we're in the rehydrating pop-up window. Rename window for clarity.
+    this.#onConnectionLost = onConnectionLost;
     this.#rehydratingWindow = window;
     this.#setupMessagePassing();
   }
@@ -80,7 +82,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   #setupMessagePassing(): void {
     this.#rehydratingWindow.addEventListener('message', this.#onReceiveHostWindowPayloadBound);
     if (!this.#rehydratingWindow.opener) {
-      throw new UserVisibleError.UserVisibleError(i18nString(UIStrings.noHostWindow));
+      this.#onConnectionLost(i18nString(UIStrings.noHostWindow));
     }
     this.#rehydratingWindow.opener.postMessage({type: 'REHYDRATING_WINDOW_READY'});
   }
@@ -97,7 +99,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
         await this.startHydration(reader.result as string);
       };
       reader.onerror = (): void => {
-        throw new UserVisibleError.UserVisibleError(i18nString(UIStrings.errorLoadingLog));
+        this.#onConnectionLost(i18nString(UIStrings.errorLoadingLog));
       };
       reader.readAsText(traceFile);
     }

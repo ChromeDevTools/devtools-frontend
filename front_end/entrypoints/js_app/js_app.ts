@@ -60,7 +60,7 @@ export class JsMainImpl implements Common.Runnable.Runnable {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.NODE, null);
       void target.runtimeAgent().invoke_runIfWaitingForDebugger();
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);
   }
 }
 

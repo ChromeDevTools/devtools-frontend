@@ -2,20 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as UI from '../../legacy.js';
 
-const UIStrings = {
-  /**
-   *@description Text on the remote debugging window to indicate the connection is lost
-   */
-  websocketDisconnected: 'WebSocket disconnected',
-};
-const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/TargetDetachedDialog.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements ProtocolProxyApi.InspectorDispatcher {
   private static hideCrashedDialog: (() => void)|null;
   constructor(target: SDK.Target.Target) {
@@ -33,9 +25,8 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
     UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(reason);
   }
 
-  static webSocketConnectionLost(): void {
-    UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(
-        i18nString(UIStrings.websocketDisconnected));
+  static connectionLost(message: Platform.UIString.LocalizedString): void {
+    UI.RemoteDebuggingTerminatedScreen.RemoteDebuggingTerminatedScreen.show(message);
   }
 
   targetCrashed(): void {

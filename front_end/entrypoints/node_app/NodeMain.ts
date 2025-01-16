@@ -46,7 +46,7 @@ export class NodeMainImpl implements Common.Runnable.Runnable {
       const target = SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.BROWSER, null);
       target.setInspectedURL('Node.js' as Platform.DevToolsPath.UrlString);
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);
   }
 }
 

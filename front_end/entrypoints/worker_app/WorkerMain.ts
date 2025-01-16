@@ -39,7 +39,7 @@ export class WorkerMainImpl implements Common.Runnable.Runnable {
       }
       SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.ServiceWorker, null);
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }
 }

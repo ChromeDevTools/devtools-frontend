@@ -89,7 +89,7 @@ export class TimelineSummary extends HTMLElement {
                 </div>
           </div>
           </div>
-          <div class="third-party-table"><slot name="third-party-table"></slot></div>
+          <slot name="third-party-table"></slot>
         </div>`;
     // clang-format on
     render(output, this.#shadow, {host: this});

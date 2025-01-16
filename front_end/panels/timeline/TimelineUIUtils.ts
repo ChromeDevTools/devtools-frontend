@@ -2317,10 +2317,16 @@ export class TimelineUIUtils {
     const treeView = new ThirdPartyTreeView.ThirdPartyTreeView();
     treeView.treeView = thirdPartyTree;
     const treeSlot = document.createElement('slot');
+
+    const thirdPartyDiv = document.createElement('div');
+    thirdPartyDiv.className = 'third-party-table';
+
     treeSlot.name = 'third-party-table';
     treeSlot.append(treeView);
+
+    thirdPartyDiv.appendChild(treeSlot);
     if (summaryTable.shadowRoot) {
-      summaryTable.shadowRoot?.appendChild(treeSlot);
+      summaryTable.shadowRoot?.appendChild(thirdPartyDiv);
     }
     return element;
   }

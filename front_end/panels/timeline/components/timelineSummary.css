@@ -84,6 +84,10 @@
   th {
     background-color: var(--sys-color-cdt-base-container);
   }
+
+  tr.revealed.selected {
+    background-color: transparent;
+  }
 }
 
 .widget.vbox.timeline-tree-view {
@@ -93,8 +97,12 @@
 
 .third-party-table {
   display: flex;
-  padding: var(--sys-size-4) var(--sys-size-8) var(--sys-size-4);
-  gap: var(--sys-size-5);
+  margin: var(--sys-size-4) var(--sys-size-8) var(--sys-size-4);
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-4);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+  max-width: var(--sys-size-35);
 }
 
 .name-container {

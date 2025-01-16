@@ -38,6 +38,10 @@ const UIStrings = {
    */
   filterByPath: 'Filter by path',
   /**
+   *@description Text in Service Worker Cache Views of the Application panel that shows if no cache entry is selected for preview
+   */
+  noCacheEntrySelected: 'No cache entry selected',
+  /**
    *@description Text in Service Worker Cache Views of the Application panel
    */
   selectACacheEntryAboveToPreview: 'Select a cache entry above to preview',
@@ -191,7 +195,8 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       this.preview.detach();
     }
     if (!preview) {
-      preview = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectACacheEntryAboveToPreview));
+      preview = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noCacheEntrySelected), i18nString(UIStrings.selectACacheEntryAboveToPreview));
     }
     this.preview = preview;
     this.preview.show(this.previewPanel.element);

@@ -101,7 +101,8 @@ describeWithEnvironment('DataGridWithPreview', () => {
     await raf();
 
     // Check preview was updated.
-    assert.strictEqual(dataGridWithPreview.previewPanelForTesting.element.innerText, 'Select a value to preview');
+    assert.strictEqual(
+        dataGridWithPreview.previewPanelForTesting.element.innerText, 'No value selected\nSelect a value to preview');
   });
 
   it('preview changed when value changes', async () => {

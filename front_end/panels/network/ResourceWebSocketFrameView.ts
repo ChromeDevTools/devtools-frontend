@@ -60,6 +60,10 @@ const UIStrings = {
    */
   filter: 'Filter',
   /**
+   *@description Text in Resource Web Socket Frame View of the Network panel that shows if no message is selected for viewing its content
+   */
+  noMessageSelected: 'No message selected',
+  /**
    *@description Text in Resource Web Socket Frame View of the Network panel
    */
   selectMessageToBrowseItsContent: 'Select message to browse its content.',
@@ -237,7 +241,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     mainContainer.setMinimumSize(0, 72);
     this.splitWidget.setMainWidget(mainContainer);
 
-    this.frameEmptyWidget = new UI.EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectMessageToBrowseItsContent));
+    this.frameEmptyWidget = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectMessageToBrowseItsContent));
     this.splitWidget.setSidebarWidget(this.frameEmptyWidget);
 
     this.selectedNode = null;

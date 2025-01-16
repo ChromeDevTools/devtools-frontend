@@ -35,6 +35,10 @@ import {type ColumnDescriptor, DataGridImpl, DataGridNode, Events} from './DataG
 
 const UIStrings = {
   /**
+   *@description Text that shows in the Applicaiton Panel if no value is selected for preview
+   */
+  noPreviewSelected: 'No value selected',
+  /**
    *@description Preview text when viewing storage in Application panel
    */
   selectAValueToPreview: 'Select a value to preview',
@@ -275,7 +279,8 @@ export class DataGridWithPreview {
       this.#preview.detach();
     }
     if (!preview) {
-      preview = new EmptyWidget.EmptyWidget('', i18nString(UIStrings.selectAValueToPreview));
+      preview = new EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noPreviewSelected), i18nString(UIStrings.selectAValueToPreview));
     }
     this.#previewValue = value;
     this.#preview = preview;

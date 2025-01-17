@@ -271,10 +271,6 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
-  override focus(): void {
-    this.#shadow.querySelector('button')?.focus();
-  }
-
   connectedCallback(): void {
     this.#render();
   }

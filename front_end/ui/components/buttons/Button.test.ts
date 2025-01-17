@@ -54,6 +54,26 @@ describe('Button', () => {
     assert.isTrue(button.disabled);
   });
 
+  describe('focus', () => {
+    it('correctly focuses the <button> element in the shadow DOM', () => {
+      const button = renderButton();
+
+      button.focus();
+
+      assert.isTrue(button.shadowRoot!.querySelector('button')!.hasFocus());
+    });
+  });
+
+  describe('hasFocus', () => {
+    it('correctly reflects the focus state of the button', () => {
+      const button = renderButton();
+
+      button.focus();
+
+      assert.isTrue(button.hasFocus());
+    });
+  });
+
   it('primary button can be clicked', () => {
     testClick({
       variant: Buttons.Button.Variant.PRIMARY,

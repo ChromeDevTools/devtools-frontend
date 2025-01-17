@@ -1,0 +1,29 @@
+/*
+ * Copyright 2025 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  padding: 0 2px;
+  position: relative;
+  white-space: nowrap;
+  height: var(--toolbar-height);
+  overflow: hidden;
+  display: flex;
+  flex: none;
+  align-items: center;
+  z-index: 0;
+
+  --toolbar-height: 26px;
+}
+
+:host([hidden]) {
+  display: none;
+}
+
+:host([wrappable]) {
+  flex-wrap: wrap;
+  overflow: visible;
+  height: initial;
+}

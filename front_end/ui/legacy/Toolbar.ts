@@ -45,8 +45,9 @@ import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
+import toolbarStyles from './toolbar.css.legacy.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel, LongClickController} from './UIUtils.js';
+import {CheckboxLabel, createShadowRootWithCoreStyles, LongClickController} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -80,6 +81,11 @@ export class Toolbar extends HTMLElement {
   private items: ToolbarItem[] = [];
   enabled: boolean = true;
   private compactLayout = false;
+
+  constructor() {
+    super();
+    createShadowRootWithCoreStyles(this, {cssFile: toolbarStyles}).createChild('slot');
+  }
 
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {

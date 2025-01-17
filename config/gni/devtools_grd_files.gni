@@ -2503,6 +2503,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/themeColors.css.legacy.js",
   "front_end/ui/legacy/theme_support/ThemeSupport.js",
   "front_end/ui/legacy/tokens.css.legacy.js",
+  "front_end/ui/legacy/toolbar.css.legacy.js",
   "front_end/ui/legacy/treeoutline.css.legacy.js",
   "front_end/ui/legacy/viewContainers.css.legacy.js",
   "front_end/ui/lit-html/i18n-template.js",

@@ -794,24 +794,6 @@ iframe.panel.extension {
 
 /* Toolbar styles */
 devtools-toolbar {
-  padding: 0 2px;
-  position: relative;
-  white-space: nowrap;
-  height: var(--toolbar-height);
-  overflow: hidden;
-  display: flex;
-  flex: none;
-  align-items: center;
-  z-index: 0;
-
-  --toolbar-height: 26px;
-
-  &[wrappable] {
-    flex-wrap: wrap;
-    overflow: visible;
-    height: initial;
-  }
-
   & > * {
     position: relative;
     display: flex;

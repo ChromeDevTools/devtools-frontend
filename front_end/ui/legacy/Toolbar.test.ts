@@ -24,10 +24,10 @@ describeWithLocale('Toolbar', () => {
       assert.instanceOf(toolbar, Toolbar);
     });
 
-    it('does not attach a shadow root', () => {
+    it('attaches a shadow root', () => {
       const toolbar = document.createElement('devtools-toolbar');
 
-      assert.isNull(toolbar.shadowRoot, 'Expected Toolbar to use Light DOM');
+      assert.isNotNull(toolbar.shadowRoot, 'Expected Toolbar to use Light DOM');
     });
 
     describe('connectedCallback', () => {

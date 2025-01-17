@@ -1131,13 +1131,7 @@
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.ResponseReceived, onResponseReceived);
 
-    this.evaluateInConsole_(
-        `
-      let img = document.createElement('img');
-      img.src = "${url}";
-      document.body.appendChild(img);
-    `,
-        () => {});
+    this.evaluateInConsole_(`location.href= "${url}";`, () => {});
 
     let count = 0;
     function onResponseReceived(event) {

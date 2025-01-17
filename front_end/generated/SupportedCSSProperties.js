@@ -616,6 +616,7 @@ export const generatedProperties = [
    "range",
    "reading-flow",
    "resize",
+   "result",
    "right",
    "rotate",
    "row-gap",
@@ -3370,6 +3371,9 @@ export const generatedProperties = [
    "inline"
   ],
   "name": "resize"
+ },
+ {
+  "name": "result"
  },
  {
   "keywords": [

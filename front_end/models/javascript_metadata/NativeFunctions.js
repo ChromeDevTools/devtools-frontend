@@ -7440,12 +7440,20 @@ export const NativeFunctions = [
     signatures: [["expires"]]
   },
   {
-    name: "beginLayer",
-    signatures: [["?options"]]
-  },
-  {
     name: "fillTextCluster",
     signatures: [["textCluster","x","y","?options"]]
+  },
+  {
+    name: "transferToGPUTexture",
+    signatures: [["options"]]
+  },
+  {
+    name: "CanvasFilter",
+    signatures: [["init"]]
+  },
+  {
+    name: "beginLayer",
+    signatures: [["?options"]]
   },
   {
     name: "createMesh2DVertexBuffer",
@@ -7462,14 +7470,6 @@ export const NativeFunctions = [
   {
     name: "drawMesh",
     signatures: [["vertex_buffer","uv_buffer","index_buffer","image"]]
-  },
-  {
-    name: "transferToGPUTexture",
-    signatures: [["options"]]
-  },
-  {
-    name: "CanvasFilter",
-    signatures: [["init"]]
   },
   {
     name: "placeElement",

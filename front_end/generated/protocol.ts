@@ -15704,6 +15704,16 @@ export namespace Target {
     port: integer;
   }
 
+  /**
+   * The state of the target window.
+   */
+  export const enum WindowState {
+    Normal = 'normal',
+    Minimized = 'minimized',
+    Maximized = 'maximized',
+    Fullscreen = 'fullscreen',
+  }
+
   export interface ActivateTargetRequest {
     targetId: TargetID;
   }
@@ -15806,6 +15816,11 @@ export namespace Target {
      * Frame height in DIP (requires newWindow to be true or headless shell).
      */
     height?: integer;
+    /**
+     * Frame window state (requires newWindow to be true or headless shell).
+     * Default is normal.
+     */
+    windowState?: WindowState;
     /**
      * The browser context to create the page in.
      */

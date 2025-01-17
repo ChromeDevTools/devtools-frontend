@@ -2838,6 +2838,7 @@ export const knownContextValues = new Set([
   'responsive',
   'restart-frame',
   'restore-default-shortcuts',
+  'result',
   'retained-size',
   'retainedSize',
   'retainers',

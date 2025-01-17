@@ -76,7 +76,7 @@ export class ChangesView extends UI.Widget.VBox {
     this.element.setAttribute('jslog', `${VisualLogging.panel('changes').track({resize: true})}`);
 
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
-    const mainWidget = new UI.Widget.Widget();
+    const mainWidget = new UI.Widget.VBox();
     splitWidget.setMainWidget(mainWidget);
     splitWidget.show(this.contentElement);
 

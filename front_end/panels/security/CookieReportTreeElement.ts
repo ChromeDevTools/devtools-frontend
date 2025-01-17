@@ -11,8 +11,11 @@ export class CookieReportTreeElement extends SecurityPanelSidebarTreeElement {
     this.setLeadingIcons([IconButton.Icon.create('cookie', 'cookie-icon')]);
   }
 
-  override onselect(): boolean {
+  override get elemId(): string {
+    return 'report';
+  }
+
+  override showElement(): void {
     this.listItemElement.dispatchEvent(new CustomEvent('showCookieReport', {bubbles: true, composed: true}));
-    return true;
   }
 }

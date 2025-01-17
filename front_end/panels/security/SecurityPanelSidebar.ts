@@ -76,10 +76,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanelSidebar.t
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SecurityPanelSidebar extends UI.Widget.VBox {
+  readonly #securitySidebarLastItemSetting: Common.Settings.Setting<string>;
   readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
   readonly #originGroupTitles: Map<OriginGroup, string>;
   #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
   securityOverviewElement: OriginTreeElement;
+  readonly #cookieControlsTreeElement: CookieControlsTreeElement|undefined;
+  readonly #cookieReportTreeElement: CookieReportTreeElement|undefined;
   readonly #elementsByOrigin: Map<string, OriginTreeElement>;
   readonly #mainViewReloadMessage: UI.TreeOutline.TreeElement;
   #mainOrigin: string|null;
@@ -87,6 +90,8 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
   constructor(element?: HTMLElement) {
     super(undefined, undefined, element);
 
+    this.#securitySidebarLastItemSetting =
+        Common.Settings.Settings.instance().createSetting('security-last-selected-element-path', 'overview');
     this.#mainOrigin = null;
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
@@ -95,9 +100,11 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
 
     if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled) {
       const privacyTreeSection = this.#addSidebarSection(i18nString(UIStrings.privacy), 'privacy');
-      privacyTreeSection.appendChild(
-          new CookieControlsTreeElement(i18nString(UIStrings.flagControls), 'cookie-flag-controls'));
-      privacyTreeSection.appendChild(new CookieReportTreeElement(i18nString(UIStrings.cookieReport), 'cookie-report'));
+      this.#cookieControlsTreeElement =
+          new CookieControlsTreeElement(i18nString(UIStrings.flagControls), 'cookie-flag-controls');
+      privacyTreeSection.appendChild(this.#cookieControlsTreeElement);
+      this.#cookieReportTreeElement = new CookieReportTreeElement(i18nString(UIStrings.cookieReport), 'cookie-report');
+      privacyTreeSection.appendChild(this.#cookieReportTreeElement);
     }
 
     const securitySectionTitle = i18nString(UIStrings.security);
@@ -131,6 +138,25 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.#clearOriginGroups();
 
     this.#elementsByOrigin = new Map();
+
+    this.element.addEventListener('update-sidebar-selection', (event: Event) => {
+      const id: string = (event as CustomEvent).detail.id;
+      this.#securitySidebarLastItemSetting.set(id);
+    });
+    this.showLastSelectedElement();
+  }
+
+  showLastSelectedElement(): void {
+    if (this.#cookieControlsTreeElement &&
+        this.#securitySidebarLastItemSetting.get() === this.#cookieControlsTreeElement.elemId) {
+      this.#cookieControlsTreeElement.showElement();
+    } else if (
+        this.#cookieReportTreeElement &&
+        this.#securitySidebarLastItemSetting.get() === this.#cookieReportTreeElement.elemId) {
+      this.#cookieReportTreeElement.showElement();
+    } else {
+      this.securityOverviewElement.showElement();
+    }
   }
 
   #addSidebarSection(title: string, jslogContext: string): UI.TreeOutline.TreeElement {

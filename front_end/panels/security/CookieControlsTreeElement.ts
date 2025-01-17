@@ -11,8 +11,11 @@ export class CookieControlsTreeElement extends SecurityPanelSidebarTreeElement {
     this.setLeadingIcons([IconButton.Icon.create('gear', 'cookie-icon')]);
   }
 
-  override onselect(): boolean {
+  override get elemId(): string {
+    return 'controls';
+  }
+
+  override showElement(): void {
     this.listItemElement.dispatchEvent(new CustomEvent('showFlagControls', {bubbles: true, composed: true}));
-    return true;
   }
 }

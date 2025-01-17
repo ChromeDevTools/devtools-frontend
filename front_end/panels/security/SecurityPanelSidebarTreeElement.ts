@@ -8,4 +8,21 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement 
     super(title, expandable, jslogContext);
     UI.ARIAUtils.setLabel(this.listItemElement, title);
   }
+
+  get elemId(): string {
+    // default landing spot for the security panel
+    return 'overview';
+  }
+
+  showElement(): void {
+    throw new Error('Unimplemented Method');
+  }
+
+  override onselect(): boolean {
+    const id = this.elemId;
+    this.listItemElement.dispatchEvent(
+        new CustomEvent('update-sidebar-selection', {bubbles: true, composed: true, detail: {id}}));
+    this.showElement();
+    return false;
+  }
 }

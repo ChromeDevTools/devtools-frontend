@@ -2967,6 +2967,7 @@ export const knownContextValues = new Set([
   'second-col',
   'secure',
   'security',
+  'security-last-selected-element-path',
   'security.main-view',
   'security.origin-view',
   'security.toggle-san-truncation',

@@ -655,11 +655,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.updateVisibleSecurityState(data);
   }
 
-  selectAndSwitchToMainView(): void {
-    // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
-    this.sidebar.securityOverviewElement.select(true);
-  }
-
   showOrigin(origin: Platform.DevToolsPath.UrlString): void {
     const originState = this.origins.get(origin);
     if (!originState) {
@@ -675,7 +670,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   override wasShown(): void {
     super.wasShown();
     if (!this.visibleView) {
-      this.selectAndSwitchToMainView();
+      this.sidebar.showLastSelectedElement();
     }
   }
 
@@ -827,9 +822,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     const {frame} = event.data;
     const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
 
-    if (!(this.visibleView instanceof CookieReportView) && !(this.visibleView instanceof CookieControlsView)) {
-      this.selectAndSwitchToMainView();
-    }
+    this.sidebar.showLastSelectedElement();
     this.sidebar.clearOrigins();
     this.origins.clear();
     this.lastResponseReceivedForLoaderId.clear();
@@ -852,8 +845,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   private onInterstitialShown(): void {
     // The panel might have been displaying the origin view on the
     // previously loaded page. When showing an interstitial, switch
-    // back to the Overview view.
-    this.selectAndSwitchToMainView();
+    // back to the sidebar's last shown view.
+    this.sidebar.showLastSelectedElement();
     this.sidebar.toggleOriginsList(true /* hidden */);
   }
 

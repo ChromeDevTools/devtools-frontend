@@ -9,6 +9,107 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Utils from './utils.js';
 
 describeWithEnvironment('AICallTree', () => {
+  it('will not build a tree from non-main-thread events', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    // A random RasterizerTask. Although this does technically run on the
+    // main _frame_, it is not on the thread we identify as the main thread.
+    const rasterTask = parsedTrace.Renderer.allTraceEntries.find(e => {
+      return e.name === Trace.Types.Events.Name.RASTER_TASK && e.pid === 4274 && e.tid === 23555;
+    });
+    assert.isOk(rasterTask);
+    assert.isNull(Utils.AICallTree.AICallTree.from(rasterTask, parsedTrace));
+  });
+
+  it('does not build a tree from events the renderer is not aware of', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    // A SyntheticLayoutShift: the RendererHandler does not know about this.
+    const shift = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+    assert.isOk(shift);
+    assert.isTrue(Trace.Types.Events.isSyntheticLayoutShift(shift));
+    assert.isNull(Utils.AICallTree.AICallTree.from(shift, parsedTrace));
+  });
+
+  it('supports NodeJS traces that do not have a "main thread"', async function() {
+    // Bit of extra setup required: we need to mimic what the panel does where
+    // it takes the CDP Profile and wraps it in fake trace events, before then
+    // passing that through to the new engine.
+    const rawEvents = await TraceLoader.rawCPUProfile(this, 'basic.cpuprofile.gz');
+    const events = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+        rawEvents,
+        Trace.Types.Events.ThreadID(1),
+    );
+    const {parsedTrace} =
+        await TraceLoader.executeTraceEngineOnFileContents(events as unknown as Trace.Types.Events.Event[]);
+    // Find a random function call in the trace.
+    const funcCall = parsedTrace.Samples.entryToNode.keys().find(event => {
+      return Trace.Types.Events.isProfileCall(event) && event.callFrame.functionName === 'callAndPauseOnStart';
+    });
+    assert.isOk(funcCall);
+    const callTree = Utils.AICallTree.AICallTree.from(funcCall, parsedTrace);
+    assert.isOk(callTree);
+    const expectedData = '\n' +
+        `
+
+# All URL #s:
+
+  * 0: node:internal/main/run_main_module
+  * 1: node:internal/modules/run_main
+  * 2: node:internal/modules/cjs/loader
+  * 3: file:///Users/andoli/Desktop/mocks/fixnodeinspector/app.js
+
+# Call tree:
+
+Node: 1 – (anonymous)
+dur: 2370
+URL #: 0
+Children:
+  * 2 – executeUserEntryPoint
+
+Node: 2 – executeUserEntryPoint
+dur: 2370
+URL #: 1
+Children:
+  * 3 – Module._load
+
+Node: 3 – Module._load
+dur: 2370
+URL #: 2
+Children:
+  * 4 – Module.load
+
+Node: 4 – Module.load
+dur: 2370
+URL #: 2
+Children:
+  * 5 – Module._extensions..js
+
+Node: 5 – Module._extensions..js
+dur: 2370
+URL #: 2
+Children:
+  * 6 – Module._compile
+
+Node: 6 – Module._compile
+dur: 2370
+URL #: 2
+Children:
+  * 7 – callAndPauseOnStart
+
+Node: 7 – callAndPauseOnStart
+Selected: true
+dur: 2370
+Children:
+  * 8 – (anonymous)
+
+Node: 8 – (anonymous)
+dur: 2370
+self: 2370
+URL #: 3
+`.trim();
+
+    assert.strictEqual(callTree?.serialize(), expectedData);
+  });
+
   it('serializes a simple tree', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
     const mainEvents = parsedTrace.Renderer.allTraceEntries;
@@ -60,7 +161,7 @@ Node: 6 – Recalculate style
 dur: 0.2
 self: 0.2
 `.trim();
-    assert.strictEqual(callTree.serialize(), expectedData);
+    assert.strictEqual(callTree?.serialize(), expectedData);
   });
 
   it('serializes a tree with lots of recursion', async function() {
@@ -71,6 +172,7 @@ self: 0.2
       throw new Error('Could not find expected event.');
     }
     const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, parsedTrace);
+    assert.isOk(callTree);
 
     // We don't need to validate the whole tree, just that it has recursion
     const treeStr = callTree.serialize();
@@ -88,8 +190,8 @@ self: 0.2
     if (!tinyEvent) {
       throw new Error('Could not find expected event.');
     }
-    const tinyStr = Utils.AICallTree.AICallTree.from(tinyEvent, parsedTrace).serialize();
-    assert.strictEqual(tinyStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
+    const tinyStr = Utils.AICallTree.AICallTree.from(tinyEvent, parsedTrace)?.serialize();
+    assert.strictEqual(tinyStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
 Node: 3 – Evaluate script
@@ -102,8 +204,8 @@ Node: 5 – get storage`.trim());
     if (!evaluateEvent) {
       throw new Error('Could not find expected event.');
     }
-    const treeStr = Utils.AICallTree.AICallTree.from(evaluateEvent, parsedTrace).serialize();
-    assert.strictEqual(treeStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
+    const treeStr = Utils.AICallTree.AICallTree.from(evaluateEvent, parsedTrace)?.serialize();
+    assert.strictEqual(treeStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
 Node: 3 – Evaluate script
@@ -117,8 +219,8 @@ Node: 6 – H.la`.trim());
     if (!compileEvent) {
       throw new Error('Could not find expected event.');
     }
-    const compileStr = Utils.AICallTree.AICallTree.from(compileEvent, parsedTrace).serialize();
-    assert.strictEqual(compileStr.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
+    const compileStr = Utils.AICallTree.AICallTree.from(compileEvent, parsedTrace)?.serialize();
+    assert.strictEqual(compileStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
 Node: 3 – Evaluate script

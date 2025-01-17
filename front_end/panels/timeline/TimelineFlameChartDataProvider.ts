@@ -207,30 +207,49 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.findPossibleContextMenuActions(entryIndex);
   }
 
-  customizedContextMenu(event: MouseEvent, entryIndex: number, groupIndex: number): UI.ContextMenu.ContextMenu
+  customizedContextMenu(mouseEvent: MouseEvent, entryIndex: number, groupIndex: number): UI.ContextMenu.ContextMenu
       |undefined {
-    const possibleActions = this.getPossibleActions(entryIndex, groupIndex);
-    if (!possibleActions) {
+    const entry = this.eventByIndex(entryIndex);
+    if (!entry) {
       return;
     }
 
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const possibleActions = this.getPossibleActions(entryIndex, groupIndex);
 
     // This action and its 'execute' is defined in `freestyler-meta`
-    const actionIdDrJ = 'drjones.performance-panel-context';
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(actionIdDrJ)) {
-      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionIdDrJ);
-      contextMenu.headerSection().appendItem(action.title(), () => {
-        const event = this.eventByIndex(entryIndex);
-        if (!event || !this.parsedTrace) {
-          return;
-        }
-        const aiCallTree = Utils.AICallTree.AICallTree.from(event, this.parsedTrace);
+    const PERF_AI_ACTION_ID = 'drjones.performance-panel-context';
+    const perfAIEntryPointEnabled =
+        Boolean(entry && this.parsedTrace && UI.ActionRegistry.ActionRegistry.instance().hasAction(PERF_AI_ACTION_ID));
 
-        // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
-        UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
-        return action.execute();
-      }, {jslogContext: actionIdDrJ});
+    if (!possibleActions && !perfAIEntryPointEnabled) {
+      // Early exit: no possible actions (e.g. collapsing children) and no AI
+      // entrypoint, so we don't need to do anything.
+      return;
+    }
+
+    const contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent);
+    if (perfAIEntryPointEnabled && this.parsedTrace) {
+      const aiCallTree = Utils.AICallTree.AICallTree.from(entry, this.parsedTrace);
+      if (aiCallTree) {
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
+        contextMenu.headerSection().appendItem(action.title(), () => {
+          const event = this.eventByIndex(entryIndex);
+          if (!event || !this.parsedTrace) {
+            return;
+          }
+          // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
+          UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+          return action.execute();
+        }, {jslogContext: PERF_AI_ACTION_ID});
+      }
+    }
+
+    if (!possibleActions) {
+      // All the code below here adds possible actions to the context menu,
+      // some of which may be marked as disabled. If we didn't get any possible
+      // actions, rather than add them all and mark all of them as disabled, we
+      // early exit + don't add any of them.
+      return contextMenu;
     }
 
     const hideEntryOption = contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
@@ -277,10 +296,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       jslogContext: 'reset-trace',
     });
 
-    const entry = this.eventByIndex(entryIndex);
-    if (!entry || !this.parsedTrace || Trace.Types.Events.isLegacyTimelineFrame(entry)) {
+    if (!this.parsedTrace || Trace.Types.Events.isLegacyTimelineFrame(entry)) {
       return contextMenu;
     }
+
     const url = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
     if (!url) {
       return contextMenu;

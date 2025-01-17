@@ -28,15 +28,57 @@ export class AICallTree {
   ) {
   }
 
-  static from(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree {
+  /**
+   * Attempts to build an AICallTree from a given selected event. It also
+   * validates that this event is one that we support being used with the AI
+   * Assistance panel, which [as of January 2025] means:
+   * 1. It is on the main thread.
+   * 2. It exists in either the Renderer or Sample handler's entryToNode map.
+   * This filters out other events we make such as SyntheticLayoutShifts which are not valid
+   * If the event is not valid, or there is an unexpected error building the tree, `null` is returned.
+   */
+  static from(selectedEvent: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree|null {
+    // First: check that the selected event is on the thread we have identified as the main thread.
+    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
+    const thread = threads.find(t => t.pid === selectedEvent.pid && t.tid === selectedEvent.tid);
+    if (!thread) {
+      return null;
+    }
+    // We allow two thread types to deal with the NodeJS use case.
+    // MAIN_THREAD is used when a trace has been generated through Chrome
+    //   tracing on a website (and we have a renderer)
+    // CPU_PROFILE is used only when we have recieved a CPUProfile - in this
+    //   case all the threads are CPU_PROFILE so we allow those. If we only allow
+    //   MAIN_THREAD then we wouldn't ever allow NodeJS users to use the AI
+    //   integration.
+    if (thread.type !== Trace.Handlers.Threads.ThreadType.MAIN_THREAD &&
+        thread.type !== Trace.Handlers.Threads.ThreadType.CPU_PROFILE) {
+      return null;
+    }
+
+    // Ensure that the event is known to either the Renderer or Samples
+    // handler. This helps exclude synthetic events we build up for other
+    // information such as Layout Shift clusters.
+    // We check Renderer + Samples to ensure we support CPU Profiles (which do
+    // not populate the Renderer Handler)
+    if (!parsedTrace.Renderer.entryToNode.has(selectedEvent) && !parsedTrace.Samples.entryToNode.has(selectedEvent)) {
+      return null;
+    }
+
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
 
     const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         Trace.Helpers.Timing.millisecondsToMicroseconds(startTime),
         Trace.Helpers.Timing.millisecondsToMicroseconds(endTime));
-    const threadEvents = parsedTrace.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
+    let threadEvents = parsedTrace.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
     if (!threadEvents) {
-      throw new Error('Cannot locate thread');
+      // None from the renderer: try the samples handler, this might be a CPU trace.
+      threadEvents = parsedTrace.Samples.profilesInProcess.get(selectedEvent.pid)?.get(selectedEvent.tid)?.profileCalls;
+    }
+
+    if (!threadEvents) {
+      console.error(`AICallTree: could not find thread for selected entry: ${selectedEvent}`);
+      return null;
     }
     const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, selectedEventBounds));
 
@@ -57,7 +99,8 @@ export class AICallTree {
     });
 
     if (selectedNode === null) {
-      throw new Error('Node not within its own tree. Unexpected.');
+      console.error(`Selected event ${selectedEvent} not found within its own tree.`);
+      return null;
     }
     const instance = new AICallTree(selectedNode, rootNode, parsedTrace);
     // instance.logDebug();

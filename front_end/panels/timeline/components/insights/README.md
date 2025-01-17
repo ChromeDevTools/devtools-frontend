@@ -1,24 +1,22 @@
 # Building performance insights UI
 
+**Last updated: Jan 2025**
+
 If you want to add an insight to the Performance panel sidebar, you need to create and render an HTML component that follows certain conventions which will mean it integrates nicely into the rest of the performance panel, and all its overlays/active state/etc is managed for you.
 
-## 1. Extend `BaseInsight`
+## 1. Extend `BaseInsightComponent`
 
-When creating your component, extend the `BaseInsight` class (defined in `insights/Helpers.ts`). This class will set up some of the setters and data you need. Your component will then have access to a `this.data` object which will have on it:
+When creating your component, extend the `BaseInsightComponent` class (defined in `components/insights/BaseInsightComponent.ts`). This class will set up some of the setters and data you need. Your component will then have access to a `this.data` object which will have on it:
 
-1. `insights`: the `TraceInsightSets` generated for the current trace.
+1. `bounds`: the current time window.
 2. `insightSetKey`: the currently active navigation ID, or NO_NAVIGATION.
-3. `activeInsight`: an object representing the current active (meaning the user has clicked to expand it) insight.
-4. `activeCategory`: an `Insights.Types.Category` enum member representing if the user has chosen a category from the dropdown.
 
 In your component you can access all this data via `this.data.X`, where `X` is one of the keys listed above.
 
 You will have to define 4 properties on your component:
 
 1. `static readonly litTagName` is the HTML tag name given to your element (define this just as you do for all custom elements).
-2. `override insightCategory: Insights.Types.Category` is the category that your insight applies to. This is so it can be filtered when the user uses the sidebar dropdown to change category.
-3. `override internalName: string` is a name used to identify the insight. It **must be unique across all insights** and is used to track if it is active or not.
-4. `override userVisibleTitle: string` is the user facing name used in the sidebar when the insight is rendered.
+2. `override internalName: string` is a name used to identify the insight. It **must be unique across all insights** and is used to track if it is active or not.
 
 > Go to KnownContextValues.ts and add your insight: `timeline.toggle-insight.your-insight-name` and `timeline.insights.your-insight-name`.
 

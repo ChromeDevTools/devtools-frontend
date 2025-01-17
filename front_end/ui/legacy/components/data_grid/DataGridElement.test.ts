@@ -113,4 +113,48 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'ArrowDown');
     assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 3: Value 3, Column 4: Value 4');
   });
+
+  it('can filter data', async () => {
+    await renderDataGrid(html`
+        <devtools-new-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+            <tr>
+              <td>Value 3</td>
+              <td>Value 4</td>
+            </tr>
+          </table>
+        </devtools-new-data-grid>`);
+    // clang-format off
+    const element = await renderDataGrid(html`
+        <devtools-new-data-grid
+            striped name=${'Display Name'}
+            .filters=${[{key: 'column-1', text: '3',  negative: false}]}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+            <tr>
+              <td>Value 3</td>
+              <td>Value 4</td>
+            </tr>
+          </table>
+        </devtools-new-data-grid>`);
+    // clang-format on
+    assert.isTrue(getAccessibleText(element).startsWith('Display Name Rows: 1'));
+    sendKeydown(element, 'ArrowDown');
+    assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
+  });
 });

@@ -99,7 +99,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     toolbar.appendToolbarItem(loadThroughTargetCheckbox);
 
     this.coverageResultsElement = this.contentElement.createChild('div', 'developer-resource-view-results');
-    this.listView = new DeveloperResourcesListView(this.isVisible.bind(this));
+    this.listView = new DeveloperResourcesListView();
     this.listView.show(this.coverageResultsElement);
     this.statusToolbarElement = this.contentElement.createChild('div', 'developer-resource-view-toolbar-summary');
     this.statusMessageElement = this.statusToolbarElement.createChild('div', 'developer-resource-view-message');
@@ -139,11 +139,6 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  private isVisible(item: SDK.PageResourceLoader.PageResource): boolean {
-    return !this.textFilterRegExp || this.textFilterRegExp.test(item.url) ||
-        this.textFilterRegExp.test(item.errorMessage || '');
-  }
-
   private onFilterChanged(): void {
     if (!this.listView) {
       return;
@@ -151,7 +146,13 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
     const text = this.filterInput.value();
     this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
-    this.listView.updateFilterAndHighlight(this.textFilterRegExp);
+    if (this.textFilterRegExp) {
+      this.listView.updateFilterAndHighlight([
+        {key: 'url,error-message', regex: this.textFilterRegExp, negative: false},
+      ]);
+    } else {
+      this.listView.updateFilterAndHighlight([]);
+    }
     this.updateStats();
 
     const numberOfResourceMatch = this.listView.getNumberOfVisibleItems();

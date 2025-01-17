@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../../core/platform/platform.js';
+import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
 import dataGridStyles from './dataGrid.css.js';
 import {Align, Events as DataGridEvents} from './DataGrid.js';
@@ -36,6 +37,7 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * @attr striped
  * @attr displayName
  * @prop columnsOrder
+ * @prop filters
  */
 class DataGridElement extends HTMLElement {
   static readonly observedAttributes = ['striped', 'name'];
@@ -98,6 +100,11 @@ class DataGridElement extends HTMLElement {
 
   get displayName(): string|null {
     return this.getAttribute('name');
+  }
+
+  set filters(filters: TextUtils.TextUtils.ParsedFilter[]) {
+    this.#dataGrid.setFilters(filters);
+    this.#dataGrid.element.setAttribute('aria-rowcount', String(this.#dataGrid.getNumberOfRows()));
   }
 
   get columnsOrder(): string[] {

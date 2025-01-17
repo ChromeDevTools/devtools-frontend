@@ -74,7 +74,8 @@ const {withThousandsSeparator} = Platform.NumberUtilities;
 
 export interface ViewInput {
   items: SDK.PageResourceLoader.PageResource[];
-  highlight: (element: Element, textContent: string) => void;
+  highlight: (element: Element, textContent: string, columnId: string) => void;
+  filters: TextUtils.TextUtils.ParsedFilter[];
   onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
   onInitiatorMouseEnter: (frameId: Protocol.Page.FrameId|null) => void;
   onInitiatorMouseLeave: () => void;
@@ -87,17 +88,16 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export class DeveloperResourcesListView extends UI.Widget.VBox {
   #items: SDK.PageResourceLoader.PageResource[] = [];
   #selectedItem: SDK.PageResourceLoader.PageResource|null = null;
-  #highlightRegExp: RegExp|null;
   readonly #view: View;
-  readonly #isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean;
-  constructor(
-      isVisibleFilter: (arg0: SDK.PageResourceLoader.PageResource) => boolean, view: View = (input, output, target) => {
-        // clang-format off
-        render(html `
+  #filters: TextUtils.TextUtils.ParsedFilter[] = [];
+  constructor(view: View = (input, output, target) => {
+    // clang-format off
+        render(html`
             <devtools-new-data-grid
               name=${i18nString(UIStrings.developerResources)}
               striped
-              @contextmenu=${input.onContextMenu}
+              .filters=${input.filters}
+               @contextmenu=${input.onContextMenu}
               class="flex-auto"
             >
               <table>
@@ -118,7 +118,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                     ${i18nString(UIStrings.error)}
                   </th>
                 </tr>
-                ${input.items.filter(this.#isVisibleFilter.bind(this)).map(item => html`
+                ${input.items.map(item => html`
                   <tr selected=${(item === this.#selectedItem) || nothing}
                       data-url=${item.url ?? nothing}
                       data-initiator-url=${item.initiator.initiatorUrl ?? nothing}>
@@ -127,7 +127,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                                                    i18nString(UIStrings.pending)}</td>
                     <td title=${item.url} aria-label=${item.url}>${(() => {
                         const url = renderUrl(item.url);
-                        input.highlight(url, item.url);
+                        input.highlight(url, item.url, 'url');
                         return url;
                       })()}</td>
                     <td title=${item.initiator.initiatorUrl || ''}
@@ -142,7 +142,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                         const cell = document.createElement('span');
                         if (item.errorMessage) {
                           cell.textContent = item.errorMessage;
-                          input.highlight(cell, item.errorMessage);
+                          input.highlight(cell, item.errorMessage, 'error-message');
                         }
                         return cell;
                       })()}</td>
@@ -150,25 +150,23 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
               </table>
             </devtools-new-data-grid>`,
             target, {host: input});  // eslint-disable-line rulesdir/lit-html-host-this
-        // clang-format on
-        function renderUrl(url: string): HTMLElement {
-          const outer = document.createElement('div');
-          UI.ARIAUtils.setHidden(outer, true);
-          outer.setAttribute('part', 'url-outer');
-          const domain = outer.createChild('div');
-          domain.setAttribute('part', 'url-prefix');
-          const path = outer.createChild('div');
-          path.setAttribute('part', 'url-suffix');
-          const splitURL = /^(.*)(\/[^/]*)$/.exec(url);
-          domain.textContent = splitURL ? splitURL[1] : url;
-          path.textContent = splitURL ? splitURL[2] : '';
-          return outer;
-        }
-      }) {
+    // clang-format on
+    function renderUrl(url: string): HTMLElement {
+      const outer = document.createElement('div');
+      UI.ARIAUtils.setHidden(outer, true);
+      outer.setAttribute('part', 'url-outer');
+      const domain = outer.createChild('div');
+      domain.setAttribute('part', 'url-prefix');
+      const path = outer.createChild('div');
+      path.setAttribute('part', 'url-suffix');
+      const splitURL = /^(.*)(\/[^/]*)$/.exec(url);
+      domain.textContent = splitURL ? splitURL[1] : url;
+      path.textContent = splitURL ? splitURL[2] : '';
+      return outer;
+    }
+  }) {
     super(true);
-    this.#isVisibleFilter = isVisibleFilter;
     this.#view = view;
-    this.#highlightRegExp = null;
   }
 
   select(item: SDK.PageResourceLoader.PageResource): void {
@@ -206,23 +204,25 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  updateFilterAndHighlight(highlightRegExp: RegExp|null): void {
-    this.#highlightRegExp = highlightRegExp;
+  updateFilterAndHighlight(filters: TextUtils.TextUtils.ParsedFilter[]): void {
+    this.#filters = filters;
     this.requestUpdate();
   }
 
   getNumberOfVisibleItems(): number {
-    return this.#items.filter(this.#isVisibleFilter.bind(this)).length;
+    return parseInt(
+               this.contentElement.querySelector('devtools-new-data-grid')?.getAttribute('aria-rowcount') || '', 10) ??
+        0;
   }
 
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([developerResourcesListViewStyles]);
   }
-
   override performUpdate(): void {
     const input = {
       items: this.#items,
+      filters: this.#filters,
       highlight: this.#highlight.bind(this),
       onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {
         if (e.detail?.element) {
@@ -243,11 +243,12 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     this.#view(input, output, this.contentElement);
   }
 
-  #highlight(element: Element, textContent: string): void {
-    if (!this.#highlightRegExp) {
+  #highlight(element: Element, textContent: string, columnId: string): void {
+    const filter = this.#filters.find(filter => filter.key?.split(',')?.includes(columnId));
+    if (!filter?.regex || element.querySelector('.filter-highlight')) {
       return;
     }
-    const matches = this.#highlightRegExp.exec(textContent);
+    const matches = filter.regex.exec(textContent);
     if (!matches || !matches.length) {
       return;
     }

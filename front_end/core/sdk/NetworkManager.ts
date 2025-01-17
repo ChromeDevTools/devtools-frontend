@@ -147,6 +147,11 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
+    if (Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get() ||
+        Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get() ||
+        Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get()) {
+      this.cookieControlFlagsSettingChanged();
+    }
 
     void this.#networkAgent.invoke_enable({maxPostDataSize: MAX_EAGER_POST_REQUEST_BODY_LENGTH});
     void this.#networkAgent.invoke_setAttachDebugStack({enabled: true});

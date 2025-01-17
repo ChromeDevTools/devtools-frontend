@@ -36,6 +36,9 @@ function checkNodeForUnderscoredProperties(context, node, typeOfNode) {
     message: 'Class {{typeOfNode}} {{propName}} should not begin with an underscore.'
   });
 }
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

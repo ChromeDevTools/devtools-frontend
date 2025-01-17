@@ -16,6 +16,9 @@
 
 const SRC_DIRECTORY_PATH_TO_MATCH = 'Images/src/';
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

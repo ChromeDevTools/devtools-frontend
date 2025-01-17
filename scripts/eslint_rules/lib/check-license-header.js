@@ -124,6 +124,9 @@ function isMissingBlockLineCommentLicense(licenseText) {
   return !BLOCK_REGEX.test(licenseText);
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

@@ -7,6 +7,9 @@
  */
 const VALID_EVENT_NAME_REGEX = /^([a-z]+)$/;
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

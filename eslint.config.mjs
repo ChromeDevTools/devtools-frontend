@@ -1,3 +1,7 @@
+// Copyright 2025 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import mochaPlugin from 'eslint-plugin-mocha';
 import rulesdirPlugin from 'eslint-plugin-rulesdir';
@@ -248,10 +252,7 @@ export default [
       'rulesdir/no-commented-out-console': 'error',
       // Prevent imports being commented out rather than deleted.
       'rulesdir/no-commented-out-import': 'error',
-      // DevTools specific rules
-      'rulesdir/es-modules-import': 'error',
       'rulesdir/check-license-header': 'error',
-      'rulesdir/html-tagged-template': 'error',
       /**
        * Ensures that JS Doc comments are properly aligned - all the starting
        * `*` are in the right place.
@@ -480,6 +481,7 @@ export default [
     files: ['scripts/**/*'],
     rules: {
       'no-console': 'off',
+      'rulesdir/es-modules-import': 'off',
     },
   },
   {
@@ -531,6 +533,8 @@ export default [
       'rulesdir/lit-template-result-or-nothing': 'error',
       'rulesdir/inject-checkbox-styles': 'error',
       'rulesdir/jslog-context-list': 'error',
+      'rulesdir/es-modules-import': 'error',
+      'rulesdir/html-tagged-template': 'error',
     },
   },
   {

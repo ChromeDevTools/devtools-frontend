@@ -5,6 +5,9 @@
 
 const {isLitHtmlTemplateCall} = require('./utils.js');
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

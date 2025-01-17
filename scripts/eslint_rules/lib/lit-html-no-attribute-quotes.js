@@ -33,6 +33,9 @@ function removeQuotesFromAttribute({fixer, firstPart, secondPart}) {
   return [fixer.removeRange(startingQuoteRangeToRemove), fixer.removeRange(endingQuoteRangeToRemove)];
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

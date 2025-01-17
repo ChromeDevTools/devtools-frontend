@@ -101,7 +101,7 @@ function getRootVariableDeclarationsFromCSSFile(filePath) {
   const definedVariableNames = new Set();
   const parsed = parse(fileContents);
   // Only parse the colors in the :root declaration.
-  parsed.walkRules(':root', (rule) => {
+  parsed.walkRules(':root', rule => {
     for (const node of rule.nodes || []) {
       if (node.prop && node.prop.startsWith('--')) {
         definedVariableNames.add(node.prop);
@@ -127,7 +127,7 @@ const ALL_DEFINED_VARIABLES = new Set([
 ]);
 
 const BOX_SHADOW_VARIABLES = new Set(
-  [1, 2, 3, 4, 5].map((x) => `var(--sys-elevation-level${x})`),
+  [1, 2, 3, 4, 5].map(x => `var(--sys-elevation-level${x})`),
 );
 
 const ruleFunction = (primary, secondary, context) => {
@@ -255,7 +255,7 @@ const ruleFunction = (primary, secondary, context) => {
       return;
     }
 
-    postcssRoot.walkRules((rule) => {
+    postcssRoot.walkRules(rule => {
       // If you are providing a selector specifically for dark mode, you can use
       // any colors you want, as it means you are purposefully deviating. This
       // is not encouraged but we do need to allow it.
@@ -268,7 +268,7 @@ const ruleFunction = (primary, secondary, context) => {
         return;
       }
 
-      rule.walkDecls((declaration) => {
+      rule.walkDecls(declaration => {
         if (!CSS_PROPS_TO_CHECK_FOR_COLOR_USAGE.has(declaration.prop)) {
           return;
         }
@@ -348,4 +348,5 @@ const ruleFunction = (primary, secondary, context) => {
 ruleFunction.ruleName = RULE_NAME;
 ruleFunction.messages = ruleMessages(RULE_NAME, {});
 
+// eslint-disable-next-line import/no-default-export
 export default createPlugin(RULE_NAME, ruleFunction);

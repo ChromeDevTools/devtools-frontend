@@ -17,6 +17,9 @@ function isI18nStringCall(callExpression) {
   return callExpression.callee.type === 'Identifier' && callExpression.callee.name === 'i18nString';
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

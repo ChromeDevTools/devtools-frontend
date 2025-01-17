@@ -24,6 +24,9 @@ function isRegisterUIStringsCall(callExpression) {
   return true;
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

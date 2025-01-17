@@ -15,6 +15,9 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

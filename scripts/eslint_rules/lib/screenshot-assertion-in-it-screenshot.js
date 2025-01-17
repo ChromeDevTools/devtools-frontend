@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 'use strict';
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

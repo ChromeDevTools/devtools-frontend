@@ -118,6 +118,9 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
   }
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

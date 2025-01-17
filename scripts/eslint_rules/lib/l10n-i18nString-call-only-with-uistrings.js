@@ -19,6 +19,9 @@ function isArgumentValid(argument) {
   return argument.object.type === 'Identifier' && argument.object.name === 'UIStrings';
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

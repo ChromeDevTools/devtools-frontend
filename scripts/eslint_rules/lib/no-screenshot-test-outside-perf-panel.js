@@ -4,9 +4,13 @@
 'use strict';
 
 const path = require('path');
-const PERFOMANCE_PANEL_INTERACTION_TESTS_PATH =
+const PERFORMANCE_PANEL_INTERACTION_TESTS_PATH =
     path.join(__dirname, '..', '..', '..', 'test', 'interactions', 'panels', 'performance');
 const UI_COMPONENTS_PATH = path.join(__dirname, '..', '..', '..', 'test', 'interactions', 'ui', 'components');
+
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta : {
     type : 'problem',
@@ -25,7 +29,7 @@ module.exports = {
     const filename = context.filename ?? context.getFilename();
     const fileName = path.resolve(filename);
     function reportPathIfInvalid(node) {
-      if (!fileName.includes(PERFOMANCE_PANEL_INTERACTION_TESTS_PATH) && !fileName.includes(UI_COMPONENTS_PATH)) {
+      if (!fileName.includes(PERFORMANCE_PANEL_INTERACTION_TESTS_PATH) && !fileName.includes(UI_COMPONENTS_PATH)) {
         context.report({
           node,
           messageId: 'invalidScreenshotTest'

@@ -51,7 +51,7 @@ if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory() || !fs.existsSync(pat
       `Target path ${cwd} does not exist or is not a directory. Please run 'gn gen out/${target}' first.`);
   process.exit(1);
 }
-const scriptPath = path.resolve(cwd, script)
+const scriptPath = path.resolve(cwd, script);
 if (!fs.existsSync(scriptPath)) {
   console.error(`Script path ${scriptPath} does not exist, trying ninja...`);
   const {error, status} = childProcess.spawnSync('autoninja', ['-C', cwd, script], {stdio: 'inherit', cwd: sourceRoot});

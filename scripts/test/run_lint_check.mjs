@@ -25,7 +25,7 @@ const flags = yargs(hideBin(process.argv))
     default: true,
     describe: 'Automatically fix, where possible, problems reported by rules.',
   })
-  .usage('$0 [<files...>]', 'Run the linter on the provided files', (yargs) => {
+  .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
       type: 'array',
@@ -49,20 +49,19 @@ async function runESLint(files) {
   // when you include a particular file that is ignored. This means that if you edit a file
   // that is directly ignored in the `.eslintignore`, ESLint would report a failure.
   // This was originally reported in https://github.com/eslint/eslint/issues/9977
-  // The suggested workaround is to use the CLIEngine to pre-emptively filter out these
+  // The suggested workaround is to use the CLIEngine to preemptively filter out these
   // problematic paths.
-
   files = await Promise.all(
-    files.map(async (file) => {
+    files.map(async file => {
       return (await cli.isPathIgnored(file)) ? null : file;
     }),
   );
-  files = files.filter((file) => file !== null);
+  files = files.filter(file => file !== null);
 
   const results = await cli.lintFiles(files);
 
   const usedDeprecatedRules = results.flatMap(
-    (result) => result.usedDeprecatedRules,
+    result => result.usedDeprecatedRules,
   );
   if (usedDeprecatedRules.length) {
     console.log('Used deprecated rules:');
@@ -83,7 +82,7 @@ async function runESLint(files) {
     console.log(output);
   }
 
-  return !results.find((report) => report.errorCount + report.warningCount > 0);
+  return !results.find(report => report.errorCount + report.warningCount > 0);
 }
 
 async function runStylelint(files) {
@@ -117,7 +116,7 @@ async function runLitAnalyzer(files) {
     );
     const { plugins } = compilerOptions;
     const tsLitPluginOptions = plugins.find(
-      (plugin) => plugin.name === 'ts-lit-plugin',
+      plugin => plugin.name === 'ts-lit-plugin',
     );
     if (tsLitPluginOptions === null) {
       throw new Error(
@@ -128,7 +127,7 @@ async function runLitAnalyzer(files) {
   };
 
   const { rules } = readLitAnalyzerConfigFromCompilerOptions();
-  const getLitAnalyzerResult = async (subsetFiles) => {
+  const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
       ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]),
@@ -141,32 +140,32 @@ async function runLitAnalyzer(files) {
       status: false,
     };
 
-    return await new Promise((resolve) => {
+    return await new Promise(resolve => {
       const litAnalyzerProcess = spawn(nodePath(), args, {
         encoding: 'utf-8',
         cwd: devtoolsRootPath(),
       });
 
-      litAnalyzerProcess.stdout.on('data', (data) => {
+      litAnalyzerProcess.stdout.on('data', data => {
         result.output += `\n${data.toString()}`;
       });
-      litAnalyzerProcess.stderr.on('data', (data) => {
+      litAnalyzerProcess.stderr.on('data', data => {
         result.error += `\n${data.toString()}`;
       });
 
-      litAnalyzerProcess.on('error', (message) => {
+      litAnalyzerProcess.on('error', message => {
         result.error += `\n${message}`;
         resolve(result);
       });
 
-      litAnalyzerProcess.on('exit', (code) => {
+      litAnalyzerProcess.on('exit', code => {
         result.status = code === 0;
         resolve(result);
       });
     });
   };
 
-  const getSplitFiles = (filesToSplit) => {
+  const getSplitFiles = filesToSplit => {
     if (process.platform !== 'win32') {
       return [filesToSplit];
     }
@@ -186,7 +185,7 @@ async function runLitAnalyzer(files) {
   };
 
   const results = await Promise.all(
-    getSplitFiles(files).map((filesBatch) => {
+    getSplitFiles(files).map(filesBatch => {
       return getLitAnalyzerResult(filesBatch);
     }),
   );
@@ -199,14 +198,14 @@ async function runLitAnalyzer(files) {
     }
   }
 
-  return results.every((r) => r.status);
+  return results.every(r => r.status);
 }
 
 async function run() {
   const scripts = [];
   const styles = [];
   for (const path of sync(flags.files, {
-    expandDirectories: { extensions: ['css', 'js', 'ts'] },
+    expandDirectories: { extensions: ['css', 'mjs', 'js', 'ts'] },
   })) {
     if (extname(path) === '.css') {
       styles.push(path);
@@ -215,10 +214,14 @@ async function run() {
     }
   }
 
+  const frontEndFiles = scripts.filter(script => script.includes('front_end'));
+
   let succeed = true;
   if (scripts.length !== 0) {
     succeed &&= await runESLint(scripts);
-    succeed &&= await runLitAnalyzer(scripts);
+  }
+  if (frontEndFiles.length !== 0) {
+    succeed &&= await runLitAnalyzer(frontEndFiles);
   }
   if (styles.length !== 0) {
     succeed &&= await runStylelint(styles);
@@ -227,10 +230,10 @@ async function run() {
 }
 
 run()
-  .then((succeed) => {
+  .then(succeed => {
     process.exit(succeed ? 0 : 1);
   })
-  .catch((err) => {
+  .catch(err => {
     console.log(`[lint]: ${err.message}`, err.stack);
     process.exit(1);
   });

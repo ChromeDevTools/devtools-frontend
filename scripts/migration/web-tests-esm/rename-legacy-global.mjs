@@ -56,8 +56,8 @@ async function findWebTests(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const pathPromises = entries.map(async entry => {
     const p = path.resolve(dir, entry.name);
-    if (entry.isDirectory() && entry.name !== 'resources') return findWebTests(p);
-    else if (entry.isFile() && entry.name.endsWith('.js')) {
+    if (entry.isDirectory() && entry.name !== 'resources') {return findWebTests(p);}
+    if (entry.isFile() && entry.name.endsWith('.js')) {
       return [p];
     }
     return [];
@@ -71,7 +71,7 @@ async function findWebTests(dir) {
  * it to an existing one.
  */
 function addImportIfNecessary(content, importLine) {
-  if (content.includes(importLine)) return content;
+  if (content.includes(importLine)) {return content;}
 
   // Find where to insert `importLine`. We'll add it either to
   // an existing import * as block or start a new one below the import {TestRunner} block.
@@ -105,7 +105,7 @@ for (const filePath of webTestPaths) {
     continue;
   } else if (yargsObject.from !== yargsObject.to) {
     replacedContent = content.replaceAll(fromRegex, yargsObject.to);
-    if (replacedContent === content) continue;
+    if (replacedContent === content) {continue;}
   }
 
   replacedContent = addImportIfNecessary(replacedContent, yargsObject.import);

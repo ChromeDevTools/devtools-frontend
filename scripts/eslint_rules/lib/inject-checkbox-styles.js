@@ -12,6 +12,9 @@ const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 // input.js as that's what the import statement would reference.
 const COMMON_INPUT_STYLES = path.join(FRONT_END_DIRECTORY, 'ui', 'components', 'input', 'input.js');
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

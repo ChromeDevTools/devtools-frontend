@@ -10,6 +10,9 @@ function isStarAsImportSpecifier(specifiers) {
   return specifiers.length === 1 && specifiers[0].type === 'ImportNamespaceSpecifier';
 }
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

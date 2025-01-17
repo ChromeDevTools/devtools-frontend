@@ -25,6 +25,9 @@ const GLOBAL_THIS_NAMES = new Set(['globalThis', 'self', 'window']);
 // Rule Definition
 // ------------------------------------------------------------------------------
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'suggestion',

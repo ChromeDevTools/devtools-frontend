@@ -9,6 +9,9 @@ const l10nHelper = require('./l10n-helper.js');
 const FULLY_LOCKED_PHRASE_REGEX = /^`[^`]*`$/;
 const SINGLE_PLACEHOLDER_REGEX = /^\{\w+\}$/;  // Matches the PH regex in `collect-strings.js`.
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

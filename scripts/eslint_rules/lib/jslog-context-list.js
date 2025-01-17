@@ -16,6 +16,9 @@ const LICENSE_HEADER = `// Copyright 2024 The Chromium Authors. All rights reser
 
 `;
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',

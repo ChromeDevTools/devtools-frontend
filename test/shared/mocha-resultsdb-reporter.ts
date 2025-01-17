@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import * as Mocha from 'mocha';
 import * as path from 'path';
 
-// eslint-disable-next-line  rulesdir/es-modules-import
 import * as ResultsDb from '../conductor/resultsdb.js';
 import {
   ScreenshotError,

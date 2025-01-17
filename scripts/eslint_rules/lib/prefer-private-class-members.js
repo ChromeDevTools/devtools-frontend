@@ -12,6 +12,9 @@
 // Rule Definition
 // ------------------------------------------------------------------------------
 
+/**
+ * @type {import('eslint').Rule.RuleModule}
+ */
 module.exports = {
   meta: {
     type: 'problem',
@@ -25,14 +28,21 @@ module.exports = {
     messages: {do_not_use_private: 'Use private properties (starting with `#`) rather than the `private` modifier.'},
   },
   create: function(context) {
-    return {
-      ['MethodDefinition, PropertyDefinition'](node) {
+    function isTypeScriptPrivate(node){
         if (node.accessibility === 'private' && node.kind !== 'constructor') {
           context.report({
             node: node.key,
             messageId: 'do_not_use_private',
           });
         }
+    }
+
+    return {
+      MethodDefinition(node){
+        isTypeScriptPrivate(node);
+      },
+      PropertyDefinition(node){
+        isTypeScriptPrivate(node);
       }
     };
   }

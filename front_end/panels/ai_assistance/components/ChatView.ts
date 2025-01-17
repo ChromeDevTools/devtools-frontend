@@ -153,10 +153,6 @@ const UIStringsNotTranslate = {
    */
   crossOriginError: 'To talk about data from another origin, start a new chat',
   /**
-   * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
-   */
-  newConversationError: 'To talk about this data, start a new chat',
-  /**
    *@description Title for the send icon button.
    */
   sendButtonTitle: 'Send',
@@ -320,7 +316,6 @@ export interface Props {
   agentType?: AgentType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
-  requiresNewConversation?: boolean;
   stripLinks: boolean;
 }
 
@@ -479,7 +474,7 @@ export class ChatView extends HTMLElement {
   }
 
   #isTextInputDisabled = (): boolean => {
-    if (this.#props.blockedByCrossOrigin || this.#props.requiresNewConversation) {
+    if (this.#props.blockedByCrossOrigin) {
       return true;
     }
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
@@ -1043,9 +1038,6 @@ export class ChatView extends HTMLElement {
     if (state === State.CONSENT_VIEW || !agentType) {
       return i18nString(UIStrings.followTheSteps);
     }
-    if (this.#props.requiresNewConversation) {
-      return lockedString(UIStringsNotTranslate.newConversationError);
-    }
     if (this.#props.blockedByCrossOrigin) {
       return lockedString(UIStringsNotTranslate.crossOriginError);
     }
@@ -1114,7 +1106,7 @@ export class ChatView extends HTMLElement {
       ></devtools-button>`;
       // clang-format on
     }
-    if (this.#props.blockedByCrossOrigin || this.#props.requiresNewConversation) {
+    if (this.#props.blockedByCrossOrigin) {
       // clang-format off
       return html`
         ${this.#props.blockedByCrossOrigin && Boolean(this.#props.onCancelCrossOriginChat) ? html`<devtools-button
@@ -1169,7 +1161,6 @@ export class ChatView extends HTMLElement {
 
     const cls = LitHtml.Directives.classMap({
       'chat-input': true,
-      'one-big-button': Boolean(this.#props.requiresNewConversation),
       'two-big-buttons': this.#props.blockedByCrossOrigin,
     });
 

@@ -143,11 +143,6 @@
     }
   }
 
-  &.one-big-button {
-    /* start new chat button */
-    --right-padding: 100px;
-  }
-
   &.two-big-buttons {
     /* cancel + start new chat button */
     --right-padding: 172px;

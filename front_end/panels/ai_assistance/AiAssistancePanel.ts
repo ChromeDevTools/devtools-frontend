@@ -816,7 +816,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#viewProps.selectedContext = currentContext;
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
-      this.#viewProps.requiresNewConversation = false;
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
@@ -826,8 +825,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#viewProps.blockedByCrossOrigin && this.#previousSameOriginContext) {
       this.#viewProps.onCancelCrossOriginChat = this.#handleCrossOriginChatCancellation.bind(this);
     }
-    this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.PERFORMANCE &&
-        Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;
     this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.PERFORMANCE;
   }
 

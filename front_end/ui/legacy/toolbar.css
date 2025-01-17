@@ -17,10 +17,6 @@
   --toolbar-height: 26px;
 }
 
-:host(:not([floating], [wrappable])) {
-  height: var(--toolbar-height);
-}
-
 :host([floating]) {
   flex-direction: column;
   inset: 0;
@@ -37,4 +33,8 @@
 :host([wrappable]) {
   flex-wrap: wrap;
   overflow: visible;
+}
+
+slot {
+  height: var(--toolbar-height);
 }

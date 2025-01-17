@@ -2,13 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './legacy.js';
-
-import {
-  dispatchClickEvent,
-  doubleRaf,
-  renderElementIntoDOM,
-} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
@@ -49,6 +43,40 @@ describeWithLocale('Toolbar', () => {
       });
     });
 
+    describe('floating', () => {
+      it('defaults to off', () => {
+        const toolbar = document.createElement('devtools-toolbar');
+
+        assert.isFalse(toolbar.floating);
+      });
+
+      it('can be toggled on', () => {
+        const toolbar = document.createElement('devtools-toolbar');
+
+        toolbar.floating = true;
+
+        assert.isTrue(toolbar.floating);
+      });
+
+      it('reflects changes onto the `floating` attribute', () => {
+        const toolbar = document.createElement('devtools-toolbar');
+
+        toolbar.floating = true;
+
+        assert.isTrue(toolbar.hasAttribute('floating'));
+      });
+    });
+
+    describe('hidden', () => {
+      it('hides the toolbar when present', () => {
+        const toolbar = renderElementIntoDOM(document.createElement('devtools-toolbar'));
+
+        toolbar.hidden = true;
+
+        assert.strictEqual(window.getComputedStyle(toolbar).display, 'none');
+      });
+    });
+
     describe('wrappable', () => {
       it('defaults to off', () => {
         const toolbar = document.createElement('devtools-toolbar');
@@ -56,7 +84,7 @@ describeWithLocale('Toolbar', () => {
         assert.isFalse(toolbar.wrappable);
       });
 
-      it('change be toggled on', () => {
+      it('can be toggled on', () => {
         const toolbar = document.createElement('devtools-toolbar');
 
         toolbar.wrappable = true;

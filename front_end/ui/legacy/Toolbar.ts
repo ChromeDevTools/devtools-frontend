@@ -73,9 +73,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * Custom element for toolbars.
  *
+ * @attr floating - If present the toolbar is rendered in columns, with a border
+ *                  around it, and a non-transparent background. This is used to
+ *                  build vertical toolbars that open with long-click. Defaults
+ *                  to `false`.
  * @attr wrappable - If present the toolbar items will wrap to a new row and the
  *                   toolbar height increases.
- * @prop {string} wrappable - The `"wrappable"` attribute is reflected as property.
+ * @prop {boolean} floating - The `"floating"` attribute is reflected as property.
+ * @prop {boolean} wrappable - The `"wrappable"` attribute is reflected as property.
  */
 export class Toolbar extends HTMLElement {
   private items: ToolbarItem[] = [];
@@ -91,6 +96,25 @@ export class Toolbar extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar');
     }
+  }
+
+  /**
+   * Returns whether this toolbar is floating.
+   *
+   * @return `true` if the `"floating"` attribute is present on this toolbar,
+   *         otherwise `false`.
+   */
+  get floating(): boolean {
+    return this.hasAttribute('floating');
+  }
+
+  /**
+   * Changes the value of the `"floating"` attribute on this toolbar.
+   *
+   * @param floating `true` to make the toolbar floating.
+   */
+  set floating(floating: boolean) {
+    this.toggleAttribute('floating', floating);
   }
 
   /**
@@ -110,11 +134,7 @@ export class Toolbar extends HTMLElement {
    *                  have the toolbar height adjust.
    */
   set wrappable(wrappable: boolean) {
-    if (wrappable) {
-      this.setAttribute('wrappable', '');
-    } else {
-      this.removeAttribute('wrappable');
-    }
+    this.toggleAttribute('wrappable', wrappable);
   }
 
   hasCompactLayout(): boolean {
@@ -172,8 +192,8 @@ export class Toolbar extends HTMLElement {
       const optionsGlassPane = new GlassPane();
       optionsGlassPane.setPointerEventsBehavior(PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
       optionsGlassPane.show(document);
-      const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar', 'fill');
-      optionsBar.classList.add('floating');
+      const optionsBar = optionsGlassPane.contentElement.createChild('devtools-toolbar');
+      optionsBar.floating = true;
       const buttonHeight = 26;
 
       const hostButtonPosition = button.element.boxInWindow().relativeToElement(GlassPane.container(document));

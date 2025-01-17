@@ -1112,22 +1112,12 @@ devtools-toolbar {
     background-color: var(--sys-color-surface-variant);
   }
 
-  &.floating {
-    flex-direction: column;
-    height: auto;
-    background-color: var(--sys-color-cdt-base-container);
-    border: 1px solid var(--sys-color-divider);
-    margin-top: -1px;
-    width: 28px;
-    left: -2px;
-  }
-
-  &:not(.floating) > :last-child:not(:first-child, select) {
+  &:not([floating]) > :last-child:not(:first-child, select) {
     flex-shrink: 1;
     justify-content: left;
   }
 
-  &:not(.floating) > .toolbar-button:last-child:not(:first-child, select) {
+  &:not([floating]) > .toolbar-button:last-child:not(:first-child, select) {
     justify-content: left;
     margin-right: 2px;
   }

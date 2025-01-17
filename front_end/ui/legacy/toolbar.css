@@ -8,7 +8,6 @@
   padding: 0 2px;
   position: relative;
   white-space: nowrap;
-  height: var(--toolbar-height);
   overflow: hidden;
   display: flex;
   flex: none;
@@ -18,6 +17,19 @@
   --toolbar-height: 26px;
 }
 
+:host(:not([floating], [wrappable])) {
+  height: var(--toolbar-height);
+}
+
+:host([floating]) {
+  flex-direction: column;
+  inset: 0;
+  background-color: var(--sys-color-cdt-base-container);
+  border: 1px solid var(--sys-color-divider);
+  margin-top: -1px;
+  width: 28px;
+}
+
 :host([hidden]) {
   display: none;
 }
@@ -25,5 +37,4 @@
 :host([wrappable]) {
   flex-wrap: wrap;
   overflow: visible;
-  height: initial;
 }

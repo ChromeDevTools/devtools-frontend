@@ -2372,6 +2372,7 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/cookie_table/CookiesTable.js",
   "front_end/ui/legacy/components/cookie_table/cookiesTable.css.js",
   "front_end/ui/legacy/components/data_grid/DataGrid.js",
+  "front_end/ui/legacy/components/data_grid/DataGridElement.js",
   "front_end/ui/legacy/components/data_grid/DataGridWithPreview.js",
   "front_end/ui/legacy/components/data_grid/ShowMoreDataGridNode.js",
   "front_end/ui/legacy/components/data_grid/SortableDataGrid.js",

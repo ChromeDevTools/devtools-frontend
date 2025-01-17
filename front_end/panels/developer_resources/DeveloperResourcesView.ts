@@ -112,7 +112,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   override async doUpdate(): Promise<void> {
     const selectedItem = this.listView.selectedItem();
     this.listView.reset();
-    this.listView.update(this.loader.getScopedResourcesLoaded().values());
+    this.listView.items = this.loader.getScopedResourcesLoaded().values();
     if (selectedItem) {
       this.listView.select(selectedItem);
     }

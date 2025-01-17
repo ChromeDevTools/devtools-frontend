@@ -885,6 +885,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         steps: [],
       };
       let step: Step = {isLoading: true};
+
+      /**
+       * Commits the step to props only if necessary.
+       */
+      function commitStep(): void {
+        if (systemMessage.steps.at(-1) !== step) {
+          systemMessage.steps.push(step);
+        }
+      }
+
       this.#viewProps.isLoading = true;
       for await (const data of generator) {
         step.sideEffect = undefined;
@@ -913,24 +923,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.title = data.title;
             step.contextDetails = data.details;
             step.isLoading = false;
-            if (systemMessage.steps.at(-1) !== step) {
-              systemMessage.steps.push(step);
-            }
+            commitStep();
             break;
           }
           case ResponseType.TITLE: {
             step.title = data.title;
-            if (systemMessage.steps.at(-1) !== step) {
-              systemMessage.steps.push(step);
-            }
+            commitStep();
             break;
           }
           case ResponseType.THOUGHT: {
             step.isLoading = false;
             step.thought = data.thought;
-            if (systemMessage.steps.at(-1) !== step) {
-              systemMessage.steps.push(step);
-            }
+            commitStep();
             break;
           }
           case ResponseType.SIDE_EFFECT: {
@@ -939,9 +943,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.sideEffect = {
               onAnswer: data.confirm,
             };
-            if (systemMessage.steps.at(-1) !== step) {
-              systemMessage.steps.push(step);
-            }
+            commitStep();
             break;
           }
           case ResponseType.ACTION: {
@@ -949,9 +951,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code = data.code;
             step.output = data.output;
             step.canceled = data.canceled;
-            if (systemMessage.steps.at(-1) !== step) {
-              systemMessage.steps.push(step);
-            }
+            commitStep();
             break;
           }
           case ResponseType.ANSWER: {
@@ -984,14 +984,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           }
         }
 
-        void this.doUpdate();
+        // Commit update intermediated step when not
+        // in read only mode.
+        if (!this.#viewProps.isReadOnly) {
+          void this.doUpdate();
 
-        // This handles scrolling to the bottom for live conversations when:
-        // * User submits the query & the context step is shown.
-        // * There is a side effect dialog  shown.
-        if (!this.#viewProps.isReadOnly &&
-            (data.type === ResponseType.CONTEXT || data.type === ResponseType.SIDE_EFFECT)) {
-          this.#viewOutput.chatView?.scrollToBottom();
+          // This handles scrolling to the bottom for live conversations when:
+          // * User submits the query & the context step is shown.
+          // * There is a side effect dialog  shown.
+          if (data.type === ResponseType.CONTEXT || data.type === ResponseType.SIDE_EFFECT) {
+            this.#viewOutput.chatView?.scrollToBottom();
+          }
         }
       }
 

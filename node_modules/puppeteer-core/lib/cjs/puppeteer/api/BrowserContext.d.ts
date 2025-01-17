@@ -3,6 +3,7 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import type { Cookie, CookieData } from '../common/Cookie.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import { Mutex } from '../util/Mutex.js';
@@ -176,6 +177,19 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * closed.
      */
     abstract close(): Promise<void>;
+    /**
+     * Gets all cookies in the browser context.
+     */
+    abstract cookies(): Promise<Cookie[]>;
+    /**
+     * Sets a cookie in the browser context.
+     */
+    abstract setCookie(...cookies: CookieData[]): Promise<void>;
+    /**
+     * Removes cookie in the browser context
+     * @param cookies - {@link Cookie | cookie} to remove
+     */
+    deleteCookie(...cookies: Cookie[]): Promise<void>;
     /**
      * Whether this {@link BrowserContext | browser context} is closed.
      */

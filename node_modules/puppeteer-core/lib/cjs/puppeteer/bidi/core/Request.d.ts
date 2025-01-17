@@ -27,7 +27,7 @@ export declare class Request extends EventEmitter<{
     get error(): string | undefined;
     get headers(): Bidi.Network.Header[];
     get id(): string;
-    get initiator(): Bidi.Network.Initiator;
+    get initiator(): Bidi.Network.Initiator | undefined;
     get method(): string;
     get navigation(): string | undefined;
     get redirect(): Request | undefined;

@@ -7,6 +7,8 @@
 import type { ChildProcess } from 'child_process';
 import type { Protocol } from 'devtools-protocol';
 import type { ProtocolType } from '../common/ConnectOptions.js';
+import type { Cookie } from '../common/Cookie.js';
+import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import type { BrowserContext } from './BrowserContext.js';
@@ -25,6 +27,13 @@ export interface BrowserContextOptions {
      * Bypass the proxy for the given list of hosts.
      */
     proxyBypassList?: string[];
+    /**
+     * Behavior definition for when downloading a file.
+     *
+     * @remarks
+     * If not set, the default behavior will be used.
+     */
+    downloadBehavior?: DownloadBehavior;
 }
 /**
  * @internal
@@ -302,6 +311,33 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * process running.
      */
     abstract disconnect(): Promise<void>;
+    /**
+     * Returns all cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.cookies | browser.defaultBrowserContext().cookies()}.
+     */
+    cookies(): Promise<Cookie[]>;
+    /**
+     * Sets cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
+     */
+    setCookie(...cookies: Cookie[]): Promise<void>;
+    /**
+     * Removes cookies from the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
+     */
+    deleteCookie(...cookies: Cookie[]): Promise<void>;
     /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *

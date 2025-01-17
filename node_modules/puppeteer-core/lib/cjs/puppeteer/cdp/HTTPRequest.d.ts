@@ -17,6 +17,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     _redirectChain: CdpHTTPRequest[];
     _response: CdpHTTPResponse | null;
     get client(): CDPSession;
+    set client(newClient: CDPSession);
     constructor(client: CDPSession, frame: Frame | null, interceptionId: string | undefined, allowInterception: boolean, data: {
         /**
          * Request identifier.

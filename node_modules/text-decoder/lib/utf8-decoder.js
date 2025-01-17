@@ -1,3 +1,5 @@
+const b4a = require('b4a')
+
 /**
  * https://encoding.spec.whatwg.org/#utf-8-decoder
  */
@@ -23,7 +25,7 @@ module.exports = class UTF8Decoder {
         isBoundary = data[i] <= 0x7f
       }
 
-      if (isBoundary) return data.toString()
+      if (isBoundary) return b4a.toString(data, 'utf8')
     }
 
     let result = ''

@@ -19,25 +19,11 @@ export class FirefoxLauncher extends BrowserLauncher {
     constructor(puppeteer) {
         super(puppeteer, 'firefox');
     }
-    static getPreferences(extraPrefsFirefox, protocol) {
+    static getPreferences(extraPrefsFirefox) {
         return {
             ...extraPrefsFirefox,
-            ...(protocol === 'webDriverBiDi'
-                ? {
-                    // Only enable the WebDriver BiDi protocol
-                    'remote.active-protocols': 1,
-                }
-                : {
-                    // Do not close the window when the last tab gets closed
-                    'browser.tabs.closeWindowWithLastTab': false,
-                    // Prevent various error message on the console
-                    // jest-puppeteer asserts that no error message is emitted by the console
-                    'network.cookie.cookieBehavior': 0,
-                    // Temporarily force disable BFCache in parent (https://bit.ly/bug-1732263)
-                    'fission.bfcacheInParent': false,
-                    // Only enable the CDP protocol
-                    'remote.active-protocols': 2,
-                }),
+            // Only enable the WebDriver BiDi protocol
+            'remote.active-protocols': 1,
             // Force all web content to use a single content process. TODO: remove
             // this once Firefox supports mouse event dispatch from the main frame
             // context. Once this happens, webContentIsolationStrategy should only
@@ -94,7 +80,7 @@ export class FirefoxLauncher extends BrowserLauncher {
         }
         await createProfile(SupportedBrowsers.FIREFOX, {
             path: userDataDir,
-            preferences: FirefoxLauncher.getPreferences(extraPrefsFirefox, options.protocol),
+            preferences: FirefoxLauncher.getPreferences(extraPrefsFirefox),
         });
         let firefoxExecutable;
         if (this.puppeteer._isPuppeteerCore || executablePath) {
@@ -102,7 +88,7 @@ export class FirefoxLauncher extends BrowserLauncher {
             firefoxExecutable = executablePath;
         }
         else {
-            firefoxExecutable = this.executablePath();
+            firefoxExecutable = this.executablePath(undefined);
         }
         return {
             isTempUserDataDir,
@@ -147,8 +133,9 @@ export class FirefoxLauncher extends BrowserLauncher {
             }
         }
     }
-    executablePath() {
-        return this.resolveExecutablePath();
+    executablePath(_, validatePath = true) {
+        return this.resolveExecutablePath(undefined, 
+        /* validatePath=*/ validatePath);
     }
     defaultArgs(options = {}) {
         const { devtools = false, headless = !devtools, args = [], userDataDir = null, } = options;

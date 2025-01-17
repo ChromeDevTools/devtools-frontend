@@ -22,6 +22,9 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     get client() {
         return this.#client;
     }
+    set client(newClient) {
+        this.#client = newClient;
+    }
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
         this.#client = client;
@@ -29,7 +32,7 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         this.#isNavigationRequest =
             data.requestId === data.loaderId && data.type === 'Document';
         this._interceptionId = interceptionId;
-        this.#url = data.request.url;
+        this.#url = data.request.url + (data.request.urlFragment ?? '');
         this.#resourceType = (data.type || 'other').toLowerCase();
         this.#method = data.request.method;
         this.#postData = data.request.postData;

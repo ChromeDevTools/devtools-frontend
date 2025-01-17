@@ -96,7 +96,7 @@ function launchChrome() {
     `--disable-features=${disabledFeatures.join(',')}`,
   ];
   const executablePath = TestConfig.chromeBinary;
-  const opts: puppeteer.LaunchOptions&puppeteer.BrowserLaunchArgumentOptions&puppeteer.BrowserConnectOptions = {
+  const opts: puppeteer.LaunchOptions = {
     headless,
     executablePath,
     dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),

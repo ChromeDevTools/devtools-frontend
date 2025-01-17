@@ -13,6 +13,7 @@ import type { BidiFrameRealm } from './Realm.js';
  * @internal
  */
 export declare class BidiElementHandle<ElementType extends Node = Element> extends ElementHandle<ElementType> {
+    #private;
     static from<ElementType extends Node = Element>(value: Bidi.Script.RemoteValue, realm: BidiFrameRealm): BidiElementHandle<ElementType>;
     handle: BidiJSHandle<ElementType>;
     constructor(value: Bidi.Script.RemoteValue, realm: BidiFrameRealm);
@@ -23,5 +24,6 @@ export declare class BidiElementHandle<ElementType extends Node = Element> exten
     contentFrame(this: BidiElementHandle<HTMLIFrameElement>): Promise<BidiFrame>;
     uploadFile(this: BidiElementHandle<HTMLInputElement>, ...files: string[]): Promise<void>;
     queryAXTree(this: BidiElementHandle<HTMLElement>, name?: string | undefined, role?: string | undefined): AwaitableIterable<ElementHandle<Node>>;
+    backendNodeId(): Promise<number>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

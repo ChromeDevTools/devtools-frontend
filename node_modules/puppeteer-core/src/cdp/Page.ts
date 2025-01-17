@@ -34,6 +34,7 @@ import type {
   Cookie,
   DeleteCookiesRequest,
   CookieParam,
+  CookiePartitionKey,
 } from '../common/Cookie.js';
 import {TargetCloseError} from '../common/Errors.js';
 import {EventEmitter} from '../common/EventEmitter.js';
@@ -63,7 +64,6 @@ import {Coverage} from './Coverage.js';
 import type {DeviceRequestPrompt} from './DeviceRequestPrompt.js';
 import {CdpDialog} from './Dialog.js';
 import {EmulationManager} from './EmulationManager.js';
-import {FirefoxTargetManager} from './FirefoxTargetManager.js';
 import type {CdpFrame} from './Frame.js';
 import {FrameManager} from './FrameManager.js';
 import {FrameManagerEvent} from './FrameManagerEvents.js';
@@ -73,8 +73,8 @@ import {MAIN_WORLD} from './IsolatedWorlds.js';
 import {releaseObject} from './JSHandle.js';
 import type {NetworkConditions} from './NetworkManager.js';
 import type {CdpTarget} from './Target.js';
+import {TargetManagerEvent} from './TargetManageEvents.js';
 import type {TargetManager} from './TargetManager.js';
-import {TargetManagerEvent} from './TargetManager.js';
 import {Tracing} from './Tracing.js';
 import {
   createClientError,
@@ -610,11 +610,9 @@ export class CdpPage extends Page {
     for (const cookie of cookies) {
       const item = {
         ...cookie,
-        // TODO: a breaking change neeeded to change the partition key
-        // type in Puppeteer.
-        partitionKey: cookie.partitionKey
-          ? {topLevelSite: cookie.partitionKey, hasCrossSiteAncestor: false}
-          : undefined,
+        partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(
+          cookie.partitionKey,
+        ),
       };
       if (!cookie.url && pageURL.startsWith('http')) {
         item.url = pageURL;
@@ -658,14 +656,9 @@ export class CdpPage extends Page {
         cookies: items.map(cookieParam => {
           return {
             ...cookieParam,
-            partitionKey: cookieParam.partitionKey
-              ? {
-                  // TODO: a breaking change neeeded to change the partition key
-                  // type in Puppeteer.
-                  topLevelSite: cookieParam.partitionKey,
-                  hasCrossSiteAncestor: false,
-                }
-              : undefined,
+            partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(
+              cookieParam.partitionKey,
+            ),
           };
         }),
       });
@@ -1010,12 +1003,8 @@ export class CdpPage extends Page {
       captureBeyondViewport,
     } = options;
 
-    const isFirefox =
-      this.target()._targetManager() instanceof FirefoxTargetManager;
-
     await using stack = new AsyncDisposableStack();
-    // Firefox omits background by default; it's not configurable.
-    if (!isFirefox && omitBackground && (type === 'png' || type === 'webp')) {
+    if (omitBackground && (type === 'png' || type === 'webp')) {
       await this.#emulationManager.setTransparentBackgroundColor();
       stack.defer(async () => {
         await this.#emulationManager
@@ -1040,15 +1029,14 @@ export class CdpPage extends Page {
       clip = getIntersectionRect(clip, viewport);
     }
 
-    // We need to do these spreads because Firefox doesn't allow unknown options.
     const {data} = await this.#primaryTargetClient.send(
       'Page.captureScreenshot',
       {
         format: type,
-        ...(optimizeForSpeed ? {optimizeForSpeed} : {}),
+        optimizeForSpeed,
+        fromSurface,
         ...(quality !== undefined ? {quality: Math.round(quality)} : {}),
         ...(clip ? {clip: {...clip, scale: clip.scale ?? 1}} : {}),
-        ...(!fromSurface ? {fromSurface} : {}),
         captureBeyondViewport,
       },
     );
@@ -1232,5 +1220,23 @@ function getIntersectionRect(
       Math.min(clip.y + clip.height, viewport.y + viewport.height) - y,
       0,
     ),
+  };
+}
+
+export function convertCookiesPartitionKeyFromPuppeteerToCdp(
+  partitionKey: CookiePartitionKey | string | undefined,
+): Protocol.Network.CookiePartitionKey | undefined {
+  if (partitionKey === undefined) {
+    return undefined;
+  }
+  if (typeof partitionKey === 'string') {
+    return {
+      topLevelSite: partitionKey,
+      hasCrossSiteAncestor: false,
+    };
+  }
+  return {
+    topLevelSite: partitionKey.sourceOrigin,
+    hasCrossSiteAncestor: partitionKey.hasCrossSiteAncestor ?? false,
   };
 }

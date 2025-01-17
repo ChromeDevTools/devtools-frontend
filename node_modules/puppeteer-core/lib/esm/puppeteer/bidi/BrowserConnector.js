@@ -62,7 +62,8 @@ async function getBiDiConnection(connectionTransport, url, options) {
     // Unbind the connection to avoid memory leaks.
     pureBidiConnection.unbind();
     // Fall back to CDP over BiDi reusing the WS connection.
-    const cdpConnection = new Connection(url, connectionTransport, slowMo, protocolTimeout);
+    const cdpConnection = new Connection(url, connectionTransport, slowMo, protocolTimeout, 
+    /* rawErrors= */ true);
     const version = await cdpConnection.send('Browser.getVersion');
     if (version.product.toLowerCase().includes('firefox')) {
         throw new UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');

@@ -30,5 +30,6 @@ export declare class CdpElementHandle<ElementType extends Node = Element> extend
     uploadFile(this: CdpElementHandle<HTMLInputElement>, ...files: string[]): Promise<void>;
     autofill(data: AutofillData): Promise<void>;
     queryAXTree(name?: string | undefined, role?: string | undefined): AwaitableIterable<ElementHandle<Node>>;
+    backendNodeId(): Promise<number>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

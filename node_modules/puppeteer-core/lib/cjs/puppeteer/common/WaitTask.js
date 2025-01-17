@@ -159,7 +159,7 @@ class WaitTask {
             }
             // Errors coming from WebDriver BiDi. TODO: Adjust messages after
             // https://github.com/w3c/webdriver-bidi/issues/540 is resolved.
-            if (error.message.includes("AbortError: Actor 'MessageHandlerFrame' destroyed")) {
+            if (error.message.includes('DiscardedBrowsingContextError')) {
                 return;
             }
             return error;

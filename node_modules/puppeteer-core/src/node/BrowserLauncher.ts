@@ -31,11 +31,7 @@ import type {SupportedBrowser} from '../common/SupportedBrowser.js';
 import {debugError, DEFAULT_VIEWPORT} from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
 
-import type {
-  BrowserLaunchArgumentOptions,
-  ChromeReleaseChannel,
-  PuppeteerNodeLaunchOptions,
-} from './LaunchOptions.js';
+import type {ChromeReleaseChannel, LaunchOptions} from './LaunchOptions.js';
 import {NodeWebSocketTransport as WebSocketTransport} from './NodeWebSocketTransport.js';
 import {PipeTransport} from './PipeTransport.js';
 import type {PuppeteerNode} from './PuppeteerNode.js';
@@ -75,7 +71,7 @@ export abstract class BrowserLauncher {
     return this.#browser;
   }
 
-  async launch(options: PuppeteerNodeLaunchOptions = {}): Promise<Browser> {
+  async launch(options: LaunchOptions = {}): Promise<Browser> {
     const {
       dumpio = false,
       env = process.env,
@@ -84,6 +80,7 @@ export abstract class BrowserLauncher {
       handleSIGHUP = true,
       acceptInsecureCerts = false,
       defaultViewport = DEFAULT_VIEWPORT,
+      downloadBehavior,
       slowMo = 0,
       timeout = 30000,
       waitForInitialPage = true,
@@ -95,6 +92,10 @@ export abstract class BrowserLauncher {
     // Default to 'webDriverBiDi' for Firefox.
     if (this.#browser === 'firefox' && protocol === undefined) {
       protocol = 'webDriverBiDi';
+    }
+
+    if (this.#browser === 'firefox' && protocol === 'cdp') {
+      throw new Error('Connecting to Firefox using CDP is no longer supported');
     }
 
     const launchArgs = await this.computeLaunchArguments({
@@ -115,18 +116,6 @@ export abstract class BrowserLauncher {
         isTemp: launchArgs.isTempUserDataDir,
       });
     };
-
-    if (
-      this.#browser === 'firefox' &&
-      protocol !== 'webDriverBiDi' &&
-      this.puppeteer.configuration.logLevel === 'warn'
-    ) {
-      console.warn(
-        `Chrome DevTools Protocol (CDP) support for Firefox is deprecated in Puppeteer ` +
-          `and it will be eventually removed. ` +
-          `Use WebDriver BiDi instead (see https://pptr.dev/webdriver-bidi#get-started).`,
-      );
-    }
 
     if (
       this.#browser === 'firefox' &&
@@ -201,11 +190,11 @@ export abstract class BrowserLauncher {
           );
         } else {
           browser = await CdpBrowser._create(
-            this.browser,
             cdpConnection,
             [],
             acceptInsecureCerts,
             defaultViewport,
+            downloadBehavior,
             browserProcess.nodeProcess,
             browserCloseCallback,
             options.targetFilter,
@@ -227,15 +216,18 @@ export abstract class BrowserLauncher {
     return browser;
   }
 
-  abstract executablePath(channel?: ChromeReleaseChannel): string;
+  abstract executablePath(
+    channel?: ChromeReleaseChannel,
+    validatePath?: boolean,
+  ): string;
 
-  abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+  abstract defaultArgs(object: LaunchOptions): string[];
 
   /**
    * @internal
    */
   protected abstract computeLaunchArguments(
-    options: PuppeteerNodeLaunchOptions,
+    options: LaunchOptions,
   ): Promise<ResolvedLaunchArgs>;
 
   /**
@@ -415,10 +407,13 @@ export abstract class BrowserLauncher {
   /**
    * @internal
    */
-  protected resolveExecutablePath(headless?: boolean | 'shell'): string {
+  resolveExecutablePath(
+    headless?: boolean | 'shell',
+    validatePath = true,
+  ): string {
     let executablePath = this.puppeteer.configuration.executablePath;
     if (executablePath) {
-      if (!existsSync(executablePath)) {
+      if (validatePath && !existsSync(executablePath)) {
         throw new Error(
           `Tried to find the browser at the configured path (${executablePath}), but no executable was found.`,
         );
@@ -453,7 +448,7 @@ export abstract class BrowserLauncher {
       buildId: this.puppeteer.browserVersion,
     });
 
-    if (!existsSync(executablePath)) {
+    if (validatePath && !existsSync(executablePath)) {
       const configVersion =
         this.puppeteer.configuration?.[this.browser]?.version;
       if (configVersion) {

@@ -58,6 +58,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpPage = void 0;
+exports.convertCookiesPartitionKeyFromPuppeteerToCdp = convertCookiesPartitionKeyFromPuppeteerToCdp;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const Page_js_1 = require("../api/Page.js");
@@ -77,7 +78,6 @@ const Connection_js_1 = require("./Connection.js");
 const Coverage_js_1 = require("./Coverage.js");
 const Dialog_js_1 = require("./Dialog.js");
 const EmulationManager_js_1 = require("./EmulationManager.js");
-const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
 const FrameManager_js_1 = require("./FrameManager.js");
 const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const Input_js_1 = require("./Input.js");
@@ -483,11 +483,7 @@ class CdpPage extends Page_js_1.Page {
         for (const cookie of cookies) {
             const item = {
                 ...cookie,
-                // TODO: a breaking change neeeded to change the partition key
-                // type in Puppeteer.
-                partitionKey: cookie.partitionKey
-                    ? { topLevelSite: cookie.partitionKey, hasCrossSiteAncestor: false }
-                    : undefined,
+                partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(cookie.partitionKey),
             };
             if (!cookie.url && pageURL.startsWith('http')) {
                 item.url = pageURL;
@@ -524,14 +520,7 @@ class CdpPage extends Page_js_1.Page {
                 cookies: items.map(cookieParam => {
                     return {
                         ...cookieParam,
-                        partitionKey: cookieParam.partitionKey
-                            ? {
-                                // TODO: a breaking change neeeded to change the partition key
-                                // type in Puppeteer.
-                                topLevelSite: cookieParam.partitionKey,
-                                hasCrossSiteAncestor: false,
-                            }
-                            : undefined,
+                        partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(cookieParam.partitionKey),
                     };
                 }),
             });
@@ -753,10 +742,8 @@ class CdpPage extends Page_js_1.Page {
         const env_2 = { stack: [], error: void 0, hasError: false };
         try {
             const { fromSurface, omitBackground, optimizeForSpeed, quality, clip: userClip, type, captureBeyondViewport, } = options;
-            const isFirefox = this.target()._targetManager() instanceof FirefoxTargetManager_js_1.FirefoxTargetManager;
             const stack = __addDisposableResource(env_2, new disposable_js_1.AsyncDisposableStack(), true);
-            // Firefox omits background by default; it's not configurable.
-            if (!isFirefox && omitBackground && (type === 'png' || type === 'webp')) {
+            if (omitBackground && (type === 'png' || type === 'webp')) {
                 await this.#emulationManager.setTransparentBackgroundColor();
                 stack.defer(async () => {
                     await this.#emulationManager
@@ -774,13 +761,12 @@ class CdpPage extends Page_js_1.Page {
                 });
                 clip = getIntersectionRect(clip, viewport);
             }
-            // We need to do these spreads because Firefox doesn't allow unknown options.
             const { data } = await this.#primaryTargetClient.send('Page.captureScreenshot', {
                 format: type,
-                ...(optimizeForSpeed ? { optimizeForSpeed } : {}),
+                optimizeForSpeed,
+                fromSurface,
                 ...(quality !== undefined ? { quality: Math.round(quality) } : {}),
                 ...(clip ? { clip: { ...clip, scale: clip.scale ?? 1 } } : {}),
-                ...(!fromSurface ? { fromSurface } : {}),
                 captureBeyondViewport,
             });
             return data;
@@ -925,6 +911,21 @@ function getIntersectionRect(clip, viewport) {
         y,
         width: Math.max(Math.min(clip.x + clip.width, viewport.x + viewport.width) - x, 0),
         height: Math.max(Math.min(clip.y + clip.height, viewport.y + viewport.height) - y, 0),
+    };
+}
+function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey) {
+    if (partitionKey === undefined) {
+        return undefined;
+    }
+    if (typeof partitionKey === 'string') {
+        return {
+            topLevelSite: partitionKey,
+            hasCrossSiteAncestor: false,
+        };
+    }
+    return {
+        topLevelSite: partitionKey.sourceOrigin,
+        hasCrossSiteAncestor: partitionKey.hasCrossSiteAncestor ?? false,
     };
 }
 //# sourceMappingURL=Page.js.map

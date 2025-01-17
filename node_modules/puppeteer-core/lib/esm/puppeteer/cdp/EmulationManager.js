@@ -343,6 +343,7 @@ let EmulationManager = (() => {
                 'blurredVision',
                 'deuteranopia',
                 'protanopia',
+                'reducedContrast',
                 'tritanopia',
             ]);
             assert(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);

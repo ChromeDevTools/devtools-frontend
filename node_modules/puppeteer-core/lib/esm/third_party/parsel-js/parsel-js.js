@@ -172,32 +172,22 @@ function tokenize(selector, grammar = TOKENS) {
   }
   return tokens;
 }
-function* flatten(node, parent) {
-  switch (node.type) {
-    case "list":
-      for (let child of node.list) {
-        yield* flatten(child, node);
-      }
-      break;
-    case "complex":
-      yield* flatten(node.left, node);
-      yield* flatten(node.right, node);
-      break;
-    case "compound":
-      yield* node.list.map((token) => [token, node]);
-      break;
-    default:
-      yield [node, parent];
-  }
-}
 function stringify(listOrNode) {
-  let tokens;
   if (Array.isArray(listOrNode)) {
-    tokens = listOrNode;
-  } else {
-    tokens = [...flatten(listOrNode)].map(([token]) => token);
+    return listOrNode.map((token) => token.content).join("");
   }
-  return tokens.map((token) => token.content).join("");
+  switch (listOrNode.type) {
+    case "list":
+      return listOrNode.list.map(stringify).join(",");
+    case "relative":
+      return listOrNode.combinator + stringify(listOrNode.right);
+    case "complex":
+      return stringify(listOrNode.left) + listOrNode.combinator + stringify(listOrNode.right);
+    case "compound":
+      return listOrNode.list.map(stringify).join("");
+    default:
+      return listOrNode.content;
+  }
 }
 export {
   TOKENS,

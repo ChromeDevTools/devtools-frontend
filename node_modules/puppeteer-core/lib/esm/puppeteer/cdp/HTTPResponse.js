@@ -7,22 +7,19 @@ import { stringToTypedArray } from '../util/encoding.js';
  * @internal
  */
 export class CdpHTTPResponse extends HTTPResponse {
-    #client;
     #request;
     #contentPromise = null;
     #bodyLoadedDeferred = Deferred.create();
     #remoteAddress;
     #status;
     #statusText;
-    #url;
     #fromDiskCache;
     #fromServiceWorker;
     #headers = {};
     #securityDetails;
     #timing;
-    constructor(client, request, responsePayload, extraInfo) {
+    constructor(request, responsePayload, extraInfo) {
         super();
-        this.#client = client;
         this.#request = request;
         this.#remoteAddress = {
             ip: responsePayload.remoteIPAddress,
@@ -31,7 +28,6 @@ export class CdpHTTPResponse extends HTTPResponse {
         this.#statusText =
             this.#parseStatusTextFromExtraInfo(extraInfo) ||
                 responsePayload.statusText;
-        this.#url = request.url();
         this.#fromDiskCache = !!responsePayload.fromDiskCache;
         this.#fromServiceWorker = !!responsePayload.fromServiceWorker;
         this.#status = extraInfo ? extraInfo.statusCode : responsePayload.status;
@@ -72,7 +68,7 @@ export class CdpHTTPResponse extends HTTPResponse {
         return this.#remoteAddress;
     }
     url() {
-        return this.#url;
+        return this.#request.url();
     }
     status() {
         return this.#status;
@@ -95,7 +91,9 @@ export class CdpHTTPResponse extends HTTPResponse {
                 .valueOrThrow()
                 .then(async () => {
                 try {
-                    const response = await this.#client.send('Network.getResponseBody', {
+                    // Use CDPSession from corresponding request to retrieve body, as it's client
+                    // might have been updated (e.g. for an adopted OOPIF).
+                    const response = await this.#request.client.send('Network.getResponseBody', {
                         requestId: this.#request.id,
                     });
                     return stringToTypedArray(response.body, response.base64Encoded);

@@ -8,6 +8,7 @@ import type { BrowserContextEvents } from '../api/BrowserContext.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { type Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
+import type { Cookie, CookieData } from '../common/Cookie.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { BidiBrowser } from './Browser.js';
@@ -36,5 +37,7 @@ export declare class BidiBrowserContext extends BrowserContext {
     overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     clearPermissionOverrides(): Promise<void>;
     get id(): string | undefined;
+    cookies(): Promise<Cookie[]>;
+    setCookie(...cookies: CookieData[]): Promise<void>;
 }
 //# sourceMappingURL=BrowserContext.d.ts.map

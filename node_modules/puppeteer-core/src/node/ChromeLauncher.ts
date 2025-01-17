@@ -19,11 +19,7 @@ import {debugError} from '../common/util.js';
 import {assert} from '../util/assert.js';
 
 import {BrowserLauncher, type ResolvedLaunchArgs} from './BrowserLauncher.js';
-import type {
-  BrowserLaunchArgumentOptions,
-  ChromeReleaseChannel,
-  PuppeteerNodeLaunchOptions,
-} from './LaunchOptions.js';
+import type {ChromeReleaseChannel, LaunchOptions} from './LaunchOptions.js';
 import type {PuppeteerNode} from './PuppeteerNode.js';
 import {rm} from './util/fs.js';
 
@@ -35,7 +31,7 @@ export class ChromeLauncher extends BrowserLauncher {
     super(puppeteer, 'chrome');
   }
 
-  override launch(options: PuppeteerNodeLaunchOptions = {}): Promise<Browser> {
+  override launch(options: LaunchOptions = {}): Promise<Browser> {
     if (
       this.puppeteer.configuration.logLevel === 'warn' &&
       process.platform === 'darwin' &&
@@ -63,7 +59,7 @@ export class ChromeLauncher extends BrowserLauncher {
    * @internal
    */
   override async computeLaunchArguments(
-    options: PuppeteerNodeLaunchOptions = {},
+    options: LaunchOptions = {},
   ): Promise<ResolvedLaunchArgs> {
     const {
       ignoreDefaultArgs = false,
@@ -127,7 +123,9 @@ export class ChromeLauncher extends BrowserLauncher {
         channel || !this.puppeteer._isPuppeteerCore,
         `An \`executablePath\` or \`channel\` must be specified for \`puppeteer-core\``,
       );
-      chromeExecutable = this.executablePath(channel, options.headless ?? true);
+      chromeExecutable = channel
+        ? this.executablePath(channel)
+        : this.resolveExecutablePath(options.headless ?? true);
     }
 
     return {
@@ -155,7 +153,7 @@ export class ChromeLauncher extends BrowserLauncher {
     }
   }
 
-  override defaultArgs(options: BrowserLaunchArgumentOptions = {}): string[] {
+  override defaultArgs(options: LaunchOptions = {}): string[] {
     // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
 
     const userDisabledFeatures = getFeatures(
@@ -212,6 +210,7 @@ export class ChromeLauncher extends BrowserLauncher {
       '--disable-breakpad',
       '--disable-client-side-phishing-detection',
       '--disable-component-extensions-with-background-pages',
+      '--disable-crash-reporter', // No crash reporting in CfT.
       '--disable-default-apps',
       '--disable-dev-shm-usage',
       '--disable-extensions',
@@ -225,8 +224,8 @@ export class ChromeLauncher extends BrowserLauncher {
       '--disable-sync',
       '--enable-automation',
       '--export-tagged-pdf',
-      '--generate-pdf-document-outline',
       '--force-color-profile=srgb',
+      '--generate-pdf-document-outline',
       '--metrics-recording-only',
       '--no-first-run',
       '--password-store=basic',
@@ -268,7 +267,7 @@ export class ChromeLauncher extends BrowserLauncher {
 
   override executablePath(
     channel?: ChromeReleaseChannel,
-    headless?: boolean | 'shell',
+    validatePath = true,
   ): string {
     if (channel) {
       return computeSystemExecutablePath({
@@ -276,7 +275,7 @@ export class ChromeLauncher extends BrowserLauncher {
         channel: convertPuppeteerChannelToBrowsersChannel(channel),
       });
     } else {
-      return this.resolveExecutablePath(headless);
+      return this.resolveExecutablePath(undefined, validatePath);
     }
   }
 }

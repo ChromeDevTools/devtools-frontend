@@ -102,6 +102,18 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
         return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, util_js_1.fromEmitterEvent)(this, "targetcreated" /* BrowserContextEvent.TargetCreated */), (0, util_js_1.fromEmitterEvent)(this, "targetchanged" /* BrowserContextEvent.TargetChanged */), (0, rxjs_js_1.from)(this.targets())).pipe((0, util_js_1.filterAsync)(predicate), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms))));
     }
     /**
+     * Removes cookie in the browser context
+     * @param cookies - {@link Cookie | cookie} to remove
+     */
+    async deleteCookie(...cookies) {
+        return await this.setCookie(...cookies.map(cookie => {
+            return {
+                ...cookie,
+                expires: 1,
+            };
+        }));
+    }
+    /**
      * Whether this {@link BrowserContext | browser context} is closed.
      */
     get closed() {

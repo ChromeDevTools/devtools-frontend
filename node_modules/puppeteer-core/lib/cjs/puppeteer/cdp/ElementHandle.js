@@ -75,9 +75,9 @@ let CdpElementHandle = (() => {
             __esDecorate(this, null, _autofill_decorators, { kind: "method", name: "autofill", static: false, private: false, access: { has: obj => "autofill" in obj, get: obj => obj.autofill }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
+        #backendNodeId = __runInitializers(this, _instanceExtraInitializers);
         constructor(world, remoteObject) {
             super(new JSHandle_js_1.CdpJSHandle(world, remoteObject));
-            __runInitializers(this, _instanceExtraInitializers);
         }
         get realm() {
             return this.handle.realm;
@@ -192,6 +192,16 @@ let CdpElementHandle = (() => {
             return yield* AsyncIterableUtil_js_1.AsyncIterableUtil.map(results, node => {
                 return this.realm.adoptBackendNode(node.backendDOMNodeId);
             });
+        }
+        async backendNodeId() {
+            if (this.#backendNodeId) {
+                return this.#backendNodeId;
+            }
+            const { node } = await this.client.send('DOM.describeNode', {
+                objectId: this.handle.id,
+            });
+            this.#backendNodeId = node.backendNodeId;
+            return this.#backendNodeId;
         }
     };
 })();

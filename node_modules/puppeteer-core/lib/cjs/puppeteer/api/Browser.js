@@ -116,6 +116,39 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         }, []);
     }
     /**
+     * Returns all cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.cookies | browser.defaultBrowserContext().cookies()}.
+     */
+    async cookies() {
+        return await this.defaultBrowserContext().cookies();
+    }
+    /**
+     * Sets cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
+     */
+    async setCookie(...cookies) {
+        return await this.defaultBrowserContext().setCookie(...cookies);
+    }
+    /**
+     * Removes cookies from the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
+     */
+    async deleteCookie(...cookies) {
+        return await this.defaultBrowserContext().deleteCookie(...cookies);
+    }
+    /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
      * @deprecated Use {@link Browser | Browser.connected}.

@@ -362,8 +362,8 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         }
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestServedFromCache, request);
     }
-    #handleRequestRedirect(client, request, responsePayload, extraInfo) {
-        const response = new HTTPResponse_js_1.CdpHTTPResponse(client, request, responsePayload, extraInfo);
+    #handleRequestRedirect(_client, request, responsePayload, extraInfo) {
+        const response = new HTTPResponse_js_1.CdpHTTPResponse(request, responsePayload, extraInfo);
         request._response = response;
         request._redirectChain.push(request);
         response._resolveBody(new Error('Response body is unavailable for redirect responses'));
@@ -371,7 +371,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Response, response);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
     }
-    #emitResponseEvent(client, responseReceived, extraInfo) {
+    #emitResponseEvent(_client, responseReceived, extraInfo) {
         const request = this.#networkEventManager.getRequest(responseReceived.requestId);
         // FileUpload sends a response without a matching request.
         if (!request) {
@@ -388,7 +388,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (responseReceived.response.fromDiskCache) {
             extraInfo = null;
         }
-        const response = new HTTPResponse_js_1.CdpHTTPResponse(client, request, responseReceived.response, extraInfo);
+        const response = new HTTPResponse_js_1.CdpHTTPResponse(request, responseReceived.response, extraInfo);
         request._response = response;
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Response, response);
     }
@@ -426,10 +426,10 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             this.#networkEventManager.forgetQueuedEventGroup(event.requestId);
             this.#emitResponseEvent(client, queuedEvents.responseReceivedEvent, event);
             if (queuedEvents.loadingFinishedEvent) {
-                this.#emitLoadingFinished(queuedEvents.loadingFinishedEvent);
+                this.#emitLoadingFinished(client, queuedEvents.loadingFinishedEvent);
             }
             if (queuedEvents.loadingFailedEvent) {
-                this.#emitLoadingFailed(queuedEvents.loadingFailedEvent);
+                this.#emitLoadingFailed(client, queuedEvents.loadingFailedEvent);
             }
             return;
         }
@@ -447,7 +447,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             this.#networkEventManager.forget(requestId);
         }
     }
-    #onLoadingFinished(_client, event) {
+    #onLoadingFinished(client, event) {
         // If the response event for this request is still waiting on a
         // corresponding ExtraInfo event, then wait to emit this event too.
         const queuedEvents = this.#networkEventManager.getQueuedEventGroup(event.requestId);
@@ -455,16 +455,17 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             queuedEvents.loadingFinishedEvent = event;
         }
         else {
-            this.#emitLoadingFinished(event);
+            this.#emitLoadingFinished(client, event);
         }
     }
-    #emitLoadingFinished(event) {
+    #emitLoadingFinished(client, event) {
         const request = this.#networkEventManager.getRequest(event.requestId);
         // For certain requestIds we never receive requestWillBeSent event.
         // @see https://crbug.com/750469
         if (!request) {
             return;
         }
+        this.#maybeReassignOOPIFRequestClient(client, request);
         // Under certain conditions we never get the Network.responseReceived
         // event from protocol. @see https://crbug.com/883475
         if (request.response()) {
@@ -473,7 +474,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
     }
-    #onLoadingFailed(_client, event) {
+    #onLoadingFailed(client, event) {
         // If the response event for this request is still waiting on a
         // corresponding ExtraInfo event, then wait to emit this event too.
         const queuedEvents = this.#networkEventManager.getQueuedEventGroup(event.requestId);
@@ -481,16 +482,17 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             queuedEvents.loadingFailedEvent = event;
         }
         else {
-            this.#emitLoadingFailed(event);
+            this.#emitLoadingFailed(client, event);
         }
     }
-    #emitLoadingFailed(event) {
+    #emitLoadingFailed(client, event) {
         const request = this.#networkEventManager.getRequest(event.requestId);
         // For certain requestIds we never receive requestWillBeSent event.
         // @see https://crbug.com/750469
         if (!request) {
             return;
         }
+        this.#maybeReassignOOPIFRequestClient(client, request);
         request._failureText = event.errorText;
         const response = request.response();
         if (response) {
@@ -498,6 +500,16 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         }
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed, request);
+    }
+    #maybeReassignOOPIFRequestClient(client, request) {
+        // Document requests for OOPIFs start in the parent frame but are adopted by their
+        // child frame, meaning their loadingFinished and loadingFailed events are fired on
+        // the child session. In this case we reassign the request CDPSession to ensure all
+        // subsequent actions use the correct session (e.g. retrieving response body in
+        // HTTPResponse).
+        if (client !== request.client && request.isNavigationRequest()) {
+            request.client = client;
+        }
     }
 }
 exports.NetworkManager = NetworkManager;

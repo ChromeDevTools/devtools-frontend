@@ -615,6 +615,9 @@ let BidiPage = (() => {
                 }
                 assert(cookieUrl !== 'about:blank', `Blank page can not have cookie "${cookie.name}"`);
                 assert(!String.prototype.startsWith.call(cookieUrl || '', 'data:'), `Data URL page can not have cookie "${cookie.name}"`);
+                // TODO: Support Chrome cookie partition keys
+                assert(cookie.partitionKey === undefined ||
+                    typeof cookie.partitionKey === 'string', 'BiDi only allows domain partition keys');
                 const normalizedUrl = URL.canParse(cookieUrl)
                     ? new URL(cookieUrl)
                     : undefined;
@@ -633,7 +636,7 @@ let BidiPage = (() => {
                     ...(cookie.sameSite !== undefined
                         ? { sameSite: convertCookiesSameSiteCdpToBiDi(cookie.sameSite) }
                         : {}),
-                    ...(cookie.expires !== undefined ? { expiry: cookie.expires } : {}),
+                    ...{ expiry: convertCookiesExpiryCdpToBiDi(cookie.expires) },
                     // Chrome-specific properties.
                     ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
                 };
@@ -758,13 +761,21 @@ function testUrlMatchCookie(cookie, url) {
     }
     return testUrlMatchCookiePath(cookie, normalizedUrl);
 }
-function bidiToPuppeteerCookie(bidiCookie) {
+export function bidiToPuppeteerCookie(bidiCookie, returnCompositePartitionKey = false) {
     const partitionKey = bidiCookie[CDP_SPECIFIC_PREFIX + 'partitionKey'];
     function getParitionKey() {
         if (typeof partitionKey === 'string') {
             return { partitionKey };
         }
         if (typeof partitionKey === 'object' && partitionKey !== null) {
+            if (returnCompositePartitionKey) {
+                return {
+                    partitionKey: {
+                        sourceOrigin: partitionKey.topLevelSite,
+                        hasCrossSiteAncestor: partitionKey.hasCrossSiteAncestor ?? false,
+                    },
+                };
+            }
             return {
                 // TODO: a breaking change in Puppeteer is required to change
                 // partitionKey type and report the composite partition key.
@@ -807,7 +818,7 @@ function cdpSpecificCookiePropertiesFromBidiToPuppeteer(bidiCookie, ...propertyN
  * Gets CDP-specific properties from the cookie, adds CDP-specific prefixes and returns
  * them as a new object which can be used in BiDi.
  */
-function cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookieParam, ...propertyNames) {
+export function cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookieParam, ...propertyNames) {
     const result = {};
     for (const property of propertyNames) {
         if (cookieParam[property] !== undefined) {
@@ -819,11 +830,23 @@ function cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookieParam, ...property
 function convertCookiesSameSiteBiDiToCdp(sameSite) {
     return sameSite === 'strict' ? 'Strict' : sameSite === 'lax' ? 'Lax' : 'None';
 }
-function convertCookiesSameSiteCdpToBiDi(sameSite) {
+export function convertCookiesSameSiteCdpToBiDi(sameSite) {
     return sameSite === 'Strict'
         ? "strict" /* Bidi.Network.SameSite.Strict */
         : sameSite === 'Lax'
             ? "lax" /* Bidi.Network.SameSite.Lax */
             : "none" /* Bidi.Network.SameSite.None */;
+}
+export function convertCookiesExpiryCdpToBiDi(expiry) {
+    return [undefined, -1].includes(expiry) ? undefined : expiry;
+}
+export function convertCookiesPartitionKeyFromPuppeteerToBiDi(partitionKey) {
+    if (partitionKey === undefined || typeof partitionKey === 'string') {
+        return partitionKey;
+    }
+    if (partitionKey.hasCrossSiteAncestor) {
+        throw new UnsupportedOperation('WebDriver BiDi does not support `hasCrossSiteAncestor` yet.');
+    }
+    return partitionKey.sourceOrigin;
 }
 //# sourceMappingURL=Page.js.map

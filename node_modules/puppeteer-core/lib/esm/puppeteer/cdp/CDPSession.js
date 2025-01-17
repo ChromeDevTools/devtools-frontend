@@ -18,15 +18,17 @@ export class CdpCDPSession extends CDPSession {
     #connection;
     #parentSessionId;
     #target;
+    #rawErrors = false;
     /**
      * @internal
      */
-    constructor(connection, targetType, sessionId, parentSessionId) {
+    constructor(connection, targetType, sessionId, parentSessionId, rawErrors) {
         super();
         this.#connection = connection;
         this.#targetType = targetType;
         this.#sessionId = sessionId;
         this.#parentSessionId = parentSessionId;
+        this.#rawErrors = rawErrors;
     }
     /**
      * Sets the {@link CdpTarget} associated with the session instance.
@@ -50,7 +52,8 @@ export class CdpCDPSession extends CDPSession {
     }
     parentSession() {
         if (!this.#parentSessionId) {
-            // To make it work in Firefox that does not have parent (tab) sessions.
+            // In some cases, e.g., DevTools pages there is no parent session. In this
+            // case, we treat the current session as the parent session.
             return this;
         }
         const parent = this.#connection?.session(this.#parentSessionId);
@@ -68,7 +71,12 @@ export class CdpCDPSession extends CDPSession {
     _onMessage(object) {
         if (object.id) {
             if (object.error) {
-                this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                if (this.#rawErrors) {
+                    this.#callbacks.rejectRaw(object.id, object.error);
+                }
+                else {
+                    this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                }
             }
             else {
                 this.#callbacks.resolve(object.id, object.result);

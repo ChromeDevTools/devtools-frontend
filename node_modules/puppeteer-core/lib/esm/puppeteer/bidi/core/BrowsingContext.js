@@ -163,6 +163,13 @@ let BrowsingContext = (() => {
                 }
                 this.dispose('Browsing context already closed.');
             });
+            sessionEmitter.on('browsingContext.historyUpdated', info => {
+                if (info.context !== this.id) {
+                    return;
+                }
+                this.#url = info.url;
+                this.emit('historyUpdated', undefined);
+            });
             sessionEmitter.on('browsingContext.domContentLoaded', info => {
                 if (info.context !== this.id) {
                     return;

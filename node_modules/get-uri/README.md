@@ -55,7 +55,7 @@ Cacheability
 
 When calling `getUri()` with the same URI multiple times, the `get-uri` module
 supports sending an indicator that the remote resource has not been modified
-since the last time it has been retreived from that node process.
+since the last time it has been retrieved from that node process.
 
 To do this, define a `cache` property on the "options object" argument
 with the value set to the `stream.Readable` instance that was previously

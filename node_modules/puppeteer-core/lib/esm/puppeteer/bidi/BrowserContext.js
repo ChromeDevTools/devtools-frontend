@@ -96,7 +96,7 @@ import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { bubble } from '../util/decorators.js';
 import { UserContext } from './core/UserContext.js';
-import { BidiPage } from './Page.js';
+import { BidiPage, bidiToPuppeteerCookie, cdpSpecificCookiePropertiesFromPuppeteerToBidi, convertCookiesExpiryCdpToBiDi, convertCookiesPartitionKeyFromPuppeteerToBiDi, convertCookiesSameSiteCdpToBiDi, } from './Page.js';
 import { BidiWorkerTarget } from './Target.js';
 import { BidiFrameTarget, BidiPageTarget } from './Target.js';
 /**
@@ -144,17 +144,15 @@ let BidiBrowserContext = (() => {
                 const page = this.#createPage(browsingContext);
                 // We need to wait for the DOMContentLoaded as the
                 // browsingContext still may be navigating from the about:blank
-                browsingContext.once('DOMContentLoaded', () => {
-                    if (browsingContext.originalOpener) {
-                        for (const context of this.userContext.browsingContexts) {
-                            if (context.id === browsingContext.originalOpener) {
-                                this.#pages
-                                    .get(context)
-                                    .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
-                            }
+                if (browsingContext.originalOpener) {
+                    for (const context of this.userContext.browsingContexts) {
+                        if (context.id === browsingContext.originalOpener) {
+                            this.#pages
+                                .get(context)
+                                .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
                         }
                     }
-                });
+                }
             });
             this.userContext.on('closed', () => {
                 this.trustedEmitter.removeAllListeners();
@@ -308,6 +306,34 @@ let BidiBrowserContext = (() => {
                 return undefined;
             }
             return this.userContext.id;
+        }
+        async cookies() {
+            const cookies = await this.userContext.getCookies();
+            return cookies.map(cookie => {
+                return bidiToPuppeteerCookie(cookie, true);
+            });
+        }
+        async setCookie(...cookies) {
+            await Promise.all(cookies.map(async (cookie) => {
+                const bidiCookie = {
+                    domain: cookie.domain,
+                    name: cookie.name,
+                    value: {
+                        type: 'string',
+                        value: cookie.value,
+                    },
+                    ...(cookie.path !== undefined ? { path: cookie.path } : {}),
+                    ...(cookie.httpOnly !== undefined ? { httpOnly: cookie.httpOnly } : {}),
+                    ...(cookie.secure !== undefined ? { secure: cookie.secure } : {}),
+                    ...(cookie.sameSite !== undefined
+                        ? { sameSite: convertCookiesSameSiteCdpToBiDi(cookie.sameSite) }
+                        : {}),
+                    ...{ expiry: convertCookiesExpiryCdpToBiDi(cookie.expires) },
+                    // Chrome-specific properties.
+                    ...cdpSpecificCookiePropertiesFromPuppeteerToBidi(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
+                };
+                return await this.userContext.setCookie(bidiCookie, convertCookiesPartitionKeyFromPuppeteerToBiDi(cookie.partitionKey));
+            }));
         }
     };
 })();

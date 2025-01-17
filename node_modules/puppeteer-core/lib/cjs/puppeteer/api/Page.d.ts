@@ -1111,17 +1111,30 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * If no URLs are specified, this method returns cookies for the current page
-     * URL. If URLs are specified, only cookies for those URLs are returned.
+     * If no URLs are specified, this method returns cookies for the
+     * current page URL. If URLs are specified, only cookies for those
+     * URLs are returned.
+     *
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.cookies} or {@link BrowserContext.cookies} instead.
      */
     abstract cookies(...urls: string[]): Promise<Cookie[]>;
+    /**
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.deleteCookie} or {@link BrowserContext.deleteCookie}
+     * instead.
+     */
     abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     /**
      * @example
      *
-     * ```ts
+     *```ts
      * await page.setCookie(cookieObject1, cookieObject2);
-     * ```
+     *```
+     *
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.setCookie} or {@link BrowserContext.setCookie}
+     * instead.
      */
     abstract setCookie(...cookies: CookieParam[]): Promise<void>;
     /**
@@ -1652,6 +1665,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   await page.emulateVisionDeficiency('blurredVision');
      *   await page.screenshot({path: 'blurred-vision.png'});
      *
+     *   await page.emulateVisionDeficiency('reducedContrast');
+     *   await page.screenshot({path: 'reduced-contrast.png'});
+     *
      *   await browser.close();
      * })();
      * ```
@@ -1692,8 +1708,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * This is either the viewport set with the previous {@link Page.setViewport}
      * call or the default viewport set via
-     * {@link BrowserConnectOptions.defaultViewport |
-     * BrowserConnectOptions.defaultViewport}.
+     * {@link ConnectOptions.defaultViewport |
+     * ConnectOptions.defaultViewport}.
      */
     abstract viewport(): Viewport | null;
     /**

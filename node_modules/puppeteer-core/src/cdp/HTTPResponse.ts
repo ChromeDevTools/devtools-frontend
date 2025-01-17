@@ -5,7 +5,6 @@
  */
 import type {Protocol} from 'devtools-protocol';
 
-import type {CDPSession} from '../api/CDPSession.js';
 import type {Frame} from '../api/Frame.js';
 import {HTTPResponse, type RemoteAddress} from '../api/HTTPResponse.js';
 import {ProtocolError} from '../common/Errors.js';
@@ -19,14 +18,12 @@ import type {CdpHTTPRequest} from './HTTPRequest.js';
  * @internal
  */
 export class CdpHTTPResponse extends HTTPResponse {
-  #client: CDPSession;
   #request: CdpHTTPRequest;
   #contentPromise: Promise<Uint8Array> | null = null;
   #bodyLoadedDeferred = Deferred.create<void, Error>();
   #remoteAddress: RemoteAddress;
   #status: number;
   #statusText: string;
-  #url: string;
   #fromDiskCache: boolean;
   #fromServiceWorker: boolean;
   #headers: Record<string, string> = {};
@@ -34,13 +31,11 @@ export class CdpHTTPResponse extends HTTPResponse {
   #timing: Protocol.Network.ResourceTiming | null;
 
   constructor(
-    client: CDPSession,
     request: CdpHTTPRequest,
     responsePayload: Protocol.Network.Response,
     extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null,
   ) {
     super();
-    this.#client = client;
     this.#request = request;
 
     this.#remoteAddress = {
@@ -50,7 +45,6 @@ export class CdpHTTPResponse extends HTTPResponse {
     this.#statusText =
       this.#parseStatusTextFromExtraInfo(extraInfo) ||
       responsePayload.statusText;
-    this.#url = request.url();
     this.#fromDiskCache = !!responsePayload.fromDiskCache;
     this.#fromServiceWorker = !!responsePayload.fromServiceWorker;
 
@@ -99,7 +93,7 @@ export class CdpHTTPResponse extends HTTPResponse {
   }
 
   override url(): string {
-    return this.#url;
+    return this.#request.url();
   }
 
   override status(): number {
@@ -128,7 +122,9 @@ export class CdpHTTPResponse extends HTTPResponse {
         .valueOrThrow()
         .then(async () => {
           try {
-            const response = await this.#client.send(
+            // Use CDPSession from corresponding request to retrieve body, as it's client
+            // might have been updated (e.g. for an adopted OOPIF).
+            const response = await this.#request.client.send(
               'Network.getResponseBody',
               {
                 requestId: this.#request.id,

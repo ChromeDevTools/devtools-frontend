@@ -978,7 +978,6 @@ let Page = (() => {
             const env_2 = { stack: [], error: void 0, hasError: false };
             try {
                 const _guard = __addDisposableResource(env_2, await this.browserContext().startScreenshot(), false);
-                await this.bringToFront();
                 const options = {
                     ...userOptions,
                     clip: userOptions.clip

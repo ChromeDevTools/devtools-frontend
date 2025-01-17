@@ -3,7 +3,7 @@ import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
 import type { Viewport } from '../common/Viewport.js';
-import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+import type { ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
@@ -30,13 +30,13 @@ export declare abstract class BrowserLauncher {
      */
     constructor(puppeteer: PuppeteerNode, browser: SupportedBrowser);
     get browser(): SupportedBrowser;
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
-    abstract executablePath(channel?: ChromeReleaseChannel): string;
-    abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+    launch(options?: LaunchOptions): Promise<Browser>;
+    abstract executablePath(channel?: ChromeReleaseChannel, validatePath?: boolean): string;
+    abstract defaultArgs(object: LaunchOptions): string[];
     /**
      * @internal
      */
-    protected abstract computeLaunchArguments(options: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
+    protected abstract computeLaunchArguments(options: LaunchOptions): Promise<ResolvedLaunchArgs>;
     /**
      * @internal
      */
@@ -91,6 +91,6 @@ export declare abstract class BrowserLauncher {
     /**
      * @internal
      */
-    protected resolveExecutablePath(headless?: boolean | 'shell'): string;
+    resolveExecutablePath(headless?: boolean | 'shell', validatePath?: boolean): string;
 }
 //# sourceMappingURL=BrowserLauncher.d.ts.map

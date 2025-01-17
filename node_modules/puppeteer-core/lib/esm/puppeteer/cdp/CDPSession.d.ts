@@ -15,7 +15,7 @@ export declare class CdpCDPSession extends CDPSession {
     /**
      * @internal
      */
-    constructor(connection: Connection, targetType: string, sessionId: string, parentSessionId: string | undefined);
+    constructor(connection: Connection, targetType: string, sessionId: string, parentSessionId: string | undefined, rawErrors: boolean);
     /**
      * Sets the {@link CdpTarget} associated with the session instance.
      *

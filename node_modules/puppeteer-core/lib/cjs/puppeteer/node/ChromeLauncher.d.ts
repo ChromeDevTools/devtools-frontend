@@ -5,26 +5,26 @@
  */
 import type { Browser } from '../api/Browser.js';
 import { BrowserLauncher, type ResolvedLaunchArgs } from './BrowserLauncher.js';
-import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+import type { ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
 export declare class ChromeLauncher extends BrowserLauncher {
     constructor(puppeteer: PuppeteerNode);
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
+    launch(options?: LaunchOptions): Promise<Browser>;
     /**
      * @internal
      */
-    computeLaunchArguments(options?: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
+    computeLaunchArguments(options?: LaunchOptions): Promise<ResolvedLaunchArgs>;
     /**
      * @internal
      */
     cleanUserDataDir(path: string, opts: {
         isTemp: boolean;
     }): Promise<void>;
-    defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
-    executablePath(channel?: ChromeReleaseChannel, headless?: boolean | 'shell'): string;
+    defaultArgs(options?: LaunchOptions): string[];
+    executablePath(channel?: ChromeReleaseChannel, validatePath?: boolean): string;
 }
 /**
  * Extracts all features from the given command-line flag

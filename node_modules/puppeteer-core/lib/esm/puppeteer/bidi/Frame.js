@@ -41,7 +41,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
-import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
+import { combineLatest, defer, delayWhen, filter, first, firstValueFrom, map, of, race, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
@@ -178,7 +178,7 @@ let BidiFrame = (() => {
                 default: BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
                 internal: BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
             };
-            this.accessibility = new Accessibility(this.realms.default);
+            this.accessibility = new Accessibility(this.realms.default, this._id);
         }
         #initialize() {
             for (const browsingContext of this.browsingContext.children) {
@@ -342,6 +342,9 @@ let BidiFrame = (() => {
                     if (error.message.includes('navigation canceled')) {
                         return;
                     }
+                    if (error.message.includes('Navigation was aborted by another navigation')) {
+                        return;
+                    }
                     throw error;
                 }),
             ]).catch(rewriteNavigationError(url, options.timeout ?? this.timeoutSettings.navigationTimeout()));
@@ -362,9 +365,14 @@ let BidiFrame = (() => {
                 return frame.#detached$();
             });
             return await firstValueFrom(combineLatest([
-                fromEmitterEvent(this.browsingContext, 'navigation')
+                race(fromEmitterEvent(this.browsingContext, 'navigation'), fromEmitterEvent(this.browsingContext, 'historyUpdated').pipe(map(() => {
+                    return { navigation: null };
+                })))
                     .pipe(first())
                     .pipe(switchMap(({ navigation }) => {
+                    if (navigation === null) {
+                        return of(null);
+                    }
                     return this.#waitForLoad$(options).pipe(delayWhen(() => {
                         if (frames.length === 0) {
                             return of(undefined);
@@ -375,6 +383,9 @@ let BidiFrame = (() => {
                     }))), switchMap(() => {
                         if (navigation.request) {
                             function requestFinished$(request) {
+                                if (navigation === null) {
+                                    return of(null);
+                                }
                                 // Reduces flakiness if the response events arrive after
                                 // the load event.
                                 // Usually, the response or error is already there at this point.
@@ -397,6 +408,9 @@ let BidiFrame = (() => {
                 })),
                 this.#waitForNetworkIdle$(options),
             ]).pipe(map(([navigation]) => {
+                if (!navigation) {
+                    return null;
+                }
                 const request = navigation.request;
                 if (!request) {
                     return null;

@@ -43,6 +43,13 @@ export class CallbackRegistry {
         }
         this._reject(callback, message, originalMessage);
     }
+    rejectRaw(id, error) {
+        const callback = this.#callbacks.get(id);
+        if (!callback) {
+            return;
+        }
+        callback.reject(error);
+    }
     _reject(callback, errorMessage, originalMessage) {
         let error;
         let message;

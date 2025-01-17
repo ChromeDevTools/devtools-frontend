@@ -46,6 +46,8 @@ class DataGridElement extends HTMLElement {
   #mutationObserver = new MutationObserver(this.#onChange.bind(this));
   #shadowRoot: ShadowRoot;
   #columnsOrder: string[] = [];
+  #hideableColumns = new Set<string>();
+  #hiddenColumns = new Set<string>();
 
   constructor() {
     super();
@@ -65,6 +67,22 @@ class DataGridElement extends HTMLElement {
     this.#dataGrid.setRowContextMenuCallback((menu, node) => {
       this.dispatchEvent(
           new CustomEvent('contextmenu', {detail: {menu, element: (node as DataGridElementNode).configElement}}));
+    });
+    this.#dataGrid.setHeaderContextMenuCallback(menu => {
+      for (const columnId of this.#columnsOrder) {
+        if (this.#hideableColumns.has(columnId)) {
+          menu.defaultSection().appendCheckboxItem(
+              this.#dataGrid.columns[columnId].title as Platform.UIString.LocalizedString, () => {
+                if (this.#hiddenColumns.has(columnId)) {
+                  this.#hiddenColumns.delete(columnId);
+                } else {
+                  this.#hiddenColumns.add(columnId);
+                }
+                this.#dataGrid.setColumnsVisibility(
+                    new Set(this.#columnsOrder.filter(column => !this.#hiddenColumns.has(column))));
+              });
+        }
+      }
     });
 
     this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
@@ -115,6 +133,7 @@ class DataGridElement extends HTMLElement {
     for (const column of Object.keys(this.#dataGrid.columns)) {
       this.#dataGrid.removeColumn(column);
     }
+    this.#hideableColumns.clear();
     this.#columnsOrder = [];
     for (const column of this.querySelectorAll('th[id]') || []) {
       const id = column.id as Lowercase<string>;
@@ -127,10 +146,15 @@ class DataGridElement extends HTMLElement {
       if (align !== Align.CENTER && align !== Align.RIGHT) {
         align = undefined;
       }
-      this.#dataGrid.addColumn({id, title, sortable, fixedWidth, width, align});
+      const weight = parseInt(column.getAttribute('weight') || '', 10) ?? undefined;
+      this.#dataGrid.addColumn({id, title, sortable, fixedWidth, width, align, weight});
+      if (column.hasAttribute('hideable')) {
+        this.#hideableColumns.add(id);
+      }
     }
-    if (this.#columnsOrder.length) {
-      this.#dataGrid.setColumnsVisibility(new Set(this.#columnsOrder));
+    const visibleColumns = new Set(this.#columnsOrder.filter(column => !this.#hiddenColumns.has(column)));
+    if (visibleColumns.size) {
+      this.#dataGrid.setColumnsVisibility(visibleColumns);
     }
   }
 

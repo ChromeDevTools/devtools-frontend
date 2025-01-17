@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/legacy/legacy.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -12,8 +13,7 @@ import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
@@ -22,7 +22,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
 import protocolMonitorStyles from './protocolMonitor.css.js';
 
-const {html} = LitHtml;
+const {widgetRef} = UI.Widget;
+const {render, html} = LitHtml;
 
 const UIStrings = {
   /**
@@ -129,10 +130,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const timeRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult => {
-  return html`${i18nString(UIStrings.sMs, {PH1: String(value)})}`;
-};
-
 export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
     Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> => {
       const metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> =
@@ -152,10 +149,13 @@ const enumsByName = ProtocolClient.InspectorBackend.inspectorBackend.enumMap;
 export interface Message {
   id?: number;
   method: string;
-  error: Object;
-  result: Object;
-  params: Object;
+  error?: Object;
+  result?: Object;
+  params?: Object;
+  requestTime: number;
+  elapsedTime?: number;
   sessionId?: string;
+  target?: SDK.Target.Target;
 }
 export interface LogMessage {
   id?: number;
@@ -172,14 +172,32 @@ export interface ProtocolDomain {
   };
 }
 
+export interface ViewInput {
+  messages: Message[];
+  filters: TextUtils.TextUtils.ParsedFilter[];
+  onRecord: (e: Event) => void;
+  onClear: () => void;
+  onSave: () => void;
+  onSelect: (e: CustomEvent<HTMLElement|null>) => void;
+  onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
+  textFilterUI: UI.Toolbar.ToolbarInput;
+  showHideSidebarButton: UI.Toolbar.ToolbarButton;
+  commandInput: UI.Toolbar.ToolbarInput;
+  selector: UI.Toolbar.ToolbarComboBox;
+}
+
+export interface ViewOutput {
+  infoWidget: InfoWidget;
+}
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
 export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
   private started: boolean;
   private startTime: number;
-  private readonly requestTimeForId: Map<number, number>;
-  private readonly dataGridRowForId: Map<number, DataGrid.DataGridUtils.Row>;
-  private readonly infoWidget: InfoWidget;
-  private readonly dataGridIntegrator: DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator;
+  private readonly messageForId = new Map<number, Message>();
+  private infoWidget!: InfoWidget;
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   private readonly textFilterUI: UI.Toolbar.ToolbarInput;
@@ -187,189 +205,113 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
   #selectedTargetId?: string;
   #commandInput: UI.Toolbar.ToolbarInput;
-  constructor(splitWidget: UI.SplitWidget.SplitWidget) {
+  #showHideSidebarButton: UI.Toolbar.ToolbarButton;
+  #view: View;
+  #messages: Message[] = [];
+  #filters: TextUtils.TextUtils.ParsedFilter[] = [];
+  #splitWidget: UI.SplitWidget.SplitWidget;
+  constructor(splitWidget: UI.SplitWidget.SplitWidget, view: View = (input, output, target) => {
+    // clang-format off
+    render(
+        html`<devtools-toolbar class="protocol-monitor-toolbar"
+                               jslog=${VisualLogging.toolbar('top')}>
+               <devtools-button title=${i18nString(UIStrings.record)}
+                                .iconName=${'record-start'}
+                                .toggledIconName=${'record-stop'}
+                                .jslogContext=${'protocol-monitor.toggle-recording'}
+                                .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                                .toggleType=${Buttons.Button.ToggleType.RED}
+                                .toggled=${true}
+                                @click=${input.onRecord}></devtools-button>
+              <devtools-button title=${i18nString(UIStrings.clearAll)}
+                               .iconName=${'clear'}
+                               .variant=${Buttons.Button.Variant.TOOLBAR}
+                               .jslogContext=${'protocol-monitor.clear-all'}
+                               @click=${input.onClear}></devtools-button>
+              <devtools-button title=${i18nString(UIStrings.save)}
+                               .iconName=${'download'}
+                               .variant=${Buttons.Button.Variant.TOOLBAR}
+                               .jslogContext=${'protocol-monitor.save'}
+                               @click=${input.onSave}></devtools-button>
+              ${input.textFilterUI.element}
+            </devtools-toolbar>
+            <devtools-split-widget .options=${{
+                vertical: true,
+                secondIsSidebar: true,
+                settingName: 'protocol-monitor-panel-split',
+              defaultSidebarWidth: 250}}>
+              <devtools-new-data-grid
+                  slot="main"
+                  @select=${input.onSelect}
+                  @contextmenu=${input.onContextMenu}
+                  .filters=${input.filters}>
+                <table>
+                    <tr>
+                      <th id="type" sortable style="text-align: center" hideable weight="1">${i18nString(UIStrings.type)}</th>
+                      <th id="method" weight="5">${i18nString(UIStrings.method)}</th>
+                      <th id="request" hideable weight="5">${i18nString(UIStrings.request)}</th>
+                      <th id="response" hideable weight="5">${i18nString(UIStrings.response)}</th>
+                      <th id="elapsed-time" sortable hideable weight="2">${i18nString(UIStrings.elapsedTime)}</th>
+                      <th id="timestamp" sortable hideable weight="5">${i18nString(UIStrings.timestamp)}</th>
+                      <th id="target" sortable hideable weight="5">${i18nString(UIStrings.target)}</th>
+                      <th id="session" sortable hideable weight="5">${i18nString(UIStrings.session)}</th>
+                    </tr>
+                    ${
+            input.messages.map(
+                (message, index) => html`
+                      <tr data-index=${index}
+                          style="--override-data-grid-row-background-color: var(--sys-color-surface3)">
+                        ${'id' in message ? html`
+                          <td title="sent">
+                            <devtools-icon name="arrow-up-down" style="color: var(--icon-request-response); width: 16px; height: 16px;">
+                            </devtools-icon>
+                          </td>` : html`
+                          <td title="received">
+                            <devtools-icon name="arrow-down" style="color: var(--icon-request); width: 16px; height: 16px;">
+                            </devtools-icon>
+                          </td>`}
+                        <td>${message.method}</td>
+                        <td>${message.params ? html`<code>${JSON.stringify(message.params)}</code>` : ''}</td>
+                        <td>
+                          ${message.result    ? html`<code>${JSON.stringify(message.result)}</code>` :
+                                message.error ? html`<code>${JSON.stringify(message.error)}</code>` :
+                                                '(pending)'}
+                        </td>
+                        <td>
+                          ${!('id' in message)  ? '' :
+                            message.elapsedTime ? i18nString(UIStrings.sMs, {PH1: String(message.elapsedTime)})
+                                                : '(pending)'}
+                        </td>
+                        <td>${i18nString(UIStrings.sMs, {PH1: String(message.requestTime)})}</td>
+                        <td>${this.targetToString(message.target)}</td>
+                        <td>${message.sessionId || ''}</td>
+                      </tr>`)}
+                  </table>
+              </devtools-new-data-grid>
+              <devtools-widget .widgetClass=${InfoWidget}
+                   class="protocol-monitor-info"
+                   ${widgetRef(InfoWidget, e => { output.infoWidget = e; })}
+                   slot="sidebar"></devtools-widget>
+            </devtools-split-widget>
+            <devtools-toolbar class="protocol-monitor-bottom-toolbar"
+               jslog=${VisualLogging.toolbar('bottom')}>
+              ${input.showHideSidebarButton.element}
+              ${input.commandInput.element}
+              ${input.selector.element}
+            </devtools-toolbar>`,
+        target,
+        {host: input},  // eslint-disable-line rulesdir/lit-html-host-this
+    );
+    // clang-format on
+  }) {
     super(true);
+    this.#splitWidget = splitWidget;
+    this.#view = view;
     this.started = false;
     this.startTime = 0;
-    this.dataGridRowForId = new Map();
-    this.requestTimeForId = new Map();
-    const topToolbar = this.contentElement.createChild('devtools-toolbar', 'protocol-monitor-toolbar');
-    topToolbar.setAttribute('jslog', `${VisualLogging.toolbar('top')}`);
     this.contentElement.classList.add('protocol-monitor');
-    const recordButton = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.record), 'record-start', 'record-stop', 'protocol-monitor.toggle-recording');
-    recordButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.setRecording(recordButton.isToggled());
-    });
-    recordButton.enableToggleWithRedColor();
-    topToolbar.appendToolbarItem(recordButton);
-    recordButton.setToggled(true);
-
-    const clearButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear', undefined, 'protocol-monitor.clear-all');
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});
-      this.infoWidget.render(null);
-    });
-    topToolbar.appendToolbarItem(clearButton);
-
-    const saveButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.save), 'download', undefined, 'protocol-monitor.save');
-    saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      void this.saveAsFile();
-    });
-    topToolbar.appendToolbarItem(saveButton);
     this.selector = this.#createTargetSelector();
-    this.infoWidget = new InfoWidget();
-    const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
-      paddingRowsCount: 100,
-      showScrollbar: true,
-      columns: [
-        {
-          id: 'type',
-          title: i18nString(UIStrings.type),
-          sortable: true,
-          widthWeighting: 1,
-          visible: true,
-          hideable: true,
-          styles: {
-            'text-align': 'center',
-          },
-        },
-        {
-          id: 'method',
-          title: i18nString(UIStrings.method),
-          sortable: false,
-          widthWeighting: 5,
-          visible: true,
-          hideable: false,
-        },
-        {
-          id: 'request',
-          title: i18nString(UIStrings.request),
-          sortable: false,
-          widthWeighting: 5,
-          visible: true,
-          hideable: true,
-        },
-        {
-          id: 'response',
-          title: i18nString(UIStrings.response),
-          sortable: false,
-          widthWeighting: 5,
-          visible: true,
-          hideable: true,
-        },
-        {
-          id: 'elapsed-time',
-          title: i18nString(UIStrings.elapsedTime),
-          sortable: true,
-          widthWeighting: 2,
-          visible: false,
-          hideable: true,
-        },
-        {
-          id: 'timestamp',
-          title: i18nString(UIStrings.timestamp),
-          sortable: true,
-          widthWeighting: 5,
-          visible: false,
-          hideable: true,
-        },
-        {
-          id: 'target',
-          title: i18nString(UIStrings.target),
-          sortable: true,
-          widthWeighting: 5,
-          visible: false,
-          hideable: true,
-        },
-        {
-          id: 'session',
-          title: i18nString(UIStrings.session),
-          sortable: true,
-          widthWeighting: 5,
-          visible: false,
-          hideable: true,
-        },
-      ],
-      rows: [],
-      contextMenus: {
-        bodyRow:
-            (menu: UI.ContextMenu.ContextMenu, columns: readonly DataGrid.DataGridUtils.Column[],
-             row: Readonly<DataGrid.DataGridUtils.Row>) => {
-              const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
-              const typeColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'type');
-              /**
-               * You can click the "Edit and resend" item in the context menu to be
-               * taken to the CDP editor with the filled with the selected command.
-               */
-              menu.editSection().appendItem(i18nString(UIStrings.editAndResend), () => {
-                if (!methodColumn.value) {
-                  return;
-                }
-                const parameters = this.infoWidget.request;
-                const targetId = this.infoWidget.targetId;
-                const command = String(methodColumn.value);
-                if (splitWidget.showMode() === UI.SplitWidget.ShowMode.ONLY_MAIN) {
-                  splitWidget.toggleSidebar();
-                }
-                this.dispatchEventToListeners(Events.COMMAND_CHANGE, {command, parameters, targetId});
-              }, {jslogContext: 'edit-and-resend', disabled: typeColumn.title !== 'sent'});
 
-              /**
-               * You can click the "Filter" item in the context menu to filter the
-               * protocol monitor entries to those that match the method of the
-               * current row.
-               */
-              menu.editSection().appendItem(i18nString(UIStrings.filter), () => {
-                const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
-                this.textFilterUI.setValue(`method:${methodColumn.value}`, true);
-              }, {jslogContext: 'filter'});
-
-              /**
-               * You can click the "Documentation" item in the context menu to be
-               * taken to the CDP Documentation site entry for the given method.
-               */
-              menu.footerSection().appendItem(i18nString(UIStrings.documentation), () => {
-                if (!methodColumn.value) {
-                  return;
-                }
-                const [domain, method] = String(methodColumn.value).split('.');
-                const type = typeColumn.title === 'sent' ? 'method' : 'event';
-                Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-                    `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}` as
-                    Platform.DevToolsPath.UrlString);
-              }, {jslogContext: 'documentation'});
-            },
-      },
-    };
-
-    this.dataGridIntegrator =
-        new DataGrid.DataGridControllerIntegrator.DataGridControllerIntegrator(dataGridInitialData);
-
-    this.dataGridIntegrator.dataGrid.addEventListener('cellfocused', event => {
-      const focusedRow = event.data.row;
-      const infoWidgetData = {
-        request: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'request'),
-        response: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'response'),
-        target: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'target'),
-        type:
-            DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'type').title as 'sent' | 'received' | undefined,
-        selectedTab: event.data.cell.columnId === 'request' ? 'request' as const:
-            event.data.cell.columnId === 'response'         ? 'response' as const:
-                                                              undefined,
-      };
-      this.infoWidget.render(infoWidgetData);
-    });
-
-    this.dataGridIntegrator.dataGrid.addEventListener('newuserfiltertext', event => {
-      this.textFilterUI.setValue(event.data.filterText, /* notify listeners */ true);
-    });
-    const split = new UI.SplitWidget.SplitWidget(true, true, 'protocol-monitor-panel-split', 250);
-    split.show(this.contentElement);
-    split.setMainWidget(this.dataGridIntegrator);
-    split.setSidebarWidget(this.infoWidget);
     const keys = ['method', 'request', 'response', 'type', 'target', 'session'];
     this.filterParser = new TextUtils.TextUtils.FilterParser(keys);
     this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
@@ -378,18 +320,14 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         undefined, 1, .2, '', this.suggestionBuilder.completions.bind(this.suggestionBuilder), true);
     this.textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, event => {
       const query = event.data as string;
-      const filters = this.filterParser.parse(query);
-      this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), filters});
+      this.#filters = this.filterParser.parse(query);
+      this.requestUpdate();
     });
-    const bottomToolbar = this.contentElement.createChild('devtools-toolbar', 'protocol-monitor-bottom-toolbar');
-    bottomToolbar.setAttribute('jslog', `${VisualLogging.toolbar('bottom')}`);
-    bottomToolbar.appendToolbarItem(splitWidget.createShowHideSidebarButton(
+    this.#showHideSidebarButton = splitWidget.createShowHideSidebarButton(
         i18nString(UIStrings.showCDPCommandEditor), i18nString(UIStrings.hideCDPCommandEditor),
         i18nString(UIStrings.CDPCommandEditorShown), i18nString(UIStrings.CDPCommandEditorHidden),
-        'protocol-monitor.toggle-command-editor'));
+        'protocol-monitor.toggle-command-editor');
     this.#commandInput = this.#createCommandInput();
-    bottomToolbar.appendToolbarItem(this.#commandInput);
-    bottomToolbar.appendToolbarItem(this.selector);
     const inputBar = this.#commandInput.element;
     const tabSelector = this.selector.element;
 
@@ -427,7 +365,97 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                                      tabSelector?.setAttribute('style', 'display:none');
                                    }
                                  }));
-    topToolbar.appendToolbarItem(this.textFilterUI);
+    this.performUpdate();
+  }
+
+  override performUpdate(): void {
+    const viewInput = {
+      messages: this.#messages,
+      filters: this.#filters,
+      onRecord: (e: Event) => {
+        this.setRecording((e.target as Buttons.Button.Button).toggled);
+      },
+      onClear: () => {
+        this.#messages = [];
+        this.messageForId.clear();
+        this.infoWidget.render(null);
+        this.requestUpdate();
+      },
+      onSave: () => {
+        void this.saveAsFile();
+      },
+      onSelect: (e: CustomEvent<HTMLElement|null>) => {
+        const index = parseInt(e.detail?.dataset?.index ?? '', 10);
+        const message = index && this.#messages[index];
+        if (message) {
+          this.infoWidget.render({
+            request: message.params,
+            response: message.result || message.error,
+            targetId: message.target?.id(),
+            type: ('id' in message) ? 'sent' : 'received',
+            selectedTab: undefined,
+          });
+        } else {
+          this.infoWidget.render(null);
+        }
+      },
+      onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {
+        const message = this.#messages[parseInt(e.detail?.element?.dataset?.index || '', 10)];
+        if (message) {
+          this.#populateContextMenu(e.detail.menu, message);
+        }
+      },
+      textFilterUI: this.textFilterUI,
+      showHideSidebarButton: this.#showHideSidebarButton,
+      commandInput: this.#commandInput,
+      selector: this.selector,
+    };
+    const that = this;
+    const viewOutput = {
+      set infoWidget(infoWidget: InfoWidget) {
+        if (infoWidget) {
+          that.infoWidget = infoWidget;
+        }
+      }
+    };
+    this.#view(viewInput, viewOutput, this.contentElement);
+  }
+
+  #populateContextMenu(menu: UI.ContextMenu.ContextMenu, message: Message): void {
+    /**
+     * You can click the "Edit and resend" item in the context menu to be
+     * taken to the CDP editor with the filled with the selected command.
+     */
+    menu.editSection().appendItem(i18nString(UIStrings.editAndResend), () => {
+      const parameters = this.infoWidget.request as {[x: string]: unknown};
+      const targetId = this.infoWidget.targetId;
+      const command = message.method;
+      if (this.#splitWidget.showMode() === UI.SplitWidget.ShowMode.ONLY_MAIN) {
+        this.#splitWidget.toggleSidebar();
+      }
+      this.dispatchEventToListeners(Events.COMMAND_CHANGE, {command, parameters, targetId});
+    }, {jslogContext: 'edit-and-resend', disabled: !('id' in message)});
+
+    /**
+     * You can click the "Filter" item in the context menu to filter the
+     * protocol monitor entries to those that match the method of the
+     * current row.
+     */
+    menu.editSection().appendItem(i18nString(UIStrings.filter), () => {
+      this.textFilterUI.setValue(`method:${message.method}`, true);
+    }, {jslogContext: 'filter'});
+
+    /**
+     * You can click the "Documentation" item in the context menu to be
+     * taken to the CDP Documentation site entry for the given method.
+     */
+    menu.footerSection().appendItem(i18nString(UIStrings.documentation), () => {
+      const [domain, method] = message.method.split('.');
+      const type = 'id' in message ? 'method' : 'event';
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+          `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}` as
+          Platform.DevToolsPath.UrlString);
+    }, {jslogContext: 'documentation'});
   }
 
   #createCommandInput(): UI.Toolbar.ToolbarInput {
@@ -509,7 +537,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     }
   }
 
-  private targetToString(target: SDK.Target.Target|null): string {
+  private targetToString(target: SDK.Target.Target|undefined): string {
     if (!target) {
       return '';
     }
@@ -519,123 +547,45 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
   private messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
     if ('id' in message && message.id) {
-      const existingRow = this.dataGridRowForId.get(message.id);
-      if (!existingRow) {
+      const existingMessage = this.messageForId.get(message.id);
+      if (!existingMessage) {
         return;
       }
-      const allExistingRows = this.dataGridIntegrator.data().rows;
-      const matchingExistingRowIndex = allExistingRows.findIndex(r => existingRow === r);
-      const newRowWithUpdate = {
-        ...existingRow,
-        cells: existingRow.cells.map(cell => {
-          if (cell.columnId === 'response') {
-            return {
-              ...cell,
-              value: JSON.stringify(message.result || message.error),
-
-            };
-          }
-
-          if (cell.columnId === 'elapsed-time') {
-            const requestTime = this.requestTimeForId.get(message.id as number);
-            if (requestTime) {
-              return {
-                ...cell,
-                value: Date.now() - requestTime,
-                renderer: timeRenderer,
-              };
-            }
-          }
-
-          return cell;
-        }),
-      };
-
-      const newRowsArray = [...this.dataGridIntegrator.data().rows];
-      newRowsArray[matchingExistingRowIndex] = newRowWithUpdate;
+      existingMessage.result = message.result;
+      existingMessage.error = message.error;
+      existingMessage.elapsedTime = Date.now() - this.startTime - existingMessage.requestTime;
 
       // Now we've updated the message, it won't be updated again, so we can delete it from the tracking map.
-      this.dataGridRowForId.delete(message.id);
-      this.dataGridIntegrator.update({
-        ...this.dataGridIntegrator.data(),
-        rows: newRowsArray,
-      });
+      this.messageForId.delete(message.id);
+      this.requestUpdate();
       return;
     }
 
-    const sdkTarget = target as SDK.Target.Target | null;
-    const responseIcon = new IconButton.Icon.Icon();
-    responseIcon.data = {iconName: 'arrow-down', color: 'var(--icon-request)', width: '16px', height: '16px'};
-    const newRow: DataGrid.DataGridUtils.Row = {
-      cells: [
-        {columnId: 'method', value: message.method, title: message.method},
-        {columnId: 'request', value: '', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
-        {
-          columnId: 'response',
-          value: JSON.stringify(message.params),
-          renderer: DataGrid.DataGridRenderers.codeBlockRenderer,
-        },
-        {
-          columnId: 'timestamp',
-          value: Date.now() - this.startTime,
-          renderer: timeRenderer,
-        },
-        {columnId: 'elapsed-time', value: ''},
-        {columnId: 'type', value: responseIcon, title: 'received', renderer: DataGrid.DataGridRenderers.iconRenderer},
-        {columnId: 'target', value: this.targetToString(sdkTarget)},
-        {columnId: 'session', value: message.sessionId || ''},
-      ],
-      hidden: false,
-    };
-
-    this.dataGridIntegrator.update({
-      ...this.dataGridIntegrator.data(),
-      rows: this.dataGridIntegrator.data().rows.concat([newRow]),
+    this.#messages.push({
+      method: message.method,
+      sessionId: message.sessionId,
+      target: (target ?? undefined) as SDK.Target.Target | undefined,
+      requestTime: Date.now() - this.startTime,
+      result: message.params as Object,
     });
+
+    this.requestUpdate();
   }
 
   private messageSent(
       message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
-    const sdkTarget = target as SDK.Target.Target | null;
-    const requestResponseIcon = new IconButton.Icon.Icon();
-    requestResponseIcon
-        .data = {iconName: 'arrow-up-down', color: 'var(--icon-request-response)', width: '16px', height: '16px'};
-    const newRow: DataGrid.DataGridUtils.Row = {
-      styles: {
-        '--override-data-grid-row-background-color': 'var(--sys-color-surface3)',
-      },
-      cells: [
-        {columnId: 'method', value: message.method, title: message.method},
-        {
-          columnId: 'request',
-          value: JSON.stringify(message.params),
-          renderer: DataGrid.DataGridRenderers.codeBlockRenderer,
-        },
-        {columnId: 'response', value: '(pending)', renderer: DataGrid.DataGridRenderers.codeBlockRenderer},
-        {
-          columnId: 'timestamp',
-          value: Date.now() - this.startTime,
-          renderer: timeRenderer,
-        },
-        {columnId: 'elapsed-time', value: '(pending)'},
-        {
-          columnId: 'type',
-          value: requestResponseIcon,
-          title: 'sent',
-          renderer: DataGrid.DataGridRenderers.iconRenderer,
-        },
-        {columnId: 'target', value: String(sdkTarget?.id())},
-        {columnId: 'session', value: message.sessionId || ''},
-      ],
-      hidden: false,
+    const messageRecord = {
+      method: message.method,
+      params: message.params,
+      id: message.id,
+      sessionId: message.sessionId,
+      target: (target ?? undefined) as SDK.Target.Target | undefined,
+      requestTime: Date.now() - this.startTime,
     };
-    this.requestTimeForId.set(message.id, Date.now());
-    this.dataGridRowForId.set(message.id, newRow);
-    this.dataGridIntegrator.update({
-      ...this.dataGridIntegrator.data(),
-      rows: this.dataGridIntegrator.data().rows.concat([newRow]),
-    });
+    this.#messages.push(messageRecord);
+    this.requestUpdate();
+    this.messageForId.set(message.id, messageRecord);
   }
 
   private async saveAsFile(): Promise<void> {
@@ -649,11 +599,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       return;
     }
 
-    const rowEntries = [];
-    for (const row of this.dataGridIntegrator.data().rows) {
-      const rowEntry = Object.fromEntries(row.cells.map(cell => ([cell.columnId, cell.value])));
-      rowEntries.push(rowEntry);
-    }
+    const rowEntries = this.#messages.map(m => ({...m, target: m.target?.id()}));
 
     void stream.write(JSON.stringify(rowEntries, null, '  '));
     void stream.close();
@@ -725,10 +671,10 @@ export class CommandAutocompleteSuggestionProvider {
 
 export class InfoWidget extends UI.Widget.VBox {
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
-  request: {[x: string]: unknown};
+  request: {[x: string]: unknown}|undefined;
   targetId = '';
-  constructor() {
-    super();
+  constructor(element: HTMLElement) {
+    super(undefined, undefined, element);
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.tabbedPane.appendTab('request', i18nString(UIStrings.request), new UI.Widget.Widget());
     this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
@@ -739,13 +685,13 @@ export class InfoWidget extends UI.Widget.VBox {
   }
 
   render(data: {
-    request: DataGrid.DataGridUtils.Cell|undefined,
-    response: DataGrid.DataGridUtils.Cell|undefined,
-    target: DataGrid.DataGridUtils.Cell|undefined,
+    request: Object|undefined,
+    response: Object|undefined,
+    targetId: string|undefined,
     type: 'sent'|'received'|undefined,
     selectedTab: 'request'|'response'|undefined,
   }|null): void {
-    if (!data || !data.request || !data.response || !data.target) {
+    if (!data) {
       this.tabbedPane.changeTabView(
           'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), ''));
       this.tabbedPane.changeTabView(
@@ -759,13 +705,9 @@ export class InfoWidget extends UI.Widget.VBox {
       this.tabbedPane.selectTab('response');
     }
 
-    const requestParsed = JSON.parse(String(data.request.value) || 'null');
-    this.request = requestParsed;
-    this.targetId = String(data.target.value);
-    this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
-    const responseParsed =
-        data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');
-    this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
+    this.request = data.request as {[x: string]: unknown} | undefined;
+    this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(data.request || null));
+    this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(data.response || null));
     if (data.selectedTab) {
       this.tabbedPane.selectTab(data.selectedTab);
     }

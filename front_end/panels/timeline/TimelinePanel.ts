@@ -1290,8 +1290,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.networkConditions));
     this.networkThrottlingSelect =
-        MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(
-            toolbarItem.selectElement());
+        MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(toolbarItem.element);
     return toolbarItem;
   }
 

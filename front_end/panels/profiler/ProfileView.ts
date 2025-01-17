@@ -514,7 +514,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   resetClicked(): void {
-    this.viewSelectComboBox.selectElement().focus();
+    this.viewSelectComboBox.element.focus();
     this.resetButton.setEnabled(false);
     if (this.profileDataGridTree) {
       this.profileDataGridTree.restore();

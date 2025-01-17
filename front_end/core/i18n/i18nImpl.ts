@@ -116,7 +116,7 @@ export function registerUIStrings(
  */
 export function getFormatLocalizedString(
     registeredStrings: I18n.LocalizedStringSet.RegisteredFileStrings, stringId: string,
-    placeholders: Record<string, Object>): Element {
+    placeholders: Record<string, Object>): HTMLSpanElement {
   const formatter =
       registeredStrings.getLocalizedStringSetFor(DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
 

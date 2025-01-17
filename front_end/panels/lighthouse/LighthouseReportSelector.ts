@@ -38,12 +38,12 @@ export class ReportSelector {
   }
 
   private setEmptyState(): void {
-    this.comboBoxInternal.selectElement().removeChildren();
+    this.comboBoxInternal.removeOptions();
 
     this.comboBoxInternal.setEnabled(false);
     this.newLighthouseItem = document.createElement('option');
     this.newLighthouseItem.label = i18nString(UIStrings.newReport);
-    this.comboBoxInternal.selectElement().appendChild(this.newLighthouseItem);
+    this.comboBoxInternal.addOption(this.newLighthouseItem);
     this.comboBoxInternal.select(this.newLighthouseItem);
   }
 
@@ -75,7 +75,7 @@ export class ReportSelector {
 
   prepend(item: Item): void {
     const optionEl = item.optionElement();
-    const selectEl = this.comboBoxInternal.selectElement();
+    const selectEl = this.comboBoxInternal.element;
 
     this.itemByOptionElement.set(optionEl, item);
     selectEl.insertBefore(optionEl, selectEl.firstElementChild);

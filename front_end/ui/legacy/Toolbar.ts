@@ -449,16 +449,16 @@ export interface ToolbarButtonOptions {
 
 // We need any here because Common.ObjectWrapper.ObjectWrapper is invariant in T.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class ToolbarItem<T = any> extends Common.ObjectWrapper.ObjectWrapper<T> {
-  element: HTMLElement;
+export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends Common.ObjectWrapper.ObjectWrapper<T> {
+  element: E;
   private visibleInternal: boolean;
   enabled: boolean;
   toolbar: Toolbar|null;
   protected title?: string;
 
-  constructor(element: Element) {
+  constructor(element: E) {
     super();
-    this.element = (element as HTMLElement);
+    this.element = element;
     this.visibleInternal = true;
     this.enabled = true;
 
@@ -523,26 +523,21 @@ interface ToolbarItemWithCompactLayoutEventTypes {
 }
 
 export class ToolbarItemWithCompactLayout extends ToolbarItem<ToolbarItemWithCompactLayoutEventTypes> {
-  constructor(element: Element) {
-    super(element);
-  }
-
   override setCompactLayout(enable: boolean): void {
     this.dispatchEventToListeners(ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED, enable);
   }
 }
 
-export class ToolbarText extends ToolbarItem<void> {
-  constructor(text?: string) {
+export class ToolbarText extends ToolbarItem<void, HTMLElement> {
+  constructor(text: string = '') {
     const element = document.createElement('div');
     element.classList.add('toolbar-text');
     super(element);
-    this.element.classList.add('toolbar-text');
-    this.setText(text || '');
+    this.setText(text);
   }
 
   text(): string {
-    return this.element.textContent || '';
+    return this.element.textContent ?? '';
   }
 
   setText(text: string): void {
@@ -550,7 +545,7 @@ export class ToolbarText extends ToolbarItem<void> {
   }
 }
 
-export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
+export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons.Button.Button> {
   private button: Buttons.Button.Button;
   private text?: string;
   private adorner?: HTMLElement;
@@ -1090,45 +1085,36 @@ export interface ItemsProvider {
   toolbarItems(): ToolbarItem[];
 }
 
-export class ToolbarComboBox extends ToolbarItem<void> {
-  protected selectElementInternal: HTMLSelectElement;
-
+export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
   constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string, jslogContext?: string) {
-    const element = document.createElement('select');
-    super(element);
-    this.selectElementInternal = element;
+    super(document.createElement('select'));
     if (changeHandler) {
-      this.selectElementInternal.addEventListener('change', changeHandler, false);
+      this.element.addEventListener('change', changeHandler, false);
     }
-    ARIAUtils.setLabel(this.selectElementInternal, title);
+    ARIAUtils.setLabel(this.element, title);
     super.setTitle(title);
     if (className) {
-      this.selectElementInternal.classList.add(className);
+      this.element.classList.add(className);
     }
     if (jslogContext) {
-      this.selectElementInternal.setAttribute(
-          'jslog', `${VisualLogging.dropDown().track({change: true}).context(jslogContext)}`);
+      this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(jslogContext)}`);
     }
-  }
-
-  selectElement(): HTMLSelectElement {
-    return this.selectElementInternal;
   }
 
   size(): number {
-    return this.selectElementInternal.childElementCount;
+    return this.element.childElementCount;
   }
 
   options(): HTMLOptionElement[] {
-    return Array.prototype.slice.call(this.selectElementInternal.children, 0);
+    return Array.prototype.slice.call(this.element.children, 0);
   }
 
   addOption(option: Element): void {
-    this.selectElementInternal.appendChild(option);
+    this.element.appendChild(option);
   }
 
   createOption(label: string, value?: string): HTMLOptionElement {
-    const option = this.selectElementInternal.createChild('option');
+    const option = this.element.createChild('option');
     option.text = label;
     if (typeof value !== 'undefined') {
       option.value = value;
@@ -1140,42 +1126,42 @@ export class ToolbarComboBox extends ToolbarItem<void> {
 
   override applyEnabledState(enabled: boolean): void {
     super.applyEnabledState(enabled);
-    this.selectElementInternal.disabled = !enabled;
+    this.element.disabled = !enabled;
   }
 
   removeOption(option: Element): void {
-    this.selectElementInternal.removeChild(option);
+    this.element.removeChild(option);
   }
 
   removeOptions(): void {
-    this.selectElementInternal.removeChildren();
+    this.element.removeChildren();
   }
 
   selectedOption(): HTMLOptionElement|null {
-    if (this.selectElementInternal.selectedIndex >= 0) {
-      return this.selectElementInternal[this.selectElementInternal.selectedIndex] as HTMLOptionElement;
+    if (this.element.selectedIndex >= 0) {
+      return this.element[this.element.selectedIndex] as HTMLOptionElement;
     }
     return null;
   }
 
   select(option: Element): void {
-    this.selectElementInternal.selectedIndex = Array.prototype.indexOf.call(this.selectElementInternal, option);
+    this.element.selectedIndex = Array.prototype.indexOf.call(this.element, option);
   }
 
   setSelectedIndex(index: number): void {
-    this.selectElementInternal.selectedIndex = index;
+    this.element.selectedIndex = index;
   }
 
   selectedIndex(): number {
-    return this.selectElementInternal.selectedIndex;
+    return this.element.selectedIndex;
   }
 
   setMaxWidth(width: number): void {
-    this.selectElementInternal.style.maxWidth = width + 'px';
+    this.element.style.maxWidth = width + 'px';
   }
 
   setMinWidth(width: number): void {
-    this.selectElementInternal.style.minWidth = width + 'px';
+    this.element.style.minWidth = width + 'px';
   }
 }
 
@@ -1192,18 +1178,18 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
     super(null, accessibleName, undefined, setting.name);
     this.optionsInternal = options;
     this.setting = setting;
-    this.selectElementInternal.addEventListener('change', this.valueChanged.bind(this), false);
+    this.element.addEventListener('change', this.valueChanged.bind(this), false);
     this.setOptions(options);
     setting.addChangeListener(this.settingChanged, this);
   }
 
   setOptions(options: Option[]): void {
     this.optionsInternal = options;
-    this.selectElementInternal.removeChildren();
+    this.element.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
       const option = this.createOption(dataOption.label, dataOption.value);
-      this.selectElementInternal.appendChild(option);
+      this.element.appendChild(option);
       if (this.setting.get() === dataOption.value) {
         this.setSelectedIndex(i);
       }

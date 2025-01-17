@@ -4,9 +4,11 @@
 
 import '../../../../ui/components/markdown_view/markdown_view.js';
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import type {InsightModel} from '../../../../models/trace/insights/types.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -59,6 +61,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
 
   #selected = false;
   #model: T|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
 
   get model(): T|null {
     return this.#model;
@@ -118,6 +121,10 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   set bounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds|null) {
     this.data.bounds = bounds;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+    this.#parsedTrace = parsedTrace;
   }
 
   #dispatchInsightToggle(): void {
@@ -248,6 +255,23 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     }
 
     return null;
+  }
+
+  protected renderNode(backendNodeId: Protocol.DOM.BackendNodeId, fallbackText?: string): LitHtml.LitTemplate {
+    const fallback = fallbackText ?? LitHtml.nothing;
+    if (!this.#parsedTrace) {
+      return html`${fallback}`;
+    }
+
+    const domNodePromise =
+        Trace.Extras.FetchNodes.domNodeForBackendNodeID(this.#parsedTrace, backendNodeId).then((node): unknown => {
+          if (!node) {
+            return fallback;
+          }
+          return Common.Linkifier.Linkifier.linkify(node);
+        });
+
+    return html`${LitHtml.Directives.until(domNodePromise, fallback)}`;
   }
 
   #renderWithContent(content: LitHtml.LitTemplate): void {

@@ -92,10 +92,11 @@
 
 .insight-section {
   padding-top: var(--sys-size-5);
+  margin-top: var(--sys-size-5);
 }
 
 .insight-description:not(:empty) {
-  padding-bottom: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
 }
 
 .insight-section:not(:empty) {

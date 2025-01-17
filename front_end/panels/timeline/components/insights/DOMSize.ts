@@ -7,6 +7,7 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -22,6 +23,10 @@ const UIStrings = {
    * @description Header for a column containing the value of a statistic.
    */
   value: 'Value',
+  /**
+   * @description Header for a column containing the page element related to a statistc.
+   */
+  element: 'Element',
   /**
    * @description Label for a value representing the total number of elements on the page.
    */
@@ -58,6 +63,36 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
                        }));
   }
 
+  #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): LitHtml.LitTemplate {
+    const rows: TableData['rows'] = [];
+
+    if (domStatsData.maxDepth) {
+      const {nodeId, nodeName} = domStatsData.maxDepth;
+      rows.push({values: [i18nString(UIStrings.maxDOMDepth), this.renderNode(nodeId, nodeName)]});
+    }
+
+    if (domStatsData.maxChildren) {
+      const {nodeId, nodeName} = domStatsData.maxChildren;
+      rows.push({values: [i18nString(UIStrings.maxChildren), this.renderNode(nodeId, nodeName)]});
+    }
+
+    if (!rows.length) {
+      return LitHtml.nothing;
+    }
+
+    // clang-format off
+    return html`<div class="insight-section">
+      <devtools-performance-table
+        .data=${{
+          insight: this,
+          headers: [i18nString(UIStrings.statistic), i18nString(UIStrings.element)],
+          rows,
+        } as TableData}>
+      </devtools-performance-table>
+    </div>`;
+    // clang-format on
+  }
+
   override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
@@ -81,7 +116,9 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
           ],
         } as TableData}>
       </devtools-performance-table>
-    </div>`;
+    </div>
+    ${this.#renderNodeTable(domStatsData)}
+    `;
     // clang-format on
   }
 }

@@ -197,6 +197,7 @@ export class SidebarInsightsTab extends HTMLElement {
             insightSetKey: id,
             activeCategory: this.#selectedCategory,
             activeInsight: this.#activeInsight,
+            parsedTrace: this.#parsedTrace,
           };
 
           const contents = html`

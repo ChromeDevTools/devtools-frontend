@@ -38,6 +38,7 @@ export interface SidebarSingleInsightSetData {
   insightSetKey: Trace.Types.Events.NavigationId|null;
   activeCategory: Trace.Insights.Types.InsightCategory;
   activeInsight: ActiveInsight|null;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
 }
 
 /**
@@ -47,7 +48,6 @@ export interface SidebarSingleInsightSetData {
  * users. */
 const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
   'FontDisplay',
-  'DOMSize',
 ]);
 
 type InsightNameToComponentMapping =
@@ -82,6 +82,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     insightSetKey: null,
     activeCategory: Trace.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
+    parsedTrace: null,
   };
 
   set data(data: SidebarSingleInsightSetData) {
@@ -197,7 +198,8 @@ export class SidebarSingleInsightSet extends HTMLElement {
           .selected=${this.#data.activeInsight?.model === model}
           .model=${model}
           .bounds=${insightSet.bounds}
-          .insightSetKey=${insightSetKey}>
+          .insightSetKey=${insightSetKey}
+          .parsedTrace=${this.#data.parsedTrace}>
         </${componentClass.litTagName}>
       </div>`;
       // clang-format on

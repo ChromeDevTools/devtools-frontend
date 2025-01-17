@@ -106,6 +106,12 @@ export class IgnoreListSetting extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [ignoreListSettingStyles];
     this.#scheduleRender();
+
+    // Prevent the event making its way to the TimelinePanel element which will
+    // cause the "Load Profile" context menu to appear.
+    this.addEventListener('contextmenu', e => {
+      e.stopPropagation();
+    });
   }
 
   #scheduleRender(): void {

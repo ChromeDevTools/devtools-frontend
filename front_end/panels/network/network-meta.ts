@@ -10,7 +10,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Extensions from '../../models/extensions/extensions.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import * as NetworkForward from './forward/forward.js';
 import type * as Network from './network.js';
@@ -443,7 +442,7 @@ UI.ContextMenu.registerProvider({
       SDK.NetworkRequest.NetworkRequest,
       SDK.Resource.Resource,
       Workspace.UISourceCode.UISourceCode,
-      TimelineUtils.NetworkRequest.TimelineNetworkRequest,
+      SDK.TraceObject.RevealableNetworkRequest,
     ];
   },
   async loadProvider() {

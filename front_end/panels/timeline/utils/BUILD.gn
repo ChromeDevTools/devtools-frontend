@@ -14,7 +14,6 @@ devtools_module("utils") {
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
-    "NetworkRequest.ts",
     "SourceMapsResolver.ts",
   ]
 
@@ -26,7 +25,6 @@ devtools_module("utils") {
     "../../../models/bindings:bundle",
     "../../../models/crux-manager:bundle",
     "../../../models/source_map_scopes:bundle",
-    "../../../models/timeline_model:bundle",
     "../../../models/trace:bundle",
     "../../../models/workspace:bundle",
     "../../../panels/mobile_throttling:bundle",

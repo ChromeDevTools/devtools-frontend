@@ -50,7 +50,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
-import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
@@ -767,7 +766,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   appendApplicableItems(
       this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu,
       target: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode|
-      TimelineUtils.NetworkRequest.TimelineNetworkRequest): void {
+      SDK.TraceObject.RevealableNetworkRequest): void {
     const appendRevealItem = (request: SDK.NetworkRequest.NetworkRequest): void => {
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openInNetworkPanel),
@@ -783,14 +782,14 @@ export class NetworkPanel extends UI.Panel.Panel implements
         jslogContext: 'reveal-in-network',
       });
     };
-    const appendRevealItemAndSelect = (request: TimelineUtils.NetworkRequest.TimelineNetworkRequest): void => {
+    const appendRevealItemAndSelect = (request: SDK.TraceObject.RevealableNetworkRequest): void => {
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openInNetworkPanel),
           () => UI.ViewManager.ViewManager.instance()
                     .showView('network')
                     .then(this.networkLogView.resetFilter.bind(this.networkLogView))
                     .then(this.selectAndActivateRequest.bind(
-                        this, request.request, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+                        this, request.networkRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
                         /* FilterOptions= */ undefined)),
           {jslogContext: 'timeline.reveal-in-network'});
     };
@@ -816,7 +815,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
       }
       return;
     }
-    if (target instanceof TimelineUtils.NetworkRequest.TimelineNetworkRequest) {
+    if (target instanceof SDK.TraceObject.RevealableNetworkRequest) {
       appendRevealItemAndSelect(target);
       return;
     }

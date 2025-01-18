@@ -6,13 +6,13 @@ import '../../../ui/components/request_link_icon/request_link_icon.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as TimelineUtils from '../utils/utils.js';
+import type * as TimelineUtils from '../utils/utils.js';
 
 import NetworkRequestDetailsStyles from './networkRequestDetails.css.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
@@ -168,28 +168,22 @@ export class NetworkRequestDetails extends HTMLElement {
     const linkifiedURL = LegacyComponents.Linkifier.Linkifier.linkifyURL(
         this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString, options);
 
-    const networkRequest = TimelineUtils.NetworkRequest.getNetworkRequest(this.#networkRequest);
+    // Potentially link to request within Network Panel
+    const networkRequest = SDK.TraceObject.RevealableNetworkRequest.create(this.#networkRequest);
     if (networkRequest) {
       linkifiedURL.addEventListener('contextmenu', (event: MouseEvent) => {
         if (!this.#networkRequest) {
           return;
         }
-        // Add a wrapper class here.
-        // The main reason is the `Open in Network panel` option is handled by the context menu provider, which will
-        // add this option for all supporting types. And there are a lot of context menu providers that support
-        // `SDK.NetworkRequest.NetworkRequest`, for example `Override content` by PersistenceActions, but we so far just
-        // want the one to reveal in network panel, so add a new class which will only be supported by Network panel.
-        // Also we want to have a different behavior(select the network request) from the
-        // `SDK.NetworkRequest.NetworkRequest` (highlight the network request once).
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        contextMenu.appendApplicableItems(new TimelineUtils.NetworkRequest.TimelineNetworkRequest(networkRequest));
+        contextMenu.appendApplicableItems(networkRequest);
         void contextMenu.show();
       });
 
       // clang-format off
       const urlElement = html`
         ${linkifiedURL}
-        <devtools-request-link-icon .data=${{request: networkRequest}}>
+        <devtools-request-link-icon .data=${{request: networkRequest.networkRequest}}>
         </devtools-request-link-icon>
       `;
       // clang-format on

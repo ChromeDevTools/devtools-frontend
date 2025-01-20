@@ -10,11 +10,11 @@ import {getLoggingState, type LoggingState} from './LoggingState.js';
 
 let veDebuggingEnabled = false;
 let debugPopover: HTMLElement|null = null;
-let hightlightedElement: HTMLElement|null = null;
+let highlightedElement: HTMLElement|null = null;
 const nonDomDebugElements = new WeakMap<Loggable, HTMLElement>();
 let onInspect: ((query: string) => void)|undefined = undefined;
 
-export function setVeDebuggingEnabled(enabled: boolean, inpsect?: (query: string) => void): void {
+export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string) => void): void {
   veDebuggingEnabled = enabled;
   if (enabled && !debugPopover) {
     debugPopover = document.createElement('div');
@@ -27,10 +27,10 @@ export function setVeDebuggingEnabled(enabled: boolean, inpsect?: (query: string
     debugPopover.style.zIndex = '100000';
     document.body.appendChild(debugPopover);
   }
-  onInspect = inpsect;
-  if (!enabled && hightlightedElement) {
-    hightlightedElement.style.backgroundColor = '';
-    hightlightedElement.style.outline = '';
+  onInspect = inspect;
+  if (!enabled && highlightedElement) {
+    highlightedElement.style.backgroundColor = '';
+    highlightedElement.style.outline = '';
   }
 }
 
@@ -53,12 +53,33 @@ function showDebugPopover(content: string, rect?: DOMRect): void {
   if (!debugPopover) {
     return;
   }
-  if (rect) {
-    debugPopover.style.left = `${rect.left}px`;
-    debugPopover.style.top = `${rect.bottom + 8}px`;
-  }
+
+  // Set these first so we get the correct information from
+  // getBoundingClientRect
   debugPopover.style.display = 'block';
   debugPopover.textContent = content;
+
+  if (rect) {
+    const debugPopoverReact = debugPopover.getBoundingClientRect();
+
+    // If there is no space under the element
+    // render render it above the element
+    if (window.innerHeight < rect.bottom + debugPopoverReact.height + 8) {
+      debugPopover.style.top = `${rect.top - debugPopoverReact.height - 8}px`;
+    } else {
+      debugPopover.style.top = `${rect.bottom + 8}px`;
+    }
+
+    // If the element will go outside the viewport on the right
+    // render it with it's and at the viewport end.
+    if (window.innerWidth < rect.left + debugPopoverReact.width) {
+      debugPopover.style.right = '0px';
+      debugPopover.style.left = '';
+    } else {
+      debugPopover.style.right = '';
+      debugPopover.style.left = `${rect.left}px`;
+    }
+  }
 }
 
 function processElementForDebugging(element: HTMLElement, loggingState: LoggingState): void {
@@ -69,7 +90,7 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
     }
   } else {
     element.addEventListener('mousedown', event => {
-      if (event.currentTarget === hightlightedElement && onInspect && debugPopover && veDebuggingEnabled) {
+      if (event.currentTarget === highlightedElement && onInspect && debugPopover && veDebuggingEnabled) {
         onInspect(debugPopover.textContent || '');
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -79,13 +100,13 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
       if (!veDebuggingEnabled) {
         return;
       }
-      if (hightlightedElement) {
-        hightlightedElement.style.backgroundColor = '';
-        hightlightedElement.style.outline = '';
+      if (highlightedElement) {
+        highlightedElement.style.backgroundColor = '';
+        highlightedElement.style.outline = '';
       }
       element.style.backgroundColor = '#A7C3E4';
       element.style.outline = 'dashed 1px #7327C6';
-      hightlightedElement = element;
+      highlightedElement = element;
       assertNotNullOrUndefined(debugPopover);
       const pathToRoot = [loggingState];
       let ancestor = loggingState.parent;
@@ -458,7 +479,7 @@ DEFINE MACRO Interaction STRUCT(${
       ])});
 DEFINE MACRO Entry STRUCT($1, $2 AS interactions, $3 AS time);
 
-// This fake entry put first fixes nested struct fiels names being lost
+// This fake entry put first fixes nested struct fields names being lost
 DEFINE MACRO FakeVeFields $VeFields("", $NullString, 0, 0, 0, $1);
 DEFINE MACRO FakeVe STRUCT($FakeVeFields($1));
 DEFINE MACRO FakeEntry $Entry($FakeVeFields($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe($FakeVe(null)))))))), ([]), 0);
@@ -606,7 +627,7 @@ export function processStartLoggingForDebugging(): void {
 
 // Compares the 'actual' log entry against the 'expected'.
 // For impressions events to match, all expected impressions need to be present
-// in the actual event. Unexected impressions in the actual event are ignored.
+// in the actual event. Unexpected impressions in the actual event are ignored.
 // Interaction events need to match exactly.
 function compareVeEvents(actual: TestLogEntry, expected: TestLogEntry): boolean {
   if ('interaction' in expected && 'interaction' in actual) {

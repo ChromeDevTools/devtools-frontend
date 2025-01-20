@@ -74,7 +74,7 @@ module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const options = {
     basePath: CHECKOUT_ROOT,
-    autoWatchBatchDelay: 3000,
+    autoWatchBatchDelay: 1000,
 
     files: [
       // Global hooks in test_setup must go first

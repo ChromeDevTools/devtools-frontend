@@ -25,6 +25,9 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                     .options('debug-driver', {type: 'boolean', hidden: true, desc: 'Debug the driver part of tests'})
                     .options('verbose', {alias: 'v', type: 'count', desc: 'Increases the log level'})
                     .options('bail', {alias: 'b', desc: ' bail after first test failure'})
+                    .options('auto-watch', {
+                      desc: 'watch changes to files and run tests automatically on file change (only for unit tests)'
+                    })
                     .positional('tests', {
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
@@ -104,6 +107,7 @@ class Tests {
   protected run(tests: PathPair[], args: string[], positionalTestArgs = true) {
     const argumentsForNode = [
       ...args,
+      ...(options['auto-watch'] ? ['--auto-watch', '--no-single-run'] : []),
       '--',
       ...tests.map(t => positionalTestArgs ? t.buildPath : `--tests=${t.buildPath}`),
       ...forwardOptions(),

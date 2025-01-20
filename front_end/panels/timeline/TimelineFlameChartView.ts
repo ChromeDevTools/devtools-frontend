@@ -921,7 +921,7 @@ export class TimelineFlameChartView extends
   extensionDataVisibilityChanged(): void {
     this.reset();
     this.setupWindowTimes();
-    this.mainDataProvider.reset();
+    this.mainDataProvider.clearTimelineDataCache();
     this.mainDataProvider.timelineData(true);
     this.refreshMainFlameChart();
   }

@@ -341,8 +341,8 @@ describeWithEnvironment('SourceMap', () => {
     assert.lengthOf(sourceMap.sourceURLs(), 3, 'unexpected number of original source URLs');
     assertMapping(sourceMap.findEntry(0, 0), 0, 'source1.js', 0, 0);
     assertMapping(sourceMap.findEntry(0, 1), 0, 'source1.js', 2, 1);
-    assertMapping(sourceMap.findEntry(2, 10), 0, 'source3.js', 0, 0);
-    assertMapping(sourceMap.findEntry(2, 11), 0, 'source3.js', 2, 1);
+    assertMapping(sourceMap.findEntry(2, 10), 2, 'source3.js', 0, 0);
+    assertMapping(sourceMap.findEntry(2, 11), 2, 'source3.js', 2, 1);
   });
 
   it('can parse source maps with ClosureScript names', () => {

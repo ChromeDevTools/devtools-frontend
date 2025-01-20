@@ -457,18 +457,20 @@ export class SourceMap {
     }
   }
 
-  private eachSection(callback: (arg0: SourceMapV3Object, arg1: number, arg2: number) => void): void {
+  private eachSection(callback: (arg0: SourceMapV3Object, arg1: number, arg2: number, arg3: number) => void): void {
     if (!this.#json) {
       return;
     }
     if ('sections' in this.#json) {
+      let sourcesIndex = 0;
       for (const section of this.#json.sections) {
         if ('map' in section) {
-          callback(section.map, section.offset.line, section.offset.column);
+          callback(section.map, sourcesIndex, section.offset.line, section.offset.column);
+          sourcesIndex += section.map.sources.length;
         }
       }
     } else {
-      callback(this.#json, 0, 0);
+      callback(this.#json, 0, 0, 0);
     }
   }
 
@@ -503,7 +505,7 @@ export class SourceMap {
     sourceMapToSourceList.set(sourceMap, sourcesList);
   }
 
-  private parseMap(map: SourceMapV3Object, lineNumber: number, columnNumber: number): void {
+  private parseMap(map: SourceMapV3Object, baseSourceIndex: number, lineNumber: number, columnNumber: number): void {
     let sourceIndex = 0;
     let sourceLineNumber = 0;
     let sourceColumnNumber = 0;
@@ -550,14 +552,15 @@ export class SourceMap {
       sourceColumnNumber += tokenIter.nextVLQ();
 
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(
-            new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
+        this.mappings().push(new SourceMapEntry(
+            lineNumber, columnNumber, baseSourceIndex + sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
         continue;
       }
 
       nameIndex += tokenIter.nextVLQ();
       this.mappings().push(new SourceMapEntry(
-          lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+          lineNumber, columnNumber, baseSourceIndex + sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber,
+          names[nameIndex]));
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {

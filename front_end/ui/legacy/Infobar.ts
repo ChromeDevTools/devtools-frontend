@@ -42,9 +42,7 @@ export class Infobar {
   private readonly infoMessage: HTMLElement;
   private infoText: HTMLElement;
   private readonly actionContainer: HTMLElement;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly disableSetting: Common.Settings.Setting<any>|null;
+  private readonly disableSetting: Common.Settings.Setting<boolean>|null;
   private readonly closeContainer: HTMLElement;
   private readonly toggleElement: Buttons.Button.Button;
   private readonly closeButton: DevToolsCloseButton;
@@ -53,9 +51,7 @@ export class Infobar {
   private parentView?: Widget;
 
   constructor(
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>,
+      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
       /* TODO(crbug.com/1354548) Remove with JS Profiler deprecation */ isCloseable: boolean = true,
       jslogContext?: string) {
     this.element = document.createElement('div');
@@ -155,9 +151,7 @@ export class Infobar {
   }
 
   static create(
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<any>,
+      type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
       jslogContext?: string): Infobar|null {
     if (disableSetting && disableSetting.get()) {
       return null;

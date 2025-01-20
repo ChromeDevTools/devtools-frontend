@@ -89,9 +89,7 @@ export class FormatterWorkerPool {
       methodName: string, params: {
         [x: string]: string,
       },
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      callback: (arg0: boolean, arg1: any) => void): void {
+      callback: (arg0: boolean, arg1: unknown) => void): void {
     const task = new Task(methodName, params, onData, true);
     this.taskQueue.push(task);
     this.processNextTask();

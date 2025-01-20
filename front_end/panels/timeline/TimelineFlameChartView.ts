@@ -976,7 +976,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   extensionDataVisibilityChanged(): void {
     this.reset();
     this.setupWindowTimes();
-    this.mainDataProvider.reset();
+    this.mainDataProvider.clearTimelineDataCache();
     this.mainDataProvider.timelineData(true);
     this.refreshMainFlameChart();
   }

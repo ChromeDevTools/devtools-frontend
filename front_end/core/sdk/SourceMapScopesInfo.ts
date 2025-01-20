@@ -5,16 +5,9 @@
 import * as Protocol from '../../generated/protocol.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
-import type {SourceMap, SourceMapV3Object} from './SourceMap.js';
+import type {SourceMap} from './SourceMap.js';
 import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
-import {
-  decodeGeneratedRanges,
-  decodeOriginalScopes,
-  type GeneratedRange,
-  type OriginalPosition,
-  type OriginalScope,
-  type Position,
-} from './SourceMapScopes.js';
+import type {GeneratedRange, OriginalPosition, OriginalScope, Position,} from './SourceMapScopes.js';
 
 export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
@@ -29,16 +22,16 @@ export class SourceMapScopesInfo {
     this.#generatedRanges = generatedRanges;
   }
 
-  static parseFromMap(
-      sourceMap: SourceMap,
-      sourceMapJson: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>): SourceMapScopesInfo {
-    if (!sourceMapJson.originalScopes || sourceMapJson.generatedRanges === undefined) {
-      throw new Error('Cant create SourceMapScopesInfo without encoded scopes');
+  addOriginalScopes(scopes: OriginalScope[]): void {
+    for (const scope of scopes) {
+      this.#originalScopes.push(scope);
     }
-    const scopeTrees = decodeOriginalScopes(sourceMapJson.originalScopes, sourceMapJson.names ?? []);
-    const originalScopes = scopeTrees.map(tree => tree.root);
-    const generatedRanges = decodeGeneratedRanges(sourceMapJson.generatedRanges, scopeTrees, sourceMapJson.names ?? []);
-    return new SourceMapScopesInfo(sourceMap, originalScopes, generatedRanges);
+  }
+
+  addGeneratedRanges(ranges: GeneratedRange[]): void {
+    for (const range of ranges) {
+      this.#generatedRanges.push(range);
+    }
   }
 
   /**

@@ -38,6 +38,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
+import {decodeScopes} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -636,7 +637,8 @@ export class SourceMap {
 
   #parseScopes(map: SourceMapV3Object): void {
     if (map.originalScopes && map.generatedRanges) {
-      this.#scopesInfo = SourceMapScopesInfo.parseFromMap(this, map);
+      const {originalScopes, generatedRanges} = decodeScopes(map);
+      this.#scopesInfo = new SourceMapScopesInfo(this, originalScopes, generatedRanges);
     }
   }
 

@@ -12,7 +12,7 @@
  * in this file to change frequently.
  */
 
-import {TokenIterator} from './SourceMap.js';
+import {type SourceMapV3Object, TokenIterator} from './SourceMap.js';
 
 /**
  * A scope in the authored source.
@@ -96,6 +96,17 @@ export interface OriginalPosition extends Position {
 interface OriginalScopeTree {
   readonly root: OriginalScope;
   readonly scopeForItemIndex: Map<number, OriginalScope>;
+}
+
+export function decodeScopes(map: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>):
+    {originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]} {
+  if (!map.originalScopes || map.generatedRanges === undefined) {
+    throw new Error('Cant decode scopes without "originalScopes" or "generatedRanges"');
+  }
+  const scopeTrees = decodeOriginalScopes(map.originalScopes, map.names ?? []);
+  const originalScopes = scopeTrees.map(tree => tree.root);
+  const generatedRanges = decodeGeneratedRanges(map.generatedRanges, scopeTrees, map.names ?? []);
+  return {originalScopes, generatedRanges};
 }
 
 export function decodeOriginalScopes(encodedOriginalScopes: string[], names: string[]): OriginalScopeTree[] {

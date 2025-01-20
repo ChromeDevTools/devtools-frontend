@@ -158,8 +158,19 @@ const createTraceElement =
       if (rule) {
         ruleOriginNode = StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
       }
+
+      let selector = 'element.style';
+      if (rule) {
+        selector = rule.selectorText();
+      } else if (property.ownerStyle.type === SDK.CSSStyleDeclaration.Type.Animation) {
+        selector = property.ownerStyle.animationName() ? `${property.ownerStyle.animationName()} animation` :
+                                                         'animation style';
+      } else if (property.ownerStyle.type === SDK.CSSStyleDeclaration.Type.Transition) {
+        selector = 'transitions style';
+      }
+
       trace.data = {
-        selector: rule ? rule.selectorText() : 'element.style',
+        selector,
         active: !isPropertyOverloaded,
         onNavigateToSource: navigateToSource.bind(null, property),
         ruleOriginNode,

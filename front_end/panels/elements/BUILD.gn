@@ -156,6 +156,7 @@ ts_library("unittests") {
     "CSSRuleValidator.test.ts",
     "ClassesPaneWidget.test.ts",
     "ComputedStyleModel.test.ts",
+    "ComputedStyleWidget.test.ts",
     "DOMLinkifier.test.ts",
     "ElementStatePaneWidget.test.ts",
     "ElementsPanel.test.ts",

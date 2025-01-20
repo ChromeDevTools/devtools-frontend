@@ -34,6 +34,10 @@ export class ThrottledWidget extends VBox {
     });
   }
 
+  override get updateComplete(): Promise<boolean> {
+    return this.updateThrottler.processCompleted?.then(result => Boolean(result)) || Promise.resolve(false);
+  }
+
   override wasShown(): void {
     super.wasShown();
     if (this.updateWhenVisible) {

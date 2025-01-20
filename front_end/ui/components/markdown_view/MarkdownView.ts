@@ -42,14 +42,18 @@ export class MarkdownView extends HTMLElement {
 
     if (data.animationEnabled) {
       this.#animationEnabled = true;
-      this.#renderer.setCustomClasses({
+      this.#renderer.addCustomClasses({
         paragraph: 'pending',
         heading: 'pending',
         list_item: 'pending',
       });
     } else {
       this.#animationEnabled = false;
-      this.#renderer.setCustomClasses({});
+      this.#renderer.removeCustomClasses({
+        paragraph: 'pending',
+        heading: 'pending',
+        list_item: 'pending',
+      });
     }
 
     this.#update();
@@ -67,7 +71,11 @@ export class MarkdownView extends HTMLElement {
     }
     this.#isAnimating = false;
     this.#animationEnabled = false;
-    this.#renderer.setCustomClasses({});
+    this.#renderer.removeCustomClasses({
+      paragraph: 'pending',
+      heading: 'pending',
+      list_item: 'pending',
+    });
   }
 
   #animate(): void {
@@ -127,16 +135,29 @@ declare global {
  * Default renderer is used for the IssuesPanel and allows only well-known images and links to be embedded.
  */
 export class MarkdownLitRenderer {
-  #customClasses: Record<string, string> = {};
+  #customClasses: Record<string, Set<string>> = {};
 
-  setCustomClasses(customClasses: Record<Marked.Marked.Token['type'], string>): void {
-    this.#customClasses = customClasses;
+  addCustomClasses(customClasses: Record<Marked.Marked.Token['type'], string>): void {
+    for (const [type, className] of Object.entries(customClasses)) {
+      if (!this.#customClasses[type]) {
+        this.#customClasses[type] = new Set();
+      }
+      this.#customClasses[type].add(className);
+    }
+  }
+
+  removeCustomClasses(customClasses: Record<Marked.Marked.Token['type'], string>): void {
+    for (const [type, className] of Object.entries(customClasses)) {
+      if (this.#customClasses[type]) {
+        this.#customClasses[type].delete(className);
+      }
+    }
   }
 
   #customClassMapForToken(type: Marked.Marked.Token['type']): LitHtml.Directive.DirectiveResult {
-    return LitHtml.Directives.classMap({
-      [this.#customClasses[type]]: this.#customClasses[type],
-    });
+    const classNames = this.#customClasses[type] || new Set();
+    const classInfo = Object.fromEntries([...classNames].map(className => [className, true]));
+    return LitHtml.Directives.classMap(classInfo);
   }
 
   renderChildTokens(token: Marked.Marked.Token): LitHtml.TemplateResult[] {
@@ -265,6 +286,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
   constructor(citationClickHandler?: (index: number) => void) {
     super();
     this.#citationClickHandler = citationClickHandler || (() => {});
+    this.addCustomClasses({heading: 'insight'});
   }
 
   override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
@@ -305,7 +327,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
   override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'heading':
-        return html`<strong>${this.renderText(token)}</strong>`;
+        return this.renderHeading(token as Marked.Marked.Tokens.Heading);
       case 'link':
       case 'image': {
         const sanitizedUrl = this.sanitizeUrl(token.href);

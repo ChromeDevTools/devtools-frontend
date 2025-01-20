@@ -79,3 +79,8 @@ devtools-code-block {
   text-decoration: underline;
   cursor: pointer;
 }
+
+h1.insight, h2.insight, h3.insight, h4.insight, h5.insight, h6.insight {
+  font: var(--sys-typescale-body4-bold);
+  margin: var(--sys-size-1) 0 10px;
+}

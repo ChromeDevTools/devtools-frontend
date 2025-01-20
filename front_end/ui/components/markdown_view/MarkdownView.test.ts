@@ -176,7 +176,7 @@ describeWithEnvironment('MarkdownView', () => {
       assert.isTrue(renderResult.includes('<em'));
     });
     it('sets custom classes on the token types', () => {
-      renderer.setCustomClasses({em: 'custom-class'});
+      renderer.addCustomClasses({em: 'custom-class'});
 
       const renderResult = renderer.renderToken(getFakeToken({type: 'em', text: 'em text'}));
       const container = renderTemplateResult(renderResult);
@@ -211,9 +211,11 @@ describeWithEnvironment('MarkdownView', () => {
           renderer.renderToken({type: 'image', text: 'learn more', href: 'https://example.com'} as Marked.Marked.Token);
       assert((result.values[0] as HTMLElement).tagName === 'X-LINK');
     });
-    it('renders headers as a strong element', () => {
-      const result = renderer.renderToken({type: 'heading', text: 'learn more'} as Marked.Marked.Token);
-      assert(result.strings.join('').includes('<strong>'));
+    it('renders headings as headings with the `insight` class', () => {
+      const renderResult = renderer.renderToken(getFakeToken({type: 'heading', text: 'a heading text', depth: 3}));
+      const container = renderTemplateResult(renderResult);
+      assert.isTrue(
+          container.querySelector('h3')?.classList.contains('insight'), 'Expected `insight`-class to be applied');
     });
     it('renders unsupported tokens', () => {
       const result = renderer.renderToken({type: 'html', raw: '<!DOCTYPE html>'} as Marked.Marked.Token);

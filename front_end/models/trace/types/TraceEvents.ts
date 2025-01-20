@@ -52,8 +52,6 @@ export const enum Phase {
   CLOCK_SYNC = 'c',
 }
 
-export type NonEmptyString = string&{_tag: 'NonEmptyString'};
-
 export function isNestableAsyncPhase(phase: Phase): boolean {
   return phase === Phase.ASYNC_NESTABLE_START || phase === Phase.ASYNC_NESTABLE_END ||
       phase === Phase.ASYNC_NESTABLE_INSTANT;
@@ -596,43 +594,29 @@ export interface Mark extends Event {
   ph: Phase.MARK;
 }
 
-// An unreliable and non-legit navigationStart. See NavigationStartWithUrl
-export interface NavigationStartUnreliable extends Mark {
+export interface NavigationStart extends Mark {
   name: 'navigationStart';
   args: Args&{
-    data?: ArgsData & {
-      /** An empty documentLoaderURL means this navigationStart is unreliable noise and can be ignored. */
-      documentLoaderURL: never,
+    frame: string,
+    data?: ArgsData&{
+      /** Must be non-empty to be valid. An empty documentLoaderURL means the event can be ignored. */
+      documentLoaderURL: string,
       isLoadingMainFrame: boolean,
-      // isOutermostMainFrame was introduced in crrev.com/c/3625434 and exists
-      // because of Fenced Frames
-      // [github.com/WICG/fenced-frame/tree/master/explainer].
-      // Fenced frames introduce a situation where isLoadingMainFrame could be
-      // true for a navigation, but that navigation be within an embedded "main
-      // frame", and therefore it wouldn't be on the top level main frame.
-      // In situations where we need to distinguish that, we can rely on
-      // isOutermostMainFrame, which will only be true for navigations on the
-      // top level main frame.
-
-      // This flag is optional as it was introduced in May 2022; so users
-      // reasonably may import traces from before that date that do not have
-      // this field present.
-      isOutermostMainFrame?: boolean, navigationId: string,
+      navigationId: string,
+      /**
+       * `isOutermostMainFrame` was introduced in crrev.com/c/3625434 and exists because of Fenced Frames
+       * [github.com/WICG/fenced-frame/tree/master/explainer]. Fenced frames introduce a situation where
+       * `isLoadingMainFrame` could be true for a navigation, but that navigation be within an embedded "main frame", and
+       * therefore it wouldn't be on the top level main frame. In situations where we need to distinguish that, we can
+       * rely on `isOutermostMainFrame`, which will only be true for navigations on the top level main frame.
+       * This flag is optional as it was introduced in May 2022; so users reasonably may import traces from before that
+       * date that do not have this field present.
+       */
+      isOutermostMainFrame?: boolean,
       /**
        * @deprecated use documentLoaderURL for navigation events URLs
        */
       url?: string,
-    },
-        frame: string,
-  };
-}
-
-// NavigationStart but definitely has a populated documentLoaderURL
-export interface NavigationStart extends NavigationStartUnreliable {
-  args: NavigationStartUnreliable['args']&{
-    data: NavigationStartUnreliable['args']['data'] & {
-      /** This navigationStart is valid, as the documentLoaderURL isn't empty. */
-      documentLoaderURL: NonEmptyString,
     },
   };
 }
@@ -2050,13 +2034,6 @@ export function isCommitLoad(
   return event.name === 'CommitLoad';
 }
 
-/** @deprecated You probably want `isNavigationStart` instead. */
-export function isNavigationStartUnreliable(
-    event: Event,
-    ): event is NavigationStartUnreliable {
-  return event.name === 'navigationStart';
-}
-
 export function isAnimation(
     event: Event,
     ): event is Animation {
@@ -2210,7 +2187,7 @@ export function isPrePaint(
 
 /** A VALID navigation start (as it has a populated documentLoaderURL) */
 export function isNavigationStart(event: Event): event is NavigationStart {
-  return Boolean(isNavigationStartUnreliable(event) && event.args.data && event.args.data.documentLoaderURL !== '');
+  return event.name === 'navigationStart' && (event as NavigationStart).args?.data?.documentLoaderURL !== '';
 }
 
 export function isMainFrameViewport(

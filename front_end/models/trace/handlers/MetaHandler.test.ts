@@ -50,7 +50,8 @@ describe('MetaHandler', function() {
         tid: Trace.Types.Events.ThreadID(775),
         ts: Trace.Types.Timing.Micro(800),
         name: 'navigationStart',
-      } as Trace.Types.Events.NavigationStartUnreliable,
+        // Casting as NavStart, but it is ignored due to the empty documentLoaderURL
+      } as Trace.Types.Events.NavigationStart,
       {
         ...defaultTraceEvent,
         args: {

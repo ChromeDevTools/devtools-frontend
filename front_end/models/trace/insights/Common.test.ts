@@ -17,7 +17,11 @@ describeWithEnvironment('Common', function() {
         throw new Error('missing metadata');
       }
 
-      const insightSetKey = getFirstOrError(data.Meta.navigationsByNavigationId.values()).args.data.navigationId;
+      const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+      if (!firstNav.args.data?.navigationId) {
+        throw new Error('expected navigationId');
+      }
+      const insightSetKey = firstNav.args.data.navigationId;
       const insightSet = insights.get(insightSetKey);
       if (!insightSet) {
         throw new Error('missing insight set');

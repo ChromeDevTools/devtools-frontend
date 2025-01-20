@@ -14,17 +14,17 @@ export async function getDataGridRows(
   const handlers = await (async () => {
     if (matchExactNumberOfRows) {
       return await waitForFunction(async () => {
-        const rows = await $$('tbody > tr:not(.padding-row):not(.hidden)', dataGrid);
+        const rows = await $$('tbody > tr[jslog]:not(.hidden)', dataGrid);
         return rows.length === expectedNumberOfRows ? rows : undefined;
       });
     }
     return await waitForFunction(async () => {
-      const rows = await $$('tbody > tr:not(.padding-row):not(.hidden)', dataGrid);
+      const rows = await $$('tbody > tr[jslog]:not(.hidden)', dataGrid);
       return rows.length >= expectedNumberOfRows ? rows : undefined;
     });
   })();
 
-  return Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[data-row-index]:not(.hidden)', handler)));
+  return Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[jslog]:not(.hidden)', handler)));
 }
 
 export async function getDataGrid(root?: ElementHandle) {

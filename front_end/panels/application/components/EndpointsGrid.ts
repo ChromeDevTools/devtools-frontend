@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/data_grid/data_grid.js';
+import '../../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -44,41 +43,28 @@ export class EndpointsGrid extends HTMLElement {
   }
 
   #render(): void {
-    const endpointsGridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'origin',
-          title: i18n.i18n.lockedString('Origin'),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'name',
-          title: i18n.i18n.lockedString('Name'),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'url',
-          title: i18n.i18n.lockedString('URL'),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-        },
-      ],
-      rows: this.#buildReportRows(),
-    };
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`
-          <devtools-data-grid-controller .data=${endpointsGridData}>
-          </devtools-data-grid-controller>
+          <devtools-new-data-grid striped>
+           <table>
+            <tr>
+              <th id="origin" weight="30">${i18n.i18n.lockedString('Origin')}</th>
+              <th id="name" weight="20">${i18n.i18n.lockedString('Name')}</th>
+              <th id="url" weight="30">${i18n.i18n.lockedString('URL')}</th>
+            </tr>
+            ${Array.from(this.#endpoints).map(([origin, endpointArray]) =>
+                endpointArray.map(endpoint => html`<tr>
+                  <td>${origin}</td>
+                  <td>${endpoint.groupName}</td>
+                  <td>${endpoint.url}</td>
+                </tr>`))
+                .flat()}
+            </table>
+          </devtools-new-data-grid>
         ` : html`
           <div class="reporting-placeholder">
             <div>${i18nString(UIStrings.noEndpointsToDisplay)}</div>
@@ -87,20 +73,6 @@ export class EndpointsGrid extends HTMLElement {
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
-  }
-
-  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    return Array.from(this.#endpoints)
-        .map(([origin, endpointArray]) => endpointArray.map(endpoint => {
-          return {
-            cells: [
-              {columnId: 'origin', value: origin},
-              {columnId: 'name', value: endpoint.groupName},
-              {columnId: 'url', value: endpoint.url},
-            ],
-          };
-        }))
-        .flat();
   }
 }
 

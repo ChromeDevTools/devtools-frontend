@@ -29,8 +29,6 @@ READ_LOCATION = path.join(ROOT_DIRECTORY, 'third_party', 'blink', 'renderer',
 # Deprecations in this list are exempt from code generation as they are not
 # dispatched to the DevTools.
 EXEMPTED_FROM_DEVTOOLS_GENERATION = {
-    "ThirdPartyCookieAccessWarning",
-    "ThirdPartyCookieAccessError",
 }
 
 

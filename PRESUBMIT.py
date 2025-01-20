@@ -691,7 +691,8 @@ def _getFilesToLint(input_api, output_api, lint_config_files,
         # Exclude front_end/third_party and front_end/generated files.
         files_to_lint = [
             file for file in files_to_lint
-            if "third_party" not in file and "generated" not in file
+            if "front_end/third_party" not in file
+            and "front_end/generated" not in file
         ]
 
         if len(files_to_lint) == 0:

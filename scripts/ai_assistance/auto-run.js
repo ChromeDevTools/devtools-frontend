@@ -18,24 +18,95 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-const userArgs = yargs(hideBin(process.argv))
-                     .option('example-urls', {
-                       string: true,
-                       type: 'array',
-                       demandOption: true,
-                     })
-                     .option('parallel', {
-                       boolean: true,
-                       default: true,
-                     })
-                     .option('label', {string: true, default: 'run'})
-                     .option('include-follow-up', {
-                       boolean: true,
-                       default: false,
-                     })
-                     .parseSync();
+const yargsInput = yargs(hideBin(process.argv))
+                       .option('example-urls', {
+                         string: true,
+                         type: 'array',
+                         demandOption: true,
+                       })
+                       .option('parallel', {
+                         boolean: true,
+                         default: true,
+                       })
+                       .option('label', {string: true, default: 'run'})
+                       .option('include-follow-up', {
+                         boolean: true,
+                         default: false,
+                       })
+                       .option('test-target', {
+                         describe: 'Which panel do you want to run the examples against?',
+                         choices: ['elements', 'performance'],
+                         demandOption: true,
+                       })
+                       .parseSync();
+
+// Map the args to a more accurate interface for better type safety.
+const userArgs = /** @type {import('./types.d.ts').YargsInput} **/ (yargsInput);
 
 const OUTPUT_DIR = path.resolve(__dirname, 'data');
+
+/**
+ * Performance examples have a trace file so that this script does not have to
+ * trigger a trace recording.
+ */
+class TraceDownloader {
+  static LOCATION = path.join(__dirname, 'performance-trace-downloads');
+  static ensureLocationExists() {
+    try {
+      fs.mkdirSync(TraceDownloader.LOCATION);
+    } catch {
+    }
+  }
+
+  /**
+   * @param {string} filename - the filename to look for
+   * @param {number} attempts - the number of attempts we have had to find the file
+   */
+  static async ensureDownloadExists(filename, attempts = 0) {
+    if (attempts === 5) {
+      return false;
+    }
+
+    if (fs.existsSync(path.join(TraceDownloader.LOCATION, filename))) {
+      return true;
+    }
+
+    return new Promise(r => {
+      setTimeout(() => {
+        return r(TraceDownloader.ensureDownloadExists(filename, attempts + 1));
+      }, 200);
+    });
+  }
+  /**
+   * Downloads a trace file for a given example.
+   * @param {Example} example - the example that is being run
+   * @param {puppeteer.Page} page - the page instance associated with this example
+   * @returns {Promise<string>} - the file name that was downloaded.
+   */
+  static async run(example, page) {
+    const url = new URL(example.url());
+    const idForUrl = path.basename(path.dirname(url.pathname));
+    const cdp = await page.createCDPSession();
+    await cdp.send('Browser.setDownloadBehavior', {
+      behavior: 'allow',
+      downloadPath: TraceDownloader.LOCATION,
+    });
+    const fileName = `${idForUrl}.json.gz`;
+    const traceUrl = example.url().replace('index.html', fileName);
+    // Using page.goto(traceUrl) does download the file, but it also causes a
+    // net::ERR_ABORTED error to be thrown. Doing it this way does not. See
+    // https://github.com/puppeteer/puppeteer/issues/6728#issuecomment-986082241.
+    await page.evaluate(traceUrl => {
+      location.href = traceUrl;
+    }, traceUrl);
+    const foundFile = await TraceDownloader.ensureDownloadExists(fileName);
+    if (!foundFile) {
+      console.error(`Could not find '${fileName}' in download location (${TraceDownloader.LOCATION}). Aborting.`);
+    }
+    example.log(`Downloaded performance trace: ${fileName}`);
+    return fileName;
+  }
+}
 
 class Logger {
   /** @type {import('./types').Logs} */
@@ -124,9 +195,49 @@ class Example {
   }
 
   /**
-   * @param {puppeteer.Page} page
+   * @param {puppeteer.Page} devtoolsPage
+   * @param {string} fileName - the trace file to import.
    */
-  async #generateMetadata(page) {
+  async #loadPerformanceTrace(devtoolsPage, fileName) {
+    await devtoolsPage.keyboard.press('Escape');
+    await devtoolsPage.keyboard.press('Escape');
+    await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
+    this.log('[Info]: loaded performance panel');
+    const fileUploader = await devtoolsPage.locator('input[type=file]').waitHandle();
+    const tracePath = path.join(TraceDownloader.LOCATION, fileName);
+    await fileUploader.uploadFile(tracePath);
+    this.log(`[Info]: imported ${fileName} to performance panel`);
+    const canvas = await devtoolsPage.waitForSelector(':scope >>> canvas.flame-chart-canvas');
+    if (!canvas) {
+      throw new Error('Could not find canvas.');
+    }
+    await this.#waitForElementToHaveHeight(canvas, 200);
+  }
+
+  /**
+   * @param {puppeteer.ElementHandle<HTMLElement>} elem
+   * @param {number} height
+   * @param {number} tries
+   */
+  async #waitForElementToHaveHeight(elem, height, tries = 0) {
+    const h = await elem.evaluate(e => e.clientHeight);
+    if (h > height) {
+      return true;
+    }
+    if (tries > 10) {
+      return false;
+    }
+    return new Promise(r => {
+      setTimeout(() => r(this.#waitForElementToHaveHeight(elem, height)), 100);
+    });
+  }
+
+  /**
+   * Parses out comments from the page.
+   * @param {puppeteer.Page} page
+   * @returns {Promise<string[]>} - the comments on the page.
+   */
+  async #getCommentStringsFromPage(page) {
     /** @type {Array<string>} */
     const commentStringsFromPage = await page.evaluate(() => {
       /**
@@ -168,6 +279,41 @@ class Example {
       globalThis.__commentElements = results;
       return results.map(result => result.comment);
     });
+    return commentStringsFromPage;
+  }
+
+  /**
+   * @param {puppeteer.Page} devtoolsPage
+   * @returns {Promise<puppeteer.ElementHandle<HTMLElement>>} - the prompt from the annotation, if it exists, or undefined if one was not found.
+   */
+  async #lookForAnnotatedPerformanceEvent(devtoolsPage) {
+    const elem = await devtoolsPage.$('devtools-entry-label-overlay >>> [aria-label="Entry label"]');
+    if (!elem) {
+      throw new Error(
+          'Could not find annotated event in the performance panel. Only traces that have one entry label annotation are supported.');
+    }
+
+    const overlay = /** @type{puppeteer.ElementHandle<HTMLElement>} */ (elem);
+    return overlay;
+  }
+
+  /**
+   * Generates the metadata for a given example.
+   * If we are testing performance, we look for an annotation to give us our target event that we need to select.
+   * We then also parse the HTML to find the comments which give us our prompt
+   * and explanation.
+   * @param {puppeteer.Page} page - the target page
+   * @param {puppeteer.Page} devtoolsPage - the DevTools page
+   * @returns {Promise<{idx: number, queries: string[], explanation: string, performanceAnnotation?: puppeteer.ElementHandle<HTMLElement>}>}
+   */
+  async #generateMetadata(page, devtoolsPage) {
+    /** @type {puppeteer.ElementHandle<HTMLElement>|undefined} */
+    let annotation = undefined;
+    if (userArgs.testTarget === 'performance') {
+      annotation = await this.#lookForAnnotatedPerformanceEvent(devtoolsPage);
+    }
+
+    const commentStringsFromPage = await this.#getCommentStringsFromPage(page);
     const comments = commentStringsFromPage.map(comment => parseComment(comment));
     // Only get the first comment for now.
     const comment = comments[0];
@@ -180,7 +326,15 @@ class Example {
       idx: 0,
       queries,
       explanation: comment.explanation,
+      performanceAnnotation: annotation,
     };
+  }
+
+  /**
+   * @return {string} the URL of the example
+   */
+  url() {
+    return this.#url;
   }
 
   id() {
@@ -203,44 +357,64 @@ class Example {
     });
     acquiredDevToolsTargets.set(devtoolsTarget, true);
 
-    const {idx, queries, explanation} = await this.#generateMetadata(page);
+    const devtoolsPage = await devtoolsTarget.asPage();
+    this.log('[Info]: Got devtools page');
+
+    if (userArgs.testTarget === 'performance') {
+      const fileName = await TraceDownloader.run(this, page);
+      await this.#loadPerformanceTrace(devtoolsPage, fileName);
+    }
+
+    const {idx, queries, explanation, performanceAnnotation} = await this.#generateMetadata(page, devtoolsPage);
     this.log('[Info]: Running...');
     // Strip comments to prevent LLM from seeing it.
     await page.evaluate(() => {
       // @ts-expect-error we don't type globalThis.__commentElements
-      for (const {commentElement} of globalThis.__commentElements) {
+      for (const {commentElement} of (globalThis.__commentElements ?? [])) {
         commentElement.remove();
       }
     });
 
-    const devtoolsPage = await devtoolsTarget.asPage();
-    this.log('[Info]: Got devtools page');
-
     await devtoolsPage.keyboard.press('Escape');
     await devtoolsPage.keyboard.press('Escape');
-    await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
-    this.log('[Info]: Opened Elements panel');
 
-    await devtoolsPage.locator('aria/<body>').click();
+    if (userArgs.testTarget === 'elements') {
+      await devtoolsPage.locator(':scope >>> #tab-elements').setTimeout(5000).click();
+      this.log('[Info]: Opened Elements panel');
 
-    this.log('[Info]: Expanding all elements');
-    let expand = await devtoolsPage.$$('pierce/.expand-button');
-    while (expand.length) {
-      for (const btn of expand) {
-        await btn.click();
+      await devtoolsPage.locator('aria/<body>').click();
+
+      this.log('[Info]: Expanding all elements');
+      let expand = await devtoolsPage.$$('pierce/.expand-button');
+      while (expand.length) {
+        for (const btn of expand) {
+          await btn.click();
+        }
+        await new Promise(resolve => setTimeout(resolve, 100));
+        expand = await devtoolsPage.$$('pierce/.expand-button');
       }
-      await new Promise(resolve => setTimeout(resolve, 100));
-      expand = await devtoolsPage.$$('pierce/.expand-button');
+
+      // If we are inspecting a DOM node, we inspect it via the console by using the global `inspect` method.
+      this.log('[Info]: Locating console');
+      await devtoolsPage.locator(':scope >>> #tab-console').click();
+      await devtoolsPage.locator('aria/Console prompt').click();
+      await devtoolsPage.keyboard.type(`inspect(globalThis.__commentElements[${idx}].targetElement)`);
+      await devtoolsPage.keyboard.press('Enter');
+
+      // Once we are done with the console, go back to the elements tab.
+      await devtoolsPage.locator(':scope >>> #tab-elements').click();
     }
 
-    this.log('[Info]: Locating console');
-    await devtoolsPage.locator(':scope >>> #tab-console').click();
-    await devtoolsPage.locator('aria/Console prompt').click();
-    await devtoolsPage.keyboard.type(`inspect(globalThis.__commentElements[${idx}].targetElement)`);
-    await devtoolsPage.keyboard.press('Enter');
+    if (userArgs.testTarget === 'performance' && performanceAnnotation) {
+      this.log('[Info]: selecting event in the performance timeline');
+      await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
+      // Clicking on the annotation will also have the side-effect of selecting the event
+      await performanceAnnotation.click();
+      // Wait until the event is selected (confirming via the HTML in the details drawer)
+      await devtoolsPage.waitForSelector(':scope >>> .timeline-details-chip-title');
+    }
 
     this.log('[Info]: Locating AI assistance tab');
-    await devtoolsPage.locator(':scope >>> #tab-elements').click();
     await devtoolsPage.locator('aria/Customize and control DevTools').click();
     await devtoolsPage.locator('aria/More tools').click();
     await devtoolsPage.locator('aria/AI assistance').click();
@@ -260,6 +434,21 @@ class Example {
     } catch (err) {
       this.#ready = false;
       this.error(`Preparation failed.\n${err instanceof Error ? logger.formatError(err) : err}`);
+    }
+  }
+
+  /**
+   * Returns the locator string based on the user-provided test target.
+   * @returns {string} The locator string.
+   */
+  #getLocator() {
+    switch (userArgs.testTarget) {
+      case 'elements':
+        return 'aria/Ask a question about the selected element';
+      case 'performance':
+        return 'aria/Ask a question about the selected item and its call tree';
+      default:
+        throw new Error(`Unknown --test-target: ${userArgs.testTarget}`);
     }
   }
 
@@ -292,9 +481,10 @@ class Example {
         throw new Error('Cannot prompt without DevTools page.');
       }
       const devtoolsPage = this.#devtoolsPage;
-      await devtoolsPage.locator('aria/Ask a question about the selected element').click();
 
-      await devtoolsPage.locator('aria/Ask a question about the selected element').fill(query);
+      const inputSelector = this.#getLocator();
+      await devtoolsPage.locator(inputSelector).click();
+      await devtoolsPage.locator(inputSelector).fill(query);
 
       const abort = new AbortController();
       /**
@@ -483,7 +673,7 @@ async function main() {
    * example ID and the explanation.
    * `examples` is an array of all requests & responses across all the
    * examples. Each has an `exampleId` field to allow it to be assigned to
-   * an individaul example.
+   * an individual example.
    */
   const output = {
     metadata,

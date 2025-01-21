@@ -43,6 +43,7 @@ export interface YargsInput {
   label: string;
   parallel: boolean;
   includeFollowUp: boolean;
+  testTarget: 'elements'|'performance';
 }
 
 // Clang cannot handle the Record<> syntax over multiple lines, it seems.

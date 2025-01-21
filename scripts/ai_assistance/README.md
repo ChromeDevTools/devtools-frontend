@@ -21,9 +21,9 @@ takes these results and presents them in a UI for evaluation.
 
 3. Close the DevTools window for the initial `about:blank` page but keep the tab open.
 
-4. Run the following command
+4. Run the following command. `--test-target` can be one of `elements` or `performance` to determine which mode the tool is run in.
 ```
-node scripts/ai_assistance/auto-run.js --example-urls <example-url-1> <example-url-2>
+node scripts/ai_assistance/auto-run.js --test-target elements --example-urls <example-url-1> <example-url-2>
 ```
 
 At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the results must be saved to the `data/` folder.

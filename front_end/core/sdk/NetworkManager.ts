@@ -331,10 +331,13 @@ export class NetworkManager extends SDKModel<EventTypes> {
   private cookieControlFlagsSettingChanged(): void {
     const overridesEnabled =
         Boolean(Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get());
-    const gracePeriodEnabled =
-        Boolean(Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get());
-    const heuristicEnabled =
-        Boolean(Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get());
+    const gracePeriodEnabled = overridesEnabled ?
+        Boolean(
+            Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get()) :
+        false;
+    const heuristicEnabled = overridesEnabled ?
+        Boolean(Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get()) :
+        false;
     void this.#networkAgent.invoke_setCookieControls({
       enableThirdPartyCookieRestriction: overridesEnabled,
       disableThirdPartyCookieMetadata: gracePeriodEnabled,

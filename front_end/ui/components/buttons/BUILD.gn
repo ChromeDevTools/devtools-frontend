@@ -32,7 +32,9 @@ devtools_entrypoint("bundle") {
     ":legacy_css_files",
   ]
 
-  visibility = default_components_visibility
+  visibility = [ "../../../entrypoints/main/*" ]
+
+  visibility += default_components_visibility
 }
 
 ts_library("unittests") {

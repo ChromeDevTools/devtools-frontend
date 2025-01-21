@@ -569,7 +569,6 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
     }
     button.classList.add('toolbar-button');
     this.element.addEventListener('click', this.clicked.bind(this), false);
-    this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
     button.textContent = text || '';
     this.setTitle(title);
     if (jslogContext) {
@@ -669,13 +668,6 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
     this.dispatchEventToListeners(ToolbarButton.Events.CLICK, event);
     event.consume();
   }
-
-  protected mouseDown(event: MouseEvent): void {
-    if (!this.enabled) {
-      return;
-    }
-    this.dispatchEventToListeners(ToolbarButton.Events.MOUSE_DOWN, event);
-  }
 }
 
 export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
@@ -695,7 +687,6 @@ export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
     element.classList.add('toolbar-button');
     super(element);
     this.element.addEventListener('click', this.clicked.bind(this), false);
-    this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
 
     this.iconName = iconName;
 
@@ -756,24 +747,15 @@ export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
     this.dispatchEventToListeners(ToolbarButton.Events.CLICK, event);
     event.consume();
   }
-
-  protected mouseDown(event: MouseEvent): void {
-    if (!this.enabled) {
-      return;
-    }
-    this.dispatchEventToListeners(ToolbarButton.Events.MOUSE_DOWN, event);
-  }
 }
 
 export namespace ToolbarButton {
   export const enum Events {
     CLICK = 'Click',
-    MOUSE_DOWN = 'MouseDown',
   }
 
   export interface EventTypes {
     [Events.CLICK]: Event;
-    [Events.MOUSE_DOWN]: MouseEvent;
   }
 }
 
@@ -986,6 +968,7 @@ export class ToolbarMenuButton extends ToolbarCombobox {
     if (jslogContext) {
       this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context(jslogContext)}`);
     }
+    this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
     ARIAUtils.markAsMenuButton(this.element);
@@ -995,12 +978,11 @@ export class ToolbarMenuButton extends ToolbarCombobox {
     this.#triggerDelay = x;
   }
 
-  override mouseDown(event: MouseEvent): void {
+  mouseDown(event: MouseEvent): void {
     if (!this.enabled) {
       return;
     }
     if (event.buttons !== 1) {
-      super.mouseDown(event);
       return;
     }
 

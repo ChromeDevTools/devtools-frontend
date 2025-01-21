@@ -52,13 +52,17 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
+
+const {html, render} = LitHtml;
 
 const UIStrings = {
   /**
@@ -862,53 +866,64 @@ export class MainMenuItem implements UI.Toolbar.Provider {
   }
 
   #handleContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    if (UI.DockController.DockController.instance().canDock()) {
+    const dockController = UI.DockController.DockController.instance();
+    if (dockController.canDock()) {
       const dockItemElement = document.createElement('div');
-      dockItemElement.classList.add('flex-centered');
-      dockItemElement.classList.add('flex-auto');
-      dockItemElement.classList.add('location-menu');
-      dockItemElement.tabIndex = -1;
-      UI.ARIAUtils.setLabel(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNaviation);
-      const titleElement = dockItemElement.createChild('span', 'dockside-title');
-      titleElement.textContent = i18nString(UIStrings.dockSide);
-      const toggleDockSideShorcuts =
-          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
-      UI.Tooltip.Tooltip.install(
-          titleElement,
-          i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: toggleDockSideShorcuts[0].title()}));
-      dockItemElement.appendChild(titleElement);
-      const dockItemToolbar = dockItemElement.createChild('devtools-toolbar');
+      dockItemElement.classList.add('flex-auto', 'flex-centered', 'location-menu');
       dockItemElement.setAttribute(
           'jslog', `${VisualLogging.item('dock-side').track({keydown: 'ArrowDown|ArrowLeft|ArrowRight'})}`);
-      const undock = new UI.Toolbar.ToolbarToggle(
-          i18nString(UIStrings.undockIntoSeparateWindow), 'dock-window', undefined, 'current-dock-state-undock');
-      const bottom = new UI.Toolbar.ToolbarToggle(
-          i18nString(UIStrings.dockToBottom), 'dock-bottom', undefined, 'current-dock-state-bottom');
-      const right = new UI.Toolbar.ToolbarToggle(
-          i18nString(UIStrings.dockToRight), 'dock-right', undefined, 'current-dock-state-right');
-      const left = new UI.Toolbar.ToolbarToggle(
-          i18nString(UIStrings.dockToLeft), 'dock-left', undefined, 'current-dock-state-left');
-      undock.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
-      bottom.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
-      right.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
-      left.addEventListener(UI.Toolbar.ToolbarButton.Events.MOUSE_DOWN, event => event.data.consume());
-      undock.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.UNDOCKED));
-      bottom.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.BOTTOM));
-      right.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.RIGHT));
-      left.addEventListener(
-          UI.Toolbar.ToolbarButton.Events.CLICK, setDockSide.bind(null, UI.DockController.DockState.LEFT));
-      undock.setToggled(
-          UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED);
-      bottom.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.BOTTOM);
-      right.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.RIGHT);
-      left.setToggled(UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.LEFT);
-      dockItemToolbar.appendToolbarItem(undock);
-      dockItemToolbar.appendToolbarItem(left);
-      dockItemToolbar.appendToolbarItem(bottom);
-      dockItemToolbar.appendToolbarItem(right);
+      dockItemElement.tabIndex = -1;
+      UI.ARIAUtils.setLabel(dockItemElement, UIStrings.dockSide + UIStrings.dockSideNaviation);
+      const [toggleDockSideShorcut] =
+          UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('main.toggle-dock');
+
+      // clang-format off
+      render(html`
+        <span class="dockside-title"
+              title=${i18nString(UIStrings.placementOfDevtoolsRelativeToThe, {PH1: toggleDockSideShorcut.title()})}>
+          ${i18nString(UIStrings.dockSide)}
+        </span>
+        <devtools-toolbar @mousedown=${(event: Event) => event.consume()}>
+          <devtools-button class="toolbar-button"
+                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-undock')}
+                           title=${i18nString(UIStrings.undockIntoSeparateWindow)}
+                           .iconName=${'dock-window'}
+                           .toggled=${dockController.dockSide() === UI.DockController.DockState.UNDOCKED}
+                           .toggledIconName=${'dock-window'}
+                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                           @click=${setDockSide.bind(null, UI.DockController.DockState.UNDOCKED)}></devtools-button>
+          <devtools-button class="toolbar-button"
+                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-bottom')}
+                           title=${i18nString(UIStrings.dockToBottom)}
+                           .iconName=${'dock-bottom'}
+                           .toggled=${dockController.dockSide() === UI.DockController.DockState.BOTTOM}
+                           .toggledIconName=${'dock-bottom'}
+                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                           @click=${setDockSide.bind(null, UI.DockController.DockState.BOTTOM)}></devtools-button>
+          <devtools-button class="toolbar-button"
+                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-right')}
+                           title=${i18nString(UIStrings.dockToRight)}
+                           .iconName=${'dock-right'}
+                           .toggled=${dockController.dockSide() === UI.DockController.DockState.RIGHT}
+                           .toggledIconName=${'dock-right'}
+                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                           @click=${setDockSide.bind(null, UI.DockController.DockState.RIGHT)}></devtools-button>
+          <devtools-button class="toolbar-button"
+                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-left')}
+                           title=${i18nString(UIStrings.dockToLeft)}
+                           .iconName=${'dock-left'}
+                           .toggled=${dockController.dockSide() === UI.DockController.DockState.LEFT}
+                           .toggledIconName=${'dock-left'}
+                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                           @click=${setDockSide.bind(null, UI.DockController.DockState.LEFT)}></devtools-button>
+        </devtools-toolbar>
+      `, dockItemElement, {host: this});
+      // clang-format on
+
       dockItemElement.addEventListener('keydown', event => {
         let dir = 0;
         if (event.key === 'ArrowLeft') {
@@ -923,29 +938,24 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           return;
         }
 
-        const buttons = [undock, left, bottom, right];
-        let index = buttons.findIndex(button => button.element.hasFocus());
+        const buttons = Array.from(dockItemElement.querySelectorAll('devtools-button'));
+        let index = buttons.findIndex(button => button.hasFocus());
         index = Platform.NumberUtilities.clamp(index + dir, 0, buttons.length - 1);
-
-        buttons[index].element.focus();
+        buttons[index].focus();
         event.consume(true);
       });
       contextMenu.headerSection().appendCustomItem(dockItemElement, 'dock-side');
     }
 
-    const button = (this.#itemInternal.element as HTMLButtonElement);
+    const button = this.#itemInternal.element;
 
     function setDockSide(side: UI.DockController.DockState): void {
-      void UI.DockController.DockController.instance()
-          .once(UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED)
-          .then(() => {
-            button.focus();
-          });
-      UI.DockController.DockController.instance().setDockSide(side);
+      void dockController.once(UI.DockController.Events.AFTER_DOCK_SIDE_CHANGED).then(() => button.focus());
+      dockController.setDockSide(side);
       contextMenu.discard();
     }
 
-    if (UI.DockController.DockController.instance().dockSide() === UI.DockController.DockState.UNDOCKED) {
+    if (dockController.dockSide() === UI.DockController.DockState.UNDOCKED) {
       const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (mainTarget && mainTarget.type() === SDK.Target.Type.FRAME) {
         contextMenu.defaultSection().appendAction('inspector-main.focus-debuggee', i18nString(UIStrings.focusDebuggee));

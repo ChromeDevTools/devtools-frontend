@@ -10,7 +10,7 @@ import {
   type Value,
   type WasmInterface,
 } from './CustomFormatters.js';
-import {type ForeignObject, type WasmValue} from './WasmTypes.js';
+import type {ForeignObject} from './WasmTypes.js';
 
 /*
  * Numbers
@@ -149,8 +149,10 @@ CustomFormatters.addFormatter({
 
 type CharArrayConstructor = typeof Uint8Array|typeof Uint16Array|typeof Uint32Array;
 function formatRawString<T extends CharArrayConstructor>(
-    wasm: WasmInterface, value: Value, charType: T, decode: (chars: InstanceType<T>) => string): string|
-    {[key: string]: Value | null} {
+    wasm: WasmInterface, value: Value, charType: T, decode: (chars: InstanceType<T>) => string): string|{
+  [key: string]: Value|null,
+}
+{
   const address = value.asUint32();
   if (address < Constants.SAFE_HEAP_START) {
     return formatPointerOrReference(wasm, value);
@@ -180,15 +182,20 @@ function formatRawString<T extends CharArrayConstructor>(
   return formatPointerOrReference(wasm, value);
 }
 
-export function formatCString(wasm: WasmInterface, value: Value): string|{[key: string]: Value | null} {
-  return formatRawString(wasm, value, Uint8Array, str => new TextDecoder().decode(str));
+export function formatCString(wasm: WasmInterface, value: Value): string|{
+  [key: string]: Value|null,
 }
+{ return formatRawString(wasm, value, Uint8Array, str => new TextDecoder().decode(str)); }
 
-export function formatU16CString(wasm: WasmInterface, value: Value): string|{[key: string]: Value | null} {
-  return formatRawString(wasm, value, Uint16Array, str => new TextDecoder('utf-16le').decode(str));
+export function formatU16CString(wasm: WasmInterface, value: Value): string|{
+  [key: string]: Value|null,
 }
+{ return formatRawString(wasm, value, Uint16Array, str => new TextDecoder('utf-16le').decode(str)); }
 
-export function formatCWString(wasm: WasmInterface, value: Value): string|{[key: string]: Value | null} {
+export function formatCWString(wasm: WasmInterface, value: Value): string|{
+  [key: string]: Value|null,
+}
+{
   // emscripten's wchar is 4 byte
   return formatRawString(wasm, value, Uint32Array, str => Array.from(str).map(v => String.fromCodePoint(v)).join(''));
 }

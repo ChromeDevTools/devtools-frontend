@@ -4,12 +4,11 @@
 
 import '../src/CreditsItem.js';
 
-import {html, render, TemplateResult} from 'lit-html';
+import {html, render, type TemplateResult} from 'lit-html';
 
-import {CreditsItem, CreditsItemData} from '../src/CreditsItem.js';
+import type {CreditsItem, CreditsItemData} from '../src/CreditsItem.js';
 
 import {nonNull} from './TestUtils.js';
-
 
 async function createItem(text: TemplateResult): Promise<CreditsItem> {
   const container = document.createElement('div');

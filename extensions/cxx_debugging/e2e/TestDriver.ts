@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle, type JSHandle} from 'puppeteer-core';
+import type {ElementHandle, JSHandle} from 'puppeteer-core';
 import {TestConfig} from 'test/conductor/test_config.js';
 import {
   CONSOLE_TAB_SELECTOR,
@@ -26,7 +26,6 @@ import {
   assertNotNullOrUndefined,
   click,
   clickElement,
-  debuggerStatement,
   getBrowserAndPages,
   getPendingEvents,
   installEventListener,
@@ -34,7 +33,6 @@ import {
   waitFor,
   waitForFunction,
 } from 'test/shared/helper.js';
-
 
 import {
   type Action,

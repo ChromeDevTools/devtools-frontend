@@ -18,7 +18,6 @@ import {
   waitForMany,
 } from 'test/shared/helper.js';
 
-
 import {
   openTestSuiteResourceInSourcesPanel,
 } from '../cxx-debugging-extension-helpers.js';

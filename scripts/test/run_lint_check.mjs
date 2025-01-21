@@ -29,7 +29,13 @@ const flags = yargs(hideBin(process.argv))
     yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
       type: 'array',
-      default: ['front_end', 'inspector_overlay', 'scripts', 'test'],
+      default: [
+        'front_end',
+        'inspector_overlay',
+        'scripts',
+        'test',
+        'extensions',
+      ],
     });
   })
   .parse();

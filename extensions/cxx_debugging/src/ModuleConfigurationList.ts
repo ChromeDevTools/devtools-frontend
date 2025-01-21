@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/check-component-naming, rulesdir/no-underscored-properties, rulesdir/no-style-tags-in-lit-html, rulesdir/no-a-tags-in-lit-html, rulesdir/lit-html-host-this,  @typescript-eslint/naming-convention,  @typescript-eslint/explicit-function-return-type,  @typescript-eslint/no-unused-vars */
+/* eslint-disable rulesdir/no-underscored-properties,  @typescript-eslint/naming-convention,  @typescript-eslint/no-unused-vars */
 
 import {html, nothing, render} from 'lit-html';
 
@@ -13,9 +13,9 @@ import {
   type PathSubstitution,
 } from './ModuleConfiguration.js';
 
-export type ModuleConfigurationListData = {
-  moduleConfigurations: ModuleConfigurations,
-};
+export interface ModuleConfigurationListData {
+  moduleConfigurations: ModuleConfigurations;
+}
 
 export class ModuleConfigurationsChangedEvent extends CustomEvent<ModuleConfigurationListData> {
   constructor(detail: ModuleConfigurationListData) {

@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
-import {type ModuleConfigurations} from './ModuleConfiguration.js';
-
-import {serializeWasmValue, type WasmValue, type SerializedWasmType} from './WasmTypes.js';
+import type {ModuleConfigurations} from './ModuleConfiguration.js';
+import {type SerializedWasmType, serializeWasmValue, type WasmValue} from './WasmTypes.js';
 
 export interface WorkerInterface extends Chrome.DevTools.LanguageExtensionPlugin {
   hello(moduleConfigurations: ModuleConfigurations, logPluginApiCalls: boolean): void;

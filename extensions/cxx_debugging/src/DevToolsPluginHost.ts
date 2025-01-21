@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {DEFAULT_MODULE_CONFIGURATIONS, type ModuleConfigurations} from './ModuleConfiguration.js';
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
-import {WorkerRPC, type AsyncHostInterface, type WorkerInterface} from './WorkerRPC.js';
-import {type WasmValue} from './WasmTypes.js';
+import {DEFAULT_MODULE_CONFIGURATIONS, type ModuleConfigurations} from './ModuleConfiguration.js';
+import type {WasmValue} from './WasmTypes.js';
+import {type AsyncHostInterface, type WorkerInterface, WorkerRPC} from './WorkerRPC.js';
 
 export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, AsyncHostInterface {
   private readonly worker: Worker;
@@ -127,8 +127,8 @@ if (typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined') {
   }
 
   const defaultConfig = {
-    'moduleConfigurations': DEFAULT_MODULE_CONFIGURATIONS,
-    'logPluginApiCalls': false,
+    moduleConfigurations: DEFAULT_MODULE_CONFIGURATIONS,
+    logPluginApiCalls: false,
   };
   chrome.storage.local.get(defaultConfig, ({moduleConfigurations, logPluginApiCalls}) => {
     let pluginPromise = registerPlugin(moduleConfigurations, logPluginApiCalls);

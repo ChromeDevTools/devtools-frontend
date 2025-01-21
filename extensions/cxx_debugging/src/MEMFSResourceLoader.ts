@@ -5,7 +5,7 @@
 import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
 import type * as DWARFSymbols from './DWARFSymbols.js';
-import {type HostInterface} from './WorkerRPC.js';
+import type {HostInterface} from './WorkerRPC.js';
 
 export class ResourceLoader implements DWARFSymbols.ResourceLoader {
   protected async fetchSymbolsData(rawModule: DWARFSymbols.RawModule, url: URL, hostInterface: HostInterface):
@@ -39,11 +39,11 @@ export class ResourceLoader implements DWARFSymbols.ResourceLoader {
         symbolsResponse.arrayBuffer(),
         symbolsDwpResponse && symbolsDwpResponse.ok ? symbolsDwpResponse.arrayBuffer() : undefined,
       ]);
-      hostInterface.reportResourceLoad(url.href, {success: true, size: symbolsData.byteLength});
+      void hostInterface.reportResourceLoad(url.href, {success: true, size: symbolsData.byteLength});
       if (symbolsDwpData) {
-        hostInterface.reportResourceLoad(dwpUrl, {success: true, size: symbolsDwpData.byteLength});
+        void hostInterface.reportResourceLoad(dwpUrl, {success: true, size: symbolsDwpData.byteLength});
       } else {
-        hostInterface.reportResourceLoad(
+        void hostInterface.reportResourceLoad(
             dwpUrl, {success: false, errorMessage: `Failed to fetch dwp file: ${symbolsDwpError}`});
       }
       return {symbolsData, symbolsDwpData};
@@ -52,11 +52,11 @@ export class ResourceLoader implements DWARFSymbols.ResourceLoader {
     if (rawModule.url !== url.href) {
       const errorMessage = `NotFoundError: Unable to load debug symbols from '${url}' for the WebAssembly module '${
           rawModule.url}' (${statusText}), double-check the parameter to -gseparate-dwarf in your Emscripten link step`;
-      hostInterface.reportResourceLoad(url.href, {success: false, errorMessage});
+      void hostInterface.reportResourceLoad(url.href, {success: false, errorMessage});
       throw new Error(errorMessage);
     }
     const errorMessage = `NotFoundError: Unable to load debug symbols from '${url}' (${statusText})`;
-    hostInterface.reportResourceLoad(url.href, {success: false, errorMessage});
+    void hostInterface.reportResourceLoad(url.href, {success: false, errorMessage});
     throw new Error(errorMessage);
   }
 
@@ -74,7 +74,7 @@ export class ResourceLoader implements DWARFSymbols.ResourceLoader {
     // This file is sometimes preserved on reload, causing problems.
     try {
       fileSystem.unlink('/' + symbolsFileName);
-    } catch (_) {
+    } catch {
     }
 
     fileSystem.createDataFile(

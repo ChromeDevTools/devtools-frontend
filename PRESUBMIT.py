@@ -301,7 +301,7 @@ def _CheckDevToolsLint(input_api, output_api):
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
-        ['.css', '.js', '.ts'], results)
+        ['.css', '.mjs', '.js', '.ts'], results)
     if should_bail_out:
         return results
 

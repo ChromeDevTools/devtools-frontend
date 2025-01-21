@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {type Value, type WasmInterface} from '../src/CustomFormatters.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Value, WasmInterface} from '../src/CustomFormatters.js';
 import {WorkerPlugin} from '../src/DevToolsPluginHost.js';
-import {type WasmValue} from '../src/WasmTypes.js';
-import {type HostInterface} from '../src/WorkerRPC.js';
-import {type Debugger} from './RealBackend.js';
+import type {WasmValue} from '../src/WasmTypes.js';
+import type {HostInterface} from '../src/WorkerRPC.js';
+
+import type {Debugger} from './RealBackend.js';
 
 export class TestHostInterface implements HostInterface {
   getWasmLinearMemory(_offset: number, _length: number, _stopId: unknown): ArrayBuffer {
@@ -24,7 +25,7 @@ export class TestHostInterface implements HostInterface {
   }
   reportResourceLoad(
       _resourceUrl: string,
-      _status: {success: boolean; errorMessage?: string | undefined; size?: number | undefined;}): Promise<void> {
+      _status: {success: boolean, errorMessage?: string|undefined, size?: number|undefined}): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -72,7 +73,7 @@ export function nonNull<T>(value: T|null|undefined): T {
 export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|
                              null): Chrome.DevTools.RemoteObject {
   assert.exists(value);
-  assert(value.type != 'reftype');
+  assert(value.type !== 'reftype');
   return value;
 }
 

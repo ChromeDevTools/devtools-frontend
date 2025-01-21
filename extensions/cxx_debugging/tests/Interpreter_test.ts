@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import {createEmbindPool} from '../src/DWARFSymbols.js';
 
 import type * as LLDBEvalTests from './LLDBEvalTests.js';

@@ -4,7 +4,7 @@
 
 import './Formatters.js';
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
 import * as Formatters from './CustomFormatters.js';
 import {
@@ -15,7 +15,7 @@ import {
 } from './ModuleConfiguration.js';
 import type * as SymbolsBackend from './SymbolsBackend.js';
 import createSymbolsBackend from './SymbolsBackend.js';
-import {type HostInterface} from './WorkerRPC.js';
+import type {HostInterface} from './WorkerRPC.js';
 
 function mapVector<T, ApiT>(vector: SymbolsBackend.Vector<ApiT>, callback: (apiElement: ApiT) => T): T[] {
   const elements: T[] = [];
@@ -26,11 +26,11 @@ function mapVector<T, ApiT>(vector: SymbolsBackend.Vector<ApiT>, callback: (apiE
   return elements;
 }
 
-type ScopeInfo = {
-  type: 'GLOBAL'|'LOCAL'|'PARAMETER',
-  typeName: string,
-  icon?: string,
-};
+interface ScopeInfo {
+  type: 'GLOBAL'|'LOCAL'|'PARAMETER';
+  typeName: string;
+  icon?: string;
+}
 
 type LazyFSNode = FS.FSNode&{contents: {cacheLength: Function, length: number}};
 
@@ -196,7 +196,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
           // Sometimes these stick around.
           try {
             backend.FS.unlink(absolutePath);
-          } catch (_) {
+          } catch {
           }
           // Ensure directory exists
           if (parentDirectory.length > 1) {
@@ -211,9 +211,9 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
           const wrapper = (): void => {
             try {
               cacheLength.apply(node.contents);
-              this.hostInterface.reportResourceLoad(dwoURL, {success: true, size: node.contents.length});
+              void this.hostInterface.reportResourceLoad(dwoURL, {success: true, size: node.contents.length});
             } catch (e) {
-              this.hostInterface.reportResourceLoad(dwoURL, {success: false, errorMessage: (e as Error).message});
+              void this.hostInterface.reportResourceLoad(dwoURL, {success: false, errorMessage: (e as Error).message});
               // Rethrow any error fetching the content as errno 44 (EEXIST)
               // TypeScript doesn't know about the ErrnoError constructor
               // @ts-ignore

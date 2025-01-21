@@ -40,6 +40,7 @@ export interface Step {
 export interface TestSpec {
   name: string;
   test: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   extension_parameters?: string;
   script?: Step[];
   file?: string;

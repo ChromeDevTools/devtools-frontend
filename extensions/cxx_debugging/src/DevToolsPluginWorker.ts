@@ -2,15 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
 import {createPlugin, type ResourceLoader} from './DWARFSymbols.js';
-import {type ModuleConfigurations} from './ModuleConfiguration.js';
-
+import type {ModuleConfigurations} from './ModuleConfiguration.js';
 import {deserializeWasmMemory, deserializeWasmValue, kMaxWasmValueSize, type WasmValue} from './WasmTypes.js';
-
-import {SynchronousIOMessage} from './WorkerRPC.js';
-import {WorkerRPC, type Channel, type HostInterface, type WorkerInterface} from './WorkerRPC.js';
+import {type Channel, type HostInterface, SynchronousIOMessage, type WorkerInterface, WorkerRPC} from './WorkerRPC.js';
 
 class SynchronousLinearMemoryMessage extends SynchronousIOMessage<ArrayBuffer> {
   deserialize(length: number): ArrayBuffer {

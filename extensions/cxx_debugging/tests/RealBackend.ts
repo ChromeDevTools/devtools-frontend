@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 
 import type Protocol from 'devtools-protocol';
-import {type ProtocolMapping} from 'devtools-protocol/types/protocol-mapping.js';
+import type {ProtocolMapping} from 'devtools-protocol/types/protocol-mapping.js';
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
-import {type WasmValue} from '../src/WasmTypes.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {WasmValue} from '../src/WasmTypes.js';
 
 import {makeURL, relativePathname} from './TestUtils.js';
 
-type PauseLocation = {
-  rawLocation: Chrome.DevTools.RawLocation,
-  callFrame: Protocol.Debugger.CallFrame,
-};
+interface PauseLocation {
+  rawLocation: Chrome.DevTools.RawLocation;
+  callFrame: Protocol.Debugger.CallFrame;
+}
 
 type Handler<Method extends keyof ProtocolMapping.Events> =
     (method: Method, event: ProtocolMapping.Events[Method][0]) => unknown;
@@ -52,7 +52,7 @@ export class Debugger {
   private readonly callbacks: Map<number, {
     method: string,
     resolve: (r: ProtocolMapping.Commands[keyof ProtocolMapping.Commands]['returnType']) => unknown,
-    reject: (r: unknown) => unknown
+    reject: (r: unknown) => unknown,
   }> = new Map();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly eventHandlers: Map<string, Set<Handler<any>>> = new Map();
@@ -432,7 +432,7 @@ export class Debugger {
         default:
           return {type: 'reftype', valueClass, index};
       }
-    }
+    };
   }
   getWasmLocal(local: number, stopId: bigint): Promise<WasmValue> {
     return this.evaluateOnCallFrameId<WasmValue>(

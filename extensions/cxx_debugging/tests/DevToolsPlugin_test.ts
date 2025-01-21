@@ -6,10 +6,10 @@ import {WorkerPlugin} from '../src/DevToolsPluginHost.js';
 import {createPlugin} from '../src/DWARFSymbols.js';
 import {ResourceLoader} from '../src/MEMFSResourceLoader.js';
 import {DEFAULT_MODULE_CONFIGURATIONS} from '../src/ModuleConfiguration.js';
-import {type WasmValue} from '../src/WasmTypes.js';
+import type {WasmValue} from '../src/WasmTypes.js';
 import {type AsyncHostInterface, WorkerRPC} from '../src/WorkerRPC.js';
 
-import {type TestWorkerInterface} from './DevToolsPluginTestWorker.js';
+import type {TestWorkerInterface} from './DevToolsPluginTestWorker.js';
 import {makeURL, TestHostInterface} from './TestUtils.js';
 
 describe('DevToolsPlugin', () => {
@@ -43,7 +43,7 @@ describe('DevToolsPlugin', () => {
       const plugin = await createPlugin(hostInterface, new ResourceLoader());
       try {
         await plugin.addRawModule('0', '', {url});
-      } catch (_) {
+      } catch {
       }
       assert.isTrue(spy.calledOnceWithExactly(
           url,
@@ -67,16 +67,16 @@ describe('DevToolsPlugin', () => {
     it('reports loaded dwos', async () => {
       const url = makeURL('/build/tests/inputs/hello-split.wasm');
       const defaultConfig = {
-        'moduleConfigurations': DEFAULT_MODULE_CONFIGURATIONS,
-        'logPluginApiCalls': false,
+        moduleConfigurations: DEFAULT_MODULE_CONFIGURATIONS,
+        logPluginApiCalls: false,
       };
 
       const plugin = await WorkerPlugin.create(defaultConfig.moduleConfigurations, defaultConfig.logPluginApiCalls);
       const spy = sinon.spy(plugin, 'reportResourceLoad');
 
       const rawModuleId = 'hello-split.wasm@123456';
-      const helloFileURL = makeURL('/build/tests/inputs/hello-split.c')
-      const helperFileURL = makeURL('/build/tests/inputs/helper.c')
+      const helloFileURL = makeURL('/build/tests/inputs/hello-split.c');
+      const helperFileURL = makeURL('/build/tests/inputs/helper.c');
 
       const sources = await plugin.addRawModule(rawModuleId, '', {url});
       expect(sources).to.deep.equal([helloFileURL, helperFileURL]);
@@ -97,15 +97,15 @@ describe('DevToolsPlugin', () => {
     it('reports missing dwos', async () => {
       const url = makeURL('/build/tests/inputs/hello-split-missing-dwo.wasm');
       const defaultConfig = {
-        'moduleConfigurations': DEFAULT_MODULE_CONFIGURATIONS,
-        'logPluginApiCalls': false,
+        moduleConfigurations: DEFAULT_MODULE_CONFIGURATIONS,
+        logPluginApiCalls: false,
       };
 
       const plugin = await WorkerPlugin.create(defaultConfig.moduleConfigurations, defaultConfig.logPluginApiCalls);
       const spy = sinon.spy(plugin, 'reportResourceLoad');
 
       const rawModuleId = 'hello-split-missing-dwo.wasm@123456';
-      const helloFileURL = makeURL('/build/tests/inputs/hello-split-missing-dwo.c')
+      const helloFileURL = makeURL('/build/tests/inputs/hello-split-missing-dwo.c');
 
       const sources = await plugin.addRawModule(rawModuleId, '', {url});
       expect(sources).to.deep.equal([helloFileURL]);
@@ -228,7 +228,7 @@ describe('DevToolsPlugin', () => {
     it('lists global variables correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
 
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/globals.s.wasm')});
+      await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/globals.s.wasm')});
 
       const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 0x6, inlineFrameIndex: 0});
       expect(variables.map(v => v.name)).to.deep.equal(['::var_separate_cu']);
@@ -238,7 +238,7 @@ describe('DevToolsPlugin', () => {
   describe('getMappedLines', () => {
     it('computes mapped lines correctly.', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources = await plugin.addRawModule('hello', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
+      await plugin.addRawModule('hello', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
 
       const mappedLines = await plugin.getMappedLines('hello', makeURL('/build/tests/inputs/hello.c'));
       expect(mappedLines).to.eql([2]);

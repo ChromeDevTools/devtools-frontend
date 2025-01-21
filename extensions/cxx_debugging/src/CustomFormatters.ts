@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 
-import {type WasmValue} from './WasmTypes.js';
-import {type HostInterface} from './WorkerRPC.js';
+import type {WasmValue} from './WasmTypes.js';
+import type {HostInterface} from './WorkerRPC.js';
 
 export interface FieldInfo {
   typeId: string;
@@ -363,7 +363,7 @@ export class CXXValue implements Value, LazyObject {
         const formattedValue = await formatter.format(this.wasm, value);
         return lazyObjectFromAny(formattedValue, this.objectStore, this.type, this.displayValue, this.memoryAddress)
             .asRemoteObject();
-      } catch (e) {
+      } catch {
         // Fallthrough
       }
     }

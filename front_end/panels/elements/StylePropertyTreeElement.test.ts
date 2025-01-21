@@ -2,16 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {SinonStub} from 'sinon';
+
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
+import {
+  getMatchedStylesWithBlankRule,
+} from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
@@ -21,14 +25,14 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
-  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
-  let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
-  let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;
-  let mockMatchedStyles: sinon.SinonStubbedInstance<SDK.CSSMatchedStyles.CSSMatchedStyles>;
   let mockVariableMap: Record<string, string>;
+  let matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  let fakeComputeCSSVariable: SinonStub<
+      [style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string],
+      SDK.CSSMatchedStyles.CSSVariableValue|null>;
 
   beforeEach(async () => {
-    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     mockVariableMap = {
       '--a': 'red',
@@ -41,20 +45,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       '--empty': '',
     };
 
-    mockStylePropertiesSection = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
-    mockCssStyleDeclaration = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
-    mockMatchedStyles = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
-    mockMatchedStyles.keyframes.returns([]);
-    mockMatchedStyles.availableCSSVariables.returns(Object.keys(mockVariableMap));
-    mockMatchedStyles.computeCSSVariable.callsFake((style, name) => {
+    matchedStyles = await getMatchedStylesWithBlankRule(
+        new SDK.CSSModel.CSSModel(createTarget()), undefined, {startLine: 0, startColumn: 0, endLine: 0, endColumn: 1});
+    sinon.stub(matchedStyles, 'availableCSSVariables').returns(Object.keys(mockVariableMap));
+    fakeComputeCSSVariable = sinon.stub(matchedStyles, 'computeCSSVariable').callsFake((style, name) => {
       return {
         value: mockVariableMap[name],
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
       };
     });
-    mockCssStyleDeclaration.leadingProperties.returns([]);
-    mockCssStyleDeclaration.styleSheetId = 'stylesheet-id' as Protocol.CSS.StyleSheetId;
-    mockCssStyleDeclaration.range = new TextUtils.TextRange.TextRange(0, 0, 10, 10);
 
     const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const resourceMapping =
@@ -63,13 +62,18 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         {forceNew: true, resourceMapping, targetManager: SDK.TargetManager.TargetManager.instance()});
   });
 
+  function addProperty(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
+    return new SDK.CSSProperty.CSSProperty(
+        matchedStyles.nodeStyles()[0], matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(), name, value, true,
+        false, true, false, '', undefined, longhandProperties);
+  }
+
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
-    const property = new SDK.CSSProperty.CSSProperty(
-        mockCssStyleDeclaration, 0, name, value, true, false, true, false, '', undefined, longhandProperties);
+    const property = addProperty(name, value, longhandProperties);
     return new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
       stylesPane: stylesSidebarPane,
-      section: mockStylePropertiesSection,
-      matchedStyles: mockMatchedStyles,
+      section: sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection),
+      matchedStyles,
       property,
       isShorthand: longhandProperties.length > 0,
       inherited: false,
@@ -170,19 +174,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
          });
 
       it('shows a popover with it\'s computed color as RGB if possible', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, red 50%, yellow)', true, false, true, false, '',
-            undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red 50%, yellow)');
 
         const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
         stylePropertyTreeElement.updateTitle();
@@ -196,19 +188,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       });
 
       it('shows a popover with it\'s computed color as wide gamut if necessary', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, oklch(.5 .5 .5) 50%, yellow)', true, false, true,
-            false, '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, oklch(.5 .5 .5) 50%, yellow)');
 
         const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
         stylePropertyTreeElement.updateTitle();
@@ -222,20 +202,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       });
 
       it('propagates updates to outer color-mixes', () => {
-        const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(
-            mockCssStyleDeclaration, 0, 'color', 'color-mix(in srgb, color-mix(in oklch, red, green), blue)', true,
-            false, true, false, '', undefined);
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles: mockMatchedStyles,
-          property: cssPropertyWithColorMix,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
-
+        const stylePropertyTreeElement =
+            getTreeElement('color', 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
         stylePropertyTreeElement.updateTitle();
 
         const outerColorMix = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
@@ -474,9 +442,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('custom-properties', () => {
     it('linkifies var functions to declarations', async () => {
-      const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
-          mockCssStyleDeclaration, 0, '--prop', 'value', true, false, true, false, '', undefined);
-      mockMatchedStyles.computeCSSVariable.callsFake(
+      const cssCustomPropertyDef = addProperty('--prop', 'value');
+      fakeComputeCSSVariable.callsFake(
           (_, name) => name === '--prop' ? {
             value: 'computedvalue',
             declaration: new SDK.CSSMatchedStyles.CSSValueSource(cssCustomPropertyDef),
@@ -506,8 +473,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.isTrue(addElementPopoverHook.calledOnce);
 
       const registration = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSRegisteredProperty);
-      mockMatchedStyles.getRegisteredProperty.callsFake(name => name === '--prop' ? registration : undefined);
-      mockMatchedStyles.computeCSSVariable.returns({
+      sinon.stub(matchedStyles, 'getRegisteredProperty')
+          .callsFake(name => name === '--prop' ? registration : undefined);
+      fakeComputeCSSVariable.returns({
         value: 'computedvalue',
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
       });
@@ -523,7 +491,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('linkifies var functions to initial-value registrations', async () => {
-      mockMatchedStyles.computeCSSVariable.returns({
+      fakeComputeCSSVariable.returns({
         value: 'computedvalue',
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(
             sinon.createStubInstance(SDK.CSSMatchedStyles.CSSRegisteredProperty, {propertyName: '--prop'})),
@@ -689,84 +657,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
-  function setUpStyles(
-      cssModel: SDK.CSSModel.CSSModel,
-      cssProperties: {name: string, value: string}[],
-      styleSheetId = '0' as Protocol.CSS.StyleSheetId,
-      origin = Protocol.CSS.StyleSheetOrigin.Regular,
-      selector = 'div',
-      ): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
-    const matchedPayload: Protocol.CSS.RuleMatch[] = [{
-      rule: {
-        selectorList: {selectors: [{text: selector}], text: selector},
-        origin,
-        style: {cssProperties, shorthandEntries: []},
-      },
-      matchingSelectors: [0],
-    }];
-    if (cssModel.styleSheetHeaderForId(styleSheetId)) {
-      cssModel.styleSheetRemoved(styleSheetId);
-    }
-    cssModel.styleSheetAdded({
-      styleSheetId,
-      frameId: '' as Protocol.Page.FrameId,
-      sourceURL: '',
-      origin,
-      title: '',
-      disabled: false,
-      isInline: false,
-      isMutable: false,
-      isConstructed: false,
-      startLine: 0,
-      startColumn: 0,
-      length: 0,
-      endLine: 0,
-      endColumn: 0,
-    });
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 0 as Protocol.DOM.NodeId;
-    return SDK.CSSMatchedStyles.CSSMatchedStyles.create({
-      cssModel,
-      node,
-      inlinePayload: null,
-      attributesPayload: null,
-      matchedPayload,
-      pseudoPayload: [],
-      inheritedPayload: [],
-      inheritedPseudoPayload: [],
-      animationsPayload: [],
-      parentLayoutNodeId: undefined,
-      positionTryRules: [],
-      propertyRules: [],
-      cssPropertyRegistrations: [],
-      activePositionFallbackIndex: -1,
-      fontPaletteValuesRule: undefined,
-      animationStylesPayload: [],
-      transitionsStylePayload: null,
-      inheritedAnimatedPayload: [],
-    });
-  }
-
   describe('VariableRenderer', () => {
     it('computes the text for var()s correctly', async () => {
-      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
-
       async function matchProperty(value: string, name = 'color') {
-        const matchedStyles = await setUpStyles(cssModel, [
-          {name: '--blue', value: 'blue'},
-          {name, value},
-        ]);
-        const property = matchedStyles.nodeStyles()[0].leadingProperties()[1];
-        const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
-          stylesPane: stylesSidebarPane,
-          section: mockStylePropertiesSection,
-          matchedStyles,
-          property,
-          isShorthand: false,
-          inherited: false,
-          overloaded: false,
-          newProperty: true,
-        });
+        addProperty('--blue', 'blue');
+        const stylePropertyTreeElement = getTreeElement(name, value);
 
         const ast =
             SDK.CSSPropertyParser.tokenizeDeclaration(stylePropertyTreeElement.name, stylePropertyTreeElement.value);
@@ -1576,10 +1471,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     function mockResolvedKeyword(propertyName: string, keyword: SDK.CSSMetadata.CSSWideKeyword, propertyValue = ''):
         sinon.SinonStubbedInstance<SDK.CSSProperty.CSSProperty> {
       const originalDeclaration = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
-      mockMatchedStyles.resolveGlobalKeyword.callsFake(
-          (property, keyword) => property.name === propertyName && property.value === keyword ?
-              new SDK.CSSMatchedStyles.CSSValueSource(originalDeclaration) :
-              null);
+      sinon.stub(matchedStyles, 'resolveGlobalKeyword')
+          .callsFake(
+              (property, keyword) => property.name === propertyName && property.value === keyword ?
+                  new SDK.CSSMatchedStyles.CSSValueSource(originalDeclaration) :
+                  null);
       originalDeclaration.name = propertyName;
       originalDeclaration.value = propertyValue;
       originalDeclaration.ownerStyle = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
@@ -1619,8 +1515,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('PositionTryRenderer', () => {
     it('renders the position-try fallback values with correct styles', () => {
-      mockMatchedStyles.activePositionFallbackIndex.returns(1);
-      mockMatchedStyles.positionTryRules.returns([]);
+      sinon.stub(matchedStyles, 'activePositionFallbackIndex').returns(1);
+      sinon.stub(matchedStyles, 'positionTryRules').returns([]);
       const stylePropertyTreeElement = getTreeElement('position-try-fallbacks', '--top, --left, --bottom');
       stylePropertyTreeElement.updateTitle();
       const values =
@@ -1634,8 +1530,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('renders the position-try correctly with keyword', () => {
-      mockMatchedStyles.activePositionFallbackIndex.returns(1);
-      mockMatchedStyles.positionTryRules.returns([]);
+      sinon.stub(matchedStyles, 'activePositionFallbackIndex').returns(1);
+      sinon.stub(matchedStyles, 'positionTryRules').returns([]);
       const stylePropertyTreeElement =
           getTreeElement('position-try', '/* comment */ most-height --top, --left, --bottom');
       stylePropertyTreeElement.updateTitle();

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../core/sdk/sdk.js';
-import type * as Protocol from '../generated/protocol.js';
+import * as Protocol from '../generated/protocol.js';
 
 export function getMatchedStylesWithStylesheet(
     cssModel: SDK.CSSModel.CSSModel, origin: Protocol.CSS.StyleSheetOrigin, styleSheetId: Protocol.CSS.StyleSheetId,
@@ -28,6 +28,31 @@ export function getMatchedStylesWithStylesheet(
     ...header,
   });
   return getMatchedStyles({cssModel, ...payload});
+}
+
+export function getMatchedStylesWithBlankRule(
+    cssModel: SDK.CSSModel.CSSModel, selector = 'div', range: Protocol.CSS.SourceRange|undefined = undefined,
+    origin = Protocol.CSS.StyleSheetOrigin.Regular, styleSheetId = '0' as Protocol.CSS.StyleSheetId,
+    payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> = {}) {
+  return getMatchedStylesWithProperties(cssModel, {}, selector, range, origin, styleSheetId, payload);
+}
+
+export function getMatchedStylesWithProperties(
+    cssModel: SDK.CSSModel.CSSModel, properties: Protocol.CSS.CSSProperty[]|Record<string, string>, selector = 'div',
+    range: Protocol.CSS.SourceRange|undefined = undefined, origin = Protocol.CSS.StyleSheetOrigin.Regular,
+    styleSheetId = '0' as Protocol.CSS.StyleSheetId,
+    payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> = {}) {
+  const cssProperties =
+      Array.isArray(properties) ? properties : Object.keys(properties).map(name => ({name, value: properties[name]}));
+  const matchedPayload: Protocol.CSS.RuleMatch[] = [{
+    rule: {
+      selectorList: {selectors: [{text: selector}], text: selector},
+      origin,
+      style: {styleSheetId, range, cssProperties, shorthandEntries: []},
+    },
+    matchingSelectors: [0],
+  }];
+  return getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {}, {matchedPayload, ...payload});
 }
 
 export function getMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> = {}) {

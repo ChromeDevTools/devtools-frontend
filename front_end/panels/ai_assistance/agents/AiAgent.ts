@@ -205,6 +205,17 @@ export abstract class AiAgent<T> {
     return this.buildChatHistoryForAida();
   }
 
+  /**
+   * Declare a function that the AI model can call.
+   * @param name - The name of the function
+   * @param declaration - the function declaration. Currently functions must:
+   * 1. Return an object of serializable key/value pairs. You cannot return
+   *    anything other than a plain JavaScript object that can be serialized.
+   * 2. Take one parameter which is an object that can have
+   *    multiple keys and values. For example, rather than a function being called
+   *    with two args, `foo` and `bar`, you should instead have the function be
+   *    called with one object with `foo` and `bar` keys.
+   */
   declareFunction<Args, ReturnType>(name: string, declaration: FunctionDeclaration<Args, ReturnType>): void {
     if (this.#functionDeclarations.has(name)) {
       throw new Error(`Duplicate function declaration ${name}`);

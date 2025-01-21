@@ -406,7 +406,7 @@ export class MainImpl {
 
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES,
-        'Performance panel: enable third party depenedency features',
+        'Performance panel: enable third party dependency features',
     );
 
     Root.Runtime.experiments.enableExperimentsByDefault([

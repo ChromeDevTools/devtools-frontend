@@ -145,6 +145,7 @@ export class FilteredUISourceCodeListProvider extends QuickOpen.FilteredListWidg
   }
 
   override renderItem(itemIndex: number, query: string, titleElement: Element, subtitleElement: Element): void {
+    titleElement.parentElement?.parentElement?.classList.toggle('search-mode', Boolean(query));
     query = this.rewriteQuery(query);
     const uiSourceCode = this.uiSourceCodes[itemIndex];
     const fullDisplayName = uiSourceCode.fullDisplayName();

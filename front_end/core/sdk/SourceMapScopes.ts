@@ -98,14 +98,17 @@ interface OriginalScopeTree {
   readonly scopeForItemIndex: Map<number, OriginalScope>;
 }
 
-export function decodeScopes(map: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>):
-    {originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]} {
+export function decodeScopes(
+    map: Pick<SourceMapV3Object, 'names'|'originalScopes'|'generatedRanges'>, basePosition: Position = {
+      line: 0,
+      column: 0
+    }): {originalScopes: OriginalScope[], generatedRanges: GeneratedRange[]} {
   if (!map.originalScopes || map.generatedRanges === undefined) {
     throw new Error('Cant decode scopes without "originalScopes" or "generatedRanges"');
   }
   const scopeTrees = decodeOriginalScopes(map.originalScopes, map.names ?? []);
   const originalScopes = scopeTrees.map(tree => tree.root);
-  const generatedRanges = decodeGeneratedRanges(map.generatedRanges, scopeTrees, map.names ?? []);
+  const generatedRanges = decodeGeneratedRanges(map.generatedRanges, scopeTrees, map.names ?? [], basePosition);
   return {originalScopes, generatedRanges};
 }
 
@@ -229,7 +232,10 @@ function*
 }
 
 export function decodeGeneratedRanges(
-    encodedGeneratedRange: string, originalScopeTrees: OriginalScopeTree[], names: string[]): GeneratedRange[] {
+    encodedGeneratedRange: string, originalScopeTrees: OriginalScopeTree[], names: string[], basePosition: Position = {
+      line: 0,
+      column: 0
+    }): GeneratedRange[] {
   // We insert a pseudo range as there could be multiple top-level ranges and we need a root range those can be attached to.
   const rangeStack: GeneratedRange[] = [{
     start: {line: 0, column: 0},
@@ -241,7 +247,7 @@ export function decodeGeneratedRanges(
   }];
   const rangeToStartItem = new Map<GeneratedRange, EncodedGeneratedRangeStart>();
 
-  for (const item of decodeGeneratedRangeItems(encodedGeneratedRange)) {
+  for (const item of decodeGeneratedRangeItems(encodedGeneratedRange, basePosition)) {
     if (isRangeStart(item)) {
       const range: GeneratedRange = {
         start: {line: item.line, column: item.column},
@@ -357,16 +363,16 @@ function isRangeStart(item: EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd)
 }
 
 function*
-    decodeGeneratedRangeItems(encodedGeneratedRange: string):
+    decodeGeneratedRangeItems(encodedGeneratedRange: string, basePosition: Position):
         Generator<EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd> {
   const iter = new TokenIterator(encodedGeneratedRange);
-  let line = 0;
+  let line = basePosition.line;
 
   // The state are the fields of the last produced item, tracked because many
   // are relative to the preceeding item.
   const state = {
-    line: 0,
-    column: 0,
+    line: basePosition.line,
+    column: basePosition.column,
     defSourceIdx: 0,
     defScopeIdx: 0,
     callsiteSourceIdx: 0,

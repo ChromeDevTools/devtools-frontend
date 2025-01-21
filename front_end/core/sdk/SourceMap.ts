@@ -38,7 +38,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
-import {decodeScopes} from './SourceMapScopes.js';
+import {decodeScopes, type Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -509,8 +509,11 @@ export class SourceMap {
     }
   }
 
-  private parseMap(map: SourceMapV3Object, baseSourceIndex: number, lineNumber: number, columnNumber: number): void {
+  private parseMap(map: SourceMapV3Object, baseSourceIndex: number, baseLineNumber: number, baseColumnNumber: number):
+      void {
     let sourceIndex = baseSourceIndex;
+    let lineNumber = baseLineNumber;
+    let columnNumber = baseColumnNumber;
     let sourceLineNumber = 0;
     let sourceColumnNumber = 0;
     let nameIndex = 0;
@@ -558,8 +561,15 @@ export class SourceMap {
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+      if (!this.#scopesInfo) {
+        this.#scopesInfo = new SourceMapScopesInfo(this, [], []);
+      }
+      if (map.originalScopes && map.generatedRanges) {
+        const {originalScopes, generatedRanges} = decodeScopes(map, {line: baseLineNumber, column: baseColumnNumber});
+        this.#scopesInfo.addOriginalScopes(originalScopes);
+        this.#scopesInfo.addGeneratedRanges(generatedRanges);
+      }
       this.parseBloombergScopes(map, baseSourceIndex);
-      this.#parseScopes(map);
     }
   }
 
@@ -633,13 +643,6 @@ export class SourceMap {
       stack.push(entry);
     }
     return toplevel;
-  }
-
-  #parseScopes(map: SourceMapV3Object): void {
-    if (map.originalScopes && map.generatedRanges) {
-      const {originalScopes, generatedRanges} = decodeScopes(map);
-      this.#scopesInfo = new SourceMapScopesInfo(this, originalScopes, generatedRanges);
-    }
   }
 
   findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):
@@ -832,6 +835,11 @@ export class SourceMap {
     }
 
     return this.#scopesInfo.resolveMappedScopeChain(frame);
+  }
+
+  findOriginalFunctionName(position: GeneratedPosition): string|null {
+    this.#ensureMappingsProcessed();
+    return this.#scopesInfo?.findOriginalFunctionName(position) ?? null;
   }
 }
 

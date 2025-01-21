@@ -1382,6 +1382,11 @@ export class ElementsTreeOutline extends
       visibleChildren.push(markerPseudoElement);
     }
 
+    const checkmarkPseudoElement = node.checkmarkPseudoElement();
+    if (checkmarkPseudoElement) {
+      visibleChildren.push(checkmarkPseudoElement);
+    }
+
     const beforePseudoElement = node.beforePseudoElement();
     if (beforePseudoElement) {
       visibleChildren.push(beforePseudoElement);

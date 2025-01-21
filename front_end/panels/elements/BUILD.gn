@@ -162,6 +162,7 @@ ts_library("unittests") {
     "ElementStatePaneWidget.test.ts",
     "ElementsPanel.test.ts",
     "ElementsTreeElementHighlighter.test.ts",
+    "ElementsTreeOutline.test.ts",
     "InspectElementModeController.test.ts",
     "PlatformFontsWidget.test.ts",
     "PropertiesWidget.test.ts",

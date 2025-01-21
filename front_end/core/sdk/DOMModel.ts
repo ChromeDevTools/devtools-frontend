@@ -353,6 +353,10 @@ export class DOMNode {
     return this.#pseudoElements;
   }
 
+  checkmarkPseudoElement(): DOMNode|undefined {
+    return this.#pseudoElements.get(Protocol.DOM.PseudoType.Checkmark)?.at(-1);
+  }
+
   beforePseudoElement(): DOMNode|undefined {
     return this.#pseudoElements.get(Protocol.DOM.PseudoType.Before)?.at(-1);
   }

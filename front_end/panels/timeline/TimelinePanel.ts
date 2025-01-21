@@ -214,9 +214,9 @@ const UIStrings = {
    */
   close: 'Close',
   /**
-   *@description Text to download the raw trace files after an error
+   *@description Text to download the trace file after an error
    */
-  downloadAfterError: 'Download raw trace events',
+  downloadAfterError: 'Download trace',
   /**
    *@description Status text to indicate the recording has failed in the Performance panel
    */
@@ -1763,7 +1763,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         {
           description: error,
           buttonText: i18nString(UIStrings.close),
-          buttonDisabled: false,
+          hideStopButton: true,
           showProgress: undefined,
           showTimer: undefined,
         },
@@ -2264,7 +2264,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         {
           showProgress: true,
           showTimer: undefined,
-          buttonDisabled: undefined,
+          hideStopButton: true,
           buttonText: undefined,
           description: undefined,
         },
@@ -2444,7 +2444,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         {
           showTimer: true,
           showProgress: true,
-          buttonDisabled: true,
+          hideStopButton: false,
           description: undefined,
           buttonText: undefined,
         },
@@ -2669,11 +2669,11 @@ export class StatusPane extends UI.Widget.VBox {
 
   constructor(
       options: {
+        hideStopButton: boolean,
         showTimer?: boolean,
         showProgress?: boolean,
         description?: string,
         buttonText?: string,
-        buttonDisabled?: boolean,
       },
       buttonCallback: () => (Promise<void>| void)) {
     super(true);
@@ -2712,14 +2712,14 @@ export class StatusPane extends UI.Widget.VBox {
     }, {jslogContext: 'timeline.download-after-error'});
 
     this.downloadTraceButton.disabled = true;
-    this.downloadTraceButton.style.visibility = 'hidden';
+    this.downloadTraceButton.classList.add('hidden');
 
     const buttonText = options.buttonText || i18nString(UIStrings.stop);
     this.button = UI.UIUtils.createTextButton(buttonText, buttonCallback, {
       jslogContext: 'timeline.stop-recording',
     });
     // Profiling can't be stopped during initialization.
-    this.button.disabled = !options.buttonDisabled === false;
+    this.button.classList.toggle('hidden', options.hideStopButton);
 
     buttonContainer.append(this.downloadTraceButton);
     buttonContainer.append(this.button);
@@ -2727,7 +2727,7 @@ export class StatusPane extends UI.Widget.VBox {
 
   finish(): void {
     this.stopTimer();
-    this.button.disabled = true;
+    this.button.classList.add('hidden');
   }
 
   async #downloadRawTraceAfterError(): Promise<void> {
@@ -2746,26 +2746,22 @@ export class StatusPane extends UI.Widget.VBox {
   enableDownloadOfEvents(rawEvents: Trace.Types.Events.Event[]): void {
     this.#rawEvents = rawEvents;
     this.downloadTraceButton.disabled = false;
-    this.downloadTraceButton.style.visibility = 'visible';
+    this.downloadTraceButton.classList.remove('hidden');
   }
 
   remove(): void {
-    if (this.element.parentNode) {
-      (this.element.parentNode as HTMLElement).classList.remove('tinted');
-      this.arrangeDialog((this.element.parentNode as HTMLElement));
-    }
+    (this.element.parentNode as HTMLElement)?.classList.remove('tinted');
     this.stopTimer();
     this.element.remove();
   }
 
   showPane(parent: Element): void {
-    this.arrangeDialog(parent);
     this.show(parent);
     parent.classList.add('tinted');
   }
 
   enableAndFocusButton(): void {
-    this.button.disabled = false;
+    this.button.classList.remove('hidden');
     this.button.focus();
   }
 
@@ -2796,7 +2792,6 @@ export class StatusPane extends UI.Widget.VBox {
   }
 
   private updateTimer(): void {
-    this.arrangeDialog((this.element.parentNode as HTMLElement));
     if (!this.timeUpdateTimer || !this.time) {
       return;
     }
@@ -2805,11 +2800,6 @@ export class StatusPane extends UI.Widget.VBox {
     this.time.textContent = i18n.TimeUtilities.preciseSecondsToString(seconds, 1);
   }
 
-  private arrangeDialog(parent: Element): void {
-    const isSmallDialog = parent.clientWidth < 325;
-    this.element.classList.toggle('small-dialog', isSmallDialog);
-    this.contentElement.classList.toggle('small-dialog', isSmallDialog);
-  }
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([timelineStatusDialogStyles]);

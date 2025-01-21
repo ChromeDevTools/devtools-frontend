@@ -382,7 +382,5 @@ export function veImpressionForPerformancePanel() {
 }
 
 function veImpressionForStatusDialog() {
-  return veImpression(
-      'Dialog', 'timeline-status',
-      [veImpression('Action', 'timeline.download-after-error'), veImpression('Action', 'timeline.stop-recording')]);
+  return veImpression('Dialog', 'timeline-status');
 }

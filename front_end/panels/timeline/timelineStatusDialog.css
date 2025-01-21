@@ -55,17 +55,6 @@
   border-radius: 12px;
 }
 
-.timeline-status-dialog.small-dialog {
-  width: inherit;
-  justify-content: center;
-}
-
-.small-dialog > .stop-button {
-  align-self: center;
-  margin-top: 20px;
-  height: initial;
-}
-
 @media (forced-colors: active) {
   .timeline-status-dialog {
     border: 1px solid canvastext;
@@ -79,5 +68,28 @@
   .timeline-status-dialog .progress .indicator {
     forced-color-adjust: none;
     background-color: ButtonText;
+  }
+}
+
+:host {
+  container-type: inline-size;
+}
+
+/* 326 is the widths above (200 + 80) + a bunch of padding. calc() can't be used here sadly */
+@container (max-width: 326px) {
+  .timeline-status-dialog {
+    box-shadow: none;
+
+    .stop-button {
+      align-self: center;
+    }
+  }
+
+  .status-dialog-line {
+    flex-direction: column;
+
+    .label {
+      display: none;
+    }
   }
 }

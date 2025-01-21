@@ -473,25 +473,6 @@ export class FontMatcher extends matcherBase(FontMatch) {
   }
 }
 
-export class LengthMatch implements Match {
-  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
-  }
-}
-
-// clang-format off
-export class LengthMatcher extends matcherBase(LengthMatch) {
-  // clang-format on
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
-    const text = matching.ast.text(node);
-    const regexp = new RegExp(`^${InlineEditor.CSSLength.CSS_LENGTH_REGEX.source}$`);
-    const match = regexp.exec(text);
-    if (!match || match.index !== 0) {
-      return null;
-    }
-    return new LengthMatch(match[0], node);
-  }
-}
-
 export class FlexGridMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly isFlex: boolean) {
   }

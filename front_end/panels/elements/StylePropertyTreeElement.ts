@@ -46,8 +46,6 @@ import {
   FontMatcher,
   type GridTemplateMatch,
   GridTemplateMatcher,
-  type LengthMatch,
-  LengthMatcher,
   type LightDarkColorMatch,
   LightDarkColorMatcher,
   type LinearGradientMatch,
@@ -1156,47 +1154,6 @@ export class GridTemplateRenderer implements MatchRenderer<GridTemplateMatch> {
   }
 }
 
-export class LengthRenderer implements MatchRenderer<LengthMatch> {
-  readonly #treeElement: StylePropertyTreeElement;
-  constructor(treeElement: StylePropertyTreeElement) {
-    this.#treeElement = treeElement;
-  }
-
-  render(match: LengthMatch, _context: RenderingContext): Node[] {
-    const lengthText = match.text;
-    if (!this.#treeElement.editable()) {
-      return [document.createTextNode(lengthText)];
-    }
-    const cssLength = new InlineEditor.CSSLength.CSSLength();
-    const valueElement = document.createElement('span');
-    valueElement.textContent = lengthText;
-    cssLength.data = {lengthText};
-    cssLength.append(valueElement);
-
-    const onValueChanged = (event: Event): void => {
-      const {data} = (event as InlineEditor.InlineEditorUtils.ValueChangedEvent);
-
-      valueElement.textContent = data.value;
-      this.#treeElement.parentPane().setEditingStyle(true);
-      void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), false);
-    };
-
-    const onDraggingFinished = (): void => {
-      this.#treeElement.parentPane().setEditingStyle(false);
-      void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), true);
-    };
-
-    cssLength.addEventListener('valuechanged', onValueChanged);
-    cssLength.addEventListener('draggingfinished', onDraggingFinished);
-
-    return [cssLength];
-  }
-
-  matcher(): LengthMatcher {
-    return new LengthMatcher();
-  }
-}
-
 async function decorateAnchorForAnchorLink(container: HTMLElement, treeElement: StylePropertyTreeElement, options: {
   identifier?: string, needsSpace: boolean,
 }): Promise<void> {
@@ -1760,10 +1717,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new FontRenderer(this),
         ] :
         [];
-
-    if (!Root.Runtime.experiments.isEnabled('css-type-component-length-deprecate') && this.property.parsedOk) {
-      renderers.push(new LengthRenderer(this));
-    }
 
     this.listItemElement.removeChildren();
     this.valueElement = Renderer.renderValueElement(this.name, this.value, renderers);

@@ -551,12 +551,6 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     });
   });
 
-  it('matches lengths', () => {
-    const {match, text} = matchSingleValue('min-width', '100px', new Elements.PropertyMatchers.LengthMatcher());
-    assert.exists(match, text);
-    assert.strictEqual(match.text, '100px');
-  });
-
   it('match css keywords', () => {
     const propertyStub = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
     const matchedStylesStub = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);

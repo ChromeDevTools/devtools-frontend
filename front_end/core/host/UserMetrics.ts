@@ -984,7 +984,6 @@ export enum DevtoolsExperiments {
   'use-source-map-scopes' = 76,
   'network-panel-filter-bar-redesign' = 79,
   'autofill-view' = 82,
-  'css-type-component-length-deprecate' = 85,
   'timeline-show-postmessage-events' = 86,
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,

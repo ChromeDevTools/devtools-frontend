@@ -1916,6 +1916,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const {traceIndex} = this.#viewMode;
     const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+    const metadata = this.#traceEngineModel.metadata(traceIndex);
     const syntheticEventsManager = this.#traceEngineModel.syntheticTraceEventsManager(traceIndex);
 
     if (!parsedTrace || !syntheticEventsManager) {
@@ -1951,7 +1952,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const isCpuProfile =
         this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
-    this.flameChart.setModel(parsedTrace, isCpuProfile);
+    this.flameChart.setModel(parsedTrace, metadata, isCpuProfile);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
     this.flameChart.setSelectionAndReveal(null);

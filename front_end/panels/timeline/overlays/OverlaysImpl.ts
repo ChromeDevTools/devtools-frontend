@@ -4,12 +4,30 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {EntryStyles} from '../../timeline/utils/utils.js';
 
 import * as Components from './components/components.js';
+
+const UIStrings = {
+  /**
+   * @description Text for showing that a metric was observed in the local environment.
+   * @example {LCP} PH1
+   */
+  fieldMetricMarkerLocal: '{PH1} - Local',
+
+  /**
+   * @description Text for showing that a metric was observed in the field, from real use data (CrUX). Also denotes if from URL or Origin dataset.
+   * @example {LCP} PH1
+   * @example {URL} PH2
+   */
+  fieldMetricMarkerField: '{PH1} - Field ({PH2})',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -284,8 +302,14 @@ export interface TimestampMarker {
  */
 export interface TimingsMarker {
   type: 'TIMINGS_MARKER';
-  entries: Trace.Types.Events.Event[];
+  entries: Trace.Types.Events.PageLoadEvent[];
+  entryToFieldResult: Map<Trace.Types.Events.PageLoadEvent, TimingsMarkerFieldResult>;
   adjustedTimestamp: Trace.Types.Timing.MicroSeconds;
+}
+
+export interface TimingsMarkerFieldResult {
+  ts: Trace.Types.Timing.MicroSeconds;
+  pageScope: CrUXManager.PageScope;
 }
 
 /**
@@ -1552,20 +1576,44 @@ export class Overlays extends EventTarget {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
-  #createOverlayPopover(adjustedTimestamp: Trace.Types.Timing.MicroSeconds, name: string): HTMLElement {
+  #createOverlayPopover(
+      adjustedTimestamp: Trace.Types.Timing.MicroSeconds, name: string,
+      fieldResult: TimingsMarkerFieldResult|undefined): HTMLElement {
     const popoverElement = document.createElement('div');
     const popoverContents = popoverElement.createChild('div', 'overlay-popover');
     popoverContents.createChild('span', 'overlay-popover-time').textContent =
         i18n.TimeUtilities.formatMicroSecondsTime(adjustedTimestamp);
-    popoverContents.createChild('span', 'overlay-popover-title').textContent = name;
+    popoverContents.createChild('span', 'overlay-popover-title').textContent =
+        fieldResult ? i18nString(UIStrings.fieldMetricMarkerLocal, {PH1: name}) : name;
+
+    // If there's field data, make another row.
+    if (fieldResult) {
+      const popoverContents = popoverElement.createChild('div', 'overlay-popover');
+      popoverContents.createChild('span', 'overlay-popover-time').textContent =
+          i18n.TimeUtilities.formatMicroSecondsTime(fieldResult.ts);
+      let scope: string = fieldResult.pageScope;
+      if (fieldResult.pageScope === 'url') {
+        scope = 'URL';
+      } else if (fieldResult.pageScope === 'origin') {
+        scope = 'Origin';
+      }
+      popoverContents.createChild('span', 'overlay-popover-title').textContent =
+          i18nString(UIStrings.fieldMetricMarkerField, {
+            PH1: name,
+            PH2: scope,
+          });
+    }
+
     return popoverElement;
   }
 
-  #mouseMoveOverlay(event: MouseEvent, name: string, overlay: TimingsMarker, markers: HTMLElement, marker: HTMLElement):
-      void {
-    const popoverElement = this.#createOverlayPopover(overlay.adjustedTimestamp, name);
-    this.#lastMouseOffsetX = event.offsetX + (markers.offsetLeft || 0) + (marker.offsetLeft || 0);
-    this.#lastMouseOffsetY = event.offsetY + markers.offsetTop || 0;
+  #mouseMoveOverlay(
+      e: MouseEvent, event: Trace.Types.Events.PageLoadEvent, name: string, overlay: TimingsMarker,
+      markers: HTMLElement, marker: HTMLElement): void {
+    const fieldResult = overlay.entryToFieldResult.get(event);
+    const popoverElement = this.#createOverlayPopover(overlay.adjustedTimestamp, name, fieldResult);
+    this.#lastMouseOffsetX = e.offsetX + (markers.offsetLeft || 0) + (marker.offsetLeft || 0);
+    this.#lastMouseOffsetY = e.offsetY + markers.offsetTop || 0;
     this.#charts.mainChart.updateMouseOffset(this.#lastMouseOffsetX, this.#lastMouseOffsetY);
     this.#charts.mainChart.updatePopoverContents(popoverElement);
   }
@@ -1590,7 +1638,7 @@ export class Overlays extends EventTarget {
 
       marker.addEventListener('click', () => this.#clickEvent(entry));
       // Popover.
-      marker.addEventListener('mousemove', event => this.#mouseMoveOverlay(event, title, overlay, markers, marker));
+      marker.addEventListener('mousemove', e => this.#mouseMoveOverlay(e, entry, title, overlay, markers, marker));
       marker.addEventListener('mouseout', () => this.#mouseOutOverlay());
     }
     return markers;

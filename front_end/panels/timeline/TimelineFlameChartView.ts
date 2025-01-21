@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -121,6 +122,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   private selectedSearchResult?: PerfUI.FlameChart.DataProviderSearchResult;
   private searchRegex?: RegExp;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  #traceMetadata: Trace.Types.File.MetaData|null;
   #traceInsightSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #selectedGroupName: string|null = null;
@@ -141,7 +143,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
-  #markers: Array<Overlays.Overlays.TimelineOverlay> = [];
+  #markers: Array<Overlays.Overlays.TimingsMarker> = [];
 
   #tooltipElement = document.createElement('div');
 
@@ -165,6 +167,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.delegate = delegate;
     this.eventListeners = [];
     this.#parsedTrace = null;
+    this.#traceMetadata = null;
 
     const flameChartsContainer = new UI.Widget.VBox();
     flameChartsContainer.element.classList.add('flame-charts-container');
@@ -521,6 +524,73 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     });
   }
 
+  #amendMarkerWithFieldData(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+    const cruxFieldData = this.#traceMetadata?.cruxFieldData;
+    if (!cruxFieldData) {
+      return;
+    }
+
+    const getPageResult = (url: string, origin: string): CrUXManager.PageResult|undefined => {
+      return cruxFieldData.find(result => {
+        const key = (result['url-ALL'] || result['origin-ALL'])?.record.key;
+        return (key?.url && key.url === url) || (key?.origin && key.origin === origin);
+      });
+    };
+    const getMetricScore = (pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames):
+        {value: number, pageScope: CrUXManager.PageScope}|null => {
+          let value = pageResult['url-ALL']?.record.metrics[name]?.percentiles?.p75;
+          if (typeof value === 'number') {
+            return {value, pageScope: 'url'};
+          }
+
+          value = pageResult['origin-ALL']?.record.metrics[name]?.percentiles?.p75;
+          if (typeof value === 'number') {
+            return {value, pageScope: 'origin'};
+          }
+
+          return null;
+        };
+
+    for (const marker of this.#markers) {
+      for (const event of marker.entries) {
+        const navigationId = event.args?.data?.navigationId;
+        if (!navigationId) {
+          continue;
+        }
+
+        let cruxMetricName: CrUXManager.StandardMetricNames;
+        if (event.name === Trace.Types.Events.Name.MARK_FCP) {
+          cruxMetricName = 'first_contentful_paint';
+        } else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
+          cruxMetricName = 'largest_contentful_paint';
+        } else {
+          continue;
+        }
+
+        const nav = parsedTrace.Meta.navigationsByNavigationId.get(navigationId);
+        // TODO(paulirish): Trace.Types.Events.NavigationStart type should be fixed, not working as intended.
+        const url = nav?.args.data.documentLoaderURL as (string | undefined);
+        if (!nav || !url) {
+          continue;
+        }
+
+        const pageResult = getPageResult(url, new URL(url).origin);
+        if (!pageResult) {
+          continue;
+        }
+
+        const metricScoreResult = getMetricScore(pageResult, cruxMetricName);
+        if (!metricScoreResult) {
+          continue;
+        }
+
+        const tsMs = metricScoreResult.value as Trace.Types.Timing.MilliSeconds;
+        const ts = Trace.Helpers.Timing.millisecondsToMicroseconds(tsMs);
+        marker.entryToFieldResult.set(event, {ts, pageScope: metricScoreResult.pageScope});
+      }
+    }
+  }
+
   setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
     if (!parsedTrace) {
       return;
@@ -555,11 +625,12 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         }
       }
       if (!matchingOverlay) {
-        const overlay = {
+        const overlay: Overlays.Overlays.TimingsMarker = {
           type: 'TIMINGS_MARKER',
           entries: [marker],
+          entryToFieldResult: new Map(),
           adjustedTimestamp,
-        } as Overlays.Overlays.TimingsMarker;
+        };
         overlayByTs.set(marker.ts, overlay);
       }
     });
@@ -569,6 +640,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       return;
     }
 
+    this.#amendMarkerWithFieldData(parsedTrace);
     this.bulkAddOverlays(this.#markers);
   }
 
@@ -1047,12 +1119,15 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#updateDetailViews();
   }
 
-  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace, isCpuProfile = false): void {
+  setModel(
+      newParsedTrace: Trace.Handlers.Types.ParsedTrace, traceMetadata: Trace.Types.File.MetaData|null,
+      isCpuProfile = false): void {
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }
     this.#selectedGroupName = null;
     this.#parsedTrace = newParsedTrace;
+    this.#traceMetadata = traceMetadata;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(newParsedTrace, isCpuProfile);

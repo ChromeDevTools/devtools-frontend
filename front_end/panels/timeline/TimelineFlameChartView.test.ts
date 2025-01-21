@@ -64,7 +64,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   });
 
   it('Can search for events by name in the timeline', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -72,7 +72,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace);
+    flameChartView.setModel(parsedTrace, metadata);
 
     const searchQuery = 'Paint';
     const searchConfig =
@@ -103,7 +103,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   });
 
   it('can search across both flame charts for events', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -111,7 +111,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     const searchableView = new UI.SearchableView.SearchableView(flameChartView, null);
     flameChartView.setSearchableView(searchableView);
-    flameChartView.setModel(parsedTrace);
+    flameChartView.setModel(parsedTrace, metadata);
 
     const searchQuery = 'app.js';
     const searchConfig =
@@ -129,35 +129,35 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   // This test is still failing after bumping up the timeout to 20 seconds. So
   // skip it while we work on a fix for the trace load speed.
   it.skip('[crbug.com/1492405] Shows the network track correctly', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace);
+    flameChartView.setModel(parsedTrace, metadata);
 
     assert.isTrue(flameChartView.isNetworkTrackShownForTests());
   });
 
   it('Does not show the network track when there is no network request', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic.json.gz');
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'basic.json.gz');
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace);
+    flameChartView.setModel(parsedTrace, metadata);
 
     assert.isFalse(flameChartView.isNetworkTrackShownForTests());
   });
 
   it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a node', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-    flameChartView.setModel(parsedTrace);
+    flameChartView.setModel(parsedTrace, metadata);
 
     // Find the main track to later collapse entries of
     const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -194,11 +194,11 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
   it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a selected node with a key shortcut event',
      async function() {
-       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+       const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
        const mockViewDelegate = new MockViewDelegate();
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-       flameChartView.setModel(parsedTrace);
+       flameChartView.setModel(parsedTrace, metadata);
 
        // Find the main track to later collapse entries of
        const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
@@ -238,11 +238,11 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
   it('Removes Hidden Descendants Arrow as a decoration when Reset Children action is applied on a node',
      async function() {
-       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+       const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
        const mockViewDelegate = new MockViewDelegate();
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-       flameChartView.setModel(parsedTrace);
+       flameChartView.setModel(parsedTrace, metadata);
        Timeline.ModificationsManager.ModificationsManager.activeManager();
 
        // Find the main track to later collapse entries of
@@ -292,16 +292,43 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        assert.isUndefined(decorationsForEntry);
      });
 
+  it('renders metrics as marker overlays w/ tooltips', async function() {
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'crux.json.gz');
+    const mockViewDelegate = new MockViewDelegate();
+
+    const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setModel(parsedTrace, metadata);
+
+    const tooltips =
+        [...flameChartView.element.querySelectorAll('.overlay-type-TIMINGS_MARKER .marker-title')].map(el => {
+          el?.dispatchEvent(new MouseEvent('mousemove', {
+            clientX: 0,
+            clientY: 0,
+          }));
+          return flameChartView.element.querySelector('.timeline-entry-tooltip-element')
+              ?.textContent?.replaceAll('\xa0', ' ');
+        });
+
+    assert.deepEqual(tooltips, [
+      '0 μsNav',
+      '43.98 msL',
+      '75.90 msFCP - Local939.00 msFCP - Field (URL)',
+      '75.90 msLCP - Local936.00 msLCP - Field (URL)',
+      '43.75 msDCL',
+    ]);
+  });
+
   describe('Context Menu', function() {
     let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
     let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    let metadata: Trace.Types.File.MetaData|null;
 
     this.beforeEach(async () => {
-      ({parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz'));
+      ({parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz'));
       const mockViewDelegate = new MockViewDelegate();
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-      flameChartView.setModel(parsedTrace);
+      flameChartView.setModel(parsedTrace, metadata);
       Timeline.ModificationsManager.ModificationsManager.activeManager();
     });
 
@@ -753,13 +780,14 @@ describeWithEnvironment('TimelineFlameChartView', function() {
   describe('Link between entries annotation in progress', function() {
     let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
     let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    let metadata: Trace.Types.File.MetaData|null;
 
     this.beforeEach(async () => {
-      ({parsedTrace} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz'));
+      ({parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz'));
       const mockViewDelegate = new MockViewDelegate();
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
-      flameChartView.setModel(parsedTrace);
+      flameChartView.setModel(parsedTrace, metadata);
       Timeline.ModificationsManager.ModificationsManager.activeManager();
     });
 

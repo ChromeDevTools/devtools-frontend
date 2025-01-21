@@ -138,7 +138,15 @@ class DataGridElement extends HTMLElement {
     for (const column of this.querySelectorAll('th[id]') || []) {
       const id = column.id as Lowercase<string>;
       this.#columnsOrder.push(id);
-      const title = (column.textContent?.trim() || '') as Platform.UIString.LocalizedString;
+      let title = column.textContent?.trim() || '';
+      const titleDOMFragment = column.firstElementChild ? document.createDocumentFragment() : undefined;
+      if (titleDOMFragment) {
+        title = '';
+        for (const child of column.children) {
+          titleDOMFragment.appendChild(child.cloneNode(true));
+          title += child.shadowRoot ? child.shadowRoot.textContent : child.textContent;
+        }
+      }
       const sortable = column.hasAttribute('sortable');
       const width = column.getAttribute('width') ?? undefined;
       const fixedWidth = column.hasAttribute('fixed');
@@ -147,7 +155,16 @@ class DataGridElement extends HTMLElement {
         align = undefined;
       }
       const weight = parseInt(column.getAttribute('weight') || '', 10) ?? undefined;
-      this.#dataGrid.addColumn({id, title, sortable, fixedWidth, width, align, weight});
+      this.#dataGrid.addColumn({
+        id,
+        title: title as Platform.UIString.LocalizedString,
+        titleDOMFragment,
+        sortable,
+        fixedWidth,
+        width,
+        align,
+        weight
+      });
       if (column.hasAttribute('hideable')) {
         this.#hideableColumns.add(id);
       }

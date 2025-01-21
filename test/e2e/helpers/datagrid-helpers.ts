@@ -10,7 +10,7 @@ import {$, $$, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/
 export async function getDataGridRows(
     expectedNumberOfRows: number, root?: ElementHandle<Node>,
     matchExactNumberOfRows: boolean = true): Promise<ElementHandle<HTMLTableCellElement>[][]> {
-  const dataGrid = !root ? await waitFor('devtools-data-grid') : root;
+  const dataGrid = !root ? await waitFor('devtools-data-grid,devtools-new-data-grid') : root;
   const handlers = await (async () => {
     if (matchExactNumberOfRows) {
       return await waitForFunction(async () => {
@@ -28,7 +28,7 @@ export async function getDataGridRows(
 }
 
 export async function getDataGrid(root?: ElementHandle) {
-  const dataGrid = await waitFor('devtools-data-grid', root);
+  const dataGrid = await waitFor('devtools-data-grid,devtools-new-data-grid', root);
   if (!dataGrid) {
     assert.fail('Could not find data-grid');
   }

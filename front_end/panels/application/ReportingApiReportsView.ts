@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -38,7 +37,7 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
     this.setSidebarWidget(bottomPanel);
 
     topPanel.contentElement.appendChild(this.reportsGrid);
-    this.reportsGrid.addEventListener('cellfocused', this.onFocus.bind(this));
+    this.reportsGrid.addEventListener('select', this.onFocus.bind(this));
 
     bottomPanel.contentElement.classList.add('placeholder');
     const centered = bottomPanel.contentElement.createChild('div');
@@ -70,9 +69,8 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
   }
 
   private async onFocus(event: Event): Promise<void> {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    const cell = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id');
-    const report = cell && this.reports.find(report => report.id === cell.value);
+    const selectEvent = event as CustomEvent<string>;
+    const report = this.reports.find(report => report.id === selectEvent.detail);
     if (report) {
       const jsonView = await SourceFrame.JSONView.JSONView.createView(JSON.stringify(report.body));
       jsonView?.setMinimumSize(0, 40);

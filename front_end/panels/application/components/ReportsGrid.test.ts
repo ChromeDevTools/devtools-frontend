@@ -6,31 +6,29 @@ import * as Root from '../../../core/root/root.js';
 import * as Protocol from '../../../generated/protocol.js';
 import {getHeaderCells, getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ApplicationComponents from './components.js';
 
 const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.ReportsGridData|null) => {
   const component = new ApplicationComponents.ReportsGrid.ReportsGrid();
+  component.style.display = 'block';
+  component.style.width = '640px';
+  component.style.height = '480px';
   if (data) {
     component.data = data;
   }
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await RenderCoordinator.done();
+  await RenderCoordinator.done({waitForWork: Boolean(data)});
   if (!data) {
     return component;
   }
 
-  const controller = getElementWithinComponent(
-      component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  assert.isNotNull(controller.shadowRoot);
-  const datagrid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+  const datagrid = component.shadowRoot!.querySelector('devtools-new-data-grid')!;
   assert.isNotNull(datagrid.shadowRoot);
   return datagrid;
 };

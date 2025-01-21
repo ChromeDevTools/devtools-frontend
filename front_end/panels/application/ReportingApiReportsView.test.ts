@@ -7,7 +7,6 @@ import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
 import * as Resources from './application.js';
 
@@ -109,20 +108,9 @@ describeWithMockConnection('ReportingApiReportsView', () => {
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[0]);
     networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, reports[1]);
     const grid = view.getReportsGrid();
-    const cells = [
-      {
-        columnId: 'id',
-        value: 'some_id',
-      },
-      {
-        columnId: 'status',
-        value: 'Queued',
-      },
-    ];
     const stub = sinon.stub(view, 'setSidebarWidget');
     assert.isTrue(stub.notCalled);
-    grid.dispatchEvent(
-        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'status', value: 'Queued'}, {cells}));
+    grid.dispatchEvent(new CustomEvent('select', {detail: 'some_id'}));
     await raf();
     assert.isTrue(stub.calledOnce);
   });

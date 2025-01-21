@@ -31,7 +31,7 @@ export const getCellByIndexes = (shadowRoot: ShadowRoot, indexes: {column: numbe
 export const getHeaderCells = (shadowRoot: ShadowRoot, options: {onlyVisible: boolean} = {
   onlyVisible: false,
 }) => {
-  const cells = shadowRoot.querySelectorAll('[data-grid-header-cell]');
+  const cells = shadowRoot.querySelectorAll('th[jslog]');
   assertElements(cells, HTMLTableCellElement);
   return Array.from(cells).filter(cell => {
     if (!options.onlyVisible) {
@@ -59,7 +59,7 @@ export const getValuesOfBodyRowByAriaIndex =
     };
 
 export const getAllRows = (shadowRoot: ShadowRoot) => {
-  const rows = shadowRoot.querySelectorAll('[aria-rowindex]');
+  const rows = shadowRoot.querySelectorAll('tbody tr[jslog]');
   assertElements(rows, HTMLTableRowElement);
   return Array.from(rows);
 };
@@ -123,9 +123,10 @@ export const getValuesOfAllBodyRows = (shadowRoot: ShadowRoot, options: {onlyVis
       .map(row => {
         // now decide if the row should be included or not
         const rowIsHidden = row.classList.contains('hidden');
-        const rowIndex = window.parseInt(row.getAttribute('aria-rowindex') || '-1', 10);
         return {
-          rowValues: getValuesOfBodyRowByAriaIndex(shadowRoot, rowIndex, options),
+          rowValues: [...row.querySelectorAll('td[jslog]')]
+                         .filter(cell => !options.onlyVisible || !cell.classList.contains('hidden'))
+                         .map(cell => (cell as HTMLTableCellElement).innerText!.trim()),
           hidden: options.onlyVisible && rowIsHidden,
         };
       })

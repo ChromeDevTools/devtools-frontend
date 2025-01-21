@@ -2,14 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/data_grid/data_grid.js';
+import '../../../ui/legacy/components/data_grid/data_grid.js';
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -74,7 +73,6 @@ export interface ReportsGridData {
 }
 
 export class ReportsGrid extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #reports: Protocol.Network.ReportingApiReport[] = [];
   #protocolMonitorExperimentEnabled = false;
@@ -91,71 +89,40 @@ export class ReportsGrid extends HTMLElement {
   }
 
   #render(): void {
-    const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'url',
-          title: i18n.i18n.lockedString('URL'),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'type',
-          title: i18n.i18n.lockedString('Type'),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'status',
-          title: i18nString(UIStrings.status),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-          titleElement: html`
-          <devtools-resources-reports-grid-status-header></devtools-resources-reports-grid-status-header>
-          `,
-        },
-        {
-          id: 'destination',
-          title: i18nString(UIStrings.destination),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'timestamp',
-          title: i18nString(UIStrings.generatedAt),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-        {
-          id: 'body',
-          title: i18n.i18n.lockedString('Body'),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-        },
-      ],
-      rows: this.#buildReportRows(),
-    };
-
-    if (this.#protocolMonitorExperimentEnabled) {
-      reportsGridData.columns.unshift(
-          {id: 'id', title: 'ID', widthWeighting: 30, hideable: false, visible: true},
-      );
-    }
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
       <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
         ${this.#reports.length > 0 ? html`
-          <devtools-data-grid-controller .data=${reportsGridData}>
-          </devtools-data-grid-controller>
+          <devtools-new-data-grid striped @select=${this.#onSelect}>
+            <table>
+              <tr>
+                ${this.#protocolMonitorExperimentEnabled ? html`
+                  <th id="id" weight="30">${i18n.i18n.lockedString('ID')}</th>
+                ` : ''}
+                <th id="url" weight="30">${i18n.i18n.lockedString('URL')}</th>
+                <th id="type" weight="20">${i18n.i18n.lockedString('Type')}</th>
+                <th id="status" weight="20">
+                    <devtools-resources-reports-grid-status-header></devtools-resources-reports-grid-status-header>
+                </th>
+                <th id="destination" weight="20">${i18nString(UIStrings.destination)}</th>
+                <th id="timestamp" weight="20">${i18nString(UIStrings.generatedAt)}</th>
+                <th id="body" weight="20">${i18n.i18n.lockedString('Body')}</th>
+              </tr>
+              ${this.#reports.map(report => html`
+                <tr data-id=${report.id}>
+                  ${this.#protocolMonitorExperimentEnabled ? html`<td>${report.id}</td>` : ''}
+                  <td>${report.initiatorUrl}</td>
+                  <td>${report.type}</td>
+                  <td>${report.status}</td>
+                  <td>${report.destination}</td>
+                  <td>${new Date(report.timestamp * 1000).toLocaleString()}</td>
+                  <td>${JSON.stringify(report.body)}</td>
+                </tr>
+              `)}
+            </table>
+          </devtools-new-data-grid>
         ` : html`
           <div class="reporting-placeholder">
             <div>${i18nString(UIStrings.noReportsToDisplay)}</div>
@@ -166,18 +133,8 @@ export class ReportsGrid extends HTMLElement {
     // clang-format on
   }
 
-  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    return this.#reports.map(report => ({
-                               cells: [
-                                 {columnId: 'id', value: report.id},
-                                 {columnId: 'url', value: report.initiatorUrl},
-                                 {columnId: 'type', value: report.type},
-                                 {columnId: 'status', value: report.status},
-                                 {columnId: 'destination', value: report.destination},
-                                 {columnId: 'timestamp', value: new Date(report.timestamp * 1000).toLocaleString()},
-                                 {columnId: 'body', value: JSON.stringify(report.body)},
-                               ],
-                             }));
+  #onSelect(e: CustomEvent<HTMLElement>): void {
+    this.dispatchEvent(new CustomEvent('select', {detail: e.detail.dataset.id}));
   }
 }
 

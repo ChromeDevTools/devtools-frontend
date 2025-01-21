@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {getHeaderCells, getValuesOfAllBodyRows} from '../../../testing/DataGridHelpers.js';
 import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
@@ -61,13 +62,10 @@ describeWithLocale('EndpointsGrid', () => {
     const dataGrid = await renderEndpointsGrid(data);
     assert.isNotNull(dataGrid.shadowRoot);
 
-    const header = [...dataGrid.shadowRoot!.querySelectorAll('th[jslog]')].map(({textContent}) => textContent!.trim());
+    const header = getHeaderCells(dataGrid.shadowRoot).map(({textContent}) => textContent!.trim());
     assert.deepEqual(header, ['Origin', 'Name', 'URL']);
 
-    const rowValues = [...dataGrid.shadowRoot!.querySelectorAll('tbody tr[jslog]')].map(row => {
-      const cells = [...row.querySelectorAll('td[jslog]')];
-      return cells.map(cell => cell.textContent!.trim());
-    });
+    const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
     assert.lengthOf(rowValues, 3);
     assert.strictEqual(rowValues[0][0], 'https://www.my-page.com', 'Endpoint origin does not match');
     assert.strictEqual(rowValues[0][1], 'main-endpoint', 'Endpoint name does not match');

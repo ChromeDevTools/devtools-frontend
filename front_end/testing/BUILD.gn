@@ -39,6 +39,7 @@ ts_library("testing") {
     "SourceMapHelpers.ts",
     "StorageItemsViewHelpers.ts",
     "StubIssue.ts",
+    "StyleHelpers.ts",
     "TraceHelpers.ts",
     "TraceLoader.ts",
     "TrackAsyncOperations.ts",

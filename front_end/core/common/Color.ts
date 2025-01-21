@@ -650,6 +650,11 @@ export interface Color {
   as<T extends Format>(format: T): ReturnType<ColorConversions[T]>;
   is<T extends Format>(format: T): this is ReturnType<ColorConversions[T]>;
   asLegacyColor(): Legacy;
+
+  // The authored text is the text that was used to define the color. If set, it may be different from what `asString`
+  // returns, for example if the latter normalizes or clamps color channel values. It is also possible that the authored
+  // text is not a parsable color outside of the context in which the color was produced, e.g., when the color stems
+  // from a custom property, the authored text may look like "var(--color)".
   getAuthoredText(): string|null;
 
   getRawParameters(): Color3D;
@@ -1801,6 +1806,9 @@ abstract class ShortFormatColorBase implements Color {
   }
   get alpha(): number|null {
     return this.color.alpha;
+  }
+  rgba(): Color4D {
+    return this.color.rgba();
   }
   equal(color: Color): boolean {
     return this.color.equal(color);

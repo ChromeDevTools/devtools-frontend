@@ -108,7 +108,7 @@ export class ColorSwatch extends HTMLElement {
     // re-format the HTML code.
     LitHtml.render(
       html`<span class=${colorSwatchClasses} title=${this.tooltip}><span class="color-swatch-inner"
-        style="background-color: ${this.getText()};"
+        style="background-color: ${color.asString()};"
         jslog=${VisualLogging.showStyleEditor('color').track({click: true})}
         @click=${this.onClick}
         @mousedown=${this.consume}

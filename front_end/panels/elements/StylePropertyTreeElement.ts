@@ -458,10 +458,7 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
       const swatchIcon =
           new ColorSwatchPopoverIcon(this.treeElement, this.treeElement.parentPane().swatchPopoverHelper(), swatch);
       swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.COLOR_CHANGED, ev => {
-        const color = Common.Color.parse(ev.data);
-        if (color) {
-          swatch.setColorText(color);
-        }
+        swatch.setColorText(ev.data);
       });
       void this.#addColorContrastInfo(swatchIcon);
     }

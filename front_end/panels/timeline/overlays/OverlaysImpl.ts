@@ -4,7 +4,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import type * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -307,10 +306,7 @@ export interface TimingsMarker {
   adjustedTimestamp: Trace.Types.Timing.MicroSeconds;
 }
 
-export interface TimingsMarkerFieldResult {
-  ts: Trace.Types.Timing.MicroSeconds;
-  pageScope: CrUXManager.PageScope;
-}
+export type TimingsMarkerFieldResult = Trace.Insights.Common.CrUXFieldMetricTimingResult;
 
 /**
  * All supported overlay types.
@@ -1590,7 +1586,7 @@ export class Overlays extends EventTarget {
     if (fieldResult) {
       const popoverContents = popoverElement.createChild('div', 'overlay-popover');
       popoverContents.createChild('span', 'overlay-popover-time').textContent =
-          i18n.TimeUtilities.formatMicroSecondsTime(fieldResult.ts);
+          i18n.TimeUtilities.formatMicroSecondsTime(fieldResult.value);
       let scope: string = fieldResult.pageScope;
       if (fieldResult.pageScope === 'url') {
         scope = 'URL';

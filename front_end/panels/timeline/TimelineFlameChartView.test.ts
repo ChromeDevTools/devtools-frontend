@@ -293,10 +293,11 @@ describeWithEnvironment('TimelineFlameChartView', function() {
      });
 
   it('renders metrics as marker overlays w/ tooltips', async function() {
-    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'crux.json.gz');
+    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'crux.json.gz');
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+    flameChartView.setInsights(insights, new Map());
     flameChartView.setModel(parsedTrace, metadata);
 
     const tooltips =

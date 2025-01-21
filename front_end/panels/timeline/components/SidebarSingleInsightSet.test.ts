@@ -30,7 +30,7 @@ function getPassedInsights(component: Components.SidebarSingleInsightSet.Sidebar
 
 describeWithEnvironment('SidebarSingleInsightSet', () => {
   it('renders a list of insights', async function() {
-    const {insights, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights, metadata, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.
@@ -47,6 +47,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
       parsedTrace,
+      traceMetadata: metadata,
     };
     await RenderCoordinator.done();
 
@@ -80,7 +81,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('does not render experimental insights by default', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     const firstNavigation = parsedTrace.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
@@ -91,6 +92,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
       parsedTrace,
+      traceMetadata: metadata,
     };
     await RenderCoordinator.done();
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
@@ -127,7 +129,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('renders experimental insights if the experiment is turned on', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
+    const {parsedTrace, metadata, insights} = await TraceLoader.traceEngine(this, 'font-display.json.gz');
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     Root.Runtime.experiments.enableForTest(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
@@ -141,6 +143,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
       parsedTrace,
+      traceMetadata: metadata,
     };
     await RenderCoordinator.done();
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
@@ -177,7 +180,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('will render the active insight fully', async function() {
-    const {insights, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights, metadata, parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.
@@ -202,6 +205,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
         insightSetKey: navigationId,
       },
       parsedTrace,
+      traceMetadata: metadata,
     };
     await RenderCoordinator.done();
 

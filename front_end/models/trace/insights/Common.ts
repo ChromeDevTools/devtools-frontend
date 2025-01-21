@@ -84,6 +84,81 @@ export function evaluateCLSMetricScore(value: number): number {
   return getLogNormalScore({p10: 0.1, median: 0.25}, value);
 }
 
+export interface CrUXFieldMetricTimingResult {
+  value: Types.Timing.MicroSeconds;
+  pageScope: CrUXManager.PageScope;
+}
+export interface CrUXFieldMetricNumberResult {
+  value: number;
+  pageScope: CrUXManager.PageScope;
+}
+export interface CrUXFieldMetricResults {
+  fcp: CrUXFieldMetricTimingResult|null;
+  lcp: CrUXFieldMetricTimingResult|null;
+  inp: CrUXFieldMetricTimingResult|null;
+  cls: CrUXFieldMetricNumberResult|null;
+}
+
+function getPageResult(cruxFieldData: CrUXManager.PageResult[], url: string, origin: string): CrUXManager.PageResult|
+    undefined {
+  return cruxFieldData.find(result => {
+    const key = (result['url-ALL'] || result['origin-ALL'])?.record.key;
+    return (key?.url && key.url === url) || (key?.origin && key.origin === origin);
+  });
+}
+
+function getMetricResult(
+    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): CrUXFieldMetricNumberResult|null {
+  let value = pageResult['url-ALL']?.record.metrics[name]?.percentiles?.p75;
+  if (typeof value === 'string') {
+    value = Number(value);
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return {value, pageScope: 'url'};
+  }
+
+  value = pageResult['origin-ALL']?.record.metrics[name]?.percentiles?.p75;
+  if (typeof value === 'string') {
+    value = Number(value);
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return {value, pageScope: 'origin'};
+  }
+
+  return null;
+}
+
+function getMetricTimingResult(
+    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): CrUXFieldMetricTimingResult|null {
+  const result = getMetricResult(pageResult, name);
+  if (result) {
+    const valueMs = result.value as Types.Timing.MilliSeconds;
+    return {value: Helpers.Timing.millisecondsToMicroseconds(valueMs), pageScope: result.pageScope};
+  }
+
+  return null;
+}
+
+export function getFieldMetricsForInsightSet(
+    insightSet: InsightSet, metadata: Types.File.MetaData|null): CrUXFieldMetricResults|null {
+  const cruxFieldData = metadata?.cruxFieldData;
+  if (!cruxFieldData) {
+    return null;
+  }
+
+  const pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin);
+  if (!pageResult) {
+    return null;
+  }
+
+  return {
+    fcp: getMetricTimingResult(pageResult, 'first_contentful_paint'),
+    lcp: getMetricTimingResult(pageResult, 'largest_contentful_paint'),
+    inp: getMetricTimingResult(pageResult, 'interaction_to_next_paint'),
+    cls: getMetricResult(pageResult, 'cumulative_layout_shift'),
+  };
+}
+
 export function calculateMetricWeightsForSorting(
     insightSet: InsightSet, metadata: Types.File.MetaData|null): {lcp: number, inp: number, cls: number} {
   const weights = {
@@ -97,32 +172,14 @@ export function calculateMetricWeightsForSorting(
     return weights;
   }
 
-  const getPageResult = (url: string, origin: string): CrUXManager.PageResult|undefined => {
-    return cruxFieldData.find(result => {
-      const key = (result['url-ALL'] || result['origin-ALL'])?.record.key;
-      return (key?.url && key.url === url) || (key?.origin && key.origin === origin);
-    });
-  };
-  const getMetricValue = (pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): number|null => {
-    const score = pageResult['url-ALL']?.record.metrics[name]?.percentiles?.p75 ??
-        pageResult['origin-ALL']?.record.metrics[name]?.percentiles?.p75;
-    if (typeof score === 'number') {
-      return score;
-    }
-    if (typeof score === 'string' && Number.isFinite(Number(score))) {
-      return Number(score);
-    }
-    return null;
-  };
-
-  const pageResult = getPageResult(insightSet.url.href, insightSet.url.origin);
-  if (!pageResult) {
+  const fieldMetrics = getFieldMetricsForInsightSet(insightSet, metadata);
+  if (!fieldMetrics) {
     return weights;
   }
 
-  const fieldLcp = getMetricValue(pageResult, 'largest_contentful_paint');
-  const fieldInp = getMetricValue(pageResult, 'interaction_to_next_paint');
-  const fieldCls = getMetricValue(pageResult, 'cumulative_layout_shift');
+  const fieldLcp = fieldMetrics.lcp?.value ?? null;
+  const fieldInp = fieldMetrics.inp?.value ?? null;
+  const fieldCls = fieldMetrics.cls?.value ?? null;
   const fieldLcpScore = fieldLcp !== null ? evaluateLCPMetricScore(fieldLcp) : 0;
   const fieldInpScore = fieldInp !== null ? evaluateINPMetricScore(fieldInp) : 0;
   const fieldClsScore = fieldCls !== null ? evaluateCLSMetricScore(fieldCls) : 0;

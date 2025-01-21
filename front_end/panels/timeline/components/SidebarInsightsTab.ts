@@ -41,6 +41,7 @@ export class SidebarInsightsTab extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #traceMetadata: Trace.Types.File.MetaData|null = null;
   #insights: Trace.Insights.Types.TraceInsightSets|null = null;
   #activeInsight: ActiveInsight|null = null;
   #selectedCategory = Trace.Insights.Types.InsightCategory.ALL;
@@ -63,6 +64,16 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#parsedTrace = data;
+    this.#insightSetKey = null;
+
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set traceMetadata(data: Trace.Types.File.MetaData|null) {
+    if (data === this.#traceMetadata) {
+      return;
+    }
+    this.#traceMetadata = data;
     this.#insightSetKey = null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -192,17 +203,18 @@ export class SidebarInsightsTab extends HTMLElement {
      html`
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
-          const data = {
+          const data: SidebarSingleInsightSetData = {
             insights: this.#insights,
             insightSetKey: id,
             activeCategory: this.#selectedCategory,
             activeInsight: this.#activeInsight,
             parsedTrace: this.#parsedTrace,
+            traceMetadata: this.#traceMetadata,
           };
 
           const contents = html`
             <devtools-performance-sidebar-single-navigation
-              .data=${data as SidebarSingleInsightSetData}>
+              .data=${data}>
             </devtools-performance-sidebar-single-navigation>
           `;
 

@@ -122,8 +122,8 @@ export class SidebarWidget extends UI.Widget.VBox {
     this.#tabbedPane.setSuffixElement('annotations', countAdorner);
   }
 
-  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
-    this.#insightsView.setParsedTrace(parsedTrace);
+  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {
+    this.#insightsView.setParsedTrace(parsedTrace, metadata);
   }
 
   setInsights(insights: Trace.Insights.Types.TraceInsightSets|null): void {
@@ -153,8 +153,9 @@ class InsightsView extends UI.Widget.VBox {
     this.element.appendChild(this.#component);
   }
 
-  setParsedTrace(data: Trace.Handlers.Types.ParsedTrace|null): void {
-    this.#component.parsedTrace = data;
+  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {
+    this.#component.parsedTrace = parsedTrace;
+    this.#component.traceMetadata = metadata;
   }
 
   setInsights(data: Trace.Insights.Types.TraceInsightSets|null): void {

@@ -1916,7 +1916,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const {traceIndex} = this.#viewMode;
     const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
-    const metadata = this.#traceEngineModel.metadata(traceIndex);
+    const traceMetadata = this.#traceEngineModel.metadata(traceIndex);
     const syntheticEventsManager = this.#traceEngineModel.syntheticTraceEventsManager(traceIndex);
 
     if (!parsedTrace || !syntheticEventsManager) {
@@ -1950,13 +1950,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    const isCpuProfile =
-        this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
-    this.flameChart.setModel(parsedTrace, metadata, isCpuProfile);
+    let traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
+    if (traceInsightsSets) {
+      // Omit insight sets that don't have anything of interest to show to the user.
+      const filteredTraceInsightsSets = new Map();
+      for (const [key, insightSet] of traceInsightsSets) {
+        if (Object.values(insightSet.model).some(model => model.shouldShow)) {
+          filteredTraceInsightsSets.set(key, insightSet);
+        }
+      }
+
+      traceInsightsSets = filteredTraceInsightsSets.size ? filteredTraceInsightsSets : null;
+    }
+    this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
+
+    const isCpuProfile = traceMetadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
+    this.flameChart.setModel(parsedTrace, traceMetadata, isCpuProfile);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
     this.flameChart.setSelectionAndReveal(null);
-    this.#sideBar.setParsedTrace(parsedTrace);
+    this.#sideBar.setParsedTrace(parsedTrace, traceMetadata);
 
     this.searchableViewInternal.showWidget();
 
@@ -2048,20 +2061,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#setActiveInsight(null);
 
-    let traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
-    if (traceInsightsSets) {
-      // Omit insight sets that don't have anything of interest to show to the user.
-      const filteredTraceInsightsSets = new Map();
-      for (const [key, insightSet] of traceInsightsSets) {
-        if (Object.values(insightSet.model).some(model => model.shouldShow)) {
-          filteredTraceInsightsSets.set(key, insightSet);
-        }
-      }
-
-      traceInsightsSets = filteredTraceInsightsSets.size ? filteredTraceInsightsSets : null;
-    }
-
-    this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
     this.#sideBar.setInsights(traceInsightsSets);
 
     this.#eventToRelatedInsights.clear();

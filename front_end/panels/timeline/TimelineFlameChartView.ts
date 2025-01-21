@@ -8,7 +8,6 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import type * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -524,32 +523,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     });
   }
 
-  #amendMarkerWithFieldData(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
-    const cruxFieldData = this.#traceMetadata?.cruxFieldData;
-    if (!cruxFieldData) {
+  #amendMarkerWithFieldData(): void {
+    if (!this.#traceMetadata?.cruxFieldData || !this.#traceInsightSets) {
       return;
     }
 
-    const getPageResult = (url: string, origin: string): CrUXManager.PageResult|undefined => {
-      return cruxFieldData.find(result => {
-        const key = (result['url-ALL'] || result['origin-ALL'])?.record.key;
-        return (key?.url && key.url === url) || (key?.origin && key.origin === origin);
-      });
-    };
-    const getMetricScore = (pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames):
-        {value: number, pageScope: CrUXManager.PageScope}|null => {
-          let value = pageResult['url-ALL']?.record.metrics[name]?.percentiles?.p75;
-          if (typeof value === 'number') {
-            return {value, pageScope: 'url'};
-          }
-
-          value = pageResult['origin-ALL']?.record.metrics[name]?.percentiles?.p75;
-          if (typeof value === 'number') {
-            return {value, pageScope: 'origin'};
-          }
-
-          return null;
-        };
+    const fieldMetricResultsByNavigationId = new Map<string, Trace.Insights.Common.CrUXFieldMetricResults|null>();
+    for (const [key, insightSet] of this.#traceInsightSets) {
+      if (insightSet.navigation) {
+        fieldMetricResultsByNavigationId.set(
+            key, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#traceMetadata));
+      }
+    }
 
     for (const marker of this.#markers) {
       for (const event of marker.entries) {
@@ -558,35 +543,23 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
           continue;
         }
 
-        let cruxMetricName: CrUXManager.StandardMetricNames;
+        const fieldMetricResults = fieldMetricResultsByNavigationId.get(navigationId);
+        if (!fieldMetricResults) {
+          continue;
+        }
+
+        let fieldMetricResult;
         if (event.name === Trace.Types.Events.Name.MARK_FCP) {
-          cruxMetricName = 'first_contentful_paint';
+          fieldMetricResult = fieldMetricResults.fcp;
         } else if (event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE) {
-          cruxMetricName = 'largest_contentful_paint';
-        } else {
+          fieldMetricResult = fieldMetricResults.lcp;
+        }
+
+        if (!fieldMetricResult) {
           continue;
         }
 
-        const nav = parsedTrace.Meta.navigationsByNavigationId.get(navigationId);
-        // TODO(paulirish): Trace.Types.Events.NavigationStart type should be fixed, not working as intended.
-        const url = nav?.args.data.documentLoaderURL as (string | undefined);
-        if (!nav || !url) {
-          continue;
-        }
-
-        const pageResult = getPageResult(url, new URL(url).origin);
-        if (!pageResult) {
-          continue;
-        }
-
-        const metricScoreResult = getMetricScore(pageResult, cruxMetricName);
-        if (!metricScoreResult) {
-          continue;
-        }
-
-        const tsMs = metricScoreResult.value as Trace.Types.Timing.MilliSeconds;
-        const ts = Trace.Helpers.Timing.millisecondsToMicroseconds(tsMs);
-        marker.entryToFieldResult.set(event, {ts, pageScope: metricScoreResult.pageScope});
+        marker.entryToFieldResult.set(event, fieldMetricResult);
       }
     }
   }
@@ -640,7 +613,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       return;
     }
 
-    this.#amendMarkerWithFieldData(parsedTrace);
+    this.#amendMarkerWithFieldData();
     this.bulkAddOverlays(this.#markers);
   }
 

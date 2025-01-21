@@ -4,6 +4,7 @@
 import '../shell/shell.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/js_timeline/js_timeline-meta.js';
+import '../../panels/network/network-meta.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';

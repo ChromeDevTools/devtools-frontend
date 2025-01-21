@@ -9,6 +9,7 @@ const queryParamsObject = new URLSearchParams(location.search);
 let runtimePlatform = '';
 
 let runtimeInstance: Runtime|undefined;
+let isNode: boolean|undefined;
 
 export function getRemoteBase(location: string = self.location.toString()): {
   base: string,
@@ -30,6 +31,11 @@ export function getRemoteBase(location: string = self.location.toString()): {
 
 export function getPathName(): string {
   return window.location.pathname;
+}
+
+export function isNodeEntry(pathname: string): boolean {
+  const nodeEntryPoints = ['node_app', 'js_app'];
+  return nodeEntryPoints.some(component => pathname.includes(component));
 }
 
 export class Runtime {
@@ -72,6 +78,13 @@ export class Runtime {
       console.error('Failed to parse localStorage[\'experiments\']');
       return {};
     }
+  }
+
+  static isNode(): boolean {
+    if (isNode === undefined) {
+      isNode = isNodeEntry(getPathName());
+    }
+    return isNode;
   }
 
   static setPlatform(platform: string): void {

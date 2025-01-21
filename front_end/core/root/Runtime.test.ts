@@ -34,6 +34,23 @@ describe('Runtime', () => {
         assert.isNull(Root.Runtime.getRemoteBase(`${bundled}?remoteBase=${remoteOrigin}`));
       });
     });
+
+    describe('isNodeEntry', () => {
+      it('returns true for node_app', () => {
+        assert.isTrue(Root.Runtime.isNodeEntry('/bundled/node_app.html'));
+        assert.isTrue(Root.Runtime.isNodeEntry('/node_app'));
+      });
+
+      it('returns true for js_app', () => {
+        assert.isTrue(Root.Runtime.isNodeEntry('/bundled/js_app.html'));
+        assert.isTrue(Root.Runtime.isNodeEntry('/js_app'));
+      });
+
+      it('returns false for other entries', () => {
+        assert.isFalse(Root.Runtime.isNodeEntry('/bundled/inspector.html'));
+        assert.isFalse(Root.Runtime.isNodeEntry('/inspector'));
+      });
+    });
   });
 
   it('allConfigurableExperiments returns all registered experiments', () => {

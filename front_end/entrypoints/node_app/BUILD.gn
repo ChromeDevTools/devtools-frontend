@@ -38,6 +38,7 @@ devtools_entrypoint("entrypoint") {
     "../../core/root:bundle",
     "../../panels/js_timeline:meta",
     "../../panels/mobile_throttling:meta",
+    "../../panels/network:meta",
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
     "../shell",

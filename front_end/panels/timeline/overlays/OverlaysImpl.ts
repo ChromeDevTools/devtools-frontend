@@ -561,7 +561,7 @@ export class Overlays extends EventTarget {
       const component = linkInProgressElement.querySelector('devtools-entries-link-overlay') as
           Components.EntriesLinkOverlay.EntriesLinkOverlay;
       const yCoordinate = mouseEvent.offsetY + ((chart === 'main') ? networkHeight : 0);
-      component.toEntryCoordinateAndDimentions = {x: mouseEvent.offsetX, y: yCoordinate};
+      component.toEntryCoordinateAndDimensions = {x: mouseEvent.offsetX, y: yCoordinate};
     }
   }
 
@@ -1079,7 +1079,7 @@ export class Overlays extends EventTarget {
           fromEntryX = fromEntryParams?.x;
           fromEntryY = fromEntryParams?.y;
 
-          component.fromEntryCoordinateAndDimentions =
+          component.fromEntryCoordinateAndDimensions =
               {x: fromEntryX, y: fromEntryY, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
         } else {
           // Something went if the entry is visible and we cannot get its' parameters.
@@ -1093,7 +1093,7 @@ export class Overlays extends EventTarget {
         this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
       }
 
-      // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
+      // If entryTo exists, pass the coordinates and dimensions of the entry that the arrow snaps to.
       // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
       const entryToWrapper = component.entryToWrapper();
 
@@ -1112,7 +1112,7 @@ export class Overlays extends EventTarget {
             toEntryX = toEntryParams?.x;
             toEntryY = toEntryParams?.y;
 
-            component.toEntryCoordinateAndDimentions = {
+            component.toEntryCoordinateAndDimensions = {
               x: toEntryX,
               y: toEntryY,
               length: toEntryWidth,

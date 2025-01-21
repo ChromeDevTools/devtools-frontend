@@ -33,9 +33,9 @@ export class EntryLinkStartCreating extends Event {
 export class EntriesLinkOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #coordinateFrom: {x: number, y: number};
-  #fromEntryDimentions: {width: number, height: number};
+  #fromEntryDimensions: {width: number, height: number};
   #coordinateTo: {x: number, y: number};
-  #toEntryDimentions: {width: number, height: number}|null = null;
+  #toEntryDimensions: {width: number, height: number}|null = null;
   #connectorLineContainer: SVGAElement|null = null;
   #connector: SVGLineElement|null = null;
   #entryFromWrapper: HTMLElement|null = null;
@@ -56,16 +56,16 @@ export class EntriesLinkOverlay extends HTMLElement {
   #linkState: Trace.Types.File.EntriesLinkState;
 
   constructor(
-      initialFromEntryCoordinateAndDimentions: {x: number, y: number, width: number, height: number},
+      initialFromEntryCoordinateAndDimensions: {x: number, y: number, width: number, height: number},
       linkCreationNotStartedState: Trace.Types.File.EntriesLinkState) {
     super();
     this.#render();
-    this.#coordinateFrom = {x: initialFromEntryCoordinateAndDimentions.x, y: initialFromEntryCoordinateAndDimentions.y};
-    this.#fromEntryDimentions = {
-      width: initialFromEntryCoordinateAndDimentions.width,
-      height: initialFromEntryCoordinateAndDimentions.height,
+    this.#coordinateFrom = {x: initialFromEntryCoordinateAndDimensions.x, y: initialFromEntryCoordinateAndDimensions.y};
+    this.#fromEntryDimensions = {
+      width: initialFromEntryCoordinateAndDimensions.width,
+      height: initialFromEntryCoordinateAndDimensions.height,
     };
-    this.#coordinateTo = {x: initialFromEntryCoordinateAndDimentions.x, y: initialFromEntryCoordinateAndDimentions.y};
+    this.#coordinateTo = {x: initialFromEntryCoordinateAndDimensions.x, y: initialFromEntryCoordinateAndDimensions.y};
     this.#connectorLineContainer = this.#shadow.querySelector<SVGAElement>('.connectorContainer') ?? null;
     this.#connector = this.#connectorLineContainer?.querySelector('line') ?? null;
     this.#entryFromWrapper = this.#shadow.querySelector('.from-highlight-wrapper') ?? null;
@@ -110,9 +110,9 @@ export class EntriesLinkOverlay extends HTMLElement {
     }
   }
 
-  set fromEntryCoordinateAndDimentions(fromEntryParams: {x: number, y: number, length: number, height: number}) {
+  set fromEntryCoordinateAndDimensions(fromEntryParams: {x: number, y: number, length: number, height: number}) {
     this.#coordinateFrom = {x: fromEntryParams.x, y: fromEntryParams.y};
-    this.#fromEntryDimentions = {width: fromEntryParams.length, height: fromEntryParams.height};
+    this.#fromEntryDimensions = {width: fromEntryParams.length, height: fromEntryParams.height};
     this.#updateCreateLinkBox();
     this.#redrawConnectionArrow();
   }
@@ -125,12 +125,12 @@ export class EntriesLinkOverlay extends HTMLElement {
 
   // The arrow might be pointing either to an entry or an empty space.
   // If the dimensions are not passed, it is pointing at an empty space.
-  set toEntryCoordinateAndDimentions(toEntryParams: {x: number, y: number, length?: number, height?: number}) {
+  set toEntryCoordinateAndDimensions(toEntryParams: {x: number, y: number, length?: number, height?: number}) {
     this.#coordinateTo = {x: toEntryParams.x, y: toEntryParams.y};
     if (toEntryParams.length && toEntryParams.height) {
-      this.#toEntryDimentions = {width: toEntryParams.length, height: toEntryParams.height};
+      this.#toEntryDimensions = {width: toEntryParams.length, height: toEntryParams.height};
     } else {
-      this.#toEntryDimentions = null;
+      this.#toEntryDimensions = null;
     }
 
     this.#updateCreateLinkBox();
@@ -177,9 +177,9 @@ export class EntriesLinkOverlay extends HTMLElement {
     // we aren't drawing the arrows, so it doesn't make sense to draw the
     // connectors.
     const drawFromEntryConnectorCircle = this.#entryFromVisible && !this.#arrowHidden && this.#fromEntryIsSource &&
-        this.#fromEntryDimentions.width >= minWidthToDrawConnectorCircles;
+        this.#fromEntryDimensions.width >= minWidthToDrawConnectorCircles;
 
-    const widthOfToEntry = this.#toEntryDimentions?.width ?? 0;
+    const widthOfToEntry = this.#toEntryDimensions?.width ?? 0;
     const drawToEntryConnectorCircle = !this.#arrowHidden && this.#entryToVisible && this.#toEntryIsSource &&
         widthOfToEntry >= minWidthToDrawConnectorCircles && !this.#arrowHidden;
 
@@ -188,9 +188,9 @@ export class EntriesLinkOverlay extends HTMLElement {
 
     // If the entry is visible, the entry arrow starts from the middle of the right edge of the entry (end on the X axis and middle of the Y axis).
     // If not, draw it to the y coordinate of the entry and the edge of the timeline so it is pointing in the direction of the entry.
-    const halfFromEntryHeight = this.#fromEntryDimentions.height / 2;
+    const halfFromEntryHeight = this.#fromEntryDimensions.height / 2;
     if (this.#entryFromVisible) {
-      const endConnectionPointX = String(this.#coordinateFrom.x + this.#fromEntryDimentions.width);
+      const endConnectionPointX = String(this.#coordinateFrom.x + this.#fromEntryDimensions.width);
       const endConnectionPointY = String(this.#coordinateFrom.y + halfFromEntryHeight);
 
       this.#connector.setAttribute('x1', endConnectionPointX);
@@ -200,7 +200,7 @@ export class EntriesLinkOverlay extends HTMLElement {
       this.#entryFromConnector.setAttribute('cy', endConnectionPointY);
       this.#entryFromWrapper.style.visibility = 'visible';
     } else {
-      this.#connector.setAttribute('x1', (this.#coordinateFrom.x + this.#fromEntryDimentions.width).toString());
+      this.#connector.setAttribute('x1', (this.#coordinateFrom.x + this.#fromEntryDimensions.width).toString());
       this.#connector.setAttribute('y1', String(this.#coordinateFrom.y + halfFromEntryHeight));
       this.#entryFromWrapper.style.visibility = 'hidden';
     }
@@ -208,9 +208,9 @@ export class EntriesLinkOverlay extends HTMLElement {
     // If the arrow is pointing to the entry and that entry is visible, point it to the middle of the entry.
     // If the entry is not visible, point the arrow to the edge of the screen towards the entry.
     // Otherwise, the arrow is following the mouse so we assign it to the provided coordinates.
-    if (this.#toEntryDimentions && this.#entryToVisible) {
+    if (this.#toEntryDimensions && this.#entryToVisible) {
       const connectionPointX = String(this.#coordinateTo.x);
-      const connectionPointY = String(this.#coordinateTo.y + this.#toEntryDimentions.height / 2);
+      const connectionPointY = String(this.#coordinateTo.y + this.#toEntryDimensions.height / 2);
 
       this.#connector.setAttribute('x2', connectionPointX);
       this.#connector.setAttribute('y2', connectionPointY);
@@ -222,10 +222,10 @@ export class EntriesLinkOverlay extends HTMLElement {
     } else {
       this.#entryToWrapper.style.visibility = 'hidden';
       this.#connector.setAttribute('x2', this.#coordinateTo.x.toString());
-      // If `toEntryDimentions` exist, the arrow points to the entry and we need to take its height into account.
+      // If `toEntryDimensions` exist, the arrow points to the entry and we need to take its height into account.
       // Otherwise, it is following the mouse.
-      if (this.#toEntryDimentions) {
-        const halfToEntryHeight = this.#toEntryDimentions.height / 2;
+      if (this.#toEntryDimensions) {
+        const halfToEntryHeight = this.#toEntryDimensions.height / 2;
         this.#connector.setAttribute('y2', String(this.#coordinateTo.y + halfToEntryHeight));
       } else {
         this.#connector.setAttribute('y2', (this.#coordinateTo.y).toString());
@@ -234,9 +234,9 @@ export class EntriesLinkOverlay extends HTMLElement {
 
     this.#connector.setAttribute('stroke-width', '2');
 
-    if (this.#toEntryDimentions && this.#entryFromVisible && !this.#entryToVisible) {
+    if (this.#toEntryDimensions && this.#entryFromVisible && !this.#entryToVisible) {
       this.#connector.setAttribute('stroke', 'url(#fromVisibleLineGradient)');
-    } else if (this.#toEntryDimentions && this.#entryToVisible && !this.#entryFromVisible) {
+    } else if (this.#toEntryDimensions && this.#entryToVisible && !this.#entryFromVisible) {
       this.#connector.setAttribute('stroke', 'url(#toVisibleLineGradient)');
     } else {
       const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
@@ -260,15 +260,15 @@ export class EntriesLinkOverlay extends HTMLElement {
       return 100;
     }
 
-    const lineLength = this.#coordinateTo.x - (this.#coordinateFrom.x + this.#fromEntryDimentions.width);
+    const lineLength = this.#coordinateTo.x - (this.#coordinateFrom.x + this.#fromEntryDimensions.width);
     let visibleLineLength = 0;
 
     // If the visible entry is the 'From' entry, find the length of the visible arrow by
-    // substracting the point where the arrow starts from the whole canvas length.
+    // subtracting the point where the arrow starts from the whole canvas length.
     // If the 'to' entry is visible, the coordinate of the entry will be equal to
     // the visible arrow length.
     if (this.#entryFromVisible && !this.#entryToVisible) {
-      visibleLineLength = this.#canvasRect.width - (this.#coordinateFrom.x + this.#fromEntryDimentions.width);
+      visibleLineLength = this.#canvasRect.width - (this.#coordinateFrom.x + this.#fromEntryDimensions.width);
     } else if (!this.#entryFromVisible && this.#entryToVisible) {
       visibleLineLength = this.#coordinateTo.x;
     }
@@ -292,7 +292,7 @@ export class EntriesLinkOverlay extends HTMLElement {
       return;
     }
 
-    createLinkIcon.style.left = `${this.#coordinateFrom.x + this.#fromEntryDimentions.width}px`;
+    createLinkIcon.style.left = `${this.#coordinateFrom.x + this.#fromEntryDimensions.width}px`;
     createLinkIcon.style.top = `${this.#coordinateFrom.y}px`;
   }
 
@@ -351,7 +351,7 @@ export class EntriesLinkOverlay extends HTMLElement {
                 fill-opacity="1"
                 refX="4"
                 refY="2"
-                visibility=${this.#entryToVisible || !this.#toEntryDimentions ? 'visible' : 'hidden'}>
+                visibility=${this.#entryToVisible || !this.#toEntryDimensions ? 'visible' : 'hidden'}>
                 <path d="M0,0 V4 L4,2 Z" fill=${arrowColor} />
               </marker>
             </defs>

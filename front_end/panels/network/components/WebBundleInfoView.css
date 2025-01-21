@@ -5,6 +5,10 @@
  */
 :host {
   --icon-padding: 4px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .header {
@@ -16,4 +20,8 @@
 
 .icon {
   margin: 0 var(--icon-padding);
+}
+
+devtools-new-data-grid {
+  height: 100%;
 }

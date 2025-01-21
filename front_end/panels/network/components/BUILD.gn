@@ -52,6 +52,7 @@ devtools_module("components") {
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/components/report_view:bundle",
     "../../../ui/legacy:bundle",
+    "../../../ui/legacy/components/data_grid:bundle",
     "../../../ui/lit-html:bundle",
     "../forward:bundle",
   ]

@@ -11,7 +11,7 @@ import type {GeneratedRange, OriginalPosition, OriginalScope, Position,} from '.
 
 export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
-  readonly #originalScopes: OriginalScope[];
+  readonly #originalScopes: (OriginalScope|undefined)[];
   readonly #generatedRanges: GeneratedRange[];
 
   #cachedVariablesAndBindingsPresent: boolean|null = null;
@@ -130,8 +130,12 @@ export class SourceMapScopesInfo {
     // We check whether any original scope has a non-empty list of variables, and
     // generated ranges with a non-empty binding list.
 
-    function walkTree(nodes: OriginalScope[]|GeneratedRange[]): boolean {
+    function walkTree(nodes: (OriginalScope|undefined)[]|GeneratedRange[]): boolean {
       for (const node of nodes) {
+        if (!node) {
+          continue;
+        }
+
         if ('variables' in node && node.variables.length > 0) {
           return true;
         }
@@ -274,8 +278,12 @@ export class SourceMapScopesInfo {
    * to inner.
    */
   #findOriginalScopeChain({sourceIndex, line, column}: OriginalPosition): OriginalScope[] {
-    const result: OriginalScope[] = [];
+    const scope = this.#originalScopes[sourceIndex];
+    if (!scope) {
+      return [];
+    }
 
+    const result: OriginalScope[] = [];
     (function walkScopes(scopes: OriginalScope[]) {
       for (const scope of scopes) {
         if (!contains(scope, line, column)) {
@@ -284,7 +292,7 @@ export class SourceMapScopesInfo {
         result.push(scope);
         walkScopes(scope.children);
       }
-    })([this.#originalScopes[sourceIndex]]);
+    })([scope]);
 
     return result;
   }

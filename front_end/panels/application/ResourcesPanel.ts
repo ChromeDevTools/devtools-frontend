@@ -33,7 +33,6 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   private domStorageView: DOMStorageItemsView|null;
   private extensionStorageView: ExtensionStorageItemsView|null;
   private cookieView: CookieItemsView|null;
-  private readonly emptyWidget: UI.EmptyWidget.EmptyWidget|null;
   private readonly sidebar: ApplicationPanelSidebar;
 
   private constructor() {
@@ -58,8 +57,6 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.extensionStorageView = null;
 
     this.cookieView = null;
-
-    this.emptyWidget = null;
 
     this.sidebar = new ApplicationPanelSidebar(this);
     this.sidebar.show(this.panelSidebarElement());
@@ -144,13 +141,16 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     return view;
   }
 
-  showCategoryView(categoryName: string, categoryLink: Platform.DevToolsPath.UrlString|null): void {
+  showCategoryView(
+      categoryName: string, categoryHeadline: string, categoryDescription: string,
+      categoryLink: Platform.DevToolsPath.UrlString|null): void {
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
     this.categoryView.element.setAttribute(
         'jslog', `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(categoryName))}`);
-    this.categoryView.setHeader(categoryName);
+    this.categoryView.setHeadline(categoryHeadline);
+    this.categoryView.setText(categoryDescription);
     this.categoryView.setLink(categoryLink);
     this.showView(this.categoryView);
   }

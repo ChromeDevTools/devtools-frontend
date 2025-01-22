@@ -20,10 +20,17 @@ import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js'
 const UIStrings = {
   /**
    *@description Label for an item in the Application Panel Sidebar of the Application panel
-   * Storage Buckets allow developers to seperate site data into buckets so that they can be
+   * Storage Buckets allow developers to separate site data into buckets so that they can be
    * deleted independently.
    */
   storageBuckets: 'Storage buckets',
+  /**
+   *@description Text for an item in the Application Panel
+   * if no storage buckets are available to show. Storage Buckets allow developers to separate
+   * site data into buckets so that they can be
+   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   */
+  noStorageBuckets: 'No storage buckets detected',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageBucketsTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -32,7 +39,9 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
   private bucketTreeElements: Set<StorageBucketsTreeElement> = new Set();
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18nString(UIStrings.storageBuckets), 'storage-buckets');
+    super(
+        storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets), '',
+        'storage-buckets');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
     this.setLink(
@@ -134,7 +143,7 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
       bucketInfo: Protocol.Storage.StorageBucketInfo) {
     const {bucket} = bucketInfo;
     const {origin} = SDK.StorageKeyManager.parseStorageKey(bucketInfo.bucket.storageKey);
-    super(resourcesPanel, `${bucket.name} - ${origin}`, 'storage-bucket');
+    super(resourcesPanel, `${bucket.name} - ${origin}`, '', '', 'storage-bucket');
     this.bucketModel = model;
     this.storageBucketInfo = bucketInfo;
     const icon = IconButton.Icon.create('database');

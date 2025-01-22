@@ -21,6 +21,10 @@ const UIStrings = {
    */
   cacheStorage: 'Cache storage',
   /**
+   *@description Text in Application Panel if no cache storage was detected.
+   */
+  noCacheStorage: 'No cache storage detected',
+  /**
    *@description A context menu item in the Application Panel Sidebar of the Application panel
    */
   refreshCaches: 'Refresh Caches',
@@ -37,7 +41,8 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
   private storageBucket?: Protocol.Storage.StorageBucket;
 
   constructor(resourcesPanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
-    super(resourcesPanel, i18nString(UIStrings.cacheStorage), 'cache-storage');
+    super(
+        resourcesPanel, i18nString(UIStrings.cacheStorage), i18nString(UIStrings.noCacheStorage), '', 'cache-storage');
     const icon = IconButton.Icon.create('database');
     this.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cache/?utm_source=devtools' as

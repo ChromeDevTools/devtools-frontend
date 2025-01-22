@@ -57,13 +57,14 @@ export class EmptyWidget extends VBox {
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('empty-view')}`);
     this.#headerElement = this.contentElement.createChild('div', 'header');
     this.#headerElement.textContent = header;
-    this.#textElement = this.contentElement.createChild('div', 'description');
+    this.#textElement = this.contentElement.createChild('div', 'description').createChild('span');
     this.#textElement.textContent = text;
   }
 
   appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
     const learnMoreLink = XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
-    return this.#textElement.appendChild(learnMoreLink) as HTMLElement;
+    this.#textElement.insertAdjacentElement('afterend', learnMoreLink);
+    return learnMoreLink;
   }
 
   set text(text: string) {

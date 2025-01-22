@@ -99,6 +99,11 @@ const UIStrings = {
    */
   storage: 'Storage',
   /**
+   *@description Text in Application Panelthat shows if no local storage
+   *             can be shown.
+   */
+  noLocalStorage: 'No local storage detected',
+  /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
   localStorage: 'Local storage',
@@ -107,9 +112,17 @@ const UIStrings = {
    */
   sessionStorage: 'Session storage',
   /**
+   *@description Text in Application Panel if no session storage can be shown.
+   */
+  noSessionStorage: 'No session storage detected',
+  /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
   extensionStorage: 'Extension storage',
+  /**
+   *@description Text in Application Panel if no extension storage can be shown
+   */
+  noExtensionStorage: 'No extension storage detected',
   /**
    *@description Text for extension session storage in Application panel
    */
@@ -130,6 +143,10 @@ const UIStrings = {
    *@description Text for web cookies
    */
   cookies: 'Cookies',
+  /**
+   *@description Text in Application Panel Sidebar if no cookies are set
+   */
+  noCookies: 'No cookies set',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -154,6 +171,10 @@ const UIStrings = {
    *@description Text in Application Panel Sidebar of the Application panel
    */
   indexeddb: 'IndexedDB',
+  /**
+   *@description Text in Application Panel if no indexedDB is detected
+   */
+  noIndexeddb: 'No indexedDB detected',
   /**
    *@description A context menu item in the Application Panel Sidebar of the Application panel
    */
@@ -344,8 +365,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     const storageSectionTitle = i18nString(UIStrings.storage);
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, 'storage');
-    this.localStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.localStorage), 'local-storage');
+    this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+        panel, i18nString(UIStrings.localStorage), i18nString(UIStrings.noLocalStorage), '', 'local-storage');
     this.localStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/localstorage/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -353,8 +374,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
-    this.sessionStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.sessionStorage), 'session-storage');
+    this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+        panel, i18nString(UIStrings.sessionStorage), i18nString(UIStrings.noSessionStorage), '', 'session-storage');
     this.sessionStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/sessionstorage/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -363,8 +384,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
 
-    this.extensionStorageListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.extensionStorage), 'extension-storage');
+    this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+        panel, i18nString(UIStrings.extensionStorage), i18nString(UIStrings.noExtensionStorage), '',
+        'extension-storage');
     this.extensionStorageListTreeElement.setLink(
         'https://developer.chrome.com/docs/extensions/reference/api/storage/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -379,8 +401,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         Platform.DevToolsPath.UrlString);
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
 
-    this.cookieListTreeElement =
-        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.cookies), 'cookies');
+    this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(
+        panel, i18nString(UIStrings.cookies), i18nString(UIStrings.noCookies), '', 'cookies');
     this.cookieListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cookies/?utm_source=devtools' as
         Platform.DevToolsPath.UrlString);
@@ -1235,7 +1257,7 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
   private idbDatabaseTreeElements: IDBDatabaseTreeElement[];
   private storageBucket?: Protocol.Storage.StorageBucket;
   constructor(storagePanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
-    super(storagePanel, i18nString(UIStrings.indexeddb), 'indexed-db');
+    super(storagePanel, i18nString(UIStrings.indexeddb), i18nString(UIStrings.noIndexeddb), '', 'indexed-db');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
@@ -1861,7 +1883,11 @@ export class StorageCategoryView extends UI.Widget.VBox {
     this.emptyWidget.show(this.element);
   }
 
-  setHeader(header: string): void {
+  setText(text: string): void {
+    this.emptyWidget.text = text;
+  }
+
+  setHeadline(header: string): void {
     this.emptyWidget.header = header;
   }
 
@@ -2236,7 +2262,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
         resourceType === Common.ResourceType.resourceTypes.Document ? this : this.categoryElements.get(categoryName);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
-          this.section.panel, resource.resourceType().category().title(), categoryName, categoryName === 'Frames');
+          this.section.panel, resource.resourceType().category().title(), '', '', categoryName,
+          categoryName === 'Frames');
       this.categoryElements.set(resourceType.name(), categoryElement);
       this.appendChild(categoryElement, FrameTreeElement.presentationOrderCompare);
     }
@@ -2250,7 +2277,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
       categoryElement = new ExpandableApplicationPanelTreeElement(
-          this.section.panel, i18nString(UIStrings.openedWindows), categoryKey);
+          this.section.panel, i18nString(UIStrings.openedWindows), '', '', categoryKey);
       this.categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, FrameTreeElement.presentationOrderCompare);
     }
@@ -2267,7 +2294,8 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
                                                                 i18nString(UIStrings.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement = new ExpandableApplicationPanelTreeElement(this.section.panel, categoryName, categoryKey);
+      categoryElement =
+          new ExpandableApplicationPanelTreeElement(this.section.panel, categoryName, '', '', categoryKey);
       this.categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, FrameTreeElement.presentationOrderCompare);
     }
@@ -2364,7 +2392,6 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
       if (view) {
         return view;
       }
-
       return new UI.EmptyWidget.EmptyWidget('', this.resource.url);
     });
     return this.previewPromise;
@@ -2373,7 +2400,7 @@ export class FrameResourceTreeElement extends ApplicationPanelTreeElement {
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
     if (this.resource.isGenerated) {
-      this.panel.showCategoryView(i18nString(UIStrings.theContentOfThisDocumentHasBeen), null);
+      this.panel.showCategoryView(i18nString(UIStrings.theContentOfThisDocumentHasBeen), '', '', null);
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }

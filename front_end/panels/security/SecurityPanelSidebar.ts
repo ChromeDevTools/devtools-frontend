@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
@@ -62,14 +63,6 @@ const UIStrings = {
    *@description Text in Security Panel of the Security panel
    */
   reloadToViewDetails: 'Reload to view details',
-  /**
-   *@description New parent title in Security Panel of the Security panel
-   */
-  mainOriginSecure: 'Main origin (secure)',
-  /**
-   *@description New parent title in Security Panel of the Security panel
-   */
-  mainOriginNonsecure: 'Main origin (non-secure)',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanelSidebar.ts', UIStrings);
@@ -78,7 +71,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SecurityPanelSidebar extends UI.Widget.VBox {
   readonly #securitySidebarLastItemSetting: Common.Settings.Setting<string>;
   readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
-  readonly #originGroupTitles: Map<OriginGroup, string>;
+  readonly #originGroupTitles: Map<OriginGroup, {title: string, icon?: IconButton.Icon.Icon}>;
   #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
   securityOverviewElement: OriginTreeElement;
   readonly #cookieControlsTreeElement: CookieControlsTreeElement|undefined;
@@ -116,15 +109,39 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     securityTreeSection.appendChild(this.securityOverviewElement);
 
     this.#originGroupTitles = new Map([
-      [OriginGroup.MainOrigin, i18nString(UIStrings.mainOrigin)],
-      [OriginGroup.NonSecure, i18nString(UIStrings.nonsecureOrigins)],
-      [OriginGroup.Secure, i18nString(UIStrings.secureOrigins)],
-      [OriginGroup.Unknown, i18nString(UIStrings.unknownCanceled)],
+      [OriginGroup.MainOrigin, {title: i18nString(UIStrings.mainOrigin)}],
+      [
+        OriginGroup.NonSecure,
+        {
+          title: i18nString(UIStrings.nonsecureOrigins),
+          icon: getSecurityStateIconForDetailedView(
+              Protocol.Security.SecurityState.Insecure,
+              `lock-icon lock-icon-${Protocol.Security.SecurityState.Insecure}`),
+        },
+      ],
+      [
+        OriginGroup.Secure,
+        {
+          title: i18nString(UIStrings.secureOrigins),
+          icon: getSecurityStateIconForDetailedView(
+              Protocol.Security.SecurityState.Secure, `lock-icon lock-icon-${Protocol.Security.SecurityState.Secure}`),
+        },
+      ],
+      [
+        OriginGroup.Unknown,
+        {
+          title: i18nString(UIStrings.unknownCanceled),
+          icon: getSecurityStateIconForDetailedView(
+              Protocol.Security.SecurityState.Unknown,
+              `lock-icon lock-icon-${Protocol.Security.SecurityState.Unknown}`),
+        },
+      ],
     ]);
 
     this.#originGroups = new Map();
     for (const group of Object.values(OriginGroup)) {
-      const element = this.#createOriginGroupElement(this.#originGroupTitles.get(group) as string);
+      const element = this.#createOriginGroupElement(
+          this.#originGroupTitles.get(group)?.title as string, this.#originGroupTitles.get(group)?.icon);
       this.#originGroups.set(group, element);
       securityTreeSection.appendChild(element);
     }
@@ -171,18 +188,22 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
   }
 
   #originGroupTitle(originGroup: OriginGroup): string {
-    return this.#originGroupTitles.get(originGroup) as string;
+    return this.#originGroupTitles.get(originGroup)?.title as string;
   }
 
   #originGroupElement(originGroup: OriginGroup): UI.TreeOutline.TreeElement {
     return this.#originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
   }
 
-  #createOriginGroupElement(originGroupTitle: string): UI.TreeOutline.TreeElement {
+  #createOriginGroupElement(originGroupTitle: string, originGroupIcon?: IconButton.Icon.Icon):
+      UI.TreeOutline.TreeElement {
     const originGroup = new UI.TreeOutline.TreeElement(originGroupTitle, true);
     originGroup.selectable = false;
     originGroup.expand();
     originGroup.listItemElement.classList.add('security-sidebar-origins');
+    if (originGroupIcon) {
+      originGroup.setLeadingIcons([originGroupIcon]);
+    }
     UI.ARIAUtils.setLabel(originGroup.childrenListElement, originGroupTitle);
     return originGroup;
   }
@@ -220,10 +241,13 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     let newParent: UI.TreeOutline.TreeElement;
     if (origin === this.#mainOrigin) {
       newParent = this.#originGroups.get(OriginGroup.MainOrigin) as UI.TreeOutline.TreeElement;
+      newParent.title = i18nString(UIStrings.mainOrigin);
       if (securityState === Protocol.Security.SecurityState.Secure) {
-        newParent.title = i18nString(UIStrings.mainOriginSecure);
+        newParent.setLeadingIcons(
+            [getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`)]);
       } else {
-        newParent.title = i18nString(UIStrings.mainOriginNonsecure);
+        newParent.setLeadingIcons(
+            [getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`)]);
       }
       UI.ARIAUtils.setLabel(newParent.childrenListElement, newParent.title);
     } else {

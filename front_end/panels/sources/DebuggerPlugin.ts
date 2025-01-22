@@ -444,7 +444,7 @@ export class DebuggerPlugin extends Plugin {
             jslogContext: 'configure',
           },
         ],
-        undefined, undefined, 'script-on-ignore-list');
+        undefined, 'script-on-ignore-list');
     this.ignoreListInfobar = infobar;
     infobar.setCloseCallback(() => this.removeInfobar(this.ignoreListInfobar));
 

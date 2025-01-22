@@ -500,7 +500,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               jslogContext: 'main.debug-reload',
             },
           ],
-          undefined, undefined, 'reload-required');
+          undefined, 'reload-required');
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.reloadRequiredInfobar = infobar;
@@ -529,7 +529,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               jslogContext: 'main.debug-reload',
             },
           ],
-          undefined, undefined, 'reload-required');
+          undefined, 'reload-required');
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.reloadRequiredInfobar = infobar;
@@ -552,7 +552,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               jslogContext: 'select-folder',
             },
           ],
-          undefined, undefined, 'select-override-folder');
+          undefined, 'select-override-folder');
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.#selectOverrideFolderInfobar = infobar;
@@ -632,7 +632,7 @@ function createLocaleInfobar(): Infobar {
           jslogContext: 'set-to-specific-language',
         },
       ],
-      getDisableLocaleInfoBarSetting(), undefined, 'language-mismatch');
+      getDisableLocaleInfoBarSetting(), 'language-mismatch');
 }
 
 function reloadDevTools(): void {

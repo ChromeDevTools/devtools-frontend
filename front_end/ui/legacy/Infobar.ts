@@ -52,7 +52,6 @@ export class Infobar {
 
   constructor(
       type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
-      /* TODO(crbug.com/1354548) Remove with JS Profiler deprecation */ isCloseable: boolean = true,
       jslogContext?: string) {
     this.element = document.createElement('div');
     if (jslogContext) {
@@ -120,7 +119,6 @@ export class Infobar {
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('dt-close-button', 'close-button');
-    this.closeButton.hidden = !isCloseable;
     this.closeButton.setTabbable(true);
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
@@ -156,7 +154,7 @@ export class Infobar {
     if (disableSetting && disableSetting.get()) {
       return null;
     }
-    return new Infobar(type, text, actions, disableSetting, undefined, jslogContext);
+    return new Infobar(type, text, actions, disableSetting, jslogContext);
   }
 
   dispose(): void {

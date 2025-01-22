@@ -46,6 +46,7 @@ export class MarkdownView extends HTMLElement {
         paragraph: 'pending',
         heading: 'pending',
         list_item: 'pending',
+        code: 'pending',
       });
     } else {
       this.#animationEnabled = false;
@@ -53,6 +54,7 @@ export class MarkdownView extends HTMLElement {
         paragraph: 'pending',
         heading: 'pending',
         list_item: 'pending',
+        code: 'pending',
       });
     }
 
@@ -75,6 +77,7 @@ export class MarkdownView extends HTMLElement {
       paragraph: 'pending',
       heading: 'pending',
       list_item: 'pending',
+      code: 'pending',
     });
   }
 
@@ -154,7 +157,7 @@ export class MarkdownLitRenderer {
     }
   }
 
-  #customClassMapForToken(type: Marked.Marked.Token['type']): LitHtml.Directive.DirectiveResult {
+  protected customClassMapForToken(type: Marked.Marked.Token['type']): LitHtml.Directive.DirectiveResult {
     const classNames = this.#customClasses[type] || new Set();
     const classInfo = Object.fromEntries([...classNames].map(className => [className, true]));
     return LitHtml.Directives.classMap(classInfo);
@@ -196,7 +199,7 @@ export class MarkdownLitRenderer {
   }
 
   renderHeading(heading: Marked.Marked.Tokens.Heading): LitHtml.TemplateResult {
-    const customClass = this.#customClassMapForToken('heading');
+    const customClass = this.customClassMapForToken('heading');
     switch (heading.depth) {
       case 1:
         return html`<h1 class=${customClass}>${this.renderText(heading)}</h1>`;
@@ -216,7 +219,7 @@ export class MarkdownLitRenderer {
   renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
     // clang-format off
     return html`<devtools-code-block
-      class=${this.#customClassMapForToken('code')}
+      class=${this.customClassMapForToken('code')}
       .code=${this.unescape(token.text)}
       .codeLang=${token.lang || ''}>
     </devtools-code-block>`;
@@ -226,24 +229,24 @@ export class MarkdownLitRenderer {
   templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'paragraph':
-        return html`<p class=${this.#customClassMapForToken('paragraph')}>${this.renderChildTokens(token)}</p>`;
+        return html`<p class=${this.customClassMapForToken('paragraph')}>${this.renderChildTokens(token)}</p>`;
       case 'list':
-        return html`<ul class=${this.#customClassMapForToken('list')}>${token.items.map(token => {
+        return html`<ul class=${this.customClassMapForToken('list')}>${token.items.map(token => {
           return this.renderToken(token);
         })}</ul>`;
       case 'list_item':
-        return html`<li class=${this.#customClassMapForToken('list_item')}>${this.renderChildTokens(token)}</li>`;
+        return html`<li class=${this.customClassMapForToken('list_item')}>${this.renderChildTokens(token)}</li>`;
       case 'text':
         return this.renderText(token);
       case 'codespan':
-        return html`<code class=${this.#customClassMapForToken('codespan')}>${this.unescape(token.text)}</code>`;
+        return html`<code class=${this.customClassMapForToken('codespan')}>${this.unescape(token.text)}</code>`;
       case 'code':
         return this.renderCodeBlock(token);
       case 'space':
         return html``;
       case 'link':
         return html`<devtools-markdown-link
-        class=${this.#customClassMapForToken('link')}
+        class=${this.customClassMapForToken('link')}
         .data=${{
         key:
           token.href, title: token.text,
@@ -251,7 +254,7 @@ export class MarkdownLitRenderer {
         }></devtools-markdown-link>`;
       case 'image':
         return html`<devtools-markdown-image
-        class=${this.#customClassMapForToken('image')}
+        class=${this.customClassMapForToken('image')}
         .data=${{
         key:
           token.href, title: token.text,
@@ -260,9 +263,9 @@ export class MarkdownLitRenderer {
       case 'heading':
         return this.renderHeading(token);
       case 'strong':
-        return html`<strong class=${this.#customClassMapForToken('strong')}>${this.renderText(token)}</strong>`;
+        return html`<strong class=${this.customClassMapForToken('strong')}>${this.renderText(token)}</strong>`;
       case 'em':
-        return html`<em class=${this.#customClassMapForToken('em')}>${this.renderText(token)}</em>`;
+        return html`<em class=${this.customClassMapForToken('em')}>${this.renderText(token)}</em>`;
       default:
         return null;
     }
@@ -338,6 +341,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
       }
       case 'code':
         return html`<devtools-code-block
+          class=${this.customClassMapForToken('code')}
           .code=${this.unescape(token.text)}
           .codeLang=${this.detectCodeLanguage(token as Marked.Marked.Tokens.Code)}
           .displayNotice=${true}>

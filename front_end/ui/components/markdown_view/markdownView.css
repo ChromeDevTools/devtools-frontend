@@ -13,10 +13,19 @@
   to { width: 100%; }
 }
 
+@keyframes expand {
+  from { height: 0; }
+  to { height: auto; }
+}
+
 .animating {
   overflow: hidden;
   white-space: nowrap;
   animation: typing 0.4s steps(40, end);
+}
+
+devtools-code-block.animating {
+  animation: expand 0.1s linear;
 }
 
 .pending {

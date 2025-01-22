@@ -71,14 +71,6 @@ const themeColorsPath = join(
     'front_end',
     'theme_colors.css',
 );
-const tokensPath = join(
-    import.meta.dirname,
-    '..',
-    '..',
-    '..',
-    'front_end',
-    'tokens.css',
-);
 const inspectorCommonPath = join(
   import.meta.dirname,
   '..',
@@ -109,15 +101,12 @@ const DEFINED_APPLICATION_COLOR_VARIABLES =
   getRootVariableDeclarationsFromCSSFile(applicationColorsPath);
 const DEFINED_THEME_COLOR_VARIABLES =
   getRootVariableDeclarationsFromCSSFile(themeColorsPath);
-const DEFINED_COLOR_TOKEN_VARIABLES =
-  getRootVariableDeclarationsFromCSSFile(tokensPath);
 const DEFINED_INSPECTOR_STYLE_VARIABLES =
   getRootVariableDeclarationsFromCSSFile(inspectorCommonPath);
 const ALL_DEFINED_VARIABLES = new Set([
   ...DEFINED_APPLICATION_COLOR_VARIABLES,
   ...DEFINED_THEME_COLOR_VARIABLES,
-  ...DEFINED_COLOR_TOKEN_VARIABLES,
-  ...DEFINED_INSPECTOR_STYLE_VARIABLES,
+    ...DEFINED_INSPECTOR_STYLE_VARIABLES,
 ]);
 
 const BOX_SHADOW_VARIABLES = new Set(

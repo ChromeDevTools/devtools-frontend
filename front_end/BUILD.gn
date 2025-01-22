@@ -39,7 +39,6 @@ copy_to_gen("integration_test_runner-gen") {
     "design_tokens.css",
     "integration_test_runner.html",
     "theme_colors.css",
-    "tokens.css",
   ]
 }
 

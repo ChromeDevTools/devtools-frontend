@@ -8,7 +8,7 @@ We define three sets of color token types, **reference/palette tokens**,
 **system tokens**, and **application tokens**.
 
 [**Reference or palette
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/tokens.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
 (e.g. `--ref-palette-X`) are a set of base colors that get updated on [Chrome
 color theme change](###) and should not be directly used.
 
@@ -317,7 +317,7 @@ example CL that adds application tokens can be found
 ### Resources
 
   * [Reference color
-    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/tokens.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
   * [System color
     tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
   * [Application color

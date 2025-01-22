@@ -144,7 +144,6 @@ server.once('error', error => {
 // to avoid styles being broken in the component server.
 const styleSheetPaths = [
   'front_end/theme_colors.css',
-  'front_end/tokens.css',
   'front_end/application_color_tokens.css',
   'front_end/design_tokens.css',
   'front_end/ui/components/buttons/textButton.css',

@@ -334,6 +334,8 @@ export const generatedProperties = [
    "animation-range-start",
    "animation-timeline",
    "animation-timing-function",
+   "animation-trigger-timeline",
+   "animation-trigger-type",
    "app-region",
    "appearance",
    "ascent-override",
@@ -863,6 +865,22 @@ export const generatedProperties = [
    "step-end"
   ],
   "name": "animation-timing-function"
+ },
+ {
+  "keywords": [
+   "none",
+   "auto"
+  ],
+  "name": "animation-trigger-timeline"
+ },
+ {
+  "keywords": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
+  ],
+  "name": "animation-trigger-type"
  },
  {
   "keywords": [
@@ -4498,6 +4516,20 @@ export const generatedPropertyValues = {
    "jump-start",
    "step-start",
    "step-end"
+  ]
+ },
+ "animation-trigger-timeline": {
+  "values": [
+   "none",
+   "auto"
+  ]
+ },
+ "animation-trigger-type": {
+  "values": [
+   "once",
+   "repeat",
+   "alternate",
+   "state"
   ]
  },
  "app-region": {

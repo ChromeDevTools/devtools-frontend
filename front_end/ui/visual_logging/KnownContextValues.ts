@@ -417,6 +417,8 @@ export const knownContextValues = new Set([
   'animation-range-start',
   'animation-timeline',
   'animation-timing-function',
+  'animation-trigger-timeline',
+  'animation-trigger-type',
   'animations',
   'animations.buffer-preview',
   'animations.clear',

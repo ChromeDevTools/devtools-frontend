@@ -38,7 +38,8 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
-import {decodeScopes, type Position as GeneratedPosition} from './SourceMapScopes.js';
+import {buildOriginalScopes, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
+import {decodeScopes, type OriginalScope, type Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**
@@ -568,20 +569,29 @@ export class SourceMap {
         const {originalScopes, generatedRanges} = decodeScopes(map, {line: baseLineNumber, column: baseColumnNumber});
         this.#scopesInfo.addOriginalScopes(originalScopes);
         this.#scopesInfo.addGeneratedRanges(generatedRanges);
+      } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
+        const originalScopes = this.parseBloombergScopes(map, baseSourceIndex);
+        this.#scopesInfo.addOriginalScopes(originalScopes);
+      } else {
+        // Keep the OriginalScope[] tree array consistent with sources.
+        this.#scopesInfo.addOriginalScopes(new Array(map.sources.length));
       }
-      this.parseBloombergScopes(map, baseSourceIndex);
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object, baseSourceIndex: number): void {
-    if (!map.x_com_bloomberg_sourcesFunctionMappings) {
-      return;
+  private parseBloombergScopes(map: SourceMapV3Object, baseSourceIndex: number): (OriginalScope|undefined)[] {
+    const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
+    if (!scopeList) {
+      throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
+    } else if (scopeList.length !== map.sources.length) {
+      throw new Error(`x_com_bloomberg_sourcesFunctionMappings must have ${map.sources.length} scope trees`);
     }
     const names = map.names ?? [];
-    const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
+    const result: (OriginalScope|undefined)[] = [];
 
     for (let i = 0; i < scopeList.length; i++) {
       if (!scopeList[i]) {
+        result.push(undefined);
         continue;
       }
       const sourceInfo = this.#sourceInfos[baseSourceIndex + i];
@@ -594,7 +604,7 @@ export class SourceMap {
       let endColumnNumber = 0;
 
       const tokenIter = new TokenIterator(scopes);
-      const entries: ScopeTreeEntry[] = [];
+      const entries: NamedFunctionRange[] = [];
       let atStart = true;
       while (tokenIter.hasNext()) {
         if (atStart) {
@@ -602,19 +612,30 @@ export class SourceMap {
         } else if (tokenIter.peek() === ',') {
           tokenIter.next();
         } else {
-          // Unexpected character.
-          return;
+          // Unexpected character. Record what we have up until now.
+          break;
         }
         nameIndex += tokenIter.nextVLQ();
         startLineNumber += tokenIter.nextVLQ();
         startColumnNumber += tokenIter.nextVLQ();
         endLineNumber += tokenIter.nextVLQ();
         endColumnNumber += tokenIter.nextVLQ();
-        entries.push(new ScopeTreeEntry(
-            startLineNumber, startColumnNumber, endLineNumber, endColumnNumber, names[nameIndex] ?? '<invalid>'));
+        const name = names[nameIndex];
+        if (name === undefined) {
+          // If the range doesn't have a valid name, ignore it.
+          continue;
+        }
+        entries.push({
+          start: {line: startLineNumber, column: startColumnNumber},
+          end: {line: endLineNumber, column: endColumnNumber},
+          name,
+        });
       }
-      sourceInfo.scopeTree = this.buildScopeTree(entries);
+      result.push(buildOriginalScopes(entries));
+      sourceInfo.scopeTree = this.buildScopeTree(
+          entries.map(e => new ScopeTreeEntry(e.start.line, e.start.column, e.end.line, e.end.column, e.name)));
     }
+    return result;
   }
 
   private buildScopeTree(entries: ScopeTreeEntry[]): ScopeTreeEntry[] {

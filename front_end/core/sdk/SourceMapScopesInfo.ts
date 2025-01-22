@@ -22,7 +22,7 @@ export class SourceMapScopesInfo {
     this.#generatedRanges = generatedRanges;
   }
 
-  addOriginalScopes(scopes: OriginalScope[]): void {
+  addOriginalScopes(scopes: (OriginalScope|undefined)[]): void {
     for (const scope of scopes) {
       this.#originalScopes.push(scope);
     }

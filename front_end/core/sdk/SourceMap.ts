@@ -140,48 +140,11 @@ export class SourceMapEntry {
   }
 }
 
-interface Position {
-  lineNumber: number;
-  columnNumber: number;
-}
-
-function comparePositions(a: Position, b: Position): number {
-  return a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
-}
-
-export interface ScopeEntry {
-  scopeName(): string;
-  start(): Position;
-  end(): Position;
-}
-
-class ScopeTreeEntry implements ScopeEntry {
-  children: ScopeTreeEntry[] = [];
-
-  constructor(
-      readonly startLineNumber: number, readonly startColumnNumber: number, readonly endLineNumber: number,
-      readonly endColumnNumber: number, readonly name: string) {
-  }
-
-  scopeName(): string {
-    return this.name;
-  }
-
-  start(): Position {
-    return {lineNumber: this.startLineNumber, columnNumber: this.startColumnNumber};
-  }
-
-  end(): Position {
-    return {lineNumber: this.endLineNumber, columnNumber: this.endColumnNumber};
-  }
-}
-
 interface SourceInfo {
   sourceURL: Platform.DevToolsPath.UrlString;
   content: string|null;
   ignoreListHint: boolean;
   reverseMappings: number[]|null;
-  scopeTree: ScopeTreeEntry[]|null;
 }
 
 export class SourceMap {
@@ -501,7 +464,6 @@ export class SourceMap {
         content: source ?? null,
         ignoreListHint: ignoreList.has(i),
         reverseMappings: null,
-        scopeTree: null,
       };
       this.#sourceInfos.push(sourceInfo);
       if (!this.#sourceInfoByURL.has(url)) {
@@ -570,7 +532,7 @@ export class SourceMap {
         this.#scopesInfo.addOriginalScopes(originalScopes);
         this.#scopesInfo.addGeneratedRanges(generatedRanges);
       } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
-        const originalScopes = this.parseBloombergScopes(map, baseSourceIndex);
+        const originalScopes = this.parseBloombergScopes(map);
         this.#scopesInfo.addOriginalScopes(originalScopes);
       } else {
         // Keep the OriginalScope[] tree array consistent with sources.
@@ -579,7 +541,7 @@ export class SourceMap {
     }
   }
 
-  private parseBloombergScopes(map: SourceMapV3Object, baseSourceIndex: number): (OriginalScope|undefined)[] {
+  private parseBloombergScopes(map: SourceMapV3Object): (OriginalScope|undefined)[] {
     const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
     if (!scopeList) {
       throw new Error('Cant decode pasta scopes without x_com_bloomberg_sourcesFunctionMappings field');
@@ -594,7 +556,6 @@ export class SourceMap {
         result.push(undefined);
         continue;
       }
-      const sourceInfo = this.#sourceInfos[baseSourceIndex + i];
       const scopes = scopeList[i];
 
       let nameIndex = 0;
@@ -632,58 +593,8 @@ export class SourceMap {
         });
       }
       result.push(buildOriginalScopes(entries));
-      sourceInfo.scopeTree = this.buildScopeTree(
-          entries.map(e => new ScopeTreeEntry(e.start.line, e.start.column, e.end.line, e.end.column, e.name)));
     }
     return result;
-  }
-
-  private buildScopeTree(entries: ScopeTreeEntry[]): ScopeTreeEntry[] {
-    const toplevel: ScopeTreeEntry[] = [];
-    entries.sort((l, r) => comparePositions(l.start(), r.start()));
-
-    const stack: ScopeTreeEntry[] = [];
-
-    for (const entry of entries) {
-      const start = entry.start();
-      // Pop all the scopes that precede the current entry.
-      while (stack.length > 0) {
-        const top = stack[stack.length - 1];
-        if (comparePositions(top.end(), start) < 0) {
-          stack.pop();
-        } else {
-          break;
-        }
-      }
-
-      if (stack.length > 0) {
-        stack[stack.length - 1].children.push(entry);
-      } else {
-        toplevel.push(entry);
-      }
-      stack.push(entry);
-    }
-    return toplevel;
-  }
-
-  findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):
-      ScopeEntry|null {
-    const sourceInfo = this.#sourceInfoByURL.get(sourceURL);
-    if (!sourceInfo || !sourceInfo.scopeTree) {
-      return null;
-    }
-    const position: Position = {lineNumber: sourceLineNumber, columnNumber: sourceColumnNumber};
-
-    let current: ScopeTreeEntry|null = null;
-    while (true) {
-      const children: ScopeTreeEntry[] = current?.children ?? sourceInfo.scopeTree;
-      const match = children.find(
-          child => comparePositions(child.start(), position) <= 0 && comparePositions(position, child.end()) <= 0);
-      if (!match) {
-        return current;
-      }
-      current = match;
-    }
   }
 
   private isSeparator(char: string): boolean {

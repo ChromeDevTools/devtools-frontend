@@ -34,7 +34,13 @@ group("front_end") {
 }
 
 copy_to_gen("integration_test_runner-gen") {
-  sources = [ "integration_test_runner.html" ]
+  sources = [
+    "application_color_tokens.css",
+    "design_tokens.css",
+    "integration_test_runner.html",
+    "theme_colors.css",
+    "tokens.css",
+  ]
 }
 
 group("integration_test_runner") {

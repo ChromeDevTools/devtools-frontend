@@ -18,10 +18,8 @@ generate_css("css_files") {
 
 generate_css("legacy_css_files") {
   sources = [
-    "applicationColorTokens.css",
     "checkboxTextLabel.css",
     "confirmDialog.css",
-    "designTokens.css",
     "dialog.css",
     "dropTarget.css",
     "emptyWidget.css",
@@ -49,8 +47,6 @@ generate_css("legacy_css_files") {
     "targetCrashedScreen.css",
     "textButton.css",
     "textPrompt.css",
-    "themeColors.css",
-    "tokens.css",
     "treeoutline.css",
     "viewContainers.css",
   ]
@@ -60,13 +56,9 @@ generate_css("legacy_css_files") {
 
 copy_to_gen("copy_stylesheets_for_server") {
   sources = [
-    "applicationColorTokens.css",
-    "designTokens.css",
     "inspectorCommon.css",
     "inspectorSyntaxHighlight.css",
     "textButton.css",
-    "themeColors.css",
-    "tokens.css",
   ]
 }
 

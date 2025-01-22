@@ -56,34 +56,28 @@ const COLOR_INDICATOR_REGEXES = new Set([
 const CUSTOM_VARIABLE_OVERRIDE_PREFIX = '--override-';
 
 const applicationColorsPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'ui',
-  'legacy',
-  'applicationColorTokens.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'application_color_tokens.css',
 );
 const themeColorsPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'ui',
-  'legacy',
-  'themeColors.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'theme_colors.css',
 );
 const tokensPath = join(
-  import.meta.dirname,
-  '..',
-  '..',
-  '..',
-  'front_end',
-  'ui',
-  'legacy',
-  'tokens.css',
+    import.meta.dirname,
+    '..',
+    '..',
+    '..',
+    'front_end',
+    'tokens.css',
 );
 const inspectorCommonPath = join(
   import.meta.dirname,

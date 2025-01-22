@@ -903,7 +903,7 @@ type LayoutShiftData = ArgsData&{
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 export interface LayoutShift extends Instant {
-  name: 'LayoutShift';
+  name: Name.LAYOUT_SHIFT;
   normalized?: boolean;
   args: Args&{
     frame: string,
@@ -929,8 +929,9 @@ export interface LayoutShiftParsedData {
   cumulativeWeightedScoreInWindow: number;
   sessionWindowData: LayoutShiftSessionWindowData;
 }
-export interface SyntheticLayoutShift extends LayoutShift, SyntheticBased<Phase.INSTANT> {
-  name: 'LayoutShift';
+
+export interface SyntheticLayoutShift extends Omit<LayoutShift, 'name'>, SyntheticBased<Phase.INSTANT> {
+  name: Name.SYNTHETIC_LAYOUT_SHIFT;
   rawSourceEvent: LayoutShift;
   args: Args&{
     frame: string,
@@ -2070,7 +2071,7 @@ export function isSyntheticAnimation(event: Event): event is SyntheticAnimationP
 export function isLayoutShift(
     event: Event,
     ): event is LayoutShift {
-  return event.name === 'LayoutShift';
+  return event.name === Name.LAYOUT_SHIFT;
 }
 
 export function isLayoutInvalidationTracking(
@@ -2275,10 +2276,7 @@ export interface Async extends Event {
 }
 
 export function isSyntheticLayoutShift(event: Event): event is SyntheticLayoutShift {
-  if (!isLayoutShift(event) || !event.args.data) {
-    return false;
-  }
-  return 'rawEvent' in event.args.data;
+  return event.name === Name.SYNTHETIC_LAYOUT_SHIFT;
 }
 
 export function isSyntheticLayoutShiftCluster(event: Event): event is SyntheticLayoutShiftCluster {
@@ -2860,6 +2858,7 @@ export const enum Name {
   PRE_PAINT = 'PrePaint',
   LAYERIZE = 'Layerize',
   LAYOUT_SHIFT = 'LayoutShift',
+  SYNTHETIC_LAYOUT_SHIFT = 'SyntheticLayoutShift',
   SYNTHETIC_LAYOUT_SHIFT_CLUSTER = 'SyntheticLayoutShiftCluster',
   UPDATE_LAYER_TREE = 'UpdateLayerTree',
   SCHEDULE_STYLE_INVALIDATION_TRACKING = 'ScheduleStyleInvalidationTracking',

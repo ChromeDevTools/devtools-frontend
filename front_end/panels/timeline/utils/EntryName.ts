@@ -103,7 +103,7 @@ export function nameForEntry(
     return nameForInteractionEvent(entry);
   }
 
-  if (Trace.Types.Events.isLayoutShift(entry)) {
+  if (Trace.Types.Events.isSyntheticLayoutShift(entry)) {
     return i18nString(UIStrings.layoutShift);
   }
 

@@ -9,9 +9,8 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as Elements from '../../panels/elements/elements.js';
 import {doubleRaf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {
   clearMockConnectionResponseHandler,
   describeWithMockConnection,
@@ -40,6 +39,12 @@ import * as Utils from './utils/utils.js';
 const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('TimelineUIUtils', function() {
+  before(async () => {
+    await initializeGlobalVars();
+  });
+
+  after(async () => await deinitializeGlobalVars());
+
   let target: SDK.Target.Target;
   // Trace events contain script ids as strings. However, the linkifier
   // utilities assume it is a number because that's how it's defined at
@@ -756,74 +761,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
       ]);
     });
 
-    it('renders the details for a layout shift properly', async function() {
-      // Set related CDP methods responses to return our mock document and node.
-      const domModel = target.model(SDK.DOMModel.DOMModel);
-      assert.exists(domModel);
-      const documentNode = {nodeId: 1 as Protocol.DOM.NodeId};
-      const docc = new SDK.DOMModel.DOMNode(domModel) as SDK.DOMModel.DOMDocument;
-      const domNode2 = new SDK.DOMModel.DOMNode(domModel);
-      const domID = 58 as Protocol.DOM.NodeId;
-      domNode2.id = domID;
-
-      setMockConnectionResponseHandler('DOM.pushNodesByBackendIdsToFrontend', () => ({nodeIds: [domID]}));
-
-      setMockConnectionResponseHandler('DOM.getDocument', () => ({root: documentNode}));
-      await domModel.requestDocument();
-      domModel.registerNode(domNode2);
-      domNode2.init(docc, false, {nodeName: 'A test node name', nodeId: domID} as Protocol.DOM.Node);
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
-      const layoutShift = parsedTrace.LayoutShifts.clusters[0].events[0];
-      Common.Linkifier.registerLinkifier({
-        contextTypes() {
-          return [Timeline.CLSLinkifier.CLSRect];
-        },
-        async loadLinkifier() {
-          return Timeline.CLSLinkifier.Linkifier.instance();
-        },
-      });
-      Common.Linkifier.registerLinkifier({
-        contextTypes() {
-          return [
-            SDK.DOMModel.DOMNode,
-          ];
-        },
-        async loadLinkifier() {
-          return Elements.DOMLinkifier.Linkifier.instance();
-        },
-      });
-
-      if (!layoutShift) {
-        throw new Error('Could not find LayoutShift event.');
-      }
-
-      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          layoutShift,
-          new Components.Linkifier.Linkifier(),
-          false,
-          null,
-      );
-      const rowData = getRowDataForDetailsElement(details);
-      assert.deepEqual(
-          rowData,
-          [
-            {
-              title: 'Warning',
-              value: 'Cumulative Layout Shifts can result in poor user experiences. It has recently evolved.',
-            },
-            {title: 'Score', value: '0.04218'},
-            {title: 'Cumulative score', value: '0.04218'},
-            {title: 'Current cluster ID', value: '1'},
-            {title: 'Current cluster score', value: '0.2952'},
-            {title: 'Had recent input', value: 'No'},
-            {title: 'Moved from', value: 'Location: [120,670], Size: [900x900]'},
-            {title: 'Moved to', value: 'Location: [120,1270], Size: [900x478]'},
-            {title: 'Related node', value: 'A test node name'},
-          ],
-      );
-    });
-
     it('renders the details for an extension entry properly', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
       const extensionEntry =
@@ -871,10 +808,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const rowData = getRowDataForDetailsElement(details)[0];
       assert.deepEqual(
           rowData,
-            {
-              title: 'Description',
-              value: 'This marks the start of a task',
-            },
+          {
+            title: 'Description',
+            value: 'This marks the start of a task',
+          },
       );
     });
 

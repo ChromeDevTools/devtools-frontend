@@ -51,7 +51,6 @@ import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.cs
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
@@ -302,59 +301,9 @@ const UIStrings = {
    */
   details: 'Details',
   /**
-   *@description Title in Timeline for Cumulative Layout Shifts
-   */
-  cumulativeLayoutShifts: 'Cumulative Layout Shifts',
-  /**
-   *@description Text for the link to the evolved CLS website
-   */
-  evolvedClsLink: 'evolved',
-  /**
-   *@description Warning in Timeline that CLS can cause a poor user experience. It contains a link to inform developers about the recent changes to how CLS is measured. The new CLS metric is said to have evolved from the previous version.
-   *@example {Link to web.dev/metrics} PH1
-   *@example {Link to web.dev/evolving-cls which will always have the text 'evolved'} PH2
-   */
-  sCLSInformation: '{PH1} can result in poor user experiences. It has recently {PH2}.',
-  /**
    *@description Text to indicate an item is a warning
    */
   warning: 'Warning',
-  /**
-   *@description Title for the Timeline CLS Score
-   */
-  score: 'Score',
-  /**
-   *@description Text in Timeline for the cumulative CLS score
-   */
-  cumulativeScore: 'Cumulative score',
-  /**
-   *@description Text in Timeline for the current CLS score
-   */
-  currentClusterScore: 'Current cluster score',
-  /**
-   *@description Text in Timeline for the current CLS cluster
-   */
-  currentClusterId: 'Current cluster ID',
-  /**
-   *@description Text in Timeline for whether input happened recently
-   */
-  hadRecentInput: 'Had recent input',
-  /**
-   *@description Text in Timeline indicating that input has happened recently
-   */
-  yes: 'Yes',
-  /**
-   *@description Text in Timeline indicating that input has not happened recently
-   */
-  no: 'No',
-  /**
-   *@description Label for Cumulative Layout records, indicating where they moved from
-   */
-  movedFrom: 'Moved from',
-  /**
-   *@description Label for Cumulative Layout records, indicating where they moved to
-   */
-  movedTo: 'Moved to',
   /**
    *@description Text that indicates a particular HTML element or node is related to what the user is viewing.
    */
@@ -1593,53 +1542,6 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow(i18nString(UIStrings.processingDuration), mainThreadTime);
           contentHelper.appendTextRow(i18nString(UIStrings.presentationDelay), presentationDelay);
         }
-        break;
-      }
-
-      case Trace.Types.Events.Name.LAYOUT_SHIFT: {
-        if (!Trace.Types.Events.isSyntheticLayoutShift(event)) {
-          console.error('Unexpected type for LayoutShift event');
-          break;
-        }
-        const layoutShift = event as Trace.Types.Events.SyntheticLayoutShift;
-        const layoutShiftEventData = layoutShift.args.data;
-        const warning = document.createElement('span');
-        const clsLink = UI.XLink.XLink.create(
-            'https://web.dev/cls/', i18nString(UIStrings.cumulativeLayoutShifts), undefined, undefined,
-            'cumulative-layout-shifts');
-        const evolvedClsLink = UI.XLink.XLink.create(
-            'https://web.dev/evolving-cls/', i18nString(UIStrings.evolvedClsLink), undefined, undefined, 'evolved-cls');
-
-        warning.appendChild(
-            i18n.i18n.getFormatLocalizedString(str_, UIStrings.sCLSInformation, {PH1: clsLink, PH2: evolvedClsLink}));
-        contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
-        if (!layoutShiftEventData) {
-          break;
-        }
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.score), layoutShiftEventData.weighted_score_delta.toPrecision(4));
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.cumulativeScore), layoutShiftEventData['cumulative_score'].toPrecision(4));
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.currentClusterId), layoutShift.parsedData.sessionWindowData.id);
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.currentClusterScore),
-            layoutShift.parsedData.sessionWindowData.cumulativeWindowScore.toPrecision(4));
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.hadRecentInput),
-            unsafeEventData['had_recent_input'] ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));
-
-        for (const impactedNode of unsafeEventData['impacted_nodes']) {
-          const oldRect = new CLSRect(impactedNode['old_rect']);
-          const newRect = new CLSRect(impactedNode['new_rect']);
-
-          const linkedOldRect = await Common.Linkifier.Linkifier.linkify(oldRect);
-          const linkedNewRect = await Common.Linkifier.Linkifier.linkify(newRect);
-
-          contentHelper.appendElementRow(i18nString(UIStrings.movedFrom), linkedOldRect);
-          contentHelper.appendElementRow(i18nString(UIStrings.movedTo), linkedNewRect);
-        }
-
         break;
       }
 

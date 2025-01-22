@@ -45,7 +45,8 @@ describeWithEnvironment('TraceFilter', () => {
         const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
         assert.isOk(layoutShiftEvent);
         assert.strictEqual(
-            TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent), Trace.Types.Events.Name.LAYOUT_SHIFT);
+            TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent),
+            Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT);
       });
     });
   });
@@ -94,7 +95,7 @@ describeWithEnvironment('TraceFilter', () => {
       assert.isOk(layoutShiftEvent);
 
       const filter = new TraceFilter.ExclusiveNameFilter([
-        Trace.Types.Events.Name.LAYOUT_SHIFT,
+        Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
       ]);
       assert.isFalse(filter.accept(layoutShiftEvent));
     });

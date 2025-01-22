@@ -49,7 +49,8 @@ const fontRequestsByPrePaint = new Map<Types.Events.PrePaint, FontChange[]|null>
 const renderBlocksByPrePaint = new Map<Types.Events.PrePaint, RenderBlockingRequest[]|null>();
 
 function setDefaultValue(
-    map: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>, shift: Types.Events.LayoutShift): void {
+    map: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
+    shift: Types.Events.SyntheticLayoutShift): void {
   Platform.MapUtilities.getWithDefault(map, shift, () => {
     return {
       unsizedMedia: [],
@@ -72,7 +73,7 @@ interface Options {
 
 export class LayoutShiftRootCauses {
   #protocolInterface: RootCauseProtocolInterface;
-  #rootCauseCacheMap = new Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>();
+  #rootCauseCacheMap = new Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>();
   #nodeDetailsCache = new Map<Protocol.DOM.NodeId, Protocol.DOM.Node|null>();
   #iframeRootCausesEnabled: boolean;
 
@@ -89,7 +90,7 @@ export class LayoutShiftRootCauses {
    * events the first time that it's called. That then populates the cache for
    * each shift, so any subsequent calls are just a constant lookup.
    */
-  async rootCausesForEvent(modelData: ParsedTrace, event: Types.Events.LayoutShift):
+  async rootCausesForEvent(modelData: ParsedTrace, event: Types.Events.SyntheticLayoutShift):
       Promise<Readonly<LayoutShiftRootCausesData>|null> {
     const cachedResult = this.#rootCauseCacheMap.get(event);
     if (cachedResult) {
@@ -120,7 +121,7 @@ export class LayoutShiftRootCauses {
    * Determines potential root causes for shifts
    */
   async blameShifts(
-      layoutShifts: Types.Events.LayoutShift[],
+      layoutShifts: Types.Events.SyntheticLayoutShift[],
       modelData: ParsedTrace,
       ): Promise<void> {
     await this.linkShiftsToLayoutInvalidations(layoutShifts, modelData);
@@ -133,7 +134,7 @@ export class LayoutShiftRootCauses {
    * rendering pipeline. This function utilizes this event to flag potential root causes
    * to layout shifts.
    */
-  async linkShiftsToLayoutInvalidations(layoutShifts: Types.Events.LayoutShift[], modelData: ParsedTrace):
+  async linkShiftsToLayoutInvalidations(layoutShifts: Types.Events.SyntheticLayoutShift[], modelData: ParsedTrace):
       Promise<void> {
     const {prePaintEvents, layoutInvalidationEvents, scheduleStyleInvalidationEvents, backendNodeIds} =
         modelData.LayoutShifts;
@@ -224,7 +225,7 @@ export class LayoutShiftRootCauses {
    * Note that a Layout cannot always be linked to a script, in that case, we cannot add a
    * "script causing reflow" as a potential root cause to the corresponding shift.
    */
-  linkShiftsToLayoutEvents(layoutShifts: Types.Events.LayoutShift[], modelData: ParsedTrace): void {
+  linkShiftsToLayoutEvents(layoutShifts: Types.Events.SyntheticLayoutShift[], modelData: ParsedTrace): void {
     const {prePaintEvents} = modelData.LayoutShifts;
     // Maps from PrePaint events to LayoutShifts that occured in each one.
     const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
@@ -634,11 +635,11 @@ function dimensionsAreExplicit(dimensions: CSSDimensions): boolean {
  * PrePaint events to layout shifts dispatched within it.
  */
 function getShiftsByPrePaintEvents(
-    layoutShifts: Types.Events.LayoutShift[],
+    layoutShifts: Types.Events.SyntheticLayoutShift[],
     prePaintEvents: Types.Events.PrePaint[],
-    ): Map<Types.Events.PrePaint, Types.Events.LayoutShift[]> {
+    ): Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]> {
   // Maps from PrePaint events to LayoutShifts that occured in each one.
-  const shiftsByPrePaint = new Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>();
+  const shiftsByPrePaint = new Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>();
 
   // Associate all shifts to their corresponding PrePaint.
   for (const prePaintEvent of prePaintEvents) {

@@ -92,7 +92,8 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   getTopCulprits(
       cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
       culpritsByShift:
-          Map<Trace.Types.Events.LayoutShift, Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData>): string[] {
+          Map<Trace.Types.Events.SyntheticLayoutShift, Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData>):
+      string[] {
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
     if (causes.length === MAX_TOP_CULPRITS) {

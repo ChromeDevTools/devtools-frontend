@@ -80,84 +80,87 @@ export interface NoncompositedAnimationFailure {
  * Each failure reason is represented by a bit flag. The bit shift operator '<<' is used to define
  * which bit corresponds to each failure reason.
  * https://source.chromium.org/search?q=f:compositor_animations.h%20%22enum%20FailureReason%22
- * @type {{flag: number, failure: AnimationFailureReasons}[]}
  */
-const ACTIONABLE_FAILURE_REASONS = [
-  {
-    flag: 1 << 0,
-    failure: AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED,
-  },
-  {
-    flag: 1 << 1,
-    failure: AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS,
-  },
-  {
-    flag: 1 << 2,
-    failure: AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT,
-  },
-  {
-    flag: 1 << 3,
-    failure: AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS,
-  },
-  {
-    flag: 1 << 4,
-    failure: AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE,
-  },
-  {
-    flag: 1 << 5,
-    failure: AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE,
-  },
-  {
-    flag: 1 << 6,
-    failure: AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS,
-  },
-  {
-    flag: 1 << 7,
-    failure: AnimationFailureReasons.TARGET_HAS_CSS_OFFSET,
-  },
-  // The failure 1 << 8 is marked as obsolete in Blink
-  {
-    flag: 1 << 9,
-    failure: AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES,
-  },
-  {
-    flag: 1 << 10,
-    failure: AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET,
-  },
-  {
-    flag: 1 << 11,
-    failure: AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT,
-  },
-  {
-    flag: 1 << 12,
-    failure: AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS,
-  },
-  {
-    flag: 1 << 13,
-    failure: AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
-  },
-  // The failure 1 << 14 is marked as obsolete in Blink
-  {
-    flag: 1 << 15,
-    failure: AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES,
-  },
-  {
-    flag: 1 << 16,
-    failure: AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE,
-  },
-  {
-    flag: 1 << 17,
-    failure: AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE,
-  },
-  {
-    flag: 1 << 18,
-    failure: AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY,
-  },
-  {
-    flag: 1 << 19,
-    failure: AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY,
-  },
-];
+const ACTIONABLE_FAILURE_REASONS: Array<{
+  flag: number,
+  failure: AnimationFailureReasons,
+}> =
+    [
+      {
+        flag: 1 << 0,
+        failure: AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED,
+      },
+      {
+        flag: 1 << 1,
+        failure: AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS,
+      },
+      {
+        flag: 1 << 2,
+        failure: AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT,
+      },
+      {
+        flag: 1 << 3,
+        failure: AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS,
+      },
+      {
+        flag: 1 << 4,
+        failure: AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE,
+      },
+      {
+        flag: 1 << 5,
+        failure: AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE,
+      },
+      {
+        flag: 1 << 6,
+        failure: AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS,
+      },
+      {
+        flag: 1 << 7,
+        failure: AnimationFailureReasons.TARGET_HAS_CSS_OFFSET,
+      },
+      // The failure 1 << 8 is marked as obsolete in Blink
+      {
+        flag: 1 << 9,
+        failure: AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES,
+      },
+      {
+        flag: 1 << 10,
+        failure: AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET,
+      },
+      {
+        flag: 1 << 11,
+        failure: AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT,
+      },
+      {
+        flag: 1 << 12,
+        failure: AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS,
+      },
+      {
+        flag: 1 << 13,
+        failure: AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
+      },
+      // The failure 1 << 14 is marked as obsolete in Blink
+      {
+        flag: 1 << 15,
+        failure: AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES,
+      },
+      {
+        flag: 1 << 16,
+        failure: AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE,
+      },
+      {
+        flag: 1 << 17,
+        failure: AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE,
+      },
+      {
+        flag: 1 << 18,
+        failure: AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY,
+      },
+      {
+        flag: 1 << 19,
+        failure: AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY,
+      },
+    ] as const;
 
 // 500ms window.
 // Use this window to consider events and requests that may have caused a layout shift.
@@ -211,8 +214,8 @@ export function getNonCompositedFailure(animationEvent: Types.Events.SyntheticAn
 function getNonCompositedFailureRootCauses(
     animationEvents: Types.Events.SyntheticAnimationPair[],
     prePaintEvents: Types.Events.PrePaint[],
-    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>,
-    rootCausesByShift: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>,
+    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
+    rootCausesByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
     ): NoncompositedAnimationFailure[] {
   const allAnimationFailures: NoncompositedAnimationFailure[] = [];
   for (const animation of animationEvents) {
@@ -260,11 +263,11 @@ function getNonCompositedFailureRootCauses(
  * PrePaint events to layout shifts dispatched within it.
  */
 function getShiftsByPrePaintEvents(
-    layoutShifts: Types.Events.LayoutShift[],
+    layoutShifts: Types.Events.SyntheticLayoutShift[],
     prePaintEvents: Types.Events.PrePaint[],
-    ): Map<Types.Events.PrePaint, Types.Events.LayoutShift[]> {
+    ): Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]> {
   // Maps from PrePaint events to LayoutShifts that occured in each one.
-  const shiftsByPrePaint = new Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>();
+  const shiftsByPrePaint = new Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>();
 
   // Associate all shifts to their corresponding PrePaint.
   for (const prePaintEvent of prePaintEvents) {
@@ -310,9 +313,11 @@ function getNextEvent(sourceEvents: Types.Events.Event[], targetEvent: Types.Eve
  */
 function getIframeRootCauses(
     iframeCreatedEvents: readonly Types.Events.RenderFrameImplCreateChildFrame[],
-    prePaintEvents: Types.Events.PrePaint[], shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>,
-    rootCausesByShift: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>,
-    domLoadingEvents: readonly Types.Events.DomLoading[]): Map<Types.Events.LayoutShift, LayoutShiftRootCausesData> {
+    prePaintEvents: Types.Events.PrePaint[],
+    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
+    rootCausesByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
+    domLoadingEvents: readonly Types.Events.DomLoading[]):
+    Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData> {
   for (const iframeEvent of iframeCreatedEvents) {
     const nextPrePaint = getNextEvent(prePaintEvents, iframeEvent) as Types.Events.PrePaint | null;
     // If no following prePaint, this is not a root cause.
@@ -354,9 +359,9 @@ function getIframeRootCauses(
  */
 function getUnsizedImageRootCauses(
     unsizedImageEvents: readonly Types.Events.LayoutImageUnsized[], paintImageEvents: Types.Events.PaintImage[],
-    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>,
-    rootCausesByShift: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>):
-    Map<Types.Events.LayoutShift, LayoutShiftRootCausesData> {
+    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
+    rootCausesByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>):
+    Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData> {
   shiftsByPrePaint.forEach((shifts, prePaint) => {
     const paintImage = getNextEvent(paintImageEvents, prePaint) as Types.Events.PaintImage | null;
     // The unsized image corresponds to this PaintImage.
@@ -384,9 +389,9 @@ function getUnsizedImageRootCauses(
  */
 function getFontRootCauses(
     networkRequests: Types.Events.SyntheticNetworkRequest[], prePaintEvents: Types.Events.PrePaint[],
-    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>,
-    rootCausesByShift: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>):
-    Map<Types.Events.LayoutShift, LayoutShiftRootCausesData> {
+    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>,
+    rootCausesByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>):
+    Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData> {
   const fontRequests =
       networkRequests.filter(req => req.args.data.resourceType === 'Font' && req.args.data.mimeType.startsWith('font'));
 

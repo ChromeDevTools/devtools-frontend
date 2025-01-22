@@ -1044,7 +1044,13 @@ export function maybeInitSylesMap(): EventStylesMap {
     [Trace.Types.Events.Name.ASYNC_TASK]:
         new TimelineRecordStyle(i18nString(UIStrings.asyncTask), defaultCategoryStyles.async),
 
-    [Trace.Types.Events.Name.LAYOUT_SHIFT]:
+    [Trace.Types.Events.Name.LAYOUT_SHIFT]: new TimelineRecordStyle(
+        i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience,
+        /* Mark LayoutShifts as hidden; in the timeline we render
+        * SyntheticLayoutShifts so those are the ones visible to the user */
+        true),
+
+    [Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT]:
         new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience),
 
     [Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT_CLUSTER]:

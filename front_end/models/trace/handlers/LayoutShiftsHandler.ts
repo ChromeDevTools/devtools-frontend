@@ -362,6 +362,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
         Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticLayoutShift>({
           rawSourceEvent: event,
           ...event,
+          name: Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT,
           args: {
             frame: event.args.frame,
             data: {

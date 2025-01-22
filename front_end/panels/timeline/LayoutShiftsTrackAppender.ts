@@ -130,14 +130,14 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
-    const score = Trace.Types.Events.isLayoutShift(event)       ? event.args.data?.weighted_score_delta ?? 0 :
-        Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ? event.clusterCumulativeScore :
-                                                                  -1;
+    const score = Trace.Types.Events.isSyntheticLayoutShift(event) ? event.args.data?.weighted_score_delta ?? 0 :
+        Trace.Types.Events.isSyntheticLayoutShiftCluster(event)    ? event.clusterCumulativeScore :
+                                                                     -1;
     // Score isn't a duration, but the UI works anyhow.
     info.formattedTime = score.toFixed(4);
-    info.title = Trace.Types.Events.isLayoutShift(event)        ? i18nString(UIStrings.layoutShift) :
-        Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ? i18nString(UIStrings.layoutShiftCluster) :
-                                                                  event.name;
+    info.title = Trace.Types.Events.isSyntheticLayoutShift(event) ? i18nString(UIStrings.layoutShift) :
+        Trace.Types.Events.isSyntheticLayoutShiftCluster(event)   ? i18nString(UIStrings.layoutShiftCluster) :
+                                                                    event.name;
 
     if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
       // Screenshots are max 500x500 naturally, but on a laptop in dock-to-right, 500px tall usually doesn't fit.
@@ -151,7 +151,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {
-    if (Trace.Types.Events.isLayoutShift(event)) {
+    if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
       const score = event.args.data?.weighted_score_delta || 0;
 
       // `buffer` is how much space is between the actual diamond shape and the

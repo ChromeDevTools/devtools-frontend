@@ -78,7 +78,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
         shift.args = {
           frame: 'frame-id-123',
         };
-        shift.name = 'LayoutShift';
+        shift.name = Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT;
       }
 
       const clusters = [{events: shifts}] as unknown as Trace.Types.Events.SyntheticLayoutShiftCluster[];
@@ -294,7 +294,6 @@ describeWithMockConnection('LayoutShift root causes', () => {
         const authoredDimensions = rootCause?.unsizedMedia[0].authoredDimensions;
         if (!authoredDimensions) {
           assert.fail('Expected defined authored dimensions');
-          return;
         }
         // Assert inline styles are preferred.
         assert.strictEqual(authoredDimensions.height, '20px');
@@ -314,7 +313,6 @@ describeWithMockConnection('LayoutShift root causes', () => {
         const authoredDimensions = rootCause?.unsizedMedia[0].authoredDimensions;
         if (!authoredDimensions) {
           assert.fail('Expected defined authored dimensions');
-          return;
         }
         // Assert matched CSS rules styles are preferred.
         assert.strictEqual(authoredDimensions.height, '30px');
@@ -332,7 +330,6 @@ describeWithMockConnection('LayoutShift root causes', () => {
         const computedDimensions = rootCause?.unsizedMedia[0].computedDimensions;
         if (!computedDimensions) {
           assert.fail('Expected defined computed dimensions');
-          return;
         }
         // Assert correct computed styles are set.
         assert.strictEqual(computedDimensions.height, height);
@@ -414,7 +411,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
           shift.args = {
             frame: 'frame-id-123',
           };
-          shift.name = 'LayoutShift';
+          shift.name = Trace.Types.Events.Name.SYNTHETIC_LAYOUT_SHIFT;
         }
 
         const clusters = [{events: shifts}] as unknown as Trace.Types.Events.SyntheticLayoutShiftCluster[];

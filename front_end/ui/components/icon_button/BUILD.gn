@@ -17,8 +17,6 @@ generate_css("css_files") {
 
 generate_css("legacy_css_files") {
   sources = [ "icon.css" ]
-
-  legacy = true
 }
 
 devtools_module("icon_button") {

@@ -45,9 +45,9 @@ import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
-import toolbarStyles from './toolbar.css.legacy.js';
+import toolbarStyles from './toolbar.css.js';
 import {Tooltip} from './Tooltip.js';
-import {CheckboxLabel, createShadowRootWithCoreStyles, LongClickController} from './UIUtils.js';
+import {CheckboxLabel, LongClickController} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -83,19 +83,21 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * @prop {boolean} wrappable - The `"wrappable"` attribute is reflected as property.
  */
 export class Toolbar extends HTMLElement {
+  #shadowRoot = this.attachShadow({mode: 'open'});
   private items: ToolbarItem[] = [];
   enabled: boolean = true;
   private compactLayout = false;
 
   constructor() {
     super();
-    createShadowRootWithCoreStyles(this, {cssFile: toolbarStyles}).createChild('slot');
+    this.#shadowRoot.createChild('slot');
   }
 
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar');
     }
+    this.#shadowRoot.adoptedStyleSheets = [toolbarStyles];
   }
 
   /**

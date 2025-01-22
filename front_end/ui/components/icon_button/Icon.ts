@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import iconStyles from './icon.css.legacy.js';
+import iconStyles from './icon.css.js';
 
 /**
  * @deprecated
@@ -75,17 +75,10 @@ export class Icon extends HTMLElement {
     this.#icon = document.createElement('span');
     this.#shadowRoot = this.attachShadow({mode: 'open'});
     this.#shadowRoot.appendChild(this.#icon);
+  }
 
-    // TODO(crbug.com/359141904): Ideally we'd have a `connectedCallback()` that would just
-    // install the CSS via `adoptedStyleSheets`, but that throws when using the
-    // same `CSSStyleSheet` across two different documents (which happens in the
-    // case of undocked DevTools windows and using the DeviceMode). So the work-
-    // around for now is to use legacy CSS injected as a <style> tag into the
-    // ShadowRoot (which has been working well for the legacy UI components for
-    // a long time).
-    const styleElement = document.createElement('style');
-    styleElement.textContent = iconStyles.cssContent;
-    this.#shadowRoot.appendChild(styleElement);
+  connectedCallback(): void {
+    this.#shadowRoot.adoptedStyleSheets = [iconStyles];
   }
 
   /**

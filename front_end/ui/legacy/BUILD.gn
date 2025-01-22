@@ -12,6 +12,7 @@ generate_css("css_files") {
   sources = [
     "emptyWidget.css",
     "inspectorCommon.css",
+    "toolbar.css",
   ]
 }
 
@@ -50,7 +51,6 @@ generate_css("legacy_css_files") {
     "textPrompt.css",
     "themeColors.css",
     "tokens.css",
-    "toolbar.css",
     "treeoutline.css",
     "viewContainers.css",
   ]

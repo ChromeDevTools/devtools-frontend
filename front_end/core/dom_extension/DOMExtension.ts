@@ -399,3 +399,64 @@ DOMTokenList.prototype['toggle'] = function(token: string, force: boolean|undefi
   return originalToggle.call(this, token, Boolean(force));
 };
 })();
+
+// DevTools uses multiple documents when the main window is undocked, and the
+// device mode toolbar is enabled. Since `CSSStyleSheet` objects cannot be
+// shared across multiple documents, we override the `adoptedStyleSheets`
+// accessor here, and clone the `CSSStyleSheet` objects under hood on-demand.
+//
+// NOTE: Since `adoptedStyleSheets` is an `ObservableArray`, which can be
+// mutated in place, we need to override both the setter and the getter, and
+// for the latter, we need to return a proxy that intercepts mutations to the
+// array-indexed properties.
+const originalAdoptedStyleSheets = Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'adoptedStyleSheets');
+if (originalAdoptedStyleSheets) {
+  const styleSheetInDocumentCache = new WeakMap<CSSStyleSheet, WeakMap<Document, CSSStyleSheet>>();
+
+  /**
+   * Returns a clone of the `styleSheet` within the given `document`.
+   */
+  function styleSheetInDocument(styleSheet: CSSStyleSheet, document: Document): CSSStyleSheet {
+    let styleSheetCache = styleSheetInDocumentCache.get(styleSheet);
+    if (styleSheetCache) {
+      const cachedSheet = styleSheetCache.get(document);
+      if (cachedSheet) {
+        return cachedSheet;
+      }
+    } else {
+      styleSheetCache = new WeakMap<Document, CSSStyleSheet>();
+      styleSheetInDocumentCache.set(styleSheet, styleSheetCache);
+    }
+
+    const clonedStyleSheet = new document.defaultView.CSSStyleSheet();
+    for (const {cssText} of styleSheet.cssRules) {
+      clonedStyleSheet.insertRule(cssText);
+    }
+    styleSheetCache.set(document, clonedStyleSheet);
+    return clonedStyleSheet;
+  }
+
+  Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
+    configurable: true,
+    enumerable: true,
+    get(this: ShadowRoot): CSSStyleSheet[] {
+      const target = originalAdoptedStyleSheets.get.call(this);
+      const {ownerDocument} = this.host;
+      return new Proxy(target, {
+        set(target, propertyKey, value, receiver) {
+          if (propertyKey === String(propertyKey >>> 0) && ownerDocument !== document) {
+            value = styleSheetInDocument(value, ownerDocument);
+          }
+          return Reflect.set(target, propertyKey, value, receiver);
+        },
+      });
+    },
+    set(this: ShadowRoot, styleSheets: CSSStyleSheet[]) {
+      const {ownerDocument} = this.host;
+      if (ownerDocument !== document) {
+        styleSheets = styleSheets.map(styleSheet => styleSheetInDocument(styleSheet, ownerDocument));
+      }
+      originalAdoptedStyleSheets.set.call(this, styleSheets);
+    }
+  });
+}

@@ -1101,6 +1101,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#selectedGroupName = null;
     this.#parsedTrace = newParsedTrace;
     this.#traceMetadata = traceMetadata;
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(newParsedTrace, isCpuProfile);
@@ -1111,7 +1112,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
     this.setMarkers(newParsedTrace);
-    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
   }
 
   setInsights(

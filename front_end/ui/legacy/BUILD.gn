@@ -138,6 +138,7 @@ devtools_entrypoint("bundle") {
   entrypoint = "legacy.ts"
 
   deps = [
+    ":css_files",
     ":legacy_css_files",
     ":ui",
   ]

@@ -30,21 +30,12 @@ devtools-toolbar {
   }
 }
 
-devtools-toolbar.device-mode-toolbar-fixed-size {
-  flex: 0 1 auto;
+devtools-toolbar.main-toolbar {
+  margin: 0 auto;
 }
 
 devtools-toolbar.device-mode-toolbar-options {
-  position: sticky;
-  right: 0;
   flex: none;
-}
-
-.device-mode-toolbar-spacer {
-  flex: 1 1 0;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
 }
 
 .device-mode-content-clip {

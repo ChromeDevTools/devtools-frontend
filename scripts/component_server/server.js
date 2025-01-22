@@ -147,9 +147,9 @@ const styleSheetPaths = [
   'front_end/tokens.css',
   'front_end/application_color_tokens.css',
   'front_end/design_tokens.css',
+  'front_end/ui/components/buttons/textButton.css',
   'front_end/ui/legacy/inspectorCommon.css',
   'front_end/ui/legacy/inspectorSyntaxHighlight.css',
-  'front_end/ui/legacy/textButton.css',
   'front_end/ui/components/docs/component_docs_styles.css',
 ];
 

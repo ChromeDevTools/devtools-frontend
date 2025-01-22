@@ -8,8 +8,8 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Utils from '../utils/utils.js';
 
@@ -89,9 +89,11 @@ export class LayoutShiftDetails extends HTMLElement {
   #isFreshRecording: Boolean = false;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [layoutShiftDetailsStyles];
-    // Styles for linkifier button.
-    UI.UIUtils.injectTextButtonStyles(this.#shadow);
+    this.#shadow.adoptedStyleSheets = [
+      layoutShiftDetailsStyles,
+      // Styles for linkifier button.
+      Buttons.textButtonStyles,
+    ];
     this.#render();
   }
 

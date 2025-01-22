@@ -53,7 +53,6 @@ import inlineButtonStyles from './inlineButton.css.legacy.js';
 import inspectorCommonStyles from './inspectorCommon.css.legacy.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import smallBubbleStyles from './smallBubble.css.legacy.js';
-import textButtonStyles from './textButton.css.legacy.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
@@ -1868,15 +1867,14 @@ function focusChanged(event: Event): void {
   updateXWidgetfocusWidgetForNode(element);
 }
 
-export function injectCoreStyles(root: Element|ShadowRoot): void {
-  ThemeSupport.ThemeSupport.instance().appendStyle(root, inspectorCommonStyles);
-  ThemeSupport.ThemeSupport.instance().appendStyle(root, textButtonStyles);
+export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void {
+  ThemeSupport.ThemeSupport.instance().appendStyle(elementOrShadowRoot, inspectorCommonStyles);
+  const shadowRootOrDocument = (elementOrShadowRoot instanceof ShadowRoot) ?
+      elementOrShadowRoot :
+      (elementOrShadowRoot.shadowRoot ?? elementOrShadowRoot.ownerDocument);
+  shadowRootOrDocument.adoptedStyleSheets.push(Buttons.textButtonStyles);
 
-  ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(root);
-}
-
-export function injectTextButtonStyles(root: Element|ShadowRoot): void {
-  ThemeSupport.ThemeSupport.instance().appendStyle(root, textButtonStyles);
+  ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(elementOrShadowRoot);
 }
 
 /**
@@ -1904,7 +1902,7 @@ export function createShadowRootWithCoreStyles(
     if ('cssContent' in cssFile) {
       ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
     } else {
-      shadowRoot.adoptedStyleSheets = cssFile;
+      shadowRoot.adoptedStyleSheets.push(...cssFile);
     }
   }
   shadowRoot.addEventListener('focus', focusChanged, true);

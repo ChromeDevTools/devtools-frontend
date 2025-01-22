@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Buttons from '../../../components/buttons/buttons.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
-import textButtonStyles from '../../textButton.css.legacy.js';
-import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import linkSwatchStyles from './linkSwatch.css.js';
 
@@ -35,8 +34,7 @@ class BaseLinkSwatch extends HTMLElement {
   #linkElement: HTMLSpanElement|undefined;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [linkSwatchStyles];
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadow, textButtonStyles);
+    this.shadow.adoptedStyleSheets = [linkSwatchStyles, Buttons.textButtonStyles];
   }
 
   set data(data: BaseLinkSwatchRenderData) {

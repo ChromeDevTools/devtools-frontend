@@ -8,8 +8,15 @@ import("../../../../scripts/build/ninja/generate_css.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-generate_css("legacy_css_files") {
-  sources = [ "button.css" ]
+generate_css("css_files") {
+  sources = [
+    "button.css",
+    "textButton.css",
+  ]
+}
+
+copy_to_gen("copy_stylesheets_for_server") {
+  sources = [ "textButton.css" ]
 }
 
 devtools_module("button") {
@@ -27,7 +34,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":button",
-    ":legacy_css_files",
+    ":css_files",
   ]
 
   visibility = [ "../../../entrypoints/main/*" ]

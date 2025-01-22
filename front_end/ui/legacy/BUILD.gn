@@ -45,7 +45,6 @@ generate_css("legacy_css_files") {
     "suggestBox.css",
     "tabbedPane.css",
     "targetCrashedScreen.css",
-    "textButton.css",
     "textPrompt.css",
     "treeoutline.css",
     "viewContainers.css",
@@ -58,7 +57,6 @@ copy_to_gen("copy_stylesheets_for_server") {
   sources = [
     "inspectorCommon.css",
     "inspectorSyntaxHighlight.css",
-    "textButton.css",
   ]
 }
 

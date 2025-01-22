@@ -202,13 +202,13 @@ body {
 }
 
 .material-tag-name {
-  /* Keep this in sync with inspectorSyntaxHighlight.css (--override-dom-tag-name-color) */
+  /* Keep this in sync with inspectorCommon.css (--override-dom-tag-name-color) */
   color: rgb(136 18 128);
 }
 
 .material-class-name,
 .material-node-id {
-  /* Keep this in sync with inspectorSyntaxHighlight.css (.webkit-html-attribute-value) */
+  /* Keep this in sync with inspectorCommon.css (.webkit-html-attribute-value) */
   color: rgb(26 26 166);
 }
 

@@ -53,7 +53,6 @@ const EXEMPTED_FILES = new Set([
   ['front_end', 'panels', 'sources', 'sourcesView.css'],
   ['front_end', 'panels', 'timeline', 'timelinePanel.css'],
   ['front_end', 'ui', 'legacy', 'filter.css'],
-  ['front_end', 'ui', 'legacy', 'inspectorSyntaxHighlight.css'],
   ['front_end', 'ui', 'legacy', 'splitWidget.css'],
   ['front_end', 'ui', 'legacy', 'suggestBox.css'],
   ['front_end', 'ui', 'legacy', 'tabbedPane.css'],

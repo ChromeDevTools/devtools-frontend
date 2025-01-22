@@ -28,7 +28,6 @@ generate_css("legacy_css_files") {
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
-    "inspectorSyntaxHighlight.css",
     "inspectorViewTabbedPane.css",
     "listWidget.css",
     "popover.css",
@@ -54,10 +53,7 @@ generate_css("legacy_css_files") {
 }
 
 copy_to_gen("copy_stylesheets_for_server") {
-  sources = [
-    "inspectorCommon.css",
-    "inspectorSyntaxHighlight.css",
-  ]
+  sources = [ "inspectorCommon.css" ]
 }
 
 devtools_module("ui") {

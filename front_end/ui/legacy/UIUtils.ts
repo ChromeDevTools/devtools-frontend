@@ -1873,8 +1873,6 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
       elementOrShadowRoot :
       (elementOrShadowRoot.shadowRoot ?? elementOrShadowRoot.ownerDocument);
   shadowRootOrDocument.adoptedStyleSheets.push(Buttons.textButtonStyles);
-
-  ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(elementOrShadowRoot);
 }
 
 /**

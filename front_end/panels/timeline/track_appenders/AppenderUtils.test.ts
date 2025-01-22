@@ -59,8 +59,8 @@ describeWithEnvironment('AppenderUtils', () => {
   describe('getFormattedTime', () => {
     // Helper method. Treat input as milliseconds
     const getFormattedTime = (tot: number, self: number): string => {
-      const totalTime = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(tot));
-      const selfTime = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(self));
+      const totalTime = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(tot));
+      const selfTime = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(self));
       return Timeline.AppenderUtils.getFormattedTime(totalTime, selfTime);
     };
 

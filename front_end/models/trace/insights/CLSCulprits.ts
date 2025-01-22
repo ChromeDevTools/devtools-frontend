@@ -164,7 +164,7 @@ const ACTIONABLE_FAILURE_REASONS: Array<{
 
 // 500ms window.
 // Use this window to consider events and requests that may have caused a layout shift.
-const ROOT_CAUSE_WINDOW = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+const ROOT_CAUSE_WINDOW = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
 
 export interface LayoutShiftRootCausesData {
   iframeIds: string[];

@@ -6,7 +6,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
-import {millisecondsToMicroseconds} from './Timing.js';
+import {milliToMicro} from './Timing.js';
 import {makeProfileCall, mergeEventsInOrder} from './Trace.js';
 
 /**
@@ -239,7 +239,7 @@ export class SamplesIntegrator {
     let prevNode;
     for (let i = 0; i < samples.length; i++) {
       const node = this.#profileModel.nodeByIndex(i);
-      const timestamp = millisecondsToMicroseconds(Types.Timing.MilliSeconds(timestamps[i]));
+      const timestamp = milliToMicro(Types.Timing.MilliSeconds(timestamps[i]));
       if (!node) {
         continue;
       }

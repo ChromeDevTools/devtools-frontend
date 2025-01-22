@@ -37,9 +37,9 @@ const jsInvokeStack: Types.Events.Event[] = [];
  */
 const taskReflowEvents: Types.Events.Event[] = [];
 
-export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(30));
+export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(30));
 
-export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
+export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(50));
 
 export function reset(): void {
   warningsPerEvent.clear();

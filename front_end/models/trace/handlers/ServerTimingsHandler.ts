@@ -86,8 +86,7 @@ function createSyntheticServerTiming(
     if (timing.start === null) {
       continue;
     }
-    const convertedTimestamp =
-        Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(timing.start)) - offset;
+    const convertedTimestamp = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(timing.start)) - offset;
     const parsedUrl = new URL(request.args.data.url);
     const origin = parsedUrl.origin;
 
@@ -98,7 +97,7 @@ function createSyntheticServerTiming(
       pid: Types.Events.ProcessID(0),
       tid: Types.Events.ThreadID(0),
       ts: Types.Timing.MicroSeconds(convertedTimestamp),
-      dur: Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(timing.value)),
+      dur: Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(timing.value)),
       cat: 'devtools.server-timing',
       args: {data: {desc: timing.description || undefined, origin}},
     });

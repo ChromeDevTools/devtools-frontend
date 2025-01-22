@@ -533,9 +533,9 @@ export class CompatibilityTracksAppender {
     this.#entryData.push(event);
     this.#legacyEntryTypeByLevel[level] = EntryType.TRACK_APPENDER;
     this.#flameChartData.entryLevels[index] = level;
-    this.#flameChartData.entryStartTimes[index] = Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const dur = event.dur || Trace.Helpers.Timing.millisecondsToMicroseconds(InstantEventVisibleDurationMs);
-    this.#flameChartData.entryTotalTimes[index] = Trace.Helpers.Timing.microSecondsToMilliseconds(dur);
+    this.#flameChartData.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(event.ts);
+    const dur = event.dur || Trace.Helpers.Timing.milliToMicro(InstantEventVisibleDurationMs);
+    this.#flameChartData.entryTotalTimes[index] = Trace.Helpers.Timing.microToMilli(dur);
     return index;
   }
 

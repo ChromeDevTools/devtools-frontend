@@ -116,7 +116,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     const timeWindow = this.overviewGrid.calculateWindowValue();
     if (Trace.Types.Timing.MilliSeconds(timeWindow.rawStartValue) <= timeInMilliSeconds &&
         timeInMilliSeconds <= Trace.Types.Timing.MilliSeconds(timeWindow.rawEndValue)) {
-      const timeInMicroSeconds = Trace.Helpers.Timing.millisecondsToMicroseconds(timeInMilliSeconds);
+      const timeInMicroSeconds = Trace.Helpers.Timing.milliToMicro(timeInMilliSeconds);
       this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_MOVE, {timeInMicroSeconds});
     } else {
       this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_LEAVE);
@@ -228,7 +228,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
       if (!marker) {
         continue;
       }
-      const timeInMicroSeconds = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(time));
+      const timeInMicroSeconds = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(time));
       const dim = highlightBounds && !Trace.Helpers.Timing.timestampIsInBounds(highlightBounds, timeInMicroSeconds);
 
       // `filter: grayscale(1)`  will make the element fully completely grayscale.
@@ -400,8 +400,8 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds, withBracket: boolean): void {
-    const left = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microSecondsToMilliseconds(bounds.min));
-    const right = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microSecondsToMilliseconds(bounds.max));
+    const left = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.min));
+    const right = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microToMilli(bounds.max));
     this.#dimMarkers(bounds);
     // Update the punch out rectangle to the not-to-desaturate time range.
     const punchRect = this.#dimHighlightSVG.querySelector('rect.punch');

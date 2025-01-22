@@ -85,14 +85,12 @@ export function buildTrackHeader(
  */
 export function getFormattedTime(
     totalTime?: Trace.Types.Timing.MicroSeconds, selfTime?: Trace.Types.Timing.MicroSeconds): string {
-  const formattedTotalTime =
-      Trace.Helpers.Timing.microSecondsToMilliseconds((totalTime || 0) as Trace.Types.Timing.MicroSeconds);
+  const formattedTotalTime = Trace.Helpers.Timing.microToMilli((totalTime || 0) as Trace.Types.Timing.MicroSeconds);
   if (formattedTotalTime === Trace.Types.Timing.MilliSeconds(0)) {
     return '';
   }
 
-  const formattedSelfTime =
-      Trace.Helpers.Timing.microSecondsToMilliseconds((selfTime || 0) as Trace.Types.Timing.MicroSeconds);
+  const formattedSelfTime = Trace.Helpers.Timing.microToMilli((selfTime || 0) as Trace.Types.Timing.MicroSeconds);
   const minSelfTimeSignificance = 1e-6;
   const formattedTime = Math.abs(formattedTotalTime - formattedSelfTime) > minSelfTimeSignificance &&
           formattedSelfTime > minSelfTimeSignificance ?

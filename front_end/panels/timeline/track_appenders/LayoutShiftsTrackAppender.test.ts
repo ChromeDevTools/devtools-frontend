@@ -68,8 +68,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     for (const event of events) {
       const markerIndex = entryData.indexOf(event);
       assert.exists(markerIndex);
-      assert.strictEqual(
-          flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts));
+      assert.strictEqual(flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microToMilli(event.ts));
     }
   });
 

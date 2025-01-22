@@ -2522,8 +2522,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     index = Platform.NumberUtilities.clamp(index + offset, 0, parsedTrace.Frames.frames.length - 1);
     const frame = parsedTrace.Frames.frames[index];
     this.#revealTimeRange(
-        Trace.Helpers.Timing.microSecondsToMilliseconds(frame.startTime),
-        Trace.Helpers.Timing.microSecondsToMilliseconds(frame.endTime));
+        Trace.Helpers.Timing.microToMilli(frame.startTime), Trace.Helpers.Timing.microToMilli(frame.endTime));
     this.select(selectionFromEvent(frame));
     return true;
   }

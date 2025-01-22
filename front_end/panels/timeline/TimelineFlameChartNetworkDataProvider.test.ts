@@ -13,8 +13,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
 
-    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
     dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);
@@ -27,8 +27,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);
 
     const networkEvents = parsedTrace.NetworkRequests.byTime;
-    const networkEventsStartTimes =
-        networkEvents.map(request => Trace.Helpers.Timing.microSecondsToMilliseconds(request.ts));
+    const networkEventsStartTimes = networkEvents.map(request => Trace.Helpers.Timing.microToMilli(request.ts));
     const networkEventsTotalTimes = networkEvents.map(request => {
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       return endTime - startTime;
@@ -71,8 +70,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
 
-    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
     dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);
@@ -99,8 +98,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic.json.gz');
 
-    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
     dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);

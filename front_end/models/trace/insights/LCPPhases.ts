@@ -81,11 +81,11 @@ function breakdownPhases(
   if (!docReqTiming) {
     throw new Error('no timing for document request');
   }
-  const firstDocByteTs = Helpers.Timing.secondsToMicroseconds(docReqTiming.requestTime) +
-      Helpers.Timing.millisecondsToMicroseconds(docReqTiming.receiveHeadersStart);
+  const firstDocByteTs = Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
+      Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart);
 
   const firstDocByteTiming = Types.Timing.MicroSeconds(firstDocByteTs - nav.ts);
-  const ttfb = Helpers.Timing.microSecondsToMilliseconds(firstDocByteTiming);
+  const ttfb = Helpers.Timing.microToMilli(firstDocByteTiming);
   let renderDelay = Types.Timing.MilliSeconds(lcpMs - ttfb);
 
   if (!lcpRequest) {
@@ -96,10 +96,10 @@ function breakdownPhases(
   }
 
   const lcpStartTs = Types.Timing.MicroSeconds(lcpRequest.ts - nav.ts);
-  const requestStart = Helpers.Timing.microSecondsToMilliseconds(lcpStartTs);
+  const requestStart = Helpers.Timing.microToMilli(lcpStartTs);
 
   const lcpReqEndTs = Types.Timing.MicroSeconds(lcpRequest.args.data.syntheticData.finishTime - nav.ts);
-  const requestEnd = Helpers.Timing.microSecondsToMilliseconds(lcpReqEndTs);
+  const requestEnd = Helpers.Timing.microToMilli(lcpReqEndTs);
 
   const loadDelay = Types.Timing.MilliSeconds(requestStart - ttfb);
   const loadTime = Types.Timing.MilliSeconds(requestEnd - requestStart);
@@ -160,9 +160,9 @@ export function generateInsight(
   }
 
   // This helps calculate the phases.
-  const lcpMs = Helpers.Timing.microSecondsToMilliseconds(metricScore.timing);
+  const lcpMs = Helpers.Timing.microToMilli(metricScore.timing);
   // This helps position things on the timeline's UI accurately for a trace.
-  const lcpTs = metricScore.event?.ts ? Helpers.Timing.microSecondsToMilliseconds(metricScore.event?.ts) : undefined;
+  const lcpTs = metricScore.event?.ts ? Helpers.Timing.microToMilli(metricScore.event?.ts) : undefined;
   const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation);
 
   const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);

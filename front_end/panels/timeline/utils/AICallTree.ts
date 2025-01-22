@@ -68,8 +68,7 @@ export class AICallTree {
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(selectedEvent);
 
     const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-        Trace.Helpers.Timing.millisecondsToMicroseconds(startTime),
-        Trace.Helpers.Timing.millisecondsToMicroseconds(endTime));
+        Trace.Helpers.Timing.milliToMicro(startTime), Trace.Helpers.Timing.milliToMicro(endTime));
     let threadEvents = parsedTrace.Renderer.processes.get(selectedEvent.pid)?.threads.get(selectedEvent.tid)?.entries;
     if (!threadEvents) {
       // None from the renderer: try the samples handler, this might be a CPU trace.

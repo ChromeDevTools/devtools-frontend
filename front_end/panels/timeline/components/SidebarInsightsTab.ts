@@ -94,7 +94,7 @@ export class SidebarInsightsTab extends HTMLElement {
     // - greater than 5s in duration
     // - or, has a navigation
     // In practice this means selecting either the first or the second insight set.
-    const trivialThreshold = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(5000));
+    const trivialThreshold = Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(5000));
     const insightSets = [...this.#insights.values()];
     this.#insightSetKey =
         insightSets.find(insightSet => insightSet.navigation || insightSet.bounds.range > trivialThreshold)?.id

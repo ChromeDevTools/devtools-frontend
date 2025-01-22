@@ -10,7 +10,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as TimelineComponents from './components.js';
 
 function milliToMicro(x: number): Trace.Types.Timing.MicroSeconds {
-  return Trace.Helpers.Timing.millisecondsToMicroseconds(
+  return Trace.Helpers.Timing.milliToMicro(
       Trace.Types.Timing.MilliSeconds(x),
   );
 }

@@ -549,7 +549,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     }
     const timestamps = filmStrip.frames.map(frame => {
       // The network view works in seconds.
-      return Trace.Helpers.Timing.microSecondsToSeconds(frame.screenshotEvent.ts);
+      return Trace.Helpers.Timing.microToSeconds(frame.screenshotEvent.ts);
     });
 
     this.networkLogView.addFilmStripFrames(timestamps);
@@ -930,7 +930,7 @@ export class FilmStripRecorder implements Trace.TracingManager.TracingManagerCli
     }
     const zeroTimeInSeconds = Trace.Types.Timing.Seconds(this.timeCalculator.minimumBoundary());
     const filmStrip =
-        Trace.Extras.FilmStrip.fromParsedTrace(data, Trace.Helpers.Timing.secondsToMicroseconds(zeroTimeInSeconds));
+        Trace.Extras.FilmStrip.fromParsedTrace(data, Trace.Helpers.Timing.secondsToMicro(zeroTimeInSeconds));
 
     if (this.callback) {
       this.callback(filmStrip);

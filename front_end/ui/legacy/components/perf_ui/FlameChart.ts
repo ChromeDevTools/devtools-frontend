@@ -742,7 +742,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.dispatchEventToListeners(Events.MOUSE_MOVE, {
       mouseEvent,
-      timeInMicroSeconds: Trace.Helpers.Timing.millisecondsToMicroseconds(timeMilliSeconds),
+      timeInMicroSeconds: Trace.Helpers.Timing.milliToMicro(timeMilliSeconds),
     });
 
     // Check if the mouse is hovering any group's header area
@@ -2240,7 +2240,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const hasNextNavStartTime = navStartTimes.length > navStartTimeIndex + 1;
       if (hasNextNavStartTime) {
         const nextNavStartTime = navStartTimes[navStartTimeIndex + 1];
-        const nextNavStartTimeStartTimestamp = Trace.Helpers.Timing.microSecondsToMilliseconds(nextNavStartTime.ts);
+        const nextNavStartTimeStartTimestamp = Trace.Helpers.Timing.microToMilli(nextNavStartTime.ts);
         if (time > nextNavStartTimeStartTimestamp) {
           navStartTimeIndex++;
         }
@@ -2249,7 +2249,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // Adjust the time by the nearest nav start marker's value.
       const nearestMarker = navStartTimes[navStartTimeIndex];
       if (nearestMarker) {
-        const nearestMarkerStartTime = Trace.Helpers.Timing.microSecondsToMilliseconds(nearestMarker.ts);
+        const nearestMarkerStartTime = Trace.Helpers.Timing.microToMilli(nearestMarker.ts);
         time -= nearestMarkerStartTime - this.zeroTime();
       }
 
@@ -2348,7 +2348,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       for (const decoration of decorationsForEvent) {
         switch (decoration.type) {
           case FlameChartDecorationType.CANDY: {
-            const candyStripeStartTime = Trace.Helpers.Timing.microSecondsToMilliseconds(decoration.startAtTime);
+            const candyStripeStartTime = Trace.Helpers.Timing.microToMilli(decoration.startAtTime);
             if (duration < candyStripeStartTime) {
               // If the duration of the event is less than the start time to draw the candy stripes, then we have no stripes to draw.
               continue;
@@ -2368,9 +2368,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             const barXStart = this.timeToPositionClipped(entryStartTime + candyStripeStartTime);
 
             // If a custom end time was passed in, that is when we stop striping, else we stripe until the very end of the entry.
-            const stripingEndTime = decoration.endAtTime ?
-                Trace.Helpers.Timing.microSecondsToMilliseconds(decoration.endAtTime) :
-                entryStartTime + duration;
+            const stripingEndTime = decoration.endAtTime ? Trace.Helpers.Timing.microToMilli(decoration.endAtTime) :
+                                                           entryStartTime + duration;
             const barXEnd = this.timeToPositionClipped(stripingEndTime);
             this.#drawEventRect(context, timelineData, entryIndex, {
               startX: barXStart,
@@ -2387,7 +2386,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             if (typeof decoration.customEndTime !== 'undefined') {
               // The user can pass a customEndTime to tell us where the event's box ends and therefore where we should
               // draw the triangle. So therefore we calculate the width by taking the end time off the start time.
-              const endTimeMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(decoration.customEndTime);
+              const endTimeMilli = Trace.Helpers.Timing.microToMilli(decoration.customEndTime);
               endTimePixels = this.timeToPositionClipped(endTimeMilli);
               barWidth = endTimePixels - barX;
             }
@@ -2397,7 +2396,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
               // The user can pass a customStartTime to tell us where the event's box start and therefore where we
               // should draw the triangle. So therefore we calculate the width by taking the end time off the start
               // time.
-              const startTimeMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(decoration.customStartTime);
+              const startTimeMilli = Trace.Helpers.Timing.microToMilli(decoration.customStartTime);
               const startTimePixels = this.timeToPositionClipped(startTimeMilli);
               triangleWidth = Math.min(endTimePixels - startTimePixels, 8);
             }

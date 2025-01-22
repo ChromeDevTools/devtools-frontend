@@ -503,7 +503,7 @@ export class TraceProcessor extends EventTarget {
     if (navigations.length) {
       const bounds = Helpers.Timing.traceWindowFromMicroSeconds(parsedTrace.Meta.traceBounds.min, navigations[0].ts);
       // When using "Record and reload" option, it typically takes ~5ms. So use 50ms to be safe.
-      const threshold = Helpers.Timing.millisecondsToMicroseconds(50 as Types.Timing.MilliSeconds);
+      const threshold = Helpers.Timing.milliToMicro(50 as Types.Timing.MilliSeconds);
       if (bounds.range > threshold) {
         const context: Insights.Types.InsightSetContext = {
           bounds,

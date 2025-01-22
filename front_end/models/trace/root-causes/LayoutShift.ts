@@ -364,7 +364,7 @@ export class LayoutShiftRootCauses {
       return [];
     }
 
-    const MAX_DELTA_FOR_FONT_REQUEST = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+    const MAX_DELTA_FOR_FONT_REQUEST = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
 
     const requestsInInvalidationWindow: RootCauseRequest[] = [];
 

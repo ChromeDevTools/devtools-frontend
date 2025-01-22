@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
 import {Models} from './insights.js';
 
 // Root cause invalidation window.
-const INVALIDATION_WINDOW = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+const INVALIDATION_WINDOW = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
 
 describeWithEnvironment('CLSCulprits', function() {
   describe('non composited animations', function() {

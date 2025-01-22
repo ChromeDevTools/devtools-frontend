@@ -61,11 +61,11 @@ interface LayoutShifts {
 
 // This represents the maximum #time we will allow a cluster to go before we
 // reset it.
-export const MAX_CLUSTER_DURATION = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(5000));
+export const MAX_CLUSTER_DURATION = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(5000));
 
 // This represents the maximum #time we will allow between layout shift events
 // before considering it to be the start of a new cluster.
-export const MAX_SHIFT_TIME_DELTA = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(1000));
+export const MAX_SHIFT_TIME_DELTA = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(1000));
 
 // Layout shifts are reported globally to the developer, irrespective of which
 // frame they originated in. However, each process does have its own individual

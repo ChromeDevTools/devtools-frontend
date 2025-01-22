@@ -54,8 +54,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     }
 
     // Update summaries.
-    const min = Trace.Helpers.Timing.millisecondsToMicroseconds(this.startTime);
-    const max = Trace.Helpers.Timing.millisecondsToMicroseconds(this.endTime);
+    const min = Trace.Helpers.Timing.milliToMicro(this.startTime);
+    const max = Trace.Helpers.Timing.milliToMicro(this.endTime);
     const bounds:
         Trace.Types.Timing.TraceWindowMicroSeconds = {max, min, range: Trace.Types.Timing.MicroSeconds(max - min)};
     this.#thirdPartySummaries =

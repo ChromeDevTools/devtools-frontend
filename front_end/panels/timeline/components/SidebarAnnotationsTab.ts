@@ -242,9 +242,9 @@ export class SidebarAnnotationsTab extends HTMLElement {
             TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.entireTraceBounds.min ?? 0;
 
         const timeRangeStartInMs =
-            Math.round(Trace.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.min) - minTraceBoundsMilli);
+            Math.round(Trace.Helpers.Timing.microToMilli(annotation.bounds.min) - minTraceBoundsMilli);
         const timeRangeEndInMs =
-            Math.round(Trace.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.max) - minTraceBoundsMilli);
+            Math.round(Trace.Helpers.Timing.microToMilli(annotation.bounds.max) - minTraceBoundsMilli);
 
         return html`
               <span class="annotation-identifier time-range">

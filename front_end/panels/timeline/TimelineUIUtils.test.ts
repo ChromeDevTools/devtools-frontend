@@ -345,7 +345,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       // Round the time to 2DP to avoid needlessly long expectation numbers!
       const unadjustedStartTimeMilliseconds = Trace.Helpers.Timing
-                                                  .microSecondsToMilliseconds(
+                                                  .microToMilli(
                                                       Trace.Types.Timing.MicroSeconds(dclEvent.ts - traceMinBound),
                                                       )
                                                   .toFixed(2);

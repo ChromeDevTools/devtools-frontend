@@ -95,8 +95,7 @@ export function getAnnotationWindow(
 
   switch (annotation.type) {
     case 'ENTRY_LABEL': {
-      const eventDuration =
-          annotation.entry.dur ?? Trace.Helpers.Timing.millisecondsToMicroseconds(minVisibleEntryDuration);
+      const eventDuration = annotation.entry.dur ?? Trace.Helpers.Timing.milliToMicro(minVisibleEntryDuration);
 
       annotationWindow = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           annotation.entry.ts,

@@ -405,8 +405,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.parsedTrace = parsedTrace;
     this.isCpuProfile = isCpuProfile;
     const {traceBounds} = parsedTrace.Meta;
-    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
     this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.#minimumBoundary;
   }
@@ -691,7 +691,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
       if (!filter || filter.accept(entry, this.parsedTrace || undefined)) {
-        const startTimeMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+        const startTimeMilli = Trace.Helpers.Timing.microToMilli(entry.ts);
         results.push({index: i, startTimeMilli, provider: 'main'});
       }
     }
@@ -742,8 +742,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let prevTimestamp: Trace.Types.Timing.MilliSeconds|undefined = undefined;
 
     for (const filmStripFrame of filmStrip.frames) {
-      const screenshotTimeInMilliSeconds =
-          Trace.Helpers.Timing.microSecondsToMilliseconds(filmStripFrame.screenshotEvent.ts);
+      const screenshotTimeInMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
       this.entryData.push(filmStripFrame.screenshotEvent);
       (this.timelineDataInternal.entryLevels as number[]).push(this.currentLevel);
       (this.timelineDataInternal.entryStartTimes as number[]).push(screenshotTimeInMilliSeconds);
@@ -793,8 +792,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     } else if (entryType === EntryType.FRAME) {
       const frame = (this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame);
-      time =
-          i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microSecondsToMilliseconds(frame.duration), 1);
+      time = i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(frame.duration), 1);
 
       if (frame.idle) {
         title = i18nString(UIStrings.idleFrame);
@@ -951,7 +949,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     context.fillRect(barX, barY, barWidth, barHeight);
 
     const frameDurationText =
-        i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microSecondsToMilliseconds(frame.duration), 1);
+        i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(frame.duration), 1);
     const textWidth = context.measureText(frameDurationText).width;
     if (textWidth <= barWidth) {
       context.fillStyle = this.textColor(entryIndex);
@@ -1042,11 +1040,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
      * TODO(crbug.com/1495248): rework how we draw whiskers to avoid this inefficiency
      */
 
-    const beginTime = Trace.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+    const beginTime = Trace.Helpers.Timing.microToMilli(entry.ts);
     const entireBarEndXPixel = barX + barWidth;
 
     function timeToPixel(time: Trace.Types.Timing.MicroSeconds): number {
-      const timeMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(time);
+      const timeMilli = Trace.Helpers.Timing.microToMilli(time);
       return Math.floor(unclippedBarXStartPixel + (timeMilli - beginTime) * timeToPixelRatio);
     }
 
@@ -1141,14 +1139,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #appendFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
     const index = this.entryData.length;
     this.entryData.push(frame);
-    const durationMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.duration);
+    const durationMilliseconds = Trace.Helpers.Timing.microToMilli(frame.duration);
     this.entryIndexToTitle[index] = i18n.TimeUtilities.millisToString(durationMilliseconds, true);
     if (!this.timelineDataInternal) {
       return;
     }
     this.timelineDataInternal.entryLevels[index] = this.currentLevel;
     this.timelineDataInternal.entryTotalTimes[index] = durationMilliseconds;
-    this.timelineDataInternal.entryStartTimes[index] = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.startTime);
+    this.timelineDataInternal.entryStartTimes[index] = Trace.Helpers.Timing.microToMilli(frame.startTime);
   }
 
   createSelection(entryIndex: number): TimelineSelection|null {

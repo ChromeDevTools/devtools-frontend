@@ -56,7 +56,7 @@ export class TimelineOverviewCalculator implements Calculator {
       // Find the latest possible nav start time which is considered earlier
       // than the value passed through.
       for (let i = this.navStartTimes.length - 1; i >= 0; i--) {
-        const startTimeMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(
+        const startTimeMilliseconds = Trace.Helpers.Timing.microToMilli(
             this.navStartTimes[i].ts,
         );
 

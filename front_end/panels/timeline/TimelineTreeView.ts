@@ -763,7 +763,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         }
         const timings = event && Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         const startTime = timings?.startTime ?? 0;
-        value = startTime - Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
+        value = startTime - Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       } break;
       case 'self':
         value = this.profileNode.selfTime;

@@ -66,8 +66,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
           parsedTrace.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
       for (let i = 0; i < allExtensionTrackEntries.length; ++i) {
         const event = allExtensionTrackEntries[i];
-        assert.strictEqual(
-            flameChartData.entryStartTimes[i], Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts));
+        assert.strictEqual(flameChartData.entryStartTimes[i], Trace.Helpers.Timing.microToMilli(event.ts));
       }
     });
 
@@ -81,7 +80,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
           continue;
         }
         const expectedTotalTimeForEvent = event.dur ?
-            Trace.Helpers.Timing.microSecondsToMilliseconds(event.dur) :
+            Trace.Helpers.Timing.microToMilli(event.dur) :
             Timeline.TimelineFlameChartDataProvider.InstantEventVisibleDurationMs;
         assert.strictEqual(flameChartData.entryTotalTimes[i], expectedTotalTimeForEvent);
       }

@@ -16,13 +16,13 @@ describeWithEnvironment('Timing helpers', () => {
     it('can convert milliseconds to microseconds', () => {
       const input = Trace.Types.Timing.MilliSeconds(1);
       const expected = Trace.Types.Timing.MicroSeconds(1000);
-      assert.strictEqual(Trace.Helpers.Timing.millisecondsToMicroseconds(input), expected);
+      assert.strictEqual(Trace.Helpers.Timing.milliToMicro(input), expected);
     });
 
     it('can convert seconds to milliseconds', () => {
       const input = Trace.Types.Timing.Seconds(1);
       const expected = Trace.Types.Timing.MilliSeconds(1000);
-      assert.strictEqual(Trace.Helpers.Timing.secondsToMilliseconds(input), expected);
+      assert.strictEqual(Trace.Helpers.Timing.secondsToMilli(input), expected);
     });
 
     it('can convert seconds to microseconds', () => {
@@ -30,13 +30,13 @@ describeWithEnvironment('Timing helpers', () => {
       // 1 Second = 1000 Milliseconds
       // 1000 Milliseconds = 1,000,000 Microseconds
       const expected = Trace.Types.Timing.MicroSeconds(1_000_000);
-      assert.strictEqual(Trace.Helpers.Timing.secondsToMicroseconds(input), expected);
+      assert.strictEqual(Trace.Helpers.Timing.secondsToMicro(input), expected);
     });
 
     it('can convert microSeconds milliseconds', () => {
       const input = Trace.Types.Timing.MicroSeconds(1_000_000);
       const expected = Trace.Types.Timing.MilliSeconds(1_000);
-      assert.strictEqual(Trace.Helpers.Timing.microSecondsToMilliseconds(input), expected);
+      assert.strictEqual(Trace.Helpers.Timing.microToMilli(input), expected);
     });
   });
 
@@ -83,13 +83,13 @@ describeWithEnvironment('Timing helpers', () => {
           parsedTrace.Meta.navigationsByFrameId,
       );
 
-      const unadjustedTime = Trace.Helpers.Timing.microSecondsToMilliseconds(
+      const unadjustedTime = Trace.Helpers.Timing.microToMilli(
           Trace.Types.Timing.MicroSeconds(lcpEvent.ts - parsedTrace.Meta.traceBounds.min),
       );
       assert.strictEqual(unadjustedTime.toFixed(2), String(130.31));
 
       // To make the assertion easier to read.
-      const timeAsMS = Trace.Helpers.Timing.microSecondsToMilliseconds(adjustedTime);
+      const timeAsMS = Trace.Helpers.Timing.microToMilli(adjustedTime);
       assert.strictEqual(timeAsMS.toFixed(2), String(118.44));
     });
 
@@ -104,7 +104,7 @@ describeWithEnvironment('Timing helpers', () => {
       // Ensure we are testing the frameID path!
       assert.isUndefined(dclEvent.args.data?.navigationId);
 
-      const unadjustedTime = Trace.Helpers.Timing.microSecondsToMilliseconds(
+      const unadjustedTime = Trace.Helpers.Timing.microToMilli(
           Trace.Types.Timing.MicroSeconds(dclEvent.ts - parsedTrace.Meta.traceBounds.min),
       );
       assert.strictEqual(unadjustedTime.toFixed(2), String(190.79));
@@ -116,7 +116,7 @@ describeWithEnvironment('Timing helpers', () => {
       );
 
       // To make the assertion easier to read.
-      const timeAsMS = Trace.Helpers.Timing.microSecondsToMilliseconds(adjustedTime);
+      const timeAsMS = Trace.Helpers.Timing.microToMilli(adjustedTime);
       assert.strictEqual(timeAsMS.toFixed(2), String(178.92));
     });
   });

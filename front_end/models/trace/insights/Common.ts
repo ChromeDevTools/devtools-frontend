@@ -36,7 +36,7 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
     return null;
   }
 
-  const value = Helpers.Timing.millisecondsToMicroseconds(insight.lcpMs);
+  const value = Helpers.Timing.milliToMicro(insight.lcpMs);
   return {value, event: insight.lcpEvent};
 }
 
@@ -133,7 +133,7 @@ function getMetricTimingResult(
   const result = getMetricResult(pageResult, name);
   if (result) {
     const valueMs = result.value as Types.Timing.MilliSeconds;
-    return {value: Helpers.Timing.millisecondsToMicroseconds(valueMs), pageScope: result.pageScope};
+    return {value: Helpers.Timing.milliToMicro(valueMs), pageScope: result.pageScope};
   }
 
   return null;

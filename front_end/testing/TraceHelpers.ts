@@ -60,8 +60,8 @@ export async function getMainFlameChartWithTracks(
       {filterThreadsByName: trackName, expandedTracks: expanded ? trackAppenderNames : undefined});
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
-  const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-  const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
   flameChart.setWindowTimes(minTime, maxTime);
   flameChart.markAsRoot();
   flameChart.update();
@@ -83,8 +83,8 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
   await initializeGlobalVars();
 
   const {parsedTrace} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
-  const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-  const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+  const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+  const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
   dataProvider.setModel(parsedTrace);
   dataProvider.setWindowTimes(minTime, maxTime);
@@ -326,8 +326,8 @@ export function makeCompleteEventInMilliseconds(
     name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
     tid: number = 0): Trace.Types.Events.Complete {
   return makeCompleteEvent(
-      name, Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(tsMillis)),
-      Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(durMillis)), cat, pid, tid);
+      name, Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(tsMillis)),
+      Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(durMillis)), cat, pid, tid);
 }
 
 /**

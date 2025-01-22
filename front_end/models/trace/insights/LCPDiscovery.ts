@@ -107,8 +107,8 @@ export function generateInsight(
   const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
   // This is the earliest discovery time an LCP request could have - it's TTFB.
   const earliestDiscoveryTime = docRequest && docRequest.args.data.timing ?
-      Helpers.Timing.secondsToMicroseconds(docRequest.args.data.timing.requestTime) +
-          Helpers.Timing.millisecondsToMicroseconds(docRequest.args.data.timing.receiveHeadersStart) :
+      Helpers.Timing.secondsToMicro(docRequest.args.data.timing.requestTime) +
+          Helpers.Timing.milliToMicro(docRequest.args.data.timing.receiveHeadersStart) :
       undefined;
 
   return finalize({

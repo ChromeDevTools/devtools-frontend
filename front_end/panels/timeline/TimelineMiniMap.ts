@@ -246,7 +246,7 @@ export class TimelineMiniMap extends
 
     // Only add markers for navigation start times.
     const navStartEvents = Meta.mainFrameNavigations;
-    const minTimeInMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
+    const minTimeInMilliseconds = Trace.Helpers.Timing.microToMilli(Meta.traceBounds.min);
 
     for (const event of navStartEvents) {
       const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);

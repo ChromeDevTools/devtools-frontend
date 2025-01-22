@@ -228,7 +228,7 @@ export class LayoutShiftDetails extends HTMLElement {
       LitHtml.TemplateResult|null {
     const ts = Trace.Types.Timing.MicroSeconds(shift.ts - parsedTrace.Meta.traceBounds.min);
     if (shift === this.#event) {
-      return html`${i18n.TimeUtilities.preciseMillisToString(Helpers.Timing.microSecondsToMilliseconds(ts))}`;
+      return html`${i18n.TimeUtilities.preciseMillisToString(Helpers.Timing.microToMilli(ts))}`;
     }
     const shiftTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
     // clang-format off

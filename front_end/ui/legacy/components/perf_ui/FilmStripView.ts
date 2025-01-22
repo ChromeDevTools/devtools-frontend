@@ -57,7 +57,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   setModel(filmStrip: Trace.Extras.FilmStrip.Data): void {
     this.#filmStrip = filmStrip;
-    this.zeroTime = Trace.Helpers.Timing.microSecondsToMilliseconds(filmStrip.zeroTime);
+    this.zeroTime = Trace.Helpers.Timing.microToMilli(filmStrip.zeroTime);
 
     if (!this.#filmStrip.frames.length) {
       this.reset();
@@ -67,7 +67,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   createFrameElement(frame: Trace.Extras.FilmStrip.Frame): HTMLButtonElement {
-    const time = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts);
+    const time = Trace.Helpers.Timing.microToMilli(frame.screenshotEvent.ts);
     const frameTime = i18n.TimeUtilities.millisToString(time - this.zeroTime);
     const element = document.createElement('button');
     element.classList.add('frame');
@@ -159,7 +159,7 @@ export class Dialog {
       source: 'Trace',
       frames: filmStrip.frames,
       index: selectedFrameIndex,
-      zeroTime: Trace.Helpers.Timing.microSecondsToMilliseconds(filmStrip.zeroTime),
+      zeroTime: Trace.Helpers.Timing.microToMilli(filmStrip.zeroTime),
     };
     return new Dialog(data);
   }
@@ -270,7 +270,7 @@ export class Dialog {
 
   private render(): void {
     const frame = this.#data.frames[this.index];
-    const timestamp = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.screenshotEvent.ts);
+    const timestamp = Trace.Helpers.Timing.microToMilli(frame.screenshotEvent.ts);
     this.fragment.$('time').textContent = i18n.TimeUtilities.millisToString(timestamp - this.#zeroTime());
     const image = (this.fragment.$('image') as HTMLImageElement);
     image.setAttribute('data-frame-index', this.index.toString());

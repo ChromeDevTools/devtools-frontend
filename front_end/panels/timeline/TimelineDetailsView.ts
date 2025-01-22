@@ -320,7 +320,7 @@ export class TimelineDetailsView extends
     if (!filmStripFrame) {
       return null;
     }
-    const frameTimeMilliSeconds = Trace.Helpers.Timing.microSecondsToMilliseconds(filmStripFrame.screenshotEvent.ts);
+    const frameTimeMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
     return frameTimeMilliSeconds - frame.endTime < 10 ? filmStripFrame : null;
   }
 
@@ -512,8 +512,8 @@ export class TimelineDetailsView extends
     if (this.#selectedEvents && isSelectorStatsEnabled) {
       const eventsInRange = Trace.Helpers.Trace.findUpdateLayoutTreeEvents(
           this.#selectedEvents,
-          Trace.Helpers.Timing.millisecondsToMicroseconds(startTime),
-          Trace.Helpers.Timing.millisecondsToMicroseconds(endTime),
+          Trace.Helpers.Timing.milliToMicro(startTime),
+          Trace.Helpers.Timing.milliToMicro(endTime),
       );
       if (eventsInRange.length > 0) {
         this.showAggregatedSelectorStats(eventsInRange);

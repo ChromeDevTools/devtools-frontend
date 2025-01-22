@@ -2021,7 +2021,7 @@ export class TimelineUIUtils {
         }
 
         const deltaInMillis =
-            Trace.Helpers.Timing.microSecondsToMilliseconds((endTime - startTime) as Trace.Types.Timing.MicroSeconds);
+            Trace.Helpers.Timing.microToMilli((endTime - startTime) as Trace.Types.Timing.MicroSeconds);
         total['idle'] = Math.max(0, deltaInMillis - aggregatedTotal);
       }
       return false;
@@ -2270,9 +2270,9 @@ export class TimelineUIUtils {
   }
 
   static frameDuration(frame: Trace.Types.Events.LegacyTimelineFrame): Element {
-    const offsetMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.startTimeOffset);
-    const durationMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(
-        Trace.Types.Timing.MicroSeconds(frame.endTime - frame.startTime));
+    const offsetMilli = Trace.Helpers.Timing.microToMilli(frame.startTimeOffset);
+    const durationMilli =
+        Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.MicroSeconds(frame.endTime - frame.startTime));
 
     const durationText = i18nString(UIStrings.sAtSParentheses, {
       PH1: i18n.TimeUtilities.millisToString(durationMilli, true),
@@ -2565,7 +2565,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
       parsedTrace.Meta.navigationsByNavigationId,
       parsedTrace.Meta.navigationsByFrameId,
   );
-  return Trace.Helpers.Timing.microSecondsToMilliseconds(time);
+  return Trace.Helpers.Timing.microToMilli(time);
 }
 
 /**
@@ -2611,5 +2611,5 @@ function getEventSelfTime(
       parsedTrace.ExtensionTraceData.entryToNode :
       parsedTrace.Renderer.entryToNode;
   const selfTime = mapToUse.get(event)?.selfTime;
-  return selfTime ? Trace.Helpers.Timing.microSecondsToMilliseconds(selfTime) : Trace.Types.Timing.MilliSeconds(0);
+  return selfTime ? Trace.Helpers.Timing.microToMilli(selfTime) : Trace.Types.Timing.MilliSeconds(0);
 }

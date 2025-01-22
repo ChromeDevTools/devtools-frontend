@@ -247,18 +247,16 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   getDecorationPixels(
       event: Trace.Types.Events.SyntheticNetworkRequest, unclippedBarX: number,
       timeToPixelRatio: number): {sendStart: number, headersEnd: number, finish: number, start: number, end: number} {
-    const beginTime = Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts);
+    const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time: number): number => unclippedBarX + (time - beginTime) * timeToPixelRatio;
-    const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts);
-    const endTime =
-        Trace.Helpers.Timing.microSecondsToMilliseconds((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
-    const sendStartTime = Trace.Helpers.Timing.microSecondsToMilliseconds(event.args.data.syntheticData.sendStartTime);
-    const headersEndTime = Trace.Helpers.Timing.microSecondsToMilliseconds(event.args.data.syntheticData.downloadStart);
+    const startTime = Trace.Helpers.Timing.microToMilli(event.ts);
+    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
+    const sendStartTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
+    const headersEndTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
     const sendStart = Math.max(timeToPixel(sendStartTime), unclippedBarX);
     const headersEnd = Math.max(timeToPixel(headersEndTime), sendStart);
-    const finish = Math.max(
-        timeToPixel(Trace.Helpers.Timing.microSecondsToMilliseconds(event.args.data.syntheticData.finishTime)),
-        headersEnd);
+    const finish =
+        Math.max(timeToPixel(Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.finishTime)), headersEnd);
     const start = timeToPixel(startTime);
     const end = Math.max(timeToPixel(endTime), finish);
 
@@ -374,10 +372,9 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       timeToPixelRatio: number): boolean {
     context.save();
     const event = this.#events[index] as Trace.Types.Events.SyntheticWebSocketConnection;
-    const beginTime = Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts);
+    const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
-    const endTime =
-        Trace.Helpers.Timing.microSecondsToMilliseconds((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
+    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
     const start = timeToPixel(beginTime) + 0.5;
     const end = timeToPixel(endTime) - 0.5;
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
@@ -431,8 +428,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    */
   #setTimingBoundsData(newParsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     const {traceBounds} = newParsedTrace.Meta;
-    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
-    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microToMilli(traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microToMilli(traceBounds.max);
     this.#minimumBoundary = minTime;
     this.#timeSpan = minTime === maxTime ? 1000 : maxTime - this.#minimumBoundary;
   }
@@ -507,7 +504,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       }
 
       if (!filter || filter.accept(entry, this.#parsedTrace ?? undefined)) {
-        const startTimeMilli = Trace.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+        const startTimeMilli = Trace.Helpers.Timing.microToMilli(entry.ts);
         results.push({startTimeMilli, index: i, provider: 'network'});
       }
     }

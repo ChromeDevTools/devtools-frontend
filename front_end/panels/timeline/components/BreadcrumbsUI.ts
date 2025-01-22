@@ -109,7 +109,7 @@ export class BreadcrumbsUI extends HTMLElement {
   }
 
   #renderElement(breadcrumb: Trace.Types.File.Breadcrumb, index: number): LitHtml.LitTemplate {
-    const breadcrumbRange = Trace.Helpers.Timing.microSecondsToMilliseconds(breadcrumb.window.range);
+    const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
     // clang-format off
     return html`
           <div class="breadcrumb" @contextmenu=${(event: Event) => this.#onContextMenu(event, breadcrumb)} @click=${() => this.#activateBreadcrumb(breadcrumb)}

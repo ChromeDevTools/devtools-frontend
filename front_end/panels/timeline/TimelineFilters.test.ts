@@ -15,8 +15,7 @@ describeWithEnvironment('TimelineFilters', () => {
     it('returns true if the event is longer than the defined duration for a new engine event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
       const longEvent = getMainThread(parsedTrace.Renderer).entries.find(event => {
-        return event.dur &&
-            event.dur > Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(50));
+        return event.dur && event.dur > Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(50));
       });
       if (!longEvent) {
         throw new Error('Could not find expected long event.');
@@ -30,9 +29,8 @@ describeWithEnvironment('TimelineFilters', () => {
     it('returns false if the event is shorter than the defined duration for a new engine event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
       const longEvent = getMainThread(parsedTrace.Renderer).entries.find(event => {
-        return event.dur &&
-            event.dur > Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(50)) &&
-            event.dur < Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(100));
+        return event.dur && event.dur > Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(50)) &&
+            event.dur < Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(100));
       });
       if (!longEvent) {
         throw new Error('Could not find expected long event.');

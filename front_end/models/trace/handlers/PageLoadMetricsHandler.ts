@@ -129,8 +129,7 @@ function storePageLoadMetricAgainstNavigationId(
     };
     storeMetricScore(frameId, navigationId, tti);
 
-    const tbtValue =
-        Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(event.args.args.total_blocking_time_ms));
+    const tbtValue = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(event.args.args.total_blocking_time_ms));
     const tbt = {
       event,
       metricName: MetricName.TBT,
@@ -265,8 +264,8 @@ function getNavigationForPageLoadEvent(event: Types.Events.PageLoadEvent): Types
  */
 export function scoreClassificationForFirstContentfulPaint(fcpScoreInMicroseconds: Types.Timing.MicroSeconds):
     ScoreClassification {
-  const FCP_GOOD_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(1.8));
-  const FCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(3.0));
+  const FCP_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(1.8));
+  const FCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(3.0));
   let scoreClassification = ScoreClassification.BAD;
   if (fcpScoreInMicroseconds <= FCP_MEDIUM_TIMING) {
     scoreClassification = ScoreClassification.OK;
@@ -284,8 +283,8 @@ export function scoreClassificationForFirstContentfulPaint(fcpScoreInMicrosecond
 
 export function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds: Types.Timing.MicroSeconds):
     ScoreClassification {
-  const TTI_GOOD_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(3.8));
-  const TTI_MEDIUM_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(7.3));
+  const TTI_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(3.8));
+  const TTI_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(7.3));
   let scoreClassification = ScoreClassification.BAD;
   if (ttiTimeInMicroseconds <= TTI_MEDIUM_TIMING) {
     scoreClassification = ScoreClassification.OK;
@@ -303,8 +302,8 @@ export function scoreClassificationForTimeToInteractive(ttiTimeInMicroseconds: T
 
 export function scoreClassificationForLargestContentfulPaint(lcpTimeInMicroseconds: Types.Timing.MicroSeconds):
     ScoreClassification {
-  const LCP_GOOD_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(2.5));
-  const LCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(4));
+  const LCP_GOOD_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(2.5));
+  const LCP_MEDIUM_TIMING = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(4));
   let scoreClassification = ScoreClassification.BAD;
   if (lcpTimeInMicroseconds <= LCP_MEDIUM_TIMING) {
     scoreClassification = ScoreClassification.OK;
@@ -330,8 +329,8 @@ export function scoreClassificationForDOMContentLoaded(_dclTimeInMicroseconds: T
 
 export function scoreClassificationForTotalBlockingTime(tbtTimeInMicroseconds: Types.Timing.MicroSeconds):
     ScoreClassification {
-  const TBT_GOOD_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
-  const TBT_MEDIUM_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(600));
+  const TBT_GOOD_TIMING = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(200));
+  const TBT_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(600));
   let scoreClassification = ScoreClassification.BAD;
   if (tbtTimeInMicroseconds <= TBT_MEDIUM_TIMING) {
     scoreClassification = ScoreClassification.OK;

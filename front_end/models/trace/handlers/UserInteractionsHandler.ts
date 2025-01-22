@@ -21,10 +21,10 @@ const allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
 const beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
 const parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
 
-export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
+export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(200));
 
 const INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
-const INP_MEDIUM_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(500));
+const INP_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(500));
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
@@ -291,13 +291,12 @@ export async function finalize(): Promise<void> {
     // that is relative to event.ts, and can be used when drawing boxes.
     // There is some inaccuracy here as we are converting milliseconds to microseconds, but it is good enough until the backend emits more accurate numbers.
     const processingStartRelativeToTraceTime = Types.Timing.MicroSeconds(
-        Helpers.Timing.millisecondsToMicroseconds(processingStart) -
-            Helpers.Timing.millisecondsToMicroseconds(timeStamp) + interactionStartEvent.ts,
+        Helpers.Timing.milliToMicro(processingStart) - Helpers.Timing.milliToMicro(timeStamp) +
+            interactionStartEvent.ts,
     );
 
     const processingEndRelativeToTraceTime = Types.Timing.MicroSeconds(
-        (Helpers.Timing.millisecondsToMicroseconds(processingEnd) -
-         Helpers.Timing.millisecondsToMicroseconds(timeStamp)) +
+        (Helpers.Timing.milliToMicro(processingEnd) - Helpers.Timing.milliToMicro(timeStamp)) +
         interactionStartEvent.ts);
 
     // Ultimate frameId fallback only needed for TSC, see comments in the type.

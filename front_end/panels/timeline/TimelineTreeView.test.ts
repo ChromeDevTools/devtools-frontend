@@ -102,8 +102,8 @@ describeWithEnvironment('TimelineTreeView', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const bottomUpTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
       bottomUpTreeView.setRange(startTime, endTime);
       bottomUpTreeView.setModelWithEvents(consoleTimings, parsedTrace);
 
@@ -128,8 +128,8 @@ describeWithEnvironment('TimelineTreeView', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
       callTreeView.setRange(startTime, endTime);
       callTreeView.setModelWithEvents(consoleTimings, parsedTrace);
 
@@ -151,8 +151,8 @@ describeWithEnvironment('TimelineTreeView', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.CallTreeTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
       callTreeView.setModelWithEvents(consoleTimings, parsedTrace);
@@ -173,8 +173,8 @@ describeWithEnvironment('TimelineTreeView', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const consoleTimings = [...parsedTrace.UserTimings.consoleTimings];
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Category);
       callTreeView.setModelWithEvents(consoleTimings, parsedTrace);
@@ -196,8 +196,8 @@ describeWithEnvironment('TimelineTreeView', function() {
     it('can group entries by domain', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Domain);
@@ -221,8 +221,8 @@ describeWithEnvironment('TimelineTreeView', function() {
     it('can group entries by third parties', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties);
@@ -246,8 +246,8 @@ describeWithEnvironment('TimelineTreeView', function() {
     it('can group entries by frame', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.Frame);
@@ -265,8 +265,8 @@ describeWithEnvironment('TimelineTreeView', function() {
     it('can group entries by URL', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
-      const startTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
-      const endTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
+      const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
+      const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.URL);

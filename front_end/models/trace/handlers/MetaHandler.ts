@@ -382,7 +382,7 @@ export async function finalize(): Promise<void> {
   // navigation happened very soon (0.5 seconds) after the trace started
   // recording.
   const firstMainFrameNav = mainFrameNavigations.at(0);
-  const firstNavTimeThreshold = Helpers.Timing.secondsToMicroseconds(Types.Timing.Seconds(0.5));
+  const firstNavTimeThreshold = Helpers.Timing.secondsToMicro(Types.Timing.Seconds(0.5));
   if (firstMainFrameNav) {
     const navigationIsWithinThreshold = firstMainFrameNav.ts - traceBounds.min < firstNavTimeThreshold;
     if (firstMainFrameNav.args.data?.isOutermostMainFrame && firstMainFrameNav.args.data?.documentLoaderURL &&

@@ -25,6 +25,10 @@ const UIStrings = {
    */
   noCacheStorage: 'No cache storage detected',
   /**
+   *@description Description text in Application Panel describing the cache storage tab
+   */
+  cacheStorageDescription: 'On this page you can view and delete cache data.',
+  /**
    *@description A context menu item in the Application Panel Sidebar of the Application panel
    */
   refreshCaches: 'Refresh Caches',
@@ -42,7 +46,8 @@ export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTre
 
   constructor(resourcesPanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
     super(
-        resourcesPanel, i18nString(UIStrings.cacheStorage), i18nString(UIStrings.noCacheStorage), '', 'cache-storage');
+        resourcesPanel, i18nString(UIStrings.cacheStorage), i18nString(UIStrings.noCacheStorage),
+        i18nString(UIStrings.cacheStorageDescription), 'cache-storage');
     const icon = IconButton.Icon.create('database');
     this.setLink(
         'https://developer.chrome.com/docs/devtools/storage/cache/?utm_source=devtools' as

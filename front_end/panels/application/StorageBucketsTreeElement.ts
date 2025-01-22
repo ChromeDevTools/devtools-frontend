@@ -31,6 +31,12 @@ const UIStrings = {
    * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
    */
   noStorageBuckets: 'No storage buckets detected',
+  /**
+   *@description Description text in the Application Panel describing the storage buckets tab.
+   * Storage Buckets allow developers to separate site data into buckets so that they can be
+   * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
+   */
+  storageBucketsDescription: 'On this page you can view and delete storage buckets, and their associated storageAPIs.'
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageBucketsTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -40,8 +46,8 @@ export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelT
 
   constructor(storagePanel: ResourcesPanel) {
     super(
-        storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets), '',
-        'storage-buckets');
+        storagePanel, i18nString(UIStrings.storageBuckets), i18nString(UIStrings.noStorageBuckets),
+        i18nString(UIStrings.storageBucketsDescription), 'storage-buckets');
     const icon = IconButton.Icon.create('database');
     this.setLeadingIcons([icon]);
     this.setLink(

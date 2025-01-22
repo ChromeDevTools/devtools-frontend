@@ -130,12 +130,15 @@ export class PromptBuilder {
 
   formatPrompt({message, relatedCode, relatedRequest}: {message: string, relatedCode: string, relatedRequest: string}):
       string {
-    let prompt = `Why does browser show an error
-${message}`;
+    let prompt = `Please explain the following console error or warning:
+
+\`\`\`
+${message}
+\`\`\``;
 
     if (relatedCode) {
       prompt += `
-For the following code in my web app
+For the following code:
 
 \`\`\`
 ${relatedCode}
@@ -144,7 +147,7 @@ ${relatedCode}
 
     if (relatedRequest) {
       prompt += `
-For the following network request in my web app
+For the following network request:
 
 \`\`\`
 ${relatedRequest}
@@ -265,7 +268,7 @@ export function formatNetworkRequest(
     string {
   const formatHeaders = (title: string, headers: SDK.NetworkRequest.NameValue[]): string => formatLines(
       title, headers.filter(allowHeader).map(header => header.name + ': ' + header.value + '\n'), MAX_HEADERS_SIZE);
-  // TODO: anything else that might be relavant?
+  // TODO: anything else that might be relevant?
   // TODO: handle missing headers
   return `Request: ${request.url()}
 

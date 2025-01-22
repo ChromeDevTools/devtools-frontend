@@ -144,6 +144,14 @@ const UIStrings = {
    * @description Text for Match whole word button
    */
   matchWholeWord: 'Match whole word',
+  /**
+   * @description Text referring to a 1st party entity
+   */
+  firstParty: '1st party',
+  /**
+   * @description Text referring to an entity that is an extension
+   */
+  extension: 'Extension',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -705,13 +713,14 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         let badgeText = '';
 
         if (thirdPartyTree.nodeIsFirstParty(this.profileNode)) {
-          badgeText = '1st party';
+          badgeText = i18nString(UIStrings.firstParty);
         } else if (thirdPartyTree.nodeIsExtension(this.profileNode)) {
-          badgeText = 'Extension';
+          badgeText = i18nString(UIStrings.extension);
         }
 
         if (badgeText) {
           const badge = container.createChild('div', 'entity-badge');
+          UI.ARIAUtils.setLabel(badge, badgeText);
           badge.createChild('div', 'entity-badge-name').textContent = badgeText;
         }
       }

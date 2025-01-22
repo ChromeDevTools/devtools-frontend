@@ -157,7 +157,7 @@ const UIStrings = {
    *@description Text to explain how the CPU calibration process will work.
    */
   calibrationConfirmationPrompt:
-      'Calibration will take ~10 seconds, and temporarily navigate away from your current page. Do you wish to continue?',
+      'Calibration will take ~5 seconds, and temporarily navigate away from your current page. Do you wish to continue?',
   /**
    *@description Text to explain an issue that may impact the CPU calibration process.
    */

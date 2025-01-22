@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    *@description Explaination in the header about the cookies listed in the report
    */
-  body: 'This site might not work if third-party cookies are limited in Chrome.',
+  body: 'This site might not work if third-party cookies and other cookies are limited in Chrome.',
   /**
    *@description A link the user can follow to learn more about third party cookie usage
    */

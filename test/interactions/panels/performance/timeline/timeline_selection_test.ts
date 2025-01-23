@@ -10,7 +10,6 @@ import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helpe
 import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {
-  ('performance_panel/basic.html');
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to prevent timeout bump.
   if (this.timeout() !== 0) {
     this.timeout(20_000);

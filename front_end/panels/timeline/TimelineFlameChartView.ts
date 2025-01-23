@@ -1017,14 +1017,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.mainFlameChart.update();
   }
 
-  extensionDataVisibilityChanged(): void {
-    this.reset();
-    this.setupWindowTimes();
-    this.mainDataProvider.clearTimelineDataCache();
-    this.mainDataProvider.timelineData(true);
-    this.refreshMainFlameChart();
-  }
-
   windowChanged(windowStartTime: Trace.Types.Timing.Milli, windowEndTime: Trace.Types.Timing.Milli, animate: boolean):
       void {
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
@@ -1090,26 +1082,38 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#updateDetailViews();
   }
 
-  setModel(
-      newParsedTrace: Trace.Handlers.Types.ParsedTrace, traceMetadata: Trace.Types.File.MetaData|null,
-      isCpuProfile = false): void {
+  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace, traceMetadata: Trace.Types.File.MetaData|null): void {
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }
-    this.#selectedGroupName = null;
     this.#parsedTrace = newParsedTrace;
     this.#traceMetadata = traceMetadata;
-    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
+    this.rebuildDataForTrace();
+  }
+
+  /**
+   * Resets the state of the UI data and initializes it again with the
+   * current parsed trace.
+   */
+  rebuildDataForTrace(): void {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    this.#selectedGroupName = null;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
-    this.mainDataProvider.setModel(newParsedTrace, isCpuProfile);
-    this.networkDataProvider.setModel(newParsedTrace);
+    // order is important: |reset| needs to be called after the trace
+    // model has been set in the data providers.
+    this.mainDataProvider.setModel(this.#parsedTrace);
+    this.networkDataProvider.setModel(this.#parsedTrace);
     this.reset();
     this.setupWindowTimes();
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
-    this.setMarkers(newParsedTrace);
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
+    this.setMarkers(this.#parsedTrace);
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
   }
 
   setInsights(

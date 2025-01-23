@@ -664,6 +664,13 @@ export class Overlays extends EventTarget {
   }
 
   /**
+   * @returns all overlays.
+   */
+  allOverlays(): TimelineOverlay[] {
+    return [...this.#overlaysToElements.keys()];
+  }
+
+  /**
    * Removes the provided overlay from the list of overlays and destroys any
    * DOM associated with it.
    */

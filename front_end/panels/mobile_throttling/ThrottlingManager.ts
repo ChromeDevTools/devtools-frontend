@@ -355,6 +355,7 @@ export class ThrottlingManager {
           optionEls[i].text = option === recommendedOption ?
               i18nString(UIStrings.recommendedThrottling, {PH1: option.title()}) :
               option.title();
+          optionEls[i].disabled = option.rate() === 0;
         }
       },
     };

@@ -90,6 +90,7 @@ export class CalibrationController {
         margin: 0;
         background-color: antiquewhite;
         font-size: 18px;
+        text-align: center;
 
         display: flex;
         flex-direction: column;

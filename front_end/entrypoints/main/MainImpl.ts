@@ -894,6 +894,15 @@ export class MainMenuItem implements UI.Toolbar.Provider {
                            .variant=${Buttons.Button.Variant.ICON_TOGGLE}
                            @click=${setDockSide.bind(null, UI.DockController.DockState.UNDOCKED)}></devtools-button>
           <devtools-button class="toolbar-button"
+                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-left')}
+                           title=${i18nString(UIStrings.dockToLeft)}
+                           .iconName=${'dock-left'}
+                           .toggled=${dockController.dockSide() === UI.DockController.DockState.LEFT}
+                           .toggledIconName=${'dock-left'}
+                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
+                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+                           @click=${setDockSide.bind(null, UI.DockController.DockState.LEFT)}></devtools-button>
+          <devtools-button class="toolbar-button"
                            jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-bottom')}
                            title=${i18nString(UIStrings.dockToBottom)}
                            .iconName=${'dock-bottom'}
@@ -911,15 +920,6 @@ export class MainMenuItem implements UI.Toolbar.Provider {
                            .toggleType=${Buttons.Button.ToggleType.PRIMARY}
                            .variant=${Buttons.Button.Variant.ICON_TOGGLE}
                            @click=${setDockSide.bind(null, UI.DockController.DockState.RIGHT)}></devtools-button>
-          <devtools-button class="toolbar-button"
-                           jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-left')}
-                           title=${i18nString(UIStrings.dockToLeft)}
-                           .iconName=${'dock-left'}
-                           .toggled=${dockController.dockSide() === UI.DockController.DockState.LEFT}
-                           .toggledIconName=${'dock-left'}
-                           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
-                           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-                           @click=${setDockSide.bind(null, UI.DockController.DockState.LEFT)}></devtools-button>
         </devtools-toolbar>
       `, dockItemElement, {host: this});
       // clang-format on

@@ -108,6 +108,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     // clang-format on
   }) {
     super(true, undefined, element);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('whats-new')}`);
     this.#view = view;
     this.requestUpdate();
   }

@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {encodeVlqList} from '../../testing/SourceMapEncoder.js';
+
 import * as SDK from './sdk.js';
 
-const {buildOriginalScopes} = SDK.SourceMapFunctionRanges;
+const {buildOriginalScopes, decodePastaRanges} = SDK.SourceMapFunctionRanges;
 
 describe('buildOriginalScopes', () => {
   it('returns an empty global scope for an empty ranges array', () => {
@@ -129,5 +131,41 @@ describe('buildOriginalScopes', () => {
 
     assert.deepEqual(root.end, rangeC.end);
     assert.deepEqual(root.end, rangeD.end);
+  });
+});
+
+describe('decodeBloombergRanges', () => {
+  it('returns an empty list for an empty string', () => {
+    assert.deepEqual(decodePastaRanges('', []), []);
+  });
+
+  it('ignores ranges with non-existing name index', () => {
+    const mapping = encodeVlqList([0, 0, 0, 5, 0]);
+
+    assert.deepEqual(decodePastaRanges(mapping, []), []);
+  });
+
+  it('decodes nested ranges', () => {
+    const mappings = [
+      encodeVlqList([0, 0, 10, 30, 2]),
+      encodeVlqList([1, -20, 5, 10, 2]),
+    ].join(',');
+
+    assert.deepEqual(decodePastaRanges(mappings, ['foo', 'bar']), [
+      {start: {line: 0, column: 10}, end: {line: 30, column: 2}, name: 'foo'},
+      {start: {line: 10, column: 15}, end: {line: 20, column: 4}, name: 'bar'},
+    ]);
+  });
+
+  it('decodes sibling scopes', () => {
+    const mappings = [
+      encodeVlqList([0, 0, 10, 10, 2]),
+      encodeVlqList([1, 10, 0, 10, 0]),
+    ].join(',');
+
+    assert.deepEqual(decodePastaRanges(mappings, ['foo', 'bar']), [
+      {start: {line: 0, column: 10}, end: {line: 10, column: 2}, name: 'foo'},
+      {start: {line: 20, column: 10}, end: {line: 30, column: 2}, name: 'bar'},
+    ]);
   });
 });

@@ -8,6 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
+import {encodeVlqList} from '../../testing/SourceMapEncoder.js';
 import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as SourceMapScopes from '../source_map_scopes/source_map_scopes.js';
@@ -443,7 +444,12 @@ describeWithMockConnection('NameResolver', () => {
           '(function () {\n  function log(m) {\n    console.log(m);\n  }\n\n  function main() {\n\t  log("hello");\n\t  log("world");\n  }\n  \n  main();\n})();',
         ],
         mappings: 'CAAA,WACE,SAAS,EAAI,GACX,QAAQ,IAAI,EACd,CAEA,SAAS,IACR,EAAI,SACJ,EAAI,QACL,CAEA,GACD,EAXD',
-        x_com_bloomberg_sourcesFunctionMappings: ['AAAWK,CACAJ,CCCRE,CIAKA'],
+        x_com_bloomberg_sourcesFunctionMappings: [[
+          encodeVlqList([0, 0, 0, 11, 5]),
+          encodeVlqList([1, -11, 1, 11, -4]),
+          encodeVlqList([1, -10, 1, 2, 2]),
+          encodeVlqList([1, 2, 0, 3, 0]),
+        ].join(',')],
       });
 
       const source = '(function(){function o(o){console.log(o)}function n(){o("hello");o("world")}n()})();\n';

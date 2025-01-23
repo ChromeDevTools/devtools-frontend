@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {TokenIterator} from './SourceMap.js';
 import {comparePositions, type OriginalScope, type Position} from './SourceMapScopes.js';
 
 export interface NamedFunctionRange {
@@ -98,4 +99,52 @@ function createScopeFrom(range: NamedFunctionRange): OriginalScope {
     children: [],
     variables: [],
   };
+}
+
+/**
+ * Implements decoding of the pasta source map specification.
+ *
+ * See https://github.com/bloomberg/pasta-sourcemaps/blob/main/spec.md
+ */
+export function decodePastaRanges(encodedRanges: string, names: string[]): NamedFunctionRange[] {
+  const result: NamedFunctionRange[] = [];
+
+  let nameIndex = 0;
+  let startLineNumber = 0;
+  let startColumnNumber = 0;
+  let endLineNumber = 0;
+  let endColumnNumber = 0;
+
+  const tokenIter = new TokenIterator(encodedRanges);
+  let atStart = true;
+  while (tokenIter.hasNext()) {
+    if (atStart) {
+      atStart = false;
+    } else if (tokenIter.peek() === ',') {
+      tokenIter.next();
+    } else {
+      // Unexpected character. Return what we have up until now.
+      break;
+    }
+
+    nameIndex += tokenIter.nextVLQ();
+    startLineNumber = endLineNumber + tokenIter.nextVLQ();
+    startColumnNumber += tokenIter.nextVLQ();
+    endLineNumber = startLineNumber + tokenIter.nextVLQ();
+    endColumnNumber += tokenIter.nextVLQ();
+
+    const name = names[nameIndex];
+    if (name === undefined) {
+      // If the range doesn't have a valid name, ignore it.
+      continue;
+    }
+
+    result.push({
+      start: {line: startLineNumber, column: startColumnNumber},
+      end: {line: endLineNumber, column: endColumnNumber},
+      name,
+    });
+  }
+
+  return result;
 }

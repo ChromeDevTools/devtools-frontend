@@ -38,7 +38,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
-import {buildOriginalScopes, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
+import {buildOriginalScopes, decodePastaRanges} from './SourceMapFunctionRanges.js';
 import {decodeScopes, type OriginalScope, type Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
@@ -549,52 +549,14 @@ export class SourceMap {
       throw new Error(`x_com_bloomberg_sourcesFunctionMappings must have ${map.sources.length} scope trees`);
     }
     const names = map.names ?? [];
-    const result: (OriginalScope|undefined)[] = [];
 
-    for (let i = 0; i < scopeList.length; i++) {
-      if (!scopeList[i]) {
-        result.push(undefined);
-        continue;
+    return scopeList.map(rawScopes => {
+      if (!rawScopes) {
+        return undefined;
       }
-      const scopes = scopeList[i];
-
-      let nameIndex = 0;
-      let startLineNumber = 0;
-      let startColumnNumber = 0;
-      let endLineNumber = 0;
-      let endColumnNumber = 0;
-
-      const tokenIter = new TokenIterator(scopes);
-      const entries: NamedFunctionRange[] = [];
-      let atStart = true;
-      while (tokenIter.hasNext()) {
-        if (atStart) {
-          atStart = false;
-        } else if (tokenIter.peek() === ',') {
-          tokenIter.next();
-        } else {
-          // Unexpected character. Record what we have up until now.
-          break;
-        }
-        nameIndex += tokenIter.nextVLQ();
-        startLineNumber += tokenIter.nextVLQ();
-        startColumnNumber += tokenIter.nextVLQ();
-        endLineNumber += tokenIter.nextVLQ();
-        endColumnNumber += tokenIter.nextVLQ();
-        const name = names[nameIndex];
-        if (name === undefined) {
-          // If the range doesn't have a valid name, ignore it.
-          continue;
-        }
-        entries.push({
-          start: {line: startLineNumber, column: startColumnNumber},
-          end: {line: endLineNumber, column: endColumnNumber},
-          name,
-        });
-      }
-      result.push(buildOriginalScopes(entries));
-    }
-    return result;
+      const ranges = decodePastaRanges(rawScopes, names);
+      return buildOriginalScopes(ranges);
+    });
   }
 
   private isSeparator(char: string): boolean {

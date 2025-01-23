@@ -10,9 +10,24 @@ import("./visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "dialog.css",
     "emptyWidget.css",
+    "filter.css",
+    "glassPane.css",
     "inspectorCommon.css",
+    "inspectorViewTabbedPane.css",
+    "listWidget.css",
+    "popover.css",
+    "remoteDebuggingTerminatedScreen.css",
+    "reportView.css",
+    "rootView.css",
+    "searchableView.css",
+    "softContextMenu.css",
+    "splitWidget.css",
+    "tabbedPane.css",
+    "targetCrashedScreen.css",
     "toolbar.css",
+    "viewContainers.css",
   ]
 }
 
@@ -20,33 +35,17 @@ generate_css("legacy_css_files") {
   sources = [
     "checkboxTextLabel.css",
     "confirmDialog.css",
-    "dialog.css",
     "dropTarget.css",
-    "emptyWidget.css",
-    "filter.css",
-    "glassPane.css",
     "infobar.css",
     "inlineButton.css",
     "inspectorCommon.css",
-    "inspectorViewTabbedPane.css",
-    "listWidget.css",
-    "popover.css",
     "progressIndicator.css",
-    "remoteDebuggingTerminatedScreen.css",
-    "reportView.css",
-    "rootView.css",
-    "searchableView.css",
     "smallBubble.css",
-    "softContextMenu.css",
     "softDropDown.css",
     "softDropDownButton.css",
-    "splitWidget.css",
     "suggestBox.css",
-    "tabbedPane.css",
-    "targetCrashedScreen.css",
     "textPrompt.css",
     "treeoutline.css",
-    "viewContainers.css",
   ]
 
   legacy = true

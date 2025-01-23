@@ -36,7 +36,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
-import softContextMenuStyles from './softContextMenu.css.legacy.js';
+import softContextMenuStyles from './softContextMenu.css.js';
 import {Tooltip} from './Tooltip.js';
 import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
@@ -112,7 +112,7 @@ export class SoftContextMenu {
     this.glassPane = new GlassPane();
     this.glassPane.setPointerEventsBehavior(
         this.parentMenu ? PointerEventsBehavior.PIERCE_GLASS_PANE : PointerEventsBehavior.BLOCKED_BY_GLASS_PANE);
-    this.glassPane.registerRequiredCSS(softContextMenuStyles);
+    this.glassPane.registerCSSFiles([softContextMenuStyles]);
     this.glassPane.setContentAnchorBox(anchorBox);
     this.glassPane.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     this.glassPane.setMarginBehavior(MarginBehavior.NO_MARGIN);

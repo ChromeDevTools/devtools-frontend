@@ -8,13 +8,16 @@ import("../../../scripts/build/ninja/generate_css.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-generate_css("legacy_css_files") {
+generate_css("css_files") {
   sources = [
-    "deviceModeToolbar.css",
     "deviceModeView.css",
     "inspectedPagePlaceholder.css",
     "mediaQueryInspector.css",
   ]
+}
+
+generate_css("legacy_css_files") {
+  sources = [ "deviceModeToolbar.css" ]
 
   legacy = true
 }
@@ -58,6 +61,7 @@ devtools_entrypoint("bundle") {
   entrypoint = "emulation.ts"
 
   deps = [
+    ":css_files",
     ":emulation",
     ":legacy_css_files",
   ]

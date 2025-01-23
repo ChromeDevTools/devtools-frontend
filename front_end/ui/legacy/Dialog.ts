@@ -32,7 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import dialogStyles from './dialog.css.legacy.js';
+import dialogStyles from './dialog.css.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
@@ -50,7 +50,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
 
   constructor(jslogContext?: string) {
     super();
-    this.registerRequiredCSS(dialogStyles);
+    this.registerCSSFiles([dialogStyles]);
     this.contentElement.tabIndex = 0;
     this.contentElement.addEventListener('focus', () => this.widget().focus(), false);
     if (jslogContext) {
@@ -81,8 +81,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   override show(where?: Document|Element): void {
-    const document =
-        (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
+    const document = where instanceof Document ? where : (where ?? InspectorView.instance().element).ownerDocument;
     this.targetDocument = document;
     this.targetDocument.addEventListener('keydown', this.targetDocumentKeyDownHandler, true);
 

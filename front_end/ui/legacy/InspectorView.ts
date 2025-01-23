@@ -45,7 +45,7 @@ import {Dialog} from './Dialog.js';
 import {DockController, DockState} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
-import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
+import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
 import {ShowMode, SplitWidget} from './SplitWidget.js';
@@ -215,7 +215,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     // the Device mode button is not added and so the allocated space is smaller.
     const allocatedSpace = Root.Runtime.conditions.canDock() ? '69px' : '41px';
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
-    this.tabbedPane.registerRequiredCSS(inspectorViewTabbedPaneStyles);
     this.tabbedPane.addEventListener(
         TabbedPaneEvents.TabSelected,
         (event: Common.EventTarget.EventTargetEvent<EventData>) => this.tabSelected(event.data.tabId, 'main'), this);
@@ -278,11 +277,14 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   override wasShown(): void {
+    super.wasShown();
+    this.tabbedPane.registerCSSFiles([inspectorViewTabbedPaneStyles]);
     this.element.ownerDocument.addEventListener('keydown', this.keyDownBound, false);
   }
 
   override willHide(): void {
     this.element.ownerDocument.removeEventListener('keydown', this.keyDownBound, false);
+    super.willHide();
   }
 
   resolveLocation(locationName: string): ViewLocation|null {

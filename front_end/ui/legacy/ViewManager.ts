@@ -18,7 +18,7 @@ import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPa
 import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation} from './View.js';
-import viewContainersStyles from './viewContainers.css.legacy.js';
+import viewContainersStyles from './viewContainers.css.js';
 import {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
@@ -403,6 +403,8 @@ export class ContainerWidget extends VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([viewContainersStyles]);
     void this.materialize().then(() => {
       const widget = widgetForView.get(this.view);
       if (widget) {
@@ -427,7 +429,6 @@ class ExpandableContainerWidget extends VBox {
   constructor(view: View) {
     super(true);
     this.element.classList.add('flex-none');
-    this.registerRequiredCSS(viewContainersStyles);
 
     this.titleElement = document.createElement('div');
     this.titleElement.classList.add('expandable-view-title');

@@ -8,7 +8,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import xmlTreeStyles from './xmlTree.css.legacy.js';
-import xmlViewStyles from './xmlView.css.legacy.js';
+import xmlViewStyles from './xmlView.css.js';
 
 const UIStrings = {
   /**
@@ -28,7 +28,6 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 
   constructor(parsedXML: Document) {
     super(true);
-    this.registerRequiredCSS(xmlViewStyles);
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.treeOutline.registerRequiredCSS(xmlTreeStyles);
@@ -41,6 +40,11 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     if (firstChild) {
       firstChild.select(true /* omitFocus */, false /* selectedByUser */);
     }
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([xmlViewStyles]);
   }
 
   static createSearchableView(parsedXML: Document): UI.SearchableView.SearchableView {

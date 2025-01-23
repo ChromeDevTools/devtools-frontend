@@ -4,7 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 
-import targetCrashedScreenStyles from './targetCrashedScreen.css.legacy.js';
+import targetCrashedScreenStyles from './targetCrashedScreen.css.js';
 import {VBox} from './Widget.js';
 
 const UIStrings = {
@@ -23,7 +23,6 @@ export class TargetCrashedScreen extends VBox {
   private readonly hideCallback: () => void;
   constructor(hideCallback: () => void) {
     super(true);
-    this.registerRequiredCSS(targetCrashedScreenStyles);
     this.contentElement.createChild('div', 'message').textContent =
         i18nString(UIStrings.devtoolsWasDisconnectedFromThe);
     this.contentElement.createChild('div', 'message').textContent =
@@ -31,7 +30,13 @@ export class TargetCrashedScreen extends VBox {
     this.hideCallback = hideCallback;
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([targetCrashedScreenStyles]);
+  }
+
   override willHide(): void {
     this.hideCallback.call(null);
+    super.willHide();
   }
 }

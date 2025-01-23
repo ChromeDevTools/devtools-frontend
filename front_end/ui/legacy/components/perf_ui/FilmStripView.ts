@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filmStripViewStyles from './filmStripView.css.legacy.js';
+import filmStripViewStyles from './filmStripView.css.js';
 
 const UIStrings = {
   /**
@@ -43,10 +43,14 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   constructor() {
     super(true);
-    this.registerRequiredCSS(filmStripViewStyles);
     this.contentElement.classList.add('film-strip-view');
     this.statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([filmStripViewStyles]);
   }
 
   static setImageData(imageElement: HTMLImageElement, dataUri: string|null): void {

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import rootViewStyles from './rootView.css.legacy.js';
+import rootViewStyles from './rootView.css.js';
 import {VBox} from './Widget.js';
 import {ZoomManager} from './ZoomManager.js';
 
@@ -12,7 +12,6 @@ export class RootView extends VBox {
     super();
     this.markAsRoot();
     this.element.classList.add('root-view');
-    this.registerRequiredCSS(rootViewStyles);
     this.element.setAttribute('spellcheck', 'false');
   }
 
@@ -23,6 +22,11 @@ export class RootView extends VBox {
     this.window = document.defaultView;
     this.doResize();
     this.show((document.body as Element));
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([rootViewStyles]);
   }
 
   override doResize(): void {

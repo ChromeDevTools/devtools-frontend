@@ -39,7 +39,7 @@ import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import imageViewStyles from './imageView.css.legacy.js';
+import imageViewStyles from './imageView.css.js';
 
 const UIStrings = {
   /**
@@ -99,7 +99,6 @@ export class ImageView extends UI.View.SimpleView {
   private cachedContent?: TextUtils.ContentData.ContentData;
   constructor(mimeType: string, contentProvider: TextUtils.ContentProvider.ContentProvider) {
     super(i18nString(UIStrings.image));
-    this.registerRequiredCSS(imageViewStyles);
     this.element.tabIndex = -1;
     this.element.classList.add('image-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('image-view')}`);
@@ -140,6 +139,8 @@ export class ImageView extends UI.View.SimpleView {
   }
 
   override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([imageViewStyles]);
     void this.updateContentIfNeeded();
   }
 

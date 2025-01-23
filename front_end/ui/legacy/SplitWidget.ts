@@ -35,7 +35,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {Constraints} from './Geometry.js';
 import {Events as ResizerWidgetEvents, type ResizeUpdatePositionEvent, SimpleResizerWidget} from './ResizerWidget.js';
-import splitWidgetStyles from './splitWidget.css.legacy.js';
+import splitWidgetStyles from './splitWidget.css.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Widget, WidgetElement} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
@@ -82,7 +82,6 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       defaultSidebarHeight?: number, constraintsInDip?: boolean, element?: SplitWidgetElement) {
     super(true, undefined, element);
     this.element.classList.add('split-widget');
-    this.registerRequiredCSS(splitWidgetStyles);
 
     this.contentElement.classList.add('shadow-split-widget');
     this.sidebarElementInternal =
@@ -685,12 +684,15 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([splitWidgetStyles]);
     this.forceUpdateLayout();
     ZoomManager.instance().addEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
   }
 
   override willHide(): void {
     ZoomManager.instance().removeEventListener(ZoomManagerEvents.ZOOM_CHANGED, this.onZoomChanged, this);
+    super.willHide();
   }
 
   override onResize(): void {

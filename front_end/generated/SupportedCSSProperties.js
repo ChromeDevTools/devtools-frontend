@@ -334,6 +334,10 @@ export const generatedProperties = [
    "animation-range-start",
    "animation-timeline",
    "animation-timing-function",
+   "animation-trigger-exit-range-end",
+   "animation-trigger-exit-range-start",
+   "animation-trigger-range-end",
+   "animation-trigger-range-start",
    "animation-trigger-timeline",
    "animation-trigger-type",
    "app-region",
@@ -505,6 +509,8 @@ export const generatedProperties = [
    "inset-inline-end",
    "inset-inline-start",
    "interactivity",
+   "interest-target-hide-delay",
+   "interest-target-show-delay",
    "interpolate-size",
    "isolation",
    "justify-content",
@@ -604,8 +610,6 @@ export const generatedProperties = [
    "perspective",
    "perspective-origin",
    "pointer-events",
-   "popover-hide-delay",
-   "popover-show-delay",
    "position",
    "position-anchor",
    "position-area",
@@ -865,6 +869,32 @@ export const generatedProperties = [
    "step-end"
   ],
   "name": "animation-timing-function"
+ },
+ {
+  "longhands": [
+   "animation-trigger-exit-range-start",
+   "animation-trigger-exit-range-end"
+  ],
+  "name": "animation-trigger-exit-range"
+ },
+ {
+  "name": "animation-trigger-exit-range-end"
+ },
+ {
+  "name": "animation-trigger-exit-range-start"
+ },
+ {
+  "longhands": [
+   "animation-trigger-range-start",
+   "animation-trigger-range-end"
+  ],
+  "name": "animation-trigger-range"
+ },
+ {
+  "name": "animation-trigger-range-end"
+ },
+ {
+  "name": "animation-trigger-range-start"
  },
  {
   "keywords": [
@@ -2526,6 +2556,12 @@ export const generatedProperties = [
   "name": "interactivity"
  },
  {
+  "name": "interest-target-hide-delay"
+ },
+ {
+  "name": "interest-target-show-delay"
+ },
+ {
   "inherited": true,
   "keywords": [
    "numeric-only",
@@ -3274,12 +3310,6 @@ export const generatedProperties = [
    "all"
   ],
   "name": "pointer-events"
- },
- {
-  "name": "popover-hide-delay"
- },
- {
-  "name": "popover-show-delay"
  },
  {
   "keywords": [

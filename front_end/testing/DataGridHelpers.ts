@@ -23,7 +23,7 @@ export const getFocusableCell = (shadowRoot: ShadowRoot) => {
 
 export const getCellByIndexes = (shadowRoot: ShadowRoot, indexes: {column: number, row: number}) => {
   const cell = shadowRoot.querySelector<HTMLTableCellElement>(
-      `[data-row-index="${indexes.row}"][data-col-index="${indexes.column}"]`);
+      `tr:nth-child(${indexes.row + 1}) td:nth-child(${indexes.column + 1})`);
   assert.instanceOf(cell, HTMLTableCellElement);
   return cell;
 };

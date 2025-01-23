@@ -133,8 +133,10 @@ export class ReportsGrid extends HTMLElement {
     // clang-format on
   }
 
-  #onSelect(e: CustomEvent<HTMLElement>): void {
-    this.dispatchEvent(new CustomEvent('select', {detail: e.detail.dataset.id}));
+  #onSelect(e: CustomEvent<HTMLElement|null>): void {
+    if (e.detail) {
+      this.dispatchEvent(new CustomEvent('select', {detail: e.detail.dataset.id}));
+    }
   }
 }
 

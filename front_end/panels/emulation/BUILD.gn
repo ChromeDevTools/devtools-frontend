@@ -16,12 +16,6 @@ generate_css("css_files") {
   ]
 }
 
-generate_css("legacy_css_files") {
-  sources = [ "deviceModeToolbar.css" ]
-
-  legacy = true
-}
-
 devtools_module("emulation") {
   sources = [
     "AdvancedApp.ts",
@@ -63,7 +57,6 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":emulation",
-    ":legacy_css_files",
   ]
 
   visibility = [

@@ -1432,7 +1432,6 @@ grd_files_debug_sources = [
   "front_end/panels/emulation/InspectedPagePlaceholder.js",
   "front_end/panels/emulation/MediaQueryInspector.js",
   "front_end/panels/emulation/components/DeviceSizeInputElement.js",
-  "front_end/panels/emulation/deviceModeToolbar.css.legacy.js",
   "front_end/panels/emulation/deviceModeView.css.js",
   "front_end/panels/emulation/inspectedPagePlaceholder.css.js",
   "front_end/panels/emulation/mediaQueryInspector.css.js",

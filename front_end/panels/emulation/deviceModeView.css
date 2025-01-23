@@ -20,6 +20,15 @@
   align-items: stretch;
 }
 
+.device-mode-x {
+  margin: 0 1px;
+  font-size: 16px;
+}
+
+.device-mode-empty-toolbar-element {
+  width: 0;
+}
+
 devtools-toolbar {
   overflow: hidden;
   flex: 0 100000 auto;

@@ -34,6 +34,7 @@ devtools_module("explain") {
     "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/source_frame:bundle",
+    "../ai_assistance:bundle",
     "../console:bundle",
     "../sources:bundle",
   ]

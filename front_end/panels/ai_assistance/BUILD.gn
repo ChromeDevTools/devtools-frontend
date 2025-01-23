@@ -68,6 +68,7 @@ devtools_entrypoint("bundle") {
     "../../../test/interactions/*",
     "../../entrypoints/*",
     "../../ui/components/docs/ai_assistance/*",
+    "../explain",
   ]
 
   visibility += devtools_panels_visibility

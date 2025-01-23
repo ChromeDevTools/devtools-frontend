@@ -4,6 +4,7 @@
 
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -70,6 +71,8 @@ export class Table extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets.push(tableStyles);
+    UI.UIUtils.injectCoreStyles(this.#shadow);
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 

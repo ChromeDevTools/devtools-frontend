@@ -6,7 +6,6 @@ import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
 import * as Resources from './application.js';
 
@@ -84,16 +83,9 @@ describeWithMockConnection('InterestGroupStorageView', () => {
           view.addEvent(event);
         });
         const grid = view.getInterestGroupGridForTesting();
-        const cells = [
-          {columnId: 'event-time', value: 0},
-          {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
-          {columnId: 'event-group-owner', value: 'https://owner1.com'},
-          {columnId: 'event-group-name', value: 'cars'},
-        ];
         const spy = sinon.spy(view, 'setSidebarWidget');
         assert.isTrue(spy.notCalled);
-        grid.dispatchEvent(
-            new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+        grid.dispatchEvent(new CustomEvent('select', {detail: events[0]}));
         await raf();
         assert.isTrue(spy.calledOnce);
         assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
@@ -113,17 +105,10 @@ describeWithMockConnection('InterestGroupStorageView', () => {
         view.addEvent(event);
       });
       const grid = view.getInterestGroupGridForTesting();
-      const cells = [
-        {columnId: 'event-time', value: 0},
-        {columnId: 'event-type', value: eventType},
-        {columnId: 'event-group-owner', value: 'https://owner1.com'},
-        {columnId: 'event-group-name', value: 'cars'},
-      ];
       const sideBarUpdateDone = expectCall(sinon.stub(view, 'sidebarUpdatedForTesting'));
       const spy = sinon.spy(view, 'setSidebarWidget');
       assert.isTrue(spy.notCalled);
-      grid.dispatchEvent(
-          new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+      grid.dispatchEvent(new CustomEvent('select', {detail: {...events[0], type: eventType}}));
       await sideBarUpdateDone;
       assert.isTrue(spy.calledOnce);
       assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
@@ -144,16 +129,9 @@ describeWithMockConnection('InterestGroupStorageView', () => {
           view.addEvent(event);
         });
         const grid = view.getInterestGroupGridForTesting();
-        const cells = [
-          {columnId: 'event-time', value: 0},
-          {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
-          {columnId: 'event-group-owner', value: 'https://owner1.com'},
-          {columnId: 'event-group-name', value: 'cars'},
-        ];
         const spy = sinon.spy(view, 'setSidebarWidget');
         assert.isTrue(spy.notCalled);
-        grid.dispatchEvent(
-            new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+        grid.dispatchEvent(new CustomEvent('select', {detail: events[0]}));
         await raf();
         assert.isTrue(spy.calledOnce);
         assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
@@ -171,15 +149,9 @@ describeWithMockConnection('InterestGroupStorageView', () => {
       view.addEvent(event);
     });
     const grid = view.getInterestGroupGridForTesting();
-    const cells = [
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
-      {columnId: 'event-group-owner', value: 'https://owner1.com'},
-      {columnId: 'event-group-name', value: 'cars'},
-    ];
     const spy = sinon.spy(view, 'setSidebarWidget');
     assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+    grid.dispatchEvent(new CustomEvent('select', {detail: events[0]}));
     await raf();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');

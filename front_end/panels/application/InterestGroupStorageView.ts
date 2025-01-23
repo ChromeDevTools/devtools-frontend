@@ -4,7 +4,6 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Protocol from '../../generated/protocol.js';
-import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -59,7 +58,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     this.noDataView.setMinimumSize(0, 40);
 
     topPanel.contentElement.appendChild(this.interestGroupGrid);
-    this.interestGroupGrid.addEventListener('cellfocused', this.onFocus.bind(this));
+    this.interestGroupGrid.addEventListener('select', this.onFocus.bind(this));
 
     this.noDisplayView.contentElement.classList.add('placeholder');
     this.noDisplayView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
@@ -97,19 +96,8 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
   }
 
   private async onFocus(event: Event): Promise<void> {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    const row = focusedEvent.data.row;
-    if (!row) {
-      return;
-    }
-
-    const ownerOrigin = row.cells.find(cell => cell.columnId === 'event-group-owner')?.value as string;
-    const name = row.cells.find(cell => cell.columnId === 'event-group-name')?.value as string;
-    const eventType =
-        row.cells.find(cell => cell.columnId === 'event-type')?.value as Protocol.Storage.InterestGroupAccessType;
-    if (!ownerOrigin || !name) {
-      return;
-    }
+    const focusedEvent = event as CustomEvent<Protocol.Storage.InterestGroupAccessedEvent>;
+    const {ownerOrigin, name, type: eventType} = focusedEvent.detail;
 
     let details = null;
     // Details of additional bids can't be looked up like regular bids,

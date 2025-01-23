@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/legacy/components/data_grid/data_grid.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import interestGroupAccessGridStyles from './interestGroupAccessGrid.css.js';
@@ -85,71 +86,32 @@ export class InterestGroupAccessGrid extends HTMLElement {
       return html`<div class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }
 
-    const gridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'event-time',
-          title: i18nString(UIStrings.eventTime),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-type',
-          title: i18nString(UIStrings.eventType),
-          widthWeighting: 5,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-group-owner',
-          title: i18nString(UIStrings.groupOwner),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-group-name',
-          title: i18nString(UIStrings.groupName),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-      ],
-      rows: this.#buildRows(),
-      initialSort: {
-        columnId: 'event-time',
-        direction: DataGrid.DataGridUtils.SortDirection.ASC,
-      },
-    };
-
     return html`
-      <devtools-data-grid-controller .data=${gridData}></devtools-data-grid-controller>
+      <devtools-new-data-grid @select=${this.#onSelect}>
+        <table>
+          <tr>
+            <th id="event-time" sortable weight="10">${i18nString(UIStrings.eventTime)}</td>
+            <th id="event-type" sortable weight="5">${i18nString(UIStrings.eventType)}</td>
+            <th id="event-group-owner" sortable weight="10">${i18nString(UIStrings.groupOwner)}</td>
+            <th id="event-group-name" sortable weight="10">${i18nString(UIStrings.groupName)}</td>
+          </tr>
+          ${this.#datastores.map((event, index) => html`
+          <tr data-index=${index}>
+            <td>${new Date(1e3 * event.accessTime).toLocaleString()}</td>
+            <td>${event.type}</td>
+            <td>${event.ownerOrigin}</td>
+            <td>${event.name}</td>
+          </tr>
+        `)}
+        </table>
+      </devtools-new-data-grid>
     `;
   }
 
-  #buildRows(): DataGrid.DataGridUtils.Row[] {
-    return this.#datastores.map(event => ({
-                                  cells: [
-                                    {
-                                      columnId: 'event-time',
-                                      value: event.accessTime,
-                                      renderer: this.#renderDateForDataGridCell.bind(this),
-                                    },
-                                    {columnId: 'event-type', value: event.type},
-                                    {columnId: 'event-group-owner', value: event.ownerOrigin},
-                                    {columnId: 'event-group-name', value: event.name},
-                                  ],
-                                }));
-  }
-
-  #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
-    const date = new Date(1e3 * (value as number));
-    return html`${date.toLocaleString()}`;
+  #onSelect(event: CustomEvent<HTMLElement|null>): void {
+    if (event.detail) {
+      this.dispatchEvent(new CustomEvent('select', {detail: this.#datastores[Number(event.detail.dataset.index)]}));
+    }
   }
 }
 

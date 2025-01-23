@@ -1406,6 +1406,11 @@ export class ElementsTreeOutline extends
       visibleChildren.push(afterPseudoElement);
     }
 
+    const pickerIconPseudoElement = node.pickerIconPseudoElement();
+    if (pickerIconPseudoElement) {
+      visibleChildren.push(pickerIconPseudoElement);
+    }
+
     const backdropPseudoElement = node.backdropPseudoElement();
     if (backdropPseudoElement) {
       visibleChildren.push(backdropPseudoElement);

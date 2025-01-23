@@ -365,6 +365,10 @@ export class DOMNode {
     return this.#pseudoElements.get(Protocol.DOM.PseudoType.After)?.at(-1);
   }
 
+  pickerIconPseudoElement(): DOMNode|undefined {
+    return this.#pseudoElements.get(Protocol.DOM.PseudoType.PickerIcon)?.at(-1);
+  }
+
   markerPseudoElement(): DOMNode|undefined {
     return this.#pseudoElements.get(Protocol.DOM.PseudoType.Marker)?.at(-1);
   }

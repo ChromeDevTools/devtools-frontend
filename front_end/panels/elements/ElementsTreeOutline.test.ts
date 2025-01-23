@@ -60,4 +60,34 @@ describeWithMockConnection('ElementsTreeOutline', () => {
     treeOutline.rootDOMNode = optionNode;
     assert.isNotNull(treeOutline.findTreeElement(checkmarkNode!));
   });
+
+  it('should include the ::picker-icon pseudo element', () => {
+    const selectNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'select',
+      localName: 'select',
+      nodeValue: 'A Select',
+      childNodeCount: 1,
+      pseudoElements: [{
+        parentId: 1 as Protocol.DOM.NodeId,
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        pseudoType: Protocol.DOM.PseudoType.PickerIcon,
+        pseudoIdentifier: '::picker-icon',
+        nodeName: '::picker-icon',
+        localName: '::picker-icon',
+        nodeValue: '^',
+      }],
+    });
+    assert.isNotNull(selectNode);
+
+    const pickerIconNode = selectNode.pickerIconPseudoElement();
+    assert.isNotNull(pickerIconNode);
+
+    treeOutline.rootDOMNode = selectNode;
+    assert.isNotNull(treeOutline.findTreeElement(pickerIconNode!));
+  });
 });

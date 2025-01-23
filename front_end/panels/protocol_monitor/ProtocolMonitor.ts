@@ -277,12 +277,12 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                                 message.error ? html`<code>${JSON.stringify(message.error)}</code>` :
                                                 '(pending)'}
                         </td>
-                        <td>
+                        <td data-value=${message.elapsedTime || 0}>
                           ${!('id' in message)  ? '' :
                             message.elapsedTime ? i18nString(UIStrings.sMs, {PH1: String(message.elapsedTime)})
                                                 : '(pending)'}
                         </td>
-                        <td>${i18nString(UIStrings.sMs, {PH1: String(message.requestTime)})}</td>
+                        <td data-value=${message.requestTime}>${i18nString(UIStrings.sMs, {PH1: String(message.requestTime)})}</td>
                         <td>${this.targetToString(message.target)}</td>
                         <td>${message.sessionId || ''}</td>
                       </tr>`)}

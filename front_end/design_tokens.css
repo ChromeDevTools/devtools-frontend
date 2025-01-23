@@ -107,6 +107,8 @@
   --sys-typescale-body5-line-height: 16px;
   --sys-typescale-monospace-line-height: 1.2;
   --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
+  --sys-motion-duration-long2: 500ms;
+  --sys-motion-curve-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00);
 }
 
 .theme-with-dark-background,

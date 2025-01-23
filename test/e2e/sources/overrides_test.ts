@@ -152,6 +152,8 @@ describe('Overrides panel', function() {
 
       // File permission pop up
       const infoBar = await waitForAria('Select a folder to store override files in.');
+      // Allow time for infobar to animate in before clicking the button
+      await new Promise<void>(resolve => setTimeout(resolve, 550));
       await click('.infobar-main-row .infobar-button', {root: infoBar});
 
       // Open & close the file in the Sources panel
@@ -216,6 +218,8 @@ describe('Overrides panel', function() {
 
       // File permission pop up
       const infoBar = await waitForAria('Select a folder to store override files in.');
+      // Allow time for infobar to animate in before clicking the button
+      await new Promise<void>(resolve => setTimeout(resolve, 550));
       await click('.infobar-main-row .infobar-button', {root: infoBar});
       await waitFor('[aria-label="coffees.json, file"]');
 
@@ -299,6 +303,7 @@ describe('Overrides panel', function() {
 
     // File permission pop up
     const infoBar = await waitForAria('Select a folder to store override files in.');
+    await new Promise<void>(resolve => setTimeout(resolve, 550));
     await click('.infobar-main-row .infobar-button', {root: infoBar});
 
     // Open the file in the Sources panel
@@ -324,6 +329,8 @@ describe('Overrides panel', function() {
 
     // File permission pop up
     const infoBar = await waitForAria('Select a folder to store override files in.');
+    // Allow time for infobar to animate in before clicking the button
+    await new Promise<void>(resolve => setTimeout(resolve, 550));
     await click('.infobar-main-row .infobar-button', {root: infoBar});
 
     // Open the main folder in the Sources panel
@@ -348,6 +355,8 @@ describe('Overrides panel', function() {
 
     // File permission pop up
     const infoBar = await waitForAria('Select a folder to store override files in.');
+    // Allow time for infobar to animate in before clicking the button
+    await new Promise<void>(resolve => setTimeout(resolve, 550));
     await click('.infobar-main-row .infobar-button', {root: infoBar});
 
     // Open the sub folder in the Sources panel

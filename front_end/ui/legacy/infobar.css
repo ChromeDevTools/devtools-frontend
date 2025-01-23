@@ -3,9 +3,21 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+:host {
+  transition: all var(--sys-motion-duration-long2);
+  transition-timing-function: var(--sys-motion-curve-spatial);
+}
+
+@starting-style {
+  :host {
+    height: 0;
+    opacity: 0%;
+  }
+}
 
 .infobar {
   color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-surface1);
   display: flex;
   flex: auto;
   flex-direction: column;
@@ -89,7 +101,7 @@
 
 .info-icon {
   mask-image: var(--image-file-info);
-  background-color: var(--icon-info);
+  background-color: var(--sys-color-primary);
 }
 
 .warning-icon {
@@ -104,7 +116,7 @@
 
 .issue-icon {
   mask-image: var(--image-file-issue-text-filled);
-  background-color: var(--icon-info);
+  background-color: var(--sys-color-primary);
 }
 
 .icon {

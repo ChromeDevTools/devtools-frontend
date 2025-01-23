@@ -274,7 +274,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             <div class="title">${i18nString(UIStrings.viewTitle)}</div>
             <div class="body">${i18nString(UIStrings.viewExplanation)}</div>
           </div>
-          <devtools-card>
+          <devtools-card class="card-container">
             <div slot="content" class=${Boolean(enterpriseEnabledSetting.get()) ? 'card enterprise-disabled' : 'card'}>
               ${cardHeader}
               <div>

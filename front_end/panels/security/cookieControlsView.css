@@ -23,6 +23,10 @@
   font: var(--sys-typescale-headline4);
 }
 
+.card-container {
+  max-width: 100%;
+}
+
 .card {
   display: flex;
   flex-direction: column;

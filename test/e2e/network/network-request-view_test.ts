@@ -38,6 +38,8 @@ const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
 
 const configureAndCheckHeaderOverrides = async () => {
   const infoBar = await waitForAria('Select a folder to store override files in.');
+  // Allow time for infobar to animate in before clicking the button
+  await new Promise<void>(resolve => setTimeout(resolve, 550));
   await click('.infobar-main-row .infobar-button', {
     root: infoBar,
   });

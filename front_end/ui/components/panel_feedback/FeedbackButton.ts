@@ -21,8 +21,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/components/panel_feedback/FeedbackButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const feedbackIconUrl = new URL('../../../Images/review.svg', import.meta.url).toString();
-
 export interface FeedbackButtonData {
   feedbackUrl: Platform.DevToolsPath.UrlString;
 }
@@ -52,7 +50,7 @@ export class FeedbackButton extends HTMLElement {
     LitHtml.render(html`
       <devtools-button
           @click=${this.#onFeedbackClick}
-          .iconUrl=${feedbackIconUrl}
+          .iconName=${'review'}
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'feedback'}
       >${i18nString(UIStrings.feedback)}</devtools-button>

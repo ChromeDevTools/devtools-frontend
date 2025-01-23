@@ -62,9 +62,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const trashIconUrl = new URL('../../../Images/bin.svg', import.meta.url).toString();
-const editIconUrl = new URL('../../../Images/edit.svg', import.meta.url).toString();
-
 export const isValidHeaderName = (headerName: string): boolean => {
   return /^[a-z0-9_\-]+$/i.test(headerName);
 };
@@ -248,7 +245,7 @@ export class HeaderSectionRow extends HTMLElement {
         <devtools-button
           title=${i18nString(UIStrings.editHeader)}
           .size=${Buttons.Button.Size.SMALL}
-          .iconUrl=${editIconUrl}
+          .iconName=${'edit'}
           .variant=${Buttons.Button.Variant.ICON}
           @click=${() => {
             this.dispatchEvent(new EnableHeaderEditingEvent());
@@ -271,7 +268,7 @@ export class HeaderSectionRow extends HTMLElement {
       <devtools-button
         title=${i18nString(UIStrings.removeOverride)}
         .size=${Buttons.Button.Size.SMALL}
-        .iconUrl=${trashIconUrl}
+        .iconName=${'bin'}
         .variant=${Buttons.Button.Variant.ICON}
         class="remove-header inline-button"
         @click=${this.#onRemoveOverrideClick}

@@ -7,7 +7,7 @@ import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../../testing/DOMHe
 import * as Buttons from './buttons.js';
 
 describe('Button', () => {
-  const iconUrl = new URL('../../../Images/file-image.svg', import.meta.url).toString();
+  const iconName = 'file-image';
 
   function renderButton(
       data: Buttons.Button.ButtonData = {
@@ -107,7 +107,7 @@ describe('Button', () => {
   it('toolbar button can be clicked', () => {
     testClick({
       variant: Buttons.Button.Variant.TOOLBAR,
-      iconUrl,
+      iconName,
     });
   });
 
@@ -115,7 +115,7 @@ describe('Button', () => {
     testClick(
         {
           variant: Buttons.Button.Variant.TOOLBAR,
-          iconUrl,
+          iconName,
           disabled: true,
         },
         0);
@@ -144,7 +144,7 @@ describe('Button', () => {
     const button = renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconUrl,
+          iconName,
         },
         'text');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -156,7 +156,7 @@ describe('Button', () => {
     const button = renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconUrl,
+          iconName,
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;
@@ -179,7 +179,7 @@ describe('Button', () => {
     const button = renderButton(
         {
           variant: Buttons.Button.Variant.PRIMARY,
-          iconUrl,
+          iconName,
         },
         '');
     const innerButton = button.shadowRoot?.querySelector('button') as HTMLButtonElement;

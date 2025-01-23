@@ -466,7 +466,7 @@ const SignatureSchemeStrings = new Map([
 
 const LOCK_ICON_NAME = 'lock';
 const WARNING_ICON_NAME = 'warning';
-const INFO_ICON_NAME = 'info';
+const UNKNOWN_ICON_NAME = 'indeterminate-question-box';
 
 export function getSecurityStateIconForDetailedView(
     securityState: Protocol.Security.SecurityState, className: string): IconButton.Icon.Icon {
@@ -483,7 +483,7 @@ export function getSecurityStateIconForDetailedView(
       break;
     case Protocol.Security.SecurityState.Info:  // fallthrough
     case Protocol.Security.SecurityState.Unknown:
-      iconName = INFO_ICON_NAME;
+      iconName = UNKNOWN_ICON_NAME;
       break;
   }
 
@@ -496,7 +496,7 @@ export function getSecurityStateIconForOverview(
   switch (securityState) {
     case Protocol.Security.SecurityState.Unknown:  // fallthrough
     case Protocol.Security.SecurityState.Neutral:
-      iconName = INFO_ICON_NAME;
+      iconName = UNKNOWN_ICON_NAME;
       break;
     case Protocol.Security.SecurityState.Insecure:  // fallthrough
     case Protocol.Security.SecurityState.InsecureBroken:

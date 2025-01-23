@@ -4,6 +4,8 @@
 
 import './dom_extension.js';
 
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+
 function createSlot(parent: HTMLElement, name?: string) {
   const slot = parent.createChild('slot');
   if (name) {
@@ -231,5 +233,115 @@ describe('DataGrid', () => {
     node = traverseNextNode(node, component1);
     assert.strictEqual(node.nodeValue, 'component2 light dom text');
     assert.strictEqual(node.nodeName, '#text');
+  });
+});
+
+describe('DOMExtension', () => {
+  describe('Document.adoptedStyleSheets monkey-patching', () => {
+    const adoptedStyleSheets: CSSStyleSheet[] = [];
+
+    beforeEach(() => {
+      adoptedStyleSheets.push(...document.adoptedStyleSheets);
+    });
+
+    afterEach(() => {
+      document.adoptedStyleSheets = adoptedStyleSheets;
+      adoptedStyleSheets.length = 0;
+    });
+
+    it('does not create `CSSStyleSheet` copies within `document`', () => {
+      const styleSheet = new CSSStyleSheet();
+
+      document.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(document.adoptedStyleSheets, 1);
+      assert.strictEqual(document.adoptedStyleSheets[0], styleSheet);
+    });
+
+    it('does not create `CSSStyleSheet` copies within an `<iframe>`', () => {
+      const iframe = renderElementIntoDOM(document.createElement('iframe'));
+      const iframeDocument = iframe.contentDocument!;
+      const styleSheet = new iframeDocument.defaultView!.CSSStyleSheet();
+
+      iframeDocument.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(iframeDocument.adoptedStyleSheets, 1);
+      assert.strictEqual(iframeDocument.adoptedStyleSheets[0], styleSheet);
+    });
+
+    it('correctly copies `CSSStyleSheet` instances across documents', () => {
+      const iframe = renderElementIntoDOM(document.createElement('iframe'));
+      const styleSheet = new iframe.contentDocument!.defaultView!.CSSStyleSheet();
+      styleSheet.insertRule('body { background: red; }');
+
+      document.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(document.adoptedStyleSheets, 1);
+      assert.notStrictEqual(document.adoptedStyleSheets[0], styleSheet);
+      assert.lengthOf(document.adoptedStyleSheets[0].cssRules, 1);
+      assert.strictEqual(document.adoptedStyleSheets[0].cssRules[0].cssText, 'body { background: red; }');
+    });
+
+    it('caches `CSSStyleSheet` copies', () => {
+      const iframe = renderElementIntoDOM(document.createElement('iframe'));
+      const styleSheet = new iframe.contentDocument!.defaultView!.CSSStyleSheet();
+
+      document.adoptedStyleSheets = [styleSheet, styleSheet];
+
+      assert.lengthOf(document.adoptedStyleSheets, 2);
+      assert.strictEqual(document.adoptedStyleSheets[0], document.adoptedStyleSheets[1]);
+    });
+  });
+
+  describe('ShadowRoot.adoptedStyleSheets monkey-patching', () => {
+    it('does not create `CSSStyleSheet` copies within `document`', () => {
+      const shadowRoot = renderElementIntoDOM(document.createElement('div')).attachShadow({mode: 'open'});
+      const styleSheet = new CSSStyleSheet();
+
+      shadowRoot.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 1);
+      assert.strictEqual(shadowRoot.adoptedStyleSheets[0], styleSheet);
+    });
+
+    it('does not create `CSSStyleSheet` copies within an `<iframe>`', () => {
+      const iframe = renderElementIntoDOM(document.createElement('iframe'));
+      const iframeDocument = iframe.contentDocument!;
+      const shadowRoot =
+          iframeDocument.body.appendChild(iframeDocument.createElement('div')).attachShadow({mode: 'open'});
+      const styleSheet = new iframeDocument.defaultView!.CSSStyleSheet();
+
+      shadowRoot.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 1);
+      assert.strictEqual(shadowRoot.adoptedStyleSheets[0], styleSheet);
+    });
+
+    it('correctly copies `CSSStyleSheet` instances across documents', () => {
+      const container = renderElementIntoDOM(document.createElement('div'));
+      const shadowRoot = container.appendChild(document.createElement('div')).attachShadow({mode: 'open'});
+      const iframe = container.appendChild(document.createElement('iframe'));
+      const styleSheet = new iframe.contentDocument!.defaultView!.CSSStyleSheet();
+      styleSheet.insertRule('body { background: red; }');
+
+      shadowRoot.adoptedStyleSheets = [styleSheet];
+
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 1);
+      assert.notStrictEqual(shadowRoot.adoptedStyleSheets[0], styleSheet);
+      assert.lengthOf(shadowRoot.adoptedStyleSheets[0].cssRules, 1);
+      assert.strictEqual(shadowRoot.adoptedStyleSheets[0].cssRules[0].cssText, 'body { background: red; }');
+    });
+
+    it('caches `CSSStyleSheet` copies', () => {
+      const container = renderElementIntoDOM(document.createElement('div'));
+      const shadowRoot = container.appendChild(document.createElement('div')).attachShadow({mode: 'open'});
+      const iframe = container.appendChild(document.createElement('iframe'));
+      const styleSheet = new iframe.contentDocument!.defaultView!.CSSStyleSheet();
+
+      shadowRoot.adoptedStyleSheets = [styleSheet, styleSheet];
+
+      assert.lengthOf(shadowRoot.adoptedStyleSheets, 2);
+      assert.strictEqual(shadowRoot.adoptedStyleSheets[0], shadowRoot.adoptedStyleSheets[1]);
+    });
   });
 });

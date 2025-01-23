@@ -29,5 +29,8 @@ ts_library("unittests") {
 
   sources = [ "DOMExtension.test.ts" ]
 
-  deps = [ ":bundle" ]
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
 }

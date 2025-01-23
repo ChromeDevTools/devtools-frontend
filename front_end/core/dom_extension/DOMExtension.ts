@@ -409,54 +409,71 @@ DOMTokenList.prototype['toggle'] = function(token: string, force: boolean|undefi
 // mutated in place, we need to override both the setter and the getter, and
 // for the latter, we need to return a proxy that intercepts mutations to the
 // array-indexed properties.
-const originalAdoptedStyleSheets = Object.getOwnPropertyDescriptor(ShadowRoot.prototype, 'adoptedStyleSheets');
-if (originalAdoptedStyleSheets) {
-  const styleSheetInDocumentCache = new WeakMap<CSSStyleSheet, WeakMap<Document, CSSStyleSheet>>();
+interface AdoptedStyleSheetsPropertyDescriptor {
+  get(this: DocumentOrShadowRoot): CSSStyleSheet[];
+  set(this: DocumentOrShadowRoot, styleSheets: CSSStyleSheet[]): boolean;
+}
+interface CSSStyleSheetConstructor {
+  new(options?: CSSStyleSheetInit): CSSStyleSheet;
+}
+const styleSheetWithConstructorMap = new WeakMap<CSSStyleSheet, WeakMap<CSSStyleSheetConstructor, CSSStyleSheet>>();
 
-  /**
-   * Returns a clone of the `styleSheet` within the given `document`.
-   */
-  function styleSheetInDocument(styleSheet: CSSStyleSheet, document: Document): CSSStyleSheet {
-    let styleSheetCache = styleSheetInDocumentCache.get(styleSheet);
-    if (styleSheetCache) {
-      const cachedSheet = styleSheetCache.get(document);
-      if (cachedSheet) {
-        return cachedSheet;
-      }
-    } else {
-      styleSheetCache = new WeakMap<Document, CSSStyleSheet>();
-      styleSheetInDocumentCache.set(styleSheet, styleSheetCache);
+/**
+ * Returns the `styleSheet` as if it was created by the given `constructor`. If the `styleSheet`
+ * is an instance of the given `constructor`, this is a no-op, otherwise a copy will be created
+ * and the rules will be inserted manually (loosing source map information unfortunately).
+ */
+function styleSheetWithConstructor(styleSheet: CSSStyleSheet, constructor: CSSStyleSheetConstructor): CSSStyleSheet {
+  let styleSheetCache = styleSheetWithConstructorMap.get(styleSheet);
+  if (styleSheetCache) {
+    const cachedSheet = styleSheetCache.get(constructor);
+    if (cachedSheet) {
+      return cachedSheet;
     }
+  } else {
+    styleSheetCache = new WeakMap();
+    styleSheetWithConstructorMap.set(styleSheet, styleSheetCache);
+  }
 
-    const clonedStyleSheet = new document.defaultView.CSSStyleSheet();
+  if (styleSheet.constructor !== constructor) {
+    const clonedStyleSheet = new constructor();
     for (const {cssText} of styleSheet.cssRules) {
       clonedStyleSheet.insertRule(cssText);
     }
-    styleSheetCache.set(document, clonedStyleSheet);
-    return clonedStyleSheet;
+    styleSheet = clonedStyleSheet;
   }
+  styleSheetCache.set(constructor, styleSheet);
+  return styleSheet;
+}
 
-  Object.defineProperty(ShadowRoot.prototype, 'adoptedStyleSheets', {
+for (const constructor of [Document, ShadowRoot]) {
+  const originalAdoptedStyleSheets = Object.getOwnPropertyDescriptor(constructor.prototype, 'adoptedStyleSheets') as
+      AdoptedStyleSheetsPropertyDescriptor;
+  Object.defineProperty(constructor.prototype, 'adoptedStyleSheets', {
     configurable: true,
     enumerable: true,
-    get(this: ShadowRoot): CSSStyleSheet[] {
+    get(this: Document|ShadowRoot): CSSStyleSheet[] {
       const target = originalAdoptedStyleSheets.get.call(this);
-      const {ownerDocument} = this.host;
+      const {defaultView} = ('defaultView' in this) ? this : this.host.ownerDocument;
+      if (defaultView === null) {
+        throw new ReferenceError('Unable to determine `CSSStyleSheet` constructor');
+      }
       return new Proxy(target, {
         set(target, propertyKey, value, receiver) {
-          if (propertyKey === String(propertyKey >>> 0) && ownerDocument !== document) {
-            value = styleSheetInDocument(value, ownerDocument);
+          if (propertyKey === String(propertyKey >>> 0)) {
+            value = styleSheetWithConstructor(value, defaultView.CSSStyleSheet);
           }
           return Reflect.set(target, propertyKey, value, receiver);
         },
       });
     },
-    set(this: ShadowRoot, styleSheets: CSSStyleSheet[]) {
-      const {ownerDocument} = this.host;
-      if (ownerDocument !== document) {
-        styleSheets = styleSheets.map(styleSheet => styleSheetInDocument(styleSheet, ownerDocument));
+    set(this: Document|ShadowRoot, styleSheets: CSSStyleSheet[]) {
+      const {defaultView} = ('defaultView' in this) ? this : this.host.ownerDocument;
+      if (defaultView === null) {
+        throw new ReferenceError('Unable to determine `CSSStyleSheet` constructor');
       }
-      originalAdoptedStyleSheets.set.call(this, styleSheets);
+      originalAdoptedStyleSheets.set.call(
+          this, styleSheets.map(styleSheet => styleSheetWithConstructor(styleSheet, defaultView.CSSStyleSheet)));
     }
   });
 }

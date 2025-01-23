@@ -1024,7 +1024,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private async removeUISourceCodeFromProject(node: NavigatorTreeNode): Promise<void> {
-    node.children().forEach(async child => {
+    node.children().slice(0).forEach(async child => {
       await this.removeUISourceCodeFromProject(child);
     });
 
@@ -1526,7 +1526,6 @@ export class NavigatorTreeNode {
   id: string;
   protected navigatorView: NavigatorView;
   type: string;
-  childrenInternal: Map<string, NavigatorTreeNode>;
   private populated: boolean;
   isMerged: boolean;
   parent!: NavigatorTreeNode|null;
@@ -1534,11 +1533,13 @@ export class NavigatorTreeNode {
   tooltip?: string;
   recursiveProperties: NavigatorRecursiveTreeNodeProperties;
 
+  #children: NavigatorTreeNode[] = [];
+  readonly #childById = new Map<string, NavigatorTreeNode>();
+
   constructor(navigatorView: NavigatorView, id: string, type: string, tooltip?: string) {
     this.id = id;
     this.navigatorView = navigatorView;
     this.type = type;
-    this.childrenInternal = new Map();
     this.tooltip = tooltip;
 
     this.populated = false;
@@ -1625,32 +1626,46 @@ export class NavigatorTreeNode {
   }
 
   isEmpty(): boolean {
-    return !this.childrenInternal.size;
+    return !this.#children.length;
   }
 
-  children(): NavigatorTreeNode[] {
-    return [...this.childrenInternal.values()];
+  children(): readonly NavigatorTreeNode[] {
+    return this.#children;
   }
 
   child(id: string): NavigatorTreeNode|null {
-    return this.childrenInternal.get(id) || null;
+    return this.#childById.get(id) ?? null;
   }
 
   appendChild(node: NavigatorTreeNode): void {
-    this.childrenInternal.set(node.id, node);
+    this.#children.push(node);
+    this.#childById.set(node.id, node);
     node.parent = this;
     this.didAddChild(node);
   }
 
   removeChild(node: NavigatorTreeNode): void {
     this.willRemoveChild(node);
-    this.childrenInternal.delete(node.id);
+    const idx = this.#children.findIndex(n => n.id === node.id);
+    if (idx >= 0) {
+      this.#children.splice(idx, 1);
+    }
+    this.#childById.delete(node.id);
     node.parent = null;
     node.dispose();
   }
 
   reset(): void {
-    this.childrenInternal.clear();
+    this.#children = [];
+    this.#childById.clear();
+  }
+
+  updateId(newId: string): void {
+    if (this.parent) {
+      this.parent.#childById.delete(this.id);
+      this.parent.#childById.set(newId, this);
+    }
+    this.id = newId;
   }
 }
 
@@ -1748,9 +1763,7 @@ export class NavigatorUISourceCodeTreeNode extends NavigatorTreeNode {
     this.treeElement.tooltip = tooltip;
     this.treeElement.updateAccessibleName();
 
-    this.parent?.childrenInternal.delete(this.id);
-    this.id = 'UISourceCode:' + this.uiSourceCodeInternal.canononicalScriptId();
-    this.parent?.childrenInternal.set(this.id, this);
+    this.updateId('UISourceCode:' + this.uiSourceCodeInternal.canononicalScriptId());
   }
 
   override hasChildren(): boolean {

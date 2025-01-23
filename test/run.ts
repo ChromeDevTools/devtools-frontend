@@ -85,6 +85,7 @@ function ninja(stdio: 'inherit'|'pipe', ...args: string[]) {
 class Tests {
   readonly suite: PathPair;
   readonly extraPaths: PathPair[];
+  protected readonly cwd = path.dirname(GEN_DIR);
   constructor(suite: string, ...extraSuites: string[]) {
     const suitePath = PathPair.get(suite);
     if (!suitePath) {
@@ -117,8 +118,12 @@ class Tests {
     } else if (options['debug']) {
       argumentsForNode.unshift('--inspect');
     }
-    const result = runProcess(
-        process.argv[0], argumentsForNode, {encoding: 'utf-8', stdio: 'inherit', cwd: path.dirname(GEN_DIR)});
+
+    const result = runProcess(process.argv[0], argumentsForNode, {
+      encoding: 'utf-8',
+      stdio: 'inherit',
+      cwd: this.cwd,
+    });
     return !result.error && (result.status ?? 1) === 0;
   }
 }
@@ -140,6 +145,32 @@ class MochaTests extends Tests {
   }
 }
 
+/**
+ * Workaround the fact that these test don't have
+ * build output in out/Default like dir.
+ */
+class ScriptPathPair extends PathPair {
+  static getFromPair(pair: PathPair) {
+    return new ScriptPathPair(pair.sourcePath, pair.sourcePath);
+  }
+}
+
+class ScriptsMochaTests extends Tests {
+  override readonly cwd = SOURCE_ROOT;
+  override run(tests: PathPair[]) {
+    return super.run(
+        tests.map(test => ScriptPathPair.getFromPair(test)!),
+        [
+          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+        ],
+    );
+  }
+
+  override match(path: PathPair): boolean {
+    return super.match(ScriptPathPair.getFromPair(path)!);
+  }
+}
+
 class KarmaTests extends Tests {
   override run(tests: PathPair[]) {
     return super.run(tests, [
@@ -156,12 +187,14 @@ class KarmaTests extends Tests {
 // - watch
 function main() {
   const tests: string[] = options['tests'];
-
   const testKinds = [
     new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
+    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
+    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),
+    new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/build/tests')),
   ];
 
   if (!options['skip-ninja']) {

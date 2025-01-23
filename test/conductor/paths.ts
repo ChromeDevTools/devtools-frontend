@@ -39,7 +39,7 @@ export function isContainedInDirectory(contained: string, directory: string) {
 }
 
 export class PathPair {
-  private constructor(readonly sourcePath: string, readonly buildPath: string) {
+  protected constructor(readonly sourcePath: string, readonly buildPath: string) {
     if (!path.isAbsolute(sourcePath) || !path.isAbsolute(buildPath)) {
       throw new Error('Repo paths must be absolute');
     }

@@ -6,27 +6,23 @@ import * as Types from '../types/types.js';
 
 import {getNavigationForTraceEvent} from './Trace.js';
 
-export const milliToMicro = (value: Types.Timing.MilliSeconds): Types.Timing.MicroSeconds =>
-    Types.Timing.MicroSeconds(value * 1000);
+export const milliToMicro = (value: Types.Timing.Milli): Types.Timing.Micro => Types.Timing.Micro(value * 1000);
 
-export const secondsToMilli = (value: Types.Timing.Seconds): Types.Timing.MilliSeconds =>
-    Types.Timing.MilliSeconds(value * 1000);
+export const secondsToMilli = (value: Types.Timing.Seconds): Types.Timing.Milli => Types.Timing.Milli(value * 1000);
 
-export const secondsToMicro = (value: Types.Timing.Seconds): Types.Timing.MicroSeconds =>
-    milliToMicro(secondsToMilli(value));
+export const secondsToMicro = (value: Types.Timing.Seconds): Types.Timing.Micro => milliToMicro(secondsToMilli(value));
 
-export const microToMilli = (value: Types.Timing.MicroSeconds): Types.Timing.MilliSeconds =>
-    Types.Timing.MilliSeconds(value / 1000);
+export const microToMilli = (value: Types.Timing.Micro): Types.Timing.Milli => Types.Timing.Milli(value / 1000);
 
-export const microToSeconds = (value: Types.Timing.MicroSeconds): Types.Timing.Seconds =>
+export const microToSeconds = (value: Types.Timing.Micro): Types.Timing.Seconds =>
     Types.Timing.Seconds(value / 1000 / 1000);
 
 export function timeStampForEventAdjustedByClosestNavigation(
     event: Types.Events.Event,
-    traceBounds: Types.Timing.TraceWindowMicroSeconds,
+    traceBounds: Types.Timing.TraceWindowMicro,
     navigationsByNavigationId: Map<string, Types.Events.NavigationStart>,
     navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>,
-    ): Types.Timing.MicroSeconds {
+    ): Types.Timing.Micro {
   let eventTimeStamp = event.ts - traceBounds.min;
   if (event.args?.data?.navigationId) {
     const navigationForEvent = navigationsByNavigationId.get(event.args.data.navigationId);
@@ -39,14 +35,14 @@ export function timeStampForEventAdjustedByClosestNavigation(
       eventTimeStamp = event.ts - navigationForEvent.ts;
     }
   }
-  return Types.Timing.MicroSeconds(eventTimeStamp);
+  return Types.Timing.Micro(eventTimeStamp);
 }
 
 // Expands the trace window by a provided percentage or, if it the expanded window is smaller than 1 millisecond, expands it to 1 millisecond.
 // If the expanded window is outside of the max trace window, cut the overflowing bound to the max trace window bound.
 export function expandWindowByPercentOrToOneMillisecond(
-    annotationWindow: Types.Timing.TraceWindowMicroSeconds, maxTraceWindow: Types.Timing.TraceWindowMicroSeconds,
-    percentage: number): Types.Timing.TraceWindowMicroSeconds {
+    annotationWindow: Types.Timing.TraceWindowMicro, maxTraceWindow: Types.Timing.TraceWindowMicro,
+    percentage: number): Types.Timing.TraceWindowMicro {
   // Expand min and max of the window by half of the provided percentage. That way, in total, the window will be expanded by the provided percentage.
   let newMin = annotationWindow.min - annotationWindow.range * (percentage / 100) / 2;
   let newMax = annotationWindow.max + annotationWindow.range * (percentage / 100) / 2;
@@ -60,40 +56,37 @@ export function expandWindowByPercentOrToOneMillisecond(
   newMin = Math.max(newMin, maxTraceWindow.min);
   newMax = Math.min(newMax, maxTraceWindow.max);
 
-  const expandedWindow: Types.Timing.TraceWindowMicroSeconds = {
-    min: Types.Timing.MicroSeconds(newMin),
-    max: Types.Timing.MicroSeconds(newMax),
-    range: Types.Timing.MicroSeconds(newMax - newMin),
+  const expandedWindow: Types.Timing.TraceWindowMicro = {
+    min: Types.Timing.Micro(newMin),
+    max: Types.Timing.Micro(newMax),
+    range: Types.Timing.Micro(newMax - newMin),
   };
 
   return expandedWindow;
 }
 
-export interface EventTimingsData<
-  ValueType extends Types.Timing.MicroSeconds|Types.Timing.MilliSeconds|Types.Timing.Seconds,
-> {
+export interface EventTimingsData<ValueType extends Types.Timing.Micro|Types.Timing.Milli|Types.Timing.Seconds, > {
   startTime: ValueType;
   endTime: ValueType;
   duration: ValueType;
 }
 
-export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MicroSeconds> {
+export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Micro> {
   return {
-    startTime: event.ts as Types.Timing.MicroSeconds,
-    endTime: (event.ts + (event.dur ?? 0)) as Types.Timing.MicroSeconds,
-    duration: (event.dur || 0) as Types.Timing.MicroSeconds,
+    startTime: event.ts as Types.Timing.Micro,
+    endTime: (event.ts + (event.dur ?? 0)) as Types.Timing.Micro,
+    duration: (event.dur || 0) as Types.Timing.Micro,
   };
 }
-export function eventTimingsMilliSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MilliSeconds> {
+export function eventTimingsMilliSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Milli> {
   return {
-    startTime: (event.ts / 1000) as Types.Timing.MilliSeconds,
-    endTime: (event.ts + (event.dur ?? 0)) / 1000 as Types.Timing.MilliSeconds,
-    duration: (event.dur || 0) / 1000 as Types.Timing.MilliSeconds,
+    startTime: (event.ts / 1000) as Types.Timing.Milli,
+    endTime: (event.ts + (event.dur ?? 0)) / 1000 as Types.Timing.Milli,
+    duration: (event.dur || 0) / 1000 as Types.Timing.Milli,
   };
 }
 
-export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicroSeconds):
-    Types.Timing.TraceWindowMilliSeconds {
+export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicro): Types.Timing.TraceWindowMilli {
   return {
     min: microToMilli(bounds.min),
     max: microToMilli(bounds.max),
@@ -101,16 +94,16 @@ export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicroSec
   };
 }
 
-export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilliSeconds):
-    Types.Timing.TraceWindowMicroSeconds {
+export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilli):
+    Types.Timing.TraceWindowMicro {
   return {
     min: milliToMicro(bounds.min),
     max: milliToMicro(bounds.max),
     range: milliToMicro(bounds.range),
   };
 }
-export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.TraceWindowMicroSeconds):
-    Types.Timing.TraceWindowMilliSeconds {
+export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.TraceWindowMicro):
+    Types.Timing.TraceWindowMilli {
   return {
     min: microToMilli(bounds.min),
     max: microToMilli(bounds.max),
@@ -119,36 +112,36 @@ export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.Trace
 }
 
 export function traceWindowFromMilliSeconds(
-    min: Types.Timing.MilliSeconds, max: Types.Timing.MilliSeconds): Types.Timing.TraceWindowMicroSeconds {
-  const traceWindow: Types.Timing.TraceWindowMicroSeconds = {
+    min: Types.Timing.Milli, max: Types.Timing.Milli): Types.Timing.TraceWindowMicro {
+  const traceWindow: Types.Timing.TraceWindowMicro = {
     min: milliToMicro(min),
     max: milliToMicro(max),
-    range: Types.Timing.MicroSeconds(milliToMicro(max) - milliToMicro(min)),
+    range: Types.Timing.Micro(milliToMicro(max) - milliToMicro(min)),
   };
   return traceWindow;
 }
 
 export function traceWindowFromMicroSeconds(
-    min: Types.Timing.MicroSeconds, max: Types.Timing.MicroSeconds): Types.Timing.TraceWindowMicroSeconds {
-  const traceWindow: Types.Timing.TraceWindowMicroSeconds = {
+    min: Types.Timing.Micro, max: Types.Timing.Micro): Types.Timing.TraceWindowMicro {
+  const traceWindow: Types.Timing.TraceWindowMicro = {
     min,
     max,
-    range: Types.Timing.MicroSeconds(max - min),
+    range: Types.Timing.Micro(max - min),
   };
   return traceWindow;
 }
 
-export function traceWindowFromEvent(event: Types.Events.Event): Types.Timing.TraceWindowMicroSeconds {
+export function traceWindowFromEvent(event: Types.Events.Event): Types.Timing.TraceWindowMicro {
   return {
     min: event.ts,
-    max: Types.Timing.MicroSeconds(event.ts + (event.dur ?? 0)),
-    range: event.dur ?? Types.Timing.MicroSeconds(0),
+    max: Types.Timing.Micro(event.ts + (event.dur ?? 0)),
+    range: event.dur ?? Types.Timing.Micro(0),
   };
 }
 
 export interface BoundsIncludeTimeRange {
-  timeRange: Types.Timing.TraceWindowMicroSeconds;
-  bounds: Types.Timing.TraceWindowMicroSeconds;
+  timeRange: Types.Timing.TraceWindowMicro;
+  bounds: Types.Timing.TraceWindowMicro;
 }
 
 /**
@@ -171,19 +164,18 @@ export function boundsIncludeTimeRange(data: BoundsIncludeTimeRange): boolean {
 }
 
 /** Checks to see if the event is within or overlaps the bounds */
-export function eventIsInBounds(event: Types.Events.Event, bounds: Types.Timing.TraceWindowMicroSeconds): boolean {
+export function eventIsInBounds(event: Types.Events.Event, bounds: Types.Timing.TraceWindowMicro): boolean {
   const startTime = event.ts;
   return startTime <= bounds.max && bounds.min <= (startTime + (event.dur ?? 0));
 }
 
-export function timestampIsInBounds(
-    bounds: Types.Timing.TraceWindowMicroSeconds, timestamp: Types.Timing.MicroSeconds): boolean {
+export function timestampIsInBounds(bounds: Types.Timing.TraceWindowMicro, timestamp: Types.Timing.Micro): boolean {
   return timestamp >= bounds.min && timestamp <= bounds.max;
 }
 
 export interface WindowFitsInsideBounds {
-  window: Types.Timing.TraceWindowMicroSeconds;
-  bounds: Types.Timing.TraceWindowMicroSeconds;
+  window: Types.Timing.TraceWindowMicro;
+  bounds: Types.Timing.TraceWindowMicro;
 }
 
 /**
@@ -194,7 +186,6 @@ export function windowFitsInsideBounds(data: WindowFitsInsideBounds): boolean {
   return data.window.min >= data.bounds.min && data.window.max <= data.bounds.max;
 }
 
-export function windowsEqual(
-    w1: Types.Timing.TraceWindowMicroSeconds, w2: Types.Timing.TraceWindowMicroSeconds): boolean {
+export function windowsEqual(w1: Types.Timing.TraceWindowMicro, w2: Types.Timing.TraceWindowMicro): boolean {
   return w1.min === w2.min && w1.max === w2.max;
 }

@@ -30,7 +30,7 @@ export function getInsight<InsightName extends keyof InsightModels>(
 }
 
 export function getLCP(insights: TraceInsightSets|null, key: string|null):
-    {value: Types.Timing.MicroSeconds, event: Types.Events.LargestContentfulPaintCandidate}|null {
+    {value: Types.Timing.Micro, event: Types.Events.LargestContentfulPaintCandidate}|null {
   const insight = getInsight('LCPPhases', insights, key);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;
@@ -41,7 +41,7 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
 }
 
 export function getINP(insights: TraceInsightSets|null, key: string|null):
-    {value: Types.Timing.MicroSeconds, event: Types.Events.SyntheticInteractionPair}|null {
+    {value: Types.Timing.Micro, event: Types.Events.SyntheticInteractionPair}|null {
   const insight = getInsight('InteractionToNextPaint', insights, key);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
@@ -85,7 +85,7 @@ export function evaluateCLSMetricScore(value: number): number {
 }
 
 export interface CrUXFieldMetricTimingResult {
-  value: Types.Timing.MicroSeconds;
+  value: Types.Timing.Micro;
   pageScope: CrUXManager.PageScope;
 }
 export interface CrUXFieldMetricNumberResult {
@@ -132,7 +132,7 @@ function getMetricTimingResult(
     pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): CrUXFieldMetricTimingResult|null {
   const result = getMetricResult(pageResult, name);
   if (result) {
-    const valueMs = result.value as Types.Timing.MilliSeconds;
+    const valueMs = result.value as Types.Timing.Milli;
     return {value: Helpers.Timing.milliToMicro(valueMs), pageScope: result.pageScope};
   }
 

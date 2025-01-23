@@ -104,7 +104,7 @@ export function extractConsoleAPIExtensionEntries(): void {
         cat: 'devtools.extension',
         args: extensionData,
         rawSourceEvent: currentTimeStamp,
-        dur: Types.Timing.MicroSeconds(entryEndTime - entryStartTime),
+        dur: Types.Timing.Micro(entryEndTime - entryStartTime),
         ts: entryStartTime,
       };
       const extensionEntry =
@@ -123,7 +123,7 @@ export function extractConsoleAPIExtensionEntries(): void {
       cat: 'disabled-by-default-v8.inspector',
       ph: Types.Events.Phase.COMPLETE,
       ts: entryStartTime,
-      dur: Types.Timing.MicroSeconds(entryEndTime - entryStartTime),
+      dur: Types.Timing.Micro(entryEndTime - entryStartTime),
       rawSourceEvent: currentTimeStamp
     };
     const syntheticTimeStamp =
@@ -177,7 +177,7 @@ export function extractPerformanceAPIExtensionEntries(
       pid: timing.pid,
       tid: timing.tid,
       ts: timing.ts,
-      dur: timing.dur as Types.Timing.MicroSeconds,
+      dur: timing.dur as Types.Timing.Micro,
       cat: 'devtools.extension',
       args: extensionPayload,
       rawSourceEvent: Types.Events.isSyntheticUserTiming(timing) ? timing.rawSourceEvent : timing,

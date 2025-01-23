@@ -43,7 +43,7 @@ describeWithEnvironment('DocumentLatency', function() {
       throw new Error('missing timing field');
     }
     mainRequestEvent.args.data.timing.receiveHeadersEnd =
-        Types.Timing.MilliSeconds(mainRequestEvent.args.data.timing.receiveHeadersEnd + 1000);
+        Types.Timing.Milli(mainRequestEvent.args.data.timing.receiveHeadersEnd + 1000);
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
     await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});

@@ -105,7 +105,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     const entireTraceBounds = parsedTrace.Meta.traceBounds;
     const newBounds = {
       ...entireTraceBounds,
-      min: Trace.Types.Timing.MicroSeconds((entireTraceBounds.max + entireTraceBounds.min) / 2),
+      min: Trace.Types.Timing.Micro((entireTraceBounds.max + entireTraceBounds.min) / 2),
     };
     minimap.breadcrumbs?.add(newBounds);
     const serializableModifications = Timeline.ModificationsManager.ModificationsManager.activeManager()?.toJSON();

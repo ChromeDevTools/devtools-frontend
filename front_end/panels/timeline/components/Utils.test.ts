@@ -14,14 +14,14 @@ describeWithEnvironment('Utils', () => {
     const {NumberWithUnit} = Utils;
 
     it('renders number with unit (formatMicroSecondsAsSeconds)', () => {
-      const result = NumberWithUnit.formatMicroSecondsAsSeconds(100_000 as Trace.Types.Timing.MicroSeconds);
+      const result = NumberWithUnit.formatMicroSecondsAsSeconds(100_000 as Trace.Types.Timing.Micro);
       assert.strictEqual(result.text, '0.10s');
       assert.strictEqual(result.element.textContent, '0.10s');
       assert.strictEqual(result.element.querySelector('.unit')?.textContent, 's');
     });
 
     it('renders number with unit (formatMicroSecondsAsMillisFixed)', () => {
-      const result = NumberWithUnit.formatMicroSecondsAsMillisFixed(100_000 as Trace.Types.Timing.MicroSeconds);
+      const result = NumberWithUnit.formatMicroSecondsAsMillisFixed(100_000 as Trace.Types.Timing.Micro);
       assert.strictEqual(result.text, '100ms');
       assert.strictEqual(result.element.textContent, '100ms');
       assert.strictEqual(result.element.querySelector('.unit')?.textContent, 'ms');

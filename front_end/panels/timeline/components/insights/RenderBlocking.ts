@@ -54,7 +54,7 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     };
   }
 
-  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.FCP ?? null;
   }
 

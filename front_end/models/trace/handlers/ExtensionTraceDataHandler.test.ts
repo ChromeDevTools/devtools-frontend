@@ -39,7 +39,7 @@ function makeTimingEventWithPerformanceExtensionData(
     args,
     name,
     ph: isMark ? Trace.Types.Events.Phase.INSTANT : Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
-    ts: Trace.Types.Timing.MicroSeconds(tsMicro),
+    ts: Trace.Types.Timing.Micro(tsMicro),
     ...traceEventBase,
   } as Trace.Types.Events.Event;
   if (isMark) {
@@ -50,7 +50,7 @@ function makeTimingEventWithPerformanceExtensionData(
     {
       name,
       ...traceEventBase,
-      ts: Trace.Types.Timing.MicroSeconds(tsMicro + (durMicro || 0)),
+      ts: Trace.Types.Timing.Micro(tsMicro + (durMicro || 0)),
       ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_END,
     },
   ];
@@ -73,7 +73,7 @@ function makeTimingEventWithConsoleExtensionData({name, ts, start, end, track, t
         color,
       }
     },
-    ts: Trace.Types.Timing.MicroSeconds(ts),
+    ts: Trace.Types.Timing.Micro(ts),
     ph: Trace.Types.Events.Phase.COMPLETE,
 
   };
@@ -258,7 +258,7 @@ describe('ExtensionTraceDataHandler', function() {
           ph: Trace.Types.Events.Phase.INSTANT,
           pid: Trace.Types.Events.ProcessID(1),
           tid: Trace.Types.Events.ThreadID(1),
-          ts: Trace.Types.Timing.MicroSeconds(100),
+          ts: Trace.Types.Timing.Micro(100),
         };
 
         assert.isNull(

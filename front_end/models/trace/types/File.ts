@@ -6,7 +6,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 
-import type {TraceWindowMicroSeconds} from './Timing.js';
+import type {TraceWindowMicro} from './Timing.js';
 import type {Event, LegacyTimelineFrame, ProcessID, SampleIndex, ThreadID} from './TraceEvents.js';
 
 export interface TraceFile {
@@ -15,7 +15,7 @@ export interface TraceFile {
 }
 
 export interface Breadcrumb {
-  window: TraceWindowMicroSeconds;
+  window: TraceWindowMicro;
   child: Breadcrumb|null;
 }
 
@@ -69,7 +69,7 @@ export interface EntryLabelAnnotation {
 export interface TimeRangeAnnotation {
   type: 'TIME_RANGE';
   label: string;
-  bounds: TraceWindowMicroSeconds;
+  bounds: TraceWindowMicro;
 }
 
 export interface EntriesLinkAnnotation {
@@ -91,7 +91,7 @@ export interface EntryLabelAnnotationSerialized {
  * Represents an object that is saved in the file when a user creates a time range with a label in the timeline.
  */
 export interface TimeRangeAnnotationSerialized {
-  bounds: TraceWindowMicroSeconds;
+  bounds: TraceWindowMicro;
   label: string;
 }
 

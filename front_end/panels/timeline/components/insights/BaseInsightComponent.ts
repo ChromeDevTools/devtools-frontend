@@ -46,7 +46,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Ba
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface BaseInsightData {
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds|null;
+  bounds: Trace.Types.Timing.TraceWindowMicro|null;
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
 }
@@ -114,11 +114,11 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  get bounds(): Trace.Types.Timing.TraceWindowMicroSeconds|null {
+  get bounds(): Trace.Types.Timing.TraceWindowMicro|null {
     return this.data.bounds;
   }
 
-  set bounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds|null) {
+  set bounds(bounds: Trace.Types.Timing.TraceWindowMicro|null) {
     this.data.bounds = bounds;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -217,7 +217,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     this.#renderWithContent(output);
   }
 
-  getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return null;
   }
 

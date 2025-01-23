@@ -7,12 +7,12 @@ import * as Trace from '../../models/trace/trace.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export class IsLong extends Trace.Extras.TraceFilter.TraceFilter {
-  #minimumRecordDurationMilli = Trace.Types.Timing.MilliSeconds(0);
+  #minimumRecordDurationMilli = Trace.Types.Timing.Milli(0);
   constructor() {
     super();
   }
 
-  setMinimumRecordDuration(value: Trace.Types.Timing.MilliSeconds): void {
+  setMinimumRecordDuration(value: Trace.Types.Timing.Milli): void {
     this.#minimumRecordDurationMilli = value;
   }
 

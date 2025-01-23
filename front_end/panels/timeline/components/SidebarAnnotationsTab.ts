@@ -151,7 +151,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
     return processedAnnotations;
   }
 
-  #getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.MicroSeconds {
+  #getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.Micro {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
         return annotation.entry.ts;

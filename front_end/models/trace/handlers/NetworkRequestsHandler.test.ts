@@ -33,29 +33,29 @@ describe('NetworkRequestsHandler', function() {
 
       // Page Request.
       const pageRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(25085)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(5670)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(105)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(498)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(363)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(1383)],
-        ['download', Trace.Types.Timing.MicroSeconds(4827)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(38503)],
+        ['queueing', Trace.Types.Timing.Micro(25085)],
+        ['stalled', Trace.Types.Timing.Micro(5670)],
+        ['dnsLookup', Trace.Types.Timing.Micro(105)],
+        ['initialConnection', Trace.Types.Timing.Micro(498)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(363)],
+        ['waiting', Trace.Types.Timing.Micro(1383)],
+        ['download', Trace.Types.Timing.Micro(4827)],
+        ['networkDuration', Trace.Types.Timing.Micro(38503)],
       ]);
       assertDataArgsProcessedDataStats(topLevelRequests.all, 'http://localhost:8080/', pageRequestExpected);
 
       // CSS Request (cached event (with resourceMarkAsCached event)),
       const cssRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(0)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(2175)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(0)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(0)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(0)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(0)],
-        ['download', Trace.Types.Timing.MicroSeconds(1294)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(0)],
+        ['queueing', Trace.Types.Timing.Micro(0)],
+        ['stalled', Trace.Types.Timing.Micro(2175)],
+        ['dnsLookup', Trace.Types.Timing.Micro(0)],
+        ['initialConnection', Trace.Types.Timing.Micro(0)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(0)],
+        ['waiting', Trace.Types.Timing.Micro(0)],
+        ['download', Trace.Types.Timing.Micro(1294)],
+        ['networkDuration', Trace.Types.Timing.Micro(0)],
       ]);
 
       const cssRequestBlockingStatusExpected: DataArgsMap = new Map([
@@ -67,15 +67,15 @@ describe('NetworkRequestsHandler', function() {
 
       // Blocking JS Request.
       const blockingJSRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(0)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(2126)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(0)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(0)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(0)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(0)],
-        ['download', Trace.Types.Timing.MicroSeconds(1207)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(0)],
+        ['queueing', Trace.Types.Timing.Micro(0)],
+        ['stalled', Trace.Types.Timing.Micro(2126)],
+        ['dnsLookup', Trace.Types.Timing.Micro(0)],
+        ['initialConnection', Trace.Types.Timing.Micro(0)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(0)],
+        ['waiting', Trace.Types.Timing.Micro(0)],
+        ['download', Trace.Types.Timing.Micro(1207)],
+        ['networkDuration', Trace.Types.Timing.Micro(0)],
       ]);
 
       const blockingJSBlockingStatusExpected: DataArgsMap = new Map([
@@ -88,15 +88,15 @@ describe('NetworkRequestsHandler', function() {
 
       // Module JS Request (cached).
       const moduleRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(7681)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(1527)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(0)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(0)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(0)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(20200)],
-        ['download', Trace.Types.Timing.MicroSeconds(19273)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(48681)],
+        ['queueing', Trace.Types.Timing.Micro(7681)],
+        ['stalled', Trace.Types.Timing.Micro(1527)],
+        ['dnsLookup', Trace.Types.Timing.Micro(0)],
+        ['initialConnection', Trace.Types.Timing.Micro(0)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(0)],
+        ['waiting', Trace.Types.Timing.Micro(20200)],
+        ['download', Trace.Types.Timing.Micro(19273)],
+        ['networkDuration', Trace.Types.Timing.Micro(48681)],
       ]);
 
       const moduleRequestBlockingStatusExpected: DataArgsMap = new Map([
@@ -111,15 +111,15 @@ describe('NetworkRequestsHandler', function() {
       assert.lengthOf(fontCSSRequests.all, 1, 'Incorrect number of requests');
 
       const fontCSSRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(0)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(3178)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(0)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(0)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(0)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(0)],
-        ['download', Trace.Types.Timing.MicroSeconds(1203)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(0)],
+        ['queueing', Trace.Types.Timing.Micro(0)],
+        ['stalled', Trace.Types.Timing.Micro(3178)],
+        ['dnsLookup', Trace.Types.Timing.Micro(0)],
+        ['initialConnection', Trace.Types.Timing.Micro(0)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(0)],
+        ['waiting', Trace.Types.Timing.Micro(0)],
+        ['download', Trace.Types.Timing.Micro(1203)],
+        ['networkDuration', Trace.Types.Timing.Micro(0)],
       ]);
 
       const fontCSSBlockingStatusExpected: DataArgsMap = new Map([
@@ -138,15 +138,15 @@ describe('NetworkRequestsHandler', function() {
       assert.lengthOf(fontDataRequests.all, 1, 'Incorrect number of requests');
 
       const fontDataRequestExpected: DataArgsProcessedDataMap = new Map([
-        ['queueing', Trace.Types.Timing.MicroSeconds(0)],
-        ['stalled', Trace.Types.Timing.MicroSeconds(1929)],
-        ['dnsLookup', Trace.Types.Timing.MicroSeconds(0)],
-        ['initialConnection', Trace.Types.Timing.MicroSeconds(0)],
-        ['ssl', Trace.Types.Timing.MicroSeconds(0)],
-        ['requestSent', Trace.Types.Timing.MicroSeconds(0)],
-        ['waiting', Trace.Types.Timing.MicroSeconds(0)],
-        ['download', Trace.Types.Timing.MicroSeconds(962)],
-        ['networkDuration', Trace.Types.Timing.MicroSeconds(0)],
+        ['queueing', Trace.Types.Timing.Micro(0)],
+        ['stalled', Trace.Types.Timing.Micro(1929)],
+        ['dnsLookup', Trace.Types.Timing.Micro(0)],
+        ['initialConnection', Trace.Types.Timing.Micro(0)],
+        ['ssl', Trace.Types.Timing.Micro(0)],
+        ['requestSent', Trace.Types.Timing.Micro(0)],
+        ['waiting', Trace.Types.Timing.Micro(0)],
+        ['download', Trace.Types.Timing.Micro(962)],
+        ['networkDuration', Trace.Types.Timing.Micro(0)],
       ]);
 
       const fontDataRequestBlockingStatusExpected: DataArgsMap = new Map([
@@ -231,15 +231,15 @@ describe('NetworkRequestsHandler', function() {
               url: 'http://localhost:3000/foo',
               priority: 'VeryHigh',
               requestMethod: 'GET',
-              ts: Trace.Types.Timing.MicroSeconds(1311223447642),
-              dur: Trace.Types.Timing.MicroSeconds(7845),
+              ts: Trace.Types.Timing.Micro(1311223447642),
+              dur: Trace.Types.Timing.Micro(7845),
             },
             {
               url: 'http://localhost:3000/bar',
               priority: 'VeryHigh',
               requestMethod: 'GET',
-              ts: Trace.Types.Timing.MicroSeconds(1311223455487),
-              dur: Trace.Types.Timing.MicroSeconds(3771),
+              ts: Trace.Types.Timing.Micro(1311223455487),
+              dur: Trace.Types.Timing.Micro(3771),
             },
           ],
           'Incorrect number of redirects (request 1)');
@@ -264,15 +264,15 @@ describe('NetworkRequestsHandler', function() {
               url: 'http://localhost:3000/foo.js',
               priority: 'Low',
               requestMethod: 'GET',
-              ts: Trace.Types.Timing.MicroSeconds(183611568786),
-              dur: Trace.Types.Timing.MicroSeconds(506233),
+              ts: Trace.Types.Timing.Micro(183611568786),
+              dur: Trace.Types.Timing.Micro(506233),
             },
             {
               url: 'http://localhost:3000/bar.js',
               priority: 'Low',
               requestMethod: 'GET',
-              ts: Trace.Types.Timing.MicroSeconds(183612075019),
-              dur: Trace.Types.Timing.MicroSeconds(802726),
+              ts: Trace.Types.Timing.Micro(183612075019),
+              dur: Trace.Types.Timing.Micro(802726),
             },
           ],
           'Incorrect number of redirects (request 1)');

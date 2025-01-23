@@ -92,12 +92,12 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     this.#parsedTrace = parsedTrace;
   }
 
-  override update(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
+  override update(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void {
     this.resetCanvas();
     this.#renderWithParsedTrace(start, end);
   }
 
-  #renderWithParsedTrace(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
+  #renderWithParsedTrace(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void {
     if (!this.#parsedTrace) {
       return;
     }
@@ -152,8 +152,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   #drawn = false;
-  #start: Trace.Types.Timing.MilliSeconds;
-  #end: Trace.Types.Timing.MilliSeconds;
+  #start: Trace.Types.Timing.Milli;
+  #end: Trace.Types.Timing.Milli;
 
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     // During the sync tracks migration this component can use either legacy
@@ -244,7 +244,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 
           function onEntryEnd(entry: Trace.Types.Events.Event): void {
             const endTimeMilli = Trace.Helpers.Timing.microToMilli(entry.ts) +
-                Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.MicroSeconds(entry.dur || 0));
+                Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(entry.dur || 0));
             const lastCategoryIndex = categoryIndexStack.pop();
             if (endTimeMilli !== undefined && lastCategoryIndex) {
               quantizer.appendInterval(endTimeMilli, lastCategoryIndex);
@@ -255,14 +255,14 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
           const bounds = {
             min: startMicro,
             max: endMicro,
-            range: Trace.Types.Timing.MicroSeconds(endMicro - startMicro),
+            range: Trace.Types.Timing.Micro(endMicro - startMicro),
           };
 
           // Filter out tiny events - they don't make a visual impact to the
           // canvas as they are so small, but they do impact the time it takes
           // to walk the tree and render the events.
           // However, if the entire range we are showing is 200ms or less, then show all events.
-          const minDuration = Trace.Types.Timing.MicroSeconds(
+          const minDuration = Trace.Types.Timing.Micro(
               bounds.range > 200_000 ? 16_000 : 0,
           );
           Trace.Helpers.TreeHelpers.walkEntireTree(
@@ -366,14 +366,14 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     return allWarningEvents;
   }
 
-  override update(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
+  override update(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void {
     this.resetCanvas();
 
     const height = this.height();
     const visibleTimeWindow = !(start && end) ? this.#parsedTrace.Meta.traceBounds : {
       min: Trace.Helpers.Timing.milliToMicro(start),
       max: Trace.Helpers.Timing.milliToMicro(end),
-      range: Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(end - start)),
+      range: Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(end - start)),
     };
     const timeSpan = visibleTimeWindow.range;
     const scale = this.width() / timeSpan;
@@ -421,8 +421,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this.reset();
   }
 
-  override update(customStartTime?: Trace.Types.Timing.MilliSeconds, customEndTime?: Trace.Types.Timing.MilliSeconds):
-      void {
+  override update(customStartTime?: Trace.Types.Timing.Milli, customEndTime?: Trace.Types.Timing.Milli): void {
     this.resetCanvas();
     const frames = this.#filmStrip ? this.#filmStrip.frames : [];
     if (!frames.length) {
@@ -465,8 +464,8 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   }
 
   private drawFrames(
-      imageWidth: number, imageHeight: number, customStartTime?: Trace.Types.Timing.MilliSeconds,
-      customEndTime?: Trace.Types.Timing.MilliSeconds): void {
+      imageWidth: number, imageHeight: number, customStartTime?: Trace.Types.Timing.Milli,
+      customEndTime?: Trace.Types.Timing.Milli): void {
     if (!imageWidth) {
       return;
     }
@@ -485,7 +484,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
     context.beginPath();
     for (let x = padding; x < width; x += imageWidth + 2 * padding) {
-      const time = Trace.Types.Timing.MilliSeconds(zeroTime + (x + imageWidth / 2) * scale);
+      const time = Trace.Types.Timing.Milli(zeroTime + (x + imageWidth / 2) * scale);
       const timeMicroSeconds = Trace.Helpers.Timing.milliToMicro(time);
       const frame = Trace.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
       if (!frame) {
@@ -558,7 +557,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     this.heapSizeLabel.textContent = '';
   }
 
-  override update(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
+  override update(start?: Trace.Types.Timing.Milli, end?: Trace.Types.Timing.Milli): void {
     this.resetCanvas();
     const ratio = window.devicePixelRatio;
 

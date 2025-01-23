@@ -338,7 +338,7 @@ function getIframeRootCauses(
       // Look for the first dom event that occurs within the bounds of the iframe event.
       // This contains the frame id.
       const domEvent = domLoadingEvents.find(e => {
-        const maxIframe = Types.Timing.MicroSeconds(iframeEvent.ts + (iframeEvent.dur ?? 0));
+        const maxIframe = Types.Timing.Micro(iframeEvent.ts + (iframeEvent.dur ?? 0));
         return e.ts >= iframeEvent.ts && e.ts <= maxIframe;
       });
       if (domEvent && domEvent.args.frame) {

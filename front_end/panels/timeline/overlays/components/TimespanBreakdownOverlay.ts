@@ -13,7 +13,7 @@ const {html} = LitHtml;
  * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
  */
 export interface EntryBreakdown {
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  bounds: Trace.Types.Timing.TraceWindowMicro;
   label: string|LitHtml.LitTemplate;
   showDuration: boolean;
 }

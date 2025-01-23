@@ -30,7 +30,7 @@ export class AnnotationModifiedEvent extends Event {
 
 interface ModificationsManagerData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  traceBounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  traceBounds: Trace.Types.Timing.TraceWindowMicro;
   rawTraceEvents: readonly Trace.Types.Events.Event[];
   syntheticEvents: Trace.Types.Events.SyntheticBased[];
   modifications?: Trace.Types.File.Modifications;

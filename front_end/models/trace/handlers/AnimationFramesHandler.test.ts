@@ -24,7 +24,7 @@ describe('AnimationFramesHandler', () => {
     assert.lengthOf(data.animationFrames, 32);
     const firstFrame = data.animationFrames[0];
     assert.strictEqual(firstFrame.args.data.beginEvent.args?.animation_frame_timing_info.duration_ms, 76);
-    assert.strictEqual(firstFrame.dur, Trace.Types.Timing.MicroSeconds(76038));
+    assert.strictEqual(firstFrame.dur, Trace.Types.Timing.Micro(76038));
   });
 
   it('links an animation frame to its presentation event', async function() {

@@ -56,8 +56,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // Update summaries.
     const min = Trace.Helpers.Timing.milliToMicro(this.startTime);
     const max = Trace.Helpers.Timing.milliToMicro(this.endTime);
-    const bounds:
-        Trace.Types.Timing.TraceWindowMicroSeconds = {max, min, range: Trace.Types.Timing.MicroSeconds(max - min)};
+    const bounds: Trace.Types.Timing.TraceWindowMicro = {max, min, range: Trace.Types.Timing.Micro(max - min)};
     this.#thirdPartySummaries =
         Trace.Extras.ThirdParties.getSummariesAndEntitiesWithMapping(parsedTrace, bounds, entityMapper.mappings());
 
@@ -181,19 +180,19 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
 
   extractThirdPartySummary(node: Trace.Extras.TraceTree.Node): {
     transferSize: number,
-    mainThreadTime: Trace.Types.Timing.MicroSeconds,
+    mainThreadTime: Trace.Types.Timing.Micro,
   } {
     if (!this.#thirdPartySummaries) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.MicroSeconds(0)};
+      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
     }
 
     const entity = this.#thirdPartySummaries.entityByEvent.get(node.event);
     if (!entity) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.MicroSeconds(0)};
+      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
     }
     const summary = this.#thirdPartySummaries.summaries.byEntity.get(entity);
     if (!summary) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.MicroSeconds(0)};
+      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
     }
     return {transferSize: summary.transferSize, mainThreadTime: summary.mainThreadTime};
   }

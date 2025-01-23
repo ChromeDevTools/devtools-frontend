@@ -31,8 +31,8 @@ describe('AnnotationHelpers', () => {
     it('returns an empty array for a range', async () => {
       const annotation: Trace.Types.File.TimeRangeAnnotation = {
         bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-            Trace.Types.Timing.MicroSeconds(0),
-            Trace.Types.Timing.MicroSeconds(10),
+            Trace.Types.Timing.Micro(0),
+            Trace.Types.Timing.Micro(10),
             ),
         type: 'TIME_RANGE',
         label: 'Hello world',
@@ -77,8 +77,8 @@ describe('AnnotationHelpers', () => {
     it('returns the bounds for a TIME_RANGE', async () => {
       const annotation: Trace.Types.File.TimeRangeAnnotation = {
         bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-            Trace.Types.Timing.MicroSeconds(0),
-            Trace.Types.Timing.MicroSeconds(10),
+            Trace.Types.Timing.Micro(0),
+            Trace.Types.Timing.Micro(10),
             ),
         type: 'TIME_RANGE',
         label: 'Hello world',

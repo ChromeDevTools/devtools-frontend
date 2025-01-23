@@ -257,7 +257,7 @@ describe('LayoutShiftsHandler', function() {
 
       const lastShiftTimings = Trace.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
       const wantEndTime = lastShiftTimings.endTime + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA;
-      const dur = Trace.Types.Timing.MicroSeconds(wantEndTime - earliestLayoutShiftTs);
+      const dur = Trace.Types.Timing.Micro(wantEndTime - earliestLayoutShiftTs);
       assert.strictEqual(cluster.dur || 0, dur);
     }
   });

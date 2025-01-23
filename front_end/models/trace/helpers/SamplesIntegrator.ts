@@ -218,7 +218,7 @@ export class SamplesIntegrator {
     // Because the event has ended, any frames that happened after
     // this event are terminated. Frames that are ancestors to this
     // event are extended to cover its ending.
-    const endTime = Types.Timing.MicroSeconds(event.ts + (event.dur ?? 0));
+    const endTime = Types.Timing.Micro(event.ts + (event.dur ?? 0));
     this.#truncateJSStack(this.#lockedJsStackDepth.pop() || 0, endTime);
   }
 
@@ -239,7 +239,7 @@ export class SamplesIntegrator {
     let prevNode;
     for (let i = 0; i < samples.length; i++) {
       const node = this.#profileModel.nodeByIndex(i);
-      const timestamp = milliToMicro(Types.Timing.MilliSeconds(timestamps[i]));
+      const timestamp = milliToMicro(Types.Timing.Milli(timestamps[i]));
       if (!node) {
         continue;
       }
@@ -326,7 +326,7 @@ export class SamplesIntegrator {
       }
       // Scoot the right edge of this callFrame to the right
       this.#currentJSStack[i].dur =
-          Types.Timing.MicroSeconds(Math.max(this.#currentJSStack[i].dur || 0, endTime - this.#currentJSStack[i].ts));
+          Types.Timing.Micro(Math.max(this.#currentJSStack[i].dur || 0, endTime - this.#currentJSStack[i].ts));
     }
 
     // If there are call frames in the sample that differ with the stack
@@ -373,7 +373,7 @@ export class SamplesIntegrator {
    * call frames between two stacks.
    * @param time the new end of the call frames in the stack.
    */
-  #truncateJSStack(depth: number, time: Types.Timing.MicroSeconds): void {
+  #truncateJSStack(depth: number, time: Types.Timing.Micro): void {
     if (this.#lockedJsStackDepth.length) {
       const lockedDepth = this.#lockedJsStackDepth.at(-1);
       if (lockedDepth && depth < lockedDepth) {
@@ -386,12 +386,12 @@ export class SamplesIntegrator {
       depth = this.#currentJSStack.length;
     }
     for (let k = 0; k < this.#currentJSStack.length; ++k) {
-      this.#currentJSStack[k].dur = Types.Timing.MicroSeconds(Math.max(time - this.#currentJSStack[k].ts, 0));
+      this.#currentJSStack[k].dur = Types.Timing.Micro(Math.max(time - this.#currentJSStack[k].ts, 0));
     }
     this.#currentJSStack.length = depth;
   }
 
-  #makeJSSampleEvent(call: Types.Events.SyntheticProfileCall, timestamp: Types.Timing.MicroSeconds):
+  #makeJSSampleEvent(call: Types.Events.SyntheticProfileCall, timestamp: Types.Timing.Micro):
       Types.Events.SyntheticJSSample {
     const JSSampleEvent: Types.Events.SyntheticJSSample = {
       name: Types.Events.Name.JS_SAMPLE,
@@ -401,7 +401,7 @@ export class SamplesIntegrator {
       },
       ph: Types.Events.Phase.INSTANT,
       ts: timestamp,
-      dur: Types.Timing.MicroSeconds(0),
+      dur: Types.Timing.Micro(0),
       pid: this.#processId,
       tid: this.#threadId,
     };

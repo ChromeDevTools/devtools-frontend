@@ -11,7 +11,7 @@ export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
 
 export interface Summary {
   transferSize: number;
-  mainThreadTime: Types.Timing.MicroSeconds;
+  mainThreadTime: Types.Timing.Micro;
 }
 
 export interface SummaryMaps {
@@ -21,7 +21,7 @@ export interface SummaryMaps {
 }
 
 function getSelfTimeByUrl(
-    parsedTrace: Handlers.Types.ParsedTrace, bounds: Types.Timing.TraceWindowMicroSeconds): Map<string, number> {
+    parsedTrace: Handlers.Types.ParsedTrace, bounds: Types.Timing.TraceWindowMicro): Map<string, number> {
   const selfTimeByUrl = new Map<string, number>();
 
   for (const process of parsedTrace.Renderer.processes.values()) {
@@ -79,13 +79,13 @@ function getSummaryMap(
     selfTimeByUrl: Map<string, number>): SummaryMaps {
   const byRequest = new Map<Types.Events.SyntheticNetworkRequest, Summary>();
   const byEntity = new Map<Entity, Summary>();
-  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.MicroSeconds(0)};
+  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.Micro(0)};
 
   for (const request of requests) {
     const urlSummary = byRequest.get(request) || {...defaultSummary};
     urlSummary.transferSize += request.args.data.encodedDataLength;
     urlSummary.mainThreadTime =
-        Types.Timing.MicroSeconds(urlSummary.mainThreadTime + (selfTimeByUrl.get(request.args.data.url) ?? 0));
+        Types.Timing.Micro(urlSummary.mainThreadTime + (selfTimeByUrl.get(request.args.data.url) ?? 0));
     byRequest.set(request, urlSummary);
   }
 
@@ -100,8 +100,7 @@ function getSummaryMap(
 
     const entitySummary = byEntity.get(entity) || {...defaultSummary};
     entitySummary.transferSize += requestSummary.transferSize;
-    entitySummary.mainThreadTime =
-        Types.Timing.MicroSeconds(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
+    entitySummary.mainThreadTime = Types.Timing.Micro(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
     byEntity.set(entity, entitySummary);
 
     const entityRequests = requestsByEntity.get(entity) || [];
@@ -113,7 +112,7 @@ function getSummaryMap(
 }
 
 export function getSummariesAndEntitiesForTraceBounds(
-    parsedTrace: Handlers.Types.ParsedTrace, traceBounds: Types.Timing.TraceWindowMicroSeconds,
+    parsedTrace: Handlers.Types.ParsedTrace, traceBounds: Types.Timing.TraceWindowMicro,
     networkRequests: Types.Events.SyntheticNetworkRequest[]): {
   summaries: SummaryMaps,
   entityByRequest: Map<Types.Events.SyntheticNetworkRequest, Entity>,
@@ -139,7 +138,7 @@ function getSummaryMapWithMapping(
     parsedTrace: Handlers.Types.ParsedTrace): SummaryMaps {
   const byEvent = new Map<Types.Events.Event, Summary>();
   const byEntity = new Map<Handlers.Helpers.Entity, Summary>();
-  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.MicroSeconds(0)};
+  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.Micro(0)};
 
   for (const event of events) {
     const url = Handlers.Helpers.getNonResolvedURL(event, parsedTrace) ?? '';
@@ -147,7 +146,7 @@ function getSummaryMapWithMapping(
     if (Types.Events.isSyntheticNetworkRequest(event)) {
       urlSummary.transferSize += event.args.data.encodedDataLength;
     }
-    urlSummary.mainThreadTime = Types.Timing.MicroSeconds(urlSummary.mainThreadTime + (selfTimeByUrl.get(url) ?? 0));
+    urlSummary.mainThreadTime = Types.Timing.Micro(urlSummary.mainThreadTime + (selfTimeByUrl.get(url) ?? 0));
     byEvent.set(event, urlSummary);
   }
 
@@ -161,8 +160,7 @@ function getSummaryMapWithMapping(
 
     const entitySummary = byEntity.get(entity) || {...defaultSummary};
     entitySummary.transferSize += requestSummary.transferSize;
-    entitySummary.mainThreadTime =
-        Types.Timing.MicroSeconds(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
+    entitySummary.mainThreadTime = Types.Timing.Micro(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
     byEntity.set(entity, entitySummary);
   }
 
@@ -170,7 +168,7 @@ function getSummaryMapWithMapping(
 }
 
 export function getSummariesAndEntitiesWithMapping(
-    parsedTrace: Handlers.Types.ParsedTrace, traceBounds: Types.Timing.TraceWindowMicroSeconds,
+    parsedTrace: Handlers.Types.ParsedTrace, traceBounds: Types.Timing.TraceWindowMicro,
     entityMapping: Handlers.Helpers.EntityMappings): {
   summaries: SummaryMaps,
   entityByEvent: Map<Types.Events.Event, Handlers.Helpers.Entity>,

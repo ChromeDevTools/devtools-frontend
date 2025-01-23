@@ -133,7 +133,7 @@ export class NetworkTrackAppender implements TrackAppender {
       }
     }
     return this.relayoutEntriesWithinBounds(
-        events, Trace.Types.Timing.MilliSeconds(-Infinity), Trace.Types.Timing.MilliSeconds(Infinity));
+        events, Trace.Types.Timing.Milli(-Infinity), Trace.Types.Timing.Milli(Infinity));
   }
 
   /**
@@ -159,8 +159,7 @@ export class NetworkTrackAppender implements TrackAppender {
    * @returns the number of levels used by this track
    */
   relayoutEntriesWithinBounds(
-      events: NetworkTrackEvent[], minTime: Trace.Types.Timing.MilliSeconds,
-      maxTime: Trace.Types.Timing.MilliSeconds): number {
+      events: NetworkTrackEvent[], minTime: Trace.Types.Timing.Milli, maxTime: Trace.Types.Timing.Milli): number {
     if (!this.#flameChartData || events.length === 0) {
       return 0;
     }

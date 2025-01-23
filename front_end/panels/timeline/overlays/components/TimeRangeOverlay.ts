@@ -38,7 +38,7 @@ export class TimeRangeRemoveEvent extends Event {
 
 export class TimeRangeOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #duration: Trace.Types.Timing.MicroSeconds|null = null;
+  #duration: Trace.Types.Timing.Micro|null = null;
   #canvasRect: DOMRect|null = null;
   #label: string;
 
@@ -84,7 +84,7 @@ export class TimeRangeOverlay extends HTMLElement {
     this.#render();
   }
 
-  set duration(duration: Trace.Types.Timing.MicroSeconds|null) {
+  set duration(duration: Trace.Types.Timing.Micro|null) {
     if (duration === this.#duration) {
       return;
     }

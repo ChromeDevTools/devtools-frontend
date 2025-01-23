@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-private-class-members */
 import type * as Protocol from '../../../generated/protocol.js';
 
-import type {MicroSeconds, MilliSeconds, Seconds, TraceWindowMicroSeconds} from './Timing.js';
+import type {Micro, Milli, Seconds, TraceWindowMicro} from './Timing.js';
 
 // Trace Events.
 export const enum Phase {
@@ -81,10 +81,10 @@ export interface Event {
   ph: Phase;
   pid: ProcessID;
   tid: ThreadID;
-  tts?: MicroSeconds;
-  ts: MicroSeconds;
-  tdur?: MicroSeconds;
-  dur?: MicroSeconds;
+  tts?: Micro;
+  ts: Micro;
+  tdur?: Micro;
+  dur?: Micro;
 }
 
 export interface Args {
@@ -155,7 +155,7 @@ export interface Profile extends Sample {
   id: ProfileID;
   args: Args&{
     data: ArgsData & {
-      startTime: MicroSeconds,
+      startTime: Micro,
     },
   };
 }
@@ -167,8 +167,8 @@ export interface ProfileChunk extends Sample {
     // `data` is only missing in "fake" traces
     data?: ArgsData & {
       cpuProfile?: PartialProfile,
-      timeDeltas?: MicroSeconds[],
-      lines?: MicroSeconds[],
+      timeDeltas?: Micro[],
+      lines?: Micro[],
     },
   };
 }
@@ -188,7 +188,7 @@ export interface PartialNode {
 
 export interface Complete extends Event {
   ph: Phase.COMPLETE;
-  dur: MicroSeconds;
+  dur: Micro;
 }
 
 export interface RunTask extends Complete {
@@ -202,7 +202,7 @@ export interface FireIdleCallback extends Complete {
   name: Name.FIRE_IDLE_CALLBACK;
   args: Args&{
     data: ArgsData & {
-      allottedMilliseconds: MilliSeconds,
+      allottedMilliseconds: Milli,
       frame: string,
       id: number,
       timedOut: boolean,
@@ -280,17 +280,17 @@ export interface EventTimingBegin extends Event {
     // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/performance_event_timing.cc;l=297;drc=4f00803ca25c0d0480ed14844d6406933c21e80e
     data: ArgsData & {
       cancelable: boolean,
-      duration: MilliSeconds,
+      duration: Milli,
       type: string,
       interactionId: number,
       interactionOffset: number,
       nodeId: Protocol.DOM.BackendNodeId,
       frame?: string,  // From May 2022 onwards, this is where frame is located. https://chromium-review.googlesource.com/c/chromium/src/+/3632661
-      processingEnd?: MilliSeconds,
-      processingStart?: MilliSeconds,
-      timeStamp?: MilliSeconds,
-      enqueuedToMainThreadTime?: MilliSeconds,
-      commitFinishTime?: MilliSeconds,
+      processingEnd?: Milli,
+      processingStart?: Milli,
+      timeStamp?: Milli,
+      enqueuedToMainThreadTime?: Milli,
+      commitFinishTime?: Milli,
     },
     frame?: string,  // Prior to May 2022, `frame` was here in args.
   };
@@ -318,35 +318,35 @@ export interface SyntheticNetworkRedirect {
   url: string;
   priority: string;
   requestMethod?: string;
-  ts: MicroSeconds;
-  dur: MicroSeconds;
+  ts: Micro;
+  dur: Micro;
 }
 
 // ProcessedArgsData is used to store the processed data of a network
 // request. Which is used to distinguish from the date we extract from the
 // trace event directly.
 interface SyntheticArgsData {
-  dnsLookup: MicroSeconds;
-  download: MicroSeconds;
-  downloadStart: MicroSeconds;
-  finishTime: MicroSeconds;
-  initialConnection: MicroSeconds;
+  dnsLookup: Micro;
+  download: Micro;
+  downloadStart: Micro;
+  finishTime: Micro;
+  initialConnection: Micro;
   isDiskCached: boolean;
   isHttps: boolean;
   isMemoryCached: boolean;
   isPushedResource: boolean;
-  networkDuration: MicroSeconds;
-  processingDuration: MicroSeconds;
-  proxyNegotiation: MicroSeconds;
-  queueing: MicroSeconds;
-  redirectionDuration: MicroSeconds;
-  requestSent: MicroSeconds;
-  sendStartTime: MicroSeconds;
-  ssl: MicroSeconds;
-  stalled: MicroSeconds;
-  totalTime: MicroSeconds;
+  networkDuration: Micro;
+  processingDuration: Micro;
+  proxyNegotiation: Micro;
+  queueing: Micro;
+  redirectionDuration: Micro;
+  requestSent: Micro;
+  sendStartTime: Micro;
+  ssl: Micro;
+  stalled: Micro;
+  totalTime: Micro;
   /** Server response time (receiveHeadersEnd - sendEnd) */
-  waiting: MicroSeconds;
+  waiting: Micro;
 }
 
 export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.COMPLETE> {
@@ -402,10 +402,10 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
   cat: 'loading';
   name: 'SyntheticNetworkRequest';
   ph: Phase.COMPLETE;
-  dur: MicroSeconds;
-  tdur: MicroSeconds;
-  ts: MicroSeconds;
-  tts: MicroSeconds;
+  dur: Micro;
+  tdur: Micro;
+  ts: Micro;
+  tts: Micro;
   pid: ProcessID;
   tid: ThreadID;
 }
@@ -422,8 +422,8 @@ export interface SyntheticWebSocketConnection extends Complete, SyntheticBased<P
   cat: string;
   name: 'SyntheticWebSocketConnection';
   ph: Phase.COMPLETE;
-  dur: MicroSeconds;
-  ts: MicroSeconds;
+  dur: Micro;
+  ts: Micro;
   pid: ProcessID;
   tid: ThreadID;
   s: Scope;
@@ -521,7 +521,7 @@ export interface Screenshot extends Event {
   /**
    * @deprecated This value is incorrect. Use ScreenshotHandler.getPresentationTimestamp()
    */
-  ts: MicroSeconds;
+  ts: Micro;
   /** The id is the frame sequence number in hex */
   id: string;
   args: Args&{
@@ -538,7 +538,7 @@ export function isScreenshot(event: Event): event is Screenshot {
 export interface SyntheticScreenshot extends Event, SyntheticBased {
   rawSourceEvent: Screenshot;
   /** This is the correct presentation timestamp. */
-  ts: MicroSeconds;
+  ts: Micro;
   args: Args&{
     dataUri: string,
   };
@@ -922,7 +922,7 @@ interface LayoutShiftSessionWindowData {
 export interface LayoutShiftParsedData {
   /** screenshot taken before and after this shift. Before *should* always exist, but after might not at the end of a trace. */
   screenshots: {before: SyntheticScreenshot|null, after: SyntheticScreenshot|null};
-  timeFromNavigation?: MicroSeconds;
+  timeFromNavigation?: Micro;
   // The sum of the weighted scores of the shifts that
   // belong to a session window up until this shift
   // (inclusive).
@@ -957,25 +957,25 @@ export type NavigationId = string|typeof NO_NAVIGATION;
  */
 export interface SyntheticLayoutShiftCluster {
   name: 'SyntheticLayoutShiftCluster';
-  clusterWindow: TraceWindowMicroSeconds;
+  clusterWindow: TraceWindowMicro;
   clusterCumulativeScore: number;
   events: SyntheticLayoutShift[];
   // For convenience we split apart the cluster into good, NI, and bad windows.
   // Since a cluster may remain in the good window, we mark NI and bad as being
   // possibly null.
   scoreWindows: {
-    good: TraceWindowMicroSeconds,
-    needsImprovement?: TraceWindowMicroSeconds,
-    bad?: TraceWindowMicroSeconds,
+    good: TraceWindowMicro,
+    needsImprovement?: TraceWindowMicro,
+    bad?: TraceWindowMicro,
   };
   // The last navigation that happened before this cluster.
   navigationId?: NavigationId;
   worstShiftEvent?: Event;
   // This is the start of the cluster: the start of the first layout shift of the cluster.
-  ts: MicroSeconds;
+  ts: Micro;
   // The duration of the cluster. This should include up until the end of the last
   // layout shift in this cluster.
-  dur: MicroSeconds;
+  dur: Micro;
   cat: '';
   ph: Phase.COMPLETE;
   pid: ProcessID;
@@ -1061,24 +1061,24 @@ export interface ResourceReceivedData extends Instant {
 
 /** See https://mdn.github.io/shared-assets/images/diagrams/api/performance/timestamp-diagram.svg  */
 interface ResourceReceiveResponseTimingData {
-  connectEnd: MilliSeconds;
-  connectStart: MilliSeconds;
-  dnsEnd: MilliSeconds;
-  dnsStart: MilliSeconds;
-  proxyEnd: MilliSeconds;
-  proxyStart: MilliSeconds;
-  pushEnd: MilliSeconds;
-  pushStart: MilliSeconds;
-  receiveHeadersEnd: MilliSeconds;
-  receiveHeadersStart: MilliSeconds;
+  connectEnd: Milli;
+  connectStart: Milli;
+  dnsEnd: Milli;
+  dnsStart: Milli;
+  proxyEnd: Milli;
+  proxyStart: Milli;
+  pushEnd: Milli;
+  pushStart: Milli;
+  receiveHeadersEnd: Milli;
+  receiveHeadersStart: Milli;
   /** When the network service is about to handle a request, ie. just before going to the HTTP cache or going to the network for DNS/connection setup. */
   requestTime: Seconds;
-  sendEnd: MilliSeconds;
-  sendStart: MilliSeconds;
-  sslEnd: MilliSeconds;
-  sslStart: MilliSeconds;
-  workerReady: MilliSeconds;
-  workerStart: MilliSeconds;
+  sendEnd: Milli;
+  sendStart: Milli;
+  sslEnd: Milli;
+  sslStart: Milli;
+  workerReady: Milli;
+  workerStart: Milli;
 }
 
 export interface ResourceReceiveResponse extends Instant {
@@ -1099,7 +1099,7 @@ export interface ResourceReceiveResponse extends Instant {
       fromServiceWorker: boolean,
       mimeType: string,
       requestId: string,
-      responseTime: MilliSeconds,
+      responseTime: Milli,
       statusCode: number,
       // Some cached events don't have this field
       timing?: ResourceReceiveResponseTimingData, connectionId: number, connectionReused: boolean,
@@ -1359,7 +1359,7 @@ export interface PerformanceMeasureBegin extends PairableUserTiming {
   args: Args&{
     detail?: string,
     stackTrace?: CallFrame[],
-    callTime?: MicroSeconds,
+    callTime?: Micro,
   };
   ph: Phase.ASYNC_NESTABLE_START;
 }
@@ -1372,7 +1372,7 @@ export interface PerformanceMark extends UserTiming {
     data?: ArgsData & {
       detail?: string,
       stackTrace?: CallFrame[],
-      callTime?: MicroSeconds,
+      callTime?: Micro,
     },
   };
   ph: Phase.INSTANT|Phase.MARK|Phase.ASYNC_NESTABLE_INSTANT;
@@ -1535,7 +1535,7 @@ export interface SyntheticEventPair<T extends PairableAsync = PairableAsync> ext
   id?: string;
   id2?: {local?: string, global?: string};
 
-  dur: MicroSeconds;
+  dur: Micro;
   args: Args&{
     data: {
       beginEvent: T & PairableAsyncBegin,
@@ -1560,23 +1560,23 @@ export interface SyntheticInteractionPair extends SyntheticEventPair<EventTiming
   interactionId: number;
   type: string;
   // This is equivalent to startEvent.ts;
-  ts: MicroSeconds;
+  ts: Micro;
   // This duration can be calculated via endEvent.ts - startEvent.ts, but we do
   // that and put it here to make it easier. This also makes these events
   // consistent with real events that have a dur field.
-  dur: MicroSeconds;
+  dur: Micro;
   // These values are provided in the startEvent's args.data field as
   // millisecond values, but during the handler phase we parse these into
   // microseconds and put them on the top level for easy access.
-  processingStart: MicroSeconds;
-  processingEnd: MicroSeconds;
+  processingStart: Micro;
+  processingEnd: Micro;
   // These 3 values represent the breakdown of the parts of an interaction:
   // 1. inputDelay: time from the user clicking to the input being handled
-  inputDelay: MicroSeconds;
+  inputDelay: Micro;
   // 2. mainThreadHandling: time spent processing the event handler
-  mainThreadHandling: MicroSeconds;
+  mainThreadHandling: Micro;
   // 3. presentationDelay: delay between the event being processed and the frame being rendered
-  presentationDelay: MicroSeconds;
+  presentationDelay: Micro;
 }
 
 /**
@@ -2683,7 +2683,7 @@ export interface SchedulePostTaskCallback extends Instant {
     data: {
       taskId: number,
       priority: 'user-blocking'|'user-visible'|'background',
-      delay: MilliSeconds,
+      delay: Milli,
       frame?: string,
       stackTrace?: CallFrame,
     },
@@ -2699,7 +2699,7 @@ export interface RunPostTaskCallback extends Complete {
     data: {
       taskId: number,
       priority: 'user-blocking'|'user-visible'|'background',
-      delay: MilliSeconds,
+      delay: Milli,
       frame?: string,
     },
   };
@@ -3006,10 +3006,10 @@ export const Categories = {
  * handlers.
  */
 export interface LegacyTimelineFrame extends Event {
-  startTime: MicroSeconds;
-  startTimeOffset: MicroSeconds;
-  endTime: MicroSeconds;
-  duration: MicroSeconds;
+  startTime: Micro;
+  startTimeOffset: Micro;
+  endTime: Micro;
+  duration: Micro;
   idle: boolean;
   dropped: boolean;
   isPartial: boolean;

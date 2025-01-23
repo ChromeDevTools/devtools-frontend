@@ -128,7 +128,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
 
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const cssModel = target?.model(SDK.CSSModel.CSSModel);
-    const time = (us: Trace.Types.Timing.MicroSeconds): string =>
+    const time = (us: Trace.Types.Timing.Micro): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     if (!this.model.topMatchAttempts.length && !this.model.topElapsedMs.length) {
@@ -165,7 +165,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
                 return {
                   values: [
                   html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
-                  time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
+                  time(Trace.Types.Timing.Micro(selector['elapsed (us)']))],
                 };
               }),
             } as TableData}>

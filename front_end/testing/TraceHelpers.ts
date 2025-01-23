@@ -106,7 +106,7 @@ export const defaultTraceEvent: Trace.Types.Events.Event = {
   name: 'process_name',
   tid: Trace.Types.Events.ThreadID(0),
   pid: Trace.Types.Events.ProcessID(0),
-  ts: Trace.Types.Timing.MicroSeconds(0),
+  ts: Trace.Types.Timing.Micro(0),
   cat: 'test',
   ph: Trace.Types.Events.Phase.METADATA,
 };
@@ -238,8 +238,8 @@ export function makeCompleteEvent(
     ph: Trace.Types.Events.Phase.COMPLETE,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
-    dur: Trace.Types.Timing.MicroSeconds(dur),
+    ts: Trace.Types.Timing.Micro(ts),
+    dur: Trace.Types.Timing.Micro(dur),
   };
 }
 
@@ -256,7 +256,7 @@ export function makeAsyncStartEvent(
     ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
+    ts: Trace.Types.Timing.Micro(ts),
   };
 }
 export function makeAsyncEndEvent(
@@ -272,7 +272,7 @@ export function makeAsyncEndEvent(
     ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_END,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
+    ts: Trace.Types.Timing.Micro(ts),
   };
 }
 
@@ -291,8 +291,8 @@ export function makeFlowPhaseEvent(
     ph,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
-    dur: Trace.Types.Timing.MicroSeconds(0),
+    ts: Trace.Types.Timing.Micro(ts),
+    dur: Trace.Types.Timing.Micro(0),
   };
 }
 
@@ -326,8 +326,8 @@ export function makeCompleteEventInMilliseconds(
     name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
     tid: number = 0): Trace.Types.Events.Complete {
   return makeCompleteEvent(
-      name, Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(tsMillis)),
-      Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(durMillis)), cat, pid, tid);
+      name, Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(tsMillis)),
+      Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(durMillis)), cat, pid, tid);
 }
 
 /**
@@ -343,7 +343,7 @@ export function makeInstantEvent(
     ph: Trace.Types.Events.Phase.INSTANT,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(tsMicroseconds),
+    ts: Trace.Types.Timing.Micro(tsMicroseconds),
     s,
   };
 }
@@ -360,7 +360,7 @@ export function makeBeginEvent(
     ph: Trace.Types.Events.Phase.BEGIN,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
+    ts: Trace.Types.Timing.Micro(ts),
   };
 }
 
@@ -376,7 +376,7 @@ export function makeEndEvent(
     ph: Trace.Types.Events.Phase.END,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(ts),
+    ts: Trace.Types.Timing.Micro(ts),
   };
 }
 
@@ -392,8 +392,8 @@ export function makeProfileCall(
     ph: Trace.Types.Events.Phase.COMPLETE,
     pid: Trace.Types.Events.ProcessID(pid),
     tid: Trace.Types.Events.ThreadID(tid),
-    ts: Trace.Types.Timing.MicroSeconds(tsUs),
-    dur: Trace.Types.Timing.MicroSeconds(durUs),
+    ts: Trace.Types.Timing.Micro(tsUs),
+    dur: Trace.Types.Timing.Micro(durUs),
     callFrame: {
       functionName,
       scriptId: '' as Protocol.Runtime.ScriptId,
@@ -457,8 +457,8 @@ export function makeMockSamplesHandlerData(profileCalls: Trace.Types.Events.Synt
   const {tree, entryToNode} = Trace.Helpers.TreeHelpers.treify(profileCalls, {filter: {has: () => true}});
   const profile: Protocol.Profiler.Profile = {
     nodes: [],
-    startTime: profileCalls.at(0)?.ts || Trace.Types.Timing.MicroSeconds(0),
-    endTime: profileCalls.at(-1)?.ts || Trace.Types.Timing.MicroSeconds(10e5),
+    startTime: profileCalls.at(0)?.ts || Trace.Types.Timing.Micro(0),
+    endTime: profileCalls.at(-1)?.ts || Trace.Types.Timing.Micro(10e5),
     samples: [],
     timeDeltas: [],
   };
@@ -629,9 +629,9 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
     },
     Meta: {
       traceBounds: {
-        min: Trace.Types.Timing.MicroSeconds(0),
-        max: Trace.Types.Timing.MicroSeconds(100),
-        range: Trace.Types.Timing.MicroSeconds(100),
+        min: Trace.Types.Timing.Micro(0),
+        max: Trace.Types.Timing.Micro(100),
+        range: Trace.Types.Timing.Micro(100),
       },
       browserProcessId: Trace.Types.Events.ProcessID(-1),
       browserThreadId: Trace.Types.Events.ThreadID(-1),
@@ -803,17 +803,17 @@ export function setupIgnoreListManagerEnvironment(): {
   return {ignoreListManager};
 }
 
-export function microsecondsTraceWindow(min: number, max: number): Trace.Types.Timing.TraceWindowMicroSeconds {
+export function microsecondsTraceWindow(min: number, max: number): Trace.Types.Timing.TraceWindowMicro {
   return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-      min as Trace.Types.Timing.MicroSeconds,
-      max as Trace.Types.Timing.MicroSeconds,
+      min as Trace.Types.Timing.Micro,
+      max as Trace.Types.Timing.Micro,
   );
 }
 
-export function microseconds(x: number): Trace.Types.Timing.MicroSeconds {
-  return Trace.Types.Timing.MicroSeconds(x);
+export function microseconds(x: number): Trace.Types.Timing.Micro {
+  return Trace.Types.Timing.Micro(x);
 }
 
-export function milliseconds(x: number): Trace.Types.Timing.MilliSeconds {
-  return Trace.Types.Timing.MilliSeconds(x);
+export function milliseconds(x: number): Trace.Types.Timing.Milli {
+  return Trace.Types.Timing.Milli(x);
 }

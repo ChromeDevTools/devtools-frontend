@@ -186,12 +186,12 @@ export class AICallTree {
 }
 
 export class AITreeFilter extends Trace.Extras.TraceFilter.TraceFilter {
-  #minDuration: Trace.Types.Timing.MicroSeconds;
+  #minDuration: Trace.Types.Timing.Micro;
   #selectedEvent: Trace.Types.Events.Event;
   constructor(selectedEvent: Trace.Types.Events.Event) {
     super();
     // The larger the selected event is, the less small ones matter. We'll exclude items under ½% of the selected event's size
-    this.#minDuration = Trace.Types.Timing.MicroSeconds((selectedEvent.dur ?? 1) * 0.005);
+    this.#minDuration = Trace.Types.Timing.Micro((selectedEvent.dur ?? 1) * 0.005);
     this.#selectedEvent = selectedEvent;
   }
   accept(event: Trace.Types.Events.Event): boolean {

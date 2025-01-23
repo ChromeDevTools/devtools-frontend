@@ -69,15 +69,15 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
       Overlays.Overlays.TimelineOverlay[] {
     const p1 = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         event.ts,
-        (event.ts + event.inputDelay) as Trace.Types.Timing.MicroSeconds,
+        (event.ts + event.inputDelay) as Trace.Types.Timing.Micro,
     );
     const p2 = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         p1.max,
-        (p1.max + event.mainThreadHandling) as Trace.Types.Timing.MicroSeconds,
+        (p1.max + event.mainThreadHandling) as Trace.Types.Timing.Micro,
     );
     const p3 = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
         p2.max,
-        (p2.max + event.presentationDelay) as Trace.Types.Timing.MicroSeconds,
+        (p2.max + event.presentationDelay) as Trace.Types.Timing.Micro,
     );
     let sections = [
       {bounds: p1, label: i18nString(UIStrings.inputDelay), showDuration: true},
@@ -104,7 +104,7 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
       return html`<div class="insight-section">${i18nString(UIStrings.noInteractions)}</div>`;
     }
 
-    const time = (us: Trace.Types.Timing.MicroSeconds): string =>
+    const time = (us: Trace.Types.Timing.Micro): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off

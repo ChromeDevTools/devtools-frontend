@@ -31,10 +31,10 @@ describe('UserInteractionsHandler', function() {
     const event = {
       name: 'EventTiming',
       type,
-      ts: Trace.Types.Timing.MicroSeconds(options.startTime),
-      dur: Trace.Types.Timing.MicroSeconds(options.endTime - options.startTime),
-      processingStart: Trace.Types.Timing.MicroSeconds(options.processingStart || 0),
-      processingEnd: Trace.Types.Timing.MicroSeconds(options.processingEnd || 0),
+      ts: Trace.Types.Timing.Micro(options.startTime),
+      dur: Trace.Types.Timing.Micro(options.endTime - options.startTime),
+      processingStart: Trace.Types.Timing.Micro(options.processingStart || 0),
+      processingEnd: Trace.Types.Timing.Micro(options.processingEnd || 0),
       interactionId: options.interactionId,
     };
 

@@ -123,7 +123,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#timeSpan;
   }
 
-  setWindowTimes(startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
+  setWindowTimes(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
     this.#updateTimelineData(startTime, endTime);
   }
 
@@ -250,7 +250,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time: number): number => unclippedBarX + (time - beginTime) * timeToPixelRatio;
     const startTime = Trace.Helpers.Timing.microToMilli(event.ts);
-    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
+    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.Micro);
     const sendStartTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.sendStartTime);
     const headersEndTime = Trace.Helpers.Timing.microToMilli(event.args.data.syntheticData.downloadStart);
     const sendStart = Math.max(timeToPixel(sendStartTime), unclippedBarX);
@@ -374,7 +374,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const event = this.#events[index] as Trace.Types.Events.SyntheticWebSocketConnection;
     const beginTime = Trace.Helpers.Timing.microToMilli(event.ts);
     const timeToPixel = (time: number): number => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
-    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.MicroSeconds);
+    const endTime = Trace.Helpers.Timing.microToMilli((event.ts + event.dur) as Trace.Types.Timing.Micro);
     const start = timeToPixel(beginTime) + 0.5;
     const end = timeToPixel(endTime) - 0.5;
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
@@ -441,7 +441,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * PerfUI.FlameChart.FlameChartTimelineData instance to force the flamechart
    * to re-render.
    */
-  #updateTimelineData(startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
+  #updateTimelineData(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
     if (!this.#networkTrackAppender || !this.#timelineDataInternal) {
       return;
     }
@@ -489,7 +489,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    * indexes
    */
   search(
-      visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds,
+      visibleWindow: Trace.Types.Timing.TraceWindowMicro,
       filter?: Trace.Extras.TraceFilter.TraceFilter,
       ): PerfUI.FlameChart.DataProviderSearchResult[] {
     const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];

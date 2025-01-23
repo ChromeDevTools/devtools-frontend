@@ -22,7 +22,7 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
     return [];
   }
 
-  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.INP ?? null;
   }
 

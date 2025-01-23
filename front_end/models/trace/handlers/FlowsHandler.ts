@@ -31,7 +31,7 @@ interface EventFlowData {
   bindingParsed: boolean;
 }
 type FlowBindingTuple =
-    Map<Types.Timing.MicroSeconds, Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Map<string, EventFlowData>>>>;
+    Map<Types.Timing.Micro, Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Map<string, EventFlowData>>>>;
 
 // Given a trace event's flow binding tuple (timestamp, process id,
 // thread id and category) we determine if there is any flow data bound
@@ -45,7 +45,7 @@ type FlowBindingTuple =
 // performance.
 const boundFlowData: FlowBindingTuple = new Map();
 
-const flowsById = new Map<number, Map<Types.Timing.MicroSeconds, Types.Events.Event>>();
+const flowsById = new Map<number, Map<Types.Timing.Micro, Types.Events.Event>>();
 const flowEvents: Types.Events.FlowEvent[] = [];
 const nonFlowEvents: Types.Events.Event[] = [];
 let flows: Types.Events.Event[][] = [];
@@ -79,7 +79,7 @@ function processNonFlowEvent(event: Types.Events.Event): void {
   }
   for (const flowId of flows) {
     const flow = Platform.MapUtilities.getWithDefault(
-        flowsById, flowId, () => new Map<Types.Timing.MicroSeconds, Types.Events.Event>());
+        flowsById, flowId, () => new Map<Types.Timing.Micro, Types.Events.Event>());
     flow.set(event.ts, event);
   }
   flowDataForEvent.bindingParsed = true;
@@ -132,9 +132,8 @@ type MapValueType<T extends Map<unknown, unknown>> = NonNullable<ReturnType<T['g
  * binding tuple (made of its ts, pid, tid and cat).
  */
 function addFlowIdToEventBinding(event: Types.Events.Event, flowId: number): void {
-  const flowsByPid =
-      Platform.MapUtilities.getWithDefault<Types.Timing.MicroSeconds, MapValueType<typeof boundFlowData>>(
-          boundFlowData, event.ts, () => new Map());
+  const flowsByPid = Platform.MapUtilities.getWithDefault<Types.Timing.Micro, MapValueType<typeof boundFlowData>>(
+      boundFlowData, event.ts, () => new Map());
   const flowsByTid = Platform.MapUtilities.getWithDefault<Types.Events.ProcessID, MapValueType<typeof flowsByPid>>(
       flowsByPid, event.pid, () => new Map());
   const flowsByCat = Platform.MapUtilities.getWithDefault<Types.Events.ThreadID, MapValueType<typeof flowsByTid>>(

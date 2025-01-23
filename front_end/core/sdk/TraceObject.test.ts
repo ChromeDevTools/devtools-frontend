@@ -15,7 +15,7 @@ describe('TraceObject', () => {
         ph: Trace.Types.Events.Phase.COMPLETE,
         pid: Trace.Types.Events.ProcessID(1),
         tid: Trace.Types.Events.ThreadID(4),
-        ts: Trace.Types.Timing.MicroSeconds(5e7),
+        ts: Trace.Types.Timing.Micro(5e7),
         args: {
           data: {frame: '0xA'},
         },

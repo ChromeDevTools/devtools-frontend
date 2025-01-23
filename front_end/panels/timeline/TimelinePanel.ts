@@ -421,7 +421,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: MobileThrottling.ThrottlingManager.CPUThrottlingSelectorWrapper;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
-  private traceLoadStart!: Trace.Types.Timing.MilliSeconds|null;
+  private traceLoadStart!: Trace.Types.Timing.Milli|null;
   private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
   // Note: this is technically unused, but we need it to define the promiseCallback function above.
   private primaryPageTargetPromise = new Promise<SDK.Target.Target>(res => {
@@ -2274,7 +2274,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.loader) {
       this.statusPane.finish();
     }
-    this.traceLoadStart = Trace.Types.Timing.MilliSeconds(performance.now());
+    this.traceLoadStart = Trace.Types.Timing.Milli(performance.now());
     await this.loadingProgress(0);
   }
 
@@ -2408,9 +2408,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // for the first paint of the flamechart
     requestAnimationFrame(() => {
       setTimeout(() => {
-        const end = Trace.Types.Timing.MilliSeconds(performance.now());
+        const end = Trace.Types.Timing.Milli(performance.now());
         const measure = performance.measure('TraceLoad', {start, end});
-        const duration = Trace.Types.Timing.MilliSeconds(measure.duration);
+        const duration = Trace.Types.Timing.Milli(measure.duration);
         this.element.dispatchEvent(new TraceLoadEvent(duration));
         Host.userMetrics.performanceTraceLoad(measure);
       }, 0);
@@ -2587,7 +2587,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.highlightEvent(event);
   }
 
-  #revealTimeRange(startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
+  #revealTimeRange(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
     if (!traceBoundsState) {
       return;
@@ -2602,8 +2602,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         Trace.Helpers.Timing.traceWindowFromMilliSeconds(
-            Trace.Types.Timing.MilliSeconds(traceWindow.min + offset),
-            Trace.Types.Timing.MilliSeconds(traceWindow.max + offset),
+            Trace.Types.Timing.Milli(traceWindow.min + offset),
+            Trace.Types.Timing.Milli(traceWindow.max + offset),
             ),
         {
           shouldAnimate: true,

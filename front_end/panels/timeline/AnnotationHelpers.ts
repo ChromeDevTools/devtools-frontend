@@ -89,9 +89,9 @@ export function getAnnotationEntries(
  */
 export function getAnnotationWindow(
     annotation: Trace.Types.File.Annotation,
-    ): Trace.Types.Timing.TraceWindowMicroSeconds|null {
-  let annotationWindow: Trace.Types.Timing.TraceWindowMicroSeconds|null = null;
-  const minVisibleEntryDuration = Trace.Types.Timing.MilliSeconds(1);
+    ): Trace.Types.Timing.TraceWindowMicro|null {
+  let annotationWindow: Trace.Types.Timing.TraceWindowMicro|null = null;
+  const minVisibleEntryDuration = Trace.Types.Timing.Milli(1);
 
   switch (annotation.type) {
     case 'ENTRY_LABEL': {
@@ -99,7 +99,7 @@ export function getAnnotationWindow(
 
       annotationWindow = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           annotation.entry.ts,
-          Trace.Types.Timing.MicroSeconds(annotation.entry.ts + eventDuration),
+          Trace.Types.Timing.Micro(annotation.entry.ts + eventDuration),
       );
 
       break;
@@ -125,7 +125,7 @@ export function getAnnotationWindow(
 
       annotationWindow = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           annotation.entryFrom.ts,
-          Trace.Types.Timing.MicroSeconds(maxTimestamp),
+          Trace.Types.Timing.Micro(maxTimestamp),
       );
       break;
     }
@@ -206,10 +206,10 @@ export function ariaAnnouncementForModifiedEvent(event: AnnotationModifiedEvent)
 
       const {min, max} = overlay.bounds;
       const minText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(
-          Trace.Types.Timing.MicroSeconds(min - traceBounds.min),
+          Trace.Types.Timing.Micro(min - traceBounds.min),
       );
       const maxText =
-          i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.MicroSeconds(max - traceBounds.min));
+          i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.Micro(max - traceBounds.min));
 
       return i18nString(UIStrings.srTimeRangeBoundsUpdated, {
         PH1: minText,

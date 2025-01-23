@@ -147,7 +147,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       }
 
       calculator.setBounds(
-          calculator.minimumBoundary(), Trace.Types.Timing.MilliSeconds(calculator.minimumBoundary() + this.span));
+          calculator.minimumBoundary(), Trace.Types.Timing.Milli(calculator.minimumBoundary() + this.span));
 
       this.lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
@@ -173,8 +173,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         if (endTime === Number.MAX_VALUE) {
           endTime = calculator.maximumBoundary();
         }
-        const startX = calculator.computePosition(Trace.Types.Timing.MilliSeconds(startTime));
-        const endX = calculator.computePosition(Trace.Types.Timing.MilliSeconds(endTime)) + 1;
+        const startX = calculator.computePosition(Trace.Types.Timing.Milli(startTime));
+        const endX = calculator.computePosition(Trace.Types.Timing.Milli(endTime)) + 1;
         context.fillRect(startX, y, Math.max(endX - startX, MIN_BAND_WIDTH), BAND_HEIGHT);
         context.strokeRect(startX, y, Math.max(endX - startX, MIN_BAND_WIDTH), BAND_HEIGHT);
       }
@@ -235,8 +235,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 
       // The network overview works in seconds, but the calcululator deals in
       // milliseconds, hence the multiplication by 1000.
-      const start = Trace.Types.Timing.MilliSeconds(timeRanges[0].start * 1000);
-      const end = Trace.Types.Timing.MilliSeconds(timeRanges[0].end * 1000);
+      const start = Trace.Types.Timing.Milli(timeRanges[0].start * 1000);
+      const end = Trace.Types.Timing.Milli(timeRanges[0].end * 1000);
       context.fillRect(
           calculator.computePosition(start) - borderSize, y - size / 2 - borderSize,
           calculator.computePosition(end) - calculator.computePosition(start) + 1 + 2 * borderSize, size * borderSize);
@@ -249,8 +249,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
               ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
           context.lineWidth = size;
 
-          const start = Trace.Types.Timing.MilliSeconds(timeRanges[j].start * 1000);
-          const end = Trace.Types.Timing.MilliSeconds(timeRanges[j].end * 1000);
+          const start = Trace.Types.Timing.Milli(timeRanges[j].start * 1000);
+          const end = Trace.Types.Timing.Milli(timeRanges[j].end * 1000);
           context.moveTo(Number(calculator.computePosition(start)) - 0, y);
           context.lineTo(Number(calculator.computePosition(end)) + 1, y);
           context.stroke();
@@ -263,7 +263,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.beginPath();
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getDCLEventColor());
     for (let i = this.domContentLoadedEvents.length - 1; i >= 0; --i) {
-      const position = calculator.computePosition(Trace.Types.Timing.MilliSeconds(this.domContentLoadedEvents[i]));
+      const position = calculator.computePosition(Trace.Types.Timing.Milli(this.domContentLoadedEvents[i]));
       const x = Math.round(position) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
@@ -273,7 +273,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.beginPath();
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getLoadEventColor());
     for (let i = this.loadEvents.length - 1; i >= 0; --i) {
-      const position = calculator.computePosition(Trace.Types.Timing.MilliSeconds(this.loadEvents[i]));
+      const position = calculator.computePosition(Trace.Types.Timing.Milli(this.loadEvents[i]));
       const x = Math.round(position) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
@@ -284,7 +284,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       context.lineWidth = 2;
       context.beginPath();
       context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--network-frame-divider-color');
-      const timeInMilliseconds = Trace.Types.Timing.MilliSeconds(this.selectedFilmStripTime);
+      const timeInMilliseconds = Trace.Types.Timing.Milli(this.selectedFilmStripTime);
       const x = Math.round(calculator.computePosition(timeInMilliseconds));
       context.moveTo(x, 0);
       context.lineTo(x, height);

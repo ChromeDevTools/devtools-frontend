@@ -53,9 +53,9 @@ describeWithEnvironment('ThirdParties', function() {
       const reqs = parsedTrace.NetworkRequests.byTime;
 
       // Font requests of load-simple.json.gz begin & end before/after this bounds.
-      const min = Trace.Types.Timing.MicroSeconds(1634222300000);
-      const max = Trace.Types.Timing.MicroSeconds(1634222320000);
-      const middle = {min, max, range: Trace.Types.Timing.MicroSeconds(max - min)};
+      const min = Trace.Types.Timing.Micro(1634222300000);
+      const max = Trace.Types.Timing.Micro(1634222320000);
+      const middle = {min, max, range: Trace.Types.Timing.Micro(max - min)};
 
       const {entityByRequest} =
           Trace.Extras.ThirdParties.getSummariesAndEntitiesForTraceBounds(parsedTrace, middle, reqs);
@@ -75,9 +75,9 @@ describeWithEnvironment('ThirdParties', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
       const reqs = parsedTrace.NetworkRequests.byTime;
 
-      const min = Trace.Types.Timing.MicroSeconds(1634230000000);
-      const max = Trace.Types.Timing.MicroSeconds(1634231000000);
-      const middle = {min, max, range: Trace.Types.Timing.MicroSeconds(max - min)};
+      const min = Trace.Types.Timing.Micro(1634230000000);
+      const max = Trace.Types.Timing.Micro(1634231000000);
+      const middle = {min, max, range: Trace.Types.Timing.Micro(max - min)};
 
       const {entityByRequest} =
           Trace.Extras.ThirdParties.getSummariesAndEntitiesForTraceBounds(parsedTrace, middle, reqs);

@@ -21,10 +21,10 @@ const allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
 const beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
 const parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
 
-export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(200));
+export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(200));
 
 const INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
-const INP_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(500));
+const INP_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.Milli(500));
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
@@ -184,7 +184,7 @@ export function removeNestedInteractions(interactions: readonly Types.Events.Syn
    * longest event for a given end time by category.
    **/
   const earliestEventForEndTimePerCategory:
-      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.Events.SyntheticInteractionPair>> = {
+      Record<InteractionCategory, Map<Types.Timing.Micro, Types.Events.SyntheticInteractionPair>> = {
         POINTER: new Map(),
         KEYBOARD: new Map(),
         OTHER: new Map(),
@@ -193,7 +193,7 @@ export function removeNestedInteractions(interactions: readonly Types.Events.Syn
   function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.Events.SyntheticInteractionPair): void {
     const category = categoryOfInteraction(interaction);
     const earliestEventForEndTime = earliestEventForEndTimePerCategory[category];
-    const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
+    const endTime = Types.Timing.Micro(interaction.ts + interaction.dur);
 
     const earliestCurrentEvent = earliestEventForEndTime.get(endTime);
     if (!earliestCurrentEvent) {
@@ -258,9 +258,9 @@ function writeSyntheticTimespans(event: Types.Events.SyntheticInteractionPair): 
   const startEvent = event.args.data.beginEvent;
   const endEvent = event.args.data.endEvent;
 
-  event.inputDelay = Types.Timing.MicroSeconds(event.processingStart - startEvent.ts);
-  event.mainThreadHandling = Types.Timing.MicroSeconds(event.processingEnd - event.processingStart);
-  event.presentationDelay = Types.Timing.MicroSeconds(endEvent.ts - event.processingEnd);
+  event.inputDelay = Types.Timing.Micro(event.processingStart - startEvent.ts);
+  event.mainThreadHandling = Types.Timing.Micro(event.processingEnd - event.processingStart);
+  event.presentationDelay = Types.Timing.Micro(endEvent.ts - event.processingEnd);
 }
 
 export async function finalize(): Promise<void> {
@@ -290,12 +290,12 @@ export async function finalize(): Promise<void> {
     // will give us a processingStart and processingEnd time in microseconds
     // that is relative to event.ts, and can be used when drawing boxes.
     // There is some inaccuracy here as we are converting milliseconds to microseconds, but it is good enough until the backend emits more accurate numbers.
-    const processingStartRelativeToTraceTime = Types.Timing.MicroSeconds(
+    const processingStartRelativeToTraceTime = Types.Timing.Micro(
         Helpers.Timing.milliToMicro(processingStart) - Helpers.Timing.milliToMicro(timeStamp) +
             interactionStartEvent.ts,
     );
 
-    const processingEndRelativeToTraceTime = Types.Timing.MicroSeconds(
+    const processingEndRelativeToTraceTime = Types.Timing.Micro(
         (Helpers.Timing.milliToMicro(processingEnd) - Helpers.Timing.milliToMicro(timeStamp)) +
         interactionStartEvent.ts);
 
@@ -315,9 +315,9 @@ export async function finalize(): Promise<void> {
           processingStart: processingStartRelativeToTraceTime,
           processingEnd: processingEndRelativeToTraceTime,
           // These will be set in writeSyntheticTimespans()
-          inputDelay: Types.Timing.MicroSeconds(-1),
-          mainThreadHandling: Types.Timing.MicroSeconds(-1),
-          presentationDelay: Types.Timing.MicroSeconds(-1),
+          inputDelay: Types.Timing.Micro(-1),
+          mainThreadHandling: Types.Timing.Micro(-1),
+          presentationDelay: Types.Timing.Micro(-1),
           args: {
             data: {
               beginEvent: interactionStartEvent,
@@ -327,7 +327,7 @@ export async function finalize(): Promise<void> {
             },
           },
           ts: interactionStartEvent.ts,
-          dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
+          dur: Types.Timing.Micro(endEvent.ts - interactionStartEvent.ts),
           type: interactionStartEvent.args.data.type,
           interactionId: interactionStartEvent.args.data.interactionId,
         });
@@ -369,7 +369,7 @@ export function deps(): HandlerName[] {
  * Classifications sourced from
  * https://web.dev/articles/inp#good-score
  */
-export function scoreClassificationForInteractionToNextPaint(timing: Types.Timing.MicroSeconds): ScoreClassification {
+export function scoreClassificationForInteractionToNextPaint(timing: Types.Timing.Micro): ScoreClassification {
   if (timing <= INP_GOOD_TIMING) {
     return ScoreClassification.GOOD;
   }

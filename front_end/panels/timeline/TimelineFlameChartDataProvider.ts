@@ -669,7 +669,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.timeSpan;
   }
 
-  search(visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds, filter?: Trace.Extras.TraceFilter.TraceFilter):
+  search(visibleWindow: Trace.Types.Timing.TraceWindowMicro, filter?: Trace.Extras.TraceFilter.TraceFilter):
       PerfUI.FlameChart.DataProviderSearchResult[] {
     const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
     this.timelineData();
@@ -739,7 +739,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     this.appendHeader('', this.screenshotsGroupStyle, false /* selectable */);
     this.entryTypeByLevel[this.currentLevel] = EntryType.SCREENSHOT;
-    let prevTimestamp: Trace.Types.Timing.MilliSeconds|undefined = undefined;
+    let prevTimestamp: Trace.Types.Timing.Milli|undefined = undefined;
 
     for (const filmStripFrame of filmStrip.frames) {
       const screenshotTimeInMilliSeconds = Trace.Helpers.Timing.microToMilli(filmStripFrame.screenshotEvent.ts);
@@ -1043,7 +1043,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const beginTime = Trace.Helpers.Timing.microToMilli(entry.ts);
     const entireBarEndXPixel = barX + barWidth;
 
-    function timeToPixel(time: Trace.Types.Timing.MicroSeconds): number {
+    function timeToPixel(time: Trace.Types.Timing.Micro): number {
       const timeMilli = Trace.Helpers.Timing.microToMilli(time);
       return Math.floor(unclippedBarXStartPixel + (timeMilli - beginTime) * timeToPixelRatio);
     }
@@ -1075,7 +1075,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // The left whisker starts at the enty timestamp, and continues until the start of the box (processingStart).
     const leftWhiskerX = timeToPixel(entry.ts);
     // The right whisker ends at (entry.ts + entry.dur). We draw the line from the end of the box (processingEnd).
-    const rightWhiskerX = timeToPixel(Trace.Types.Timing.MicroSeconds(entry.ts + entry.dur));
+    const rightWhiskerX = timeToPixel(Trace.Types.Timing.Micro(entry.ts + entry.dur));
     context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = '#ccc';
@@ -1323,7 +1323,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 }
 
-export const InstantEventVisibleDurationMs = Trace.Types.Timing.MilliSeconds(0.001);
+export const InstantEventVisibleDurationMs = Trace.Types.Timing.Milli(0.001);
 
 export const enum Events {
   DATA_CHANGED = 'DataChanged',

@@ -87,7 +87,7 @@ export function generateInsight(
     const first = entries[0];
     const last = entries[entries.length - 1];
     const timeRange =
-        Helpers.Timing.traceWindowFromMicroSeconds(first.ts, Types.Timing.MicroSeconds(last.ts + (last.dur ?? 0)));
+        Helpers.Timing.traceWindowFromMicroSeconds(first.ts, Types.Timing.Micro(last.ts + (last.dur ?? 0)));
     if (!Helpers.Timing.boundsIncludeTimeRange({timeRange, bounds: context.bounds})) {
       continue;
     }

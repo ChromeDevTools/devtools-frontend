@@ -90,7 +90,7 @@ export interface EntriesLink {
  */
 export interface TimeRangeLabel {
   type: 'TIME_RANGE';
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  bounds: Trace.Types.Timing.TraceWindowMicro;
   label: string;
   showDuration: boolean;
 }
@@ -100,10 +100,9 @@ export interface TimeRangeLabel {
  * trace window that will contain all of the overlays.
  * `overlays` is expected to be non-empty, and this will return `null` if it is empty.
  */
-export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicroSeconds|
-    null {
-  let minTime = Trace.Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
-  let maxTime = Trace.Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
+export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicro|null {
+  let minTime = Trace.Types.Timing.Micro(Number.POSITIVE_INFINITY);
+  let maxTime = Trace.Types.Timing.Micro(Number.NEGATIVE_INFINITY);
 
   if (overlays.length === 0) {
     return null;
@@ -122,9 +121,9 @@ export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trac
   return Trace.Helpers.Timing.traceWindowFromMicroSeconds(minTime, maxTime);
 }
 
-function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.TraceWindowMicroSeconds {
-  const overlayMinBounds: Trace.Types.Timing.MicroSeconds[] = [];
-  const overlayMaxBounds: Trace.Types.Timing.MicroSeconds[] = [];
+function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.TraceWindowMicro {
+  const overlayMinBounds: Trace.Types.Timing.Micro[] = [];
+  const overlayMaxBounds: Trace.Types.Timing.Micro[] = [];
 
   switch (overlay.type) {
     case 'ENTRY_SELECTED': {
@@ -200,8 +199,8 @@ function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.Tra
       Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
   }
 
-  const min = Trace.Types.Timing.MicroSeconds(Math.min(...overlayMinBounds));
-  const max = Trace.Types.Timing.MicroSeconds(Math.max(...overlayMaxBounds));
+  const min = Trace.Types.Timing.Micro(Math.min(...overlayMinBounds));
+  const max = Trace.Types.Timing.Micro(Math.max(...overlayMaxBounds));
   return Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 }
 
@@ -274,7 +273,7 @@ export function chartForEntry(entry: OverlayEntry): EntryChartLocation {
  */
 export interface CandyStripedTimeRange {
   type: 'CANDY_STRIPED_TIME_RANGE';
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  bounds: Trace.Types.Timing.TraceWindowMicro;
   entry: Trace.Types.Events.Event;
 }
 
@@ -291,7 +290,7 @@ export interface TimespanBreakdown {
 
 export interface TimestampMarker {
   type: 'TIMESTAMP_MARKER';
-  timestamp: Trace.Types.Timing.MicroSeconds;
+  timestamp: Trace.Types.Timing.Micro;
 }
 
 /**
@@ -303,7 +302,7 @@ export interface TimingsMarker {
   type: 'TIMINGS_MARKER';
   entries: Trace.Types.Events.PageLoadEvent[];
   entryToFieldResult: Map<Trace.Types.Events.PageLoadEvent, TimingsMarkerFieldResult>;
-  adjustedTimestamp: Trace.Types.Timing.MicroSeconds;
+  adjustedTimestamp: Trace.Types.Timing.Micro;
 }
 
 export type TimingsMarkerFieldResult = Trace.Insights.Common.CrUXFieldMetricTimingResult;
@@ -342,7 +341,7 @@ export function overlayIsSingleton(overlay: TimelineOverlay): overlay is Singlet
  */
 interface ActiveDimensions {
   trace: {
-    visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds|null,
+    visibleWindow: Trace.Types.Timing.TraceWindowMicro|null,
   };
   charts: {
     main: FlameChartDimensions|null,
@@ -688,7 +687,7 @@ export class Overlays extends EventTarget {
    * Update the visible window of the UI.
    * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
    */
-  updateVisibleWindow(visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds): void {
+  updateVisibleWindow(visibleWindow: Trace.Types.Timing.TraceWindowMicro): void {
     this.#dimensions.trace.visibleWindow = visibleWindow;
   }
 
@@ -1573,7 +1572,7 @@ export class Overlays extends EventTarget {
   }
 
   #createOverlayPopover(
-      adjustedTimestamp: Trace.Types.Timing.MicroSeconds, name: string,
+      adjustedTimestamp: Trace.Types.Timing.Micro, name: string,
       fieldResult: TimingsMarkerFieldResult|undefined): HTMLElement {
     const popoverElement = document.createElement('div');
     const popoverContents = popoverElement.createChild('div', 'overlay-popover');
@@ -1869,7 +1868,7 @@ export class Overlays extends EventTarget {
    * how far along the timeline the event is. We can then multiply that by the
    * width of the canvas to get its pixel position.
    */
-  #xPixelForMicroSeconds(chart: EntryChartLocation, timestamp: Trace.Types.Timing.MicroSeconds): number|null {
+  #xPixelForMicroSeconds(chart: EntryChartLocation, timestamp: Trace.Types.Timing.Micro): number|null {
     if (this.#dimensions.trace.visibleWindow === null) {
       console.error('Cannot calculate xPixel without visible trace window.');
       return null;
@@ -1998,7 +1997,7 @@ export class Overlays extends EventTarget {
  * of entry.
  */
 export function timingsForOverlayEntry(entry: OverlayEntry):
-    Trace.Helpers.Timing.EventTimingsData<Trace.Types.Timing.MicroSeconds> {
+    Trace.Helpers.Timing.EventTimingsData<Trace.Types.Timing.Micro> {
   if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
     return {
       startTime: entry.startTime,

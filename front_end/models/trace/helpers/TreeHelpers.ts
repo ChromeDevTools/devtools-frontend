@@ -31,7 +31,7 @@ export interface TraceEntryTree {
 export interface TraceEntryNode {
   entry: Types.Events.Event;
   depth: number;
-  selfTime?: Types.Timing.MicroSeconds;
+  selfTime?: Types.Timing.Micro;
   id: TraceEntryNodeId;
   parent: TraceEntryNode|null;
   children: TraceEntryNode[];
@@ -88,7 +88,7 @@ export function treify(entries: Types.Events.Event[], options?: {
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
       tree.roots.add(node);
-      node.selfTime = Types.Timing.MicroSeconds(duration);
+      node.selfTime = Types.Timing.Micro(duration);
       stack.push(node);
       tree.maxDepth = Math.max(tree.maxDepth, stack.length);
       entryToNode.set(event, node);
@@ -148,9 +148,9 @@ export function treify(entries: Types.Events.Event[], options?: {
     node.depth = stack.length;
     node.parent = parentNode;
     parentNode.children.push(node);
-    node.selfTime = Types.Timing.MicroSeconds(duration);
+    node.selfTime = Types.Timing.Micro(duration);
     if (parentNode.selfTime !== undefined) {
-      parentNode.selfTime = Types.Timing.MicroSeconds(parentNode.selfTime - (event.dur || 0));
+      parentNode.selfTime = Types.Timing.Micro(parentNode.selfTime - (event.dur || 0));
     }
     stack.push(node);
     tree.maxDepth = Math.max(tree.maxDepth, stack.length);
@@ -222,8 +222,8 @@ export function walkEntireTree(
     tree: TraceEntryTree,
     onEntryStart: (entry: Types.Events.Event) => void,
     onEntryEnd: (entry: Types.Events.Event) => void,
-    traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
-    minDuration?: Types.Timing.MicroSeconds,
+    traceWindowToInclude?: Types.Timing.TraceWindowMicro,
+    minDuration?: Types.Timing.Micro,
     ): void {
   for (const rootNode of tree.roots) {
     walkTreeByNode(entryToNode, rootNode, onEntryStart, onEntryEnd, traceWindowToInclude, minDuration);
@@ -235,8 +235,8 @@ function walkTreeByNode(
     rootNode: TraceEntryNode,
     onEntryStart: (entry: Types.Events.Event) => void,
     onEntryEnd: (entry: Types.Events.Event) => void,
-    traceWindowToInclude?: Types.Timing.TraceWindowMicroSeconds,
-    minDuration?: Types.Timing.MicroSeconds,
+    traceWindowToInclude?: Types.Timing.TraceWindowMicro,
+    minDuration?: Types.Timing.Micro,
     ): void {
   if (traceWindowToInclude && !treeNodeIsInWindow(rootNode, traceWindowToInclude)) {
     // If this node is not within the provided window, we can skip it. We also
@@ -246,8 +246,8 @@ function walkTreeByNode(
   }
 
   if (typeof minDuration !== 'undefined') {
-    const duration = Types.Timing.MicroSeconds(
-        rootNode.entry.ts + Types.Timing.MicroSeconds(rootNode.entry.dur ?? 0),
+    const duration = Types.Timing.Micro(
+        rootNode.entry.ts + Types.Timing.Micro(rootNode.entry.dur ?? 0),
     );
     if (duration < minDuration) {
       return;
@@ -266,7 +266,7 @@ function walkTreeByNode(
  * window. The entire node does not have to fit inside the window, but it does
  * have to partially intersect it.
  */
-function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindowMicroSeconds): boolean {
+function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindowMicro): boolean {
   return eventIsInBounds(node.entry, traceWindow);
 }
 

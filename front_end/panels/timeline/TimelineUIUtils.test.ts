@@ -100,8 +100,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
            name: Trace.Types.Events.Name.FUNCTION_CALL,
            ph: Trace.Types.Events.Phase.COMPLETE,
            cat: 'devtools-timeline',
-           dur: Trace.Types.Timing.MicroSeconds(100),
-           ts: Trace.Types.Timing.MicroSeconds(100),
+           dur: Trace.Types.Timing.Micro(100),
+           ts: Trace.Types.Timing.Micro(100),
            pid: Trace.Types.Events.ProcessID(1),
            tid: Trace.Types.Events.ThreadID(1),
            args: {
@@ -133,8 +133,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
            name: Trace.Types.Events.Name.FUNCTION_CALL,
            ph: Trace.Types.Events.Phase.COMPLETE,
            cat: 'devtools-timeline',
-           dur: Trace.Types.Timing.MicroSeconds(100),
-           ts: Trace.Types.Timing.MicroSeconds(100),
+           dur: Trace.Types.Timing.Micro(100),
+           ts: Trace.Types.Timing.Micro(100),
            pid: Trace.Types.Events.ProcessID(1),
            tid: Trace.Types.Events.ThreadID(1),
            args: {
@@ -346,7 +346,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       // Round the time to 2DP to avoid needlessly long expectation numbers!
       const unadjustedStartTimeMilliseconds = Trace.Helpers.Timing
                                                   .microToMilli(
-                                                      Trace.Types.Timing.MicroSeconds(dclEvent.ts - traceMinBound),
+                                                      Trace.Types.Timing.Micro(dclEvent.ts - traceMinBound),
                                                       )
                                                   .toFixed(2);
       assert.strictEqual(unadjustedStartTimeMilliseconds, String(190.79));
@@ -1335,8 +1335,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
     it('correctly aggregates up stats', async () => {
       const mainThread = Trace.Types.Events.ThreadID(1);
       const pid = Trace.Types.Events.ProcessID(100);
-      function microsec(x: number): Trace.Types.Timing.MicroSeconds {
-        return Trace.Types.Timing.MicroSeconds(x);
+      function microsec(x: number): Trace.Types.Timing.Micro {
+        return Trace.Types.Timing.Micro(x);
       }
 
       const events: Trace.Types.Events.Event[] = [
@@ -1455,8 +1455,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       const rangeStats101To103 = Timeline.TimelineUIUtils.TimelineUIUtils.statsForTimeRange(
           events,
-          Trace.Types.Timing.MilliSeconds(101),
-          Trace.Types.Timing.MilliSeconds(103),
+          Trace.Types.Timing.Milli(101),
+          Trace.Types.Timing.Milli(103),
       );
       assert.deepEqual(rangeStats101To103, {
         other: 1,
@@ -1466,8 +1466,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
       });
       const rangeStats104To109 = Timeline.TimelineUIUtils.TimelineUIUtils.statsForTimeRange(
           events,
-          Trace.Types.Timing.MilliSeconds(104),
-          Trace.Types.Timing.MilliSeconds(109),
+          Trace.Types.Timing.Milli(104),
+          Trace.Types.Timing.Milli(109),
       );
       assert.deepEqual(rangeStats104To109, {
         other: 2,

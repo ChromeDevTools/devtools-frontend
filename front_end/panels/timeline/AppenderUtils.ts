@@ -83,14 +83,13 @@ export function buildTrackHeader(
  * @param selfTime the self time of the hovered event.
  * @returns the formatted time string for popoverInfo
  */
-export function getFormattedTime(
-    totalTime?: Trace.Types.Timing.MicroSeconds, selfTime?: Trace.Types.Timing.MicroSeconds): string {
-  const formattedTotalTime = Trace.Helpers.Timing.microToMilli((totalTime || 0) as Trace.Types.Timing.MicroSeconds);
-  if (formattedTotalTime === Trace.Types.Timing.MilliSeconds(0)) {
+export function getFormattedTime(totalTime?: Trace.Types.Timing.Micro, selfTime?: Trace.Types.Timing.Micro): string {
+  const formattedTotalTime = Trace.Helpers.Timing.microToMilli((totalTime || 0) as Trace.Types.Timing.Micro);
+  if (formattedTotalTime === Trace.Types.Timing.Milli(0)) {
     return '';
   }
 
-  const formattedSelfTime = Trace.Helpers.Timing.microToMilli((selfTime || 0) as Trace.Types.Timing.MicroSeconds);
+  const formattedSelfTime = Trace.Helpers.Timing.microToMilli((selfTime || 0) as Trace.Types.Timing.Micro);
   const minSelfTimeSignificance = 1e-6;
   const formattedTime = Math.abs(formattedTotalTime - formattedSelfTime) > minSelfTimeSignificance &&
           formattedSelfTime > minSelfTimeSignificance ?

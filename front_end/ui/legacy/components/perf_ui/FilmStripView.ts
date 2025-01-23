@@ -38,7 +38,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStrip
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
   private statusLabel: HTMLElement;
-  private zeroTime: Trace.Types.Timing.MilliSeconds = Trace.Types.Timing.MilliSeconds(0);
+  private zeroTime: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
 
   constructor() {
@@ -117,7 +117,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
   }
 
   reset(): void {
-    this.zeroTime = Trace.Types.Timing.MilliSeconds(0);
+    this.zeroTime = Trace.Types.Timing.Milli(0);
     this.contentElement.removeChildren();
     this.contentElement.appendChild(this.statusLabel);
   }
@@ -142,7 +142,7 @@ export interface EventTypes {
 interface DialogParsedTrace {
   source: 'Trace';
   index: number;
-  zeroTime: Trace.Types.Timing.MilliSeconds;
+  zeroTime: Trace.Types.Timing.Milli;
   frames: readonly Trace.Extras.FilmStrip.Frame[];
 }
 
@@ -201,7 +201,7 @@ export class Dialog {
     return this.#data.frames.length;
   }
 
-  #zeroTime(): Trace.Types.Timing.MilliSeconds {
+  #zeroTime(): Trace.Types.Timing.Milli {
     return this.#data.zeroTime;
   }
 

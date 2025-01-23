@@ -7,8 +7,8 @@ import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
 
 export interface Data {
-  zeroTime: Types.Timing.MicroSeconds;
-  spanTime: Types.Timing.MicroSeconds;
+  zeroTime: Types.Timing.Micro;
+  spanTime: Types.Timing.Micro;
   frames: readonly Frame[];
 }
 
@@ -30,10 +30,9 @@ export type HandlerDataWithScreenshots = Handlers.Types.EnabledHandlerDataWithMe
 // Cache film strips based on:
 // 1. The trace parsed data object
 // 2. The start time.
-const filmStripCache = new WeakMap<HandlerDataWithScreenshots, Map<Types.Timing.MicroSeconds, Data>>();
+const filmStripCache = new WeakMap<HandlerDataWithScreenshots, Map<Types.Timing.Micro, Data>>();
 
-export function fromParsedTrace(
-    parsedTrace: HandlerDataWithScreenshots, customZeroTime?: Types.Timing.MicroSeconds): Data {
+export function fromParsedTrace(parsedTrace: HandlerDataWithScreenshots, customZeroTime?: Types.Timing.Micro): Data {
   const frames: Frame[] = [];
 
   const zeroTime = typeof customZeroTime !== 'undefined' ? customZeroTime : parsedTrace.Meta.traceBounds.min;
@@ -60,14 +59,14 @@ export function fromParsedTrace(
     frames: Array.from(frames),
   };
 
-  const cachedForData = Platform.MapUtilities.getWithDefault(
-      filmStripCache, parsedTrace, () => new Map<Types.Timing.MicroSeconds, Data>());
+  const cachedForData =
+      Platform.MapUtilities.getWithDefault(filmStripCache, parsedTrace, () => new Map<Types.Timing.Micro, Data>());
   cachedForData.set(zeroTime, result);
 
   return result;
 }
 
-export function frameClosestToTimestamp(filmStrip: Data, searchTimestamp: Types.Timing.MicroSeconds): Frame|null {
+export function frameClosestToTimestamp(filmStrip: Data, searchTimestamp: Types.Timing.Micro): Frame|null {
   const closestFrameIndexBeforeTimestamp = Platform.ArrayUtilities.nearestIndexFromEnd(
       filmStrip.frames, frame => frame.screenshotEvent.ts < searchTimestamp);
   if (closestFrameIndexBeforeTimestamp === null) {

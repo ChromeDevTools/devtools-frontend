@@ -122,7 +122,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       valueText = valueDisplay = '-';
       classification = Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.UNCLASSIFIED;
     } else if (metric === 'LCP') {
-      const micros = value as Trace.Types.Timing.MicroSeconds;
+      const micros = value as Trace.Types.Timing.Micro;
       const {text, element} = NumberWithUnit.formatMicroSecondsAsSeconds(micros);
       valueText = text;
       valueDisplay = element;
@@ -132,7 +132,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       valueText = valueDisplay = value ? value.toFixed(2) : '0';
       classification = Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(value);
     } else if (metric === 'INP') {
-      const micros = value as Trace.Types.Timing.MicroSeconds;
+      const micros = value as Trace.Types.Timing.Micro;
       const {text, element} = NumberWithUnit.formatMicroSecondsAsMillisFixed(micros);
       valueText = text;
       valueDisplay = element;

@@ -9,9 +9,9 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 
 import * as TimelineComponents from './components.js';
 
-function milliToMicro(x: number): Trace.Types.Timing.MicroSeconds {
+function milliToMicro(x: number): Trace.Types.Timing.Micro {
   return Trace.Helpers.Timing.milliToMicro(
-      Trace.Types.Timing.MilliSeconds(x),
+      Trace.Types.Timing.Milli(x),
   );
 }
 
@@ -38,7 +38,7 @@ describeWithEnvironment('BreadcrumbsUI', () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow: Trace.Types.Timing.TraceWindowMicro = {
       min: milliToMicro(1),
       max: milliToMicro(10),
       range: milliToMicro(9),
@@ -63,13 +63,13 @@ describeWithEnvironment('BreadcrumbsUI', () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow2: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow2: Trace.Types.Timing.TraceWindowMicro = {
       min: milliToMicro(2),
       max: milliToMicro(9),
       range: milliToMicro(7),
     };
 
-    const traceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow: Trace.Types.Timing.TraceWindowMicro = {
       min: milliToMicro(1),
       max: milliToMicro(10),
       range: milliToMicro(9),

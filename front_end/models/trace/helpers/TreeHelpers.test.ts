@@ -237,7 +237,7 @@ describe('TreeHelpers', () => {
         assert.fail('Total time for task was not found');
         return;
       }
-      assert.strictEqual(taskCTotalTime, Trace.Types.Timing.MicroSeconds(1));
+      assert.strictEqual(taskCTotalTime, Trace.Types.Timing.Micro(1));
       assert.strictEqual(nodeC.selfTime, taskCTotalTime);
 
       const taskBTotalTime = taskB.dur;
@@ -245,15 +245,15 @@ describe('TreeHelpers', () => {
         assert.fail('Total time for task was not found');
         return;
       }
-      assert.strictEqual(taskBTotalTime, Trace.Types.Timing.MicroSeconds(3));
-      assert.strictEqual(nodeB.selfTime, Trace.Types.Timing.MicroSeconds(taskBTotalTime - taskCTotalTime));
+      assert.strictEqual(taskBTotalTime, Trace.Types.Timing.Micro(3));
+      assert.strictEqual(nodeB.selfTime, Trace.Types.Timing.Micro(taskBTotalTime - taskCTotalTime));
 
       const taskDTotalTime = taskD.dur;
       if (taskDTotalTime === undefined) {
         assert.fail('Total time for task was not found');
         return;
       }
-      assert.strictEqual(taskDTotalTime, Trace.Types.Timing.MicroSeconds(3));
+      assert.strictEqual(taskDTotalTime, Trace.Types.Timing.Micro(3));
       assert.strictEqual(nodeD.selfTime, taskDTotalTime);
 
       const taskATotalTime = taskA.dur;
@@ -261,16 +261,15 @@ describe('TreeHelpers', () => {
         assert.fail('Total time for task was not found');
         return;
       }
-      assert.strictEqual(taskATotalTime, Trace.Types.Timing.MicroSeconds(10));
-      assert.strictEqual(
-          nodeA.selfTime, Trace.Types.Timing.MicroSeconds(taskATotalTime - taskBTotalTime - taskDTotalTime));
+      assert.strictEqual(taskATotalTime, Trace.Types.Timing.Micro(10));
+      assert.strictEqual(nodeA.selfTime, Trace.Types.Timing.Micro(taskATotalTime - taskBTotalTime - taskDTotalTime));
 
       const taskETotalTime = taskE.dur;
       if (taskETotalTime === undefined) {
         assert.fail('Total time for task was not found');
         return;
       }
-      assert.strictEqual(taskETotalTime, Trace.Types.Timing.MicroSeconds(3));
+      assert.strictEqual(taskETotalTime, Trace.Types.Timing.Micro(3));
       assert.strictEqual(nodeD.selfTime, taskETotalTime);
     });
     describe('building hierarchies trace events and profile calls', () => {
@@ -372,9 +371,9 @@ describe('TreeHelpers', () => {
         callOrder.push({type: 'END', entryName: entry.name});
       }
       Trace.Helpers.TreeHelpers.walkEntireTree(entryToNode, tree, onEntryStart, onEntryEnd, {
-        min: Trace.Types.Timing.MicroSeconds(5),
-        max: Trace.Types.Timing.MicroSeconds(10),
-        range: Trace.Types.Timing.MicroSeconds(5),
+        min: Trace.Types.Timing.Micro(5),
+        max: Trace.Types.Timing.Micro(10),
+        range: Trace.Types.Timing.Micro(5),
       });
 
       assert.deepEqual(callOrder, [

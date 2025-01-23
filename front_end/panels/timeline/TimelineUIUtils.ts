@@ -1600,8 +1600,7 @@ export class TimelineUIUtils {
   }
 
   static statsForTimeRange(
-      events: Trace.Types.Events.Event[], startTime: Trace.Types.Timing.MilliSeconds,
-      endTime: Trace.Types.Timing.MilliSeconds): {
+      events: Trace.Types.Events.Event[], startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): {
     [x: string]: number,
   } {
     if (!events.length) {
@@ -2020,8 +2019,7 @@ export class TimelineUIUtils {
           aggregatedTotal += total[categoryName];
         }
 
-        const deltaInMillis =
-            Trace.Helpers.Timing.microToMilli((endTime - startTime) as Trace.Types.Timing.MicroSeconds);
+        const deltaInMillis = Trace.Helpers.Timing.microToMilli((endTime - startTime) as Trace.Types.Timing.Micro);
         total['idle'] = Math.max(0, deltaInMillis - aggregatedTotal);
       }
       return false;
@@ -2210,8 +2208,8 @@ export class TimelineUIUtils {
 
     // Keeps the most useful categories on top.
     categories = categories.sort((a, b) => b.value - a.value);
-    const start = Trace.Types.Timing.MilliSeconds(rangeStart);
-    const end = Trace.Types.Timing.MilliSeconds(rangeEnd);
+    const start = Trace.Types.Timing.Milli(rangeStart);
+    const end = Trace.Types.Timing.Milli(rangeEnd);
     const summaryTable = new TimelineComponents.TimelineSummary.TimelineSummary();
     summaryTable.data = {
       rangeStart: start,
@@ -2271,8 +2269,7 @@ export class TimelineUIUtils {
 
   static frameDuration(frame: Trace.Types.Events.LegacyTimelineFrame): Element {
     const offsetMilli = Trace.Helpers.Timing.microToMilli(frame.startTimeOffset);
-    const durationMilli =
-        Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.MicroSeconds(frame.endTime - frame.startTime));
+    const durationMilli = Trace.Helpers.Timing.microToMilli(Trace.Types.Timing.Micro(frame.endTime - frame.startTime));
 
     const durationText = i18nString(UIStrings.sAtSParentheses, {
       PH1: i18n.TimeUtilities.millisToString(durationMilli, true),
@@ -2552,8 +2549,7 @@ export interface TimelineMarkerStyle {
  * the LCP (for example) relative to the last navigation.
  **/
 export function timeStampForEventAdjustedForClosestNavigationIfPossible(
-    event: Trace.Types.Events.Event,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace|null): Trace.Types.Timing.MilliSeconds {
+    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace|null): Trace.Types.Timing.Milli {
   if (!parsedTrace) {
     const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
     return startTime;
@@ -2606,10 +2602,10 @@ export function isMarkerEvent(parsedTrace: Trace.Handlers.Types.ParsedTrace, eve
 }
 
 function getEventSelfTime(
-    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.MilliSeconds {
+    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.Milli {
   const mapToUse = Trace.Types.Extensions.isSyntheticExtensionEntry(event) ?
       parsedTrace.ExtensionTraceData.entryToNode :
       parsedTrace.Renderer.entryToNode;
   const selfTime = mapToUse.get(event)?.selfTime;
-  return selfTime ? Trace.Helpers.Timing.microToMilli(selfTime) : Trace.Types.Timing.MilliSeconds(0);
+  return selfTime ? Trace.Helpers.Timing.microToMilli(selfTime) : Trace.Types.Timing.Milli(0);
 }

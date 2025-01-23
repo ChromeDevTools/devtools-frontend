@@ -41,7 +41,7 @@ export type LCPDiscoveryInsightModel = InsightModel<{
   shouldPreloadImage?: boolean,
   /** The network request for the LCP image, if there was one. */
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
-  earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
+  earliestDiscoveryTimeTs?: Types.Timing.Micro,
 }>;
 
 function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'|'category'|'shouldShow'>):
@@ -117,6 +117,6 @@ export function generateInsight(
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
     shouldPreloadImage: !imgPreloadedOrFoundInHTML,
     lcpRequest,
-    earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.MicroSeconds(earliestDiscoveryTime) : undefined,
+    earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.Micro(earliestDiscoveryTime) : undefined,
   });
 }

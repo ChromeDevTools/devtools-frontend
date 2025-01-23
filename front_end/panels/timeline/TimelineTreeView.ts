@@ -165,8 +165,8 @@ export class TimelineTreeView extends
   private lastHoveredProfileNode!: Trace.Extras.TraceTree.Node|null;
   private textFilterInternal!: TimelineRegExp;
   private taskFilter!: Trace.Extras.TraceFilter.ExclusiveNameFilter;
-  protected startTime!: Trace.Types.Timing.MilliSeconds;
-  protected endTime!: Trace.Types.Timing.MilliSeconds;
+  protected startTime!: Trace.Types.Timing.Milli;
+  protected endTime!: Trace.Types.Timing.Milli;
   splitWidget!: UI.SplitWidget.SplitWidget;
   detailsView!: UI.Widget.Widget;
   private searchableView!: UI.SearchableView.SearchableView;
@@ -284,7 +284,7 @@ export class TimelineTreeView extends
     this.setRange(timingMilli.min, timingMilli.max);
   }
 
-  setRange(startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
+  setRange(startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): void {
     this.startTime = startTime;
     this.endTime = endTime;
     this.refreshTree();

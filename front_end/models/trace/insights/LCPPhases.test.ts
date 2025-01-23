@@ -14,8 +14,8 @@ describeWithEnvironment('LCPPhases', function() {
 
     assert.strictEqual(insight.lcpMs, 106.482);
 
-    const wantTtfb = Types.Timing.MilliSeconds(6.115);
-    const wantRenderDelay = Types.Timing.MilliSeconds(100.367);
+    const wantTtfb = Types.Timing.Milli(6.115);
+    const wantRenderDelay = Types.Timing.Milli(100.367);
     assert.deepEqual(insight.phases, {ttfb: wantTtfb, renderDelay: wantRenderDelay});
   });
 

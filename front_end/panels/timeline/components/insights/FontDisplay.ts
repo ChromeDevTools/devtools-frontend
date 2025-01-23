@@ -50,7 +50,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     return [...this.#overlayForRequest.values()];
   }
 
-  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.FCP ?? null;
   }
 

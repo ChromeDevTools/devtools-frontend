@@ -39,26 +39,26 @@ interface LCPPhases {
    * The time between when the user initiates loading the page until when
    * the browser receives the first byte of the html response.
    */
-  ttfb: Types.Timing.MilliSeconds;
+  ttfb: Types.Timing.Milli;
   /**
    * The time between ttfb and the LCP request request being started.
    * For a text LCP, this is undefined given no request is loaded.
    */
-  loadDelay?: Types.Timing.MilliSeconds;
+  loadDelay?: Types.Timing.Milli;
   /**
    * The time it takes to load the LCP request.
    */
-  loadTime?: Types.Timing.MilliSeconds;
+  loadTime?: Types.Timing.Milli;
   /**
    * The time between when the LCP request finishes loading and when
    * the LCP element is rendered.
    */
-  renderDelay: Types.Timing.MilliSeconds;
+  renderDelay: Types.Timing.Milli;
 }
 
 export type LCPPhasesInsightModel = InsightModel<{
-  lcpMs?: Types.Timing.MilliSeconds,
-  lcpTs?: Types.Timing.MilliSeconds,
+  lcpMs?: Types.Timing.Milli,
+  lcpTs?: Types.Timing.Milli,
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
   /** The network request for the LCP image, if there was one. */
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
@@ -75,8 +75,8 @@ function anyValuesNaN(...values: number[]): boolean {
  * data we rely on, so we want to handle that case.
  */
 function breakdownPhases(
-    nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
-    lcpMs: Types.Timing.MilliSeconds, lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPPhases|null {
+    nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest, lcpMs: Types.Timing.Milli,
+    lcpRequest: Types.Events.SyntheticNetworkRequest|undefined): LCPPhases|null {
   const docReqTiming = docRequest.args.data.timing;
   if (!docReqTiming) {
     throw new Error('no timing for document request');
@@ -84,9 +84,9 @@ function breakdownPhases(
   const firstDocByteTs = Helpers.Timing.secondsToMicro(docReqTiming.requestTime) +
       Helpers.Timing.milliToMicro(docReqTiming.receiveHeadersStart);
 
-  const firstDocByteTiming = Types.Timing.MicroSeconds(firstDocByteTs - nav.ts);
+  const firstDocByteTiming = Types.Timing.Micro(firstDocByteTs - nav.ts);
   const ttfb = Helpers.Timing.microToMilli(firstDocByteTiming);
-  let renderDelay = Types.Timing.MilliSeconds(lcpMs - ttfb);
+  let renderDelay = Types.Timing.Milli(lcpMs - ttfb);
 
   if (!lcpRequest) {
     if (anyValuesNaN(ttfb, renderDelay)) {
@@ -95,15 +95,15 @@ function breakdownPhases(
     return {ttfb, renderDelay};
   }
 
-  const lcpStartTs = Types.Timing.MicroSeconds(lcpRequest.ts - nav.ts);
+  const lcpStartTs = Types.Timing.Micro(lcpRequest.ts - nav.ts);
   const requestStart = Helpers.Timing.microToMilli(lcpStartTs);
 
-  const lcpReqEndTs = Types.Timing.MicroSeconds(lcpRequest.args.data.syntheticData.finishTime - nav.ts);
+  const lcpReqEndTs = Types.Timing.Micro(lcpRequest.args.data.syntheticData.finishTime - nav.ts);
   const requestEnd = Helpers.Timing.microToMilli(lcpReqEndTs);
 
-  const loadDelay = Types.Timing.MilliSeconds(requestStart - ttfb);
-  const loadTime = Types.Timing.MilliSeconds(requestEnd - requestStart);
-  renderDelay = Types.Timing.MilliSeconds(lcpMs - requestEnd);
+  const loadDelay = Types.Timing.Milli(requestStart - ttfb);
+  const loadTime = Types.Timing.Milli(requestEnd - requestStart);
+  renderDelay = Types.Timing.Milli(lcpMs - requestEnd);
   if (anyValuesNaN(ttfb, loadDelay, loadTime, renderDelay)) {
     return null;
   }

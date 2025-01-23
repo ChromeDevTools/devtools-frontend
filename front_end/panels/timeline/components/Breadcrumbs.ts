@@ -29,7 +29,7 @@ export class Breadcrumbs {
   initialBreadcrumb: Trace.Types.File.Breadcrumb;
   activeBreadcrumb: Trace.Types.File.Breadcrumb;
 
-  constructor(initialTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds) {
+  constructor(initialTraceWindow: Trace.Types.Timing.TraceWindowMicro) {
     this.initialBreadcrumb = {
       window: initialTraceWindow,
       child: null,
@@ -41,7 +41,7 @@ export class Breadcrumbs {
     this.activeBreadcrumb = lastBreadcrumb;
   }
 
-  add(newBreadcrumbTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds): Trace.Types.File.Breadcrumb {
+  add(newBreadcrumbTraceWindow: Trace.Types.Timing.TraceWindowMicro): Trace.Types.File.Breadcrumb {
     if (!this.isTraceWindowWithinTraceWindow(newBreadcrumbTraceWindow, this.activeBreadcrumb.window)) {
       throw new Error('Can not add a breadcrumb that is equal to or is outside of the parent breadcrumb TimeWindow');
     }
@@ -59,7 +59,7 @@ export class Breadcrumbs {
 
   // Breadcumb should be within the bounds of the parent and can not have both start and end be equal to the parent
   isTraceWindowWithinTraceWindow(
-      child: Trace.Types.Timing.TraceWindowMicroSeconds, parent: Trace.Types.Timing.TraceWindowMicroSeconds): boolean {
+      child: Trace.Types.Timing.TraceWindowMicro, parent: Trace.Types.Timing.TraceWindowMicro): boolean {
     return (child.min >= parent.min && child.max <= parent.max) &&
         !(child.min === parent.min && child.max === parent.max);
   }

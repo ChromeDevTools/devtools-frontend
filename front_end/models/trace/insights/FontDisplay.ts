@@ -30,7 +30,7 @@ export type FontDisplayInsightModel = InsightModel<{
   fonts: Array<{
     request: Types.Events.SyntheticNetworkRequest,
     display: string,
-    wastedTime: Types.Timing.MilliSeconds,
+    wastedTime: Types.Timing.Milli,
   }>,
 }>;
 
@@ -60,16 +60,16 @@ export function generateInsight(
     }
 
     const display = event.args.display;
-    let wastedTime = Types.Timing.MilliSeconds(0);
+    let wastedTime = Types.Timing.Milli(0);
 
     if (/^(block|fallback|auto)$/.test(display)) {
-      const wastedTimeMicro = Types.Timing.MicroSeconds(
+      const wastedTimeMicro = Types.Timing.Micro(
           request.args.data.syntheticData.finishTime - request.args.data.syntheticData.sendStartTime);
       // TODO(crbug.com/352244504): should really end at the time of the next Commit trace event.
-      wastedTime = Platform.NumberUtilities.floor(Helpers.Timing.microToMilli(wastedTimeMicro), 1 / 5) as
-          Types.Timing.MilliSeconds;
+      wastedTime =
+          Platform.NumberUtilities.floor(Helpers.Timing.microToMilli(wastedTimeMicro), 1 / 5) as Types.Timing.Milli;
       // All browsers wait for no more than 3s.
-      wastedTime = Math.min(wastedTime, 3000) as Types.Timing.MilliSeconds;
+      wastedTime = Math.min(wastedTime, 3000) as Types.Timing.Milli;
     }
 
     fonts.push({
@@ -81,7 +81,7 @@ export function generateInsight(
 
   fonts.sort((a, b) => b.wastedTime - a.wastedTime);
 
-  const savings = Math.max(...fonts.map(f => f.wastedTime)) as Types.Timing.MilliSeconds;
+  const savings = Math.max(...fonts.map(f => f.wastedTime)) as Types.Timing.Milli;
 
   return finalize({
     relatedEvents: fonts.map(f => f.request),

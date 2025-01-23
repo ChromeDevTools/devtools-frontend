@@ -34,11 +34,11 @@ export function removeListener(cb: (event: StateChangedEvent) => void): void {
 }
 
 export interface State {
-  readonly micro: Readonly<TraceWindows<Trace.Types.Timing.MicroSeconds>>;
-  readonly milli: Readonly<TraceWindows<Trace.Types.Timing.MilliSeconds>>;
+  readonly micro: Readonly<TraceWindows<Trace.Types.Timing.Micro>>;
+  readonly milli: Readonly<TraceWindows<Trace.Types.Timing.Milli>>;
 }
 
-export interface TraceWindows<TimeFormat extends Trace.Types.Timing.MicroSeconds|Trace.Types.Timing.MilliSeconds> {
+export interface TraceWindows<TimeFormat extends Trace.Types.Timing.Micro|Trace.Types.Timing.Milli> {
   /**
    * This is the bounds of the entire trace. Once a trace is imported/recorded
    * and this is set, it cannot be changed.
@@ -81,14 +81,14 @@ export class BoundsManager extends EventTarget {
     instance = null;
   }
 
-  #currentState: TraceWindows<Trace.Types.Timing.MicroSeconds>|null = null;
+  #currentState: TraceWindows<Trace.Types.Timing.Micro>|null = null;
 
   private constructor() {
     // Defined to enable us to mark it as Private.
     super();
   }
 
-  resetWithNewBounds(initialBounds: Trace.Types.Timing.TraceWindowMicroSeconds): this {
+  resetWithNewBounds(initialBounds: Trace.Types.Timing.TraceWindowMicro): this {
     this.#currentState = {
       entireTraceBounds: initialBounds,
       minimapTraceBounds: initialBounds,
@@ -117,7 +117,7 @@ export class BoundsManager extends EventTarget {
     };
   }
 
-  setMiniMapBounds(newBounds: Trace.Types.Timing.TraceWindowMicroSeconds): void {
+  setMiniMapBounds(newBounds: Trace.Types.Timing.TraceWindowMicro): void {
     if (!this.#currentState) {
       // If we don't have the existing state and know the trace bounds, we
       // cannot set the minimap bounds.
@@ -148,7 +148,7 @@ export class BoundsManager extends EventTarget {
    * with this! Unless you deal with this situation, the UI of the performance
    * panel will break.
    */
-  setTimelineVisibleWindow(newWindow: Trace.Types.Timing.TraceWindowMicroSeconds, options: {
+  setTimelineVisibleWindow(newWindow: Trace.Types.Timing.TraceWindowMicro, options: {
     shouldAnimate?: boolean,
     ignoreMiniMapBounds?: boolean,
   } = {
@@ -176,10 +176,8 @@ export class BoundsManager extends EventTarget {
 
     if (!options.ignoreMiniMapBounds) {
       // Ensure that the setTimelineVisibleWindow can never go outside the bounds of the minimap bounds.
-      newWindow.min =
-          Trace.Types.Timing.MicroSeconds(Math.max(this.#currentState.minimapTraceBounds.min, newWindow.min));
-      newWindow.max =
-          Trace.Types.Timing.MicroSeconds(Math.min(this.#currentState.minimapTraceBounds.max, newWindow.max));
+      newWindow.min = Trace.Types.Timing.Micro(Math.max(this.#currentState.minimapTraceBounds.min, newWindow.min));
+      newWindow.max = Trace.Types.Timing.Micro(Math.min(this.#currentState.minimapTraceBounds.max, newWindow.max));
     }
 
     if (newWindow.min === existingWindow.min && newWindow.max === existingWindow.max) {

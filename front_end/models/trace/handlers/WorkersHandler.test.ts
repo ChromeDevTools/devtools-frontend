@@ -28,8 +28,8 @@ describe('WorkersHandler', () => {
         tid: Trace.Types.Events.ThreadID(37651),
         pid: Trace.Types.Events.ProcessID(71044),
         s: Trace.Types.Events.Scope.THREAD,
-        ts: Trace.Types.Timing.MicroSeconds(107351291649),
-        tts: Trace.Types.Timing.MicroSeconds(934),
+        ts: Trace.Types.Timing.Micro(107351291649),
+        tts: Trace.Types.Timing.Micro(934),
         args: {
           data: {
             frame: '372333E30ECABDA706136ED37FD9FA2B',
@@ -46,8 +46,8 @@ describe('WorkersHandler', () => {
         tid: Trace.Types.Events.ThreadID(35351),
         pid: Trace.Types.Events.ProcessID(71044),
         s: Trace.Types.Events.Scope.THREAD,
-        ts: Trace.Types.Timing.MicroSeconds(107351292507),
-        tts: Trace.Types.Timing.MicroSeconds(817),
+        ts: Trace.Types.Timing.Micro(107351292507),
+        tts: Trace.Types.Timing.Micro(817),
         args: {
           data: {
             frame: '372333E30ECABDA706136ED37FD9FA2B',

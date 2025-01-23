@@ -849,8 +849,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this.overviewPane.setBounds(
-        Trace.Types.Timing.MilliSeconds(this.calculator.minimumBoundary() * 1000),
-        Trace.Types.Timing.MilliSeconds(this.calculator.maximumBoundary() * 1000));
+        Trace.Types.Timing.Milli(this.calculator.minimumBoundary() * 1000),
+        Trace.Types.Timing.Milli(this.calculator.maximumBoundary() * 1000));
     this.networkOverview.updateRequest(request);
   }
 

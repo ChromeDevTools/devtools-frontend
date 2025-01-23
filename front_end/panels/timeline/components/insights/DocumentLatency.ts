@@ -98,7 +98,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     if (this.model.data.redirectDuration) {
       const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           event.ts,
-          (event.ts + redirectDurationMicro) as Trace.Types.Timing.MicroSeconds,
+          (event.ts + redirectDurationMicro) as Trace.Types.Timing.Micro,
       );
       sections.push({bounds, label: i18nString(UIStrings.redirectsLabel), showDuration: true});
       overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
@@ -106,11 +106,11 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     if (this.model.data.serverResponseTooSlow) {
       const serverResponseTimeMicro = Trace.Helpers.Timing.milliToMicro(this.model.data.serverResponseTime);
       // NOTE: NetworkRequestHandlers never makes a synthetic network request event if `timing` is missing.
-      const sendEnd = event.args.data.timing?.sendEnd ?? Trace.Types.Timing.MilliSeconds(0);
+      const sendEnd = event.args.data.timing?.sendEnd ?? Trace.Types.Timing.Milli(0);
       const sendEndMicro = Trace.Helpers.Timing.milliToMicro(sendEnd);
       const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           sendEndMicro,
-          (sendEndMicro + serverResponseTimeMicro) as Trace.Types.Timing.MicroSeconds,
+          (sendEndMicro + serverResponseTimeMicro) as Trace.Types.Timing.Micro,
       );
       sections.push({bounds, label: i18nString(UIStrings.serverResponseTimeLabel), showDuration: true});
     }
@@ -118,7 +118,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
       const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           event.args.data.syntheticData.downloadStart,
           (event.args.data.syntheticData.downloadStart + event.args.data.syntheticData.download) as
-              Trace.Types.Timing.MicroSeconds,
+              Trace.Types.Timing.Micro,
       );
       sections.push({bounds, label: i18nString(UIStrings.uncompressedDownload), showDuration: true});
       overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
@@ -142,7 +142,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     return overlays;
   }
 
-  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     return this.model?.metricSavings?.FCP ?? null;
   }
 

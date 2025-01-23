@@ -23,14 +23,14 @@ function createProcessedNavigation(parsedTrace: Handlers.Types.ParsedTrace, fram
   }
 
   const getTimestampOrUndefined =
-      (metric: Handlers.ModelHandlers.PageLoadMetrics.MetricName): Types.Timing.MicroSeconds|undefined => {
+      (metric: Handlers.ModelHandlers.PageLoadMetrics.MetricName): Types.Timing.Micro|undefined => {
         const metricScore = scores.get(metric);
         if (!metricScore?.event) {
           return;
         }
         return metricScore.event.ts;
       };
-  const getTimestamp = (metric: Handlers.ModelHandlers.PageLoadMetrics.MetricName): Types.Timing.MicroSeconds => {
+  const getTimestamp = (metric: Handlers.ModelHandlers.PageLoadMetrics.MetricName): Types.Timing.Micro => {
     const metricScore = scores.get(metric);
     if (!metricScore?.event) {
       throw new Lantern.Core.LanternError(`missing metric: ${metric}`);

@@ -102,8 +102,8 @@ describeWithEnvironment('Overlays', () => {
       allGroupsCollapsed: false,
     });
 
-    const windowMin = Trace.Types.Timing.MicroSeconds(0);
-    const windowMax = Trace.Types.Timing.MicroSeconds(100);
+    const windowMin = Trace.Types.Timing.Micro(0);
+    const windowMax = Trace.Types.Timing.Micro(100);
     // Set the visible window to be 0-100 microseconds
     overlays.updateVisibleWindow(Trace.Helpers.Timing.traceWindowFromMicroSeconds(windowMin, windowMax));
 
@@ -752,7 +752,7 @@ describeWithEnvironment('Overlays', () => {
 
       // change the bounds so the new min is +1second of time.
       const newBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-          Trace.Types.Timing.MicroSeconds(rangeOverlay.bounds.min + (1_000 * 1_000)),
+          Trace.Types.Timing.Micro(rangeOverlay.bounds.min + (1_000 * 1_000)),
           rangeOverlay.bounds.max,
       );
       overlays.updateExisting(rangeOverlay, {bounds: newBounds});
@@ -773,8 +773,8 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: layoutShiftEvent,
       });
-      const boundsRange = Trace.Types.Timing.MicroSeconds(20_000);
-      const boundsMax = Trace.Types.Timing.MicroSeconds(layoutShiftEvent.ts + boundsRange);
+      const boundsRange = Trace.Types.Timing.Micro(20_000);
+      const boundsMax = Trace.Types.Timing.Micro(layoutShiftEvent.ts + boundsRange);
       overlays.updateVisibleWindow({min: layoutShiftEvent.ts, max: boundsMax, range: boundsRange});
       await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
@@ -1043,7 +1043,7 @@ describeWithEnvironment('Overlays', () => {
     it('defines a log for cursor timestamp marker', () => {
       const overlay: Overlays.Overlays.TimestampMarker = {
         type: 'TIMESTAMP_MARKER',
-        timestamp: 1_000 as Trace.Types.Timing.MicroSeconds,
+        timestamp: 1_000 as Trace.Types.Timing.Micro,
       };
       const context = Overlays.Overlays.jsLogContext(overlay);
       assert.strictEqual(context, 'timeline.overlays.cursor-timestamp-marker');

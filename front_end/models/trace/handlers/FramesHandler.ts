@@ -102,7 +102,7 @@ export class TimelineFrameModel {
   #framePendingCommit: PendingFrame|null = null;
   #lastBeginFrame: number|null = null;
   #lastNeedsBeginFrame: number|null = null;
-  #lastTaskBeginTime: Types.Timing.MicroSeconds|null = null;
+  #lastTaskBeginTime: Types.Timing.Micro|null = null;
   #layerTreeId: number|null = null;
   #activeProcessId: Types.Events.ProcessID|null = null;
   #activeThreadId: Types.Events.ThreadID|null = null;
@@ -137,7 +137,7 @@ export class TimelineFrameModel {
     return this.#frames;
   }
 
-  #handleBeginFrame(startTime: Types.Timing.MicroSeconds, seqId: number): void {
+  #handleBeginFrame(startTime: Types.Timing.Micro, seqId: number): void {
     if (!this.#lastFrame) {
       this.#startFrame(startTime, seqId);
     }
@@ -146,7 +146,7 @@ export class TimelineFrameModel {
     this.#beginFrameQueue.addFrameIfNotExists(seqId, startTime, false, false);
   }
 
-  #handleDroppedFrame(startTime: Types.Timing.MicroSeconds, seqId: number, isPartial: boolean): void {
+  #handleDroppedFrame(startTime: Types.Timing.Micro, seqId: number, isPartial: boolean): void {
     if (!this.#lastFrame) {
       this.#startFrame(startTime, seqId);
     }
@@ -159,7 +159,7 @@ export class TimelineFrameModel {
     this.#beginFrameQueue.setPartial(seqId, isPartial);
   }
 
-  #handleDrawFrame(startTime: Types.Timing.MicroSeconds, seqId: number): void {
+  #handleDrawFrame(startTime: Types.Timing.Micro, seqId: number): void {
     if (!this.#lastFrame) {
       this.#startFrame(startTime, seqId);
       return;
@@ -231,21 +231,21 @@ export class TimelineFrameModel {
     this.#lastLayerTree = layerTree;
   }
 
-  #handleNeedFrameChanged(startTime: Types.Timing.MicroSeconds, needsBeginFrame: boolean): void {
+  #handleNeedFrameChanged(startTime: Types.Timing.Micro, needsBeginFrame: boolean): void {
     if (needsBeginFrame) {
       this.#lastNeedsBeginFrame = startTime;
     }
   }
 
-  #startFrame(startTime: Types.Timing.MicroSeconds, seqId: number): void {
+  #startFrame(startTime: Types.Timing.Micro, seqId: number): void {
     if (this.#lastFrame) {
       this.#flushFrame(this.#lastFrame, startTime);
     }
     this.#lastFrame =
-        new TimelineFrame(seqId, startTime, Types.Timing.MicroSeconds(startTime - metaHandlerData().traceBounds.min));
+        new TimelineFrame(seqId, startTime, Types.Timing.Micro(startTime - metaHandlerData().traceBounds.min));
   }
 
-  #flushFrame(frame: TimelineFrame, endTime: Types.Timing.MicroSeconds): void {
+  #flushFrame(frame: TimelineFrame, endTime: Types.Timing.Micro): void {
     frame.setLayerTree(this.#lastLayerTree);
     frame.setEndTime(endTime);
     if (this.#lastLayerTree) {
@@ -278,7 +278,7 @@ export class TimelineFrameModel {
       events: readonly Types.Events.Event[], threadData: {
         pid: Types.Events.ProcessID,
         tid: Types.Events.ThreadID,
-        startTime: Types.Timing.MicroSeconds,
+        startTime: Types.Timing.Micro,
       }[],
       mainFrameId: string): void {
     let j = 0;
@@ -387,15 +387,15 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
   cat = 'devtools.legacy_frame';
   name = 'frame';
   ph = Types.Events.Phase.COMPLETE;
-  ts: Types.Timing.MicroSeconds;
+  ts: Types.Timing.Micro;
   pid = Types.Events.ProcessID(-1);
   tid = Types.Events.ThreadID(-1);
 
   index: number = -1;
-  startTime: Types.Timing.MicroSeconds;
-  startTimeOffset: Types.Timing.MicroSeconds;
-  endTime: Types.Timing.MicroSeconds;
-  duration: Types.Timing.MicroSeconds;
+  startTime: Types.Timing.Micro;
+  startTimeOffset: Types.Timing.Micro;
+  endTime: Types.Timing.Micro;
+  duration: Types.Timing.Micro;
   idle: boolean;
   dropped: boolean;
   isPartial: boolean;
@@ -404,13 +404,13 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
   mainFrameId: number|undefined;
   readonly seqId: number;
 
-  constructor(seqId: number, startTime: Types.Timing.MicroSeconds, startTimeOffset: Types.Timing.MicroSeconds) {
+  constructor(seqId: number, startTime: Types.Timing.Micro, startTimeOffset: Types.Timing.Micro) {
     this.seqId = seqId;
     this.startTime = startTime;
     this.ts = startTime;
     this.startTimeOffset = startTimeOffset;
     this.endTime = this.startTime;
-    this.duration = Types.Timing.MicroSeconds(0);
+    this.duration = Types.Timing.Micro(0);
     this.idle = false;
     this.dropped = false;
     this.isPartial = false;
@@ -423,9 +423,9 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
     this.index = i;
   }
 
-  setEndTime(endTime: Types.Timing.MicroSeconds): void {
+  setEndTime(endTime: Types.Timing.Micro): void {
     this.endTime = endTime;
-    this.duration = Types.Timing.MicroSeconds(this.endTime - this.startTime);
+    this.duration = Types.Timing.Micro(this.endTime - this.startTime);
   }
 
   setLayerTree(layerTree: Types.Events.LegacyFrameLayerTreeData|null): void {
@@ -436,7 +436,7 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
    * Fake the `dur` field to meet the expected value given that we pretend
    * these TimelineFrame classes are trace events across the codebase.
    */
-  get dur(): Types.Timing.MicroSeconds {
+  get dur(): Types.Timing.Micro {
     return this.duration;
   }
 }
@@ -479,10 +479,10 @@ export class PendingFrame {
 // The parameters of an impl-side BeginFrame.
 class BeginFrameInfo {
   seqId: number;
-  startTime: Types.Timing.MicroSeconds;
+  startTime: Types.Timing.Micro;
   isDropped: boolean;
   isPartial: boolean;
-  constructor(seqId: number, startTime: Types.Timing.MicroSeconds, isDropped: boolean, isPartial: boolean) {
+  constructor(seqId: number, startTime: Types.Timing.Micro, isDropped: boolean, isPartial: boolean) {
     this.seqId = seqId;
     this.startTime = startTime;
     this.isDropped = isDropped;
@@ -503,8 +503,7 @@ export class TimelineFrameBeginFrameQueue {
   } = {};
 
   // Add a BeginFrame to the queue, if it does not already exit.
-  addFrameIfNotExists(seqId: number, startTime: Types.Timing.MicroSeconds, isDropped: boolean, isPartial: boolean):
-      void {
+  addFrameIfNotExists(seqId: number, startTime: Types.Timing.Micro, isDropped: boolean, isPartial: boolean): void {
     if (!(seqId in this.mapFrames)) {
       this.mapFrames[seqId] = new BeginFrameInfo(seqId, startTime, isDropped, isPartial);
       this.queueFrames.push(seqId);
@@ -556,8 +555,8 @@ export class TimelineFrameBeginFrameQueue {
 }
 
 export function framesWithinWindow(
-    frames: readonly Types.Events.LegacyTimelineFrame[], startTime: Types.Timing.MicroSeconds,
-    endTime: Types.Timing.MicroSeconds): Types.Events.LegacyTimelineFrame[] {
+    frames: readonly Types.Events.LegacyTimelineFrame[], startTime: Types.Timing.Micro,
+    endTime: Types.Timing.Micro): Types.Events.LegacyTimelineFrame[] {
   const firstFrame = Platform.ArrayUtilities.lowerBound(frames, startTime || 0, (time, frame) => time - frame.endTime);
   const lastFrame =
       Platform.ArrayUtilities.lowerBound(frames, endTime || Infinity, (time, frame) => time - frame.startTime);

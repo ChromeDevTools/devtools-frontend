@@ -13,7 +13,7 @@ const unpairedAsyncEvents: Types.Events.PipelineReporter[] = [];
 
 const snapshotEvents: Types.Events.Screenshot[] = [];
 const syntheticScreenshots: Types.Events.SyntheticScreenshot[] = [];
-let frameSequenceToTs: Record<string, Types.Timing.MicroSeconds> = {};
+let frameSequenceToTs: Record<string, Types.Timing.Micro> = {};
 
 export function reset(): void {
   unpairedAsyncEvents.length = 0;
@@ -35,7 +35,7 @@ export async function finalize(): Promise<void> {
 
   frameSequenceToTs = Object.fromEntries(pipelineReporterEvents.map(evt => {
     const frameSequenceId = evt.args.data.beginEvent.args.chrome_frame_reporter.frame_sequence;
-    const presentationTs = Types.Timing.MicroSeconds(evt.ts + evt.dur);
+    const presentationTs = Types.Timing.Micro(evt.ts + evt.dur);
     return [frameSequenceId, presentationTs];
   }));
 
@@ -67,7 +67,7 @@ export async function finalize(): Promise<void> {
  * Presentation == when the pixels hit the screen. AKA Swap on the GPU
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getPresentationTimestamp(screenshotEvent: Types.Events.Screenshot): Types.Timing.MicroSeconds {
+function getPresentationTimestamp(screenshotEvent: Types.Events.Screenshot): Types.Timing.Micro {
   const frameSequence = parseInt(screenshotEvent.id, 16);
   // If it's 1, then it's an old trace (before https://crrev.com/c/4957973) and cannot be corrected.
   if (frameSequence === 1) {

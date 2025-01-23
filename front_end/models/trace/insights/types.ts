@@ -15,13 +15,13 @@ import type * as Models from './Models.js';
 export type InsightSetContext = InsightSetContextWithoutNavigation|InsightSetContextWithNavigation;
 
 export interface InsightSetContextWithoutNavigation {
-  bounds: Types.Timing.TraceWindowMicroSeconds;
+  bounds: Types.Timing.TraceWindowMicro;
   frameId: string;
   navigation?: never;
 }
 
 export interface InsightSetContextWithNavigation {
-  bounds: Types.Timing.TraceWindowMicroSeconds;
+  bounds: Types.Timing.TraceWindowMicro;
   frameId: string;
   navigation: Types.Events.NavigationStart;
   navigationId: string;
@@ -46,11 +46,11 @@ export enum InsightWarning {
 
 export interface MetricSavings {
   /* eslint-disable @typescript-eslint/naming-convention */
-  FCP?: Types.Timing.MilliSeconds;
-  LCP?: Types.Timing.MilliSeconds;
-  TBT?: Types.Timing.MilliSeconds;
+  FCP?: Types.Timing.Milli;
+  LCP?: Types.Timing.Milli;
+  TBT?: Types.Timing.Milli;
   CLS?: number;
-  INP?: Types.Timing.MilliSeconds;
+  INP?: Types.Timing.Milli;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -85,7 +85,7 @@ export interface InsightSet {
   /** The URL to show in the accordion list. */
   url: URL;
   frameId: string;
-  bounds: Types.Timing.TraceWindowMicroSeconds;
+  bounds: Types.Timing.TraceWindowMicro;
   model: InsightModels;
   navigation?: Types.Events.NavigationStart;
 }

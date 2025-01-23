@@ -464,8 +464,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
       // that correspond to font changes.
       const fontRequests = [
         {
-          dur: Trace.Types.Timing.MicroSeconds(2),
-          ts: Trace.Types.Timing.MicroSeconds(0),
+          dur: Trace.Types.Timing.Micro(2),
+          ts: Trace.Types.Timing.Micro(0),
           args: {
             data: {
               url: fontSource,
@@ -474,8 +474,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
           },
         },
         {
-          dur: Trace.Types.Timing.MicroSeconds(30),
-          ts: Trace.Types.Timing.MicroSeconds(0),
+          dur: Trace.Types.Timing.Micro(30),
+          ts: Trace.Types.Timing.Micro(0),
           args: {
             data: {
               url: fontSource,
@@ -507,8 +507,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
 
       it('ignores requests for fonts whose font-display property is "optional"', async () => {
         const optionalFontRequests = [{
-                                       dur: Trace.Types.Timing.MicroSeconds(2),
-                                       ts: Trace.Types.Timing.MicroSeconds(0),
+                                       dur: Trace.Types.Timing.Micro(2),
+                                       ts: Trace.Types.Timing.Micro(0),
                                        args: {
                                          data: {
                                            url: fontSource,
@@ -533,8 +533,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
       it('ignores requests for fonts that lie outside the fixed time window from ending at the "font change" layout invalidation event',
          async () => {
            const optionalFontRequests = [{
-                                          dur: Trace.Types.Timing.MicroSeconds(2),
-                                          ts: Trace.Types.Timing.MicroSeconds(85),
+                                          dur: Trace.Types.Timing.Micro(2),
+                                          ts: Trace.Types.Timing.Micro(85),
                                           args: {
                                             data: {
                                               url: fontSource,
@@ -561,8 +561,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
     describe('Render blocking request', () => {
       const RenderBlockingRequest = [
         {
-          dur: Trace.Types.Timing.MicroSeconds(2),
-          ts: Trace.Types.Timing.MicroSeconds(0),
+          dur: Trace.Types.Timing.Micro(2),
+          ts: Trace.Types.Timing.Micro(0),
           args: {
             data: {
               url: renderBlockSource,
@@ -572,8 +572,8 @@ describeWithMockConnection('LayoutShift root causes', () => {
           },
         },
         {
-          dur: Trace.Types.Timing.MicroSeconds(30),
-          ts: Trace.Types.Timing.MicroSeconds(0),
+          dur: Trace.Types.Timing.Micro(30),
+          ts: Trace.Types.Timing.Micro(0),
           args: {
             data: {
               url: renderBlockSource,

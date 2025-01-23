@@ -11,7 +11,7 @@ export interface InsightDetails {
   description: string;
   internalName: string;
   expanded: boolean;
-  estimatedSavingsTime?: Trace.Types.Timing.MilliSeconds;
+  estimatedSavingsTime?: Trace.Types.Timing.Milli;
   estimatedSavingsBytes?: number;
 }
 
@@ -34,14 +34,14 @@ export class InsightDeactivated extends Event {
 
 export class InsightSetHovered extends Event {
   static readonly eventName = 'insightsethovered';
-  constructor(public bounds?: Trace.Types.Timing.TraceWindowMicroSeconds) {
+  constructor(public bounds?: Trace.Types.Timing.TraceWindowMicro) {
     super(InsightSetHovered.eventName, {bubbles: true, composed: true});
   }
 }
 
 export class InsightSetZoom extends Event {
   static readonly eventName = 'insightsetzoom';
-  constructor(public bounds: Trace.Types.Timing.TraceWindowMicroSeconds) {
+  constructor(public bounds: Trace.Types.Timing.TraceWindowMicro) {
     super(InsightSetZoom.eventName, {bubbles: true, composed: true});
   }
 }

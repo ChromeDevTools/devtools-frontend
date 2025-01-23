@@ -7,8 +7,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import type {Calculator} from './TimelineGrid.js';
 
 export class TimelineOverviewCalculator implements Calculator {
-  #minimumBoundary: Trace.Types.Timing.MilliSeconds = Trace.Types.Timing.MilliSeconds(0);
-  #maximumBoundary: Trace.Types.Timing.MilliSeconds = Trace.Types.Timing.MilliSeconds(100);
+  #minimumBoundary: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
+  #maximumBoundary: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(100);
 
   #displayWidth: number = 0;
   private navStartTimes?: readonly Trace.Types.Events.NavigationStart[];
@@ -19,18 +19,18 @@ export class TimelineOverviewCalculator implements Calculator {
    * @param time
    * @returns position in pixel
    */
-  computePosition(time: Trace.Types.Timing.MilliSeconds): number {
+  computePosition(time: Trace.Types.Timing.Milli): number {
     return (time - this.#minimumBoundary) / this.boundarySpan() * this.#displayWidth;
   }
 
-  positionToTime(position: number): Trace.Types.Timing.MilliSeconds {
+  positionToTime(position: number): Trace.Types.Timing.Milli {
     if (this.#displayWidth === 0) {
-      return Trace.Types.Timing.MilliSeconds(0);
+      return Trace.Types.Timing.Milli(0);
     }
-    return Trace.Types.Timing.MilliSeconds(position / this.#displayWidth * this.boundarySpan() + this.#minimumBoundary);
+    return Trace.Types.Timing.Milli(position / this.#displayWidth * this.boundarySpan() + this.#minimumBoundary);
   }
 
-  setBounds(minimumBoundary: Trace.Types.Timing.MilliSeconds, maximumBoundary: Trace.Types.Timing.MilliSeconds): void {
+  setBounds(minimumBoundary: Trace.Types.Timing.Milli, maximumBoundary: Trace.Types.Timing.Milli): void {
     this.#minimumBoundary = minimumBoundary;
     this.#maximumBoundary = maximumBoundary;
   }
@@ -45,12 +45,12 @@ export class TimelineOverviewCalculator implements Calculator {
 
   reset(): void {
     this.setBounds(
-        Trace.Types.Timing.MilliSeconds(0),
-        Trace.Types.Timing.MilliSeconds(100),
+        Trace.Types.Timing.Milli(0),
+        Trace.Types.Timing.Milli(100),
     );
   }
 
-  formatValue(time: Trace.Types.Timing.MilliSeconds, precision?: number): string {
+  formatValue(time: Trace.Types.Timing.Milli, precision?: number): string {
     // If there are nav start times the value needs to be remapped.
     if (this.navStartTimes) {
       // Find the latest possible nav start time which is considered earlier
@@ -61,7 +61,7 @@ export class TimelineOverviewCalculator implements Calculator {
         );
 
         if (time > startTimeMilliseconds) {
-          time = Trace.Types.Timing.MilliSeconds(time - (startTimeMilliseconds - this.zeroTime()));
+          time = Trace.Types.Timing.Milli(time - (startTimeMilliseconds - this.zeroTime()));
           break;
         }
       }
@@ -70,15 +70,15 @@ export class TimelineOverviewCalculator implements Calculator {
     return i18n.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
   }
 
-  maximumBoundary(): Trace.Types.Timing.MilliSeconds {
+  maximumBoundary(): Trace.Types.Timing.Milli {
     return this.#maximumBoundary;
   }
 
-  minimumBoundary(): Trace.Types.Timing.MilliSeconds {
+  minimumBoundary(): Trace.Types.Timing.Milli {
     return this.#minimumBoundary;
   }
 
-  zeroTime(): Trace.Types.Timing.MilliSeconds {
+  zeroTime(): Trace.Types.Timing.Milli {
     return this.#minimumBoundary;
   }
 
@@ -87,7 +87,7 @@ export class TimelineOverviewCalculator implements Calculator {
    *
    * @returns the time range in milliseconds
    */
-  boundarySpan(): Trace.Types.Timing.MilliSeconds {
-    return Trace.Types.Timing.MilliSeconds(this.#maximumBoundary - this.#minimumBoundary);
+  boundarySpan(): Trace.Types.Timing.Milli {
+    return Trace.Types.Timing.Milli(this.#maximumBoundary - this.#minimumBoundary);
   }
 }

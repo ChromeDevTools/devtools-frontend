@@ -61,8 +61,8 @@ interface LCPImageDiscoveryData {
   shouldPreloadImage: boolean;
   shouldRemoveLazyLoading: boolean;
   request: Trace.Types.Events.SyntheticNetworkRequest;
-  discoveryDelay: Trace.Types.Timing.MicroSeconds|null;
-  estimatedSavings: Trace.Types.Timing.MilliSeconds|null;
+  discoveryDelay: Trace.Types.Timing.Micro|null;
+  estimatedSavings: Trace.Types.Timing.Milli|null;
 }
 
 function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|null {
@@ -93,7 +93,7 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
 
   if (model.earliestDiscoveryTimeTs && model.lcpRequest) {
     const discoveryDelay = model.lcpRequest.ts - model.earliestDiscoveryTimeTs;
-    data.discoveryDelay = Trace.Types.Timing.MicroSeconds(discoveryDelay);
+    data.discoveryDelay = Trace.Types.Timing.Micro(discoveryDelay);
   }
 
   return data;
@@ -117,7 +117,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     `;
   }
 
-  #renderDiscoveryDelay(delay: Trace.Types.Timing.MicroSeconds): Element {
+  #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): Element {
     const timeWrapper = document.createElement('span');
     timeWrapper.classList.add('discovery-time-ms');
     timeWrapper.innerText = i18n.TimeUtilities.formatMicroSecondsTime(delay);
@@ -135,7 +135,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     }
 
     const delay = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-        Trace.Types.Timing.MicroSeconds(imageResults.request.ts - imageResults.discoveryDelay),
+        Trace.Types.Timing.Micro(imageResults.request.ts - imageResults.discoveryDelay),
         imageResults.request.ts,
     );
 
@@ -165,7 +165,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     ];
   }
 
-  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
     if (!this.model) {
       return null;
     }

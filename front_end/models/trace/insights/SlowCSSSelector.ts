@@ -30,7 +30,7 @@ export function deps(): ['SelectorStats'] {
 }
 
 export type SlowCSSSelectorInsightModel = InsightModel<{
-  totalElapsedMs: Types.Timing.MilliSeconds,
+  totalElapsedMs: Types.Timing.Milli,
   totalMatchAttempts: number,
   totalMatchCount: number,
   topElapsedMs: Types.Events.SelectorTiming[],
@@ -112,7 +112,7 @@ export function generateInsight(
   return finalize({
     // TODO: should we identify UpdateLayout events as linked to this insight?
     relatedEvents: [],
-    totalElapsedMs: Types.Timing.MilliSeconds(totalElapsedUs / 1000.0),
+    totalElapsedMs: Types.Timing.Milli(totalElapsedUs / 1000.0),
     totalMatchAttempts,
     totalMatchCount,
     topElapsedMs: sortByElapsedMs.slice(0, 3),

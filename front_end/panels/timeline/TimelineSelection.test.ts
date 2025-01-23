@@ -33,7 +33,7 @@ describeWithEnvironment('TimelineSelection', function() {
     assert.strictEqual(selection.event, request);
     const timings = TimelineSelection.rangeForSelection(selection);
     assert.strictEqual(timings.min, request.ts);
-    assert.strictEqual(timings.max, (request.ts + request.dur as Trace.Types.Timing.MicroSeconds));
+    assert.strictEqual(timings.max, (request.ts + request.dur as Trace.Types.Timing.Micro));
     assert.isTrue(TimelineSelection.selectionIsEvent(selection));
     assert.isFalse(TimelineSelection.selectionIsRange(selection));
   });

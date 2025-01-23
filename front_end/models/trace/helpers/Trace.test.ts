@@ -41,7 +41,7 @@ describeWithEnvironment('Trace helpers', function() {
         name: 'process_name',
         tid,
         pid,
-        ts: Trace.Types.Timing.MicroSeconds(0),
+        ts: Trace.Types.Timing.Micro(0),
         cat: 'test',
         ph: Trace.Types.Events.Phase.METADATA,
       };
@@ -81,8 +81,8 @@ describeWithEnvironment('Trace helpers', function() {
   describe('sortTraceEventsInPlace', () => {
     function makeFakeEvent(ts: number, dur: number): Trace.Types.Events.Event {
       return {
-        ts: Trace.Types.Timing.MicroSeconds(ts),
-        dur: Trace.Types.Timing.MicroSeconds(dur),
+        ts: Trace.Types.Timing.Micro(ts),
+        dur: Trace.Types.Timing.Micro(dur),
       } as unknown as Trace.Types.Events.Event;
     }
 
@@ -117,7 +117,7 @@ describeWithEnvironment('Trace helpers', function() {
       const request2 = NetworkRequests.byTime[1];
       const navigationForSecondRequest =
           Trace.Helpers.Trace.getNavigationForTraceEvent(request2, request2.args.data.frame, Meta.navigationsByFrameId);
-      assert.strictEqual(navigationForSecondRequest?.ts, Trace.Types.Timing.MicroSeconds(636471400029));
+      assert.strictEqual(navigationForSecondRequest?.ts, Trace.Types.Timing.Micro(636471400029));
     });
 
     it('returns the correct navigation for a page load event', async function() {
@@ -375,10 +375,10 @@ describeWithEnvironment('Trace helpers', function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
       const frameId = '1F729458403A23CF1D8D246095129AC4';
       const firstURL = Trace.Helpers.Trace.activeURLForFrameAtTime(
-          frameId, Trace.Types.Timing.MicroSeconds(251126654355), parsedTrace.Meta.rendererProcessesByFrame);
+          frameId, Trace.Types.Timing.Micro(251126654355), parsedTrace.Meta.rendererProcessesByFrame);
       assert.strictEqual(firstURL, 'about:blank');
       const secondURL = Trace.Helpers.Trace.activeURLForFrameAtTime(
-          frameId, Trace.Types.Timing.MicroSeconds(251126663398), parsedTrace.Meta.rendererProcessesByFrame);
+          frameId, Trace.Types.Timing.Micro(251126663398), parsedTrace.Meta.rendererProcessesByFrame);
       assert.strictEqual(secondURL, 'https://www.google.com');
     });
   });
@@ -484,8 +484,8 @@ describeWithEnvironment('Trace helpers', function() {
         name: Trace.Types.Events.Name.FUNCTION_CALL,
         ph: Trace.Types.Events.Phase.COMPLETE,
         cat: 'devtools-timeline',
-        dur: Trace.Types.Timing.MicroSeconds(100),
-        ts: Trace.Types.Timing.MicroSeconds(100),
+        dur: Trace.Types.Timing.Micro(100),
+        ts: Trace.Types.Timing.Micro(100),
         pid: Trace.Types.Events.ProcessID(1),
         tid: Trace.Types.Events.ThreadID(1),
         args: {
@@ -551,7 +551,7 @@ describeWithEnvironment('Trace helpers', function() {
       const filteredByEndTimeEvents = Trace.Helpers.Trace.findUpdateLayoutTreeEvents(
           mainThread.entries,
           parsedTrace.Meta.traceBounds.min,
-          Trace.Types.Timing.MicroSeconds(lastEvent.ts - 1_000),
+          Trace.Types.Timing.Micro(lastEvent.ts - 1_000),
       );
       assert.lengthOf(filteredByEndTimeEvents, 10);
     });
@@ -607,8 +607,8 @@ describeWithEnvironment('Trace helpers', function() {
       Trace.Helpers.Trace.forEachEvent(traceEvents, {
         onEndEvent,
         onStartEvent,
-        startTime: Trace.Types.Timing.MicroSeconds(5),
-        endTime: Trace.Types.Timing.MicroSeconds(9),
+        startTime: Trace.Types.Timing.Micro(5),
+        endTime: Trace.Types.Timing.Micro(9),
       });
       const eventsFromStartEventCalls = onStartEvent.getCalls().map(a => a.args[0]);
       const eventsFromEndEventCalls = onEndEvent.getCalls().map(a => a.args[0]);

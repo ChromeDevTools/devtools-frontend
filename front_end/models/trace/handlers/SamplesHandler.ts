@@ -55,7 +55,7 @@ function buildProfileCalls(): void {
         if (threadId === undefined) {
           return;
         }
-        const ts = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(timeStampMilliseconds));
+        const ts = Helpers.Timing.milliToMicro(Types.Timing.Milli(timeStampMilliseconds));
         const nodeId = node.id as Helpers.TreeHelpers.TraceEntryNodeId;
 
         const profileCall = Helpers.Trace.makeProfileCall(node, profileId, sampleIndex, ts, processId, threadId);
@@ -83,8 +83,8 @@ function buildProfileCalls(): void {
             tid === undefined || traceEntryNode === undefined) {
           return;
         }
-        const dur = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(durMs));
-        const selfTime = Helpers.Timing.milliToMicro(Types.Timing.MilliSeconds(selfTimeMs));
+        const dur = Helpers.Timing.milliToMicro(Types.Timing.Milli(durMs));
+        const selfTime = Helpers.Timing.milliToMicro(Types.Timing.Milli(selfTimeMs));
         profileCall.dur = dur;
         traceEntryNode.selfTime = selfTime;
 

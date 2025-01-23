@@ -79,12 +79,11 @@ export class NetworkRequestTooltip extends HTMLElement {
 
   static renderTimings(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): LitHtml.TemplateResult|null {
     const syntheticData = networkRequest.args.data.syntheticData;
-    const queueing = (syntheticData.sendStartTime - networkRequest.ts) as Trace.Types.Timing.MicroSeconds;
-    const requestPlusWaiting =
-        (syntheticData.downloadStart - syntheticData.sendStartTime) as Trace.Types.Timing.MicroSeconds;
-    const download = (syntheticData.finishTime - syntheticData.downloadStart) as Trace.Types.Timing.MicroSeconds;
+    const queueing = (syntheticData.sendStartTime - networkRequest.ts) as Trace.Types.Timing.Micro;
+    const requestPlusWaiting = (syntheticData.downloadStart - syntheticData.sendStartTime) as Trace.Types.Timing.Micro;
+    const download = (syntheticData.finishTime - syntheticData.downloadStart) as Trace.Types.Timing.Micro;
     const waitingOnMainThread =
-        (networkRequest.ts + networkRequest.dur - syntheticData.finishTime) as Trace.Types.Timing.MicroSeconds;
+        (networkRequest.ts + networkRequest.dur - syntheticData.finishTime) as Trace.Types.Timing.Micro;
 
     const color = colorForNetworkRequest(networkRequest);
     const styleForWaiting = {

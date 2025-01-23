@@ -8,15 +8,15 @@ import {
 import * as Trace from '../trace.js';
 
 const DEVTOOLS_CATEGORY = 'disabled-by-default-devtools.timeline';
-function milliToMicro(x: number): Trace.Types.Timing.MicroSeconds {
-  return Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.MilliSeconds(x));
+function milliToMicro(x: number): Trace.Types.Timing.Micro {
+  return Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(x));
 }
 
-function makeFakeBounds(min: number, max: number): Trace.Types.Timing.TraceWindowMicroSeconds {
+function makeFakeBounds(min: number, max: number): Trace.Types.Timing.TraceWindowMicro {
   return {
-    min: Trace.Types.Timing.MicroSeconds(min),
-    max: Trace.Types.Timing.MicroSeconds(max),
-    range: Trace.Types.Timing.MicroSeconds(max - min),
+    min: Trace.Types.Timing.Micro(min),
+    max: Trace.Types.Timing.Micro(max),
+    range: Trace.Types.Timing.Micro(max - min),
   };
 }
 

@@ -70,7 +70,7 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
 
 // Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
 // on top of each other.
-const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.MicroSeconds(10);
+const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.Micro(10);
 
 export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
@@ -580,7 +580,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
             event.name === Trace.Types.Events.Name.MARK_LOAD);
 
     this.#sortMarkersForPreferredVisualOrder(markers);
-    const overlayByTs = new Map<Trace.Types.Timing.MicroSeconds, Overlays.Overlays.TimingsMarker>();
+    const overlayByTs = new Map<Trace.Types.Timing.Micro, Overlays.Overlays.TimingsMarker>();
     markers.forEach(marker => {
       const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           marker,
@@ -741,7 +741,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
   }
 
-  addTimestampMarkerOverlay(timestamp: Trace.Types.Timing.MicroSeconds): void {
+  addTimestampMarkerOverlay(timestamp: Trace.Types.Timing.Micro): void {
     // TIMESTAMP_MARKER is a singleton. If one already exists, it will
     // be updated instead of creating a new one.
     this.addOverlay({
@@ -802,8 +802,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#linkSelectionAnnotation = linkSelectionAnnotation;
   }
 
-  #createNewTimeRangeFromKeyboard(startTime: Trace.Types.Timing.MicroSeconds, endTime: Trace.Types.Timing.MicroSeconds):
-      void {
+  #createNewTimeRangeFromKeyboard(startTime: Trace.Types.Timing.Micro, endTime: Trace.Types.Timing.Micro): void {
     if (this.#timeRangeSelectionAnnotation) {
       return;
     }
@@ -842,17 +841,17 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
               startTime = rangeForSelection(this.#currentSelection).min;
             }
             this.#createNewTimeRangeFromKeyboard(
-                startTime, Trace.Types.Timing.MicroSeconds(startTime + timeRangeIncrementValue));
+                startTime, Trace.Types.Timing.Micro(startTime + timeRangeIncrementValue));
             return true;
           }
           return false;
         }
 
         // Grow the RHS of the range, but limit it to the visible window.
-        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.Micro(
             Math.min(this.#timeRangeSelectionAnnotation.bounds.max + timeRangeIncrementValue, visibleWindow.max),
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.Micro(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
         );
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
@@ -862,13 +861,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.Micro(
             // Shrink the RHS of the range, but make sure it cannot go below the min value.
             Math.max(
                 this.#timeRangeSelectionAnnotation.bounds.max - timeRangeIncrementValue,
                 this.#timeRangeSelectionAnnotation.bounds.min + 1),
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.Micro(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
         );
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
@@ -879,13 +878,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.Micro(
             // Increase the LHS of the range, but make sure it cannot go above the max value.
             Math.min(
                 this.#timeRangeSelectionAnnotation.bounds.min + timeRangeIncrementValue,
                 this.#timeRangeSelectionAnnotation.bounds.max - 1),
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.Micro(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
         );
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
@@ -895,11 +894,11 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         if (!this.#timeRangeSelectionAnnotation) {
           return false;
         }
-        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.Micro(
             // Decrease the LHS, but make sure it cannot go beyond the minimum visible window.
             Math.max(this.#timeRangeSelectionAnnotation.bounds.min - timeRangeIncrementValue, visibleWindow.min),
         );
-        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.Micro(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
         );
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
@@ -1026,13 +1025,12 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.refreshMainFlameChart();
   }
 
-  windowChanged(
-      windowStartTime: Trace.Types.Timing.MilliSeconds, windowEndTime: Trace.Types.Timing.MilliSeconds,
-      animate: boolean): void {
+  windowChanged(windowStartTime: Trace.Types.Timing.Milli, windowEndTime: Trace.Types.Timing.Milli, animate: boolean):
+      void {
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         Trace.Helpers.Timing.traceWindowFromMilliSeconds(
-            Trace.Types.Timing.MilliSeconds(windowStartTime),
-            Trace.Types.Timing.MilliSeconds(windowEndTime),
+            Trace.Types.Timing.Milli(windowStartTime),
+            Trace.Types.Timing.Milli(windowEndTime),
             ),
         {shouldAnimate: animate},
     );
@@ -1044,14 +1042,14 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
    * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
    */
   updateRangeSelection(startTime: number, endTime: number): void {
-    this.delegate.select(selectionFromRangeMilliSeconds(
-        Trace.Types.Timing.MilliSeconds(startTime), Trace.Types.Timing.MilliSeconds(endTime)));
+    this.delegate.select(
+        selectionFromRangeMilliSeconds(Trace.Types.Timing.Milli(startTime), Trace.Types.Timing.Milli(endTime)));
 
     // We need to check if the user is updating the range because they are
     // creating a time range annotation.
     const bounds = Trace.Helpers.Timing.traceWindowFromMilliSeconds(
-        Trace.Types.Timing.MilliSeconds(startTime),
-        Trace.Types.Timing.MilliSeconds(endTime),
+        Trace.Types.Timing.Milli(startTime),
+        Trace.Types.Timing.Milli(endTime),
     );
 
     // If the current time range annotation exists, the range selection

@@ -20,8 +20,8 @@ describeWithEnvironment('FilmStrip', function() {
     // It is from cache so you get back the exact same object.
     assert.strictEqual(filmStrip1, filmStrip2);
 
-    const filmStrip3 = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace, Trace.Types.Timing.MicroSeconds(0));
-    const filmStrip4 = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace, Trace.Types.Timing.MicroSeconds(5));
+    const filmStrip3 = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace, Trace.Types.Timing.Micro(0));
+    const filmStrip4 = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace, Trace.Types.Timing.Micro(5));
     // Not equal as the calls had different start times.
     assert.notStrictEqual(filmStrip3, filmStrip4);
   });
@@ -38,7 +38,7 @@ describeWithEnvironment('FilmStrip', function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
     // Set a custom zero time after the first screenshot and ensure that we now only have four events.
-    const newCustomZeroTime = Trace.Types.Timing.MicroSeconds(filmStrip.frames[0].screenshotEvent.ts + 1000);
+    const newCustomZeroTime = Trace.Types.Timing.Micro(filmStrip.frames[0].screenshotEvent.ts + 1000);
     const newFilmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace, newCustomZeroTime);
     // Check that the new film strip is all the frames other than the first, now we have set a custom time.
     assert.deepEqual(newFilmStrip.frames.map(f => f.screenshotEvent.args.dataUri), [
@@ -55,14 +55,14 @@ describeWithEnvironment('FilmStrip', function() {
     const frameTimestamps = filmStrip.frames.map(frame => frame.screenshotEvent.ts);
     assert.deepEqual(frameTimestamps, [1020034823345, 1020034961883, 1020035045298, 1020035061981, 1020035112030]);
 
-    const timestampNearestFirstFrame = Trace.Types.Timing.MicroSeconds(frameTimestamps[0] + 10);
+    const timestampNearestFirstFrame = Trace.Types.Timing.Micro(frameTimestamps[0] + 10);
     assert.strictEqual(
         Trace.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, timestampNearestFirstFrame), filmStrip.frames.at(0));
-    const timestampNearestThirdFrame = Trace.Types.Timing.MicroSeconds(frameTimestamps[2] + 10);
+    const timestampNearestThirdFrame = Trace.Types.Timing.Micro(frameTimestamps[2] + 10);
     assert.strictEqual(
         Trace.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, timestampNearestThirdFrame), filmStrip.frames.at(2));
 
-    const timestampBeforeAnyFrames = Trace.Types.Timing.MicroSeconds(frameTimestamps[0] - 100);
+    const timestampBeforeAnyFrames = Trace.Types.Timing.Micro(frameTimestamps[0] - 100);
     assert.isNull(Trace.Extras.FilmStrip.frameClosestToTimestamp(filmStrip, timestampBeforeAnyFrames));
   });
 });

@@ -79,7 +79,7 @@ export function generateInsight(
       return finalize({
         mobileOptimized: false,
         viewportEvent,
-        metricSavings: {INP: 300 as Types.Timing.MilliSeconds},
+        metricSavings: {INP: 300 as Types.Timing.Milli},
       });
     }
   }

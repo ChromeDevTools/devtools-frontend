@@ -55,12 +55,12 @@ export class TimelineJSProfileProcessor {
         ph: ph || Types.Events.Phase.COMPLETE,
         pid: Types.Events.ProcessID(1),
         tid,
-        ts: Types.Timing.MicroSeconds(ts),
+        ts: Types.Timing.Micro(ts),
         args,
       };
 
       if (dur) {
-        event.dur = Types.Timing.MicroSeconds(dur);
+        event.dur = Types.Timing.Micro(dur);
       }
       events.push(event);
       return event;

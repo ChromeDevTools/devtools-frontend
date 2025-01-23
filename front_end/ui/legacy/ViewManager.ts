@@ -403,8 +403,6 @@ export class ContainerWidget extends VBox {
   }
 
   override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([viewContainersStyles]);
     void this.materialize().then(() => {
       const widget = widgetForView.get(this.view);
       if (widget) {
@@ -454,6 +452,8 @@ class ExpandableContainerWidget extends VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([viewContainersStyles]);
     if (this.widget && this.materializePromise) {
       void this.materializePromise.then(() => {
         if (this.titleElement.classList.contains('expanded') && this.widget) {

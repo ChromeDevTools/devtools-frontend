@@ -163,6 +163,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Long critical network tree',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -176,6 +177,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Long critical network tree',
     ]);
   });
 

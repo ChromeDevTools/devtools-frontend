@@ -17,6 +17,7 @@ devtools_module("insights") {
     "InteractionToNextPaint.ts",
     "LCPDiscovery.ts",
     "LCPPhases.ts",
+    "LongCriticalNetworkTree.ts",
     "Models.ts",
     "RenderBlocking.ts",
     "SlowCSSSelector.ts",

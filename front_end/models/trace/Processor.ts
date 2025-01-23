@@ -365,6 +365,7 @@ export class TraceProcessor extends EventTarget {
       DOMSize: null,
       ThirdParties: null,
       SlowCSSSelector: null,
+      LongCriticalNetworkTree: null,
     };
 
     // Determine the weights for each metric based on field data, utilizing the same scoring curve that Lighthouse uses.
@@ -573,7 +574,7 @@ export class TraceProcessor extends EventTarget {
 /**
  * Some Handlers need data provided by others. Dependencies of a handler handler are
  * declared in the `deps` field.
- * @returns A map from trace event handler name to trace event hander whose entries
+ * @returns A map from trace event handler name to trace event handler whose entries
  * iterate in such a way that each handler is visited after its dependencies.
  */
 export function sortHandlers(traceHandlers: Partial<{[key in Handlers.Types.HandlerName]: Handlers.Types.Handler}>):

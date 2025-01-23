@@ -408,6 +408,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DOMSize',
         'ThirdParties',
         'SlowCSSSelector',
+        'LongCriticalNetworkTree',
       ]);
 
       const orderWithMetadata = await getInsightOrder(true);
@@ -425,6 +426,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DOMSize',
         'ThirdParties',
         'SlowCSSSelector',
+        'LongCriticalNetworkTree',
       ]);
     });
   });

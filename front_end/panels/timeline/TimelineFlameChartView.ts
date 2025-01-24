@@ -78,7 +78,8 @@ interface FlameChartDimmer {
   networkChartIndices: number[];
   /** When true, the provided indices will be dimmed. When false, all others will be dimmed. */
   inclusive: boolean;
-  outline: boolean;
+  /** When true, all undimmed entries are outlined. When a number array, only those indices are outlined (if not dimmed). */
+  outline: boolean|{main: number[] | boolean, network: number[]|boolean};
 }
 
 export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
@@ -481,14 +482,24 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       return;
     }
 
-    this.mainFlameChart.enableDimming(dimmer.mainChartIndices, dimmer.inclusive, dimmer.outline);
-    this.networkFlameChart.enableDimming(dimmer.networkChartIndices, dimmer.inclusive, dimmer.outline);
+    const mainOutline = typeof dimmer.outline === 'boolean' ? dimmer.outline : dimmer.outline.main;
+    const networkOutline = typeof dimmer.outline === 'boolean' ? dimmer.outline : dimmer.outline.network;
+
+    this.mainFlameChart.enableDimming(dimmer.mainChartIndices, dimmer.inclusive, mainOutline);
+    this.networkFlameChart.enableDimming(dimmer.networkChartIndices, dimmer.inclusive, networkOutline);
   }
 
   #dimInsightRelatedEvents(relatedEvents: Trace.Types.Events.Event[]): void {
     // Dim all events except those related to the active insight.
     const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
     const relatedNetworkIndices = relatedEvents.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
+
+    // Only outline the events that are individually/specifically identified as being related. Don't outline
+    // the events covered by range overlays.
+    this.#activeInsightDimmer.outline = {
+      main: [...relatedMainIndices],
+      network: [...relatedNetworkIndices],
+    };
 
     // Further, overlays defining a trace bounds do not dim an event that falls within those bounds.
     for (const overlay of this.#currentInsightOverlays) {

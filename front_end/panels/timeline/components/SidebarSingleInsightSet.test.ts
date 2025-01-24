@@ -59,12 +59,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'LCP request discovery',
       'Render blocking requests',
       'Document request latency',
-      'Optimize DOM size',
       'Third parties',
       'INP by phase',
       'Layout shift culprits',
       'Improve image delivery',
       'Optimize viewport for mobile',
+      'Optimize DOM size',
       'CSS Selector costs',
     ]);
 
@@ -76,6 +76,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Layout shift culprits',
       'Improve image delivery',
       'Optimize viewport for mobile',
+      'Optimize DOM size',
       'CSS Selector costs',
     ]);
   });

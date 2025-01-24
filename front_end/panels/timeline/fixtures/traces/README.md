@@ -222,7 +222,7 @@ Generate from a page load [this HTML file](https://gist.github.com/adamraine/397
 ### dom-size
 
 Generate from a recording of [this HTML file](https://gist.github.com/adamraine/bfdb3cecca2322bf74f1e725d9a4699d) with the following steps:
-1. Set CPU throttling to 4x
+1. Set CPU throttling to 20x
 2. Start recording without reloading the page
 3. Click the button once
 4. Reload the page

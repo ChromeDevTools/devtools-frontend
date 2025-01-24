@@ -163,6 +163,13 @@ function initialize(): void {
   }, {reportAllChanges: true});
 
   onINP(metric => {
+    // TODO(b/376777343): Remove this line when `interactionTargetElement` is removed from web-vitals.js
+    // The `metric` emitted in this callback is stored within web-vitals.js closures.
+    // This can lead to `interactionTargetElement` persisting in memory after it has been removed.
+    // We don't use `interactionTargetElement` here, and `onEachInteraction` will interaction
+    // elements separately so it is safe to remove here and prevent memory leaks.
+    metric.attribution.interactionTargetElement = undefined;
+
     const event: Spec.INPChangeEvent = {
       name: 'INP',
       value: metric.value,

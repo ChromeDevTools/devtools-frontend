@@ -13,6 +13,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
+import * as Utils from './utils/utils.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -775,6 +776,27 @@ describeWithEnvironment('TimelineFlameChartView', function() {
                    .label,
                'Remove script from ignore list');
          });
+    });
+  });
+
+  describe('updating the active AI call tree', () => {
+    it('updates the UI Context with the active AI Call tree for the selected event', async function() {
+      const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mockViewDelegate = new MockViewDelegate();
+      const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
+      flameChartView.setModel(parsedTrace, metadata);
+      // Find some task in the main thread that we can build an AI Call Tree from
+      const task = parsedTrace.Renderer.allTraceEntries.find(event => {
+        return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
+            Utils.AICallTree.AICallTree.from(event, parsedTrace) !== null;
+      });
+
+      assert.isOk(task);
+      UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, null);
+      const selection = Timeline.TimelineSelection.selectionFromEvent(task);
+      flameChartView.setSelectionAndReveal(selection);
+      const flavor = UI.Context.Context.instance().flavor(Utils.AICallTree.AICallTree);
+      assert.instanceOf(flavor, Utils.AICallTree.AICallTree);
     });
   });
 

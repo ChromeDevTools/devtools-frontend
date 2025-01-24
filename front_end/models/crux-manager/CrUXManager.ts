@@ -202,7 +202,6 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       }
 
       await Promise.all(promises);
-      this.#pageResult = pageResult;
     } catch (err) {
       console.error(err);
     } finally {
@@ -228,6 +227,10 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
   }
 
+  async getFieldDataForCurrentPageForTesting(): Promise<PageResult> {
+    return this.#getFieldDataForCurrentPage();
+  }
+
   /**
    * In general, this function should use the main document URL
    * (i.e. the URL after all redirects but before SPA navigations)
@@ -237,13 +240,12 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * back to the currently inspected URL (i.e. what is displayed in the omnibox) if
    * the main document URL cannot be found.
    */
-  async getFieldDataForCurrentPage(): Promise<PageResult> {
+  async #getFieldDataForCurrentPage(): Promise<PageResult> {
     const currentUrl = this.#mainDocumentUrl || await this.#getInspectedURL();
     const urlForCrux = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
                                                                    this.#getMappedUrl(currentUrl);
 
     const result = await this.getFieldDataForPage(urlForCrux);
-    this.#pageResult = result;
     if (currentUrl !== urlForCrux) {
       result.warnings.push(i18nString(UIStrings.fieldOverrideWarning));
     }
@@ -289,7 +291,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return;
     }
 
-    this.#pageResult = await this.getFieldDataForCurrentPage();
+    this.#pageResult = await this.#getFieldDataForCurrentPage();
     this.dispatchEventToListeners(Events.FIELD_DATA_CHANGED, this.#pageResult);
   }
 

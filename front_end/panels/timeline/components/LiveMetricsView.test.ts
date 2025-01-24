@@ -717,7 +717,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         warnings: [],
       };
 
-      sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForCurrentPage').callsFake(async () => mockFieldData);
+      sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForPage').callsFake(async () => mockFieldData);
       CrUXManager.CrUXManager.instance().getConfigSetting().set({enabled: true, override: ''});
     });
 

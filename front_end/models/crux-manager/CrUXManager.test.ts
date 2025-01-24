@@ -348,7 +348,7 @@ describeWithMockConnection('CrUXManager', () => {
         isPrimaryFrame: () => false,
       } as SDK.ResourceTreeModel.ResourceTreeFrame);
 
-      const result = await cruxManager.getFieldDataForCurrentPage();
+      const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
       assert.deepEqual(result.warnings, []);
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -360,7 +360,7 @@ describeWithMockConnection('CrUXManager', () => {
       cruxManager.getConfigSetting().set(
           {enabled: false, override: 'https://example.com/override', overrideEnabled: true});
 
-      const result = await cruxManager.getFieldDataForCurrentPage();
+      const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
       assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -377,7 +377,7 @@ describeWithMockConnection('CrUXManager', () => {
         }],
       });
 
-      const result = await cruxManager.getFieldDataForCurrentPage();
+      const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
       assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -396,7 +396,7 @@ describeWithMockConnection('CrUXManager', () => {
         }],
       });
 
-      const result = await cruxManager.getFieldDataForCurrentPage();
+      const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
       assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -406,7 +406,7 @@ describeWithMockConnection('CrUXManager', () => {
     it('should use inspected URL if main document is unavailable', async () => {
       target.setInspectedURL(urlString`https://example.com/inspected`);
 
-      const result = await cruxManager.getFieldDataForCurrentPage();
+      const result = await cruxManager.getFieldDataForCurrentPageForTesting();
 
       assert.deepEqual(result.warnings, []);
       assert.strictEqual(getFieldDataMock.callCount, 1);
@@ -416,7 +416,7 @@ describeWithMockConnection('CrUXManager', () => {
     it('should wait for inspected URL if main document and inspected URL are unavailable', async () => {
       target.setInspectedURL(Platform.DevToolsPath.EmptyUrlString);
 
-      const finishPromise = cruxManager.getFieldDataForCurrentPage();
+      const finishPromise = cruxManager.getFieldDataForCurrentPageForTesting();
 
       await triggerMicroTaskQueue();
 
@@ -430,7 +430,8 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('getSelectedFieldMetricData - should take from selected page scope', async () => {
-      await cruxManager.getFieldDataForCurrentPage();
+      cruxManager.getConfigSetting().set({enabled: true});
+      await cruxManager.refresh();
 
       let data: CrUXManager.MetricResponse|undefined;
 
@@ -448,7 +449,8 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('should take from selected device scope', async () => {
-      await cruxManager.getFieldDataForCurrentPage();
+      cruxManager.getConfigSetting().set({enabled: true});
+      await cruxManager.refresh();
       cruxManager.fieldPageScope = 'url';
 
       let data: CrUXManager.MetricResponse|undefined;
@@ -470,7 +472,8 @@ describeWithMockConnection('CrUXManager', () => {
       cruxManager.fieldDeviceOption = 'AUTO';
       assert.strictEqual(cruxManager.getSelectedDeviceScope(), 'ALL');
 
-      await cruxManager.getFieldDataForCurrentPage();
+      cruxManager.getConfigSetting().set({enabled: true});
+      await cruxManager.refresh();
       assert.strictEqual(cruxManager.getSelectedDeviceScope(), 'DESKTOP');
 
       for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
@@ -493,7 +496,7 @@ describeWithMockConnection('CrUXManager', () => {
       cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, event => {
         eventBodies.push(event.data);
       });
-      getFieldDataMock = sinon.stub(cruxManager, 'getFieldDataForCurrentPage');
+      getFieldDataMock = sinon.stub(cruxManager, 'getFieldDataForPage');
       getFieldDataMock.resolves({
         'origin-ALL': null,
         'origin-DESKTOP': null,
@@ -503,6 +506,7 @@ describeWithMockConnection('CrUXManager', () => {
         'url-DESKTOP': null,
         'url-PHONE': null,
         'url-TABLET': null,
+        warnings: [],
       });
     });
 

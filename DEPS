@@ -309,7 +309,14 @@ hooks = [
     'name': 'VS Code settings',
     'pattern': '.',
     'condition': 'build_with_chromium == False',
-    'action': ['vpython3', 'third_party/node/node.py', '--output', 'scripts/deps/sync-vscode-settings.mjs']
+    'action': [
+      'vpython3',
+      'third_party/node/node.py',
+      '--output',
+      # Silence the "Importing JSON modules" warning
+      '--no-warnings=ExperimentalWarning',
+      'scripts/deps/sync-vscode-settings.mjs'
+    ]
   },
 ]
 

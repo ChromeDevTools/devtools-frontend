@@ -37,6 +37,11 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     entityByEvent: Map<Trace.Types.Events.Event, Trace.Extras.ThirdParties.Entity>,
   }|null = null;
 
+  // By default the TimelineTreeView will auto-select the first row
+  // when the grid is refreshed but for the ThirdParty view we only
+  // want to do this when the user hovers.
+  protected override autoSelectFirstChildOnRefresh = false;
+
   constructor() {
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);

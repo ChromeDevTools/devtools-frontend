@@ -194,6 +194,12 @@ export class TimelineTreeView extends
   #lastHighlightedEvent: HTMLElement|null = null;
   eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
 
+  /**
+   * Determines if the first child in the data grid will be selected
+   * by default when refreshTree() gets called.
+   */
+  protected autoSelectFirstChildOnRefresh = true;
+
   constructor() {
     super();
     this.#selectedEvents = null;
@@ -279,8 +285,6 @@ export class TimelineTreeView extends
     this.splitWidget.hideSidebar();
     this.splitWidget.show(this.element);
     this.splitWidget.addEventListener(UI.SplitWidget.Events.SHOW_MODE_CHANGED, this.onShowModeChanged, this);
-
-    this.lastSelectedNodeInternal;
   }
 
   lastSelectedNode(): Trace.Extras.TraceTree.Node|null|undefined {
@@ -424,7 +428,7 @@ export class TimelineTreeView extends
       this.searchableView.refreshSearch();
     }
     const rootNode = this.dataGrid.rootNode();
-    if (rootNode.children.length > 0) {
+    if (this.autoSelectFirstChildOnRefresh && rootNode.children.length > 0) {
       rootNode.children[0].select(/* supressSelectedEvent */ true);
     }
   }

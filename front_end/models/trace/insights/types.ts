@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../core/common/common.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Lantern from '../lantern/lantern.js';
 import type * as Types from '../types/types.js';
@@ -32,6 +33,19 @@ export interface LanternContext {
   graph: Lantern.Graph.Node<Types.Events.SyntheticNetworkRequest>;
   simulator: Lantern.Simulation.Simulator<Types.Events.SyntheticNetworkRequest>;
   metrics: Record<string, Lantern.Metrics.MetricResult>;
+}
+
+export interface ForcedReflowAggregatedData {
+  topLevelFunctionCall: Types.Events.CallFrame|Protocol.Runtime.CallFrame;
+  totalReflowTime: number;
+  bottomUpData: Set<string>;
+  topLevelFunctionCallEvents: Types.Events.Event[];
+}
+
+export interface BottomUpCallStack {
+  bottomUpData: Types.Events.CallFrame|Protocol.Runtime.CallFrame;
+  totalTime: number;
+  relatedEvents: Types.Events.Event[];
 }
 
 export type InsightModelsType = typeof Models;

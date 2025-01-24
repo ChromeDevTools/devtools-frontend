@@ -79,6 +79,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   RenderBlocking: Insights.RenderBlocking.RenderBlocking,
   SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
   ThirdParties: Insights.ThirdParties.ThirdParties,
+  ForcedReflow: Insights.ForcedReflow.ForcedReflow,
   Viewport: Insights.Viewport.Viewport,
 };
 

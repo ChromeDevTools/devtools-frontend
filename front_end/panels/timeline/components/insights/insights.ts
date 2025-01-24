@@ -8,6 +8,7 @@ import * as DocumentLatency from './DocumentLatency.js';
 import * as DOMSize from './DOMSize.js';
 import * as EventRef from './EventRef.js';
 import * as FontDisplay from './FontDisplay.js';
+import * as ForcedReflow from './ForcedReflow.js';
 import * as Helpers from './Helpers.js';
 import * as ImageDelivery from './ImageDelivery.js';
 import * as InteractionToNextPaint from './InteractionToNextPaint.js';
@@ -30,6 +31,7 @@ export {
   DOMSize,
   EventRef,
   FontDisplay,
+  ForcedReflow,
   Helpers,
   ImageDelivery,
   InteractionToNextPaint,

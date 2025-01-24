@@ -66,6 +66,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Forced reflow',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -78,6 +79,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Forced reflow',
     ]);
   });
 
@@ -112,6 +114,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Forced reflow',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -126,6 +129,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
+      'Forced reflow',
     ]);
   });
 
@@ -165,6 +169,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize DOM size',
       'CSS Selector costs',
       'Long critical network tree',
+      'Forced reflow',
     ]);
 
     const passedInsightTitles = getPassedInsights(component).flatMap(component => {
@@ -179,6 +184,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Optimize DOM size',
       'CSS Selector costs',
       'Long critical network tree',
+      'Forced reflow',
     ]);
   });
 

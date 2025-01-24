@@ -22,6 +22,7 @@ devtools_module("insights") {
     "DocumentLatency.ts",
     "EventRef.ts",
     "FontDisplay.ts",
+    "ForcedReflow.ts",
     "Helpers.ts",
     "ImageDelivery.ts",
     "InteractionToNextPaint.ts",

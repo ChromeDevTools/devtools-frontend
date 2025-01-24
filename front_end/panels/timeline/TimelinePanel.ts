@@ -334,6 +334,10 @@ const UIStrings = {
    * @description Title for the Dim 3rd Parties checkbox.
    */
   dimThirdParties: 'Dim 3rd Parties',
+  /**
+   * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
+   */
+  thirdPartiesByThirdPartyWeb: '3rd parties classified by third-party-web',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1144,7 +1148,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES) &&
         this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox =
-          this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.dimThirdParties));
+          this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.thirdPartiesByThirdPartyWeb));
       this.panelToolbar.appendToolbarItem(dimThirdPartiesCheckbox);
     }
 

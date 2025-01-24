@@ -8,7 +8,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import infobarStyles from './infobar.css.legacy.js';
+import infobarStyles from './infobar.css.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createShadowRootWithCoreStyles, createTextButton, type DevToolsCloseButton} from './UIUtils.js';
 import type {Widget} from './Widget.js';
@@ -59,7 +59,7 @@ export class Infobar {
           'jslog', `${VisualLogging.dialog(jslogContext).track({resize: true, keydown: 'Enter|Escape'})}`);
     }
     this.element.classList.add('flex-none');
-    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles});
+    this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: [infobarStyles]});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type);
 

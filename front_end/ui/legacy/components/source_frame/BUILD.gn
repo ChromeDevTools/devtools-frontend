@@ -14,17 +14,10 @@ generate_css("css_files") {
     "imageView.css",
     "jsonView.css",
     "resourceSourceFrame.css",
-    "xmlView.css",
-  ]
-}
-
-generate_css("legacy_css_files") {
-  sources = [
     "selfXssDialog.css",
     "xmlTree.css",
+    "xmlView.css",
   ]
-
-  legacy = true
 }
 
 devtools_module("source_frame") {
@@ -62,7 +55,6 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":css_files",
-    ":legacy_css_files",
     ":source_frame",
   ]
 

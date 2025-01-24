@@ -7,7 +7,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import xmlTreeStyles from './xmlTree.css.legacy.js';
+import xmlTreeStyles from './xmlTree.css.js';
 import xmlViewStyles from './xmlView.css.js';
 
 const UIStrings = {
@@ -30,7 +30,6 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
     super(true);
     this.contentElement.classList.add('shadow-xml-view', 'source-code');
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    this.treeOutline.registerRequiredCSS(xmlTreeStyles);
     this.contentElement.appendChild(this.treeOutline.element);
     this.currentSearchFocusIndex = 0;
     this.currentSearchTreeElements = [];
@@ -44,6 +43,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
 
   override wasShown(): void {
     super.wasShown();
+    this.treeOutline.registerCSSFiles([xmlTreeStyles]);
     this.registerCSSFiles([xmlViewStyles]);
   }
 

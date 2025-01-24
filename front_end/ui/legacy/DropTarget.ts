@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import dropTargetStyles from './dropTarget.css.legacy.js';
+import dropTargetStyles from './dropTarget.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class DropTarget {
@@ -71,7 +71,7 @@ export class DropTarget {
       return;
     }
     this.dragMaskElement = this.element.createChild('div', '');
-    const shadowRoot = createShadowRootWithCoreStyles(this.dragMaskElement, {cssFile: dropTargetStyles});
+    const shadowRoot = createShadowRootWithCoreStyles(this.dragMaskElement, {cssFile: [dropTargetStyles]});
     shadowRoot.createChild('div', 'drop-target-message').textContent = this.messageText;
     this.dragMaskElement.addEventListener('drop', this.onDrop.bind(this), true);
     this.dragMaskElement.addEventListener('dragleave', this.onDragLeave.bind(this), true);

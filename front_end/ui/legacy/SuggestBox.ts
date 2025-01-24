@@ -38,7 +38,7 @@ import {Size} from './Geometry.js';
 import {AnchorBehavior, GlassPane} from './GlassPane.js';
 import {ListControl, type ListDelegate, ListMode} from './ListControl.js';
 import {ListModel} from './ListModel.js';
-import suggestBoxStyles from './suggestBox.css.legacy.js';
+import suggestBoxStyles from './suggestBox.css.js';
 import {createShadowRootWithCoreStyles, measuredScrollbarWidth, measurePreferredSize} from './UIUtils.js';
 
 const UIStrings = {
@@ -105,7 +105,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
     this.glassPane = new GlassPane();
     this.glassPane.setAnchorBehavior(AnchorBehavior.PREFER_BOTTOM);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
-    const shadowRoot = createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: suggestBoxStyles});
+    const shadowRoot = createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: [suggestBoxStyles]});
     shadowRoot.appendChild(this.element);
   }
 

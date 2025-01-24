@@ -72,6 +72,15 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
 // on top of each other.
 const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.Micro(10);
 
+interface FlameChartDimmer {
+  active: boolean;
+  mainChartIndices: number[];
+  networkChartIndices: number[];
+  /** When true, the provided indices will be dimmed. When false, all others will be dimmed. */
+  inclusive: boolean;
+  outline: boolean;
+}
+
 export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
   private readonly delegate: TimelineModeViewDelegate;
@@ -157,7 +166,15 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #currentSelection: TimelineSelection|null = null;
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
-  #activeThirdPartyDimmingSetting: boolean = false;
+
+  // Only one dimmer is used at a time. The first dimmer, as defined by the following
+  // order, that is `active` within this array is used.
+  #flameChartDimmers: FlameChartDimmer[] = [];
+  #searchDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
+  #treeRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
+  #thirdPartyRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
+  #activeInsightDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
+  #thirdPartyCheckboxDimmer = this.#registerFlameChartDimmer({inclusive: true, outline: false});
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -357,12 +374,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
         return;
       }
-      const events = node?.data?.events;
-      if (events) {
-        this.#dimInsightRelatedEvents(events);
-      } else {
-        this.disableAllDimming();
-      }
+
+      const events = node?.data?.events ?? null;
+      this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, events);
     });
 
     this.detailsView.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
@@ -370,13 +384,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         return;
       }
 
-      const entityEvents = node.data;
-      if (entityEvents && entityEvents.length) {
-        // Dim events not related to third party entity.
-        this.#dimUnrelatedEvents(entityEvents, false);
-      } else {
-        this.disableAllDimming();
-      }
+      this.#updateFlameChartDimmerWithEvents(this.#thirdPartyRowHoverDimmer, node.data);
     });
 
     /**
@@ -426,43 +434,55 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     return this.element;
   }
 
-  dimEvents(events: Trace.Types.Events.Event[]): void {
-    const relatedMainIndices = events.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
-    const relatedNetworkIndices = events.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
-    this.mainFlameChart.enableDimming(relatedMainIndices, false /** shouldAddOutlines */);
-    this.networkFlameChart.enableDimming(relatedNetworkIndices, false /** shouldAddOutlines */);
+  setActiveThirdPartyDimmingSetting(thirdPartyEvents: Trace.Types.Events.Event[]|null): void {
+    this.#updateFlameChartDimmerWithEvents(this.#thirdPartyCheckboxDimmer, thirdPartyEvents);
   }
 
-  /**
-   * dimUnrelatedEvents calls for dimming of all events except the relatedEvents provided.
-   *
-   * @param relatedEvents
-   * @param shouldAddOutlines whether to add outlines to add an outline ot events that are undimmed.
-   * Currently this is being used by dimming from 3rd parties and insight related events dimming.
-   * We don't use outlines for 3rd party dimming, since outlines can add a lot of noise.
-   */
-  #dimUnrelatedEvents(relatedEvents: Trace.Types.Events.Event[], shouldAddOutlines: boolean): void {
-    const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
-    const relatedNetworkIndices = relatedEvents.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
-
-    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices, shouldAddOutlines);
-    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices, shouldAddOutlines);
+  #registerFlameChartDimmer(opts: {inclusive: boolean, outline: boolean}): FlameChartDimmer {
+    const dimmer: FlameChartDimmer = {
+      active: false,
+      mainChartIndices: [],
+      networkChartIndices: [],
+      inclusive: opts.inclusive,
+      outline: opts.outline
+    };
+    this.#flameChartDimmers.push(dimmer);
+    return dimmer;
   }
 
-  setActiveThirdPartyDimmingSetting(active: boolean): void {
-    this.#activeThirdPartyDimmingSetting = active;
-  }
-
-  // This wraps disabling dimming to include a check for 3p checkbox.
-  disableAllDimming(): void {
-    this.mainFlameChart.disableDimming();
-    this.networkFlameChart.disableDimming();
-
-    // If 3p checkbox is enabled, we should dim again.
-    if (this.#activeThirdPartyDimmingSetting) {
-      const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
-      this.dimEvents(thirdPartyEvents);
+  #updateFlameChartDimmerWithEvents(dimmer: FlameChartDimmer, events: Trace.Types.Events.Event[]|null): void {
+    if (events) {
+      dimmer.active = true;
+      dimmer.mainChartIndices = events.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
+      dimmer.networkChartIndices = events.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
+    } else {
+      dimmer.active = false;
+      dimmer.mainChartIndices = [];
+      dimmer.networkChartIndices = [];
     }
+
+    this.#refreshDimming();
+  }
+
+  #updateFlameChartDimmerWithIndices(
+      dimmer: FlameChartDimmer, mainChartIndices: number[], networkChartIndices: number[]): void {
+    dimmer.active = true;
+    dimmer.mainChartIndices = mainChartIndices;
+    dimmer.networkChartIndices = networkChartIndices;
+
+    this.#refreshDimming();
+  }
+
+  #refreshDimming(): void {
+    const dimmer = this.#flameChartDimmers.find(dimmer => dimmer.active);
+    if (!dimmer) {
+      this.mainFlameChart.disableDimming();
+      this.networkFlameChart.disableDimming();
+      return;
+    }
+
+    this.mainFlameChart.enableDimming(dimmer.mainChartIndices, dimmer.inclusive, dimmer.outline);
+    this.networkFlameChart.enableDimming(dimmer.networkChartIndices, dimmer.inclusive, dimmer.outline);
   }
 
   #dimInsightRelatedEvents(relatedEvents: Trace.Types.Events.Event[]): void {
@@ -511,8 +531,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
       relevantEvents.push(...provider.search(bounds).map(r => r.index));
     }
-    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices, true);
-    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices, true);
+
+    this.#updateFlameChartDimmerWithIndices(this.#activeInsightDimmer, relatedMainIndices, relatedNetworkIndices);
   }
 
   #sortMarkersForPreferredVisualOrder(markers: Trace.Types.Events.Event[]): void {
@@ -645,7 +665,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
       // The insight's `relatedEvents` property likely already includes the events associated with
-      // and overlay, but just in case not, include both arrays. Duplicates are fine.
+      // an overlay, but just in case not, include both arrays. Duplicates are fine.
       let relatedEventsList = this.#activeInsight?.model.relatedEvents;
       if (!relatedEventsList) {
         relatedEventsList = [];
@@ -713,7 +733,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
     if (!this.#activeInsight) {
-      this.disableAllDimming();
+      this.#updateFlameChartDimmerWithEvents(this.#activeInsightDimmer, null);
     }
   }
 
@@ -1086,8 +1106,14 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }
+
     this.#parsedTrace = newParsedTrace;
     this.#traceMetadata = traceMetadata;
+    for (const dimmer of this.#flameChartDimmers) {
+      dimmer.active = false;
+      dimmer.mainChartIndices = [];
+      dimmer.networkChartIndices = [];
+    }
     this.rebuildDataForTrace();
   }
 
@@ -1099,6 +1125,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     if (!this.#parsedTrace) {
       return;
     }
+
     this.#selectedGroupName = null;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
@@ -1629,8 +1656,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     if (!this.searchRegex) {
       return;
     }
-    this.mainFlameChart.removeSearchResultHighlights();
-    this.networkFlameChart.removeSearchResultHighlights();
+
     const regExpFilter = new TimelineRegExp(this.searchRegex);
     const visibleWindow = traceBoundsState.micro.timelineTraceWindow;
 
@@ -1653,11 +1679,15 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
 
-    this.mainFlameChart.highlightAllEntries(mainMatches.map(m => m.index));
-    this.networkFlameChart.highlightAllEntries(networkMatches.map(m => m.index));
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
+      this.#updateFlameChartDimmerWithIndices(
+          this.#searchDimmer, mainMatches.map(m => m.index), networkMatches.map(m => m.index));
+    }
+
     if (!shouldJump || !this.searchResults.length) {
       return;
     }
+
     let selectedIndex = this.#indexOfSearchResult(oldSelectedSearchResult);
     if (selectedIndex === -1) {
       selectedIndex = jumpBackwards ? this.searchResults.length - 1 : 0;
@@ -1694,9 +1724,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     delete this.selectedSearchResult;
     delete this.searchRegex;
     this.mainFlameChart.showPopoverForSearchResult(null);
-    this.mainFlameChart.removeSearchResultHighlights();
     this.networkFlameChart.showPopoverForSearchResult(null);
-    this.networkFlameChart.removeSearchResultHighlights();
+    this.#updateFlameChartDimmerWithEvents(this.#searchDimmer, null);
   }
 
   performSearch(searchConfig: UI.SearchableView.SearchConfig, shouldJump: boolean, jumpBackwards?: boolean): void {

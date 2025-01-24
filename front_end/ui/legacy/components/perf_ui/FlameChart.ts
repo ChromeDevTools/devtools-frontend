@@ -31,7 +31,6 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Root from '../../../../core/root/root.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
@@ -323,7 +322,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number|null = null;
-  #searchResultEntries: number[]|null = null;
   #inTrackConfigEditMode: boolean = false;
   #linkSelectionAnnotationIsInProgress: boolean = false;
 
@@ -333,7 +331,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   #indexToDrawOverride = new Map<number, DrawOverride>();
 
-  #shouldAddOutlines: boolean = true;
+  #shouldAddOutlines: boolean = false;
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
@@ -503,37 +501,35 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   #shouldDimEvent(entryIndex: number): boolean {
-    // If a search is active, that enables a mode where we dim all events that do not match the search results.
-    if (this.entryIndicesToDim?.length && !this.#searchResultEntries) {
+    if (this.entryIndicesToDim) {
       return this.entryIndicesToDim.includes(entryIndex);
     }
 
-    // Otherwise the events to not dim are defined by the last call to `enableDimmingForUnrelatedEntries` or
-    // `enableDimming`.
-    const entriesToNotDim = this.#searchResultEntries ?? this.entryIndicesToNotDim;
-    if (!entriesToNotDim) {
-      return false;
+    if (this.entryIndicesToNotDim) {
+      return !this.entryIndicesToNotDim.includes(entryIndex);
     }
-    return !entriesToNotDim.includes(entryIndex);
+
+    return false;
   }
 
-  enableDimming(entryIndices: number[], shouldAddOutlines: boolean): void {
-    this.entryIndicesToDim = entryIndices;
+  enableDimming(entryIndices: number[], inclusive: boolean, shouldAddOutlines: boolean): void {
     this.#shouldAddOutlines = shouldAddOutlines;
-    this.entryIndicesToNotDim = [];
-    this.draw();
-  }
 
-  enableDimmingForUnrelatedEntries(entryIndicesToNotDim: number[], shouldAddOutlines: boolean = true): void {
-    this.entryIndicesToNotDim = entryIndicesToNotDim;
-    this.entryIndicesToDim = [];
-    this.#shouldAddOutlines = shouldAddOutlines;
+    if (inclusive) {
+      this.entryIndicesToDim = entryIndices;
+      this.entryIndicesToNotDim = null;
+    } else {
+      this.entryIndicesToNotDim = entryIndices;
+      this.entryIndicesToDim = null;
+    }
+
     this.draw();
   }
 
   disableDimming(): void {
     this.entryIndicesToNotDim = null;
     this.entryIndicesToDim = null;
+    this.#shouldAddOutlines = false;
     this.draw();
   }
 
@@ -571,20 +567,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedEntryIndex = entryIndex;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.ENTRY_HOVERED, entryIndex);
-  }
-
-  highlightAllEntries(entries: number[]): void {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      this.#searchResultEntries = entries;
-      // Must redraw for the dimming treatment (#searchResultEntries overrides entryIndicesToNotDim).
-      this.draw();
-    }
-  }
-
-  removeSearchResultHighlights(): void {
-    this.#searchResultEntries = null;
-    // Must redraw for the dimming treatment (to turn it off / revert back to entryIndicesToNotDim).
-    this.draw();
   }
 
   hideHighlight(): void {
@@ -2318,9 +2300,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    */
   #maybeAddOutlines(context: CanvasRenderingContext2D, color: string): void {
     // We only want to add outlines when in a dimming state and the user has searched for something.
-    if (!this.entryIndicesToNotDim && !this.#searchResultEntries) {
+    if (!this.#shouldAddOutlines) {
       return;
     }
+
     // This foregroundColor is near-black in light mode, and vice-versa. Color mix so it's a good contrast, but still has the base flavor.
     const foregroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-base');
     context.strokeStyle = `color-mix(in srgb, ${color}, ${foregroundColor} 60%)`;

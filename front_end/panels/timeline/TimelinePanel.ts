@@ -2141,14 +2141,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!parsedTrace) {
       return;
     }
+
     const checkboxState = this.#dimThirdPartiesSetting?.get() ?? false;
-    this.flameChart.setActiveThirdPartyDimmingSetting(checkboxState);
     const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
-    if (this.#dimThirdPartiesSetting?.get() && thirdPartyEvents.length) {
-      this.flameChart.dimEvents(thirdPartyEvents);
+
+    if (checkboxState && thirdPartyEvents.length) {
+      this.flameChart.setActiveThirdPartyDimmingSetting(thirdPartyEvents);
     } else {
-      // Ensure dimming stores are cleared, and there is no dimming.
-      this.flameChart.disableAllDimming();
+      this.flameChart.setActiveThirdPartyDimmingSetting(null);
     }
   }
 
@@ -2330,7 +2330,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    *
    * IMPORTANT: All the code in here should be code that is only required when we have
    * recorded or loaded a brand new trace. If you need the code to run when the
-   * user switches to an existing trace, please {@see setModel} and put your
+   * user switches to an existing trace, please @see #setModelForActiveTrace and put your
    * code in there.
    **/
   async loadingComplete(

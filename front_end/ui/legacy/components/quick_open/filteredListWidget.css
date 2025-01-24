@@ -100,6 +100,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item .filtered-list-widget-title {
+  white-space: nowrap;
   flex: initial;
   overflow: hidden;
   text-overflow: ellipsis;

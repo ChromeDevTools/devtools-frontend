@@ -18,7 +18,7 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: var(--sys-size-5);
+  gap: var(--sys-size-2);
   padding-left: var(--sys-size-5);
 }
 

@@ -139,6 +139,10 @@ const UIStrings = {
    * @description Sub-heading for a list of links to URLs which are related to the AI-generated response.
    */
   relatedContent: 'Related content',
+  /**
+   * @description Error message shown when the request to get an AI response times out.
+   */
+  timedOut: 'Generating a response took too long. Please try again.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -200,6 +204,7 @@ type StateData = {
   completed: boolean,
   directCitationUrls: string[],
   highlightIndex?: number,
+  timedOut?: boolean,
 }&Host.AidaClient.AidaResponse|{
   type: State.ERROR,
   error: string,
@@ -564,10 +569,15 @@ export class ConsoleInsight extends HTMLElement {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
-      this.#transitionTo({
-        type: State.ERROR,
-        error: err.message,
-      });
+      if (err.message === 'doAidaConversation timed out' && this.#state.type === State.INSIGHT) {
+        this.#state.timedOut = true;
+        this.#transitionTo({...this.#state, completed: true, timedOut: true});
+      } else {
+        this.#transitionTo({
+          type: State.ERROR,
+          error: err.message,
+        });
+      }
     }
   }
 
@@ -763,6 +773,7 @@ export class ConsoleInsight extends HTMLElement {
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: true} as MarkdownView.MarkdownView.MarkdownViewData}>
             </devtools-markdown-view>`: this.#state.explanation
           }
+          ${this.#state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : LitHtml.nothing}
           ${this.#isSearchRagResponse(this.#state.metadata) ? html`
             <details class="references" ${LitHtml.Directives.ref(this.#referenceDetailsRef)} @toggle=${this.#onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
               <summary>${i18nString(UIStrings.references)}</summary>

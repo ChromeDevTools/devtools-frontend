@@ -162,6 +162,34 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert(component.shadowRoot!.querySelector('.rating'));
   });
 
+  it('shows an error message on timeout', async () => {
+    function getAidaClientWithTimeout() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: 'test',
+                metadata: {
+                  rpcGlobalId: 0,
+                },
+                completed: true,
+              };
+              throw new Error('doAidaConversation timed out');
+            },
+        registerClientEvent: sinon.spy(),
+      };
+    }
+
+    component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getAidaClientWithTimeout(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    renderElementIntoDOM(component);
+    await drainMicroTasks();
+    assert.isNotNull(component.shadowRoot);
+    assert.strictEqual(
+        component.shadowRoot.querySelector('.error-message')?.textContent,
+        'Generating a response took too long. Please try again.');
+  });
+
   const reportsRating = (positive: boolean) => async () => {
     const stub = getGetHostConfigStub({});
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');

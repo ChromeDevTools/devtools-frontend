@@ -383,3 +383,7 @@ details h3 {
   color: var(--sys-color-on-surface-subtle);
   padding-left: var(--sys-size-6);
 }
+
+.error-message {
+  font: var(--sys-typescale-body4-bold);
+}

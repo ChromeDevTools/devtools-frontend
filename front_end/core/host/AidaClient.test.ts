@@ -412,6 +412,19 @@ describeWithEnvironment('AidaClient', () => {
     }
   });
 
+  it('throws a timeout error on timeout', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
+      netErrorName: 'net::ERR_TIMED_OUT'
+    });
+    const provider = new Host.AidaClient.AidaClient();
+    try {
+      await getAllResults(provider);
+      expect.fail('provider.fetch did not throw');
+    } catch (err) {
+      expect(err.message).equals('doAidaConversation timed out');
+    }
+  });
+
   it('throws an error for other codes', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
       statusCode: 418,

@@ -279,7 +279,15 @@ export class NamedBitSetFilterUIElement extends HTMLElement {
   #namedBitSetFilterUI?: NamedBitSetFilterUI;
 
   set options(options: NamedBitSetFilterUIOptions) {
+    // return if they are the same
+    if (this.#options.items.toString() === options.items.toString() && this.#options.setting === options.setting) {
+      return;
+    }
+
     this.#options = options;
+    // When options are updated, clear the UI so that a new one is created with the new options
+    this.#shadow.innerHTML = '';
+    this.#namedBitSetFilterUI = undefined;
   }
 
   getOrCreateNamedBitSetFilterUI(): NamedBitSetFilterUI {

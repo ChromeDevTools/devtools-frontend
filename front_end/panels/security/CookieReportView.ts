@@ -186,6 +186,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
   gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[];
+  filterItems: UI.FilterBar.Item[];
   onFilterChanged: () => void;
   onSortingChanged: () => void;
   populateContextMenu:
@@ -214,6 +215,7 @@ export class CookieReportView extends UI.Widget.VBox {
   #view: View;
   dataGrid?: DataGrid.DataGrid.DataGridImpl<CookieReportNodeData>;
   gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[] = [];
+  filterItems: UI.FilterBar.Item[] = [];
 
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
     const dataGridOptions: DataGrid.DataGrid.DataGridWidgetOptions<CookieReportNodeData> = {
@@ -231,33 +233,6 @@ export class CookieReportView extends UI.Widget.VBox {
       rowContextMenuCallback: input.populateContextMenu.bind(input),
     };
 
-    const filterItems: UI.FilterBar.Item[] = [];
-
-    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.blocked))) {
-      filterItems.push({
-        name: UIStrings.blocked,
-        label: () => i18nString(UIStrings.blocked),
-        title: UIStrings.blocked,
-        jslogContext: UIStrings.blocked,
-      });
-    }
-    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.allowed))) {
-      filterItems.push({
-        name: UIStrings.allowed,
-        label: () => i18nString(UIStrings.allowed),
-        title: UIStrings.allowed,
-        jslogContext: UIStrings.allowed,
-      });
-    }
-    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.allowedByException))) {
-      filterItems.push({
-        name: UIStrings.allowedByException,
-        label: () => i18nString(UIStrings.allowedByException),
-        title: UIStrings.allowedByException,
-        jslogContext: UIStrings.allowedByException,
-      });
-    }
-
     // clang-format off
     render(html `
         <div class="report overflow-auto">
@@ -270,7 +245,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 <devtools-named-bit-set-filter
                   class="filter"
                   @filterChanged=${input.onFilterChanged}
-                  .options=${{items: filterItems}}
+                  .options=${{items: input.filterItems}}
                   ${ref((el?: Element) => {
                     if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
                       output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
@@ -327,6 +302,7 @@ export class CookieReportView extends UI.Widget.VBox {
 
   override performUpdate(): void {
     this.gridData = this.#buildNodes();
+    this.filterItems = this.#buildFilterItems();
     this.#view(this, this, this.contentElement);
   }
 
@@ -359,6 +335,39 @@ export class CookieReportView extends UI.Widget.VBox {
     if (info) {
       this.#cookieRows.set(issue.cookieId(), info);
     }
+  }
+
+  #buildFilterItems(): UI.FilterBar.Item[] {
+    const filterItems: UI.FilterBar.Item[] = [];
+
+    if (this.#cookieRows.values().some(n => n.status === IssuesManager.CookieIssue.CookieStatus.BLOCKED)) {
+      filterItems.push({
+        name: UIStrings.blocked,
+        label: () => i18nString(UIStrings.blocked),
+        title: UIStrings.blocked,
+        jslogContext: UIStrings.blocked,
+      });
+    }
+    if (this.#cookieRows.values().some(n => n.status === IssuesManager.CookieIssue.CookieStatus.ALLOWED)) {
+      filterItems.push({
+        name: UIStrings.allowed,
+        label: () => i18nString(UIStrings.allowed),
+        title: UIStrings.allowed,
+        jslogContext: UIStrings.allowed,
+      });
+    }
+    if (this.#cookieRows.values().some(
+            n => n.status === IssuesManager.CookieIssue.CookieStatus.ALLOWED_BY_GRACE_PERIOD ||
+                n.status === IssuesManager.CookieIssue.CookieStatus.ALLOWED_BY_HEURISTICS)) {
+      filterItems.push({
+        name: UIStrings.allowedByException,
+        label: () => i18nString(UIStrings.allowedByException),
+        title: UIStrings.allowedByException,
+        jslogContext: UIStrings.allowedByException,
+      });
+    }
+
+    return filterItems;
   }
 
   #buildNodes(): DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[] {

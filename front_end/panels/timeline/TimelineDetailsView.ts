@@ -132,6 +132,9 @@ export class TimelineDetailsView extends
       this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node.data);
     });
 
+    this.#thirdPartyTree.addEventListener(
+        TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => this.#bottomUpClicked(node));
+
     this.#networkRequestDetails =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
 
@@ -142,6 +145,34 @@ export class TimelineDetailsView extends
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
 
     this.lazySelectorStatsView = null;
+  }
+
+  #bottomUpClicked(event: Common.EventTarget.EventTargetEvent<Trace.Extras.TraceTree.Node|null>): void {
+    // Select bottom up tree.
+    this.tabbedPane.selectTab(Tab.BottomUp, true, true);
+    if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
+      return;
+    }
+    const bottomUp = this.tabbedPane.visibleView;
+    const thirdPartyNodeSelected = event.data;
+    if (!thirdPartyNodeSelected) {
+      return;
+    }
+    // Group by 3P.
+    bottomUp.setGroupBySetting(BottomUpTimelineTreeView.GroupBy.ThirdParties);
+    bottomUp.refreshTree();
+
+    // Look for the matching node in the bottom up tree using selected node event data.
+    const treeNode = bottomUp.eventToTreeNode.get(thirdPartyNodeSelected.event);
+    if (!treeNode) {
+      return;
+    }
+    bottomUp.selectProfileNode(treeNode, true);
+    // Reveal/expand the bottom up tree grid node.
+    const gridNode = bottomUp.dataGridNodeForTreeNode(treeNode);
+    if (gridNode) {
+      gridNode.expand();
+    }
   }
 
   #createContentWidget(): UI.Widget.VBox {

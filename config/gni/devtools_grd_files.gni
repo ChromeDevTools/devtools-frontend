@@ -20,6 +20,7 @@ grd_files_release_sources = [
   "front_end/Images/accelerometer-left.png",
   "front_end/Images/accelerometer-right.png",
   "front_end/Images/accelerometer-top.png",
+  "front_end/Images/account-tree.svg",
   "front_end/Images/align-content-center.svg",
   "front_end/Images/align-content-end.svg",
   "front_end/Images/align-content-space-around.svg",

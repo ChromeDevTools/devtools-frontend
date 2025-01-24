@@ -10,6 +10,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -19,7 +20,7 @@ import {ActiveFilters} from './ActiveFilters.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
-import type {ThirdPartyTreeViewWidget} from './ThirdPartyTreeView.js';
+import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {rangeForSelection, type TimelineSelection} from './TimelineSelection.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
@@ -144,6 +145,14 @@ const UIStrings = {
    * @description Text for Match whole word button
    */
   matchWholeWord: 'Match whole word',
+  /**
+   * @description Text for bottom up tree button
+   */
+  bottomUp: 'Bottom-up',
+  /**
+   * @description Text referring to view bottom up tree
+   */
+  viewBottomUp: 'View Bottom-up',
   /**
    * @description Text referring to a 1st party entity
    */
@@ -654,11 +663,13 @@ export namespace TimelineTreeView {
   export const enum Events {
     TREE_ROW_HOVERED = 'TreeRowHovered',
     THIRD_PARTY_ROW_HOVERED = 'ThirdPartyRowHovered',
+    BOTTOM_UP_BUTTON_CLICKED = 'BottomUpButtonClicked',
   }
 
   export interface EventTypes {
     [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
     [Events.THIRD_PARTY_ROW_HOVERED]: Trace.Types.Events.Event[]|null;
+    [Events.BOTTOM_UP_BUTTON_CLICKED]: Trace.Extras.TraceTree.Node|null;
   }
 }
 
@@ -708,8 +719,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
 
       // Include badges with the name, if relevant.
-      if (columnId === 'site' && (this.treeView as ThirdPartyTreeViewWidget)) {
-        const thirdPartyTree = (this.treeView as ThirdPartyTreeViewWidget);
+      if (columnId === 'site' && this.treeView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget) {
+        const thirdPartyTree = this.treeView;
         let badgeText = '';
 
         if (thirdPartyTree.nodeIsFirstParty(this.profileNode)) {
@@ -753,7 +764,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let maxTime: number|undefined;
     let event: Trace.Types.Events.Event|null;
     let isSize = false;
-    const thirdPartyView = this.treeView as ThirdPartyTreeViewWidget;
+    let showBottomUpButton = false;
+    const thirdPartyView = this.treeView as ThirdPartyTreeView.ThirdPartyTreeViewWidget;
     switch (columnId) {
       case 'start-time': {
         event = this.profileNode.event;
@@ -769,6 +781,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         value = this.profileNode.selfTime;
         maxTime = this.maxSelfTime;
         showPercents = true;
+        showBottomUpButton = thirdPartyView instanceof ThirdPartyTreeView.ThirdPartyTreeViewWidget;
         break;
       case 'total':
         value = this.profileNode.totalTime;
@@ -804,7 +817,37 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       cell.createChild('div', 'background-bar-container').createChild('div', 'background-bar').style.width =
           (value * 100 / maxTime).toFixed(1) + '%';
     }
+    // Generate button on hover for 3P self time cell.
+    if (showBottomUpButton) {
+      this.generateBottomUpButton(cell);
+    }
     return cell;
+  }
+
+  // Generates bottom up tree hover button and appends it to the provided cell element.
+  private generateBottomUpButton(cell: HTMLElement): void {
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+    cell.classList.add('hover-bottom-up-button');
+
+    const button = new Buttons.Button.Button();
+    button.data = {
+      variant: Buttons.Button.Variant.ICON,
+      iconName: 'account-tree',
+      size: Buttons.Button.Size.SMALL,
+      toggledIconName: i18nString(UIStrings.bottomUp),
+    };
+    UI.ARIAUtils.setLabel(button, i18nString(UIStrings.viewBottomUp));
+    button.addEventListener('click', () => this.#bottomUpButtonClicked());
+    buttonContainer.appendChild(button);
+    UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.bottomUp));
+
+    // Append the button to the last column
+    cell.appendChild(buttonContainer);
+  }
+
+  #bottomUpButtonClicked(): void {
+    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, this.profileNode);
   }
 }
 
@@ -852,7 +895,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
   }
 
-  setGroupBySettingForTests(groupBy: AggregatedTimelineTreeView.GroupBy): void {
+  setGroupBySetting(groupBy: AggregatedTimelineTreeView.GroupBy): void {
     this.groupBySetting.set(groupBy);
   }
 

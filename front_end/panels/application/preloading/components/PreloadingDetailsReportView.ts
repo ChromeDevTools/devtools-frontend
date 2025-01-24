@@ -195,8 +195,11 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     assertNotNullOrUndefined(this.#data);
     const attempt = this.#data.pipeline.getOriginallyTriggered();
 
+    const prefetchStatus = this.#data.pipeline.getPrefetch()?.status;
+
     let value;
-    if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch && attempt.requestId !== undefined) {
+    if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch && attempt.requestId !== undefined &&
+        prefetchStatus !== SDK.PreloadingModel.PreloadingStatus.NOT_TRIGGERED) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       const {requestId, key: {url}} = attempt;

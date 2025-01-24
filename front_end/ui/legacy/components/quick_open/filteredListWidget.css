@@ -140,7 +140,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.one-row .filtered-list-widget-title {
-  display: flex;
+  display: inline;
 }
 
 .filtered-list-widget-item.two-rows {

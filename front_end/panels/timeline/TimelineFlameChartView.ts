@@ -173,7 +173,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #flameChartDimmers: FlameChartDimmer[] = [];
   #searchDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
   #treeRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
-  #thirdPartyRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
+  #thirdPartyRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: false});
   #activeInsightDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
   #thirdPartyCheckboxDimmer = this.#registerFlameChartDimmer({inclusive: true, outline: false});
 

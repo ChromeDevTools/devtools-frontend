@@ -76,15 +76,15 @@ let BidiBrowser = (() => {
         ];
         static subscribeCdpEvents = [
             // Coverage
-            'cdp.Debugger.scriptParsed',
-            'cdp.CSS.styleSheetAdded',
-            'cdp.Runtime.executionContextsCleared',
+            'goog:cdp.Debugger.scriptParsed',
+            'goog:cdp.CSS.styleSheetAdded',
+            'goog:cdp.Runtime.executionContextsCleared',
             // Tracing
-            'cdp.Tracing.tracingComplete',
+            'goog:cdp.Tracing.tracingComplete',
             // TODO: subscribe to all CDP events in the future.
-            'cdp.Network.requestWillBeSent',
-            'cdp.Debugger.scriptParsed',
-            'cdp.Page.screencastFrame',
+            'goog:cdp.Network.requestWillBeSent',
+            'goog:cdp.Debugger.scriptParsed',
+            'goog:cdp.Page.screencastFrame',
         ];
         static async create(opts) {
             const session = await Session_js_1.Session.from(opts.connection, {

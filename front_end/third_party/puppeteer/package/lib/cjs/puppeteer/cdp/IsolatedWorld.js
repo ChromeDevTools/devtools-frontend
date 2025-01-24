@@ -100,7 +100,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
         return await context.evaluate(pageFunction, ...args);
     }
     async adoptBackendNode(backendNodeId) {
-        // This code needs to schedule resolveNode call synchroniously (at
+        // This code needs to schedule resolveNode call synchronously (at
         // least when the context is there) so we cannot unconditionally
         // await.
         let context = this.#executionContext();

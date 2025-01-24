@@ -276,7 +276,7 @@ export function parsePDFOptions(options = {}, lengthUnit = 'in') {
     let width = 8.5;
     let height = 11;
     if (options.format) {
-        const format = paperFormats[options.format.toLowerCase()];
+        const format = paperFormats[options.format.toLowerCase()][lengthUnit];
         assert(format, 'Unknown paper format: ' + options.format);
         width = format.width;
         height = format.height;

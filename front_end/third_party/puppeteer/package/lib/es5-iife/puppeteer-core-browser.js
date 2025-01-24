@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.1.0';
+  const packageVersion = '24.1.1';
 
   /**
    * @license
@@ -3113,51 +3113,120 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   /**
    * @internal
+   *
+   * @remarks All A series paper format sizes in inches are calculated from centimeters
+   * rounded mathematically to four decimal places.
    */
   const paperFormats = {
     letter: {
-      width: 8.5,
-      height: 11
+      cm: {
+        width: 21.59,
+        height: 27.94
+      },
+      in: {
+        width: 8.5,
+        height: 11
+      }
     },
     legal: {
-      width: 8.5,
-      height: 14
+      cm: {
+        width: 21.59,
+        height: 35.56
+      },
+      in: {
+        width: 8.5,
+        height: 14
+      }
     },
     tabloid: {
-      width: 11,
-      height: 17
+      cm: {
+        width: 27.94,
+        height: 43.18
+      },
+      in: {
+        width: 11,
+        height: 17
+      }
     },
     ledger: {
-      width: 17,
-      height: 11
+      cm: {
+        width: 43.18,
+        height: 27.94
+      },
+      in: {
+        width: 17,
+        height: 11
+      }
     },
     a0: {
-      width: 33.1102,
-      height: 46.811
+      cm: {
+        width: 84.1,
+        height: 118.9
+      },
+      in: {
+        width: 33.1102,
+        height: 46.811
+      }
     },
     a1: {
-      width: 23.3858,
-      height: 33.1102
+      cm: {
+        width: 59.4,
+        height: 84.1
+      },
+      in: {
+        width: 23.3858,
+        height: 33.1102
+      }
     },
     a2: {
-      width: 16.5354,
-      height: 23.3858
+      cm: {
+        width: 42,
+        height: 59.4
+      },
+      in: {
+        width: 16.5354,
+        height: 23.3858
+      }
     },
     a3: {
-      width: 11.6929,
-      height: 16.5354
+      cm: {
+        width: 29.7,
+        height: 42
+      },
+      in: {
+        width: 11.6929,
+        height: 16.5354
+      }
     },
     a4: {
-      width: 8.2677,
-      height: 11.6929
+      cm: {
+        width: 21,
+        height: 29.7
+      },
+      in: {
+        width: 8.2677,
+        height: 11.6929
+      }
     },
     a5: {
-      width: 5.8268,
-      height: 8.2677
+      cm: {
+        width: 14.8,
+        height: 21
+      },
+      in: {
+        width: 5.8268,
+        height: 8.2677
+      }
     },
     a6: {
-      width: 4.1339,
-      height: 5.8268
+      cm: {
+        width: 10.5,
+        height: 14.8
+      },
+      in: {
+        width: 4.1339,
+        height: 5.8268
+      }
     }
   };
 
@@ -3440,7 +3509,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     let width = 8.5;
     let height = 11;
     if (options.format) {
-      const format = paperFormats[options.format.toLowerCase()];
+      const format = paperFormats[options.format.toLowerCase()][lengthUnit];
       assert(format, 'Unknown paper format: ' + options.format);
       width = format.width;
       height = format.height;
@@ -6197,8 +6266,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       /**
        * @internal
        */
-      dispose() {
-        return this.handle.dispose();
+      async dispose() {
+        await Promise.all([this.handle.dispose(), this.isolatedHandle?.dispose()]);
       }
       /**
        * @internal
@@ -11922,7 +11991,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       if (_classPrivateFieldGet(_poller, this)) {
         try {
-          await _classPrivateFieldGet(_poller, this).evaluateHandle(async poller => {
+          await _classPrivateFieldGet(_poller, this).evaluate(async poller => {
             await poller.stop();
           });
           if (_classPrivateFieldGet(_poller, this)) {
@@ -15909,7 +15978,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return await context.evaluate(pageFunction, ...args);
     }
     async adoptBackendNode(backendNodeId) {
-      // This code needs to schedule resolveNode call synchroniously (at
+      // This code needs to schedule resolveNode call synchronously (at
       // least when the context is there) so we cannot unconditionally
       // await.
       let context = _assertClassBrand(_IsolatedWorld_brand, this, _executionContext).call(this);
@@ -24295,9 +24364,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '132.0.6834.83',
-    'chrome-headless-shell': '132.0.6834.83',
-    firefox: 'stable_134.0.1'
+    chrome: '132.0.6834.110',
+    'chrome-headless-shell': '132.0.6834.110',
+    firefox: 'stable_134.0.2'
   });
 
   /**

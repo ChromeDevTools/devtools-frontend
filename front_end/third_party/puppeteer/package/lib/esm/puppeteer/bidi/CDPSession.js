@@ -25,7 +25,7 @@ export class BidiCdpSession extends CDPSession {
         else {
             (async () => {
                 try {
-                    const { result } = await connection.send('cdp.getSession', {
+                    const { result } = await connection.send('goog:cdp.getSession', {
                         context: frame._id,
                     });
                     this.#sessionId.resolve(result.session);
@@ -50,7 +50,7 @@ export class BidiCdpSession extends CDPSession {
             throw new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);
         }
         const session = await this.#sessionId.valueOrThrow();
-        const { result } = await this.#connection.send('cdp.sendCommand', {
+        const { result } = await this.#connection.send('goog:cdp.sendCommand', {
             method: method,
             params: params,
             session,

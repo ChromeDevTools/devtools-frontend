@@ -1392,6 +1392,8 @@ export class ElementsTreeOutline extends
       visibleChildren.push(beforePseudoElement);
     }
 
+    visibleChildren.push(...node.carouselPseudoElements());
+
     if (node.childNodeCount()) {
       // Children may be stale when the outline is not wired to receive DOMModel updates.
       let children: SDK.DOMModel.DOMNode[] = node.children() || [];

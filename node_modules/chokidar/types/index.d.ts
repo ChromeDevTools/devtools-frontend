@@ -4,6 +4,7 @@
 
 import * as fs from "fs";
 import { EventEmitter } from "events";
+import { Matcher } from 'anymatch';
 
 export class FSWatcher extends EventEmitter implements fs.FSWatcher {
   options: WatchOptions;
@@ -17,13 +18,13 @@ export class FSWatcher extends EventEmitter implements fs.FSWatcher {
    * Add files, directories, or glob patterns for tracking. Takes an array of strings or just one
    * string.
    */
-  add(paths: string | ReadonlyArray<string>): void;
+  add(paths: string | ReadonlyArray<string>): this;
 
   /**
    * Stop watching files, directories, or glob patterns. Takes an array of strings or just one
    * string.
    */
-  unwatch(paths: string | ReadonlyArray<string>): void;
+  unwatch(paths: string | ReadonlyArray<string>): this;
 
   /**
    * Returns an object representing all the paths on the file system being watched by this
@@ -79,7 +80,7 @@ export interface WatchOptions {
    * (the path), second time with two arguments (the path and the
    * [`fs.Stats`](https://nodejs.org/api/fs.html#fs_class_fs_stats) object of that path).
    */
-  ignored?: any;
+  ignored?: Matcher;
 
   /**
    * If set to `false` then `add`/`addDir` events are also emitted for matching paths while

@@ -87,3 +87,34 @@
     font-weight: var(--ref-typeface-weight-medium);
   }
 }
+
+.field-mismatch-notice {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  background-color: var(--sys-color-surface3);
+  margin: var(--sys-size-6) 0;
+  border-radius: var(--sys-shape-corner-extra-small);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+
+  h3 {
+    margin-block: 3px;
+    font: var(--sys-typescale-body4-medium);
+    color: var(--sys-color-on-base);
+    padding: var(--sys-size-5) var(--sys-size-6) 0 var(--sys-size-6);
+  }
+
+  .field-mismatch-notice__body {
+    padding: var(--sys-size-3) var(--sys-size-6) var(--sys-size-5) var(--sys-size-6);
+  }
+
+  button {
+    padding: 5px;
+    background: unset;
+    border: unset;
+    font: inherit;
+    color: var(--sys-color-primary);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}

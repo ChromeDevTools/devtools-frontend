@@ -9,6 +9,8 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
+import type {CompareRating} from './MetricCompareStrings.js';
+
 const UIStrings = {
   /**
    *@description ms is the short form of milli-seconds and the placeholder is a decimal number.
@@ -251,4 +253,48 @@ export namespace NumberWithUnit {
 
     return {text: element.textContent ?? '', element};
   }
+}
+
+/**
+ * Returns if the local value is better/worse/similar compared to field.
+ */
+export function determineCompareRating(
+    metric: 'LCP'|'CLS'|'INP', localValue: Trace.Types.Timing.Milli|number,
+    fieldValue: Trace.Types.Timing.Milli|number): CompareRating|undefined {
+  let thresholds: MetricThresholds;
+  let compareThreshold: number;
+  switch (metric) {
+    case 'LCP':
+      thresholds = LCP_THRESHOLDS;
+      compareThreshold = 1000;
+      break;
+    case 'CLS':
+      thresholds = CLS_THRESHOLDS;
+      compareThreshold = 0.1;
+      break;
+    case 'INP':
+      thresholds = INP_THRESHOLDS;
+      compareThreshold = 200;
+      break;
+    default:
+      Platform.assertNever(metric, `Unknown metric: ${metric}`);
+  }
+
+  const localRating = rateMetric(localValue, thresholds);
+  const fieldRating = rateMetric(fieldValue, thresholds);
+
+  // It's not worth highlighting a significant difference when both #s
+  // are rated "good"
+  if (localRating === 'good' && fieldRating === 'good') {
+    return 'similar';
+  }
+
+  if (localValue - fieldValue > compareThreshold) {
+    return 'worse';
+  }
+  if (fieldValue - localValue > compareThreshold) {
+    return 'better';
+  }
+
+  return 'similar';
 }

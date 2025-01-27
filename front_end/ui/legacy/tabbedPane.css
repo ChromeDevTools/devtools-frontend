@@ -46,28 +46,79 @@
 }
 
 .tabbed-pane-placeholder {
-  font-size: 14px;
   text-align: center;
-  width: fit-content;
-  margin: 40px auto 0;
-  text-shadow: var(--color-background-opacity-80) 0 1px 0;
-  line-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 
 .tabbed-pane-placeholder-row {
-  margin-inline: 10px;
+  max-width: var(--sys-size-32);
+  min-width: var(--sys-size-28);
+  margin: 0 var(--sys-size-8);
 
-  & span {
-    display: inline-block;
-    padding-inline: 10px;
+  &.workspace {
+    display: inline-flex;
+    align-items: center;
+    border: var(--sys-size-2) dashed var(--sys-color-divider);
+    padding: var(--sys-size-8);
+    border-radius: var(--sys-shape-corner-medium);
+    margin-bottom: var(--sys-size-11);
+
+    > .icon-container {
+      flex-shrink: 0;
+      width: var(--sys-size-13);
+      height: var(--sys-size-13);
+      background: var(--sys-color-tonal-container);
+      align-content: center;
+      border-radius: var(--sys-shape-corner-full);
+      margin-right: var(--sys-size-8);
+
+      > devtools-icon {
+        color: var(--sys-color-on-tonal-container);
+      }
+    }
   }
 
-  &:has(.workspace) {
-    max-width: 400px;
-    border: 2px dashed var(--sys-color-neutral-outline);
-    margin-block-start: 20px;
-    padding: 10px;
-    margin-inline: 20px;
+  &.shortcuts-list {
+    padding: 0 var(--sys-size-6);
+
+    .shortcut-line {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: var(--sys-size-10);
+      padding: var(--sys-size-4) 0;
+
+      &:not(:last-child) {
+        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+      }
+
+      .shortcuts {
+        display: flex;
+        flex-direction: row;
+        gap: var(--sys-size-4);
+        align-items: center;
+      }
+
+      .keybinds-key {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--sys-size-11);
+        min-width: var(--sys-size-11);
+        font: var(--sys-typescale-body5-medium);
+        white-space: nowrap;
+        border-radius: var(--sys-shape-corner-small);
+        background: var(--sys-color-tonal-container);
+        padding: 0 var(--sys-size-4);
+      }
+
+      & button {
+        margin-inline: 0;
+      }
+    }
   }
 
   & button {
@@ -77,7 +128,8 @@
     border: none;
     padding: 0;
     text-decoration: underline;
-    margin-inline: 5px;
+    margin-inline: var(--sys-size-3);
+    text-align: left;
 
     &:focus-visible {
       outline: 2px solid var(--sys-color-state-focus-ring);

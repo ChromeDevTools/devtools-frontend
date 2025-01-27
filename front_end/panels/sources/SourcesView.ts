@@ -12,6 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -145,45 +146,53 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   private placeholderElement(): Element {
+    const placeholder = document.createElement('div');
+
+    const workspaceElement = placeholder.createChild('div', 'tabbed-pane-placeholder-row');
+    workspaceElement.classList.add('workspace');
+
+    const icon = IconButton.Icon.create('sync', 'sync-icon');
+    workspaceElement.createChild('span', 'icon-container').appendChild(icon);
+    const text = workspaceElement.createChild('span');
+    text.textContent = UIStrings.workspaceDropInAFolderToSyncSources;
+    const browseButton = text.createChild('button');
+    browseButton.textContent = i18nString(UIStrings.selectFolder);
+    browseButton.addEventListener('click', this.addFileSystemClicked.bind(this));
+
     const shortcuts = [
       {actionId: 'quick-open.show', description: i18nString(UIStrings.openFile)},
       {actionId: 'quick-open.show-command-menu', description: i18nString(UIStrings.runCommand)},
-      {
-        actionId: 'sources.add-folder-to-workspace',
-        description: i18nString(UIStrings.workspaceDropInAFolderToSyncSources),
-        isWorkspace: true,
-      },
     ];
 
-    const list = document.createElement('div');
+    const list = placeholder.createChild('div', 'shortcuts-list');
+    list.classList.add('tabbed-pane-placeholder-row');
     UI.ARIAUtils.markAsList(list);
     UI.ARIAUtils.setLabel(list, i18nString(UIStrings.sourceViewActions));
 
     for (const shortcut of shortcuts) {
-      const shortcutKeyText = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(shortcut.actionId);
-      const listItemElement = list.createChild('div', 'tabbed-pane-placeholder-row');
-      UI.ARIAUtils.markAsListitem(listItemElement);
-      if (shortcutKeyText) {
-        const title = listItemElement.createChild('span');
-        title.textContent = shortcutKeyText;
+      const shortcutKeys = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(shortcut.actionId);
+      const listItemElement = list.createChild('div');
+      listItemElement.classList.add('shortcut-line');
 
+      UI.ARIAUtils.markAsListitem(listItemElement);
+
+      // Take the first shortcut for display.
+      if (shortcutKeys && shortcutKeys[0]) {
         const button = listItemElement.createChild('button');
         button.textContent = shortcut.description;
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
         button.addEventListener('click', () => action.execute());
-      }
 
-      if (shortcut.isWorkspace) {
-        const workspace = listItemElement.createChild('span', 'workspace');
-        workspace.textContent = shortcut.description;
-
-        const browseButton = workspace.createChild('button');
-        browseButton.textContent = i18nString(UIStrings.selectFolder);
-        browseButton.addEventListener('click', this.addFileSystemClicked.bind(this));
+        const shortcutElement = listItemElement.createChild('span', 'shortcuts');
+        const separator = Host.Platform.isMac() ? '\u2004' : ' + ';
+        const keys = shortcutKeys[0].descriptors.flatMap(descriptor => descriptor.name.split(separator));
+        keys.forEach(key => {
+          shortcutElement.createChild('span', 'keybinds-key').createChild('span').textContent = key;
+        });
       }
     }
 
-    return list;
+    return placeholder;
   }
 
   private async addFileSystemClicked(): Promise<void> {

@@ -42,6 +42,7 @@ devtools_module("security") {
     "../../panels/network/forward:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/cards:bundle",
+    "../../ui/components/chrome_link:bundle",
     "../../ui/components/switch:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",

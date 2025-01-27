@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/components/switch/switch.js';
+import '../../ui/components/chrome_link/chrome_link.js';
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
@@ -11,6 +12,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
+import * as ChromeLink from '../../ui/components/chrome_link/chrome_link.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -206,7 +208,7 @@ export class CookieControlsView extends UI.Widget.VBox {
                   }) :
                 (thirdPartyControlsDict ? !thirdPartyControlsDict?.thirdPartyCookieMetadataEnabled: false) ?
                   i18nFormatString(UIStrings.enableFlag, {
-                    PH1: UI.Fragment.html`<x-link class="x-link" href="chrome://flags/#tpcd-metadata-grants" jslog=${VisualLogging.link('metadata-grants-flag-link').track({click: true})}>${i18nString(UIStrings.tpcdMetadataGrants)}</x-link>`,
+                    PH1: this.getChromeFlagsLink(UIStrings.tpcdMetadataGrants),
                   }) :
                 i18nFormatString(this.#isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
                   PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
@@ -239,7 +241,7 @@ export class CookieControlsView extends UI.Widget.VBox {
                 }) :
                 (thirdPartyControlsDict ? !thirdPartyControlsDict.thirdPartyCookieHeuristicsEnabled: false) ?
                   i18nFormatString(UIStrings.enableFlag, {
-                    PH1: UI.Fragment.html`<x-link class="x-link" href="chrome://flags/#tpcd-heuristics-grants" jslog=${VisualLogging.link('heuristics-grants-flag-link').track({click: true})}>${i18nString(UIStrings.tpcdHeuristicsGrants)}</x-link>`,
+                    PH1: this.getChromeFlagsLink(UIStrings.tpcdHeuristicsGrants),
                   }) :
                 i18nFormatString(UIStrings.heuristicExplanation, {
                   PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
@@ -378,5 +380,13 @@ export class CookieControlsView extends UI.Widget.VBox {
       this.#isGracePeriodActive = true;
       this.requestUpdate();
     }
+  }
+
+  getChromeFlagsLink(flag: string): Element {
+    const link = new ChromeLink.ChromeLink.ChromeLink();
+    link.textContent = flag;
+    link.href = ('chrome://flags/' + flag) as Platform.DevToolsPath.UrlString;
+
+    return link;
   }
 }

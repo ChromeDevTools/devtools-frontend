@@ -6,7 +6,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  InsightWarning,
+  type RequiredData
+} from './types.js';
 
 const UIStrings = {
   /**
@@ -145,7 +151,7 @@ export function generateInsight(
   const documentRequest =
       parsedTrace.NetworkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!documentRequest) {
-    throw new Error('missing document request');
+    return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
   const serverResponseTime = getServerResponseTime(documentRequest);

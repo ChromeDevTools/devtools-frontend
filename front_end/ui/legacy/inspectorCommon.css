@@ -579,6 +579,7 @@ select option {
     color: var(--sys-color-on-surface-subtle);
 
     > x-link {  /* stylelint-disable-line selector-type-no-unknown */
+      white-space: nowrap;
       margin-left: var(--sys-size-3);
     }
   }

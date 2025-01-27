@@ -42,7 +42,7 @@ const UIStrings = {
   /**
    *@description Header text to indicate there are no breakpoints
    */
-  noBreakpoints: 'You\'ll find DOM breakpoints here',
+  noBreakpoints: 'No DOM breakpoints set',
   /**
    *@description DOM breakpoints description that shows if no DOM breakpoints are set
    */

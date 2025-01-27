@@ -68,7 +68,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
           </devtools-icon>
         </x-link>
       </div>
-      <devtools-new-data-grid>
+      <devtools-new-data-grid striped>
         <table>
           <tr><th id="url">${i18nString(UIStrings.bundledResource)}</th></tr>
           ${this.#webBundleInfo.resourceUrls?.map(url => {

@@ -241,6 +241,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                 settingName: 'protocol-monitor-panel-split',
               defaultSidebarWidth: 250}}>
               <devtools-new-data-grid
+                  striped
                   slot="main"
                   @select=${input.onSelect}
                   @contextmenu=${input.onContextMenu}

@@ -87,7 +87,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
     }
 
     return html`
-      <devtools-new-data-grid @select=${this.#onSelect}>
+      <devtools-new-data-grid @select=${this.#onSelect} striped>
         <table>
           <tr>
             <th id="event-time" sortable weight="10">${i18nString(UIStrings.eventTime)}</td>

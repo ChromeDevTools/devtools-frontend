@@ -1118,6 +1118,11 @@ export abstract class HeapSnapshot {
       if (filter && !filter(node)) {
         continue;
       }
+      if (node.selfSize() === 0) {
+        // Nodes with size zero are omitted in the data grid, so avoid returning
+        // search results that can't be navigated to.
+        continue;
+      }
       const name = node.name();
       if (name === node.rawName()) {
         // If the string displayed to the user matches the raw name from the

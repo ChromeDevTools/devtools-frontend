@@ -85,6 +85,7 @@ module.exports = function(config: any) {
       {pattern: path.join(GEN_DIR, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/core/i18n/locales/*.json'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/theme_colors.css'), served: true, included: true},
+      {pattern: path.join(GEN_DIR, 'front_end/application_color_tokens.css'), served: true, included: true},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/*.js.map'), served: true, included: false, watched: true},

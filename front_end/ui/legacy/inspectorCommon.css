@@ -544,12 +544,12 @@ select option {
     max-width: var(--sys-size-29);
   }
 
-  .header {
+  .empty-state-header {
     font: var(--sys-typescale-headline5);
     margin-bottom: var(--sys-size-3);
   }
 
-  .description {
+  .empty-state-description {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 

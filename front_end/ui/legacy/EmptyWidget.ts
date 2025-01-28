@@ -54,9 +54,9 @@ export class EmptyWidget extends VBox {
     this.element.classList.add('empty-view-scroller');
     this.contentElement = this.element.createChild('div', 'empty-state');
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('empty-view')}`);
-    this.#headerElement = this.contentElement.createChild('div', 'header');
+    this.#headerElement = this.contentElement.createChild('div', 'empty-state-header');
     this.#headerElement.textContent = header;
-    this.#textElement = this.contentElement.createChild('div', 'description').createChild('span');
+    this.#textElement = this.contentElement.createChild('div', 'empty-state-description').createChild('span');
     this.#textElement.textContent = text;
   }
 

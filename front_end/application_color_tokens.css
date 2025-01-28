@@ -3,6 +3,13 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
+ /**
+  * Application-specific tokens list tokens that differ from our core design system.
+  *
+  * Before adding to this file, make sure that there's really no usable --sys-* definition
+  * in design_system_tokens.css. Additions to this file should be an exception.
+  */
 :root {
   --icon-action: var(--sys-color-primary-bright);
   --icon-arrow-main-thread: var(--sys-color-primary-bright);
@@ -228,6 +235,11 @@
     }
   }
 
+  /**
+   * Combobox image.
+   */
+   --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
+
   &.theme-with-dark-background {
     --color-primary-old: rgb(138 180 248);
     --color-primary-variant: rgb(102 157 246);
@@ -366,5 +378,10 @@
      * Color for input driver for AI assistance chat
      */
     --app-color-ai-assistance-input-divider: rgb(255 255 255 / 15%);
+
+    /**
+    * Combobox image.
+    */
+    --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-dark);
   }
 }

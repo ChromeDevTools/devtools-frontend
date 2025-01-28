@@ -5,12 +5,12 @@
  */
 
 /**
- * These are the new set of colors for the new Light/Dark themes. See
- * https://crbug.com/1122511 and
- * https://docs.google.com/document/d/1QrSSRsJRzaQBY3zz73ZL84bTcFUV60yMtE5cuu6ED14
- * for details.
-*/
+ * These tokens make up the Chrome DevTools Design System.
+ * See goo.gle/devtools-ux-style-guide for more information on how to build UI for DevTools.
+ */
 :root {
+  /* Colors begin */
+
   /* Chrome Desktop Design System */
 
   /* Use on all surfaces */
@@ -189,13 +189,357 @@
   --sys-color-gradient-primary: var(--ref-palette-primary90);
   --sys-color-gradient-tertiary: var(--ref-palette-tertiary95);
 
- /**
-   * Reference colors. Reference colors are a set of base colors that get updated on Chrome
-   * color theme changes and should not be directly used (except when defining system or
-   * application colors).
-   *
-   * DON'T CHANGE AND DON'T USE THEM DIRECTLY IN CODE.
-   * More info: https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/styleguide/ux/styles.md#colors
+  &.baseline-default {
+    --sys-color-surface5: color-mix(in sRGB, #6991d6 14%, var(--ref-palette-neutral100));
+    --sys-color-surface4: color-mix(in sRGB, #6991d6 12%, var(--ref-palette-neutral100));
+    --sys-color-surface3: color-mix(in sRGB, #6991d6 11%, var(--ref-palette-neutral100));
+    --sys-color-surface2: color-mix(in sRGB, #6991d6 8%, var(--ref-palette-neutral100));
+    --sys-color-surface1: color-mix(in sRGB, #6991d6 5%, var(--ref-palette-neutral100));
+  }
+
+  &.baseline-grayscale {
+    --sys-color-divider: var(--ref-palette-neutral90);
+    --sys-color-surface5: color-mix(in srgb, var(--ref-palette-neutral40) 14%, var(--ref-palette-neutral100));
+    --sys-color-surface4: color-mix(in srgb, var(--ref-palette-neutral40) 12%, var(--ref-palette-neutral100));
+    --sys-color-surface3: color-mix(in srgb, var(--ref-palette-neutral40) 11%, var(--ref-palette-neutral100));
+    --sys-color-surface2: color-mix(in srgb, var(--ref-palette-neutral40) 8%, var(--ref-palette-neutral100));
+    --sys-color-surface1: color-mix(in srgb, var(--ref-palette-neutral40) 5%, var(--ref-palette-neutral100));
+  }
+
+  &.baseline-default,
+  &.baseline-grayscale {
+    --sys-color-base: var(--ref-palette-neutral100);
+    --sys-color-surface: var(--ref-palette-neutral100);
+    --sys-color-cdt-base-container: var(--ref-palette-neutral100);
+
+    &.theme-with-dark-background {
+      --sys-color-surface5: color-mix(in sRGB, #d1e1ff 14%, var(--ref-palette-neutral10));
+      --sys-color-surface4: color-mix(in sRGB, #d1e1ff 12%, var(--ref-palette-neutral10));
+      --sys-color-surface3: color-mix(in sRGB, #d1e1ff 11%, var(--ref-palette-neutral10));
+      --sys-color-surface2: color-mix(in sRGB, #d1e1ff 8%, var(--ref-palette-neutral10));
+      --sys-color-surface1: color-mix(in sRGB, #d1e1ff 5%, var(--ref-palette-neutral10));
+      --sys-color-divider: var(--ref-palette-neutral40);
+      --sys-color-base: var(--ref-palette-neutral25);
+      --sys-color-surface: var(--ref-palette-neutral10);
+      --sys-color-cdt-base-container: var(--ref-palette-neutral15);
+    }
+  }
+
+  &.theme-with-dark-background {
+    /* Chrome Desktop Design System */
+
+    /* Use on all surfaces */
+
+    --sys-color-on-surface: var(--ref-palette-neutral90);
+    --sys-color-on-surface-subtle: var(--ref-palette-neutral80);
+    --sys-color-on-surface-secondary: var(--ref-palette-neutral80);
+    --sys-color-on-surface-primary: var(--ref-palette-primary90);
+
+    /* Universal surfaces */
+
+    --sys-color-surface: var(--ref-palette-neutral10);
+    --sys-color-surface-variant: var(--ref-palette-neutral-variant30);
+
+    /* Containers */
+
+    --sys-color-tonal-container: var(--ref-palette-secondary30);
+    --sys-color-on-tonal-container: var(--ref-palette-secondary90);
+    --sys-color-tertiary-container: var(--ref-palette-tertiary30);
+    --sys-color-on-tertiary-container: var(--ref-palette-tertiary90);
+    --sys-color-error-container: var(--ref-palette-error30);
+    --sys-color-on-error-container: var(--ref-palette-error90);
+    --sys-color-neutral-container: var(--ref-palette-neutral25);
+    --sys-color-omnibox-container: var(--ref-palette-neutral15);
+
+    /* Prominent accent colors */
+
+    --sys-color-primary: var(--ref-palette-primary80);
+    --sys-color-on-primary: var(--ref-palette-primary20);
+    --sys-color-secondary: var(--ref-palette-secondary80);
+    --sys-color-on-secondary: var(--ref-palette-secondary20);
+    --sys-color-tertiary: var(--ref-palette-tertiary80);
+    --sys-color-on-tertiary: var(--ref-palette-tertiary20);
+    --sys-color-error: var(--ref-palette-error80);
+    --sys-color-on-error: var(--ref-palette-error20);
+
+    /* Chrome base surface */
+
+    --sys-color-base: var(--ref-palette-secondary25);
+    --sys-color-base-container: var(--ref-palette-neutral15);
+    --sys-color-base-container-elevated: var(--ref-palette-neutral25);
+
+    /* Corresponding base on colors */
+
+    --sys-color-on-base: var(--ref-palette-neutral90);
+    --sys-color-on-base-divider: var(--ref-palette-neutral40);
+
+    /* Inverse */
+
+    --sys-color-inverse-surface: var(--ref-palette-neutral90);
+    --sys-color-inverse-primary: var(--ref-palette-primary40);
+    --sys-color-inverse-on-surface: var(--ref-palette-neutral10);
+
+    /* Outlines */
+
+    --sys-color-outline: var(--ref-palette-neutral-variant60);
+    --sys-color-tonal-outline: var(--ref-palette-secondary50);
+    --sys-color-neutral-outline: var(--ref-palette-neutral50);
+    --sys-color-yellow-outline: var(--ref-palette-yellow40);
+    --sys-color-error-outline: var(--ref-palette-error80);
+    --sys-color-divider: var(--ref-palette-secondary35);
+    --sys-color-divider-on-tonal-container: var(--ref-palette-neutral40);
+    --sys-color-divider-prominent: var(--ref-palette-neutral50);
+
+    /* States */
+
+    --sys-color-state-hover-on-prominent: color-mix(in srgb, var(--ref-palette-neutral10) 6%, transparent);
+    --sys-color-state-hover-on-subtle: color-mix(in srgb, var(--ref-palette-neutral99) 10%, transparent);
+    --sys-color-state-hover-dim-blend-protection: rgb(31 31 31 / 10%);
+    --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 16%);
+    --sys-color-state-ripple-neutral-on-prominent: color-mix(in srgb, var(--ref-palette-neutral10) 12%, transparent);
+    --sys-color-state-ripple-neutral-on-subtle: color-mix(in srgb, var(--ref-palette-neutral99) 16%, transparent);
+    --sys-color-state-ripple-primary: color-mix(in srgb, var(--ref-palette-primary60) 32%, transparent);
+    --sys-color-state-focus-ring: var(--ref-palette-primary80);
+    --sys-color-state-focus-select: var(--ref-palette-secondary50);
+    --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);
+    --sys-color-state-disabled: rgb(227 227 227 / 38%);
+    --sys-color-state-disabled-container: rgb(227 227 227 / 12%);
+    --sys-color-state-header-hover: var(--ref-palette-secondary30);
+    --sys-color-state-on-header-hover: var(--ref-palette-secondary90);
+    --sys-color-state-text-highlight: var(--ref-palette-primary80);
+    --sys-color-state-on-text-highlight: var(--ref-palette-neutral-variant0);
+
+    /* Surfaces */
+
+    --sys-color-surface5: color-mix(in srgb, var(--ref-palette-primary80) 14%, var(--ref-palette-neutral10));
+    --sys-color-surface4: color-mix(in srgb, var(--ref-palette-primary80) 12%, var(--ref-palette-neutral10));
+    --sys-color-surface3: color-mix(in srgb, var(--ref-palette-primary80) 11%, var(--ref-palette-neutral10));
+    --sys-color-surface2: color-mix(in srgb, var(--ref-palette-primary80) 8%, var(--ref-palette-neutral10));
+    --sys-color-surface1: color-mix(in srgb, var(--ref-palette-primary80) 5%, var(--ref-palette-neutral10));
+
+    /* Header surface */
+    --sys-color-header-container: var(--ref-palette-neutral25);
+
+    /* Chrome DevTools Design System */
+
+    /* Prominent accent colors for icons */
+
+    --sys-color-primary-bright: var(--ref-palette-primary70);
+    --sys-color-blue-bright: var(--ref-palette-blue70);
+    --sys-color-green-bright: var(--ref-palette-green70);
+    --sys-color-error-bright: var(--ref-palette-error60);
+    --sys-color-orange-bright: var(--ref-palette-orange70);
+    --sys-color-yellow-bright: var(--ref-palette-yellow70);
+    --sys-color-cyan-bright: var(--ref-palette-cyan70);
+    --sys-color-purple-bright: var(--ref-palette-purple70);
+    --sys-color-neutral-bright: var(--ref-palette-neutral50);
+    --sys-color-pink-bright: var(--ref-palette-pink70);
+
+    /* Prominent accent colors for text */
+
+    --sys-color-blue: var(--ref-palette-blue80);
+    --sys-color-on-blue: var(--ref-palette-blue20);
+    --sys-color-green: var(--ref-palette-green80);
+    --sys-color-on-green: var(--ref-palette-green20);
+    --sys-color-orange: var(--ref-palette-orange80);
+    --sys-color-on-orange: var(--ref-palette-orange20);
+    --sys-color-yellow: var(--ref-palette-yellow80);
+    --sys-color-on-yellow: var(--ref-palette-yellow20);
+    --sys-color-cyan: var(--ref-palette-cyan80);
+    --sys-color-on-cyan: var(--ref-palette-cyan20);
+    --sys-color-purple: var(--ref-palette-purple80);
+    --sys-color-on-purple: var(--ref-palette-purple20);
+    --sys-color-pink: var(--ref-palette-pink80);
+    --sys-color-on-pink: var(--ref-palette-pink20);
+
+    /* Containers */
+
+    --sys-color-yellow-container: var(--ref-palette-yellow30);
+    --sys-color-on-yellow-container: var(--ref-palette-yellow90);
+
+    /* Universal surfaces */
+
+    --sys-color-cdt-base: var(--sys-color-base);
+    --sys-color-cdt-base-container: var(--sys-color-base-container);
+
+    /* Tinted surfaces */
+
+    --sys-color-surface-yellow: rgb(65 60 38 / 100%);
+    --sys-color-surface-yellow-high: rgb(76 68 37 / 100%);
+    --sys-color-surface-error: rgb(78 53 52 / 100%);
+    --sys-color-surface-green: rgb(43 70 51 / 100%);
+
+    /* Corresponding on colors */
+
+    --sys-color-on-surface-yellow: var(--ref-palette-yellow90);
+    --sys-color-on-surface-error: var(--ref-palette-error90);
+    --sys-color-on-surface-green: var(--ref-palette-green90);
+
+    /* Syntax highlighting */
+
+    --sys-color-token-variable: var(--ref-palette-neutral80);
+    --sys-color-token-property: var(--ref-palette-yellow70);
+    --sys-color-token-property-special: var(--ref-palette-cyan80);
+    --sys-color-token-type: var(--ref-palette-blue70);
+    --sys-color-token-definition: var(--ref-palette-blue70);
+    --sys-color-token-variable-special: var(--ref-palette-blue40);
+    --sys-color-token-builtin: var(--ref-palette-blue80);
+    --sys-color-token-keyword: var(--ref-palette-purple60);
+    --sys-color-token-number: var(--ref-palette-green90);
+    --sys-color-token-string: var(--ref-palette-orange70);
+    --sys-color-token-string-special: var(--ref-palette-orange70);
+    --sys-color-token-atom: var(--ref-palette-green90);
+    --sys-color-token-tag: var(--ref-palette-blue70);
+    --sys-color-token-attribute: var(--ref-palette-blue80);
+    --sys-color-token-attribute-value: var(--ref-palette-orange70);
+    --sys-color-token-comment: var(--ref-palette-neutral70);
+    --sys-color-token-meta: var(--ref-palette-neutral60);
+    --sys-color-token-deleted: var(--ref-palette-error50);
+    --sys-color-token-inserted: var(--ref-palette-green60);
+    --sys-color-token-pseudo-element: var(--ref-palette-pink70);
+    --sys-color-token-subtle: var(--ref-palette-neutral60);
+
+    /**
+    * Gradients
+    */
+    --sys-color-gradient-primary: var(--ref-palette-primary30);
+    --sys-color-gradient-tertiary: var(--ref-palette-tertiary30);
+  }
+
+  /* Colors end */
+
+  /* Sizes begin */
+
+  --sys-size-1: 1px;
+  --sys-size-2: 2px;
+  --sys-size-3: 4px;
+  --sys-size-4: 6px;
+  --sys-size-5: 8px;
+  --sys-size-6: 12px;
+  --sys-size-7: 14px;
+  --sys-size-8: 16px;
+  --sys-size-9: 20px;
+  --sys-size-10: 22px;
+  --sys-size-11: 24px;
+  --sys-size-12: 28px;
+  --sys-size-13: 32px;
+  --sys-size-14: 40px;
+  --sys-size-15: 44px;
+  --sys-size-16: 48px;
+  --sys-size-17: 56px;
+  --sys-size-18: 64px;
+  --sys-size-19: 80px;
+  --sys-size-20: 112px;
+  --sys-size-21: 128px;
+  --sys-size-22: 144px;
+  --sys-size-23: 160px;
+  --sys-size-24: 176px;
+  --sys-size-25: 192px;
+  --sys-size-26: 208px;
+  --sys-size-27: 224px;
+  --sys-size-28: 240px;
+  --sys-size-29: 256px;
+  --sys-size-30: 288px;
+  --sys-size-31: 320px;
+  --sys-size-32: 384px;
+  --sys-size-33: 448px;
+  --sys-size-34: 512px;
+  --sys-size-35: 576px;
+  --sys-size-36: 672px;
+  --sys-size-37: 768px;
+  --sys-size-38: 896px;
+  --sys-size-39: 1024px;
+  --sys-size-40: 1152px;
+  --sys-size-41: 1280px;
+  /* Sizes end */
+
+  /* Typography begin */
+
+  --ref-typeface-weight-regular: 400;
+  --ref-typeface-weight-medium: 500;
+  --ref-typeface-weight-bold: 700;
+  --sys-typescale-headline1: var(--ref-typeface-weight-medium) var(--sys-typescale-headline1-size) / var(--sys-typescale-headline1-line-height) var(--default-font-family);
+  --sys-typescale-headline2: var(--ref-typeface-weight-medium) var(--sys-typescale-headline2-size) / var(--sys-typescale-headline2-line-height) var(--default-font-family);
+  --sys-typescale-headline3: var(--ref-typeface-weight-medium) var(--sys-typescale-headline3-size) / var(--sys-typescale-headline3-line-height) var(--default-font-family);
+  --sys-typescale-headline4: var(--ref-typeface-weight-medium) var(--sys-typescale-headline4-size) / var(--sys-typescale-headline4-line-height) var(--default-font-family);
+  --sys-typescale-headline5: var(--ref-typeface-weight-medium) var(--sys-typescale-headline5-size) / var(--sys-typescale-headline5-line-height) var(--default-font-family);
+  --sys-typescale-body1-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-body1-size) / var(--sys-typescale-body1-line-height) var(--default-font-family);
+  --sys-typescale-body2-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-body2-size) / var(--sys-typescale-body2-line-height) var(--default-font-family);
+  --sys-typescale-body3-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-body3-size) / var(--sys-typescale-body3-line-height) var(--default-font-family);
+  --sys-typescale-body4-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-body4-size) / var(--sys-typescale-body4-line-height) var(--default-font-family);
+  --sys-typescale-body5-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-body5-size) / var(--sys-typescale-body5-line-height) var(--default-font-family);
+  --sys-typescale-body1-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body1-size) / var(--sys-typescale-body1-line-height) var(--default-font-family);
+  --sys-typescale-body2-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body2-size) / var(--sys-typescale-body2-line-height) var(--default-font-family);
+  --sys-typescale-body3-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body3-size) / var(--sys-typescale-body3-line-height) var(--default-font-family);
+  --sys-typescale-body4-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body4-size) / var(--sys-typescale-body4-line-height) var(--default-font-family);
+  --sys-typescale-body5-medium: var(--ref-typeface-weight-medium) var(--sys-typescale-body5-size) / var(--sys-typescale-body5-line-height) var(--default-font-family);
+  --sys-typescale-body1-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-body1-size) / var(--sys-typescale-body1-line-height) var(--default-font-family);
+  --sys-typescale-body2-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-body2-size) / var(--sys-typescale-body2-line-height) var(--default-font-family);
+  --sys-typescale-body3-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-body3-size) / var(--sys-typescale-body3-line-height) var(--default-font-family);
+  --sys-typescale-body4-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-body4-size) / var(--sys-typescale-body4-line-height) var(--default-font-family);
+  --sys-typescale-body5-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-body5-size) / var(--sys-typescale-body5-line-height) var(--default-font-family);
+  --sys-typescale-monospace-regular: var(--ref-typeface-weight-regular) var(--sys-typescale-monospace-size) / var(--sys-typescale-monospace-line-height) var(--monospace-font-family);
+  --sys-typescale-monospace-bold: var(--ref-typeface-weight-bold) var(--sys-typescale-monospace-size) / var(--sys-typescale-monospace-line-height) var(--monospace-font-family);
+  --sys-typescale-headline1-size: 24px;
+  --sys-typescale-headline2-size: 20px;
+  --sys-typescale-headline3-size: 18px;
+  --sys-typescale-headline4-size: 16px;
+  --sys-typescale-headline5-size: 14px;
+  --sys-typescale-body1-size: 16px;
+  --sys-typescale-body2-size: 14px;
+  --sys-typescale-body3-size: 13px;
+  --sys-typescale-body4-size: 12px;
+  --sys-typescale-body5-size: 11px;
+  --sys-typescale-monospace-size: 11px;
+  --sys-typescale-headline1-line-height: 32px;
+  --sys-typescale-headline2-line-height: 24px;
+  --sys-typescale-headline3-line-height: 24px;
+  --sys-typescale-headline4-line-height: 24px;
+  --sys-typescale-headline5-line-height: 20px;
+  --sys-typescale-body1-line-height: 24px;
+  --sys-typescale-body2-line-height: 20px;
+  --sys-typescale-body3-line-height: 20px;
+  --sys-typescale-body4-line-height: 16px;
+  --sys-typescale-body5-line-height: 16px;
+  --sys-typescale-monospace-line-height: 1.2;
+
+  /* Typography end */
+
+  /* Elevation begin */
+
+  --sys-elevation-level1: 0 1px 2px 0 rgb(0 0 0 / 30%), 0 1px 3px 1px rgb(0 0 0 / 15%);
+  --sys-elevation-level2: 0 1px 2px 0 rgb(0 0 0 / 30%), 0 2px 6px 2px rgb(0 0 0 / 15%);
+  --sys-elevation-level3: 0 4px 8px 3px rgb(0 0 0 / 15%), 0 1px 3px 0 rgb(0 0 0 / 30%);
+  --sys-elevation-level4: 0 6px 10px 4px rgb(0 0 0 / 15%), 0 2px 3px 0 rgb(0 0 0 / 30%);
+  --sys-elevation-level5: 0 8px 12px 6px rgb(0 0 0 / 15%), 0 4px 4px 0 rgb(0 0 0 / 30%);
+
+  /* Elevation end */
+
+  /* Shape begin */
+
+  --sys-shape-corner-extra-small: 4px;
+  --sys-shape-corner-small: 8px;
+  --sys-shape-corner-medium-small: 12px;
+  --sys-shape-corner-medium: 16px;
+  --sys-shape-corner-large: 24px;
+  --sys-shape-corner-full: 9999px;
+
+  /* Shape end */
+
+  /* Motion begin */
+
+  --sys-motion-duration-long2: 500ms;
+  --sys-motion-curve-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00);
+
+  /* Motion end */
+
+  /**
+    * Reference colors. Reference colors are a set of base colors that get updated on Chrome
+    * color theme changes and should not be directly used (except when defining system or
+    * application colors).
+    *
+    * DON'T CHANGE AND DON'T USE THEM DIRECTLY IN CODE.
+    * More info: https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/styleguide/ux/styles.md#colors
    **/
    --ref-palette-primary0: var(--color-ref-primary0, rgb(0 0 0 / 100%));
    --ref-palette-primary10: var(--color-ref-primary10, rgb(4 30 73 / 100%));
@@ -389,221 +733,4 @@
    --ref-palette-indigo95: rgb(243 238 255 / 100%);
    --ref-palette-indigo99: rgb(255 251 255 / 100%);
    --ref-palette-indigo100: rgb(255 255 255 / 100%);
-}
-
-:root.baseline-default {
-  --sys-color-surface5: color-mix(in sRGB, #6991d6 14%, var(--ref-palette-neutral100));
-  --sys-color-surface4: color-mix(in sRGB, #6991d6 12%, var(--ref-palette-neutral100));
-  --sys-color-surface3: color-mix(in sRGB, #6991d6 11%, var(--ref-palette-neutral100));
-  --sys-color-surface2: color-mix(in sRGB, #6991d6 8%, var(--ref-palette-neutral100));
-  --sys-color-surface1: color-mix(in sRGB, #6991d6 5%, var(--ref-palette-neutral100));
-}
-
-:root.baseline-grayscale {
-  --sys-color-divider: var(--ref-palette-neutral90);
-  --sys-color-surface5: color-mix(in srgb, var(--ref-palette-neutral40) 14%, var(--ref-palette-neutral100));
-  --sys-color-surface4: color-mix(in srgb, var(--ref-palette-neutral40) 12%, var(--ref-palette-neutral100));
-  --sys-color-surface3: color-mix(in srgb, var(--ref-palette-neutral40) 11%, var(--ref-palette-neutral100));
-  --sys-color-surface2: color-mix(in srgb, var(--ref-palette-neutral40) 8%, var(--ref-palette-neutral100));
-  --sys-color-surface1: color-mix(in srgb, var(--ref-palette-neutral40) 5%, var(--ref-palette-neutral100));
-}
-
-:root.baseline-default,
-:root.baseline-grayscale {
-  --sys-color-base: var(--ref-palette-neutral100);
-  --sys-color-surface: var(--ref-palette-neutral100);
-  --sys-color-cdt-base-container: var(--ref-palette-neutral100);
-
-  &.theme-with-dark-background {
-    --sys-color-surface5: color-mix(in sRGB, #d1e1ff 14%, var(--ref-palette-neutral10));
-    --sys-color-surface4: color-mix(in sRGB, #d1e1ff 12%, var(--ref-palette-neutral10));
-    --sys-color-surface3: color-mix(in sRGB, #d1e1ff 11%, var(--ref-palette-neutral10));
-    --sys-color-surface2: color-mix(in sRGB, #d1e1ff 8%, var(--ref-palette-neutral10));
-    --sys-color-surface1: color-mix(in sRGB, #d1e1ff 5%, var(--ref-palette-neutral10));
-    --sys-color-divider: var(--ref-palette-neutral40);
-    --sys-color-base: var(--ref-palette-neutral25);
-    --sys-color-surface: var(--ref-palette-neutral10);
-    --sys-color-cdt-base-container: var(--ref-palette-neutral15);
-  }
-}
-
-.theme-with-dark-background {
-  /* Chrome Desktop Design System */
-
-  /* Use on all surfaces */
-
-  --sys-color-on-surface: var(--ref-palette-neutral90);
-  --sys-color-on-surface-subtle: var(--ref-palette-neutral80);
-  --sys-color-on-surface-secondary: var(--ref-palette-neutral80);
-  --sys-color-on-surface-primary: var(--ref-palette-primary90);
-
-  /* Universal surfaces */
-
-  --sys-color-surface: var(--ref-palette-neutral10);
-  --sys-color-surface-variant: var(--ref-palette-neutral-variant30);
-
-  /* Containers */
-
-  --sys-color-tonal-container: var(--ref-palette-secondary30);
-  --sys-color-on-tonal-container: var(--ref-palette-secondary90);
-  --sys-color-tertiary-container: var(--ref-palette-tertiary30);
-  --sys-color-on-tertiary-container: var(--ref-palette-tertiary90);
-  --sys-color-error-container: var(--ref-palette-error30);
-  --sys-color-on-error-container: var(--ref-palette-error90);
-  --sys-color-neutral-container: var(--ref-palette-neutral25);
-  --sys-color-omnibox-container: var(--ref-palette-neutral15);
-
-  /* Prominent accent colors */
-
-  --sys-color-primary: var(--ref-palette-primary80);
-  --sys-color-on-primary: var(--ref-palette-primary20);
-  --sys-color-secondary: var(--ref-palette-secondary80);
-  --sys-color-on-secondary: var(--ref-palette-secondary20);
-  --sys-color-tertiary: var(--ref-palette-tertiary80);
-  --sys-color-on-tertiary: var(--ref-palette-tertiary20);
-  --sys-color-error: var(--ref-palette-error80);
-  --sys-color-on-error: var(--ref-palette-error20);
-
-  /* Chrome base surface */
-
-  --sys-color-base: var(--ref-palette-secondary25);
-  --sys-color-base-container: var(--ref-palette-neutral15);
-  --sys-color-base-container-elevated: var(--ref-palette-neutral25);
-
-  /* Corresponding base on colors */
-
-  --sys-color-on-base: var(--ref-palette-neutral90);
-  --sys-color-on-base-divider: var(--ref-palette-neutral40);
-
-  /* Inverse */
-
-  --sys-color-inverse-surface: var(--ref-palette-neutral90);
-  --sys-color-inverse-primary: var(--ref-palette-primary40);
-  --sys-color-inverse-on-surface: var(--ref-palette-neutral10);
-
-  /* Outlines */
-
-  --sys-color-outline: var(--ref-palette-neutral-variant60);
-  --sys-color-tonal-outline: var(--ref-palette-secondary50);
-  --sys-color-neutral-outline: var(--ref-palette-neutral50);
-  --sys-color-yellow-outline: var(--ref-palette-yellow40);
-  --sys-color-error-outline: var(--ref-palette-error80);
-  --sys-color-divider: var(--ref-palette-secondary35);
-  --sys-color-divider-on-tonal-container: var(--ref-palette-neutral40);
-  --sys-color-divider-prominent: var(--ref-palette-neutral50);
-
-  /* States */
-
-  --sys-color-state-hover-on-prominent: color-mix(in srgb, var(--ref-palette-neutral10) 6%, transparent);
-  --sys-color-state-hover-on-subtle: color-mix(in srgb, var(--ref-palette-neutral99) 10%, transparent);
-  --sys-color-state-hover-dim-blend-protection: rgb(31 31 31 / 10%);
-  --sys-color-state-hover-bright-blend-protection: rgb(31 31 31 / 16%);
-  --sys-color-state-ripple-neutral-on-prominent: color-mix(in srgb, var(--ref-palette-neutral10) 12%, transparent);
-  --sys-color-state-ripple-neutral-on-subtle: color-mix(in srgb, var(--ref-palette-neutral99) 16%, transparent);
-  --sys-color-state-ripple-primary: color-mix(in srgb, var(--ref-palette-primary60) 32%, transparent);
-  --sys-color-state-focus-ring: var(--ref-palette-primary80);
-  --sys-color-state-focus-select: var(--ref-palette-secondary50);
-  --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);
-  --sys-color-state-disabled: rgb(227 227 227 / 38%);
-  --sys-color-state-disabled-container: rgb(227 227 227 / 12%);
-  --sys-color-state-header-hover: var(--ref-palette-secondary30);
-  --sys-color-state-on-header-hover: var(--ref-palette-secondary90);
-  --sys-color-state-text-highlight: var(--ref-palette-primary80);
-  --sys-color-state-on-text-highlight: var(--ref-palette-neutral-variant0);
-
-  /* Surfaces */
-
-  --sys-color-surface5: color-mix(in srgb, var(--ref-palette-primary80) 14%, var(--ref-palette-neutral10));
-  --sys-color-surface4: color-mix(in srgb, var(--ref-palette-primary80) 12%, var(--ref-palette-neutral10));
-  --sys-color-surface3: color-mix(in srgb, var(--ref-palette-primary80) 11%, var(--ref-palette-neutral10));
-  --sys-color-surface2: color-mix(in srgb, var(--ref-palette-primary80) 8%, var(--ref-palette-neutral10));
-  --sys-color-surface1: color-mix(in srgb, var(--ref-palette-primary80) 5%, var(--ref-palette-neutral10));
-
-  /* Header surface */
-  --sys-color-header-container: var(--ref-palette-neutral25);
-
-  /* Chrome DevTools Design System */
-
-  /* Prominent accent colors for icons */
-
-  --sys-color-primary-bright: var(--ref-palette-primary70);
-  --sys-color-blue-bright: var(--ref-palette-blue70);
-  --sys-color-green-bright: var(--ref-palette-green70);
-  --sys-color-error-bright: var(--ref-palette-error60);
-  --sys-color-orange-bright: var(--ref-palette-orange70);
-  --sys-color-yellow-bright: var(--ref-palette-yellow70);
-  --sys-color-cyan-bright: var(--ref-palette-cyan70);
-  --sys-color-purple-bright: var(--ref-palette-purple70);
-  --sys-color-neutral-bright: var(--ref-palette-neutral50);
-  --sys-color-pink-bright: var(--ref-palette-pink70);
-
-  /* Prominent accent colors for text */
-
-  --sys-color-blue: var(--ref-palette-blue80);
-  --sys-color-on-blue: var(--ref-palette-blue20);
-  --sys-color-green: var(--ref-palette-green80);
-  --sys-color-on-green: var(--ref-palette-green20);
-  --sys-color-orange: var(--ref-palette-orange80);
-  --sys-color-on-orange: var(--ref-palette-orange20);
-  --sys-color-yellow: var(--ref-palette-yellow80);
-  --sys-color-on-yellow: var(--ref-palette-yellow20);
-  --sys-color-cyan: var(--ref-palette-cyan80);
-  --sys-color-on-cyan: var(--ref-palette-cyan20);
-  --sys-color-purple: var(--ref-palette-purple80);
-  --sys-color-on-purple: var(--ref-palette-purple20);
-  --sys-color-pink: var(--ref-palette-pink80);
-  --sys-color-on-pink: var(--ref-palette-pink20);
-
-  /* Containers */
-
-  --sys-color-yellow-container: var(--ref-palette-yellow30);
-  --sys-color-on-yellow-container: var(--ref-palette-yellow90);
-
-  /* Universal surfaces */
-
-  --sys-color-cdt-base: var(--sys-color-base);
-  --sys-color-cdt-base-container: var(--sys-color-base-container);
-
-  /* Tinted surfaces */
-
-  --sys-color-surface-yellow: rgb(65 60 38 / 100%);
-  --sys-color-surface-yellow-high: rgb(76 68 37 / 100%);
-  --sys-color-surface-error: rgb(78 53 52 / 100%);
-  --sys-color-surface-green: rgb(43 70 51 / 100%);
-
-  /* Corresponding on colors */
-
-  --sys-color-on-surface-yellow: var(--ref-palette-yellow90);
-  --sys-color-on-surface-error: var(--ref-palette-error90);
-  --sys-color-on-surface-green: var(--ref-palette-green90);
-
-  /* Syntax highlighting */
-
-  --sys-color-token-variable: var(--ref-palette-neutral80);
-  --sys-color-token-property: var(--ref-palette-yellow70);
-  --sys-color-token-property-special: var(--ref-palette-cyan80);
-  --sys-color-token-type: var(--ref-palette-blue70);
-  --sys-color-token-definition: var(--ref-palette-blue70);
-  --sys-color-token-variable-special: var(--ref-palette-blue40);
-  --sys-color-token-builtin: var(--ref-palette-blue80);
-  --sys-color-token-keyword: var(--ref-palette-purple60);
-  --sys-color-token-number: var(--ref-palette-green90);
-  --sys-color-token-string: var(--ref-palette-orange70);
-  --sys-color-token-string-special: var(--ref-palette-orange70);
-  --sys-color-token-atom: var(--ref-palette-green90);
-  --sys-color-token-tag: var(--ref-palette-blue70);
-  --sys-color-token-attribute: var(--ref-palette-blue80);
-  --sys-color-token-attribute-value: var(--ref-palette-orange70);
-  --sys-color-token-comment: var(--ref-palette-neutral70);
-  --sys-color-token-meta: var(--ref-palette-neutral60);
-  --sys-color-token-deleted: var(--ref-palette-error50);
-  --sys-color-token-inserted: var(--ref-palette-green60);
-  --sys-color-token-pseudo-element: var(--ref-palette-pink70);
-  --sys-color-token-subtle: var(--ref-palette-neutral60);
-
-  /**
-  * Gradients
-  */
-  --sys-color-gradient-primary: var(--ref-palette-primary30);
-  --sys-color-gradient-tertiary: var(--ref-palette-tertiary30);
 }

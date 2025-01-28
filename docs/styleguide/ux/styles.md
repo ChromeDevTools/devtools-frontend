@@ -328,7 +328,7 @@ example CL that adds application tokens can be found
 ## Sizes
 
 [**System
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_tokens.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
 include a set of tokens to be used for sizes, ranging from `--sys-size-1` (which
 corresponds to a single pixel) to `--sys-size-41` (which corresponds to the HD
 resolution width).

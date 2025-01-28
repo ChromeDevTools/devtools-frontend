@@ -84,7 +84,7 @@ export const getDataGrid = (gridComponent: HTMLElement) => {
 };
 
 export const assertGridContents = (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
-  const grid = getDataGrid(gridComponent);
+  const grid = gridComponent.shadowRoot?.querySelector('devtools-new-data-grid') || getDataGrid(gridComponent);
   assert.isNotNull(grid.shadowRoot);
 
   const headerActual = getHeaderCells(grid.shadowRoot).map(({textContent}) => textContent!.trim());

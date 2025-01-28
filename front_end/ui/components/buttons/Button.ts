@@ -119,25 +119,9 @@ export class Button extends HTMLElement {
     this.addEventListener('click', this.#boundOnClick, true);
   }
 
-  #eventListeners: Parameters<HTMLElement['addEventListener']>[] = [];
-
-  override addEventListener<K extends keyof HTMLElementEventMap>(
-      type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void,
-      options?: boolean|AddEventListenerOptions|undefined): void;
-  override addEventListener(
-      type: string, listener: EventListenerOrEventListenerObject,
-      options?: boolean|AddEventListenerOptions|undefined): void;
-  override addEventListener(...args: Parameters<HTMLElement['addEventListener']>): void {
-    super.addEventListener(...args);
-    this.#eventListeners.push(args);
-  }
-
   override cloneNode(deep?: boolean): Node {
     const node = super.cloneNode(deep) as Button;
     Object.assign(node.#props, this.#props);
-    for (const args of this.#eventListeners) {
-      node.addEventListener(...args);
-    }
     node.#render();
     return node;
   }

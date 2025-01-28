@@ -245,6 +245,10 @@ function createRuleSetView(target: SDK.Target.Target): Resources.PreloadingView.
   const view = new Resources.PreloadingView.PreloadingRuleSetView(model);
   const container = new UI.Widget.VBox();
   const div = document.createElement('div');
+  view.contentElement.style.display = 'block';
+  view.contentElement.style.width = '640px';
+  view.contentElement.style.height = '480px';
+
   renderElementIntoDOM(div);
   container.markAsRoot();
   container.show(div);
@@ -366,12 +370,7 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
 
     );
 
-    const cells = [
-      {columnId: 'id', value: 'ruleSetId:0.2'},
-      {columnId: 'Validity', value: 'Invalid'},
-    ];
-    ruleSetGridComponent.dispatchEvent(
-        new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'Validity', value: 'Invalid'}, {cells}));
+    ruleSetGridComponent.dispatchEvent(new CustomEvent('select', {detail: 'ruleSetId:0.2'}));
 
     await RenderCoordinator.done();
 

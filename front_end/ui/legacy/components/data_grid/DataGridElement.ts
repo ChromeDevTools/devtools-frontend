@@ -44,6 +44,7 @@ class DataGridElement extends HTMLElement {
 
   #dataGrid = SortableDataGrid.create([DUMMY_COLUMN_ID], [], '') as SortableDataGrid<DataGridElementNode>;
   #mutationObserver = new MutationObserver(this.#onChange.bind(this));
+  #resizeObserver = new ResizeObserver(() => this.#dataGrid.onResize());
   #shadowRoot: ShadowRoot;
   #columnsOrder: string[] = [];
   #hideableColumns = new Set<string>();
@@ -86,6 +87,7 @@ class DataGridElement extends HTMLElement {
     });
 
     this.#mutationObserver.observe(this, {childList: true, attributes: true, subtree: true, characterData: true});
+    this.#resizeObserver.observe(this);
     this.#updateColumns();
     this.#addNodes(this.querySelectorAll('tr'));
   }
@@ -273,13 +275,33 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     super.refresh();
   }
 
+  #onCellClick(configCell: HTMLElement, event: MouseEvent): void {
+    let currentElement = event.target as HTMLElement;
+    const childIndexesOnPathToRoot: number[] = [];
+    while (currentElement?.parentElement && currentElement !== event.currentTarget) {
+      childIndexesOnPathToRoot.push([...currentElement.parentElement.children].indexOf(currentElement));
+      currentElement = currentElement.parentElement;
+    }
+    if (!currentElement) {
+      throw new Error('Cell click event target not found in the data grid');
+    }
+    let targetInConfigCell: Element = configCell;
+    for (const index of childIndexesOnPathToRoot.reverse()) {
+      targetInConfigCell = targetInConfigCell.children[index];
+    }
+    if (targetInConfigCell instanceof HTMLElement) {
+      targetInConfigCell?.click();
+    }
+  }
+
   override createCell(columnId: string): HTMLElement {
-    const cell = this.createTD(columnId);
     const index = this.#dataGridElement.columnsOrder.indexOf(columnId);
     const configCell = this.#configElement.querySelectorAll('td')[index];
     if (!configCell) {
       throw new Error(`Column ${columnId} not found in the data grid`);
     }
+    const cell = this.createTD(columnId);
+    cell.addEventListener('click', this.#onCellClick.bind(this, configCell));
     for (const child of configCell.childNodes) {
       cell.appendChild(child.cloneNode(true));
     }

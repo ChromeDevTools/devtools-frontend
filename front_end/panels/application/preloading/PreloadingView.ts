@@ -220,7 +220,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
 
-    this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
+    this.ruleSetGrid.addEventListener('select', this.onRuleSetsGridCellFocused.bind(this));
 
     const onPrettyPrintToggle = (): void => {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
@@ -307,9 +307,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   }
 
   private onRuleSetsGridCellFocused(event: Event): void {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    this.focusedRuleSetId =
-        focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as Protocol.Preload.RuleSetId;
+    const focusedEvent = event as CustomEvent<Protocol.Preload.RuleSetId>;
+    this.focusedRuleSetId = focusedEvent.detail;
     this.render();
   }
 

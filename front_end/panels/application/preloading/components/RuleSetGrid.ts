@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../../ui/components/data_grid/data_grid.js';
+import '../../../../ui/legacy/components/data_grid/data_grid.js';
 import '../../../../ui/components/icon_button/icon_button.js';
 
 import * as Common from '../../../../core/common/common.js';
@@ -11,7 +11,6 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
-import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -22,7 +21,7 @@ import * as PreloadingHelper from '../helper/helper.js';
 import * as PreloadingString from './PreloadingString.js';
 import ruleSetGridStyles from './ruleSetGrid.css.js';
 
-const {html} = LitHtml;
+const {html, Directives: {styleMap}} = LitHtml;
 
 const UIStrings = {
   /**
@@ -65,7 +64,6 @@ export interface RuleSetGridRow {
 
 // Grid component to show SpeculationRules rule sets.
 export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetGridData|null = null;
 
@@ -79,65 +77,139 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     this.#render();
   }
 
+  async #revealSpeculationRules(ruleSet: Protocol.Preload.RuleSet): Promise<void> {
+    if (ruleSet.backendNodeId !== undefined) {
+      await this.#revealSpeculationRulesInElements(ruleSet);
+    } else if (ruleSet.url !== undefined && ruleSet.requestId) {
+      await this.#revealSpeculationRulesInNetwork(ruleSet);
+    }
+  }
+
+  async #revealSpeculationRulesInElements(ruleSet: Protocol.Preload.RuleSet): Promise<void> {
+    assertNotNullOrUndefined(ruleSet.backendNodeId);
+
+    const target = SDK.TargetManager.TargetManager.instance().scopeTarget();
+    if (target === null) {
+      return;
+    }
+
+    await Common.Revealer.reveal(new SDK.DOMModel.DeferredDOMNode(target, ruleSet.backendNodeId));
+  }
+
+  async #revealSpeculationRulesInNetwork(ruleSet: Protocol.Preload.RuleSet): Promise<void> {
+    assertNotNullOrUndefined(ruleSet.requestId);
+    const request = SDK.TargetManager.TargetManager.instance()
+                        .scopeTarget()
+                        ?.model(SDK.NetworkManager.NetworkManager)
+                        ?.requestForId(ruleSet.requestId) ||
+        null;
+    if (request === null) {
+      return;
+    }
+
+    const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+        request, NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, {clearFilter: false});
+    await Common.Revealer.reveal(requestLocation);
+  }
+
+  async #revealAttemptViewWithFilter(ruleSet: Protocol.Preload.RuleSet): Promise<void> {
+    await Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
+  }
+
   #render(): void {
     if (this.#data === null) {
       return;
     }
 
-    const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'rule-set',
-          title: i18nString(UIStrings.ruleSet),
-          widthWeighting: 20,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'status',
-          title: i18nString(UIStrings.status),
-          widthWeighting: 80,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-      ],
-      rows: this.#buildReportRows(),
-      striped: true,
-    };
+    const {rows, pageURL} = this.#data;
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
-      <div class="ruleset-container"
-      jslog=${VisualLogging.pane('preloading-rules')}>
-        <devtools-data-grid-controller .data=${reportsGridData}></devtools-data-grid-controller>
-      </div>
-    `, this.#shadow, {host: this});
+      LitHtml.render(html`
+        <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
+          <devtools-new-data-grid striped @select=${this.#onRowSelected}>
+            <table>
+              <tr>
+                <th id="rule-set" weight="20" sortable>
+                  ${i18nString(UIStrings.ruleSet)}
+                </th>
+                <th id="status" weight="80" sortable>
+                  ${i18nString(UIStrings.status)}
+                </th>
+              </tr>
+              ${rows.map(({ruleSet, preloadsStatusSummary}) => {
+                const location = PreloadingString.ruleSetLocationShort(ruleSet, pageURL);
+                const revealInElements = ruleSet.backendNodeId !== undefined;
+                const revealInNetwork = ruleSet.url !== undefined && ruleSet.requestId;
+                return html`
+                  <tr>
+                    <td data-id=${ruleSet.id}>
+                      ${revealInElements || revealInNetwork ? html`
+                        <button class="link" role="link"
+                            @click=${() => this.#revealSpeculationRules(ruleSet)}
+                            title=${revealInElements ? i18nString(UIStrings.clickToOpenInElementsPanel)
+                                                    : i18nString(UIStrings.clickToOpenInNetworkPanel)}
+                            style=${styleMap({
+                              border: 'none',
+                              background: 'none',
+                              color: 'var(--icon-link)',
+                              cursor: 'pointer',
+                              'text-decoration': 'underline',
+                              'padding-inline-start': '0',
+                              'padding-inline-end': '0',
+                            })}
+                            jslog=${VisualLogging
+                                .action(revealInElements ? 'reveal-in-elements' : 'reveal-in-network')
+                                .track({click: true})}
+                          >
+                            <devtools-icon name=${revealInElements ? 'code-circle' : 'arrow-up-down-circle'}
+                              style=${styleMap({
+                                color: 'var(--icon-link)',
+                                width: '16px',
+                                height: '16px',
+                                'vertical-align': 'sub',
+                              })}
+                            ></devtools-icon>
+                            ${location}
+                          </button>`
+                          : location}
+                  </td>
+                  <td>
+                    ${ruleSet.errorType !== undefined ? html`
+                      <span style=${styleMap({color: 'var(--sys-color-error)'})}>
+                        ${i18nString(UIStrings.errors, {errorCount: 1})}
+                      </span>` : ''}
+                    ${ruleSet.errorType !== Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject ? html`
+                      <button class="link" role="link"
+                        @click=${() => this.#revealAttemptViewWithFilter(ruleSet)}
+                        title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}
+                        style=${styleMap({
+                          color: 'var(--sys-color-primary)',
+                          'text-decoration': 'underline',
+                          cursor: 'pointer',
+                          border: 'none',
+                          background: 'none',
+                          'padding-inline-start': '0',
+                          'padding-inline-end': '0',
+                        })}
+                        jslog=${VisualLogging.action('reveal-preloads').track({click: true})}>
+                        ${preloadsStatusSummary}
+                      </button>` : ''}
+                  </td>
+                </tr>
+              `;})}
+            </table>
+          </devtools-new-data-grid>
+        </div>
+      `, this.#shadow, {host: this});
     // clang-format on
   }
 
-  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    assertNotNullOrUndefined(this.#data);
-
-    const pageURL = this.#data.pageURL;
-    return this.#data.rows.map(
-        row => ({
-          cells: [
-            {columnId: 'id', value: row.ruleSet.id},
-            {
-              columnId: 'rule-set',
-              value: '',
-              renderer: () => ruleSetRenderer(row.ruleSet, pageURL),
-            },
-            {
-              columnId: 'status',
-              value: row.preloadsStatusSummary,
-              renderer: preloadsStatusSummary => statusRenderer(preloadsStatusSummary as string, row.ruleSet),
-            },
-          ],
-        }));
+  #onRowSelected(event: CustomEvent<HTMLElement>): void {
+    const ruleSetId = event.detail.dataset.id;
+    if (ruleSetId !== undefined) {
+      this.dispatchEvent(new CustomEvent('select', {detail: ruleSetId}));
+    }
   }
 }
 
@@ -146,174 +218,5 @@ customElements.define('devtools-resources-ruleset-grid', RuleSetGrid);
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-resources-ruleset-grid': RuleSetGrid;
-  }
-}
-
-function ruleSetRenderer(
-    ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): LitHtml.TemplateResult {
-  function ruleSetRendererInnerDocument(ruleSet: Protocol.Preload.RuleSet, location: string): LitHtml.TemplateResult {
-    assertNotNullOrUndefined(ruleSet.backendNodeId);
-
-    const revealSpeculationRulesInElements = async(): Promise<void> => {
-      assertNotNullOrUndefined(ruleSet.backendNodeId);
-
-      const target = SDK.TargetManager.TargetManager.instance().scopeTarget();
-      if (target === null) {
-        return;
-      }
-
-      await Common.Revealer.reveal(new SDK.DOMModel.DeferredDOMNode(target, ruleSet.backendNodeId));
-    };
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <button class="link" role="link"
-        @click=${revealSpeculationRulesInElements}
-        title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
-        style=${LitHtml.Directives.styleMap({
-          border: 'none',
-          background: 'none',
-          color: 'var(--icon-link)',
-          cursor: 'pointer',
-          'text-decoration': 'underline',
-          'padding-inline-start': '0',
-          'padding-inline-end': '0',
-        })}
-        jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
-      >
-        <devtools-icon
-          .data=${{
-            iconName: 'code-circle',
-            color: 'var(--icon-link)',
-            width: '16px',
-            height: '16px',
-          }}
-          style=${LitHtml.Directives.styleMap({
-            'vertical-align': 'sub',
-          })}
-        >
-        </devtools-icon>
-        ${location}
-      </button>
-    `;
-    // clang-format on
-  }
-
-  function ruleSetRendererOutOfDocument(ruleSet: Protocol.Preload.RuleSet, location: string): LitHtml.TemplateResult {
-    assertNotNullOrUndefined(ruleSet.url);
-    assertNotNullOrUndefined(ruleSet.requestId);
-
-    const revealSpeculationRulesInNetwork = async(): Promise<void> => {
-      assertNotNullOrUndefined(ruleSet.requestId);
-      const request = SDK.TargetManager.TargetManager.instance()
-                          .scopeTarget()
-                          ?.model(SDK.NetworkManager.NetworkManager)
-                          ?.requestForId(ruleSet.requestId) ||
-          null;
-      if (request === null) {
-        return;
-      }
-
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          request, NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, {clearFilter: false});
-      await Common.Revealer.reveal(requestLocation);
-    };
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <button class="link" role="link"
-        @click=${revealSpeculationRulesInNetwork}
-        title=${i18nString(UIStrings.clickToOpenInNetworkPanel)}
-        style=${LitHtml.Directives.styleMap({
-          border: 'none',
-          background: 'none',
-          color: 'var(--icon-link)',
-          cursor: 'pointer',
-          'text-decoration': 'underline',
-          'padding-inline-start': '0',
-          'padding-inline-end': '0',
-        })}
-      >
-        <devtools-icon
-         .data=${{
-            iconName: 'arrow-up-down-circle',
-            color: 'var(--icon-link)',
-            width: '16px',
-            height: '16px',
-          }}
-          style=${LitHtml.Directives.styleMap({
-            'vertical-align': 'sub',
-          })}
-        >
-        </devtools-icon>
-        ${location}
-      </button>
-    `;
-    // clang-format on
-  }
-
-  const location = PreloadingString.ruleSetLocationShort(ruleSet, pageURL);
-
-  if (ruleSet.backendNodeId !== undefined) {
-    return ruleSetRendererInnerDocument(ruleSet, location);
-  }
-
-  if (ruleSet.url !== undefined && ruleSet.requestId) {
-    return ruleSetRendererOutOfDocument(ruleSet, location);
-  }
-
-  return html`${location}`;
-}
-
-function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload.RuleSet): LitHtml.TemplateResult {
-  function counts(preloadsStatusSummary: string, ruleSet: Protocol.Preload.RuleSet): LitHtml.TemplateResult {
-    const revealAttemptViewWithFilter = async(): Promise<void> => {
-      await Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
-    };
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      <button class="link" role="link"
-        @click=${revealAttemptViewWithFilter}
-        title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}
-        style=${LitHtml.Directives.styleMap({
-          color: 'var(--sys-color-primary)',
-          'text-decoration': 'underline',
-          cursor: 'pointer',
-          border: 'none',
-          background: 'none',
-          'padding-inline-start': '0',
-          'padding-inline-end': '0',
-        })}
-        jslog=${VisualLogging.action('reveal-preloads').track({click: true})}>
-        ${preloadsStatusSummary}
-      </button>
-    `;
-    // clang-format on
-  }
-
-  function errors(): LitHtml.TemplateResult {
-    const nErrors = i18nString(UIStrings.errors, {errorCount: 1});
-    return html`
-      <span
-        style=${LitHtml.Directives.styleMap({
-      color: 'var(--sys-color-error)',
-    })}
-      >
-        ${nErrors}
-      </span>
-    `;
-  }
-
-  switch (ruleSet.errorType) {
-    case undefined:
-      return counts(preloadsStatusSummary, ruleSet);
-    case Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject:
-      return errors();
-    case Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped:
-      return html`${errors()} ${counts(preloadsStatusSummary, ruleSet)}`;
   }
 }

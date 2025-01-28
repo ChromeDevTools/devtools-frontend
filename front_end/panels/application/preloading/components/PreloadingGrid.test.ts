@@ -8,7 +8,6 @@ import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents, getCellByIndexes} from '../../../../testing/DataGridHelpers.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
@@ -17,7 +16,7 @@ const {urlString} = Platform.DevToolsPath;
 
 async function assertRenderResult(
     rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridData, headerExpected: string[],
-    rowsExpected: string[][]): Promise<DataGrid.DataGrid.DataGrid> {
+    rowsExpected: string[][]): Promise<Element> {
   const component = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   component.update(rowsInput);
   renderElementIntoDOM(component);

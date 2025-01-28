@@ -142,8 +142,8 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                 const revealInElements = ruleSet.backendNodeId !== undefined;
                 const revealInNetwork = ruleSet.url !== undefined && ruleSet.requestId;
                 return html`
-                  <tr>
-                    <td data-id=${ruleSet.id}>
+                  <tr data-id=${ruleSet.id}>
+                    <td>
                       ${revealInElements || revealInNetwork ? html`
                         <button class="link" role="link"
                             @click=${() => this.#revealSpeculationRules(ruleSet)}

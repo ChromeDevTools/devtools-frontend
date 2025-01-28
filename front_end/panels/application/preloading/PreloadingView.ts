@@ -13,7 +13,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import type * as SplitView from '../../../ui/components/split_view/split_view.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
@@ -377,7 +376,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
-    this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
+    this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
     LitHtml.render(
         html`
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: 0px">
@@ -458,9 +457,8 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   }
 
   private onPreloadingGridCellFocused(event: Event): void {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    this.focusedPreloadingAttemptId = focusedEvent.data.row.cells.find(cell => cell.columnId === 'id')?.value as
-        SDK.PreloadingModel.PreloadingAttemptId;
+    const focusedEvent = event as CustomEvent<SDK.PreloadingModel.PreloadingAttemptId>;
+    this.focusedPreloadingAttemptId = focusedEvent.detail;
     this.render();
   }
 

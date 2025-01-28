@@ -24,6 +24,14 @@ const UIStrings = {
    * @example {URL} PH2
    */
   fieldMetricMarkerField: '{PH1} - Field ({PH2})',
+  /**
+   * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+   */
+  urlOption: 'URL',
+  /**
+   * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+   */
+  originOption: 'Origin',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1595,9 +1603,9 @@ export class Overlays extends EventTarget {
           i18n.TimeUtilities.formatMicroSecondsTime(fieldResult.value);
       let scope: string = fieldResult.pageScope;
       if (fieldResult.pageScope === 'url') {
-        scope = 'URL';
+        scope = i18nString(UIStrings.urlOption);
       } else if (fieldResult.pageScope === 'origin') {
-        scope = 'Origin';
+        scope = i18nString(UIStrings.originOption);
       }
       popoverContents.createChild('span', 'overlay-popover-title').textContent =
           i18nString(UIStrings.fieldMetricMarkerField, {

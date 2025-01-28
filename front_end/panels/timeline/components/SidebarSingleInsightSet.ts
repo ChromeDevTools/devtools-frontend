@@ -39,6 +39,19 @@ const UIStrings = {
    */
   passedInsights: 'Passed insights ({PH1})',
   /**
+   * @description Label denoting that metrics were observed in the field, from real use data (CrUX). Also denotes if from URL or Origin dataset.
+   * @example {URL} PH1
+   */
+  fieldScoreLabel: 'Field ({PH1})',
+  /**
+   * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+   */
+  urlOption: 'URL',
+  /**
+   * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+   */
+  originOption: 'Origin',
+  /**
    * @description Title for button that closes a warning popup.
    */
   dismissTitle: 'Dismiss',
@@ -282,15 +295,22 @@ export class SidebarSingleInsightSet extends HTMLElement {
       const inpEl = this.#renderMetricValue('INP', inp?.value ?? null, null);
       const clsEl = this.#renderMetricValue('CLS', cls?.value ?? null, null);
 
+      let scope = i18nString(UIStrings.originOption);
+      if (lcp?.pageScope === 'url' || inp?.pageScope === 'url') {
+        scope = i18nString(UIStrings.urlOption);
+      }
+
+      // clang-format off
       fieldMetricsTemplateResult = html`
         <div class="metrics-row">
           <span>${lcpEl}</span>
           <span>${inpEl}</span>
           <span>${clsEl}</span>
-          <span class="row-label">Field (Origin)</span>
+          <span class="row-label">${i18nString(UIStrings.fieldScoreLabel, {PH1: scope})}</span>
         </div>
         <span class="row-border"></span>
       `;
+      // clang-format on
     }
 
     const localValues = {

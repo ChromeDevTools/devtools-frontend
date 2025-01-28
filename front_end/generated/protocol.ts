@@ -9166,6 +9166,7 @@ export namespace Network {
     StorageAccess = 'StorageAccess',
     TopLevelStorageAccess = 'TopLevelStorageAccess',
     Scheme = 'Scheme',
+    SameSiteNoneCookiesInSandbox = 'SameSiteNoneCookiesInSandbox',
   }
 
   /**

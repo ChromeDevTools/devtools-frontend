@@ -13696,7 +13696,8 @@
                         "EnterprisePolicy",
                         "StorageAccess",
                         "TopLevelStorageAccess",
-                        "Scheme"
+                        "Scheme",
+                        "SameSiteNoneCookiesInSandbox"
                     ]
                 },
                 {

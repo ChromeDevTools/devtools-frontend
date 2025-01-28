@@ -79,6 +79,7 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {
     if (this.#widgetParams) {
       Object.assign(widget, this.#widgetParams);
     }
+    widget.requestUpdate();
     return widget;
   }
 
@@ -92,7 +93,7 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {
         }
       }
       if (needsUpdate) {
-        Object.assign(widget, this.#widgetParams);
+        Object.assign(widget, config.widgetParams);
         widget.requestUpdate();
       }
     }

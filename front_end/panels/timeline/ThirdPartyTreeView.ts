@@ -33,7 +33,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView {
   #thirdPartySummaries: {
-    summaries: Trace.Extras.ThirdParties.SummaryMaps,
+    summaries: Trace.Extras.ThirdParties.ThirdPartySummary,
     entityByEvent: Map<Trace.Types.Events.Event, Trace.Extras.ThirdParties.Entity>,
   }|null = null;
 

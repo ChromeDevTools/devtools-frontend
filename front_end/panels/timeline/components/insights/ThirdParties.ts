@@ -45,16 +45,16 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     }
 
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    for (const [entity, requests] of this.model.requestsByEntity) {
+    for (const [entity, events] of this.model.eventsByEntity) {
       if (entity === this.model.firstPartyEntity) {
         continue;
       }
 
       const overlaysForThisEntity = [];
-      for (const request of requests) {
+      for (const event of events) {
         const overlay: Overlays.Overlays.TimelineOverlay = {
           type: 'ENTRY_OUTLINE',
-          entry: request,
+          entry: event,
           outlineReason: 'INFO',
         };
         overlaysForThisEntity.push(overlay);

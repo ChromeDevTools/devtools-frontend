@@ -30,26 +30,24 @@ export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting']
 }
 
 export type ThirdPartiesInsightModel = InsightModel<{
-  entityByRequest: Map<Types.Events.SyntheticNetworkRequest, Extras.ThirdParties.Entity>,
-  requestsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.Event[]>,
-  summaryByEvent: Map<Types.Events.Event, Extras.ThirdParties.Summary>,
+  eventsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.Event[]>,
   summaryByEntity: Map<Extras.ThirdParties.Entity, Extras.ThirdParties.Summary>,
   /** The entity for this navigation's URL. Any other entity is from a third party. */
   firstPartyEntity?: Extras.ThirdParties.Entity,
 }>;
 
 function getRelatedEvents(
-    summaries: Extras.ThirdParties.SummaryMaps,
+    summaries: Extras.ThirdParties.ThirdPartySummary,
     firstPartyEntity: Extras.ThirdParties.Entity|undefined): Types.Events.Event[] {
-  const events = [];
+  const relatedEvents = [];
 
-  for (const [entity, requests] of summaries.eventsByEntity.entries()) {
+  for (const [entity, events] of summaries.eventsByEntity.entries()) {
     if (entity !== firstPartyEntity) {
-      events.push(...requests);
+      relatedEvents.push(...events);
     }
   }
 
-  return events;
+  return relatedEvents;
 }
 
 function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'|'category'|'shouldShow'>):
@@ -78,19 +76,17 @@ export function generateInsight(
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 
-  const {entityByRequest, madeUpEntityCache, summaries} = Extras.ThirdParties.getSummariesAndEntitiesForTraceBounds(
+  const thirdPartySummary = Extras.ThirdParties.summarizeThirdParties(
       parsedTrace as Handlers.Types.ParsedTrace, context.bounds, networkRequests);
 
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
-      Handlers.Helpers.makeUpEntity(madeUpEntityCache, firstPartyUrl);
+      Handlers.Helpers.makeUpEntity(thirdPartySummary.madeUpEntityCache, firstPartyUrl);
 
   return finalize({
-    relatedEvents: getRelatedEvents(summaries, firstPartyEntity),
-    entityByRequest,
-    requestsByEntity: summaries.eventsByEntity,
-    summaryByEvent: summaries.byEvent,
-    summaryByEntity: summaries.byEntity,
+    relatedEvents: getRelatedEvents(thirdPartySummary, firstPartyEntity),
+    eventsByEntity: thirdPartySummary.eventsByEntity,
+    summaryByEntity: thirdPartySummary.byEntity,
     firstPartyEntity,
   });
 }

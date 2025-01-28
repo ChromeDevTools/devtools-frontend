@@ -76,15 +76,7 @@ describe('Performance panel', function() {
         await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
         await waitFor('.timeline-flamechart');
         const panel = await waitFor('body');
-        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node-new-engine.png', 3);
-      });
-
-  itScreenshot(
-      'loads a cpuprofile and renders it in node mode with default track source set to old engine', async () => {
-        await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
-        await waitFor('.timeline-flamechart');
-        const panel = await waitFor('body');
-        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node-old-engine.png', 3);
+        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png', 3);
       });
 
   itScreenshot('candy stripes long tasks', async () => {

@@ -200,6 +200,7 @@ ts_library("unittests") {
     "TimelineHistoryManager.test.ts",
     "TimelineLoader.test.ts",
     "TimelineMiniMap.test.ts",
+    "TimelinePanel.test.ts",
     "TimelineSelection.test.ts",
     "TimelineTreeView.test.ts",
     "TimelineUIUtils.test.ts",

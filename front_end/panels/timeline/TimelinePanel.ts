@@ -337,7 +337,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-let timelinePanelInstance: TimelinePanel;
+let timelinePanelInstance: TimelinePanel|undefined;
 let isNode: boolean;
 
 /**
@@ -483,7 +483,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
 
-  constructor() {
+  constructor(traceModel?: Trace.TraceModel.Model) {
     super('timeline');
     const adornerContent = document.createElement('span');
     adornerContent.innerHTML = `<div style="
@@ -503,7 +503,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.brickBreakerToolbarButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.CLICK, () => this.#onBrickBreakerEasterEggClick());
 
-    this.#traceEngineModel = this.#instantiateNewModel();
+    this.#traceEngineModel = traceModel || this.#instantiateNewModel();
     this.#listenForProcessingProgress();
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
@@ -721,15 +721,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   static instance(opts: {
     forceNew: boolean|null,
     isNode: boolean,
+    traceModel?: Trace.TraceModel.Model,
   }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
     const {forceNew, isNode: isNodeMode} = opts;
     isNode = isNodeMode;
 
     if (!timelinePanelInstance || forceNew) {
-      timelinePanelInstance = new TimelinePanel();
+      timelinePanelInstance = new TimelinePanel(opts.traceModel);
     }
 
     return timelinePanelInstance;
+  }
+  static removeInstance(): void {
+    // TODO(crbug.com/358583420): Simplify attached data management
+    // so that we don't have to maintain all of these singletons.
+    Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
+    Trace.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
+    TraceBounds.TraceBounds.BoundsManager.removeInstance();
+    ModificationsManager.reset();
+    ActiveFilters.removeInstance();
+    timelinePanelInstance = undefined;
   }
 
   #instantiateNewModel(): Trace.TraceModel.Model {
@@ -1524,7 +1535,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #extensionDataVisibilityChanged(): void {
-    this.flameChart.extensionDataVisibilityChanged();
+    this.flameChart.rebuildDataForTrace();
   }
 
   private updateSettingsPaneVisibility(): void {
@@ -1951,9 +1962,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    const isCpuProfile =
-        this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE;
-    this.flameChart.setModel(parsedTrace, isCpuProfile);
+    this.flameChart.setModel(parsedTrace);
     this.flameChart.resizeToPreferredHeights();
     // Reset the visual selection as we've just swapped to a new trace.
     this.flameChart.setSelectionAndReveal(null);

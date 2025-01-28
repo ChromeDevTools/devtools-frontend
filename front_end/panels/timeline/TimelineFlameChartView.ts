@@ -918,14 +918,6 @@ export class TimelineFlameChartView extends
     this.mainFlameChart.update();
   }
 
-  extensionDataVisibilityChanged(): void {
-    this.reset();
-    this.setupWindowTimes();
-    this.mainDataProvider.clearTimelineDataCache();
-    this.mainDataProvider.timelineData(true);
-    this.refreshMainFlameChart();
-  }
-
   windowChanged(
       windowStartTime: Trace.Types.Timing.MilliSeconds, windowEndTime: Trace.Types.Timing.MilliSeconds,
       animate: boolean): void {
@@ -992,22 +984,35 @@ export class TimelineFlameChartView extends
     this.#updateDetailViews();
   }
 
-  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace, isCpuProfile = false): void {
+  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }
-    this.#selectedGroupName = null;
     this.#parsedTrace = newParsedTrace;
+    this.rebuildDataForTrace();
+  }
+
+  /**
+   * Resets the state of the UI data and initializes it again with the
+   * current parsed trace.
+   */
+  rebuildDataForTrace(): void {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    this.#selectedGroupName = null;
     Common.EventTarget.removeEventListeners(this.eventListeners);
     this.#selectedEvents = null;
-    this.mainDataProvider.setModel(newParsedTrace, isCpuProfile);
-    this.networkDataProvider.setModel(newParsedTrace);
+    // order is important: |reset| needs to be called after the trace
+    // model has been set in the data providers.
+    this.mainDataProvider.setModel(this.#parsedTrace);
+    this.networkDataProvider.setModel(this.#parsedTrace);
     this.reset();
     this.setupWindowTimes();
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
-    this.setMarkers(newParsedTrace);
+    this.setMarkers(this.#parsedTrace);
   }
 
   setInsights(

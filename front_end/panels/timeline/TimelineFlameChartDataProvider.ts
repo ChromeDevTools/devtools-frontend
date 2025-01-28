@@ -113,7 +113,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private compatibilityTracksAppender: CompatibilityTracksAppender|null = null;
   private parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
-  private isCpuProfile = false;
 
   #minimumBoundary: number = 0;
   private timeSpan: number = 0;
@@ -382,10 +381,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace, isCpuProfile = false): void {
+  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     this.reset();
     this.parsedTrace = parsedTrace;
-    this.isCpuProfile = isCpuProfile;
     const {traceBounds} = parsedTrace.Meta;
     const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
     const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
@@ -484,10 +482,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.#font;
   }
 
-  // Clear the cache and rebuild the timeline data
-  // This should be called when the trace file is the same but we want to rebuild the timeline date.
-  // Some possible example: when we hide/unhide an event, or the ignore list is changed etc.
-  clearTimelineDataCache(): void {
+  /**
+   * Clear the cache and rebuild the timeline data This should be called
+   * when the trace file is the same but we want to rebuild the timeline
+   * data. Some possible example: when we hide/unhide an event, or the
+   * ignore list is changed etc.
+   */
+  rebuildTimelineData(): void {
     this.currentLevel = 0;
     this.entryData = [];
     this.entryTypeByLevel = [];
@@ -501,12 +502,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           threadAppender => threadAppender.setHeaderAppended(false));
     }
   }
-
-  // Reset all data other than the UI elements.
-  // This should be called when
-  // - initialized the data provider
-  // - a new trace file is coming (when `setModel()` is called)
-  // etc.
+  /**
+   * Reset all data other than the UI elements.
+   * This should be called when
+   * - initialized the data provider
+   * - a new trace file is coming (when `setModel()` is called)
+   * etc.
+   */
   reset(): void {
     this.currentLevel = 0;
     this.entryData = [];
@@ -542,7 +544,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (rebuild) {
       // This function will interact with the |compatibilityTracksAppender|, which needs the reference of
       // |timelineDataInternal|, so make sure this is called after the correct |timelineDataInternal|.
-      this.clearTimelineDataCache();
+      this.rebuildTimelineData();
     }
 
     this.currentLevel = 0;
@@ -581,10 +583,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   #processInspectorTrace(): void {
-    if (!this.isCpuProfile) {
-      // CPU Profiles do not have frames and screenshots.
-      this.#appendFramesAndScreenshotsTrack();
-    }
+    // In CPU Profiles the trace data will not have frames nor
+    // screenshots, so we can keep this call as it will be a no-op in
+    // these cases.
+    this.#appendFramesAndScreenshotsTrack();
 
     const weight = (track: {type?: string, forMainFrame?: boolean, appenderName?: TrackAppenderName}): number => {
       switch (track.appenderName) {
@@ -697,6 +699,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(this.parsedTrace);
     const hasScreenshots = filmStrip.frames.length > 0;
+    const hasFrames = this.parsedTrace.Frames.frames.length > 0;
+    if (!hasFrames && !hasScreenshots) {
+      return;
+    }
 
     this.framesGroupStyle.collapsible = hasScreenshots;
     const expanded = Root.Runtime.Runtime.queryParam('flamechart-force-expand') === 'frames';

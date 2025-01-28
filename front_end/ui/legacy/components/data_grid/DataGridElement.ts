@@ -40,11 +40,15 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  * @prop filters
  */
 class DataGridElement extends HTMLElement {
-  static readonly observedAttributes = ['striped', 'name'];
+  static readonly observedAttributes = ['striped', 'name', 'inline'];
 
   #dataGrid = SortableDataGrid.create([DUMMY_COLUMN_ID], [], '') as SortableDataGrid<DataGridElementNode>;
   #mutationObserver = new MutationObserver(this.#onChange.bind(this));
-  #resizeObserver = new ResizeObserver(() => this.#dataGrid.onResize());
+  #resizeObserver = new ResizeObserver(() => {
+    if (!this.inline) {
+      this.#dataGrid.onResize();
+    }
+  });
   #shadowRoot: ShadowRoot;
   #columnsOrder: string[] = [];
   #hideableColumns = new Set<string>();
@@ -103,6 +107,9 @@ class DataGridElement extends HTMLElement {
       case 'name':
         this.#dataGrid.displayName = newValue ?? '';
         break;
+      case 'inline':
+        this.#dataGrid.renderInline();
+        break;
     }
   }
 
@@ -112,6 +119,14 @@ class DataGridElement extends HTMLElement {
 
   get striped(): boolean {
     return this.hasAttribute('striped');
+  }
+
+  set inline(striped: boolean) {
+    this.toggleAttribute('inline', striped);
+  }
+
+  get inline(): boolean {
+    return this.hasAttribute('inline');
   }
 
   set displayName(displayName: string) {

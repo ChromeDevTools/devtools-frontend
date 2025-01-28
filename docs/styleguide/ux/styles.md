@@ -8,12 +8,12 @@ We define three sets of color token types, **reference/palette tokens**,
 **system tokens**, and **application tokens**.
 
 [**Reference or palette
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css)
 (e.g. `--ref-palette-X`) are a set of base colors that get updated on [Chrome
 color theme change](###) and should not be directly used.
 
 [**System
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css)
 (e.g. `--sys-color-X`) are a set of semantic tokens (use is often clear from
 name e.g. `--sys-color-error-container`). They reference palette tokens and
 incorporate light / dark mode switches and should be used in the code directly.
@@ -21,7 +21,7 @@ You can view all system tokens in their light and dark variant when running the
 component server with `npm run components-server` under *Theme Colors*.
 
 [**Application
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_color_tokens.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_tokens.css)
 (e.g. `--app-color-X`) reference palette tokens, and add more semantic meaning
 and handle exception cases, where system tokens are not enough. Should be
 defined for both light and dark modes. An example CL that adds application
@@ -51,7 +51,7 @@ Chrome's theming differentiates between two *default* color schemes (a blue
 **default** and a **grey default**), and a number of **accent** color schemes
 (blue, purple, yellow, and so on). In DevTools, the default schemes are defined
 as `baseline-grayscale` and `baseline-default` css classes in
-[themeColors.css](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css).
+[themeColors.css](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css).
 The accent color schemes don't require extra color definitions and will adapt
 with the reference colors.
 
@@ -317,18 +317,18 @@ example CL that adds application tokens can be found
 ### Resources
 
   * [Reference color
-    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css)
   * [System color
-    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css)
   * [Application color
-    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_color_tokens_.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_tokens_.css)
   * [Color definitions in the CDT
     Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=337-5217&m=dev)
 
 ## Sizes
 
 [**System
-tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/theme_colors.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css)
 include a set of tokens to be used for sizes, ranging from `--sys-size-1` (which
 corresponds to a single pixel) to `--sys-size-41` (which corresponds to the HD
 resolution width).

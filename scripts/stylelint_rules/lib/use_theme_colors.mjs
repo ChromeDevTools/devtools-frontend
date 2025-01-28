@@ -55,21 +55,21 @@ const COLOR_INDICATOR_REGEXES = new Set([
 
 const CUSTOM_VARIABLE_OVERRIDE_PREFIX = '--override-';
 
-const applicationColorsPath = join(
+const applicationTokensPath = join(
     import.meta.dirname,
     '..',
     '..',
     '..',
     'front_end',
-    'application_color_tokens.css',
+    'application_tokens.css',
 );
-const themeColorsPath = join(
+const designSystemTokensPath = join(
     import.meta.dirname,
     '..',
     '..',
     '..',
     'front_end',
-    'theme_colors.css',
+    'design_system_tokens.css',
 );
 const inspectorCommonPath = join(
   import.meta.dirname,
@@ -98,9 +98,9 @@ function getRootVariableDeclarationsFromCSSFile(filePath) {
 }
 
 const DEFINED_APPLICATION_COLOR_VARIABLES =
-  getRootVariableDeclarationsFromCSSFile(applicationColorsPath);
+  getRootVariableDeclarationsFromCSSFile(applicationTokensPath);
 const DEFINED_THEME_COLOR_VARIABLES =
-  getRootVariableDeclarationsFromCSSFile(themeColorsPath);
+  getRootVariableDeclarationsFromCSSFile(designSystemTokensPath);
 const DEFINED_INSPECTOR_STYLE_VARIABLES =
   getRootVariableDeclarationsFromCSSFile(inspectorCommonPath);
 const ALL_DEFINED_VARIABLES = new Set([

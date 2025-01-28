@@ -354,7 +354,7 @@ describe('Recorder', function() {
       await frontend.select('pierce/select', 'AllRecordingsPage');
       await click('pierce/.delete-recording-button');
 
-      await frontend.waitForSelector('pierce/devtools-start-view');
+      await frontend.waitForSelector('pierce/.empty-state');
     });
   });
 });

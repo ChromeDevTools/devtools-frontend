@@ -558,6 +558,10 @@ select option {
       margin-left: var(--sys-size-3);
     }
   }
+
+  > devtools-button {
+    margin-top: var(--sys-size-7);
+  }
 }
 
 dt-icon-label {

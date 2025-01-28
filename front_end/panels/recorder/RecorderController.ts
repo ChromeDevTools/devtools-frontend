@@ -17,6 +17,9 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../ui/components/menus/menus.js';
+// inspectorCommonStyles is imported for the empty state styling that is used for the start view
+// eslint-disable-next-line rulesdir/es-modules-import
+import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -38,7 +41,7 @@ const UIStrings = {
   /**
    * @description The title of the button that leads to a page for creating a new recording.
    */
-  createRecording: 'Create a new recording',
+  createRecording: 'Create recording',
   /**
    * @description The title of the button that allows importing a recording.
    */
@@ -104,12 +107,26 @@ const UIStrings = {
    * @description The button label that leads to the feedback form for Recorder.
    */
   sendFeedback: 'Send feedback',
+  /**
+   * @description The header of the start page in the Recorder panel.
+   */
+  header: 'Nothing recorded yet',
+  /**
+   * @description Text to explain the usage of the recorder panel.
+   */
+  recordingDescription: 'Use recordings to create automated end-to-end tests or performance traces.',
+  /**
+   * @description Link text to forward to a documentation page on the recorder.
+   */
+  learnMore: 'Learn more'
 };
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/RecorderController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const GET_EXTENSIONS_MENU_ITEM = 'get-extensions-link';
 const GET_EXTENSIONS_URL = 'https://goo.gle/recorder-extension-list' as Platform.DevToolsPath.UrlString;
+const RECORDER_EXPLANATION_URL = 'https://developer.chrome.com/docs/devtools/recorder';
+const FEEDBACK_URL = 'https://goo.gle/recorder-feedback' as Platform.DevToolsPath.UrlString;
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -163,7 +180,7 @@ const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|
 
 @customElement('devtools-recorder-controller')
 export class RecorderController extends LitElement {
-  static override readonly styles = [recorderControllerStyles];
+  static override readonly styles = [recorderControllerStyles, inspectorCommonStyles];
 
   @state() declare private currentRecordingSession?: Models.RecordingSession.RecordingSession;
   @state() declare private currentRecording: StoredRecording|undefined;
@@ -1098,9 +1115,13 @@ export class RecorderController extends LitElement {
   #renderStartPage(): LitHtml.TemplateResult {
     // clang-format off
     return html`
-      <devtools-start-view
-        @createrecording=${this.#onCreateNewRecording}
-      ></devtools-start-view>
+      <div class="empty-state" jslog=${VisualLogging.section().context('start-view')}>
+        <div class="empty-state-header">${i18nString(UIStrings.header)}</div>
+        <div class="empty-state-description">
+          ${i18nString(UIStrings.recordingDescription)}${UI.XLink.XLink.create(RECORDER_EXPLANATION_URL, i18nString(UIStrings.learnMore))}
+        </div>
+        <devtools-button jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
+      </div>
     `;
     // clang-format on
   }
@@ -1370,7 +1391,7 @@ export class RecorderController extends LitElement {
             ></devtools-button>
             <div class="feedback">
               <x-link class="x-link" href=${
-                Components.StartView.FEEDBACK_URL
+                FEEDBACK_URL
               } jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
             </div>
             <div class="separator"></div>

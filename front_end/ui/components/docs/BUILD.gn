@@ -50,7 +50,6 @@ group("docs") {
     "./recorder_recording_view",
     "./recorder_select_button",
     "./recorder_split_view",
-    "./recorder_start_view",
     "./report",
     "./request_link_icon",
     "./select_menu",

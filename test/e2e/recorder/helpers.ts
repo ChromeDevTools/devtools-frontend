@@ -83,7 +83,7 @@ export async function enableAndOpenRecorderPanel(path: string) {
 }
 
 async function createRecording(name: string, selectorAttribute?: string) {
-  const newRecordingButton = await waitForAria('Create a new recording');
+  const newRecordingButton = await waitForAria('Create recording');
   await newRecordingButton.click();
   const input = await waitForAria('RECORDING NAME');
   await input.type(name);

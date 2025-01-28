@@ -315,10 +315,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private totalTime?: number;
   private lastPopoverState: PopoverState;
 
-  private dimIndicies?: number[]|null;
-  private dimInclusive = false;
-  /** When true, all undimmed entries are outlined. When a number array, only those indices are outlined (if not dimmed). */
-  private dimShouldOutlineUndimmedEntries: boolean|number[] = false;
+  private dimIndicies?: Uint8Array|null;
+  /** When true, all undimmed entries are outlined. When an array, only those indices are outlined (if not dimmed). */
+  private dimShouldOutlineUndimmedEntries: boolean|Uint8Array = false;
 
   #tooltipPopoverYAdjustment: number = 0;
 
@@ -503,10 +502,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   #shouldDimEvent(entryIndex: number): boolean {
     if (this.dimIndicies) {
-      if (this.dimInclusive) {
-        return this.dimIndicies.includes(entryIndex);
-      }
-      return !this.dimIndicies.includes(entryIndex);
+      return this.dimIndicies[entryIndex] !== 0;
     }
 
     return false;
@@ -521,24 +517,43 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return false;
     }
 
-    if (Array.isArray(this.dimShouldOutlineUndimmedEntries)) {
-      return this.dimShouldOutlineUndimmedEntries.includes(entryIndex);
+    if (ArrayBuffer.isView(this.dimShouldOutlineUndimmedEntries)) {
+      return this.dimShouldOutlineUndimmedEntries[entryIndex] !== 0;
     }
 
     return this.dimShouldOutlineUndimmedEntries;
   }
 
+  /**
+   * Returns a contiguous boolean array for quick lookup during drawing.
+   */
+  #createTypedIndexArray(indices: number[], inclusive: boolean): Uint8Array {
+    const typedIndices = new Uint8Array(this.rawTimelineDataLength);
+
+    if (inclusive) {
+      for (const index of indices) {
+        typedIndices[index] = 1;
+      }
+    } else {
+      typedIndices.fill(1);
+      for (const index of indices) {
+        typedIndices[index] = 0;
+      }
+    }
+
+    return typedIndices;
+  }
+
   enableDimming(entryIndices: number[], inclusive: boolean, outline: boolean|number[]): void {
-    this.dimIndicies = entryIndices;
-    this.dimInclusive = inclusive;
-    this.dimShouldOutlineUndimmedEntries = outline;
+    this.dimIndicies = this.#createTypedIndexArray(entryIndices, inclusive);
+    this.dimShouldOutlineUndimmedEntries =
+        Array.isArray(outline) ? this.#createTypedIndexArray(outline, true) : outline;
 
     this.draw();
   }
 
   disableDimming(): void {
     this.dimIndicies = null;
-    this.dimInclusive = false;
     this.dimShouldOutlineUndimmedEntries = false;
 
     this.draw();

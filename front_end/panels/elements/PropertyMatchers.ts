@@ -463,13 +463,60 @@ export class FontMatcher extends matcherBase(FontMatch) {
     return SDK.CSSMetadata.cssMetadata().isFontAwareProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
-    if (node.name === 'Declaration') {
+    if (node.name !== 'Declaration') {
       return null;
     }
     const regex = matching.ast.propertyName === 'font-family' ? InlineEditor.FontEditorUtils.FontFamilyRegex :
                                                                 InlineEditor.FontEditorUtils.FontPropertiesRegex;
+    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    if (valueNodes.length === 0) {
+      return null;
+    }
+    const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+    return regex.test(valueText) ? new FontMatch(valueText, node) : null;
+  }
+}
+
+export class LengthMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly unit: string) {
+  }
+}
+
+// clang-format off
+export class LengthMatcher extends matcherBase(LengthMatch) {
+  static readonly LENGTH_UNITS = new Set([
+                                'cm',
+                                'mm',
+                                'Q',
+                                'in',
+                                'pc',
+                                'pt',
+                                'px',
+                                'em',
+                                'ex',
+                                'ch',
+                                'rem',
+                                'vw',
+                                'vh',
+                                'vmin',
+                                'vmax',
+                                'cqw',
+                                'cqh',
+                                'cqi',
+                                'cqb',
+                                'cqmin',
+                                'cqmax']);
+  // clang-format on
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'NumberLiteral') {
+      return null;
+    }
+    const unit = matching.ast.text(node.getChild('Unit'));
+    if (!LengthMatcher.LENGTH_UNITS.has(unit)) {
+      return null;
+    }
     const text = matching.ast.text(node);
-    return regex.test(text) ? new FontMatch(text, node) : null;
+    return new LengthMatch(text, node, unit);
   }
 }
 

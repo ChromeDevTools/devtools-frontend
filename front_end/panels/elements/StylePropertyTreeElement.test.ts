@@ -1546,6 +1546,32 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('LengthRenderer', () => {
+    it('shows a popover with pixel values for relative units', async () => {
+      stubNoopSettings();
+      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+      setMockConnectionResponseHandler(
+          'CSS.resolveValues',
+          (request: Protocol.CSS.ResolveValuesRequest) =>
+              ({results: request.values.map(v => v === '2em' ? '15px' : v)}));
+      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
+      const domModel = cssModel.domModel();
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      node.id = 0 as Protocol.DOM.NodeId;
+      LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      const stylePropertyTreeElement = getTreeElement('margin', '5px 2em');
+      const addPopoverPromise = Promise.withResolvers<() => HTMLElement | undefined>();
+      sinon.stub(stylePropertyTreeElement.parentPane(), 'addPopover')
+          .callsFake((element, popover) => addPopoverPromise.resolve(popover.contents));
+      setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({computedStyle: {}}));
+
+      await stylePropertyTreeElement.onpopulate();
+      stylePropertyTreeElement.updateTitle();
+      const popover = (await addPopoverPromise.promise)();
+      assert.strictEqual(popover?.textContent, '15px');
+    });
+  });
+
   describe('Autocompletion', function(this: Mocha.Suite) {
     let promptStub: sinon.SinonStub<Parameters<Elements.StylesSidebarPane.CSSPropertyPrompt['initialize']>>;
     beforeEach(async () => {

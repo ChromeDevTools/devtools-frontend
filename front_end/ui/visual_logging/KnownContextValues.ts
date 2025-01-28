@@ -1951,6 +1951,7 @@ export const knownContextValues = new Set([
   'left',
   'legend',
   'length',
+  'length-popover',
   'less',
   'letter-spacing',
   'letter-spacing-unit',

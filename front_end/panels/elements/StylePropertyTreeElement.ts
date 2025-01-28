@@ -46,6 +46,8 @@ import {
   FontMatcher,
   type GridTemplateMatch,
   GridTemplateMatcher,
+  type LengthMatch,
+  LengthMatcher,
   type LightDarkColorMatch,
   LightDarkColorMatcher,
   type LinearGradientMatch,
@@ -1123,9 +1125,10 @@ export class FontRenderer implements MatchRenderer<FontMatch> {
   constructor(readonly treeElement: StylePropertyTreeElement) {
   }
 
-  render(match: FontMatch): Node[] {
+  render(match: FontMatch, context: RenderingContext): Node[] {
     this.treeElement.section().registerFontProperty(this.treeElement);
-    return [document.createTextNode(match.text)];
+    const {nodes} = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
+    return nodes;
   }
 
   matcher(): FontMatcher {
@@ -1151,6 +1154,61 @@ export class GridTemplateRenderer implements MatchRenderer<GridTemplateMatch> {
 
   matcher(): GridTemplateMatcher {
     return new GridTemplateMatcher();
+  }
+}
+
+export class LengthRenderer implements MatchRenderer<LengthMatch> {
+  readonly #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  render(match: LengthMatch, _context: RenderingContext): Node[] {
+    const lengthText = match.text;
+    if (!this.#treeElement.editable()) {
+      return [document.createTextNode(lengthText)];
+    }
+    const valueElement = document.createElement('span');
+    valueElement.textContent = lengthText;
+
+    void this.#attachPopover(valueElement, match.text, match.unit);
+
+    return [valueElement];
+  }
+
+  async #attachPopover(valueElement: HTMLElement, value: string, unit: string): Promise<void> {
+    if (unit === 'px') {
+      return;
+    }
+    const nodeId = this.#treeElement.parentPane().node()?.id;
+    if (nodeId === undefined) {
+      return;
+    }
+
+    let pixelValue = '';
+    const result =
+        await this.#treeElement.parentPane().cssModel()?.agent.invoke_resolveValues({values: [value], nodeId});
+    if (!result || result.getError()) {
+      return;
+    }
+
+    pixelValue = result.results[0];
+    this.#treeElement.parentPane().addPopover(valueElement, {
+      contents: () => {
+        if (!pixelValue) {
+          return undefined;
+        }
+        const contents = document.createElement('span');
+        contents.style.margin = '4px';
+        contents.appendChild(document.createTextNode(pixelValue));
+        return contents;
+      },
+      jslogContext: 'length-popover'
+    });
+  }
+
+  matcher(): LengthMatcher {
+    return new LengthMatcher();
   }
 }
 
@@ -1714,9 +1772,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new PositionAnchorRenderer(this),
           new FlexGridRenderer(this),
           new PositionTryRenderer(this),
-          new FontRenderer(this),
+          new LengthRenderer(this),
         ] :
         [];
+
+    if (Root.Runtime.experiments.isEnabled('font-editor') && this.property.parsedOk) {
+      renderers.push(new FontRenderer(this));
+    }
 
     this.listItemElement.removeChildren();
     this.valueElement = Renderer.renderValueElement(this.name, this.value, renderers);

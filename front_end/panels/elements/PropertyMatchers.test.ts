@@ -347,7 +347,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
 
       const matches = SDK.CSSPropertyParser.TreeSearch.findAll(
           ast, node => matchedResult.getMatch(node) instanceof Elements.PropertyMatchers.FontMatch);
-      assert.deepEqual(matches.map(m => matchedResult.getMatch(m)?.text), ['"Gill Sans"', 'sans-serif']);
+      assert.deepEqual(matches.map(m => matchedResult.getMatch(m)?.text), ['"Gill Sans", sans-serif']);
     }
   });
 
@@ -549,6 +549,12 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
         assert.isNull(match);
       }
     });
+  });
+
+  it('matches lengths', () => {
+    const {match, text} = matchSingleValue('min-width', '100px', new Elements.PropertyMatchers.LengthMatcher());
+    assert.exists(match, text);
+    assert.strictEqual(match.text, '100px');
   });
 
   it('match css keywords', () => {

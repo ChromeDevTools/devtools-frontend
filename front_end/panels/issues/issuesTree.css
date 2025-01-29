@@ -33,12 +33,11 @@
 }
 
 .issues li.parent::before {
-  margin-top: 10px;
+  margin-top: 7px;
 }
 
 .issues .affected-resources li.parent::before {
-  margin-top: 3px;
-  margin-right: 0;
+  margin-top: 0;
 }
 
 .issue-category,

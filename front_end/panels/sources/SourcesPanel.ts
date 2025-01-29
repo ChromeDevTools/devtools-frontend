@@ -1190,7 +1190,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
     this.sidebarPaneStack = UI.ViewManager.ViewManager.instance().createStackLocation(
         this.revealDebuggerSidebar.bind(this), undefined, 'debug');
-    this.sidebarPaneStack.widget().element.classList.add('overflow-auto');
+    this.sidebarPaneStack.widget().element.classList.add('overflow-y-auto');
     this.sidebarPaneStack.widget().show(vbox.element);
     this.sidebarPaneStack.widget().element.appendChild(this.debuggerPausedMessage.element());
     this.sidebarPaneStack.appendApplicableItems('sources.sidebar-top');

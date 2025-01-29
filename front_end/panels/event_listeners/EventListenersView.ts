@@ -304,7 +304,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       const deleteButton = new Buttons.Button.Button();
       deleteButton.data = {
         variant: Buttons.Button.Variant.ICON,
-        size: Buttons.Button.Size.SMALL,
+        size: Buttons.Button.Size.MICRO,
         iconName: 'bin',
         jslogContext: 'delete-event-listener',
       };

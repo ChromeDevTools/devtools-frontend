@@ -17,11 +17,10 @@
 
 .object-properties-section li {
   user-select: text;
-}
 
-.object-properties-section li::before {
-  top: -1px;
-  margin-right: 2px;
+  &::before {
+    margin-right: 2px;
+  }
 }
 
 .object-properties-section li.editing-sub-part {

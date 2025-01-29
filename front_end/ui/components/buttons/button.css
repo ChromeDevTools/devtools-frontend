@@ -82,6 +82,14 @@ button {
       --icon-size: var(--sys-size-8);
     }
 
+    &.micro {
+      --button-height: var(--sys-size-8);
+      --button-width: var(--sys-size-8);
+      --icon-size: var(--sys-size-8);
+
+      border-radius: var(--sys-shape-corner-extra-small);
+    }
+
     &.toggled devtools-icon {
       color: var(--toggle-color); /* stylelint-disable-line plugin/use_theme_colors */
 
@@ -167,24 +175,6 @@ button {
 
     devtools-icon {
       color: var(--icon-primary);
-    }
-
-    &.micro {
-      --button-height: var(--sys-size-7);
-
-      padding: 0 var(--sys-size-5);
-      font-size: var(--sys-typescale-body4-size);
-      font-weight: var(--ref-typeface-weight-medium);
-      line-height: var(--sys-typescale-body4-line-height);
-
-      &:not(.icon):has(devtools-icon) {
-        padding-left: var(--sys-size-3);
-      }
-
-      &:not(.icon) devtools-icon {
-        height: var(--sys-size-6);
-        width: var(--sys-size-6);
-      }
     }
   }
 

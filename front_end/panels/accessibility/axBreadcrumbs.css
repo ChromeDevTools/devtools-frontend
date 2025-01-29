@@ -79,10 +79,6 @@
   background-color: var(--sys-color-tonal-container);
 }
 
-.ax-breadcrumbs .ax-node.parent.inspected:focus::before {
-  background-color: var(--sys-color-on-tonal-container);
-}
-
 .ax-breadcrumbs .ax-node.inspected:focus {
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);

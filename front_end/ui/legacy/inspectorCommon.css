@@ -196,6 +196,11 @@ iframe.fill {
   background-color: var(--sys-color-cdt-base-container);
 }
 
+.overflow-y-auto {
+  overflow: hidden auto;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
 iframe.widget {
   position: absolute;
   width: 100%;

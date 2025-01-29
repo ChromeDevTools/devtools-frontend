@@ -33,15 +33,16 @@ li {
 .arrow-icon {
   display: block;
   user-select: none;
-  mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-arrow-collapse);
   background-color: var(--icon-default);
+  margin-top: -2px;
+  margin-right: 3px;
   content: "";
   text-shadow: none;
   height: 14px;
   width: 14px;
   overflow: hidden;
   flex: none;
-  transition: transform 200ms;
 }
 
 ul {
@@ -58,7 +59,7 @@ li:not(.parent) > .arrow-and-key-wrapper > .arrow-icon {
 }
 
 li.parent.expanded > .arrow-and-key-wrapper > .arrow-icon {
-  transform: rotate(90deg);
+  mask-image: var(--image-file-arrow-drop-down);
 }
 
 li.is-top-level {

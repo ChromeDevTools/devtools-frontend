@@ -116,20 +116,18 @@
 .elements-disclosure li.parent:not(.always-parent)::before {
   box-sizing: border-box;
   user-select: none;
-  mask-image: var(--image-file-triangle-right);
+  mask-image: var(--image-file-arrow-collapse);
   height: 14px;
   width: 14px;
   content: "\A0\A0";
   color: transparent;
   text-shadow: none;
-  margin-left: -3px;
+  margin: -3px 2px 0 -3px;
   background-color: var(--icon-default);
-  transition: transform 200ms;
 }
 
 .elements-disclosure li.parent.expanded::before {
-  transform: rotate(90deg);
-  margin-top: -2px;
+  mask-image: var(--image-file-arrow-drop-down);
 }
 
 .elements-disclosure li .selection {

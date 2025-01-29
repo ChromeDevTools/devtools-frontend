@@ -1274,6 +1274,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.sortByColumnHeaderCell((cell as HTMLElement));
   }
 
+  /**
+   * Sorts by column header cell.
+   * Additionally applies the aria-sort label to a column's th.
+   * Guidance on values of attribute taken from
+   * https://www.w3.org/TR/wai-aria-practices/examples/grid/dataGrids.html.
+   */
   private sortByColumnHeaderCell(cell: Element): void {
     if (!nodeToColumnIdMap.has(cell) || !cell.classList.contains('sortable')) {
       return;
@@ -1286,10 +1292,13 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     if (this.sortColumnCell) {
       this.sortColumnCell.classList.remove(Order.Ascending, Order.Descending);
+      this.sortColumnCell.removeAttribute('aria-sort');
     }
     this.sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
+    const ariaLabel = this.isSortOrderAscending() ? 'ascending' : 'descending';
+    cell.setAttribute('aria-sort', ariaLabel);
 
     this.dispatchEventToListeners(Events.SORTING_CHANGED);
   }

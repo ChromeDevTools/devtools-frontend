@@ -89,7 +89,8 @@
     font-weight: var(--ref-typeface-weight-medium);
   }
 
-  tr.revealed:hover {
+  tr.revealed:hover,
+  tr.selected {
     .button-container {
       align-items: center;
       display: block;

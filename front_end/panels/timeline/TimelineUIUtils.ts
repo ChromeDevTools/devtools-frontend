@@ -510,6 +510,10 @@ const UIStrings = {
    * @description Text to refer to a 3rd Party entity.
    */
   entity: '3rd party entity',
+  /**
+   * @description Label for third party table.
+   */
+  thirdPartyTable: '1st / 3rd party table',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -2231,6 +2235,7 @@ export class TimelineUIUtils {
 
     const thirdPartyDiv = document.createElement('div');
     thirdPartyDiv.className = 'third-party-table';
+    UI.ARIAUtils.setLabel(thirdPartyDiv, i18nString(UIStrings.thirdPartyTable));
 
     treeSlot.name = 'third-party-table';
     treeSlot.append(treeView);

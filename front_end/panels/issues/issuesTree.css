@@ -16,11 +16,15 @@
   --issue-indent: 8px;
 }
 
+/* The top most parents need to be larger, as they may include an unhide button. */
+.tree-outline.issues > li {
+  min-height: var(--sys-size-13);
+}
+
 /* Override whitespace behavior for tree items to allow wrapping */
 .issues li {
   white-space: normal;
   align-items: flex-start;
-  min-height: var(--sys-size-13);
 }
 
 /* Hide toggle for tree items which cannot be collapsed */

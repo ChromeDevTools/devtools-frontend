@@ -5,11 +5,11 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -72,7 +72,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div>
         <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
         <devtools-icon class="info-icon"
@@ -85,7 +85,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
     // clang-format on
   }
 
-  #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
+  #renderGridOrNoDataMessage(): Lit.TemplateResult {
     if (this.#datastores.length === 0) {
       return html`<div
         class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
@@ -162,7 +162,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
                                 }));
   }
 
-  #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
+  #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): Lit.TemplateResult {
     const date = new Date(1e3 * (value as number));
     return html`${date.toLocaleString()}`;
   }

@@ -6,12 +6,12 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as Utils from '../../utils/utils.js';
 
 import baseInsightComponentStyles from './baseInsightComponent.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class EventReferenceClick extends Event {
   static readonly eventName = 'eventreferenceclick';
@@ -48,7 +48,7 @@ class EventRef extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <button type="button" class="timeline-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#event) {
@@ -62,7 +62,7 @@ class EventRef extends HTMLElement {
 
 type EventRefSupportedEvents = Trace.Types.Events.SyntheticNetworkRequest;
 
-export function eventRef(event: EventRefSupportedEvents): LitHtml.TemplateResult {
+export function eventRef(event: EventRefSupportedEvents): Lit.TemplateResult {
   let title, text;
   if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
     text = Utils.Helpers.shortenUrl(new URL(event.args.data.url));
@@ -100,14 +100,14 @@ class ImageRef extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="image-ref">
         ${this.#request.args.data.mimeType.includes('image') ? html`
           <img
             class="element-img"
             src=${this.#request.args.data.url}
             @error=${handleBadImage}/>
-        `: LitHtml.nothing}
+        `: Lit.nothing}
         <span class="element-img-details">
           ${eventRef(this.#request)}
           <span class="element-img-details-size">${
@@ -125,7 +125,7 @@ function handleBadImage(event: Event): void {
   img.style.display = 'none';
 }
 
-export function imageRef(request: Trace.Types.Events.SyntheticNetworkRequest): LitHtml.TemplateResult {
+export function imageRef(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult {
   return html`
     <devtools-performance-image-ref
       .request=${request}

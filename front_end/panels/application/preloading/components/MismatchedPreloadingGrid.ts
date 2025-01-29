@@ -13,7 +13,7 @@ import * as Diff from '../../../../third_party/diff/diff.js';
 import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import * as PreloadingString from './PreloadingString.js';
 
@@ -86,7 +86,7 @@ class PreloadingUIUtils {
   }
 }
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export interface MismatchedPreloadingGridRow {
   action: Protocol.Preload.SpeculationAction;
@@ -156,11 +156,11 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
   }
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    function urlRenderer(url: string, pageURL: string): LitHtml.TemplateResult {
-      function span(additionalProps: {color?: string, 'text-decoration'?: string}, s: string): LitHtml.TemplateResult {
+    function urlRenderer(url: string, pageURL: string): Lit.TemplateResult {
+      function span(additionalProps: {color?: string, 'text-decoration'?: string}, s: string): Lit.TemplateResult {
         // Don't insert spaces to prevent spaces for inline blocks.
         // clang-format off
-        return html`<span style=${LitHtml.Directives.styleMap(additionalProps)}>${s}</span>`;
+        return html`<span style=${Lit.Directives.styleMap(additionalProps)}>${s}</span>`;
         // clang-format on
       }
 
@@ -179,7 +179,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
           default:
             throw new Error('unreachable');
         }
-      }, LitHtml.nothing as unknown as LitHtml.TemplateResult);
+      }, Lit.nothing as unknown as Lit.TemplateResult);
 
       return html`<div>${contents}</div>`;
     }

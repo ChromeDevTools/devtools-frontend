@@ -61,7 +61,7 @@ devtools_module("inline_editor") {
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",
-    "../../../../ui/lit-html:bundle",
+    "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
   ]
 

@@ -92,7 +92,7 @@ devtools_module("network") {
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
     "../settings/emulation/components:bundle",
     "./components:bundle",
     "./forward:bundle",

@@ -5,11 +5,11 @@
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import * as MarkdownView from './markdown_view.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 interface TestToken {
   type: string;
@@ -24,9 +24,9 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;
 }
 
-function renderTemplateResult(templateResult: LitHtml.TemplateResult): HTMLElement {
+function renderTemplateResult(templateResult: Lit.TemplateResult): HTMLElement {
   const container = document.createElement('container');
-  LitHtml.render(templateResult, container);  // eslint-disable-line rulesdir/lit-html-host-this
+  Lit.render(templateResult, container);  // eslint-disable-line rulesdir/lit-host-this
   return container;
 }
 
@@ -320,7 +320,7 @@ console.log('test')
     it('renders using a custom renderer', () => {
       const codeBlock =
           renderString('`console.log()`', 'code', new class extends MarkdownView.MarkdownView.MarkdownLitRenderer {
-            override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+            override templateForToken(token: Marked.Marked.Token): Lit.TemplateResult|null {
               if (token.type === 'codespan') {
                 return html`<code>overriden</code>`;
               }

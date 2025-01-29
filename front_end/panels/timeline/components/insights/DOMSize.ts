@@ -8,7 +8,7 @@ import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
@@ -44,10 +44,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DOMSize.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-dom-size`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName: string = 'dom-size';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -63,7 +63,7 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
                        }));
   }
 
-  #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): LitHtml.LitTemplate {
+  #renderNodeTable(domStatsData: Trace.Types.Events.DOMStats['args']['data']): Lit.LitTemplate {
     const rows: TableData['rows'] = [];
 
     if (domStatsData.maxDepth) {
@@ -77,7 +77,7 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
     }
 
     if (!rows.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off
@@ -93,14 +93,14 @@ export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
     // clang-format on
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const domStatsData = this.model.maxDOMStats?.args.data;
     if (!domStatsData) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off

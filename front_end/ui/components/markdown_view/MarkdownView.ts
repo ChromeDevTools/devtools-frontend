@@ -8,13 +8,13 @@ import './MarkdownLink.js';
 
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as UI from '../../legacy/legacy.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import markdownViewStyles from './markdownView.css.js';
 
-const html = LitHtml.html;
-const render = LitHtml.render;
+const html = Lit.html;
+const render = Lit.render;
 
 export interface MarkdownViewData {
   tokens: Marked.Marked.Token[];
@@ -157,13 +157,13 @@ export class MarkdownLitRenderer {
     }
   }
 
-  protected customClassMapForToken(type: Marked.Marked.Token['type']): LitHtml.Directive.DirectiveResult {
+  protected customClassMapForToken(type: Marked.Marked.Token['type']): Lit.Directive.DirectiveResult {
     const classNames = this.#customClasses[type] || new Set();
     const classInfo = Object.fromEntries([...classNames].map(className => [className, true]));
-    return LitHtml.Directives.classMap(classInfo);
+    return Lit.Directives.classMap(classInfo);
   }
 
-  renderChildTokens(token: Marked.Marked.Token): LitHtml.TemplateResult[] {
+  renderChildTokens(token: Marked.Marked.Token): Lit.TemplateResult[] {
     if ('tokens' in token && token.tokens) {
       return token.tokens.map(token => this.renderToken(token));
     }
@@ -171,7 +171,7 @@ export class MarkdownLitRenderer {
   }
 
   /**
-   * Unescape will get rid of the escaping done by Marked to avoid double escaping due to escaping it also with Lit-html.
+   * Unescape will get rid of the escaping done by Marked to avoid double escaping due to escaping it also with lit.
    * Table taken from: front_end/third_party/marked/package/src/helpers.js
    */
   unescape(text: string): string {
@@ -188,7 +188,7 @@ export class MarkdownLitRenderer {
     });
   }
 
-  renderText(token: Marked.Marked.Token): LitHtml.TemplateResult {
+  renderText(token: Marked.Marked.Token): Lit.TemplateResult {
     if ('tokens' in token && token.tokens) {
       return html`${this.renderChildTokens(token)}`;
     }
@@ -198,7 +198,7 @@ export class MarkdownLitRenderer {
     return html`${this.unescape('text' in token ? token.text : '')}`;
   }
 
-  renderHeading(heading: Marked.Marked.Tokens.Heading): LitHtml.TemplateResult {
+  renderHeading(heading: Marked.Marked.Tokens.Heading): Lit.TemplateResult {
     const customClass = this.customClassMapForToken('heading');
     switch (heading.depth) {
       case 1:
@@ -216,7 +216,7 @@ export class MarkdownLitRenderer {
     }
   }
 
-  renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
+  renderCodeBlock(token: Marked.Marked.Tokens.Code): Lit.TemplateResult {
     // clang-format off
     return html`<devtools-code-block
       class=${this.customClassMapForToken('code')}
@@ -226,7 +226,7 @@ export class MarkdownLitRenderer {
     // clang-format on
   }
 
-  templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
+  templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
     switch (token.type) {
       case 'paragraph':
         return html`<p class=${this.customClassMapForToken('paragraph')}>${this.renderChildTokens(token)}</p>`;
@@ -271,7 +271,7 @@ export class MarkdownLitRenderer {
     }
   }
 
-  renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
+  renderToken(token: Marked.Marked.Token): Lit.TemplateResult {
     const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       throw new Error(`Markdown token type '${token.type}' not supported.`);
@@ -292,7 +292,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     this.addCustomClasses({heading: 'insight'});
   }
 
-  override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
+  override renderToken(token: Marked.Marked.Token): Lit.TemplateResult {
     const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       return html`${token.raw}`;
@@ -327,7 +327,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     return '';
   }
 
-  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.Token): Lit.TemplateResult|null {
     switch (token.type) {
       case 'heading':
         return this.renderHeading(token as Marked.Marked.Tokens.Heading);

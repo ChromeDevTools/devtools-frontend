@@ -16,23 +16,23 @@ const ruleTester = new (require('eslint').RuleTester)({
 ruleTester.run('lit-template-result-or-nothing', rule, {
   valid: [
     {
-      code: 'function foo(): LitHtml.LitTemplate {}',
+      code: 'function foo(): Lit.LitTemplate {}',
       filename: 'front_end/components/datagrid.ts',
     },
     {
-      code: 'function foo(): Promise<LitHtml.LitTemplate> {}',
+      code: 'function foo(): Promise<Lit.LitTemplate> {}',
       filename: 'front_end/components/datagrid.ts',
     },
     {
-      code: 'function foo(): Promise<LitHtml.LitTemplate|SomeOtherType> {}',
+      code: 'function foo(): Promise<Lit.LitTemplate|SomeOtherType> {}',
       filename: 'front_end/components/datagrid.ts',
     },
     {
-      code: 'function foo(): LitHtml.LitTemplate|string {}',
+      code: 'function foo(): Lit.LitTemplate|string {}',
       filename: 'front_end/components/datagrid.ts',
     },
     {
-      code: 'function foo(): LitHtml.TemplateResult|string {}',
+      code: 'function foo(): Lit.TemplateResult|string {}',
       filename: 'front_end/components/datagrid.ts',
     },
     {
@@ -51,99 +51,99 @@ ruleTester.run('lit-template-result-or-nothing', rule, {
   ],
   invalid: [
     {
-      code: 'function foo(): LitHtml.TemplateResult|{} {}',
+      code: 'function foo(): Lit.TemplateResult|{} {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverEmptyObject'}],
-      output: 'function foo(): LitHtml.LitTemplate {}',
+      output: 'function foo(): Lit.LitTemplate {}',
     },
     {
-      code: 'function foo(): LitHtml.TemplateResult|{}|number {}',
+      code: 'function foo(): Lit.TemplateResult|{}|number {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverEmptyObject'}],
-      output: 'function foo(): LitHtml.LitTemplate|number {}',
+      output: 'function foo(): Lit.LitTemplate|number {}',
     },
     {
-      code: 'function foo(): LitHtml.TemplateResult|typeof LitHtml.nothing {}',
+      code: 'function foo(): Lit.TemplateResult|typeof Lit.nothing {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
-      output: 'function foo(): LitHtml.LitTemplate {}',
+      output: 'function foo(): Lit.LitTemplate {}',
     },
     {
-      code: 'function foo(): LitHtml.TemplateResult|typeof LitHtml.nothing|number {}',
+      code: 'function foo(): Lit.TemplateResult|typeof Lit.nothing|number {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
-      output: 'function foo(): LitHtml.LitTemplate|number {}',
+      output: 'function foo(): Lit.LitTemplate|number {}',
     },
     {
-      code: 'function foo(): typeof LitHtml.nothing|LitHtml.TemplateResult {}',
+      code: 'function foo(): typeof Lit.nothing|Lit.TemplateResult {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
-      output: 'function foo(): LitHtml.LitTemplate {}',
+      output: 'function foo(): Lit.LitTemplate {}',
     },
     {
       code: `class Bar {
-        foo(): typeof LitHtml.nothing|LitHtml.TemplateResult {}
+        foo(): typeof Lit.nothing|Lit.TemplateResult {}
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
       output: `class Bar {
-        foo(): LitHtml.LitTemplate {}
+        foo(): Lit.LitTemplate {}
       }`,
     },
     {
       code: `class Bar {
-        #foo(): typeof LitHtml.nothing|LitHtml.TemplateResult {}
+        #foo(): typeof Lit.nothing|Lit.TemplateResult {}
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
       output: `class Bar {
-        #foo(): LitHtml.LitTemplate {}
+        #foo(): Lit.LitTemplate {}
       }`,
     },
     {
       code: `class Bar {
-        #foo(): LitHtml.TemplateResult|{} {}
+        #foo(): Lit.TemplateResult|{} {}
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverEmptyObject'}],
       output: `class Bar {
-        #foo(): LitHtml.LitTemplate {}
+        #foo(): Lit.LitTemplate {}
       }`,
     },
     {
-      code: 'function foo(): Promise<LitHtml.TemplateResult|{}> {}',
+      code: 'function foo(): Promise<Lit.TemplateResult|{}> {}',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverEmptyObject'}],
-      output: 'function foo(): Promise<LitHtml.LitTemplate> {}',
+      output: 'function foo(): Promise<Lit.LitTemplate> {}',
     },
     {
       code: `interface Foo {
-        someThing: LitHtml.TemplateResult|typeof LitHtml.nothing;
+        someThing: Lit.TemplateResult|typeof Lit.nothing;
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
       output: `interface Foo {
-        someThing: LitHtml.LitTemplate;
+        someThing: Lit.LitTemplate;
       }`,
     },
     {
       code: `interface Foo {
-        someThing: Promise<LitHtml.TemplateResult|{}>;
+        someThing: Promise<Lit.TemplateResult|{}>;
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverEmptyObject'}],
       output: `interface Foo {
-        someThing: Promise<LitHtml.LitTemplate>;
+        someThing: Promise<Lit.LitTemplate>;
       }`,
     },
     {
       code: `type Foo = {
-        someThing: LitHtml.TemplateResult|typeof LitHtml.nothing;
+        someThing: Lit.TemplateResult|typeof Lit.nothing;
       }`,
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'useLitTemplateOverTypeOfNothing'}],
       output: `type Foo = {
-        someThing: LitHtml.LitTemplate;
+        someThing: Lit.LitTemplate;
       }`,
     },
   ],

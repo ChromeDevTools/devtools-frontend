@@ -4,10 +4,10 @@
 
 import '../../report_view/report_view.js';
 
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
@@ -21,7 +21,7 @@ if (!container) {
   throw new Error('Could not find container');
 }
 
-LitHtml.render(
+Lit.render(
     html`
         <style>
           .source-code {

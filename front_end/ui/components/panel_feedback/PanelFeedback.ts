@@ -7,12 +7,12 @@ import '../../legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import panelFeedbackStyles from './panelFeedback.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -69,7 +69,7 @@ export class PanelFeedback extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="preview">
         <h2 class="flex">
           <devtools-icon .data=${{

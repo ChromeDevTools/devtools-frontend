@@ -7,13 +7,13 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPDiscoveryInsightModel} from '../../../../models/trace/insights/LCPDiscovery.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -100,10 +100,10 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
 }
 
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-lcp-discovery`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-discovery`;
   override internalName: string = 'lcp-discovery';
 
-  #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
+  #adviceIcon(didFail: boolean, label: string): Lit.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';
 
     const ariaLabel = didFail ? i18nString(UIStrings.failedAriaLabel, {PH1: label}) :
@@ -173,9 +173,9 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const imageData = getImageData(this.model);

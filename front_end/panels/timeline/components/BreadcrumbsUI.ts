@@ -6,13 +6,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {flattenBreadcrumbs} from './Breadcrumbs.js';
 import breadcrumbsUIStyles from './breadcrumbsUI.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -108,7 +108,7 @@ export class BreadcrumbsUI extends HTMLElement {
     void menu.show();
   }
 
-  #renderElement(breadcrumb: Trace.Types.File.Breadcrumb, index: number): LitHtml.LitTemplate {
+  #renderElement(breadcrumb: Trace.Types.File.Breadcrumb, index: number): Lit.LitTemplate {
     const breadcrumbRange = Trace.Helpers.Timing.microToMilli(breadcrumb.window.range);
     // clang-format off
     return html`
@@ -136,7 +136,7 @@ export class BreadcrumbsUI extends HTMLElement {
   #render(): void {
     // clang-format off
     const output = html`
-      ${this.#initialBreadcrumb === null ? LitHtml.nothing : html`<div class="breadcrumbs" jslog=${VisualLogging.section('breadcrumbs')}>
+      ${this.#initialBreadcrumb === null ? Lit.nothing : html`<div class="breadcrumbs" jslog=${VisualLogging.section('breadcrumbs')}>
         ${flattenBreadcrumbs(this.#initialBreadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
       </div>`}
     `;

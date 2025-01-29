@@ -11,7 +11,7 @@ import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../utils/utils.js';
 
 import NetworkRequestDetailsStyles from './networkRequestDetails.css.js';
@@ -19,7 +19,7 @@ import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import {NetworkRequestTooltip} from './NetworkRequestTooltip.js';
 import {colorForNetworkRequest} from './Utils.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const MAX_URL_LENGTH = 100;
 
@@ -131,7 +131,7 @@ export class NetworkRequestDetails extends HTMLElement {
     await this.#render();
   }
 
-  #renderTitle(): LitHtml.TemplateResult|null {
+  #renderTitle(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
     }
@@ -140,13 +140,13 @@ export class NetworkRequestDetails extends HTMLElement {
     };
     return html`
       <div class="network-request-details-title">
-        <div style=${LitHtml.Directives.styleMap(style)}></div>
+        <div style=${Lit.Directives.styleMap(style)}></div>
         ${i18nString(UIStrings.networkRequest)}
       </div>
     `;
   }
 
-  #renderRow(title: string, value?: string|Node|LitHtml.TemplateResult): LitHtml.TemplateResult|null {
+  #renderRow(title: string, value?: string|Node|Lit.TemplateResult): Lit.TemplateResult|null {
     if (!value) {
       return null;
     }
@@ -155,7 +155,7 @@ export class NetworkRequestDetails extends HTMLElement {
     `;
   }
 
-  #renderURL(): LitHtml.TemplateResult|null {
+  #renderURL(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
     }
@@ -193,7 +193,7 @@ export class NetworkRequestDetails extends HTMLElement {
     return html`<div class="network-request-details-row">${linkifiedURL}</div>`;
   }
 
-  #renderFromCache(): LitHtml.TemplateResult|null {
+  #renderFromCache(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
     }
@@ -203,7 +203,7 @@ export class NetworkRequestDetails extends HTMLElement {
         i18nString(UIStrings.fromCache), cached ? i18nString(UIStrings.yes) : i18nString(UIStrings.no));
   }
 
-  #renderThirdPartyEntity(): LitHtml.TemplateResult|null {
+  #renderThirdPartyEntity(): Lit.TemplateResult|null {
     if (!this.#entityMapper || !this.#networkRequest) {
       return null;
     }
@@ -214,7 +214,7 @@ export class NetworkRequestDetails extends HTMLElement {
     return this.#renderRow(i18nString(UIStrings.entity), entity.name);
   }
 
-  #renderEncodedDataLength(): LitHtml.TemplateResult|null {
+  #renderEncodedDataLength(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
     }
@@ -235,7 +235,7 @@ export class NetworkRequestDetails extends HTMLElement {
     return this.#renderRow(i18nString(UIStrings.encodedData), lengthText);
   }
 
-  #renderInitiatedBy(): LitHtml.TemplateResult|null {
+  #renderInitiatedBy(): Lit.TemplateResult|null {
     if (!this.#networkRequest) {
       return null;
     }
@@ -270,7 +270,7 @@ export class NetworkRequestDetails extends HTMLElement {
     return null;
   }
 
-  #renderBlockingRow(): LitHtml.TemplateResult|null {
+  #renderBlockingRow(): Lit.TemplateResult|null {
     if (!this.#networkRequest || !Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest)) {
       return null;
     }
@@ -290,7 +290,7 @@ export class NetworkRequestDetails extends HTMLElement {
     return this.#renderRow(i18nString(UIStrings.blocking), renderBlockingText);
   }
 
-  async #renderPreviewElement(): Promise<LitHtml.TemplateResult|null> {
+  async #renderPreviewElement(): Promise<Lit.TemplateResult|null> {
     if (!this.#networkRequest) {
       return null;
     }
@@ -347,7 +347,7 @@ export class NetworkRequestDetails extends HTMLElement {
       ${this.#renderInitiatedBy()}
     `; // The last items are outside the 2 column layout because InitiatedBy can be very wide
     // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   }
 }
 

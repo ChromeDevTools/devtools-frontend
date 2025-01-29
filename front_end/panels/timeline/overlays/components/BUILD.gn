@@ -29,7 +29,7 @@ devtools_module("components") {
     "../../../../models/trace:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/icon_button:bundle",
-    "../../../../ui/lit-html:bundle",
+    "../../../../ui/lit:bundle",
     "../../../../ui/visual_logging:bundle",
   ]
 }

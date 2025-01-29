@@ -12,11 +12,11 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import ignoreListSettingStyles from './ignoreListSetting.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -245,8 +245,8 @@ export class IgnoreListSetting extends HTMLElement {
     this.#newRegexInput.addEventListener('focus', this.#startEditing.bind(this), false);
   }
 
-  #renderNewRegexRow(): LitHtml.TemplateResult {
-    const classes = LitHtml.Directives.classMap({
+  #renderNewRegexRow(): Lit.TemplateResult {
+    const classes = Lit.Directives.classMap({
       'input-validation': true,
       'input-validation-error': !this.#newRegexIsValid,
     });
@@ -254,7 +254,7 @@ export class IgnoreListSetting extends HTMLElement {
       <div class='new-regex-row'>${this.#newRegexCheckbox}${this.#newRegexInput}</div>
       ${
         this.#newRegexValidationMessage ? html`<div class=${classes}>${this.#newRegexValidationMessage}</div>` :
-                                          LitHtml.nothing}
+                                          Lit.nothing}
     `;
   }
 
@@ -278,7 +278,7 @@ export class IgnoreListSetting extends HTMLElement {
     this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
   }
 
-  #renderItem(regex: Common.Settings.RegExpSettingItem, index: number): LitHtml.TemplateResult {
+  #renderItem(regex: Common.Settings.RegExpSettingItem, index: number): Lit.TemplateResult {
     const checkboxWithLabel = UI.UIUtils.CheckboxLabel.createWithStringLiteral(
         regex.pattern, !regex.disabled, /* subtitle*/ undefined, /* jslogContext*/ 'timeline.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
@@ -328,7 +328,7 @@ export class IgnoreListSetting extends HTMLElement {
       </devtools-button-dialog>
     `;
     // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   }
 }
 

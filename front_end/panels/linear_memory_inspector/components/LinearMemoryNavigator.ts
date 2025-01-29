@@ -5,7 +5,7 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
@@ -39,7 +39,7 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html, Directives: {ifDefined}} = LitHtml;
+const {render, html, Directives: {ifDefined}} = Lit;
 
 export const enum Navigation {
   BACKWARD = 'Backward',
@@ -160,13 +160,13 @@ export class LinearMemoryNavigator extends HTMLElement {
     // clang-format on
   }
 
-  #createAddressInput(): LitHtml.TemplateResult {
+  #createAddressInput(): Lit.TemplateResult {
     const classMap = {
       'address-input': true,
       invalid: !this.#valid,
     };
     return html`
-      <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
+      <input class=${Lit.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
         jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
       change: true,
     })}
@@ -180,7 +180,7 @@ export class LinearMemoryNavigator extends HTMLElement {
   }
 
   #createButton(data: {icon: string, title: string, event: Event, enabled: boolean, jslogContext: string}):
-      LitHtml.TemplateResult {
+      Lit.TemplateResult {
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
         jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}

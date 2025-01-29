@@ -23,7 +23,7 @@ devtools_module("report_view") {
   sources = [ "ReportView.ts" ]
   deps = [
     "../../components/helpers:bundle",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
   ]
 }
 
@@ -46,6 +46,6 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
   ]
 }

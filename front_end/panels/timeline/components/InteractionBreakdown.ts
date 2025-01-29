@@ -4,11 +4,11 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import styles from './interactionBreakdown.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -51,7 +51,7 @@ export class InteractionBreakdown extends HTMLElement {
     const inputDelay = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.inputDelay);
     const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.mainThreadHandling);
     const presentationDelay = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(this.#entry.presentationDelay);
-    LitHtml.render(
+    Lit.render(
         html`<ul class="breakdown">
                      <li data-entry="input-delay">${i18nString(UIStrings.inputDelay)}<span class="value">${
             inputDelay}</span></li>

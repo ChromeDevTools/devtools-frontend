@@ -8,9 +8,9 @@ import * as Common from '../../../../core/common/common.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface NodeLinkData {
   backendNodeId: Protocol.DOM.BackendNodeId;
@@ -82,10 +82,10 @@ export class NodeLink extends HTMLElement {
     } else if (this.#fallbackText) {
       template = html`<span>${this.#fallbackText}</span>`;
     } else {
-      template = LitHtml.nothing;
+      template = Lit.nothing;
     }
 
-    LitHtml.render(template, this.#shadow, {host: this});
+    Lit.render(template, this.#shadow, {host: this});
   }
 }
 

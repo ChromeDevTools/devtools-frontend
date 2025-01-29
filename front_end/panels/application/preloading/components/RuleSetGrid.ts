@@ -13,7 +13,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../../../network/forward/forward.js';
 import * as PreloadingHelper from '../helper/helper.js';
@@ -21,7 +21,7 @@ import * as PreloadingHelper from '../helper/helper.js';
 import * as PreloadingString from './PreloadingString.js';
 import ruleSetGridStyles from './ruleSetGrid.css.js';
 
-const {html, Directives: {styleMap}} = LitHtml;
+const {html, Directives: {styleMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -125,7 +125,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
         <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
           <devtools-new-data-grid striped @select=${this.#onRowSelected}>
             <table>

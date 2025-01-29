@@ -14,7 +14,7 @@ ts_library("ts") {
   ]
 
   deps = [
-    "../../../../../front_end/ui/lit-html:bundle",
+    "../../../../../front_end/ui/lit:bundle",
     "../../../../testing",
     "../../dialogs:bundle",
   ]

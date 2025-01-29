@@ -248,7 +248,7 @@ group("unittests") {
     "ui/legacy/components/source_frame:unittests",
     "ui/legacy/components/utils:unittests",
     "ui/legacy/theme_support:unittests",
-    "ui/lit-html:unittests",
+    "ui/lit:unittests",
     "ui/visual_logging:unittests",
   ]
 }

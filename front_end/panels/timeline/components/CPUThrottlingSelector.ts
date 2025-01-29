@@ -10,13 +10,13 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 import cpuThrottlingSelectorStyles from './cpuThrottlingSelector.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -199,14 +199,14 @@ export class CPUThrottlingSelector extends HTMLElement {
                   @click=${this.#onCalibrateClick}
                 >
                   ${calibrationLabel}
-                </devtools-menu-item>` : LitHtml.nothing}
+                </devtools-menu-item>` : Lit.nothing}
               </devtools-menu-group>`;
           })}
       </devtools-select-menu>
       ${recommendedInfoEl}
     `;
     // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   };
 }
 

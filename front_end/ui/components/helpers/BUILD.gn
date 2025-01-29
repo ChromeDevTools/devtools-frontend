@@ -20,7 +20,7 @@ devtools_module("helpers") {
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../ui/legacy/theme_support:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../render_coordinator:bundle",
   ]
 }
@@ -48,7 +48,7 @@ ts_library("unittests") {
     ":bundle",
     "../../../testing",
     "../../legacy/theme_support:bundle",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../render_coordinator:bundle",
   ]
 }

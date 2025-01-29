@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import {getElementWithinComponent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import * as ReportView from './report_view.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 describe('ReportView', () => {
   describe('header', () => {
@@ -26,7 +26,7 @@ describe('ReportView', () => {
     it('renders the elements provided for the "key" and "value" slot', () => {
       const report = new ReportView.ReportView.Report();
       // clang-format off
-      LitHtml.render(
+      Lit.render(
           html`
         <devtools-report-key>This is the key</devtools-report-key>
         <devtools-report-value>This is the value</devtools-report-value>

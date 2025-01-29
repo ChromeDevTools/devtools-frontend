@@ -31,7 +31,7 @@ devtools_module("components") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/legacy_wrapper:bundle",
     "../../../ui/legacy/components/utils:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
 }

@@ -31,7 +31,7 @@
 import '../../core/dom_extension/dom_extension.js';
 
 import * as Platform from '../../core/platform/platform.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import {Constraints, Size} from './Geometry.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
@@ -113,8 +113,8 @@ interface Constructor<T, Args extends unknown[]> {
 }
 
 export function widgetRef<T extends Widget, Args extends unknown[]>(
-    type: Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof LitHtml.Directives.ref> {
-  return LitHtml.Directives.ref((e?: Element) => {
+    type: Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof Lit.Directives.ref> {
+  return Lit.Directives.ref((e?: Element) => {
     if (!(e instanceof HTMLElement)) {
       return;
     }

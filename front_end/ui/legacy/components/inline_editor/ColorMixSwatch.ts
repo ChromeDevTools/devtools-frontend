@@ -4,12 +4,12 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorMixSwatchStyles from './colorMixSwatch.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export const enum Events {
   COLOR_CHANGED = 'colorChanged',
@@ -84,7 +84,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   #render(): void {
     if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
-      LitHtml.render(this.colorMixText, this.shadow, {host: this});
+      Lit.render(this.colorMixText, this.shadow, {host: this});
       return;
     }
 
@@ -95,7 +95,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // free to append any content to replace what is being shown here.
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
-    LitHtml.render(
+    Lit.render(
       html`<div class="swatch-icon" jslog=${VisualLogging.cssColorMix()} style="--color: ${this.colorMixText}">
         <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
         <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>

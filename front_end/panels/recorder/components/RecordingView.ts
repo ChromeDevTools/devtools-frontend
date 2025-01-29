@@ -21,7 +21,7 @@ import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as Input from '../../../ui/components/input/input.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Converters from '../converters/converters.js';
 import type * as Extensions from '../extensions/extensions.js';
@@ -38,7 +38,7 @@ import {
   type StepViewData,
 } from './StepView.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -468,7 +468,7 @@ export class RecordingView extends HTMLElement {
       section: Models.Section.Section,
       step: Models.Schema.Step,
       isLastSection: boolean,
-      ): LitHtml.TemplateResult {
+      ): Lit.TemplateResult {
     const stepIndex = this.#steps.indexOf(step);
     // clang-format off
     return html`
@@ -651,7 +651,7 @@ export class RecordingView extends HTMLElement {
     Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.COPY_RECORDING_OR_STEP);
   }
 
-  #renderSettings(): LitHtml.TemplateResult {
+  #renderSettings(): Lit.TemplateResult {
     if (!this.#settings) {
       return html``;
     }
@@ -802,7 +802,7 @@ export class RecordingView extends HTMLElement {
       <div class="settings-row">
         <div class="settings-container">
           <div
-            class=${LitHtml.Directives.classMap(replaySettingsButtonClassMap)}
+            class=${Lit.Directives.classMap(replaySettingsButtonClassMap)}
             @keydown=${isEditable && this.#onReplaySettingsKeydown}
             @click=${isEditable && this.#onToggleReplaySettings}
             tabindex="0"
@@ -819,7 +819,7 @@ export class RecordingView extends HTMLElement {
                 : ''
             }
           </div>
-          <div class=${LitHtml.Directives.classMap(replaySettingsClassMap)}>
+          <div class=${Lit.Directives.classMap(replaySettingsClassMap)}>
             ${
               replaySettingsFragments.length
                 ? replaySettingsFragments
@@ -853,7 +853,7 @@ export class RecordingView extends HTMLElement {
     return currentConverter;
   }
 
-  #renderTimelineArea(): LitHtml.LitTemplate {
+  #renderTimelineArea(): Lit.LitTemplate {
     if (this.#extensionDescriptor) {
       // clang-format off
       return html`
@@ -926,7 +926,7 @@ export class RecordingView extends HTMLElement {
     // clang-format on
   }
 
-  #renderTextEditor(): LitHtml.TemplateResult {
+  #renderTextEditor(): Lit.TemplateResult {
     if (!this.#editorState) {
       throw new Error('Unexpected: trying to render the text editor without editorState');
     }
@@ -941,7 +941,7 @@ export class RecordingView extends HTMLElement {
 
   #renderScreenshot(
       section: Models.Section.Section,
-      ): LitHtml.TemplateResult|null {
+      ): Lit.TemplateResult|null {
     if (!section.screenshot) {
       return null;
     }
@@ -955,7 +955,7 @@ export class RecordingView extends HTMLElement {
     // clang-format on
   }
 
-  #renderReplayOrAbortButton(): LitHtml.TemplateResult {
+  #renderReplayOrAbortButton(): Lit.TemplateResult {
     if (this.#replayState.isPlaying) {
       return html`
         <devtools-button .jslogContext=${'abort-replay'} @click=${
@@ -1081,7 +1081,7 @@ export class RecordingView extends HTMLElement {
     void this.#convertToCode();
   };
 
-  #renderSections(): LitHtml.LitTemplate {
+  #renderSections(): Lit.LitTemplate {
     // clang-format off
     return html`
       <div class="sections">
@@ -1178,7 +1178,7 @@ export class RecordingView extends HTMLElement {
     // clang-format on
   }
 
-  #renderHeader(): LitHtml.LitTemplate|string {
+  #renderHeader(): Lit.LitTemplate|string {
     if (!this.#userFlow) {
       return '';
     }
@@ -1194,11 +1194,11 @@ export class RecordingView extends HTMLElement {
                   id="title-input"
                   .contentEditable=${isTitleEditable ? 'true' : 'false'}
                   jslog=${VisualLogging.value('title').track({change: true})}
-                  class=${LitHtml.Directives.classMap({
+                  class=${Lit.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
                     disabled: !isTitleEditable,
                   })}
-                  .innerText=${LitHtml.Directives.live(title)}></span>
+                  .innerText=${Lit.Directives.live(title)}></span>
             <div class="title-button-bar">
               <devtools-button
                 @click=${this.#onEditTitleButtonClick}
@@ -1250,7 +1250,7 @@ export class RecordingView extends HTMLElement {
     // clang-format on
   }
 
-  #renderFooter(): LitHtml.LitTemplate|string {
+  #renderFooter(): Lit.LitTemplate|string {
     if (!this.#isRecording) {
       return '';
     }
@@ -1288,9 +1288,9 @@ export class RecordingView extends HTMLElement {
     };
 
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
-      <div @click=${this.#onWrapperClick} class=${LitHtml.Directives.classMap(
+      <div @click=${this.#onWrapperClick} class=${Lit.Directives.classMap(
         classNames,
       )}>
         <div class="main">

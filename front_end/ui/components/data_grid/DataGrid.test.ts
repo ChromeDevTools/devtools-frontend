@@ -28,13 +28,13 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import {withMutations} from '../../../testing/MutationHelpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as IconButton from '../icon_button/icon_button.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as DataGrid from './data_grid.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const createColumns = (): DataGrid.DataGridUtils.Column[] => {
   return [

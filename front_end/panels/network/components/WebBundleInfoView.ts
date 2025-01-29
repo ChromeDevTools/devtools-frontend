@@ -11,12 +11,12 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import {PanelUtils} from '../../../panels/utils/utils.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 const {mimeFromURL, fromMimeTypeOverride, fromMimeType} = Common.ResourceType.ResourceType;
 const {iconDataForResourceType} = PanelUtils;
 

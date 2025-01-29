@@ -17,7 +17,7 @@ devtools_module("node_text") {
 
   deps = [
     "../../../core/sdk:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../helpers:bundle",
   ]
 }

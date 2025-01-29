@@ -22,7 +22,7 @@ import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
@@ -32,7 +32,7 @@ import type {MetricCardData} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
-const {html, nothing} = LitHtml;
+const {html, nothing} = Lit;
 
 type DeviceOption = CrUXManager.DeviceScope|'AUTO';
 
@@ -419,7 +419,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
-  #renderLcpCard(): LitHtml.LitTemplate {
+  #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink = this.#lcpValue?.nodeRef?.link;
     const phases = this.#lcpValue?.phases;
@@ -452,7 +452,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #renderClsCard(): LitHtml.LitTemplate {
+  #renderClsCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('cumulative_layout_shift');
 
     const clusterIds = new Set(this.#clsValue?.clusterShiftIds || []);
@@ -485,7 +485,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #renderInpCard(): LitHtml.LitTemplate {
+  #renderInpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
     const phases = this.#inpValue?.phases;
     const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.interactionId);
@@ -521,7 +521,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #renderRecordAction(action: UI.ActionRegistration.Action): LitHtml.LitTemplate {
+  #renderRecordAction(action: UI.ActionRegistration.Action): Lit.LitTemplate {
     function onClick(): void {
       void action.execute();
     }
@@ -582,7 +582,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
-  #renderRecordingSettings(): LitHtml.LitTemplate {
+  #renderRecordingSettings(): Lit.LitTemplate {
     const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
 
     const deviceRecEl = document.createElement('span');
@@ -644,9 +644,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #renderPageScopeSetting(): LitHtml.LitTemplate {
+  #renderPageScopeSetting(): Lit.LitTemplate {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const urlLabel = this.#getPageScopeLabel('url');
@@ -727,9 +727,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #renderDeviceScopeSetting(): LitHtml.LitTemplate {
+  #renderDeviceScopeSetting(): Lit.LitTemplate {
     if (!this.#cruxManager.getConfigSetting().get().enabled) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // If there is no data at all we should force users to try adjusting the page scope
@@ -800,7 +800,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
-  #renderCollectionPeriod(): LitHtml.LitTemplate {
+  #renderCollectionPeriod(): Lit.LitTemplate {
     const range = this.#getCollectionPeriodRange();
 
     const dateEl = document.createElement('span');
@@ -823,7 +823,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     `;
   }
 
-  #renderFieldDataMessage(): LitHtml.LitTemplate {
+  #renderFieldDataMessage(): Lit.LitTemplate {
     if (this.#cruxManager.getConfigSetting().get().enabled) {
       return this.#renderCollectionPeriod();
     }
@@ -837,7 +837,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     `;
   }
 
-  #renderLogSection(): LitHtml.LitTemplate {
+  #renderLogSection(): Lit.LitTemplate {
     // clang-format off
     return html`
       <section class="logs-section" aria-label=${i18nString(UIStrings.eventLogs)}>
@@ -881,9 +881,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }
   }
 
-  #renderInteractionsLog(): LitHtml.LitTemplate {
+  #renderInteractionsLog(): Lit.LitTemplate {
     if (!this.#interactions.size) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off
@@ -992,9 +992,9 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
-  #renderLayoutShiftsLog(): LitHtml.LitTemplate {
+  #renderLayoutShiftsLog(): Lit.LitTemplate {
     if (!this.#layoutShifts.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off
@@ -1032,7 +1032,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #renderNodeView(): LitHtml.LitTemplate {
+  #renderNodeView(): Lit.LitTemplate {
     return html`
       <div class="node-view">
         <main>
@@ -1046,7 +1046,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #render = (): void => {
     if (this.#isNode) {
-      LitHtml.render(this.#renderNodeView(), this.#shadow, {host: this});
+      Lit.render(this.#renderNodeView(), this.#shadow, {host: this});
       return;
     }
 
@@ -1109,7 +1109,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </div>
       </div>
     `;
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   };
   // clang-format on
 }

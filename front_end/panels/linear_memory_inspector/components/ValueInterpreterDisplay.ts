@@ -7,7 +7,7 @@ import '../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import valueInterpreterDisplayStyles from './valueInterpreterDisplay.css.js';
@@ -51,7 +51,7 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const SORTED_VALUE_TYPES = Array.from(getDefaultValueTypeMapping().keys());
 
@@ -136,7 +136,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format on
   }
 
-  #showValue(type: ValueType): LitHtml.TemplateResult {
+  #showValue(type: ValueType): Lit.TemplateResult {
     if (isNumber(type)) {
       return this.#renderNumberValues(type);
     }
@@ -146,7 +146,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     throw new Error(`No known way to format ${type}`);
   }
 
-  #renderPointerValue(type: ValueType): LitHtml.TemplateResult {
+  #renderPointerValue(type: ValueType): Lit.TemplateResult {
     const unsignedValue = this.#parse({type, signed: false});
     const address = getPointerAddress(type, this.#buffer, this.#endianness);
     const jumpDisabled = Number.isNaN(address) || BigInt(address) >= BigInt(this.#memoryLength);
@@ -178,7 +178,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     this.dispatchEvent(new JumpToPointerAddressEvent(address));
   }
 
-  #renderNumberValues(type: ValueType): LitHtml.TemplateResult {
+  #renderNumberValues(type: ValueType): Lit.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -203,7 +203,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     // clang-format on
   }
 
-  #renderSignedAndUnsigned(type: ValueType): LitHtml.TemplateResult {
+  #renderSignedAndUnsigned(type: ValueType): Lit.TemplateResult {
     const unsignedValue = this.#parse({type, signed: false});
     const signedValue = this.#parse({type, signed: true});
     const mode = this.#valueTypeModeConfig.get(type);

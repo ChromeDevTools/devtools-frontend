@@ -5,7 +5,7 @@
 import './CSSAngleEditor.js';
 import './CSSAngleSwatch.js';
 
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 
 import cssAngleStyles from './cssAngle.css.js';
 import {
@@ -19,8 +19,8 @@ import {
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
 
-const {render, html} = LitHtml;
-const styleMap = LitHtml.Directives.styleMap;
+const {render, html} = Lit;
+const styleMap = Lit.Directives.styleMap;
 
 export class PopoverToggledEvent extends Event {
   static readonly eventName = 'popovertoggled';
@@ -244,7 +244,7 @@ export class CSSAngle extends HTMLElement {
     // clang-format on
   }
 
-  private renderPopover(): LitHtml.TemplateResult {
+  private renderPopover(): Lit.TemplateResult {
     let contextualBackground = '';
     if (this.propertyValue && !this.propertyValue.match(/url\(.*\)/i)) {
       contextualBackground = this.propertyValue;

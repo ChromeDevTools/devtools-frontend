@@ -18,7 +18,7 @@ devtools_module("extensions") {
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/theme_support:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 

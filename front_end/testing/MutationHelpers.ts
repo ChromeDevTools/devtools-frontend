@@ -26,7 +26,7 @@ const nodeShouldBeIgnored = (node: Node): boolean => {
 
   if (isTextNode) {
     // We ignore textNode changes where the trimmed text is empty - these are
-    // most likely whitespace changes from LitHtml and not important.
+    // most likely whitespace changes from Lit and not important.
     return (node.textContent || '').trim() === '';
   }
 

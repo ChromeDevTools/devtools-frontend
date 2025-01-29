@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import linkSwatchStyles from './linkSwatch.css.js';
@@ -18,7 +18,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/LinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html, Directives: {ifDefined, classMap}} = LitHtml;
+const {render, html, Directives: {ifDefined, classMap}} = Lit;
 
 interface BaseLinkSwatchRenderData {
   text: string;

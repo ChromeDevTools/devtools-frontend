@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import styles from './fileSourceIcon.css.js';
 import {create} from './Icon.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface FileSourceIconData {
   contentType?: string;
@@ -59,7 +59,7 @@ export class FileSourceIcon extends HTMLElement {
     const icon = create(this.#iconType, iconStyles.join(' '));
 
     // clang-format off
-    LitHtml.render(html`${icon}`, this.#shadow, {
+    Lit.render(html`${icon}`, this.#shadow, {
       host: this,
     });
     // clang-format on

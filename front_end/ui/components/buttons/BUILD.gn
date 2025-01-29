@@ -23,7 +23,7 @@ devtools_module("button") {
   sources = [ "Button.ts" ]
 
   deps = [
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../icon_button:bundle",
   ]

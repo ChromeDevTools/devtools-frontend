@@ -7,11 +7,11 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import hideIssuesMenuStyles from './hideIssuesMenu.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -58,7 +58,7 @@ export class HideIssuesMenu extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
     <devtools-button
       .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
       .jslogContext=${'hide-issues'}

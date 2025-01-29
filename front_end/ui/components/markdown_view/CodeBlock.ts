@@ -9,12 +9,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import styles from './codeBlock.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -120,7 +120,7 @@ export class CodeBlock extends HTMLElement {
     }, this.#copyTimeout);
   }
 
-  #renderNotice(): LitHtml.TemplateResult {
+  #renderNotice(): Lit.TemplateResult {
     // clang-format off
     return html`<p class="notice">
       <x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${
@@ -133,7 +133,7 @@ export class CodeBlock extends HTMLElement {
     // clang-format on
   }
 
-  #renderCopyButton(): LitHtml.LitTemplate {
+  #renderCopyButton(): Lit.LitTemplate {
     // clang-format off
     return html`
       <div class="copy-button-container">
@@ -149,12 +149,12 @@ export class CodeBlock extends HTMLElement {
           }
           @click=${this.#onCopy}
         ></devtools-button>
-        ${this.#copied ? html`<span>${i18nString(UIStrings.copied)}</span>` : LitHtml.nothing}
+        ${this.#copied ? html`<span>${i18nString(UIStrings.copied)}</span>` : Lit.nothing}
       </div>`;
     // clang-format on
   }
 
-  #renderTextEditor(): LitHtml.TemplateResult {
+  #renderTextEditor(): Lit.TemplateResult {
     if (!this.#editorState) {
       throw new Error('Unexpected: trying to render the text editor without editorState');
     }
@@ -171,16 +171,16 @@ export class CodeBlock extends HTMLElement {
     const header = (this.#header ?? this.#codeLang) || i18nString(UIStrings.code);
 
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`<div class='codeblock' jslog=${VisualLogging.section('code')}>
       <div class="editor-wrapper">
         <div class="heading">
           <h4 class="heading-text">${header}</h4>
-          ${this.#showCopyButton ? this.#renderCopyButton() : LitHtml.nothing}
+          ${this.#showCopyButton ? this.#renderCopyButton() : Lit.nothing}
         </div>
         ${this.#renderTextEditor()}
       </div>
-      ${this.#displayNotice ? this.#renderNotice() : LitHtml.nothing}
+      ${this.#displayNotice ? this.#renderNotice() : Lit.nothing}
     </div>`,
       this.#shadow,
       {

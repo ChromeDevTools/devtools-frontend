@@ -7,7 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("./visibility.gni")
 
-devtools_module("lit-html") {
+devtools_module("lit") {
   sources = [ "i18n-template.ts" ]
 
   deps = [
@@ -17,9 +17,9 @@ devtools_module("lit-html") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "lit-html.ts"
+  entrypoint = "lit.ts"
 
-  deps = [ ":lit-html" ]
+  deps = [ ":lit" ]
 
   visibility = [
     ":*",

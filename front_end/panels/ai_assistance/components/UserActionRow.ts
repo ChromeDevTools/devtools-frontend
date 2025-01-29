@@ -8,12 +8,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import userActionRowStyles from './userActionRow.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -85,9 +85,9 @@ export class UserActionRow extends HTMLElement {
   #isShowingFeedbackForm = false;
   #currentRating?: Host.AidaClient.Rating;
   #isSubmitButtonDisabled = true;
-  #suggestionsScrollContainerRef = LitHtml.Directives.createRef<HTMLElement>();
-  #suggestionsLeftScrollButtonContainerRef = LitHtml.Directives.createRef<HTMLElement>();
-  #suggestionsRightScrollButtonContainerRef = LitHtml.Directives.createRef<HTMLElement>();
+  #suggestionsScrollContainerRef = Lit.Directives.createRef<HTMLElement>();
+  #suggestionsLeftScrollButtonContainerRef = Lit.Directives.createRef<HTMLElement>();
+  #suggestionsRightScrollButtonContainerRef = Lit.Directives.createRef<HTMLElement>();
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
   #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(50);
 
@@ -176,7 +176,7 @@ export class UserActionRow extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
   };
 
-  #renderButtons(): LitHtml.LitTemplate {
+  #renderButtons(): Lit.LitTemplate {
     // clang-format off
     const rateButtons = html`
       <devtools-button
@@ -211,7 +211,7 @@ export class UserActionRow extends HTMLElement {
     // clang-format off
     return html`
     <div class="rate-buttons">
-      ${this.#props.showRateButtons ? rateButtons : LitHtml.nothing}
+      ${this.#props.showRateButtons ? rateButtons : Lit.nothing}
       <devtools-button
         .data=${
           {
@@ -253,9 +253,9 @@ export class UserActionRow extends HTMLElement {
     rightScrollButtonContainer.classList.toggle('hidden', !shouldShowRightButton);
   };
 
-  #renderFeedbackForm(): LitHtml.LitTemplate {
+  #renderFeedbackForm(): Lit.LitTemplate {
     if (!this.#isShowingFeedbackForm) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off
@@ -314,13 +314,13 @@ export class UserActionRow extends HTMLElement {
     // clang-format on
   }
 
-  #renderSuggestions(): LitHtml.LitTemplate {
+  #renderSuggestions(): Lit.LitTemplate {
     if (!this.#props.suggestions) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     // clang-format off
     return html`<div class="suggestions-container">
-      <div class="scroll-button-container left hidden" ${LitHtml.Directives.ref(this.#suggestionsLeftScrollButtonContainerRef)}>
+      <div class="scroll-button-container left hidden" ${Lit.Directives.ref(this.#suggestionsLeftScrollButtonContainerRef)}>
         <devtools-button
           class='scroll-button'
           .data=${{
@@ -333,7 +333,7 @@ export class UserActionRow extends HTMLElement {
           @click=${() => this.#scrollSuggestionsScrollContainer('left')}
         ></devtools-button>
       </div>
-      <div class="suggestions-scroll-container" @scroll=${this.#handleSuggestionsScrollOrResize} ${LitHtml.Directives.ref(this.#suggestionsScrollContainerRef)}>
+      <div class="suggestions-scroll-container" @scroll=${this.#handleSuggestionsScrollOrResize} ${Lit.Directives.ref(this.#suggestionsScrollContainerRef)}>
         ${this.#props.suggestions?.map(suggestion => html`<devtools-button
           class='suggestion'
           .data=${{
@@ -344,7 +344,7 @@ export class UserActionRow extends HTMLElement {
           @click=${() => this.#props.handleSuggestionClick(suggestion)}
         >${suggestion}</devtools-button>`)}
       </div>
-      <div class="scroll-button-container right hidden" ${LitHtml.Directives.ref(this.#suggestionsRightScrollButtonContainerRef)}>
+      <div class="scroll-button-container right hidden" ${Lit.Directives.ref(this.#suggestionsRightScrollButtonContainerRef)}>
         <devtools-button
           class='scroll-button'
           .data=${{
@@ -363,7 +363,7 @@ export class UserActionRow extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
         <div class="feedback">
           ${this.#renderButtons()}

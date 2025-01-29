@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as IconButton from '../../../components/icon_button/icon_button.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -11,7 +11,7 @@ import bezierSwatchStyles from './bezierSwatch.css.js';
 import type {CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class BezierSwatch extends HTMLElement {
   readonly #icon: IconButton.Icon.Icon;
@@ -66,7 +66,7 @@ export class CSSShadowSwatch extends HTMLElement {
       cssShadowSwatchStyles,
     ];
 
-    LitHtml.render(
+    Lit.render(
         html`<devtools-icon name="shadow" class="shadow-swatch-icon"></devtools-icon><slot></slot>`, this.#shadow,
         {host: this});
 

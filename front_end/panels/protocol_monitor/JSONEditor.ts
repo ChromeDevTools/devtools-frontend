@@ -14,13 +14,13 @@ import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import type * as Menus from '../../ui/components/menus/menus.js';
 import * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ElementsComponents from '../elements/components/components.js';
 
 import editorWidgetStyles from './JSONEditor.css.js';
 
-const {html, render, Directives, nothing} = LitHtml;
+const {html, render, Directives, nothing} = Lit;
 const {live, classMap, repeat} = Directives;
 
 const UIStrings = {
@@ -879,7 +879,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.requestUpdate();
   }
 
-  #renderTargetSelectorRow(): LitHtml.TemplateResult|undefined {
+  #renderTargetSelectorRow(): Lit.TemplateResult|undefined {
     const target = this.targets.find(el => el.id() === this.targetId);
     const targetLabel = target ? this.#computeTargetLabel(target) : this.#computeTargetLabel(this.targets[0]);
 
@@ -936,7 +936,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     classMap: {[name: string]: string|boolean|number},
     onClick: (event: MouseEvent) => void,
     jslogContext: string,
-  }): LitHtml.TemplateResult|undefined {
+  }): Lit.TemplateResult|undefined {
     return html`
           <devtools-button
             title=${opts.title}
@@ -950,7 +950,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         `;
   }
 
-  #renderWarningIcon(): LitHtml.TemplateResult|undefined {
+  #renderWarningIcon(): Lit.TemplateResult|undefined {
     return html`<devtools-icon
     .data=${{
     iconName:
@@ -968,7 +968,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Renders the parameters list corresponding to a specific CDP command.
    */
   #renderParameters(parameters: Parameter[], id?: string, parentParameter?: Parameter, parentParameterId?: string):
-      LitHtml.TemplateResult|undefined {
+      Lit.TemplateResult|undefined {
     parameters.sort((a, b) => Number(a.optional) - Number(b.optional));
 
     // clang-format off

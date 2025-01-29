@@ -7,9 +7,9 @@ import './components/components.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export type AXTreeNodeData = SDK.AccessibilityModel.AccessibilityNode;
 export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<AXTreeNodeData>;
@@ -112,7 +112,7 @@ export async function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.Acces
   }];
 }
 
-export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateResult {
+export function accessibilityNodeRenderer(node: AXTreeNode): Lit.TemplateResult {
   const sdkNode = node.treeNodeData;
   const name = sdkNode.name()?.value || '';
   const role = sdkNode.role()?.value || '';

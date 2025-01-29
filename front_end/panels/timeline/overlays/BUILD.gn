@@ -14,7 +14,7 @@ devtools_module("overlays") {
     "../../../models/trace:bundle",
     "../../../services/trace_bounds:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../timeline/utils:bundle",
     "./components:bundle",
   ]

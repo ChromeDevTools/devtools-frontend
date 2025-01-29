@@ -28,7 +28,7 @@ devtools_module("icon_button") {
   deps = [
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 
@@ -65,6 +65,6 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
   ]
 }

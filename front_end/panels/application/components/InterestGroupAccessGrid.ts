@@ -6,11 +6,11 @@ import '../../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import interestGroupAccessGridStyles from './interestGroupAccessGrid.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -68,7 +68,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div>
         <span class="heading">Interest Groups</span>
         <devtools-icon class="info-icon"
@@ -81,7 +81,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
     // clang-format on
   }
 
-  #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
+  #renderGridOrNoDataMessage(): Lit.TemplateResult {
     if (this.#datastores.length === 0) {
       return html`<div class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }

@@ -16,14 +16,14 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
 import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {widgetConfig} = UI.Widget;
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -310,7 +310,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
               ${input.selector.element}
             </devtools-toolbar>`,
         target,
-        {host: input},  // eslint-disable-line rulesdir/lit-html-host-this
+        {host: input},  // eslint-disable-line rulesdir/lit-host-this
     );
     // clang-format on
   }) {

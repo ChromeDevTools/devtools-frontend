@@ -17,7 +17,7 @@ devtools_module("card") {
 
   deps = [
     "../../../core/common:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../icon_button:bundle",
   ]
 }

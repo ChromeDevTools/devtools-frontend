@@ -18,7 +18,7 @@ devtools_module("chrome_link") {
   deps = [
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
   ]
@@ -44,7 +44,7 @@ ts_library("unittests") {
     ":bundle",
     "../../../core/platform:bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../render_coordinator:bundle",
   ]
 }

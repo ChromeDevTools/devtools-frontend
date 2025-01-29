@@ -5,7 +5,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 
@@ -17,7 +17,7 @@ import {
 import selectMenuStyles from './selectMenu.css.js';
 import selectMenuButtonStyles from './selectMenuButton.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface SelectMenuData {
   /**
@@ -34,7 +34,7 @@ export interface SelectMenuData {
   horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment;
   /**
    * The title of the menu button. Can be either a string or a function
-   * that returns a LitHTML template.
+   * that returns a Lit template.
    * If not set, the title of the button will default to the selected
    * item's text.
    */
@@ -73,7 +73,7 @@ export interface SelectMenuData {
    */
   jslogContext: string;
 }
-type TitleCallback = () => LitHtml.TemplateResult;
+type TitleCallback = () => Lit.TemplateResult;
 
 const deployMenuArrow = new URL('../../../Images/triangle-down.svg', import.meta.url).toString();
 
@@ -203,11 +203,11 @@ export class SelectMenu extends HTMLElement {
     this.dispatchEvent(new SelectMenuSideButtonClickEvent());
   }
 
-  #getButtonText(): LitHtml.TemplateResult|string {
+  #getButtonText(): Lit.TemplateResult|string {
     return this.buttonTitle instanceof Function ? this.buttonTitle() : this.buttonTitle;
   }
 
-  #renderButton(): LitHtml.TemplateResult {
+  #renderButton(): Lit.TemplateResult {
     const buttonLabel = this.#getButtonText();
     if (!this.sideButton) {
       // clang-format off
@@ -261,7 +261,7 @@ export class SelectMenu extends HTMLElement {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('SelectMenu render was not scheduled');
     }
-    LitHtml.render(
+    Lit.render(
         html`
       <devtools-menu
         @menucloserequest=${this.#onMenuClose}
@@ -402,18 +402,18 @@ export class SelectMenuButton extends HTMLElement {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('SelectMenuItem render was not scheduled');
     }
-    const arrow = this.#props.showArrow ? html`<span id="arrow"></span>` : LitHtml.nothing;
+    const arrow = this.#props.showArrow ? html`<span id="arrow"></span>` : Lit.nothing;
     const classMap = {'single-arrow': this.#props.singleArrow};
     // clang-format off
       const buttonTitle = html`
       <span id="button-label-wrapper">
-        <span id="label" ?witharrow=${this.showArrow} class=${LitHtml.Directives.classMap(classMap)}><slot></slot></span>
+        <span id="label" ?witharrow=${this.showArrow} class=${Lit.Directives.classMap(classMap)}><slot></slot></span>
         ${arrow}
       </span>
       `;
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <button aria-haspopup="true" aria-expanded="false" class="show" @keydown=${this.#handleButtonKeyDown} @click=${this.#handleClick} ?disabled=${this.disabled} jslog=${VisualLogging.dropDown(this.jslogContext)}>${buttonTitle}</button>
     `, this.#shadow, { host: this });
     // clang-format on

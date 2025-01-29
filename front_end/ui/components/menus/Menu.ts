@@ -5,7 +5,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 
@@ -13,7 +13,7 @@ import menuStyles from './menu.css.js';
 import menuGroupStyles from './menuGroup.css.js';
 import menuItemStyles from './menuItem.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface MenuData {
   /**
@@ -371,7 +371,7 @@ export class Menu extends HTMLElement {
       throw new Error('Menu render was not scheduled');
     }
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
         @forceddialogclose=${this.#closeDialog}
@@ -473,8 +473,8 @@ export class MenuItem extends HTMLElement {
     }
     // clang-format off
 
-    LitHtml.render(html`
-      <span class=${LitHtml.Directives.classMap({
+    Lit.render(html`
+      <span class=${Lit.Directives.classMap({
         'menu-item': true,
         'is-selected-item': this.selected,
         'is-disabled-item': this.disabled,
@@ -517,7 +517,7 @@ export class MenuGroup extends HTMLElement {
       throw new Error('MenuGroup render was not scheduled');
     }
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <span class="menu-group">
         <span class="menu-group-label">${this.name}</span>
         <slot></slot>

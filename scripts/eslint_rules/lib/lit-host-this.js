@@ -13,13 +13,13 @@ module.exports = {
     type: 'problem',
 
     docs: {
-      description: 'enforce use of {host: this} when rendering LitHtml',
+      description: 'enforce use of {host: this} when rendering Lit',
       category: 'Possible Errors',
     },
     fixable: 'code',
     messages: {
       missingHostOption:
-          'LitHtml.render call does not include {host: this} as the third option. This may cause event handlers to be called with the wrong scope.',
+          'Lit.render call does not include {host: this} as the third option. This may cause event handlers to be called with the wrong scope.',
       invalidHostOption: 'The host option must be set to `this` to ensure event listeners are bound correctly.'
     },
     schema: []  // no options

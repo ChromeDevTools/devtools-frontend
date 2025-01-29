@@ -11,9 +11,9 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -139,7 +139,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return RenderCoordinator.write('StorageMetadataView render', async () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
         <devtools-report .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)}}>
           ${await this.renderReportContent()}
         </devtools-report>`, this.#shadow, {host: this});
@@ -156,17 +156,17 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return this.#storageBucketsModel ? `${bucketName} - ${origin}` : origin;
   }
 
-  key(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
+  key(content: string|Lit.TemplateResult): Lit.TemplateResult {
     return html`<devtools-report-key>${content}</devtools-report-key>`;
   }
 
-  value(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
+  value(content: string|Lit.TemplateResult): Lit.TemplateResult {
     return html`<devtools-report-value>${content}</devtools-report-value>`;
   }
 
-  async renderReportContent(): Promise<LitHtml.LitTemplate> {
+  async renderReportContent(): Promise<Lit.LitTemplate> {
     if (!this.#storageKey) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     const origin = this.#storageKey.origin;
     const ancestorChainHasCrossSite =
@@ -185,21 +185,21 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return html`
         ${this.key(i18nString(UIStrings.origin))}
         ${this.value(html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}
-        ${(topLevelSite || topLevelSiteIsOpaque) ? this.key(i18nString(UIStrings.topLevelSite)) : LitHtml.nothing}
-        ${topLevelSite ? this.value(topLevelSite) : LitHtml.nothing}
-        ${topLevelSiteIsOpaque ? this.value(i18nString(UIStrings.opaque)) : LitHtml.nothing}
-        ${thirdPartyReason ? html`${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : LitHtml.nothing}
+        ${(topLevelSite || topLevelSiteIsOpaque) ? this.key(i18nString(UIStrings.topLevelSite)) : Lit.nothing}
+        ${topLevelSite ? this.value(topLevelSite) : Lit.nothing}
+        ${topLevelSiteIsOpaque ? this.value(i18nString(UIStrings.opaque)) : Lit.nothing}
+        ${thirdPartyReason ? html`${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : Lit.nothing}
         ${hasNonce || topLevelSiteIsOpaque ?
-        this.key(i18nString(UIStrings.isOpaque)) : LitHtml.nothing}
-        ${hasNonce ? this.value(i18nString(UIStrings.yes)) : LitHtml.nothing}
+        this.key(i18nString(UIStrings.isOpaque)) : Lit.nothing}
+        ${hasNonce ? this.value(i18nString(UIStrings.yes)) : Lit.nothing}
         ${topLevelSiteIsOpaque ?
-        this.value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : LitHtml.nothing}
-        ${this.#storageBucket ? this.#renderStorageBucketInfo() : LitHtml.nothing}
-        ${this.#storageBucketsModel ? this.#renderBucketControls() : LitHtml.nothing}`;
+        this.value(i18nString(UIStrings.yesBecauseTopLevelIsOpaque)) : Lit.nothing}
+        ${this.#storageBucket ? this.#renderStorageBucketInfo() : Lit.nothing}
+        ${this.#storageBucketsModel ? this.#renderBucketControls() : Lit.nothing}`;
     // clang-format on
   }
 
-  #renderStorageBucketInfo(): LitHtml.LitTemplate {
+  #renderStorageBucketInfo(): Lit.LitTemplate {
     if (!this.#storageBucket) {
       throw new Error('Should not call #renderStorageBucketInfo if #bucket is null.');
     }
@@ -233,7 +233,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return (new Date(expiration * 1000)).toLocaleString();
   }
 
-  #renderBucketControls(): LitHtml.TemplateResult {
+  #renderBucketControls(): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-report-section>

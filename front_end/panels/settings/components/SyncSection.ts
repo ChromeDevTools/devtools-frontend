@@ -10,11 +10,11 @@ import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import syncSectionStyles from './syncSection.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -75,7 +75,7 @@ export class SyncSection extends HTMLElement {
     this.#syncSetting?.setDisabled(checkboxDisabled);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <fieldset>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <setting-checkbox .data=${
@@ -89,7 +89,7 @@ export class SyncSection extends HTMLElement {
 
 /* x-link doesn't work with custom click/keydown handlers */
 
-function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): LitHtml.TemplateResult {
+function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.SyncInformation): Lit.TemplateResult {
   if (!syncInfo.isSyncActive) {
     const link = 'chrome://settings/syncSetup' as Platform.DevToolsPath.UrlString;
     // Disabled until https://crbug.com/1079231 is fixed.

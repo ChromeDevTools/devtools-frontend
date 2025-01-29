@@ -12,7 +12,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ElementsPanel from '../elements/elements.js';
 import * as NetworkForward from '../network/forward/forward.js';
@@ -55,7 +55,7 @@ import {
   type Step,
 } from './components/ChatView.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
@@ -137,15 +137,15 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
 
 function defaultView(input: ChatViewProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
-  LitHtml.render(html`
-    <devtools-ai-chat-view .props=${input} ${LitHtml.Directives.ref((el: Element|undefined) => {
+  Lit.render(html`
+    <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
       if (!el || !(el instanceof ChatView)) {
         return;
       }
 
       output.chatView = el;
     })}></devtools-ai-chat-view>
-  `, target, {host: input}); // eslint-disable-line rulesdir/lit-html-host-this
+  `, target, {host: input}); // eslint-disable-line rulesdir/lit-host-this
   // clang-format on
 }
 

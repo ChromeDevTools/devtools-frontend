@@ -16,7 +16,7 @@ devtools_module("floating_button") {
   sources = [ "FloatingButton.ts" ]
 
   deps = [
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../../visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",

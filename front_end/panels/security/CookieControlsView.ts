@@ -13,12 +13,12 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cookieControlsViewStyles from './cookieControlsView.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -167,10 +167,10 @@ export class CookieControlsView extends UI.Widget.VBox {
           ${Boolean(enterpriseEnabledSetting.get()) ? html `
             <devtools-icon
               .name=${'domain'}
-              ${LitHtml.Directives.ref((el: Element|undefined) => {
+              ${Lit.Directives.ref((el: Element|undefined) => {
                 UI.Tooltip.Tooltip.install(el as HTMLElement, i18nString(UIStrings.enterpriseTooltip));
               })}>
-            </devtools-icon>` : LitHtml.nothing
+            </devtools-icon>` : Lit.nothing
           }
         </div>
         <div>
@@ -287,7 +287,7 @@ export class CookieControlsView extends UI.Widget.VBox {
               </div>
             </div>
           </devtools-card>
-          ${Boolean(enterpriseEnabledSetting.get()) ? enterpriseDisclaimer : LitHtml.nothing}
+          ${Boolean(enterpriseEnabledSetting.get()) ? enterpriseDisclaimer : Lit.nothing}
         </div>
       </div>
     `, target, {host: this});

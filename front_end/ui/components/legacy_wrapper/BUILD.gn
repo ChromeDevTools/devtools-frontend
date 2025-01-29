@@ -10,7 +10,7 @@ devtools_module("legacy_wrapper") {
   sources = [ "LegacyWrapper.ts" ]
   deps = [
     "../../../ui/legacy:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 

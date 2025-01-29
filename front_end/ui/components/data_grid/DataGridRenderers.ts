@@ -1,27 +1,27 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import type {CellValue} from './DataGridUtils.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
-export const primitiveRenderer = (value: CellValue): LitHtml.TemplateResult => {
+export const primitiveRenderer = (value: CellValue): Lit.TemplateResult => {
   return html`${value}`;
 };
 
-export const codeBlockRenderer = (value: CellValue): LitHtml.TemplateResult|typeof LitHtml.nothing => {
+export const codeBlockRenderer = (value: CellValue): Lit.TemplateResult|typeof Lit.nothing => {
   if (!value) {
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
   const stringValue = String(value);
   return html`<code>${stringValue}</code>`;
 };
 
-export const iconRenderer = (icon: CellValue): LitHtml.TemplateResult|typeof LitHtml.nothing => {
+export const iconRenderer = (icon: CellValue): Lit.TemplateResult|typeof Lit.nothing => {
   if (!icon) {
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
   return html`<div style="display: flex; justify-content: center;">${icon}</div>`;
 };

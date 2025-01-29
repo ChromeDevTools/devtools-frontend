@@ -7,13 +7,13 @@ import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPPhasesInsightModel} from '../../../../models/trace/insights/LCPPhases.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -55,7 +55,7 @@ interface PhaseData {
 }
 
 export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-lcp-by-phases`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-by-phases`;
   override internalName: string = 'lcp-by-phase';
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 
@@ -186,9 +186,9 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return overlays;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const phaseData = this.#getPhaseData();

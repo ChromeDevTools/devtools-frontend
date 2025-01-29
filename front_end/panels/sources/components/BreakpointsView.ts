@@ -18,13 +18,13 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import breakpointsViewStyles from './breakpointsView.css.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
 
-const {html, Directives: {ifDefined, repeat, classMap, live}} = LitHtml;
+const {html, Directives: {ifDefined, repeat, classMap, live}} = Lit;
 
 const UIStrings = {
   /**
@@ -609,7 +609,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             (group, groupIndex) => html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
         </div>`;
       // clang-format on
-      LitHtml.render(out, this.#shadow, {host: this});
+      Lit.render(out, this.#shadow, {host: this});
     });
 
     // If no element is tabbable, set the pause-on-exceptions to be tabbable. This can happen
@@ -699,7 +699,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return;
   }
 
-  #renderEditBreakpointButton(breakpointItem: BreakpointItem): LitHtml.TemplateResult {
+  #renderEditBreakpointButton(breakpointItem: BreakpointItem): Lit.TemplateResult {
     const clickHandler = (event: Event): void => {
       void this.#controller.breakpointEdited(breakpointItem, true /* editButtonClicked */);
       event.consume();
@@ -717,7 +717,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderRemoveBreakpointButton(
-      breakpointItems: BreakpointItem[], tooltipText: string, action: Host.UserMetrics.Action): LitHtml.TemplateResult {
+      breakpointItems: BreakpointItem[], tooltipText: string, action: Host.UserMetrics.Action): Lit.TemplateResult {
     const clickHandler = (event: Event): void => {
       Host.userMetrics.actionTaken(action);
       void this.#controller.breakpointsRemoved(breakpointItems);
@@ -770,7 +770,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void menu.show();
   }
 
-  #renderBreakpointGroup(group: BreakpointGroup, groupIndex: number): LitHtml.TemplateResult {
+  #renderBreakpointGroup(group: BreakpointGroup, groupIndex: number): Lit.TemplateResult {
     const contextmenuHandler = (event: Event): void => {
       this.#onBreakpointGroupContextMenu(event, group);
       event.consume();
@@ -817,7 +817,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #renderGroupCheckbox(group: BreakpointGroup): LitHtml.TemplateResult {
+  #renderGroupCheckbox(group: BreakpointGroup): Lit.TemplateResult {
     const groupCheckboxToggled = (e: Event): void => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
       const element = e.target as HTMLInputElement;
@@ -842,7 +842,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     `;
   }
 
-  #renderFileIcon(): LitHtml.TemplateResult {
+  #renderFileIcon(): Lit.TemplateResult {
     return html`<devtools-icon name="file-script"></devtools-icon>`;
   }
 
@@ -892,7 +892,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderBreakpointEntry(
       breakpointItem: BreakpointItem, editable: boolean, groupIndex: number,
-      breakpointItemIndex: number): LitHtml.TemplateResult {
+      breakpointItemIndex: number): Lit.TemplateResult {
     const codeSnippetClickHandler = (event: Event): void => {
       void this.#controller.jumpToSource(breakpointItem);
       event.consume();
@@ -940,7 +940,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       </label>
       <span class='code-snippet' @click=${codeSnippetClickHandler} title=${ifDefined(codeSnippetTooltip)} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
-        ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
+        ${editable ? this.#renderEditBreakpointButton(breakpointItem) : Lit.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}
         <span class='location'>${breakpointItem.location}</span>
       </span>

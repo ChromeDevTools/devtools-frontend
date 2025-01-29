@@ -37,7 +37,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
@@ -45,7 +45,7 @@ import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -163,9 +163,9 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
     return this.database?.databaseId.name;
   }
 
-  override async renderReportContent(): Promise<LitHtml.LitTemplate> {
+  override async renderReportContent(): Promise<Lit.LitTemplate> {
     if (!this.database) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     return html`
       ${await super.renderReportContent()}

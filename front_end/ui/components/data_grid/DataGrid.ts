@@ -6,7 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as UI from '../../legacy/legacy.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
@@ -33,7 +33,7 @@ import {
   type SortState,
 } from './DataGridUtils.js';
 
-const {html, Directives: {ifDefined, classMap, styleMap, repeat}} = LitHtml;
+const {html, Directives: {ifDefined, classMap, styleMap, repeat}} = Lit;
 const UIStrings = {
   /**
    *@description A context menu item in the Data Grid of a data grid
@@ -134,7 +134,7 @@ export class DataGrid extends HTMLElement {
   });
 
   // Thie have to be bound as they are put onto the global document, not onto
-  // this element, so LitHtml does not bind them for us.
+  // this element, so Lit does not bind them for us.
   #boundOnResizePointerMove = this.#onResizePointerMove.bind(this);
 
   /**
@@ -397,17 +397,17 @@ export class DataGrid extends HTMLElement {
     return undefined;
   }
 
-  #renderEmptyFillerRow(numberOfVisibleRows: number): LitHtml.TemplateResult {
+  #renderEmptyFillerRow(numberOfVisibleRows: number): Lit.TemplateResult {
     const emptyCells = this.#columns.map((col, colIndex) => {
       if (!col.visible) {
-        return LitHtml.nothing;
+        return Lit.nothing;
       }
-      const emptyCellClasses = LitHtml.Directives.classMap({
+      const emptyCellClasses = Lit.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
       return html`<td aria-hidden="true" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}></td>`;
     });
-    const emptyRowClasses = LitHtml.Directives.classMap({
+    const emptyRowClasses = Lit.Directives.classMap({
       'filler-row': true,
       'padding-row': true,
       'empty-table': numberOfVisibleRows === 0,
@@ -549,7 +549,7 @@ export class DataGrid extends HTMLElement {
     this.#cleanUpAfterResizeColumnComplete();
   }
 
-  #renderResizeForCell(column: Column, position: CellPosition): LitHtml.LitTemplate {
+  #renderResizeForCell(column: Column, position: CellPosition): Lit.LitTemplate {
     /**
      * A resizer for a column is placed at the far right of the _previous column
      * cell_. So when we get called with [1, 0] that means this dragger is
@@ -561,7 +561,7 @@ export class DataGrid extends HTMLElement {
     const lastVisibleColumnIndex = this.#getIndexOfLastVisibleColumn();
     // If we are in the very last column, there is no column to the right to resize, so don't render a resizer.
     if (columnIndex === lastVisibleColumnIndex || !column.visible) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     return html`<span class="cell-resize-handle"
@@ -781,7 +781,7 @@ export class DataGrid extends HTMLElement {
     await RenderCoordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
       ${this.#columns.map((col, columnIndex) => {
         /**
          * We render the resizers outside of the table. One is rendered for each
@@ -804,7 +804,7 @@ export class DataGrid extends HTMLElement {
               const width = calculateColumnWidthPercentageFromWeighting(this.#columns, col.id);
               const style = `width: ${width}%`;
               if (!col.visible) {
-                return LitHtml.nothing;
+                return Lit.nothing;
               }
               return html`<col style=${style} data-col-column-index=${colIndex}>`;
             })}
@@ -864,7 +864,7 @@ export class DataGrid extends HTMLElement {
               // don't highlight the active cell before they've even clicked it.
               const rowIsSelected = this.#cellUserHasFocused ? tableRowIndex === this.#cellUserHasFocused[1] : false;
 
-              const rowClasses = LitHtml.Directives.classMap({
+              const rowClasses = Lit.Directives.classMap({
                 selected: rowIsSelected,
                 hidden: row.hidden === true,
               });

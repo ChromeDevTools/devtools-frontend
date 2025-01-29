@@ -11,7 +11,7 @@ devtools_module("components") {
   deps = [
     "../../../models/emulation:bundle",
     "../../../ui/components/helpers:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 

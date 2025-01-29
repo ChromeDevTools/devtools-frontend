@@ -1,15 +1,15 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export function init(): void {
   const container = document.createElement('ul');
   // clang-format off
-  // eslint-disable-next-line rulesdir/no-a-tags-in-lit-html
-  LitHtml.render(html`
+  // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+  Lit.render(html`
 
   <style>
     .docs-breadcrumbs {

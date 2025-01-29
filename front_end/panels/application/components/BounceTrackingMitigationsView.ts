@@ -11,12 +11,12 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import bounceTrackingMitigationsViewStyles from './bounceTrackingMitigationsView.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -89,7 +89,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
   async #render(): Promise<void> {
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
                        jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
         ${await this.#renderMainFrameInformation()}
@@ -98,7 +98,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format on
   }
 
-  async #renderMainFrameInformation(): Promise<LitHtml.TemplateResult> {
+  async #renderMainFrameInformation(): Promise<Lit.TemplateResult> {
     if (!this.#checkedFeature) {
       await this.#checkFeatureState();
     }
@@ -137,7 +137,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format on
   }
 
-  #renderForceRunButton(): LitHtml.TemplateResult {
+  #renderForceRunButton(): Lit.TemplateResult {
     const isMitigationRunning = (this.#screenStatus === ScreenStatusType.RUNNING);
 
     // clang-format off
@@ -158,7 +158,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format on
   }
 
-  #renderDeletedSitesOrNoSitesMessage(): LitHtml.TemplateResult {
+  #renderDeletedSitesOrNoSitesMessage(): Lit.TemplateResult {
     if (!this.#seenButtonClick) {
       return html``;
     }

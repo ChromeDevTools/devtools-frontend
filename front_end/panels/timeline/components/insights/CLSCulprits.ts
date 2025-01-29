@@ -5,13 +5,13 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {CLSCulpritsInsightModel} from '../../../../models/trace/insights/CLSCulprits.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -60,7 +60,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CL
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-cls-culprits`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cls-culprits`;
   override internalName: string = 'cls-culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -134,9 +134,9 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model || !this.bounds) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     if (!this.model.clusters.length || !this.model.worstCluster) {

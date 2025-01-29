@@ -18,12 +18,12 @@ const error = {
 ruleTester.run('html-tagged-template', rule, {
   valid: [
     {
-      code: `import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+      code: `import * as Lit from '../../../../ui/lit/lit.js';
 
-      const {html} = LitHtml;
+      const {html} = Lit;
 
       function render() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }
@@ -32,65 +32,65 @@ ruleTester.run('html-tagged-template', rule, {
   ],
   invalid: [
     {
-      code: `import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+      code: `import * as Lit from '../../../../ui/lit/lit.js';
 
       function render() {
-        LitHtml.render(
-            LitHtml.html\`<div></div>\`,
+        Lit.render(
+            Lit.html\`<div></div>\`,
             this.shadow, {host: this});
       }
 
       function render2() {
-        LitHtml.render(
-            LitHtml.html\`<div></div>\`,
+        Lit.render(
+            Lit.html\`<div></div>\`,
             this.shadow, {host: this});
       }`,
       errors: [error, error],
-      output: `import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+      output: `import * as Lit from '../../../../ui/lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
       function render() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }
 
       function render2() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }`,
     },
     {
-      code: `import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+      code: `import * as Lit from '../../../../ui/lit/lit.js';
 
-      const {html} = LitHtml;
+      const {html} = Lit;
 
       function render() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }
 
       function render2() {
-        LitHtml.render(
-            LitHtml.html\`<div></div>\`,
+        Lit.render(
+            Lit.html\`<div></div>\`,
             this.shadow, {host: this});
       }`,
       errors: [error],
-      output: `import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+      output: `import * as Lit from '../../../../ui/lit/lit.js';
 
-      const {html} = LitHtml;
+      const {html} = Lit;
 
       function render() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }
 
       function render2() {
-        LitHtml.render(
+        Lit.render(
             html\`<div></div>\`,
             this.shadow, {host: this});
       }`,

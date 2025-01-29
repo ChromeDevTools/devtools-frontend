@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import linkifierImplStyles from './linkifierImpl.css.js';
 import * as LinkifierUtils from './LinkifierUtils.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface LinkifierData {
   url: Platform.DevToolsPath.UrlString;
@@ -72,8 +72,8 @@ export class Linkifier extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     await RenderCoordinator.write(() => {
       // clang-format off
-      // eslint-disable-next-line rulesdir/no-a-tags-in-lit-html
-      LitHtml.render(html`<a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${LitHtml.Directives.ifDefined(this.#title) as string}><slot>${linkText}</slot></a>`, this.#shadow, { host: this});
+      // eslint-disable-next-line rulesdir/no-a-tags-in-lit
+      Lit.render(html`<a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${Lit.Directives.ifDefined(this.#title) as string}><slot>${linkText}</slot></a>`, this.#shadow, { host: this});
       // clang-format on
     });
   }

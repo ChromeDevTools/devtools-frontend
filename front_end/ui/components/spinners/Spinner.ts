@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import spinnerStyles from './spinner.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class Spinner extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -22,7 +22,7 @@ export class Spinner extends HTMLElement {
     // https://github.com/material-components/material-components-web/tree/master/packages/mdc-circular-progress.
     // Changing the value of the radius will cause errors in animation.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="indeterminate-spinner">
         <div class="left-circle-graphic-container">
           <svg class="left-circle-graphic" viewBox="0 0 100 100">

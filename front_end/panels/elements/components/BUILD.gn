@@ -64,7 +64,7 @@ devtools_module("components") {
     "../../../ui/components/tree_outline:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/inline_editor:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
 }

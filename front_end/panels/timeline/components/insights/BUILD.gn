@@ -49,7 +49,7 @@ devtools_module("insights") {
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/linkifier:bundle",
-    "../../../../ui/lit-html:bundle",
+    "../../../../ui/lit:bundle",
     "../../overlays:bundle",
     "../../utils:bundle",
   ]

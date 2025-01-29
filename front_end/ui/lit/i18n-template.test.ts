@@ -5,9 +5,9 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as i18nRaw from '../../third_party/i18n/i18n.js';
 
-import * as LitHtml from './lit-html.js';
+import * as Lit from './lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 describe('i18nTemplate', () => {
   const uiStrings = {placeholder: 'a message with a {string} and {template} placeholder'};
@@ -33,8 +33,8 @@ describe('i18nTemplate', () => {
     const strings = i18nInstance.registerFileStrings('test.ts', uiStrings);
     setLocale('en-US');
 
-    const result = LitHtml.i18nTemplate(strings, uiStrings.placeholder, {string: 'STRING', template: html`TEMPLATE`});
-    const element = LitHtml.render(result, document.createElement('div'), {host: this});
+    const result = Lit.i18nTemplate(strings, uiStrings.placeholder, {string: 'STRING', template: html`TEMPLATE`});
+    const element = Lit.render(result, document.createElement('div'), {host: this});
     assert.deepEqual(
         (element.parentNode as HTMLDivElement).innerText, 'a message with a STRING and TEMPLATE placeholder');
   });
@@ -45,8 +45,8 @@ describe('i18nTemplate', () => {
     const strings = i18nInstance.registerFileStrings('test.ts', uiStrings);
     setLocale('de');
 
-    const result = LitHtml.i18nTemplate(strings, uiStrings.placeholder, {string: 'STRING', template: html`TEMPLATE`});
-    const element = LitHtml.render(result, document.createElement('div'), {host: this});
+    const result = Lit.i18nTemplate(strings, uiStrings.placeholder, {string: 'STRING', template: html`TEMPLATE`});
+    const element = Lit.render(result, document.createElement('div'), {host: this});
     assert.deepEqual(
         (element.parentNode as HTMLDivElement).innerText, 'a message with a TEMPLATE and STRING placeholder');
   });

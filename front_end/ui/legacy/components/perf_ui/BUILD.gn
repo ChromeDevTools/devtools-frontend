@@ -59,7 +59,7 @@ devtools_module("perf_ui") {
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/source_frame:bundle",
     "../../../../ui/legacy/theme_support:bundle",
-    "../../../../ui/lit-html:bundle",
+    "../../../../ui/lit:bundle",
   ]
 
   visibility = [ "../../../../component_docs/perf_piechart" ]

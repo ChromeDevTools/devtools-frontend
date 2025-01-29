@@ -9,10 +9,10 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Marked from '../../../third_party/marked/marked.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export function getThrottlingRecommendations(): {
   cpuOption: SDK.CPUThrottlingManager.CPUThrottlingOption|null,
@@ -131,7 +131,7 @@ export function shortenUrl(url: URL, maxChars = 20): string {
  * This should only be used for markdown that is guaranteed to be valid,
  * and not contain any user-generated content.
  */
-export function md(markdown: Common.UIString.LocalizedString): LitHtml.TemplateResult {
+export function md(markdown: Common.UIString.LocalizedString): Lit.TemplateResult {
   const tokens = Marked.Marked.lexer(markdown);
   const data = {tokens};
   return html`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;

@@ -5,17 +5,17 @@
 import '../../../components/panel_introduction_steps/panel_introduction_steps.js';
 
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const container = document.getElementById('container');
 if (container) {
-  LitHtml.render(
+  Lit.render(
       html`
 <devtools-panel-introduction-steps>
 <span slot="title">Get actionable insights on your website's performance</span>

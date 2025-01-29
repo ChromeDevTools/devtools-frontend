@@ -5,11 +5,11 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import timelineSummaryStyles from './timelineSummary.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**

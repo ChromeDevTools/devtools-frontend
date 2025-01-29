@@ -12,12 +12,12 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as Logs from '../../../models/logs/logs.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import requestLinkIconStyles from './requestLinkIcon.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -161,10 +161,10 @@ export class RequestLinkIcon extends HTMLElement {
     return this.#affectedRequest?.url;
   }
 
-  #maybeRenderURL(): LitHtml.LitTemplate {
+  #maybeRenderURL(): Lit.LitTemplate {
     const url = this.#getUrlForDisplaying();
     if (!url) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     if (this.#urlToDisplay) {
@@ -184,7 +184,7 @@ export class RequestLinkIcon extends HTMLElement {
       if (this.#request || this.#affectedRequest?.requestId !== undefined) {
         // clang-format off
         template = html`
-          <button class=${LitHtml.Directives.classMap({link: Boolean(this.#request)})}
+          <button class=${Lit.Directives.classMap({link: Boolean(this.#request)})}
                   title=${this.#getTooltip()}
                   jslog=${VisualLogging.link('request').track({click: true})}
                   @click=${this.handleClick}>
@@ -193,7 +193,7 @@ export class RequestLinkIcon extends HTMLElement {
           </button>`;
         // clang-format on
       }
-      LitHtml.render(template, this.#shadow, {host: this});
+      Lit.render(template, this.#shadow, {host: this});
     });
   }
 }

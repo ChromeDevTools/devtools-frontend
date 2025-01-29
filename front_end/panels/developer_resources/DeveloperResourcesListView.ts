@@ -11,11 +11,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import developerResourcesListViewStyles from './developerResourcesListView.css.js';
 
-const {render, html, nothing} = LitHtml;
+const {render, html, nothing} = Lit;
 
 const UIStrings = {
   /**
@@ -149,7 +149,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                   </tr>`)}
               </table>
             </devtools-new-data-grid>`,
-            target, {host: input});  // eslint-disable-line rulesdir/lit-html-host-this
+            target, {host: input});  // eslint-disable-line rulesdir/lit-host-this
     // clang-format on
     function renderUrl(url: string): HTMLElement {
       const outer = document.createElement('div');

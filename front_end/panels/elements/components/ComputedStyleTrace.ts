@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import computedStyleTraceStyles from './computedStyleTrace.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export interface ComputedStyleTraceData {
   selector: string;

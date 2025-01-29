@@ -11,13 +11,13 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 import networkThrottlingSelectorStyles from './networkThrottlingSelector.css.js';
 
-const {html, nothing} = LitHtml;
+const {html, nothing} = Lit;
 
 const UIStrings = {
   /**
@@ -231,7 +231,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
       ${recommendedInfoEl}
     `;
     // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   };
 }
 

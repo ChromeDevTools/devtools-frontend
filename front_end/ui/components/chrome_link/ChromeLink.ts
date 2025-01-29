@@ -6,13 +6,13 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
 import chromeLinkStyles from './chromeLink.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -61,9 +61,9 @@ export class ChromeLink extends HTMLElement {
     urlForContext.search = '';
     const jslogContext = Platform.StringUtilities.toKebabCase(urlForContext.toString());
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       /* x-link doesn't work with custom click/keydown handlers */
-      /* eslint-disable rulesdir/no-a-tags-in-lit-html */
+      /* eslint-disable rulesdir/no-a-tags-in-lit */
       html`
         <a href=${this.#href} class="link" target="_blank"
           jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}

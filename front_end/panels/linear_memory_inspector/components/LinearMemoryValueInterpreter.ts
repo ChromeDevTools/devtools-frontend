@@ -8,7 +8,7 @@ import './ValueInterpreterSettings.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
@@ -30,7 +30,7 @@ const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export class EndiannessChangedEvent extends Event {
   static readonly eventName = 'endiannesschanged';
@@ -128,7 +128,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     this.dispatchEvent(new EndiannessChangedEvent(endianness));
   }
 
-  #renderEndiannessSetting(): LitHtml.TemplateResult {
+  #renderEndiannessSetting(): Lit.TemplateResult {
     const onEnumSettingChange = this.#onEndiannessChange.bind(this);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

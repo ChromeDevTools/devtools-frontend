@@ -97,7 +97,7 @@ devtools_module("elements") {
     "../../ui/legacy/components/inline_editor:bundle",
     "../../ui/legacy/components/object_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
     "./components:bundle",
   ]
 

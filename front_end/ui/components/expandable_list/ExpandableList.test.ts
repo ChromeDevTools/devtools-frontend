@@ -4,11 +4,11 @@
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {MutationType, withMutations} from '../../../testing/MutationHelpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import * as ExpandableList from './expandable_list.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 describe('ExpandableList', () => {
   it('can be expanded', async () => {

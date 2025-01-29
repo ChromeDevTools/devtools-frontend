@@ -40,7 +40,7 @@ devtools_module("protocol_monitor") {
     "../../ui/components/suggestion_input:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/source_frame:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 }

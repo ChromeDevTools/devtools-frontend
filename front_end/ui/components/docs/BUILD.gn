@@ -79,5 +79,5 @@ ts_library("bundle") {
     "toggle_fonts.ts",
   ]
 
-  deps = [ "../../../ui/lit-html:bundle" ]
+  deps = [ "../../../ui/lit:bundle" ]
 }

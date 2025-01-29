@@ -4,13 +4,13 @@
 
 import '../../legacy/legacy.js'; // Required for <x-link>.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import markdownLinkStyles from './markdownLink.css.js';
 import {getMarkdownLink} from './MarkdownLinksMap.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface MarkdownLinkData {
   key: string;
@@ -44,7 +44,7 @@ export class MarkdownLink extends HTMLElement {
     // clang-format off
     const output = html`<x-link class="devtools-link" href=${this.#linkUrl} jslog=${VisualLogging.link().track({click: true})}
     >${this.#linkText}</x-link>`;
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
     // clang-format on
   }
 }

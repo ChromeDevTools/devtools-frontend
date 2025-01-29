@@ -21,7 +21,7 @@ devtools_module("tree_outline") {
     "../../../core/platform:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../code_highlighter:bundle",
   ]
@@ -46,7 +46,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../render_coordinator:bundle",
   ]
 }

@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import * as LitHtml from '../lit-html/lit-html.js';
+import * as Lit from '../lit/lit.js';
 
 import * as UI from './legacy.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 describe('XLink', () => {
   describe('title', () => {
@@ -30,7 +30,7 @@ describe('XLink', () => {
   describe('HTML minification', () => {
     it('properly minifies whitespaces in release mode', () => {
       const target = document.createElement('section');
-      LitHtml.render(UI.XLink.sample, target, {host: this});
+      Lit.render(UI.XLink.sample, target, {host: this});
       const result = target.querySelector('p')?.innerText;
       assert.strictEqual(result, 'Hello, world!');
     });
@@ -47,10 +47,10 @@ describe('XLink', () => {
       assert.strictEqual(link.tabIndex, -1);
     });
 
-    it('can be set via LitHTML template', async () => {
+    it('can be set via Lit template', async () => {
       const container = document.createElement('div');
       // clang-format off
-      LitHtml.render(
+      Lit.render(
         html`
           <x-link
             href="https://example.com/"

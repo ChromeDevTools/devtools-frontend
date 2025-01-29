@@ -66,7 +66,7 @@ ruleTester.run('no-bound-component-methods', rule, {
   invalid: [
     {
       code: `export class FeedbackButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal\`devtools-feedback-button\`;
+  static readonly litTagName = Lit.literal\`devtools-feedback-button\`;
   readonly #boundRender = this.render.bind(this);
   readonly #boundClick = this.onClick.bind(this);
 }`,
@@ -80,7 +80,7 @@ ruleTester.run('no-bound-component-methods', rule, {
     },
     {
       code: `export class FeedbackButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal\`devtools-feedback-button\`;
+  static readonly litTagName = Lit.literal\`devtools-feedback-button\`;
   private readonly boundClick = this.onClick.bind(this);
 }`,
       filename: 'front_end/components/test.ts',
@@ -93,7 +93,7 @@ ruleTester.run('no-bound-component-methods', rule, {
     },
     {
       code: `export class FeedbackButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal\`devtools-feedback-button\`;
+  static readonly litTagName = Lit.literal\`devtools-feedback-button\`;
   private readonly boundClick = this.onClick.bind(this);
   private readonly boundFocus = this.onFocus.bind(this);
 

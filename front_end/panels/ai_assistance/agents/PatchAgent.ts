@@ -5,7 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
-import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Lit from '../../../ui/lit/lit.js';
 
 import {
   type ActionResponse,
@@ -66,7 +66,7 @@ export class ProjectContext extends ConversationContext<Workspace.Workspace.Proj
     return document.createElement('span');
   }
 
-  override getTitle(): string|ReturnType<typeof LitHtml.Directives.until> {
+  override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
     return this.#project.displayName();
   }
 }

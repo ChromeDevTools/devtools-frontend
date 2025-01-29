@@ -39,7 +39,7 @@ devtools_module("markdown_view") {
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
 }
@@ -72,7 +72,7 @@ ts_library("unittests") {
     "../../../testing",
     "../../../third_party/marked:bundle",
     "../../legacy:bundle",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../icon_button:bundle",
     "../render_coordinator:bundle",
   ]

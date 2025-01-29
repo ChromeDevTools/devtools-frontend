@@ -4,12 +4,12 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import styles from './timeRangeOverlay.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -255,7 +255,7 @@ export class TimeRangeOverlay extends HTMLElement {
   #render(): void {
     const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
     // clang-format off
-    LitHtml.render(
+    Lit.render(
         html`
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
             <span

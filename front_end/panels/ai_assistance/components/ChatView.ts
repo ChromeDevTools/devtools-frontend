@@ -15,14 +15,14 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 
 import styles from './chatView.css.js';
 import type {UserActionRowProps} from './UserActionRow.js';
 
-const {html, Directives: {ifDefined, ref}} = LitHtml;
+const {html, Directives: {ifDefined, ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -335,7 +335,7 @@ class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownIn
     super();
     this.#stripLinks = Boolean(opts.stripLinks);
   }
-  override templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
     if (token.type === 'code') {
       const lines = (token.text as string).split('\n');
       if (lines[0]?.trim() === 'css') {
@@ -375,7 +375,7 @@ export class ChatView extends HTMLElement {
   #scrollTop?: number;
   #props: Props;
   #messagesContainerElement?: Element;
-  #mainElementRef?: LitHtml.Directives.Ref<Element> = LitHtml.Directives.createRef();
+  #mainElementRef?: Lit.Directives.Ref<Element> = Lit.Directives.createRef();
   #lastAnswerMarkdownView?: MarkdownView.MarkdownView.MarkdownView;
   #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
   /**
@@ -565,8 +565,7 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #renderUserActionRow(rpcId?: Host.AidaClient.RpcGlobalId, suggestions?: [string, ...string[]]):
-      LitHtml.TemplateResult {
+  #renderUserActionRow(rpcId?: Host.AidaClient.RpcGlobalId, suggestions?: [string, ...string[]]): Lit.TemplateResult {
     // clang-format off
     return html`<devtools-user-action-row
       .props=${{
@@ -588,7 +587,7 @@ export class ChatView extends HTMLElement {
   #renderTextAsMarkdown(text: string, {animate, ref: refFn}: {
     animate?: boolean,
     ref?: (element?: Element) => void,
-  } = {}): LitHtml.TemplateResult {
+  } = {}): Lit.TemplateResult {
     let tokens = [];
     try {
       tokens = Marked.Marked.lexer(text);
@@ -609,22 +608,22 @@ export class ChatView extends HTMLElement {
     // clang-format off
     return html`<devtools-markdown-view
       .data=${{tokens, renderer: this.#markdownRenderer, animationEnabled: animate} as MarkdownView.MarkdownView.MarkdownViewData}
-      ${refFn ? ref(refFn) : LitHtml.nothing}>
+      ${refFn ? ref(refFn) : Lit.nothing}>
     </devtools-markdown-view>`;
     // clang-format on
   }
 
-  #renderTitle(step: Step): LitHtml.LitTemplate {
+  #renderTitle(step: Step): Lit.LitTemplate {
     const paused = step.sideEffect ? html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
-                                     LitHtml.nothing;
+                                     Lit.nothing;
     const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 
     return html`<span class="title">${paused}${actionTitle}</span>`;
   }
 
-  #renderStepCode(step: Step): LitHtml.LitTemplate {
+  #renderStepCode(step: Step): Lit.LitTemplate {
     if (!step.code && !step.output) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
@@ -644,7 +643,7 @@ export class ChatView extends HTMLElement {
           .showCopyButton=${true}
         ></devtools-code-block>
     </div>` :
-                             LitHtml.nothing;
+                             Lit.nothing;
     const output = step.output ? html`<div class="js-code-output">
       <devtools-code-block
         .code=${step.output}
@@ -654,20 +653,19 @@ export class ChatView extends HTMLElement {
         .showCopyButton=${false}
       ></devtools-code-block>
     </div>` :
-                                 LitHtml.nothing;
+                                 Lit.nothing;
 
     return html`<div class="step-code">${code}${output}</div>`;
     // clang-format on
   }
 
-  #renderStepDetails(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
-    const sideEffects =
-        options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : LitHtml.nothing;
-    const thought = step.thought ? html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
+  #renderStepDetails(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
+    const sideEffects = options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : Lit.nothing;
+    const thought = step.thought ? html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : Lit.nothing;
 
     // clang-format off
     const contextDetails = step.contextDetails ?
-    html`${LitHtml.Directives.repeat(
+    html`${Lit.Directives.repeat(
       step.contextDetails,
         contextDetail => {
           return html`<div class="context-details">
@@ -680,7 +678,7 @@ export class ChatView extends HTMLElement {
         ></devtools-code-block>
       </div>`;
         },
-      )}` : LitHtml.nothing;
+      )}` : Lit.nothing;
 
     return html`<div class="step-details">
       ${thought}
@@ -691,7 +689,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderStepBadge(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
+  #renderStepBadge(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
     if (this.#props.isLoading && options.isLast && !step.sideEffect) {
       return html`<devtools-spinner></devtools-spinner>`;
     }
@@ -716,8 +714,8 @@ export class ChatView extends HTMLElement {
       ></devtools-icon>`;
   }
 
-  #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
-    const stepClasses = LitHtml.Directives.classMap({
+  #renderStep(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
+    const stepClasses = Lit.Directives.classMap({
       step: true,
       empty: !step.thought && !step.code && !step.contextDetails,
       paused: Boolean(step.sideEffect),
@@ -745,9 +743,9 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderSideEffectConfirmationUi(step: Step): LitHtml.LitTemplate {
+  #renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
     if (!step.sideEffect) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const sideEffectAction = (answer: boolean): void => {
@@ -791,7 +789,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderError(message: ModelChatMessage): LitHtml.LitTemplate {
+  #renderError(message: ModelChatMessage): Lit.LitTemplate {
     if (message.error) {
       let errorMessage;
       switch (message.error) {
@@ -810,10 +808,10 @@ export class ChatView extends HTMLElement {
       return html`<p class="error" jslog=${VisualLogging.section('error')}>${lockedString(errorMessage)}</p>`;
     }
 
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
 
-  #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
+  #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): Lit.TemplateResult => {
     if (message.entity === ChatMessageEntity.USER) {
       const name = this.#props.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
       const image = this.#props.userInfo.accountImage ?
@@ -849,7 +847,7 @@ export class ChatView extends HTMLElement {
             <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
         </div>
-        ${LitHtml.Directives.repeat(
+        ${Lit.Directives.repeat(
           message.steps,
           (_, index) => index,
           step => {
@@ -860,11 +858,11 @@ export class ChatView extends HTMLElement {
         )}
         ${message.answer
           ? html`<p>${this.#renderTextAsMarkdown(message.answer, { animate: !this.#props.isReadOnly, ref: this.#handleLastAnswerMarkdownViewRef })}</p>`
-          : LitHtml.nothing}
+          : Lit.nothing}
         ${this.#renderError(message)}
         <div class="actions">
           ${isLast && this.#props.isLoading
-            ? LitHtml.nothing
+            ? Lit.nothing
             : this.#renderUserActionRow(
                 message.rpcId,
                 isLast ? message.suggestions : undefined,
@@ -875,28 +873,28 @@ export class ChatView extends HTMLElement {
     // clang-format on
   };
 
-  #renderSelection(): LitHtml.LitTemplate {
+  #renderSelection(): Lit.LitTemplate {
     if (!this.#props.agentType) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     return this.#renderContextSelector();
   }
 
-  #renderContextSelector(): LitHtml.LitTemplate {
+  #renderContextSelector(): Lit.LitTemplate {
     // TODO: currently the picker behavior is SDKNode specific.
     const hasPickerBehavior = this.#props.agentType === AgentType.STYLING;
 
-    const resourceClass = LitHtml.Directives.classMap({
+    const resourceClass = Lit.Directives.classMap({
       'not-selected': !this.#props.selectedContext,
       'resource-link': true,
       'allow-overflow': hasPickerBehavior,
     });
 
     if (!this.#props.selectedContext && !hasPickerBehavior) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
-    const icon = this.#props.selectedContext?.getIcon() ?? LitHtml.nothing;
+    const icon = this.#props.selectedContext?.getIcon() ?? Lit.nothing;
 
     const handleKeyDown = (ev: KeyboardEvent): void => {
       if (ev.key === 'Enter') {
@@ -921,7 +919,7 @@ export class ChatView extends HTMLElement {
             } as Buttons.Button.ButtonData}
             @click=${this.#props.onInspectElementClick}
           ></devtools-button>
-        ` : LitHtml.nothing
+        ` : Lit.nothing
       }
       <div
         role=button
@@ -938,7 +936,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderMessages = (): LitHtml.TemplateResult => {
+  #renderMessages = (): Lit.TemplateResult => {
     // clang-format off
     return html`
       <div class="messages-container" ${ref(this.#handleMessageContainerRef)}>
@@ -952,7 +950,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   };
 
-  #renderEmptyState = (): LitHtml.TemplateResult => {
+  #renderEmptyState = (): Lit.TemplateResult => {
     const suggestions = this.#getEmptyStateSuggestions();
 
     // clang-format off
@@ -1062,9 +1060,9 @@ export class ChatView extends HTMLElement {
     }
   }
 
-  #renderReadOnlySection(): LitHtml.LitTemplate {
+  #renderReadOnlySection(): Lit.LitTemplate {
     if (!this.#props.agentType) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off
@@ -1087,7 +1085,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderChatInputButtons(): LitHtml.TemplateResult {
+  #renderChatInputButtons(): Lit.TemplateResult {
     if (this.#props.isLoading) {
       // clang-format off
       return html`<devtools-button
@@ -1119,7 +1117,7 @@ export class ChatView extends HTMLElement {
               jslogContext: 'cancel-cross-origin-context-chat',
             } as Buttons.Button.ButtonData
           }
-        >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : LitHtml.nothing}
+        >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : Lit.nothing}
         <devtools-button
           class="chat-input-button"
           aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
@@ -1154,12 +1152,12 @@ export class ChatView extends HTMLElement {
     ></devtools-button>`;
   }
 
-  #renderChatInput = (): LitHtml.LitTemplate => {
+  #renderChatInput = (): Lit.LitTemplate => {
     if (!this.#props.agentType) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
-    const cls = LitHtml.Directives.classMap({
+    const cls = Lit.Directives.classMap({
       'chat-input': true,
       'two-big-buttons': this.#props.blockedByCrossOrigin,
     });
@@ -1176,7 +1174,7 @@ export class ChatView extends HTMLElement {
             ${this.#renderSelection()}
           </div>
         </div>
-      ` : LitHtml.nothing}
+      ` : Lit.nothing}
       <div class="chat-input-container">
         <textarea class=${cls}
           .disabled=${this.#isTextInputDisabled()}
@@ -1228,7 +1226,7 @@ export class ChatView extends HTMLElement {
     }
   };
 
-  #getConsentViewContents(): LitHtml.TemplateResult {
+  #getConsentViewContents(): Lit.TemplateResult {
     const settingsLink = document.createElement('button');
     settingsLink.textContent = i18nString(UIStrings.settingsLink);
     settingsLink.classList.add('link');
@@ -1257,7 +1255,7 @@ export class ChatView extends HTMLElement {
   #getUnavailableAidaAvailabilityContents(
       aidaAvailability:
           Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>):
-      LitHtml.TemplateResult {
+      Lit.TemplateResult {
     switch (aidaAvailability) {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED: {
@@ -1269,7 +1267,7 @@ export class ChatView extends HTMLElement {
     }
   }
 
-  #renderDisabledState(contents: LitHtml.TemplateResult): LitHtml.TemplateResult {
+  #renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
     // clang-format off
     return html`
       <div class="empty-state-container">
@@ -1291,12 +1289,12 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderNoAgentState(): LitHtml.TemplateResult {
+  #renderNoAgentState(): Lit.TemplateResult {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const featureCards: {
       icon: string,
       heading: string,
-      content: LitHtml.TemplateResult,
+      content: Lit.TemplateResult,
     }[] =
         [
           ...(config.devToolsFreestyler?.enabled ? [{
@@ -1366,7 +1364,7 @@ export class ChatView extends HTMLElement {
     // clang-format on
   }
 
-  #renderMainContents(): LitHtml.TemplateResult {
+  #renderMainContents(): Lit.TemplateResult {
     if (this.#props.state === State.CONSENT_VIEW) {
       return this.#renderDisabledState(this.#getConsentViewContents());
     }
@@ -1388,7 +1386,7 @@ export class ChatView extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
           ${this.#renderMainContents()}

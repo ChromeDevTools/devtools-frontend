@@ -8,7 +8,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {md} from '../utils/Helpers.js';
 
@@ -18,7 +18,7 @@ import type {ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
 import {determineCompareRating, NumberWithUnit} from './Utils.js';
 
-const {html} = LitHtml.StaticHtml;
+const {html} = Lit.StaticHtml;
 
 const UIStrings = {
   /**
@@ -150,7 +150,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #renderMetricValue(metric: 'LCP'|'CLS'|'INP', value: number|null, relevantEvent: Trace.Types.Events.Event|null):
-      LitHtml.LitTemplate {
+      Lit.LitTemplate {
     let valueText: string;
     let valueDisplay: HTMLElement|string;
     let classification;
@@ -196,7 +196,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       >
         <div class="metric-value metric-value-${classification}">${valueDisplay}</div>
       </button>
-    ` : LitHtml.nothing;
+    ` : Lit.nothing;
     // clang-format on
   }
 
@@ -269,7 +269,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     this.#render();
   }
 
-  #renderMetrics(insightSetKey: string): LitHtml.TemplateResult {
+  #renderMetrics(insightSetKey: string): Lit.TemplateResult {
     const local = this.#getLocalMetrics(insightSetKey);
     const field = this.#getFieldMetrics(insightSetKey);
 
@@ -342,7 +342,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     }
 
     const classes = {metrics: true, 'metrics--field': Boolean(fieldMetricsTemplateResult)};
-    const metricsTableEl = html`<div class=${LitHtml.Directives.classMap(classes)}>
+    const metricsTableEl = html`<div class=${Lit.Directives.classMap(classes)}>
       <div class="metrics-row">
         <span class="metric-label">LCP</span>
         <span class="metric-label">INP</span>
@@ -362,19 +362,19 @@ export class SidebarSingleInsightSet extends HTMLElement {
   #renderInsights(
       insightSets: Trace.Insights.Types.TraceInsightSets|null,
       insightSetKey: string,
-      ): LitHtml.LitTemplate {
+      ): Lit.LitTemplate {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );
 
     const insightSet = insightSets?.get(insightSetKey);
     if (!insightSet) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const models = insightSet.model;
-    const shownInsights: LitHtml.TemplateResult[] = [];
-    const passedInsights: LitHtml.TemplateResult[] = [];
+    const shownInsights: Lit.TemplateResult[] = [];
+    const passedInsights: Lit.TemplateResult[] = [];
     for (const [name, model] of Object.entries(models)) {
       const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
       if (!componentClass) {
@@ -419,7 +419,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
           })}</summary>
           ${passedInsights}
         </details>
-      ` : LitHtml.nothing}
+      ` : Lit.nothing}
     `;
     // clang-format on
   }
@@ -430,12 +430,12 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSetKey,
     } = this.#data;
     if (!insights || !insightSetKey) {
-      LitHtml.render(html``, this.#shadow, {host: this});
+      Lit.render(html``, this.#shadow, {host: this});
       return;
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(insights, insightSetKey)}

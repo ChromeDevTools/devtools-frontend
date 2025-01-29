@@ -54,7 +54,7 @@ devtools_module("ai_assistance") {
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
   ]
 }
 

@@ -67,7 +67,7 @@ function devtoolsPlugin(source, importer) {
   // name (without the extension). For example:
   // `import * as Components from './components/components.js'` = external
   // `import * as UI from '../ui/ui.js'` = external
-  // `import * as LitHtml from '../third_party/lit-html/lit-html.js'` = external
+  // `import * as Lit from '../third_party/lit/lit.js'` = external
   // `import {DataGrid} from './components/DataGrid.js'` = not external
   // `import * as Components from './components/foo.js'` = not external
 
@@ -77,7 +77,7 @@ function devtoolsPlugin(source, importer) {
   // as a check for the import, as the import will be different in Chromium and
   // would therefore not match the path of `__dirname`.
   // These should be removed because the new heuristic _should_ deal with these
-  // e.g. it'll pick up third_party/lit-html/lit-html.js is its own entrypoint
+  // e.g. it'll pick up third_party/lit/lit.js is its own entrypoint
 
   // The CodeMirror addons look like bundles (addon/comment/comment.js) but are not.
   if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'codemirror', 'package'))) {

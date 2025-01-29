@@ -6,7 +6,7 @@ import './DataGrid.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as UI from '../../legacy/legacy.js';
 
 import type {DataGridContextMenusConfiguration} from './DataGrid.js';
@@ -21,7 +21,7 @@ import {
   type SortState,
 } from './DataGridUtils.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -269,7 +269,7 @@ export class DataGridController extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <devtools-data-grid .data=${{
           columns: this.#columns,
           rows: this.#rows,

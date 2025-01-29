@@ -17,7 +17,7 @@ devtools_module("adorners") {
 
   deps = [
     "../../../core/platform:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
   ]

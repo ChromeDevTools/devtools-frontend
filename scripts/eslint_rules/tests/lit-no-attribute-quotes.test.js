@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/lit-html-no-attribute-quotes.js');
+const rule = require('../lib/lit-no-attribute-quotes.js');
 const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
@@ -13,14 +13,14 @@ const ruleTester = new (require('eslint').RuleTester)({
   },
 });
 
-ruleTester.run('lit-html-no-attribute-quotes', rule, {
+ruleTester.run('lit-no-attribute-quotes', rule, {
   valid: [
     {
-      code: 'LitHtml.html`<p class=${foo}>foo</p>`',
+      code: 'Lit.html`<p class=${foo}>foo</p>`',
       filename: 'front_end/components/datagrid.ts',
     },
     {
-      code: 'LitHtml.html`<p class=${foo}>"${someOutput}"</p>`',
+      code: 'Lit.html`<p class=${foo}>"${someOutput}"</p>`',
       filename: 'front_end/components/datagrid.ts',
     },
     {
@@ -34,12 +34,12 @@ ruleTester.run('lit-html-no-attribute-quotes', rule, {
   ],
   invalid: [
     {
-      code: 'LitHtml.html`<p class="${foo}">foo</p>`',
+      code: 'Lit.html`<p class="${foo}">foo</p>`',
       filename: 'front_end/components/datagrid.ts',
       errors: [
-        {messageId: 'attributeQuotesNotRequired', column: 26, line: 1},
+        {messageId: 'attributeQuotesNotRequired', column: 22, line: 1},
       ],
-      output: 'LitHtml.html`<p class=${foo}>foo</p>`',
+      output: 'Lit.html`<p class=${foo}>foo</p>`',
     },
     {
       code: 'html`<p class="${foo}">foo</p>`',

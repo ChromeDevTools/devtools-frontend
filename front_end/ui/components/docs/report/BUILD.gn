@@ -12,7 +12,7 @@ ts_library("ts") {
   deps = [
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/components/report_view:bundle",
-    "../../../../ui/lit-html:bundle",
+    "../../../../ui/lit:bundle",
   ]
 }
 

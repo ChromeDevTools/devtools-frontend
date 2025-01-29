@@ -11,11 +11,11 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import trustTokensViewStyles from './trustTokensView.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -81,7 +81,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     await RenderCoordinator.write('Render TrustTokensView', () => {
       // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
         <div>
           <span class="heading">${i18nString(UIStrings.trustTokens)}</span>
           <devtools-icon name="info" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}></devtools-icon>
@@ -95,7 +95,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
-  #renderGridOrNoDataMessage(tokens: Protocol.Storage.TrustTokens[]): LitHtml.TemplateResult {
+  #renderGridOrNoDataMessage(tokens: Protocol.Storage.TrustTokens[]): Lit.TemplateResult {
     if (tokens.length === 0) {
       return html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
     }

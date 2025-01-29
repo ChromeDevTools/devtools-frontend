@@ -5,14 +5,14 @@
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
 import tableStyles from './table.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>;
 
@@ -44,7 +44,7 @@ export interface TableData {
 }
 
 export interface TableDataRow {
-  values: Array<number|string|LitHtml.LitTemplate>;
+  values: Array<number|string|Lit.LitTemplate>;
   overlays?: Overlays.Overlays.TimelineOverlay[];
 }
 
@@ -167,9 +167,9 @@ export class Table extends HTMLElement {
       return;
     }
 
-    LitHtml.render(
+    Lit.render(
         html`<table
-          class=${LitHtml.Directives.classMap({
+          class=${Lit.Directives.classMap({
           interactive: this.#interactive,
         })}
           @mouseleave=${this.#interactive ? this.#onMouseLeave : null}>

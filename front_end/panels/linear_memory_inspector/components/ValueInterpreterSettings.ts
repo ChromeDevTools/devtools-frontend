@@ -5,13 +5,13 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Input from '../../../ui/components/input/input.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
 import valueInterpreterSettingsStyles from './valueInterpreterSettings.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -90,7 +90,7 @@ export class ValueInterpreterSettings extends HTMLElement {
       `, this.#shadow, {host: this});
   }
 
-  #plotTypeSelections(group: ValueTypeGroup): LitHtml.TemplateResult {
+  #plotTypeSelections(group: ValueTypeGroup): Lit.TemplateResult {
     const types = GROUP_TO_TYPES.get(group);
     if (!types) {
       throw new Error(`Unknown group ${group}`);

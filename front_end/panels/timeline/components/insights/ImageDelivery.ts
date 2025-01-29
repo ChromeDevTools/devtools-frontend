@@ -8,14 +8,14 @@ import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {ImageDeliveryInsightModel} from '../../../../models/trace/insights/ImageDelivery.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
 import type {TableDataRow} from './Table.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -39,7 +39,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_REQUESTS = 10;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-image-delivery`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-image-delivery`;
   override internalName: string = 'image-delivery';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -63,9 +63,9 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     return this.model?.totalByteSavings ?? null;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const optimizableImages = [...this.model.optimizableImages];

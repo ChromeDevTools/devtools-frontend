@@ -14,7 +14,7 @@ generate_css("css_files") {
 devtools_module("spinner") {
   sources = [ "Spinner.ts" ]
 
-  deps = [ "../../../ui/lit-html:bundle" ]
+  deps = [ "../../../ui/lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {

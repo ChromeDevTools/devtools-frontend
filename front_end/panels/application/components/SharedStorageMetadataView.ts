@@ -7,12 +7,12 @@ import '../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
 import {StorageMetadataView} from './StorageMetadataView.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -83,7 +83,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
     return i18nString(UIStrings.sharedStorage);
   }
 
-  override async renderReportContent(): Promise<LitHtml.LitTemplate> {
+  override async renderReportContent(): Promise<Lit.LitTemplate> {
     const metadata = await this.#sharedStorageMetadataGetter.getMetadata();
     this.#creationTime = metadata?.creationTime ?? null;
     this.#length = metadata?.length ?? 0;
@@ -105,7 +105,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
     // clang-format on
   }
 
-  #renderDateForCreationTime(): LitHtml.TemplateResult {
+  #renderDateForCreationTime(): Lit.TemplateResult {
     if (!this.#creationTime) {
       return html`${i18nString(UIStrings.notYetCreated)}`;
     }
@@ -113,7 +113,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
     return html`${date.toLocaleString()}`;
   }
 
-  #renderResetBudgetButton(): LitHtml.TemplateResult {
+  #renderResetBudgetButton(): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-button .iconName=${'undo'}

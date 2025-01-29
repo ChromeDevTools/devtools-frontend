@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import cssAngleEditorStyles from './cssAngleEditor.css.js';
@@ -16,8 +16,8 @@ import {
   getRadiansFromAngle,
 } from './CSSAngleUtils.js';
 
-const {render, html} = LitHtml;
-const styleMap = LitHtml.Directives.styleMap;
+const {render, html} = Lit;
+const styleMap = Lit.Directives.styleMap;
 
 const CLOCK_DIAL_LENGTH = 6;
 
@@ -36,7 +36,7 @@ export class CSSAngleEditor extends HTMLElement {
   private onAngleUpdate?: (angle: Angle) => void;
   private background = '';
   private clockRadius = 77 / 2;  // By default the clock is 77 * 77.
-  private dialTemplates?: LitHtml.TemplateResult[];
+  private dialTemplates?: Lit.TemplateResult[];
   private mousemoveThrottler = new Common.Throttler.Throttler(16.67 /* 60fps */);
   private mousemoveListener = this.onMousemove.bind(this);
 
@@ -147,7 +147,7 @@ export class CSSAngleEditor extends HTMLElement {
     // clang-format on
   }
 
-  private renderDials(): LitHtml.TemplateResult[] {
+  private renderDials(): Lit.TemplateResult[] {
     if (!this.dialTemplates) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off

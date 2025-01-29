@@ -5,12 +5,12 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import styles from './entryLabelOverlay.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -335,7 +335,7 @@ export class EntryLabelOverlay extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(
+    Lit.render(
         html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <span

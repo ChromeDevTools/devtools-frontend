@@ -5,11 +5,11 @@
 import '../icon_button/icon_button.js';
 
 import * as Common from '../../../core/common/common.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import settingDeprecationWarning from './settingDeprecationWarning.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class SettingDeprecationWarning extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -34,8 +34,8 @@ export class SettingDeprecationWarning extends HTMLElement {
       };
     }
 
-    LitHtml.render(
-        html`<devtools-icon class=${LitHtml.Directives.classMap(classes)} .data=${iconData} title=${warning} @click=${
+    Lit.render(
+        html`<devtools-icon class=${Lit.Directives.classMap(classes)} .data=${iconData} title=${warning} @click=${
             onclick}></devtools-icon>`,
         this.#shadow, {host: this});
   }

@@ -10,13 +10,13 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import badgeStyles from './badge.css.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
-const {html, Directives: {ifDefined}} = LitHtml;
+const {html, Directives: {ifDefined}} = Lit;
 
 const UIStrings = {
   /**
@@ -99,7 +99,7 @@ export class Badge extends HTMLElement {
     };
     this.#adorner.classList.add(`badge-${data.style}`);
 
-    LitHtml.render(
+    Lit.render(
         html`
       ${this.#adorner}
     `,
@@ -140,7 +140,7 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
         badgeContent: trial.status,
         style: trial.status === Protocol.Page.OriginTrialStatus.Enabled ? 'success' : 'error',
       } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>
-        ${trial.tokensWithStatus.length > 1 ? tokenCountBadge : LitHtml.nothing}
+        ${trial.tokensWithStatus.length > 1 ? tokenCountBadge : Lit.nothing}
       `;
     },
   };
@@ -160,17 +160,17 @@ function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Tr
       } as BadgeData}></devtools-resources-origin-trial-tree-view-badge>
       `;
       // Only display token status for convenience when the node is not expanded.
-      return html`${i18nString(UIStrings.token)} ${state.isExpanded ? LitHtml.nothing : statusBadge}`;
+      return html`${i18nString(UIStrings.token)} ${state.isExpanded ? Lit.nothing : statusBadge}`;
     },
   };
 }
 
 interface TokenField {
   name: string;
-  value: LitHtml.TemplateResult;
+  value: Lit.TemplateResult;
 }
 
-function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult {
+function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): Lit.TemplateResult {
   return html`
     <devtools-resources-origin-trial-token-rows .data=${{node} as OriginTrialTokenRowsData}>
     </devtools-resources-origin-trial-token-rows>
@@ -208,7 +208,7 @@ function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeN
   };
 }
 
-function defaultRenderer(node: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult {
+function defaultRenderer(node: TreeNode<OriginTrialTreeNodeData>): Lit.TemplateResult {
   return html`${String(node.treeNodeData)}`;
 }
 
@@ -235,7 +235,7 @@ export class OriginTrialTokenRows extends HTMLElement {
     this.#render();
   }
 
-  #renderTokenField = (fieldValue: string, hasError?: boolean): LitHtml.TemplateResult => html`
+  #renderTokenField = (fieldValue: string, hasError?: boolean): Lit.TemplateResult => html`
         <div class=${ifDefined(hasError ? 'error-text' : undefined)}>
           ${fieldValue}
         </div>`;
@@ -306,7 +306,7 @@ export class OriginTrialTokenRows extends HTMLElement {
           `;
     });
 
-    LitHtml.render(
+    Lit.render(
         html`
       <div class="content">
         ${tokenDetailRows}
@@ -335,7 +335,7 @@ export class OriginTrialTreeView extends HTMLElement {
 
   #render(trials: Protocol.Page.OriginTrial[]): void {
     if (!trials.length) {
-      LitHtml.render(
+      Lit.render(
           html`
     <span class="status-badge">
       <devtools-icon
@@ -353,7 +353,7 @@ export class OriginTrialTreeView extends HTMLElement {
       return;
     }
 
-    LitHtml.render(
+    Lit.render(
         html`
       <devtools-tree-outline .data=${{
           tree: trials.map(constructOriginTrialTree),

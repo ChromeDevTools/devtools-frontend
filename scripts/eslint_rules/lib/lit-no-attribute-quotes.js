@@ -47,7 +47,7 @@ module.exports = {
     fixable: 'code',
     messages: {
       attributeQuotesNotRequired:
-          'When interpolating a value as an attribute in LitHtml you do not need double quotes around it.',
+          'When interpolating a value as an attribute in Lit you do not need double quotes around it.',
     },
     schema: []  // no options
   },

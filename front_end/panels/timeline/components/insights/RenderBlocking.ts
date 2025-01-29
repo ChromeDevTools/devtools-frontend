@@ -8,13 +8,13 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type {RenderBlockingInsightModel} from '../../../../models/trace/insights/RenderBlocking.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -35,7 +35,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Re
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-render-blocking-requests`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-render-blocking-requests`;
   override internalName: string = 'render-blocking-requests';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -58,9 +58,9 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     return this.model?.metricSavings?.FCP ?? null;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const MAX_REQUESTS = 3;

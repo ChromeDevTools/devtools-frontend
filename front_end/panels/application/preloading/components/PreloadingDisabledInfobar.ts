@@ -14,12 +14,12 @@ import * as IconButton from '../../../../ui/components/icon_button/icon_button.j
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -120,11 +120,11 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
   async #render(): Promise<void> {
     await RenderCoordinator.write('PreloadingDisabledInfobar render', () => {
-      LitHtml.render(this.#renderInternal(), this.#shadow, {host: this});
+      Lit.render(this.#renderInternal(), this.#shadow, {host: this});
     });
   }
 
-  #renderInternal(): LitHtml.LitTemplate {
+  #renderInternal(): Lit.LitTemplate {
     const forceEnabled =
         this.#data.disabledByHoldbackPrefetchSpeculationRules || this.#data.disabledByHoldbackPrerenderSpeculationRules;
     const disabled =
@@ -136,7 +136,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     } else if (forceEnabled) {
       header = i18nString(UIStrings.infobarPreloadingIsForceEnabled);
     } else {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -167,7 +167,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     // clang-format on
   }
 
-  #dialogContents(): LitHtml.LitTemplate {
+  #dialogContents(): Lit.LitTemplate {
     const LINK = 'https://developer.chrome.com/blog/prerender-pages/';
 
     const learnMoreLink =
@@ -197,9 +197,9 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     `;
   }
 
-  #maybeKeyValue(shouldShow: boolean, header: string, description: string|Element): LitHtml.LitTemplate {
+  #maybeKeyValue(shouldShow: boolean, header: string, description: string|Element): Lit.LitTemplate {
     if (!shouldShow) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     return html`
@@ -212,7 +212,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     `;
   }
 
-  #maybeDisalebByPreference(): LitHtml.LitTemplate {
+  #maybeDisalebByPreference(): Lit.LitTemplate {
     const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
     preloadingSettingLink.href = 'chrome://settings/performance' as Platform.DevToolsPath.UrlString;
     preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPagesSettings);
@@ -225,26 +225,26 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
         this.#data.disabledByPreference, i18nString(UIStrings.headerDisabledByPreference), description);
   }
 
-  #maybeDisalebByDataSaver(): LitHtml.LitTemplate {
+  #maybeDisalebByDataSaver(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByDataSaver, i18nString(UIStrings.headerDisabledByDataSaver),
         i18nString(UIStrings.descriptionDisabledByDataSaver));
   }
 
-  #maybeDisalebByBatterySaver(): LitHtml.LitTemplate {
+  #maybeDisalebByBatterySaver(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByBatterySaver, i18nString(UIStrings.headerDisabledByBatterySaver),
         i18nString(UIStrings.descriptionDisabledByBatterySaver));
   }
 
-  #maybeDisalebByHoldbackPrefetchSpeculationRules(): LitHtml.LitTemplate {
+  #maybeDisalebByHoldbackPrefetchSpeculationRules(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByHoldbackPrefetchSpeculationRules,
         i18nString(UIStrings.headerDisabledByHoldbackPrefetchSpeculationRules),
         i18nString(UIStrings.descriptionDisabledByHoldbackPrefetchSpeculationRules));
   }
 
-  #maybeDisalebByHoldbackPrerenderSpeculationRules(): LitHtml.LitTemplate {
+  #maybeDisalebByHoldbackPrerenderSpeculationRules(): Lit.LitTemplate {
     return this.#maybeKeyValue(
         this.#data.disabledByHoldbackPrerenderSpeculationRules,
         i18nString(UIStrings.headerDisabledByHoldbackPrerenderSpeculationRules),

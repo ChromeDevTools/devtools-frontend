@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 // clean-css does not compile this file correctly. So as a workaround adding styles inline.
 const styles = `
@@ -179,7 +179,7 @@ export class SplitView extends HTMLElement {
 
   #render = (): void => {
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
         <div class="wrapper ${this.#mainAxisIdx === 1 ? 'horizontal' : ''}">
           <div class="container">

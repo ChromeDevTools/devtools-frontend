@@ -12,7 +12,7 @@ import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import preloadingGridStyles from './preloadingGrid.css.js';
 import {capitalizedAction, composedStatus, ruleSetLocationShort} from './PreloadingString.js';
@@ -40,7 +40,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html, Directives: {styleMap}} = LitHtml;
+const {render, html, Directives: {styleMap}} = Lit;
 
 export interface PreloadingGridData {
   rows: PreloadingGridRow[];

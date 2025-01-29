@@ -18,49 +18,49 @@ const EXPECTED_ERROR_MESSAGE = 'Custom elements should not be self closing.';
 ruleTester.run('no-self-closing-custom-element-tagnames', rule, {
   valid: [
     {
-      code: 'LitHtml.html`<p></p>`',
+      code: 'Lit.html`<p></p>`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<input />`',
+      code: 'Lit.html`<input />`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<${DataGrid.litTagName}></${DataGrid.litTagName}>`',
+      code: 'Lit.html`<${DataGrid.litTagName}></${DataGrid.litTagName}>`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<p><${DataGrid.litTagName}></${DataGrid.litTagName}></p>`',
+      code: 'Lit.html`<p><${DataGrid.litTagName}></${DataGrid.litTagName}></p>`',
       filename: 'front_end/components/test.ts',
     },
     {
       code:
-          'LitHtml.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName}></${DataGrid2.litTagName}></${DataGrid1.litTagName}>`',
+          'Lit.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName}></${DataGrid2.litTagName}></${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<${DataGrid1.litTagName}>\n</${DataGrid1.litTagName}>`',
+      code: 'Lit.html`<${DataGrid1.litTagName}>\n</${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
     },
   ],
   invalid: [
     {
-      code: 'LitHtml.html`<${DataGrid.litTagName} />`',
+      code: 'Lit.html`<${DataGrid.litTagName} />`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`<p><${DataGrid.litTagName} /></p>`',
+      code: 'Lit.html`<p><${DataGrid.litTagName} /></p>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName} /></${DataGrid1.litTagName}>`',
+      code: 'Lit.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName} /></${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`<${DataGrid.litTagName} .data=${{test: "Hello World"}}/>`',
+      code: 'Lit.html`<${DataGrid.litTagName} .data=${{test: "Hello World"}}/>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },

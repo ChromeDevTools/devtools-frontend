@@ -10,7 +10,7 @@ module.exports = {
     type: 'problem',
 
     docs: {
-      description: 'Usage of LitHtml.html',
+      description: 'Usage of Lit.html',
       category: 'Possible Errors',
     },
     fixable: 'code',
@@ -39,14 +39,14 @@ module.exports = {
       },
       TaggedTemplateExpression(node) {
         const tag = node.tag;
-        if (tag.type === 'MemberExpression' && tag.object.name === 'LitHtml' && tag.property.name === 'html') {
+        if (tag.type === 'MemberExpression' && tag.object.name === 'Lit' && tag.property.name === 'html') {
           context.report({
             node,
             message: 'Use unqualified html tagged template for compatibility with lit-analyzer',
             fix(fixer) {
               const result = [fixer.removeRange([tag.object.range[0], tag.property.range[0]])];
               if (lastImport && !shortandDefined) {
-                result.push(fixer.insertTextAfter(lastImport, '\n\nconst {html} = LitHtml;'));
+                result.push(fixer.insertTextAfter(lastImport, '\n\nconst {html} = Lit;'));
                 shortandDefined = true;
               }
               return result;

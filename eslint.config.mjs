@@ -272,11 +272,11 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-          import.meta.dirname,
-          'config',
-          'typescript',
-          'tsconfig.eslint.json',
-        ),
+            import.meta.dirname,
+            'config',
+            'typescript',
+            'tsconfig.eslint.json',
+            ),
       },
     },
 
@@ -465,12 +465,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-            import.meta.dirname,
-            'front_end',
-            'models',
-            'trace',
-            'trace.js',
-          ),
+              import.meta.dirname,
+              'front_end',
+              'models',
+              'trace',
+              'trace.js',
+              ),
           importName: 'Trace',
         },
       ],
@@ -521,15 +521,15 @@ export default [
       'rulesdir/no-bound-component-methods': 'error',
       'rulesdir/no-customized-builtin-elements': 'error',
       'rulesdir/no-self-closing-custom-element-tagnames': 'error',
-      'rulesdir/no-style-tags-in-lit-html': 'error',
-      'rulesdir/no-a-tags-in-lit-html': 'error',
+      'rulesdir/no-style-tags-in-lit': 'error',
+      'rulesdir/no-a-tags-in-lit': 'error',
       'rulesdir/check-css-import': 'error',
       'rulesdir/enforce-optional-properties-last': 'error',
       'rulesdir/check-enumerated-histograms': 'error',
       'rulesdir/check-was-shown-methods': 'error',
       'rulesdir/static-custom-event-names': 'error',
-      'rulesdir/lit-html-host-this': 'error',
-      'rulesdir/lit-html-no-attribute-quotes': 'error',
+      'rulesdir/lit-host-this': 'error',
+      'rulesdir/lit-no-attribute-quotes': 'error',
       'rulesdir/lit-template-result-or-nothing': 'error',
       'rulesdir/inject-checkbox-styles': 'error',
       'rulesdir/jslog-context-list': 'error',
@@ -676,10 +676,10 @@ export default [
       // anything, so we leave return types to the developer within the
       // component_docs folder.
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'rulesdir/no-style-tags-in-lit-html': 'off',
-      // We use LitHtml to help render examples sometimes and we don't use
+      'rulesdir/no-style-tags-in-lit': 'off',
+      // We use Lit to help render examples sometimes and we don't use
       // {host: this} as often the `this` is the window.
-      'rulesdir/lit-html-host-this': 'off',
+      'rulesdir/lit-host-this': 'off',
     },
   },
   {

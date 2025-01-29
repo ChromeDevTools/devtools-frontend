@@ -10,13 +10,13 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import type {ForcedReflowInsightModel} from '../../../../models/trace/insights/ForcedReflow.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -37,10 +37,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Fo
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-forced-reflow`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
   override internalName: string = 'forced-reflow';
 
-  #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame): LitHtml.LitTemplate {
+  #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame): Lit.LitTemplate {
     const linkifier = new LegacyComponents.Linkifier.Linkifier();
     const stackTrace: Protocol.Runtime.StackTrace = {
       callFrames: [
@@ -59,9 +59,9 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     return html`${callFrameContents.element}`;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model || !this.model.topLevelFunctionCallData) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const topLevelFunctionCallData = this.model.topLevelFunctionCallData.topLevelFunctionCall;

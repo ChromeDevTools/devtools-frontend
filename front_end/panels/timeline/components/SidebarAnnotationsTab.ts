@@ -9,14 +9,14 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const diagramImageUrl = new URL('../../../Images/performance-panel-diagram.svg', import.meta.url).toString();
 const entryLabelImageUrl = new URL('../../../Images/performance-panel-entry-label.svg', import.meta.url).toString();
@@ -191,7 +191,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #renderEntryToIdentifier(annotation: Trace.Types.File.EntriesLinkAnnotation): LitHtml.LitTemplate {
+  #renderEntryToIdentifier(annotation: Trace.Types.File.EntriesLinkAnnotation): Lit.LitTemplate {
     if (annotation.entryTo) {
       const entryToName = Utils.EntryName.nameForEntry(annotation.entryTo);
       const toBackgroundColor = this.#annotationEntryToColorMap.get(annotation.entryTo) ?? '';
@@ -202,12 +202,12 @@ export class SidebarAnnotationsTab extends HTMLElement {
       };
       // clang-format off
       return html`
-        <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForToAnnotationIdentifier)}>
+        <span class="annotation-identifier" style=${Lit.Directives.styleMap(styleForToAnnotationIdentifier)}>
           ${entryToName}
         </span>`;
       // clang-format on
     }
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
 
   /**
@@ -221,7 +221,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
    *
    * All identifiers have a different colour background.
    */
-  #renderAnnotationIdentifier(annotation: Trace.Types.File.Annotation): LitHtml.LitTemplate {
+  #renderAnnotationIdentifier(annotation: Trace.Types.File.Annotation): Lit.LitTemplate {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
         const entryName = Utils.EntryName.nameForEntry(annotation.entry);
@@ -232,7 +232,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
           color,
         };
         return html`
-              <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForAnnotationIdentifier)}>
+              <span class="annotation-identifier" style=${Lit.Directives.styleMap(styleForAnnotationIdentifier)}>
                 ${entryName}
               </span>
         `;
@@ -263,7 +263,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
         // clang-format off
         return html`
           <div class="entries-link">
-            <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}>
+            <span class="annotation-identifier" style=${Lit.Directives.styleMap(styleForFromAnnotationIdentifier)}>
               ${entryFromName}
             </span>
             <devtools-icon class="inline-icon" .data=${{
@@ -276,7 +276,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
             ${this.#renderEntryToIdentifier(annotation)}
           </div>
       `;
-            // clang-format on
+        // clang-format on
       }
       default:
         Platform.assertNever(annotation, 'Unsupported annotation type');
@@ -287,7 +287,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
     this.dispatchEvent(new RevealAnnotation(annotation));
   }
 
-  #renderTutorialCard(): LitHtml.TemplateResult {
+  #renderTutorialCard(): Lit.TemplateResult {
     return html`
       <div class="annotation-tutorial-container">
       ${i18nString(UIStrings.annotationGetStarted)}
@@ -329,7 +329,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
   #render(): void {
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
         <span class="annotations">
           ${this.#annotations.length === 0 ?

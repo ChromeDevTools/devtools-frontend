@@ -51,7 +51,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../dialogs:bundle",
     "../render_coordinator:bundle",
   ]

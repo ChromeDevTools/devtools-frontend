@@ -57,7 +57,7 @@ devtools_module("components") {
     "../../../ui/components/suggestion_input:bundle",
     "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../controllers:bundle",
     "../converters:bundle",

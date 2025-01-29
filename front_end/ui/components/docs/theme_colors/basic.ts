@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
@@ -146,13 +146,13 @@ function appendStyles() {
     } else {
       styles = {borderBottomColor: `var(${varName})`};
     }
-    const style = LitHtml.Directives.styleMap(styles);
+    const style = Lit.Directives.styleMap(styles);
     return html`
       <div style=${style}><code>${varName}: ${value}</code></div>
       <div style=${style} class='theme-with-dark-background'><code>${varName}: ${value}</code></div>
     `;
   });
-  LitHtml.render(html`${items}`, container);
+  Lit.render(html`${items}`, container);
 }
 
 appendStyles();

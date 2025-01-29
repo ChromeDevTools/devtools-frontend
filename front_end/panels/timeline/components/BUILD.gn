@@ -77,7 +77,7 @@ devtools_module("components") {
     "../../../ui/components/request_link_icon:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/legacy/components/perf_ui:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
     "../../emulation:bundle",
     "../../mobile_throttling:bundle",

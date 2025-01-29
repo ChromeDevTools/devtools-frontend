@@ -7,12 +7,12 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DocumentLatencyInsightModel} from '../../../../models/trace/insights/DocumentLatency.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -67,10 +67,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Do
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-document-latency`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-document-latency`;
   override internalName: string = 'document-latency';
 
-  #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
+  #check(didPass: boolean, good: string, bad: string): Lit.TemplateResult {
     const icon = didPass ? 'check-circle' : 'clear';
 
     const ariaLabel = didPass ? i18nString(UIStrings.successAriaLabel, {PH1: good}) :
@@ -150,9 +150,9 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     return this.model?.data?.uncompressedResponseBytes ?? null;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model?.data) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off

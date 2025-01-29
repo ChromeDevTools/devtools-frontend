@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
+
 import panelIntroductionStepsStyles from './panelIntroductionSteps.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class PanelIntroductionSteps extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -23,7 +24,7 @@ export class PanelIntroductionSteps extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <h1><slot name="title">slot: title</slot></h1>
 
       <ol class="intro-steps">

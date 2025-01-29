@@ -10,7 +10,7 @@ module.exports = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'Enforce that no methods that are used as LitHtml events are bound.',
+      description: 'Enforce that no methods that are used as Lit events are bound.',
       category: 'Possible Errors',
     },
     fixable: 'code',

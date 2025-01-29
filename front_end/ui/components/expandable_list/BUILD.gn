@@ -16,7 +16,7 @@ devtools_module("expandable_list") {
   sources = [ "ExpandableList.ts" ]
 
   deps = [
-    "../../lit-html:bundle",
+    "../../lit:bundle",
     "../../visual_logging:bundle",
     "../helpers:bundle",
   ]
@@ -41,6 +41,6 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../testing",
-    "../../lit-html:bundle",
+    "../../lit:bundle",
   ]
 }

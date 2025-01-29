@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as ComponentHelpers from './helpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const TestElement = class extends HTMLElement {
   renderCount = 0;
@@ -43,7 +43,7 @@ describe('ComponentHelpers', () => {
         const targetDiv = document.createElement('div');
         const callback = sinon.spy();
         function fakeComponentRender(this: HTMLDivElement) {
-          LitHtml.render(
+          Lit.render(
               // clang-format off
               html`
               <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
@@ -61,7 +61,7 @@ describe('ComponentHelpers', () => {
         const targetDiv = document.createElement('div');
         const callback = sinon.spy();
         function fakeComponentRender(this: HTMLDivElement, output: string) {
-          LitHtml.render(
+          Lit.render(
               // clang-format off
               html`
               <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>

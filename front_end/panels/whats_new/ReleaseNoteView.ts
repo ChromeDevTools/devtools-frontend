@@ -9,12 +9,12 @@ import * as Marked from '../../third_party/marked/marked.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 import releaseNoteViewStyles from './releaseNoteView.css.js';
 
 const UIStrings = {

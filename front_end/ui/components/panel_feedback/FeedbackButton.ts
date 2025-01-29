@@ -6,10 +6,10 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as Buttons from '../buttons/buttons.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -47,7 +47,7 @@ export class FeedbackButton extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <devtools-button
           @click=${this.#onFeedbackClick}
           .iconName=${'review'}

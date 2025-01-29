@@ -13,12 +13,12 @@ import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Switch from '../../ui/components/switch/switch.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import aiSettingsTabStyles from './aiSettingsTab.css.js';
 
-const {html, Directives: {ifDefined, classMap}} = LitHtml;
+const {html, Directives: {ifDefined, classMap}} = Lit;
 
 const UIStrings = {
   /**
@@ -313,8 +313,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     void this.render();
   }
 
-  #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString|LitHtml.TemplateResult):
-      LitHtml.TemplateResult {
+  #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString|Lit.TemplateResult):
+      Lit.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -332,7 +332,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderSharedDisclaimer(): LitHtml.TemplateResult {
+  #renderSharedDisclaimer(): Lit.TemplateResult {
     const tosLink = UI.XLink.XLink.create(
         'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
         'terms-of-service');
@@ -371,7 +371,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     `;
   }
 
-  #renderSettingItem(icon: string, text: Common.UIString.LocalizedString): LitHtml.TemplateResult {
+  #renderSettingItem(icon: string, text: Common.UIString.LocalizedString): Lit.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -412,7 +412,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     return reasons;
   }
 
-  #renderConsoleInsightsSetting(disabledReasons: string[]): LitHtml.TemplateResult {
+  #renderConsoleInsightsSetting(disabledReasons: string[]): Lit.TemplateResult {
     const isDisabled = disabledReasons.length > 0;
     const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
     const detailsClasses = {
@@ -484,7 +484,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderAiAssistanceSetting(disabledReasons: string[]): LitHtml.TemplateResult {
+  #renderAiAssistanceSetting(disabledReasons: string[]): Lit.TemplateResult {
     const isDisabled = disabledReasons.length > 0;
     const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
     const detailsClasses = {
@@ -556,7 +556,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderDisabledExplainer(disabledReasons: string[]): LitHtml.LitTemplate {
+  #renderDisabledExplainer(disabledReasons: string[]): Lit.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
@@ -583,16 +583,16 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? html`
-          ${disabledReasons.length ? this.#renderDisabledExplainer(disabledReasons) : LitHtml.nothing}
+          ${disabledReasons.length ? this.#renderDisabledExplainer(disabledReasons) : Lit.nothing}
           <div class="settings-container">
-            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting(disabledReasons) : LitHtml.nothing}
-            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting(disabledReasons) : LitHtml.nothing}
+            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting(disabledReasons) : Lit.nothing}
+            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting(disabledReasons) : Lit.nothing}
           </div>
-        ` : LitHtml.nothing}
+        ` : Lit.nothing}
       </div>
     `, this.#shadow, {host: this});
     // clang-format on

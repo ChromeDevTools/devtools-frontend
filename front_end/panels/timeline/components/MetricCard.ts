@@ -8,7 +8,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import metricCardStyles from './metricCard.css.js';
 import {type CompareRating, renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
@@ -24,7 +24,7 @@ import {
   renderMetricValue,
 } from './Utils.js';
 
-const {html, nothing} = LitHtml;
+const {html, nothing} = Lit;
 
 const UIStrings = {
   /**
@@ -359,7 +359,7 @@ export class MetricCard extends HTMLElement {
     return determineCompareRating(this.#data.metric, localValue, fieldValue);
   }
 
-  #renderCompareString(): LitHtml.LitTemplate {
+  #renderCompareString(): Lit.LitTemplate {
     const localValue = this.#getLocalValue();
     if (localValue === undefined) {
       if (this.#data.metric === 'INP') {
@@ -367,7 +367,7 @@ export class MetricCard extends HTMLElement {
           <div class="compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
         `;
       }
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const compare = this.#getCompareRating();
@@ -390,10 +390,10 @@ export class MetricCard extends HTMLElement {
     // clang-format on
   }
 
-  #renderEnvironmentRecommendations(): LitHtml.LitTemplate {
+  #renderEnvironmentRecommendations(): Lit.LitTemplate {
     const compare = this.#getCompareRating();
     if (!compare || compare === 'similar') {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const recs: string[] = [];
@@ -428,7 +428,7 @@ export class MetricCard extends HTMLElement {
     }
 
     if (!recs.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     return html`
@@ -443,7 +443,7 @@ export class MetricCard extends HTMLElement {
     return `timeline.landing.${isLocal ? 'local' : 'field'}-${this.#data.metric.toLowerCase()}`;
   }
 
-  #renderDetailedCompareString(): LitHtml.LitTemplate {
+  #renderDetailedCompareString(): Lit.LitTemplate {
     const localValue = this.#getLocalValue();
     if (localValue === undefined) {
       if (this.#data.metric === 'INP') {
@@ -451,7 +451,7 @@ export class MetricCard extends HTMLElement {
           <div class="detailed-compare-text">${i18nString(UIStrings.interactToMeasure)}</div>
         `;
       }
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const localRating = rateMetric(localValue, this.#getThresholds());
@@ -508,7 +508,7 @@ export class MetricCard extends HTMLElement {
     return i18nString(UIStrings.percentage, {PH1: percent});
   }
 
-  #renderFieldHistogram(): LitHtml.LitTemplate {
+  #renderFieldHistogram(): Lit.LitTemplate {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
 
     const format = this.#getFormatFn();
@@ -564,11 +564,11 @@ export class MetricCard extends HTMLElement {
     // clang-format on
   }
 
-  #renderPhaseTable(): LitHtml.LitTemplate {
+  #renderPhaseTable(): Lit.LitTemplate {
     const localValue = this.#getLocalValue();
     const phases = this.#data.phases;
     if (!phases || !localValue) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     return html`
@@ -650,7 +650,7 @@ export class MetricCard extends HTMLElement {
         <slot name="extra-info"></slot>
       </div>
     `;
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   };
   // clang-format on
 }

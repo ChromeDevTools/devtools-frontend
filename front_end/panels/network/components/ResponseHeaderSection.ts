@@ -16,7 +16,7 @@ import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Sources from '../../../panels/sources/sources.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -33,7 +33,7 @@ import {
 } from './HeaderSectionRow.js';
 import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -554,7 +554,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
           jslog=${VisualLogging.action('add-header').track({click: true})}>
           ${i18nString(UIStrings.addHeader)}
         </devtools-button>
-      ` : LitHtml.nothing}
+      ` : Lit.nothing}
     `, this.shadow, {host: this});
     // clang-format on
   }

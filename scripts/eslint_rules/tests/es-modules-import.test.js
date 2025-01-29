@@ -72,7 +72,7 @@ ruleTester.run('es-modules-import', rule, {
       filename: 'front_end/elements/ElementsBreadcrumbs.test.ts',
     },
     {
-      code: 'import * as LitHtml from \'../third_party/lit-html/lit-html.js\';',
+      code: 'import * as Lit from \'../third_party/lit/lit.js\';',
       filename: 'front_end/elements/ElementBreadcrumbs.ts',
     },
     {
@@ -301,12 +301,12 @@ ruleTester.run('es-modules-import', rule, {
       ],
     },
     {
-      code: 'import {classMap} from \'../third_party/lit-html/package/directives/class-map.js\';',
+      code: 'import {classMap} from \'../third_party/lit/package/directives/class-map.js\';',
       filename: 'front_end/elements/ElementsBreadcrumbs.ts',
       errors: [
         {
           message:
-              'Incorrect cross-namespace import: "../third_party/lit-html/package/directives/class-map.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.',
+              'Incorrect cross-namespace import: "../third_party/lit/package/directives/class-map.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead. If the third_party dependency does not expose a single entrypoint, update es_modules_import.js to make it exempt.',
         },
       ],
     },

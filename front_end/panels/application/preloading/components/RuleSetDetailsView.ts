@@ -12,11 +12,11 @@ import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TextEditor from '../../../../ui/components/text_editor/text_editor.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import ruleSetDetailsViewStyles from './RuleSetDetailsView.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 type RuleSet = Protocol.Preload.RuleSet;
 
@@ -46,7 +46,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
   async #render(): Promise<void> {
     await RenderCoordinator.write('RuleSetDetailsView render', async () => {
       if (this.#data === null) {
-        LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
+        Lit.render(Lit.nothing, this.#shadow, {host: this});
         return;
       }
 
@@ -54,7 +54,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
         <div class="content">
           <div class="ruleset-header" id="ruleset-url">${this.#data?.url || SDK.TargetManager.TargetManager.instance().inspectedURL()}</div>
           ${this.#maybeError()}
@@ -68,11 +68,11 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   // TODO(https://crbug.com/1425354): Support i18n.
-  #maybeError(): LitHtml.LitTemplate {
+  #maybeError(): Lit.LitTemplate {
     assertNotNullOrUndefined(this.#data);
 
     if (this.#data.errorMessage === undefined) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // Disabled until https://crbug.com/1079231 is fixed.
@@ -93,7 +93,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
             // clang-format on
   }
 
-  #renderSource(sourceText: string): LitHtml.LitTemplate {
+  #renderSource(sourceText: string): Lit.LitTemplate {
     this.#editorState = CodeMirror.EditorState.create({
       doc: sourceText,
       extensions: [

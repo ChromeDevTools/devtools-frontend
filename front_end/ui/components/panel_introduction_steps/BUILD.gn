@@ -19,7 +19,7 @@ devtools_module("panel_introduction_steps") {
     "../../../core/root:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../buttons:bundle",
     "../input:bundle",
   ]

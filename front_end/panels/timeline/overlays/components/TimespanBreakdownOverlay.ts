@@ -3,18 +3,18 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import styles from './timespanBreakdownOverlay.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 /**
  * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
  */
 export interface EntryBreakdown {
   bounds: Trace.Types.Timing.TraceWindowMicro;
-  label: string|LitHtml.LitTemplate;
+  label: string|Lit.LitTemplate;
   showDuration: boolean;
 }
 
@@ -154,7 +154,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     return Array.from(this.#shadow.querySelectorAll('.timespan-breakdown-overlay-section'));
   }
 
-  #renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
+  #renderSection(section: EntryBreakdown): Lit.TemplateResult {
     // clang-format off
     return html`
       <div class="timespan-breakdown-overlay-section">
@@ -162,7 +162,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
         ${section.showDuration ?
           html`
             <span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span>
-          ` : LitHtml.nothing}
+          ` : Lit.nothing}
           <span class="section-label-text">
             ${section.label}
           </span>
@@ -176,7 +176,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
       this.classList.toggle('odd-number-of-sections', this.#sections.length % 2 === 1);
       this.classList.toggle('even-number-of-sections', this.#sections.length % 2 === 0);
     }
-    LitHtml.render(html`${this.#sections?.map(this.#renderSection)}`, this.#shadow, {host: this});
+    Lit.render(html`${this.#sections?.map(this.#renderSection)}`, this.#shadow, {host: this});
     this.checkSectionLabelPositioning();
   }
 }

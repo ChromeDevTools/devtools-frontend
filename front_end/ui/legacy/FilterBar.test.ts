@@ -4,11 +4,11 @@
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import * as UI from './legacy.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 describeWithEnvironment('NamedBitSetFilterUI', () => {
   it('is functional from template', async () => {
@@ -31,7 +31,7 @@ describeWithEnvironment('NamedBitSetFilterUI', () => {
             html`
             <devtools-named-bit-set-filter
               .options=${{items: filterItems}}
-              ${LitHtml.Directives.ref((el: Element|undefined) => {
+              ${Lit.Directives.ref((el: Element|undefined) => {
                   if(!el || !(el instanceof UI.FilterBar.NamedBitSetFilterUIElement)){
                       return;
                   }

@@ -8,12 +8,12 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type {ThirdPartiesInsightModel} from '../../../../models/trace/insights/ThirdParties.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /** Label for a table column that displays the name of a third-party provider. */
@@ -32,7 +32,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Th
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-third-parties`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-third-parties`;
   override internalName: string = 'third-parties';
 
   #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();
@@ -67,9 +67,9 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const entries = [...this.model.summaryByEntity.entries()].filter(kv => kv[0] !== this.model?.firstPartyEntity);

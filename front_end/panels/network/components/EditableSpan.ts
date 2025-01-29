@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import editableSpanStyles from './EditableSpan.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export interface EditableSpanData {
   value: string;

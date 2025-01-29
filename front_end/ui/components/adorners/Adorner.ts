@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import type * as Platform from '../../../core/platform/platform.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualElements from '../../visual_logging/visual_logging.js';
 
 import adornerStyles from './adorner.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export interface AdornerData {
   name: string;

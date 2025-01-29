@@ -10,14 +10,14 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import type * as Actions from '../recorder-actions/recorder-actions.js';
 
 import selectButtonStyles from './selectButton.css.js';
 
-const {html, Directives: {ifDefined, classMap}} = LitHtml;
+const {html, Directives: {ifDefined, classMap}} = Lit;
 
 export const enum Variant {
   PRIMARY = 'primary',
@@ -179,7 +179,7 @@ export class SelectButton extends HTMLElement {
   #renderSelectItem(
       item: SelectButtonItem,
       selectedItem: SelectButtonItem,
-      ): LitHtml.TemplateResult {
+      ): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-menu-item .value=${item.value} .selected=${
@@ -194,7 +194,7 @@ export class SelectButton extends HTMLElement {
   #renderSelectGroup(
       group: SelectMenuGroup,
       selectedItem: SelectButtonItem,
-      ): LitHtml.TemplateResult {
+      ): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-menu-group .name=${group.name}>
@@ -226,7 +226,7 @@ export class SelectButton extends HTMLElement {
     const menuLabel = selectedItem.buttonLabel ? selectedItem.buttonLabel() : selectedItem.label();
 
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
       <div class="select-button" title=${ifDefined(this.#getTitle(menuLabel))}>
       <devtools-select-menu

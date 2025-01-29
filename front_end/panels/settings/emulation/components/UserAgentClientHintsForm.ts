@@ -10,13 +10,13 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../../ui/components/input/input.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as EmulationUtils from '../utils/utils.js';
 
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -443,7 +443,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
 
   #renderInputWithLabel(
       label: string, placeholder: string, value: string,
-      stateKey: keyof Protocol.Emulation.UserAgentMetadata): LitHtml.TemplateResult {
+      stateKey: keyof Protocol.Emulation.UserAgentMetadata): Lit.TemplateResult {
     const handleInputChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
       this.#handleInputChange(stateKey, value);
@@ -464,7 +464,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  #renderPlatformSection(): LitHtml.TemplateResult {
+  #renderPlatformSection(): Lit.TemplateResult {
     const {platform, platformVersion} = this.#metaData;
     const handlePlatformNameChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
@@ -503,7 +503,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  #renderDeviceModelSection(): LitHtml.TemplateResult {
+  #renderDeviceModelSection(): Lit.TemplateResult {
     const {model, mobile} = this.#metaData;
     const handleDeviceModelChange = (event: KeyboardEvent): void => {
       const value = (event.target as HTMLInputElement).value;
@@ -542,7 +542,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  #renderUseragent(): LitHtml.TemplateResult {
+  #renderUseragent(): Lit.TemplateResult {
     const {
       brands =
           [
@@ -644,7 +644,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     `;
   }
 
-  #renderFullVersionList(): LitHtml.TemplateResult {
+  #renderFullVersionList(): Lit.TemplateResult {
     const {
       fullVersionList =
           [
@@ -770,7 +770,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       >
         ${i18nString(UIStrings.update)}
       </devtools-button>
-    ` : LitHtml.nothing;
+    ` : Lit.nothing;
     // clang-format on
 
     // clang-format off
@@ -835,7 +835,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       </section>
     `;
               // clang-format on
-              LitHtml.render(output, this.#shadow, {host: this});
+            Lit.render(output, this.#shadow, {host: this});
   }
 
   validate = (): UI.ListWidget.ValidatorResult => {

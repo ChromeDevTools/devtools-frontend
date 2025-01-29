@@ -7,11 +7,11 @@ import '../icon_button/icon_button.js';
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import surveyLinkStyles from './surveyLink.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -131,7 +131,7 @@ export class SurveyLink extends HTMLElement {
       </button>
     `;
     // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   }
 }
 

@@ -9,7 +9,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import {linkifyNodeReference} from '../../elements/DOMLinkifier.js';
 import {AI_ASSISTANCE_CSS_CLASS_NAME, ChangeManager} from '../ChangeManager.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
@@ -227,10 +227,10 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     return document.createElement('span');
   }
 
-  override getTitle(): string|ReturnType<typeof LitHtml.Directives.until> {
+  override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
     const hiddenClassList =
         this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
-    return LitHtml.Directives.until(
+    return Lit.Directives.until(
         linkifyNodeReference(this.#node, {hiddenClassList}),
     );
   }

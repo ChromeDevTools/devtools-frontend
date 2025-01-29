@@ -5,7 +5,7 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Extensions from '../extensions/extensions.js';
 import type * as Models from '../models/models.js';
@@ -19,7 +19,7 @@ import {
   Variant as SelectButtonVariant,
 } from './SelectButton.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -223,7 +223,7 @@ export class ReplaySection extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
     <devtools-select-button
       @selectmenuselected=${this.#handleSelectMenuSelected}

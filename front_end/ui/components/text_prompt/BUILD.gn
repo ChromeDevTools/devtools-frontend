@@ -17,7 +17,7 @@ devtools_module("text_prompt") {
   deps = [
     "../../../core/platform:bundle",
     "../../../ui/components/helpers:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 

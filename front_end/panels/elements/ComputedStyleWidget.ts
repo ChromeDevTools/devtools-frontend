@@ -41,7 +41,7 @@ import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import * as ElementsComponents from './components/components.js';
 import {type ComputedStyle, type ComputedStyleModel, Events} from './ComputedStyleModel.js';
@@ -53,7 +53,7 @@ import {categorizePropertyName, type Category, DefaultCategoryOrder} from './Pro
 import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -124,7 +124,7 @@ function renderPropertyContents(
 const createPropertyElement =
     (node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string, traceable: boolean, inherited: boolean,
      activeProperty: SDK.CSSProperty.CSSProperty|undefined,
-     onContextMenu: ((event: Event) => void)): LitHtml.TemplateResult => {
+     onContextMenu: ((event: Event) => void)): Lit.TemplateResult => {
       const {name, value} = renderPropertyContents(node, propertyName, propertyValue);
       // clang-format off
       return html`<devtools-computed-style-property
@@ -478,7 +478,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       ):
       (node: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>,
-       state: {isExpanded: boolean}) => LitHtml.TemplateResult {
+       state: {isExpanded: boolean}) => Lit.TemplateResult {
     return node => {
       const data = node.treeNodeData;
       if (data.tag === 'property') {

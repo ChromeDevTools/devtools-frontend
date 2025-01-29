@@ -9,8 +9,8 @@ const {assert} = require('chai');
 
 describe('eslint utils', () => {
   describe('isLitHtmlTemplateCall', () => {
-    it('returns true if the code is LitHtml.html``', () => {
-      const code = 'LitHtml.html`<span>foo</span>`';
+    it('returns true if the code is Lit.html``', () => {
+      const code = 'Lit.html`<span>foo</span>`';
       const parsed = parser.parse(code);
       const result = utils.isLitHtmlTemplateCall(parsed.body[0].expression);
       assert.strictEqual(result, true);
@@ -23,8 +23,8 @@ describe('eslint utils', () => {
       assert.strictEqual(result, true);
     });
 
-    it('returns false if the code is LitHtml.somethingElse``', () => {
-      const code = 'LitHtml.somethingElse`<span>foo</span>`';
+    it('returns false if the code is Lit.somethingElse``', () => {
+      const code = 'Lit.somethingElse`<span>foo</span>`';
       const parsed = parser.parse(code);
       const result = utils.isLitHtmlTemplateCall(parsed.body[0].expression);
       assert.strictEqual(result, false);
@@ -39,8 +39,8 @@ describe('eslint utils', () => {
   });
 
   describe('isLitHtmlRenderCall', () => {
-    it('returns true if the code is LitHtml.render()', () => {
-      const code = 'LitHtml.render(LitHtml.html``, this.#shadow)';
+    it('returns true if the code is Lit.render()', () => {
+      const code = 'Lit.render(Lit.html``, this.#shadow)';
       const parsed = parser.parse(code);
       const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
       assert.strictEqual(result, true);
@@ -60,8 +60,8 @@ describe('eslint utils', () => {
       assert.strictEqual(result, false);
     });
 
-    it('returns false if the code is LitHtml.notRender()', () => {
-      const code = 'LitHtml.notRender(html``, this.#shadow)';
+    it('returns false if the code is Lit.notRender()', () => {
+      const code = 'Lit.notRender(html``, this.#shadow)';
       const parsed = parser.parse(code);
       const result = utils.isLitHtmlRenderCall(parsed.body[0].expression);
       assert.strictEqual(result, false);

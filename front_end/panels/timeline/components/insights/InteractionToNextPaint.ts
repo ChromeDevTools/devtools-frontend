@@ -8,12 +8,12 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type {INPInsightModel} from '../../../../models/trace/insights/InteractionToNextPaint.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -48,7 +48,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/In
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-inp`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp`;
   override internalName: string = 'inp';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -98,7 +98,7 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
     ];
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     const event = this.model?.longestInteractionEvent;
     if (!event) {
       return html`<div class="insight-section">${i18nString(UIStrings.noInteractions)}</div>`;

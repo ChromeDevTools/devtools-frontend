@@ -7,14 +7,14 @@ import './SettingDeprecationWarning.js';
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
 import settingCheckboxStyles from './settingCheckbox.css.js';
 
-const {html, Directives: {ifDefined}} = LitHtml;
+const {html, Directives: {ifDefined}} = Lit;
 
 const UIStrings = {
   /**
@@ -58,7 +58,7 @@ export class SettingCheckbox extends HTMLElement {
     this.#render();
   }
 
-  icon(): LitHtml.TemplateResult|undefined {
+  icon(): Lit.TemplateResult|undefined {
     if (!this.#setting) {
       return undefined;
     }
@@ -105,8 +105,8 @@ export class SettingCheckbox extends HTMLElement {
             Buttons.Button.Size.SMALL} title=${ifDefined(disabledReasons.join('\n'))} @click=${
             onclick}></devtools-button>
     ` :
-        LitHtml.nothing;
-    LitHtml.render(
+        Lit.nothing;
+    Lit.render(
         html`
       <p>
         <label title=${title}>

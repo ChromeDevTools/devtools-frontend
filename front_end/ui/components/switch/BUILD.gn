@@ -15,7 +15,7 @@ generate_css("css_files") {
 devtools_module("switch_impl") {
   sources = [ "SwitchImpl.ts" ]
   deps = [
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
     "../../../ui/visual_logging:bundle",
   ]
 }

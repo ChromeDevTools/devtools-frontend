@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Lit from '../../../ui/lit/lit.js';
 import {AiHistoryStorage} from '../AiHistoryStorage.js';
 
 export const enum ResponseType {
@@ -134,7 +134,7 @@ export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
   abstract getIcon(): HTMLElement;
-  abstract getTitle(): string|ReturnType<typeof LitHtml.Directives.until>;
+  abstract getTitle(): string|ReturnType<typeof Lit.Directives.until>;
 
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {

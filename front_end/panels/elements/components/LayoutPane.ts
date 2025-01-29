@@ -15,7 +15,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 // eslint-disable-next-line rulesdir/es-modules-import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import layoutPaneStyles from './layoutPane.css.js';
@@ -67,7 +67,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export {LayoutElement};
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
   const className = node.getAttribute('class');
@@ -432,7 +432,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     element.hideHighlight();
   }
 
-  #renderElement(element: LayoutElement): LitHtml.TemplateResult {
+  #renderElement(element: LayoutElement): Lit.TemplateResult {
     const onElementToggle = this.#onElementToggle.bind(this, element);
     const onElementClick = this.#onElementClick.bind(this, element);
     const onColorChange = this.#onColorChange.bind(this, element);
@@ -483,7 +483,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
             // clang-format on
   }
 
-  #renderBooleanSetting(setting: BooleanSetting): LitHtml.TemplateResult {
+  #renderBooleanSetting(setting: BooleanSetting): Lit.TemplateResult {
     const onBooleanSettingChange = this.#onBooleanSettingChange.bind(this, setting);
     return html`<label data-boolean-setting="true" class="checkbox-label" title=${setting.title} jslog=${
         VisualLogging.toggle().track({click: true}).context(setting.name)}>
@@ -492,7 +492,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     </label>`;
   }
 
-  #renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
+  #renderEnumSetting(setting: EnumSetting): Lit.TemplateResult {
     const onEnumSettingChange = this.#onEnumSettingChange.bind(this, setting);
     return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
       <select

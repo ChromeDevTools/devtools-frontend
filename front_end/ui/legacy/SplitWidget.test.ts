@@ -4,11 +4,11 @@
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 
 import * as UI from './legacy.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 const widgetRef = UI.Widget.widgetRef;
 const SplitWidget = UI.SplitWidget.SplitWidget;
 

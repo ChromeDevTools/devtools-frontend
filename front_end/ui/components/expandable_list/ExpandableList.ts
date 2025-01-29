@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import expandableListStyles from './expandableList.css.js';
 
-const {html, Directives: {ifDefined}} = LitHtml;
+const {html, Directives: {ifDefined}} = Lit;
 
 export interface ExpandableListData {
-  rows: LitHtml.TemplateResult[];
+  rows: Lit.TemplateResult[];
   title?: string;
 }
 
@@ -18,7 +18,7 @@ export class ExpandableList extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #expanded = false;
-  #rows: LitHtml.TemplateResult[] = [];
+  #rows: Lit.TemplateResult[] = [];
   #title?: string;
 
   set data(data: ExpandableListData) {
@@ -43,7 +43,7 @@ export class ExpandableList extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(
+    Lit.render(
         html`
       <div class="expandable-list-container">
         <div>
@@ -54,7 +54,7 @@ export class ExpandableList extends HTMLElement {
                 jslog=${VisualLogging.expand().track({click: true})}></span>
               </button>
             `
-          : LitHtml.nothing}
+          : Lit.nothing}
         </div>
         <div class="expandable-list-items">
           ${this.#rows.filter((_, index) => (this.#expanded || index === 0)).map(row => html`

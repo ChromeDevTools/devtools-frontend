@@ -6,7 +6,7 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
@@ -20,7 +20,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 import styles from './entriesLinkOverlay.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';
@@ -314,7 +314,7 @@ export class EntriesLinkOverlay extends HTMLElement {
   #render(): void {
     const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
     // clang-format off
-    LitHtml.render(
+    Lit.render(
         html`
           <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
             <defs>

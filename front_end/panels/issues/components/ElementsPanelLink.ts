@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsPanelLinkStyles from './elementsPanelLink.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface ElementsPanelLinkData {
   onElementRevealIconClick: (event?: Event) => void;
@@ -38,7 +38,7 @@ export class ElementsPanelLink extends HTMLElement {
 
   #render(): void {
     // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
       <span
         class="element-reveal-icon"
         jslog=${VisualLogging.link('elements-panel').track({click: true})}

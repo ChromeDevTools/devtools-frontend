@@ -12,10 +12,10 @@ import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -392,7 +392,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           {
             columnId: SelectorTimingsKey.Elapsed,
             value: elapsedTimeInMs,
-            renderer(): LitHtml.TemplateResult {
+            renderer(): Lit.TemplateResult {
               return html`${elapsedTimeInMs.toFixed(3)}`;
             },
           },
@@ -401,7 +401,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           {
             columnId: SelectorTimingsKey.RejectPercentage,
             value: rejectPercentage,
-            renderer(): LitHtml.TemplateResult {
+            renderer(): Lit.TemplateResult {
               return html`${rejectPercentage.toFixed(1)}`;
             },
           },
@@ -413,7 +413,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           {
             columnId: SelectorTimingsKey.StyleSheetId,
             value: x[SelectorTimingsKey.StyleSheetId],
-            renderer(): LitHtml.TemplateResult {
+            renderer(): Lit.TemplateResult {
               if (locations === null) {
                 return html`<span></span>`;
               }

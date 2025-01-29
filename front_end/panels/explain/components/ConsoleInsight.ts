@@ -15,7 +15,7 @@ import type * as IconButton from '../../../ui/components/icon_button/icon_button
 import * as Input from '../../../ui/components/input/input.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
@@ -148,7 +148,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html, Directives} = LitHtml;
+const {render, html, Directives} = Lit;
 
 export class CloseEvent extends Event {
   static readonly eventName = 'close';
@@ -257,7 +257,7 @@ export class ConsoleInsight extends HTMLElement {
 
   // Main state.
   #state: StateData;
-  #referenceDetailsRef = LitHtml.Directives.createRef<HTMLDetailsElement>();
+  #referenceDetailsRef = Lit.Directives.createRef<HTMLDetailsElement>();
   #areReferenceDetailsOpen = false;
 
   // Rating sub-form state.
@@ -637,7 +637,7 @@ export class ConsoleInsight extends HTMLElement {
     }, {once: true});
   }
 
-  #renderSearchButton(): LitHtml.TemplateResult {
+  #renderSearchButton(): Lit.TemplateResult {
     // clang-format off
     return html`<devtools-button
       @click=${this.#onSearch}
@@ -654,7 +654,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #renderLearnMoreAboutInsights(): LitHtml.TemplateResult {
+  #renderLearnMoreAboutInsights(): Lit.TemplateResult {
     // clang-format off
     return html`<x-link href=${LEARNMORE_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>
       ${i18nString(UIStrings.learnMore)}
@@ -662,9 +662,9 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #maybeRenderSources(): LitHtml.LitTemplate {
+  #maybeRenderSources(): Lit.LitTemplate {
     if (this.#state.type !== State.INSIGHT || !this.#state.directCitationUrls.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const highlightIndex = this.#state.highlightIndex || -1;
@@ -672,7 +672,7 @@ export class ConsoleInsight extends HTMLElement {
     return html`
       <ol class="sources-list">
         ${this.#state.directCitationUrls.map((url, index) => {
-          const linkClasses = LitHtml.Directives.classMap({
+          const linkClasses = Lit.Directives.classMap({
             link: true,
             highlighted: highlightIndex - 1 === index,
           });
@@ -693,9 +693,9 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #maybeRenderRelatedContent(): LitHtml.LitTemplate {
+  #maybeRenderRelatedContent(): Lit.LitTemplate {
     if (this.#state.type !== State.INSIGHT || !this.#state.metadata.factualityMetadata?.facts.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     const directCitationUrls = this.#state.directCitationUrls;
     const relatedUrls = this.#state.metadata.factualityMetadata.facts
@@ -713,11 +713,11 @@ export class ConsoleInsight extends HTMLElement {
     relatedUrls.push(...dedupedTrainingDataUrls);
 
     if (relatedUrls.length === 0) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     // clang-format off
     return html`
-      ${this.#state.directCitationUrls.length ? html`<h3>${i18nString(UIStrings.relatedContent)}</h3>` : LitHtml.nothing}
+      ${this.#state.directCitationUrls.length ? html`<h3>${i18nString(UIStrings.relatedContent)}</h3>` : Lit.nothing}
       <ul class="references-list">
         ${relatedUrls.map(relatedUrl => html`
           <li>
@@ -750,7 +750,7 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  #renderMain(): LitHtml.TemplateResult {
+  #renderMain(): Lit.TemplateResult {
     const jslog = `${VisualLogging.section(this.#state.type).track({resize: true})}`;
     const noLogging = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
@@ -777,14 +777,14 @@ export class ConsoleInsight extends HTMLElement {
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: true} as MarkdownView.MarkdownView.MarkdownViewData}>
             </devtools-markdown-view>`: this.#state.explanation
           }
-          ${this.#state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : LitHtml.nothing}
+          ${this.#state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}
           ${this.#isSearchRagResponse(this.#state.metadata) ? html`
-            <details class="references" ${LitHtml.Directives.ref(this.#referenceDetailsRef)} @toggle=${this.#onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
+            <details class="references" ${Lit.Directives.ref(this.#referenceDetailsRef)} @toggle=${this.#onToggleReferenceDetails} jslog=${VisualLogging.expand('references').track({click: true})}>
               <summary>${i18nString(UIStrings.references)}</summary>
               ${this.#maybeRenderSources()}
               ${this.#maybeRenderRelatedContent()}
             </details>
-          ` : LitHtml.nothing}
+          ` : Lit.nothing}
           <details jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
             <devtools-console-insight-sources-list .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
@@ -897,7 +897,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #renderDisclaimer(): LitHtml.LitTemplate {
+  #renderDisclaimer(): Lit.LitTemplate {
     const noLogging = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
@@ -916,7 +916,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
-  #renderFooter(): LitHtml.LitTemplate {
+  #renderFooter(): Lit.LitTemplate {
     const showThumbsUpDownButtons =
         !(Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.disallowLogging ?? true);
     const disclaimer = this.#renderDisclaimer();
@@ -924,7 +924,7 @@ export class ConsoleInsight extends HTMLElement {
     switch (this.#state.type) {
       case State.LOADING:
       case State.SETTING_IS_NOT_TRUE:
-        return LitHtml.nothing;
+        return Lit.nothing;
       case State.ERROR:
       case State.OFFLINE:
         return html`<footer jslog=${VisualLogging.section('footer')}>
@@ -1028,7 +1028,7 @@ export class ConsoleInsight extends HTMLElement {
               }
               @click=${this.#onRating}
             ></devtools-button>
-          ` : LitHtml.nothing}
+          ` : Lit.nothing}
           <devtools-button
             .data=${
               {
@@ -1068,18 +1068,18 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  #renderSpinner(): LitHtml.LitTemplate {
+  #renderSpinner(): Lit.LitTemplate {
     // clang-format off
     if (this.#state.type === State.INSIGHT && !this.#state.completed) {
       return html`<devtools-spinner></devtools-spinner>`;
     }
-    return LitHtml.nothing;
+    return Lit.nothing;
     // clang-format on
   }
 
-  #renderHeader(): LitHtml.LitTemplate {
+  #renderHeader(): Lit.LitTemplate {
     if (this.#state.type === State.SETTING_IS_NOT_TRUE) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     const hasIcon = this.#state.type === State.CONSENT_REMINDER;
     // clang-format off
@@ -1094,7 +1094,7 @@ export class ConsoleInsight extends HTMLElement {
             } as IconButton.Icon.IconData}>
             </devtools-icon>
           </div>`
-        : LitHtml.nothing}
+        : Lit.nothing}
         <div class="filler">
           <h2 tabindex="-1">
             ${this.#getHeader()}
@@ -1163,7 +1163,7 @@ class ConsoleInsightSourcesList extends HTMLElement {
         })}
         ${this.#isPageReloadRecommended ? html`<li class="source-disclaimer">
           <devtools-icon name="warning"></devtools-icon>
-          ${i18nString(UIStrings.reloadRecommendation)}</li>` : LitHtml.nothing}
+          ${i18nString(UIStrings.reloadRecommendation)}</li>` : Lit.nothing}
       </ul>
     `, this.#shadow, {
       host: this,

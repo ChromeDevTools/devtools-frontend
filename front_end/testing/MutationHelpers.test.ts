@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../ui/lit-html/lit-html.js';
+import * as Lit from '../ui/lit/lit.js';
 
 import {renderElementIntoDOM} from './DOMHelpers.js';
 import {TEXT_NODE, withMutations, withNoMutations} from './MutationHelpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 /**
  * Needed because assert.throws from chai does not work async.
@@ -156,7 +156,7 @@ describe('MutationHelpers', () => {
     it('lets you declare any expected text updates', async () => {
       const div = document.createElement('div');
       const renderList = (list: string[]) => {
-        LitHtml.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
+        Lit.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
       };
 
       renderElementIntoDOM(div);
@@ -180,7 +180,7 @@ describe('MutationHelpers', () => {
     it('fails if there are undeclared text updates', async () => {
       const div = document.createElement('div');
       const renderList = (list: string[]) => {
-        LitHtml.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
+        Lit.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
       };
 
       renderElementIntoDOM(div);
@@ -242,7 +242,7 @@ describe('MutationHelpers', () => {
     it('fails if there are text re-orderings', async () => {
       const div = document.createElement('div');
       const renderList = (list: string[]) => {
-        LitHtml.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
+        Lit.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
       };
 
       renderElementIntoDOM(div);
@@ -258,7 +258,7 @@ describe('MutationHelpers', () => {
     it('fails if there are text re-orderings and DOM additions', async () => {
       const div = document.createElement('div');
       const renderList = (list: string[]) => {
-        LitHtml.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
+        Lit.render(html`${list.map(l => html`<span>${l}</span>`)}`, div, {host: this});
       };
 
       renderElementIntoDOM(div);

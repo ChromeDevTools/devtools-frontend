@@ -22,7 +22,7 @@ devtools_module("components") {
     "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }
 
@@ -54,6 +54,6 @@ ts_library("unittests") {
     "../../../ui/components/chrome_link:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/settings:bundle",
-    "../../../ui/lit-html:bundle",
+    "../../../ui/lit:bundle",
   ]
 }

@@ -9,13 +9,13 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
 import cookieReportViewStyles from './cookieReportView.css.js';
 
-const {render, html, Directives: {ref}} = LitHtml;
+const {render, html, Directives: {ref}} = Lit;
 
 const UIStrings = {
   /**
@@ -469,7 +469,7 @@ export class CookieReportView extends UI.Widget.VBox {
     return recElem;
   }
 
-  static getRecommendationText(domain: string, insight?: Protocol.Audits.CookieIssueInsight): LitHtml.TemplateResult {
+  static getRecommendationText(domain: string, insight?: Protocol.Audits.CookieIssueInsight): Lit.TemplateResult {
     if (!insight) {
       return html`${i18nString(UIStrings.other)}`;
     }

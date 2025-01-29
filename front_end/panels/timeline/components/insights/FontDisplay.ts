@@ -7,14 +7,14 @@ import './Table.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {FontDisplayInsightModel} from '../../../../models/trace/insights/FontDisplay.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
 import type {TableData} from './Table.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /** Column for a font loaded by the page to render text. */
@@ -27,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Fo
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
-  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-font-display`;
+  static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-font-display`;
   override internalName: string = 'font-display';
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
@@ -54,9 +54,9 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     return this.model?.metricSavings?.FCP ?? null;
   }
 
-  override renderContent(): LitHtml.LitTemplate {
+  override renderContent(): Lit.LitTemplate {
     if (!this.model) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     // clang-format off

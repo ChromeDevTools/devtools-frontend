@@ -29,7 +29,7 @@ devtools_module("whats_new") {
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/render_coordinator:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
   ]
 

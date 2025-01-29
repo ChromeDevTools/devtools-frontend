@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-
 import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import contentEditableStyles from './suggestionInput.css.js';
@@ -23,7 +22,7 @@ function assert<T>(
   }
 }
 
-const {html, Decorators, Directives, LitElement} = LitHtml;
+const {html, Decorators, Directives, LitElement} = Lit;
 const {customElement, property, state} = Decorators;
 const {classMap} = Directives;
 
@@ -202,7 +201,7 @@ class SuggestionBox extends LitElement {
     );
   }
 
-  override willUpdate(changedProperties: LitHtml.PropertyValues<this>): void {
+  override willUpdate(changedProperties: Lit.PropertyValues<this>): void {
     if (changedProperties.has('options')) {
       this.options = Object.freeze([...this.options].sort());
     }
@@ -214,7 +213,7 @@ class SuggestionBox extends LitElement {
     }
   }
 
-  protected override render(): LitHtml.TemplateResult|undefined {
+  protected override render(): Lit.TemplateResult|undefined {
     if (this.#suggestions.length === 0) {
       return;
     }
@@ -337,14 +336,14 @@ export class SuggestionInput extends LitElement {
   };
 
   protected override willUpdate(
-      properties: LitHtml.PropertyValues<this>,
+      properties: Lit.PropertyValues<this>,
       ): void {
     if (properties.has('value')) {
       this.expression = this.value;
     }
   }
 
-  protected override render(): LitHtml.TemplateResult {
+  protected override render(): Lit.TemplateResult {
     // clang-format off
     return html`<devtools-editable-content
         ?disabled=${this.disabled}

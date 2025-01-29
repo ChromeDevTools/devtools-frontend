@@ -7,13 +7,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 
 import dialogStyles from './dialog.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
 
@@ -611,7 +611,7 @@ export class Dialog extends HTMLElement {
     return this.#dialogClientRect;
   }
 
-  #renderHeaderRow(): LitHtml.TemplateResult|null {
+  #renderHeaderRow(): Lit.TemplateResult|null {
     // If the title is empty and close button is false, let's skip the header row.
     if (!this.#props.dialogTitle && !this.#props.closeButton) {
       return null;
@@ -630,7 +630,7 @@ export class Dialog extends HTMLElement {
             } as Buttons.Button.ButtonData}
             jslog=${VisualLogging.close().track({click: true})}
           ></devtools-button>
-        ` : LitHtml.nothing}
+        ` : Lit.nothing}
     `;
     // clang-format on
   }
@@ -643,7 +643,7 @@ export class Dialog extends HTMLElement {
     if (!IS_DIALOG_SUPPORTED) {
       // To make sure that light dom content passed into this component doesn't show up,
       // we have to explicitly render a slot and hide it with CSS.
-      LitHtml.render(
+      Lit.render(
           // clang-format off
       html`
         <slot></slot>
@@ -653,7 +653,7 @@ export class Dialog extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}
               jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
         <div id="content">

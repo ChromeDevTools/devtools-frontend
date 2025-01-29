@@ -9,14 +9,14 @@ import './ControlButton.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import createRecordingViewStyles from './createRecordingView.css.js';
 
-const {html, Directives: {ifDefined}} = LitHtml;
+const {html, Directives: {ifDefined}} = Lit;
 
 const UIStrings = {
   /**
@@ -262,7 +262,7 @@ export class CreateRecordingView extends HTMLElement {
       ],
     ]);
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
         <div class="wrapper">
           <div class="header-wrapper">

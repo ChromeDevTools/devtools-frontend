@@ -12,13 +12,13 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {EditableSpan} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -141,7 +141,7 @@ export class HeaderSectionRow extends HTMLElement {
       return;
     }
 
-    const rowClasses = LitHtml.Directives.classMap({
+    const rowClasses = Lit.Directives.classMap({
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride) || this.#isHeaderValueEdited,
@@ -149,12 +149,12 @@ export class HeaderSectionRow extends HTMLElement {
       'header-deleted': Boolean(this.#header.isDeleted),
     });
 
-    const headerNameClasses = LitHtml.Directives.classMap({
+    const headerNameClasses = Lit.Directives.classMap({
       'header-name': true,
       'pseudo-header': this.#header.name.startsWith(':'),
     });
 
-    const headerValueClasses = LitHtml.Directives.classMap({
+    const headerValueClasses = Lit.Directives.classMap({
       'header-value': true,
       'header-warning': Boolean(this.#header.headerValueIncorrect),
       'flex-columns': this.#header.name === 'x-client-data' && !this.#header.isResponseHeader,
@@ -180,7 +180,7 @@ export class HeaderSectionRow extends HTMLElement {
         <div class=${headerNameClasses}>
           ${this.#header.headerNotSet ?
             html`<div class="header-badge header-badge-text">${i18n.i18n.lockedString('not-set')}</div> ` :
-            LitHtml.nothing
+            Lit.nothing
           }
           ${isHeaderNameEditable && !this.#isValidHeaderName ?
             html`<devtools-icon class="inline-icon disallowed-characters" title=${UIStrings.headerNamesOnlyLetters} .data=${{
@@ -189,7 +189,7 @@ export class HeaderSectionRow extends HTMLElement {
               height: '16px',
               color: 'var(--icon-error)',
             }}>
-            </devtools-icon>` : LitHtml.nothing
+            </devtools-icon>` : Lit.nothing
           }
           ${isHeaderNameEditable && !this.#header.isDeleted ?
             html`<devtools-editable-span
@@ -214,7 +214,7 @@ export class HeaderSectionRow extends HTMLElement {
             height: '16px',
             color: 'var(--icon-default)',
           }}>
-          </devtools-icon>` : LitHtml.nothing
+          </devtools-icon>` : Lit.nothing
         }
       </div>
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
@@ -226,9 +226,9 @@ export class HeaderSectionRow extends HTMLElement {
     }
   }
 
-  #renderHeaderValue(): LitHtml.LitTemplate {
+  #renderHeaderValue(): Lit.LitTemplate {
     if (!this.#header) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     if (this.#header.name === 'x-client-data' && !this.#header.isResponseHeader) {
       return this.#renderXClientDataHeader(this.#header);
@@ -253,7 +253,7 @@ export class HeaderSectionRow extends HTMLElement {
           jslog=${VisualLogging.action('enable-header-overrides').track({click: true})}
           class="enable-editing inline-button"
         ></devtools-button>
-      ` : LitHtml.nothing}
+      ` : Lit.nothing}
     `;
     }
     return html`
@@ -278,7 +278,7 @@ export class HeaderSectionRow extends HTMLElement {
     // clang-format on
   }
 
-  #renderXClientDataHeader(header: HeaderDescriptor): LitHtml.LitTemplate {
+  #renderXClientDataHeader(header: HeaderDescriptor): Lit.LitTemplate {
     const data = ClientVariations.parseClientVariations(header.value || '');
     const output = ClientVariations.formatClientVariations(
         data, i18nString(UIStrings.activeClientExperimentVariation),
@@ -299,7 +299,7 @@ export class HeaderSectionRow extends HTMLElement {
     });
   }
 
-  #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): LitHtml.LitTemplate {
+  #maybeRenderHeaderValueSuffix(header: HeaderDescriptor): Lit.LitTemplate {
     if (header.name === 'set-cookie' && header.setCookieBlockedReasons) {
       const titleText =
           header.setCookieBlockedReasons.map(SDK.NetworkRequest.setCookieBlockedReasonToUiString).join('\n');
@@ -316,12 +316,12 @@ export class HeaderSectionRow extends HTMLElement {
       `;
             // clang-format on
     }
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
 
-  #maybeRenderBlockedDetails(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
+  #maybeRenderBlockedDetails(blockedDetails?: BlockedDetailsDescriptor): Lit.LitTemplate {
     if (!blockedDetails) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -344,7 +344,7 @@ export class HeaderSectionRow extends HTMLElement {
     // clang-format on
   }
 
-  #maybeRenderBlockedDetailsLink(blockedDetails?: BlockedDetailsDescriptor): LitHtml.LitTemplate {
+  #maybeRenderBlockedDetailsLink(blockedDetails?: BlockedDetailsDescriptor): Lit.LitTemplate {
     if (blockedDetails?.reveal) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -379,7 +379,7 @@ export class HeaderSectionRow extends HTMLElement {
       `;
             // clang-format on
     }
-    return LitHtml.nothing;
+    return Lit.nothing;
   }
 
   #onHeaderValueFocusOut(event: Event): void {

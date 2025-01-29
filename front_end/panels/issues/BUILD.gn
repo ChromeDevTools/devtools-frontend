@@ -55,7 +55,7 @@ devtools_module("issues") {
     "../../ui/components/request_link_icon:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
-    "../../ui/lit-html:bundle",
+    "../../ui/lit:bundle",
     "./components:bundle",
   ]
 }

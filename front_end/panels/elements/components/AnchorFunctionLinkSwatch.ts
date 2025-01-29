@@ -7,7 +7,7 @@ import '../../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/inline_editor.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import anchorFunctionLinkSwatchStyles from './anchorFunctionLinkSwatch.css.js';
@@ -20,7 +20,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AnchorFunctionLinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 // Clang format is messing up the formatting of the functions below. It's best
 // to leave formatting off for this type declaration.
@@ -72,7 +72,7 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
     this.#data.onLinkActivate();
   }
 
-  #renderIdentifierLink(): LitHtml.LitTemplate {
+  #renderIdentifierLink(): Lit.LitTemplate {
     // clang-format off
     return html`<devtools-link-swatch
       @mouseenter=${this.#data.onMouseEnter}
@@ -86,7 +86,7 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
     // clang-format on
   }
 
-  #renderIconLink(): LitHtml.LitTemplate {
+  #renderIconLink(): Lit.LitTemplate {
     // clang-format off
     return html`<devtools-icon
       role='button'

@@ -4,12 +4,12 @@
 
 import '../icon_button/icon_button.js';
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import buttonStyles from './button.css.js';
 
-const {html, Directives: {ifDefined, ref, classMap}} = LitHtml;
+const {html, Directives: {ifDefined, ref, classMap}} = Lit;
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -111,7 +111,7 @@ export class Button extends HTMLElement {
     longClickable: false,
   };
   #internals = this.attachInternals();
-  #slotRef = LitHtml.Directives.createRef();
+  #slotRef = Lit.Directives.createRef();
 
   constructor() {
     super();
@@ -363,7 +363,7 @@ export class Button extends HTMLElement {
     const jslog =
         this.#props.jslogContext && VisualLogging.action().track({click: true}).context(this.#props.jslogContext);
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
         <button title=${ifDefined(this.#props.title)}
                 .disabled=${this.#props.disabled}

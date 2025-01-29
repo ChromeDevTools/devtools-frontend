@@ -36,7 +36,7 @@ export type IconData = IconWithName|{
  * const iconWithClassName = IconButton.Icon.create('bin', 'delete-icon');
  *
  * // Use within a template:
- * LitHtml.html`
+ * Lit.html`
  *   <devtools-icon name="bin">
  *   </devtools-icon>
  * `;

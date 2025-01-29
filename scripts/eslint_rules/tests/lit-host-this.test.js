@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/lit-html-host-this.js');
+const rule = require('../lib/lit-host-this.js');
 const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
@@ -13,10 +13,10 @@ const ruleTester = new (require('eslint').RuleTester)({
   },
 });
 
-ruleTester.run('lit-html-host-this', rule, {
+ruleTester.run('lit-host-this', rule, {
   valid: [
     {
-      code: 'LitHtml.render(someHtml, this.shadow, {host: this})',
+      code: 'Lit.render(someHtml, this.shadow, {host: this})',
       filename: 'front_end/components/datagrid.ts',
     },
     {
@@ -26,25 +26,25 @@ ruleTester.run('lit-html-host-this', rule, {
   ],
   invalid: [
     {
-      code: 'LitHtml.render(someHtml, this.shadow)',
+      code: 'Lit.render(someHtml, this.shadow)',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'missingHostOption'}],
-      output: 'LitHtml.render(someHtml, this.shadow, {host: this})',
+      output: 'Lit.render(someHtml, this.shadow, {host: this})',
     },
     {
-      code: 'LitHtml.render(someHtml, this.shadow, { renderBefore: foo })',
+      code: 'Lit.render(someHtml, this.shadow, { renderBefore: foo })',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'missingHostOption'}],
-      output: 'LitHtml.render(someHtml, this.shadow, { renderBefore: foo, host: this })',
+      output: 'Lit.render(someHtml, this.shadow, { renderBefore: foo, host: this })',
     },
     {
-      code: 'LitHtml.render(someHtml, this.shadow, { renderBefore: foo, })',
+      code: 'Lit.render(someHtml, this.shadow, { renderBefore: foo, })',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'missingHostOption'}],
-      output: 'LitHtml.render(someHtml, this.shadow, { renderBefore: foo, host: this, })',
+      output: 'Lit.render(someHtml, this.shadow, { renderBefore: foo, host: this, })',
     },
     {
-      code: 'LitHtml.render(someHtml, this.shadow, { host: notThis })',
+      code: 'Lit.render(someHtml, this.shadow, { host: notThis })',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'invalidHostOption'}],
     },

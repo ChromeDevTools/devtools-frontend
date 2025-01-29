@@ -4,7 +4,7 @@
 
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import buttonDialogStyles from './buttonDialog.css.js';
 import {
@@ -14,7 +14,7 @@ import {
   DialogVerticalPosition,
 } from './Dialog.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface ButtonDialogData {
   openOnRender?: boolean;
@@ -78,7 +78,7 @@ export class ButtonDialog extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(
+    Lit.render(
       html`
       <devtools-button
         @click=${this.#showDialog}

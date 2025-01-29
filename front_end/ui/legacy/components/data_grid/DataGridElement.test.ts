@@ -7,10 +7,10 @@ import './data_grid.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 function getAccessibleText(element: HTMLElement): string {
   element.blur();
@@ -49,11 +49,11 @@ describeWithEnvironment('DataGrid', () => {
     renderElementIntoDOM(container);
   });
 
-  async function renderDataGrid(template: LitHtml.TemplateResult): Promise<HTMLElement> {
+  async function renderDataGrid(template: Lit.TemplateResult): Promise<HTMLElement> {
     container.style.display = 'flex';
     container.style.width = '640px';
     container.style.height = '480px';
-    render(template, container, {host: {}});  // eslint-disable-line rulesdir/lit-html-host-this
+    render(template, container, {host: {}});  // eslint-disable-line rulesdir/lit-host-this
     await RenderCoordinator.done({waitForWork: true});
     return container.querySelector('devtools-new-data-grid') as HTMLElement;
   }

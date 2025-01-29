@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Platform from '../../../core/platform/platform.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Lit from '../../../ui/lit/lit.js';
 
 import * as DataGridRenderers from './DataGridRenderers.js';
 
@@ -17,7 +17,7 @@ export interface Column {
   /** `title`: the user visible title. */
   title: string;
   /** An element to use rather than the `title` as text. */
-  titleElement?: LitHtml.TemplateResult;
+  titleElement?: Lit.TemplateResult;
   /** `sortable`: an optional property to denote if the  column is sortable.
    *   Note, if you're rendering a data-grid yourself you likely  shouldn't set
    *   this. It's set by the `data-grid-controller`, which is the component you
@@ -47,7 +47,7 @@ export interface Cell {
   columnId: string;
   value: CellValue;
   title?: string;
-  renderer?: (value: CellValue) => LitHtml.TemplateResult | typeof LitHtml.nothing;
+  renderer?: (value: CellValue) => Lit.TemplateResult | typeof Lit.nothing;
 }
 
 export function getStringifiedCellValues(cells: Cell[]): string {
@@ -88,7 +88,7 @@ export function getRowEntryForColumnId(row: Row, id: string): Cell {
   return rowEntry;
 }
 
-export function renderCellValue(cell: Cell): LitHtml.LitTemplate {
+export function renderCellValue(cell: Cell): Lit.LitTemplate {
   if (cell.renderer) {
     return cell.renderer(cell.value);
   }

@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 import textPromptStyles from './textPrompt.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 export interface TextPromptData {
   ariaLabel: string;
@@ -130,7 +130,7 @@ export class TextPrompt extends HTMLElement {
       <span class="text-prompt-input"><input class="input" aria-label=${
         this.#ariaLabelText} spellcheck="false" @input=${this.onInput} @keydown=${
         this.onKeyDown}/><input class="suggestion" aria-label=${this.#ariaLabelText + ' Suggestion'}></span>`;
-    LitHtml.render(output, this.#shadow, {host: this});
+    Lit.render(output, this.#shadow, {host: this});
   }
 }
 

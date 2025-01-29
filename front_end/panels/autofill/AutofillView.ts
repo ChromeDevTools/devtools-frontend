@@ -15,12 +15,12 @@ import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import autofillViewStyles from './autofillView.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -166,7 +166,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     if (!this.#address && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(html`
+      Lit.render(html`
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -201,7 +201,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
@@ -250,12 +250,12 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     AutofillManager.AutofillManager.AutofillManager.instance().onShowAutofillTestAddressesSettingsChanged();
   }
 
-  #renderAddress(): LitHtml.LitTemplate {
+  #renderAddress(): Lit.LitTemplate {
     if (!this.#address) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
-    const createSpan = (startIndex: number, endIndex: number): LitHtml.TemplateResult => {
+    const createSpan = (startIndex: number, endIndex: number): Lit.TemplateResult => {
       const textContentLines = this.#address.substring(startIndex, endIndex).split('\n');
       const templateLines =
           textContentLines.map((line, i) => i === textContentLines.length - 1 ? line : html`${line}<br>`);
@@ -265,7 +265,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
         return html`<span>${templateLines}</span>`;
       }
 
-      const spanClasses = LitHtml.Directives.classMap({
+      const spanClasses = Lit.Directives.classMap({
         'matches-filled-field': hasMatches,
         highlighted:
             this.#highlightedMatches.some(match => match.startIndex <= startIndex && match.endIndex > startIndex),
@@ -286,7 +286,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // 0 or more matches. This allows highlighting the corresponding grid rows
     // when hovering over a span. And vice versa finding the corresponding
     // spans to highlight when hovering over a grid line.
-    const spans: LitHtml.TemplateResult[] = [];
+    const spans: Lit.TemplateResult[] = [];
     const matchIndices = new Set<number>([0, this.#address.length]);
     for (const match of this.#matches) {
       matchIndices.add(match.startIndex);
@@ -315,9 +315,9 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
-  #renderFilledFields(): LitHtml.LitTemplate {
+  #renderFilledFields(): Lit.LitTemplate {
     if (!this.#filledFields.length) {
-      return LitHtml.nothing;
+      return Lit.nothing;
     }
 
     const gridData: DataGrid.DataGridController.DataGridControllerData = {
@@ -428,8 +428,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     );
   }
 
-  #autofillTypeRenderer(autofillType: string, fillingStrategy: Protocol.Autofill.FillingStrategy):
-      LitHtml.TemplateResult {
+  #autofillTypeRenderer(autofillType: string, fillingStrategy: Protocol.Autofill.FillingStrategy): Lit.TemplateResult {
     const adornerContent = document.createElement('span');
     let adornerTitle = '';
     switch (fillingStrategy) {
@@ -448,7 +447,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       ${autofillType}
       ${adornerContent.textContent ? html`
           <devtools-adorner title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent}}></devtools-adorner>
-        `: LitHtml.nothing}
+        `: Lit.nothing}
     `;
     // clang-format on
   }

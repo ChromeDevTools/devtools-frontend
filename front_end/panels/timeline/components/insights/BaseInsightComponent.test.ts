@@ -7,12 +7,12 @@ import * as Trace from '../../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import type {TimelineOverlay} from '../../overlays/OverlaysImpl.js';
 
 import * as Insights from './insights.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 describeWithEnvironment('BaseInsightComponent', () => {
   const {BaseInsightComponent} = Insights.BaseInsightComponent;
@@ -21,7 +21,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     override createOverlays(): TimelineOverlay[] {
       return [];
     }
-    override renderContent(): LitHtml.LitTemplate {
+    override renderContent(): Lit.LitTemplate {
       return html`<div>test content</div>`;
     }
   }

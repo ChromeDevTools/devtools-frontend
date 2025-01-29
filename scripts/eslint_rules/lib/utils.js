@@ -7,19 +7,19 @@
 
 /**
  * @param taggedTemplateExpressionNode - a TaggedTemplateExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches LitHtml.html`` or html``, and false otherwise.
+ * @returns {boolean} - `true` if the code matches Lit.html`` or html``, and false otherwise.
  */
 function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
   if (taggedTemplateExpressionNode.type !== 'TaggedTemplateExpression') {
     throw new Error('Node of type other than TaggedTemplateExpression passed to isLitHtmlTemplateCall.');
   }
-  // Match LitHtml.html``
+  // Match Lit.html``
   const {tag} = taggedTemplateExpressionNode;
   if (!tag) {
     return false;
   }
-  // Match LitHtml.html``
-  const isLitHtmlDotHtmlCall = tag.object?.name === 'LitHtml' && tag.property?.name === 'html';
+  // Match Lit.html``
+  const isLitHtmlDotHtmlCall = tag.object?.name === 'Lit' && tag.property?.name === 'html';
   // Match html`` (and guess that it's Lit)
   const isDestructuredHtmlCall = tag.type === 'Identifier' && tag.name === 'html';
 
@@ -28,7 +28,7 @@ function isLitHtmlTemplateCall(taggedTemplateExpressionNode) {
 
 /**
  * @param callExpressionNode - a CallExpression node from the AST of the parsed code.
- * @returns {boolean} - `true` if the code matches LitHtml.render() or render(), and false otherwise.
+ * @returns {boolean} - `true` if the code matches Lit.render() or render(), and false otherwise.
  */
 function isLitHtmlRenderCall(callExpressionNode) {
   if (callExpressionNode.type !== 'CallExpression') {
@@ -37,7 +37,7 @@ function isLitHtmlRenderCall(callExpressionNode) {
 
   const {callee} = callExpressionNode;
   const isDestructuredRenderCall = callee.type === 'Identifier' && callee.name === 'render';
-  const isLitHtmlDotRenderCall = callee.object?.name === 'LitHtml' && callee.property?.name === 'render';
+  const isLitHtmlDotRenderCall = callee.object?.name === 'Lit' && callee.property?.name === 'render';
 
   return isDestructuredRenderCall || isLitHtmlDotRenderCall;
 }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/no-style-tags-in-lit-html.js');
+const rule = require('../lib/no-a-tags-in-lit.js');
 const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
@@ -13,52 +13,63 @@ const ruleTester = new (require('eslint').RuleTester)({
   },
 });
 
-const EXPECTED_ERROR_MESSAGE =
-    'Adding styles to a component should be done using this.shadow.adoptedStyleSheets = [importedStyles]. Import the styles from the CSS file.';
+const EXPECTED_ERROR_MESSAGE = 'Adding links to a component should be done using `front_end/ui/legacy/XLink.ts`';
 
-ruleTester.run('no-style-tags-in-lit-html', rule, {
+ruleTester.run('no-a-tags-in-lit', rule, {
   valid: [
     {
-      code: 'LitHtml.html`<p></p>`',
+      code: 'Lit.html`<p></p>`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<input />`',
+      code: 'Lit.html`<aside></aside>`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<${DataGrid.litTagName}></${DataGrid.litTagName}>`',
+      code: 'Lit.html`<input />`',
       filename: 'front_end/components/test.ts',
     },
     {
-      code: 'LitHtml.html`<p><${DataGrid.litTagName}></${DataGrid.litTagName}></p>`',
+      code: 'Lit.html`<${DataGrid.litTagName}></${DataGrid.litTagName}>`',
+      filename: 'front_end/components/test.ts',
+    },
+    {
+      code: 'Lit.html`<p><${DataGrid.litTagName}></${DataGrid.litTagName}></p>`',
       filename: 'front_end/components/test.ts',
     },
     {
       code:
-          'LitHtml.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName}></${DataGrid2.litTagName}></${DataGrid1.litTagName}>`',
+          'Lit.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName}></${DataGrid2.litTagName}></${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
     },
   ],
   invalid: [
     {
-      code: 'LitHtml.html`<style />`',
+      code: 'Lit.html`<a />`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`<style></style>`',
+      code: 'Lit.html`<a></a>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`</style>`',
+      code: 'Lit.html`</a>`',
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
-      code: 'LitHtml.html`<style >`',
+      code: 'Lit.html`<a >`',
       filename: 'front_end/components/test.ts',
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+    },
+    {
+      code: 'Lit.html`<p><${DataGrid.litTagName}></${DataGrid.litTagName}><a></a></p>`',
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
+    },
+    {
+      code: 'Lit.html`<${DataGrid.litTagName}><a /></${DataGrid.litTagName}>`',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
   ],

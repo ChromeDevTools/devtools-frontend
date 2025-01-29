@@ -4,11 +4,11 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import srgbOverlayStyles from './srgbOverlay.css.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
@@ -100,7 +100,7 @@ export class SrgbOverlay extends HTMLElement {
         return;
       }
 
-      LitHtml.render(
+      Lit.render(
           html`
           <span class="label" style="right: ${width - closestPoint.x}px">sRGB</span>
           <svg>

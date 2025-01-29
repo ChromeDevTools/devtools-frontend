@@ -51,7 +51,7 @@ describe('DataGridController', () => {
 
       await withMutations(
           [{
-            // Two text mutations as LitHtml updates the text nodes but does not
+            // Two text mutations as Lit updates the text nodes but does not
             // touch the actual DOM nodes.
             target: TEXT_NODE,
             max: 2,

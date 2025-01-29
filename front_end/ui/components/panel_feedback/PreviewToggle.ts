@@ -6,12 +6,12 @@ import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as Input from '../input/input.js';
 
 import previewToggleStyles from './previewToggle.css.js';
 
-const {render, html, nothing} = LitHtml;
+const {render, html, nothing} = Lit;
 
 export interface PreviewToggleData {
   name: string;

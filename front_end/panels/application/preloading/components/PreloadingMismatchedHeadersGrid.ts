@@ -10,7 +10,7 @@ import type * as SDK from '../../../../core/sdk/sdk.js';
 import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
-import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 
 import preloadingGridStyles from './preloadingGrid.css.js';
 
@@ -36,7 +36,7 @@ const str_ = i18n.i18n.registerUIStrings(
     'panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {render, html} = LitHtml;
+const {render, html} = Lit;
 
 export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
 

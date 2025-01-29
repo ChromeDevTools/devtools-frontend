@@ -13,7 +13,7 @@ ts_library("ts") {
     "../../../../testing",
     "../../../../ui/components/helpers:bundle",
     "../../../components/panel_introduction_steps:bundle",
-    "../../../lit-html:bundle",
+    "../../../lit:bundle",
   ]
 }
 

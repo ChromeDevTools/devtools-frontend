@@ -4,7 +4,7 @@
 'use strict';
 
 /**
- * @fileoverview Detect and prevent usage of inline `<style>`s within lit-html
+ * @fileoverview Detect and prevent usage of inline `<style>`s within lit
  * templates.
  *
  * We require that all CSS lives in dedicated `.css` files and is used via

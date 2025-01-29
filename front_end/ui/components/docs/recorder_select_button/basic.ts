@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
+import * as Lit from '../../../../../front_end/ui/lit/lit.js';
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -51,14 +51,14 @@ const replayItems = [
   },
 ];
 
-function litRender(template: LitHtml.TemplateResult): void {
+function litRender(template: Lit.TemplateResult): void {
   const div = document.createElement('div');
   div.style.width = '400px';
   div.style.display = 'flex';
   div.style.margin = '10px';
   div.style.flexDirection = 'row-reverse';
   container?.appendChild(div);
-  LitHtml.render(template, div);
+  Lit.render(template, div);
 }
 
 litRender(html`

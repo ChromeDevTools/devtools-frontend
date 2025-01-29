@@ -9,14 +9,14 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import type {DOMNode} from './Helper.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -264,8 +264,8 @@ export class ElementsBreadcrumbs extends HTMLElement {
     };
   }
 
-  #renderOverflowButton(direction: 'left'|'right', disabled: boolean): LitHtml.TemplateResult {
-    const buttonStyles = LitHtml.Directives.classMap({
+  #renderOverflowButton(direction: 'left'|'right', disabled: boolean): Lit.TemplateResult {
+    const buttonStyles = Lit.Directives.classMap({
       overflow: true,
       [direction]: true,
       hidden: !this.#overflowing,
@@ -297,7 +297,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`
+    Lit.render(html`
       <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
         ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 
@@ -308,9 +308,9 @@ export class ElementsBreadcrumbs extends HTMLElement {
                 crumb: true,
                 selected: crumb.selected,
               };
-              // eslint-disable-next-line rulesdir/no-a-tags-in-lit-html
+              // eslint-disable-next-line rulesdir/no-a-tags-in-lit
               return html`
-                <li class=${LitHtml.Directives.classMap(crumbClasses)}
+                <li class=${Lit.Directives.classMap(crumbClasses)}
                   data-node-id=${crumb.node.id}
                   data-crumb="true"
                 >

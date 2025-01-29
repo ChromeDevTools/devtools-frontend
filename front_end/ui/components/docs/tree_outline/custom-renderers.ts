@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
-import * as LitHtml from '../../../lit-html/lit-html.js';
+import * as Lit from '../../../lit/lit.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as TreeOutline from '../../tree_outline/tree_outline.js';
 
-const {html} = LitHtml;
+const {html} = Lit;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -20,13 +20,13 @@ interface TreeNodeData {
 const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
   defaultRenderer: (node, state) => {
     const {cssProperty, cssValue} = node.treeNodeData;
-    const valueStyles = LitHtml.Directives.styleMap({
+    const valueStyles = Lit.Directives.styleMap({
       paddingLeft: '10px',
       fontStyle: 'italic',
       color: 'var(--sys-color-token-property-special)',
     });
     return html`<code>${cssProperty}</code>:${
-        state.isExpanded ? LitHtml.nothing : html`<code style=${valueStyles}>${cssValue}</code>`}`;
+        state.isExpanded ? Lit.nothing : html`<code style=${valueStyles}>${cssValue}</code>`}`;
   },
   tree: [
     {

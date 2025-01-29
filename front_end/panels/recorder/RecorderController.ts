@@ -21,7 +21,7 @@ import type * as Menus from '../../ui/components/menus/menus.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
@@ -34,7 +34,7 @@ import * as Actions from './recorder-actions/recorder-actions.js';
 import recorderControllerStyles from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 
-const {html, Decorators, LitElement} = LitHtml;
+const {html, Decorators, LitElement} = Lit;
 const {customElement, state} = Decorators;
 
 const UIStrings = {
@@ -1079,7 +1079,7 @@ export class RecorderController extends LitElement {
     ];
   }
 
-  #renderCurrentPage(): LitHtml.TemplateResult {
+  #renderCurrentPage(): Lit.TemplateResult {
     switch (this.currentPage) {
       case Pages.START_PAGE:
         return this.#renderStartPage();
@@ -1092,7 +1092,7 @@ export class RecorderController extends LitElement {
     }
   }
 
-  #renderAllRecordingsPage(): LitHtml.TemplateResult {
+  #renderAllRecordingsPage(): Lit.TemplateResult {
     const recordings = this.#storage.getRecordings();
     // clang-format off
     return html`
@@ -1112,7 +1112,7 @@ export class RecorderController extends LitElement {
     // clang-format on
   }
 
-  #renderStartPage(): LitHtml.TemplateResult {
+  #renderStartPage(): Lit.TemplateResult {
     // clang-format off
     return html`
       <div class="empty-state" jslog=${VisualLogging.section().context('start-view')}>
@@ -1126,7 +1126,7 @@ export class RecorderController extends LitElement {
     // clang-format on
   }
 
-  #renderRecordingPage(): LitHtml.TemplateResult {
+  #renderRecordingPage(): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-recording-view
@@ -1173,7 +1173,7 @@ export class RecorderController extends LitElement {
     // clang-format on
   }
 
-  #renderCreateRecordingPage(): LitHtml.TemplateResult {
+  #renderCreateRecordingPage(): Lit.TemplateResult {
     // clang-format off
     return html`
       <devtools-create-recording-view
@@ -1206,7 +1206,7 @@ export class RecorderController extends LitElement {
     this.exportMenuExpanded = false;
   }
 
-  protected override render(): LitHtml.TemplateResult {
+  protected override render(): Lit.TemplateResult {
     const recordings = this.#storage.getRecordings();
     const selectValue: string = this.currentRecording ? this.currentRecording.storageName : this.currentPage;
     // clang-format off
@@ -1262,7 +1262,7 @@ export class RecorderController extends LitElement {
               @change=${this.#onRecordingSelected}
               jslog=${VisualLogging.dropDown('recordings').track({change: true})}
             >
-              ${LitHtml.Directives.repeat(
+              ${Lit.Directives.repeat(
                 values,
                 item => item.value,
                 item => {
@@ -1311,7 +1311,7 @@ export class RecorderController extends LitElement {
               <devtools-menu-group .name=${i18nString(
       UIStrings.export,
     )}>
-                ${LitHtml.Directives.repeat(
+                ${Lit.Directives.repeat(
                   this.#builtInConverters,
                   converter => {
                     return html`
@@ -1327,7 +1327,7 @@ export class RecorderController extends LitElement {
               <devtools-menu-group .name=${i18nString(
       UIStrings.exportViaExtensions,
     )}>
-                ${LitHtml.Directives.repeat(
+                ${Lit.Directives.repeat(
                   this.extensionConverters,
                   converter => {
                     return html`

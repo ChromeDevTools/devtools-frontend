@@ -30,7 +30,7 @@ ruleTester.run('jslog-context-list', rule, {
     },
     {
       code: `
-        LitHtml.render(LitHtml.html\`
+        Lit.render(Lit.html\`
           <dialog @click=\${this.#handlePointerEvent} @pointermove=\${this.#handlePointerEvent} @cancel=\${this.#onCancel}
                   jslog=\${VisualLogging.dialog('uNkNown').track({resize: true, keydown: 'Escape'}).parent('mapped')}>
             <div id="content-wrap">
@@ -156,7 +156,7 @@ ruleTester.run('jslog-context-list', rule, {
     },
     {
       code: `
-        LitHtml.render(LitHtml.html\`
+        Lit.render(Lit.html\`
           <dialog @click=\${this.#handlePointerEvent} @pointermove=\${this.#handlePointerEvent} @cancel=\${this.#onCancel}
                   jslog=\${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
             <div id="content-wrap">

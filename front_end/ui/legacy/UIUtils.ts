@@ -1242,7 +1242,7 @@ export function createIconLabel(
  * the radio button accessible.
  *
  * The element is automatically styled correctly, as long as the core styles (in particular
- * `inspectorCommon.css` is injected into the current document / shadow root). The lit-html
+ * `inspectorCommon.css` is injected into the current document / shadow root). The lit
  * equivalent of calling this method is:
  *
  * ```js
@@ -1272,7 +1272,7 @@ export function createRadioButton(
  * and a `step` of 1 (the default for the element).
  *
  * The element is automatically styled correctly, as long as the core styles (in particular
- * `inspectorCommon.css` is injected into the current document / shadow root). The lit-html
+ * `inspectorCommon.css` is injected into the current document / shadow root). The lit
  * equivalent of calling this method is:
  *
  * ```js

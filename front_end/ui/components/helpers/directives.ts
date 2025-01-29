@@ -2,26 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../lit-html/lit-html.js';
+import * as Lit from '../../lit/lit.js';
 
 /**
- * Provides a hook to get a callback when a LitHtml node is rendered into the DOM:
+ * Provides a hook to get a callback when a Lit node is rendered into the DOM:
  * @example
  *
  * ```
  * <p on-render=${nodeRenderedCallback(node => ...)}>
  * ```
  */
-class NodeRenderedCallback extends LitHtml.Directive.Directive {
-  constructor(partInfo: LitHtml.Directive.PartInfo) {
+class NodeRenderedCallback extends Lit.Directive.Directive {
+  constructor(partInfo: Lit.Directive.PartInfo) {
     super(partInfo);
 
-    if (partInfo.type !== LitHtml.Directive.PartType.ATTRIBUTE) {
+    if (partInfo.type !== Lit.Directive.PartType.ATTRIBUTE) {
       throw new Error('Node rendered callback directive must be used as an attribute.');
     }
   }
 
-  override update(part: LitHtml.Directive.ElementPart, [callback]: LitHtml.Directive.DirectiveParameters<this>): void {
+  override update(part: Lit.Directive.ElementPart, [callback]: Lit.Directive.DirectiveParameters<this>): void {
     callback(part.element);
   }
 
@@ -35,4 +35,4 @@ class NodeRenderedCallback extends LitHtml.Directive.Directive {
   }
 }
 
-export const nodeRenderedCallback = LitHtml.Directive.directive(NodeRenderedCallback);
+export const nodeRenderedCallback = Lit.Directive.directive(NodeRenderedCallback);

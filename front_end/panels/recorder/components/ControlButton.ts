@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Lit from '../../../ui/lit/lit.js';
 
 import controlButtonStyles from './controlButton.css.js';
 
-const {html, Decorators, LitElement} = LitHtml;
+const {html, Decorators, LitElement} = Lit;
 const {customElement, property} = Decorators;
 
 declare global {

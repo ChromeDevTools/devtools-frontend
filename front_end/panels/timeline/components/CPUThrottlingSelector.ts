@@ -193,7 +193,7 @@ export class CPUThrottlingSelector extends HTMLElement {
                   `;
                 })}
                 ${group.name === 'Calibrated presets' ? html`<devtools-menu-item
-                  .value=${1 /* This won't be displayed unless it has some value. */}
+                  .value=${-1 /* This won't be displayed unless it has some value. */}
                   .title=${calibrationLabel}
                   jslog=${VisualLogging.action('cpu-throttling-selector-calibrate').track({click: true})}
                   @click=${this.#onCalibrateClick}

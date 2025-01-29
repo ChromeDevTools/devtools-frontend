@@ -7,6 +7,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as Formatter from '../../models/formatter/formatter.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -19,15 +20,25 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import changesViewStyles from './changesView.css.js';
 
+const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes' as Platform.DevToolsPath.UrlString;
+
 const UIStrings = {
   /**
-   *@description Text in Changes View of the Changes tab
+   *@description Text in Changes View of the Changes tab if no change has been made so far.
    */
-  noChanges: 'No changes',
+  noChanges: 'No changes yet',
   /**
-   *@description Text in Changes View of the Changes tab
+   *@description Text in Changes View of the Changes tab to explain the Changes panel.
    */
-  binaryData: 'Binary data',
+  changesViewDescription: 'On this page you can track code changes made within DevTools.',
+  /**
+   *@description Text in Changes View of the Changes tab if the changed content is of a binary type.
+   */
+  noTextualDiff: 'No textual diff available',
+  /**
+   *@description Text in Changes View of the Changes tab when binary data has been changed
+   */
+  binaryDataDescription: 'The changes tab doesn\'t show binary data changes',
   /**
    * @description Text in the Changes tab that indicates how many lines of code have changed in the
    * selected file. An insertion refers to an added line of code. The (+) is a visual cue to indicate
@@ -65,6 +76,7 @@ export class ChangesView extends UI.Widget.VBox {
   readonly changesSidebar: ChangesSidebar;
   private selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null;
   #selectedSourceCodeFormattedMapping?: Formatter.ScriptFormatter.FormatterSourceMapping;
+  #learnMoreLinkElement?: HTMLElement;
   private readonly diffContainer: HTMLElement;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats: UI.Toolbar.ToolbarText;
@@ -108,7 +120,7 @@ export class ChangesView extends UI.Widget.VBox {
       label: i18nLazyString(UIStrings.copy),
     }));
 
-    this.hideDiff(i18nString(UIStrings.noChanges));
+    this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
     this.selectedUISourceCodeChanged();
   }
 
@@ -211,7 +223,7 @@ export class ChangesView extends UI.Widget.VBox {
     }
     const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode.contentType().isTextType()) {
-      this.hideDiff(i18nString(UIStrings.binaryData));
+      this.hideDiff(i18nString(UIStrings.noTextualDiff), i18nString(UIStrings.binaryDataDescription));
       return;
     }
     const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
@@ -222,17 +234,28 @@ export class ChangesView extends UI.Widget.VBox {
     this.renderDiffRows(diffResponse?.diff);
   }
 
-  private hideDiff(message: string): void {
+  private hideDiff(header: string, text: string, link?: Platform.DevToolsPath.UrlString): void {
     this.diffStats.setText('');
     this.toolbar.setEnabled(false);
     this.diffContainer.style.display = 'none';
-    this.emptyWidget.header = message;
+    this.emptyWidget.header = header;
+    this.emptyWidget.text = text;
+
+    if (link && !this.#learnMoreLinkElement) {
+      this.#learnMoreLinkElement = this.emptyWidget.appendLink(link);
+    } else if (link && this.#learnMoreLinkElement) {
+      this.#learnMoreLinkElement.setAttribute('href', link);
+      this.#learnMoreLinkElement.setAttribute('title', link);
+    } else if (!link && this.#learnMoreLinkElement) {
+      this.#learnMoreLinkElement.remove();
+      this.#learnMoreLinkElement = undefined;
+    }
     this.emptyWidget.showWidget();
   }
 
   private renderDiffRows(diff?: Diff.Diff.DiffArray): void {
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
-      this.hideDiff(i18nString(UIStrings.noChanges));
+      this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
     } else {
       this.diffStats.setText(diffStats(diff));
       this.toolbar.setEnabled(true);

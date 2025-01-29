@@ -5,6 +5,6 @@
  */
 
 .request-initiator-view {
-  display: block;
+  display: flex;
   margin: 6px;
 }

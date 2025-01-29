@@ -87,6 +87,10 @@ const UIStrings = {
    */
   noMessageSelected: 'No message selected',
   /**
+   *@description Text in Protocol Monitor of the Protocol Monitor tab if no message is selected
+   */
+  selectAMessageToView: 'Select a message to see its details',
+  /**
    *@description Text in Protocol Monitor for the save button
    */
   save: 'Save',
@@ -680,9 +684,13 @@ export class InfoWidget extends UI.Widget.VBox {
   override performUpdate(): void {
     if (!this.request && !this.response) {
       this.tabbedPane.changeTabView(
-          'request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), ''));
+          'request',
+          new UI.EmptyWidget.EmptyWidget(
+              i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
       this.tabbedPane.changeTabView(
-          'response', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected), ''));
+          'response',
+          new UI.EmptyWidget.EmptyWidget(
+              i18nString(UIStrings.noMessageSelected), i18nString(UIStrings.selectAMessageToView)));
       return;
     }
 

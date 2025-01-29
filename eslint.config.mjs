@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+/* eslint-disable import/no-default-export */
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import mochaPlugin from 'eslint-plugin-mocha';
 import rulesdirPlugin from 'eslint-plugin-rulesdir';
@@ -26,6 +27,10 @@ export default [
   {
     name: 'Ignore list',
     ignores: [
+      // Git submodules that are not in third_party
+      'build/',
+      'buildtools/',
+
       'front_end/diff/diff_match_patch.jD',
       'front_end/models/javascript_metadata/NativeFunctions.js',
       // All of these scripts are auto-generated so don't lint them.
@@ -82,6 +87,10 @@ export default [
       globals: {
         ...globals.browser,
       },
+    },
+
+    linterOptions: {
+      reportUnusedDisableDirectives: 'error',
     },
 
     rules: {
@@ -272,11 +281,11 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
@@ -465,12 +474,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],

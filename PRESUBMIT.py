@@ -292,6 +292,9 @@ def _CheckDevToolsLint(input_api, output_api):
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintignore'),
+        # This file includes the LitAnalyzer rules
+        input_api.os_path.join(input_api.PresubmitLocalPath(),
+                               'tsconfig.json'),
         input_api.os_path.join(scripts_directory, 'test',
                                'run_lint_check.mjs'),
     ]

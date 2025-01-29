@@ -4,7 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
-import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -46,6 +46,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
     this.init();
+    this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {

@@ -1604,6 +1604,27 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return this.#propertyTextFromSource !== property.propertyText || this.parentPane().isPropertyChanged(property);
   }
 
+  async #getLonghandProperties(): Promise<SDK.CSSProperty.CSSProperty[]> {
+    const staticLonghandProperties = this.property.getLonghandProperties();
+
+    if (staticLonghandProperties.some(property => property.value !== '')) {
+      return staticLonghandProperties;
+    }
+
+    const parsedProperty = this.#computeCSSExpression(this.style, this.property.value);
+    if (!parsedProperty || parsedProperty === this.property.value) {
+      return staticLonghandProperties;
+    }
+
+    const parsedLonghands = await this.parentPaneInternal.cssModel()?.agent.invoke_getLonghandProperties(
+        {shorthandName: this.property.name, value: parsedProperty});
+    if (!parsedLonghands || parsedLonghands.getError()) {
+      return staticLonghandProperties;
+    }
+
+    return parsedLonghands.longhandProperties.map(p => SDK.CSSProperty.CSSProperty.parsePayload(this.style, -1, p));
+  }
+
   override async onpopulate(): Promise<void> {
     if (!this.#gridNames) {
       this.#gridNames = await this.gridNames();
@@ -1614,8 +1635,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const longhandProperties = this.property.getLonghandProperties();
+    const longhandProperties = await this.#getLonghandProperties();
     const leadingProperties = this.style.leadingProperties();
+
+    // Re-check child count to avoid any races of concurrent onpopulate calls
+    if (this.childCount()) {
+      return;
+    }
 
     for (const property of longhandProperties) {
       const name = property.name;

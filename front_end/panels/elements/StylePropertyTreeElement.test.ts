@@ -109,6 +109,42 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
          assertNullSwatchOnChildAt(3, 'devtools-css-length');
        });
 
+    it('is able to expand longhands with vars', async () => {
+      stubNoopSettings();
+      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+      setMockConnectionResponseHandler(
+          'CSS.getLonghandProperties', (request: Protocol.CSS.GetLonghandPropertiesRequest) => {
+            if (request.shorthandName !== 'shorthand') {
+              return {getError: () => 'Invalid shorthand'};
+            }
+            const longhands = request.value.split(' ');
+            if (longhands.length !== 3) {
+              return {getError: () => 'Invalid value'};
+            }
+            return {
+              longhandProperties: [
+                {name: 'first', value: longhands[0]},
+                {name: 'second', value: longhands[1]},
+                {name: 'third', value: longhands[2]},
+              ]
+            };
+          });
+      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
+      const domModel = cssModel.domModel();
+      const node = new SDK.DOMModel.DOMNode(domModel);
+      node.id = 0 as Protocol.DOM.NodeId;
+      LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      const stylePropertyTreeElement = getTreeElement(
+          'shorthand', 'var(--a) var(--space)',
+          [{name: 'first', value: ''}, {name: 'second', value: ''}, {name: 'third', value: ''}]);
+      await stylePropertyTreeElement.onpopulate();
+      stylePropertyTreeElement.updateTitle();
+      stylePropertyTreeElement.expand();
+      const children = stylePropertyTreeElement.children().map(
+          child => (child as Elements.StylePropertyTreeElement.StylePropertyTreeElement).valueElement?.textContent);
+      assert.deepEqual(children, ['red', 'shorter', 'hue']);
+    });
+
     describe('color-mix swatch', () => {
       it('should show color mix swatch when color-mix is used with a color', () => {
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red, blue)');

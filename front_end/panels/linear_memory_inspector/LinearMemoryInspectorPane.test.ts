@@ -16,13 +16,13 @@ function createArray() {
 
 describeWithEnvironment('LinearMemoryInspectorPane', () => {
   class Uint8Wrapper {
-    private array: Uint8Array;
+    private array: Uint8Array<ArrayBuffer>;
 
-    constructor(array: Uint8Array) {
+    constructor(array: Uint8Array<ArrayBuffer>) {
       this.array = array;
     }
 
-    getRange(start: number, end: number): Promise<Uint8Array> {
+    getRange(start: number, end: number): Promise<Uint8Array<ArrayBuffer>> {
       return Promise.resolve(this.array.slice(start, end));
     }
     length(): number {

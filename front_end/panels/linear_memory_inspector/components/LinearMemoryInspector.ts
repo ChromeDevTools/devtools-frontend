@@ -52,7 +52,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // on the 1. memoryOffset (at which index this portion starts),
 // and on the 2. outerMemoryLength (length of the original Uint8Array).
 export interface LinearMemoryInspectorData {
-  memory: Uint8Array;
+  memory: Uint8Array<ArrayBuffer>;
   address: number;
   memoryOffset: number;
   outerMemoryLength: number;

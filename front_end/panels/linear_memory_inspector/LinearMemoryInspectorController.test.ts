@@ -27,7 +27,7 @@ class MockRemoteObject extends SDK.RemoteObject.LocalJSONObject {
   }
 }
 
-function createWrapper(array: Uint8Array) {
+function createWrapper(array: Uint8Array<ArrayBuffer>) {
   const mockRemoteObj = new MockRemoteObject(array.buffer);
   const mockRemoteArrayBuffer = new SDK.RemoteObject.RemoteArrayBuffer(mockRemoteObj);
   return new LinearMemoryInspectorController.RemoteArrayBufferWrapper(mockRemoteArrayBuffer);

@@ -35,7 +35,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.refreshData();
   }
 
-  setMemory(memory: Uint8Array): void {
+  setMemory(memory: Uint8Array<ArrayBuffer>): void {
     this.#memory = memory;
     this.refreshData();
   }

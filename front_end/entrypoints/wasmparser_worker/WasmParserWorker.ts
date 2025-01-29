@@ -54,7 +54,7 @@ export function dissambleWASM(
     const offsets = [];
     const functionBodyOffsets = [];
     let chunkSize: number = 128 * 1024;
-    let buffer: Uint8Array = new Uint8Array(chunkSize);
+    let buffer = new Uint8Array(chunkSize);
     let pendingSize = 0;
     let offsetInModule = 0;
     for (let i = 0; i < data.length;) {

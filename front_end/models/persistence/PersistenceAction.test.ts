@@ -70,8 +70,10 @@ describeWithLocale('ContextMenuProvider', () => {
     uiSourceCode.project.returns(stubProject);
     const stubWorkspaceBinding = sinon.createStubInstance(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding);
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance').returns(stubWorkspaceBinding);
-    const stubWasmScript = sinon.createStubInstance(
-        SDK.Script.Script, {getWasmBytecode: Promise.resolve(new Uint8Array([1, 2, 3, 4])), isWasm: true});
+    const stubWasmScript = sinon.createStubInstance(SDK.Script.Script, {
+      getWasmBytecode: Promise.resolve(new Uint8Array([1, 2, 3, 4]).buffer),
+      isWasm: true,
+    });
     stubWorkspaceBinding.scriptsForUISourceCode.returns([stubWasmScript]);
 
     menuProvider.appendApplicableItems(event, contextMenu, uiSourceCode);

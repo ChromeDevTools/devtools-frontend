@@ -12,7 +12,7 @@ import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 const {render, html} = Lit;
 
 export interface LinearMemoryViewerData {
-  memory: Uint8Array;
+  memory: Uint8Array<ArrayBuffer>;
   address: number;
   memoryOffset: number;
   focus: boolean;

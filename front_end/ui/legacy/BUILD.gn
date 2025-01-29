@@ -124,7 +124,6 @@ devtools_module("ui") {
     "../../ui/legacy/theme_support:bundle",
     "../components/adorners:bundle",
     "../components/buttons:bundle",
-    "../components/buttons:bundle",
     "../components/helpers:bundle",
     "../components/icon_button:bundle",
     "../components/settings:bundle",

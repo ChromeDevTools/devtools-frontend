@@ -55,7 +55,7 @@ export class ChunkedFileReader implements ChunkedReader {
   #file: File|null;
   readonly #fileSizeInternal: number;
   #loadedSizeInternal: number;
-  #streamReader: ReadableStreamDefaultReader<Uint8Array>|null;
+  #streamReader: ReadableStreamDefaultReader<Uint8Array<ArrayBuffer>>|null;
   readonly #chunkSize: number;
   readonly #chunkTransferredCallback: ((arg0: ChunkedReader) => void)|undefined;
   readonly #decoder: TextDecoder;

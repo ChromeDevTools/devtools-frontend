@@ -26,14 +26,14 @@ export class TimelineJSProfileProcessor {
   }
 
   static createFakeTraceFromCpuProfile(profile: Protocol.Profiler.Profile, tid: Types.Events.ThreadID):
-      Types.Events.Event[] {
+      Types.File.TraceFile {
     const events: Types.Events.Event[] = [];
 
     const threadName = `Thread ${tid}`;
     appendEvent('TracingStartedInPage', {data: {sessionId: '1'}}, 0, 0, Types.Events.Phase.METADATA);
     appendEvent(Types.Events.Name.THREAD_NAME, {name: threadName}, 0, 0, Types.Events.Phase.METADATA, '__metadata');
     if (!profile) {
-      return events;
+      return {traceEvents: events, metadata: {}};
     }
 
     // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
@@ -45,7 +45,12 @@ export class TimelineJSProfileProcessor {
 
     // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
     appendEvent('CpuProfile', {data: {cpuProfile: profile}}, profile.endTime, 0, Types.Events.Phase.COMPLETE);
-    return events;
+    return {
+      traceEvents: events,
+      metadata: {
+        dataOrigin: Types.File.DataOrigin.CPU_PROFILE,
+      }
+    };
 
     function appendEvent(
         name: string, args: any, ts: number, dur?: number, ph?: Types.Events.Phase, cat?: string): Types.Events.Event {

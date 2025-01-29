@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as File from './File.js';
+
 export interface Configuration {
   /**
    * Include V8 RCS functions in the JS stacks
@@ -47,4 +49,19 @@ export const defaults = (): Configuration => ({
  */
 export function configToCacheKey(config: Configuration): string {
   return JSON.stringify(config);
+}
+
+export interface ParseOptions {
+  /**
+   * If the trace was just recorded on the current page, rather than an imported file.
+   * TODO(paulirish): Maybe remove. This is currently unused by the Processor and Handlers
+   * @default false
+   */
+  isFreshRecording?: boolean;
+  /**
+   * If the trace is a CPU Profile rather than a Chrome tracing trace.
+   * @default false
+   */
+  isCPUProfile?: boolean;
+  metadata?: File.MetaData;
 }

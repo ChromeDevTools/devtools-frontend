@@ -88,11 +88,11 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     loader.#traceIsCPUProfile = true;
 
     try {
-      const events = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+      const contents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
-        void loader.addEvents(events);
+        void loader.addEvents(contents.traceEvents);
       });
     } catch (e) {
       console.error(e.stack);
@@ -166,7 +166,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
   }
 
-  async addEvents(events: Trace.Types.Events.Event[]): Promise<void> {
+  async addEvents(events: readonly Trace.Types.Events.Event[]): Promise<void> {
     this.client?.loadingStarted();
     /**
      * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
@@ -261,10 +261,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
-    const traceEvents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const traceFile = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         parsedTrace, Trace.Types.Events.ThreadID(1));
 
-    this.#collectEvents(traceEvents);
+    this.#collectEvents(traceFile.traceEvents);
   }
 
   #collectEvents(events: readonly Trace.Types.Events.Event[]): void {

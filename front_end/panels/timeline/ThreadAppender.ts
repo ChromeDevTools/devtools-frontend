@@ -146,7 +146,7 @@ export class ThreadAppender implements TrackAppender {
   #compatibilityBuilder: CompatibilityTracksAppender;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
 
-  #entries: Trace.Types.Events.Event[] = [];
+  #entries: readonly Trace.Types.Events.Event[] = [];
   #tree: Trace.Helpers.TreeHelpers.TraceEntryTree;
   #processId: Trace.Types.Events.ProcessID;
   #threadId: Trace.Types.Events.ThreadID;
@@ -161,7 +161,8 @@ export class ThreadAppender implements TrackAppender {
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       processId: Trace.Types.Events.ProcessID, threadId: Trace.Types.Events.ThreadID, threadName: string|null,
-      type: Trace.Handlers.Threads.ThreadType) {
+      type: Trace.Handlers.Threads.ThreadType, entries: readonly Trace.Types.Events.Event[],
+      tree: Trace.Helpers.TreeHelpers.TraceEntryTree) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old
@@ -177,14 +178,6 @@ export class ThreadAppender implements TrackAppender {
     this.#processId = processId;
     this.#threadId = threadId;
 
-    // When loading a CPU profile, only CPU data will be available, thus
-    // we get the data from the SamplesHandler.
-    const entries = type === Trace.Handlers.Threads.ThreadType.CPU_PROFILE ?
-        this.#parsedTrace.Samples?.profilesInProcess.get(processId)?.get(threadId)?.profileCalls :
-        this.#parsedTrace.Renderer?.processes.get(processId)?.threads?.get(threadId)?.entries;
-    const tree = type === Trace.Handlers.Threads.ThreadType.CPU_PROFILE ?
-        this.#parsedTrace.Samples?.profilesInProcess.get(processId)?.get(threadId)?.profileTree :
-        this.#parsedTrace.Renderer?.processes.get(processId)?.threads?.get(threadId)?.tree;
     if (!entries || !tree) {
       throw new Error(`Could not find data for thread with id ${threadId} in process with id ${processId}`);
     }
@@ -370,7 +363,7 @@ export class ThreadAppender implements TrackAppender {
     return this.#url;
   }
 
-  getEntries(): Trace.Types.Events.Event[] {
+  getEntries(): readonly Trace.Types.Events.Event[] {
     return this.#entries;
   }
 

@@ -49,21 +49,6 @@ declare global {
   }
 }
 
-export interface ParseOptions {
-  /**
-   * If the trace was just recorded on the current page, rather than an imported file.
-   * TODO(paulirish): Maybe remove. This is currently unused by the Processor and Handlers
-   * @default false
-   */
-  isFreshRecording?: boolean;
-  /**
-   * If the trace is a CPU Profile rather than a Chrome tracing trace.
-   * @default false
-   */
-  isCPUProfile?: boolean;
-  metadata?: Types.File.MetaData;
-}
-
 export class TraceProcessor extends EventTarget {
   // We force the Meta handler to be enabled, so the TraceHandlers type here is
   // the model handlers the user passes in and the Meta handler.
@@ -166,13 +151,13 @@ export class TraceProcessor extends EventTarget {
     this.#status = Status.IDLE;
   }
 
-  async parse(traceEvents: readonly Types.Events.Event[], options: ParseOptions): Promise<void> {
+  async parse(traceEvents: readonly Types.Events.Event[], options: Types.Configuration.ParseOptions): Promise<void> {
     if (this.#status !== Status.IDLE) {
       throw new Error(`Trace processor can't start parsing when not idle. Current state: ${this.#status}`);
     }
     try {
       this.#status = Status.PARSING;
-      await this.#computeParsedTrace(traceEvents);
+      await this.#computeParsedTrace(traceEvents, options);
       if (this.#data && !options.isCPUProfile) {  // We do not calculate insights for CPU Profiles.
         this.#computeInsights(this.#data, traceEvents, options);
       }
@@ -186,7 +171,8 @@ export class TraceProcessor extends EventTarget {
   /**
    * Run all the handlers and set the result to `#data`.
    */
-  async #computeParsedTrace(traceEvents: readonly Types.Events.Event[]): Promise<void> {
+  async #computeParsedTrace(traceEvents: readonly Types.Events.Event[], options: Types.Configuration.ParseOptions):
+      Promise<void> {
     /**
      * We want to yield regularly to maintain responsiveness. If we yield too often, we're wasting idle time.
      * We could do this by checking `performance.now()` regularly, but it's an expensive call in such a hot loop.
@@ -226,7 +212,7 @@ export class TraceProcessor extends EventTarget {
         // Yield to the UI because finalize() calls can be expensive
         // TODO(jacktfranklin): consider using `scheduler.yield()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
         await new Promise(resolve => setTimeout(resolve, 0));
-        await handler.finalize();
+        await handler.finalize(options);
       }
       const percent = calculateProgress(i / sortedHandlers.length, ProgressPhase.FINALIZE);
       this.dispatchEvent(new TraceParseProgressEvent({percent}));
@@ -442,7 +428,7 @@ export class TraceProcessor extends EventTarget {
   #computeInsightSet(
       insights: Insights.Types.TraceInsightSets, parsedTrace: Handlers.Types.ParsedTrace,
       insightRunners: Partial<typeof Insights.Models>, context: Insights.Types.InsightSetContext,
-      options: ParseOptions): void {
+      options: Types.Configuration.ParseOptions): void {
     const model = {} as Insights.Types.InsightSet['model'];
 
     for (const [name, insight] of Object.entries(insightRunners)) {
@@ -491,7 +477,7 @@ export class TraceProcessor extends EventTarget {
    */
   #computeInsights(
       parsedTrace: Handlers.Types.ParsedTrace, traceEvents: readonly Types.Events.Event[],
-      options: ParseOptions): void {
+      options: Types.Configuration.ParseOptions): void {
     this.#insights = new Map();
 
     const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(parsedTrace);

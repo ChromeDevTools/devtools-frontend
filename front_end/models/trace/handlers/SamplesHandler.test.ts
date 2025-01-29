@@ -25,6 +25,25 @@ async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null
   return Trace.Handlers.ModelHandlers.Samples.data();
 }
 
+async function handleEventsFromCpuProfile(context: Mocha.Context|Mocha.Suite|null, name: string):
+    Promise<Trace.Handlers.ModelHandlers.Samples.SamplesHandlerData> {
+  const profile = await TraceLoader.rawCPUProfile(context, name);
+
+  const contents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+      profile, Trace.Types.Events.ThreadID(1));
+
+  Trace.Handlers.ModelHandlers.Samples.reset();
+  for (const event of contents.traceEvents) {
+    Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+    Trace.Handlers.ModelHandlers.Samples.handleEvent(event);
+  }
+
+  await Trace.Handlers.ModelHandlers.Meta.finalize();
+  await Trace.Handlers.ModelHandlers.Samples.finalize({isCPUProfile: true});
+
+  return Trace.Handlers.ModelHandlers.Samples.data();
+}
+
 describeWithEnvironment('SamplesHandler', function() {
   it('finds all the profiles in a real world recording', async () => {
     const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
@@ -141,7 +160,7 @@ describeWithEnvironment('SamplesHandler', function() {
       for (const event of [mockProfileEvent, ...mockChunks]) {
         Trace.Handlers.ModelHandlers.Samples.handleEvent(event);
       }
-      await Trace.Handlers.ModelHandlers.Samples.finalize();
+      await Trace.Handlers.ModelHandlers.Samples.finalize({isCPUProfile: true});
       const data = Trace.Handlers.ModelHandlers.Samples.data();
       const calls = data.profilesInProcess.get(pid)?.get(tid)?.profileCalls.map(call => {
         const selfTime = data.entryToNode.get(call)?.selfTime;
@@ -177,23 +196,36 @@ describeWithEnvironment('SamplesHandler', function() {
 
       assert.deepEqual(callsTestData, expectedResult);
     });
-    it('can build profile calls from a CPU profile coming from a real world trace', async () => {
-      const data = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+
+    it('can build profile calls from a CPU profile coming from a real world cpuprofile', async () => {
+      const data = await handleEventsFromCpuProfile(this, 'basic.cpuprofile.gz');
 
       const threadId = Trace.Types.Events.ThreadID(1);
-      const firstProcessId = Trace.Types.Events.ProcessID(2236123);
+      const firstProcessId = Trace.Types.Events.ProcessID(1);
       const profilesFirstProcess = data.profilesInProcess.get(firstProcessId);
-      const calls = profilesFirstProcess?.get(threadId)?.profileCalls.slice(0, 5).map(call => {
+      const profileData = profilesFirstProcess?.get(threadId) as Trace.Handlers.ModelHandlers.Samples.ProfileData;
+      // These particular calls are selected as some have children and others have selfTime
+      const calls = [
+        ...profileData?.profileCalls.slice(0, 4),
+        ...profileData?.profileCalls.slice(10, 15),
+      ].map(call => {
         const selfTime = data.entryToNode.get(call)?.selfTime;
         return {...call, selfTime};
       });
-      const tree = profilesFirstProcess?.get(threadId)?.profileTree;
+      const tree = profileData.profileTree;
       const expectedResult = [
-        {id: 2, dur: 392, ts: 643496962681, selfTime: 392, children: []},
-        {id: 3, dur: 682, ts: 643496963073, selfTime: 0, children: [4]},
-        {id: 4, dur: 682, ts: 643496963073, selfTime: 160, children: [5]},
-        {id: 5, dur: 522, ts: 643496963233, selfTime: 178, children: [6, 7]},
-        {id: 6, dur: 175, ts: 643496963411, selfTime: 175, children: []},
+        // The initial call stack
+        {id: 2, dur: 2369962, ts: 73029010084, selfTime: 0, children: [3]},
+        {id: 3, dur: 2369962, ts: 73029010084, selfTime: 0, children: [4]},
+        {id: 4, dur: 2369962, ts: 73029010084, selfTime: 0, children: [5]},
+        {id: 5, dur: 2369962, ts: 73029010084, selfTime: 0, children: [6]},
+        // various calls to hrtime
+        {id: 10, dur: 375, ts: 73029011751, selfTime: 375, children: []},
+        {id: 10, dur: 1083, ts: 73029012251, selfTime: 1083, children: []},
+        {id: 10, dur: 833, ts: 73029013459, selfTime: 833, children: []},
+        {id: 10, dur: 917, ts: 73029014417, selfTime: 792, children: []},
+        {id: 11, dur: 125, ts: 73029014667, selfTime: 125, children: []},
+
       ];
       assert.exists(tree?.roots);
       if (!tree?.roots) {

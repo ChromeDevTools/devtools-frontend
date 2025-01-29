@@ -137,6 +137,7 @@ devtools-recording-list-view {
   outline-offset: 3px;
 }
 
-.feedback .x-link:focus-visible {
+.feedback .x-link:focus-visible,
+.empty-state-description .x-link:focus-visible {
   outline: -webkit-focus-ring-color auto 1px;
 }

@@ -1118,7 +1118,8 @@ export class RecorderController extends LitElement {
       <div class="empty-state" jslog=${VisualLogging.section().context('start-view')}>
         <div class="empty-state-header">${i18nString(UIStrings.header)}</div>
         <div class="empty-state-description">
-          ${i18nString(UIStrings.recordingDescription)}${UI.XLink.XLink.create(RECORDER_EXPLANATION_URL, i18nString(UIStrings.learnMore))}
+          <span>${i18nString(UIStrings.recordingDescription)}</span>
+          ${UI.XLink.XLink.create(RECORDER_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
         </div>
         <devtools-button jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
       </div>

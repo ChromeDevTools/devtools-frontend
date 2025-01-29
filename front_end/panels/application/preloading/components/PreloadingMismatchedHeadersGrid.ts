@@ -37,7 +37,6 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
 
 export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: SDK.PreloadingModel.PrerenderAttempt|null = null;
   connectedCallback(): void {
@@ -83,7 +82,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
                 </tr>
               `)}
             </table>
-          </devtools-data-grid-controller>
+          </devtools-new-data-grid>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

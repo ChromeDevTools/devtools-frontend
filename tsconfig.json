@@ -16,7 +16,8 @@
         "rules": {
           "no-complex-attribute-binding": "off",
           "no-missing-import": "error",
-          "no-unknown-tag-name": "error"
+          "no-unknown-tag-name": "error",
+          "no-unclosed-tag": "error"
         }
       }
     ]

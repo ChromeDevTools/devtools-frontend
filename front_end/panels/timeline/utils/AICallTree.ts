@@ -76,7 +76,7 @@ export class AICallTree {
     }
 
     if (!threadEvents) {
-      console.error(`AICallTree: could not find thread for selected entry: ${selectedEvent}`);
+      console.warn(`AICallTree: could not find thread for selected entry: ${selectedEvent}`);
       return null;
     }
     const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, selectedEventBounds));
@@ -98,7 +98,7 @@ export class AICallTree {
     });
 
     if (selectedNode === null) {
-      console.error(`Selected event ${selectedEvent} not found within its own tree.`);
+      console.warn(`Selected event ${selectedEvent} not found within its own tree.`);
       return null;
     }
     const instance = new AICallTree(selectedNode, rootNode, parsedTrace);

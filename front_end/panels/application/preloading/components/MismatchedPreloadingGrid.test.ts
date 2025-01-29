@@ -10,11 +10,9 @@ import {
   getCellByIndexes,
 } from '../../../../testing/DataGridHelpers.js';
 import {
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
@@ -40,16 +38,14 @@ async function renderMismatchedPreloadingGrid(
 function assertDiff(
     gridComponent: HTMLElement, cellIndex: {row: number, column: number},
     spansExpected: {textContent: string, partOfStyle: string}[]) {
-  const controller = getElementWithinComponent(
-      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+  const grid = gridComponent.shadowRoot!.querySelector('devtools-new-data-grid')!;
   assert.isNotNull(grid.shadowRoot);
   const cell = getCellByIndexes(grid.shadowRoot, cellIndex);
   const spans = cell.querySelectorAll('div span');
 
   for (const [got, expected] of zip2(Array.from(spans), spansExpected)) {
     assert.strictEqual(got.textContent, expected.textContent);
-    assert.include(got.getAttribute('style'), expected.partOfStyle);
+    assert.include(got.getAttribute('style') || '', expected.partOfStyle);
   }
 }
 

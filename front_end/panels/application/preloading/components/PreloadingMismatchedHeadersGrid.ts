@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../../ui/components/data_grid/data_grid.js';
+import '../../../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
-import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -56,72 +54,39 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
   }
 
   #render(): void {
-    if (this.#data === null) {
+    if (!this.#data?.mismatchedHeaders) {
       return;
     }
-
-    const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'header-name',
-          title: i18nString(UIStrings.headerName),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'initial-value',
-          title: i18nString(UIStrings.initialNavigationValue),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'activation-value',
-          title: i18nString(UIStrings.activationNavigationValue),
-          widthWeighting: 30,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-      ],
-      rows: this.#buildReportRows(),
-      striped: true,
-    };
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       render(html`
         <div class="preloading-container">
-          <devtools-data-grid-controller .data=${reportsGridData}></devtools-data-grid-controller>
+          <devtools-new-data-grid striped inline>
+            <table>
+              <tr>
+                <th id="header-name" weight="30" sortable>
+                  ${i18nString(UIStrings.headerName)}
+                </th>
+                <th id="initial-value" weight="30" sortable>
+                  ${i18nString(UIStrings.initialNavigationValue)}
+                </th>
+                <th id="activation-value" weight="30" sortable>
+                  ${i18nString(UIStrings.activationNavigationValue)}
+                </th>
+              </tr>
+              ${this.#data.mismatchedHeaders.map(mismatchedHeaders => html`
+                <tr>
+                  <td>${mismatchedHeaders.headerName}</td>
+                  <td>${mismatchedHeaders.initialValue ?? i18nString(UIStrings.missing)}</td>
+                  <td>${mismatchedHeaders.activationValue ?? i18nString(UIStrings.missing)}</td>
+                </tr>
+              `)}
+            </table>
+          </devtools-data-grid-controller>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on
-  }
-
-  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    assertNotNullOrUndefined(this.#data);
-    assertNotNullOrUndefined(this.#data.mismatchedHeaders);
-
-    return this.#data.mismatchedHeaders.map(
-        mismatchedHeaders => ({
-          cells: [
-            {
-              columnId: 'header-name',
-              value: mismatchedHeaders.headerName,
-            },
-            {
-              columnId: 'initial-value',
-              value: mismatchedHeaders.initialValue ?? i18nString(UIStrings.missing),
-            },
-            {
-              columnId: 'activation-value',
-              value: mismatchedHeaders.activationValue ?? i18nString(UIStrings.missing),
-            },
-          ],
-        }));
   }
 }
 

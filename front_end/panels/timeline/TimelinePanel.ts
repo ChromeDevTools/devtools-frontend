@@ -384,6 +384,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   readonly #minimapComponent = new TimelineMiniMap();
   #viewMode: ViewMode = {mode: 'LANDING_PAGE'};
   readonly #dimThirdPartiesSetting: Common.Settings.Setting<boolean>|null = null;
+  #thirdPartyCheckbox: UI.Toolbar.ToolbarSettingCheckbox|null = null;
 
   /**
    * We get given any filters for a new trace when it is recorded/imported.
@@ -724,11 +725,31 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
+    // When an insight is selected, ensure that the 3P checkbox is disabled
+    // to avoid dimming interference.
     if (insight) {
       this.#splitWidget.showBoth();
+      this.#set3PCheckboxDisabled(true);
+    } else {
+      this.#set3PCheckboxDisabled(false);
     }
     this.#sideBar.setActiveInsight(insight);
     this.flameChart.setActiveInsight(insight);
+  }
+
+  /**
+   * This "disables" the 3P checkbox in the toolbar.
+   * Disabling here does a couple of things:
+   * 1) updates the setting to "disabled"
+   * 2) makes the checkbox dimmed and unclickable
+   * 3) gives the checkbox UI an indeterminate state
+   */
+  #set3PCheckboxDisabled(disabled: boolean): void {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
+      this.#dimThirdPartiesSetting?.setDisabled(disabled);
+      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
+      this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+    }
   }
 
   static instance(opts: {
@@ -1026,7 +1047,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private createSettingCheckbox(setting: Common.Settings.Setting<boolean>, tooltip: Platform.UIString.LocalizedString):
-      UI.Toolbar.ToolbarItem {
+      UI.Toolbar.ToolbarSettingCheckbox {
     const checkboxItem = new UI.Toolbar.ToolbarSettingCheckbox(setting, tooltip);
     this.recordingOptionUIControls.push(checkboxItem);
     return checkboxItem;
@@ -1149,6 +1170,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox =
           this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.thirdPartiesByThirdPartyWeb));
+      this.#thirdPartyCheckbox = dimThirdPartiesCheckbox;
       this.panelToolbar.appendToolbarItem(dimThirdPartiesCheckbox);
     }
 
@@ -2146,7 +2168,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    const checkboxState = this.#dimThirdPartiesSetting?.get() ?? false;
+    const checkboxState = this.#dimThirdPartiesSetting?.getIfNotDisabled() ?? false;
     const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
 
     if (checkboxState && thirdPartyEvents.length) {

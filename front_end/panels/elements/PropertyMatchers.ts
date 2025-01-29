@@ -484,29 +484,11 @@ export class LengthMatch implements Match {
 
 // clang-format off
 export class LengthMatcher extends matcherBase(LengthMatch) {
-  static readonly LENGTH_UNITS = new Set([
-                                'cm',
-                                'mm',
-                                'Q',
-                                'in',
-                                'pc',
-                                'pt',
-                                'px',
-                                'em',
-                                'ex',
-                                'ch',
-                                'rem',
-                                'vw',
-                                'vh',
-                                'vmin',
-                                'vmax',
-                                'cqw',
-                                'cqh',
-                                'cqi',
-                                'cqb',
-                                'cqmin',
-                                'cqmax']);
   // clang-format on
+  static readonly LENGTH_UNITS = new Set([
+    'cm', 'mm', 'Q',    'in',   'pc',  'pt',  'px',  'em',  'ex',    'ch',   'rem',
+    'vw', 'vh', 'vmin', 'vmax', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax'
+  ]);
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'NumberLiteral') {
       return null;
@@ -517,6 +499,33 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
     }
     const text = matching.ast.text(node);
     return new LengthMatch(text, node, unit);
+  }
+}
+
+export class SelectFunctionMatch implements Match {
+  constructor(
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: string,
+      readonly args: CodeMirror.SyntaxNode[][]) {
+  }
+}
+
+// clang-format off
+export class SelectFunctionMatcher extends matcherBase(SelectFunctionMatch) {
+  // clang-format on
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'CallExpression') {
+      return null;
+    }
+    const callee = matching.ast.text(node.getChild('Callee'));
+    if (!['min', 'max', 'clamp'].includes(callee)) {
+      return null;
+    }
+    const args = ASTUtils.callArgs(node);
+    if (args.some(arg => arg.length === 0 || matching.hasUnresolvedVarsRange(arg[0], arg[arg.length - 1]))) {
+      return null;
+    }
+    const text = matching.ast.text(node);
+    return new SelectFunctionMatch(text, node, callee, args);
   }
 }
 

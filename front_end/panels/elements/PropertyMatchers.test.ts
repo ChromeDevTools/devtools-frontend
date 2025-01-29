@@ -551,6 +551,25 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     });
   });
 
+  describe('SelectFunctionMatcher', () => {
+    it('matches selecting functions', () => {
+      const success = ['clamp(1px, 2px, 3px)', 'min(1, 2)', 'max(3, 4)'];
+      for (const value of success) {
+        const {match, text} = matchSingleValue('width', value, new Elements.PropertyMatchers.SelectFunctionMatcher());
+        assert.exists(match, text);
+        assert.strictEqual(match.text, value);
+        assert.strictEqual(match.func, value.substr(0, value.indexOf('(')));
+        assert.isAbove(match.args.length, 0);
+      }
+
+      const failure = ['clomp(1px, 2px, 3px)', 'min()'];
+      for (const value of failure) {
+        const {match, text} = matchSingleValue('width', value, new Elements.PropertyMatchers.SelectFunctionMatcher());
+        assert.notExists(match, text);
+      }
+    });
+  });
+
   it('matches lengths', () => {
     const {match, text} = matchSingleValue('min-width', '100px', new Elements.PropertyMatchers.LengthMatcher());
     assert.exists(match, text);

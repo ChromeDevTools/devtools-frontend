@@ -59,6 +59,8 @@ import {
   PositionAnchorMatcher,
   type PositionTryMatch,
   PositionTryMatcher,
+  type SelectFunctionMatch,
+  SelectFunctionMatcher,
   type ShadowMatch,
   ShadowMatcher,
   ShadowType,
@@ -1212,6 +1214,57 @@ export class LengthRenderer implements MatchRenderer<LengthMatch> {
   }
 }
 
+export class SelectFunctionRenderer implements MatchRenderer<SelectFunctionMatch> {
+  constructor(private readonly treeElement: StylePropertyTreeElement) {
+  }
+  matcher(): SDK.CSSPropertyParser.Matcher<SelectFunctionMatch> {
+    return new SelectFunctionMatcher();
+  }
+
+  render(match: SelectFunctionMatch, context: RenderingContext): Node[] {
+    const resolvedArgs = match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
+
+    const renderedArgs = match.args.map(arg => {
+      const span = document.createElement('span');
+      Renderer.renderInto(arg, context, span);
+      return span;
+    });
+
+    void this.applySelectFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
+
+    return [
+      document.createTextNode(match.func),
+      document.createTextNode('('),
+      ...renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [document.createTextNode(', '), arg]).flat(),
+      document.createTextNode(')'),
+    ];
+  }
+
+  async applySelectFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
+    const nodeId = this.treeElement.node()?.id;
+    if (nodeId === undefined) {
+      return;
+    }
+    // To understand which argument was selected by the function, we evaluate the function as well as all the arguments
+    // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
+    // function calls and normalizes all units to px.
+    values.unshift(functionText);
+    const evaledArgs = await this.treeElement.parentPane().cssModel()?.agent.invoke_resolveValues({values, nodeId});
+    if (!evaledArgs || evaledArgs.getError()) {
+      return;
+    }
+    const functionResult = evaledArgs.results.shift();
+    if (!functionResult) {
+      return;
+    }
+    for (let i = 0; i < renderedArgs.length; ++i) {
+      if (evaledArgs.results[i] !== functionResult) {
+        renderedArgs[i].style.textDecoration = 'line-through';
+      }
+    }
+  }
+}
+
 async function decorateAnchorForAnchorLink(container: HTMLElement, treeElement: StylePropertyTreeElement, options: {
   identifier?: string, needsSpace: boolean,
 }): Promise<void> {
@@ -1799,6 +1852,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new FlexGridRenderer(this),
           new PositionTryRenderer(this),
           new LengthRenderer(this),
+          new SelectFunctionRenderer(this),
         ] :
         [];
 

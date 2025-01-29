@@ -31,6 +31,18 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       [style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string],
       SDK.CSSMatchedStyles.CSSVariableValue|null>;
 
+  async function setUpCSSModel() {
+    stubNoopSettings();
+    setMockConnectionResponseHandler('CSS.enable', () => ({}));
+    const cssModel = new SDK.CSSModel.CSSModel(createTarget());
+    await cssModel.resumeModel();
+    const domModel = cssModel.domModel();
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    node.id = 0 as Protocol.DOM.NodeId;
+    LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+    return {cssModel};
+  }
+
   beforeEach(async () => {
     const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
@@ -110,8 +122,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
        });
 
     it('is able to expand longhands with vars', async () => {
-      stubNoopSettings();
-      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+      await setUpCSSModel();
       setMockConnectionResponseHandler(
           'CSS.getLonghandProperties', (request: Protocol.CSS.GetLonghandPropertiesRequest) => {
             if (request.shorthandName !== 'shorthand') {
@@ -129,11 +140,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
               ]
             };
           });
-      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
-      const domModel = cssModel.domModel();
-      const node = new SDK.DOMModel.DOMNode(domModel);
-      node.id = 0 as Protocol.DOM.NodeId;
-      LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
       const stylePropertyTreeElement = getTreeElement(
           'shorthand', 'var(--a) var(--space)',
           [{name: 'first', value: ''}, {name: 'second', value: ''}, {name: 'third', value: ''}]);
@@ -1584,8 +1590,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('LengthRenderer', () => {
     it('shows a popover with pixel values for relative units', async () => {
-      stubNoopSettings();
-      setMockConnectionResponseHandler('CSS.enable', () => ({}));
+      await setUpCSSModel();
       setMockConnectionResponseHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) =>
@@ -1608,19 +1613,38 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('SelectFunctionRenderer', () => {
+    it('strikes out non-selected values', async () => {
+      await setUpCSSModel();
+      setMockConnectionResponseHandler(
+          'CSS.resolveValues',
+          (request: Protocol.CSS.ResolveValuesRequest) => ({
+            results: request.values.map(
+                value => value.startsWith('min') ? '4px' : value.trim().replaceAll(/(em|pt)$/g, 'px'))
+          }));
+      const strikeOutSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.SelectFunctionRenderer.prototype, 'applySelectFunction');
+      const stylePropertyTreeElement = getTreeElement('width', 'min(5em, 4px, 8pt)');
+      stylePropertyTreeElement.updateTitle();
+
+      assert.isTrue(strikeOutSpy.calledOnce);
+      await strikeOutSpy.returnValues[0];
+      const args =
+          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLSpanElement>;
+      assert.lengthOf(args, 3);
+      assert.deepEqual(
+          Array.from(args.values()).map(arg => arg.style.textDecoration), ['line-through', '', 'line-through']);
+    });
+  });
+
   describe('Autocompletion', function(this: Mocha.Suite) {
     let promptStub: sinon.SinonStub<Parameters<Elements.StylesSidebarPane.CSSPropertyPrompt['initialize']>>;
     beforeEach(async () => {
-      stubNoopSettings();
       promptStub = sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize').resolves([]);
-      setMockConnectionResponseHandler('CSS.enable', () => ({}));
 
-      const cssModel = new SDK.CSSModel.CSSModel(createTarget());
-      await cssModel.resumeModel();
-      const domModel = cssModel.domModel();
-      const gridNode = new SDK.DOMModel.DOMNode(domModel);
-      gridNode.id = 0 as Protocol.DOM.NodeId;
-      const currentNode = new SDK.DOMModel.DOMNode(domModel);
+      const {cssModel} = await setUpCSSModel();
+      const gridNode = LegacyUI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+      const currentNode = new SDK.DOMModel.DOMNode(cssModel.domModel());
       currentNode.id = 1 as Protocol.DOM.NodeId;
       currentNode.parentNode = gridNode;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, currentNode);

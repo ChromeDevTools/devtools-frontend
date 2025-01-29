@@ -40,13 +40,12 @@
 }
 
 .ax-breadcrumbs .ax-node::before {
-  mask-image: var(--image-file-chevron-right);
+  mask-image: var(--image-file-arrow-collapse);
   mask-repeat: no-repeat;
   background-color: var(--icon-default);
-  transform: scale(0.7);
   content: "";
   text-shadow: none;
-  margin-left: -4px;
+  margin-left: -5px;
   margin-top: -2px;
   height: 16px;
   width: 16px;
@@ -59,17 +58,11 @@
 }
 
 .ax-breadcrumbs .ax-node.parent::before {
-  mask-image: var(--image-file-chevron-down);
+  mask-image: var(--image-file-arrow-drop-down);
 }
 
 .ax-breadcrumbs .ax-node.no-dom-node {
   opacity: 70%;
-}
-
-.ax-breadcrumbs .ax-node.children-unloaded::before {
-  mask-position: 0 1px;
-  width: 13px;
-  opacity: 40%;
 }
 
 .ax-breadcrumbs .ax-node .selection {

@@ -153,6 +153,10 @@ export class TimelineDetailsView extends
     if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
       return;
     }
+    /**
+     * For a11y, ensure that the header is focused.
+     */
+    this.tabbedPane.focusSelectedTabHeader();
     const bottomUp = this.tabbedPane.visibleView;
     const thirdPartyNodeSelected = event.data;
     if (!thirdPartyNodeSelected) {

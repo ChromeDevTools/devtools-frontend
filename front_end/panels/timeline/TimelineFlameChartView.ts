@@ -476,6 +476,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   #refreshDimming(): void {
     const dimmer = this.#flameChartDimmers.find(dimmer => dimmer.active);
+
+    // This checkbox should only be enabled if its dimmer is being used.
+    this.delegate.set3PCheckboxDisabled(Boolean(dimmer && dimmer !== this.#thirdPartyCheckboxDimmer));
+
     if (!dimmer) {
       this.mainFlameChart.disableDimming();
       this.networkFlameChart.disableDimming();

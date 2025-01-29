@@ -729,9 +729,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // to avoid dimming interference.
     if (insight) {
       this.#splitWidget.showBoth();
-      this.#set3PCheckboxDisabled(true);
-    } else {
-      this.#set3PCheckboxDisabled(false);
     }
     this.#sideBar.setActiveInsight(insight);
     this.flameChart.setActiveInsight(insight);
@@ -743,12 +740,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * 1) updates the setting to "disabled"
    * 2) makes the checkbox dimmed and unclickable
    * 3) gives the checkbox UI an indeterminate state
+   * Only make the change if it's different to avoid an infinite loop
    */
-  #set3PCheckboxDisabled(disabled: boolean): void {
+  set3PCheckboxDisabled(disabled: boolean): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      this.#dimThirdPartiesSetting?.setDisabled(disabled);
-      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
-      this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+      if (this.#thirdPartyCheckbox?.inputElement.disabled !== disabled) {
+        this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+        this.#thirdPartyCheckbox?.setIndeterminate(disabled);
+        this.#dimThirdPartiesSetting?.setDisabled(disabled);
+      }
     }
   }
 
@@ -2685,6 +2685,7 @@ export const headerHeight = 20;
 export interface TimelineModeViewDelegate {
   select(selection: TimelineSelection|null): void;
   element: Element;
+  set3PCheckboxDisabled(disabled: boolean): void;
   selectEntryAtTime(events: Trace.Types.Events.Event[]|null, time: number): void;
   highlightEvent(event: Trace.Types.Events.Event|null): void;
 }

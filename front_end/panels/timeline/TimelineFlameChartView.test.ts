@@ -22,6 +22,8 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
   select(selection: Timeline.TimelineSelection.TimelineSelection|null): void {
     this.selection = selection;
   }
+  set3PCheckboxDisabled(_disabled: boolean): void {
+  }
   selectEntryAtTime(_events: Trace.Types.Events.Event[]|null, _time: number): void {
   }
   highlightEvent(_event: Trace.Types.Events.Event|null): void {

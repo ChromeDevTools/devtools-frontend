@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/legacy/components/data_grid/data_grid.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
 
-const {html} = Lit;
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -32,11 +33,6 @@ const UIStrings = {
    * 'documentSet', 'workletDelete', or 'workletGet'.
    */
   eventType: 'Access Type',
-  /**
-   *@description Text in Shared Storage Events View of the Application panel
-   * Id of the page's main frame for this access event.
-   */
-  mainFrameId: 'Main Frame ID',
   /**
    *@description Text in Shared Storage Events View of the Application panel
    * Owner origin of the shared storage for this access event.
@@ -66,13 +62,13 @@ export class SharedStorageAccessGrid extends HTMLElement {
   }
 
   set data(data: Array<Protocol.Storage.SharedStorageAccessedEvent>) {
-    this.#datastores = data;
+    this.#datastores = data.sort((a, b) => a.accessTime - b.accessTime);
     this.#render();
   }
 
   #render(): void {
     // clang-format off
-    Lit.render(html`
+    render(html`
       <div>
         <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
         <devtools-icon class="info-icon"
@@ -90,81 +86,44 @@ export class SharedStorageAccessGrid extends HTMLElement {
       return html`<div
         class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }
-
-    const gridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'event-main-frame-id',
-          title: i18nString(UIStrings.mainFrameId),
-          widthWeighting: 10,
-          hideable: false,
-          visible: false,
-          sortable: false,
-        },
-        {
-          id: 'event-time',
-          title: i18nString(UIStrings.eventTime),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-type',
-          title: i18nString(UIStrings.eventType),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-owner-origin',
-          title: i18nString(UIStrings.ownerOrigin),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'event-params',
-          title: i18nString(UIStrings.eventParams),
-          widthWeighting: 10,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-      ],
-      rows: this.#buildRows(),
-      initialSort: {
-        columnId: 'event-time',
-        direction: DataGrid.DataGridUtils.SortDirection.ASC,
-      },
-    };
-
     return html`
-      <devtools-data-grid-controller .data=${gridData}></devtools-data-grid-controller>
+      <devtools-new-data-grid striped inline @select=${this.#onSelect}>
+        <table>
+          <tr>
+            <th id="event-time" weight="10" sortable>
+              ${i18nString(UIStrings.eventTime)}
+            </th>
+            <th id="event-type" weight="10" sortable>
+              ${i18nString(UIStrings.eventType)}
+            </th>
+            <th id="event-owner-origin" weight="10" sortable>
+              ${i18nString(UIStrings.ownerOrigin)}
+            </th>
+            <th id="event-params" weight="10" sortable>
+              ${i18nString(UIStrings.eventParams)}
+            </th>
+          </tr>
+          ${this.#datastores.map((event, index) => html`
+            <tr data-index=${index}>
+              <td data-value=${event.accessTime}>
+                ${new Date(1e3 * event.accessTime).toLocaleString()}
+              </td>
+              <td>${event.type}</td>
+              <td>${event.ownerOrigin}</td>
+              <td>${JSON.stringify(event.params)}</td>
+            </tr>
+          `)}
+        </table>
+      </devtools-new-data-grid>
     `;
   }
 
-  #buildRows(): DataGrid.DataGridUtils.Row[] {
-    return this.#datastores.map(event => ({
-                                  cells: [
-                                    {columnId: 'event-main-frame-id', value: event.mainFrameId},
-                                    {
-                                      columnId: 'event-time',
-                                      value: event.accessTime,
-                                      renderer: this.#renderDateForDataGridCell.bind(this),
-                                    },
-                                    {columnId: 'event-type', value: event.type},
-                                    {columnId: 'event-owner-origin', value: event.ownerOrigin},
-                                    {columnId: 'event-params', value: JSON.stringify(event.params)},
-                                  ],
-                                }));
-  }
-
-  #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): Lit.TemplateResult {
-    const date = new Date(1e3 * (value as number));
-    return html`${date.toLocaleString()}`;
+  #onSelect(event: CustomEvent<HTMLElement>): void {
+    const index = parseInt(event.detail.dataset.index || '', 10);
+    const datastore = isNaN(index) ? undefined : this.#datastores[index];
+    if (datastore) {
+      this.dispatchEvent(new CustomEvent('select', {detail: datastore}));
+    }
   }
 }
 

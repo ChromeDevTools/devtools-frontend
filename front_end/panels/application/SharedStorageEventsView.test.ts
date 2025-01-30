@@ -5,7 +5,6 @@
 import * as Protocol from '../../generated/protocol.js';
 import {raf} from '../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 
 import * as Resources from './application.js';
 
@@ -159,18 +158,11 @@ describeWithMockConnection('SharedStorageEventsView', () => {
       view.addEvent(event);
     }
     const grid = view.getSharedStorageAccessGridForTesting();
-    const cells = [
-      {columnId: 'event-main-frame-id', value: ''},
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.SharedStorageAccessType.DocumentAppend},
-      {columnId: 'event-owner-origin', value: TEST_ORIGIN_A},
-      {columnId: 'event-params', value: JSON.stringify({key: 'key0', value: 'value0'})},
-    ];
 
     // Use a spy to assert that the sidebar preview pane gets updated when expected.
     const spy = sinon.spy(view, 'setSidebarWidget');
     assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+    grid.dispatchEvent(new CustomEvent<Protocol.Storage.SharedStorageAccessedEvent>('select', {detail: EVENTS[0]}));
     await raf();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
@@ -183,18 +175,11 @@ describeWithMockConnection('SharedStorageEventsView', () => {
       view.addEvent(event);
     }
     const grid = view.getSharedStorageAccessGridForTesting();
-    const cells = [
-      {columnId: 'event-main-frame-id', value: ''},
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.SharedStorageAccessType.DocumentAppend},
-      {columnId: 'event-owner-origin', value: TEST_ORIGIN_A},
-      {columnId: 'event-params', value: JSON.stringify({key: 'key0', value: 'value0'})},
-    ];
 
     // Use a spy to assert that the sidebar preview pane gets updated when expected.
     const spy = sinon.spy(view, 'setSidebarWidget');
     assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+    grid.dispatchEvent(new CustomEvent<Protocol.Storage.SharedStorageAccessedEvent>('select', {detail: EVENTS[0]}));
     await raf();
     assert.isTrue(spy.calledOnce);
     assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');

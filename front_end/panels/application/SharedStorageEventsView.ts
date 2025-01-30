@@ -5,7 +5,6 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -22,13 +21,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/SharedStorageEventsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-interface WrappedEvent {
-  accessTime: string;
-  accessType: string;
-  ownerOrigin: string;
-  eventParams: Object;
-}
 
 function eventEquals(
     a: Protocol.Storage.SharedStorageAccessedEvent, b: Protocol.Storage.SharedStorageAccessedEvent): boolean {
@@ -55,7 +47,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     this.setSidebarWidget(this.#noDisplayView);
 
     topPanel.contentElement.appendChild(this.#sharedStorageEventGrid);
-    this.#sharedStorageEventGrid.addEventListener('cellfocused', this.#onFocus.bind(this));
+    this.#sharedStorageEventGrid.addEventListener('select', this.#onFocus.bind(this));
     this.#sharedStorageEventGrid.setAttribute('jslog', `${VisualLogging.section('events-table')}`);
 
     this.#getMainFrameResourceTreeModel()?.addEventListener(
@@ -109,20 +101,13 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
   }
 
   async #onFocus(event: Event): Promise<void> {
-    const focusedEvent = event as DataGrid.DataGridEvents.BodyCellFocusedEvent;
-    const row = focusedEvent.data.row;
-    if (!row) {
+    const focusedEvent = event as CustomEvent<HTMLElement>;
+    const datastore = focusedEvent.detail;
+    if (!datastore) {
       return;
     }
 
-    const wrappedEvent: WrappedEvent = {
-      accessTime: row.cells.find(cell => cell.columnId === 'event-time')?.value as string,
-      accessType: row.cells.find(cell => cell.columnId === 'event-type')?.value as string,
-      ownerOrigin: row.cells.find(cell => cell.columnId === 'event-owner-origin')?.value as string,
-      eventParams: JSON.parse(row.cells.find(cell => cell.columnId === 'event-params')?.value as string),
-    } as WrappedEvent;
-
-    const jsonView = SourceFrame.JSONView.JSONView.createViewSync(wrappedEvent);
+    const jsonView = SourceFrame.JSONView.JSONView.createViewSync(datastore);
     jsonView.setMinimumSize(0, 40);
     this.setSidebarWidget(jsonView);
   }

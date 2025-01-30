@@ -196,23 +196,20 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return {name: domainName || unattributed, color, icon: undefined};
   }
 
-  extractThirdPartySummary(node: Trace.Extras.TraceTree.Node): {
-    transferSize: number,
-    mainThreadTime: Trace.Types.Timing.Micro,
-  } {
+  extractThirdPartySummary(node: Trace.Extras.TraceTree.Node): {transferSize: number} {
     if (!this.#thirdPartySummaries) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
+      return {transferSize: 0};
     }
 
     const entity = this.#thirdPartySummaries.entityByEvent.get(node.event);
     if (!entity) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
+      return {transferSize: 0};
     }
     const summary = this.#thirdPartySummaries.summaries.byEntity.get(entity);
     if (!summary) {
-      return {transferSize: 0, mainThreadTime: Trace.Types.Timing.Micro(0)};
+      return {transferSize: 0};
     }
-    return {transferSize: summary.transferSize, mainThreadTime: summary.mainThreadTime};
+    return {transferSize: summary.transferSize};
   }
 
   nodeIsFirstParty(node: Trace.Extras.TraceTree.Node): boolean {

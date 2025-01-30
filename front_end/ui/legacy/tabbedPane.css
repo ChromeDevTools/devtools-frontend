@@ -176,6 +176,21 @@
   padding: 4px;
 }
 
+.badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 15px;
+  width: 15px;
+  line-height: 15px;
+  border-radius: var(--sys-shape-corner-full);
+  margin-left: var(-sys-size-2);
+  background-color: var(--sys-color-error);
+  color: var(--sys-color-on-error);
+  font-size: var(--sys-typescale-body5-size);
+  font-weight: var(--ref-typeface-weight-bold);
+}
+
 .tabbed-pane-header-tab {
   font: var(--sys-typescale-body4-medium);
   color: var(--sys-color-on-surface-subtle);

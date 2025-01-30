@@ -4,7 +4,6 @@
 
 import * as Common from '../../../core/common/common.js';
 import type * as Trace from '../../../models/trace/trace.js';
-import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
@@ -108,18 +107,9 @@ export class SidebarWidget extends UI.Widget.VBox {
   }
 
   #updateAnnotationsCountBadge(): void {
-    let countAdorner: Adorners.Adorner.Adorner|null = null;
-    if (this.#annotationCount > 0) {
-      countAdorner = new Adorners.Adorner.Adorner();
-      const countSpan = document.createElement('span');
-      countSpan.textContent = this.#annotationCount.toString();
-      countAdorner.data = {
-        name: 'countWrapper',
-        content: countSpan,
-      };
-      countAdorner.classList.add('annotations-count');
+    if (this.#annotationCount) {
+      this.#tabbedPane.setBadge('annotations', this.#annotationCount.toString());
     }
-    this.#tabbedPane.setSuffixElement('annotations', countAdorner);
   }
 
   setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {

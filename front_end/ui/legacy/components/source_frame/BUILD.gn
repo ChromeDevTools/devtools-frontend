@@ -8,7 +8,7 @@ import("../../../../../scripts/build/ninja/generate_css.gni")
 import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
-generate_css("css_files") {
+generate_css("legacy_css_files") {
   sources = [
     "fontView.css",
     "imageView.css",
@@ -18,6 +18,8 @@ generate_css("css_files") {
     "xmlTree.css",
     "xmlView.css",
   ]
+
+  legacy = true
 }
 
 devtools_module("source_frame") {
@@ -54,7 +56,7 @@ devtools_entrypoint("bundle") {
   entrypoint = "source_frame.ts"
 
   deps = [
-    ":css_files",
+    ":legacy_css_files",
     ":source_frame",
   ]
 

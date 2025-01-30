@@ -44,15 +44,15 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
-import confirmDialogStyles from './confirmDialog.css.js';
+import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
+import confirmDialogStyles from './confirmDialog.css.legacy.js';
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
-import inlineButtonStyles from './inlineButton.css.js';
+import inlineButtonStyles from './inlineButton.css.legacy.js';
 import inspectorCommonStyles from './inspectorCommon.css.legacy.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
-import smallBubbleStyles from './smallBubble.css.js';
+import smallBubbleStyles from './smallBubble.css.legacy.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
@@ -1300,7 +1300,7 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLElement {
-  private readonly shadowRootInternal: ShadowRoot;
+  private readonly shadowRootInternal!: DocumentFragment;
   checkboxElement!: HTMLInputElement;
   textElement!: HTMLElement;
 
@@ -1308,17 +1308,13 @@ export class CheckboxLabel extends HTMLElement {
     super();
     CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
-    this.shadowRootInternal = createShadowRootWithCoreStyles(this);
+    this.shadowRootInternal = createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles});
     this.checkboxElement = this.shadowRootInternal.createChild('input');
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
     this.textElement = this.shadowRootInternal.createChild('label', 'dt-checkbox-text');
     this.textElement.setAttribute('for', id);
     this.shadowRootInternal.createChild('slot');
-  }
-
-  connectedCallback(): void {
-    this.shadowRootInternal.adoptedStyleSheets.push(checkboxTextLabelStyles);
   }
 
   static create(
@@ -1382,19 +1378,14 @@ export class DevToolsIconLabel extends HTMLElement {
 customElements.define('dt-icon-label', DevToolsIconLabel);
 
 export class DevToolsSmallBubble extends HTMLElement {
-  #shadowRoot: ShadowRoot;
   private textElement: Element;
 
   constructor() {
     super();
-    this.#shadowRoot = createShadowRootWithCoreStyles(this);
-    this.textElement = this.#shadowRoot.createChild('div');
+    const root = createShadowRootWithCoreStyles(this, {cssFile: smallBubbleStyles});
+    this.textElement = root.createChild('div');
     this.textElement.className = 'info';
     this.textElement.createChild('slot');
-  }
-
-  connectedCallback(): void {
-    this.#shadowRoot.adoptedStyleSheets.push(smallBubbleStyles);
   }
 
   set type(type: string) {
@@ -1631,7 +1622,7 @@ export class MessageDialog {
     const dialog = new Dialog(jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
-    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: [confirmDialogStyles]});
+    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
       const okButton = createTextButton(
@@ -1655,7 +1646,7 @@ export class ConfirmDialog {
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
-    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: [confirmDialogStyles]});
+    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
@@ -1680,7 +1671,7 @@ export class ConfirmDialog {
 
 export function createInlineButton(toolbarButton: ToolbarButton): Element {
   const element = document.createElement('span');
-  const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: [inlineButtonStyles]});
+  const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles});
   element.classList.add('inline-button');
   const toolbar = shadowRoot.createChild('devtools-toolbar');
   toolbar.appendToolbarItem(toolbarButton);
@@ -1894,18 +1885,24 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element, options: {cssFile?: CSSStyleSheet[], delegatesFocus?: boolean} = {
+    element: Element, options: {cssFile?: CSSStyleSheet[]|{cssContent: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {
   const {
-    cssFile = [],
+    cssFile,
     delegatesFocus,
   } = options;
 
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
   injectCoreStyles(shadowRoot);
-  shadowRoot.adoptedStyleSheets.push(...cssFile);
+  if (cssFile) {
+    if ('cssContent' in cssFile) {
+      ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
+    } else {
+      shadowRoot.adoptedStyleSheets.push(...cssFile);
+    }
+  }
   shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;
 }

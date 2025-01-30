@@ -39,7 +39,7 @@ import * as FormatterActions from '../../../../entrypoints/formatter_worker/Form
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
+import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
 import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
 
 const UIStrings = {
@@ -102,6 +102,7 @@ export class SearchableContainer extends UI.Widget.VBox {
 
   constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string) {
     super(true);
+    this.registerRequiredCSS(resourceSourceFrameStyles);
     const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
     const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
     this.sourceFrame = sourceFrame;
@@ -118,11 +119,6 @@ export class SearchableContainer extends UI.Widget.VBox {
     void sourceFrame.toolbarItems().then(items => {
       items.map(item => toolbar.appendToolbarItem(item));
     });
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([resourceSourceFrameStyles]);
   }
 
   async revealPosition(position: RevealPosition): Promise<void> {

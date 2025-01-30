@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
-import deviceModeViewStyles from './deviceModeView.css.js';
+import deviceModeViewStyles from './deviceModeView.css.legacy.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
 const UIStrings = {
@@ -100,6 +100,7 @@ export class DeviceModeView extends UI.Widget.VBox {
 
     this.setMinimumSize(150, 150);
     this.element.classList.add('device-mode-view');
+    this.registerRequiredCSS(deviceModeViewStyles);
 
     this.model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.model.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.updateUI, this);
@@ -439,15 +440,12 @@ export class DeviceModeView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([deviceModeViewStyles]);
     this.measureHandles();
     this.toolbar.restore();
   }
 
   override willHide(): void {
     this.model.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
-    super.willHide();
   }
 
   async captureScreenshot(): Promise<void> {

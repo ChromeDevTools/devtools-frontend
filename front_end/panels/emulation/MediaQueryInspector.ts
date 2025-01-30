@@ -11,7 +11,7 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';
+import mediaQueryInspectorStyles from './mediaQueryInspector.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -37,6 +37,7 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
       getWidthCallback: () => number, setWidthCallback: (arg0: number) => void,
       mediaThrottler: Common.Throttler.Throttler) {
     super(true);
+    this.registerRequiredCSS(mediaQueryInspectorStyles);
     this.contentElement.classList.add('media-inspector-view');
     this.contentElement.setAttribute('jslog', `${VisualLogging.mediaInspectorView().track({click: true})}`);
     this.contentElement.addEventListener('click', this.onMediaQueryClicked.bind(this), false);
@@ -270,7 +271,6 @@ export class MediaQueryInspector extends UI.Widget.Widget implements
 
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([mediaQueryInspectorStyles]);
     this.scheduleMediaQueriesUpdate();
   }
 

@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
+import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.legacy.js';
 
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
@@ -14,6 +14,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
   private updateId?: number;
   constructor() {
     super(true);
+    this.registerRequiredCSS(inspectedPagePlaceholderStyles);
     UI.ZoomManager.ZoomManager.instance().addEventListener(UI.ZoomManager.Events.ZOOM_CHANGED, this.onResize, this);
     this.restoreMinimumSize();
   }
@@ -27,11 +28,6 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
     }
 
     return inspectedPagePlaceholderInstance;
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([inspectedPagePlaceholderStyles]);
   }
 
   override onResize(): void {

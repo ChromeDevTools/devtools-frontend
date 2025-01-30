@@ -43,7 +43,7 @@ import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import selfXssDialogStyles from './selfXssDialog.css.js';
+import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -1062,8 +1062,7 @@ export class SelfXssWarningDialog {
     dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog.setDimmed(true);
-    const shadowRoot =
-        UI.UIUtils.createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: [selfXssDialogStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: selfXssDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
 
     const result = await new Promise<boolean>(resolve => {

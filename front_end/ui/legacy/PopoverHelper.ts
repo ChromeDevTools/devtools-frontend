@@ -31,12 +31,12 @@
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
-import popoverStyles from './popover.css.js';
+import popoverStyles from './popover.css.legacy.js';
 
 export class PopoverHelper {
   static createPopover = (jslogContext?: string): GlassPane => {
     const popover = new GlassPane(`${VisualLogging.popover(jslogContext).parent('mapped')}`);
-    popover.registerCSSFiles([popoverStyles]);
+    popover.registerRequiredCSS(popoverStyles);
     popover.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     popover.setMarginBehavior(MarginBehavior.ARROW);
     return popover;

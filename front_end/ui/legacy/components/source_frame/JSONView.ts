@@ -35,7 +35,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 
-import jsonViewStyles from './jsonView.css.js';
+import jsonViewStyles from './jsonView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -57,6 +57,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   constructor(parsedJSON: ParsedJSON, startCollapsed?: boolean) {
     super();
     this.initialized = false;
+    this.registerRequiredCSS(jsonViewStyles);
     this.parsedJSON = parsedJSON;
     this.startCollapsed = Boolean(startCollapsed);
     this.element.classList.add('json-view');
@@ -153,8 +154,6 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   }
 
   override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([jsonViewStyles]);
     this.initialize();
   }
 

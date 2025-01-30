@@ -7,7 +7,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
 import * as UI from '../../legacy.js';
 
-import chartViewPortStyles from './chartViewport.css.js';
+import chartViewPortStyles from './chartViewport.css.legacy.js';
 import {MinimalTimeWindowMs} from './FlameChart.js';
 
 export interface ChartViewportDelegate {
@@ -57,6 +57,7 @@ export class ChartViewport extends UI.Widget.VBox {
   constructor(delegate: ChartViewportDelegate, config: Config) {
     super();
     this.#config = config;
+    this.registerRequiredCSS(chartViewPortStyles);
 
     this.delegate = delegate;
 
@@ -102,11 +103,6 @@ export class ChartViewport extends UI.Widget.VBox {
 
   isDragging(): boolean {
     return this.isDraggingInternal;
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([chartViewPortStyles]);
   }
 
   override elementsToRestoreScrollPositionsFor(): Element[] {

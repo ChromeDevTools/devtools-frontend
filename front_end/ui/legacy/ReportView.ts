@@ -8,7 +8,7 @@ import type * as Buttons from '../components/buttons/buttons.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import reportViewStyles from './reportView.css.js';
+import reportViewStyles from './reportView.css.legacy.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {VBox} from './Widget.js';
@@ -26,6 +26,7 @@ export class ReportView extends VBox {
   private urlElement?: HTMLElement;
   constructor(title?: string) {
     super(true);
+    this.registerRequiredCSS(reportViewStyles);
 
     this.contentBox = this.contentElement.createChild('div', 'report-content-box');
     this.headerElement = this.contentBox.createChild('div', 'report-header vbox');
@@ -38,11 +39,6 @@ export class ReportView extends VBox {
     ARIAUtils.markAsHeading(this.titleElement, 1);
 
     this.sectionList = this.contentBox.createChild('div', 'vbox');
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([reportViewStyles]);
   }
 
   getHeaderElement(): Element {

@@ -12,6 +12,7 @@ devtools_module("helpers") {
   sources = [
     "component-server-setup.ts",
     "directives.ts",
+    "get-root-node.ts",
     "scheduled-render.ts",
   ]
 

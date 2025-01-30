@@ -14,6 +14,8 @@ generate_css("css_files") {
     "inspectedPagePlaceholder.css",
     "mediaQueryInspector.css",
   ]
+
+  legacy = true
 }
 
 devtools_module("emulation") {

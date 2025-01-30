@@ -39,7 +39,7 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {drawExpansionArrow, drawIcon, horizontalLine} from './CanvasHelper.js';
 import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
-import flameChartStyles from './flameChart.css.js';
+import flameChartStyles from './flameChart.css.legacy.js';
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
 import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 
@@ -338,6 +338,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       optionalConfig: OptionalFlameChartConfig = {}) {
     super(true);
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
+    this.registerRequiredCSS(flameChartStyles);
     this.contentElement.classList.add('flame-chart-main-pane');
     if (typeof optionalConfig.selectedElementOutline === 'boolean') {
       this.#selectedElementOutlineEnabled = optionalConfig.selectedElementOutline;
@@ -429,14 +430,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([flameChartStyles]);
-  }
-
   override willHide(): void {
     this.hideHighlight();
-    super.willHide();
   }
 
   canvasBoundingClientRect(): DOMRect|null {

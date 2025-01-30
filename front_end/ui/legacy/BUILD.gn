@@ -10,6 +10,14 @@ import("./visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "emptyWidget.css",
+    "inspectorCommon.css",
+    "toolbar.css",
+  ]
+}
+
+generate_css("legacy_css_files") {
+  sources = [
     "checkboxTextLabel.css",
     "confirmDialog.css",
     "dialog.css",
@@ -31,21 +39,14 @@ generate_css("css_files") {
     "smallBubble.css",
     "softContextMenu.css",
     "softDropDown.css",
+    "softDropDownButton.css",
     "splitWidget.css",
     "suggestBox.css",
     "tabbedPane.css",
     "targetCrashedScreen.css",
-    "toolbar.css",
+    "textPrompt.css",
     "treeoutline.css",
     "viewContainers.css",
-  ]
-}
-
-generate_css("legacy_css_files") {
-  sources = [
-    "inspectorCommon.css",
-    "softDropDownButton.css",
-    "textPrompt.css",
   ]
 
   legacy = true

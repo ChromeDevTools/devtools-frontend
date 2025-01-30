@@ -32,8 +32,10 @@ import '../../core/dom_extension/dom_extension.js';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Lit from '../../ui/lit/lit.js';
+import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 import {XWidget} from './XWidget.js';
 
@@ -565,17 +567,13 @@ export class Widget {
     this.doResize();
   }
 
-  registerCSSFiles(styleSheets: CSSStyleSheet[]): void {
-    const root = (this.shadowRoot ?? this.contentElement.getRootNode() as unknown) as DocumentOrShadowRoot;
+  registerRequiredCSS(cssFile: {cssContent: string}): void {
+    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
+  }
 
-    // Make sure to properly deduplicate CSSStyleSheet instances (after the
-    // DOMExtension.ts magic kicked in), so we don't end up just appending
-    // the same style sheets over and over again when hiding and showing.
-    // TODO(http://crbug.com/391381439): We should get rid of this and
-    // instead use a declarative approach to associate style sheets with
-    // widgets, similar to how `LitElement` uses the `styles` class property.
-    root.adoptedStyleSheets.push(...styleSheets);
-    root.adoptedStyleSheets = [...new Set(root.adoptedStyleSheets)];
+  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
+    const root = this.shadowRoot ?? Helpers.GetRootNode.getRootNode(this.contentElement);
+    root.adoptedStyleSheets = root.adoptedStyleSheets.concat(cssFiles);
   }
 
   printWidgetHierarchy(): void {

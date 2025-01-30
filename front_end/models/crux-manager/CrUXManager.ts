@@ -29,6 +29,10 @@ export type FormFactor = 'DESKTOP'|'PHONE'|'TABLET';
 export type DeviceScope = FormFactor|'ALL';
 export type DeviceOption = DeviceScope|'AUTO';
 export type PageScope = 'url'|'origin';
+export interface Scope {
+  pageScope: PageScope;
+  deviceScope: DeviceScope;
+}
 export type ConnectionType = 'offline'|'slow-2G'|'2G'|'3G'|'4G';
 
 export interface CrUXRequest {
@@ -382,6 +386,10 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   getSelectedDeviceScope(): DeviceScope {
     return this.fieldDeviceOption === 'AUTO' ? this.#getAutoDeviceScope() : this.fieldDeviceOption;
+  }
+
+  getSelectedScope(): Scope {
+    return {pageScope: this.fieldPageScope, deviceScope: this.getSelectedDeviceScope()};
   }
 
   getSelectedFieldResponse(): CrUXResponse|null|undefined {

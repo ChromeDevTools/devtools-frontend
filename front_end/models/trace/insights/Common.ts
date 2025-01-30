@@ -99,38 +99,45 @@ export interface CrUXFieldMetricResults {
   cls: CrUXFieldMetricNumberResult|null;
 }
 
-function getPageResult(cruxFieldData: CrUXManager.PageResult[], url: string, origin: string): CrUXManager.PageResult|
-    undefined {
+function getPageResult(
+    cruxFieldData: CrUXManager.PageResult[], url: string, origin: string,
+    scope: CrUXManager.Scope|null = null): CrUXManager.PageResult|undefined {
   return cruxFieldData.find(result => {
-    const key = (result['url-ALL'] || result['origin-ALL'])?.record.key;
+    const key = scope ? result[`${scope.pageScope}-${scope.deviceScope}`]?.record.key :
+                        (result['url-ALL'] || result['origin-ALL'])?.record.key;
     return (key?.url && key.url === url) || (key?.origin && key.origin === origin);
   });
 }
 
 function getMetricResult(
-    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): CrUXFieldMetricNumberResult|null {
-  let value = pageResult['url-ALL']?.record.metrics[name]?.percentiles?.p75;
-  if (typeof value === 'string') {
-    value = Number(value);
-  }
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return {value, pageScope: 'url'};
+    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames,
+    scope: CrUXManager.Scope|null = null): CrUXFieldMetricNumberResult|null {
+  const scopes: Array<{pageScope: CrUXManager.PageScope, deviceScope: CrUXManager.DeviceScope}> = [];
+  if (scope) {
+    scopes.push(scope);
+  } else {
+    scopes.push({pageScope: 'url', deviceScope: 'ALL'});
+    scopes.push({pageScope: 'origin', deviceScope: 'ALL'});
   }
 
-  value = pageResult['origin-ALL']?.record.metrics[name]?.percentiles?.p75;
-  if (typeof value === 'string') {
-    value = Number(value);
-  }
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return {value, pageScope: 'origin'};
+  for (const scope of scopes) {
+    const key = `${scope.pageScope}-${scope.deviceScope}` as const;
+    let value = pageResult[key]?.record.metrics[name]?.percentiles?.p75;
+    if (typeof value === 'string') {
+      value = Number(value);
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      return {value, pageScope: scope.pageScope};
+    }
   }
 
   return null;
 }
 
 function getMetricTimingResult(
-    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames): CrUXFieldMetricTimingResult|null {
-  const result = getMetricResult(pageResult, name);
+    pageResult: CrUXManager.PageResult, name: CrUXManager.StandardMetricNames,
+    scope: CrUXManager.Scope|null = null): CrUXFieldMetricTimingResult|null {
+  const result = getMetricResult(pageResult, name, scope);
   if (result) {
     const valueMs = result.value as Types.Timing.Milli;
     return {value: Helpers.Timing.milliToMicro(valueMs), pageScope: result.pageScope};
@@ -140,22 +147,23 @@ function getMetricTimingResult(
 }
 
 export function getFieldMetricsForInsightSet(
-    insightSet: InsightSet, metadata: Types.File.MetaData|null): CrUXFieldMetricResults|null {
+    insightSet: InsightSet, metadata: Types.File.MetaData|null,
+    scope: CrUXManager.Scope|null = null): CrUXFieldMetricResults|null {
   const cruxFieldData = metadata?.cruxFieldData;
   if (!cruxFieldData) {
     return null;
   }
 
-  const pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin);
+  const pageResult = getPageResult(cruxFieldData, insightSet.url.href, insightSet.url.origin, scope);
   if (!pageResult) {
     return null;
   }
 
   return {
-    fcp: getMetricTimingResult(pageResult, 'first_contentful_paint'),
-    lcp: getMetricTimingResult(pageResult, 'largest_contentful_paint'),
-    inp: getMetricTimingResult(pageResult, 'interaction_to_next_paint'),
-    cls: getMetricResult(pageResult, 'cumulative_layout_shift'),
+    fcp: getMetricTimingResult(pageResult, 'first_contentful_paint', scope),
+    lcp: getMetricTimingResult(pageResult, 'largest_contentful_paint', scope),
+    inp: getMetricTimingResult(pageResult, 'interaction_to_next_paint', scope),
+    cls: getMetricResult(pageResult, 'cumulative_layout_shift', scope),
   };
 }
 

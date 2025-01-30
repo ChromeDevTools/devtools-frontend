@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -211,32 +212,17 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #getFieldMetrics(insightSetKey: string): Omit<Trace.Insights.Common.CrUXFieldMetricResults, 'fcp'>|null {
     const insightSet = this.#data.insights?.get(insightSetKey);
-    const fieldMetricsResults =
-        insightSet && Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#data.traceMetadata);
+    if (!insightSet) {
+      return null;
+    }
+
+    const fieldMetricsResults = Trace.Insights.Common.getFieldMetricsForInsightSet(
+        insightSet, this.#data.traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope());
     if (!fieldMetricsResults) {
       return null;
     }
 
-    let {lcp, inp, cls} = fieldMetricsResults;
-
-    // Only show field data from the Origin or URL datasets, but never a mix.
-    if (lcp?.pageScope === 'url' || inp?.pageScope === 'url' || cls?.pageScope === 'url') {
-      if (lcp?.pageScope === 'origin') {
-        lcp = null;
-      }
-      if (inp?.pageScope === 'origin') {
-        inp = null;
-      }
-      if (cls?.pageScope === 'origin') {
-        cls = null;
-      }
-    }
-
-    if (!(lcp || cls || inp)) {
-      return null;
-    }
-
-    return {lcp, cls, inp};
+    return fieldMetricsResults;
   }
 
   /**

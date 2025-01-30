@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -567,7 +568,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     for (const [key, insightSet] of this.#traceInsightSets) {
       if (insightSet.navigation) {
         fieldMetricResultsByNavigationId.set(
-            key, Trace.Insights.Common.getFieldMetricsForInsightSet(insightSet, this.#traceMetadata));
+            key,
+            Trace.Insights.Common.getFieldMetricsForInsightSet(
+                insightSet, this.#traceMetadata, CrUXManager.CrUXManager.instance().getSelectedScope()));
       }
     }
 

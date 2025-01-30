@@ -227,7 +227,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.editing = false;
     this.selectedNode = null;
-    this.expandNodesWhenArrowing = false;
+    /** Currently by default this is true to expand nodes when arrowing with keyboard. */
+    this.expandNodesWhenArrowing = true;
     this.setRootNode(new DataGridNode<T>());
 
     this.setHasSelection(false);
@@ -1174,6 +1175,10 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         }
       }
     } else if (event.key === 'ArrowRight') {
+      /** We do not want to expand if this setting is disabled. */
+      if (!this.expandNodesWhenArrowing) {
+        return;
+      }
       if (!this.selectedNode.revealed) {
         this.selectedNode.reveal();
         handled = true;

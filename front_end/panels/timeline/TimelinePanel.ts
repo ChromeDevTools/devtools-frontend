@@ -333,7 +333,7 @@ const UIStrings = {
   /**
    * @description Title for the Dim 3rd Parties checkbox.
    */
-  dimThirdParties: 'Dim 3rd Parties',
+  dimThirdParties: 'Dim 3rd parties',
   /**
    * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
    */

@@ -18,7 +18,7 @@ const UIStrings = {
   /**
    *@description Title for the name of either 1st or 3rd Party entities.
    */
-  firstOrThirdPartyName: '1st / 3rd Party',
+  firstOrThirdPartyName: '1st / 3rd party',
   /**
    *@description Title referencing transfer size.
    */
@@ -47,6 +47,11 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
     this.init();
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
+    /**
+     * By default data grids always expand when arrowing.
+     * For 3P table, we don't use this feature.
+     */
+    this.dataGrid.expandNodesWhenArrowing = false;
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {
@@ -72,6 +77,13 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return new Trace.Extras.TraceTree.BottomUpRootNode(
         relatedEvents, this.textFilter(), this.filtersWithoutTextFilter(), this.startTime, this.endTime,
         this.groupingFunction());
+  }
+
+  /**
+   * Third party tree view doesn't require the select feature, as this expands the node.
+   */
+  override selectProfileNode(): void {
+    return;
   }
 
   protected groupingFunction(): ((arg0: Trace.Types.Events.Event) => string)|null {

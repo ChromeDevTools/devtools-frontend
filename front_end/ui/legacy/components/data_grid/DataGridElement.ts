@@ -171,7 +171,7 @@ class DataGridElement extends HTMLElement {
       if (align !== Align.CENTER && align !== Align.RIGHT) {
         align = undefined;
       }
-      const weight = parseInt(column.getAttribute('weight') || '', 10) ?? undefined;
+      const weight = parseFloat(column.getAttribute('weight') || '') ?? undefined;
       this.#dataGrid.addColumn({
         id,
         title: title as Platform.UIString.LocalizedString,

@@ -3,19 +3,21 @@
 // found in the LICENSE file.
 
 import '../../ui/components/linkifier/linkifier.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-const {html} = Lit;
+import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.js';
+
+const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -85,8 +87,17 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const SelectorTimingsKey = Trace.Types.Events.SelectorTimingsKey;
 
+type SelectorTiming =
+    Trace.Types.Events.SelectorTiming&{locations: Linkifier.Linkifier.LinkifierData[] | undefined | null};
+
+interface ViewInput {
+  timings: SelectorTiming[];
+  onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
+}
+interface ViewOutput {}
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
-  #datagrid: DataGrid.DataGridController.DataGridController;
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   /**
@@ -98,126 +109,127 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
    * If it's null, that means we have not rendered yet.
    */
   #lastStatsSourceEventOrEvents: Trace.Types.Events.UpdateLayoutTree|Trace.Types.Events.UpdateLayoutTree[]|null = null;
+  #view: View;
+  #timings: SelectorTiming[] = [];
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null) {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, view: View = (input, output, target) => {
+    render(
+        html`
+      <devtools-new-data-grid striped name=${i18nString(UIStrings.selectorStats)}
+          @contextmenu=${input.onContextMenu.bind(input)}>
+        <table>
+          <tr>
+            <th id=${SelectorTimingsKey.Elapsed} weight="1" sortable hideable align="right">
+              ${i18nString(UIStrings.elapsed)}
+            </th>
+            <th id=${SelectorTimingsKey.MatchAttempts} weight="1" sortable hideable align="right">
+              ${i18nString(UIStrings.matchAttempts)}
+            </th>
+            <th id=${SelectorTimingsKey.MatchCount} weight="1" sortable hideable align="right">
+              ${i18nString(UIStrings.matchCount)}
+            </th>
+            <th id=${SelectorTimingsKey.RejectPercentage} weight="1" sortable hideable align="right">
+              <span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
+            i18nString(UIStrings.rejectPercentage)}</span>
+            </th>
+            <th id=${SelectorTimingsKey.Selector} weight="3" sortable hideable>
+              ${i18nString(UIStrings.selector)}
+            </th>
+            <th id=${SelectorTimingsKey.StyleSheetId} weight="1.5" sortable hideable>
+              ${i18nString(UIStrings.styleSheetId)}
+            </th>
+          </tr>
+          ${input.timings.map(timing => {
+          const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
+          const rejectPercentage = (nonMatches ? timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
+          const styleSheetId = timing[SelectorTimingsKey.StyleSheetId];
+          const locations = timing.locations;
+          const locationMessage = locations ? null :
+              locations === null            ? '' :
+                                              i18nString(UIStrings.unableToLinkViaStyleSheetId, {PH1: styleSheetId});
+          return html`<tr>
+            <td data-value=${timing[SelectorTimingsKey.Elapsed]}>
+              ${(timing[SelectorTimingsKey.Elapsed] / 1000.0).toFixed(3)}
+            </td>
+            <td>${timing[SelectorTimingsKey.MatchAttempts]}</td>
+            <td>${timing[SelectorTimingsKey.MatchCount]}</td>
+            <td data-value=${rejectPercentage}>
+              ${rejectPercentage.toFixed(1)}
+            </td>
+            <td title=${timing[SelectorTimingsKey.Selector]}>
+             ${timing[SelectorTimingsKey.Selector]}
+            </td>
+            <td data-value=${styleSheetId}>${
+              locations ? html`${locations.map((location, itemIndex) => html`
+                <devtools-linkifier .data=${location}></devtools-linkifier
+                >${itemIndex !== locations.length - 1 ? ',' : ''}`)}` :
+                          locationMessage}
+            </td>
+          </tr>`;
+        })}
+        </table>
+      </devtools-new-data-grid>`,
+        target, {host: this});
+  }) {
     super();
 
-    this.#datagrid = new DataGrid.DataGridController.DataGridController();
+    this.#view = view;
     this.element.setAttribute('jslog', `${VisualLogging.pane('selector-stats').track({resize: true})}`);
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
     this.#parsedTrace = parsedTrace;
 
-    this.#datagrid.data = {
-      label: i18nString(UIStrings.selectorStats),
-      showScrollbar: true,
-      autoScrollToBottom: false,
-      initialSort: {
-        columnId: SelectorTimingsKey.Elapsed as Lowercase<string>,
-        direction: DataGrid.DataGridUtils.SortDirection.DESC,
-      },
-      columns: [
-        {
-          id: SelectorTimingsKey.Elapsed as Lowercase<string>,
-          title: i18nString(UIStrings.elapsed),
-          sortable: true,
-          widthWeighting: 1,
-          visible: true,
-          hideable: true,
-          styles: {
-            'text-align': 'right',
-          },
-        },
-        {
-          id: SelectorTimingsKey.MatchAttempts as Lowercase<string>,
-          title: i18nString(UIStrings.matchAttempts),
-          sortable: true,
-          widthWeighting: 1,
-          visible: true,
-          hideable: true,
-          styles: {
-            'text-align': 'right',
-          },
-        },
-        {
-          id: SelectorTimingsKey.MatchCount as Lowercase<string>,
-          title: i18nString(UIStrings.matchCount),
-          sortable: true,
-          widthWeighting: 1,
-          visible: true,
-          hideable: true,
-          styles: {
-            'text-align': 'right',
-          },
-        },
-        {
-          id: SelectorTimingsKey.RejectPercentage as Lowercase<string>,
-          title: i18nString(UIStrings.rejectPercentage),
-          titleElement: html`<span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
-              i18nString(UIStrings.rejectPercentage)}</span>`,
-          sortable: true,
-          widthWeighting: 1,
-          visible: true,
-          hideable: true,
-          styles: {
-            'text-align': 'right',
-          },
-        },
-        {
-          id: SelectorTimingsKey.Selector as Lowercase<string>,
-          title: i18nString(UIStrings.selector),
-          sortable: true,
-          widthWeighting: 3,
-          visible: true,
-          hideable: true,
-        },
-        {
-          id: SelectorTimingsKey.StyleSheetId as Lowercase<string>,
-          title: i18nString(UIStrings.styleSheetId),
-          sortable: true,
-          widthWeighting: 1.5,
-          visible: true,
-          hideable: true,
-        },
-      ],
-      rows: [],
-      contextMenus: {
-        bodyRow: (
-            menu: UI.ContextMenu.ContextMenu, columns: readonly DataGrid.DataGridUtils.Column[],
-            row: Readonly<DataGrid.DataGridUtils.Row>, rows: readonly DataGrid.DataGridUtils.Row[]): void => {
-          menu.defaultSection().appendItem(i18nString(UIStrings.copyTable), () => {
-            const tableData = [];
-            const columnName = columns.map(col => col.title);
-            tableData.push(columnName.join('\t'));
-            for (const rowData of rows) {
-              const cellsValue = rowData.cells;
-              const rowValue = cellsValue.map(cell => {
-                if (cell.columnId === SelectorTimingsKey.StyleSheetId) {
-                  // Export link via raw StyleSheetId data
-                  const defaultLinkValue = i18nString(UIStrings.unableToLink);
-                  let linkData = '';
-                  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-                  const cssModel = target?.model(SDK.CSSModel.CSSModel);
-                  if (cssModel) {
-                    const styleSheetHeader = cssModel.styleSheetHeaderForId(cell.value as Protocol.CSS.StyleSheetId);
-                    if (styleSheetHeader) {
-                      linkData = styleSheetHeader.resourceURL().toString();
-                    }
-                  }
-                  return linkData ? linkData.toString() : defaultLinkValue;
-                }
-                return String(cell.value);
-              });
-              tableData.push(rowValue.join('\t'));
-            }
-            const data = tableData.join('\n');
-            void navigator.clipboard.writeText(data);
-            UI.ARIAUtils.alert(i18nString(UIStrings.tableCopiedToClipboard));
-          });
-        },
+    this.performUpdate();
+  }
+
+  #onContextMenu(e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>): void {
+    const {menu} = e.detail;
+    menu.defaultSection().appendItem(i18nString(UIStrings.copyTable), () => {
+      const tableData = [];
+      const columnName = [
+        i18nString(UIStrings.elapsed), i18nString(UIStrings.matchAttempts), i18nString(UIStrings.matchCount),
+        i18nString(UIStrings.rejectPercentage), i18nString(UIStrings.selector), i18nString(UIStrings.styleSheetId)
+      ];
+      tableData.push(columnName.join('\t'));
+      for (const timing of this.#timings) {
+        const nonMatches = timing[SelectorTimingsKey.MatchAttempts] - timing[SelectorTimingsKey.MatchCount];
+        const rejectPercentage = (nonMatches ? timing[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
+        const styleSheetId = timing[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
+        let linkData = '';
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const cssModel = target?.model(SDK.CSSModel.CSSModel);
+        if (cssModel) {
+          const styleSheetHeader = cssModel.styleSheetHeaderForId(styleSheetId);
+          if (styleSheetHeader) {
+            linkData = styleSheetHeader.resourceURL().toString();
+          }
+        }
+        if (!linkData) {
+          linkData = i18nString(UIStrings.unableToLink);
+        }
+        tableData.push([
+          timing[SelectorTimingsKey.Elapsed] / 1000.0,
+          timing[SelectorTimingsKey.MatchAttempts],
+          timing[SelectorTimingsKey.MatchCount],
+          rejectPercentage,
+          timing[SelectorTimingsKey.Selector],
+          linkData,
+        ].join('\t'));
+      }
+      const data = tableData.join('\n');
+      void navigator.clipboard.writeText(data);
+      UI.ARIAUtils.alert(i18nString(UIStrings.tableCopiedToClipboard));
+    });
+  }
+
+  override performUpdate(): void {
+    const viewInput = {
+      timings: this.#timings,
+      onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {
+        this.#onContextMenu(event);
       },
     };
-
-    this.contentElement.appendChild(this.#datagrid);
+    const viewOutput = {};
+    this.#view(viewInput, viewOutput, this.contentElement);
   }
 
   setEvent(event: Trace.Types.Events.UpdateLayoutTree): boolean {
@@ -235,15 +247,15 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
     const selectorStats = this.#parsedTrace.SelectorStats.dataForUpdateLayoutEvent.get(event);
     if (!selectorStats) {
-      this.#datagrid.data = {...this.#datagrid.data, rows: []};
+      this.#timings = [];
+      this.requestUpdate();
       return false;
     }
 
-    const timings: Trace.Types.Events.SelectorTiming[] = selectorStats.timings;
-    void this.createRowsForTable(timings).then(rows => {
-      this.#datagrid.data = {...this.#datagrid.data, rows};
+    void this.processSelectorTimings(selectorStats.timings).then(timings => {
+      this.#timings = timings;
+      this.requestUpdate();
     });
-
     return true;
   }
 
@@ -314,7 +326,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       });
       selectorMap.clear();
     } else {
-      this.#datagrid.data = {...this.#datagrid.data, rows: []};
+      this.#timings = [];
+      this.requestUpdate();
       return;
     }
 
@@ -328,13 +341,13 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       [SelectorTimingsKey.StyleSheetId]: 'n/a',
     });
 
-    void this.createRowsForTable(timings).then(rows => {
-      this.#datagrid.data = {...this.#datagrid.data, rows};
+    void this.processSelectorTimings(timings).then(timings => {
+      this.#timings = timings;
+      this.requestUpdate();
     });
   }
 
-  private async createRowsForTable(timings: Trace.Types.Events.SelectorTiming[]):
-      Promise<DataGrid.DataGridUtils.Row[]> {
+  private async processSelectorTimings(timings: Trace.Types.Events.SelectorTiming[]): Promise<SelectorTiming[]> {
     async function toSourceFileLocation(
         cssModel: SDK.CSSModel.CSSModel, styleSheetId: Protocol.CSS.StyleSheetId, selectorText: string,
         selectorLocations: Map<string, Protocol.CSS.SourceRange[]>):
@@ -377,65 +390,19 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       return [];
     }
 
-    const rows = await Promise.all(timings.map(async x => {
-      const styleSheetId = x[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
-      const selectorText = x[SelectorTimingsKey.Selector].trim();
-      const elapsedTimeInMs = x[SelectorTimingsKey.Elapsed] / 1000.0;
-      const nonMatches = x[SelectorTimingsKey.MatchAttempts] - x[SelectorTimingsKey.MatchCount];
-      const rejectPercentage = (nonMatches ? x[SelectorTimingsKey.FastRejectCount] / nonMatches : 1) * 100;
-      const locations = styleSheetId === 'n/a' ?
-          null :
-          await toSourceFileLocation(cssModel, styleSheetId, selectorText, this.#selectorLocations);
+    return await Promise.all(
+        timings.sort((a, b) => b[SelectorTimingsKey.Elapsed] - a[SelectorTimingsKey.Elapsed]).map(async x => {
+          const styleSheetId = x[SelectorTimingsKey.StyleSheetId] as Protocol.CSS.StyleSheetId;
+          const selectorText = x[SelectorTimingsKey.Selector].trim();
+          const locations = styleSheetId === 'n/a' ?
+              null :
+              await toSourceFileLocation(cssModel, styleSheetId, selectorText, this.#selectorLocations);
 
-      return {
-        cells: [
-          {
-            columnId: SelectorTimingsKey.Elapsed,
-            value: elapsedTimeInMs,
-            renderer(): Lit.TemplateResult {
-              return html`${elapsedTimeInMs.toFixed(3)}`;
-            },
-          },
-          {columnId: SelectorTimingsKey.MatchAttempts, value: x[SelectorTimingsKey.MatchAttempts]},
-          {columnId: SelectorTimingsKey.MatchCount, value: x[SelectorTimingsKey.MatchCount]},
-          {
-            columnId: SelectorTimingsKey.RejectPercentage,
-            value: rejectPercentage,
-            renderer(): Lit.TemplateResult {
-              return html`${rejectPercentage.toFixed(1)}`;
-            },
-          },
-          {
-            columnId: SelectorTimingsKey.Selector,
-            title: x[SelectorTimingsKey.Selector],
-            value: x[SelectorTimingsKey.Selector],
-          },
-          {
-            columnId: SelectorTimingsKey.StyleSheetId,
-            value: x[SelectorTimingsKey.StyleSheetId],
-            renderer(): Lit.TemplateResult {
-              if (locations === null) {
-                return html`<span></span>`;
-              }
-              if (locations === undefined) {
-                return html`<span title=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
-                  PH1: x[SelectorTimingsKey.StyleSheetId],
-                })} aria-label=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
-                  PH1: x[SelectorTimingsKey.StyleSheetId],
-                })}>${i18nString(UIStrings.unableToLink)}</span>`;
-              }
-              return html`
-              ${locations.map((location, itemIndex) => {
-                const divider = itemIndex !== locations.length - 1 ? ', ' : '';
-                return html`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
-              })}
-              `;
-            },
-          },
-        ],
-      };
-    }));
-
-    return rows;
+          return {...x, locations};
+        }));
+  }
+  override wasShown(): void {
+    super.wasShown();
+    this.registerCSSFiles([timelineSelectorStatsViewStyles]);
   }
 }

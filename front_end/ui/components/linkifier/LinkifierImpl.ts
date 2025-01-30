@@ -31,7 +31,6 @@ export class LinkifierClick extends Event {
 }
 
 export class Linkifier extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #url: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
   #lineNumber?: number;
@@ -51,6 +50,18 @@ export class Linkifier extends HTMLElement {
     }
 
     void this.#render();
+  }
+
+  override cloneNode(deep?: boolean): Node {
+    const node = super.cloneNode(deep) as Linkifier;
+    node.data = {
+      url: this.#url,
+      lineNumber: this.#lineNumber,
+      columnNumber: this.#columnNumber,
+      linkText: this.#linkText,
+      title: this.#title
+    };
+    return node;
   }
 
   connectedCallback(): void {

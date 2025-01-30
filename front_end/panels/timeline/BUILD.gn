@@ -45,6 +45,7 @@ generate_css("css_files") {
     "timelineMiniMap.css",
     "timelinePaintProfiler.css",
     "timelinePanel.css",
+    "timelineSelectorStatsView.css",
     "timelineStatusDialog.css",
   ]
 }

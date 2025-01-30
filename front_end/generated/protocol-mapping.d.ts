@@ -374,6 +374,16 @@ export namespace ProtocolMapping {
     'Page.documentOpened': [Protocol.Page.DocumentOpenedEvent];
     'Page.frameResized': [];
     /**
+     * Fired when a navigation starts. This event is fired for both
+     * renderer-initiated and browser-initiated navigations. For renderer-initiated
+     * navigations, the event is fired after `frameRequestedNavigation`.
+     * Navigation may still be cancelled after the event is issued. Multiple events
+     * can be fired for a single navigation, for example, when a same-document
+     * navigation becomes a cross-document navigation (such as in the case of a
+     * frameset).
+     */
+    'Page.frameStartedNavigating': [Protocol.Page.FrameStartedNavigatingEvent];
+    /**
      * Fired when a renderer-initiated navigation is requested.
      * Navigation may still be cancelled after the event is issued.
      */
@@ -714,6 +724,7 @@ export namespace ProtocolMapping {
     'FedCm.dialogClosed': [Protocol.FedCm.DialogClosedEvent];
     /**
      * Fired when breakpoint is resolved to an actual script and location.
+     * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      */
     'Debugger.breakpointResolved': [Protocol.Debugger.BreakpointResolvedEvent];
     /**

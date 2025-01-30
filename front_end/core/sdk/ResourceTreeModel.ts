@@ -1131,6 +1131,9 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   frameClearedScheduledNavigation({}: Protocol.Page.FrameClearedScheduledNavigationEvent): void {
   }
 
+  frameStartedNavigating({}: Protocol.Page.FrameStartedNavigatingEvent): void {
+  }
+
   navigatedWithinDocument({}: Protocol.Page.NavigatedWithinDocumentEvent): void {
   }
 

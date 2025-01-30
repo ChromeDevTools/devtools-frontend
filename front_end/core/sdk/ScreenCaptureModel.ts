@@ -140,6 +140,9 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
   frameRequestedNavigation(_params: Protocol.Page.FrameRequestedNavigationEvent): void {
   }
 
+  frameStartedNavigating(_params: Protocol.Page.FrameStartedNavigatingEvent): void {
+  }
+
   frameSubtreeWillBeDetached(_params: Protocol.Page.FrameSubtreeWillBeDetachedEvent): void {
   }
 

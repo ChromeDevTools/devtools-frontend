@@ -2916,6 +2916,17 @@ declare namespace ProtocolProxyApi {
     frameResized(): void;
 
     /**
+     * Fired when a navigation starts. This event is fired for both
+     * renderer-initiated and browser-initiated navigations. For renderer-initiated
+     * navigations, the event is fired after `frameRequestedNavigation`.
+     * Navigation may still be cancelled after the event is issued. Multiple events
+     * can be fired for a single navigation, for example, when a same-document
+     * navigation becomes a cross-document navigation (such as in the case of a
+     * frameset).
+     */
+    frameStartedNavigating(params: Protocol.Page.FrameStartedNavigatingEvent): void;
+
+    /**
      * Fired when a renderer-initiated navigation is requested.
      * Navigation may still be cancelled after the event is issued.
      */
@@ -4345,6 +4356,7 @@ declare namespace ProtocolProxyApi {
   export interface DebuggerDispatcher {
     /**
      * Fired when breakpoint is resolved to an actual script and location.
+     * Deprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.
      */
     breakpointResolved(params: Protocol.Debugger.BreakpointResolvedEvent): void;
 

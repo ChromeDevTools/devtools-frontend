@@ -4684,6 +4684,12 @@
                             "name": "frameId",
                             "description": "Identifier of the frame where \"via-inspector\" stylesheet should be created.",
                             "$ref": "Page.FrameId"
+                        },
+                        {
+                            "name": "force",
+                            "description": "If true, creates a new stylesheet for every call. If false,\nreturns a stylesheet previously created by a call with force=false\nfor the frame's document if it exists or creates a new stylesheet\n(default: false).",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -20261,6 +20267,42 @@
                     "experimental": true
                 },
                 {
+                    "name": "frameStartedNavigating",
+                    "description": "Fired when a navigation starts. This event is fired for both\nrenderer-initiated and browser-initiated navigations. For renderer-initiated\nnavigations, the event is fired after `frameRequestedNavigation`.\nNavigation may still be cancelled after the event is issued. Multiple events\ncan be fired for a single navigation, for example, when a same-document\nnavigation becomes a cross-document navigation (such as in the case of a\nframeset).",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "frameId",
+                            "description": "ID of the frame that is being navigated.",
+                            "$ref": "FrameId"
+                        },
+                        {
+                            "name": "url",
+                            "description": "The URL the navigation started with. The final URL can be different.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "loaderId",
+                            "description": "Loader identifier. Even though it is present in case of same-document\nnavigation, the previously committed loaderId would not change unless\nthe navigation changes from a same-document to a cross-document\nnavigation.",
+                            "$ref": "Network.LoaderId"
+                        },
+                        {
+                            "name": "navigationType",
+                            "type": "string",
+                            "enum": [
+                                "reload",
+                                "reloadBypassingCache",
+                                "restore",
+                                "restoreWithPost",
+                                "historySameDocument",
+                                "historyDifferentDocument",
+                                "sameDocument",
+                                "differentDocument"
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "frameRequestedNavigation",
                     "description": "Fired when a renderer-initiated navigation is requested.\nNavigation may still be cancelled after the event is issued.",
                     "experimental": true,
@@ -27747,6 +27789,22 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "id": "ResolvedBreakpoint",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "breakpointId",
+                            "description": "Breakpoint unique identifier.",
+                            "$ref": "BreakpointId"
+                        },
+                        {
+                            "name": "location",
+                            "description": "Actual breakpoint location.",
+                            "$ref": "Location"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -28541,7 +28599,8 @@
             "events": [
                 {
                     "name": "breakpointResolved",
-                    "description": "Fired when breakpoint is resolved to an actual script and location.",
+                    "description": "Fired when breakpoint is resolved to an actual script and location.\nDeprecated in favor of `resolvedBreakpoints` in the `scriptParsed` event.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "breakpointId",
@@ -28861,6 +28920,16 @@
                             "experimental": true,
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "resolvedBreakpoints",
+                            "description": "The list of set breakpoints in this script if calls to `setBreakpointByUrl`\nmatches this script's URL or hash. Clients that use this list can ignore the\n`breakpointResolved` event. They are equivalent.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ResolvedBreakpoint"
+                            }
                         }
                     ]
                 }
@@ -30601,12 +30670,22 @@
                     "returns": [
                         {
                             "name": "usedSize",
-                            "description": "Used heap size in bytes.",
+                            "description": "Used JavaScript heap size in bytes.",
                             "type": "number"
                         },
                         {
                             "name": "totalSize",
-                            "description": "Allocated heap size in bytes.",
+                            "description": "Allocated JavaScript heap size in bytes.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "embedderHeapUsedSize",
+                            "description": "Used size in bytes in the embedder's garbage-collected heap.",
+                            "type": "number"
+                        },
+                        {
+                            "name": "backingStorageSize",
+                            "description": "Size in bytes of backing storage for array buffers and external strings.",
                             "type": "number"
                         }
                     ]

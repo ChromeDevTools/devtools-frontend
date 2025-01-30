@@ -256,16 +256,18 @@ export class CookieControlsView extends UI.Widget.VBox {
     const enterpriseDisclaimer = html`
       <div class="enterprise">
         <div class="text body">${i18nString(UIStrings.enterpriseDisclaimer)}</div>
-        <devtools-icon
-          .name=${'domain'}
-        ></devtools-icon>
-        <devtools-button
-          @click=${input.openChromeCookieSettings}
-          aria-label="View details"
-          .variant=${Buttons.Button.Variant.OUTLINED}
-          jslog=${VisualLogging.action('view-details').track({click: true})}>
+          <div class="anchor">
+            <devtools-icon
+            .name=${'domain'}
+            ></devtools-icon>
+            <devtools-button
+            @click=${input.openChromeCookieSettings}
+            aria-label="View details"
+            .variant=${Buttons.Button.Variant.OUTLINED}
+            jslog=${VisualLogging.action('view-details').track({click: true})}>
             ${i18nString(UIStrings.viewDetails)}
-        </devtools-button>
+          </devtools-button>
+        </div>
       </div>
     `;
 

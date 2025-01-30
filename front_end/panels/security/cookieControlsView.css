@@ -98,9 +98,16 @@
 .enterprise {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   gap: var(--sys-size-9);
   padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-11);
   align-items: center;
+
+  > .anchor{
+    display: flex;
+    flex-direction: row;
+    gap: var(--sys-size-9);
+  }
 }
 
 input[type="checkbox"] {

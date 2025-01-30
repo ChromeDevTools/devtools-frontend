@@ -62,11 +62,11 @@ details > summary::before {
   mask-image: var(--image-file-arrow-collapse);
   background-color: var(--icon-default);
   content: "";
-  height: 16px;
-  min-width: 16px;
-  max-width: 16px;
-  margin-top: -2px;
-  margin-left: -4px;
+  height: var(--sys-size-8);
+  min-width: var(--sys-size-8);
+  max-width: var(--sys-size-8);
+  margin-top: calc(-1 * var(--sys-size-2));
+  margin-left: calc(-1 * var(--sys-size-3));
   overflow: hidden;
 }
 

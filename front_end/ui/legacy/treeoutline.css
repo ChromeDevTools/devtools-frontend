@@ -118,9 +118,9 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   background-color: var(--icon-default);
   content: "\A0\A0";
   text-shadow: none;
-  margin-top: -2px;
-  height: 16px;
-  width: 16px;
+  margin-top: calc(-1 * var(--sys-size-2));
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
 }
 
 .tree-outline li:not(.parent)::before {

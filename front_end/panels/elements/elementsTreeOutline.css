@@ -122,7 +122,7 @@
   content: "\A0\A0";
   color: transparent;
   text-shadow: none;
-  margin: -3px 2px 0 -3px;
+  margin: -3px var(--sys-size-2) 0 -3px;
   background-color: var(--icon-default);
 }
 

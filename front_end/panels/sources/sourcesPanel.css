@@ -66,6 +66,11 @@
   display: flex;
 }
 
+.y-overflow-only {
+  overflow: hidden auto;
+  background-color: var(--sys-color-cdt-base-container);
+}
+
 .cursor-auto {
   cursor: auto;
 }

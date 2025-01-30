@@ -16,18 +16,14 @@ interface DiffResponse {
 }
 
 export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  private readonly uiSourceCodeDiffs: WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeDiff>;
-  private readonly loadingUISourceCodes:
-      Map<Workspace.UISourceCode.UISourceCode, Promise<[string | null, string|null]>>;
-  private readonly modifiedUISourceCodesInternal: Set<Workspace.UISourceCode.UISourceCode>;
+  readonly #persistence = Persistence.Persistence.PersistenceImpl.instance();
+  readonly #diffs = new WeakMap<Workspace.UISourceCode.UISourceCode, UISourceCodeDiff>();
+  private readonly loadingUISourceCodes =
+      new Map<Workspace.UISourceCode.UISourceCode, Promise<[string | null, string|null]>>();
+  readonly #modified = new Set<Workspace.UISourceCode.UISourceCode>();
 
   constructor(workspace: Workspace.Workspace.WorkspaceImpl) {
     super();
-    this.uiSourceCodeDiffs = new WeakMap();
-
-    this.loadingUISourceCodes = new Map();
-
-    this.modifiedUISourceCodesInternal = new Set();
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.uiSourceCodeChanged, this);
     workspace.addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.uiSourceCodeChanged, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
@@ -51,18 +47,18 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   modifiedUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {
-    return Array.from(this.modifiedUISourceCodesInternal);
+    return Array.from(this.#modified);
   }
 
   isUISourceCodeModified(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.modifiedUISourceCodesInternal.has(uiSourceCode) || this.loadingUISourceCodes.has(uiSourceCode);
+    return this.#modified.has(uiSourceCode) || this.loadingUISourceCodes.has(uiSourceCode);
   }
 
   private uiSourceCodeDiff(uiSourceCode: Workspace.UISourceCode.UISourceCode): UISourceCodeDiff {
-    let diff = this.uiSourceCodeDiffs.get(uiSourceCode);
+    let diff = this.#diffs.get(uiSourceCode);
     if (!diff) {
       diff = new UISourceCodeDiff(uiSourceCode);
-      this.uiSourceCodeDiffs.set(uiSourceCode, diff);
+      this.#diffs.set(uiSourceCode, diff);
     }
     return diff;
   }
@@ -92,7 +88,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   private removeUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.loadingUISourceCodes.delete(uiSourceCode);
-    const uiSourceCodeDiff = this.uiSourceCodeDiffs.get(uiSourceCode);
+    const uiSourceCodeDiff = this.#diffs.get(uiSourceCode);
     if (uiSourceCodeDiff) {
       uiSourceCodeDiff.dispose = true;
     }
@@ -101,27 +97,44 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   private markAsUnmodified(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.uiSourceCodeProcessedForTest();
-    if (this.modifiedUISourceCodesInternal.delete(uiSourceCode)) {
+    if (this.#modified.delete(uiSourceCode)) {
       this.dispatchEventToListeners(Events.MODIFIED_STATUS_CHANGED, {uiSourceCode, isModified: false});
     }
   }
 
   private markAsModified(uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
     this.uiSourceCodeProcessedForTest();
-    if (this.modifiedUISourceCodesInternal.has(uiSourceCode)) {
+    if (this.#modified.has(uiSourceCode)) {
       return;
     }
-    this.modifiedUISourceCodesInternal.add(uiSourceCode);
+    this.#modified.add(uiSourceCode);
     this.dispatchEventToListeners(Events.MODIFIED_STATUS_CHANGED, {uiSourceCode, isModified: true});
   }
 
   private uiSourceCodeProcessedForTest(): void {
   }
 
+  #shouldTrack(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    // We track differences for all Network resources.
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
+      return true;
+    }
+
+    // Additionally we also track differences for FileSystem resources that don't have
+    // a binding (as part of the kDevToolsImprovedWorkspaces feature).
+    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
+        this.#persistence.binding(uiSourceCode) === null &&
+        Common.Settings.Settings.instance().getHostConfig().devToolsImprovedWorkspaces?.enabled) {
+      return true;
+    }
+
+    return false;
+  }
+
   private async updateModifiedState(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     this.loadingUISourceCodes.delete(uiSourceCode);
 
-    if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network) {
+    if (!this.#shouldTrack(uiSourceCode)) {
       this.markAsUnmodified(uiSourceCode);
       return;
     }

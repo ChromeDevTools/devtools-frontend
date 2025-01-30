@@ -423,6 +423,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         temperature: -1,
         enabled: false,
       },
+      devToolsImprovedWorkspaces: {
+        enabled: false,
+      },
       devToolsVeLogging: {
         enabled: true,
         testing: false,

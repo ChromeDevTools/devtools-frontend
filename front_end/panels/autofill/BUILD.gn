@@ -20,8 +20,8 @@ devtools_module("autofill") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../models/autofill_manager:bundle",
-    "../../ui/components/data_grid:bundle",
     "../../ui/components/legacy_wrapper:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
   ]
 }
 

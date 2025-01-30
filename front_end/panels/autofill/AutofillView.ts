@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/components/adorners/adorners.js';
-import '../../ui/components/data_grid/data_grid.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -11,7 +11,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -20,7 +19,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import autofillViewStyles from './autofillView.css.js';
 
-const {html} = Lit;
+const {html, render, Directives: {styleMap}} = Lit;
+const {FillingStrategy} = Protocol.Autofill;
 
 const UIStrings = {
   /**
@@ -166,7 +166,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     if (!this.#address && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      Lit.render(html`
+      render(html`
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -201,7 +201,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    Lit.render(html`
+    render(html`
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
@@ -320,64 +320,54 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       return Lit.nothing;
     }
 
-    const gridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'name',
-          title: i18nString(UIStrings.formField),
-          widthWeighting: 50,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'autofill-type',
-          title: i18nString(UIStrings.predictedAutofillValue),
-          widthWeighting: 50,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'value',
-          title: i18nString(UIStrings.value),
-          widthWeighting: 50,
-          hideable: false,
-          visible: true,
-          sortable: true,
-        },
-        {
-          id: 'filled-field-index',
-          title: 'filledFieldIndex',
-          widthWeighting: 50,
-          hideable: true,
-          visible: false,
-        },
-      ],
-      rows: this.#buildReportRows(),
-      striped: true,
-    };
-
+    const highlightedGridRows = new Set(this.#highlightedMatches.map(match => match.filledFieldIndex));
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
       <div class="grid-wrapper" role="region" aria-label=${i18nString(UIStrings.formInspector)}>
-        <devtools-data-grid-controller
-          @rowmouseenter=${this.#onGridRowMouseEnter}
-          @rowmouseleave=${this.#onGridRowMouseLeave}
+        <devtools-new-data-grid
+          striped
           class="filled-fields-grid"
-          .data=${gridData}>
-        </devtools-data-grid-controller>
+        >
+          <table>
+            <tr>
+              <th id="name" weight="50" sortable>${i18nString(UIStrings.formField)}</th>
+              <th id="autofill-type" weight="50" sortable>${i18nString(UIStrings.predictedAutofillValue)}</th>
+              <th id="value" weight="50" sortable>${i18nString(UIStrings.value)}</th>
+            </tr>
+            ${this.#filledFields.map((field, index) => html`
+                <tr style=${styleMap({
+                    'font-family': 'var(--monospace-font-family)',
+                    'font-size': 'var(--monospace-font-size)',
+                    'background-color': highlightedGridRows.has(index) ? 'var(--sys-color-state-hover-on-subtle)' : null,
+                  })}
+                  @mouseenter=${() => this.#onGridRowMouseEnter(index)}
+                  @mouseleave=${this.#onGridRowMouseLeave.bind(this)}
+                >
+                  <td>${field.name || `#${field.id}`} (${field.htmlType})</td>
+                  <td>
+                      ${field.autofillType}
+                      ${field.fillingStrategy === FillingStrategy.AutocompleteAttribute ?
+                            html`<devtools-adorner title=${i18nString(UIStrings.autocompleteAttribute)} .data=${{name: field.fillingStrategy}}>
+                              <span slot="content">${i18nString(UIStrings.attr)}</span>
+                            </devtools-adorner>` :
+                        field.fillingStrategy === FillingStrategy.AutofillInferred ?
+                            html`<devtools-adorner title=${i18nString(UIStrings.inferredByHeuristics)} .data=${{name: field.fillingStrategy}}>
+                              <span slot="content">${i18nString(UIStrings.heur)}</span>
+                            </devtools-adorner>` :
+                            Lit.nothing}
+                  </td>
+                  <td>"${field.value}"</td>
+                </tr>`
+            )}
+          </table>
+        </devtools-new-data-grid>
       </div>
     `;
     // clang-format on
   }
 
-  #onGridRowMouseEnter(event: DataGrid.DataGridEvents.RowMouseEnterEvent): void {
-    const rowIndex = event.data.row.cells[3].value;
-    if (typeof rowIndex !== 'number') {
-      return;
-    }
+  #onGridRowMouseEnter(rowIndex: number): void {
     this.#highlightedMatches = this.#matches.filter(match => match.filledFieldIndex === rowIndex);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
 
@@ -399,57 +389,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     this.#highlightedMatches = [];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();
-  }
-
-  #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    const highlightedGridRows = new Set(this.#highlightedMatches.map(match => match.filledFieldIndex));
-
-    return this.#filledFields.map(
-        (field, index) => {
-          const fieldName = field.name || `#${field.id}`;
-          return {
-            cells: [
-              {columnId: 'name', value: `${fieldName} (${field.htmlType})`},
-              {
-                columnId: 'autofill-type',
-                value: field.autofillType,
-                renderer: () => this.#autofillTypeRenderer(field.autofillType, field.fillingStrategy),
-              },
-              {columnId: 'value', value: `"${field.value}"`},
-              {columnId: 'filled-field-index', value: index},
-            ],
-            styles: {
-              'font-family': 'var(--monospace-font-family)',
-              'font-size': 'var(--monospace-font-size)',
-              ...(highlightedGridRows.has(index) && {'background-color': 'var(--sys-color-state-hover-on-subtle)'}),
-            },
-          };
-        },
-    );
-  }
-
-  #autofillTypeRenderer(autofillType: string, fillingStrategy: Protocol.Autofill.FillingStrategy): Lit.TemplateResult {
-    const adornerContent = document.createElement('span');
-    let adornerTitle = '';
-    switch (fillingStrategy) {
-      case Protocol.Autofill.FillingStrategy.AutocompleteAttribute:
-        adornerContent.textContent = i18nString(UIStrings.attr);
-        adornerTitle = i18nString(UIStrings.autocompleteAttribute);
-        break;
-      case Protocol.Autofill.FillingStrategy.AutofillInferred:
-        adornerContent.textContent = i18nString(UIStrings.heur);
-        adornerTitle = i18nString(UIStrings.inferredByHeuristics);
-    }
-
-    // Disabled until https://crbug.com/1079231 is fixed.
-    // clang-format off
-    return html`
-      ${autofillType}
-      ${adornerContent.textContent ? html`
-          <devtools-adorner title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent}}></devtools-adorner>
-        `: Lit.nothing}
-    `;
-    // clang-format on
   }
 }
 

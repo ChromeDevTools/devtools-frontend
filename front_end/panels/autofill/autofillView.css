@@ -46,6 +46,11 @@ main {
   flex-grow: 1;
 }
 
+devtools-new-data-grid {
+  border: none;
+  height: 100%;
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;

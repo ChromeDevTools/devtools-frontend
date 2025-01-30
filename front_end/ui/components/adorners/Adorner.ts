@@ -12,7 +12,7 @@ const {render, html} = Lit;
 
 export interface AdornerData {
   name: string;
-  content: HTMLElement;
+  content?: HTMLElement;
   jslogContext?: string;
 }
 
@@ -29,11 +29,19 @@ export class Adorner extends HTMLElement {
   set data(data: AdornerData) {
     this.name = data.name;
     this.#jslogContext = data.jslogContext;
-    data.content.slot = 'content';
-    this.#content?.remove();
-    this.append(data.content);
-    this.#content = data.content;
+    if (data.content) {
+      data.content.slot = 'content';
+      this.#content?.remove();
+      this.append(data.content);
+      this.#content = data.content;
+    }
     this.#render();
+  }
+
+  override cloneNode(deep?: boolean): Node {
+    const node = super.cloneNode(deep) as Adorner;
+    node.data = {name: this.name, content: this.#content, jslogContext: this.#jslogContext};
+    return node;
   }
 
   connectedCallback(): void {

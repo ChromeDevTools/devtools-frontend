@@ -280,17 +280,32 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
       const columnId = this.#dataGridElement.columnsOrder[i];
       this.data[columnId] = cell.dataset.value ?? cell.textContent ?? '';
     }
+    if (this.#configElement.hasAttribute('selected')) {
+      this.select();
+    }
+  }
+
+  override createElement(): HTMLElement {
+    const element = super.createElement();
+    element.addEventListener('click', this.#onRowMouseEvent.bind(this));
+    element.addEventListener('mouseenter', this.#onRowMouseEvent.bind(this));
+    element.addEventListener('mouseleave', this.#onRowMouseEvent.bind(this));
+    if (this.#configElement.hasAttribute('style')) {
+      element.setAttribute('style', this.#configElement.getAttribute('style') || '');
+    }
+    return element;
   }
 
   override refresh(): void {
     this.#updateData();
-    if (this.#configElement.hasAttribute('selected')) {
-      this.select();
-    }
     super.refresh();
+    const existingElement = this.existingElement();
+    if (existingElement && this.#configElement.hasAttribute('style')) {
+      existingElement.setAttribute('style', this.#configElement.getAttribute('style') || '');
+    }
   }
 
-  #onCellClick(configCell: HTMLElement, event: MouseEvent): void {
+  #onRowMouseEvent(event: MouseEvent): void {
     let currentElement = event.target as HTMLElement;
     const childIndexesOnPathToRoot: number[] = [];
     while (currentElement?.parentElement && currentElement !== event.currentTarget) {
@@ -300,12 +315,12 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     if (!currentElement) {
       throw new Error('Cell click event target not found in the data grid');
     }
-    let targetInConfigCell: Element = configCell;
+    let targetInConfigRow = this.#configElement;
     for (const index of childIndexesOnPathToRoot.reverse()) {
-      targetInConfigCell = targetInConfigCell.children[index];
+      targetInConfigRow = targetInConfigRow.children[index];
     }
-    if (targetInConfigCell instanceof HTMLElement) {
-      targetInConfigCell?.click();
+    if (targetInConfigRow instanceof HTMLElement) {
+      targetInConfigRow?.dispatchEvent(new MouseEvent(event.type, {bubbles: true, composed: true}));
     }
   }
 
@@ -316,7 +331,6 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
       throw new Error(`Column ${columnId} not found in the data grid`);
     }
     const cell = this.createTD(columnId);
-    cell.addEventListener('click', this.#onCellClick.bind(this, configCell));
     for (const child of configCell.childNodes) {
       cell.appendChild(child.cloneNode(true));
     }

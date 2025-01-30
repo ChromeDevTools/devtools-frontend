@@ -6,7 +6,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import {assertGridContents, getBodyRowByAriaIndex, getDataGrid} from '../../testing/DataGridHelpers.js';
+import {assertGridContents} from '../../testing/DataGridHelpers.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -110,9 +110,12 @@ describeWithMockConnection('AutofillView', () => {
 
   const renderAutofillView = async () => {
     const view = new Autofill.AutofillView.AutofillView();
+    view.style.display = 'block';
+    view.style.width = '640px';
+    view.style.height = '480px';
     renderElementIntoDOM(view);
     await view.render();
-    await RenderCoordinator.done();
+    await RenderCoordinator.done({waitForWork: true});
     return view;
   };
 
@@ -121,12 +124,12 @@ describeWithMockConnection('AutofillView', () => {
     const addressText = [...addressSpans].map(div => div.textContent);
     assert.deepEqual(
         addressText, ['Crocodile', ' Middle ', 'Dundee', 'Uluru ToursOutback Road 1Bundaberg Queensland ', '12345']);
-    const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value', 'filledFieldIndex'];
+    const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value'];
     const expectedRows = [
-      ['#input1 (text)', 'First name \nheur', '"Crocodile"', ''],
-      ['input2 (text)', 'Last name \nheur', '"Dundee"', ''],
-      ['#input3 (text)', 'Country \nheur', '"Australia"', ''],
-      ['#input4 (text)', 'Zip code \nattr', '"12345"', ''],
+      ['#input1 (text)', 'First name \nheur', '"Crocodile"'],
+      ['input2 (text)', 'Last name \nheur', '"Dundee"'],
+      ['#input3 (text)', 'Country \nheur', '"Australia"'],
+      ['#input4 (text)', 'Zip code \nattr', '"12345"'],
     ];
     assertGridContents(view, expectedHeaders, expectedRows);
   };
@@ -219,9 +222,9 @@ describeWithMockConnection('AutofillView', () => {
     const crocodileSpan = addressSpans[0];
     assert.strictEqual(crocodileSpan.textContent, 'Crocodile');
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
-    const grid = getDataGrid(view);
+    const grid = view.shadowRoot!.querySelector('devtools-new-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
-    const firstGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 1);
+    const firstGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]')!;
     let styles = firstGridRow.getAttribute('style') || '';
     assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
 
@@ -265,9 +268,9 @@ describeWithMockConnection('AutofillView', () => {
     const zipCodeSpan = addressSpans[4];
     assert.strictEqual(zipCodeSpan.textContent, '12345');
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
-    const grid = getDataGrid(view);
+    const grid = view.shadowRoot!.querySelector('devtools-new-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
-    const fourthGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 4);
+    const fourthGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]:nth-child(5)')!;
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
     await RenderCoordinator.done({waitForWork: true});
     assert.isTrue(zipCodeSpan.classList.contains('highlighted'));

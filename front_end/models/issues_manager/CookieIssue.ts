@@ -343,6 +343,7 @@ export class CookieIssue extends Issue {
           {
             url: this.#issueDetails.request?.url as Platform.DevToolsPath.UrlString | undefined,
             affectedResources: {requestId: this.#issueDetails.request?.requestId, issueId: this.issueId},
+            isCookieReportIssue: true
           });
     }
     return;

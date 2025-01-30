@@ -588,6 +588,7 @@ export interface ConsoleMessageDetails {
   context?: string;
   affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
+  isCookieReportIssue?: boolean;
 }
 
 export class ConsoleMessage {
@@ -611,6 +612,7 @@ export class ConsoleMessage {
   #exceptionId?: number = undefined;
   #affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
+  isCookieReportIssue: boolean = false;
 
   /**
    * The parent frame of the `console.log` call of logpoints or conditional breakpoints
@@ -641,6 +643,7 @@ export class ConsoleMessage {
     this.workerId = details?.workerId;
     this.#affectedResources = details?.affectedResources;
     this.category = details?.category;
+    this.isCookieReportIssue = Boolean(details?.isCookieReportIssue);
 
     if (!this.#executionContextId && this.#runtimeModelInternal) {
       if (this.scriptId) {

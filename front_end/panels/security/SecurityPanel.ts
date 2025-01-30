@@ -1631,3 +1631,18 @@ export interface OriginState {
 }
 
 export type Origin = Platform.DevToolsPath.UrlString;
+
+export class SecurityRevealer implements Common.Revealer.Revealer<CookieReportView> {
+  async reveal(cookieReportView: CookieReportView): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('security');
+    const view = UI.ViewManager.ViewManager.instance().view('security');
+    if (view) {
+      const securityPanel = await view.widget();
+      if (securityPanel instanceof SecurityPanel) {
+        securityPanel.setVisibleView(cookieReportView);
+      } else {
+        throw new Error('Expected securityPanel to be an instance of SecurityPanel');
+      }
+    }
+  }
+}

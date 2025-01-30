@@ -31,6 +31,7 @@ import * as CSSMetadata from './CSSMetadata.js';
 import * as CSSModel from './CSSModel.js';
 import * as CSSProperty from './CSSProperty.js';
 import * as CSSPropertyParser from './CSSPropertyParser.js';
+import * as CSSPropertyParserMatchers from './CSSPropertyParserMatchers.js';
 import * as CSSQuery from './CSSQuery.js';
 import * as CSSRule from './CSSRule.js';
 import * as CSSScope from './CSSScope.js';
@@ -109,6 +110,7 @@ export {
   CSSModel,
   CSSProperty,
   CSSPropertyParser,
+  CSSPropertyParserMatchers,
   CSSQuery,
   CSSRule,
   CSSScope,

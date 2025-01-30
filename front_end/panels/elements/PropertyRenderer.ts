@@ -12,12 +12,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import {
-  type StringMatch,
-  StringMatcher,
-  type URLMatch,
-  URLMatcher,
-} from './PropertyMatchers.js';
 import {unescapeCssString} from './StylesSidebarPane.js';
 
 const UIStrings = {
@@ -188,10 +182,10 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     return valueElement;
   }
 }
-export class URLRenderer implements MatchRenderer<URLMatch> {
+export class URLRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.URLMatch> {
   constructor(private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null) {
   }
-  render(match: URLMatch): Node[] {
+  render(match: SDK.CSSPropertyParserMatchers.URLMatch): Node[] {
     const url = unescapeCssString(match.url) as Platform.DevToolsPath.UrlString;
     const container = document.createDocumentFragment();
     UI.UIUtils.createTextChild(container, 'url(');
@@ -219,20 +213,20 @@ export class URLRenderer implements MatchRenderer<URLMatch> {
     return [container];
   }
 
-  matcher(): URLMatcher {
-    return new URLMatcher();
+  matcher(): SDK.CSSPropertyParserMatchers.URLMatcher {
+    return new SDK.CSSPropertyParserMatchers.URLMatcher();
   }
 }
 
-export class StringRenderer implements MatchRenderer<StringMatch> {
-  render(match: StringMatch): Node[] {
+export class StringRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.StringMatch> {
+  render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[] {
     const element = document.createElement('span');
     element.innerText = match.text;
     UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
     return [element];
   }
 
-  matcher(): StringMatcher {
-    return new StringMatcher();
+  matcher(): SDK.CSSPropertyParserMatchers.StringMatcher {
+    return new SDK.CSSPropertyParserMatchers.StringMatcher();
   }
 }

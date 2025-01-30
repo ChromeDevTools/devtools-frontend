@@ -48,7 +48,6 @@ import {type ComputedStyle, type ComputedStyleModel, Events} from './ComputedSty
 import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
-import {type ColorMatch, ColorMatcher} from './PropertyMatchers.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
 import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
@@ -179,8 +178,8 @@ const createTraceElement =
       return trace;
     };
 
-class ColorRenderer implements MatchRenderer<ColorMatch> {
-  render(match: ColorMatch, context: RenderingContext): Node[] {
+class ColorRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.ColorMatch> {
+  render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {
     const color = Common.Color.parse(match.text);
     if (!color) {
       return [document.createTextNode(match.text)];
@@ -203,8 +202,8 @@ class ColorRenderer implements MatchRenderer<ColorMatch> {
     return [swatch];
   }
 
-  matcher(): ColorMatcher {
-    return new ColorMatcher();
+  matcher(): SDK.CSSPropertyParserMatchers.ColorMatcher {
+    return new SDK.CSSPropertyParserMatchers.ColorMatcher();
   }
 }
 

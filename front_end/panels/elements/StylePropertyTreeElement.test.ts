@@ -1186,7 +1186,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         };
       });
       const model = new Elements.StylePropertyTreeElement.ShadowModel(
-          Elements.PropertyMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);
+          SDK.CSSPropertyParserMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);
 
       const container = document.createElement('div');
       model.renderContents(container);

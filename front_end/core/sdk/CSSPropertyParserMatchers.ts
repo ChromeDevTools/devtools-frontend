@@ -4,20 +4,29 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
-type Match = SDK.CSSPropertyParser.Match;
-type BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching;
-type SyntaxTree = SDK.CSSPropertyParser.SyntaxTree;
+import type {CSSMatchedStyles, CSSValueSource} from './CSSMatchedStyles.js';
+import {
+  CSSMetadata,
+  cssMetadata,
+  type CSSWideKeyword,
+  CubicBezierKeywordValues,
+  FontFamilyRegex,
+  FontPropertiesRegex
+} from './CSSMetadata.js';
+import type {CSSProperty} from './CSSProperty.js';
+import {
+  ASTUtils,
+  type BottomUpTreeMatching,
+  type Match,
+  matcherBase,
+  type SyntaxTree,
+  tokenizeDeclaration,
+  VariableMatch
+} from './CSSPropertyParser.js';
 
-const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
-const matcherBase = SDK.CSSPropertyParser.matcherBase;
-const tokenizeDeclaration = SDK.CSSPropertyParser.tokenizeDeclaration;
-
-export class AngleMatch implements SDK.CSSPropertyParser.Match {
+export class AngleMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
   }
 
@@ -30,7 +39,7 @@ export class AngleMatch implements SDK.CSSPropertyParser.Match {
 export class AngleMatcher extends matcherBase(AngleMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isAngleAwareProperty(propertyName);
+    return cssMetadata().isAngleAwareProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'NumberLiteral') {
@@ -66,7 +75,7 @@ export class ColorMixMatch implements Match {
 export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+    return cssMetadata().isColorAwareProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'color-mix') {
@@ -185,7 +194,7 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
   }
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+    return cssMetadata().isColorAwareProperty(propertyName);
   }
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
@@ -223,7 +232,7 @@ export class LightDarkColorMatch implements Match {
 export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
+    return cssMetadata().isColorAwareProperty(propertyName);
   }
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
@@ -388,21 +397,17 @@ export class BezierMatch implements Match {
 export class BezierMatcher extends matcherBase(BezierMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isBezierAwareProperty(propertyName);
+    return cssMetadata().isBezierAwareProperty(propertyName);
   }
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const text = matching.ast.text(node);
 
-    const isCubicBezierKeyword = node.name === 'ValueName' && UI.Geometry.CubicBezier.KeywordValues.has(text);
+    const isCubicBezierKeyword = node.name === 'ValueName' && CubicBezierKeywordValues.has(text);
     const isCubicBezierOrLinearFunction = node.name === 'CallExpression' &&
         ['cubic-bezier', 'linear'].includes(matching.ast.text(node.getChild('Callee')));
 
     if (!isCubicBezierKeyword && !isCubicBezierOrLinearFunction) {
-      return null;
-    }
-
-    if (!InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(text)) {
       return null;
     }
     return new BezierMatch(text, node);
@@ -435,7 +440,7 @@ export class ShadowMatch implements Match {
 export class ShadowMatcher extends matcherBase(ShadowMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isShadowProperty(propertyName);
+    return cssMetadata().isShadowProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'Declaration') {
@@ -460,14 +465,13 @@ export class FontMatch implements Match {
 export class FontMatcher extends matcherBase(FontMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isFontAwareProperty(propertyName);
+    return cssMetadata().isFontAwareProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'Declaration') {
       return null;
     }
-    const regex = matching.ast.propertyName === 'font-family' ? InlineEditor.FontEditorUtils.FontFamilyRegex :
-                                                                InlineEditor.FontEditorUtils.FontPropertiesRegex;
+    const regex = matching.ast.propertyName === 'font-family' ? FontFamilyRegex : FontPropertiesRegex;
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
     if (valueNodes.length === 0) {
       return null;
@@ -574,7 +578,7 @@ export class GridTemplateMatch implements Match {
 export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
   // clang-format on
   override accepts(propertyName: string): boolean {
-    return SDK.CSSMetadata.cssMetadata().isGridAreaDefiningProperty(propertyName);
+    return cssMetadata().isGridAreaDefiningProperty(propertyName);
   }
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'Declaration' || matching.hasUnresolvedVars(node)) {
@@ -598,7 +602,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
     // be rendered into separate lines.
     function parseNodes(nodes: CodeMirror.SyntaxNode[], varParsingMode = false): void {
       for (const curNode of nodes) {
-        if (matching.getMatch(curNode) instanceof SDK.CSSPropertyParser.VariableMatch) {
+        if (matching.getMatch(curNode) instanceof VariableMatch) {
           const computedValueTree = tokenizeDeclaration('--property', matching.getComputedText(curNode));
           if (!computedValueTree) {
             continue;
@@ -730,10 +734,10 @@ export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
 
 export class CSSWideKeywordMatch implements Match {
   constructor(
-      readonly text: SDK.CSSMetadata.CSSWideKeyword, readonly node: CodeMirror.SyntaxNode,
-      readonly property: SDK.CSSProperty.CSSProperty, readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+      readonly text: CSSWideKeyword, readonly node: CodeMirror.SyntaxNode, readonly property: CSSProperty,
+      readonly matchedStyles: CSSMatchedStyles) {
   }
-  resolveProperty(): SDK.CSSMatchedStyles.CSSValueSource|null {
+  resolveProperty(): CSSValueSource|null {
     return this.matchedStyles.resolveGlobalKeyword(this.property, this.text);
   }
   computedText?(): string|null {
@@ -744,8 +748,7 @@ export class CSSWideKeywordMatch implements Match {
 // clang-format off
 export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
   // clang-format on
-  constructor(
-      readonly property: SDK.CSSProperty.CSSProperty, readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+  constructor(readonly property: CSSProperty, readonly matchedStyles: CSSMatchedStyles) {
     super();
   }
 
@@ -761,7 +764,7 @@ export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
     }
 
     const text = matching.ast.text(node);
-    if (!SDK.CSSMetadata.CSSMetadata.isCSSWideKeyword(text)) {
+    if (!CSSMetadata.isCSSWideKeyword(text)) {
       return null;
     }
 
@@ -795,10 +798,10 @@ export class PositionTryMatcher extends matcherBase(PositionTryMatch) {
     if (matching.ast.propertyName === LinkableNameProperties.POSITION_TRY) {
       for (const [i, n] of fallbacks[0].entries()) {
         const computedText = matching.getComputedText(n);
-        if (SDK.CSSMetadata.CSSMetadata.isCSSWideKeyword(computedText)) {
+        if (CSSMetadata.isCSSWideKeyword(computedText)) {
           return null;
         }
-        if (SDK.CSSMetadata.CSSMetadata.isPositionTryOrderKeyword(computedText)) {
+        if (CSSMetadata.isPositionTryOrderKeyword(computedText)) {
           preamble = fallbacks[0].splice(0, i + 1);
           break;
         }

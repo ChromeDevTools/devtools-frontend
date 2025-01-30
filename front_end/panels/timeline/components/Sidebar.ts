@@ -51,8 +51,6 @@ export class SidebarWidget extends UI.Widget.VBox {
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
 
-  #annotationCount = 0;
-
   /**
    * Track if the user has opened the sidebar before. We do this so that the
    * very first time they record/import a trace after the sidebar ships, we can
@@ -102,13 +100,13 @@ export class SidebarWidget extends UI.Widget.VBox {
       updatedAnnotations: Trace.Types.File.Annotation[],
       annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
     this.#annotationsView.setAnnotations(updatedAnnotations, annotationEntryToColorMap);
-    this.#annotationCount = updatedAnnotations.length;
     this.#updateAnnotationsCountBadge();
   }
 
   #updateAnnotationsCountBadge(): void {
-    if (this.#annotationCount) {
-      this.#tabbedPane.setBadge('annotations', this.#annotationCount.toString());
+    const annotations = this.#annotationsView.deduplicatedAnnotations();
+    if (annotations.length) {
+      this.#tabbedPane.setBadge('annotations', annotations.length.toString());
     }
   }
 
@@ -173,5 +171,15 @@ class AnnotationsView extends UI.Widget.VBox {
     // set the `annotationEntryToColorMap` first.
     this.#component.annotationEntryToColorMap = annotationEntryToColorMap;
     this.#component.annotations = annotations;
+  }
+
+  /**
+   * The component "de-duplicates" annotations to ensure implementation details
+   * about how we create pending annotations don't leak into the UI. We expose
+   * these here because we use this count to show the number of annotations in
+   * the small adorner in the sidebar tab.
+   */
+  deduplicatedAnnotations(): readonly Trace.Types.File.Annotation[] {
+    return this.#component.deduplicatedAnnotations();
   }
 }

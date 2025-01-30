@@ -110,6 +110,10 @@ export class SidebarAnnotationsTab extends HTMLElement {
     this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');
   }
 
+  deduplicatedAnnotations(): readonly Trace.Types.File.Annotation[] {
+    return this.#annotations;
+  }
+
   set annotations(annotations: Trace.Types.File.Annotation[]) {
     this.#annotations = this.#processAnnotationsList(annotations);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

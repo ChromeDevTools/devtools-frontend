@@ -281,11 +281,11 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-          import.meta.dirname,
-          'config',
-          'typescript',
-          'tsconfig.eslint.json',
-        ),
+            import.meta.dirname,
+            'config',
+            'typescript',
+            'tsconfig.eslint.json',
+            ),
       },
     },
 
@@ -474,12 +474,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-            import.meta.dirname,
-            'front_end',
-            'models',
-            'trace',
-            'trace.js',
-          ),
+              import.meta.dirname,
+              'front_end',
+              'models',
+              'trace',
+              'trace.js',
+              ),
           importName: 'Trace',
         },
       ],
@@ -530,7 +530,6 @@ export default [
       'rulesdir/no-bound-component-methods': 'error',
       'rulesdir/no-customized-builtin-elements': 'error',
       'rulesdir/no-self-closing-custom-element-tagnames': 'error',
-      'rulesdir/no-style-tags-in-lit': 'error',
       'rulesdir/no-a-tags-in-lit': 'error',
       'rulesdir/check-css-import': 'error',
       'rulesdir/enforce-optional-properties-last': 'error',
@@ -685,7 +684,6 @@ export default [
       // anything, so we leave return types to the developer within the
       // component_docs folder.
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'rulesdir/no-style-tags-in-lit': 'off',
       // We use Lit to help render examples sometimes and we don't use
       // {host: this} as often the `this` is the window.
       'rulesdir/lit-host-this': 'off',

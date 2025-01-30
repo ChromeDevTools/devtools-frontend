@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import iconStyles from './icon.css.js';
+import iconStyles from './icon.css.legacy.js';
 
 /**
  * @deprecated
@@ -72,13 +72,11 @@ export class Icon extends HTMLElement {
   constructor() {
     super();
     this.role = 'presentation';
+    const style = document.createElement('style');
+    style.textContent = iconStyles.cssContent;
     this.#icon = document.createElement('span');
     this.#shadowRoot = this.attachShadow({mode: 'open'});
-    this.#shadowRoot.appendChild(this.#icon);
-  }
-
-  connectedCallback(): void {
-    this.#shadowRoot.adoptedStyleSheets = [iconStyles];
+    this.#shadowRoot.append(style, this.#icon);
   }
 
   /**

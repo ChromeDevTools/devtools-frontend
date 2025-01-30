@@ -61,7 +61,6 @@ export class SizeInputElement extends HTMLElement {
         // For now, use an inline style tag and later we can refactor this
         // to use proper constructed stylesheets, when the code runs
         // in the correct frame context.
-        // eslint-disable-next-line rulesdir/no-style-tags-in-lit
         html`
       <style>
         input {

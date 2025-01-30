@@ -11,12 +11,11 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "fileSourceIcon.css",
+    "icon.css",
     "iconButton.css",
   ]
-}
 
-generate_css("legacy_css_files") {
-  sources = [ "icon.css" ]
+  legacy = true
 }
 
 devtools_module("icon_button") {
@@ -38,7 +37,6 @@ devtools_entrypoint("bundle") {
   deps = [
     ":css_files",
     ":icon_button",
-    ":legacy_css_files",
   ]
 
   visibility = [

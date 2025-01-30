@@ -4,7 +4,7 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import styles from './fileSourceIcon.css.js';
+import fileSourceIconStyles from './fileSourceIcon.css.legacy.js';
 import {create} from './Icon.js';
 
 const {html} = Lit;
@@ -44,7 +44,6 @@ export class FileSourceIcon extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
     this.#render();
   }
 
@@ -59,7 +58,9 @@ export class FileSourceIcon extends HTMLElement {
     const icon = create(this.#iconType, iconStyles.join(' '));
 
     // clang-format off
-    Lit.render(html`${icon}`, this.#shadow, {
+    Lit.render(
+      html`<style>${fileSourceIconStyles.cssContent}</style>${icon}`,
+      this.#shadow, {
       host: this,
     });
     // clang-format on

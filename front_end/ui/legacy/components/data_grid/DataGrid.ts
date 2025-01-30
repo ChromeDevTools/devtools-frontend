@@ -105,6 +105,11 @@ const UIStrings = {
    *@description Accessible text indicating an empty row is created.
    */
   emptyRowCreated: 'An empty table row has been created. You may double click or use context menu to edit.',
+  /**
+   *@description Text for screen reader to announce when focusing on a sortable column in data grid.
+   *@example {ascending} PH1
+   */
+  enterToSort: 'Column sort state: {PH1}. Press enter to apply sorting filter',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1317,6 +1322,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     cell.classList.add(sortOrder);
     const ariaLabel = this.isSortOrderAscending() ? 'ascending' : 'descending';
     cell.setAttribute('aria-sort', ariaLabel);
+    UI.ARIAUtils.alert(i18nString(UIStrings.enterToSort, {PH1: ariaLabel || ''}));
 
     this.dispatchEventToListeners(Events.SORTING_CHANGED);
   }

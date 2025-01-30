@@ -189,7 +189,8 @@
   padding-right: 14px;
 }
 
-.data-grid th.sortable:hover {
+.data-grid th.sortable:hover,
+.data-grid th.sortable:focus-within {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 

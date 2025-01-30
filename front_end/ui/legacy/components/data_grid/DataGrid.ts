@@ -421,6 +421,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
                 .track({click: column.sortable, resize: true})
                 .context(Platform.StringUtilities.toKebabCase(columnId))}`);
     cell.className = columnId + '-column';
+    cell.setAttribute('tabindex', '0');
+    cell.setAttribute('role', 'columnheader');
     nodeToColumnIdMap.set(cell, columnId);
     this.dataTableHeaders[columnId] = cell;
 
@@ -439,6 +441,11 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     if (column.sortable) {
       cell.addEventListener('click', this.clickInHeaderCell.bind(this), false);
+      /**
+       * For a11y reasons to allow for keyboard navigation through the table headers
+       * we additionally have a keydown event listener.
+       */
+      cell.addEventListener('keydown', this.keydownHeaderCell.bind(this), false);
       cell.classList.add('sortable');
       const icon = document.createElement('span');
       icon.className = 'sort-order-icon';
@@ -1272,6 +1279,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     this.sortByColumnHeaderCell((cell as HTMLElement));
+  }
+
+  private keydownHeaderCell(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.clickInHeaderCell(event);
+    }
   }
 
   /**

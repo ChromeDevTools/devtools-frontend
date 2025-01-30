@@ -96,6 +96,13 @@
       display: block;
     }
   }
+
+  /* Default data-grid has this element on the edge of the rows,
+    we don't need them for the 3P table. So for now set display to none.
+   */
+  .corner {
+    display: none;
+  }
 }
 
 .widget.vbox.timeline-tree-view {

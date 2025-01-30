@@ -83,7 +83,7 @@
     "lit-analyzer": "2.0.3",
     "mocha": "9.2.2",
     "postcss": "8.4.38",
-    "puppeteer-core": "24.0.0",
+    "puppeteer-core": "24.1.1",
     "rollup-plugin-sourcemaps2": "0.4.2",
     "sinon": "18.0.0",
     "source-map-support": "0.5.21",

@@ -111,7 +111,7 @@ let Realm = (() => {
         }
         async resolveExecutionContextId() {
             if (!this.executionContextId) {
-                const { result } = await this.session.connection.send('cdp.resolveRealm', { realm: this.id });
+                const { result } = await this.session.connection.send('goog:cdp.resolveRealm', { realm: this.id });
                 this.executionContextId = result.executionContextId;
             }
             return this.executionContextId;

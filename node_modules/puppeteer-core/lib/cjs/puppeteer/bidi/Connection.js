@@ -140,6 +140,6 @@ function createProtocolError(object) {
     return message;
 }
 function isCdpEvent(event) {
-    return event.method.startsWith('cdp.');
+    return event.method.startsWith('goog:cdp.');
 }
 //# sourceMappingURL=Connection.js.map

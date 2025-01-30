@@ -371,8 +371,8 @@ let ElementHandle = (() => {
         /**
          * @internal
          */
-        dispose() {
-            return this.handle.dispose();
+        async dispose() {
+            await Promise.all([this.handle.dispose(), this.isolatedHandle?.dispose()]);
         }
         /**
          * @internal

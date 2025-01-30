@@ -297,7 +297,7 @@ function parsePDFOptions(options = {}, lengthUnit = 'in') {
     let width = 8.5;
     let height = 11;
     if (options.format) {
-        const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()];
+        const format = PDFOptions_js_1.paperFormats[options.format.toLowerCase()][lengthUnit];
         (0, assert_js_1.assert)(format, 'Unknown paper format: ' + options.format);
         width = format.width;
         height = format.height;

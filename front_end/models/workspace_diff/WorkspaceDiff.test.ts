@@ -38,7 +38,7 @@ describeWithEnvironment('UISourceCodeDiff', () => {
     uiSourceCode.setWorkingCopyGetter(() => 'const data={modified:true,original:false}');
 
     const uiSourceCodeDiff = new WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff(uiSourceCode);
-    const {diff, formattedCurrentMapping} = (await uiSourceCodeDiff.requestDiff({shouldFormatDiff: true}))!;
+    const {diff, formattedCurrentMapping} = (await uiSourceCodeDiff.requestDiff())!;
     assert.deepEqual(diff, [
       {0: 0, 1: ['const data = {']},
       {0: -1, 1: ['    original: true']},

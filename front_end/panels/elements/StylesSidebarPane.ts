@@ -1550,8 +1550,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!changeTracker) {
       return;
     }
-    const diffResponse =
-        await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    const diffResponse = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode);
     const changedLines = new Set<number>();
     changeTracker.changedLines = changedLines;
     if (!diffResponse) {
@@ -1570,8 +1569,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   async getFormattedChanges(): Promise<string> {
     let allChanges = '';
     for (const [url, {uiSourceCode}] of this.#urlToChangeTracker) {
-      const diffResponse =
-          await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode, {shouldFormatDiff: true});
+      const diffResponse = await WorkspaceDiff.WorkspaceDiff.workspaceDiff().requestDiff(uiSourceCode);
       // Diff array with real diff will contain at least 2 lines.
       if (!diffResponse || diffResponse?.diff.length < 2) {
         continue;

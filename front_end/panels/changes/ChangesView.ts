@@ -144,7 +144,7 @@ export class ChangesView extends UI.Widget.VBox {
     if (!uiSourceCode) {
       return;
     }
-    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode);
     // Diff array with real diff will contain at least 2 lines.
     if (!diffResponse || diffResponse?.diff.length < 2) {
       return;
@@ -226,7 +226,7 @@ export class ChangesView extends UI.Widget.VBox {
       this.hideDiff(i18nString(UIStrings.noTextualDiff), i18nString(UIStrings.binaryDataDescription));
       return;
     }
-    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode, {shouldFormatDiff: true});
+    const diffResponse = await this.workspaceDiff.requestDiff(uiSourceCode);
     if (this.selectedUISourceCode !== uiSourceCode) {
       return;
     }

@@ -233,6 +233,7 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
     this.nodeFieldsCount = 7;
     this.nodeTypesMap = {};
     this.nodeTypesArray = [];
+    this.extraNativeBytes = 0;
 
     for (const nodeType in HeapProfilerTestRunner.HeapNode.Type) {
       this.nodeTypesMap[nodeType] = this.nodeTypesArray.length;
@@ -260,7 +261,8 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
             node_types: [this.nodeTypesArray, 'string', 'number', 'number', 'number', 'number', 'number'],
             edge_fields: ['type', 'name_or_index', 'to_node'],
             edge_types: [this.edgeTypesArray, 'string_or_number', 'node']
-          }
+          },
+          extra_native_bytes: this.extraNativeBytes
         },
 
         nodes: [],

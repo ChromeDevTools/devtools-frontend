@@ -764,7 +764,7 @@ export abstract class HeapSnapshot {
   #aggregatesSortedFlags: {
     [x: string]: boolean,
   };
-  #profile: Profile;
+  profile: Profile;
   nodeTypeOffset!: number;
   nodeNameOffset!: number;
   nodeIdOffset!: number;
@@ -845,7 +845,7 @@ export abstract class HeapSnapshot {
     this.#aggregates = {};
 
     this.#aggregatesSortedFlags = {};
-    this.#profile = profile;
+    this.profile = profile;
     this.#ignoredNodesInRetainersView = new Set();
     this.#ignoredEdgesInRetainersView = new Set();
     this.#edgeNamesThatAreNotWeakMaps = Platform.TypedArrayUtilities.createBitVector(this.strings.length);
@@ -939,7 +939,7 @@ export abstract class HeapSnapshot {
     this.buildLocationMap();
     this.#progress.updateStatus('Finished processing.');
 
-    if (this.#profile.snapshot.trace_function_count) {
+    if (this.profile.snapshot.trace_function_count) {
       this.#progress.updateStatus('Building allocation statistics…');
       const nodes = this.nodes;
       const nodesLength = nodes.length;
@@ -961,7 +961,7 @@ export abstract class HeapSnapshot {
         stats.size += node.selfSize();
         stats.ids.push(node.id());
       }
-      this.#allocationProfile = new AllocationProfile(this.#profile, liveObjects);
+      this.#allocationProfile = new AllocationProfile(this.profile, liveObjects);
       this.#progress.updateStatus('done');
     }
   }
@@ -1045,7 +1045,7 @@ export abstract class HeapSnapshot {
   }
 
   get totalSize(): number {
-    return this.rootNode().retainedSize();
+    return this.rootNode().retainedSize() + (this.profile.snapshot.extra_native_bytes ?? 0);
   }
 
   private getDominatedIndex(nodeIndex: number): number {
@@ -2755,6 +2755,7 @@ export interface HeapSnapshotHeader {
   edge_count: number;
   trace_function_count: number;
   root_index: number;
+  extra_native_bytes?: number;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -3415,7 +3416,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     const nodeSlicedStringType = this.nodeSlicedStringType;
     const nodeHiddenType = this.nodeHiddenType;
     const nodeStringType = this.nodeStringType;
-    let sizeNative = 0;
+    let sizeNative = this.profile.snapshot.extra_native_bytes ?? 0;
     let sizeTypedArrays = 0;
     let sizeCode = 0;
     let sizeStrings = 0;

@@ -31,6 +31,8 @@ describeWithEnvironment('ImageDelivery', function() {
     const insight =
         getInsightOrError('ImageDelivery', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.totalByteSavings, 2007125);
+    assert.strictEqual(insight.metricSavings!.FCP, 0);
+    assert.strictEqual(insight.metricSavings!.LCP, 100);
     assert.deepEqual(
         insight.optimizableImages.map(
             o => ({url: o.request.args.data.url, optimizations: o.optimizations, byteSavings: o.byteSavings})),

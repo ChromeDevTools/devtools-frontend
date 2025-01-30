@@ -6,6 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
+import {metricSavingsForWastedBytes} from './Common.js';
 import {
   InsightCategory,
   type InsightModel,
@@ -264,8 +265,14 @@ export function generateInsight(
     }
   }
 
+  const wastedBytesByRequestId = new Map<string, number>();
+  for (const image of optimizableImages) {
+    wastedBytesByRequestId.set(image.request.args.data.requestId, image.byteSavings);
+  }
+
   return finalize({
     optimizableImages,
     totalByteSavings: optimizableImages.reduce((total, img) => total + img.byteSavings, 0),
+    metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),
   });
 }

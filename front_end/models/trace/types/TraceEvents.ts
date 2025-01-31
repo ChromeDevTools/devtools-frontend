@@ -1412,7 +1412,7 @@ export interface ConsoleTimeStamp extends Event {
   name: Name.CONSOLE_TIME_STAMP;
   ph: Phase.COMPLETE;
   args: Args&{
-    data: ArgsData & {
+    data?: ArgsData & {
       // The console.timeStamp allows to pass integers as values as well
       // as strings
       name: string | number,

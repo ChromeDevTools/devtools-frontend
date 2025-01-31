@@ -655,7 +655,7 @@ export class TimelineUIUtils {
     if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console)) {
       return title;
     }
-    if (Trace.Types.Events.isConsoleTimeStamp(event)) {
+    if (Trace.Types.Events.isConsoleTimeStamp(event) && event.args.data) {
       return i18nString(UIStrings.sS, {PH1: title, PH2: event.args.data.name});
     }
     if (Trace.Types.Events.isAnimation(event) && event.args.data.name) {

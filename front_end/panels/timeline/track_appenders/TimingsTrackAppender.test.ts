@@ -154,7 +154,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('returns the correct title for console timestamps', () => {
       const traceMarkers = parsedTrace.UserTimings.timestampEvents;
       for (const mark of traceMarkers) {
-        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `TimeStamp: ${mark.args.data.name}`);
+        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `TimeStamp: ${mark.args.data?.name}`);
       }
     });
   });

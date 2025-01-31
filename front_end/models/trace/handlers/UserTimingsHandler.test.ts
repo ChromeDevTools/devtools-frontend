@@ -174,9 +174,9 @@ describeWithEnvironment('UserTimingsHandler', function() {
     describe('console.timestamp events parsing', function() {
       it('parses console.timestamp events correctly', async function() {
         assert.lengthOf(timingsData.timestampEvents, 3);
-        assert.strictEqual(timingsData.timestampEvents[0].args.data.name, 'a timestamp');
-        assert.strictEqual(timingsData.timestampEvents[1].args.data.name, 'another timestamp');
-        assert.strictEqual(timingsData.timestampEvents[2].args.data.name, 'yet another timestamp');
+        assert.strictEqual(timingsData.timestampEvents[0].args.data?.name, 'a timestamp');
+        assert.strictEqual(timingsData.timestampEvents[1].args.data?.name, 'another timestamp');
+        assert.strictEqual(timingsData.timestampEvents[2].args.data?.name, 'yet another timestamp');
       });
     });
   });

@@ -206,7 +206,7 @@ describe('Overrides panel', function() {
 
       await openNetworkTab();
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
-      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+      const icons = await networkPanel.$$('devtools-icon.warning');
 
       assert.lengthOf(icons, 0);
     });
@@ -226,11 +226,12 @@ describe('Overrides panel', function() {
       await openNetworkTab();
       await setCacheDisabled(false);
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
-      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
-      const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
+      const icons = await networkPanel.$$('devtools-icon.warning');
 
       assert.lengthOf(icons, 1);
-      assert.isNotNull(iconTitleElement);
+      assert.strictEqual(
+          'Requests may be overridden locally, see the Sources panel',
+          await icons[0].evaluate(icon => (icon as HTMLElement).title));
     });
 
     await step('no indicator after clearing overrides configuration', async () => {
@@ -241,7 +242,7 @@ describe('Overrides panel', function() {
       await openNetworkTab();
       await setCacheDisabled(false);
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
-      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+      const icons = await networkPanel.$$('devtools-icon.warning');
 
       assert.lengthOf(icons, 0);
     });
@@ -255,11 +256,12 @@ describe('Overrides panel', function() {
       await openNetworkTab();
       await setCacheDisabled(false);
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
-      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
-      const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
+      const icons = await networkPanel.$$('devtools-icon.warning');
 
       assert.lengthOf(icons, 1);
-      assert.isNotNull(iconTitleElement);
+      assert.strictEqual(
+          'Requests may be overridden locally, see the Sources panel',
+          await icons[0].evaluate(icon => (icon as HTMLElement).title));
     });
   });
 

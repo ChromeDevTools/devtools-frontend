@@ -5,7 +5,7 @@
  */
 
 .tabbed-pane-header-tab {
-  & > .tabbed-pane-header-tab-icon > devtools-icon {
+  & > .tabbed-pane-header-tab-suffix-element devtools-icon.warning {
     width: 14px;
     height: 14px;
     color: var(--icon-warning);

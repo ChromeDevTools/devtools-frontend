@@ -429,6 +429,14 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateTabElements();
   }
 
+  setTrailingTabIcon(id: string, icon: IconButton.Icon.Icon|null): void {
+    const tab = this.tabsById.get(id);
+    if (!tab) {
+      return;
+    }
+    tab.setSuffixElement(icon);
+  }
+
   setSuffixElement(id: string, suffixElement: HTMLElement|null): void {
     const tab = this.tabsById.get(id);
     if (!tab) {

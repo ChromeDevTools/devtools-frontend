@@ -338,10 +338,10 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       let icon: IconButton.Icon.Icon|null = null;
       if (warnings.length !== 0) {
         const warning = warnings.length === 1 ? warnings[0] : '· ' + warnings.join('\n· ');
-        icon = IconButton.Icon.create('warning-filled');
+        icon = IconButton.Icon.create('warning-filled', 'warning');
         Tooltip.install(icon, warning);
       }
-      tabbedPane.setTabIcon(tabId, icon);
+      tabbedPane.setTrailingTabIcon(tabId, icon);
     }
   }
 

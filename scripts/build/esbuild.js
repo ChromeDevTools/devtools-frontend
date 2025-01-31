@@ -4,10 +4,11 @@
 
 // @ts-check
 
-const path = require('path');
 const os = require('os');
+const path = require('path');
 
 const devtools_paths = require('../devtools_paths.js');
+
 const devtools_plugin = require('./devtools_plugin.js');
 
 // esbuild module uses binary in this path.

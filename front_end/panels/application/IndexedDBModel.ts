@@ -30,8 +30,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 const DEFAULT_BUCKET = '';  // Empty string is not a valid bucket name
 

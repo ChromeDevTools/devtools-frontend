@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, goToResource, waitForAria} from '../../shared/helper.js';
-
 import {getPausedMessages, openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('Breakpoints on CSP Violation', () => {

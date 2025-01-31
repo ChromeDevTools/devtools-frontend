@@ -5,8 +5,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as ResultsDb from './resultsdb.js';
-const diff = require('diff');
+
 const chalk = require('chalk');
+const diff = require('diff');
 
 type DiffCallback = (line: string) => string;
 function*

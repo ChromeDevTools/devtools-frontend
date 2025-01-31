@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Platform from '../platform/platform.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export class PerformanceMetricsModel extends SDKModel<void> {
   readonly #agent: ProtocolProxyApi.PerformanceApi;

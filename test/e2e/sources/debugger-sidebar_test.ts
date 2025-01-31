@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
-
 import {openSourcesPanel, toggleDebuggerSidebar} from '../helpers/sources-helpers.js';
 
 describe('The Sources panel', () => {

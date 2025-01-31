@@ -5,7 +5,6 @@ import {assert} from 'chai';
 
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
-
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,

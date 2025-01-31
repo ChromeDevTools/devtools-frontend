@@ -12,7 +12,6 @@ import {
   goToResource,
   waitFor,
 } from '../../shared/helper.js';
-
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
 

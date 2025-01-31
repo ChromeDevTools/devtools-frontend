@@ -5,26 +5,25 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as Util from '../util/util.js';
-
 import type * as ProtocolProxyApi from '../../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import type * as Injected from '../injected/injected.js';
+import * as Util from '../util/util.js';
 
 import {
   AssertedEventType,
-  StepType,
-  type Key,
   type ChangeStep,
   type ClickStep,
   type DoubleClickStep,
   type FrameSelector,
+  type Key,
   type KeyDownStep,
   type KeyUpStep,
   type NavigationEvent,
   type SelectorType,
   type Step,
+  StepType,
   type Target,
   type UserFlow,
 } from './Schema.js';

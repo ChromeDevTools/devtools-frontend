@@ -4,8 +4,8 @@
 
 'use strict';
 
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 const FILE = 'front_end/ui/visual_logging/KnownContextValues.ts';
 const FRONT_END_PARENT_FOLDER = path.join(__filename, '..', '..', '..', '..');

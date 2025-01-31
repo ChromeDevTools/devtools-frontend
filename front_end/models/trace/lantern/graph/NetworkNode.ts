@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode} from './BaseNode.js';
 import type * as Lantern from '../types/types.js';
+
+import {BaseNode} from './BaseNode.js';
 
 const NON_NETWORK_SCHEMES = [
   'blob',        // @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL

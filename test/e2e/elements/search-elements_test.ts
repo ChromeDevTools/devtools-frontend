@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages, goToResource, pressKey, timeout, waitFor, waitForNone} from '../../shared/helper.js';
-
 import {
   assertSearchResultMatchesText,
   SEARCH_BOX_SELECTOR,

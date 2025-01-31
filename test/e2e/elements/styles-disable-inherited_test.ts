@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {click, goToResource, waitFor} from '../../shared/helper.js';
-
 import {
   checkStyleAttributes,
   expandSelectedNodeRecursively,

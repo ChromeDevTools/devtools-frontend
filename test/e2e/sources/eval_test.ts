@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {waitFor} from '../../shared/helper.js';
-
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('The Sources Tab', () => {

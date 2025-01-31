@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/prefer-readonly-keyword.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/prefer-readonly-keyword.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

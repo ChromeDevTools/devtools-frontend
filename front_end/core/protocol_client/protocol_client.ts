@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as InspectorBackendCommands from '../../generated/InspectorBackendCommands.js';
+
 import * as InspectorBackend from './InspectorBackend.js';
 import * as NodeURL from './NodeURL.js';
 

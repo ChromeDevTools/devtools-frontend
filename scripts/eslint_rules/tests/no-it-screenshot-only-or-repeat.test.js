@@ -4,8 +4,9 @@
 
 'use strict';
 
-const rule = require('../lib/no-it-screenshot-only-or-repeat.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/no-it-screenshot-only-or-repeat.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

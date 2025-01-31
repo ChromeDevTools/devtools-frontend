@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
   captureAddedSourceFiles,

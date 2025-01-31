@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$$, step, waitFor} from '../../shared/helper.js';
-
 import {openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 
 describe('Sources Tab', function() {

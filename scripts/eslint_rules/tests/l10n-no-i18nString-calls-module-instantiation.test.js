@@ -4,8 +4,9 @@
 
 'use strict';
 
-const rule = require('../lib/l10n-no-i18nString-calls-module-instantiation.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/l10n-no-i18nString-calls-module-instantiation.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

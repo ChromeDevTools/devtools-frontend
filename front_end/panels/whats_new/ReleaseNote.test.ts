@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,

@@ -21,7 +21,6 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   CONSOLE_ALL_MESSAGES_SELECTOR,
   focusConsolePrompt,

@@ -5,8 +5,8 @@
 // found in the LICENSE file.
 'use strict';
 
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 const {
   devtoolsRootPath,

@@ -11,7 +11,6 @@ import {
   waitForFunction,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
-
 import {getSelectedItemText, QUICK_OPEN_SELECTOR} from '../helpers/quick_open-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 import {

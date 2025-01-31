@@ -5,8 +5,8 @@
 // Converts a JSON results file into two TSV files: queries and responses.
 // Usage: node to_tsv.mjs path/to/file.json
 
-import fs from 'fs/promises';
 import assert from 'assert';
+import fs from 'fs/promises';
 
 const file = process.argv[2];
 

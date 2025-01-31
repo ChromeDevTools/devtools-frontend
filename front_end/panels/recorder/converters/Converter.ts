@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Models from '../models/models.js';
 import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
+import type * as Models from '../models/models.js';
 
 export interface Converter {
   stringify(flow: Models.Schema.UserFlow): Promise<[string, PuppeteerReplay.SourceMap|undefined]>;

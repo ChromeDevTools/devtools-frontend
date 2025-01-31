@@ -10,8 +10,8 @@
  * here. Please add any paths you need that are missing.
  */
 
-const path = require('path');
 const os = require('os');
+const path = require('path');
 
 /**
  * You would think we can use __filename here but we cannot because __filename
@@ -164,13 +164,13 @@ function downloadedChromeBinaryPath() {
 }
 
 module.exports = {
-  thirdPartyPath,
-  nodePath,
   devtoolsRootPath,
-  nodeModulesPath,
-  mochaExecutablePath,
-  stylelintExecutablePath,
   downloadedChromeBinaryPath,
   litAnalyzerExecutablePath,
+  mochaExecutablePath,
+  nodeModulesPath,
+  nodePath,
+  stylelintExecutablePath,
+  thirdPartyPath,
   tsconfigJsonPath,
 };

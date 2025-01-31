@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, step, typeText, waitFor} from '../../shared/helper.js';
-
 import {
   addBreakpointForLine,
   openSourceCodeEditorForFile,

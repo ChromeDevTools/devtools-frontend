@@ -11,7 +11,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {getColorSwatch, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
 
 describe('ColorPicker', () => {

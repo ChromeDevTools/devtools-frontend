@@ -4,10 +4,10 @@
 
 'use strict';
 
+const tsParser = require('@typescript-eslint/parser');
 const path = require('path');
 
 const rule = require('../lib/l10n-filename-matches.js');
-const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

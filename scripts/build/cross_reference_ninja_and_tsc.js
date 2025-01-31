@@ -6,9 +6,9 @@
 // $ node scripts/build/cross_reference_ninja_and_tsc.js [Target] [Path to bundle],
 // e.g. node scripts/build/cross_reference_ninja_and_tsc.js Default front_end/common:bundle,
 
+const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const childProcess = require('child_process');
 const [, , buildDir, gnTarget] = process.argv;
 const cwd = process.cwd();
 

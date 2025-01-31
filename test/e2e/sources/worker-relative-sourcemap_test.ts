@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, goToResource, waitFor} from '../../shared/helper.js';
-
 import {createSelectorsForWorkerFile, expandFileTree, type NestedFileSelector} from '../helpers/sources-helpers.js';
 
 function createSelectorsForEvalWorker(fileName: string) {

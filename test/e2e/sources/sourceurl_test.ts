@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getTestServerPort} from '../../shared/helper.js';
-
 import {expandFileTree, openFileInSourcesPanel, type NestedFileSelector} from '../helpers/sources-helpers.js';
 
 function createSelectorsForFile(domainName: string, folderName: string, fileName: string): NestedFileSelector {

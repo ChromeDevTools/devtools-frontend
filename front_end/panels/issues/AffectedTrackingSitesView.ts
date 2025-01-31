@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
 const UIStrings = {

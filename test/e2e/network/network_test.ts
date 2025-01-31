@@ -8,7 +8,6 @@ import {
   goTo,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   clearTimeWindow,
   getAllRequestNames,

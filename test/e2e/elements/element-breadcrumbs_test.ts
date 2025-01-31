@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {clickElement, goToResource, waitForElementWithTextContent} from '../../shared/helper.js';
-
 import {
   assertSelectedElementsNodeTextIncludes,
   expandSelectedNodeRecursively,

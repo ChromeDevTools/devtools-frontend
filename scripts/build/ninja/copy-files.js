@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 const fs = require('fs');
 const path = require('path');
+
 const {writeIfChanged} = require('./write-if-changed.js');
 const [, , src, dest, files] = process.argv;
 

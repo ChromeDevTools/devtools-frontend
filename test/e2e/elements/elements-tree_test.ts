@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, goToResource, waitForAria, waitForElementWithTextContent} from '../../shared/helper.js';
-
 import {
   expandSelectedNodeRecursively,
   getContentOfSelectedNode,

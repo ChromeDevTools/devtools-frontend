@@ -4,8 +4,9 @@
 
 'use strict';
 
-const rule = require('../lib/l10n-no-locked-or-placeholder-only-phrase.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/l10n-no-locked-or-placeholder-only-phrase.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

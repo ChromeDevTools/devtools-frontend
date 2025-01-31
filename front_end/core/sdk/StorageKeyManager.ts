@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {Capability, type Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
 import * as Common from '../common/common.js';
 import type * as Platform from '../platform/platform.js';
+
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export class StorageKeyManager extends SDKModel<EventTypes> {
   #mainStorageKeyInternal: string;

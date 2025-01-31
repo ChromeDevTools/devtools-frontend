@@ -9,7 +9,6 @@ import {
   getTestServerPort,
   goToResource,
 } from '../../shared/helper.js';
-
 import {
   getCurrentConsoleMessages,
   Level,

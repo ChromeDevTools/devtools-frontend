@@ -28,10 +28,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import {NodeURL} from './NodeURL.js';
-import type * as Platform from '../platform/platform.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as Platform from '../platform/platform.js';
+
+import {NodeURL} from './NodeURL.js';
 
 export const DevToolsStubErrorCode = -32015;
 // TODO(dgozman): we are not reporting generic errors in tests, but we should

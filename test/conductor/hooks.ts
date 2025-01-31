@@ -9,22 +9,22 @@
 import puppeteer = require('puppeteer-core');
 
 import {
+  dumpCollectedErrors,
+  installPageErrorHandlers,
+  setupBrowserProcessIO,
+} from './events.js';
+import {
+  DevToolsFrontendTab,
+  loadEmptyPageAndWaitForContent,
+  type DevToolsFrontendReloadOptions,
+} from './frontend_tab.js';
+import {
   clearPuppeteerState,
   getBrowserAndPages,
   registerHandlers,
   setBrowserAndPages,
   setTestServerPort,
 } from './puppeteer-state.js';
-import {
-  loadEmptyPageAndWaitForContent,
-  DevToolsFrontendTab,
-  type DevToolsFrontendReloadOptions,
-} from './frontend_tab.js';
-import {
-  dumpCollectedErrors,
-  installPageErrorHandlers,
-  setupBrowserProcessIO,
-} from './events.js';
 import {TargetTab} from './target_tab.js';
 import {TestConfig} from './test_config.js';
 

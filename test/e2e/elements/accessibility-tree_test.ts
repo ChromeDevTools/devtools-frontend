@@ -13,7 +13,6 @@ import {
   waitForElementWithTextContent,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
-
 import {toggleAccessibilityTree} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Tree in the Elements Tab', function() {

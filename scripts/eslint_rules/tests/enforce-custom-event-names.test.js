@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/enforce-custom-event-names.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/enforce-custom-event-names.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

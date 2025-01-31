@@ -2,15 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import * as Workspace from '../../models/workspace/workspace.js';
-
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
+import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as Diff from '../../third_party/diff/diff.js';
 
 export const cleanupURL = function(url) {

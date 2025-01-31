@@ -10,9 +10,9 @@
  * node scripts/search-trace-files.js "v8.parse"
  */
 
+const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const child_process = require('child_process');
 
 const TRACE_FILES_DIR = path.join(__dirname, '..', 'front_end', 'panels', 'timeline', 'fixtures', 'traces');
 

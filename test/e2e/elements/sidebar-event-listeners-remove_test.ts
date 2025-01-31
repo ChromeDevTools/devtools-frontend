@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, waitFor} from '../../shared/helper.js';
-
 import {
   getDisplayedEventListenerNames,
   getFirstNodeForEventListener,

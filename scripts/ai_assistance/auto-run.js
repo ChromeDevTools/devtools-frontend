@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const puppeteer = require('puppeteer-core');
-const yargs = require('yargs/yargs');
-const {hideBin} = require('yargs/helpers');
 const fs = require('fs');
 const path = require('path');
+const puppeteer = require('puppeteer-core');
+const {hideBin} = require('yargs/helpers');
+const yargs = require('yargs/yargs');
+
 const {parseComment} = require('./auto-run-helpers');
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';

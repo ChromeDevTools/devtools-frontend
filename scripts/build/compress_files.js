@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const fs = require('fs');
 const crypto = require('crypto');
-const zlib = require('zlib');
+const fs = require('fs');
 const {pipeline, Readable} = require('stream');
+const zlib = require('zlib');
 
 const {promises: pfs} = fs;
 

@@ -4,8 +4,9 @@
 
 'use strict';
 
-const rule = require('../lib/single-screenshot-assertion-per-test.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/single-screenshot-assertion-per-test.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

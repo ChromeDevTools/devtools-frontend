@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
-
 import {
   getPieChartLegendRows,
   getQuotaUsage,

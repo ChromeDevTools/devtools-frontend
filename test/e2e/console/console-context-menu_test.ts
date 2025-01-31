@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, typeText, waitForFunction} from '../../shared/helper.js';
-
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', function() {

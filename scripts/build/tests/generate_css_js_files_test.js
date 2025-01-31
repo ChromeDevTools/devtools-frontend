@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 const {assert} = require('chai');
+
 const {codeForFile} = require('../generate_css_js_files.js');
 
 describe('generating CSS JS files', () => {

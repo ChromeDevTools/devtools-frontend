@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 const path = require('path');
+
 const {writeIfChanged} = require('../../../scripts/build/ninja/write-if-changed.js');
 const [, , targetGenDir] = process.argv;
 

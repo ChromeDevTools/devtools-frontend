@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   getAndExpandSpecificIssueByTitle,

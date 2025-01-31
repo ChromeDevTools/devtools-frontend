@@ -3,14 +3,15 @@
 // found in the LICENSE file.
 
 /* eslint-disable import/no-default-export */
+
+import stylisticPlugin from '@stylistic/eslint-plugin';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
-import mochaPlugin from 'eslint-plugin-mocha';
-import rulesdirPlugin from 'eslint-plugin-rulesdir';
+import tsParser from '@typescript-eslint/parser';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
+import mochaPlugin from 'eslint-plugin-mocha';
+import rulesdirPlugin from 'eslint-plugin-rulesdir';
 import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import stylisticPlugin from '@stylistic/eslint-plugin';
 import { join } from 'path';
 
 rulesdirPlugin.RULES_DIR = join(
@@ -259,6 +260,24 @@ export default [
        * import * as FooModule from './foo.js'
        **/
       'import/no-duplicates': 'error',
+      /**
+       * Provides more consistency in the imports.
+       */
+      'import/order': [
+        'error',
+        {
+          // We need to group the builtin and external as clang-format
+          // can't differentiate the two
+          groups: [['builtin', 'external'], 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+          // clang-format has it's own logic overriding this
+          named: false,
+          alphabetize: {
+            order: 'asc',
+            caseInsensitive: true,
+          },
+        },
+      ],
       // Try to spot '// console.log()' left over from debugging
       'rulesdir/no-commented-out-console': 'error',
       // Prevent imports being commented out rather than deleted.
@@ -283,11 +302,11 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
@@ -476,12 +495,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],

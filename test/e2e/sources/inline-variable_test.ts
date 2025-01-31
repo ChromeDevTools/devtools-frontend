@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
-
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {

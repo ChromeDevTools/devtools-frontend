@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, goToResource, waitFor} from '../../shared/helper.js';
-
 import {
   getHiddenIssuesRow,
   getHiddenIssuesRowBody,

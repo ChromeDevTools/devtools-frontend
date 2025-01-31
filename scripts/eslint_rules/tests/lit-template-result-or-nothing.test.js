@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/lit-template-result-or-nothing.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/lit-template-result-or-nothing.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

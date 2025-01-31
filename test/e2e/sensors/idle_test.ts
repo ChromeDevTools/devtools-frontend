@@ -13,7 +13,6 @@ import {
   step,
   waitFor,
 } from '../../shared/helper.js';
-
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Idle Emulation on Sensors panel', () => {

@@ -12,7 +12,6 @@ import {
   waitForAriaNone,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {loadExtension} from '../helpers/extension-helpers.js';
 
 describe('The Extension API', () => {

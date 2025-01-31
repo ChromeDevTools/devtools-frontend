@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages} from '../../shared/helper.js';
-
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile} from '../helpers/sources-helpers.js';
 

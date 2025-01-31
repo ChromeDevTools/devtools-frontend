@@ -4,8 +4,9 @@
 
 'use strict';
 
-const rule = require('../lib/l10n-i18nString-call-only-with-uistrings.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/l10n-i18nString-call-only-with-uistrings.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

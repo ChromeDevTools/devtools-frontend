@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$, click, getBrowserAndPages, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
-
 import {openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';

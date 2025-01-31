@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Bindings from '../../models/bindings/bindings.js';
 import * as Common from '../../core/common/common.js';
-import type * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 
 export class ProfileHeader extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly profileTypeInternal: ProfileType;

@@ -36,7 +36,8 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                           f => path.relative(process.cwd(), path.join(SOURCE_ROOT, f))),
                     })
                     .strict()
-                    .argv;
+                    .parseSync();
+
 const CONSUMED_OPTIONS = ['tests', 'skip-ninja', 'debug-driver', 'bail', 'b', 'verbose', 'v', 'watch'];
 
 let logLevel = 'error';
@@ -186,7 +187,7 @@ class KarmaTests extends Tests {
 // TODO(333423685)
 // - watch
 function main() {
-  const tests: string[] = options['tests'];
+  const tests: string[] = typeof options['tests'] === 'string' ? [options['tests']] : options['tests'];
   const testKinds = [
     new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),

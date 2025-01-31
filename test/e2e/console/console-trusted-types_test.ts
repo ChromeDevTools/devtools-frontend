@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 
 describe('Logging and preview of Trusted Types objects in the Console', () => {

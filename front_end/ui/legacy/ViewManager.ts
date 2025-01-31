@@ -915,15 +915,15 @@ class StackLocation extends Location implements ViewLocation {
 }
 
 export {
-  ViewRegistration,
-  ViewPersistence,
+  getLocalizedViewLocationCategory,
+  getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
   maybeRemoveViewExtension,
-  registerViewExtension,
-  ViewLocationValues,
-  getRegisteredLocationResolvers,
   registerLocationResolver,
-  ViewLocationCategory,
-  getLocalizedViewLocationCategory,
+  registerViewExtension,
   resetViewRegistration,
+  ViewLocationCategory,
+  ViewLocationValues,
+  ViewPersistence,
+  ViewRegistration,
 };

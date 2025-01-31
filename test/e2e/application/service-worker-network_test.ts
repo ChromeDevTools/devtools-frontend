@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 import {click, getBrowserAndPages, step} from '../../shared/helper.js';
-
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,

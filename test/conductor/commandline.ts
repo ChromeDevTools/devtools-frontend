@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {Argv} from 'yargs';
+
 export enum DiffBehaviors {
   UPDATE = 'update',
   THROW = 'throw',
@@ -36,13 +38,13 @@ function validateDiffBehaviors(args: undefined|string|string[]) {
   return asArray(args);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function commandLineArgs(yargs: any) {
+export function commandLineArgs<T = Record<string, unknown>>(yargs: Argv<T>) {
   return yargs
       .parserConfiguration({
         'camel-case-expansion': false,
       })
-      .command('$0 [tests..]')
+      // TODO: add description
+      .command('$0 [tests..]', '')
       .option('debug', {
         type: 'boolean',
         default: false,
@@ -74,7 +76,11 @@ export function commandLineArgs(yargs: any) {
         desc: `Define how to deal with diffs in snapshots/screenshots. Options are: ${
             Object.values(DiffBehaviors).join(', ')}`,
       })
-      .option('shuffle', {type: 'boolean', desc: 'Execute tests in random order'})
+      .option('shuffle', {
+        type: 'boolean',
+        desc: 'Execute tests in random order',
+        default: false,
+      })
       .option('grep', {type: 'string', conflicts: 'fgrep', desc: 'Filter tests by name using grep'})
       .option('fgrep', {type: 'string', conflicts: 'grep', desc: 'Filter tests by name using fgrep'})
       .option('invert-grep', {type: 'boolean', desc: 'Invert the grep/fgrep result'});

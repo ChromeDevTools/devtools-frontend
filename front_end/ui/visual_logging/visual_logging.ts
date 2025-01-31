@@ -9,8 +9,8 @@ import * as LoggingEvents from './LoggingEvents.js';
 import * as NonDomState from './NonDomState.js';
 
 export type Loggable = LoggableModule.Loggable;
-export {setVeDebugLoggingEnabled, DebugLoggingFormat, setVeDebuggingEnabled} from './Debugging.js';
-export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
+export {DebugLoggingFormat, setVeDebuggingEnabled, setVeDebugLoggingEnabled} from './Debugging.js';
+export {addDocument, startLogging, stopLogging} from './LoggingDriver.js';
 export {logImpressions} from './LoggingEvents.js';
 export const logClick = (loggable: Loggable, event: Event, options: {doubleClick?: boolean} = {}): void =>
     LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(loggable, event, options);

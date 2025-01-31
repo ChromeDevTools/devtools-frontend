@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../host/host.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Host from '../host/host.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export class LogModel extends SDKModel<EventTypes> implements ProtocolProxyApi.LogDispatcher {
   readonly #logAgent: ProtocolProxyApi.LogApi;

@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$$, click, getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
-
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,

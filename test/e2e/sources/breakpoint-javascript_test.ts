@@ -16,7 +16,6 @@ import {
   waitForFunction,
   withControlOrMetaKey,
 } from '../../shared/helper.js';
-
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {

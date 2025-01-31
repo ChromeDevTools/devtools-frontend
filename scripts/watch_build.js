@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const path = require('path');
 const childProcess = require('child_process');
 const fs = require('fs');
+const path = require('path');
+const {WebSocketServer} = require('ws');
+
 const cwd = process.cwd();
 const frontEndDir = path.join(cwd, 'front_end');
 const testsDir = path.join(cwd, 'test');
-const {WebSocketServer} = require('ws');
 const env = process.env;
 
 const extractArgument = argName => {

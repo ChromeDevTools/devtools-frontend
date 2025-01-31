@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {waitFor} from '../../shared/helper.js';
-
 import {
   getDisplayedEventListenerNames,
   getEventListenerProperties,

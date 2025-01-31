@@ -11,7 +11,7 @@ import {asArray, commandLineArgs, DiffBehaviors} from './commandline.js';
 import {defaultChromePath, SOURCE_ROOT} from './paths.js';
 
 const yargs = require('yargs');
-const options = commandLineArgs(yargs(yargs.argv['_'])).argv;
+const options = commandLineArgs(yargs(yargs.argv['_'])).parseSync();
 
 export const enum ServerType {
   HOSTED_MODE = 'hosted-mode',

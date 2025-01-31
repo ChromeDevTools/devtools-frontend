@@ -9,7 +9,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   addBreakpointForLine,
   disableInlineBreakpointForLine,

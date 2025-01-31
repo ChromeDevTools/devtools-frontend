@@ -28,13 +28,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../common/common.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
+import type * as Common from '../common/common.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {Events as StorageKeyManagerEvents, StorageKeyManager} from './StorageKeyManager.js';
+import {Capability, type Target} from './Target.js';
 
 export class StorageBucketsModel extends SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
   private enabled: boolean = false;

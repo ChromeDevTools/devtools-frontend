@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-
 import {
   clickNthChildOfSelectedElementNode,
   getElementStyleFontEditorButton,

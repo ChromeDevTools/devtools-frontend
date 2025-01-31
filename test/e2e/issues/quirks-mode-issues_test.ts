@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getResourcesPath, goToResource, matchStringArray} from '../../shared/helper.js';
-
 import {
   assertIssueTitle,
   expandIssue,

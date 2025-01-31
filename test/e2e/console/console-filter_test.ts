@@ -6,7 +6,6 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {$, getBrowserAndPages, step} from '../../shared/helper.js';
-
 import {
   CONSOLE_MESSAGE_WRAPPER_SELECTOR,
   deleteConsoleMessagesFilter,

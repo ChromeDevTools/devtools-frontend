@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 
 import {CSSModel} from './CSSModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export class EmulationModel extends SDKModel<void> {
   readonly #emulationAgent: ProtocolProxyApi.EmulationApi;

@@ -50,7 +50,7 @@ async function getComputationDataFromFixture({trace, settings, url}: {
 }
 
 export {
-  toLanternTrace,
-  runTrace,
   getComputationDataFromFixture,
+  runTrace,
+  toLanternTrace,
 };

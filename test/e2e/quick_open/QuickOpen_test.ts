@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {clickElement, enableExperiment, goToResource, step, waitFor} from '../../shared/helper.js';
-
 import {navigateToElementsTab} from '../helpers/elements-helpers.js';
 import {
   getMenuItemAtPosition,

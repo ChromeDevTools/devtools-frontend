@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, step} from '../../shared/helper.js';
-
 import {
   deleteSelectedStorageItem,
   getStorageItemsData,

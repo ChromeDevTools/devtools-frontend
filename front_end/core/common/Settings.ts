@@ -1396,14 +1396,14 @@ export function settingForTest(settingName: string): Setting<unknown> {
 export {
   getLocalizedSettingsCategory,
   maybeRemoveSettingExtension,
-  registerSettingExtension,
   RegExpSettingItem,
+  registerSettingExtension,
+  registerSettingsForTest,
+  resetSettings,
   SettingCategory,
   SettingExtensionOption,
   SettingRegistration,
   SettingType,
-  registerSettingsForTest,
-  resetSettings,
 };
 
 export interface Serializer<I, O> {

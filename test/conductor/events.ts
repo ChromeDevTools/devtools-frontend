@@ -12,6 +12,7 @@
 // use require here due to
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer-core');
+
 const path = require('path');
 
 const ALLOWED_ASSERTION_FAILURES = [

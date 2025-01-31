@@ -21,7 +21,6 @@ import {
   waitForFunction,
   withControlOrMetaKey,
 } from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';

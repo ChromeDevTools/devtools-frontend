@@ -428,7 +428,7 @@ function createGraph(
 }
 
 export {
-  createProcessedNavigation,
-  createNetworkRequests,
   createGraph,
+  createNetworkRequests,
+  createProcessedNavigation,
 };

@@ -25,6 +25,6 @@ function isUIStringsVariableDeclarator(context, variableDeclarator) {
   return variableDeclarator.init?.type === 'ObjectExpression';
 }
 
+exports.isModuleScope = isModuleScope;
 exports.isUIStringsIdentifier = isUIStringsIdentifier;
 exports.isUIStringsVariableDeclarator = isUIStringsVariableDeclarator;
-exports.isModuleScope = isModuleScope;

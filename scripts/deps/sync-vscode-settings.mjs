@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import path from 'path';
-import fs from 'fs';
 import childProcess from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
 // JSON files under .vscode/ synced by this script
 const VSCODE_SETTINGS_TO_MERGE = [

@@ -3,13 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
-
 import type * as puppeteer from 'puppeteer-core';
 
 import {click, goToResource} from '../../shared/helper.js';
-
+import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,
   editCSSProperty,

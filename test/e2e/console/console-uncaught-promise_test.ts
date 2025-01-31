@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, getTestServerPort, goToResource} from '../../shared/helper.js';
-
 import {
   checkCommandStacktrace,
   getCurrentConsoleMessages,

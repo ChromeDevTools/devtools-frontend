@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const rule = require('../lib/prefer-private-class-members.js');
 const tsParser = require('@typescript-eslint/parser');
+
+const rule = require('../lib/prefer-private-class-members.js');
 const ruleTester = new (require('eslint').RuleTester)({
   languageOptions: {
     ecmaVersion: 'latest',

@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$$, goToResource, waitFor} from '../../shared/helper.js';
-
 import {
   CATEGORY,
   getGroupByCategoryChecked,

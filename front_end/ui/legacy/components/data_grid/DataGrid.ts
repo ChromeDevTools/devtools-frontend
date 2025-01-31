@@ -110,6 +110,10 @@ const UIStrings = {
    *@example {ascending} PH1
    */
   enterToSort: 'Column sort state: {PH1}. Press enter to apply sorting filter',
+  /**
+   *@description Label for sortable column headers.
+   */
+  sortableColumn: 'Sortable column. Press enter to apply sorting filter',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -456,6 +460,10 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const icon = document.createElement('span');
       icon.className = 'sort-order-icon';
       cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
+
+      if (column.title) {
+        UI.ARIAUtils.setLabel(cell, i18nString(UIStrings.sortableColumn));
+      }
     }
   }
 

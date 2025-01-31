@@ -20,20 +20,16 @@ export interface EntityMappings {
   eventsByEntity: Map<Entity, Types.Events.Event[]>;
 }
 
-export function getEntityForEvent(event: Types.Events.Event, entityByUrlCache: Map<string, Entity>): Entity|undefined {
+export function getEntityForEvent(event: Types.Events.Event, entityCache: Map<string, Entity>): Entity|undefined {
   const url = getNonResolvedURL(event);
   if (!url) {
     return;
   }
-  return getEntityForUrl(url, entityByUrlCache);
+  return getEntityForUrl(url, entityCache);
 }
 
-export function getEntityForUrl(url: string, entityByUrlCache: Map<string, Entity>): Entity|undefined {
-  if (entityByUrlCache.has(url)) {
-    return entityByUrlCache.get(url);
-  }
-  const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(url) ?? makeUpEntity(entityByUrlCache, url);
-  return entity;
+export function getEntityForUrl(url: string, entityCache: Map<string, Entity>): Entity|undefined {
+  return ThirdPartyWeb.ThirdPartyWeb.getEntity(url) ?? makeUpEntity(entityCache, url);
 }
 
 export function getNonResolvedURL(
@@ -145,15 +141,18 @@ function makeUpChromeExtensionEntity(entityCache: Map<string, Entity>, url: stri
   return chromeExtensionEntity;
 }
 
-export function updateEventForEntities(entry: Types.Events.Event, entityMappings: EntityMappings): void {
-  const entity = getEntityForEvent(entry, entityMappings.createdEntityCache);
-  if (entity) {
-    if (entityMappings.eventsByEntity.has(entity)) {
-      const events = entityMappings.eventsByEntity.get(entity) ?? [];
-      events?.push(entry);
-    } else {
-      entityMappings.eventsByEntity.set(entity, [entry]);
-    }
-    entityMappings.entityByEvent.set(entry, entity);
+export function addEventToEntityMapping(event: Types.Events.Event, entityMappings: EntityMappings): void {
+  const entity = getEntityForEvent(event, entityMappings.createdEntityCache);
+  if (!entity) {
+    return;
   }
+
+  const events = entityMappings.eventsByEntity.get(entity);
+  if (events) {
+    events.push(event);
+  } else {
+    entityMappings.eventsByEntity.set(entity, [event]);
+  }
+
+  entityMappings.entityByEvent.set(event, entity);
 }

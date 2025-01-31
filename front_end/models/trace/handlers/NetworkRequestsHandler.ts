@@ -486,7 +486,7 @@ export async function finalize(): Promise<void> {
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
     // Update entity relationships for network events.
-    HandlerHelpers.updateEventForEntities(networkEvent, entityMappings);
+    HandlerHelpers.addEventToEntityMapping(networkEvent, entityMappings);
     const initiatorUrl = networkEvent.args.data.initiator?.url ||
         Helpers.Trace.getZeroIndexedStackTraceForEvent(networkEvent)?.at(0)?.url;
     if (initiatorUrl) {

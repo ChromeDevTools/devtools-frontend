@@ -356,7 +356,7 @@ export function buildHierarchy(
       // Update the entryToNode map with the entries from this thread
       for (const [entry, node] of treeData.entryToNode) {
         entryToNode.set(entry, node);
-        HandlerHelpers.updateEventForEntities(entry, entityMappings);
+        HandlerHelpers.addEventToEntityMapping(entry, entityMappings);
       }
     }
   }

@@ -2052,11 +2052,6 @@ export const NativeFunctions = [
   },
   {
     name: "write",
-    signatures: [["input","?options"]],
-    receivers: ["AIWriter"]
-  },
-  {
-    name: "write",
     signatures: [["message","?options"]],
     receivers: ["NDEFReader"]
   },
@@ -7282,24 +7277,12 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "rewrite",
-    signatures: [["input","?options"]]
-  },
-  {
-    name: "rewriteStreaming",
-    signatures: [["input","?options"]]
-  },
-  {
     name: "createOptionsAvailable",
     signatures: [["options"]]
   },
   {
     name: "languageAvailable",
     signatures: [["languageTag"]]
-  },
-  {
-    name: "writeStreaming",
-    signatures: [["input","?options"]]
   },
   {
     name: "detect",
@@ -8537,6 +8520,10 @@ export const NativeFunctions = [
   {
     name: "SpeechRecognitionPhrase",
     signatures: [["phrase","?boost"]]
+  },
+  {
+    name: "updateContext",
+    signatures: [["context"]]
   },
   {
     name: "onDeviceWebSpeechAvailable",

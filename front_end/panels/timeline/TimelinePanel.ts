@@ -738,18 +738,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   /**
    * This "disables" the 3P checkbox in the toolbar.
    * Disabling here does a couple of things:
-   * 1) updates the setting to "disabled"
-   * 2) makes the checkbox dimmed and unclickable
-   * 3) gives the checkbox UI an indeterminate state
-   * Only make the change if it's different to avoid an infinite loop
+   * 1) makes the checkbox dimmed and unclickable
+   * 2) gives the checkbox UI an indeterminate state
    */
   set3PCheckboxDisabled(disabled: boolean): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      if (this.#thirdPartyCheckbox?.inputElement.disabled !== disabled) {
-        this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
-        this.#thirdPartyCheckbox?.setIndeterminate(disabled);
-        this.#dimThirdPartiesSetting?.setDisabled(disabled);
-      }
+      this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
     }
   }
 

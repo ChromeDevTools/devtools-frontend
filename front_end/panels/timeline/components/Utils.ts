@@ -64,7 +64,8 @@ export function networkResourceCategory(request: Trace.Types.Events.SyntheticNet
 
       // Traces before Feb 2024 don't have `resourceType`.
       // We'll keep mimeType logic for a couple years to avoid grey network requests for last year's traces.
-      return mimeType.endsWith('/css')                                   ? NetworkCategory.CSS :
+      return mimeType === undefined                                      ? NetworkCategory.OTHER :
+          mimeType.endsWith('/css')                                      ? NetworkCategory.CSS :
           mimeType.endsWith('javascript')                                ? NetworkCategory.JS :
           mimeType.startsWith('image/')                                  ? NetworkCategory.IMG :
           mimeType.startsWith('audio/') || mimeType.startsWith('video/') ? NetworkCategory.MEDIA :

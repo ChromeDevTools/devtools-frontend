@@ -2306,9 +2306,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // In some scenarios we want to draw outlines around events for added visual contrast.
     if (outline) {
-      // This foregroundColor is near-black in light mode, and vice-versa. Color mix so it's a good contrast, but still has the base flavor.
-      const foregroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-base');
-      context.strokeStyle = `color-mix(in srgb, ${color}, ${foregroundColor} 60%)`;
+      // This near-black works best in both light- and dark-mode. Color mix with the rect's bg so it's a good contrast, but still has the base flavor.
+      const nearBlack = ThemeSupport.ThemeSupport.instance().getComputedValue('--ref-palette-neutral10');
+      context.strokeStyle = `color-mix(in srgb, ${color}, ${nearBlack} 60%)`;
       context.stroke();
     }
 

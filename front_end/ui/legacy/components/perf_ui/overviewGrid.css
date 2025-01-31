@@ -117,7 +117,7 @@
   background: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow-depth-3);
   border-radius: 50px;
-  padding: 5px 10px;
+  padding: 1px 6px;
   gap: 2px;
 }
 

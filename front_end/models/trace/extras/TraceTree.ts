@@ -317,8 +317,9 @@ export class BottomUpRootNode extends Node {
   override totalTime: number;
 
   constructor(
-      events: Types.Events.Event[], textFilter: TraceFilter, filters: TraceFilter[], startTime: Types.Timing.Milli,
-      endTime: Types.Timing.Milli, eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null) {
+      events: Types.Events.Event[], textFilter: TraceFilter, filters: readonly TraceFilter[],
+      startTime: Types.Timing.Milli, endTime: Types.Timing.Milli,
+      eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null) {
     super('', events[0]);
     this.childrenInternal = null;
     this.events = events;
@@ -591,6 +592,9 @@ export function generateEventID(event: Types.Events.Event): string {
 
   if (Types.Events.isConsoleTimeStamp(event) && event.args.data) {
     return `${event.name}:${event.args.data.name}`;
+  }
+  if (Types.Events.isSyntheticNetworkRequest(event)) {
+    return `${event.name}:${event.args.data.url}`;
   }
 
   return event.name;

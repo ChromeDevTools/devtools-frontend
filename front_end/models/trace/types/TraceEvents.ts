@@ -398,7 +398,7 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
     },
   };
   cat: 'loading';
-  name: 'SyntheticNetworkRequest';
+  name: Name.SYNTHETIC_NETWORK_REQUEST;
   ph: Phase.COMPLETE;
   dur: Micro;
   tdur: Micro;
@@ -2201,7 +2201,7 @@ export function isResourceReceivedData(
 export function isSyntheticNetworkRequest(
     event: Event,
     ): event is SyntheticNetworkRequest {
-  return event.name === 'SyntheticNetworkRequest';
+  return event.name === Name.SYNTHETIC_NETWORK_REQUEST;
 }
 
 export function isSyntheticWebSocketConnection(
@@ -2993,6 +2993,8 @@ export const enum Name {
 
   ANIMATION_FRAME = 'AnimationFrame',
   ANIMATION_FRAME_PRESENTATION = 'AnimationFrame::Presentation',
+
+  SYNTHETIC_NETWORK_REQUEST = 'SyntheticNetworkRequest'
 }
 
 // NOT AN EXHAUSTIVE LIST: just some categories we use and refer

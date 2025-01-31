@@ -10,6 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as TimelineTreeView from './TimelineTreeView.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -81,11 +82,17 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         Trace.Extras.ThirdParties.getSummariesAndEntitiesWithMapping(parsedTrace, bounds, entityMapper.mappings());
 
     const events = this.#thirdPartySummaries?.entityByEvent.keys();
-    const relatedEvents = Array.from(events ?? []);
+    const relatedEvents = Array.from(events ?? []).sort(Trace.Helpers.Trace.eventTimeComparator);
 
-    return new Trace.Extras.TraceTree.BottomUpRootNode(
-        relatedEvents, this.textFilter(), this.filtersWithoutTextFilter(), this.startTime, this.endTime,
-        this.groupingFunction());
+    // The filters for this view are slightly different; we want to use the set
+    // of visible event types, but also include network events, which by
+    // default are not in the set of visible entries (as they are not shown on
+    // the main flame chart).
+    const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
+        Utils.EntryStyles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+    const node = new Trace.Extras.TraceTree.BottomUpRootNode(
+        relatedEvents, this.textFilter(), [filter], this.startTime, this.endTime, this.groupingFunction());
+    return node;
   }
 
   /**

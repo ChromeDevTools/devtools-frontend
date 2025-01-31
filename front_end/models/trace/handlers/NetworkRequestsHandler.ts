@@ -454,7 +454,7 @@ export async function finalize(): Promise<void> {
             },
           },
           cat: 'loading',
-          name: 'SyntheticNetworkRequest',
+          name: Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
           ph: Types.Events.Phase.COMPLETE,
           dur: Types.Timing.Micro(endTime - startTime),
           tdur: Types.Timing.Micro(endTime - startTime),

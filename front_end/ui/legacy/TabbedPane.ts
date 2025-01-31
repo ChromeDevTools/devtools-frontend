@@ -1275,7 +1275,7 @@ export class TabbedPaneTab {
     const closeButton = new Buttons.Button.Button();
     closeButton.data = {
       variant: Buttons.Button.Variant.ICON,
-      size: Buttons.Button.Size.SMALL,
+      size: Buttons.Button.Size.MICRO,
       iconName: 'cross',
       title: i18nString(UIStrings.closeS, {PH1: this.title}),
     };
@@ -1293,7 +1293,8 @@ export class TabbedPaneTab {
     closeIcon.data = {
       iconName: 'experiment',
       color: 'var(--override-tabbed-pane-preview-icon-color)',
-      width: '16px',
+      height: '14px',
+      width: '14px',
     };
     previewIcon.appendChild(closeIcon);
     previewIcon.setAttribute('title', i18nString(UIStrings.previewFeature));

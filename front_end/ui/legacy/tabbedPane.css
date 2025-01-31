@@ -172,8 +172,14 @@
 }
 
 .tabbed-pane-header-tab-suffix-element {
-  width: 20px;
-  padding: 4px;
+  height: var(--sys-size-8);
+  width: var(--sys-size-8);
+  padding-left: var(--sys-size-2);
+
+  &:has(.badge) {
+    width: 17px;
+    margin-left: var(--sys-size-2);
+  }
 }
 
 .badge {

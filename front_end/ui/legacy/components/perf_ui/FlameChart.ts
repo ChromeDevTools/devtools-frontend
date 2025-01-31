@@ -2550,16 +2550,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       color: string;
       outline: boolean;
     }
-    const keys: BatchKey[] = [];
+    const keysByColorWithOutline = new Map<string, BatchKey>();
+    const keysByColorWithNoOutline = new Map<string, BatchKey>();
     const getOrMakeKey = (color: string, outline: boolean): BatchKey => {
-      for (const key of keys) {
-        if (key.outline === outline && key.color === color) {
-          return key;
-        }
+      const map = outline ? keysByColorWithOutline : keysByColorWithNoOutline;
+      const key = map.get(color);
+      if (key) {
+        return key;
       }
 
       const newKey = {color, outline};
-      keys.push(newKey);
+      map.set(color, newKey);
       return newKey;
     };
 

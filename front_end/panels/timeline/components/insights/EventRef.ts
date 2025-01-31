@@ -64,13 +64,15 @@ class EventRef extends HTMLElement {
   }
 }
 
-type EventRefSupportedEvents = Trace.Types.Events.SyntheticNetworkRequest;
+type EventRefSupportedEvents = Trace.Types.Events.SyntheticNetworkRequest|Trace.Types.Events.Event;
 
 export function eventRef(event: EventRefSupportedEvents): Lit.TemplateResult {
   let title, text;
   if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
     text = Utils.Helpers.shortenUrl(new URL(event.args.data.url));
     title = event.args.data.url;
+  } else if (Trace.Types.Events.isEvent(event)) {
+    text = title = Utils.EntryName.nameForEntry(event);
   } else {
     Platform.TypeScriptUtilities.assertNever(
         event, `unsupported event in eventRef: ${(event as Trace.Types.Events.Event).name}`);

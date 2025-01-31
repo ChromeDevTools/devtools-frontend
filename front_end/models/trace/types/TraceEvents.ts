@@ -129,6 +129,10 @@ export interface TraceFrame {
   isInPrimaryMainFrame?: boolean;
 }
 
+export function isEvent(event: Event): event is Event {
+  return 'ts' in event;
+}
+
 // Sample events.
 
 export interface Sample extends Event {

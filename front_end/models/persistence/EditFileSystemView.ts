@@ -33,13 +33,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import editFileSystemViewStylesRaw from './editFileSystemView.css.legacy.js';
+import editFileSystemViewStyles from './editFileSystemView.css.legacy.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const editFileSystemViewStyles = new CSSStyleSheet();
-editFileSystemViewStyles.replaceSync(editFileSystemViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -89,6 +85,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
   private excludedFolderEditor?: UI.ListWidget.Editor<string>;
   constructor(fileSystemPath: Platform.DevToolsPath.UrlString) {
     super(true);
+    this.registerRequiredCSS(editFileSystemViewStyles);
 
     this.fileSystemPath = fileSystemPath;
 
@@ -108,6 +105,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
 
     this.excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this.excludedFoldersList.element.classList.add('file-system-list');
+    this.excludedFoldersList.registerRequiredCSS(editFileSystemViewStyles);
 
     const excludedFoldersPlaceholder = document.createElement('div');
     excludedFoldersPlaceholder.classList.add('file-system-list-empty');
@@ -223,10 +221,5 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
       return '';
     }
     return prefix + (prefix[prefix.length - 1] === '/' ? '' : '/');
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.excludedFoldersList.registerCSSFiles([editFileSystemViewStyles]);
-    this.registerCSSFiles([editFileSystemViewStyles]);
   }
 }

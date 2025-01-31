@@ -51,13 +51,9 @@ import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import stylePropertiesTreeOutlineStylesRaw from './stylePropertiesTreeOutline.css.legacy.js';
+import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.legacy.js';
 import {type Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {StylesSidebarPane} from './StylesSidebarPane.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const stylePropertiesTreeOutlineStyles = new CSSStyleSheet();
-stylePropertiesTreeOutlineStyles.replaceSync(stylePropertiesTreeOutlineStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -208,7 +204,7 @@ export class StylePropertiesSection {
 
     this.propertiesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     this.propertiesTreeOutline.setFocusable(false);
-    this.propertiesTreeOutline.registerCSSFiles([stylePropertiesTreeOutlineStyles]);
+    this.propertiesTreeOutline.registerRequiredCSS(stylePropertiesTreeOutlineStyles);
     this.propertiesTreeOutline.element.classList.add('style-properties', 'matched-styles', 'monospace');
     this.#styleRuleElement.appendChild(this.propertiesTreeOutline.element);
 

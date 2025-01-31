@@ -12,11 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CalibrationController} from './CalibrationController.js';
-import throttlingSettingsTabStylesRaw from './throttlingSettingsTab.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const throttlingSettingsTabStyles = new CSSStyleSheet();
-throttlingSettingsTabStyles.replaceSync(throttlingSettingsTabStylesRaw.cssContent);
+import throttlingSettingsTabStyles from './throttlingSettingsTab.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -452,6 +448,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(throttlingSettingsTabStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('throttling-conditions')}`);
 
@@ -481,6 +478,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     };
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('conditions-list');
+    this.list.registerRequiredCSS(throttlingSettingsTabStyles);
     this.list.show(container);
     container.appendChild(addButton);
 
@@ -491,8 +489,6 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   override wasShown(): void {
     super.wasShown();
     this.cpuThrottlingCard.wasShown();
-    this.list.registerCSSFiles([throttlingSettingsTabStyles]);
-    this.registerCSSFiles([throttlingSettingsTabStyles]);
     this.conditionsUpdated();
   }
 

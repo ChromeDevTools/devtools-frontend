@@ -10,12 +10,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {MainView, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
-import playerListViewStylesRaw from './playerListView.css.legacy.js';
+import playerListViewStyles from './playerListView.css.legacy.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const playerListViewStyles = new CSSStyleSheet();
-playerListViewStyles.replaceSync(playerListViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -57,6 +53,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
 
   constructor(mainContainer: MainView) {
     super(true);
+    this.registerRequiredCSS(playerListViewStyles);
 
     this.playerEntryFragments = new Map();
     this.playerEntriesWithHostnameFrameTitle = new Set();
@@ -253,10 +250,5 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
 
   onMessage(_playerID: string, _message: Protocol.Media.PlayerMessage): void {
     // TODO(tmathmeyer) show a message count number next to the player name.
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([playerListViewStyles]);
   }
 }

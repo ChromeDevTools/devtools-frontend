@@ -13,11 +13,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import developerResourcesListViewStylesRaw from './developerResourcesListView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const developerResourcesListViewStyles = new CSSStyleSheet();
-developerResourcesListViewStyles.replaceSync(developerResourcesListViewStylesRaw.cssContent);
+import developerResourcesListViewStyles from './developerResourcesListView.css.legacy.js';
 
 const {render, html, nothing} = Lit;
 
@@ -171,6 +167,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
   }) {
     super(true);
     this.#view = view;
+    this.registerRequiredCSS(developerResourcesListViewStyles);
   }
 
   select(item: SDK.PageResourceLoader.PageResource): void {
@@ -218,10 +215,6 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
         0;
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([developerResourcesListViewStyles]);
-  }
   override performUpdate(): void {
     const input = {
       items: this.#items,

@@ -15,23 +15,15 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as SplitView from '../../../ui/components/split_view/split_view.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import emptyWidgetStylesRaw from '../../../ui/legacy/emptyWidget.css.legacy.js';
+import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.legacy.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
-import preloadingViewStylesRaw from './preloadingView.css.legacy.js';
-import preloadingViewDropDownStylesRaw from './preloadingViewDropDown.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const emptyWidgetStyles = new CSSStyleSheet();
-emptyWidgetStyles.replaceSync(emptyWidgetStylesRaw.cssContent);
-const preloadingViewStyles = new CSSStyleSheet();
-preloadingViewStyles.replaceSync(preloadingViewStylesRaw.cssContent);
-const preloadingViewDropDownStyles = new CSSStyleSheet();
-preloadingViewDropDownStyles.replaceSync(preloadingViewDropDownStylesRaw.cssContent);
+import preloadingViewStyles from './preloadingView.css.legacy.js';
+import preloadingViewDropDownStyles from './preloadingViewDropDown.css.legacy.js';
 
 const {html} = Lit;
 
@@ -200,6 +192,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.model = model;
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
@@ -265,8 +258,6 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-
-    this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
     this.warningsView.wasShown();
 
@@ -347,6 +338,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('preloading-speculations')}`);
     this.model = model;
@@ -402,8 +394,6 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-
-    this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
     this.warningsView.wasShown();
 
@@ -496,6 +486,7 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
+    this.registerRequiredCSS(emptyWidgetStyles, preloadingViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('speculative-loads')}`);
     this.model = model;
@@ -519,8 +510,6 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
 
   override wasShown(): void {
     super.wasShown();
-
-    this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
     this.warningsView.wasShown();
 
@@ -666,7 +655,7 @@ class PreloadingRuleSetSelector implements
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
   createElementForItem(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): Element {
     const element = document.createElement('div');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [preloadingViewDropDownStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: preloadingViewDropDownStyles});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(id), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');
@@ -697,13 +686,11 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
 
   constructor() {
     super(/* isWebComponent */ false, /* delegatesFocus */ false);
+    this.registerRequiredCSS(emptyWidgetStyles);
   }
 
   override wasShown(): void {
     super.wasShown();
-
-    this.registerCSSFiles([emptyWidgetStyles]);
-
     this.contentElement.append(this.infobar);
   }
 

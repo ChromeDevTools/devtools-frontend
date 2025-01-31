@@ -8,12 +8,8 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import eventDisplayTableStylesRaw from './eventDisplayTable.css.legacy.js';
+import eventDisplayTableStyles from './eventDisplayTable.css.legacy.js';
 import type {PlayerEvent} from './MediaModel.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const eventDisplayTableStyles = new CSSStyleSheet();
-eventDisplayTableStyles.replaceSync(eventDisplayTableStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -80,6 +76,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
 
   constructor() {
     super();
+    this.registerRequiredCSS(eventDisplayTableStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('events')}`);
 
@@ -168,9 +165,5 @@ export class PlayerEventsView extends UI.Widget.VBox {
       weight: columnConfig.weight || 0,
       sort: DataGrid.DataGrid.Order.Ascending,
     } as DataGrid.DataGrid.ColumnDescriptor;
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([eventDisplayTableStyles]);
   }
 }

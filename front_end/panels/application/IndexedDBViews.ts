@@ -43,11 +43,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
-import indexedDBViewsStylesRaw from './indexedDBViews.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const indexedDBViewsStyles = new CSSStyleSheet();
-indexedDBViewsStyles.replaceSync(indexedDBViewsStylesRaw.cssContent);
+import indexedDBViewsStyles from './indexedDBViews.css.legacy.js';
 
 const {html} = Lit;
 
@@ -275,6 +271,7 @@ export class IDBDataView extends UI.View.SimpleView {
       model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
       refreshObjectStoreCallback: () => void) {
     super(i18nString(UIStrings.idb));
+    this.registerRequiredCSS(indexedDBViewsStyles);
 
     this.model = model;
     this.databaseId = databaseId;
@@ -655,11 +652,6 @@ export class IDBDataView extends UI.View.SimpleView {
       sheet.replaceSync('::selection {background-color: var(--sys-color-state-focus-select);}');
       shadowRoot?.adoptedStyleSheets.push(sheet);
     });
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([indexedDBViewsStyles]);
   }
 }
 

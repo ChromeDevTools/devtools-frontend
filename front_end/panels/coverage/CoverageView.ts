@@ -17,11 +17,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {CoverageDecorationManager} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
 import {type CoverageInfo, CoverageModel, CoverageType, Events, type URLCoverageInfo} from './CoverageModel.js';
-import coverageViewStylesRaw from './coverageView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const coverageViewStyles = new CSSStyleSheet();
-coverageViewStyles.replaceSync(coverageViewStylesRaw.cssContent);
+import coverageViewStyles from './coverageView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -136,6 +132,7 @@ export class CoverageView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(coverageViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('coverage').track({resize: true})}`);
 
@@ -625,7 +622,6 @@ export class CoverageView extends UI.Widget.VBox {
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(CoverageView, this);
     super.wasShown();
-    this.registerCSSFiles([coverageViewStyles]);
   }
 
   override willHide(): void {

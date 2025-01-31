@@ -6,11 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import dialogStylesRaw from './dialog.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const dialogStyles = new CSSStyleSheet();
-dialogStyles.replaceSync(dialogStylesRaw.cssContent);
+import dialogStyles from './dialog.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -36,6 +32,7 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
       label: Platform.UIString.LocalizedString, jslogContext: string,
       callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
     super(/* useShadowDom */ true);
+    this.registerRequiredCSS(dialogStyles);
 
     this.contentElement.createChild('label').textContent = label;
 
@@ -87,9 +84,5 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
       event.consume(true);
       this.apply();
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([dialogStyles]);
   }
 }

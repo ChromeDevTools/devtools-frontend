@@ -41,12 +41,8 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import jsUtilsStylesRaw from './jsUtils.css.legacy.js';
+import jsUtilsStyles from './jsUtils.css.legacy.js';
 import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const jsUtilsStyles = new CSSStyleSheet();
-jsUtilsStyles.replaceSync(jsUtilsStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -171,7 +167,7 @@ export function buildStackTracePreviewContents(
   element.classList.add('stack-preview-container');
   element.classList.toggle('width-constrained', options.widthConstrained);
   element.style.display = 'inline-block';
-  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles]});
+  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: jsUtilsStyles});
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   contentElement.classList.toggle('width-constrained', options.widthConstrained);
 

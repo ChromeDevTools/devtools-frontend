@@ -12,11 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
-import developerResourcesViewStylesRaw from './developerResourcesView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const developerResourcesViewStyles = new CSSStyleSheet();
-developerResourcesViewStyles.replaceSync(developerResourcesViewStylesRaw.cssContent);
+import developerResourcesViewStyles from './developerResourcesView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -82,6 +78,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(developerResourcesViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('developer-resources').track({resize: true})}`);
 
@@ -167,10 +164,5 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
       resourceMatch = i18nString(UIStrings.numberOfResourceMatch, {n: numberOfResourceMatch});
     }
     UI.ARIAUtils.alert(resourceMatch);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([developerResourcesViewStyles]);
   }
 }

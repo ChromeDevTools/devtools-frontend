@@ -15,11 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
-import storageViewStylesRaw from './storageView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const storageViewStyles = new CSSStyleSheet();
-storageViewStyles.replaceSync(storageViewStylesRaw.cssContent);
+import storageViewStyles from './storageView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -173,6 +169,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true, 1000);
+    this.registerRequiredCSS(storageViewStyles);
 
     this.contentElement.classList.add('clear-storage-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
@@ -187,6 +184,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.reportView = new UI.ReportView.ReportView(i18nString(UIStrings.storageTitle));
+    this.reportView.registerRequiredCSS(storageViewStyles);
 
     this.reportView.element.classList.add('clear-storage-header');
     this.reportView.show(this.contentElement);
@@ -575,11 +573,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
       default:
         return i18nString(UIStrings.other);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.reportView.registerCSSFiles([storageViewStyles]);
-    this.registerCSSFiles([storageViewStyles]);
   }
 }
 

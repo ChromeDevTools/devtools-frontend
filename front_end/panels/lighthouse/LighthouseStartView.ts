@@ -12,12 +12,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {type LighthouseController, type Preset, Presets, RuntimeSettings} from './LighthouseController.js';
 import type {LighthousePanel} from './LighthousePanel.js';
-import lighthouseStartViewStylesRaw from './lighthouseStartView.css.legacy.js';
+import lighthouseStartViewStyles from './lighthouseStartView.css.legacy.js';
 import {RadioSetting} from './RadioSetting.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const lighthouseStartViewStyles = new CSSStyleSheet();
-lighthouseStartViewStyles.replaceSync(lighthouseStartViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -70,6 +66,7 @@ export class StartView extends UI.Widget.Widget {
 
   constructor(controller: LighthouseController, panel: LighthousePanel) {
     super(true /* useShadowDom */);
+    this.registerRequiredCSS(lighthouseStartViewStyles);
 
     this.controller = controller;
     this.panel = panel;
@@ -310,7 +307,6 @@ export class StartView extends UI.Widget.Widget {
   override wasShown(): void {
     super.wasShown();
     this.controller.recomputePageAuditability();
-    this.registerCSSFiles([lighthouseStartViewStyles]);
   }
 
   settingsToolbar(): UI.Toolbar.Toolbar {

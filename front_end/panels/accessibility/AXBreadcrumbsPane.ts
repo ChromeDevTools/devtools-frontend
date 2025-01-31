@@ -14,11 +14,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
-import axBreadcrumbsStylesRaw from './axBreadcrumbs.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const axBreadcrumbsStyles = new CSSStyleSheet();
-axBreadcrumbsStyles.replaceSync(axBreadcrumbsStylesRaw.cssContent);
+import axBreadcrumbsStyles from './axBreadcrumbs.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -59,6 +55,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
   constructor(axSidebarView: AccessibilitySidebarView) {
     super(i18nString(UIStrings.accessibilityTree));
+    this.registerRequiredCSS(axBreadcrumbsStyles);
 
     this.element.classList.add('ax-subpane');
     this.element.tabIndex = -1;
@@ -427,10 +424,6 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       contextMenu.appendApplicableItems(deferredNode);
     }
     void contextMenu.show();
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([axBreadcrumbsStyles]);
   }
 }
 

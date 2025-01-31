@@ -36,11 +36,7 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {Events as OverviewGridEvents, OverviewGrid, type WindowChangedWithPositionEvent} from './OverviewGrid.js';
 import {TimelineOverviewCalculator} from './TimelineOverviewCalculator.js';
-import timelineOverviewInfoStylesRaw from './timelineOverviewInfo.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelineOverviewInfoStyles = new CSSStyleSheet();
-timelineOverviewInfoStyles.replaceSync(timelineOverviewInfoStylesRaw.cssContent);
+import timelineOverviewInfoStyles from './timelineOverviewInfo.css.legacy.js';
 
 export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
@@ -546,8 +542,7 @@ export class OverviewInfo {
     this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.visible = false;
     this.element =
-        UI.UIUtils
-            .createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: [timelineOverviewInfoStyles]})
+        UI.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: timelineOverviewInfoStyles})
             .createChild('div', 'overview-info');
   }
 

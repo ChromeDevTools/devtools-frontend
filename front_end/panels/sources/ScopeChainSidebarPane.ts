@@ -38,11 +38,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import scopeChainSidebarPaneStylesRaw from './scopeChainSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const scopeChainSidebarPaneStyles = new CSSStyleSheet();
-scopeChainSidebarPaneStyles.replaceSync(scopeChainSidebarPaneStylesRaw.cssContent);
+import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -80,9 +76,11 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS(scopeChainSidebarPaneStyles);
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.scope-chain')}`);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    this.treeOutline.registerRequiredCSS(scopeChainSidebarPaneStyles);
     this.treeOutline.hideOverflow();
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
@@ -208,10 +206,5 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 
   private sidebarPaneUpdatedForTest(): void {
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.treeOutline.registerCSSFiles([scopeChainSidebarPaneStyles]);
-    this.registerCSSFiles([scopeChainSidebarPaneStyles]);
   }
 }

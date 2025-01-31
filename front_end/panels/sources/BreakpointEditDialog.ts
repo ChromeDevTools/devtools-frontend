@@ -14,11 +14,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import breakpointEditDialogStylesRaw from './breakpointEditDialog.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const breakpointEditDialogStyles = new CSSStyleSheet();
-breakpointEditDialogStyles.replaceSync(breakpointEditDialogStylesRaw.cssContent);
+import breakpointEditDialogStyles from './breakpointEditDialog.css.legacy.js';
 
 const {Direction} = TextEditor.TextEditorHistory;
 
@@ -90,6 +86,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       editorLineNumber: number, oldCondition: string, isLogpoint: boolean,
       onFinish: (result: BreakpointEditDialogResult) => void) {
     super(true);
+    this.registerRequiredCSS(breakpointEditDialogStyles);
 
     const editorConfig = [
       CodeMirror.javascript.javascriptLanguage,
@@ -255,11 +252,6 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
     this.#history.pushHistoryItem(condition);
     const isLogpoint = this.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT;
     this.onFinish({committed, condition: condition as BreakpointManager.BreakpointManager.UserCondition, isLogpoint});
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([breakpointEditDialogStyles]);
   }
 
   get editorForTest(): TextEditor.TextEditor.TextEditor {

@@ -18,11 +18,7 @@ import * as NetworkComponents from '../network/components/components.js';
 import * as Network from '../network/network.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkerCacheViewsStylesRaw from './serviceWorkerCacheViews.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const serviceWorkerCacheViewsStyles = new CSSStyleSheet();
-serviceWorkerCacheViewsStyles.replaceSync(serviceWorkerCacheViewsStylesRaw.cssContent);
+import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -108,6 +104,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   constructor(model: SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel, cache: SDK.ServiceWorkerCacheModel.Cache) {
     super(i18nString(UIStrings.cache));
+    this.registerRequiredCSS(serviceWorkerCacheViewsStyles);
 
     this.model = model;
     this.entriesForTest = null;
@@ -182,7 +179,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   override wasShown(): void {
     this.model.addEventListener(
         SDK.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED, this.cacheContentUpdated, this);
-    this.registerCSSFiles([serviceWorkerCacheViewsStyles]);
     void this.updateData(true);
   }
 

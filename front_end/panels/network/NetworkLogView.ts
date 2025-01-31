@@ -65,7 +65,7 @@ import {
   NetworkRequestNode,
 } from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
-import networkLogViewStylesRaw from './networkLogView.css.legacy.js';
+import networkLogViewStyles from './networkLogView.css.legacy.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
 import {
   NetworkTimeBoundary,
@@ -73,10 +73,6 @@ import {
   NetworkTransferDurationCalculator,
   NetworkTransferTimeCalculator,
 } from './NetworkTimeCalculator.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkLogViewStyles = new CSSStyleSheet();
-networkLogViewStyles.replaceSync(networkLogViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -514,6 +510,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       filterBar: UI.FilterBar.FilterBar, progressBarContainer: Element,
       networkLogLargeRowsSetting: Common.Settings.Setting<boolean>) {
     super();
+    this.registerRequiredCSS(networkLogViewStyles);
     this.setMinimumSize(50, 64);
 
     this.element.id = 'network-container';
@@ -1411,8 +1408,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refreshIfNeeded();
-    this.registerCSSFiles([networkLogViewStyles]);
     this.columnsInternal.wasShown();
   }
 

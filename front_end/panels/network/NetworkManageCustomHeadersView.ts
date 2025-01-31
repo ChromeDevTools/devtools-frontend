@@ -5,11 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import networkManageCustomHeadersViewStylesRaw from './networkManageCustomHeadersView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkManageCustomHeadersViewStyles = new CSSStyleSheet();
-networkManageCustomHeadersViewStyles.replaceSync(networkManageCustomHeadersViewStylesRaw.cssContent);
+import networkManageCustomHeadersViewStyles from './networkManageCustomHeadersView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -56,11 +52,13 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {
     super(true);
+    this.registerRequiredCSS(networkManageCustomHeadersViewStyles);
 
     this.contentElement.classList.add('custom-headers-wrapper');
     this.contentElement.createChild('div', 'header').textContent = i18nString(UIStrings.manageHeaderColumns);
 
     this.list = new UI.ListWidget.ListWidget(this);
+    this.list.registerRequiredCSS(networkManageCustomHeadersViewStyles);
     this.list.element.classList.add('custom-headers-list');
 
     const placeholder = document.createElement('div');
@@ -85,9 +83,8 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.headersUpdated();
-    this.list.registerCSSFiles([networkManageCustomHeadersViewStyles]);
-    this.registerCSSFiles([networkManageCustomHeadersViewStyles]);
   }
 
   private headersUpdated(): void {

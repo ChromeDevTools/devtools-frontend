@@ -43,11 +43,7 @@ import {PanelUtils} from '../utils/utils.js';
 
 import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
-import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const settingsScreenStyles = new CSSStyleSheet();
-settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
+import settingsScreenStyles from './settingsScreen.css.legacy.js';
 
 const UIStrings = {
 
@@ -119,6 +115,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS(settingsScreenStyles);
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
@@ -126,7 +123,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     const settingsLabelElement = document.createElement('div');
     settingsLabelElement.classList.add('settings-window-label-element');
     const settingsTitleElement =
-        UI.UIUtils.createShadowRootWithCoreStyles(settingsLabelElement, {cssFile: [settingsScreenStyles]})
+        UI.UIUtils.createShadowRootWithCoreStyles(settingsLabelElement, {cssFile: settingsScreenStyles})
             .createChild('div', 'settings-window-title');
 
     UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);
@@ -135,7 +132,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     this.tabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
         () => SettingsScreen.revealSettingsScreen(), 'settings-view');
     const tabbedPane = this.tabbedLocation.tabbedPane();
-    tabbedPane.registerCSSFiles([settingsScreenStyles]);
+    tabbedPane.registerRequiredCSS(settingsScreenStyles);
     tabbedPane.headerElement().prepend(settingsLabelElement);
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.makeVerticalTabLayout();
@@ -238,10 +235,6 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     if (this.tabbedLocation.tabbedPane().selectedTabId === 'keybinds' && this.keybindsTab) {
       this.keybindsTab.onEscapeKeyPressed(event);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([settingsScreenStyles]);
   }
 }
 

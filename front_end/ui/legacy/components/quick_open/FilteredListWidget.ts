@@ -11,11 +11,7 @@ import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.j
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filteredListWidgetStylesRaw from './filteredListWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const filteredListWidgetStyles = new CSSStyleSheet();
-filteredListWidgetStyles.replaceSync(filteredListWidgetStylesRaw.cssContent);
+import filteredListWidgetStyles from './filteredListWidget.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -65,6 +61,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
 
   constructor(provider: Provider|null, promptHistory?: string[], queryChangedCallback?: ((arg0: string) => void)) {
     super(true);
+    this.registerRequiredCSS(filteredListWidgetStyles);
     this.promptHistory = promptHistory || [];
 
     this.scoringTimer = 0;
@@ -229,7 +226,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([filteredListWidgetStyles]);
+    super.wasShown();
     this.attachProvider();
   }
 

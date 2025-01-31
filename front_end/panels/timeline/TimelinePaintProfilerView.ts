@@ -9,11 +9,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
-import timelinePaintProfilerStylesRaw from './timelinePaintProfiler.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelinePaintProfilerStyles = new CSSStyleSheet();
-timelinePaintProfilerStyles.replaceSync(timelinePaintProfilerStylesRaw.cssContent);
+import timelinePaintProfilerStyles from './timelinePaintProfiler.css.legacy.js';
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly logAndImageSplitWidget: UI.SplitWidget.SplitWidget;
@@ -214,6 +210,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   private maskRectangle?: Protocol.DOM.Rect|null;
   constructor() {
     super(true);
+    this.registerRequiredCSS(timelinePaintProfilerStyles);
 
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this.imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
@@ -280,9 +277,5 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
   setMask(maskRectangle: Protocol.DOM.Rect|null): void {
     this.maskRectangle = maskRectangle;
     this.maskElement.classList.toggle('hidden', !maskRectangle);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([timelinePaintProfilerStyles]);
   }
 }

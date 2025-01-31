@@ -12,11 +12,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
 
-import networkConfigViewStylesRaw from './networkConfigView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkConfigViewStyles = new CSSStyleSheet();
-networkConfigViewStyles.replaceSync(networkConfigViewStylesRaw.cssContent);
+import networkConfigViewStyles from './networkConfigView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -73,6 +69,7 @@ let networkConfigViewInstance: NetworkConfigView;
 export class NetworkConfigView extends UI.Widget.VBox {
   constructor() {
     super(true);
+    this.registerRequiredCSS(networkConfigViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('network-conditions').track({resize: true})}`);
 
@@ -367,8 +364,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
   }
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([networkConfigViewStyles]);
-
     UI.ARIAUtils.alert(i18nString(UIStrings.networkConditionsPanelShown));
   }
 }

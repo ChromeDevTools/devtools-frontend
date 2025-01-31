@@ -10,11 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import outermostTargetSelectorStylesRaw from './outermostTargetSelector.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const outermostTargetSelectorStyles = new CSSStyleSheet();
-outermostTargetSelectorStyles.replaceSync(outermostTargetSelectorStylesRaw.cssContent);
+import outermostTargetSelectorStyles from './outermostTargetSelector.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -155,7 +151,7 @@ export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.S
   createElementForItem(item: SDK.Target.Target): Element {
     const element = document.createElement('div');
     element.classList.add('target');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [outermostTargetSelectorStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: outermostTargetSelectorStyles});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

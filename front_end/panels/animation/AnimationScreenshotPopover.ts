@@ -4,11 +4,7 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
-import animationScreenshotPopoverStylesRaw from './animationScreenshotPopover.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const animationScreenshotPopoverStyles = new CSSStyleSheet();
-animationScreenshotPopoverStyles.replaceSync(animationScreenshotPopoverStylesRaw.cssContent);
+import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.legacy.js';
 
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
   #frames: HTMLImageElement[];
@@ -19,6 +15,7 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
   #endDelay?: number;
   constructor(images: HTMLImageElement[]) {
     super(true);
+    this.registerRequiredCSS(animationScreenshotPopoverStyles);
     console.assert(images.length > 0);
 
     this.contentElement.classList.add('animation-screenshot-popover');
@@ -34,8 +31,8 @@ export class AnimationScreenshotPopover extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.#rafId = this.contentElement.window().requestAnimationFrame(this.changeFrame.bind(this));
-    this.registerCSSFiles([animationScreenshotPopoverStyles]);
   }
 
   override willHide(): void {

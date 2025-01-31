@@ -18,12 +18,8 @@ import type {DOMStorage} from './DOMStorageModel.js';
 import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
 import type {ExtensionStorage} from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
-import resourcesPanelStylesRaw from './resourcesPanel.css.legacy.js';
+import resourcesPanelStyles from './resourcesPanel.css.legacy.js';
 import {StorageItemsView} from './StorageItemsView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const resourcesPanelStyles = new CSSStyleSheet();
-resourcesPanelStyles.replaceSync(resourcesPanelStylesRaw.cssContent);
 
 let resourcesPanelInstance: ResourcesPanel;
 
@@ -41,6 +37,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
 
   private constructor() {
     super('resources');
+    this.registerRequiredCSS(resourcesPanelStyles);
 
     this.resourcesLastSelectedItemSetting =
         Common.Settings.Settings.instance().createSetting('resources-last-selected-element-path', []);
@@ -208,10 +205,6 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
         this.cookieView.refreshItems();
       }
     });
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([resourcesPanelStyles]);
   }
 }
 

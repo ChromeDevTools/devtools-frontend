@@ -20,11 +20,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
-import protocolMonitorStylesRaw from './protocolMonitor.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const protocolMonitorStyles = new CSSStyleSheet();
-protocolMonitorStyles.replaceSync(protocolMonitorStylesRaw.cssContent);
+import protocolMonitorStyles from './protocolMonitor.css.legacy.js';
 
 const {widgetConfig} = UI.Widget;
 const {render, html} = Lit;
@@ -514,7 +510,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     if (this.started) {
       return;
     }
-    this.registerCSSFiles([protocolMonitorStyles]);
+    this.registerRequiredCSS(protocolMonitorStyles);
     this.started = true;
     this.startTime = Date.now();
     this.setRecording(true);

@@ -9,21 +9,13 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 /* eslint-disable rulesdir/es-modules-import */
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {frameworkEventListeners, type FrameworkEventListenersObject} from './EventListenersUtils.js';
-import eventListenersViewStylesRaw from './eventListenersView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const eventListenersViewStyles = new CSSStyleSheet();
-eventListenersViewStyles.replaceSync(eventListenersViewStylesRaw.cssContent);
+import eventListenersViewStyles from './eventListenersView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -69,6 +61,7 @@ export class EventListenersView extends UI.Widget.VBox {
     this.treeOutline.element.classList.add('monospace');
     this.treeOutline.setShowSelectionOnKeyboardFocus(true);
     this.treeOutline.setFocusable(true);
+    this.treeOutline.registerRequiredCSS(eventListenersViewStyles, objectValueStyles);
     this.element.appendChild(this.treeOutline.element);
     this.emptyHolder = document.createElement('div');
     this.emptyHolder.classList.add('gray-info-message');
@@ -238,10 +231,6 @@ export class EventListenersView extends UI.Widget.VBox {
   }
 
   private eventListenersArrivedForTest(): void {
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.treeOutline.registerCSSFiles([eventListenersViewStyles, objectValueStyles]);
   }
 }
 

@@ -9,12 +9,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import classesPaneWidgetStylesRaw from './classesPaneWidget.css.legacy.js';
+import classesPaneWidgetStyles from './classesPaneWidget.css.legacy.js';
 import {ElementsPanel} from './ElementsPanel.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const classesPaneWidgetStyles = new CSSStyleSheet();
-classesPaneWidgetStyles.replaceSync(classesPaneWidgetStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -51,6 +47,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(classesPaneWidgetStyles);
     this.contentElement.className = 'styles-element-classes-pane';
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('elements-classes')}`);
     const container = this.contentElement.createChild('div', 'title-container');
@@ -158,7 +155,6 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   override wasShown(): void {
     super.wasShown();
     this.update();
-    this.registerCSSFiles([classesPaneWidgetStyles]);
   }
 
   update(): void {

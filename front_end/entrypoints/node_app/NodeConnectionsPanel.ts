@@ -8,11 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeConnectionsPanelStylesRaw from './nodeConnectionsPanel.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const nodeConnectionsPanelStyles = new CSSStyleSheet();
-nodeConnectionsPanelStyles.replaceSync(nodeConnectionsPanelStylesRaw.cssContent);
+import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -79,7 +75,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
   }
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([nodeConnectionsPanelStyles]);
+    this.registerRequiredCSS(nodeConnectionsPanelStyles);
   }
 }
 
@@ -103,7 +99,7 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.specifyNetworkEndpointAnd, {PH1: documentationLink}));
 
     this.#list = new UI.ListWidget.ListWidget(this);
-
+    this.#list.registerRequiredCSS(nodeConnectionsPanelStyles);
     this.#list.element.classList.add('network-discovery-list');
     const placeholder = document.createElement('div');
     placeholder.classList.add('network-discovery-list-empty');
@@ -197,9 +193,5 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
         errorMessage: undefined,
       };
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.#list.registerCSSFiles([nodeConnectionsPanelStyles]);
   }
 }

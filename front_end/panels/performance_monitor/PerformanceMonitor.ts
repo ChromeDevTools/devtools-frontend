@@ -11,11 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import performanceMonitorStylesRaw from './performanceMonitor.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const performanceMonitorStyles = new CSSStyleSheet();
-performanceMonitorStyles.replaceSync(performanceMonitorStylesRaw.cssContent);
+import performanceMonitorStyles from './performanceMonitor.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -81,6 +77,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   constructor(pollIntervalMs: number = 500) {
     super(true);
+    this.registerRequiredCSS(performanceMonitorStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('performance.monitor').track({resize: true})}`);
 
@@ -110,7 +107,6 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     if (!this.model) {
       return;
     }
-    this.registerCSSFiles([performanceMonitorStyles]);
     this.controlPane.instantiateMetricData();
     const themeSupport = ThemeSupport.ThemeSupport.instance();
     themeSupport.addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {

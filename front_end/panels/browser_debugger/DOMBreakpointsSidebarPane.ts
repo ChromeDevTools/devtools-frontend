@@ -37,11 +37,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
-import domBreakpointsSidebarPaneStylesRaw from './domBreakpointsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const domBreakpointsSidebarPaneStyles = new CSSStyleSheet();
-domBreakpointsSidebarPaneStyles.replaceSync(domBreakpointsSidebarPaneStylesRaw.cssContent);
+import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -146,6 +142,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS(domBreakpointsSidebarPaneStyles);
 
     this.elementToCheckboxes = new WeakMap();
 
@@ -395,10 +392,6 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
       this.#list.refreshItem(this.#highlightedBreakpoint);
     }
     void UI.ViewManager.ViewManager.instance().showView('sources.dom-breakpoints');
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([domBreakpointsSidebarPaneStyles]);
   }
 }
 

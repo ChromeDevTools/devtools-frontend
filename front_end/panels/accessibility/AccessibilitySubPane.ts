@@ -5,25 +5,18 @@
 import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import accessibilityNodeStylesRaw from './accessibilityNode.css.legacy.js';
-import accessibilityPropertiesStylesRaw from './accessibilityProperties.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const accessibilityPropertiesStyles = new CSSStyleSheet();
-accessibilityPropertiesStyles.replaceSync(accessibilityPropertiesStylesRaw.cssContent);
-const accessibilityNodeStyles = new CSSStyleSheet();
-accessibilityNodeStyles.replaceSync(accessibilityNodeStylesRaw.cssContent);
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
+import accessibilityNodeStyles from './accessibilityNode.css.legacy.js';
+import accessibilityPropertiesStyles from './accessibilityProperties.css.legacy.js';
 
 export class AccessibilitySubPane extends UI.View.SimpleView {
   axNode: SDK.AccessibilityModel.AccessibilityNode|null;
   protected nodeInternal?: SDK.DOMModel.DOMNode|null;
   constructor(name: Platform.UIString.LocalizedString) {
     super(name);
+    this.registerRequiredCSS(accessibilityPropertiesStyles);
 
     this.axNode = null;
   }
@@ -48,15 +41,11 @@ export class AccessibilitySubPane extends UI.View.SimpleView {
 
   createTreeOutline(): UI.TreeOutline.TreeOutline {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerCSSFiles([accessibilityNodeStyles, accessibilityPropertiesStyles, objectValueStyles]);
+    treeOutline.registerRequiredCSS(accessibilityNodeStyles, accessibilityPropertiesStyles, objectValueStyles);
 
     treeOutline.element.classList.add('hidden');
     treeOutline.hideOverflow();
     this.element.appendChild(treeOutline.element);
     return treeOutline;
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([accessibilityPropertiesStyles]);
   }
 }

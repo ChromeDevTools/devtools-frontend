@@ -10,17 +10,11 @@ import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.j
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import consolePinPaneStylesRaw from './consolePinPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
-const consolePinPaneStyles = new CSSStyleSheet();
-consolePinPaneStyles.replaceSync(consolePinPaneStylesRaw.cssContent);
+import consolePinPaneStyles from './consolePinPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -67,6 +61,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
   private readonly pinsSetting: Common.Settings.Setting<string[]>;
   constructor(private readonly liveExpressionButton: UI.Toolbar.ToolbarButton, private readonly focusOut: () => void) {
     super(true, 250);
+    this.registerRequiredCSS(consolePinPaneStyles, objectValueStyles);
     this.contentElement.classList.add('console-pins', 'monospace');
     this.contentElement.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('console-pins')}`);
@@ -78,12 +73,8 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([consolePinPaneStyles, objectValueStyles]);
-  }
-
   override willHide(): void {
+    super.willHide();
     for (const pin of this.pins) {
       pin.setHovered(false);
     }

@@ -13,13 +13,9 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
-import releaseNoteViewStylesRaw from './releaseNoteView.css.legacy.js';
+import releaseNoteViewStyles from './releaseNoteView.css.legacy.js';
 
 const {render, html} = Lit;
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const releaseNoteViewStyles = new CSSStyleSheet();
-releaseNoteViewStyles.replaceSync(releaseNoteViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -70,6 +66,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
   #view: View;
 
   constructor(element?: HTMLElement, view: View = (input, _output, target) => {
+    this.registerRequiredCSS(releaseNoteViewStyles);
     const releaseNote = input.getReleaseNote();
     const markdownContent = input.markdownContent;
     // clang-format off
@@ -158,10 +155,5 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
   #openNewTab(link: string): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link as Platform.DevToolsPath.UrlString);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([releaseNoteViewStyles]);
   }
 }

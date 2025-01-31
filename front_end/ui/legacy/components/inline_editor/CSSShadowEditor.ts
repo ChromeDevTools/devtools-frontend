@@ -8,11 +8,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import cssShadowEditorStylesRaw from './cssShadowEditor.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cssShadowEditorStyles = new CSSStyleSheet();
-cssShadowEditorStyles.replaceSync(cssShadowEditorStylesRaw.cssContent);
+import cssShadowEditorStyles from './cssShadowEditor.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -115,6 +111,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   private changedElement?: HTMLInputElement|null;
   constructor() {
     super(true);
+    this.registerRequiredCSS(cssShadowEditorStyles);
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(
         'jslog', `${VisualLogging.dialog('cssShadowEditor').parent('mapped').track({keydown: 'Enter|Escape'})}`);
@@ -183,7 +180,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([cssShadowEditorStyles]);
+    super.wasShown();
     this.updateUI();
   }
 

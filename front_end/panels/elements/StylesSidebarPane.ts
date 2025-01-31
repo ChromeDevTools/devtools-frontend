@@ -72,12 +72,8 @@ import {
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import stylesSidebarPaneStylesRaw from './stylesSidebarPane.css.legacy.js';
+import stylesSidebarPaneStyles from './stylesSidebarPane.css.legacy.js';
 import {WebCustomData} from './WebCustomData.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const stylesSidebarPaneStyles = new CSSStyleSheet();
-stylesSidebarPaneStyles.replaceSync(stylesSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -240,7 +236,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   constructor(computedStyleModel: ComputedStyleModel) {
     super(computedStyleModel, true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
-    this.registerCSSFiles([stylesSidebarPaneStyles]);
+    this.registerRequiredCSS(stylesSidebarPaneStyles);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
 
     this.currentToolbarPane = null;

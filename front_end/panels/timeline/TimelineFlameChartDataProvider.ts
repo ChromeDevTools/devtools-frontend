@@ -41,7 +41,7 @@ import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} 
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
-import timelineFlamechartPopoverStylesRaw from './timelineFlamechartPopover.css.legacy.js';
+import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.legacy.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {
   selectionFromEvent,
@@ -50,10 +50,6 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelineFlamechartPopoverStyles = new CSSStyleSheet();
-timelineFlamechartPopoverStyles.replaceSync(timelineFlamechartPopoverStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -818,8 +814,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     const popoverElement = document.createElement('div');
-    const root =
-        UI.UIUtils.createShadowRootWithCoreStyles(popoverElement, {cssFile: [timelineFlamechartPopoverStyles]});
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(popoverElement, {cssFile: timelineFlamechartPopoverStyles});
     const popoverContents = root.createChild('div', 'timeline-flamechart-popover');
     popoverContents.createChild('span', timeElementClassName).textContent = time;
     popoverContents.createChild('span', 'popoverinfo-title').textContent = title;
@@ -835,7 +830,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   preparePopoverForCollapsedArrow(entryIndex: number): Element|null {
     const element = document.createElement('div');
-    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [timelineFlamechartPopoverStyles]});
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: timelineFlamechartPopoverStyles});
 
     const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
     const hiddenEntriesAmount =

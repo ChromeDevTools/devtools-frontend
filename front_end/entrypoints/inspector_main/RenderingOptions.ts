@@ -34,11 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import renderingOptionsStylesRaw from './renderingOptions.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const renderingOptionsStyles = new CSSStyleSheet();
-renderingOptionsStyles.replaceSync(renderingOptionsStylesRaw.cssContent);
+import renderingOptionsStyles from './renderingOptions.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -210,6 +206,7 @@ const supportsPrefersContrast = (): boolean => {
 export class RenderingOptionsView extends UI.Widget.VBox {
   constructor() {
     super(true);
+    this.registerRequiredCSS(renderingOptionsStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('rendering').track({resize: true})}`);
 
@@ -307,10 +304,6 @@ export class RenderingOptionsView extends UI.Widget.VBox {
     if (control) {
       this.contentElement.appendChild(control);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([renderingOptionsStyles]);
   }
 }
 

@@ -12,11 +12,7 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import binaryResourceViewStylesRaw from './binaryResourceView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const binaryResourceViewStyles = new CSSStyleSheet();
-binaryResourceViewStyles.replaceSync(binaryResourceViewStylesRaw.cssContent);
+import binaryResourceViewStyles from './binaryResourceView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -80,6 +76,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
       content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType) {
     super();
+    this.registerRequiredCSS(binaryResourceViewStyles);
 
     this.binaryResourceViewFactory =
         new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(content, contentUrl, resourceType);
@@ -151,11 +148,6 @@ export class BinaryResourceView extends UI.Widget.VBox {
       this.addFadeoutSettimeoutId = null;
     }
     this.addFadeoutSettimeoutId = window.setTimeout(addFadeoutClass.bind(this), 2000);
-  }
-
-  override wasShown(): void {
-    this.updateView();
-    this.registerCSSFiles([binaryResourceViewStyles]);
   }
 
   private updateView(): void {

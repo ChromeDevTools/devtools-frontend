@@ -9,16 +9,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestInitiatorViewStylesRaw from './requestInitiatorView.css.legacy.js';
-import requestInitiatorViewTreeStylesRaw from './requestInitiatorViewTree.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestInitiatorViewStyles = new CSSStyleSheet();
-requestInitiatorViewStyles.replaceSync(requestInitiatorViewStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestInitiatorViewTreeStyles = new CSSStyleSheet();
-requestInitiatorViewTreeStyles.replaceSync(requestInitiatorViewTreeStylesRaw.cssContent);
+import requestInitiatorViewStyles from './requestInitiatorView.css.legacy.js';
+import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -72,7 +64,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
 
   private createTree(): UI.TreeOutline.TreeOutlineInShadow {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
-    treeOutline.registerCSSFiles([requestInitiatorViewTreeStyles]);
+    treeOutline.registerRequiredCSS(requestInitiatorViewTreeStyles);
     treeOutline.contentElement.classList.add('request-initiator-view-tree');
     treeOutline.contentElement.setAttribute('jslog', `${VisualLogging.tree('initiator-tree')}`);
 
@@ -150,7 +142,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     if (this.hasShown) {
       return;
     }
-    this.registerCSSFiles([requestInitiatorViewStyles]);
+    this.registerRequiredCSS(requestInitiatorViewStyles);
     let initiatorDataPresent = false;
     const containerTree = this.createTree();
 

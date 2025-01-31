@@ -9,11 +9,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import threadsSidebarPaneStylesRaw from './threadsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const threadsSidebarPaneStyles = new CSSStyleSheet();
-threadsSidebarPaneStyles.replaceSync(threadsSidebarPaneStylesRaw.cssContent);
+import threadsSidebarPaneStyles from './threadsSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -33,6 +29,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(threadsSidebarPaneStyles);
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.threads')}`);
     this.items = new UI.ListModel.ListModel();
@@ -156,9 +153,5 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
     if (hadFocus) {
       this.focus();
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([threadsSidebarPaneStyles]);
   }
 }

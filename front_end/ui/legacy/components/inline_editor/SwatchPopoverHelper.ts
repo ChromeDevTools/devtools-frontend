@@ -8,11 +8,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
-import swatchPopoverStylesRaw from './swatchPopover.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const swatchPopoverStyles = new CSSStyleSheet();
-swatchPopoverStyles.replaceSync(swatchPopoverStylesRaw.cssContent);
+import swatchPopoverStyles from './swatchPopover.css.legacy.js';
 
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly popover: UI.GlassPane.GlassPane;
@@ -66,7 +62,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
     }
 
     VisualLogging.setMappedParent(view.contentElement, anchorElement);
-    this.popover.registerCSSFiles([swatchPopoverStyles]);
+    this.popover.registerRequiredCSS(swatchPopoverStyles);
     this.dispatchEventToListeners(Events.WILL_SHOW_POPOVER);
 
     this.isHidden = false;

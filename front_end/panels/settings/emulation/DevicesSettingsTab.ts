@@ -10,11 +10,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as EmulationComponents from './components/components.js';
-import devicesSettingsTabStylesRaw from './devicesSettingsTab.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const devicesSettingsTabStyles = new CSSStyleSheet();
-devicesSettingsTabStyles.replaceSync(devicesSettingsTabStylesRaw.cssContent);
+import devicesSettingsTabStyles from './devicesSettingsTab.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -89,6 +85,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super();
+    this.registerRequiredCSS(devicesSettingsTabStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('devices')}`);
 
@@ -97,6 +94,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     this.containerElement.classList.add('settings-card-container', 'ignore-list-settings');
 
     this.#defaultDeviceList = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
+    this.#defaultDeviceList.registerRequiredCSS(devicesSettingsTabStyles);
     this.#defaultDeviceList.element.classList.add('devices-list', 'device-card-content');
 
     this.muteUpdate = false;
@@ -127,6 +125,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     this.containerElement.appendChild(customDevicesCard);
 
     this.#customDeviceList = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
+    this.#customDeviceList.registerRequiredCSS(devicesSettingsTabStyles);
     this.#customDeviceList.element.classList.add('devices-list');
     this.#customDeviceList.show(deviceList);
 
@@ -141,9 +140,6 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   override wasShown(): void {
     super.wasShown();
     this.devicesUpdated();
-    this.registerCSSFiles([devicesSettingsTabStyles]);
-    this.#defaultDeviceList.registerCSSFiles([devicesSettingsTabStyles]);
-    this.#customDeviceList.registerCSSFiles([devicesSettingsTabStyles]);
   }
 
   private devicesUpdated(): void {

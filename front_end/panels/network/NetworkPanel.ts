@@ -55,13 +55,9 @@ import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
-import networkPanelStylesRaw from './networkPanel.css.legacy.js';
+import networkPanelStyles from './networkPanel.css.legacy.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
 import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkPanelStyles = new CSSStyleSheet();
-networkPanelStyles.replaceSync(networkPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -230,6 +226,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   constructor(displayScreenshotDelay: number) {
     super('network');
+    this.registerRequiredCSS(networkPanelStyles);
 
     this.displayScreenshotDelay = displayScreenshotDelay;
     this.networkLogShowOverviewSetting =
@@ -651,8 +648,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   override wasShown(): void {
+    super.wasShown();
     UI.Context.Context.instance().setFlavor(NetworkPanel, this);
-    this.registerCSSFiles([networkPanelStyles]);
 
     // Record the network tool load time after the panel has loaded.
     Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
@@ -660,6 +657,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
 
   override willHide(): void {
     UI.Context.Context.instance().setFlavor(NetworkPanel, null);
+    super.willHide();
   }
 
   revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void {

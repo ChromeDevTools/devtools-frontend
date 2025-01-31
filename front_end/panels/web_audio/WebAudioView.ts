@@ -14,12 +14,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
 import * as GraphVisualizer from './graph_visualizer/graph_visualizer.js';
-import webAudioStylesRaw from './webAudio.css.legacy.js';
+import webAudioStyles from './webAudio.css.legacy.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const webAudioStyles = new CSSStyleSheet();
-webAudioStyles.replaceSync(webAudioStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -40,6 +36,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   private readonly summaryBarContainer: HTMLElement;
   constructor() {
     super(true, 1000);
+    this.registerRequiredCSS(webAudioStyles);
     this.element.setAttribute('jslog', `${VisualLogging.panel('web-audio').track({resize: true})}`);
     this.element.classList.add('web-audio-drawer');
 
@@ -90,7 +87,6 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([webAudioStyles]);
     for (const model of SDK.TargetManager.TargetManager.instance().models(WebAudioModel)) {
       this.addEventListeners(model);
     }

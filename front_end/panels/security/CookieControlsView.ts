@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../ui/components/switch/switch.js';
+import '../../ui/components/cards/cards.js';
 import '../../ui/components/chrome_link/chrome_link.js';
 
 import * as Common from '../../core/common/common.js';
@@ -11,18 +12,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Cards from '../../ui/components/cards/cards.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as ChromeLink from '../../ui/components/chrome_link/chrome_link.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cookieControlsViewStylesRaw from './cookieControlsView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cookieControlsViewStyles = new CSSStyleSheet();
-cookieControlsViewStyles.replaceSync(cookieControlsViewStylesRaw.cssContent);
+import cookieControlsViewStyles from './cookieControlsView.css.legacy.js';
 
 const {render, html} = Lit;
 
@@ -304,6 +300,7 @@ export class CookieControlsView extends UI.Widget.VBox {
     super(true, undefined, element);
     this.#view = view;
     this.#isGracePeriodActive = false;
+    this.registerRequiredCSS(Input.checkboxStylesRaw, cookieControlsViewStyles);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
@@ -350,11 +347,6 @@ export class CookieControlsView extends UI.Widget.VBox {
     });
 
     UI.InspectorView.InspectorView.instance().removeDebuggedTabReloadRequiredWarning();
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([Input.checkboxStyles, cookieControlsViewStyles]);
   }
 
   async checkGracePeriodActive(event?: Common.EventTarget.EventTargetEvent<SDK.Resource.Resource>): Promise<void> {

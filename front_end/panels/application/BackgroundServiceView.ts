@@ -12,18 +12,12 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import emptyWidgetStylesRaw from '../../ui/legacy/emptyWidget.css.legacy.js';
+import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type BackgroundServiceModel, Events} from './BackgroundServiceModel.js';
-import backgroundServiceViewStylesRaw from './backgroundServiceView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const emptyWidgetStyles = new CSSStyleSheet();
-emptyWidgetStyles.replaceSync(emptyWidgetStylesRaw.cssContent);
-const backgroundServiceViewStyles = new CSSStyleSheet();
-backgroundServiceViewStyles.replaceSync(backgroundServiceViewStylesRaw.cssContent);
+import backgroundServiceViewStyles from './backgroundServiceView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -176,6 +170,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
   constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel) {
     super(true);
+    this.registerRequiredCSS(emptyWidgetStyles, backgroundServiceViewStyles);
 
     this.serviceName = serviceName;
     const kebabName = Platform.StringUtilities.toKebabCase(serviceName);
@@ -522,10 +517,6 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     const events = this.model.getEvents(this.serviceName).filter(event => this.acceptEvent(event));
     await stream.write(JSON.stringify(events, undefined, 2));
     void stream.close();
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([emptyWidgetStyles, backgroundServiceViewStyles]);
   }
 }
 

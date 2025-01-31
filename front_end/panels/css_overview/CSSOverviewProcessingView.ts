@@ -7,11 +7,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {Events, type OverviewController} from './CSSOverviewController.js';
-import cssOverviewProcessingViewStylesRaw from './cssOverviewProcessingView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cssOverviewProcessingViewStyles = new CSSStyleSheet();
-cssOverviewProcessingViewStyles.replaceSync(cssOverviewProcessingViewStylesRaw.cssContent);
+import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -27,6 +23,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
   fragment?: UI.Fragment.Fragment;
   constructor(controller: OverviewController) {
     super();
+    this.registerRequiredCSS(cssOverviewProcessingViewStyles);
 
     this.#controller = controller;
     this.#render();
@@ -47,10 +44,5 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
 
     this.contentElement.appendChild(this.fragment.element());
     this.contentElement.style.overflow = 'auto';
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([cssOverviewProcessingViewStyles]);
   }
 }

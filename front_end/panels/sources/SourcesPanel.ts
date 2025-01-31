@@ -51,14 +51,10 @@ import * as Snippets from '../snippets/snippets.js';
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import {NavigatorView} from './NavigatorView.js';
-import sourcesPanelStylesRaw from './sourcesPanel.css.legacy.js';
+import sourcesPanelStyles from './sourcesPanel.css.legacy.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sourcesPanelStyles = new CSSStyleSheet();
-sourcesPanelStyles.replaceSync(sourcesPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -217,6 +213,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   constructor() {
     super('sources');
+    this.registerRequiredCSS(sourcesPanelStyles);
 
     new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], i18nString(UIStrings.dropWorkspaceFolderHere),
@@ -402,7 +399,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   override wasShown(): void {
     UI.Context.Context.instance().setFlavor(SourcesPanel, this);
-    this.registerCSSFiles([sourcesPanelStyles]);
     super.wasShown();
     if (UI.Context.Context.instance().flavor(QuickSourceView)) {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);

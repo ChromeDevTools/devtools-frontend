@@ -31,16 +31,13 @@
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import requestHTMLViewStylesRaw from './requestHTMLView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestHTMLViewStyles = new CSSStyleSheet();
-requestHTMLViewStyles.replaceSync(requestHTMLViewStylesRaw.cssContent);
+import requestHTMLViewStyles from './requestHTMLView.css.legacy.js';
 
 export class RequestHTMLView extends UI.Widget.VBox {
   private readonly dataURL: string;
   private constructor(dataURL: string) {
     super(true);
+    this.registerRequiredCSS(requestHTMLViewStyles);
 
     this.dataURL = dataURL;
     this.contentElement.classList.add('html', 'request-view');
@@ -52,8 +49,8 @@ export class RequestHTMLView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.createIFrame();
-    this.registerCSSFiles([requestHTMLViewStyles]);
   }
 
   override willHide(): void {

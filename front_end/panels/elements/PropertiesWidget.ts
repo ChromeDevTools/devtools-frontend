@@ -42,11 +42,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import propertiesWidgetStylesRaw from './propertiesWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const propertiesWidgetStyles = new CSSStyleSheet();
-propertiesWidgetStyles.replaceSync(propertiesWidgetStylesRaw.cssContent);
+import propertiesWidgetStyles from './propertiesWidget.css.legacy.js';
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
@@ -82,6 +78,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
   private lastRequestedNode?: SDK.DOMModel.DOMNode;
   constructor(throttlingTimeout?: number) {
     super(true /* isWebComponent */, throttlingTimeout);
+    this.registerRequiredCSS(propertiesWidgetStyles);
 
     this.showAllPropertiesSetting = Common.Settings.Settings.instance().createSetting('show-all-properties', false);
     this.showAllPropertiesSetting.addChangeListener(this.filterList.bind(this));
@@ -187,10 +184,5 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     this.update();
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([propertiesWidgetStyles]);
   }
 }

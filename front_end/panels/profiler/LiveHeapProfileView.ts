@@ -13,11 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import liveHeapProfileStylesRaw from './liveHeapProfile.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const liveHeapProfileStyles = new CSSStyleSheet();
-liveHeapProfileStyles.replaceSync(liveHeapProfileStylesRaw.cssContent);
+import liveHeapProfileStyles from './liveHeapProfile.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -73,6 +69,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   private constructor() {
     super(true);
     this.gridNodeByUrl = new Map();
+    this.registerRequiredCSS(liveHeapProfileStyles);
 
     this.setting = Common.Settings.Settings.instance().moduleSetting('memory-live-heap-profile');
     const toolbar = this.contentElement.createChild('devtools-toolbar', 'live-heap-profile-toolbar');
@@ -177,7 +174,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     void this.poll();
-    this.registerCSSFiles([liveHeapProfileStyles]);
     this.setting.addChangeListener(this.settingChanged, this);
   }
 

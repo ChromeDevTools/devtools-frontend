@@ -8,11 +8,7 @@ import * as UI from '../../legacy.js';
 
 import {AnimationTimingModel} from './AnimationTimingModel.js';
 import {AnimationTimingUI, PresetUI} from './AnimationTimingUI.js';
-import bezierEditorStylesRaw from './bezierEditor.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const bezierEditorStyles = new CSSStyleSheet();
-bezierEditorStyles.replaceSync(bezierEditorStylesRaw.cssContent);
+import bezierEditorStyles from './bezierEditor.css.legacy.js';
 
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
 
@@ -33,6 +29,7 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
   constructor(model: AnimationTimingModel) {
     super(true);
+    this.registerRequiredCSS(bezierEditorStyles);
 
     this.model = model;
     this.contentElement.tabIndex = 0;
@@ -101,7 +98,6 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([bezierEditorStyles]);
     this.unselectPresets();
     // Check if bezier matches a preset
     for (const category of this.presetCategories) {

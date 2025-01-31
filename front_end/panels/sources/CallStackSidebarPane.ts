@@ -41,11 +41,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import callStackSidebarPaneStylesRaw from './callStackSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const callStackSidebarPaneStyles = new CSSStyleSheet();
-callStackSidebarPaneStyles.replaceSync(callStackSidebarPaneStylesRaw.cssContent);
+import callStackSidebarPaneStyles from './callStackSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -113,6 +109,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
 
   private constructor() {
     super(i18nString(UIStrings.callStack), true, 'sources.callstack');
+    this.registerRequiredCSS(callStackSidebarPaneStyles);
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.callstack')}`);
     ({element: this.ignoreListMessageElement, checkbox: this.ignoreListCheckboxElement} =
@@ -543,10 +540,6 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       text.push(itemText);
     }
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join('\n'));
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([callStackSidebarPaneStyles]);
   }
 }
 

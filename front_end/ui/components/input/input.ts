@@ -15,5 +15,6 @@ textInputStyles.replaceSync(textInputStylesRaw.cssContent);
 
 export {
   checkboxStyles,
+  checkboxStylesRaw,
   textInputStyles,
 };

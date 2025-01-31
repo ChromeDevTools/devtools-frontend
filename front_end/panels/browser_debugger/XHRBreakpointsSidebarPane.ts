@@ -9,11 +9,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import xhrBreakpointsSidebarPaneStylesRaw from './xhrBreakpointsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const xhrBreakpointsSidebarPaneStyles = new CSSStyleSheet();
-xhrBreakpointsSidebarPaneStyles.replaceSync(xhrBreakpointsSidebarPaneStylesRaw.cssContent);
+import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -84,6 +80,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS(xhrBreakpointsSidebarPaneStyles);
 
     this.#breakpoints = new UI.ListModel.ListModel();
     this.#list = new UI.ListControl.ListControl(this.#breakpoints, this, UI.ListControl.ListMode.NonViewport);
@@ -406,9 +403,5 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     for (const url of breakpoints.keys()) {
       this.setBreakpoint(url);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([xhrBreakpointsSidebarPaneStyles]);
   }
 }

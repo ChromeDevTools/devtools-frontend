@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
 import {CookieReportTreeElement} from './CookieReportTreeElement.js';
-import lockIconStylesRaw from './lockIcon.css.legacy.js';
+import lockIconStyles from './lockIcon.css.legacy.js';
 import {OriginTreeElement} from './OriginTreeElement.js';
 import {
   createHighlightedUrl,
@@ -20,15 +20,7 @@ import {
   OriginGroup,
 } from './SecurityPanel.js';
 import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
-import sidebarStylesRaw from './sidebar.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const lockIconStyles = new CSSStyleSheet();
-lockIconStyles.replaceSync(lockIconStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sidebarStyles = new CSSStyleSheet();
-sidebarStyles.replaceSync(sidebarStylesRaw.cssContent);
+import sidebarStyles from './sidebar.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -96,6 +88,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.#mainOrigin = null;
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.sidebarTree.registerRequiredCSS(lockIconStyles, sidebarStyles);
     this.sidebarTree.element.classList.add('security-sidebar');
     this.contentElement.appendChild(this.sidebarTree.element);
 
@@ -304,11 +297,6 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
   clearOrigins(): void {
     this.#clearOriginGroups();
     this.#elementsByOrigin.clear();
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.sidebarTree.registerCSSFiles([lockIconStyles, sidebarStyles]);
   }
 
   #renderTreeElement(element: SecurityPanelSidebarTreeElement): void {

@@ -10,11 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import layersWidgetStylesRaw from './layersWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const layersWidgetStyles = new CSSStyleSheet();
-layersWidgetStyles.replaceSync(layersWidgetStylesRaw.cssContent);
+import layersWidgetStyles from './layersWidget.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -39,6 +35,7 @@ export class LayersWidget extends UI.Widget.Widget {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(layersWidgetStyles);
 
     this.contentElement.className = 'styles-layers-pane';
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('css-layers')}`);
@@ -62,9 +59,8 @@ export class LayersWidget extends UI.Widget.Widget {
     }
   }
 
-  override async wasShown(): Promise<void> {
+  override wasShown(): Promise<void> {
     super.wasShown();
-    this.registerCSSFiles([layersWidgetStyles]);
     return this.update();
   }
 

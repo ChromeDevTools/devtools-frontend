@@ -38,11 +38,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
-import screencastViewStylesRaw from './screencastView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const screencastViewStyles = new CSSStyleSheet();
-screencastViewStyles.replaceSync(screencastViewStylesRaw.cssContent);
+import screencastViewStyles from './screencastView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -139,6 +135,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private historyEntries?: Protocol.Page.NavigationEntry[];
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
     super();
+    this.registerRequiredCSS(screencastViewStyles);
     this.screenCaptureModel = screenCaptureModel;
     this.domModel = screenCaptureModel.target().model(SDK.DOMModel.DOMModel);
     this.overlayModel = screenCaptureModel.target().model(SDK.OverlayModel.OverlayModel);
@@ -201,11 +198,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.onSuspendStateChange, this);
     this.updateGlasspane();
-  }
-
-  override wasShown(): void {
-    this.startCasting();
-    this.registerCSSFiles([screencastViewStyles]);
   }
 
   override willHide(): void {

@@ -43,11 +43,7 @@ import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 import * as DataGrid from '../data_grid/data_grid.js';
 
-import cookiesTableStylesRaw from './cookiesTable.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cookiesTableStyles = new CSSStyleSheet();
-cookiesTableStyles.replaceSync(cookiesTableStylesRaw.cssContent);
+import cookiesTableStyles from './cookiesTable.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -134,6 +130,7 @@ export class CookiesTable extends UI.Widget.VBox {
       refreshCallback?: (() => void), selectedCallback?: (() => void),
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void)) {
     super();
+    this.registerRequiredCSS(cookiesTableStyles);
 
     this.element.classList.add('cookies-table');
 
@@ -308,10 +305,6 @@ export class CookiesTable extends UI.Widget.VBox {
     this.cookieToBlockedReasons = null;
 
     this.cookieToExemptionReason = null;
-  }
-
-  override wasShown(): void {
-    this.registerCSSFiles([cookiesTableStyles]);
   }
 
   setCookies(

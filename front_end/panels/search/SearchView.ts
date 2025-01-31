@@ -15,11 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {SearchResultsPane} from './SearchResultsPane.js';
 import type {SearchResult, SearchScope} from './SearchScope.js';
-import searchViewStylesRaw from './searchView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const searchViewStyles = new CSSStyleSheet();
-searchViewStyles.replaceSync(searchViewStylesRaw.cssContent);
+import searchViewStyles from './searchView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -146,6 +142,7 @@ export class SearchView extends UI.Widget.VBox {
   constructor(settingKey: string, throttler: Common.Throttler.Throttler) {
     super(true);
     this.setMinimumSize(0, 40);
+    this.registerRequiredCSS(searchViewStyles);
 
     this.focusOnShow = false;
     this.isIndexing = false;
@@ -282,11 +279,11 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     if (this.focusOnShow) {
       this.focus();
       this.focusOnShow = false;
     }
-    this.registerCSSFiles([searchViewStyles]);
   }
 
   private onIndexingFinished(): void {

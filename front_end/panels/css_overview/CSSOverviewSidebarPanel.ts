@@ -9,11 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cssOverviewSidebarPanelStylesRaw from './cssOverviewSidebarPanel.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cssOverviewSidebarPanelStyles = new CSSStyleSheet();
-cssOverviewSidebarPanelStyles.replaceSync(cssOverviewSidebarPanelStylesRaw.cssContent);
+import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -37,6 +33,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(cssOverviewSidebarPanelStyles);
 
     this.contentElement.classList.add('overview-sidebar-panel');
     this.contentElement.addEventListener('click', this.#onItemClick.bind(this));
@@ -163,10 +160,6 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
       target.focus();
       target.contentEditable = 'false';
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([cssOverviewSidebarPanelStyles]);
   }
 }
 

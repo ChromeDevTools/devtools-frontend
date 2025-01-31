@@ -13,12 +13,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
-import consoleSidebarStylesRaw from './consoleSidebar.css.legacy.js';
+import consoleSidebarStyles from './consoleSidebar.css.legacy.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const consoleSidebarStyles = new CSSStyleSheet();
-consoleSidebarStyles.replaceSync(consoleSidebarStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -67,6 +63,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.tree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this.selectionChanged.bind(this));
+    this.tree.registerRequiredCSS(consoleSidebarStyles);
     this.tree.hideOverflow();
 
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
@@ -136,11 +133,6 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private selectionChanged(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
     this.selectedTreeElement = event.data;
     this.dispatchEventToListeners(Events.FILTER_SELECTED);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.tree.registerCSSFiles([consoleSidebarStyles]);
   }
 }
 

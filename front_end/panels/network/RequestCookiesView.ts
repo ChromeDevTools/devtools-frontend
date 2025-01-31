@@ -37,11 +37,7 @@ import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_tab
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestCookiesViewStylesRaw from './requestCookiesView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestCookiesViewStyles = new CSSStyleSheet();
-requestCookiesViewStyles.replaceSync(requestCookiesViewStylesRaw.cssContent);
+import requestCookiesViewStyles from './requestCookiesView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -116,6 +112,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.registerRequiredCSS(requestCookiesViewStyles);
 
     this.element.classList.add('request-cookies-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('cookies').track({resize: true})}`);
@@ -337,7 +334,6 @@ export class RequestCookiesView extends UI.Widget.Widget {
 
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([requestCookiesViewStyles]);
     this.request.addEventListener(
         SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshRequestCookiesView, this);
     this.request.addEventListener(

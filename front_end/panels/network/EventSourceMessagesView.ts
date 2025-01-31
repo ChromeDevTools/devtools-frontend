@@ -12,11 +12,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import eventSourceMessagesViewStylesRaw from './eventSourceMessagesView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const eventSourceMessagesViewStyles = new CSSStyleSheet();
-eventSourceMessagesViewStyles.replaceSync(eventSourceMessagesViewStylesRaw.cssContent);
+import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -67,6 +63,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.registerRequiredCSS(eventSourceMessagesViewStyles);
 
     this.element.classList.add('event-source-messages-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('event-stream').track({resize: true})}`);
@@ -115,8 +112,8 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refresh();
-    this.registerCSSFiles([eventSourceMessagesViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.EVENT_SOURCE_MESSAGE_ADDED, this.messageAdded, this);
   }
 

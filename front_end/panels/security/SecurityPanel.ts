@@ -16,10 +16,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CookieControlsView} from './CookieControlsView.js';
 import {CookieReportView} from './CookieReportView.js';
-import lockIconStylesRaw from './lockIcon.css.legacy.js';
-import mainViewStylesRaw from './mainView.css.legacy.js';
+import lockIconStyles from './lockIcon.css.legacy.js';
+import mainViewStyles from './mainView.css.legacy.js';
 import {ShowOriginEvent} from './OriginTreeElement.js';
-import originViewStylesRaw from './originView.css.legacy.js';
+import originViewStyles from './originView.css.legacy.js';
 import {
   Events,
   type PageVisibleSecurityState,
@@ -29,18 +29,6 @@ import {
   SummaryMessages,
 } from './SecurityModel.js';
 import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const lockIconStyles = new CSSStyleSheet();
-lockIconStyles.replaceSync(lockIconStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const mainViewStyles = new CSSStyleSheet();
-mainViewStyles.replaceSync(mainViewStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const originViewStyles = new CSSStyleSheet();
-originViewStyles.replaceSync(originViewStylesRaw.cssContent);
 
 const {widgetConfig} = UI.Widget;
 
@@ -888,6 +876,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   private securityState: Protocol.Security.SecurityState|null;
   constructor(element?: HTMLElement) {
     super(undefined, undefined, element);
+    this.registerRequiredCSS(lockIconStyles, mainViewStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('security.main-view')}`);
 
     this.setMinimumSize(200, 100);
@@ -1332,10 +1321,6 @@ export class SecurityMainView extends UI.Widget.VBox {
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters(
         [{filterType: NetworkForward.UIFilter.FilterType.MixedContent, filterValue: filterKey}]));
   }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([lockIconStyles, mainViewStyles]);
-  }
 }
 
 export class SecurityOriginView extends UI.Widget.VBox {
@@ -1343,6 +1328,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
   private readonly originLockIcon: HTMLElement;
   constructor(panel: SecurityPanel, origin: Platform.DevToolsPath.UrlString, originState: OriginState) {
     super();
+    this.registerRequiredCSS(originViewStyles, lockIconStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('security.origin-view')}`);
     this.panel = panel;
     this.setMinimumSize(200, 100);
@@ -1603,11 +1589,6 @@ export class SecurityOriginView extends UI.Widget.VBox {
     const icon = getSecurityStateIconForDetailedView(
         newSecurityState, `security-property security-property-${newSecurityState}`);
     this.originLockIcon.appendChild(icon);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([originViewStyles, lockIconStyles]);
   }
 }
 

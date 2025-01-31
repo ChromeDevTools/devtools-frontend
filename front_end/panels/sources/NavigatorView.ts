@@ -44,17 +44,9 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import {PanelUtils} from '../utils/utils.js';
 
-import navigatorTreeStylesRaw from './navigatorTree.css.legacy.js';
-import navigatorViewStylesRaw from './navigatorView.css.legacy.js';
+import navigatorTreeStyles from './navigatorTree.css.legacy.js';
+import navigatorViewStyles from './navigatorView.css.legacy.js';
 import {SearchSources} from './SearchSourcesView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const navigatorTreeStyles = new CSSStyleSheet();
-navigatorTreeStyles.replaceSync(navigatorTreeStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const navigatorViewStyles = new CSSStyleSheet();
-navigatorViewStyles.replaceSync(navigatorViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -201,9 +193,11 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private groupByFolder?: boolean;
   constructor(jslogContext: string, enableAuthoredGrouping?: boolean) {
     super(true);
+    this.registerRequiredCSS(navigatorViewStyles);
 
     this.placeholder = null;
     this.scriptsTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.scriptsTree.registerRequiredCSS(navigatorTreeStyles);
 
     this.scriptsTree.hideOverflow();
     this.scriptsTree.setComparator(NavigatorView.treeElementsCompare);
@@ -1248,11 +1242,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     if (targetNode) {
       targetNode.setTitle(target.name());
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.scriptsTree.registerCSSFiles([navigatorTreeStyles]);
-    this.registerCSSFiles([navigatorViewStyles]);
   }
 }
 

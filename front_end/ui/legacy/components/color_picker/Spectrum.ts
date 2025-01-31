@@ -47,11 +47,7 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 import {FormatPickerContextMenu} from './FormatPickerContextMenu.js';
-import spectrumStylesRaw from './spectrum.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const spectrumStyles = new CSSStyleSheet();
-spectrumStyles.replaceSync(spectrumStylesRaw.cssContent);
+import spectrumStyles from './spectrum.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -274,6 +270,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private colorStringInternal?: string;
   constructor(contrastInfo?: ContrastInfo|null) {
     super(true);
+    this.registerRequiredCSS(spectrumStyles);
 
     this.contentElement.tabIndex = 0;
     this.contentElement.setAttribute(
@@ -1343,7 +1340,6 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([spectrumStyles]);
     this.hueAlphaWidth = this.hueElement.offsetWidth;
     this.slideHelperWidth = this.hueSlider.offsetWidth / 2;
     this.dragWidth = this.colorElement.offsetWidth;

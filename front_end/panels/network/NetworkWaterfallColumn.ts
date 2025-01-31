@@ -12,17 +12,9 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStylesRaw from './networkTimingTable.css.legacy.js';
-import networkWaterfallColumnStylesRaw from './networkWaterfallColumn.css.legacy.js';
+import networkingTimingTableStyles from './networkTimingTable.css.legacy.js';
+import networkWaterfallColumnStyles from './networkWaterfallColumn.css.legacy.js';
 import {type RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkingTimingTableStyles = new CSSStyleSheet();
-networkingTimingTableStyles.replaceSync(networkingTimingTableStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkWaterfallColumnStyles = new CSSStyleSheet();
-networkWaterfallColumnStyles.replaceSync(networkWaterfallColumnStylesRaw.cssContent);
 
 const BAR_SPACING = 1;
 
@@ -56,6 +48,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   constructor(calculator: NetworkTimeCalculator) {
     // TODO(allada) Make this a shadowDOM when the NetworkWaterfallColumn gets moved into NetworkLogViewColumns.
     super(false);
+    this.registerRequiredCSS(networkWaterfallColumnStyles);
 
     this.canvas = this.contentElement.createChild('canvas');
     this.canvas.tabIndex = -1;
@@ -215,11 +208,12 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
 
   override willHide(): void {
     this.popoverHelper.hidePopover();
+    super.willHide();
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.update();
-    this.registerCSSFiles([networkWaterfallColumnStyles]);
   }
 
   private onMouseMove(event: MouseEvent): void {
@@ -287,7 +281,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       show: (popover: UI.GlassPane.GlassPane) => {
         const content =
             RequestTimingView.createTimingTable((request as SDK.NetworkRequest.NetworkRequest), this.calculator);
-        popover.registerCSSFiles([networkingTimingTableStyles]);
+        popover.registerRequiredCSS(networkingTimingTableStyles);
         popover.contentElement.appendChild(content);
         return Promise.resolve(true);
       },

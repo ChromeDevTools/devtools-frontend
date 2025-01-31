@@ -19,11 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line rulesdir/es-modules-import
-import consoleViewStylesRaw from './consoleView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const consoleViewStyles = new CSSStyleSheet();
-consoleViewStyles.replaceSync(consoleViewStylesRaw.cssContent);
+import consoleViewStyles from './consoleView.css.legacy.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -302,7 +298,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       await message.formatErrorStackPromiseForTest();
 
       const wrapperElement = document.createElement('div');
-      const shadowElement = UI.UIUtils.createShadowRootWithCoreStyles(wrapperElement, {cssFile: [consoleViewStyles]});
+      const shadowElement = UI.UIUtils.createShadowRootWithCoreStyles(wrapperElement, {cssFile: consoleViewStyles});
       shadowElement.appendChild(element);
       renderElementIntoDOM(wrapperElement);
       assert.isTrue(element.checkVisibility());

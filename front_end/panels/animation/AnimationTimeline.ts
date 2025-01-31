@@ -15,12 +15,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
-import animationTimelineStylesRaw from './animationTimeline.css.legacy.js';
+import animationTimelineStyles from './animationTimeline.css.legacy.js';
 import {AnimationUI} from './AnimationUI.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const animationTimelineStyles = new CSSStyleSheet();
-animationTimelineStyles.replaceSync(animationTimelineStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -138,6 +134,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
 
   private constructor() {
     super(true);
+    this.registerRequiredCSS(animationTimelineStyles);
 
     this.element.classList.add('animations-timeline');
     this.element.setAttribute('jslog', `${VisualLogging.panel('animations').track({resize: true})}`);
@@ -223,12 +220,12 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   override wasShown(): void {
+    super.wasShown();
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.AnimationModel.AnimationModel, {scoped: true})) {
       this.#addExistingAnimationGroups(animationModel);
       this.addEventListeners(animationModel);
     }
-    this.registerCSSFiles([animationTimelineStyles]);
   }
 
   override willHide(): void {

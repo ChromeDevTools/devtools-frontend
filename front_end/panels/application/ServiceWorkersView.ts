@@ -16,15 +16,9 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkersViewStylesRaw from './serviceWorkersView.css.legacy.js';
-import serviceWorkerUpdateCycleViewStylesRaw from './serviceWorkerUpdateCycleView.css.legacy.js';
+import serviceWorkersViewStyles from './serviceWorkersView.css.legacy.js';
+import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.legacy.js';
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const serviceWorkersViewStyles = new CSSStyleSheet();
-serviceWorkersViewStyles.replaceSync(serviceWorkersViewStylesRaw.cssContent);
-const serviceWorkerUpdateCycleViewStyles = new CSSStyleSheet();
-serviceWorkerUpdateCycleViewStyles.replaceSync(serviceWorkerUpdateCycleViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -207,6 +201,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(serviceWorkersViewStyles);
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
     this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service workers'));
@@ -477,12 +472,6 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
 
   private updateListVisibility(): void {
     this.contentElement.classList.toggle('service-worker-list-empty', this.sections.size === 0);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([
-      serviceWorkersViewStyles,
-    ]);
   }
 }
 

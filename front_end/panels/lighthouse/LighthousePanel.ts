@@ -16,7 +16,7 @@ import {
   type PageAuditabilityChangedEvent,
   type PageWarningsChangedEvent,
 } from './LighthouseController.js';
-import lighthousePanelStylesRaw from './lighthousePanel.css.legacy.js';
+import lighthousePanelStyles from './lighthousePanel.css.legacy.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
 import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
@@ -24,10 +24,6 @@ import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';
 import {StatusView} from './LighthouseStatusView.js';
 import {TimespanView} from './LighthouseTimespanView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const lighthousePanelStyles = new CSSStyleSheet();
-lighthousePanelStyles.replaceSync(lighthousePanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -86,6 +82,7 @@ export class LighthousePanel extends UI.Panel.Panel {
       controller: LighthouseController,
   ) {
     super('lighthouse');
+    this.registerRequiredCSS(lighthousePanelStyles);
 
     this.controller = controller;
     this.startView = new StartView(this.controller, this);
@@ -366,10 +363,5 @@ export class LighthousePanel extends UI.Panel.Panel {
       els.push(lhContainerEl);
     }
     return els;
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([lighthousePanelStyles]);
   }
 }

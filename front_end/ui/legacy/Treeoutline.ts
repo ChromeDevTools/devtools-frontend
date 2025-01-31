@@ -416,12 +416,10 @@ export class TreeOutlineInShadow extends TreeOutline {
     }
   }
 
-  registerRequiredCSS(cssFile: {cssContent: string}): void {
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
-  }
-
-  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
-    this.shadowRoot.adoptedStyleSheets = this.shadowRoot.adoptedStyleSheets.concat(cssFiles);
+  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+    for (const cssFile of cssFiles) {
+      ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
+    }
   }
 
   hideOverflow(): void {

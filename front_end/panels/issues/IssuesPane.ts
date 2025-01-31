@@ -19,17 +19,9 @@ import {
   IssueAggregator,
 } from './IssueAggregator.js';
 import {getGroupIssuesByKindSetting, IssueKindView, issueKindViewSortPriority} from './IssueKindView.js';
-import issuesPaneStylesRaw from './issuesPane.css.legacy.js';
-import issuesTreeStylesRaw from './issuesTree.css.legacy.js';
+import issuesPaneStyles from './issuesPane.css.legacy.js';
+import issuesTreeStyles from './issuesTree.css.legacy.js';
 import {IssueView} from './IssueView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const issuesPaneStyles = new CSSStyleSheet();
-issuesPaneStyles.replaceSync(issuesPaneStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const issuesTreeStyles = new CSSStyleSheet();
-issuesTreeStyles.replaceSync(issuesTreeStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -192,6 +184,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(issuesPaneStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel('issues')}`);
 
@@ -208,6 +201,7 @@ export class IssuesPane extends UI.Widget.VBox {
 
     this.#issuesTree.setShowSelectionOnKeyboardFocus(true);
     this.#issuesTree.contentElement.classList.add('issues');
+    this.#issuesTree.registerRequiredCSS(issuesTreeStyles);
     this.contentElement.appendChild(this.#issuesTree.element);
 
     this.#hiddenIssuesRow = new HiddenIssuesRow();
@@ -479,11 +473,5 @@ export class IssuesPane extends UI.Widget.VBox {
       issueView.reveal();
       issueView.select(false, true);
     }
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.#issuesTree.registerCSSFiles([issuesTreeStyles]);
-    this.registerCSSFiles([issuesPaneStyles]);
   }
 }

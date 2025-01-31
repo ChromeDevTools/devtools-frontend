@@ -35,12 +35,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import type {ProfileType} from './ProfileHeader.js';
-import profileLauncherViewStylesRaw from './profileLauncherView.css.legacy.js';
+import profileLauncherViewStyles from './profileLauncherView.css.legacy.js';
 import type {ProfilesPanel} from './ProfilesPanel.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const profileLauncherViewStyles = new CSSStyleSheet();
-profileLauncherViewStyles.replaceSync(profileLauncherViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -90,6 +86,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
 
   constructor(profilesPanel: ProfilesPanel) {
     super();
+    this.registerRequiredCSS(profileLauncherViewStyles);
 
     this.panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
@@ -230,10 +227,6 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
     this.isEnabled = profileType.isEnabled();
     this.updateControls();
     this.selectedProfileTypeSetting.set(profileType.id);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([profileLauncherViewStyles]);
   }
 }
 

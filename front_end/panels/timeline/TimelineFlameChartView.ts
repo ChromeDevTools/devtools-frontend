@@ -30,7 +30,7 @@ import {
   TimelineFlameChartDataProvider,
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
-import timelineFlameChartViewStylesRaw from './timelineFlameChartView.css.legacy.js';
+import timelineFlameChartViewStyles from './timelineFlameChartView.css.legacy.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {
   rangeForSelection,
@@ -43,10 +43,6 @@ import {
 import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 import * as Utils from './utils/utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelineFlameChartViewStyles = new CSSStyleSheet();
-timelineFlameChartViewStyles.replaceSync(timelineFlameChartViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -184,6 +180,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
+    this.registerRequiredCSS(timelineFlameChartViewStyles);
     this.element.classList.add('timeline-flamechart');
 
     this.delegate = delegate;
@@ -1316,7 +1313,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([timelineFlameChartViewStyles]);
+    super.wasShown();
     this.networkFlameChartGroupExpansionSetting.addChangeListener(this.resizeToPreferredHeights, this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#boundRefreshAfterIgnoreList);
     if (this.needsResizeToPreferredHeights) {

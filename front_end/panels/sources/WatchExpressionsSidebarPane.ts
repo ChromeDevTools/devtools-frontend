@@ -43,21 +43,13 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
-import watchExpressionsSidebarPaneStylesRaw from './watchExpressionsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const watchExpressionsSidebarPaneStyles = new CSSStyleSheet();
-watchExpressionsSidebarPaneStyles.replaceSync(watchExpressionsSidebarPaneStylesRaw.cssContent);
+import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -110,6 +102,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
   private readonly linkifier: Components.Linkifier.Linkifier;
   private constructor() {
     super(true);
+    this.registerRequiredCSS(watchExpressionsSidebarPaneStyles, objectValueStyles);
 
     // TODO(szuend): Replace with a Set once the web test
     // panels/sources/debugger-ui/watch-expressions-preserve-expansion.js is either converted
@@ -133,6 +126,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.contentElement.setAttribute('jslog', `${VisualLogging.section('sources.watch')}`);
     this.contentElement.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
+    this.treeOutline.registerRequiredCSS(watchExpressionsSidebarPaneStyles);
     this.treeOutline.hideOverflow();
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
@@ -308,12 +302,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     }
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.treeOutline.registerCSSFiles([watchExpressionsSidebarPaneStyles]);
-    this.registerCSSFiles([watchExpressionsSidebarPaneStyles, objectValueStyles]);
   }
 }
 

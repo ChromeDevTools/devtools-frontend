@@ -9,13 +9,9 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import accessibilityNodeStylesRaw from './accessibilityNode.css.legacy.js';
+import accessibilityNodeStyles from './accessibilityNode.css.legacy.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const accessibilityNodeStyles = new CSSStyleSheet();
-accessibilityNodeStyles.replaceSync(accessibilityNodeStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -129,6 +125,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   private readonly ignoredReasonsTree: UI.TreeOutline.TreeOutline;
   constructor() {
     super(i18nString(UIStrings.computedProperties));
+    this.registerRequiredCSS(accessibilityNodeStyles);
 
     this.axNode = null;
 
@@ -226,10 +223,6 @@ export class AXNodeSubPane extends AccessibilitySubPane {
   override setNode(node: SDK.DOMModel.DOMNode|null): void {
     super.setNode(node);
     this.axNode = null;
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([accessibilityNodeStyles]);
   }
 }
 

@@ -39,31 +39,15 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectPropertiesSectionStylesRaw from
-    '../../ui/legacy/components/object_ui/objectPropertiesSection.css.legacy.js';
+import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/objectPropertiesSection.css.legacy.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestPayloadTreeStylesRaw from './requestPayloadTree.css.legacy.js';
-import requestPayloadViewStylesRaw from './requestPayloadView.css.legacy.js';
+import requestPayloadTreeStyles from './requestPayloadTree.css.legacy.js';
+import requestPayloadViewStyles from './requestPayloadView.css.legacy.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectPropertiesSectionStyles = new CSSStyleSheet();
-objectPropertiesSectionStyles.replaceSync(objectPropertiesSectionStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestPayloadTreeStyles = new CSSStyleSheet();
-requestPayloadTreeStyles.replaceSync(requestPayloadTreeStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const requestPayloadViewStyles = new CSSStyleSheet();
-requestPayloadViewStyles.replaceSync(requestPayloadViewStylesRaw.cssContent);
 const UIStrings = {
   /**
    *@description A context menu item Payload View of the Network panel to copy a parsed value.
@@ -146,6 +130,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.registerRequiredCSS(requestPayloadViewStyles);
     this.element.classList.add('request-payload-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('payload').track({resize: true})}`);
 
@@ -158,7 +143,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     }
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerCSSFiles([objectValueStyles, objectPropertiesSectionStyles, requestPayloadTreeStyles]);
+    root.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles, requestPayloadTreeStyles);
     root.element.classList.add('request-payload-tree');
     root.makeDense();
     this.element.appendChild(root.element);
@@ -169,7 +154,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([requestPayloadViewStyles]);
+    super.wasShown();
     this.request.addEventListener(SDK.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.refreshFormData, this);
 
     this.refreshQueryString();

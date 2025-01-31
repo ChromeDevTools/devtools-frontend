@@ -39,12 +39,8 @@ import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_tab
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cookieItemsViewStylesRaw from './cookieItemsView.css.legacy.js';
+import cookieItemsViewStyles from './cookieItemsView.css.legacy.js';
 import {StorageItemsView} from './StorageItemsView.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cookieItemsViewStyles = new CSSStyleSheet();
-cookieItemsViewStyles.replaceSync(cookieItemsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -180,6 +176,7 @@ export class CookieItemsView extends StorageItemsView {
   private selectedCookie: SDK.Cookie.Cookie|null;
   constructor(model: SDK.CookieModel.CookieModel, cookieDomain: string) {
     super(i18nString(UIStrings.cookies), 'cookiesPanel');
+    this.registerRequiredCSS(cookieItemsViewStyles);
 
     this.element.classList.add('storage-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('cookies-data')}`);
@@ -328,10 +325,5 @@ export class CookieItemsView extends StorageItemsView {
 
   override refreshItems(): void {
     void this.model.getCookiesForDomain(this.cookieDomain, true).then(this.updateWithCookies.bind(this));
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([cookieItemsViewStyles]);
   }
 }

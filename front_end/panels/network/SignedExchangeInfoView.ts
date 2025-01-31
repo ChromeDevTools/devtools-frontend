@@ -10,16 +10,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import signedExchangeInfoTreeStylesRaw from './signedExchangeInfoTree.css.legacy.js';
-import signedExchangeInfoViewStylesRaw from './signedExchangeInfoView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const signedExchangeInfoTreeStyles = new CSSStyleSheet();
-signedExchangeInfoTreeStyles.replaceSync(signedExchangeInfoTreeStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const signedExchangeInfoViewStyles = new CSSStyleSheet();
-signedExchangeInfoViewStyles.replaceSync(signedExchangeInfoViewStylesRaw.cssContent);
+import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.legacy.js';
+import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -114,13 +106,14 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.registerRequiredCSS(signedExchangeInfoViewStyles);
     console.assert(request.signedExchangeInfo() !== null);
     const signedExchangeInfo = (request.signedExchangeInfo() as Protocol.Network.SignedExchangeInfo);
 
     this.element.classList.add('signed-exchange-info-view');
 
     const root = new UI.TreeOutline.TreeOutlineInShadow();
-    root.registerCSSFiles([signedExchangeInfoTreeStyles]);
+    root.registerRequiredCSS(signedExchangeInfoTreeStyles);
     root.element.classList.add('signed-exchange-info-tree');
     root.setFocusable(false);
     root.makeDense();
@@ -262,10 +255,6 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
       valueElement.classList.add('error-field');
     }
     return fragment;
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([signedExchangeInfoViewStyles]);
   }
 }
 

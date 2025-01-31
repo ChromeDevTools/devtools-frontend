@@ -10,11 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerMessagesViewStylesRaw from './playerMessagesView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const playerMessagesViewStyles = new CSSStyleSheet();
-playerMessagesViewStyles.replaceSync(playerMessagesViewStylesRaw.cssContent);
+import playerMessagesViewStyles from './playerMessagesView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -227,7 +223,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
 
   createElementForItem(item: SelectableLevel): Element {
     const element = document.createElement('div');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [playerMessagesViewStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: playerMessagesViewStyles});
     const container = shadowRoot.createChild('div', 'media-messages-level-dropdown-element');
     const checkBox = container.createChild('div', 'media-messages-level-dropdown-checkbox');
     const text = container.createChild('span', 'media-messages-level-dropdown-text');
@@ -261,6 +257,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
 
   constructor() {
     super();
+    this.registerRequiredCSS(playerMessagesViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('messages')}`);
 
@@ -401,10 +398,5 @@ export class PlayerMessagesView extends UI.Widget.VBox {
   addError(error: Protocol.Media.PlayerError): void {
     const container = this.bodyPanel.createChild('div', 'media-messages-message-container media-message-error');
     container.appendChild(this.errorToDiv(error));
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([playerMessagesViewStyles]);
   }
 }

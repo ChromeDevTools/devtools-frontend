@@ -9,16 +9,12 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
-import customPreviewComponentStylesRaw from './customPreviewComponent.css.legacy.js';
+import customPreviewComponentStyles from './customPreviewComponent.css.legacy.js';
 import {
   ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
 } from './ObjectPropertiesSection.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const customPreviewComponentStyles = new CSSStyleSheet();
-customPreviewComponentStyles.replaceSync(customPreviewComponentStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -196,8 +192,7 @@ export class CustomPreviewComponent {
     this.customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
-    const shadowRoot =
-        UI.UIUtils.createShadowRootWithCoreStyles(this.element, {cssFile: [customPreviewComponentStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, {cssFile: customPreviewComponentStyles});
     this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this.customPreviewSection.element());
   }

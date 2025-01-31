@@ -38,11 +38,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import metricsSidebarPaneStylesRaw from './metricsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const metricsSidebarPaneStyles = new CSSStyleSheet();
-metricsSidebarPaneStyles.replaceSync(metricsSidebarPaneStylesRaw.cssContent);
+import metricsSidebarPaneStyles from './metricsSidebarPane.css.legacy.js';
 
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
@@ -58,6 +54,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
 
   constructor(computedStyleModel: ComputedStyleModel) {
     super(computedStyleModel);
+    this.registerRequiredCSS(metricsSidebarPaneStyles);
 
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;
@@ -537,9 +534,5 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
       ): void {
     this.editingEnded(element, context);
     this.applyUserInput(element, userInput, previousContent, context, true);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([metricsSidebarPaneStyles]);
   }
 }

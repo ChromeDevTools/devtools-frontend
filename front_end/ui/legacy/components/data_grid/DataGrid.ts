@@ -32,11 +32,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import dataGridStylesRaw from './dataGrid.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const dataGridStyles = new CSSStyleSheet();
-dataGridStyles.replaceSync(dataGridStylesRaw.cssContent);
+import dataGridStyles from './dataGrid.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -2491,18 +2487,21 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
     this.dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
     this.setDefaultFocusedElement(dataGrid.element);
+    this.registerRequiredCSS(dataGridStyles);
   }
 
   override wasShown(): void {
-    this.registerCSSFiles([dataGridStyles]);
+    super.wasShown();
     this.dataGrid.wasShown();
   }
 
   override willHide(): void {
     this.dataGrid.willHide();
+    super.willHide();
   }
 
   override onResize(): void {
+    super.onResize();
     this.dataGrid.onResize();
   }
 

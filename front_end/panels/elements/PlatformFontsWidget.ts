@@ -34,11 +34,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {type ComputedStyleModel, Events} from './ComputedStyleModel.js';
-import platformFontsWidgetStylesRaw from './platformFontsWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const platformFontsWidgetStyles = new CSSStyleSheet();
-platformFontsWidgetStyles.replaceSync(platformFontsWidgetStylesRaw.cssContent);
+import platformFontsWidgetStyles from './platformFontsWidget.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -80,6 +76,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor(sharedModel: ComputedStyleModel) {
     super(true);
+    this.registerRequiredCSS(platformFontsWidgetStyles);
 
     this.sharedModel = sharedModel;
     this.sharedModel.addEventListener(Events.CSS_MODEL_CHANGED, this.update, this);
@@ -137,9 +134,5 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
       const usage = platformFont.glyphCount;
       fontUsageElement.textContent = i18nString(UIStrings.dGlyphs, {n: usage});
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([platformFontsWidgetStyles]);
   }
 }

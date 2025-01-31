@@ -17,11 +17,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
-import consolePromptStylesRaw from './consolePrompt.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const consolePromptStyles = new CSSStyleSheet();
-consolePromptStyles.replaceSync(consolePromptStylesRaw.cssContent);
+import consolePromptStyles from './consolePrompt.css.legacy.js';
 
 const {Direction} = TextEditor.TextEditorHistory;
 
@@ -91,6 +87,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   constructor() {
     super();
+    this.registerRequiredCSS(consolePromptStyles);
     this.addCompletionsFromHistory = true;
     this.historyInternal = new TextEditor.AutocompleteHistory.AutocompleteHistory(
         Common.Settings.Settings.instance().createLocalSetting('console-history', []));
@@ -224,12 +221,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([consolePromptStyles]);
-  }
-
   override willHide(): void {
+    super.willHide();
     if (this.highlightingNode) {
       this.highlightingNode = false;
       SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight();

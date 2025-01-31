@@ -35,11 +35,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import heapProfilerStylesRaw from './heapProfiler.css.legacy.js';
+import heapProfilerStyles from './heapProfiler.css.legacy.js';
 import {
   type DataDisplayDelegate,
   ProfileEvents as ProfileTypeEvents,
@@ -48,24 +48,8 @@ import {
 } from './ProfileHeader.js';
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
-import profilesPanelStylesRaw from './profilesPanel.css.legacy.js';
-import profilesSidebarTreeStylesRaw from './profilesSidebarTree.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const objectValueStyles = new CSSStyleSheet();
-objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const heapProfilerStyles = new CSSStyleSheet();
-heapProfilerStyles.replaceSync(heapProfilerStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const profilesPanelStyles = new CSSStyleSheet();
-profilesPanelStyles.replaceSync(profilesPanelStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const profilesSidebarTreeStyles = new CSSStyleSheet();
-profilesSidebarTreeStyles.replaceSync(profilesSidebarTreeStylesRaw.cssContent);
+import profilesPanelStyles from './profilesPanel.css.legacy.js';
+import profilesSidebarTreeStyles from './profilesSidebarTree.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -119,6 +103,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   constructor(name: string, profileTypes: ProfileType[], recordingActionId: string) {
     super(name);
     this.profileTypes = profileTypes;
+    this.registerRequiredCSS(objectValueStyles, profilesPanelStyles, heapProfilerStyles);
 
     const mainContainer = new UI.Widget.VBox();
     this.splitWidget().setMainWidget(mainContainer);
@@ -126,7 +111,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     this.profilesItemTreeElement = new ProfilesSidebarTreeElement(this);
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow();
-
+    this.sidebarTree.registerRequiredCSS(profilesSidebarTreeStyles);
     this.sidebarTree.element.classList.add('profiles-sidebar-tree-box');
     this.panelSidebarElement().appendChild(this.sidebarTree.element);
 
@@ -476,8 +461,6 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(ProfilesPanel, this);
-    this.registerCSSFiles([objectValueStyles, profilesPanelStyles, heapProfilerStyles]);
-    this.sidebarTree.registerCSSFiles([profilesSidebarTreeStyles]);
   }
 
   override willHide(): void {

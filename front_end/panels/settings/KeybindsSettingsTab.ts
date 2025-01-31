@@ -12,16 +12,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import keybindsSettingsTabStylesRaw from './keybindsSettingsTab.css.legacy.js';
-import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const keybindsSettingsTabStyles = new CSSStyleSheet();
-keybindsSettingsTabStyles.replaceSync(keybindsSettingsTabStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const settingsScreenStyles = new CSSStyleSheet();
-settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
+import keybindsSettingsTabStyles from './keybindsSettingsTab.css.legacy.js';
+import settingsScreenStyles from './settingsScreen.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -115,6 +107,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(keybindsSettingsTabStyles, settingsScreenStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('keybinds')}`);
 
@@ -321,13 +314,10 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   override willHide(): void {
+    super.willHide();
     if (this.editingItem) {
       this.stopEditing(this.editingItem);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([keybindsSettingsTabStyles, settingsScreenStyles]);
   }
 }
 

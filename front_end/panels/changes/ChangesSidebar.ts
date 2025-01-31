@@ -12,11 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
-import changesSidebarStylesRaw from './changesSidebar.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const changesSidebarStyles = new CSSStyleSheet();
-changesSidebarStyles.replaceSync(changesSidebarStylesRaw.cssContent);
+import changesSidebarStyles from './changesSidebar.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -36,6 +32,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   constructor(workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl) {
     super();
     this.treeoutline = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.treeoutline.registerRequiredCSS(changesSidebarStyles);
     this.treeoutline.setFocusable(false);
     this.treeoutline.hideOverflow();
     this.treeoutline.setComparator((a, b) => Platform.StringUtilities.compare(a.titleAsText(), b.titleAsText()));
@@ -107,10 +104,6 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (!this.treeoutline.selectedTreeElement) {
       treeElement.select(true);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.treeoutline.registerCSSFiles([changesSidebarStyles]);
   }
 }
 

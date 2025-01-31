@@ -8,11 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import consoleContextSelectorStylesRaw from './consoleContextSelector.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const consoleContextSelectorStyles = new CSSStyleSheet();
-consoleContextSelectorStyles.replaceSync(consoleContextSelectorStylesRaw.cssContent);
+import consoleContextSelectorStyles from './consoleContextSelector.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -216,7 +212,7 @@ export class ConsoleContextSelector implements SDK.TargetManager.SDKModelObserve
 
   createElementForItem(item: SDK.RuntimeModel.ExecutionContext): Element {
     const element = document.createElement('div');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [consoleContextSelectorStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: consoleContextSelectorStyles});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     const subTitle = shadowRoot.createChild('div', 'subtitle');

@@ -11,16 +11,8 @@ import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import frameworkIgnoreListSettingsTabStylesRaw from './frameworkIgnoreListSettingsTab.css.legacy.js';
-import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const frameworkIgnoreListSettingsTabStyles = new CSSStyleSheet();
-frameworkIgnoreListSettingsTabStyles.replaceSync(frameworkIgnoreListSettingsTabStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const settingsScreenStyles = new CSSStyleSheet();
-settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
+import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.legacy.js';
+import settingsScreenStyles from './settingsScreen.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -106,6 +98,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles, settingsScreenStyles);
     this.element.setAttribute('jslog', `${VisualLogging.pane('blackbox')}`);
 
     const settingsContent =
@@ -179,6 +172,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('ignore-list');
+    this.list.registerRequiredCSS(frameworkIgnoreListSettingsTabStyles);
 
     const placeholder = document.createElement('div');
     placeholder.classList.add('ignore-list-empty');
@@ -208,8 +202,6 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
   override wasShown(): void {
     super.wasShown();
-    this.list.registerCSSFiles([frameworkIgnoreListSettingsTabStyles]);
-    this.registerCSSFiles([frameworkIgnoreListSettingsTabStyles, settingsScreenStyles]);
     this.settingUpdated();
   }
 

@@ -20,7 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import sourcesViewStylesRaw from './sourcesView.css.legacy.js';
+import sourcesViewStyles from './sourcesView.css.legacy.js';
 import {
   type EditorSelectedEvent,
   Events as TabbedEditorContainerEvents,
@@ -28,10 +28,6 @@ import {
   type TabbedEditorContainerDelegate,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sourcesViewStyles = new CSSStyleSheet();
-sourcesViewStyles.replaceSync(sourcesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -76,6 +72,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   constructor() {
     super();
+    this.registerRequiredCSS(sourcesViewStyles);
 
     this.element.id = 'sources-panel-sources-view';
     this.element.setAttribute('jslog', `${VisualLogging.pane('editor').track({keydown: 'Escape'})}`);
@@ -235,7 +232,6 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([sourcesViewStyles]);
     UI.Context.Context.instance().setFlavor(SourcesView, this);
   }
 

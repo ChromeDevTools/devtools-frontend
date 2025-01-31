@@ -12,13 +12,9 @@ import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import fontEditorStylesRaw from './fontEditor.css.legacy.js';
+import fontEditorStyles from './fontEditor.css.legacy.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const fontEditorStyles = new CSSStyleSheet();
-fontEditorStyles.replaceSync(fontEditorStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -132,6 +128,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
+    this.registerRequiredCSS(fontEditorStyles);
     this.selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     this.propertyMap = propertyMap;
@@ -182,10 +179,6 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         'letter-spacing', i18nString(UIStrings.spacing), cssPropertySection, letterSpacingPropertyInfo,
         FontEditorUtils.LetterSpacingStaticParams, this.updatePropertyValue.bind(this), this.resizePopout.bind(this),
         /** hasUnits= */ true);
-  }
-
-  override wasShown(): void {
-    this.registerCSSFiles([fontEditorStyles]);
   }
 
   private async createFontSelectorSection(propertyValue?: string): Promise<void> {

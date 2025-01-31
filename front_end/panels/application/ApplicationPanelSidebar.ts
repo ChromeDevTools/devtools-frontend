@@ -75,7 +75,7 @@ import {
 } from './PreloadingTreeElement.js';
 import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
-import resourcesSidebarStylesRaw from './resourcesSidebar.css.legacy.js';
+import resourcesSidebarStyles from './resourcesSidebar.css.legacy.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {SharedStorageListTreeElement} from './SharedStorageListTreeElement.js';
@@ -88,10 +88,6 @@ import {SharedStorageTreeElement} from './SharedStorageTreeElement.js';
 import {StorageBucketsTreeParentElement} from './StorageBucketsTreeElement.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const resourcesSidebarStyles = new CSSStyleSheet();
-resourcesSidebarStyles.replaceSync(resourcesSidebarStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -377,10 +373,10 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
   constructor(panel: ResourcesPanel) {
     super();
-
     this.panel = panel;
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
+    this.sidebarTree.registerRequiredCSS(resourcesSidebarStyles);
     this.sidebarTree.element.classList.add('resources-sidebar');
     this.sidebarTree.hideOverflow();
 
@@ -1063,10 +1059,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       this.previousHoveredElement.hovered = false;
       delete this.previousHoveredElement;
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.sidebarTree.registerCSSFiles([resourcesSidebarStyles]);
   }
 }
 

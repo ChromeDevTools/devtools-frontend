@@ -8,11 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import domLinkifierStylesRaw from './domLinkifier.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const domLinkifierStyles = new CSSStyleSheet();
-domLinkifierStyles.replaceSync(domLinkifierStylesRaw.cssContent);
+import domLinkifierStyles from './domLinkifier.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -113,7 +109,7 @@ export const linkifyNodeReference = function(node: SDK.DOMModel.DOMNode|null, op
 
   const root = document.createElement('span');
   root.classList.add('monospace');
-  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles]});
+  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: domLinkifierStyles});
   const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.classList.toggle('dynamic-link', options.isDynamicLink);
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
@@ -140,7 +136,7 @@ export const linkifyDeferredNodeReference = function(
       preventKeyboardFocus: undefined,
     }): Node {
   const root = document.createElement('div');
-  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles]});
+  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: domLinkifierStyles});
   const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true})}`);
   link.createChild('slot');

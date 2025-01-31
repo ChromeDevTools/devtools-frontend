@@ -10,11 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import reportingApiReportsViewStylesRaw from './reportingApiReportsView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const reportingApiReportsViewStyles = new CSSStyleSheet();
-reportingApiReportsViewStyles.replaceSync(reportingApiReportsViewStylesRaw.cssContent);
+import reportingApiReportsViewStyles from './reportingApiReportsView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -57,7 +53,7 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
     super.wasShown();
     const sbw = this.sidebarWidget();
     if (sbw) {
-      sbw.registerCSSFiles([reportingApiReportsViewStyles]);
+      sbw.registerRequiredCSS(reportingApiReportsViewStyles);
     }
   }
 

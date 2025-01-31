@@ -32,11 +32,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import webSocketFrameViewStylesRaw from './webSocketFrameView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const webSocketFrameViewStyles = new CSSStyleSheet();
-webSocketFrameViewStyles.replaceSync(webSocketFrameViewStylesRaw.cssContent);
+import webSocketFrameViewStyles from './webSocketFrameView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -170,6 +166,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 
   constructor(request: SDK.NetworkRequest.NetworkRequest) {
     super();
+    this.registerRequiredCSS(webSocketFrameViewStyles);
 
     this.element.classList.add('websocket-frame-view');
     this.element.setAttribute('jslog', `${VisualLogging.pane('web-socket-messages').track({resize: true})}`);
@@ -282,8 +279,8 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
+    super.wasShown();
     this.refresh();
-    this.registerCSSFiles([webSocketFrameViewStyles]);
     this.request.addEventListener(SDK.NetworkRequest.Events.WEBSOCKET_FRAME_ADDED, this.frameAdded, this);
   }
 

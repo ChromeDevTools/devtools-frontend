@@ -9,11 +9,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerPropertiesViewStylesRaw from './playerPropertiesView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const playerPropertiesViewStyles = new CSSStyleSheet();
-playerPropertiesViewStyles.replaceSync(playerPropertiesViewStylesRaw.cssContent);
+import playerPropertiesViewStyles from './playerPropertiesView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -481,6 +477,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
   constructor() {
     super();
+    this.registerRequiredCSS(playerPropertiesViewStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('properties')}`);
 
@@ -671,9 +668,5 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
     const textTrackManager = new TextTrackManager(this);
     this.attributeMap.set(PlayerPropertyKeys.TEXT_TRACKS, textTrackManager);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([playerPropertiesViewStyles]);
   }
 }

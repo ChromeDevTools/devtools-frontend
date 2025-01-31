@@ -8,11 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import audioContextSelectorStylesRaw from './audioContextSelector.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const audioContextSelectorStyles = new CSSStyleSheet();
-audioContextSelectorStyles.replaceSync(audioContextSelectorStylesRaw.cssContent);
+import audioContextSelectorStyles from './audioContextSelector.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -96,7 +92,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   createElementForItem(item: Protocol.WebAudio.BaseAudioContext): Element {
     const element = document.createElement('div');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [audioContextSelectorStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: audioContextSelectorStyles});
     const title = shadowRoot.createChild('div', 'title');
     UI.UIUtils.createTextChild(title, Platform.StringUtilities.trimEndWithMaxLength(this.titleFor(item), 100));
     return element;

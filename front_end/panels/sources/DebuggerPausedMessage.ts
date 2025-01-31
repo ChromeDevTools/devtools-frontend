@@ -14,11 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
-import debuggerPausedMessageStylesRaw from './debuggerPausedMessage.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const debuggerPausedMessageStyles = new CSSStyleSheet();
-debuggerPausedMessageStyles.replaceSync(debuggerPausedMessageStylesRaw.cssContent);
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -128,7 +124,7 @@ export class DebuggerPausedMessage {
     this.elementInternal.classList.add('flex-none');
     this.elementInternal.setAttribute('jslog', `${VisualLogging.dialog('debugger-paused')}`);
     const root =
-        UI.UIUtils.createShadowRootWithCoreStyles(this.elementInternal, {cssFile: [debuggerPausedMessageStyles]});
+        UI.UIUtils.createShadowRootWithCoreStyles(this.elementInternal, {cssFile: debuggerPausedMessageStyles});
     this.contentElement = root.createChild('div');
     UI.ARIAUtils.markAsPoliteLiveRegion(this.elementInternal, false);
   }

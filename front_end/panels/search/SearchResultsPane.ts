@@ -10,12 +10,8 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import searchResultsPaneStylesRaw from './searchResultsPane.css.legacy.js';
+import searchResultsPaneStyles from './searchResultsPane.css.legacy.js';
 import type {SearchResult} from './SearchScope.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const searchResultsPaneStyles = new CSSStyleSheet();
-searchResultsPaneStyles.replaceSync(searchResultsPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -51,6 +47,7 @@ export class SearchResultsPane extends UI.Widget.VBox {
     this.searchResults = [];
     this.treeElements = [];
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.treeOutline.registerRequiredCSS(searchResultsPaneStyles);
     this.treeOutline.hideOverflow();
 
     this.contentElement.appendChild(this.treeOutline.element);
@@ -88,10 +85,6 @@ export class SearchResultsPane extends UI.Widget.VBox {
     }
     this.matchesExpandedCount += searchResult.matchesCount();
     this.treeElements.push(treeElement);
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.treeOutline.registerCSSFiles([searchResultsPaneStyles]);
   }
 }
 

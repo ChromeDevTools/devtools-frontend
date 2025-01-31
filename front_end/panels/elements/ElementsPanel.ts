@@ -51,7 +51,7 @@ import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import elementsPanelStylesRaw from './elementsPanel.css.legacy.js';
+import elementsPanelStyles from './elementsPanel.css.legacy.js';
 import type {ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
@@ -62,10 +62,6 @@ import {
   StylesSidebarPane,
   type StylesUpdateCompletedEvent,
 } from './StylesSidebarPane.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const elementsPanelStyles = new CSSStyleSheet();
-elementsPanelStyles.replaceSync(elementsPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -233,6 +229,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
   constructor() {
     super('elements');
+    this.registerRequiredCSS(elementsPanelStyles);
 
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elements-panel-split-view-state', 325, 325);
     this.splitWidget.addEventListener(
@@ -484,7 +481,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().setFlavor(ElementsPanel, this);
-    this.registerCSSFiles([elementsPanelStyles]);
 
     for (const treeOutline of this.treeOutlines) {
       // Attach heavy component lazily

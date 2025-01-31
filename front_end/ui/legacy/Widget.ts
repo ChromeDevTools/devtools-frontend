@@ -32,7 +32,6 @@ import '../../core/dom_extension/dom_extension.js';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Lit from '../../ui/lit/lit.js';
-import * as Helpers from '../components/helpers/helpers.js';
 
 import {Constraints, Size} from './Geometry.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
@@ -577,13 +576,10 @@ export class Widget {
     this.doResize();
   }
 
-  registerRequiredCSS(cssFile: {cssContent: string}): void {
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
-  }
-
-  registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
-    const root = this.shadowRoot ?? Helpers.GetRootNode.getRootNode(this.contentElement);
-    root.adoptedStyleSheets = root.adoptedStyleSheets.concat(cssFiles);
+  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+    for (const cssFile of cssFiles) {
+      ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
+    }
   }
 
   printWidgetHierarchy(): void {

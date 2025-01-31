@@ -44,7 +44,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import codeHighlighterStylesRaw from '../../ui/components/code_highlighter/codeHighlighter.css.legacy.js';
+import codeHighlighterStyles from '../../ui/components/code_highlighter/codeHighlighter.css.legacy.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import imagePreviewStylesRaw from '../../ui/legacy/components/utils/imagePreview.css.legacy.js';
@@ -60,10 +60,6 @@ import * as ThirdPartyTreeView from './ThirdPartyTreeView.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {selectionFromEvent} from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const codeHighlighterStyles = new CSSStyleSheet();
-codeHighlighterStyles.replaceSync(codeHighlighterStylesRaw.cssContent);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const imagePreviewStyles = new CSSStyleSheet();
@@ -1762,8 +1758,7 @@ export class TimelineUIUtils {
 
     // Use CodeHighlighter for syntax highlighting.
     const highlightContainer = document.createElement('div');
-    const shadowRoot =
-        UI.UIUtils.createShadowRootWithCoreStyles(highlightContainer, {cssFile: [codeHighlighterStyles]});
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(highlightContainer, {cssFile: codeHighlighterStyles});
     const elem = shadowRoot.createChild('div');
     elem.classList.add('monospace', 'source-code');
     elem.textContent = eventStr;

@@ -14,11 +14,7 @@ import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
-import workspaceSettingsTabStylesRaw from './workspaceSettingsTab.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const workspaceSettingsTabStyles = new CSSStyleSheet();
-workspaceSettingsTabStyles.replaceSync(workspaceSettingsTabStylesRaw.cssContent);
+import workspaceSettingsTabStyles from './workspaceSettingsTab.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -53,6 +49,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
   constructor() {
     super();
+    this.registerRequiredCSS(workspaceSettingsTabStyles);
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('workspace')}`);
 
@@ -92,11 +89,6 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
         {jslogContext: 'sources.add-folder-to-workspace'});
     addButton.classList.add('add-folder');
     this.#addButtonContainer.appendChild(addButton);
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([workspaceSettingsTabStyles]);
   }
 
   private createFolderExcludePatternInput(): HTMLElement {

@@ -7,11 +7,7 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import timelineSummaryStylesRaw from './timelineSummary.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelineSummaryStyles = new CSSStyleSheet();
-timelineSummaryStyles.replaceSync(timelineSummaryStylesRaw.cssContent);
+import timelineSummaryStyles from './timelineSummary.css.legacy.js';
 
 const {render, html} = Lit;
 
@@ -46,7 +42,7 @@ export interface SummaryTableData {
 
 export class TimelineSummary extends HTMLElement {
   readonly #shadow =
-      UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: [timelineSummaryStyles], delegatesFocus: undefined});
+      UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: timelineSummaryStyles, delegatesFocus: undefined});
 
   #rangeStart = 0;
   #rangeEnd = 0;

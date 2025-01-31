@@ -42,11 +42,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
-import sourcesNavigatorStylesRaw from './sourcesNavigator.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sourcesNavigatorStyles = new CSSStyleSheet();
-sourcesNavigatorStyles.replaceSync(sourcesNavigatorStylesRaw.cssContent);
+import sourcesNavigatorStyles from './sourcesNavigator.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -121,17 +117,13 @@ let networkNavigatorViewInstance: NetworkNavigatorView;
 export class NetworkNavigatorView extends NavigatorView {
   private constructor() {
     super('navigator-network', true);
+    this.registerRequiredCSS(sourcesNavigatorStyles);
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
 
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-  }
-
-  override wasShown(): void {
-    this.registerCSSFiles([sourcesNavigatorStyles]);
-    super.wasShown();
   }
 
   static instance(opts: {

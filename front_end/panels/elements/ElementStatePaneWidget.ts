@@ -11,11 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import elementStatePaneWidgetStylesRaw from './elementStatePaneWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const elementStatePaneWidgetStyles = new CSSStyleSheet();
-elementStatePaneWidgetStyles.replaceSync(elementStatePaneWidgetStylesRaw.cssContent);
+import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -82,6 +78,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
   constructor() {
     super(true);
+    this.registerRequiredCSS(elementStatePaneWidgetStyles);
     this.contentElement.className = 'styles-element-state-pane';
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('element-states')}`);
     const inputs: HTMLInputElement[] = [];
@@ -266,7 +263,6 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
   }
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([elementStatePaneWidgetStyles]);
     this.update();
   }
   update(): void {

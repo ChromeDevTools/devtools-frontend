@@ -13,11 +13,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
-import cookieReportViewStylesRaw from './cookieReportView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cookieReportViewStyles = new CSSStyleSheet();
-cookieReportViewStyles.replaceSync(cookieReportViewStylesRaw.cssContent);
+import cookieReportViewStyles from './cookieReportView.css.legacy.js';
 
 const {render, html, Directives: {ref}} = Lit;
 
@@ -287,6 +283,7 @@ export class CookieReportView extends UI.Widget.VBox {
   }) {
     super(true, undefined, element);
     this.#view = view;
+    this.registerRequiredCSS(cookieReportViewStyles);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
@@ -439,11 +436,6 @@ export class CookieReportView extends UI.Widget.VBox {
       ]);
       void Common.Revealer.reveal(requestFilter);
     }, {jslogContext: 'show-requests-with-this-cookie'});
-  }
-
-  override wasShown(): void {
-    super.wasShown();
-    this.registerCSSFiles([cookieReportViewStyles]);
   }
 
   static getStatusString(status: IssuesManager.CookieIssue.CookieStatus): string {

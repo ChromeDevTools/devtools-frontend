@@ -11,11 +11,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import originMapStylesRaw from './originMap.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const originMapStyles = new CSSStyleSheet();
-originMapStyles.replaceSync(originMapStylesRaw.cssContent);
+import originMapStyles from './originMap.css.legacy.js';
 
 const {html} = Lit;
 
@@ -70,7 +66,7 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> impleme
   override createWidget(): UI.Widget.Widget {
     const containerWidget = new UI.Widget.Widget(false, false, this);
 
-    this.#list.registerCSSFiles([originMapStyles]);
+    this.#list.registerRequiredCSS(originMapStyles);
     this.#list.show(containerWidget.contentElement);
 
     return containerWidget;

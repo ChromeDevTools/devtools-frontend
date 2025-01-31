@@ -39,11 +39,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStylesRaw from './networkTimingTable.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const networkingTimingTableStyles = new CSSStyleSheet();
-networkingTimingTableStyles.replaceSync(networkingTimingTableStylesRaw.cssContent);
+import networkingTimingTableStyles from './networkTimingTable.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -249,6 +245,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   private tableElement?: Element;
   constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator) {
     super();
+    this.registerRequiredCSS(networkingTimingTableStyles);
     this.element.classList.add('resource-timing-view');
 
     this.request = request;
@@ -782,7 +779,6 @@ export class RequestTimingView extends UI.Widget.VBox {
     this.request.addEventListener(SDK.NetworkRequest.Events.TIMING_CHANGED, this.refresh, this);
     this.request.addEventListener(SDK.NetworkRequest.Events.FINISHED_LOADING, this.refresh, this);
     this.calculator.addEventListener(Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
-    this.registerCSSFiles([networkingTimingTableStyles]);
     this.refresh();
   }
 

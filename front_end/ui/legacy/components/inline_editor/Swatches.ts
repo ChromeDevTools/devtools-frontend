@@ -7,13 +7,9 @@ import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import bezierSwatchStylesRaw from './bezierSwatch.css.legacy.js';
+import bezierSwatchStyles from './bezierSwatch.css.legacy.js';
 import type {CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const bezierSwatchStyles = new CSSStyleSheet();
-bezierSwatchStyles.replaceSync(bezierSwatchStylesRaw.cssContent);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssShadowSwatchStyles = new CSSStyleSheet();
@@ -27,7 +23,7 @@ export class BezierSwatch extends HTMLElement {
 
   constructor() {
     super();
-    const root = UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: [bezierSwatchStyles]});
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: bezierSwatchStyles});
     this.#icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
     this.#icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     root.appendChild(this.#icon);

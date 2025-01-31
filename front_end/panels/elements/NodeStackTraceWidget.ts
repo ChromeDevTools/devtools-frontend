@@ -7,11 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeStackTraceWidgetStylesRaw from './nodeStackTraceWidget.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const nodeStackTraceWidgetStyles = new CSSStyleSheet();
-nodeStackTraceWidgetStyles.replaceSync(nodeStackTraceWidgetStylesRaw.cssContent);
+import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -29,6 +25,7 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true /* isWebComponent */);
+    this.registerRequiredCSS(nodeStackTraceWidgetStyles);
 
     this.noStackTraceElement = this.contentElement.createChild('div', 'gray-info-message');
     this.noStackTraceElement.textContent = i18nString(UIStrings.noStackTraceAvailable);
@@ -40,7 +37,6 @@ export class NodeStackTraceWidget extends UI.ThrottledWidget.ThrottledWidget {
   override wasShown(): void {
     super.wasShown();
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.update, this);
-    this.registerCSSFiles([nodeStackTraceWidgetStyles]);
     this.update();
   }
 

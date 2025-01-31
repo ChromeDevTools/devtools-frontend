@@ -16,12 +16,8 @@ import {
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
-import timelineHistoryManagerStylesRaw from './timelineHistoryManager.css.legacy.js';
+import timelineHistoryManagerStyles from './timelineHistoryManager.css.legacy.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const timelineHistoryManagerStyles = new CSSStyleSheet();
-timelineHistoryManagerStyles.replaceSync(timelineHistoryManagerStylesRaw.cssContent);
 
 /**
  * The dropdown works by returning an index which is the trace index; but we
@@ -470,7 +466,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     this.glassPane.element.addEventListener('blur', () => this.close(null));
 
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
-        this.glassPane.contentElement, {cssFile: [timelineHistoryManagerStyles]});
+        this.glassPane.contentElement, {cssFile: timelineHistoryManagerStyles});
     const contentElement = shadowRoot.createChild('div', 'drop-down');
 
     const listModel = new UI.ListModel.ListModel<number>();

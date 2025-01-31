@@ -10,11 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import sharedStorageEventsViewStylesRaw from './sharedStorageEventsView.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sharedStorageEventsViewStyles = new CSSStyleSheet();
-sharedStorageEventsViewStyles.replaceSync(sharedStorageEventsViewStylesRaw.cssContent);
+import sharedStorageEventsViewStyles from './sharedStorageEventsView.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -79,7 +75,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     super.wasShown();
     const sidebar = this.sidebarWidget();
     if (sidebar) {
-      sidebar.registerCSSFiles([sharedStorageEventsViewStyles]);
+      sidebar.registerRequiredCSS(sharedStorageEventsViewStyles);
     }
   }
 

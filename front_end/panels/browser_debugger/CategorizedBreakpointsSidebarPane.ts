@@ -9,11 +9,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import categorizedBreakpointsSidebarPaneStylesRaw from './categorizedBreakpointsSidebarPane.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const categorizedBreakpointsSidebarPaneStyles = new CSSStyleSheet();
-categorizedBreakpointsSidebarPaneStyles.replaceSync(categorizedBreakpointsSidebarPaneStylesRaw.cssContent);
+import categorizedBreakpointsSidebarPaneStyles from './categorizedBreakpointsSidebarPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -141,6 +137,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
       detailsPausedReason: Protocol.Debugger.PausedEventReason) {
     super(true);
     this.#categoriesTreeOutline = new UI.TreeOutline.TreeOutlineInShadow();
+    this.#categoriesTreeOutline.registerRequiredCSS(categorizedBreakpointsSidebarPaneStyles);
 
     this.#categoriesTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);
     this.contentElement.appendChild(this.#categoriesTreeOutline.element);
@@ -343,10 +340,6 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     } else {
       UI.ARIAUtils.setChecked(category.element.listItemElement, hasEnabled);
     }
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.#categoriesTreeOutline.registerCSSFiles([categorizedBreakpointsSidebarPaneStyles]);
   }
 }
 export interface Item {

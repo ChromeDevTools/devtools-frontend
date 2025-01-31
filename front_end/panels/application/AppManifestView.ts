@@ -15,12 +15,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import appManifestViewStylesRaw from './appManifestView.css.legacy.js';
+import appManifestViewStyles from './appManifestView.css.legacy.js';
 import * as ApplicationComponents from './components/components.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const appManifestViewStyles = new CSSStyleSheet();
-appManifestViewStyles.replaceSync(appManifestViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -497,6 +493,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
       throttler: Common.Throttler.Throttler) {
     super(true);
+    this.registerRequiredCSS(appManifestViewStyles);
 
     this.contentElement.classList.add('manifest-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('manifest')}`);
@@ -508,7 +505,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.emptyView.hideWidget();
 
     this.reportView = reportView;
-
+    this.reportView.registerRequiredCSS(appManifestViewStyles);
     this.reportView.element.classList.add('manifest-view-header');
     this.reportView.show(this.contentElement);
     this.reportView.hideWidget();
@@ -1238,11 +1235,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     field.appendChild(wrapper);
     return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight};
-  }
-  override wasShown(): void {
-    super.wasShown();
-    this.reportView.registerCSSFiles([appManifestViewStyles]);
-    this.registerCSSFiles([appManifestViewStyles]);
   }
 
   private async appendWindowControlsToSection(

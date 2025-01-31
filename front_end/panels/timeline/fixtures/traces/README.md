@@ -250,3 +250,7 @@ This is a trace where a `LargestImagePaint` event occurs after the last `largest
 ### web-dev-screenshot-source-ids
 
 A trace generated from crrev.com/c/6197645 (January 2025), which changed the format of screenshots from the legacy OBJECT_SNAPSHOT format to be instant events with more information attached to them.
+
+### dom-size-overlap
+
+Trace containing a cross-origin navigation where DOM size events from the pre-navigation page are emitted *after* the navigation event.

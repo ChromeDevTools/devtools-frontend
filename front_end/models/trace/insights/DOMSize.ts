@@ -124,6 +124,14 @@ export function generateInsight(
   const domStatsEvents = parsedTrace.DOMStats.domStatsByFrameId.get(context.frameId)?.filter(isWithinContext) ?? [];
   let maxDOMStats: Types.Events.DOMStats|undefined;
   for (const domStats of domStatsEvents) {
+    // While recording a cross-origin navigation, there can be overlapping dom stats from before & after
+    // the navigation which share a frameId. In this case we should also ensure the pid matches up with
+    // the navigation we care about (i.e. from after the navigation event).
+    const navigationPid = context.navigation?.pid;
+    if (navigationPid && domStats.pid !== navigationPid) {
+      continue;
+    }
+
     if (!maxDOMStats || domStats.args.data.totalElements > maxDOMStats.args.data.totalElements) {
       maxDOMStats = domStats;
     }

@@ -22,6 +22,7 @@ copy_to_gen("traces") {
     "cls-single-frame.json.gz",
     "crux.json.gz",
     "dom-size-long.json.gz",
+    "dom-size-overlap.json.gz",
     "dom-size.json.gz",
     "enhanced-traces.json.gz",
     "extension-tracks-and-marks.json.gz",

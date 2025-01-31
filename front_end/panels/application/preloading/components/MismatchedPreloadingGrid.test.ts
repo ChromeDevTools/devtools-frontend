@@ -38,7 +38,7 @@ async function renderMismatchedPreloadingGrid(
 function assertDiff(
     gridComponent: HTMLElement, cellIndex: {row: number, column: number},
     spansExpected: {textContent: string, partOfStyle: string}[]) {
-  const grid = gridComponent.shadowRoot!.querySelector('devtools-new-data-grid')!;
+  const grid = gridComponent.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(grid.shadowRoot);
   const cell = getCellByIndexes(grid.shadowRoot, cellIndex);
   const spans = cell.querySelectorAll('div span');

@@ -97,7 +97,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
   constructor(view: View = (input, output, target) => {
     // clang-format off
         render(html`
-            <devtools-new-data-grid
+            <devtools-data-grid
               name=${i18nString(UIStrings.developerResources)}
               striped
               .filters=${input.filters}
@@ -152,7 +152,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                       })()}</td>
                   </tr>`)}
               </table>
-            </devtools-new-data-grid>`,
+            </devtools-data-grid>`,
             target, {host: input});  // eslint-disable-line rulesdir/lit-host-this
     // clang-format on
     function renderUrl(url: string): HTMLElement {
@@ -214,8 +214,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
   }
 
   getNumberOfVisibleItems(): number {
-    return parseInt(
-               this.contentElement.querySelector('devtools-new-data-grid')?.getAttribute('aria-rowcount') || '', 10) ??
+    return parseInt(this.contentElement.querySelector('devtools-data-grid')?.getAttribute('aria-rowcount') || '', 10) ??
         0;
   }
 

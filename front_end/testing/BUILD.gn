@@ -74,7 +74,6 @@ ts_library("testing") {
     "../panels/sensors:meta",
     "../panels/timeline:bundle",
     "../services/trace_bounds:bundle",
-    "../ui/components/data_grid:bundle",
     "../ui/components/node_text:bundle",
     "../ui/components/render_coordinator:bundle",
     "../ui/legacy:bundle",

@@ -65,7 +65,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
     // clang-format off
       render(html`
         <div class="preloading-container">
-          <devtools-new-data-grid striped inline>
+          <devtools-data-grid striped inline>
             <table>
               <tr>
                 <th id="header-name" weight="30" sortable>
@@ -86,7 +86,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
                 </tr>
               `)}
             </table>
-          </devtools-new-data-grid>
+          </devtools-data-grid>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

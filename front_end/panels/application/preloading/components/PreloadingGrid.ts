@@ -84,7 +84,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
     // clang-format off
     render(html`
       <div class="preloading-container">
-        <devtools-new-data-grid striped @select=${this.#onPreloadingGridCellFocused}>
+        <devtools-data-grid striped @select=${this.#onPreloadingGridCellFocused}>
           <table>
             <tr>
               <th id="url" weight="40" sortable>${i18n.i18n.lockedString('URL')}</th>
@@ -124,7 +124,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
               </tr>`;
             })}
           </table>
-        </devtools-new-data-grid>
+        </devtools-data-grid>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on

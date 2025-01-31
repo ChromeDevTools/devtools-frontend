@@ -53,7 +53,7 @@ export class EndpointsGrid extends HTMLElement {
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`
-          <devtools-new-data-grid striped>
+          <devtools-data-grid striped>
            <table>
             <tr>
               <th id="origin" weight="30">${i18n.i18n.lockedString('Origin')}</th>
@@ -68,7 +68,7 @@ export class EndpointsGrid extends HTMLElement {
                 </tr>`))
                 .flat()}
             </table>
-          </devtools-new-data-grid>
+          </devtools-data-grid>
         ` : html`
           <div class="reporting-placeholder">
             <div>${i18nString(UIStrings.noEndpointsToDisplay)}</div>

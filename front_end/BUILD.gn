@@ -214,7 +214,6 @@ group("unittests") {
     "ui/components/cards:unittests",
     "ui/components/chrome_link:unittests",
     "ui/components/code_highlighter:unittests",
-    "ui/components/data_grid:unittests",
     "ui/components/dialogs:unittests",
     "ui/components/diff_view:unittests",
     "ui/components/expandable_list:unittests",

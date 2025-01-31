@@ -329,7 +329,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // clang-format off
     return html`
       <div class="grid-wrapper" role="region" aria-label=${i18nString(UIStrings.formInspector)}>
-        <devtools-new-data-grid
+        <devtools-data-grid
           striped
           class="filled-fields-grid"
         >
@@ -365,7 +365,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
                 </tr>`
             )}
           </table>
-        </devtools-new-data-grid>
+        </devtools-data-grid>
       </div>
     `;
     // clang-format on

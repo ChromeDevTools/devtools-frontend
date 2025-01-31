@@ -183,7 +183,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format off
     return html`
       <devtools-report-section>
-        <devtools-new-data-grid striped inline>
+        <devtools-data-grid striped inline>
           <table>
             <tr>
               <th id="sites" weight="10" sortable>
@@ -193,7 +193,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
             ${this.#trackingSites.map(site => html`
               <tr><td>${site}</td></tr>`)}
           </table>
-        </devtools-new-data-grid>
+        </devtools-data-grid>
       </devtools-report-section>
     `;
     // clang-format on

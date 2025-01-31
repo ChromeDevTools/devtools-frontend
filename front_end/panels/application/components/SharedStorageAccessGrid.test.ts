@@ -25,7 +25,7 @@ async function renderSharedStorageAccessGrid(events: Protocol.Storage.SharedStor
 
 function getInternalDataGridShadowRoot(
     component: ApplicationComponents.SharedStorageAccessGrid.SharedStorageAccessGrid): ShadowRoot {
-  const dataGrid = component.shadowRoot!.querySelector('devtools-new-data-grid')!;
+  const dataGrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }

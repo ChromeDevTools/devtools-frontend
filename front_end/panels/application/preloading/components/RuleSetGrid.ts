@@ -131,7 +131,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     // clang-format off
       Lit.render(html`
         <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
-          <devtools-new-data-grid striped @select=${this.#onRowSelected}>
+          <devtools-data-grid striped @select=${this.#onRowSelected}>
             <table>
               <tr>
                 <th id="rule-set" weight="20" sortable>
@@ -203,7 +203,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
                 </tr>
               `;})}
             </table>
-          </devtools-new-data-grid>
+          </devtools-data-grid>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

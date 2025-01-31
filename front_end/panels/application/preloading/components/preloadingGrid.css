@@ -30,7 +30,7 @@
   color: var(--sys-color-token-subtle);
 }
 
-devtools-new-data-grid {
+devtools-data-grid {
   flex: auto;
 }
 

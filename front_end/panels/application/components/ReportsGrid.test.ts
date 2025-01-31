@@ -28,7 +28,7 @@ const renderReportsGrid = async (data?: ApplicationComponents.ReportsGrid.Report
     return component;
   }
 
-  const datagrid = component.shadowRoot!.querySelector('devtools-new-data-grid')!;
+  const datagrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(datagrid.shadowRoot);
   return datagrid;
 };

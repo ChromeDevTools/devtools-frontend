@@ -222,7 +222,7 @@ describeWithMockConnection('AutofillView', () => {
     const crocodileSpan = addressSpans[0];
     assert.strictEqual(crocodileSpan.textContent, 'Crocodile');
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
-    const grid = view.shadowRoot!.querySelector('devtools-new-data-grid')!;
+    const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
     const firstGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]')!;
     let styles = firstGridRow.getAttribute('style') || '';
@@ -268,7 +268,7 @@ describeWithMockConnection('AutofillView', () => {
     const zipCodeSpan = addressSpans[4];
     assert.strictEqual(zipCodeSpan.textContent, '12345');
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
-    const grid = view.shadowRoot!.querySelector('devtools-new-data-grid')!;
+    const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
     const fourthGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]:nth-child(5)')!;
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));

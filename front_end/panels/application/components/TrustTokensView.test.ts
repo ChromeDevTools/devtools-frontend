@@ -31,7 +31,7 @@ async function renderTrustTokensView(): Promise<ApplicationComponents.TrustToken
 }
 
 function getInternalDataGridShadowRoot(component: ApplicationComponents.TrustTokensView.TrustTokensView): ShadowRoot {
-  const dataGrid = component.shadowRoot!.querySelector('devtools-new-data-grid')!;
+  const dataGrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }

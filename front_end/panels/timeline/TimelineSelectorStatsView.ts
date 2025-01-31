@@ -119,7 +119,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, view: View = (input, output, target) => {
     render(
         html`
-      <devtools-new-data-grid striped name=${i18nString(UIStrings.selectorStats)}
+      <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}
           @contextmenu=${input.onContextMenu.bind(input)}>
         <table>
           <tr>
@@ -172,7 +172,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
           </tr>`;
         })}
         </table>
-      </devtools-new-data-grid>`,
+      </devtools-data-grid>`,
         target, {host: this});
   }) {
     super();

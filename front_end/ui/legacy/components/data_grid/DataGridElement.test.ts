@@ -55,19 +55,19 @@ describeWithEnvironment('DataGrid', () => {
     container.style.height = '480px';
     render(template, container, {host: {}});  // eslint-disable-line rulesdir/lit-host-this
     await RenderCoordinator.done({waitForWork: true});
-    return container.querySelector('devtools-new-data-grid') as HTMLElement;
+    return container.querySelector('devtools-data-grid') as HTMLElement;
   }
 
   it('can be configured from template', async () => {
     const element = await renderDataGrid(html`
-        <devtools-new-data-grid .striped=${true} .displayName=${'Display Name'}>
-        </devtools-new-data-grid>`);
+        <devtools-data-grid .striped=${true} .displayName=${'Display Name'}>
+        </devtools-data-grid>`);
     assert.isTrue(getAccessibleText(element).startsWith('Display Name Rows: 0'));
   });
 
   it('can initialize data from template', async () => {
     const element = await renderDataGrid(html`
-        <devtools-new-data-grid striped name=${'Display Name'}>
+        <devtools-data-grid striped name=${'Display Name'}>
           <table>
             <tr>
               <th id="column-1">Column 1</th>
@@ -78,14 +78,14 @@ describeWithEnvironment('DataGrid', () => {
               <td>Value 2</td>
             </tr>
           </table>
-        </devtools-new-data-grid>`);
+        </devtools-data-grid>`);
     sendKeydown(element, 'ArrowDown');
     assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 1: Value 1, Column 2: Value 2');
   });
 
   it('can update data from template', async () => {
     await renderDataGrid(html`
-        <devtools-new-data-grid striped name=${'Display Name'}>
+        <devtools-data-grid striped name=${'Display Name'}>
           <table>
             <tr>
               <th id="column-1">Column 1</th>
@@ -96,9 +96,9 @@ describeWithEnvironment('DataGrid', () => {
               <td>Value 2</td>
             </tr>
           </table>
-        </devtools-new-data-grid>`);
+        </devtools-data-grid>`);
     const element = await renderDataGrid(html`
-        <devtools-new-data-grid striped name=${'Display Name'}>
+        <devtools-data-grid striped name=${'Display Name'}>
           <table>
             <tr>
               <th id="column-3">Column 3</th>
@@ -109,14 +109,14 @@ describeWithEnvironment('DataGrid', () => {
               <td>Value 4</td>
             </tr>
           </table>
-        </devtools-new-data-grid>`);
+        </devtools-data-grid>`);
     sendKeydown(element, 'ArrowDown');
     assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 3: Value 3, Column 4: Value 4');
   });
 
   it('can filter data', async () => {
     await renderDataGrid(html`
-        <devtools-new-data-grid striped name=${'Display Name'}>
+        <devtools-data-grid striped name=${'Display Name'}>
           <table>
             <tr>
               <th id="column-1">Column 1</th>
@@ -131,10 +131,10 @@ describeWithEnvironment('DataGrid', () => {
               <td>Value 4</td>
             </tr>
           </table>
-        </devtools-new-data-grid>`);
+        </devtools-data-grid>`);
     // clang-format off
     const element = await renderDataGrid(html`
-        <devtools-new-data-grid
+        <devtools-data-grid
             striped name=${'Display Name'}
             .filters=${[{key: 'column-1', text: '3',  negative: false}]}>
           <table>
@@ -151,7 +151,7 @@ describeWithEnvironment('DataGrid', () => {
               <td>Value 4</td>
             </tr>
           </table>
-        </devtools-new-data-grid>`);
+        </devtools-data-grid>`);
     // clang-format on
     assert.isTrue(getAccessibleText(element).startsWith('Display Name Rows: 1'));
     sendKeydown(element, 'ArrowDown');

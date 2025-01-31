@@ -21,8 +21,6 @@ group("docs") {
     "./computed_style_trace",
     "./console_insight",
     "./css_overview",
-    "./data_grid",
-    "./data_grid_controller",
     "./dialog",
     "./elements_breadcrumbs",
     "./expandable_list",

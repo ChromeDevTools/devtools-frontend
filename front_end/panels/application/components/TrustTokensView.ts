@@ -106,7 +106,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // clang-format off
     return html`
-      <devtools-new-data-grid striped inline>
+      <devtools-data-grid striped inline>
         <table>
           <tr>
             <th id="issuer" weight="10" sortable>${i18nString(UIStrings.issuer)}</th>
@@ -129,7 +129,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               </tr>
             `)}
         </table>
-      </devtools-new-data-grid>
+      </devtools-data-grid>
     `;
     // clang-format on
   }

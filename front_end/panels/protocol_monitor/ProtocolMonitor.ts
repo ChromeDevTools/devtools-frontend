@@ -248,7 +248,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                 secondIsSidebar: true,
                 settingName: 'protocol-monitor-panel-split',
               defaultSidebarWidth: 250}}>
-              <devtools-new-data-grid
+              <devtools-data-grid
                   striped
                   slot="main"
                   @select=${input.onSelect}
@@ -296,7 +296,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                         <td>${message.sessionId || ''}</td>
                       </tr>`)}
                   </table>
-              </devtools-new-data-grid>
+              </devtools-data-grid>
               <devtools-widget .widgetConfig=${widgetConfig(InfoWidget, {
                     request: input.selectedMessage?.params,
                     response: input.selectedMessage?.result || input.selectedMessage?.error,

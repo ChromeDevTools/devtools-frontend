@@ -33,7 +33,7 @@ async function renderBounceTrackingMitigationsView():
 
 function getInternalDataGridShadowRoot(
     component: ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView): ShadowRoot {
-  const dataGrid = component.shadowRoot!.querySelector('devtools-new-data-grid')!;
+  const dataGrid = component.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(dataGrid.shadowRoot);
   return dataGrid.shadowRoot;
 }
@@ -47,7 +47,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-new-data-grid');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
@@ -67,7 +67,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     const component = await renderBounceTrackingMitigationsView();
     await RenderCoordinator.done();
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-new-data-grid');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');
@@ -99,7 +99,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
 
     await RenderCoordinator.done();
 
-    const nullGridElement = component.shadowRoot!.querySelector('devtools-new-data-grid');
+    const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
     const sections = component.shadowRoot!.querySelectorAll('devtools-report-section');

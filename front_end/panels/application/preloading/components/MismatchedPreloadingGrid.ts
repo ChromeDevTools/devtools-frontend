@@ -121,7 +121,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
     const {pageURL} = this.#data;
 
     render(
-        html`<devtools-new-data-grid striped inline>
+        html`<devtools-data-grid striped inline>
           <table>
             <tr>
               <th id="url" weight="40" sortable>
@@ -174,7 +174,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
                 </tr>
               `)}
           </table>
-        </devtools-new-data-grid>`,
+        </devtools-data-grid>`,
         this.#shadow, {host: this});
   }
 }

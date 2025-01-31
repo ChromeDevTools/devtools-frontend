@@ -46,7 +46,7 @@ main {
   flex-grow: 1;
 }
 
-devtools-new-data-grid {
+devtools-data-grid {
   border: none;
   height: 100%;
 }

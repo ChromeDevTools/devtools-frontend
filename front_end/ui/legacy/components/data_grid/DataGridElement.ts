@@ -20,7 +20,7 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  *
  * It can be used as
  * ```
- * <devtools-new-data-grid striped name=${'Display Name'}>
+ * <devtools-data-grid striped name=${'Display Name'}>
  *   <table>
  *     <tr>
  *       <th id="column-1">Column 1</th>
@@ -31,7 +31,7 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  *       <td>Value 2</td>
  *     </tr>
  *   </table>
- * </devtools-new-data-grid>
+ * </devtools-data-grid>
  * ```
  * where a row with <th> configures the columns and rows with <td> provide the data.
  *
@@ -351,4 +351,4 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
 }
 
 // TODO(dsv): Rename to devtools-data-grid once the other one is removed.
-customElements.define('devtools-new-data-grid', DataGridElement);
+customElements.define('devtools-data-grid', DataGridElement);

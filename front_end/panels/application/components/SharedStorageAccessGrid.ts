@@ -91,7 +91,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
         class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }
     return html`
-      <devtools-new-data-grid striped inline @select=${this.#onSelect}>
+      <devtools-data-grid striped inline @select=${this.#onSelect}>
         <table>
           <tr>
             <th id="event-time" weight="10" sortable>
@@ -118,7 +118,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
             </tr>
           `)}
         </table>
-      </devtools-new-data-grid>
+      </devtools-data-grid>
     `;
   }
 

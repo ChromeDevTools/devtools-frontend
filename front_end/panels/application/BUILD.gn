@@ -89,7 +89,6 @@ devtools_module("application") {
     "../../panels/network/forward:bundle",
     "../../third_party/json5:bundle",
     "../../ui/components/buttons:bundle",
-    "../../ui/components/data_grid:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/legacy_wrapper:bundle",
     "../../ui/components/report_view:bundle",

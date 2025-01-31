@@ -8,6 +8,7 @@ import {
   getBrowserAndPages,
   waitFor,
 } from '../../shared/helper.js';
+import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 
 // Ideally we want to have all panels within this list,
 // but introducing shadow doms for all panels currently leads
@@ -15,8 +16,6 @@ import {
 const PANEL_NAMES = [
   'Lighthouse',
 ];
-
-import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 
 describe('DevTools panels', function() {
   PANEL_NAMES.forEach(panel => {

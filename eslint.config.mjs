@@ -249,6 +249,8 @@ export default [
       'no-implicit-globals': 'off',
       'no-unused-private-class-members': 'error',
 
+      // Sort imports first
+      'import/first': 'error',
       // Closure does not properly typecheck default exports
       'import/no-default-export': 'error',
       /**

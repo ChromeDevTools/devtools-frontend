@@ -283,7 +283,7 @@ export class CookieControlsView extends UI.Widget.VBox {
       <div class="overflow-auto">
         <div class="controls">
           <div class="header">
-            <div class="title">${i18nString(UIStrings.viewTitle)}</div>
+            <h1>${i18nString(UIStrings.viewTitle)}</h1>
             <div class="body">${i18nString(UIStrings.viewExplanation)}</div>
           </div>
           <devtools-card class="card-container">
@@ -291,7 +291,7 @@ export class CookieControlsView extends UI.Widget.VBox {
               ${cardHeader}
               <div>
                 <div class="card-row text">
-                  <div class="card-row-title main-text">${i18nString(UIStrings.exceptions)}</div>
+                  <h3 class="main-text">${i18nString(UIStrings.exceptions)}</h3>
                   <div class="body subtext">${i18nString(UIStrings.exceptionsExplanation)}</div>
                 </div>
                 ${gracePeriodControl}

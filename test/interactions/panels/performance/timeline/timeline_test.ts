@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample} from '../../../helpers/shared.js';
@@ -135,5 +136,30 @@ describe('Performance panel', function() {
       return timingTitle.includes('0&nbsp;ms – 2.66&nbsp;s');
     });
     assert(didUpdate);
+  });
+  itScreenshot('renders the flamechart correctly when toggling the custom data setting', async () => {
+    const {frontend} = getBrowserAndPages();
+    await loadComponentDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');
+    // expand the network track to ensure it's unaffected when toggling the custom data setting.
+    await frontend.evaluate(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const panel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
+      const mainFlameChart = panel.getFlameChart().getNetworkDataProvider();
+      const data = mainFlameChart.timelineData();
+      if (!data) {
+        throw new Error('Timeline data was not found');
+      }
+      const networkTrackIndex = data.groups.findIndex(f => f.name === 'Network');
+      if (networkTrackIndex === -1) {
+        throw new Error('Could not find network track');
+      }
+
+      panel.getFlameChart().getNetworkFlameChart().toggleGroupExpand(networkTrackIndex);
+    });
+    const timeline = await waitFor('.widget.vbox[slot="main"]');
+    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-before-extension-toggle.png', 3);
+    await click('[aria-label="Capture settings"]');
+    await click('input[title="Show data added by extensions of the Performance panel"]');
+    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-after-extension-toggle.png', 3);
   });
 });

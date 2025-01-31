@@ -1158,6 +1158,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
+    this.resizeToPreferredHeights();
     this.setMarkers(this.#parsedTrace);
   }
 

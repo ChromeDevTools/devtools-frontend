@@ -35,11 +35,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import heapProfilerStyles from './heapProfiler.css.legacy.js';
+import heapProfilerStyles from './heapProfiler.css.js';
 import {
   type DataDisplayDelegate,
   ProfileEvents as ProfileTypeEvents,
@@ -48,8 +48,8 @@ import {
 } from './ProfileHeader.js';
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
-import profilesPanelStyles from './profilesPanel.css.legacy.js';
-import profilesSidebarTreeStyles from './profilesSidebarTree.css.legacy.js';
+import profilesPanelStyles from './profilesPanel.css.js';
+import profilesSidebarTreeStyles from './profilesSidebarTree.css.js';
 
 const UIStrings = {
   /**

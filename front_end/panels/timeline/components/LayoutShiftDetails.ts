@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
-import layoutShiftDetailsStylesRaw from './layoutShiftDetails.css.legacy.js';
+import layoutShiftDetailsStylesRaw from './layoutShiftDetails.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const layoutShiftDetailsStyles = new CSSStyleSheet();

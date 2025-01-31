@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import lighthouseDialogStyles from './lighthouseDialog.css.legacy.js';
+import lighthouseDialogStyles from './lighthouseDialog.css.js';
 import type {LighthousePanel} from './LighthousePanel.js';
 
 const UIStrings = {

@@ -35,7 +35,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 
-import jsonViewStyles from './jsonView.css.legacy.js';
+import jsonViewStyles from './jsonView.css.js';
 
 const UIStrings = {
   /**

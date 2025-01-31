@@ -5,7 +5,7 @@
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as Lit from '../../lit/lit.js';
 
-import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.legacy.js';
+import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const panelIntroductionStepsStyles = new CSSStyleSheet();

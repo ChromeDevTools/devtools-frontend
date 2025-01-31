@@ -36,7 +36,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import paintProfilerStyles from './paintProfiler.css.legacy.js';
+import paintProfilerStyles from './paintProfiler.css.js';
 
 const UIStrings = {
   /**

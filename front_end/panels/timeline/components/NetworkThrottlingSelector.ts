@@ -15,7 +15,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import networkThrottlingSelectorStylesRaw from './networkThrottlingSelector.css.legacy.js';
+import networkThrottlingSelectorStylesRaw from './networkThrottlingSelector.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const networkThrottlingSelectorStyles = new CSSStyleSheet();

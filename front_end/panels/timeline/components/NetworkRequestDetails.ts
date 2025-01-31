@@ -14,8 +14,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../utils/utils.js';
 
-import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.legacy.js';
-import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.legacy.js';
+import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.js';
+import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.js';
 import {NetworkRequestTooltip} from './NetworkRequestTooltip.js';
 import {colorForNetworkRequest} from './Utils.js';
 

@@ -12,7 +12,7 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import binaryResourceViewStyles from './binaryResourceView.css.legacy.js';
+import binaryResourceViewStyles from './binaryResourceView.css.js';
 
 const UIStrings = {
   /**

@@ -18,7 +18,7 @@ import {
   TimelineEventOverviewResponsiveness,
   TimelineFilmStripOverview,
 } from './TimelineEventOverview.js';
-import miniMapStyles from './timelineMiniMap.css.legacy.js';
+import miniMapStyles from './timelineMiniMap.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {

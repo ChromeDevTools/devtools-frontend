@@ -13,7 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import liveHeapProfileStyles from './liveHeapProfile.css.legacy.js';
+import liveHeapProfileStyles from './liveHeapProfile.css.js';
 
 const UIStrings = {
   /**

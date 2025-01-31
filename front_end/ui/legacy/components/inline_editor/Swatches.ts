@@ -7,9 +7,9 @@ import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import bezierSwatchStyles from './bezierSwatch.css.legacy.js';
+import bezierSwatchStyles from './bezierSwatch.css.js';
 import type {CSSShadowModel} from './CSSShadowEditor.js';
-import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.legacy.js';
+import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssShadowSwatchStyles = new CSSStyleSheet();

@@ -8,7 +8,7 @@ import * as UI from '../../legacy.js';
 
 import {AnimationTimingModel} from './AnimationTimingModel.js';
 import {AnimationTimingUI, PresetUI} from './AnimationTimingUI.js';
-import bezierEditorStyles from './bezierEditor.css.legacy.js';
+import bezierEditorStyles from './bezierEditor.css.js';
 
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
 

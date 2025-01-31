@@ -17,7 +17,7 @@ import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrappe
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import autofillViewStylesRaw from './autofillView.css.legacy.js';
+import autofillViewStylesRaw from './autofillView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const autofillViewStyles = new CSSStyleSheet();

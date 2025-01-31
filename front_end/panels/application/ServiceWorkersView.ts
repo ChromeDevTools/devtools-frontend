@@ -16,8 +16,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkersViewStyles from './serviceWorkersView.css.legacy.js';
-import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.legacy.js';
+import serviceWorkersViewStyles from './serviceWorkersView.css.js';
+import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {

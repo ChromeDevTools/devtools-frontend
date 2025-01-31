@@ -20,7 +20,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
-import protocolMonitorStyles from './protocolMonitor.css.legacy.js';
+import protocolMonitorStyles from './protocolMonitor.css.js';
 
 const {widgetConfig} = UI.Widget;
 const {render, html} = Lit;

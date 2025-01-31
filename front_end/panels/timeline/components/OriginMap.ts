@@ -11,7 +11,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import originMapStyles from './originMap.css.legacy.js';
+import originMapStyles from './originMap.css.js';
 
 const {html} = Lit;
 

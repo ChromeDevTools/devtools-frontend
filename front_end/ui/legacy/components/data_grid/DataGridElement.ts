@@ -5,7 +5,7 @@
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
-import dataGridStylesRaw from './dataGrid.css.legacy.js';
+import dataGridStylesRaw from './dataGrid.css.js';
 import {Align, Events as DataGridEvents} from './DataGrid.js';
 import {SortableDataGrid, SortableDataGridNode} from './SortableDataGrid.js';
 

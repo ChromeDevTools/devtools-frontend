@@ -14,7 +14,7 @@ import * as TextEditor from '../../../../ui/components/text_editor/text_editor.j
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import ruleSetDetailsViewStylesRaw from './RuleSetDetailsView.css.legacy.js';
+import ruleSetDetailsViewStylesRaw from './RuleSetDetailsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const ruleSetDetailsViewStyles = new CSSStyleSheet();

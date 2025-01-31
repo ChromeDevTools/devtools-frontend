@@ -5,7 +5,7 @@
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import computedStyleTraceStylesRaw from './computedStyleTrace.css.legacy.js';
+import computedStyleTraceStylesRaw from './computedStyleTrace.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const computedStyleTraceStyles = new CSSStyleSheet();

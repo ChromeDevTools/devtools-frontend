@@ -8,7 +8,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import infobarStyles from './infobar.css.legacy.js';
+import infobarStyles from './infobar.css.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createShadowRootWithCoreStyles, createTextButton, type DevToolsCloseButton} from './UIUtils.js';
 import type {Widget} from './Widget.js';

@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import domLinkifierStyles from './domLinkifier.css.legacy.js';
+import domLinkifierStyles from './domLinkifier.css.js';
 
 const UIStrings = {
   /**

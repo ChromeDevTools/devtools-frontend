@@ -14,7 +14,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import createRecordingViewStylesRaw from './createRecordingView.css.legacy.js';
+import createRecordingViewStylesRaw from './createRecordingView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const createRecordingViewStyles = new CSSStyleSheet();

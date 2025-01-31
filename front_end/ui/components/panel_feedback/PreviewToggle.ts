@@ -9,7 +9,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as Input from '../input/input.js';
 
-import previewToggleStylesRaw from './previewToggle.css.legacy.js';
+import previewToggleStylesRaw from './previewToggle.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const previewToggleStyles = new CSSStyleSheet();

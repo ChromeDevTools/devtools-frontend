@@ -12,7 +12,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as EmulationComponents from '../settings/emulation/components/components.js';
 
-import networkConfigViewStyles from './networkConfigView.css.legacy.js';
+import networkConfigViewStyles from './networkConfigView.css.js';
 
 const UIStrings = {
   /**

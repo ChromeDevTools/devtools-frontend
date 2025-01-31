@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {SearchResultsPane} from './SearchResultsPane.js';
 import type {SearchResult, SearchScope} from './SearchScope.js';
-import searchViewStyles from './searchView.css.legacy.js';
+import searchViewStyles from './searchView.css.js';
 
 const UIStrings = {
   /**

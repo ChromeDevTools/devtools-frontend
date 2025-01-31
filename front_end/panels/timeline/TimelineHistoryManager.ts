@@ -16,7 +16,7 @@ import {
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
-import timelineHistoryManagerStyles from './timelineHistoryManager.css.legacy.js';
+import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
 
 /**

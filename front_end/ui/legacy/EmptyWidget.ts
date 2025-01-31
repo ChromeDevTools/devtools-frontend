@@ -32,7 +32,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
-import emptyWidgetStyles from './emptyWidget.css.legacy.js';
+import emptyWidgetStyles from './emptyWidget.css.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 

@@ -12,7 +12,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.legacy.js';
+import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 
 const UIStrings = {
   /**

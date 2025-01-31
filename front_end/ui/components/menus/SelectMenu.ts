@@ -14,8 +14,8 @@ import {
   type MenuItemSelectedEvent,
   type MenuItemValue,
 } from './Menu.js';
-import selectMenuStylesRaw from './selectMenu.css.legacy.js';
-import selectMenuButtonStylesRaw from './selectMenuButton.css.legacy.js';
+import selectMenuStylesRaw from './selectMenu.css.js';
+import selectMenuButtonStylesRaw from './selectMenuButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const selectMenuStyles = new CSSStyleSheet();

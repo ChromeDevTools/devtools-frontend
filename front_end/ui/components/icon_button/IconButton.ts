@@ -7,7 +7,7 @@ import './Icon.js';
 import * as Lit from '../../lit/lit.js';
 
 import type {IconData} from './Icon.js';
-import iconButtonStyles from './iconButton.css.legacy.js';
+import iconButtonStyles from './iconButton.css.js';
 
 const {html} = Lit;
 

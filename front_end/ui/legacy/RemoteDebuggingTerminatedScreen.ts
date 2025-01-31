@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 
 import {Dialog} from './Dialog.js';
 import {SizeBehavior} from './GlassPane.js';
-import remoteDebuggingTerminatedScreenStyles from './remoteDebuggingTerminatedScreen.css.legacy.js';
+import remoteDebuggingTerminatedScreenStyles from './remoteDebuggingTerminatedScreen.css.js';
 import {createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
 

@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.legacy.js';
+import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 
 const UIStrings = {
   /**

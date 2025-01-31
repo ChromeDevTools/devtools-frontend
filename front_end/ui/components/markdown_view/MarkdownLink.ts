@@ -7,7 +7,7 @@ import '../../legacy/legacy.js'; // Required for <x-link>.
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import markdownLinkStylesRaw from './markdownLink.css.legacy.js';
+import markdownLinkStylesRaw from './markdownLink.css.js';
 import {getMarkdownLink} from './MarkdownLinksMap.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

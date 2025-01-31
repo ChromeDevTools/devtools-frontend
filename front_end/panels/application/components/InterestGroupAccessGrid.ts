@@ -8,7 +8,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import interestGroupAccessGridStylesRaw from './interestGroupAccessGrid.css.legacy.js';
+import interestGroupAccessGridStylesRaw from './interestGroupAccessGrid.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const interestGroupAccessGridStyles = new CSSStyleSheet();

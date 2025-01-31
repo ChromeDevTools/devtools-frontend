@@ -17,7 +17,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
-import consolePromptStyles from './consolePrompt.css.legacy.js';
+import consolePromptStyles from './consolePrompt.css.js';
 
 const {Direction} = TextEditor.TextEditorHistory;
 

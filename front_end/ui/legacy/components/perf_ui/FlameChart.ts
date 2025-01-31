@@ -39,7 +39,7 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {drawExpansionArrow, drawIcon, horizontalLine} from './CanvasHelper.js';
 import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
-import flameChartStyles from './flameChart.css.legacy.js';
+import flameChartStyles from './flameChart.css.js';
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
 import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 

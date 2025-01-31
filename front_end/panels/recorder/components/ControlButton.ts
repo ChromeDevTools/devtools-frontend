@@ -4,7 +4,7 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import controlButtonStylesRaw from './controlButton.css.legacy.js';
+import controlButtonStylesRaw from './controlButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const controlButtonStyles = new CSSStyleSheet();

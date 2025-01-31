@@ -4,7 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 
-import targetCrashedScreenStyles from './targetCrashedScreen.css.legacy.js';
+import targetCrashedScreenStyles from './targetCrashedScreen.css.js';
 import {VBox} from './Widget.js';
 
 const UIStrings = {

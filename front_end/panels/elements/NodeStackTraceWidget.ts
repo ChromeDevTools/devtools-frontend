@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.legacy.js';
+import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.js';
 
 const UIStrings = {
   /**

@@ -38,7 +38,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
-import screencastViewStyles from './screencastView.css.legacy.js';
+import screencastViewStyles from './screencastView.css.js';
 
 const UIStrings = {
   /**

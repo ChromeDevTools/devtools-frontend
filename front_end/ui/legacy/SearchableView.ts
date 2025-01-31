@@ -44,7 +44,7 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
-import searchableViewStyles from './searchableView.css.legacy.js';
+import searchableViewStyles from './searchableView.css.js';
 import {ToolbarButton, ToolbarText, ToolbarToggle} from './Toolbar.js';  // eslint-disable-line import/no-duplicates
 import {createHistoryInput, createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';

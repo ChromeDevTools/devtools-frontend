@@ -16,7 +16,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {EditableSpan} from './EditableSpan.js';
-import headerSectionRowStylesRaw from './HeaderSectionRow.css.legacy.js';
+import headerSectionRowStylesRaw from './HeaderSectionRow.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const headerSectionRowStyles = new CSSStyleSheet();

@@ -35,10 +35,10 @@ module.exports = {
       ImportDeclaration(node) {
         const importPath = path.normalize(node.source.value);
 
-        if (importPath.endsWith('.css.legacy.js')) {
+        if (importPath.endsWith('.css.js')) {
           const importingFileName = path.resolve(filename);
           const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
-          const importedCSS = exportingFileName.replace(/\.legacy\.js$/, '');
+          const importedCSS = exportingFileName.replace(/\.js$/, '');
 
           if (!fs.existsSync(importedCSS)) {
             context.report({

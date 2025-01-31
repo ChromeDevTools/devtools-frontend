@@ -6,7 +6,7 @@ import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import buttonDialogStylesRaw from './buttonDialog.css.legacy.js';
+import buttonDialogStylesRaw from './buttonDialog.css.js';
 import {
   type ClickOutsideDialogEvent,
   type Dialog as DialogElement,

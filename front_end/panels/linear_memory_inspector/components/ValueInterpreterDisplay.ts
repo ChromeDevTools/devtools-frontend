@@ -6,11 +6,11 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.legacy.js';
+import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.js';
 import {
   Endianness,
   format,

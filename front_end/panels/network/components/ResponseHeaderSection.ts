@@ -31,7 +31,7 @@ import {
   type HeaderSectionRowData,
   isValidHeaderName,
 } from './HeaderSectionRow.js';
-import responseHeaderSectionStylesRaw from './ResponseHeaderSection.css.legacy.js';
+import responseHeaderSectionStylesRaw from './ResponseHeaderSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const responseHeaderSectionStyles = new CSSStyleSheet();

@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import sensorsStyles from './sensors.css.legacy.js';
+import sensorsStyles from './sensors.css.js';
 
 const UIStrings = {
   /**

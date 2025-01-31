@@ -8,7 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 
-import imagePreviewStylesRaw from './imagePreview.css.legacy.js';
+import imagePreviewStylesRaw from './imagePreview.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const imagePreviewStyles = new CSSStyleSheet();

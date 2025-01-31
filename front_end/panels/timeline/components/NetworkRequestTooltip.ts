@@ -10,7 +10,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.legacy.js';
+import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.js';
 import {colorForNetworkRequest, networkResourceCategory} from './Utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

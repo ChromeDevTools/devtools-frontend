@@ -43,7 +43,7 @@ import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
+import selfXssDialogStyles from './selfXssDialog.css.js';
 
 const UIStrings = {
   /**

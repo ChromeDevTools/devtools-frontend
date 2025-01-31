@@ -19,7 +19,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 
-import stylesRaw from './chatView.css.legacy.js';
+import stylesRaw from './chatView.css.js';
 import type {UserActionRowProps} from './UserActionRow.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

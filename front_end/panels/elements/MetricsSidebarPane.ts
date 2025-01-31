@@ -38,7 +38,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import metricsSidebarPaneStyles from './metricsSidebarPane.css.legacy.js';
+import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
 
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;

@@ -9,7 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.legacy.js';
+import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
 
 const UIStrings = {
   /**

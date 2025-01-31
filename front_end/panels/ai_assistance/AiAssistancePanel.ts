@@ -41,7 +41,7 @@ import {
 import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
-import aiAssistancePanelStyles from './aiAssistancePanel.css.legacy.js';
+import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {
   AiHistoryStorage,
 } from './AiHistoryStorage.js';

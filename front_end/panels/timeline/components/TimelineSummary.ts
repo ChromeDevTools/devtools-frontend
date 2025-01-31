@@ -7,7 +7,7 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import timelineSummaryStyles from './timelineSummary.css.legacy.js';
+import timelineSummaryStyles from './timelineSummary.css.js';
 
 const {render, html} = Lit;
 

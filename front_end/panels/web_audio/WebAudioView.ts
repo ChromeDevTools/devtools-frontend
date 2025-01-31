@@ -14,7 +14,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {ContextDetailBuilder, ContextSummaryBuilder} from './AudioContextContentBuilder.js';
 import {AudioContextSelector, Events as SelectorEvents} from './AudioContextSelector.js';
 import * as GraphVisualizer from './graph_visualizer/graph_visualizer.js';
-import webAudioStyles from './webAudio.css.legacy.js';
+import webAudioStyles from './webAudio.css.js';
 import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 const UIStrings = {

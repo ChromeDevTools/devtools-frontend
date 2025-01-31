@@ -10,8 +10,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.legacy.js';
-import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.legacy.js';
+import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
+import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.js';
 
 const UIStrings = {
   /**

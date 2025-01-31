@@ -19,8 +19,8 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
-import stylesRaw from './consoleInsight.css.legacy.js';
-import listStylesRaw from './consoleInsightSourcesList.css.legacy.js';
+import stylesRaw from './consoleInsight.css.js';
+import listStylesRaw from './consoleInsightSourcesList.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();

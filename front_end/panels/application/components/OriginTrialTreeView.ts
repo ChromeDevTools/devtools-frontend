@@ -12,9 +12,9 @@ import type * as IconButton from '../../../ui/components/icon_button/icon_button
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import badgeStylesRaw from './badge.css.legacy.js';
-import originTrialTokenRowsStylesRaw from './originTrialTokenRows.css.legacy.js';
-import originTrialTreeViewStylesRaw from './originTrialTreeView.css.legacy.js';
+import badgeStylesRaw from './badge.css.js';
+import originTrialTokenRowsStylesRaw from './originTrialTokenRows.css.js';
+import originTrialTreeViewStylesRaw from './originTrialTreeView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const badgeStyles = new CSSStyleSheet();

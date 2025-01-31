@@ -7,7 +7,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {Events, type OverviewController} from './CSSOverviewController.js';
-import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.legacy.js';
+import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
 
 const UIStrings = {
   /**

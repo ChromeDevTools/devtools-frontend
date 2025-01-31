@@ -30,7 +30,7 @@ import {
   TimelineFlameChartDataProvider,
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
-import timelineFlameChartViewStyles from './timelineFlameChartView.css.legacy.js';
+import timelineFlameChartViewStyles from './timelineFlameChartView.css.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {
   rangeForSelection,

@@ -139,7 +139,7 @@ ruleTester.run('es-modules-import', rule, {
       filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
     {
-      code: 'import checkboxStyles from \'./checkbox.css.legacy.js\';',
+      code: 'import checkboxStyles from \'./checkbox.css.js\';',
       filename: 'front_end/ui/components/input/input.ts',
     },
     {
@@ -321,12 +321,12 @@ ruleTester.run('es-modules-import', rule, {
       ],
     },
     {
-      code: 'import checkboxStyles from \'../../../input/checkbox.css.legacy.js\';',
+      code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
       filename: 'front_end/ui/panels/foo/FooPanel.ts',
       errors: [
         {
           message:
-              'Incorrect cross-namespace import: "../../../input/checkbox.css.legacy.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+              'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
         },
       ],
     },

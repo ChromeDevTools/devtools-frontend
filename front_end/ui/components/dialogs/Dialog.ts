@@ -11,7 +11,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 
-import dialogStylesRaw from './dialog.css.legacy.js';
+import dialogStylesRaw from './dialog.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const dialogStyles = new CSSStyleSheet();

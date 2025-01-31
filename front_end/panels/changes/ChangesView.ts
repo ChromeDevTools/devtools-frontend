@@ -18,7 +18,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
-import changesViewStyles from './changesView.css.legacy.js';
+import changesViewStyles from './changesView.css.js';
 
 const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes' as Platform.DevToolsPath.UrlString;
 

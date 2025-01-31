@@ -13,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
-import consoleSidebarStyles from './consoleSidebar.css.legacy.js';
+import consoleSidebarStyles from './consoleSidebar.css.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 const UIStrings = {

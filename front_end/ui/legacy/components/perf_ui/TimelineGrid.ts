@@ -35,7 +35,7 @@
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
-import timelineGridStyles from './timelineGrid.css.legacy.js';
+import timelineGridStyles from './timelineGrid.css.js';
 
 const labelMap = new Map<HTMLDivElement|HTMLElement, HTMLDivElement>();
 

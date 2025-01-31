@@ -16,10 +16,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CookieControlsView} from './CookieControlsView.js';
 import {CookieReportView} from './CookieReportView.js';
-import lockIconStyles from './lockIcon.css.legacy.js';
-import mainViewStyles from './mainView.css.legacy.js';
+import lockIconStyles from './lockIcon.css.js';
+import mainViewStyles from './mainView.css.js';
 import {ShowOriginEvent} from './OriginTreeElement.js';
-import originViewStyles from './originView.css.legacy.js';
+import originViewStyles from './originView.css.js';
 import {
   Events,
   type PageVisibleSecurityState,

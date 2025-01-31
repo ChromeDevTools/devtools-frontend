@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
-import animationTimelineStyles from './animationTimeline.css.legacy.js';
+import animationTimelineStyles from './animationTimeline.css.js';
 import {AnimationUI} from './AnimationUI.js';
 
 const UIStrings = {

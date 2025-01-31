@@ -16,7 +16,7 @@ import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js'
 import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
 
-import baseInsightComponentStylesRaw from './baseInsightComponent.css.legacy.js';
+import baseInsightComponentStylesRaw from './baseInsightComponent.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
 

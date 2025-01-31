@@ -13,7 +13,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
-import cookieReportViewStyles from './cookieReportView.css.legacy.js';
+import cookieReportViewStyles from './cookieReportView.css.js';
 
 const {render, html, Directives: {ref}} = Lit;
 

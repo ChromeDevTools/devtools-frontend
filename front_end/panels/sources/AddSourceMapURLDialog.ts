@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import dialogStyles from './dialog.css.legacy.js';
+import dialogStyles from './dialog.css.js';
 
 const UIStrings = {
   /**

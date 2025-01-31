@@ -13,7 +13,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
-import releaseNoteViewStyles from './releaseNoteView.css.legacy.js';
+import releaseNoteViewStyles from './releaseNoteView.css.js';
 
 const {render, html} = Lit;
 

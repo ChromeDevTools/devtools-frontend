@@ -4,7 +4,7 @@
 
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 
-import highlightingStylesRaw from './highlighting.css.legacy.js';
+import highlightingStylesRaw from './highlighting.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const highlightingStyles = new CSSStyleSheet();

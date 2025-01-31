@@ -41,7 +41,7 @@ import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} 
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.legacy.js';
+import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {
   selectionFromEvent,

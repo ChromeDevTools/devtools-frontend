@@ -9,7 +9,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as CSSOverviewComponents from './components/components.js';
-import cssOverviewStyles from './cssOverview.css.legacy.js';
+import cssOverviewStyles from './cssOverview.css.js';
 import {type ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
 import {Events, type OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';

@@ -4,7 +4,7 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import timelineSectionStylesRaw from './timelineSection.css.legacy.js';
+import timelineSectionStylesRaw from './timelineSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const timelineSectionStyles = new CSSStyleSheet();

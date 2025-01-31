@@ -13,7 +13,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import HeadersViewStylesRaw from './HeadersView.css.legacy.js';
+import HeadersViewStylesRaw from './HeadersView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const HeadersViewStyles = new CSSStyleSheet();

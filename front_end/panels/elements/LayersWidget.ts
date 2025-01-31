@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import layersWidgetStyles from './layersWidget.css.legacy.js';
+import layersWidgetStyles from './layersWidget.css.js';
 
 const UIStrings = {
   /**

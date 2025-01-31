@@ -7,7 +7,7 @@ import './CSSAngleSwatch.js';
 
 import * as Lit from '../../../lit/lit.js';
 
-import cssAngleStylesRaw from './cssAngle.css.legacy.js';
+import cssAngleStylesRaw from './cssAngle.css.js';
 import {
   type Angle,
   AngleUnit,

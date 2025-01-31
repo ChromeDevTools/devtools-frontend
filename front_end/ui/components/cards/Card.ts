@@ -6,7 +6,7 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as Lit from '../../lit/lit.js';
 
-import cardStylesRaw from './card.css.legacy.js';
+import cardStylesRaw from './card.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cardStyles = new CSSStyleSheet();

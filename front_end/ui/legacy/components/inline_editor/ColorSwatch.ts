@@ -8,7 +8,7 @@ import * as ColorPicker from '../../../legacy/components/color_picker/color_pick
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import colorSwatchStylesRaw from './colorSwatch.css.legacy.js';
+import colorSwatchStylesRaw from './colorSwatch.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const colorSwatchStyles = new CSSStyleSheet();

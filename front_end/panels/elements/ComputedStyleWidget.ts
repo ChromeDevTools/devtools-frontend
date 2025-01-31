@@ -45,7 +45,7 @@ import * as Lit from '../../ui/lit/lit.js';
 
 import * as ElementsComponents from './components/components.js';
 import {type ComputedStyle, type ComputedStyleModel, Events} from './ComputedStyleModel.js';
-import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.legacy.js';
+import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';

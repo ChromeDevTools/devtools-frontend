@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import dropTargetStyles from './dropTarget.css.legacy.js';
+import dropTargetStyles from './dropTarget.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class DropTarget {

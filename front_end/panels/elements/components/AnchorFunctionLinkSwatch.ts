@@ -10,7 +10,7 @@ import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.legacy.js';
+import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const anchorFunctionLinkSwatchStyles = new CSSStyleSheet();

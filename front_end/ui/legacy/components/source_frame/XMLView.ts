@@ -7,8 +7,8 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import xmlTreeStyles from './xmlTree.css.legacy.js';
-import xmlViewStyles from './xmlView.css.legacy.js';
+import xmlTreeStyles from './xmlTree.css.js';
+import xmlViewStyles from './xmlView.css.js';
 
 const UIStrings = {
   /**

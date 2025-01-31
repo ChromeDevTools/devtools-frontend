@@ -16,7 +16,7 @@ import {
   type PageAuditabilityChangedEvent,
   type PageWarningsChangedEvent,
 } from './LighthouseController.js';
-import lighthousePanelStyles from './lighthousePanel.css.legacy.js';
+import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
 import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';

@@ -32,7 +32,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import webSocketFrameViewStyles from './webSocketFrameView.css.legacy.js';
+import webSocketFrameViewStyles from './webSocketFrameView.css.js';
 
 const UIStrings = {
   /**

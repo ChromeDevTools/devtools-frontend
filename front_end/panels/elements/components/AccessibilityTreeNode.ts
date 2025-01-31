@@ -8,7 +8,7 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.legacy.js';
+import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const accessibilityTreeNodeStyles = new CSSStyleSheet();

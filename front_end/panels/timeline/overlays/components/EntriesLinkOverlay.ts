@@ -9,7 +9,7 @@ import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import stylesRaw from './entriesLinkOverlay.css.legacy.js';
+import stylesRaw from './entriesLinkOverlay.css.js';
 
 const UIStrings = {
   /**

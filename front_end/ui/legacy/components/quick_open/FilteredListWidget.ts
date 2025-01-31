@@ -11,7 +11,7 @@ import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.j
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filteredListWidgetStyles from './filteredListWidget.css.legacy.js';
+import filteredListWidgetStyles from './filteredListWidget.css.js';
 
 const UIStrings = {
   /**

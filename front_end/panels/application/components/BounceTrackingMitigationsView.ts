@@ -14,7 +14,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import bounceTrackingMitigationsViewStylesRaw from './bounceTrackingMitigationsView.css.legacy.js';
+import bounceTrackingMitigationsViewStylesRaw from './bounceTrackingMitigationsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const bounceTrackingMitigationsViewStyles = new CSSStyleSheet();

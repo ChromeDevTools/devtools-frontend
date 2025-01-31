@@ -31,7 +31,7 @@
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
-import popoverStyles from './popover.css.legacy.js';
+import popoverStyles from './popover.css.js';
 
 export class PopoverHelper {
   static createPopover = (jslogContext?: string): GlassPane => {

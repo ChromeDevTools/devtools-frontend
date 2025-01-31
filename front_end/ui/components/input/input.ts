@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import checkboxStylesRaw from './checkbox.css.legacy.js';
-import textInputStylesRaw from './textInput.css.legacy.js';
+import checkboxStylesRaw from './checkbox.css.js';
+import textInputStylesRaw from './textInput.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const checkboxStyles = new CSSStyleSheet();

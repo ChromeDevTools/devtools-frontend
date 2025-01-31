@@ -11,7 +11,7 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import mediaQueryInspectorStyles from './mediaQueryInspector.css.legacy.js';
+import mediaQueryInspectorStyles from './mediaQueryInspector.css.js';
 
 const UIStrings = {
   /**

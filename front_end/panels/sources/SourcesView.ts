@@ -20,7 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import sourcesViewStyles from './sourcesView.css.legacy.js';
+import sourcesViewStyles from './sourcesView.css.js';
 import {
   type EditorSelectedEvent,
   Events as TabbedEditorContainerEvents,

@@ -20,7 +20,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
-import preloadingDetailsReportViewStylesRaw from './preloadingDetailsReportView.css.legacy.js';
+import preloadingDetailsReportViewStylesRaw from './preloadingDetailsReportView.css.js';
 import * as PreloadingString from './PreloadingString.js';
 import {prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort} from './PreloadingString.js';
 

@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {getIssueKindIconData} from './IssueCounter.js';
-import IssueLinkIconStylesRaw from './issueLinkIcon.css.legacy.js';
+import IssueLinkIconStylesRaw from './issueLinkIcon.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const IssueLinkIconStyles = new CSSStyleSheet();

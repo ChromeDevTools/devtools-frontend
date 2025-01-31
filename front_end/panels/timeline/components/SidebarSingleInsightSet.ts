@@ -16,7 +16,7 @@ import {md} from '../utils/Helpers.js';
 import {shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
-import stylesRaw from './sidebarSingleInsightSet.css.legacy.js';
+import stylesRaw from './sidebarSingleInsightSet.css.js';
 import {determineCompareRating, NumberWithUnit} from './Utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

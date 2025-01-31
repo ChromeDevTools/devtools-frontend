@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.legacy.js';
+import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 
 const UIStrings = {
   /**

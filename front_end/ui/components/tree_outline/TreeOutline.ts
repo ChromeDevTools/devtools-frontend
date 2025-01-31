@@ -9,7 +9,7 @@ import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import treeOutlineStylesRaw from './treeOutline.css.legacy.js';
+import treeOutlineStylesRaw from './treeOutline.css.js';
 import {
   findNextNodeForTreeOutlineKeyboardNavigation,
   getNodeChildren,

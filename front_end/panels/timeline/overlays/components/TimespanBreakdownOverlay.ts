@@ -5,7 +5,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import stylesRaw from './timespanBreakdownOverlay.css.legacy.js';
+import stylesRaw from './timespanBreakdownOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();

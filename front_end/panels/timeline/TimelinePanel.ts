@@ -73,14 +73,14 @@ import {Events as TimelineFlameChartViewEvents, TimelineFlameChartView} from './
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineMiniMap} from './TimelineMiniMap.js';
-import timelinePanelStyles from './timelinePanel.css.legacy.js';
+import timelinePanelStyles from './timelinePanel.css.js';
 import {
   rangeForSelection,
   selectionFromEvent,
   selectionIsRange,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import timelineStatusDialogStyles from './timelineStatusDialog.css.legacy.js';
+import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';

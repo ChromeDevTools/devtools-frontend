@@ -4,7 +4,7 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import fileSourceIconStyles from './fileSourceIcon.css.legacy.js';
+import fileSourceIconStyles from './fileSourceIcon.css.js';
 import {create} from './Icon.js';
 
 const {html} = Lit;

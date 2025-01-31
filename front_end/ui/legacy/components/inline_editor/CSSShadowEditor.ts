@@ -8,7 +8,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import cssShadowEditorStyles from './cssShadowEditor.css.legacy.js';
+import cssShadowEditorStyles from './cssShadowEditor.css.js';
 
 const UIStrings = {
   /**

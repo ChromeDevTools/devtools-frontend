@@ -18,7 +18,7 @@ import * as NetworkComponents from '../network/components/components.js';
 import * as Network from '../network/network.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.legacy.js';
+import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
 
 const UIStrings = {
   /**

@@ -4,12 +4,12 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import reportStylesRaw from './report.css.legacy.js';
-import reportKeyStylesRaw from './reportKey.css.legacy.js';
-import reportSectionStylesRaw from './reportSection.css.legacy.js';
-import reportSectionDividerStylesRaw from './reportSectionDivider.css.legacy.js';
-import reportSectionHeaderStylesRaw from './reportSectionHeader.css.legacy.js';
-import reportValueStylesRaw from './reportValue.css.legacy.js';
+import reportStylesRaw from './report.css.js';
+import reportKeyStylesRaw from './reportKey.css.js';
+import reportSectionStylesRaw from './reportSection.css.js';
+import reportSectionDividerStylesRaw from './reportSectionDivider.css.js';
+import reportSectionHeaderStylesRaw from './reportSectionHeader.css.js';
+import reportValueStylesRaw from './reportValue.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const reportStyles = new CSSStyleSheet();

@@ -6,7 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import cssAngleEditorStylesRaw from './cssAngleEditor.css.legacy.js';
+import cssAngleEditorStylesRaw from './cssAngleEditor.css.js';
 import {
   type Angle,
   AngleUnit,

@@ -6,7 +6,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualElements from '../../visual_logging/visual_logging.js';
 
-import adornerStylesRaw from './adorner.css.legacy.js';
+import adornerStylesRaw from './adorner.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const adornerStyles = new CSSStyleSheet();

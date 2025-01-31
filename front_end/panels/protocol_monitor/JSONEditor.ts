@@ -18,7 +18,7 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ElementsComponents from '../elements/components/components.js';
 
-import editorWidgetStyles from './JSONEditor.css.legacy.js';
+import editorWidgetStyles from './JSONEditor.css.js';
 
 const {html, render, Directives, nothing} = Lit;
 const {live, classMap, repeat} = Directives;

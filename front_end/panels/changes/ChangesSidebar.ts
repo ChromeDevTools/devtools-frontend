@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
-import changesSidebarStyles from './changesSidebar.css.legacy.js';
+import changesSidebarStyles from './changesSidebar.css.js';
 
 const UIStrings = {
   /**

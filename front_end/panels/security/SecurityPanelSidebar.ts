@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
 import {CookieReportTreeElement} from './CookieReportTreeElement.js';
-import lockIconStyles from './lockIcon.css.legacy.js';
+import lockIconStyles from './lockIcon.css.js';
 import {OriginTreeElement} from './OriginTreeElement.js';
 import {
   createHighlightedUrl,
@@ -20,7 +20,7 @@ import {
   OriginGroup,
 } from './SecurityPanel.js';
 import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
-import sidebarStyles from './sidebar.css.legacy.js';
+import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {
   /**

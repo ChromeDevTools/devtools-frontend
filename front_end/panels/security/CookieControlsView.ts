@@ -18,7 +18,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cookieControlsViewStyles from './cookieControlsView.css.legacy.js';
+import cookieControlsViewStyles from './cookieControlsView.css.js';
 
 const {render, html} = Lit;
 

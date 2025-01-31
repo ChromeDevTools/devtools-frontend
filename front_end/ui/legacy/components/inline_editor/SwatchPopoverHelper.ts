@@ -8,7 +8,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
-import swatchPopoverStyles from './swatchPopover.css.legacy.js';
+import swatchPopoverStyles from './swatchPopover.css.js';
 
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly popover: UI.GlassPane.GlassPane;

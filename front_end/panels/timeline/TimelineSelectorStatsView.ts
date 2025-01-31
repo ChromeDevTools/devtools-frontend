@@ -15,7 +15,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.legacy.js';
+import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.js';
 
 const {render, html} = Lit;
 

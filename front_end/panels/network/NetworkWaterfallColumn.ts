@@ -12,8 +12,8 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStyles from './networkTimingTable.css.legacy.js';
-import networkWaterfallColumnStyles from './networkWaterfallColumn.css.legacy.js';
+import networkingTimingTableStyles from './networkTimingTable.css.js';
+import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
 import {type RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
 
 const BAR_SPACING = 1;

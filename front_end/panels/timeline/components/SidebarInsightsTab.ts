@@ -15,7 +15,7 @@ import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
-import stylesRaw from './sidebarInsightsTab.css.legacy.js';
+import stylesRaw from './sidebarInsightsTab.css.js';
 import type {SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

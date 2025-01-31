@@ -19,8 +19,8 @@ import {
   IssueAggregator,
 } from './IssueAggregator.js';
 import {getGroupIssuesByKindSetting, IssueKindView, issueKindViewSortPriority} from './IssueKindView.js';
-import issuesPaneStyles from './issuesPane.css.legacy.js';
-import issuesTreeStyles from './issuesTree.css.legacy.js';
+import issuesPaneStyles from './issuesPane.css.js';
+import issuesTreeStyles from './issuesTree.css.js';
 import {IssueView} from './IssueView.js';
 
 const UIStrings = {

@@ -4,7 +4,7 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import nodeTextStylesRaw from './nodeText.css.legacy.js';
+import nodeTextStylesRaw from './nodeText.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const nodeTextStyles = new CSSStyleSheet();

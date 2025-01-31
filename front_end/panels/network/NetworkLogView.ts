@@ -65,7 +65,7 @@ import {
   NetworkRequestNode,
 } from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
-import networkLogViewStyles from './networkLogView.css.legacy.js';
+import networkLogViewStyles from './networkLogView.css.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
 import {
   NetworkTimeBoundary,

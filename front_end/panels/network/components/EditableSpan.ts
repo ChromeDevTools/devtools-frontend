@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import editableSpanStylesRaw from './EditableSpan.css.legacy.js';
+import editableSpanStylesRaw from './EditableSpan.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const editableSpanStyles = new CSSStyleSheet();

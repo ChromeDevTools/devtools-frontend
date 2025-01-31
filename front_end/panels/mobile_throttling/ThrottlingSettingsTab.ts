@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CalibrationController} from './CalibrationController.js';
-import throttlingSettingsTabStyles from './throttlingSettingsTab.css.legacy.js';
+import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
 const UIStrings = {
   /**

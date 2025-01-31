@@ -7,7 +7,7 @@ import '../icon_button/icon_button.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import buttonStylesRaw from './button.css.legacy.js';
+import buttonStylesRaw from './button.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const buttonStyles = new CSSStyleSheet();

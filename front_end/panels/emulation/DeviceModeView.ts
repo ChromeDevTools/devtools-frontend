@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
-import deviceModeViewStyles from './deviceModeView.css.legacy.js';
+import deviceModeViewStyles from './deviceModeView.css.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
 const UIStrings = {

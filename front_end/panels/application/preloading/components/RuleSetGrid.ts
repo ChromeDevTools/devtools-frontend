@@ -19,7 +19,7 @@ import * as NetworkForward from '../../../network/forward/forward.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
 import * as PreloadingString from './PreloadingString.js';
-import ruleSetGridStylesRaw from './ruleSetGrid.css.legacy.js';
+import ruleSetGridStylesRaw from './ruleSetGrid.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const ruleSetGridStyles = new CSSStyleSheet();

@@ -14,7 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
-import debuggerPausedMessageStyles from './debuggerPausedMessage.css.legacy.js';
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 const UIStrings = {
   /**

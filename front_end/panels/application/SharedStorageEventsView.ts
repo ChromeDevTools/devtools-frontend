@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import sharedStorageEventsViewStyles from './sharedStorageEventsView.css.legacy.js';
+import sharedStorageEventsViewStyles from './sharedStorageEventsView.css.js';
 
 const UIStrings = {
   /**

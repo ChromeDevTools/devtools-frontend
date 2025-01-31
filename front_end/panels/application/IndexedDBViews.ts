@@ -43,7 +43,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
-import indexedDBViewsStyles from './indexedDBViews.css.legacy.js';
+import indexedDBViewsStyles from './indexedDBViews.css.js';
 
 const {html} = Lit;
 

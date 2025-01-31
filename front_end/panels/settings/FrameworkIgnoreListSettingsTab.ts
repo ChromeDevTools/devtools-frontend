@@ -11,8 +11,8 @@ import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.legacy.js';
-import settingsScreenStyles from './settingsScreen.css.legacy.js';
+import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
+import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
   /**

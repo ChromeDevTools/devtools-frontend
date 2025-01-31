@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import rootViewStyles from './rootView.css.legacy.js';
+import rootViewStyles from './rootView.css.js';
 import {VBox} from './Widget.js';
 import {ZoomManager} from './ZoomManager.js';
 

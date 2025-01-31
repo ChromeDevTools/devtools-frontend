@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import consoleContextSelectorStyles from './consoleContextSelector.css.legacy.js';
+import consoleContextSelectorStyles from './consoleContextSelector.css.js';
 
 const UIStrings = {
   /**

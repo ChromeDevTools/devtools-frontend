@@ -13,7 +13,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import developerResourcesListViewStyles from './developerResourcesListView.css.legacy.js';
+import developerResourcesListViewStyles from './developerResourcesListView.css.js';
 
 const {render, html, nothing} = Lit;
 

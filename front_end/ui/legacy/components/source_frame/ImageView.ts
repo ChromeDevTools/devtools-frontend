@@ -39,7 +39,7 @@ import * as Workspace from '../../../../models/workspace/workspace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import imageViewStyles from './imageView.css.legacy.js';
+import imageViewStyles from './imageView.css.js';
 
 const UIStrings = {
   /**

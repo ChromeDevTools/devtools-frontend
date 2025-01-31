@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import outermostTargetSelectorStyles from './outermostTargetSelector.css.legacy.js';
+import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
 
 const UIStrings = {
   /**

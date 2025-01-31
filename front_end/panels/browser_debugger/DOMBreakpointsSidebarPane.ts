@@ -37,7 +37,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
-import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.legacy.js';
+import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.js';
 
 const UIStrings = {
   /**

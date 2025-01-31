@@ -36,7 +36,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import fontViewStyles from './fontView.css.legacy.js';
+import fontViewStyles from './fontView.css.js';
 
 const UIStrings = {
   /**

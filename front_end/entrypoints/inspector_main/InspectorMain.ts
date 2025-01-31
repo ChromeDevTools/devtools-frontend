@@ -13,7 +13,7 @@ import * as Security from '../../panels/security/security.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeIconStyles from './nodeIcon.css.legacy.js';
+import nodeIconStyles from './nodeIcon.css.js';
 
 const UIStrings = {
   /**

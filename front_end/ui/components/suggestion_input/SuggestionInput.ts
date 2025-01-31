@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-import codeHighlighterStylesRaw from '../../../ui/components/code_highlighter/codeHighlighter.css.legacy.js';
+import codeHighlighterStylesRaw from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import contentEditableStylesRaw from './suggestionInput.css.legacy.js';
+import contentEditableStylesRaw from './suggestionInput.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const codeHighlighterStyles = new CSSStyleSheet();

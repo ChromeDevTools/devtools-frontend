@@ -11,7 +11,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.legacy.js';
+import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
 

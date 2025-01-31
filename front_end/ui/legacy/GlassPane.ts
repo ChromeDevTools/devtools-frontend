@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import type {Size} from './Geometry.js';
-import glassPaneStyles from './glassPane.css.legacy.js';
+import glassPaneStyles from './glassPane.css.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 

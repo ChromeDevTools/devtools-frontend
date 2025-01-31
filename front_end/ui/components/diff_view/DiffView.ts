@@ -8,7 +8,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Lit from '../../lit/lit.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
-import diffViewStylesRaw from './diffView.css.legacy.js';
+import diffViewStylesRaw from './diffView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const diffViewStyles = new CSSStyleSheet();

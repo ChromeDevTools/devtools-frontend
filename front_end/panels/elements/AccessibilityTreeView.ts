@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
-import accessibilityTreeViewStyles from './accessibilityTreeView.css.legacy.js';
+import accessibilityTreeViewStyles from './accessibilityTreeView.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
 export class AccessibilityTreeView extends UI.Widget.VBox implements

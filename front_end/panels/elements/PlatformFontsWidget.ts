@@ -34,7 +34,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {type ComputedStyleModel, Events} from './ComputedStyleModel.js';
-import platformFontsWidgetStyles from './platformFontsWidget.css.legacy.js';
+import platformFontsWidgetStyles from './platformFontsWidget.css.js';
 
 const UIStrings = {
   /**

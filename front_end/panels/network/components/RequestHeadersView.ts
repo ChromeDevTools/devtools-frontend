@@ -24,7 +24,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../../sources/sources.js';
 
 import type {RequestHeaderSectionData} from './RequestHeaderSection.js';
-import requestHeadersViewStylesRaw from './RequestHeadersView.css.legacy.js';
+import requestHeadersViewStylesRaw from './RequestHeadersView.css.js';
 import {
   RESPONSE_HEADER_SECTION_DATA_KEY,
   type ResponseHeaderSectionData,

@@ -52,11 +52,11 @@ export function getINP(insights: TraceInsightSets|null, key: string|null):
 }
 
 export function getCLS(
-    insights: TraceInsightSets|null, key: string|null): {value: number, worstShiftEvent: Types.Events.Event|null} {
+    insights: TraceInsightSets|null, key: string|null): {value: number, worstClusterEvent: Types.Events.Event|null} {
   const insight = getInsight('CLSCulprits', insights, key);
   if (!insight) {
     // Unlike the other metrics, there is always a value for CLS even with no data.
-    return {value: 0, worstShiftEvent: null};
+    return {value: 0, worstClusterEvent: null};
   }
 
   // TODO(cjamcl): the CLS insight should be doing this for us.
@@ -69,7 +69,7 @@ export function getCLS(
     }
   }
 
-  return {value: maxScore, worstShiftEvent: worstCluster?.worstShiftEvent ?? null};
+  return {value: maxScore, worstClusterEvent: worstCluster ?? null};
 }
 
 export function evaluateLCPMetricScore(value: number): number {

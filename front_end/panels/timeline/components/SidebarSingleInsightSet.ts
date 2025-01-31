@@ -261,7 +261,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
     const lcpEl = this.#renderMetricValue('LCP', local.lcp?.value ?? null, local.lcp?.event ?? null);
     const inpEl = this.#renderMetricValue('INP', local.inp?.value ?? null, local.inp?.event ?? null);
-    const clsEl = this.#renderMetricValue('CLS', local.cls.value ?? null, local.cls?.worstShiftEvent ?? null);
+    const clsEl = this.#renderMetricValue('CLS', local.cls.value ?? null, local.cls?.worstClusterEvent ?? null);
 
     const localMetricsTemplateResult = html`
       <div class="metrics-row">

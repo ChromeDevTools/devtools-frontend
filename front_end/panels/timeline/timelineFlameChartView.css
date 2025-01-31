@@ -145,14 +145,14 @@
 
 .overlay-type-TIMINGS_MARKER {
   bottom: 0;
-  width: 1px;
+  width: 0.5px;
   pointer-events: auto;
 }
 
 .marker-title {
   display: flex;
   justify-content: center;
-  width: var(--sys-size-13);
+  padding: 0 var(--sys-size-3);
   font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-base);
 

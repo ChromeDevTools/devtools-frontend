@@ -255,7 +255,8 @@ describeWithEnvironment('SamplesHandler', function() {
       assert.strictEqual(profileById.size, 1);
       const cpuProfileData = profileById.values().next().value as Trace.Handlers.ModelHandlers.Samples.ProfileData;
       const cpuProfile = cpuProfileData.rawProfile;
-      assert.deepEqual(Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines']);
+      assert.deepEqual(
+          Object.keys(cpuProfile), ['startTime', 'endTime', 'nodes', 'samples', 'timeDeltas', 'lines', 'traceIds']);
       assert.lengthOf(cpuProfile.nodes, 153);
       assert.strictEqual(cpuProfile.startTime, 287510826176);
       assert.strictEqual(cpuProfile.endTime, 287510847633);

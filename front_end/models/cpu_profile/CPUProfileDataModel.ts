@@ -50,6 +50,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   profileEndTime: number /* milliseconds */;
   timestamps: number[];
   samples: number[]|undefined;
+  /**
+   * Contains trace ids assigned to samples, if any. Trace ids are
+   * keyed by the sample index in the profile. These are only created
+   * for CPU profiles coming from traces.
+   */
+  traceIds?: Record<string, number>;
   lines?: number[];
   totalHitCount: number;
   profileHead: CPUProfileNode;
@@ -81,6 +87,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       this.profileEndTime = profile.endTime / 1000;
       this.timestamps = this.convertTimeDeltas(profile);
     }
+    this.traceIds = profile.traceIds;
     this.samples = profile.samples;
 
     // Lines are available only in profiles coming from tracing.
@@ -547,5 +554,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
 
 // Format used by profiles coming from traces.
 export type ExtendedProfileNode = Protocol.Profiler.ProfileNode&{parent?: number};
-export type ExtendedProfile =
-    Protocol.Profiler.Profile&{nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[], lines?: number[]};
+export type ExtendedProfile = Protocol.Profiler.Profile&{
+  nodes: Protocol.Profiler.ProfileNode[] | ExtendedProfileNode[],
+  lines?: number[],
+  traceIds?: Record<string, number>,
+};

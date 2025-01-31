@@ -174,6 +174,14 @@ export interface ProfileChunk extends Sample {
 export interface PartialProfile {
   nodes?: PartialNode[];
   samples: CallFrameID[];
+  /**
+   * Contains trace ids assigned to samples, if any. Trace ids are
+   * keyed by the sample index in the profile (the keys of the object
+   * are strings containing the numeric index).
+   */
+  /* eslint-disable @typescript-eslint/naming-convention */
+  trace_ids?: Record<string, number>;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface PartialNode {
@@ -1421,6 +1429,7 @@ export interface ConsoleTimeStamp extends Event {
       track?: string|number,
       trackGroup?: string|number,
       color?: string|number,
+      sampleTraceId?: number,
     },
   };
 }
@@ -1643,7 +1652,8 @@ export interface SyntheticJSSample extends Event {
   name: Name.JS_SAMPLE;
   args: Args&{
     data: ArgsData & {
-      stackTrace: Protocol.Runtime.CallFrame[],
+      // Used to associate a stack sample with a trace event.
+      traceId?: number, stackTrace: Protocol.Runtime.CallFrame[],
     },
   };
   ph: Phase.INSTANT;
@@ -2762,6 +2772,11 @@ export function isJSInvocationEvent(event: Event): boolean {
   return false;
 }
 export interface ConsoleRunTask extends Event {
+  args: Args&{
+    data: ArgsData & {
+      sampleTraceId?: number,
+    },
+  };
   name: Name.V8_CONSOLE_RUN_TASK;
 }
 

@@ -687,3 +687,10 @@ export function isMatchingCallFrame(
 export function eventContainsTimestamp(event: Types.Events.Event, ts: Types.Timing.Micro): boolean {
   return event.ts <= ts && event.ts + (event.dur || 0) >= ts;
 }
+
+export function extractSampleTraceId(event: Types.Events.Event): number|null {
+  if (Types.Events.isConsoleRunTask(event) || Types.Events.isConsoleTimeStamp(event)) {
+    return event.args?.data?.sampleTraceId || null;
+  }
+  return null;
+}

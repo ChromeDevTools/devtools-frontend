@@ -225,6 +225,74 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(constructedCalls[1].ts, 300);
       assert.strictEqual(constructedCalls[1].dur, 200);
     });
+    it('uses the stack in a sample for a trace event when connected via a common trace id ', () => {
+      const traceId = 123;
+      const cdpProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile = {
+        startTime: 0,
+        endTime: 3000,
+        nodes: [
+          {
+            id: 1,
+            hitCount: 0,
+            callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
+            children: [2],
+          },
+          {id: 2, callFrame: {functionName: 'foo', scriptId, url, lineNumber, columnNumber}, children: [3, 4]},
+          {id: 3, callFrame: {functionName: 'bar', scriptId, url, lineNumber, columnNumber}},
+          {id: 4, callFrame: {functionName: 'baz', scriptId, url, lineNumber, columnNumber}, children: [5]},
+          {id: 5, callFrame: {functionName: 'sheep', scriptId, url, lineNumber, columnNumber}},
+        ],
+        samples: [3, 3, 3, 5],
+        traceIds: {3: traceId},
+        timeDeltas: new Array(4).fill(100),
+      };
+
+      // Before integrating samples and trace events, the flamechart
+      // looks roughly like:
+      //   |----------------EvaluateScript-----------------|
+      //       |-----------------v8.run--------------------|
+      //                                    |---TimeStamp--|
+      //          | foo |  | foo |  | foo |  | foo |
+      //          | bar |  | bar |  | bar |  | baz |
+      //                                     |sheep|
+
+      // After integrating, it should look as follows. note that the the
+      // stack in the last sample should be used to parent `TimeStamp`,
+      // event if that sample's ts is later, since that event and that
+      // sample are connected by a trace id.
+      //   |----------------EvaluateScript-----------------|
+      //       |-----------------v8.run--------------------|
+      //          |------------------foo-------------------|
+      //          |----------bar--------||--------baz------|
+      //                                 |------sheep------|
+      //                                 |-Timestamp-|
+
+      const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
+      const integrator = new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, PROFILE_ID, pid, tid);
+      const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
+      const v8Run = makeCompleteEvent('v8.run', 10, 490);
+      const consoleTimeStamp =
+          makeCompleteEvent(Trace.Types.Events.Name.CONSOLE_TIME_STAMP, 350, 10) as Trace.Types.Events.ConsoleTimeStamp;
+      consoleTimeStamp.args = {data: {name: 'A timestamp', sampleTraceId: traceId}};
+      const traceEvents = [evaluateScript, v8Run, consoleTimeStamp];
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
+      assert.lengthOf(constructedCalls, 4);
+      assert.strictEqual(constructedCalls[0].callFrame.functionName, 'foo');
+      assert.strictEqual(constructedCalls[0].ts, 100);
+      assert.strictEqual(constructedCalls[0].dur, 400);  // 100 - 500
+
+      assert.strictEqual(constructedCalls[1].callFrame.functionName, 'bar');
+      assert.strictEqual(constructedCalls[1].ts, 100);
+      assert.strictEqual(constructedCalls[1].dur, 250);  // 100 - 350
+
+      assert.strictEqual(constructedCalls[2].callFrame.functionName, 'baz');
+      assert.strictEqual(constructedCalls[2].ts, 350);
+      assert.strictEqual(constructedCalls[2].dur, 150);  // 350 - 500
+
+      assert.strictEqual(constructedCalls[3].callFrame.functionName, 'sheep');
+      assert.strictEqual(constructedCalls[3].ts, 350);
+      assert.strictEqual(constructedCalls[3].dur, 150);  // 350 - 500
+    });
     it('restarts the call frame stack when a new top level event is encountered', () => {
       // Profile contains the following samples:
       // |a||a||a||a|

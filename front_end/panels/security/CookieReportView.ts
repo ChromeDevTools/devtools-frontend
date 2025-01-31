@@ -238,12 +238,13 @@ export class CookieReportView extends UI.Widget.VBox {
         <div class="report overflow-auto">
             <div class="header">
               <h1>${i18nString(UIStrings.title)}</h1>
-              <div class="body">${i18nString(UIStrings.body)} <x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
+              <div class="body">${i18nString(UIStrings.body)} <x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
             </div>
             ${input.gridData.length > 0 ?
               html`
                 <devtools-named-bit-set-filter
                   class="filter"
+                  aria-label="Third-party cookie status filters"
                   @filterChanged=${input.onFilterChanged}
                   .options=${{items: input.filterItems}}
                   ${ref((el?: Element) => {

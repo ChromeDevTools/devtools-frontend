@@ -187,6 +187,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             .checked=${Boolean(toggleEnabledSetting.get())}
             .disabled=${Boolean(enterpriseEnabledSetting.get())}
             @switchchange=${()=>{input.inputChanged(!toggleEnabledSetting.get(), toggleEnabledSetting);}}
+            aria-label="Temporarily limit third-party cookies, only when DevTools is open"
             jslog=${VisualLogging.toggle(toggleEnabledSetting.name).track({click: true})}
           >
           </devtools-switch>
@@ -218,7 +219,7 @@ export class CookieControlsView extends UI.Widget.VBox {
                     PH1: this.getChromeFlagsLink(UIStrings.tpcdMetadataGrants),
                   }) :
                 i18nFormatString(this.#isGracePeriodActive ? UIStrings.gracePeriodExplanation : UIStrings.enrollGracePeriod, {
-                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
+                  PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
                 })
               }
             </div>
@@ -251,7 +252,7 @@ export class CookieControlsView extends UI.Widget.VBox {
                     PH1: this.getChromeFlagsLink(UIStrings.tpcdHeuristicsGrants),
                   }) :
                 i18nFormatString(UIStrings.heuristicExplanation, {
-                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
+                  PH1: UI.Fragment.html`<x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
                 })
               }
             </div>
@@ -269,7 +270,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             ></devtools-icon>
             <devtools-button
             @click=${input.openChromeCookieSettings}
-            aria-label="View details"
+            aria-label="View details of third-party cookie access in Settings"
             .variant=${Buttons.Button.Variant.OUTLINED}
             jslog=${VisualLogging.action('view-details').track({click: true})}>
             ${i18nString(UIStrings.viewDetails)}
@@ -390,6 +391,7 @@ export class CookieControlsView extends UI.Widget.VBox {
     const link = new ChromeLink.ChromeLink.ChromeLink();
     link.textContent = flag;
     link.href = ('chrome://flags/' + flag) as Platform.DevToolsPath.UrlString;
+    link.setAttribute('tabindex', '0');
 
     return link;
   }

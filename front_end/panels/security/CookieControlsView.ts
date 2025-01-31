@@ -123,6 +123,11 @@ export interface ViewOutput {}
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
+export function showInfobar(): void {
+  UI.InspectorView.InspectorView.instance().displayDebuggedTabReloadRequiredWarning(
+      i18nString(UIStrings.siteReloadMessage));
+}
+
 export class CookieControlsView extends UI.Widget.VBox {
   #view: View;
   #isGracePeriodActive: boolean;
@@ -322,8 +327,7 @@ export class CookieControlsView extends UI.Widget.VBox {
 
   inputChanged(newValue: boolean, setting: Common.Settings.Setting<boolean>): void {
     setting.set(newValue);
-    UI.InspectorView.InspectorView.instance().displayDebuggedTabReloadRequiredWarning(
-        i18nString(UIStrings.siteReloadMessage));
+    showInfobar();
     this.requestUpdate();
   }
 

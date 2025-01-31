@@ -147,9 +147,12 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
-    if (Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get() ||
-        Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get() ||
-        Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get()) {
+    if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled &&
+        Common.Settings.Settings.instance().getHostConfig().thirdPartyCookieControls?.managedBlockThirdPartyCookies !==
+            true &&
+        (Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get() ||
+         Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get() ||
+         Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get())) {
       this.cookieControlFlagsSettingChanged();
     }
 

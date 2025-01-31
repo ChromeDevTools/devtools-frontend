@@ -7,7 +7,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
 import * as Common from '../common/common.js';
@@ -20,7 +20,32 @@ const LONG_URL_PART =
     'LoremIpsumDolorSitAmetConsecteturAdipiscingElitPhasellusVitaeOrciInAugueCondimentumTinciduntUtEgetDolorQuisqueEfficiturUltricesTinciduntVivamusVelitPurusCommodoQuisErosSitAmetTemporMalesuadaNislNullamTtempusVulputateAugueEgetScelerisqueLacusVestibulumNon/index.html';
 
 describeWithMockConnection('NetworkManager', () => {
+  it('setCookieControls is not invoked if the browsers enterprise setting blocks third party cookies', () => {
+    getGetHostConfigStub(
+        {thirdPartyCookieControls: {managedBlockThirdPartyCookies: true}, devToolsPrivacyUI: {enabled: true}});
+
+    const enableThirdPartyCookieRestrictionSetting =
+        Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);
+    const disableThirdPartyCookieMetadataSetting =
+        Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', true);
+    const disableThirdPartyCookieHeuristicsSetting =
+        Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', true);
+    assert.isFalse(enableThirdPartyCookieRestrictionSetting.get());
+    assert.isTrue(disableThirdPartyCookieMetadataSetting.get());
+    assert.isTrue(disableThirdPartyCookieHeuristicsSetting.get());
+
+    const target = createTarget();
+    const expectedCall = sinon.spy(target.networkAgent(), 'invoke_setCookieControls');
+
+    new SDK.NetworkManager.NetworkManager(target);
+
+    // function should not be called since there is a enterprise policy blocking third-party cookies
+    assert.isTrue(expectedCall.notCalled);
+  });
+
   it('setCookieControls gets invoked with expected values when network agent auto attach', () => {
+    getGetHostConfigStub({devToolsPrivacyUI: {enabled: true}});
+
     const enableThirdPartyCookieRestrictionSetting =
         Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);
     const disableThirdPartyCookieMetadataSetting =

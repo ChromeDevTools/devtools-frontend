@@ -7,7 +7,7 @@ import '../icon_button/icon_button.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 import type * as IconButton from '../icon_button/icon_button.js';
 
 import issueCounterStylesRaw from './issueCounter.css.js';
@@ -15,8 +15,6 @@ import issueCounterStylesRaw from './issueCounter.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const issueCounterStyles = new CSSStyleSheet();
 issueCounterStyles.replaceSync(issueCounterStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -209,7 +207,7 @@ export class IssueCounter extends HTMLElement {
       accessibleName: this.#accessibleName,
       compact: this.#compact,
     };
-    Lit.render(
+    render(
         html`
         <icon-button .data=${data} .accessibleName=${this.#accessibleName}></icon-button>
         `,

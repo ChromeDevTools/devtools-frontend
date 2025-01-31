@@ -7,15 +7,13 @@ import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 
 import hideIssuesMenuStylesRaw from './hideIssuesMenu.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const hideIssuesMenuStyles = new CSSStyleSheet();
 hideIssuesMenuStyles.replaceSync(hideIssuesMenuStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -62,7 +60,7 @@ export class HideIssuesMenu extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    Lit.render(html`
+    render(html`
     <devtools-button
       .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
       .jslogContext=${'hide-issues'}

@@ -6,15 +6,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const accessibilityTreeNodeStyles = new CSSStyleSheet();
 accessibilityTreeNodeStyles.replaceSync(accessibilityTreeNodeStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -85,12 +83,12 @@ export class AccessibilityTreeNode extends HTMLElement {
         ({name, value}) => isPrintable(value.type) ?
             html` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${
                 value.value}</span>` :
-            Lit.nothing);
+            nothing);
     const content =
         this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
     await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
       // clang-format off
-      Lit.render(
+      render(
         html`<div class='container'>${content}</div>`,
         this.#shadow,
         {host: this});

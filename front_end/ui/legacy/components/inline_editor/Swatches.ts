@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as IconButton from '../../../components/icon_button/icon_button.js';
-import * as Lit from '../../../lit/lit.js';
+import {html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
@@ -14,8 +14,6 @@ import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssShadowSwatchStyles = new CSSStyleSheet();
 cssShadowSwatchStyles.replaceSync(cssShadowSwatchStylesRaw.cssContent);
-
-const {html} = Lit;
 
 export class BezierSwatch extends HTMLElement {
   readonly #icon: IconButton.Icon.Icon;
@@ -70,7 +68,7 @@ export class CSSShadowSwatch extends HTMLElement {
       cssShadowSwatchStyles,
     ];
 
-    Lit.render(
+    render(
         html`<devtools-icon name="shadow" class="shadow-swatch-icon"></devtools-icon><slot></slot>`, this.#shadow,
         {host: this});
 

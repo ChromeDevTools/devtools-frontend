@@ -1,11 +1,12 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import {html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import stylesRaw from './entryLabelOverlay.css.js';
@@ -13,8 +14,6 @@ import stylesRaw from './entryLabelOverlay.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
 styles.replaceSync(stylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -339,7 +338,7 @@ export class EntryLabelOverlay extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    Lit.render(
+    render(
         html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <span

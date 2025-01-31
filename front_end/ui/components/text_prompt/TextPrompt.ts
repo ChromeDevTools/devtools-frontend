@@ -3,15 +3,13 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 
 import textPromptStylesRaw from './textPrompt.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const textPromptStyles = new CSSStyleSheet();
 textPromptStyles.replaceSync(textPromptStylesRaw.cssContent);
-
-const {html} = Lit;
 
 export interface TextPromptData {
   ariaLabel: string;
@@ -134,7 +132,7 @@ export class TextPrompt extends HTMLElement {
       <span class="text-prompt-input"><input class="input" aria-label=${
         this.#ariaLabelText} spellcheck="false" @input=${this.onInput} @keydown=${
         this.onKeyDown}/><input class="suggestion" aria-label=${this.#ariaLabelText + ' Suggestion'}></span>`;
-    Lit.render(output, this.#shadow, {host: this});
+    render(output, this.#shadow, {host: this});
   }
 }
 

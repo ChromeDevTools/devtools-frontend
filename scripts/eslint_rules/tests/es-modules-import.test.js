@@ -52,6 +52,11 @@ ruleTester.run('es-modules-import', rule, {
       code: 'import * as UI from \'../../legacy.js\';',
       filename: 'front_end/ui/legacy/components/data_grid/DataGrid.ts',
     },
+    // the `lit/lit.js` package is an exception
+    {
+      code: 'import {html, render} from \'../ui/lit/lit.js\';',
+      filename: 'front_end/elements/ElementsBreadcrumbs.ts',
+    },
     // the `ls` helper from Platform is an exception
     {
       code: 'import {ls} from \'../platform/platform.js\';',

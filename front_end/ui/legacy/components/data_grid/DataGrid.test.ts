@@ -4,12 +4,11 @@
 
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import {html, render} from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import * as DataGrid from './data_grid.js';
 
-const {render, html} = Lit;
 const widgetRef = UI.Widget.widgetRef;
 
 describeWithEnvironment('DataGrid', () => {

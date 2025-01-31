@@ -11,7 +11,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import {PanelUtils} from '../../../panels/utils/utils.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import webBundleInfoViewStylesRaw from './WebBundleInfoView.css.js';
@@ -20,7 +20,6 @@ import webBundleInfoViewStylesRaw from './WebBundleInfoView.css.js';
 const webBundleInfoViewStyles = new CSSStyleSheet();
 webBundleInfoViewStyles.replaceSync(webBundleInfoViewStylesRaw.cssContent);
 
-const {render, html} = Lit;
 const {mimeFromURL, fromMimeTypeOverride, fromMimeType} = Common.ResourceType.ResourceType;
 const {iconDataForResourceType} = PanelUtils;
 

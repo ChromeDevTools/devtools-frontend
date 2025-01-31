@@ -6,13 +6,11 @@ import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-li
 import {
   describeWithLocale,
 } from '../../../testing/EnvironmentHelpers.js';
-import * as Lit from '../../lit/lit.js';
+import {html} from '../../lit/lit.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Menus from './menus.js';
-
-const {html} = Lit;
 
 async function createMenu(): Promise<Menus.SelectMenu.SelectMenu> {
   const menuItems = [

@@ -6,7 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
@@ -15,8 +15,6 @@ import chromeLinkStylesRaw from './chromeLink.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const chromeLinkStyles = new CSSStyleSheet();
 chromeLinkStyles.replaceSync(chromeLinkStylesRaw.cssContent);
-
-const {html} = Lit;
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -65,7 +63,7 @@ export class ChromeLink extends HTMLElement {
     urlForContext.search = '';
     const jslogContext = Platform.StringUtilities.toKebabCase(urlForContext.toString());
     // clang-format off
-    Lit.render(
+    render(
       /* x-link doesn't work with custom click/keydown handlers */
       /* eslint-disable rulesdir/no-a-tags-in-lit */
       html`

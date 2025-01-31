@@ -16,7 +16,7 @@ import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as Sources from '../../../panels/sources/sources.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -36,8 +36,6 @@ import responseHeaderSectionStylesRaw from './ResponseHeaderSection.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const responseHeaderSectionStyles = new CSSStyleSheet();
 responseHeaderSectionStyles.replaceSync(responseHeaderSectionStylesRaw.cssContent);
-
-const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -558,7 +556,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
           jslog=${VisualLogging.action('add-header').track({click: true})}>
           ${i18nString(UIStrings.addHeader)}
         </devtools-button>
-      ` : Lit.nothing}
+      ` : nothing}
     `, this.shadow, {host: this});
     // clang-format on
   }

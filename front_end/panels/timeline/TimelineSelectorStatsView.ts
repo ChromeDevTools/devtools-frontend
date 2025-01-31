@@ -12,12 +12,10 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.js';
-
-const {render, html} = Lit;
 
 const UIStrings = {
   /**

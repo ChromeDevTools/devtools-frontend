@@ -7,7 +7,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import type {ButtonDialogData} from './ButtonDialog.js';
 import shortcutDialogStylesRaw from './shortcutDialog.css.js';
@@ -15,8 +15,6 @@ import shortcutDialogStylesRaw from './shortcutDialog.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const shortcutDialogStyles = new CSSStyleSheet();
 shortcutDialogStyles.replaceSync(shortcutDialogStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
 
@@ -79,7 +77,7 @@ export class ShortcutDialog extends HTMLElement {
     }
 
     // clang-format off
-    Lit.render(
+    render(
       html`
       <devtools-button-dialog .data=${{
           openOnRender: this.#openOnRender,
@@ -90,7 +88,7 @@ export class ShortcutDialog extends HTMLElement {
           iconTitle: i18nString(UIStrings.showShortcutTitle),
         } as ButtonDialogData}>
         <ul class="keybinds-list">
-          ${(this.#prependedElement) ? html`${this.#prependedElement}` : Lit.nothing}
+          ${(this.#prependedElement) ? html`${this.#prependedElement}` : nothing}
           ${this.#shortcuts.map(shortcut =>
             html`
               <li class="keybinds-list-item">

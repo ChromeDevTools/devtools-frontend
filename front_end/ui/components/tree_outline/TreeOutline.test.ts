@@ -11,12 +11,10 @@ import {
   renderElementIntoDOM,
   stripLitHtmlCommentNodes,
 } from '../../../testing/DOMHelpers.js';
-import * as Lit from '../../lit/lit.js';
+import {html} from '../../lit/lit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as TreeOutline from './tree_outline.js';
-
-const {html} = Lit;
 
 async function renderTreeOutline<TreeNodeDataType>({
   tree,

@@ -17,15 +17,13 @@ import type * as SplitView from '../../../ui/components/split_view/split_view.js
 // eslint-disable-next-line rulesdir/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -228,7 +226,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     };
 
     // clang-format off
-    Lit.render(
+    render(
         html`
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: max(100vh-200px, 0px)">
           <div slot="main" class="overflow-auto" style="height: 100%">
@@ -377,7 +375,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
     this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
-    Lit.render(
+    render(
         html`
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: 0px">
           <div slot="main" class="overflow-auto" style="height: 100%">

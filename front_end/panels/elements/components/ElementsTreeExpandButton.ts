@@ -5,7 +5,7 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsTreeExpandButtonStylesRaw from './elementsTreeExpandButton.css.js';
@@ -13,8 +13,6 @@ import elementsTreeExpandButtonStylesRaw from './elementsTreeExpandButton.css.js
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsTreeExpandButtonStyles = new CSSStyleSheet();
 elementsTreeExpandButtonStyles.replaceSync(elementsTreeExpandButtonStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -50,7 +48,7 @@ export class ElementsTreeExpandButton extends HTMLElement {
     // clang-format off
     // This button's innerText will be tested by e2e test and blink layout tests.
     // It can't have any other characters like '\n' or space, otherwise it will break tests.
-    Lit.render(html`<button
+    render(html`<button
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString(UIStrings.expand)}

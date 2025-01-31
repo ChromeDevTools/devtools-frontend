@@ -5,7 +5,7 @@
 import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, render} from '../../../ui/lit/lit.js';
 
 import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.js';
 
@@ -21,8 +21,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const {render, html, Directives} = Lit;
 
 interface Hint {
   getMessage(): string;

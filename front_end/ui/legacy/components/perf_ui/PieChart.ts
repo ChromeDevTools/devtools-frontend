@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Lit from '../../../lit/lit.js';
+import {html, render, svg} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import pieChartStylesRaw from './pieChart.css.js';
@@ -12,7 +12,6 @@ import pieChartStylesRaw from './pieChart.css.js';
 const pieChartStyles = new CSSStyleSheet();
 pieChartStyles.replaceSync(pieChartStylesRaw.cssContent);
 
-const {render, html, svg} = Lit;
 const UIStrings = {
   /**
    *@description Text for sum

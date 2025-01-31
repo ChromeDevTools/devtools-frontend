@@ -11,7 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CookieControlsView} from './CookieControlsView.js';
@@ -533,7 +533,6 @@ export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, secur
   return highlightedUrl;
 }
 
-const {render, html} = Lit;
 export interface ViewInput {
   panel: SecurityPanel;
 }

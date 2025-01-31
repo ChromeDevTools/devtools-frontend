@@ -8,7 +8,7 @@ import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
 import linearMemoryInspectorStylesRaw from './linearMemoryInspector.css.js';
@@ -35,8 +35,6 @@ import {
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryInspectorStyles = new CSSStyleSheet();
 linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssContent);
-
-const {render, html} = Lit;
 
 const UIStrings = {
   /**
@@ -222,7 +220,7 @@ export class LinearMemoryInspector extends HTMLElement {
           @resize=${this.#resize}>
         </devtools-linear-memory-inspector-viewer>
       </div>
-      ${this.#hideValueInspector ? Lit.nothing : html`
+      ${this.#hideValueInspector ? nothing : html`
       <div class="value-interpreter">
         <devtools-linear-memory-inspector-interpreter
           .data=${{

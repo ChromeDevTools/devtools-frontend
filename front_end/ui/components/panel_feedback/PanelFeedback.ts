@@ -7,7 +7,7 @@ import '../../legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import panelFeedbackStylesRaw from './panelFeedback.css.js';
@@ -15,8 +15,6 @@ import panelFeedbackStylesRaw from './panelFeedback.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const panelFeedbackStyles = new CSSStyleSheet();
 panelFeedbackStyles.replaceSync(panelFeedbackStylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -73,7 +71,7 @@ export class PanelFeedback extends HTMLElement {
     }
 
     // clang-format off
-    Lit.render(html`
+    render(html`
       <div class="preview">
         <h2 class="flex">
           <devtools-icon .data=${{

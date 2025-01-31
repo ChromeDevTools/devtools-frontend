@@ -7,7 +7,7 @@ import '../../../ui/legacy/legacy.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Input from '../../../ui/components/input/input.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import CSSPropertyDocsViewStylesRaw from './cssPropertyDocsView.css.js';
@@ -28,8 +28,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSPropertyDocsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const {render, html} = Lit;
 
 interface CSSProperty {
   name: string;
@@ -70,7 +68,7 @@ export class CSSPropertyDocsView extends HTMLElement {
           <div id="description">
             ${description}
           </div>
-        ` : Lit.nothing}
+        ` : nothing}
         ${link ? html`
           <div class="docs-popup-section footer">
             <x-link
@@ -85,7 +83,7 @@ export class CSSPropertyDocsView extends HTMLElement {
               ${i18nString(UIStrings.dontShow)}
             </label>
           </div>
-        ` : Lit.nothing}
+        ` : nothing}
       </div>
     `, this.#shadow, {
         host: this,

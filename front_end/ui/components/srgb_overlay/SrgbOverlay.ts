@@ -4,15 +4,13 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 
 import srgbOverlayStylesRaw from './srgbOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const srgbOverlayStyles = new CSSStyleSheet();
 srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw.cssContent);
-
-const {html} = Lit;
 
 interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
@@ -104,7 +102,7 @@ export class SrgbOverlay extends HTMLElement {
         return;
       }
 
-      Lit.render(
+      render(
           html`
           <span class="label" style="right: ${width - closestPoint.x}px">sRGB</span>
           <svg>

@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Lit from '../../../lit/lit.js';
+import {html, render} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorMixSwatchStylesRaw from './colorMixSwatch.css.js';
@@ -12,8 +12,6 @@ import colorMixSwatchStylesRaw from './colorMixSwatch.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const colorMixSwatchStyles = new CSSStyleSheet();
 colorMixSwatchStyles.replaceSync(colorMixSwatchStylesRaw.cssContent);
-
-const {html} = Lit;
 
 export const enum Events {
   COLOR_CHANGED = 'colorChanged',
@@ -88,7 +86,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   #render(): void {
     if (!this.colorMixText || !this.firstColorText || !this.secondColorText) {
-      Lit.render(this.colorMixText, this.shadow, {host: this});
+      render(this.colorMixText, this.shadow, {host: this});
       return;
     }
 
@@ -99,7 +97,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // free to append any content to replace what is being shown here.
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
-    Lit.render(
+    render(
       html`<div class="swatch-icon" jslog=${VisualLogging.cssColorMix()} style="--color: ${this.colorMixText}">
         <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
         <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>

@@ -10,6 +10,7 @@ import {
   getBrowserAndPages,
   getResourcesPath,
   goTo,
+  goToHtml,
   goToResource,
   goToResourceWithCustomHost,
   waitFor,
@@ -19,6 +20,13 @@ import {
 } from '../../shared/helper.js';
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {reloadDevTools, tabExistsInDrawer} from '../helpers/cross-tool-helper.js';
+import {
+  getCategoryRow,
+  navigateToMemoryTab,
+  setClassFilter,
+  takeHeapSnapshot,
+  waitForNonEmptyHeapSnapshotData,
+} from '../helpers/memory-helpers.js';
 
 const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';
@@ -448,6 +456,53 @@ describe('The Performance panel landing page', () => {
         'Array(3)',
         'Intersecting long animation frame events: [{…}]',
       ]);
+    } finally {
+      await targetSession.detach();
+    }
+  });
+
+  it('does not retain interaction nodes in memory', async () => {
+    const {target, frontend} = await getBrowserAndPages();
+
+    await target.bringToFront();
+
+    const targetSession = await target.createCDPSession();
+    try {
+      await goToHtml('<button>Click me!</button>');
+
+      const button = await target.waitForSelector('button');
+      await button!.click();
+
+      // This ensures that the interaction has time to make it's way through web-vitals.js and
+      // be detected by the live metrics model in DevTools.
+      //
+      // If any unnecessary JS references to the node get created they will be created in this time period.
+      await target.evaluate(() => new Promise(requestAnimationFrame));
+      await target.evaluate(() => new Promise(requestAnimationFrame));
+      await frontend.bringToFront();
+      await waitFor(INTERACTION_SELECTOR);
+      await target.bringToFront();
+
+      // Attempt to remove the node from memory
+      await button!.evaluate(async el => {
+        el.remove();
+        await new Promise(requestAnimationFrame);
+      });
+      await button!.dispose();
+
+      // Ensure the node is not preserved in a detached state
+      const {detachedNodes} = await targetSession.send('DOM.getDetachedDomNodes');
+      assert.lengthOf(detachedNodes, 0);
+
+      await frontend.bringToFront();
+
+      // For redundancy, ensure the button node is removed from the memory heap
+      await navigateToMemoryTab();
+      await takeHeapSnapshot();
+      await waitForNonEmptyHeapSnapshotData();
+      await setClassFilter('Detached <button>');
+      const row = await getCategoryRow('Detached <button>', false);
+      assert.isNull(row);
     } finally {
       await targetSession.detach();
     }

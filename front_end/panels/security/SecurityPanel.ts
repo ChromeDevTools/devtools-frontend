@@ -610,6 +610,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
+
+    this.sidebar.showLastSelectedElement();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {

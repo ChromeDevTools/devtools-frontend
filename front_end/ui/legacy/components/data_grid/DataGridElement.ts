@@ -5,9 +5,13 @@
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
-import dataGridStyles from './dataGrid.css.js';
+import dataGridStylesRaw from './dataGrid.css.legacy.js';
 import {Align, Events as DataGridEvents} from './DataGrid.js';
 import {SortableDataGrid, SortableDataGridNode} from './SortableDataGrid.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const dataGridStyles = new CSSStyleSheet();
+dataGridStyles.replaceSync(dataGridStylesRaw.cssContent);
 
 const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least one column.
 

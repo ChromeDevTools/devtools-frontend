@@ -14,7 +14,7 @@ import * as TimelineComponents from './components/components.js';
 import {initiatorsDataToDrawForNetwork} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {NetworkTrackAppender, type NetworkTrackEvent} from './NetworkTrackAppender.js';
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
+import timelineFlamechartPopoverStylesRaw from './timelineFlamechartPopover.css.legacy.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {
   selectionFromEvent,
@@ -23,6 +23,10 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import * as TimelineUtils from './utils/utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineFlamechartPopoverStyles = new CSSStyleSheet();
+timelineFlamechartPopoverStyles.replaceSync(timelineFlamechartPopoverStylesRaw.cssContent);
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   #minimumBoundary: number = 0;

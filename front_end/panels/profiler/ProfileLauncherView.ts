@@ -35,8 +35,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import type {ProfileType} from './ProfileHeader.js';
-import profileLauncherViewStyles from './profileLauncherView.css.js';
+import profileLauncherViewStylesRaw from './profileLauncherView.css.legacy.js';
 import type {ProfilesPanel} from './ProfilesPanel.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const profileLauncherViewStyles = new CSSStyleSheet();
+profileLauncherViewStyles.replaceSync(profileLauncherViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -34,7 +34,11 @@ ruleTester.run('inject-checkbox-styles', rule, {
       code: `import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as Lit from '../../lit/lit.js';
 import * as Input from '../input/input.js';
-import settingCheckboxStyles from './settingCheckbox.css.js';
+import settingCheckboxStylesRaw from './settingCheckbox.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const settingCheckboxStyles = new CSSStyleSheet();
+settingCheckboxStyles.replaceSync(settingCheckboxStylesRaw.cssContent);
 
 export class SettingCheckbox extends HTMLElement {
   static readonly litTagName = Lit.literal\`setting-checkbox\`;

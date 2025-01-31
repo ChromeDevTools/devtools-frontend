@@ -32,7 +32,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import webSocketFrameViewStyles from './webSocketFrameView.css.js';
+import webSocketFrameViewStylesRaw from './webSocketFrameView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const webSocketFrameViewStyles = new CSSStyleSheet();
+webSocketFrameViewStyles.replaceSync(webSocketFrameViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

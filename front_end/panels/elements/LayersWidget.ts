@@ -10,7 +10,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import layersWidgetStyles from './layersWidget.css.js';
+import layersWidgetStylesRaw from './layersWidget.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const layersWidgetStyles = new CSSStyleSheet();
+layersWidgetStyles.replaceSync(layersWidgetStylesRaw.cssContent);
 
 const UIStrings = {
   /**

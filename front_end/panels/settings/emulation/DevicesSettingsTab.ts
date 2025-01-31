@@ -10,7 +10,11 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as EmulationComponents from './components/components.js';
-import devicesSettingsTabStyles from './devicesSettingsTab.css.js';
+import devicesSettingsTabStylesRaw from './devicesSettingsTab.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const devicesSettingsTabStyles = new CSSStyleSheet();
+devicesSettingsTabStyles.replaceSync(devicesSettingsTabStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -19,8 +19,12 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 
-import styles from './chatView.css.js';
+import stylesRaw from './chatView.css.legacy.js';
 import type {UserActionRowProps} from './UserActionRow.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
 
 const {html, Directives: {ifDefined, ref}} = Lit;
 

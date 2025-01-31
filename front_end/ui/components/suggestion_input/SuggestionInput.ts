@@ -3,11 +3,19 @@
 // found in the LICENSE file.
 
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
+import codeHighlighterStylesRaw from '../../../ui/components/code_highlighter/codeHighlighter.css.legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import contentEditableStyles from './suggestionInput.css.js';
+import contentEditableStylesRaw from './suggestionInput.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const codeHighlighterStyles = new CSSStyleSheet();
+codeHighlighterStyles.replaceSync(codeHighlighterStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const contentEditableStyles = new CSSStyleSheet();
+contentEditableStyles.replaceSync(contentEditableStylesRaw.cssContent);
 
 const mod = (a: number, n: number): number => {
   return ((a % n) + n) % n;

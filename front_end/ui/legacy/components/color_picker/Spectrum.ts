@@ -47,7 +47,11 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 import {FormatPickerContextMenu} from './FormatPickerContextMenu.js';
-import spectrumStyles from './spectrum.css.js';
+import spectrumStylesRaw from './spectrum.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const spectrumStyles = new CSSStyleSheet();
+spectrumStyles.replaceSync(spectrumStylesRaw.cssContent);
 
 const UIStrings = {
   /**

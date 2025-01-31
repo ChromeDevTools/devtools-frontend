@@ -9,7 +9,11 @@ import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LayerViewer from '../layer_viewer/layer_viewer.js';
 
-import timelinePaintProfilerStyles from './timelinePaintProfiler.css.js';
+import timelinePaintProfilerStylesRaw from './timelinePaintProfiler.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelinePaintProfilerStyles = new CSSStyleSheet();
+timelinePaintProfilerStyles.replaceSync(timelinePaintProfilerStylesRaw.cssContent);
 
 export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
   private readonly logAndImageSplitWidget: UI.SplitWidget.SplitWidget;

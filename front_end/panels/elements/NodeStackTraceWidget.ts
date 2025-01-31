@@ -7,7 +7,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.js';
+import nodeStackTraceWidgetStylesRaw from './nodeStackTraceWidget.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const nodeStackTraceWidgetStyles = new CSSStyleSheet();
+nodeStackTraceWidgetStyles.replaceSync(nodeStackTraceWidgetStylesRaw.cssContent);
 
 const UIStrings = {
   /**

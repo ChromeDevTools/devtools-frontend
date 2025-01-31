@@ -8,7 +8,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import consoleContextSelectorStyles from './consoleContextSelector.css.js';
+import consoleContextSelectorStylesRaw from './consoleContextSelector.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const consoleContextSelectorStyles = new CSSStyleSheet();
+consoleContextSelectorStyles.replaceSync(consoleContextSelectorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

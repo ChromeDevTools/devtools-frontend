@@ -14,8 +14,16 @@ import {
   type MenuItemSelectedEvent,
   type MenuItemValue,
 } from './Menu.js';
-import selectMenuStyles from './selectMenu.css.js';
-import selectMenuButtonStyles from './selectMenuButton.css.js';
+import selectMenuStylesRaw from './selectMenu.css.legacy.js';
+import selectMenuButtonStylesRaw from './selectMenuButton.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const selectMenuStyles = new CSSStyleSheet();
+selectMenuStyles.replaceSync(selectMenuStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const selectMenuButtonStyles = new CSSStyleSheet();
+selectMenuButtonStyles.replaceSync(selectMenuButtonStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -16,8 +16,12 @@ import {
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
-import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
+import timelineHistoryManagerStylesRaw from './timelineHistoryManager.css.legacy.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineHistoryManagerStyles = new CSSStyleSheet();
+timelineHistoryManagerStyles.replaceSync(timelineHistoryManagerStylesRaw.cssContent);
 
 /**
  * The dropdown works by returning an index which is the trace index; but we

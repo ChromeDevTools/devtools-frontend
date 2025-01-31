@@ -9,7 +9,11 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import reportingApiGridStyles from './reportingApiGrid.css.js';
+import reportingApiGridStylesRaw from './reportingApiGrid.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportingApiGridStyles = new CSSStyleSheet();
+reportingApiGridStyles.replaceSync(reportingApiGridStylesRaw.cssContent);
 
 const UIStrings = {
   /**

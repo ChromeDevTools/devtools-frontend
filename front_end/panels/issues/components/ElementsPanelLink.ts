@@ -5,7 +5,11 @@
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import elementsPanelLinkStyles from './elementsPanelLink.css.js';
+import elementsPanelLinkStylesRaw from './elementsPanelLink.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const elementsPanelLinkStyles = new CSSStyleSheet();
+elementsPanelLinkStyles.replaceSync(elementsPanelLinkStylesRaw.cssContent);
 
 const {html} = Lit;
 

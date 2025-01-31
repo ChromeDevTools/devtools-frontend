@@ -8,7 +8,11 @@ import * as UI from '../../legacy.js';
 
 import {AnimationTimingModel} from './AnimationTimingModel.js';
 import {AnimationTimingUI, PresetUI} from './AnimationTimingUI.js';
-import bezierEditorStyles from './bezierEditor.css.js';
+import bezierEditorStylesRaw from './bezierEditor.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const bezierEditorStyles = new CSSStyleSheet();
+bezierEditorStyles.replaceSync(bezierEditorStylesRaw.cssContent);
 
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
 

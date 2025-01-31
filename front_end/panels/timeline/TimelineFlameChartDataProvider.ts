@@ -41,7 +41,7 @@ import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} 
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
+import timelineFlamechartPopoverStylesRaw from './timelineFlamechartPopover.css.legacy.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {
   selectionFromEvent,
@@ -50,6 +50,10 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineFlamechartPopoverStyles = new CSSStyleSheet();
+timelineFlamechartPopoverStyles.replaceSync(timelineFlamechartPopoverStylesRaw.cssContent);
 
 const UIStrings = {
   /**

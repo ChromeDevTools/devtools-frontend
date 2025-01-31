@@ -41,8 +41,12 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import jsUtilsStyles from './jsUtils.css.js';
+import jsUtilsStylesRaw from './jsUtils.css.legacy.js';
 import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const jsUtilsStyles = new CSSStyleSheet();
+jsUtilsStyles.replaceSync(jsUtilsStylesRaw.cssContent);
 
 const UIStrings = {
   /**

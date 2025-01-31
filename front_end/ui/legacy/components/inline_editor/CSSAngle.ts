@@ -7,7 +7,7 @@ import './CSSAngleSwatch.js';
 
 import * as Lit from '../../../lit/lit.js';
 
-import cssAngleStyles from './cssAngle.css.js';
+import cssAngleStylesRaw from './cssAngle.css.legacy.js';
 import {
   type Angle,
   AngleUnit,
@@ -18,6 +18,10 @@ import {
   roundAngleByUnit,
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssAngleStyles = new CSSStyleSheet();
+cssAngleStyles.replaceSync(cssAngleStylesRaw.cssContent);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;

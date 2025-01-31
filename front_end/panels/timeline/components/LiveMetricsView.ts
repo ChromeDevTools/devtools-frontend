@@ -27,10 +27,18 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
 
-import liveMetricsViewStyles from './liveMetricsView.css.js';
+import liveMetricsViewStylesRaw from './liveMetricsView.css.legacy.js';
 import type {MetricCardData} from './MetricCard.js';
-import metricValueStyles from './metricValueStyles.css.js';
+import metricValueStylesRaw from './metricValueStyles.css.legacy.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const liveMetricsViewStyles = new CSSStyleSheet();
+liveMetricsViewStyles.replaceSync(liveMetricsViewStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const metricValueStyles = new CSSStyleSheet();
+metricValueStyles.replaceSync(metricValueStylesRaw.cssContent);
 
 const {html, nothing} = Lit;
 

@@ -10,7 +10,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as UI from '../../legacy/legacy.js';
 
 import type {DataGridContextMenusConfiguration} from './DataGrid.js';
-import dataGridControllerStyles from './dataGridController.css.js';
+import dataGridControllerStylesRaw from './dataGridController.css.legacy.js';
 import type {ColumnHeaderClickEvent, ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
 import {
   type Column,
@@ -20,6 +20,10 @@ import {
   SortDirection,
   type SortState,
 } from './DataGridUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const dataGridControllerStyles = new CSSStyleSheet();
+dataGridControllerStyles.replaceSync(dataGridControllerStylesRaw.cssContent);
 
 const {html} = Lit;
 

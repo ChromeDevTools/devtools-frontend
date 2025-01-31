@@ -13,9 +13,13 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
+import releaseNoteViewStylesRaw from './releaseNoteView.css.legacy.js';
 
 const {render, html} = Lit;
-import releaseNoteViewStyles from './releaseNoteView.css.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const releaseNoteViewStyles = new CSSStyleSheet();
+releaseNoteViewStyles.replaceSync(releaseNoteViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

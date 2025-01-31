@@ -10,8 +10,12 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {MainView, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
-import playerListViewStyles from './playerListView.css.js';
+import playerListViewStylesRaw from './playerListView.css.legacy.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const playerListViewStyles = new CSSStyleSheet();
+playerListViewStyles.replaceSync(playerListViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

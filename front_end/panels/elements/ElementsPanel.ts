@@ -51,7 +51,7 @@ import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import elementsPanelStyles from './elementsPanel.css.js';
+import elementsPanelStylesRaw from './elementsPanel.css.legacy.js';
 import type {ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
@@ -62,6 +62,10 @@ import {
   StylesSidebarPane,
   type StylesUpdateCompletedEvent,
 } from './StylesSidebarPane.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const elementsPanelStyles = new CSSStyleSheet();
+elementsPanelStyles.replaceSync(elementsPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**

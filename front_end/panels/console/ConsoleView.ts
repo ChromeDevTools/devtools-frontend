@@ -47,7 +47,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
+import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -57,7 +57,7 @@ import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
-import consoleViewStyles from './consoleView.css.js';
+import consoleViewStylesRaw from './consoleView.css.legacy.js';
 import {
   ConsoleCommand,
   ConsoleCommandResult,
@@ -68,6 +68,12 @@ import {
   MaxLengthForLinks,
 } from './ConsoleViewMessage.js';
 import {ConsoleViewport, type ConsoleViewportElement, type ConsoleViewportProvider} from './ConsoleViewport.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const objectValueStyles = new CSSStyleSheet();
+objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
+const consoleViewStyles = new CSSStyleSheet();
+consoleViewStyles.replaceSync(consoleViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -718,7 +724,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.#isDetached = false;
     this.updateIssuesToolbarItem();
     this.viewport.refresh();
-    this.registerCSSFiles([consoleViewStyles, objectValueStyles, CodeHighlighter.Style.default]);
+    this.registerCSSFiles([consoleViewStyles, objectValueStyles]);
+    this.registerRequiredCSS(CodeHighlighter.Style.default);
   }
 
   override focus(): void {

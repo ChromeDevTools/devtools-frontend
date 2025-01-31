@@ -14,7 +14,11 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
-import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
+import sidebarAnnotationsTabStylesRaw from './sidebarAnnotationsTab.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sidebarAnnotationsTabStyles = new CSSStyleSheet();
+sidebarAnnotationsTabStyles.replaceSync(sidebarAnnotationsTabStylesRaw.cssContent);
 
 const {html} = Lit;
 

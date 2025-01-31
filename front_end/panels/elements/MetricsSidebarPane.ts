@@ -38,7 +38,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
+import metricsSidebarPaneStylesRaw from './metricsSidebarPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const metricsSidebarPaneStyles = new CSSStyleSheet();
+metricsSidebarPaneStyles.replaceSync(metricsSidebarPaneStylesRaw.cssContent);
 
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;

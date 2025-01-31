@@ -41,7 +41,11 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
+import callStackSidebarPaneStylesRaw from './callStackSidebarPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const callStackSidebarPaneStyles = new CSSStyleSheet();
+callStackSidebarPaneStyles.replaceSync(callStackSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

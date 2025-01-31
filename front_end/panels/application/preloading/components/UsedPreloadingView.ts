@@ -22,7 +22,11 @@ import * as PreloadingHelper from '../helper/helper.js';
 
 import type * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
-import usedPreloadingStyles from './usedPreloadingView.css.js';
+import usedPreloadingStylesRaw from './usedPreloadingView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const usedPreloadingStyles = new CSSStyleSheet();
+usedPreloadingStyles.replaceSync(usedPreloadingStylesRaw.cssContent);
 
 const {html} = Lit;
 

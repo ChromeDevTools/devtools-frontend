@@ -6,7 +6,11 @@ import '../icon_button/icon_button.js';
 
 import * as Lit from '../../lit/lit.js';
 
-import floatingButtonStyles from './floatingButton.css.js';
+import floatingButtonStylesRaw from './floatingButton.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const floatingButtonStyles = new CSSStyleSheet();
+floatingButtonStyles.replaceSync(floatingButtonStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined}} = Lit;
 

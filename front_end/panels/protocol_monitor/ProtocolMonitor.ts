@@ -20,7 +20,11 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Command, Events as JSONEditorEvents, JSONEditor, type Parameter} from './JSONEditor.js';
-import protocolMonitorStyles from './protocolMonitor.css.js';
+import protocolMonitorStylesRaw from './protocolMonitor.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const protocolMonitorStyles = new CSSStyleSheet();
+protocolMonitorStyles.replaceSync(protocolMonitorStylesRaw.cssContent);
 
 const {widgetConfig} = UI.Widget;
 const {render, html} = Lit;

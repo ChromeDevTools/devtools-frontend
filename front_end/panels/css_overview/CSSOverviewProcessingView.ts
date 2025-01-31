@@ -7,7 +7,11 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {Events, type OverviewController} from './CSSOverviewController.js';
-import cssOverviewProcessingViewStyles from './cssOverviewProcessingView.css.js';
+import cssOverviewProcessingViewStylesRaw from './cssOverviewProcessingView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssOverviewProcessingViewStyles = new CSSStyleSheet();
+cssOverviewProcessingViewStyles.replaceSync(cssOverviewProcessingViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

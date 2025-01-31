@@ -16,9 +16,13 @@ import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js'
 import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
 
-import baseInsightComponentStyles from './baseInsightComponent.css.js';
+import baseInsightComponentStylesRaw from './baseInsightComponent.css.legacy.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const baseInsightComponentStyles = new CSSStyleSheet();
+baseInsightComponentStyles.replaceSync(baseInsightComponentStylesRaw.cssContent);
 
 const {html} = Lit;
 

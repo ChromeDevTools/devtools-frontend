@@ -12,7 +12,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
-import developerResourcesViewStyles from './developerResourcesView.css.js';
+import developerResourcesViewStylesRaw from './developerResourcesView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const developerResourcesViewStyles = new CSSStyleSheet();
+developerResourcesViewStyles.replaceSync(developerResourcesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

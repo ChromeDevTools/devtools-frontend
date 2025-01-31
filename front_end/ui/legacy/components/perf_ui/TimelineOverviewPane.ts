@@ -36,7 +36,11 @@ import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {Events as OverviewGridEvents, OverviewGrid, type WindowChangedWithPositionEvent} from './OverviewGrid.js';
 import {TimelineOverviewCalculator} from './TimelineOverviewCalculator.js';
-import timelineOverviewInfoStyles from './timelineOverviewInfo.css.js';
+import timelineOverviewInfoStylesRaw from './timelineOverviewInfo.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineOverviewInfoStyles = new CSSStyleSheet();
+timelineOverviewInfoStyles.replaceSync(timelineOverviewInfoStylesRaw.cssContent);
 
 export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {

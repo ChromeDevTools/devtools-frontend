@@ -51,10 +51,14 @@ import * as Snippets from '../snippets/snippets.js';
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import {NavigatorView} from './NavigatorView.js';
-import sourcesPanelStyles from './sourcesPanel.css.js';
+import sourcesPanelStylesRaw from './sourcesPanel.css.legacy.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sourcesPanelStyles = new CSSStyleSheet();
+sourcesPanelStyles.replaceSync(sourcesPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**

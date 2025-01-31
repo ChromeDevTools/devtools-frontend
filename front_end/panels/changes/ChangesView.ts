@@ -18,7 +18,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
-import changesViewStyles from './changesView.css.js';
+import changesViewStylesRaw from './changesView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const changesViewStyles = new CSSStyleSheet();
+changesViewStyles.replaceSync(changesViewStylesRaw.cssContent);
 
 const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes' as Platform.DevToolsPath.UrlString;
 

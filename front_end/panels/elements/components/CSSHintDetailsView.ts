@@ -7,7 +7,11 @@ import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import cssHintDetailsViewStyles from './cssHintDetailsView.css.js';
+import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssHintDetailsViewStyles = new CSSStyleSheet();
+cssHintDetailsViewStyles.replaceSync(cssHintDetailsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

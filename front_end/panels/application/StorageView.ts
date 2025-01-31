@@ -15,7 +15,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
-import storageViewStyles from './storageView.css.js';
+import storageViewStylesRaw from './storageView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const storageViewStyles = new CSSStyleSheet();
+storageViewStyles.replaceSync(storageViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

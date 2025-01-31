@@ -4,7 +4,11 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import controlButtonStyles from './controlButton.css.js';
+import controlButtonStylesRaw from './controlButton.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const controlButtonStyles = new CSSStyleSheet();
+controlButtonStyles.replaceSync(controlButtonStylesRaw.cssContent);
 
 const {html, Decorators, LitElement} = Lit;
 const {customElement, property} = Decorators;

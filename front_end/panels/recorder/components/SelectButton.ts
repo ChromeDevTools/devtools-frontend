@@ -15,7 +15,11 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import type * as Actions from '../recorder-actions/recorder-actions.js';
 
-import selectButtonStyles from './selectButton.css.js';
+import selectButtonStylesRaw from './selectButton.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const selectButtonStyles = new CSSStyleSheet();
+selectButtonStyles.replaceSync(selectButtonStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined, classMap}} = Lit;
 

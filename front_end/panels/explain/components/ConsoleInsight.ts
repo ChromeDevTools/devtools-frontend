@@ -19,8 +19,16 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
-import styles from './consoleInsight.css.js';
-import listStyles from './consoleInsightSourcesList.css.js';
+import stylesRaw from './consoleInsight.css.legacy.js';
+import listStylesRaw from './consoleInsightSourcesList.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const listStyles = new CSSStyleSheet();
+listStyles.replaceSync(listStylesRaw.cssContent);
 
 // Note: privacy and legal notices are not localized so far.
 const UIStrings = {

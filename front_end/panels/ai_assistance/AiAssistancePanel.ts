@@ -41,7 +41,7 @@ import {
 import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
-import styles from './aiAssistancePanel.css.js';
+import stylesRaw from './aiAssistancePanel.css.legacy.js';
 import {
   AiHistoryStorage,
 } from './AiHistoryStorage.js';
@@ -54,6 +54,10 @@ import {
   State as ChatViewState,
   type Step,
 } from './components/ChatView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
 
 const {html} = Lit;
 

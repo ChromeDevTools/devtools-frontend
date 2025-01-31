@@ -14,7 +14,11 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as EmulationUtils from '../utils/utils.js';
 
-import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
+import userAgentClientHintsFormStylesRaw from './userAgentClientHintsForm.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const userAgentClientHintsFormStyles = new CSSStyleSheet();
+userAgentClientHintsFormStyles.replaceSync(userAgentClientHintsFormStylesRaw.cssContent);
 
 const {html} = Lit;
 

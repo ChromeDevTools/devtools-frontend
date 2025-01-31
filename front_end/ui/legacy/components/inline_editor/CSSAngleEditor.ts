@@ -6,7 +6,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import cssAngleEditorStyles from './cssAngleEditor.css.js';
+import cssAngleEditorStylesRaw from './cssAngleEditor.css.legacy.js';
 import {
   type Angle,
   AngleUnit,
@@ -15,6 +15,10 @@ import {
   getNewAngleFromEvent,
   getRadiansFromAngle,
 } from './CSSAngleUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssAngleEditorStyles = new CSSStyleSheet();
+cssAngleEditorStyles.replaceSync(cssAngleEditorStylesRaw.cssContent);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;

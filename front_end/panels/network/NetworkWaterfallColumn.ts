@@ -12,9 +12,17 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import type {NetworkNode} from './NetworkDataGridNode.js';
 import {RequestTimeRangeNameToColor} from './NetworkOverview.js';
 import type {Label, NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStyles from './networkTimingTable.css.js';
-import networkWaterfallColumnStyles from './networkWaterfallColumn.css.js';
+import networkingTimingTableStylesRaw from './networkTimingTable.css.legacy.js';
+import networkWaterfallColumnStylesRaw from './networkWaterfallColumn.css.legacy.js';
 import {type RequestTimeRange, RequestTimeRangeNames, RequestTimingView} from './RequestTimingView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkingTimingTableStyles = new CSSStyleSheet();
+networkingTimingTableStyles.replaceSync(networkingTimingTableStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkWaterfallColumnStyles = new CSSStyleSheet();
+networkWaterfallColumnStyles.replaceSync(networkWaterfallColumnStylesRaw.cssContent);
 
 const BAR_SPACING = 1;
 

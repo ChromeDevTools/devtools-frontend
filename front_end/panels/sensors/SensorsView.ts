@@ -10,7 +10,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import sensorsStyles from './sensors.css.js';
+import sensorsStylesRaw from './sensors.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sensorsStyles = new CSSStyleSheet();
+sensorsStyles.replaceSync(sensorsStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -10,7 +10,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import reportingApiReportsViewStyles from './reportingApiReportsView.css.js';
+import reportingApiReportsViewStylesRaw from './reportingApiReportsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportingApiReportsViewStyles = new CSSStyleSheet();
+reportingApiReportsViewStyles.replaceSync(reportingApiReportsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

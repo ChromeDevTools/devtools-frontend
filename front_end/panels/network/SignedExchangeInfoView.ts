@@ -4,15 +4,22 @@
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-
-import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
-import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.js';
-
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Protocol from '../../generated/protocol.js';
+
+import signedExchangeInfoTreeStylesRaw from './signedExchangeInfoTree.css.legacy.js';
+import signedExchangeInfoViewStylesRaw from './signedExchangeInfoView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const signedExchangeInfoTreeStyles = new CSSStyleSheet();
+signedExchangeInfoTreeStyles.replaceSync(signedExchangeInfoTreeStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const signedExchangeInfoViewStyles = new CSSStyleSheet();
+signedExchangeInfoViewStyles.replaceSync(signedExchangeInfoViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

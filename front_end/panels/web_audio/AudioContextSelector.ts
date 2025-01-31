@@ -8,7 +8,11 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import audioContextSelectorStyles from './audioContextSelector.css.js';
+import audioContextSelectorStylesRaw from './audioContextSelector.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const audioContextSelectorStyles = new CSSStyleSheet();
+audioContextSelectorStyles.replaceSync(audioContextSelectorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

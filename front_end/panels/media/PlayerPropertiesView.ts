@@ -9,7 +9,11 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerPropertiesViewStyles from './playerPropertiesView.css.js';
+import playerPropertiesViewStylesRaw from './playerPropertiesView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const playerPropertiesViewStyles = new CSSStyleSheet();
+playerPropertiesViewStyles.replaceSync(playerPropertiesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -43,7 +43,11 @@ import {PanelUtils} from '../utils/utils.js';
 
 import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
-import settingsScreenStyles from './settingsScreen.css.js';
+import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const settingsScreenStyles = new CSSStyleSheet();
+settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
 
 const UIStrings = {
 

@@ -9,7 +9,11 @@ import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../lit/lit.js';
 
-import surveyLinkStyles from './surveyLink.css.js';
+import surveyLinkStylesRaw from './surveyLink.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const surveyLinkStyles = new CSSStyleSheet();
+surveyLinkStyles.replaceSync(surveyLinkStylesRaw.cssContent);
 
 const {html} = Lit;
 

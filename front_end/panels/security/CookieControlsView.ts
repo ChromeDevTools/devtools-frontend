@@ -18,7 +18,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cookieControlsViewStyles from './cookieControlsView.css.js';
+import cookieControlsViewStylesRaw from './cookieControlsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cookieControlsViewStyles = new CSSStyleSheet();
+cookieControlsViewStyles.replaceSync(cookieControlsViewStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

@@ -8,10 +8,10 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 
+import * as Cards from './cards.js';
+
 const CONTENT_SLOT = 'content';
 const HEADING_SUFFIX_SLOT = 'heading-suffix';
-
-import * as Cards from './cards.js';
 
 function assertCardContent(card: Cards.Card.Card, slotName: string, expectedContent: string[]) {
   const slot = getElementWithinComponent(card, `slot[name="${slotName}"]`, HTMLSlotElement);

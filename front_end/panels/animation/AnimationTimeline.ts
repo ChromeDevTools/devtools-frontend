@@ -15,8 +15,12 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
-import animationTimelineStyles from './animationTimeline.css.js';
+import animationTimelineStylesRaw from './animationTimeline.css.legacy.js';
 import {AnimationUI} from './AnimationUI.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const animationTimelineStyles = new CSSStyleSheet();
+animationTimelineStyles.replaceSync(animationTimelineStylesRaw.cssContent);
 
 const UIStrings = {
   /**

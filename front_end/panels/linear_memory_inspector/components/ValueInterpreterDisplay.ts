@@ -6,11 +6,11 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import valueInterpreterDisplayStyles from './valueInterpreterDisplay.css.js';
+import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.legacy.js';
 import {
   Endianness,
   format,
@@ -23,6 +23,14 @@ import {
   ValueType,
   ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const inspectorCommonStyles = new CSSStyleSheet();
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const valueInterpreterDisplayStyles = new CSSStyleSheet();
+valueInterpreterDisplayStyles.replaceSync(valueInterpreterDisplayStylesRaw.cssContent);
 
 const UIStrings = {
   /**

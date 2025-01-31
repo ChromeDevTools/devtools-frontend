@@ -20,9 +20,13 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
-import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
+import preloadingDetailsReportViewStylesRaw from './preloadingDetailsReportView.css.legacy.js';
 import * as PreloadingString from './PreloadingString.js';
 import {prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort} from './PreloadingString.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const preloadingDetailsReportViewStyles = new CSSStyleSheet();
+preloadingDetailsReportViewStyles.replaceSync(preloadingDetailsReportViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

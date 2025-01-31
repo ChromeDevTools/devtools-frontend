@@ -6,8 +6,12 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {toHexString} from './LinearMemoryInspectorUtils.js';
-import linearMemoryViewerStyles from './linearMemoryViewer.css.js';
+import linearMemoryViewerStylesRaw from './linearMemoryViewer.css.legacy.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const linearMemoryViewerStyles = new CSSStyleSheet();
+linearMemoryViewerStyles.replaceSync(linearMemoryViewerStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

@@ -14,7 +14,7 @@ async function runCSSMinification(input, fileName) {
   return result.css;
 }
 
-async function codeForFile({srcDir, fileName, input, isDebug, hotReloadEnabled, isLegacy = false, buildTimestamp}) {
+async function codeForFile({srcDir, fileName, input, isDebug, hotReloadEnabled, isLegacy = true, buildTimestamp}) {
   input = input.replace(/\`/g, '\\\'');
   input = input.replace(/\\/g, '\\\\');
 
@@ -78,20 +78,19 @@ ${exportStatement}
 exports.codeForFile = codeForFile;
 
 async function runMain() {
-  const [, , buildTimestamp, isDebugString, legacyString, targetName, srcDir, targetGenDir, files, hotReloadEnabledString] =
+  const [, , buildTimestamp, isDebugString, targetName, srcDir, targetGenDir, files, hotReloadEnabledString] =
       process.argv;
 
   const filenames = files.split(',');
   const configFiles = [];
   const isDebug = isDebugString === 'true';
-  const isLegacy = legacyString === 'true';
   const hotReloadEnabled = hotReloadEnabledString === 'true';
 
   for (const fileName of filenames) {
     const contents = fs.readFileSync(path.join(srcDir, fileName), {encoding: 'utf8', flag: 'r'});
-    const newContents =
-        await codeForFile({srcDir, fileName, isDebug, hotReloadEnabled, input: contents, isLegacy, buildTimestamp});
-    const generatedFileName = `${fileName}${isLegacy ? '.legacy' : ''}.js`;
+    const newContents = await codeForFile(
+        {srcDir, fileName, isDebug, hotReloadEnabled, input: contents, isLegacy: true, buildTimestamp});
+    const generatedFileName = `${fileName}.legacy.js`;
     const generatedFileLocation = path.join(targetGenDir, generatedFileName);
 
     writeIfChanged(generatedFileLocation, newContents);

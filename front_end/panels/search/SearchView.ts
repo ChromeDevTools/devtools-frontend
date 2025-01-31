@@ -15,7 +15,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {SearchResultsPane} from './SearchResultsPane.js';
 import type {SearchResult, SearchScope} from './SearchScope.js';
-import searchViewStyles from './searchView.css.js';
+import searchViewStylesRaw from './searchView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const searchViewStyles = new CSSStyleSheet();
+searchViewStyles.replaceSync(searchViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

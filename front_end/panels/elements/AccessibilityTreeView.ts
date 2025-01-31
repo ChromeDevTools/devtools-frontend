@@ -9,8 +9,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as AccessibilityTreeUtils from './AccessibilityTreeUtils.js';
-import accessibilityTreeViewStyles from './accessibilityTreeView.css.js';
+import accessibilityTreeViewStylesRaw from './accessibilityTreeView.css.legacy.js';
 import {ElementsPanel} from './ElementsPanel.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const accessibilityTreeViewStyles = new CSSStyleSheet();
+accessibilityTreeViewStyles.replaceSync(accessibilityTreeViewStylesRaw.cssContent);
 
 export class AccessibilityTreeView extends UI.Widget.VBox implements
     SDK.TargetManager.SDKModelObserver<SDK.AccessibilityModel.AccessibilityModel> {

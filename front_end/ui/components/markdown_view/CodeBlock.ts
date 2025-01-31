@@ -12,7 +12,11 @@ import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import styles from './codeBlock.css.js';
+import stylesRaw from './codeBlock.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
 
 const {html} = Lit;
 

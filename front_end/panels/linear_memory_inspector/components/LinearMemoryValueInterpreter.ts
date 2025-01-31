@@ -11,9 +11,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
+import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.legacy.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const linearMemoryValueInterpreterStyles = new CSSStyleSheet();
+linearMemoryValueInterpreterStyles.replaceSync(linearMemoryValueInterpreterStylesRaw.cssContent);
 
 const UIStrings = {
   /**

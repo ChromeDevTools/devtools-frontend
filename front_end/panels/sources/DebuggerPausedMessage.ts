@@ -14,7 +14,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
-import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
+import debuggerPausedMessageStylesRaw from './debuggerPausedMessage.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const debuggerPausedMessageStyles = new CSSStyleSheet();
+debuggerPausedMessageStyles.replaceSync(debuggerPausedMessageStylesRaw.cssContent);
 
 const UIStrings = {
   /**

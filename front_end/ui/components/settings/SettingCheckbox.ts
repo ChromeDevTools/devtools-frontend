@@ -12,7 +12,11 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
-import settingCheckboxStyles from './settingCheckbox.css.js';
+import settingCheckboxStylesRaw from './settingCheckbox.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const settingCheckboxStyles = new CSSStyleSheet();
+settingCheckboxStyles.replaceSync(settingCheckboxStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined}} = Lit;
 

@@ -14,10 +14,18 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../utils/utils.js';
 
-import NetworkRequestDetailsStyles from './networkRequestDetails.css.js';
-import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
+import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.legacy.js';
+import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.legacy.js';
 import {NetworkRequestTooltip} from './NetworkRequestTooltip.js';
 import {colorForNetworkRequest} from './Utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const NetworkRequestDetailsStyles = new CSSStyleSheet();
+NetworkRequestDetailsStyles.replaceSync(NetworkRequestDetailsStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkRequestTooltipStyles = new CSSStyleSheet();
+networkRequestTooltipStyles.replaceSync(networkRequestTooltipStylesRaw.cssContent);
 
 const {html} = Lit;
 

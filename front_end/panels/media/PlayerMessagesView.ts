@@ -10,7 +10,11 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerMessagesViewStyles from './playerMessagesView.css.js';
+import playerMessagesViewStylesRaw from './playerMessagesView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const playerMessagesViewStyles = new CSSStyleSheet();
+playerMessagesViewStyles.replaceSync(playerMessagesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

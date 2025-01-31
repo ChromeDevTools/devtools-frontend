@@ -15,7 +15,11 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import requestLinkIconStyles from './requestLinkIcon.css.js';
+import requestLinkIconStylesRaw from './requestLinkIcon.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestLinkIconStyles = new CSSStyleSheet();
+requestLinkIconStyles.replaceSync(requestLinkIconStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
 import {CookieReportTreeElement} from './CookieReportTreeElement.js';
-import lockIconStyles from './lockIcon.css.js';
+import lockIconStylesRaw from './lockIcon.css.legacy.js';
 import {OriginTreeElement} from './OriginTreeElement.js';
 import {
   createHighlightedUrl,
@@ -20,7 +20,15 @@ import {
   OriginGroup,
 } from './SecurityPanel.js';
 import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
-import sidebarStyles from './sidebar.css.js';
+import sidebarStylesRaw from './sidebar.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const lockIconStyles = new CSSStyleSheet();
+lockIconStyles.replaceSync(lockIconStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sidebarStyles = new CSSStyleSheet();
+sidebarStyles.replaceSync(sidebarStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -39,7 +39,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStyles from './networkTimingTable.css.js';
+import networkingTimingTableStylesRaw from './networkTimingTable.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkingTimingTableStyles = new CSSStyleSheet();
+networkingTimingTableStyles.replaceSync(networkingTimingTableStylesRaw.cssContent);
 
 const UIStrings = {
   /**

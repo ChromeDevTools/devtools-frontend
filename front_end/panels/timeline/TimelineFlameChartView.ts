@@ -30,7 +30,7 @@ import {
   TimelineFlameChartDataProvider,
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
-import timelineFlameChartViewStyles from './timelineFlameChartView.css.js';
+import timelineFlameChartViewStylesRaw from './timelineFlameChartView.css.legacy.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {
   rangeForSelection,
@@ -43,6 +43,10 @@ import {
 import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 import * as Utils from './utils/utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineFlameChartViewStyles = new CSSStyleSheet();
+timelineFlameChartViewStyles.replaceSync(timelineFlameChartViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -9,12 +9,16 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
-import customPreviewComponentStyles from './customPreviewComponent.css.js';
+import customPreviewComponentStylesRaw from './customPreviewComponent.css.legacy.js';
 import {
   ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
 } from './ObjectPropertiesSection.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const customPreviewComponentStyles = new CSSStyleSheet();
+customPreviewComponentStyles.replaceSync(customPreviewComponentStylesRaw.cssContent);
 
 const UIStrings = {
   /**

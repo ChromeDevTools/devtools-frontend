@@ -45,12 +45,16 @@ import * as Lit from '../../ui/lit/lit.js';
 
 import * as ElementsComponents from './components/components.js';
 import {type ComputedStyle, type ComputedStyleModel, Events} from './ComputedStyleModel.js';
-import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
+import computedStyleSidebarPaneStylesRaw from './computedStyleSidebarPane.css.legacy.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
 import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const computedStyleSidebarPaneStyles = new CSSStyleSheet();
+computedStyleSidebarPaneStyles.replaceSync(computedStyleSidebarPaneStylesRaw.cssContent);
 
 const {html} = Lit;
 

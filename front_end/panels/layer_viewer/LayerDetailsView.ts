@@ -35,7 +35,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import layerDetailsViewStyles from './layerDetailsView.css.js';
+import layerDetailsViewStylesRaw from './layerDetailsView.css.legacy.js';
 import {
   type LayerView,
   type LayerViewHost,
@@ -44,6 +44,10 @@ import {
   type SnapshotSelection,
   Type,
 } from './LayerViewHost.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const layerDetailsViewStyles = new CSSStyleSheet();
+layerDetailsViewStyles.replaceSync(layerDetailsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

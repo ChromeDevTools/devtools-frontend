@@ -14,30 +14,16 @@ const ruleTester = new (require('eslint').RuleTester)({
 ruleTester.run('check-css-import', rule, {
   valid: [
     {
-      code: 'import styles from \'./check_css_import_test_file.css.js\';',
-      filename: 'scripts/eslint_rules/tests/file.ts',
-    },
-    {
       code: 'import styles from \'./check_css_import_test_file.css.legacy.js\';',
       filename: 'scripts/eslint_rules/tests/file.ts',
     },
     {
-      code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.js\';',
+      code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.legacy.js\';',
       filename: 'front_end/ui/components/file.ts',
     },
   ],
 
   invalid: [
-    {
-      // Files that do not exist are caught
-      code: 'import styles from \'styles.css.js\';',
-      filename: 'front_end/ui/components/component/file.ts',
-      errors: [
-        {
-          message: 'File styles.css does not exist. Check you are importing the correct file.',
-        },
-      ],
-    },
     {
       // Files that do not exist are caught
       code: 'import styles from \'styles.css.legacy.js\';',
@@ -50,7 +36,7 @@ ruleTester.run('check-css-import', rule, {
     },
     {
       // Filename typos are caught
-      code: 'import styles from \'../../../scripts/eslint_rules/test/check_css_import_tests_file.css.js\';',
+      code: 'import styles from \'../../../scripts/eslint_rules/test/check_css_import_tests_file.css.legacy.js\';',
       filename: 'front_end/ui/components/icon_button/file.ts',
       errors: [
         {

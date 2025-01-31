@@ -12,7 +12,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CalibrationController} from './CalibrationController.js';
-import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
+import throttlingSettingsTabStylesRaw from './throttlingSettingsTab.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const throttlingSettingsTabStyles = new CSSStyleSheet();
+throttlingSettingsTabStyles.replaceSync(throttlingSettingsTabStylesRaw.cssContent);
 
 const UIStrings = {
   /**

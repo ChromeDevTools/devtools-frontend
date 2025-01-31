@@ -13,8 +13,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
-import consoleSidebarStyles from './consoleSidebar.css.js';
+import consoleSidebarStylesRaw from './consoleSidebar.css.legacy.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const consoleSidebarStyles = new CSSStyleSheet();
+consoleSidebarStyles.replaceSync(consoleSidebarStylesRaw.cssContent);
 
 const UIStrings = {
   /**

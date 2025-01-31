@@ -12,7 +12,11 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import binaryResourceViewStyles from './binaryResourceView.css.js';
+import binaryResourceViewStylesRaw from './binaryResourceView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const binaryResourceViewStyles = new CSSStyleSheet();
+binaryResourceViewStyles.replaceSync(binaryResourceViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -6,7 +6,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import dialogStyles from './dialog.css.js';
+import dialogStylesRaw from './dialog.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const dialogStyles = new CSSStyleSheet();
+dialogStyles.replaceSync(dialogStylesRaw.cssContent);
 
 const UIStrings = {
   /**

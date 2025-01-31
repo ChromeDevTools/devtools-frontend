@@ -32,7 +32,11 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import dataGridStyles from './dataGrid.css.js';
+import dataGridStylesRaw from './dataGrid.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const dataGridStyles = new CSSStyleSheet();
+dataGridStyles.replaceSync(dataGridStylesRaw.cssContent);
 
 const UIStrings = {
   /**

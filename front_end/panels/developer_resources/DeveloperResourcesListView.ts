@@ -13,7 +13,11 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 
-import developerResourcesListViewStyles from './developerResourcesListView.css.js';
+import developerResourcesListViewStylesRaw from './developerResourcesListView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const developerResourcesListViewStyles = new CSSStyleSheet();
+developerResourcesListViewStyles.replaceSync(developerResourcesListViewStylesRaw.cssContent);
 
 const {render, html, nothing} = Lit;
 

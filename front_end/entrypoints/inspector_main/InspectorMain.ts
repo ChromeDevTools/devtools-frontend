@@ -12,7 +12,11 @@ import * as MobileThrottling from '../../panels/mobile_throttling/mobile_throttl
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeIconStyles from './nodeIcon.css.js';
+import nodeIconStylesRaw from './nodeIcon.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const nodeIconStyles = new CSSStyleSheet();
+nodeIconStyles.replaceSync(nodeIconStylesRaw.cssContent);
 
 const UIStrings = {
   /**

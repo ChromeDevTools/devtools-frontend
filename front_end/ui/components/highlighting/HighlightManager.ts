@@ -4,7 +4,11 @@
 
 import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 
-import highlightingStyles from './highlighting.css.js';
+import highlightingStylesRaw from './highlighting.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const highlightingStyles = new CSSStyleSheet();
+highlightingStyles.replaceSync(highlightingStylesRaw.cssContent);
 
 export class RangeWalker {
   #offset = 0;

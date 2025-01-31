@@ -14,7 +14,11 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import webBundleInfoViewStyles from './WebBundleInfoView.css.js';
+import webBundleInfoViewStylesRaw from './WebBundleInfoView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const webBundleInfoViewStyles = new CSSStyleSheet();
+webBundleInfoViewStyles.replaceSync(webBundleInfoViewStylesRaw.cssContent);
 
 const {render, html} = Lit;
 const {mimeFromURL, fromMimeTypeOverride, fromMimeType} = Common.ResourceType.ResourceType;

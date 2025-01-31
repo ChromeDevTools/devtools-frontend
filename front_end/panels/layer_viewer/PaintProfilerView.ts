@@ -36,7 +36,11 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import paintProfilerStyles from './paintProfiler.css.js';
+import paintProfilerStylesRaw from './paintProfiler.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const paintProfilerStyles = new CSSStyleSheet();
+paintProfilerStyles.replaceSync(paintProfilerStylesRaw.cssContent);
 
 const UIStrings = {
   /**

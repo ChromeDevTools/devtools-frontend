@@ -6,13 +6,17 @@ import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import buttonDialogStyles from './buttonDialog.css.js';
+import buttonDialogStylesRaw from './buttonDialog.css.legacy.js';
 import {
   type ClickOutsideDialogEvent,
   type Dialog as DialogElement,
   DialogHorizontalAlignment,
   DialogVerticalPosition,
 } from './Dialog.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const buttonDialogStyles = new CSSStyleSheet();
+buttonDialogStyles.replaceSync(buttonDialogStylesRaw.cssContent);
 
 const {html} = Lit;
 

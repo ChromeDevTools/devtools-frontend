@@ -43,13 +43,21 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
+import objectValueStylesRaw from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
-import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css.js';
+import watchExpressionsSidebarPaneStylesRaw from './watchExpressionsSidebarPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const objectValueStyles = new CSSStyleSheet();
+objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const watchExpressionsSidebarPaneStyles = new CSSStyleSheet();
+watchExpressionsSidebarPaneStyles.replaceSync(watchExpressionsSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -8,7 +8,11 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import cssShadowEditorStyles from './cssShadowEditor.css.js';
+import cssShadowEditorStylesRaw from './cssShadowEditor.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssShadowEditorStyles = new CSSStyleSheet();
+cssShadowEditorStyles.replaceSync(cssShadowEditorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

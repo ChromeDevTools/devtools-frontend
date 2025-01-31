@@ -9,9 +9,21 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Dialogs from '../dialogs/dialogs.js';
 
-import menuStyles from './menu.css.js';
-import menuGroupStyles from './menuGroup.css.js';
-import menuItemStyles from './menuItem.css.js';
+import menuStylesRaw from './menu.css.legacy.js';
+import menuGroupStylesRaw from './menuGroup.css.legacy.js';
+import menuItemStylesRaw from './menuItem.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const menuStyles = new CSSStyleSheet();
+menuStyles.replaceSync(menuStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const menuGroupStyles = new CSSStyleSheet();
+menuGroupStyles.replaceSync(menuGroupStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const menuItemStyles = new CSSStyleSheet();
+menuItemStyles.replaceSync(menuItemStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -9,7 +9,11 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
+import openedWindowDetailsViewStylesRaw from './openedWindowDetailsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const openedWindowDetailsViewStyles = new CSSStyleSheet();
+openedWindowDetailsViewStyles.replaceSync(openedWindowDetailsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -14,7 +14,11 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
+import breakpointEditDialogStylesRaw from './breakpointEditDialog.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const breakpointEditDialogStyles = new CSSStyleSheet();
+breakpointEditDialogStyles.replaceSync(breakpointEditDialogStylesRaw.cssContent);
 
 const {Direction} = TextEditor.TextEditorHistory;
 

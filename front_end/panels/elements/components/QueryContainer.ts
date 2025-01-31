@@ -10,7 +10,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import type {DOMNode} from './Helper.js';
-import queryContainerStyles from './queryContainer.css.js';
+import queryContainerStylesRaw from './queryContainer.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const queryContainerStyles = new CSSStyleSheet();
+queryContainerStyles.replaceSync(queryContainerStylesRaw.cssContent);
 
 const {render, html} = Lit;
 const {PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;

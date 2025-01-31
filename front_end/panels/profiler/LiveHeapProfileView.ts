@@ -13,7 +13,11 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import liveHeapProfileStyles from './liveHeapProfile.css.js';
+import liveHeapProfileStylesRaw from './liveHeapProfile.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const liveHeapProfileStyles = new CSSStyleSheet();
+liveHeapProfileStyles.replaceSync(liveHeapProfileStylesRaw.cssContent);
 
 const UIStrings = {
   /**

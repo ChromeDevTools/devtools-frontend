@@ -37,7 +37,11 @@ import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_tab
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestCookiesViewStyles from './requestCookiesView.css.js';
+import requestCookiesViewStylesRaw from './requestCookiesView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestCookiesViewStyles = new CSSStyleSheet();
+requestCookiesViewStyles.replaceSync(requestCookiesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

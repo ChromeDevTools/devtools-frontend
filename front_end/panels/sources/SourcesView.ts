@@ -20,7 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import sourcesViewStyles from './sourcesView.css.js';
+import sourcesViewStylesRaw from './sourcesView.css.legacy.js';
 import {
   type EditorSelectedEvent,
   Events as TabbedEditorContainerEvents,
@@ -28,6 +28,10 @@ import {
   type TabbedEditorContainerDelegate,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sourcesViewStyles = new CSSStyleSheet();
+sourcesViewStyles.replaceSync(sourcesViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -9,7 +9,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.js';
+import cssOverviewSidebarPanelStylesRaw from './cssOverviewSidebarPanel.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssOverviewSidebarPanelStyles = new CSSStyleSheet();
+cssOverviewSidebarPanelStyles.replaceSync(cssOverviewSidebarPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**

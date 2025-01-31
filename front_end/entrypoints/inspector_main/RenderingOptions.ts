@@ -34,7 +34,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import renderingOptionsStyles from './renderingOptions.css.js';
+import renderingOptionsStylesRaw from './renderingOptions.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const renderingOptionsStyles = new CSSStyleSheet();
+renderingOptionsStyles.replaceSync(renderingOptionsStylesRaw.cssContent);
 
 const UIStrings = {
   /**

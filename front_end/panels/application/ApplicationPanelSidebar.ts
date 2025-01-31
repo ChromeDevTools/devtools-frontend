@@ -75,7 +75,7 @@ import {
 } from './PreloadingTreeElement.js';
 import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 import type {ResourcesPanel} from './ResourcesPanel.js';
-import resourcesSidebarStyles from './resourcesSidebar.css.js';
+import resourcesSidebarStylesRaw from './resourcesSidebar.css.legacy.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
 import {SharedStorageListTreeElement} from './SharedStorageListTreeElement.js';
@@ -88,6 +88,10 @@ import {SharedStorageTreeElement} from './SharedStorageTreeElement.js';
 import {StorageBucketsTreeParentElement} from './StorageBucketsTreeElement.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const resourcesSidebarStyles = new CSSStyleSheet();
+resourcesSidebarStyles.replaceSync(resourcesSidebarStylesRaw.cssContent);
 
 const UIStrings = {
   /**

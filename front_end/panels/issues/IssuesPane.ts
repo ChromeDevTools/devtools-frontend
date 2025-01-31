@@ -19,9 +19,17 @@ import {
   IssueAggregator,
 } from './IssueAggregator.js';
 import {getGroupIssuesByKindSetting, IssueKindView, issueKindViewSortPriority} from './IssueKindView.js';
-import issuesPaneStyles from './issuesPane.css.js';
-import issuesTreeStyles from './issuesTree.css.js';
+import issuesPaneStylesRaw from './issuesPane.css.legacy.js';
+import issuesTreeStylesRaw from './issuesTree.css.legacy.js';
 import {IssueView} from './IssueView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const issuesPaneStyles = new CSSStyleSheet();
+issuesPaneStyles.replaceSync(issuesPaneStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const issuesTreeStyles = new CSSStyleSheet();
+issuesTreeStyles.replaceSync(issuesTreeStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -11,7 +11,11 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import originMapStyles from './originMap.css.js';
+import originMapStylesRaw from './originMap.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const originMapStyles = new CSSStyleSheet();
+originMapStyles.replaceSync(originMapStylesRaw.cssContent);
 
 const {html} = Lit;
 

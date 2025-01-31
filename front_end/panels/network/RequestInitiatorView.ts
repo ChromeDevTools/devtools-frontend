@@ -9,8 +9,16 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestInitiatorViewStyles from './requestInitiatorView.css.js';
-import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
+import requestInitiatorViewStylesRaw from './requestInitiatorView.css.legacy.js';
+import requestInitiatorViewTreeStylesRaw from './requestInitiatorViewTree.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestInitiatorViewStyles = new CSSStyleSheet();
+requestInitiatorViewStyles.replaceSync(requestInitiatorViewStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestInitiatorViewTreeStyles = new CSSStyleSheet();
+requestInitiatorViewTreeStyles.replaceSync(requestInitiatorViewTreeStylesRaw.cssContent);
 
 const UIStrings = {
   /**

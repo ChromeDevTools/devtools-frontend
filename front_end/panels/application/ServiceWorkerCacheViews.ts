@@ -18,7 +18,11 @@ import * as NetworkComponents from '../network/components/components.js';
 import * as Network from '../network/network.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
+import serviceWorkerCacheViewsStylesRaw from './serviceWorkerCacheViews.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const serviceWorkerCacheViewsStyles = new CSSStyleSheet();
+serviceWorkerCacheViewsStyles.replaceSync(serviceWorkerCacheViewsStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -9,12 +9,16 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as CSSOverviewComponents from './components/components.js';
-import cssOverviewStyles from './cssOverview.css.js';
+import cssOverviewStylesRaw from './cssOverview.css.legacy.js';
 import {type ContrastIssue, CSSOverviewCompletedView} from './CSSOverviewCompletedView.js';
 import {Events, type OverviewController} from './CSSOverviewController.js';
 import {CSSOverviewModel, type GlobalStyleStats} from './CSSOverviewModel.js';
 import {CSSOverviewProcessingView} from './CSSOverviewProcessingView.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssOverviewStyles = new CSSStyleSheet();
+cssOverviewStyles.replaceSync(cssOverviewStylesRaw.cssContent);
 
 export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManager.Observer {
   readonly #controller: OverviewController;

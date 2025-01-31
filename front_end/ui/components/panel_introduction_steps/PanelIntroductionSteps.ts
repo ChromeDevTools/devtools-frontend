@@ -5,7 +5,11 @@
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as Lit from '../../lit/lit.js';
 
-import panelIntroductionStepsStyles from './panelIntroductionSteps.css.js';
+import panelIntroductionStepsStylesRaw from './panelIntroductionSteps.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const panelIntroductionStepsStyles = new CSSStyleSheet();
+panelIntroductionStepsStyles.replaceSync(panelIntroductionStepsStylesRaw.cssContent);
 
 const {html} = Lit;
 

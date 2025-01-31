@@ -38,7 +38,11 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
-import screencastViewStyles from './screencastView.css.js';
+import screencastViewStylesRaw from './screencastView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const screencastViewStyles = new CSSStyleSheet();
+screencastViewStyles.replaceSync(screencastViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

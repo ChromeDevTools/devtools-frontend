@@ -14,7 +14,11 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import ignoreListSettingStyles from './ignoreListSetting.css.js';
+import ignoreListSettingStylesRaw from './ignoreListSetting.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const ignoreListSettingStyles = new CSSStyleSheet();
+ignoreListSettingStyles.replaceSync(ignoreListSettingStylesRaw.cssContent);
 
 const {html} = Lit;
 

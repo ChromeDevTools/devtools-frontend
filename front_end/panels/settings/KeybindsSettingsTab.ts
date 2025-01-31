@@ -12,8 +12,16 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import keybindsSettingsTabStyles from './keybindsSettingsTab.css.js';
-import settingsScreenStyles from './settingsScreen.css.js';
+import keybindsSettingsTabStylesRaw from './keybindsSettingsTab.css.legacy.js';
+import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const keybindsSettingsTabStyles = new CSSStyleSheet();
+keybindsSettingsTabStyles.replaceSync(keybindsSettingsTabStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const settingsScreenStyles = new CSSStyleSheet();
+settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
 
 const UIStrings = {
   /**

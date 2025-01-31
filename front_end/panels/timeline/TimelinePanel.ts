@@ -73,18 +73,26 @@ import {Events as TimelineFlameChartViewEvents, TimelineFlameChartView} from './
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineMiniMap} from './TimelineMiniMap.js';
-import timelinePanelStyles from './timelinePanel.css.js';
+import timelinePanelStylesRaw from './timelinePanel.css.legacy.js';
 import {
   rangeForSelection,
   selectionFromEvent,
   selectionIsRange,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
+import timelineStatusDialogStylesRaw from './timelineStatusDialog.css.legacy.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
 import * as Utils from './utils/utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelinePanelStyles = new CSSStyleSheet();
+timelinePanelStyles.replaceSync(timelinePanelStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineStatusDialogStyles = new CSSStyleSheet();
+timelineStatusDialogStyles.replaceSync(timelineStatusDialogStylesRaw.cssContent);
 
 const UIStrings = {
   /**

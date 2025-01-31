@@ -8,7 +8,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
+import nodeConnectionsPanelStylesRaw from './nodeConnectionsPanel.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const nodeConnectionsPanelStyles = new CSSStyleSheet();
+nodeConnectionsPanelStyles.replaceSync(nodeConnectionsPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**

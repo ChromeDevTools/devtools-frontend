@@ -10,7 +10,7 @@ import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import dataGridStyles from './dataGrid.css.js';
+import dataGridStylesRaw from './dataGrid.css.legacy.js';
 import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {
   BodyCellFocusedEvent,
@@ -32,6 +32,10 @@ import {
   SortDirection,
   type SortState,
 } from './DataGridUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const dataGridStyles = new CSSStyleSheet();
+dataGridStyles.replaceSync(dataGridStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined, classMap, styleMap, repeat}} = Lit;
 const UIStrings = {

@@ -8,7 +8,11 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
+import linearMemoryNavigatorStylesRaw from './linearMemoryNavigator.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const linearMemoryNavigatorStyles = new CSSStyleSheet();
+linearMemoryNavigatorStyles.replaceSync(linearMemoryNavigatorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

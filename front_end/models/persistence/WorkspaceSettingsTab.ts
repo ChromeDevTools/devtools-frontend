@@ -14,7 +14,11 @@ import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
-import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
+import workspaceSettingsTabStylesRaw from './workspaceSettingsTab.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const workspaceSettingsTabStyles = new CSSStyleSheet();
+workspaceSettingsTabStyles.replaceSync(workspaceSettingsTabStylesRaw.cssContent);
 
 const UIStrings = {
   /**

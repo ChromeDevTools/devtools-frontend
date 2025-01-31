@@ -72,8 +72,12 @@ import {
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
 import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
+import stylesSidebarPaneStylesRaw from './stylesSidebarPane.css.legacy.js';
 import {WebCustomData} from './WebCustomData.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const stylesSidebarPaneStyles = new CSSStyleSheet();
+stylesSidebarPaneStyles.replaceSync(stylesSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

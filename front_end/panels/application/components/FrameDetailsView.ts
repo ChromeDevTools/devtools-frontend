@@ -25,13 +25,17 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
+import frameDetailsReportViewStylesRaw from './frameDetailsReportView.css.legacy.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
 import {
   type PermissionsPolicySectionData,
   renderIconLink,
 } from './PermissionsPolicySection.js';
 import type {StackTraceData} from './StackTrace.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const frameDetailsReportViewStyles = new CSSStyleSheet();
+frameDetailsReportViewStyles.replaceSync(frameDetailsReportViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

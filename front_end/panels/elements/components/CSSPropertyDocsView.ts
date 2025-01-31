@@ -10,7 +10,11 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import CSSPropertyDocsViewStyles from './cssPropertyDocsView.css.js';
+import CSSPropertyDocsViewStylesRaw from './cssPropertyDocsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const CSSPropertyDocsViewStyles = new CSSStyleSheet();
+CSSPropertyDocsViewStyles.replaceSync(CSSPropertyDocsViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

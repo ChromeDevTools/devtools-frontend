@@ -12,7 +12,11 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import syncSectionStyles from './syncSection.css.js';
+import syncSectionStylesRaw from './syncSection.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const syncSectionStyles = new CSSStyleSheet();
+syncSectionStyles.replaceSync(syncSectionStylesRaw.cssContent);
 
 const {html} = Lit;
 

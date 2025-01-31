@@ -24,7 +24,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
-import backForwardCacheViewStyles from './backForwardCacheView.css.js';
+import backForwardCacheViewStylesRaw from './backForwardCacheView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const backForwardCacheViewStyles = new CSSStyleSheet();
+backForwardCacheViewStyles.replaceSync(backForwardCacheViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -11,8 +11,16 @@ import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
-import settingsScreenStyles from './settingsScreen.css.js';
+import frameworkIgnoreListSettingsTabStylesRaw from './frameworkIgnoreListSettingsTab.css.legacy.js';
+import settingsScreenStylesRaw from './settingsScreen.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const frameworkIgnoreListSettingsTabStyles = new CSSStyleSheet();
+frameworkIgnoreListSettingsTabStyles.replaceSync(frameworkIgnoreListSettingsTabStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const settingsScreenStyles = new CSSStyleSheet();
+settingsScreenStyles.replaceSync(settingsScreenStylesRaw.cssContent);
 
 const UIStrings = {
   /**

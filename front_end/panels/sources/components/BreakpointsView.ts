@@ -21,8 +21,12 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import breakpointsViewStyles from './breakpointsView.css.js';
+import breakpointsViewStylesRaw from './breakpointsView.css.legacy.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const breakpointsViewStyles = new CSSStyleSheet();
+breakpointsViewStyles.replaceSync(breakpointsViewStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined, repeat, classMap, live}} = Lit;
 

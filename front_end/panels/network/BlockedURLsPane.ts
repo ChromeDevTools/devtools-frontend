@@ -13,7 +13,11 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import blockedURLsPaneStyles from './blockedURLsPane.css.js';
+import blockedURLsPaneStylesRaw from './blockedURLsPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const blockedURLsPaneStyles = new CSSStyleSheet();
+blockedURLsPaneStyles.replaceSync(blockedURLsPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

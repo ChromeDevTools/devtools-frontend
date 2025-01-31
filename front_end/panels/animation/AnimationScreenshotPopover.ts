@@ -4,7 +4,11 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
-import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.js';
+import animationScreenshotPopoverStylesRaw from './animationScreenshotPopover.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const animationScreenshotPopoverStyles = new CSSStyleSheet();
+animationScreenshotPopoverStyles.replaceSync(animationScreenshotPopoverStylesRaw.cssContent);
 
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
   #frames: HTMLImageElement[];

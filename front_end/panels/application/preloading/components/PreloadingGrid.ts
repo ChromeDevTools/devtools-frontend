@@ -14,8 +14,12 @@ import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import preloadingGridStyles from './preloadingGrid.css.js';
+import preloadingGridStylesRaw from './preloadingGrid.css.legacy.js';
 import {capitalizedAction, composedStatus, ruleSetLocationShort} from './PreloadingString.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const preloadingGridStyles = new CSSStyleSheet();
+preloadingGridStyles.replaceSync(preloadingGridStylesRaw.cssContent);
 
 const {PreloadingStatus} = SDK.PreloadingModel;
 

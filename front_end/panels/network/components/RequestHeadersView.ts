@@ -24,11 +24,15 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../../sources/sources.js';
 
 import type {RequestHeaderSectionData} from './RequestHeaderSection.js';
-import requestHeadersViewStyles from './RequestHeadersView.css.js';
+import requestHeadersViewStylesRaw from './RequestHeadersView.css.legacy.js';
 import {
   RESPONSE_HEADER_SECTION_DATA_KEY,
   type ResponseHeaderSectionData,
 } from './ResponseHeaderSection.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestHeadersViewStyles = new CSSStyleSheet();
+requestHeadersViewStyles.replaceSync(requestHeadersViewStylesRaw.cssContent);
 
 const RAW_HEADER_CUTOFF = 3000;
 const {render, html} = Lit;

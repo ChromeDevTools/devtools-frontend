@@ -4,7 +4,11 @@
 
 import * as Lit from '../../../ui/lit/lit.js';
 
-import nodeTextStyles from './nodeText.css.js';
+import nodeTextStylesRaw from './nodeText.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const nodeTextStyles = new CSSStyleSheet();
+nodeTextStyles.replaceSync(nodeTextStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

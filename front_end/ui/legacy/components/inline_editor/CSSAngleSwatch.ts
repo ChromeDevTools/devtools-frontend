@@ -4,8 +4,12 @@
 
 import * as Lit from '../../../lit/lit.js';
 
-import cssAngleSwatchStyles from './cssAngleSwatch.css.js';
+import cssAngleSwatchStylesRaw from './cssAngleSwatch.css.legacy.js';
 import {type Angle, AngleUnit, get2DTranslationsForAngle} from './CSSAngleUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssAngleSwatchStyles = new CSSStyleSheet();
+cssAngleSwatchStyles.replaceSync(cssAngleSwatchStylesRaw.cssContent);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;

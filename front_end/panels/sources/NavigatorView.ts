@@ -44,9 +44,17 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import {PanelUtils} from '../utils/utils.js';
 
-import navigatorTreeStyles from './navigatorTree.css.js';
-import navigatorViewStyles from './navigatorView.css.js';
+import navigatorTreeStylesRaw from './navigatorTree.css.legacy.js';
+import navigatorViewStylesRaw from './navigatorView.css.legacy.js';
 import {SearchSources} from './SearchSourcesView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const navigatorTreeStyles = new CSSStyleSheet();
+navigatorTreeStyles.replaceSync(navigatorTreeStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const navigatorViewStyles = new CSSStyleSheet();
+navigatorViewStyles.replaceSync(navigatorViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

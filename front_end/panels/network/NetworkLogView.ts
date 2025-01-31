@@ -65,7 +65,7 @@ import {
   NetworkRequestNode,
 } from './NetworkDataGridNode.js';
 import {NetworkFrameGrouper} from './NetworkFrameGrouper.js';
-import networkLogViewStyles from './networkLogView.css.js';
+import networkLogViewStylesRaw from './networkLogView.css.legacy.js';
 import {NetworkLogViewColumns} from './NetworkLogViewColumns.js';
 import {
   NetworkTimeBoundary,
@@ -73,6 +73,10 @@ import {
   NetworkTransferDurationCalculator,
   NetworkTransferTimeCalculator,
 } from './NetworkTimeCalculator.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkLogViewStyles = new CSSStyleSheet();
+networkLogViewStyles.replaceSync(networkLogViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

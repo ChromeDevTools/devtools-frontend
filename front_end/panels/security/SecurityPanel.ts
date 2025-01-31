@@ -16,10 +16,10 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CookieControlsView} from './CookieControlsView.js';
 import {CookieReportView} from './CookieReportView.js';
-import lockIconStyles from './lockIcon.css.js';
-import mainViewStyles from './mainView.css.js';
+import lockIconStylesRaw from './lockIcon.css.legacy.js';
+import mainViewStylesRaw from './mainView.css.legacy.js';
 import {ShowOriginEvent} from './OriginTreeElement.js';
-import originViewStyles from './originView.css.js';
+import originViewStylesRaw from './originView.css.legacy.js';
 import {
   Events,
   type PageVisibleSecurityState,
@@ -29,6 +29,18 @@ import {
   SummaryMessages,
 } from './SecurityModel.js';
 import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const lockIconStyles = new CSSStyleSheet();
+lockIconStyles.replaceSync(lockIconStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const mainViewStyles = new CSSStyleSheet();
+mainViewStyles.replaceSync(mainViewStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const originViewStyles = new CSSStyleSheet();
+originViewStyles.replaceSync(originViewStylesRaw.cssContent);
 
 const {widgetConfig} = UI.Widget;
 

@@ -20,7 +20,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":theme_support",
-    "../:legacy_css_files",
+    "../:css_files",
   ]
 
   visibility = [

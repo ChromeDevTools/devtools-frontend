@@ -8,7 +8,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import domLinkifierStyles from './domLinkifier.css.js';
+import domLinkifierStylesRaw from './domLinkifier.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const domLinkifierStyles = new CSSStyleSheet();
+domLinkifierStyles.replaceSync(domLinkifierStylesRaw.cssContent);
 
 const UIStrings = {
   /**

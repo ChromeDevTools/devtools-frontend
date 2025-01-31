@@ -10,7 +10,11 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
-import tableStyles from './table.css.js';
+import tableStylesRaw from './table.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const tableStyles = new CSSStyleSheet();
+tableStyles.replaceSync(tableStylesRaw.cssContent);
 
 const {html} = Lit;
 

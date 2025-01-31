@@ -8,7 +8,11 @@ import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import styles from './entryLabelOverlay.css.js';
+import stylesRaw from './entryLabelOverlay.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
 
 const {html} = Lit;
 

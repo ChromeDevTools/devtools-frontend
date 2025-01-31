@@ -17,7 +17,11 @@ import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrappe
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import autofillViewStyles from './autofillView.css.js';
+import autofillViewStylesRaw from './autofillView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const autofillViewStyles = new CSSStyleSheet();
+autofillViewStyles.replaceSync(autofillViewStylesRaw.cssContent);
 
 const {html, render, Directives: {styleMap}} = Lit;
 const {FillingStrategy} = Protocol.Autofill;

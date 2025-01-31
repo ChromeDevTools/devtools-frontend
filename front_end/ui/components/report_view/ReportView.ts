@@ -4,12 +4,36 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import reportStyles from './report.css.js';
-import reportKeyStyles from './reportKey.css.js';
-import reportSectionStyles from './reportSection.css.js';
-import reportSectionDividerStyles from './reportSectionDivider.css.js';
-import reportSectionHeaderStyles from './reportSectionHeader.css.js';
-import reportValueStyles from './reportValue.css.js';
+import reportStylesRaw from './report.css.legacy.js';
+import reportKeyStylesRaw from './reportKey.css.legacy.js';
+import reportSectionStylesRaw from './reportSection.css.legacy.js';
+import reportSectionDividerStylesRaw from './reportSectionDivider.css.legacy.js';
+import reportSectionHeaderStylesRaw from './reportSectionHeader.css.legacy.js';
+import reportValueStylesRaw from './reportValue.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportStyles = new CSSStyleSheet();
+reportStyles.replaceSync(reportStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportKeyStyles = new CSSStyleSheet();
+reportKeyStyles.replaceSync(reportKeyStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportSectionStyles = new CSSStyleSheet();
+reportSectionStyles.replaceSync(reportSectionStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportSectionDividerStyles = new CSSStyleSheet();
+reportSectionDividerStyles.replaceSync(reportSectionDividerStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportSectionHeaderStyles = new CSSStyleSheet();
+reportSectionHeaderStyles.replaceSync(reportSectionHeaderStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const reportValueStyles = new CSSStyleSheet();
+reportValueStyles.replaceSync(reportValueStylesRaw.cssContent);
 
 const {html} = Lit;
 

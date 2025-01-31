@@ -33,9 +33,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import editFileSystemViewStyles from './editFileSystemView.css.js';
+import editFileSystemViewStylesRaw from './editFileSystemView.css.legacy.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import type {PlatformFileSystem} from './PlatformFileSystem.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const editFileSystemViewStyles = new CSSStyleSheet();
+editFileSystemViewStyles.replaceSync(editFileSystemViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

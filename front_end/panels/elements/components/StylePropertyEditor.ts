@@ -9,7 +9,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSSPropertyIconResolver.js';
-import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
+import stylePropertyEditorStylesRaw from './stylePropertyEditor.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const stylePropertyEditorStyles = new CSSStyleSheet();
+stylePropertyEditorStyles.replaceSync(stylePropertyEditorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

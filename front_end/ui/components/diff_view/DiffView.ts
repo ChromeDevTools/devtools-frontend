@@ -8,7 +8,13 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Lit from '../../lit/lit.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
-import diffViewStyles from './diffView.css.js';
+import diffViewStylesRaw from './diffView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const diffViewStyles = new CSSStyleSheet();
+diffViewStyles.replaceSync(diffViewStylesRaw.cssContent);
+const CodeHighlighterStyles = new CSSStyleSheet();
+CodeHighlighterStyles.replaceSync(CodeHighlighter.Style.default.cssContent);
 
 const {html} = Lit;
 
@@ -273,7 +279,7 @@ export class DiffView extends HTMLElement {
 
   constructor(data?: DiffViewData) {
     super();
-    this.#shadow.adoptedStyleSheets = [diffViewStyles, CodeHighlighter.Style.default];
+    this.#shadow.adoptedStyleSheets = [diffViewStyles, CodeHighlighterStyles];
     if (data) {
       this.loaded = DiffRenderer.render(data.diff, data.mimeType, this.#shadow);
     } else {

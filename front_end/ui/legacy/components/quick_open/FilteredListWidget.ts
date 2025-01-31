@@ -11,7 +11,11 @@ import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.j
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filteredListWidgetStyles from './filteredListWidget.css.js';
+import filteredListWidgetStylesRaw from './filteredListWidget.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const filteredListWidgetStyles = new CSSStyleSheet();
+filteredListWidgetStyles.replaceSync(filteredListWidgetStylesRaw.cssContent);
 
 const UIStrings = {
   /**

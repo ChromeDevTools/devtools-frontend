@@ -35,9 +35,17 @@ import * as UI from '../../legacy.js';
 import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
-import objectPopoverStyles from './objectPopover.css.js';
+import objectPopoverStylesRaw from './objectPopover.css.legacy.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
-import objectValueStyles from './objectValue.css.js';
+import objectValueStylesRaw from './objectValue.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const objectPopoverStyles = new CSSStyleSheet();
+objectPopoverStyles.replaceSync(objectPopoverStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const objectValueStyles = new CSSStyleSheet();
+objectValueStyles.replaceSync(objectValueStylesRaw.cssContent);
 
 const UIStrings = {
   /**

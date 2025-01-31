@@ -17,7 +17,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {CoverageDecorationManager} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
 import {type CoverageInfo, CoverageModel, CoverageType, Events, type URLCoverageInfo} from './CoverageModel.js';
-import coverageViewStyles from './coverageView.css.js';
+import coverageViewStylesRaw from './coverageView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const coverageViewStyles = new CSSStyleSheet();
+coverageViewStyles.replaceSync(coverageViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

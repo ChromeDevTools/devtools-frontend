@@ -7,8 +7,12 @@ import '../../components/icon_button/icon_button.js';
 import type * as IconButton from '../../components/icon_button/icon_button.js';
 import * as Lit from '../../lit/lit.js';
 
-import markdownImageStyles from './markdownImage.css.js';
+import markdownImageStylesRaw from './markdownImage.css.legacy.js';
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const markdownImageStyles = new CSSStyleSheet();
+markdownImageStyles.replaceSync(markdownImageStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined}} = Lit;
 

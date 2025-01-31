@@ -29,7 +29,7 @@ import * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import recordingViewStyles from './recordingView.css.js';
+import recordingViewStylesRaw from './recordingView.css.legacy.js';
 import type {ReplaySectionData, StartReplayEvent} from './ReplaySection.js';
 import {
   type CopyStepEvent,
@@ -37,6 +37,10 @@ import {
   type StepView,
   type StepViewData,
 } from './StepView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const recordingViewStyles = new CSSStyleSheet();
+recordingViewStyles.replaceSync(recordingViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

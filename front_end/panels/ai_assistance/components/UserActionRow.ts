@@ -11,7 +11,11 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import userActionRowStyles from './userActionRow.css.js';
+import userActionRowStylesRaw from './userActionRow.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const userActionRowStyles = new CSSStyleSheet();
+userActionRowStyles.replaceSync(userActionRowStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -9,8 +9,12 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
+import sharedStorageMetadataViewStylesRaw from './sharedStorageMetadataView.css.legacy.js';
 import {StorageMetadataView} from './StorageMetadataView.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sharedStorageMetadataViewStyles = new CSSStyleSheet();
+sharedStorageMetadataViewStyles.replaceSync(sharedStorageMetadataViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

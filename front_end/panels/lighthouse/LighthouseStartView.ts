@@ -12,8 +12,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {type LighthouseController, type Preset, Presets, RuntimeSettings} from './LighthouseController.js';
 import type {LighthousePanel} from './LighthousePanel.js';
-import lighthouseStartViewStyles from './lighthouseStartView.css.js';
+import lighthouseStartViewStylesRaw from './lighthouseStartView.css.legacy.js';
 import {RadioSetting} from './RadioSetting.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const lighthouseStartViewStyles = new CSSStyleSheet();
+lighthouseStartViewStyles.replaceSync(lighthouseStartViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

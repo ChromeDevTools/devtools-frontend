@@ -9,7 +9,11 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import threadsSidebarPaneStyles from './threadsSidebarPane.css.js';
+import threadsSidebarPaneStylesRaw from './threadsSidebarPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const threadsSidebarPaneStyles = new CSSStyleSheet();
+threadsSidebarPaneStyles.replaceSync(threadsSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

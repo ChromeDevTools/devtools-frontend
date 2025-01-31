@@ -55,9 +55,13 @@ import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
-import networkPanelStyles from './networkPanel.css.js';
+import networkPanelStylesRaw from './networkPanel.css.legacy.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
 import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkPanelStyles = new CSSStyleSheet();
+networkPanelStyles.replaceSync(networkPanelStylesRaw.cssContent);
 
 const UIStrings = {
   /**

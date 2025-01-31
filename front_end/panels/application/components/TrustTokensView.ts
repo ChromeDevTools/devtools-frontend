@@ -13,7 +13,11 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import trustTokensViewStyles from './trustTokensView.css.js';
+import trustTokensViewStylesRaw from './trustTokensView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const trustTokensViewStyles = new CSSStyleSheet();
+trustTokensViewStyles.replaceSync(trustTokensViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

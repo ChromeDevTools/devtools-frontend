@@ -12,7 +12,11 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 
 import {EditingAllowedStatus, type HeaderDescriptor} from './HeaderSectionRow.js';
-import requestHeaderSectionStyles from './RequestHeaderSection.css.js';
+import requestHeaderSectionStylesRaw from './RequestHeaderSection.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const requestHeaderSectionStyles = new CSSStyleSheet();
+requestHeaderSectionStyles.replaceSync(requestHeaderSectionStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

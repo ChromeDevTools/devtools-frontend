@@ -15,7 +15,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
+import cssOverviewCompletedViewStylesRaw from './cssOverviewCompletedView.css.legacy.js';
 import {
   Events as CSSOverViewControllerEvents,
   type OverviewController,
@@ -25,6 +25,10 @@ import {
 } from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssOverviewCompletedViewStyles = new CSSStyleSheet();
+cssOverviewCompletedViewStyles.replaceSync(cssOverviewCompletedViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

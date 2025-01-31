@@ -7,9 +7,17 @@ import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import bezierSwatchStyles from './bezierSwatch.css.js';
+import bezierSwatchStylesRaw from './bezierSwatch.css.legacy.js';
 import type {CSSShadowModel} from './CSSShadowEditor.js';
-import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
+import cssShadowSwatchStylesRaw from './cssShadowSwatch.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const bezierSwatchStyles = new CSSStyleSheet();
+bezierSwatchStyles.replaceSync(bezierSwatchStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const cssShadowSwatchStyles = new CSSStyleSheet();
+cssShadowSwatchStyles.replaceSync(cssShadowSwatchStylesRaw.cssContent);
 
 const {html} = Lit;
 

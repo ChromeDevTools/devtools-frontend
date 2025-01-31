@@ -42,7 +42,11 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import propertiesWidgetStyles from './propertiesWidget.css.js';
+import propertiesWidgetStylesRaw from './propertiesWidget.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const propertiesWidgetStyles = new CSSStyleSheet();
+propertiesWidgetStyles.replaceSync(propertiesWidgetStylesRaw.cssContent);
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 

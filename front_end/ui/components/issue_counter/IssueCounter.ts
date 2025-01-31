@@ -10,7 +10,11 @@ import * as IssuesManager from '../../../models/issues_manager/issues_manager.js
 import * as Lit from '../../lit/lit.js';
 import type * as IconButton from '../icon_button/icon_button.js';
 
-import issueCounterStyles from './issueCounter.css.js';
+import issueCounterStylesRaw from './issueCounter.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const issueCounterStyles = new CSSStyleSheet();
+issueCounterStyles.replaceSync(issueCounterStylesRaw.cssContent);
 
 const {html} = Lit;
 

@@ -1885,7 +1885,8 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element, options: {cssFile?: CSSStyleSheet[]|{cssContent: string}, delegatesFocus?: boolean} = {
+    element: Element,
+    options: {cssFile?: (CSSStyleSheet|{cssContent: string})[]|{cssContent: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {
@@ -1896,12 +1897,16 @@ export function createShadowRootWithCoreStyles(
 
   const shadowRoot = element.attachShadow({mode: 'open', delegatesFocus});
   injectCoreStyles(shadowRoot);
-  if (cssFile) {
-    if ('cssContent' in cssFile) {
-      ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
-    } else {
-      shadowRoot.adoptedStyleSheets.push(...cssFile);
+  if (Array.isArray(cssFile)) {
+    for (const cf of cssFile) {
+      if ('cssContent' in cf) {
+        ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cf);
+      } else {
+        shadowRoot.adoptedStyleSheets.push(cf);
+      }
     }
+  } else if (cssFile) {
+    ThemeSupport.ThemeSupport.instance().appendStyle(shadowRoot, cssFile);
   }
   shadowRoot.addEventListener('focus', focusChanged, true);
   return shadowRoot;

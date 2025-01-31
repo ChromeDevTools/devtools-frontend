@@ -8,8 +8,12 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import eventDisplayTableStyles from './eventDisplayTable.css.js';
+import eventDisplayTableStylesRaw from './eventDisplayTable.css.legacy.js';
 import type {PlayerEvent} from './MediaModel.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const eventDisplayTableStyles = new CSSStyleSheet();
+eventDisplayTableStyles.replaceSync(eventDisplayTableStylesRaw.cssContent);
 
 const UIStrings = {
   /**

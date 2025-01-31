@@ -10,21 +10,14 @@ import("../../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "pieChart.css",
-    "timelineOverviewInfo.css",
-  ]
-}
-
-generate_css("legacy_css_files") {
-  sources = [
     "chartViewport.css",
     "filmStripView.css",
     "flameChart.css",
     "overviewGrid.css",
+    "pieChart.css",
     "timelineGrid.css",
+    "timelineOverviewInfo.css",
   ]
-
-  legacy = true
 }
 
 devtools_module("perf_ui") {
@@ -70,7 +63,6 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":css_files",
-    ":legacy_css_files",
     ":perf_ui",
   ]
 

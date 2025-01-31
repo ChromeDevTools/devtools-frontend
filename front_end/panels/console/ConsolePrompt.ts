@@ -17,7 +17,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
-import consolePromptStyles from './consolePrompt.css.js';
+import consolePromptStylesRaw from './consolePrompt.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const consolePromptStyles = new CSSStyleSheet();
+consolePromptStyles.replaceSync(consolePromptStylesRaw.cssContent);
 
 const {Direction} = TextEditor.TextEditorHistory;
 

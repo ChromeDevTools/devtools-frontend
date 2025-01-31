@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import pieChartStyles from './pieChart.css.js';
+import pieChartStylesRaw from './pieChart.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const pieChartStyles = new CSSStyleSheet();
+pieChartStyles.replaceSync(pieChartStylesRaw.cssContent);
 
 const {render, html, svg} = Lit;
-
-import * as i18n from '../../../../core/i18n/i18n.js';
 const UIStrings = {
   /**
    *@description Text for sum

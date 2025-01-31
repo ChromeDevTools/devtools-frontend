@@ -10,14 +10,6 @@ import("./visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "emptyWidget.css",
-    "inspectorCommon.css",
-    "toolbar.css",
-  ]
-}
-
-generate_css("legacy_css_files") {
-  sources = [
     "checkboxTextLabel.css",
     "confirmDialog.css",
     "dialog.css",
@@ -45,11 +37,10 @@ generate_css("legacy_css_files") {
     "tabbedPane.css",
     "targetCrashedScreen.css",
     "textPrompt.css",
+    "toolbar.css",
     "treeoutline.css",
     "viewContainers.css",
   ]
-
-  legacy = true
 }
 
 copy_to_gen("copy_stylesheets_for_server") {
@@ -138,7 +129,6 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":css_files",
-    ":legacy_css_files",
     ":ui",
   ]
 

@@ -36,7 +36,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import layers3DViewStyles from './layers3DView.css.js';
+import layers3DViewStylesRaw from './layers3DView.css.legacy.js';
 import {
   LayerSelection,
   type LayerView,
@@ -47,6 +47,10 @@ import {
   Type,
 } from './LayerViewHost.js';
 import {Events as TransformControllerEvents, TransformController} from './TransformController.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const layers3DViewStyles = new CSSStyleSheet();
+layers3DViewStyles.replaceSync(layers3DViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

@@ -5,7 +5,11 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import networkManageCustomHeadersViewStyles from './networkManageCustomHeadersView.css.js';
+import networkManageCustomHeadersViewStylesRaw from './networkManageCustomHeadersView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const networkManageCustomHeadersViewStyles = new CSSStyleSheet();
+networkManageCustomHeadersViewStyles.replaceSync(networkManageCustomHeadersViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

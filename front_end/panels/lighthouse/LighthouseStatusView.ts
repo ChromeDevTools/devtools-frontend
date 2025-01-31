@@ -8,8 +8,12 @@ import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {RuntimeSettings} from './LighthouseController.js';
-import lighthouseDialogStyles from './lighthouseDialog.css.js';
+import lighthouseDialogStylesRaw from './lighthouseDialog.css.legacy.js';
 import type {LighthousePanel} from './LighthousePanel.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const lighthouseDialogStyles = new CSSStyleSheet();
+lighthouseDialogStyles.replaceSync(lighthouseDialogStylesRaw.cssContent);
 
 const UIStrings = {
   /**

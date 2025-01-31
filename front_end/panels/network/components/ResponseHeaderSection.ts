@@ -31,7 +31,11 @@ import {
   type HeaderSectionRowData,
   isValidHeaderName,
 } from './HeaderSectionRow.js';
-import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
+import responseHeaderSectionStylesRaw from './ResponseHeaderSection.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const responseHeaderSectionStyles = new CSSStyleSheet();
+responseHeaderSectionStyles.replaceSync(responseHeaderSectionStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

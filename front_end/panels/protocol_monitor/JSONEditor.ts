@@ -18,7 +18,11 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ElementsComponents from '../elements/components/components.js';
 
-import editorWidgetStyles from './JSONEditor.css.js';
+import editorWidgetStylesRaw from './JSONEditor.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const editorWidgetStyles = new CSSStyleSheet();
+editorWidgetStyles.replaceSync(editorWidgetStylesRaw.cssContent);
 
 const {html, render, Directives, nothing} = Lit;
 const {live, classMap, repeat} = Directives;

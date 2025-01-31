@@ -10,9 +10,9 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import metricCardStyles from './metricCard.css.js';
+import metricCardStylesRaw from './metricCard.css.legacy.js';
 import {type CompareRating, renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
-import metricValueStyles from './metricValueStyles.css.js';
+import metricValueStylesRaw from './metricValueStyles.css.legacy.js';
 import {
   CLS_THRESHOLDS,
   determineCompareRating,
@@ -23,6 +23,14 @@ import {
   rateMetric,
   renderMetricValue,
 } from './Utils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const metricCardStyles = new CSSStyleSheet();
+metricCardStyles.replaceSync(metricCardStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const metricValueStyles = new CSSStyleSheet();
+metricValueStyles.replaceSync(metricValueStylesRaw.cssContent);
 
 const {html, nothing} = Lit;
 

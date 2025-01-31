@@ -6,7 +6,11 @@ import * as Common from '../../../core/common/common.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import srgbOverlayStyles from './srgbOverlay.css.js';
+import srgbOverlayStylesRaw from './srgbOverlay.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const srgbOverlayStyles = new CSSStyleSheet();
+srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw.cssContent);
 
 const {html} = Lit;
 

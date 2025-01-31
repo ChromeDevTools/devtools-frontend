@@ -12,7 +12,11 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import recordingListViewStyles from './recordingListView.css.js';
+import recordingListViewStylesRaw from './recordingListView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const recordingListViewStyles = new CSSStyleSheet();
+recordingListViewStyles.replaceSync(recordingListViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

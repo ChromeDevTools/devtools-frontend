@@ -5,7 +5,11 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../lit/lit.js';
 
-import textPromptStyles from './textPrompt.css.js';
+import textPromptStylesRaw from './textPrompt.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const textPromptStyles = new CSSStyleSheet();
+textPromptStyles.replaceSync(textPromptStylesRaw.cssContent);
 
 const {html} = Lit;
 

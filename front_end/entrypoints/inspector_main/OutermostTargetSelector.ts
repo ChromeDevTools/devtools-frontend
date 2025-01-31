@@ -10,7 +10,11 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
+import outermostTargetSelectorStylesRaw from './outermostTargetSelector.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const outermostTargetSelectorStyles = new CSSStyleSheet();
+outermostTargetSelectorStyles.replaceSync(outermostTargetSelectorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

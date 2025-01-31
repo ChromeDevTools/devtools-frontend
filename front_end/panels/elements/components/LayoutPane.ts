@@ -13,13 +13,21 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import layoutPaneStyles from './layoutPane.css.js';
+import layoutPaneStylesRaw from './layoutPane.css.legacy.js';
 import type {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const inspectorCommonStyles = new CSSStyleSheet();
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const layoutPaneStyles = new CSSStyleSheet();
+layoutPaneStyles.replaceSync(layoutPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

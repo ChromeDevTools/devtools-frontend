@@ -256,7 +256,7 @@ module.exports = {
               return;
             }
 
-            if (importPath.endsWith('.css.js')) {
+            if (importPath.endsWith('.css.legacy.js')) {
               // We allow files to import CSS files within the same module.
               return;
             }

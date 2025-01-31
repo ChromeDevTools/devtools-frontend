@@ -37,7 +37,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
-import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.js';
+import domBreakpointsSidebarPaneStylesRaw from './domBreakpointsSidebarPane.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const domBreakpointsSidebarPaneStyles = new CSSStyleSheet();
+domBreakpointsSidebarPaneStyles.replaceSync(domBreakpointsSidebarPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

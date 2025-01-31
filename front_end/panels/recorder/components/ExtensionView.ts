@@ -12,7 +12,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Extensions from '../extensions/extensions.js';
 
-import extensionViewStyles from './extensionView.css.js';
+import extensionViewStylesRaw from './extensionView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const extensionViewStyles = new CSSStyleSheet();
+extensionViewStyles.replaceSync(extensionViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

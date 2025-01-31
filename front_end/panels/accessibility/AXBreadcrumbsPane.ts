@@ -14,7 +14,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
-import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
+import axBreadcrumbsStylesRaw from './axBreadcrumbs.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const axBreadcrumbsStyles = new CSSStyleSheet();
+axBreadcrumbsStyles.replaceSync(axBreadcrumbsStylesRaw.cssContent);
 
 const UIStrings = {
   /**

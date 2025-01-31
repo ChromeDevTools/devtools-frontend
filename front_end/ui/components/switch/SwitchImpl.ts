@@ -5,7 +5,11 @@
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import switchStyles from './switch.css.js';
+import switchStylesRaw from './switch.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const switchStyles = new CSSStyleSheet();
+switchStyles.replaceSync(switchStylesRaw.cssContent);
 
 const {html} = Lit;
 

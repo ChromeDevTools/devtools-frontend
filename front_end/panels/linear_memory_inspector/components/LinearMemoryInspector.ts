@@ -2,39 +2,41 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './LinearMemoryValueInterpreter.js';
+import './LinearMemoryHighlightChipList.js';
+import './LinearMemoryViewer.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import linearMemoryInspectorStyles from './linearMemoryInspector.css.js';
-
-const {render, html} = Lit;
-
+import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
+import linearMemoryInspectorStylesRaw from './linearMemoryInspector.css.legacy.js';
+import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
-  Mode,
-  Navigation,
   type AddressInputChangedEvent,
   type HistoryNavigationEvent,
+  Mode,
+  Navigation,
   type PageNavigationEvent,
 } from './LinearMemoryNavigator.js';
-
-import './LinearMemoryValueInterpreter.js';
 import type {EndiannessChangedEvent, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
-
-import './LinearMemoryHighlightChipList.js';
-import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
-import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import './LinearMemoryViewer.js';
 import type {ByteSelectedEvent, ResizeEvent} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {
   Endianness,
-  VALUE_INTEPRETER_MAX_NUM_BYTES,
   getDefaultValueTypeMapping,
+  VALUE_INTEPRETER_MAX_NUM_BYTES,
   type ValueType,
   type ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const linearMemoryInspectorStyles = new CSSStyleSheet();
+linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssContent);
+
+const {render, html} = Lit;
 
 const UIStrings = {
   /**

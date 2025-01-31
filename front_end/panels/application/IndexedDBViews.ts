@@ -43,7 +43,11 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
-import indexedDBViewsStyles from './indexedDBViews.css.js';
+import indexedDBViewsStylesRaw from './indexedDBViews.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const indexedDBViewsStyles = new CSSStyleSheet();
+indexedDBViewsStyles.replaceSync(indexedDBViewsStylesRaw.cssContent);
 
 const {html} = Lit;
 

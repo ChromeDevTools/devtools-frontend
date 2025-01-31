@@ -42,7 +42,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
-import sourcesNavigatorStyles from './sourcesNavigator.css.js';
+import sourcesNavigatorStylesRaw from './sourcesNavigator.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const sourcesNavigatorStyles = new CSSStyleSheet();
+sourcesNavigatorStyles.replaceSync(sourcesNavigatorStylesRaw.cssContent);
 
 const UIStrings = {
   /**

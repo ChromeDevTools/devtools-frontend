@@ -9,7 +9,11 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as Utils from '../../utils/utils.js';
 
-import baseInsightComponentStyles from './baseInsightComponent.css.js';
+import baseInsightComponentStylesRaw from './baseInsightComponent.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const baseInsightComponentStyles = new CSSStyleSheet();
+baseInsightComponentStyles.replaceSync(baseInsightComponentStylesRaw.cssContent);
 
 const {html} = Lit;
 

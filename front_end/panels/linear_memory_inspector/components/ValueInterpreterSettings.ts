@@ -9,7 +9,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
-import valueInterpreterSettingsStyles from './valueInterpreterSettings.css.js';
+import valueInterpreterSettingsStylesRaw from './valueInterpreterSettings.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const valueInterpreterSettingsStyles = new CSSStyleSheet();
+valueInterpreterSettingsStyles.replaceSync(valueInterpreterSettingsStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

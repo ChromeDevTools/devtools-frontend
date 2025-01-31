@@ -9,6 +9,8 @@ import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
+import stylesRaw from './entriesLinkOverlay.css.legacy.js';
+
 const UIStrings = {
   /**
    *@description Accessible label used to explain to a user that they are viewing an arrow representing a link between two entries.
@@ -18,7 +20,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntriesLinkOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-import styles from './entriesLinkOverlay.css.js';
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const styles = new CSSStyleSheet();
+styles.replaceSync(stylesRaw.cssContent);
 
 const {html} = Lit;
 

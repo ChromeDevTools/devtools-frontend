@@ -10,8 +10,12 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import searchResultsPaneStyles from './searchResultsPane.css.js';
+import searchResultsPaneStylesRaw from './searchResultsPane.css.legacy.js';
 import type {SearchResult} from './SearchScope.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const searchResultsPaneStyles = new CSSStyleSheet();
+searchResultsPaneStyles.replaceSync(searchResultsPaneStylesRaw.cssContent);
 
 const UIStrings = {
   /**

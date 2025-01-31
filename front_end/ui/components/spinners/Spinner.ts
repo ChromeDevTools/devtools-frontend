@@ -4,7 +4,11 @@
 
 import * as Lit from '../../lit/lit.js';
 
-import spinnerStyles from './spinner.css.js';
+import spinnerStylesRaw from './spinner.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const spinnerStyles = new CSSStyleSheet();
+spinnerStyles.replaceSync(spinnerStylesRaw.cssContent);
 
 const {html} = Lit;
 

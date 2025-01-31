@@ -6,8 +6,12 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../lit/lit.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import linkifierImplStyles from './linkifierImpl.css.js';
+import linkifierImplStylesRaw from './linkifierImpl.css.legacy.js';
 import * as LinkifierUtils from './LinkifierUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const linkifierImplStyles = new CSSStyleSheet();
+linkifierImplStyles.replaceSync(linkifierImplStylesRaw.cssContent);
 
 const {html} = Lit;
 

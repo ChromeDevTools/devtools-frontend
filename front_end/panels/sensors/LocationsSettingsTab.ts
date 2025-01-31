@@ -9,7 +9,11 @@ import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
+import locationsSettingsTabStylesRaw from './locationsSettingsTab.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const locationsSettingsTabStyles = new CSSStyleSheet();
+locationsSettingsTabStyles.replaceSync(locationsSettingsTabStylesRaw.cssContent);
 
 const UIStrings = {
   /**

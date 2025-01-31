@@ -15,7 +15,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.js';
+import timelineSelectorStatsViewStylesRaw from './timelineSelectorStatsView.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const timelineSelectorStatsViewStyles = new CSSStyleSheet();
+timelineSelectorStatsViewStyles.replaceSync(timelineSelectorStatsViewStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

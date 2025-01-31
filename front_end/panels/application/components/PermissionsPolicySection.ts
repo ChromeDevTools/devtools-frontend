@@ -16,7 +16,11 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
+import permissionsPolicySectionStylesRaw from './permissionsPolicySection.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const permissionsPolicySectionStyles = new CSSStyleSheet();
+permissionsPolicySectionStyles.replaceSync(permissionsPolicySectionStylesRaw.cssContent);
 
 const {html} = Lit;
 

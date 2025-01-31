@@ -5,7 +5,11 @@
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import expandableListStyles from './expandableList.css.js';
+import expandableListStylesRaw from './expandableList.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const expandableListStyles = new CSSStyleSheet();
+expandableListStyles.replaceSync(expandableListStylesRaw.cssContent);
 
 const {html, Directives: {ifDefined}} = Lit;
 

@@ -10,12 +10,16 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import coverageListViewStyles from './coverageListView.css.js';
+import coverageListViewStylesRaw from './coverageListView.css.legacy.js';
 import {
   CoverageType,
   SourceURLCoverageInfo,
   type URLCoverageInfo,
 } from './CoverageModel.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const coverageListViewStyles = new CSSStyleSheet();
+coverageListViewStyles.replaceSync(coverageListViewStylesRaw.cssContent);
 
 const UIStrings = {
   /**

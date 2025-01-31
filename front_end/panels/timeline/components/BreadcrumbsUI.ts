@@ -10,7 +10,11 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {flattenBreadcrumbs} from './Breadcrumbs.js';
-import breadcrumbsUIStyles from './breadcrumbsUI.css.js';
+import breadcrumbsUIStylesRaw from './breadcrumbsUI.css.legacy.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const breadcrumbsUIStyles = new CSSStyleSheet();
+breadcrumbsUIStyles.replaceSync(breadcrumbsUIStylesRaw.cssContent);
 
 const {render, html} = Lit;
 

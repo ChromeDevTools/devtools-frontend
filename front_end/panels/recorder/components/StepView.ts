@@ -23,8 +23,12 @@ import type * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
 import type {StepEditedEvent} from './StepEditor.js';
-import stepViewStyles from './stepView.css.js';
+import stepViewStylesRaw from './stepView.css.legacy.js';
 import type {TimelineSectionData} from './TimelineSection.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const stepViewStyles = new CSSStyleSheet();
+stepViewStyles.replaceSync(stepViewStylesRaw.cssContent);
 
 const {html} = Lit;
 

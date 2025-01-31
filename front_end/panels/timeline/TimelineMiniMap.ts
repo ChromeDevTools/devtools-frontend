@@ -18,8 +18,12 @@ import {
   TimelineEventOverviewResponsiveness,
   TimelineFilmStripOverview,
 } from './TimelineEventOverview.js';
-import miniMapStyles from './timelineMiniMap.css.js';
+import miniMapStylesRaw from './timelineMiniMap.css.legacy.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const miniMapStyles = new CSSStyleSheet();
+miniMapStyles.replaceSync(miniMapStylesRaw.cssContent);
 
 export interface OverviewData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace;

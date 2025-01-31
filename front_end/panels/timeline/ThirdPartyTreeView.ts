@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -52,6 +53,14 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
      * For 3P table, we don't use this feature.
      */
     this.dataGrid.expandNodesWhenArrowing = false;
+  }
+
+  override wasShown(): void {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
+  }
+
+  override childWasDetached(_widget: UI.Widget.Widget): void {
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {
@@ -169,6 +178,16 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     if (sortFunction) {
       this.dataGrid.sortNodes(sortFunction, !this.dataGrid.isSortOrderAscending());
     }
+  }
+
+  /**
+   * This event fires when the user selects a row in the grid, either by
+   * clicking or by using the arrow keys. We want to have the same effect as
+   * when the user hover overs a row.
+   */
+  #onDataGridSelectionChange(
+      event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<TimelineTreeView.GridNode>>): void {
+    this.onHover((event.data as TimelineTreeView.GridNode).profileNode);
   }
 
   override onHover(node: Trace.Extras.TraceTree.Node|null): void {

@@ -151,4 +151,20 @@ describe('Widget', () => {
       await widget.updateComplete;
     });
   });
+
+  describe('WidgetElement', () => {
+    it('renders WidgetElement into DOM without a root element', async () => {
+      const widget = new UI.Widget.WidgetElement();
+      class WidgetInstance extends UI.Widget.Widget {
+        constructor(element: HTMLElement) {
+          super(false, false, element);
+        }
+        override performUpdate(): void {
+          // no-op
+        }
+      }
+      widget.widgetConfig = UI.Widget.widgetConfig(WidgetInstance, {});
+      renderElementIntoDOM(widget);
+    });
+  });
 });

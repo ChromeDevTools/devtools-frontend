@@ -104,7 +104,11 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {
   }
 
   connectedCallback(): void {
-    Widget.getOrCreateWidget(this).show(this.parentElement as HTMLElement);
+    // When using <devtools-widget> we suppress
+    // suppressOrphanWidgetError and allow the Widget instance to be
+    // treated as a root instance if no root widget was found.
+    Widget.getOrCreateWidget(this).show(
+        this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   }
 }
 
@@ -349,7 +353,7 @@ export class Widget {
   async ownerViewDisposed(): Promise<void> {
   }
 
-  show(parentElement: Element, insertBefore?: Node|null): void {
+  show(parentElement: Element, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {
     assert(parentElement, 'Attempt to attach widget with no parent element');
 
     if (!this.isRoot) {
@@ -358,6 +362,12 @@ export class Widget {
       let currentWidget = undefined;
       while (!currentWidget) {
         if (!currentParent) {
+          if (suppressOrphanWidgetError) {
+            this.isRoot = true;
+            console.warn('A Widget has silently been marked as a root widget');
+            this.show(parentElement, insertBefore);
+            return;
+          }
           throw new Error('Attempt to attach widget to orphan node');
         }
         currentWidget = widgetMap.get(currentParent);

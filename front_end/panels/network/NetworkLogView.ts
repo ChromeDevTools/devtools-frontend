@@ -1727,7 +1727,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (request) {
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.network-panel-context')) {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
-        contextMenu.headerSection().appendAction(
+        contextMenu.footerSection().appendAction(
             'drjones.network-panel-context',
         );
       }

@@ -231,7 +231,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const aiCallTree = Utils.AICallTree.AICallTree.from(entry, this.parsedTrace);
       if (aiCallTree) {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(PERF_AI_ACTION_ID);
-        contextMenu.headerSection().appendItem(action.title(), () => {
+        contextMenu.footerSection().appendItem(action.title(), () => {
           const event = this.eventByIndex(entryIndex);
           if (!event || !this.parsedTrace) {
             return;

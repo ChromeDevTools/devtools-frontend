@@ -1443,7 +1443,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         new UI.ContextMenu.ContextMenu(event);
 
     // Generate context menu entries for annotations.
-    const annotationSection = this.contextMenu.section('annotations');
+    const annotationSection = this.contextMenu.annotationSection();
     annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
       this.dispatchEventToListeners(
           Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});

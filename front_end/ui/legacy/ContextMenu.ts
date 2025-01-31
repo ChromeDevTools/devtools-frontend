@@ -334,6 +334,10 @@ export class SubMenu extends Item {
     return this.section('save');
   }
 
+  annotationSection(): Section {
+    return this.section('annotation');
+  }
+
   footerSection(): Section {
     return this.section('footer');
   }
@@ -687,8 +691,10 @@ export class ContextMenu extends SubMenu {
 
   private static pendingMenu: ContextMenu|null = null;
   private static useSoftMenu = false;
-  static readonly groupWeights =
-      ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'override', 'save', 'footer'];
+  static readonly groupWeights = [
+    'header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'override', 'save', 'annotation',
+    'footer'
+  ];
 }
 
 export interface Provider<T> {

@@ -806,7 +806,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     let menuItem;
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.element-panel-context')) {
-      contextMenu.headerSection().appendAction(
+      contextMenu.footerSection().appendAction(
           'freestyler.element-panel-context',
       );
     }

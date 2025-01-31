@@ -20,17 +20,19 @@ export class ExtensionScope {
                       data: Protocol.Runtime.BindingCalledEvent,
                     }) => Promise<void>> = [];
   #changeManager: ChangeManager;
+  #agentId: string;
   #frameId?: Protocol.Page.FrameId|null;
   #target?: SDK.Target.Target;
 
   readonly #bindingMutex = new Common.Mutex.Mutex();
 
-  constructor(changes: ChangeManager) {
+  constructor(changes: ChangeManager, agentId: string) {
     this.#changeManager = changes;
     const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
 
     const frameId = selectedNode?.frameId();
     const target = selectedNode?.domModel().target();
+    this.#agentId = agentId;
     this.#target = target;
     this.#frameId = frameId;
   }
@@ -146,6 +148,7 @@ export class ExtensionScope {
         throw new Error('CSSModel is not found');
       }
       await this.#changeManager.addChange(cssModel, this.frameId, {
+        groupId: this.#agentId,
         selector,
         className,
         styles: arg.styles,

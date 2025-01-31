@@ -78,6 +78,10 @@
       animation-timeline: --scroll-timeline;
     }
   }
+
+  &:has(.change-summary) .input-form-shadow-container {
+    display: none;
+  }
 }
 
 .chat-readonly-container {
@@ -461,11 +465,16 @@
 
 .input-header {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 2px;
   line-height: 20px;
   gap: var(--sys-size-8);
+  position: relative;
+
+  &:has(.change-summary) {
+    min-height: var(--sys-size-13);
+  }
 
   & .feedback-icon {
     width: var(--sys-size-8);
@@ -665,6 +674,80 @@ main {
 .side-effect-buttons-container {
   display: flex;
   gap: var(--sys-size-4);
+}
+
+.change-summary {
+  width: fit-content;
+  background-color: var(--sys-color-surface3);
+  border-radius: var(--sys-size-6);
+  position: relative;
+  max-height: 80cqh;
+  overflow: auto;
+  scrollbar-width: none;
+
+  summary {
+    padding-left: var(--sys-size-6);
+    padding-right: var(--sys-size-4);
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+    height: var(--sys-size-13);
+
+    & .difference-icon {
+      color: var(--sys-color-on-tonal-container);
+      width: var(--sys-size-8);
+      height: var(--sys-size-8);
+    }
+
+    & .header-text {
+      font: var(--sys-typescale-body5-bold);
+      color: var(--sys-color-on-surface-subtle);
+    }
+
+    & .arrow {
+      margin-left: auto;
+    }
+
+    &::marker {
+      content: "";
+    }
+  }
+
+  &:not(&[open]):hover::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &[open] {
+    flex: 1;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+
+    &::details-content {
+      height: fit-content;
+      padding: var(--sys-size-2) 0;
+      border-radius: inherit;
+    }
+
+    summary .arrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  devtools-code-block {
+    margin-top: calc(-1 * var(--sys-size-5));
+
+    --code-block-background-color: inherit;
+  }
 }
 
 @keyframes reveal {

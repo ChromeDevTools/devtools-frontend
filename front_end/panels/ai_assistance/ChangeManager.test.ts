@@ -10,6 +10,7 @@ import * as Freestyler from './ai_assistance.js';
 describe('ChangeManager', () => {
   const styleSheetId = '1' as Protocol.CSS.StyleSheetId;
   const frameId = '1' as Protocol.Page.FrameId;
+  const agentId = '1';
 
   function createModel() {
     const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {
@@ -41,6 +42,7 @@ describe('ChangeManager', () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'div',
       className: 'ai-style-change-1',
       styles: {
@@ -57,6 +59,7 @@ describe('ChangeManager', () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'div',
       className: 'ai-style-change-1',
       styles: {
@@ -64,6 +67,7 @@ describe('ChangeManager', () => {
       },
     });
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'span',
       className: 'ai-style-change-1',
       styles: {
@@ -81,6 +85,7 @@ describe('ChangeManager', () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'div',
       className: 'ai-style-change-1',
       styles: {
@@ -88,6 +93,7 @@ describe('ChangeManager', () => {
       },
     });
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'div',
       className: 'ai-style-change-1',
       styles: {
@@ -105,6 +111,7 @@ describe('ChangeManager', () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'div',
       className: 'ai-style-change-1',
       styles: {
@@ -117,6 +124,7 @@ describe('ChangeManager', () => {
     ]);
     await changeManager.clear();
     await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
       selector: 'body',
       className: 'ai-style-change-1',
       styles: {
@@ -128,5 +136,31 @@ describe('ChangeManager', () => {
       [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
       [styleSheetId, '.ai-style-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
     ]);
+  });
+
+  describe('format changes', () => {
+    it('returns empty string when there are no changes from the given agent', async () => {
+      const changeManager = new Freestyler.ChangeManager();
+
+      assert.strictEqual(changeManager.formatChanges(agentId), '');
+    });
+
+    it('returns formatted changes for an agent without `.ai-style-change` classes', async () => {
+      const changeManager = new Freestyler.ChangeManager();
+      const cssModel = createModel();
+
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {
+          color: 'blue',
+        },
+      });
+
+      assert.strictEqual(changeManager.formatChanges(agentId), `div {
+  color: blue;
+}`);
+    });
   });
 });

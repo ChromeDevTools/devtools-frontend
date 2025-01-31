@@ -423,6 +423,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#currentAgent = agent;
       this.#viewProps.agentType = this.#currentAgent?.type;
       this.#viewProps.messages = [];
+      this.#viewProps.changeSummary = undefined;
       this.#viewProps.isLoading = false;
       this.#viewProps.isReadOnly = this.#currentAgent?.isHistoryEntry ?? false;
     }
@@ -955,6 +956,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code = data.code;
             step.output = data.output;
             step.canceled = data.canceled;
+            if (isAiAssistanceChangeSummariesEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
+              this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
+            }
             commitStep();
             break;
           }
@@ -1046,6 +1050,18 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
+function setAiAssistanceChangeSummariesEnabled(enabled: true): void {
+  if (enabled) {
+    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'true');
+  } else {
+    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'false');
+  }
+}
+
+function isAiAssistanceChangeSummariesEnabled(): boolean {
+  return localStorage.getItem('aiAssistance_changeSummariesEnabled') === 'true';
+}
+
 function setAiAssistanceServerSideLoggingEnabled(enabled: boolean): void {
   if (enabled) {
     localStorage.setItem('aiAssistance_enableServerSideLogging', 'true');
@@ -1064,3 +1080,5 @@ function isAiAssistanceServerSideLoggingEnabled(): boolean {
 
 // @ts-ignore
 globalThis.setAiAssistanceServerSideLoggingEnabled = setAiAssistanceServerSideLoggingEnabled;
+// @ts-ignore
+globalThis.setAiAssistanceChangeSummariesEnabled = setAiAssistanceChangeSummariesEnabled;

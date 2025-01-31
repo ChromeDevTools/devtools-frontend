@@ -423,7 +423,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
-                                   return new ExtensionScope(changes);
+                                   return new ExtensionScope(changes, this.id);
                                  });
     this.#confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     SDK.TargetManager.TargetManager.instance().addModelListener(

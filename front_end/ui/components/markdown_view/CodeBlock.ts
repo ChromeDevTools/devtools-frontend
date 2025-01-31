@@ -41,11 +41,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/CodeBlock.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface Heading {
-  showCopyButton: boolean;
-  text: string;
-}
-
 export class CodeBlock extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});

@@ -110,6 +110,7 @@ devtools_svg_sources = [
   "devtools-thumbnail.svg",
   "devtools-tips.svg",
   "devtools.svg",
+  "difference.svg",
   "dock-bottom.svg",
   "dock-left.svg",
   "dock-right.svg",

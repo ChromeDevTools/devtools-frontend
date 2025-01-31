@@ -8,12 +8,19 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 export interface Change {
+  groupId: string;
   selector: string;
   className: string;
   styles: Record<string, string>;
 }
 
 export const AI_ASSISTANCE_CSS_CLASS_NAME = 'ai-style-change';
+
+function formatStyles(styles: Record<string, string>): string {
+  const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
+  const lines = Object.entries(kebabStyles).map(([key, value]) => `  ${key}: ${value};`);
+  return lines.join('\n');
+}
 
 /**
  * Keeps track of changes done by the Styling agent. Currently, it is
@@ -83,6 +90,12 @@ export class ChangeManager {
     const existingChange = changes.find(c => c.className === change.className);
     if (existingChange) {
       Object.assign(existingChange.styles, change.styles);
+      // This combines all style changes for a given element,
+      // regardless of the conversation they originated from, into a single rule.
+      // While separating these changes by conversation would be ideal,
+      // it currently causes crashes in the Styles tab when duplicate selectors exist (crbug.com/393515428).
+      // This workaround avoids that crash.
+      existingChange.groupId = change.groupId;
     } else {
       changes.push(change);
     }
@@ -90,17 +103,21 @@ export class ChangeManager {
     this.#stylesheetChanges.set(stylesheetId, changes);
   }
 
+  formatChanges(groupId: string): string {
+    return Array.from(this.#stylesheetChanges.values())
+        .flatMap(
+            changesPerStylesheet =>
+                changesPerStylesheet.filter(change => change.groupId === groupId).map(change => `${change.selector} {
+${formatStyles(change.styles)}
+}`)).join('\n\n');
+  }
+
   buildChanges(changes: Array<Change>): string {
-    function formatStyles(styles: Record<string, string>): string {
-      const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
-      const lines = Object.entries(kebabStyles).map(([key, value]) => `${key}: ${value};`);
-      return lines.join('\n');
-    }
     return changes
         .map(change => {
           return `.${change.className} {
   ${change.selector}& {
-    ${formatStyles(change.styles)}
+  ${formatStyles(change.styles)}
   }
 }`;
         })

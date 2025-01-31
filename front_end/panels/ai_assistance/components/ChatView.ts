@@ -253,6 +253,10 @@ const UIStringsNotTranslate = {
    *@description Text displayed when the chat input is disabled due to reading past conversation.
    */
   pastConversation: 'You\'re viewing a past conversation.',
+  /**
+   *@description Text displayed for showing change summary view.
+   */
+  changeSummary: 'Change summary',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -321,6 +325,7 @@ export interface Props {
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   stripLinks: boolean;
+  changeSummary?: string;
 }
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -586,6 +591,31 @@ export class ChatView extends HTMLElement {
       } as UserActionRowProps}
       ></devtools-user-action-row>`;
     // clang-format on
+  }
+
+  #renderChangeSummary(): Lit.LitTemplate {
+    if (!this.#props.changeSummary) {
+      return Lit.nothing;
+    }
+
+    return html`<details class="change-summary">
+        <summary>
+          <devtools-icon class="difference-icon" .name=${'difference'}
+          ></devtools-icon>
+          <span class="header-text">
+            ${lockedString(UIStringsNotTranslate.changeSummary)}
+          </span>
+          <devtools-icon
+            class="arrow"
+            .name=${'chevron-up'}
+          ></devtools-icon>
+        </summary>
+        <devtools-code-block
+          .code=${this.#props.changeSummary}
+          .codeLang=${'css'}
+          .displayNotice=${false}
+        ></devtools-code-block>
+      </details>`;
   }
 
   #renderTextAsMarkdown(text: string, {animate, ref: refFn}: {
@@ -1177,6 +1207,7 @@ export class ChatView extends HTMLElement {
           <div class="header-link-container">
             ${this.#renderSelection()}
           </div>
+          ${this.#renderChangeSummary()}
         </div>
       ` : Lit.nothing}
       <div class="chat-input-container">

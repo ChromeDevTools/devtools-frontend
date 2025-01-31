@@ -1112,8 +1112,13 @@ export enum IssueCreated {
   'CookieIssue::WarnThirdPartyPhaseout::SetCookie' = 83,
   'CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie' = 84,
   'CookieIssue::ExcludeThirdPartyPhaseout::SetCookie' = 85,
+  'SelectElementAccessibilityIssue::DisallowedSelectChild' = 86,
+  'SelectElementAccessibilityIssue::DisallowedOptGroupChild' = 87,
+  'SelectElementAccessibilityIssue::NonPhrasingContentOptionChild' = 88,
+  'SelectElementAccessibilityIssue::InteractiveContentOptionChild' = 89,
+  'SelectElementAccessibilityIssue::InteractiveContentLegendChild' = 90,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 86,
+  MAX_VALUE = 91,
 }
 
 export const enum DeveloperResourceLoaded {

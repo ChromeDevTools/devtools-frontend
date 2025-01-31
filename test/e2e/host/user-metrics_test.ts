@@ -521,6 +521,69 @@ describe('User Metrics for Issue Panel', () => {
       },
     ]);
   });
+
+  it('dispatches an event when a SelectElementAccessibility DisallowedSelectChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-DisallowedSelectChild.html');
+    await waitFor('.issue');
+
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 86,  // SelectElementAccessibilityIssue::DisallowedSelectChild
+      },
+    ]);
+  });
+
+  it('dispatches an event when a SelectElementAccessibility DisallowedOptGroupChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
+    await waitFor('.issue');
+
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 87,  // SelectElementAccessibilityIssue::DisallowedOptGroupChild
+      },
+    ]);
+  });
+
+  it('dispatches an event when a SelectElementAccessibility NonPhrasingContentOptionChild issue is created',
+     async () => {
+       await goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');
+       await waitFor('.issue');
+
+       await assertHistogramEventsInclude([
+         {
+           actionName: 'DevTools.IssueCreated',
+           actionCode: 88,  // SelectElementAccessibilityIssue::NonPhrasingContentOptionChild
+         },
+       ]);
+     });
+
+  it('dispatches an event when a SelectElementAccessibility InteractiveContentOptionChild issue is created',
+     async () => {
+       await goToResource('issues/select-element-accessibility-issue-InteractiveContentOptionChild.html');
+       await waitFor('.issue');
+
+       await assertHistogramEventsInclude([
+         {
+           actionName: 'DevTools.IssueCreated',
+           actionCode: 89,  // SelectElementAccessibilityIssue::InteractiveContentOptionChild
+         },
+       ]);
+     });
+
+  it('dispatches an event when a SelectElementAccessibility InteractiveContentLegendChild issue is created',
+     async () => {
+       await goToResource('issues/select-element-accessibility-issue-InteractiveContentLegendChild.html');
+       await waitFor('.issue');
+
+       await assertHistogramEventsInclude([
+         {
+           actionName: 'DevTools.IssueCreated',
+           actionCode: 90,  // SelectElementAccessibilityIssue::InteractiveContentLegendChild
+         },
+       ]);
+     });
 });
 
 describe('User Metrics for CSS custom properties in the Styles pane', () => {

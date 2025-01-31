@@ -18,6 +18,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AffectedBlockedByResponseView} from './AffectedBlockedByResponseView.js';
 import {AffectedCookiesView, AffectedRawCookieLinesView} from './AffectedCookiesView.js';
+import {AffectedDescendantsWithinSelectElementView} from './AffectedDescendantsWithinSelectElementView.js';
 import {AffectedDirectivesView} from './AffectedDirectivesView.js';
 import {AffectedDocumentsInQuirksModeView} from './AffectedDocumentsInQuirksModeView.js';
 import {AffectedElementsView} from './AffectedElementsView.js';
@@ -255,6 +256,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
       new AffectedRawCookieLinesView(this, this.#issue, 'affected-raw-cookies'),
       new AffectedTrackingSitesView(this, this.#issue, 'tracking-sites-details'),
       new AffectedMetadataAllowedSitesView(this, this.#issue, 'metadata-allowed-sites-details'),
+      new AffectedDescendantsWithinSelectElementView(this, this.#issue, 'disallowed-select-descendants-details'),
     ];
     this.#hiddenIssuesMenu = new Components.HideIssuesMenu.HideIssuesMenu();
     this.#aggregatedIssuesCount = null;

@@ -19,6 +19,7 @@ devtools_module("issues") {
   sources = [
     "AffectedBlockedByResponseView.ts",
     "AffectedCookiesView.ts",
+    "AffectedDescendantsWithinSelectElementView.ts",
     "AffectedDirectivesView.ts",
     "AffectedDocumentsInQuirksModeView.ts",
     "AffectedElementsView.ts",

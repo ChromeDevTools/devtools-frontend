@@ -29,6 +29,7 @@ node_ts_library("issues") {
     "quota-issues_test.ts",
     "report-only_test.ts",
     "sab-issues_test.ts",
+    "select-element-accessibility-issues_test.ts",
   ]
 
   deps = [

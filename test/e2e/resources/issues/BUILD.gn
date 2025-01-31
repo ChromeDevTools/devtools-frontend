@@ -20,6 +20,12 @@ copy_to_gen("issues") {
     "origin-wildcard.rawresponse",
     "redirect.rawresponse",
     "sab-issue.rawresponse",
+    "select-element-accessibility-issue-DisallowedOptGroupChild.html",
+    "select-element-accessibility-issue-DisallowedSelectChild.html",
+    "select-element-accessibility-issue-InteractiveAttributesSelectDescendant.html",
+    "select-element-accessibility-issue-InteractiveContentLegendChild.html",
+    "select-element-accessibility-issue-InteractiveContentOptionChild.html",
+    "select-element-accessibility-issue-NonPhrasingContentOptionChild.html",
     "wasm-co-iframe.html",
     "wasm-co-sharing.html",
   ]

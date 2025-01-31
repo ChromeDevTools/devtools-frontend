@@ -168,14 +168,16 @@ export class CookieControlsView extends UI.Widget.VBox {
       <div class="card-header">
         <div class="lhs">
           <div class="text">
-            <div class="card-title main-text">${i18nString(UIStrings.cardTitle)}</div>
+            <h2 class="main-text">${i18nString(UIStrings.cardTitle)}</h2>
             <div class="body subtext">${i18nString(UIStrings.cardDisclaimer)}</div>
           </div>
           ${Boolean(enterpriseEnabledSetting.get()) ? html `
             <devtools-icon
+              tabindex="0"
               .name=${'domain'}
               ${Lit.Directives.ref((el: Element|undefined) => {
                 UI.Tooltip.Tooltip.install(el as HTMLElement, i18nString(UIStrings.enterpriseTooltip));
+                (el as HTMLElement).role = 'img';
               })}>
             </devtools-icon>` : Lit.nothing
           }

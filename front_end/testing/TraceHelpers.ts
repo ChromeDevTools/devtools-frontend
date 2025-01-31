@@ -661,7 +661,8 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       },
     },
     Screenshots: {
-      all: [],
+      legacySyntheticScreenshots: [],
+      screenshots: [],
     },
     Samples: {
       entryToNode: new Map(),

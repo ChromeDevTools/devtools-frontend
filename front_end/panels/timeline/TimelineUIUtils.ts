@@ -2267,8 +2267,8 @@ export class TimelineUIUtils {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');
       // TODO(paulirish): Adopt Util.ImageCache
-      void UI.UIUtils.loadImage(filmStripFrame.screenshotEvent.args.dataUri)
-          .then(image => image && filmStripPreview.appendChild(image));
+      const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(filmStripFrame.screenshotEvent);
+      void UI.UIUtils.loadImage(uri).then(image => image && filmStripPreview.appendChild(image));
       contentHelper.appendElementRow('', filmStripPreview);
       filmStripPreview.addEventListener('click', frameClicked.bind(null, filmStrip, filmStripFrame), false);
     }

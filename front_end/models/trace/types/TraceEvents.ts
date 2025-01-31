@@ -515,7 +515,23 @@ export function isAuctionWorkletDoneWithProcess(event: Event): event is AuctionW
 
 // Snapshot events.
 
-export interface Screenshot extends Event {
+/**
+ * In January 2025 when crrev.com/c/6197645 landed, it changed the format of screenshot events.
+ * That is why we two screenshot types:
+ * `LegacyScreenshot` and `LegacySyntheticScreenshot`: BEFORE the above CL.
+ * `Screenshot`: AFTER the above CL.
+ * Important things to note:
+ * 1. Both the "old" and "new" events share the name "Screenshot" but their format is very different.
+ * 2. The old events had both a raw event (LegacyScreenshot) and a synthetic
+ *    event (LegacySyntheticScreenshot). The new events only have a raw event, as
+ *    we do not need the additional complexity of a synthetic event.
+ * 3. Because we like to support "old" traces, DevTools will maintain its
+ *    support for both screenshot events for the foreseeable future. If you are
+ *    consuming screenshot events from the ScreenshotHandler, you must make sure
+ *    to have your code deal with the two different formats.
+ */
+// These are nullable because in January 2025 a CL in Chromium
+export interface LegacyScreenshot extends Event {
   /**
    * @deprecated This value is incorrect. Use ScreenshotHandler.getPresentationTimestamp()
    */
@@ -529,12 +545,19 @@ export interface Screenshot extends Event {
   cat: 'disabled-by-default-devtools.screenshot';
   ph: Phase.OBJECT_SNAPSHOT;
 }
-export function isScreenshot(event: Event): event is Screenshot {
-  return event.name === Name.SCREENSHOT;
+export function isLegacyScreenshot(event: Event): event is LegacyScreenshot {
+  return event.name === Name.SCREENSHOT && 'id' in event;
+}
+export function isLegacySyntheticScreenshot(event: Event): event is LegacySyntheticScreenshot {
+  return event.name === Name.SCREENSHOT && 'dataUri' in (event.args ?? {});
 }
 
-export interface SyntheticScreenshot extends Event, SyntheticBased {
-  rawSourceEvent: Screenshot;
+export function isScreenshot(event: Event): event is Screenshot {
+  return event.name === Name.SCREENSHOT && 'source_id' in (event.args ?? {});
+}
+
+export interface LegacySyntheticScreenshot extends Event, SyntheticBased {
+  rawSourceEvent: LegacyScreenshot;
   /** This is the correct presentation timestamp. */
   ts: Micro;
   args: Args&{
@@ -543,6 +566,18 @@ export interface SyntheticScreenshot extends Event, SyntheticBased {
   name: Name.SCREENSHOT;
   cat: 'disabled-by-default-devtools.screenshot';
   ph: Phase.OBJECT_SNAPSHOT;
+}
+
+export interface Screenshot extends Instant {
+  args: Args&{
+    snapshot: string,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    source_id: number,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    frame_sequence: number,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    expected_display_time: number,
+  };
 }
 
 // Animation events.
@@ -905,7 +940,7 @@ interface LayoutShiftSessionWindowData {
 }
 export interface LayoutShiftParsedData {
   /** screenshot taken before and after this shift. Before *should* always exist, but after might not at the end of a trace. */
-  screenshots: {before: SyntheticScreenshot|null, after: SyntheticScreenshot|null};
+  screenshots: {before: LegacySyntheticScreenshot|Screenshot|null, after: LegacySyntheticScreenshot|Screenshot|null};
   timeFromNavigation?: Micro;
   // The sum of the weighted scores of the shifts that
   // belong to a session window up until this shift

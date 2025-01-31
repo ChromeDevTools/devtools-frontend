@@ -86,7 +86,8 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     element.addEventListener('focusin', this.onMouseEvent.bind(this, Events.FRAME_ENTER, time), false);
     element.addEventListener('focusout', this.onMouseEvent.bind(this, Events.FRAME_EXIT, time), false);
 
-    FilmStripView.setImageData(imageElement, frame.screenshotEvent.args.dataUri);
+    const imgData = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(frame.screenshotEvent);
+    FilmStripView.setImageData(imageElement, imgData);
     return element;
   }
 
@@ -274,7 +275,8 @@ export class Dialog {
     this.fragment.$('time').textContent = i18n.TimeUtilities.millisToString(timestamp - this.#zeroTime());
     const image = (this.fragment.$('image') as HTMLImageElement);
     image.setAttribute('data-frame-index', this.index.toString());
-    FilmStripView.setImageData(image, frame.screenshotEvent.args.dataUri);
+    const imgData = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(frame.screenshotEvent);
+    FilmStripView.setImageData(image, imgData);
     this.resize();
   }
 }

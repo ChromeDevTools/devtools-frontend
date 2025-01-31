@@ -13,7 +13,7 @@ export interface Data {
 }
 
 export interface Frame {
-  screenshotEvent: Types.Events.SyntheticScreenshot;
+  screenshotEvent: Types.Events.LegacySyntheticScreenshot|Types.Events.Screenshot;
   index: number;
 }
 
@@ -42,7 +42,9 @@ export function fromParsedTrace(parsedTrace: HandlerDataWithScreenshots, customZ
     return fromCache;
   }
 
-  for (const screenshotEvent of parsedTrace.Screenshots.all) {
+  const screenshots = parsedTrace.Screenshots.screenshots ?? parsedTrace.Screenshots.legacySyntheticScreenshots ?? [];
+
+  for (const screenshotEvent of screenshots) {
     if (screenshotEvent.ts < zeroTime) {
       continue;
     }

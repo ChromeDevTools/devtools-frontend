@@ -200,7 +200,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   preloadScreenshots(events: Trace.Types.Events.SyntheticLayoutShift[]): Promise<(void|undefined)[]> {
-    const screenshotsToLoad: Set<Trace.Types.Events.SyntheticScreenshot> = new Set();
+    const screenshotsToLoad: Set<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot> =
+        new Set();
     for (const event of events) {
       const shots = event.parsedData.screenshots;
       shots.before && screenshotsToLoad.add(shots.before);

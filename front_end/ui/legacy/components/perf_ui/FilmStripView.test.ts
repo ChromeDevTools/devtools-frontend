@@ -44,7 +44,8 @@ describeWithEnvironment('FilmStripView', function() {
     // data. And that the time label is as expected.
     renderedFrames.forEach((frame, index) => {
       const img = querySelectorErrorOnMissing<HTMLImageElement>(frame, 'img');
-      assert.isTrue(img.src.includes(parsedTrace.Screenshots.all[index].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(img.src.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[index].args.dataUri));
 
       const timeElement = querySelectorErrorOnMissing<HTMLDivElement>(frame, '.time');
       // Remove whitespace to avoid having to compare with &nbsp; in the
@@ -77,7 +78,9 @@ describeWithEnvironment('FilmStripView', function() {
       const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, 0);
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[0].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -93,7 +96,9 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[0].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -109,7 +114,9 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(previousBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[0].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -126,7 +133,9 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[0].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[0].args.dataUri));
       dialog.hide();
     });
 
@@ -143,7 +152,9 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       const renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[1].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
       dialog.hide();
     });
 
@@ -154,7 +165,9 @@ describeWithEnvironment('FilmStripView', function() {
       const {dialog, shadowRoot} = await renderDialogWithTrace(filmStrip, numberOfFrames - 1);
 
       let renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[numberOfFrames - 1].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(renderedImage?.currentSrc.includes(
+          parsedTrace.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
 
       const nextBtn = shadowRoot.querySelectorAll('devtools-button')[1];
       assert.isTrue(nextBtn.textContent === '▶' || nextBtn.textContent === '&#9654;');
@@ -164,7 +177,9 @@ describeWithEnvironment('FilmStripView', function() {
       dispatchClickEvent(nextBtn);
       await raf();
       renderedImage = shadowRoot.querySelector<HTMLImageElement>('[data-film-strip-dialog-img]');
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[numberOfFrames - 1].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(renderedImage?.currentSrc.includes(
+          parsedTrace.Screenshots.legacySyntheticScreenshots[numberOfFrames - 1].args.dataUri));
       dialog.hide();
     });
 
@@ -181,7 +196,9 @@ describeWithEnvironment('FilmStripView', function() {
         bubbles: true,
       });
       await raf();
-      assert.isTrue(renderedImage?.currentSrc.includes(parsedTrace.Screenshots.all[1].args.dataUri));
+      assert.isOk(parsedTrace.Screenshots.legacySyntheticScreenshots);
+      assert.isTrue(
+          renderedImage?.currentSrc.includes(parsedTrace.Screenshots.legacySyntheticScreenshots[1].args.dataUri));
       dialog.hide();
     });
   });

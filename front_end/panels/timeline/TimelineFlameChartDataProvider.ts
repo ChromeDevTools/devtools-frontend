@@ -689,7 +689,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
 
-      if (Trace.Types.Events.isScreenshot(entry)) {
+      if (Trace.Types.Events.isLegacyScreenshot(entry)) {
         // Screenshots are represented as trace events, but you can't search for them, so skip.
         continue;
       }
@@ -970,7 +970,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private async drawScreenshot(
       entryIndex: number, context: CanvasRenderingContext2D, barX: number, barY: number, barWidth: number,
       barHeight: number): Promise<void> {
-    const screenshot = (this.entryData[entryIndex] as Trace.Types.Events.SyntheticScreenshot);
+    const screenshot = (this.entryData[entryIndex] as Trace.Types.Events.LegacySyntheticScreenshot);
     const image = Utils.ImageCache.getOrQueue(screenshot);
     if (!image) {
       return;

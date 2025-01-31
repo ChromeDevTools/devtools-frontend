@@ -2,23 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 
-const imageCache: WeakMap<Trace.Types.Events.SyntheticScreenshot, HTMLImageElement|null> = new WeakMap();
+const imageCache:
+    WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null> =
+        new WeakMap();
 export const emitter = new EventTarget();
 
 /**
  * Synchronously returns an image, or return `null` while queuing up an async load of that image.
  * If the image load fails, we cache a null to avoid reattempts.
  */
-export function getOrQueue(screenshot: Trace.Types.Events.SyntheticScreenshot): HTMLImageElement|null {
+export function getOrQueue(screenshot: Trace.Types.Events.LegacySyntheticScreenshot|
+                           Trace.Types.Events.Screenshot): HTMLImageElement|null {
   if (imageCache.has(screenshot)) {
     return imageCache.get(screenshot) ?? null;
   }
 
-  const data = screenshot.args.dataUri;
+  const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(screenshot);
 
-  loadImage(data)
+  loadImage(uri)
       .then(imageOrNull => {
         imageCache.set(screenshot, imageOrNull);
         emitter.dispatchEvent(new CustomEvent('screenshot-loaded', {detail: {screenshot, image: imageOrNull}}));
@@ -38,12 +41,14 @@ function loadImage(url: string): Promise<HTMLImageElement|null> {
 }
 
 /** Populate the cache ahead of use, to allow for getOrQueue to synchronously return images. */
-export function preload(screenshots: Trace.Types.Events.SyntheticScreenshot[]): Promise<void[]> {
+export function preload(screenshots: (Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot)[]):
+    Promise<void[]> {
   const promises = screenshots.map(screenshot => {
     if (imageCache.has(screenshot)) {
       return;
     }
-    return loadImage(screenshot.args.dataUri).then(image => {
+    const uri = Trace.Handlers.ModelHandlers.Screenshots.screenshotImageDataUri(screenshot);
+    return loadImage(uri).then(image => {
       imageCache.set(screenshot, image);
       return;
     });

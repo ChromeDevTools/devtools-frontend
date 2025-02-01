@@ -454,6 +454,39 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.isNull(match, text);
   });
 
+  it('parses auto-base correctly', () => {
+    for (const fail of ['-internal-auto-base()', '-internal-auto-base(block)', '-internal-auto-base(var(--foo))']) {
+      const {match, text} = matchSingleValue('display', fail, new SDK.CSSPropertyParserMatchers.AutoBaseMatcher());
+      assert.isNull(match, text);
+    }
+
+    for (const [succeed, propertyName] of [
+             ['-internal-auto-base(red, blue)', 'color'],
+             ['-internal-auto-base(var(--foo), red)', 'color'],
+             ['-internal-auto-base(red, var(--foo))', 'color'],
+             ['-internal-auto-base(var(--foo), var(--bar))', 'color'],
+             ['-internal-auto-base(gray, coral)', 'background-color'],
+             ['-internal-auto-base(inline, block)', 'display'],
+             ['-internal-auto-base(center, right)', 'text-align'],
+             ['-internal-auto-base(serif, cursive)', 'font-family'],
+             ['-internal-auto-base(solid, dashed)', 'border-style'],
+             ['-internal-auto-base(0, 0.5em)', 'border-radius'],
+             ['-internal-auto-base(2px, 0.25em)', 'padding'],
+             ['-internal-auto-base(1en, 3pt)', 'margin'],
+    ]) {
+      const {ast, match, text} =
+          matchSingleValue(propertyName, succeed, new SDK.CSSPropertyParserMatchers.AutoBaseMatcher());
+      assert.exists(ast, text);
+      assert.exists(match, text);
+
+      const [auto, base] = succeed.slice('-internal-auto-base('.length, -1).split(', ');
+      assert.lengthOf(match.auto, 1);
+      assert.lengthOf(match.base, 1);
+      assert.strictEqual(ast.text(match.auto[0]), auto);
+      assert.strictEqual(ast.text(match.base[0]), base);
+    }
+  });
+
   describe('AnchorFunctionMatcher', () => {
     it('should not match when it is not a call expression', () => {
       const {match, text} =

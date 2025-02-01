@@ -791,6 +791,38 @@ export class BezierRenderer implements MatchRenderer<SDK.CSSPropertyParserMatche
   }
 }
 
+export class AutoBaseRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.AutoBaseMatch> {
+  readonly #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  matcher(): SDK.CSSPropertyParserMatchers.AutoBaseMatcher {
+    return new SDK.CSSPropertyParserMatchers.AutoBaseMatcher();
+  }
+
+  render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Node[] {
+    const content = document.createElement('span');
+    content.appendChild(document.createTextNode('-internal-auto-base('));
+    const auto = content.appendChild(document.createElement('span'));
+    content.appendChild(document.createTextNode(', '));
+    const base = content.appendChild(document.createElement('span'));
+    content.appendChild(document.createTextNode(')'));
+
+    Renderer.renderInto(match.auto, context, auto);
+    Renderer.renderInto(match.base, context, base);
+
+    const activeAppearance = this.#treeElement.getComputedStyle('appearance');
+    if (activeAppearance?.startsWith('base')) {
+      auto.style.textDecoration = 'line-through';
+    } else {
+      base.style.textDecoration = 'line-through';
+    }
+
+    return [content];
+  }
+}
+
 export const enum ShadowPropertyType {
   X = 'x',
   Y = 'y',
@@ -1825,6 +1857,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new PositionTryRenderer(this),
           new LengthRenderer(this),
           new SelectFunctionRenderer(this),
+          new AutoBaseRenderer(this),
         ] :
         [];
 

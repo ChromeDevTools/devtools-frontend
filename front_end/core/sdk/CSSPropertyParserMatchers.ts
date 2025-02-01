@@ -247,6 +247,30 @@ export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
   }
 }
 
+export class AutoBaseMatch implements Match {
+  constructor(
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly auto: CodeMirror.SyntaxNode[],
+      readonly base: CodeMirror.SyntaxNode[]) {
+  }
+}
+
+// clang-format off
+export class AutoBaseMatcher extends matcherBase(AutoBaseMatch) {
+  // clang-format on
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== '-internal-auto-base') {
+      return null;
+    }
+
+    const args = ASTUtils.callArgs(node);
+    if (args.length !== 2 || args[0].length === 0 || args[1].length === 0) {
+      return null;
+    }
+
+    return new AutoBaseMatch(matching.ast.text(node), node, args[0], args[1]);
+  }
+}
+
 export const enum LinkableNameProperties {
   ANIMATION = 'animation',
   ANIMATION_NAME = 'animation-name',

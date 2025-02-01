@@ -65,12 +65,11 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
         ${html`<devtools-performance-table
           .data=${{
             insight: this,
-            headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
+            headers: [i18nString(UIStrings.fontColumn), i18nString(UIStrings.wastedTimeColumn)],
             rows: this.model.fonts.map(font => ({
               values: [
                 // TODO(crbug.com/369422196): the font name would be nicer here.
                 eventRef(font.request),
-                font.display,
                 i18n.TimeUtilities.millisToString(font.wastedTime),
               ],
               overlays: [this.#overlayForRequest.get(font.request)],

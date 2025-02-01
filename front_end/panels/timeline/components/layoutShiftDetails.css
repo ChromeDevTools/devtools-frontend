@@ -58,6 +58,7 @@
   border: none;
   padding: 0;
   font: inherit;
+  text-align: left;
 }
 
 .timeline-link.invalid-link {

@@ -1254,7 +1254,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
     const rowData = getRowDataForDetailsElement(details)[2];
     assert.deepEqual(rowData, {
-      title: '3rd party entity',
+      title: 'Third party',
       value: 'Google Analytics',
     });
   });

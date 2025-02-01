@@ -513,7 +513,7 @@ const UIStrings = {
   /**
    * @description Text to refer to a 3rd Party entity.
    */
-  entity: '3rd party entity',
+  entity: 'Third party',
   /**
    * @description Label for third party table.
    */

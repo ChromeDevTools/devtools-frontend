@@ -121,6 +121,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   static resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
+      // Workers call into this with no #frames available.
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
         return result;
@@ -354,11 +355,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   frames(): ResourceTreeFrame[] {
     return [...this.framesInternal.values()];
-  }
-
-  resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
-    // Workers call into this with no #frames available.
-    return this.mainFrame ? this.mainFrame.resourceForURL(url) : null;
   }
 
   private addFramesRecursively(

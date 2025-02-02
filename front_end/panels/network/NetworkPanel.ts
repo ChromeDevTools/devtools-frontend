@@ -39,7 +39,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -809,7 +808,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
       return;
     }
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
-      const resource = Bindings.ResourceUtils.resourceForURL(target.url());
+      const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(target.url());
       if (resource && resource.request) {
         appendRevealItem(resource.request);
       } else {

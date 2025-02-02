@@ -354,9 +354,9 @@ lorem ipsum
         requestContentData: true,
         url: networkRequest.url(),
       });
-      sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel.prototype, 'resourceForURL')
-          .withArgs(networkRequest.url())
-          .returns({request: networkRequest} as SDK.Resource.Resource);
+      sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL').withArgs(networkRequest.url()).returns({
+        request: networkRequest
+      } as SDK.Resource.Resource);
       assert.strictEqual(formatFile(uiSourceCode), `File name: script.js
 URL: https://www.example.com/script.js
 Request initiator chain:

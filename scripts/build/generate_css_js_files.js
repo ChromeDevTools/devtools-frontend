@@ -29,7 +29,7 @@ async function codeForFile({srcDir, fileName, input, isDebug, buildTimestamp}) {
 /* istanbul ignore file */
 export default {
   cssContent: \`${stylesheetContents}
-/*# sourceURL=${fileName} */
+/*# sourceURL=\${import.meta.resolve('./${fileName}')} */
 \`
 };`;
 }

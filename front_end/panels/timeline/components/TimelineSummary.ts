@@ -40,7 +40,7 @@ export interface SummaryTableData {
   selectedEvents: Trace.Types.Events.Event[];
 }
 
-export class TimelineSummary extends HTMLElement {
+export class CategorySummary extends HTMLElement {
   readonly #shadow =
       UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: timelineSummaryStyles, delegatesFocus: undefined});
 
@@ -89,17 +89,17 @@ export class TimelineSummary extends HTMLElement {
                 </div>
           </div>
           </div>
-          <slot name="third-party-table"></slot>
+
         </div>`;
     // clang-format on
     render(output, this.#shadow, {host: this});
   }
 }
 
-customElements.define('devtools-performance-timeline-summary', TimelineSummary);
+customElements.define('devtools-performance-timeline-summary', CategorySummary);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-timeline-summary': TimelineSummary;
+    'devtools-performance-timeline-summary': CategorySummary;
   }
 }

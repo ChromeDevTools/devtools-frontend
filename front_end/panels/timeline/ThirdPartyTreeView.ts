@@ -49,6 +49,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     this.element.setAttribute('jslog', `${VisualLogging.pane('third-party-tree').track({hover: true})}`);
     this.init();
     this.dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
+    this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.NEAREST);
     /**
      * By default data grids always expand when arrowing.
      * For 3P table, we don't use this feature.
@@ -130,21 +131,23 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         {
           id: 'site',
           title: i18nString(UIStrings.firstOrThirdPartyName),
-          width: '100px',
-          fixedWidth: true,
+          // It's important that this width is the `.widget.vbox.timeline-tree-view` max-width (550)
+          // minus the two fixed sizes below. (550-100-105) == 345
+          width: '345px',
+          // And with this column not-fixed-width and resizingMethod NEAREST, the name-column will appropriately flex.
           sortable: true,
         },
         {
           id: 'transfer-size',
           title: i18nString(UIStrings.transferSize),
-          width: '80px',
+          width: '100px',  // Mostly so there's room for the header plus sorting triangle
           fixedWidth: true,
           sortable: true,
         },
         {
           id: 'self',
           title: i18nString(UIStrings.selfTime),
-          width: '80px',
+          width: '105px',  // Mostly to fit large self-time plus devtools-button
           fixedWidth: true,
           sortable: true,
         });
@@ -257,7 +260,7 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
   }
 }
 
-export class ThirdPartyTreeView extends UI.Widget.WidgetElement<UI.Widget.Widget> {
+export class ThirdPartyTreeElement extends UI.Widget.WidgetElement<UI.Widget.Widget> {
   #treeView?: ThirdPartyTreeViewWidget;
 
   set treeView(treeView: ThirdPartyTreeViewWidget) {
@@ -279,10 +282,10 @@ export class ThirdPartyTreeView extends UI.Widget.WidgetElement<UI.Widget.Widget
   }
 }
 
-customElements.define('devtools-performance-third-party-tree-view', ThirdPartyTreeView);
+customElements.define('devtools-performance-third-party-tree-view', ThirdPartyTreeElement);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-third-party-tree-view': ThirdPartyTreeView;
+    'devtools-performance-third-party-tree-view': ThirdPartyTreeElement;
   }
 }

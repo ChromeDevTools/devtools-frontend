@@ -735,8 +735,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
 
         if (badgeText) {
           const badge = container.createChild('div', 'entity-badge');
+          badge.textContent = badgeText;
           UI.ARIAUtils.setLabel(badge, badgeText);
-          badge.createChild('div', 'entity-badge-name').textContent = badgeText;
         }
       }
     } else if (event) {
@@ -817,23 +817,19 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
           i18nString(UIStrings.percentPlaceholder, {PH1: (value / this.grandTotalTime * 100).toFixed(1)});
     }
     if (maxTime) {
-      textDiv.classList.add('background-percent-bar');
+      textDiv.classList.add('background-bar-text');
       cell.createChild('div', 'background-bar-container').createChild('div', 'background-bar').style.width =
           (value * 100 / maxTime).toFixed(1) + '%';
     }
     // Generate button on hover for 3P self time cell.
     if (showBottomUpButton) {
-      this.generateBottomUpButton(cell);
+      this.generateBottomUpButton(textDiv);
     }
     return cell;
   }
 
   // Generates bottom up tree hover button and appends it to the provided cell element.
-  private generateBottomUpButton(cell: HTMLElement): void {
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'button-container';
-    cell.classList.add('hover-bottom-up-button');
-
+  private generateBottomUpButton(textDiv: HTMLElement): void {
     const button = new Buttons.Button.Button();
     button.data = {
       variant: Buttons.Button.Variant.ICON,
@@ -843,11 +839,10 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     };
     UI.ARIAUtils.setLabel(button, i18nString(UIStrings.viewBottomUp));
     button.addEventListener('click', () => this.#bottomUpButtonClicked());
-    buttonContainer.appendChild(button);
     UI.Tooltip.Tooltip.install(button, i18nString(UIStrings.bottomUp));
 
     // Append the button to the last column
-    cell.appendChild(buttonContainer);
+    textDiv.appendChild(button);
   }
 
   #bottomUpButtonClicked(): void {

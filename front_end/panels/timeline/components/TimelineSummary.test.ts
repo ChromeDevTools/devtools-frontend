@@ -16,7 +16,7 @@ describeWithMockConnection('TimelineSummary', () => {
       {title: 'Rendering', value: 0, color: 'black'},
     ];
 
-    const summary = new TimelineComponents.TimelineSummary.TimelineSummary();
+    const summary = new TimelineComponents.TimelineSummary.CategorySummary();
     summary.data = {
       rangeStart: 0,
       rangeEnd: 110,
@@ -45,7 +45,7 @@ describeWithMockConnection('TimelineSummary', () => {
   it('no categories should just render Total', async function() {
     const categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
 
-    const summary = new TimelineComponents.TimelineSummary.TimelineSummary();
+    const summary = new TimelineComponents.TimelineSummary.CategorySummary();
     summary.data = {
       rangeStart: 0,
       rangeEnd: 110,

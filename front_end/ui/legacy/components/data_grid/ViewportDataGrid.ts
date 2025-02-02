@@ -222,18 +222,23 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     return result;
   }
 
+  // The datagrids assume a fixed height of rows, typically 20px. see nodeSelfHeight() and calculateVisibleNodes().
   private update(): void {
+    // Visual height of visible data rows
     const clientHeight = this.scrollContainer.clientHeight - this.headerHeightInScroller();
-    let scrollTop: number = this.scrollContainer.scrollTop;
-    const currentScrollTop = scrollTop;
-    const maxScrollTop = Math.max(0, this.contentHeight() - clientHeight);
+    // The hypothetical height of all data rows summed.
+    const contentHeight = this.contentHeight();
+    const currentScrollTop = this.scrollContainer.scrollTop;
+    // Scrolltop if scrolled to the very bottom
+    const maxScrollTop = Math.max(0, contentHeight - clientHeight);
+    let nextScrollTop = currentScrollTop;
     if (!this.updateIsFromUser && this.keepScrollingToBottom) {
-      scrollTop = maxScrollTop;
+      nextScrollTop = maxScrollTop;
     }
     this.updateIsFromUser = false;
-    scrollTop = Math.min(maxScrollTop, scrollTop);
+    nextScrollTop = Math.min(maxScrollTop, nextScrollTop);
 
-    const viewportState = this.calculateVisibleNodes(clientHeight, scrollTop);
+    const viewportState = this.calculateVisibleNodes(clientHeight, nextScrollTop);
     const visibleNodes = viewportState.visibleNodes;
     const visibleNodesSet = new Set<ViewportDataGridNode<T>>(visibleNodes);
 
@@ -274,9 +279,9 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     }
 
     this.setVerticalPadding(viewportState.topPadding, viewportState.bottomPadding);
-    this.lastScrollTop = scrollTop;
-    if (scrollTop !== currentScrollTop) {
-      this.scrollContainer.scrollTop = scrollTop;
+    this.lastScrollTop = nextScrollTop;
+    if (nextScrollTop !== currentScrollTop) {
+      this.scrollContainer.scrollTop = nextScrollTop;
     }
     const contentFits =
         viewportState.contentHeight <= clientHeight && viewportState.topPadding + viewportState.bottomPadding === 0;
@@ -339,6 +344,13 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
       this.stale = false;
     }
     return element;
+  }
+
+  override nodeSelfHeight(): number {
+    // Use the height of the first non-filler row.
+    const firstVisibleRow = this.dataGrid?.topFillerRow?.nextElementSibling;
+    const height = firstVisibleRow?.classList.contains('data-grid-data-grid-node') && firstVisibleRow.clientHeight;
+    return height || super.nodeSelfHeight();
   }
 
   setStriped(isStriped: boolean): void {

@@ -23,7 +23,7 @@ import {ModificationsManager} from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
-import {TimelineDetailsView} from './TimelineDetailsView.js';
+import {TimelineDetailsPane} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
   Events as TimelineFlameChartDataProviderEvents,
@@ -107,7 +107,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   private brickGame?: PerfUI.BrickBreaker.BrickBreaker;
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
-  private readonly detailsView: TimelineDetailsView;
+  private readonly detailsView: TimelineDetailsPane;
   private readonly onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
     entryIndex: number,
     withLinkCreationButton: boolean,
@@ -346,7 +346,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     // Create top level properties splitter.
     this.detailsSplitWidget = new UI.SplitWidget.SplitWidget(false, true, 'timeline-panel-details-split-view-state');
     this.detailsSplitWidget.element.classList.add('timeline-details-split');
-    this.detailsView = new TimelineDetailsView(delegate);
+    this.detailsView = new TimelineDetailsPane(delegate);
     this.detailsSplitWidget.installResizer(this.detailsView.headerElement());
     this.detailsSplitWidget.setMainWidget(this.chartSplitWidget);
     this.detailsSplitWidget.setSidebarWidget(this.detailsView);

@@ -26,7 +26,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
   it('displays the details of a network request event correctly', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
-    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
 
     const networkRequests = parsedTrace.NetworkRequests.byTime;
     const cssRequest = networkRequests.find(request => {
@@ -53,7 +53,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
   it('displays the details for a frame correctly', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
@@ -79,7 +79,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
   it('renders the layout shift component for a single layout shift', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
-    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
@@ -101,7 +101,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
   it('renders the layout shift component for a selected cluster', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
-    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     await detailsView.setModel({
       parsedTrace,
       selectedEvents: null,
@@ -123,7 +123,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
   it('updates the range details when the user has a range selected', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsPane(mockViewDelegate);
     await detailsView.setModel({
       parsedTrace,
       // We have to set selected events for the range selection UI to be drawn

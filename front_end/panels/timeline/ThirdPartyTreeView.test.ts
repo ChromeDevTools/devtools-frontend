@@ -50,7 +50,7 @@ describeWithEnvironment('TimelineTreeView', function() {
           firstNode, firstNode.totalTime, firstNode.selfTime, firstNode.totalTime, treeView);
       const extEntity = extensionNode?.createCell('site');
 
-      let gotBadgeName = extEntity.querySelector<HTMLTableRowElement>('.entity-badge-name')?.textContent || '';
+      let gotBadgeName = extEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
       assert.strictEqual(gotBadgeName, 'Extension');
 
       // Node with first party
@@ -61,7 +61,7 @@ describeWithEnvironment('TimelineTreeView', function() {
           secondNode, secondNode.totalTime, secondNode.selfTime, secondNode.totalTime, treeView);
       const firstPartyEntity = firstPartyNode?.createCell('site');
 
-      gotBadgeName = firstPartyEntity.querySelector<HTMLTableRowElement>('.entity-badge-name')?.textContent || '';
+      gotBadgeName = firstPartyEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
       assert.strictEqual(gotBadgeName, '1st party');
     });
   });

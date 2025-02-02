@@ -5,13 +5,9 @@
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
-import dataGridStylesRaw from './dataGrid.css.js';
+import dataGridStyles from './dataGrid.css.js';
 import {Align, Events as DataGridEvents} from './DataGrid.js';
 import {SortableDataGrid, SortableDataGridNode} from './SortableDataGrid.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const dataGridStyles = new CSSStyleSheet();
-dataGridStyles.replaceSync(dataGridStylesRaw.cssContent);
 
 const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least one column.
 
@@ -65,8 +61,8 @@ class DataGridElement extends HTMLElement {
     this.#dataGrid.element.style.flex = 'auto';
 
     this.#shadowRoot = this.attachShadow({mode: 'open', delegatesFocus: true});
+    this.#shadowRoot.createChild('style').textContent = dataGridStyles.cssContent;
     this.#shadowRoot.appendChild(this.#dataGrid.element);
-    this.#shadowRoot.adoptedStyleSheets = [dataGridStyles];
 
     this.#dataGrid.addEventListener(
         DataGridEvents.SELECTED_NODE,

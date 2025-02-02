@@ -7,11 +7,7 @@ import '../icon_button/icon_button.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import buttonStylesRaw from './button.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const buttonStyles = new CSSStyleSheet();
-buttonStyles.replaceSync(buttonStylesRaw.cssContent);
+import buttonStyles from './button.css.js';
 
 const {html, Directives: {ifDefined, ref, classMap}} = Lit;
 
@@ -264,7 +260,6 @@ export class Button extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [buttonStyles];
     this.#render();
   }
 
@@ -369,6 +364,7 @@ export class Button extends HTMLElement {
     // clang-format off
     Lit.render(
       html`
+        <style>${buttonStyles.cssContent}</style>
         <button title=${ifDefined(this.#props.title)}
                 .disabled=${this.#props.disabled}
                 class=${classMap(classes)}

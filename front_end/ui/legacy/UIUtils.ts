@@ -1869,10 +1869,7 @@ function focusChanged(event: Event): void {
 
 export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void {
   ThemeSupport.ThemeSupport.instance().appendStyle(elementOrShadowRoot, inspectorCommonStyles);
-  const shadowRootOrDocument = (elementOrShadowRoot instanceof ShadowRoot) ?
-      elementOrShadowRoot :
-      (elementOrShadowRoot.shadowRoot ?? elementOrShadowRoot.ownerDocument);
-  shadowRootOrDocument.adoptedStyleSheets.push(Buttons.textButtonStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(elementOrShadowRoot, Buttons.textButtonStyles);
 }
 
 /**

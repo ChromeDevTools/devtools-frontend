@@ -45,13 +45,9 @@ import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestion} from './SuggestBox.js';
 import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
-import toolbarStylesRaw from './toolbar.css.js';
+import toolbarStyles from './toolbar.css.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const toolbarStyles = new CSSStyleSheet();
-toolbarStyles.replaceSync(toolbarStylesRaw.cssContent);
 
 const UIStrings = {
   /**
@@ -94,6 +90,7 @@ export class Toolbar extends HTMLElement {
 
   constructor() {
     super();
+    this.#shadowRoot.createChild('style').textContent = toolbarStyles.cssContent;
     this.#shadowRoot.createChild('slot');
   }
 
@@ -101,7 +98,6 @@ export class Toolbar extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar');
     }
-    this.#shadowRoot.adoptedStyleSheets = [toolbarStyles];
   }
 
   /**

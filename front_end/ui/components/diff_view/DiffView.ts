@@ -14,7 +14,7 @@ import diffViewStylesRaw from './diffView.css.js';
 const diffViewStyles = new CSSStyleSheet();
 diffViewStyles.replaceSync(diffViewStylesRaw.cssContent);
 const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.Style.default.cssContent);
+CodeHighlighterStyles.replaceSync(CodeHighlighter.codeHighlighterStyles.cssContent);
 
 const {html} = Lit;
 

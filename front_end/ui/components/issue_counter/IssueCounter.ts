@@ -10,11 +10,7 @@ import * as IssuesManager from '../../../models/issues_manager/issues_manager.js
 import {html, render} from '../../lit/lit.js';
 import type * as IconButton from '../icon_button/icon_button.js';
 
-import issueCounterStylesRaw from './issueCounter.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const issueCounterStyles = new CSSStyleSheet();
-issueCounterStyles.replaceSync(issueCounterStylesRaw.cssContent);
+import issueCounterStyles from './issueCounter.css.js';
 
 const UIStrings = {
   /**
@@ -120,10 +116,6 @@ export class IssueCounter extends HTMLElement {
     }
   }
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [issueCounterStyles];
-  }
-
   set data(data: IssueCounterData) {
     this.#clickHandler = data.clickHandler;
     this.#leadingText = data.leadingText ?? '';
@@ -209,6 +201,7 @@ export class IssueCounter extends HTMLElement {
     };
     render(
         html`
+        <style>${issueCounterStyles.cssContent}</style>
         <icon-button .data=${data} .accessibleName=${this.#accessibleName}></icon-button>
         `,
         this.#shadow, {host: this});

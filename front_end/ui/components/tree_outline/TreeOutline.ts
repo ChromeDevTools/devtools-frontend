@@ -9,7 +9,7 @@ import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import treeOutlineStylesRaw from './treeOutline.css.js';
+import treeOutlineStyles from './treeOutline.css.js';
 import {
   findNextNodeForTreeOutlineKeyboardNavigation,
   getNodeChildren,
@@ -20,12 +20,6 @@ import {
   type TreeNodeId,
   type TreeNodeWithChildren,
 } from './TreeOutlineUtils.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const treeOutlineStyles = new CSSStyleSheet();
-treeOutlineStyles.replaceSync(treeOutlineStylesRaw.cssContent);
-const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.Style.default.cssContent);
 
 const {html, Directives: {ifDefined}} = Lit;
 
@@ -150,7 +144,6 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   connectedCallback(): void {
     this.#setTopLevelNodeBorderColorCSSVariable(this.getAttribute('toplevelbordercolor'));
     this.#setNodeKeyNoWrapCSSVariable(this.getAttribute('nowrap'));
-    this.#shadow.adoptedStyleSheets = [treeOutlineStyles, CodeHighlighterStyles];
   }
 
   get data(): TreeOutlineData<TreeNodeDataType> {
@@ -528,6 +521,8 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
+      <style>${treeOutlineStyles.cssContent}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles.cssContent}</style>
       <div class="wrapping-container">
         <ul role="tree" @keydown=${this.#onTreeKeyDown}>
           ${this.#treeData.map((topLevelNode, index) => {

@@ -10,11 +10,7 @@ import {html, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
-import chromeLinkStylesRaw from './chromeLink.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const chromeLinkStyles = new CSSStyleSheet();
-chromeLinkStyles.replaceSync(chromeLinkStylesRaw.cssContent);
+import chromeLinkStyles from './chromeLink.css.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -30,7 +26,6 @@ export class ChromeLink extends HTMLElement {
   #href: string = '';
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [chromeLinkStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -67,6 +62,7 @@ export class ChromeLink extends HTMLElement {
       /* x-link doesn't work with custom click/keydown handlers */
       /* eslint-disable rulesdir/no-a-tags-in-lit */
       html`
+        <style>${chromeLinkStyles.cssContent}</style>
         <a href=${this.#href} class="link" target="_blank"
           jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}
           @click=${this.#handleClick}><slot></slot></a>

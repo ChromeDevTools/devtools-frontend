@@ -6,11 +6,7 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import {html, nothing, render} from '../../lit/lit.js';
 
-import cardStylesRaw from './card.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const cardStyles = new CSSStyleSheet();
-cardStyles.replaceSync(cardStylesRaw.cssContent);
+import cardStyles from './card.css.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -24,6 +20,7 @@ export interface CardData {
   headingSuffix?: HTMLElement;
   content: HTMLElement[];
 }
+
 export class Card extends HTMLElement {
   #heading?: string;
   #headingIconName?: string;
@@ -53,13 +50,13 @@ export class Card extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [cardStyles];
     this.#render();
   }
 
   #render(): void {
     // clang-format off
     render(html`
+    <style>${cardStyles.cssContent}</style>
     <div class="card">
       <div class="heading-wrapper">
         ${this.#headingIconName ? html`<devtools-icon class="heading-icon" name=${this.#headingIconName}></devtools-icon>` : nothing}
@@ -68,9 +65,7 @@ export class Card extends HTMLElement {
       </div>
       <slot name="content" class='content-container'></slot>
     </div>
-    `, this.#shadow, {
-    host: this,
-  });
+    `, this.#shadow, { host: this });
     // clang-format on
   }
 }

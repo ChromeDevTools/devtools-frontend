@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/cards/cards.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Cards from '../../ui/components/cards/cards.js';
+import type * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -199,7 +201,7 @@ function createComputePressurePromise(): Promise<{state: string}> {
 }
 
 export class CPUThrottlingCard {
-  element: HTMLElement;
+  element: Cards.Card.Card;
 
   private readonly setting: Common.Settings.Setting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>;
   private computePressurePromise?: ReturnType<typeof createComputePressurePromise>;
@@ -220,20 +222,21 @@ export class CPUThrottlingCard {
     this.setting = Common.Settings.Settings.instance().createSetting<SDK.CPUThrottlingManager.CalibratedCPUThrottling>(
         'calibrated-cpu-throttling', {}, Common.Settings.SettingStorageType.GLOBAL);
 
-    const card = new Cards.Card.Card();
+    this.element = document.createElement('devtools-card');
+    this.element.heading = i18nString(UIStrings.cpuThrottlingPresets);
 
-    const descriptionEl = card.createChild('span');
+    const descriptionEl = this.element.createChild('span');
     descriptionEl.textContent = i18nString(UIStrings.cpuCalibrationDescription);
 
-    this.lowTierMobileDeviceEl = card.createChild('div', 'cpu-preset-section');
+    this.lowTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
     this.lowTierMobileDeviceEl.append('Low-tier mobile device');
     this.lowTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
 
-    this.midTierMobileDeviceEl = card.createChild('div', 'cpu-preset-section');
+    this.midTierMobileDeviceEl = this.element.createChild('div', 'cpu-preset-section');
     this.midTierMobileDeviceEl.append('Mid-tier mobile device');
     this.midTierMobileDeviceEl.createChild('div', 'cpu-preset-result');
 
-    this.calibrateEl = card.createChild('div', 'cpu-preset-section cpu-preset-calibrate');
+    this.calibrateEl = this.element.createChild('div', 'cpu-preset-section cpu-preset-calibrate');
 
     const buttonContainerEl = this.calibrateEl.createChild('div', 'button-container');
 
@@ -260,12 +263,6 @@ export class CPUThrottlingCard {
 
     this.progress = new UI.ProgressIndicator.ProgressIndicator({showStopButton: false});
     this.calibrateEl.append(this.progress.element);
-
-    card.data = {
-      heading: i18nString(UIStrings.cpuThrottlingPresets),
-      content: [descriptionEl, this.lowTierMobileDeviceEl, this.midTierMobileDeviceEl, this.calibrateEl],
-    };
-    this.element = card;
 
     this.updateState();
   }
@@ -469,13 +466,10 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     addButton.textContent = i18nString(UIStrings.addCustomProfile);
     addButton.addEventListener('click', () => this.addButtonClicked());
 
-    const container = settingsContent.createChild('div');
-    const card = new Cards.Card.Card();
-    settingsContent.appendChild(card);
-    card.data = {
-      heading: i18nString(UIStrings.networkThrottlingProfiles),
-      content: [container],
-    };
+    const card = settingsContent.createChild('devtools-card');
+    card.heading = i18nString(UIStrings.networkThrottlingProfiles);
+    const container = card.createChild('div');
+
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('conditions-list');
     this.list.registerRequiredCSS(throttlingSettingsTabStyles);

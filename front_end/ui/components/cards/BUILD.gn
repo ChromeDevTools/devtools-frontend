@@ -15,11 +15,7 @@ generate_css("css_files") {
 devtools_module("card") {
   sources = [ "Card.ts" ]
 
-  deps = [
-    "../../../core/common:bundle",
-    "../../../ui/lit:bundle",
-    "../icon_button:bundle",
-  ]
+  deps = [ "../../../ui/lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
@@ -42,7 +38,6 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
-    "../../../core/common:bundle",
     "../../../testing",
   ]
 }

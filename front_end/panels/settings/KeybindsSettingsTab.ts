@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/cards/cards.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -121,8 +122,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     const keybindsSetSelect =
         UI.SettingsUI.createControlForSetting(keybindsSetSetting, i18nString(UIStrings.matchShortcutsFromPreset));
 
-    const card = new Cards.Card.Card();
-    settingsContent.appendChild(card);
+    const card = settingsContent.createChild('devtools-card');
+    card.heading = i18nString(UIStrings.shortcuts);
 
     if (keybindsSetSelect) {
       keybindsSetSelect.classList.add('keybinds-set-select');
@@ -151,10 +152,10 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     this.editingItem = null;
     this.editingRow = null;
 
-    card.data = {
-      heading: i18nString(UIStrings.shortcuts),
-      content: keybindsSetSelect ? [keybindsSetSelect, this.list.element, footer] : [this.list.element, footer],
-    };
+    if (keybindsSetSelect) {
+      card.append(keybindsSetSelect);
+    }
+    card.append(this.list.element, footer);
 
     this.update();
   }

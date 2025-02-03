@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/cards/cards.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -114,12 +115,9 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting));
     UI.Tooltip.Tooltip.install(enableIgnoreListing, i18nString(UIStrings.enableIgnoreListingTooltip));
 
-    const enableIgnoreListingCard = new Cards.Card.Card();
-    enableIgnoreListingCard.data = {
-      heading: i18nString(UIStrings.frameworkIgnoreList),
-      content: [ignoreListingDescription, enableIgnoreListing],
-    };
-    settingsContent.appendChild(enableIgnoreListingCard);
+    const enableIgnoreListingCard = settingsContent.createChild('devtools-card');
+    enableIgnoreListingCard.heading = i18nString(UIStrings.frameworkIgnoreList);
+    enableIgnoreListingCard.append(ignoreListingDescription, enableIgnoreListing);
 
     const generalExclusionGroup = this.createSettingGroup();
     generalExclusionGroup.classList.add('general-exclusion-group');
@@ -152,23 +150,15 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         i18nString(UIStrings.ignoreListAnonymousScripts),
         Common.Settings.Settings.instance().moduleSetting('skip-anonymous-scripts')));
 
-    const generalExclusionGroupCard = new Cards.Card.Card();
-    generalExclusionGroupCard.data = {
-      heading: i18nString(UIStrings.generalExclusionRules),
-      content: [generalExclusionGroup],
-    };
-    generalExclusionGroupCard.classList.add('ignore-list-options');
-    settingsContent.appendChild(generalExclusionGroupCard);
+    const generalExclusionGroupCard = settingsContent.createChild('devtools-card', 'ignore-list-options');
+    generalExclusionGroupCard.heading = i18nString(UIStrings.generalExclusionRules);
+    generalExclusionGroupCard.append(generalExclusionGroup);
 
     const customExclusionGroup = this.createSettingGroup();
     customExclusionGroup.classList.add('custom-exclusion-group');
-    const customExclusionGroupCard = new Cards.Card.Card();
-    customExclusionGroupCard.classList.add('ignore-list-options');
-    customExclusionGroupCard.data = {
-      heading: i18nString(UIStrings.customExclusionRules),
-      content: [customExclusionGroup],
-    };
-    settingsContent.appendChild(customExclusionGroupCard);
+    const customExclusionGroupCard = settingsContent.createChild('devtools-card', 'ignore-list-options');
+    customExclusionGroupCard.heading = i18nString(UIStrings.customExclusionRules);
+    customExclusionGroupCard.append(customExclusionGroup);
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('ignore-list');

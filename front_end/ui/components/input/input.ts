@@ -15,4 +15,5 @@ export {
   checkboxStyles,
   checkboxStylesRaw,
   textInputStyles,
+  textInputStylesRaw,
 };

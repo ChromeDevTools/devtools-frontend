@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/spinners/spinners.js';
-import './UserActionRow.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -20,7 +19,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 
 import stylesRaw from './chatView.css.js';
-import type {UserActionRowProps} from './UserActionRow.js';
+import {UserActionRow} from './UserActionRow.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -574,25 +573,6 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #renderUserActionRow(rpcId?: Host.AidaClient.RpcGlobalId, suggestions?: [string, ...string[]]): Lit.TemplateResult {
-    // clang-format off
-    return html`<devtools-user-action-row
-      .props=${{
-        showRateButtons: rpcId !== undefined,
-        onFeedbackSubmit: (rating, feedback) => {
-          if (!rpcId) {
-            return;
-          }
-          this.#props.onFeedbackSubmit(rpcId, rating, feedback);
-        },
-        suggestions,
-        handleSuggestionClick: this.#handleSuggestionClick,
-        canShowFeedbackForm: this.#props.canShowFeedbackForm,
-      } as UserActionRowProps}
-      ></devtools-user-action-row>`;
-    // clang-format on
-  }
-
   #renderChangeSummary(): Lit.LitTemplate {
     if (!this.#props.changeSummary) {
       return Lit.nothing;
@@ -894,14 +874,21 @@ export class ChatView extends HTMLElement {
           ? html`<p>${this.#renderTextAsMarkdown(message.answer, { animate: !this.#props.isReadOnly, ref: this.#handleLastAnswerMarkdownViewRef })}</p>`
           : Lit.nothing}
         ${this.#renderError(message)}
-        <div class="actions">
-          ${isLast && this.#props.isLoading
-            ? Lit.nothing
-            : this.#renderUserActionRow(
-                message.rpcId,
-                isLast ? message.suggestions : undefined,
-              )}
-        </div>
+        ${isLast && this.#props.isLoading
+          ? Lit.nothing
+          : html`<devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
+              showRateButtons: message.rpcId !== undefined,
+              onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback: string) => {
+                if (!message.rpcId) {
+                  return;
+                }
+                this.#props.onFeedbackSubmit(message.rpcId, rating, feedback);
+              },
+              suggestions: isLast ? message.suggestions : undefined,
+              onSuggestionClick: this.#handleSuggestionClick,
+              canShowFeedbackForm: this.#props.canShowFeedbackForm,
+            })}></devtools-widget>`
+        }
       </section>
     `;
     // clang-format on

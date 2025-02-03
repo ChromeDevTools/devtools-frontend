@@ -73,19 +73,6 @@ const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=e
     Platform.DevToolsPath.UrlString;
 const SCROLL_ROUNDING_OFFSET = 1;
 
-export interface UserActionRowProps {
-  showRateButtons: boolean;
-  onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
-  suggestions?: [string, ...string[]];
-  onSuggestionClick: (suggestion: string) => void;
-  canShowFeedbackForm: boolean;
-}
-
-interface State {
-  onFeedbackSubmit?: (rate: Host.AidaClient.Rating, feedback?: string) => void;
-  canShowFeedbackForm: boolean;
-}
-
 export interface RatingViewInput {
   currentRating?: Host.AidaClient.Rating;
   onRatingClick: (rating: Host.AidaClient.Rating) => void;
@@ -116,49 +103,46 @@ export interface ViewOutput {
   suggestionsRightScrollButtonContainer?: Element;
 }
 
+export interface UserActionRowWidgetParams {
+  showRateButtons: boolean;
+  onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
+  suggestions?: [string, ...string[]];
+  onSuggestionClick: (suggestion: string) => void;
+  canShowFeedbackForm: boolean;
+}
+
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 /**
  * This presenter has too many responsibilities (rating buttons, feedback
  * form, suggestions).
  */
-export class UserActionRow extends UI.Widget.Widget implements UserActionRowProps {
-  #state: State = {
-    canShowFeedbackForm: false,
-  };
+export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidgetParams {
+  showRateButtons = false;
+  onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void = () => {};
+  suggestions: [string, ...string[]]|undefined;
+  onSuggestionClick: (suggestion: string) => void = () => {};
+  canShowFeedbackForm = false;
+
   #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
   #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(50);
-  #view: View;
-  #viewInput: ViewInput = {
-    currentRating: undefined,
-    onRatingClick: this.#handleRateClick.bind(this),
-    showRateButtons: true,
-    onReportClick: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL),
 
-    suggestions: undefined,
-    scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
-    onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
-    onSuggestionClick: () => {},
-
-    isShowingFeedbackForm: false,
-    onSubmit: this.#handleSubmit.bind(this),
-    onClose: this.#handleClose.bind(this),
-    onInputChange: this.#handleInputChange.bind(this),
-    isSubmitButtonDisabled: false,
-  };
-  #viewOutput: ViewOutput = {};
   #feedbackValue = '';
+  #currentRating: Host.AidaClient.Rating|undefined;
+  #isShowingFeedbackForm = false;
+  #isSubmitButtonDisabled = false;
+
+  #view: View;
+  #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view?: View) {
     super(false, false, element);
     this.registerRequiredCSS(Input.textInputStylesRaw);
+    this.registerRequiredCSS(userActionRowStyles);
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
       Lit.render(
         html`
-          <style>
-            ${userActionRowStyles.cssContent}
-          </style>
           <div class="ai-assistance-feedback-row">
             ${renderButtons(input)}
             ${renderSuggestions(input, output)}
@@ -173,31 +157,6 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowProp
     // clang-format on
   }
 
-  set showRateButtons(value: boolean) {
-    this.#viewInput.showRateButtons = value;
-    this.requestUpdate();
-  }
-
-  set onFeedbackSubmit(value: (rate: Host.AidaClient.Rating, feedback?: string) => void) {
-    this.#state.onFeedbackSubmit = value;
-    this.requestUpdate();
-  }
-
-  set suggestions(suggestions: [string, ...string[]]|undefined) {
-    this.#viewInput.suggestions = suggestions;
-    this.requestUpdate();
-  }
-
-  set onSuggestionClick(callback: (suggestion: string) => void) {
-    this.#viewInput.onSuggestionClick = callback;
-    this.requestUpdate();
-  }
-
-  set canShowFeedbackForm(value: boolean) {
-    this.#state.canShowFeedbackForm = value;
-    this.requestUpdate();
-  }
-
   override wasShown(): void {
     super.wasShown();
     void this.performUpdate();
@@ -209,14 +168,30 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowProp
   }
 
   override performUpdate(): Promise<void>|void {
-    this.#view(this.#viewInput, this.#viewOutput, this.contentElement);
+    this.#view(
+        {
+          onSuggestionClick: this.onSuggestionClick,
+          onRatingClick: this.#handleRateClick.bind(this),
+          onReportClick: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL),
+          scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
+          onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
+          onSubmit: this.#handleSubmit.bind(this),
+          onClose: this.#handleClose.bind(this),
+          onInputChange: this.#handleInputChange.bind(this),
+          isSubmitButtonDisabled: this.#isSubmitButtonDisabled,
+          showRateButtons: this.showRateButtons,
+          suggestions: this.suggestions,
+          currentRating: this.#currentRating,
+          isShowingFeedbackForm: this.#isShowingFeedbackForm,
+        },
+        this.#viewOutput, this.contentElement);
   }
 
   #handleInputChange(value: string): void {
     this.#feedbackValue = value;
     const disableSubmit = !value;
-    if (disableSubmit !== this.#viewInput.isSubmitButtonDisabled) {
-      this.#viewInput.isSubmitButtonDisabled = disableSubmit;
+    if (disableSubmit !== this.#isSubmitButtonDisabled) {
+      this.#isSubmitButtonDisabled = disableSubmit;
       void this.performUpdate();
     }
   }
@@ -263,37 +238,37 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowProp
   }
 
   #handleRateClick(rating: Host.AidaClient.Rating): void {
-    if (this.#viewInput.currentRating === rating) {
-      this.#viewInput.currentRating = undefined;
-      this.#viewInput.isShowingFeedbackForm = false;
-      this.#viewInput.isSubmitButtonDisabled = true;
+    if (this.#currentRating === rating) {
+      this.#currentRating = undefined;
+      this.#isShowingFeedbackForm = false;
+      this.#isSubmitButtonDisabled = true;
       // This effectively reset the user rating
-      this.#state.onFeedbackSubmit?.(Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED);
+      this.onFeedbackSubmit(Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED);
       void this.performUpdate();
       return;
     }
 
-    this.#viewInput.currentRating = rating;
-    this.#viewInput.isShowingFeedbackForm = this.#state.canShowFeedbackForm;
-    this.#state.onFeedbackSubmit?.(rating);
+    this.#currentRating = rating;
+    this.#isShowingFeedbackForm = this.canShowFeedbackForm;
+    this.onFeedbackSubmit(rating);
     void this.performUpdate();
   }
 
   #handleClose(): void {
-    this.#viewInput.isShowingFeedbackForm = false;
-    this.#viewInput.isSubmitButtonDisabled = true;
+    this.#isShowingFeedbackForm = false;
+    this.#isSubmitButtonDisabled = true;
     void this.performUpdate();
   }
 
   #handleSubmit(ev: SubmitEvent): void {
     ev.preventDefault();
     const input = this.#feedbackValue;
-    if (!this.#viewInput.currentRating || !input) {
+    if (!this.#currentRating || !input) {
       return;
     }
-    this.#state.onFeedbackSubmit?.(this.#viewInput.currentRating, input);
-    this.#viewInput.isShowingFeedbackForm = false;
-    this.#viewInput.isSubmitButtonDisabled = true;
+    this.onFeedbackSubmit(this.#currentRating, input);
+    this.#isShowingFeedbackForm = false;
+    this.#isSubmitButtonDisabled = true;
     void this.performUpdate();
   }
 }

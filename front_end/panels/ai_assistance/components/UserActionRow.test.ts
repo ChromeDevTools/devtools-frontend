@@ -9,7 +9,7 @@ import {
 import * as Freestyler from '../ai_assistance.js';
 
 describeWithEnvironment('UserActionRow', () => {
-  function createComponent(props: Freestyler.UserActionRowProps):
+  function createComponent(props: Freestyler.UserActionRowWidgetParams):
       [sinon.SinonStub<[Freestyler.ViewInput, Freestyler.ViewOutput, HTMLElement], void>, Freestyler.UserActionRow] {
     const view = sinon.stub<[Freestyler.ViewInput, Freestyler.ViewOutput, HTMLElement]>();
     const component = new Freestyler.UserActionRow(undefined, view);
@@ -29,14 +29,14 @@ describeWithEnvironment('UserActionRow', () => {
     assert.isTrue(view.calledOnce);
 
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isShowingFeedbackForm).equals(false);
       viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
     assert.isTrue(view.calledTwice);
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isShowingFeedbackForm).equals(true);
     }
   });
@@ -52,14 +52,14 @@ describeWithEnvironment('UserActionRow', () => {
     assert.isTrue(view.calledOnce);
 
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isShowingFeedbackForm).equals(false);
       viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
     assert.isTrue(view.calledTwice);
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isShowingFeedbackForm).equals(false);
     }
   });
@@ -75,7 +75,7 @@ describeWithEnvironment('UserActionRow', () => {
     assert.isTrue(view.calledOnce);
 
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isSubmitButtonDisabled).equals(false);
       viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
@@ -83,7 +83,7 @@ describeWithEnvironment('UserActionRow', () => {
     assert.isTrue(view.calledTwice);
 
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isSubmitButtonDisabled).equals(false);
       expect(viewInput.isShowingFeedbackForm).equals(true);
       viewInput.onInputChange('test');
@@ -91,7 +91,7 @@ describeWithEnvironment('UserActionRow', () => {
     }
 
     {
-      const [viewInput] = view.args[0];
+      const [viewInput] = view.lastCall.args;
       expect(viewInput.isSubmitButtonDisabled).equals(true);
     }
   });

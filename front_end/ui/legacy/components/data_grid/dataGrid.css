@@ -232,6 +232,7 @@
 
   & ::selection {
     background-color: var(--sys-color-state-focus-select);
+    color: currentcolor;
   }
 }
 

@@ -2325,6 +2325,10 @@ const evalExpression = defineStatefulDecoration();
 // Styling for plugin-local elements
 
 const theme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-gutters .cm-gutter.cm-lineNumbers .cm-gutterElement': {
     '&:hover, &.cm-breakpoint': {
       borderStyle: 'solid',

@@ -128,6 +128,10 @@ body {
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size) !important; /* stylelint-disable-line declaration-no-important */
   white-space: pre-wrap;
+
+  &::selection {
+    color: var(--sys-color-on-surface);
+  }
 }
 
 .source-code .devtools-link.text-button {

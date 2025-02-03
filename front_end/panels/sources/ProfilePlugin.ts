@@ -162,6 +162,10 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
 };
 
 const theme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-performanceGutter': {
     width: '60px',
     backgroundColor: 'var(--sys-color-cdt-base-container)',

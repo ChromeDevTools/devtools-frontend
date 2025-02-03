@@ -65,6 +65,7 @@
 
 .text-prompt-root:not(:focus-within) ::selection {
   background: transparent;
+  color: currentcolor;
 }
 
 @media (forced-colors: active) {

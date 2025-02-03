@@ -649,7 +649,7 @@ export class IDBDataView extends UI.View.SimpleView {
     this.dataGrid.selectedNode?.element().querySelectorAll('.source-code').forEach(element => {
       const shadowRoot = element.shadowRoot;
       const sheet = new CSSStyleSheet();
-      sheet.replaceSync('::selection {background-color: var(--sys-color-state-focus-select);}');
+      sheet.replaceSync('::selection {background-color: var(--sys-color-state-focus-select); color: currentColor;}');
       shadowRoot?.adoptedStyleSheets.push(sheet);
     });
   }

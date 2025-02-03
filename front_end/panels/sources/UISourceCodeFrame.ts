@@ -800,6 +800,10 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
 }
 
 const rowMessageTheme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-tooltip-message': {
     padding: '4px',
   },

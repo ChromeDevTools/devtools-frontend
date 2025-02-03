@@ -484,7 +484,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     const syncTargets = (): void => {
       selector.removeOptions();
       for (const target of targetManager.targets()) {
-        selector.createOption(`${target.name()} (${target.inspectedURL()})`, target.id());
+        selector.createOption(`${target.name()} (${target.inspectedURL()})`, target.id(), 'target');
       }
     };
     targetManager.addEventListener(SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, syncTargets);

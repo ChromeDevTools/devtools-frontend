@@ -1079,13 +1079,15 @@ export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
     this.element.appendChild(option);
   }
 
-  createOption(label: string, value?: string): HTMLOptionElement {
+  createOption(label: string, value?: string, jslogContext?: string): HTMLOptionElement {
     const option = this.element.createChild('option');
     option.text = label;
     if (typeof value !== 'undefined') {
       option.value = value;
     }
-    const jslogContext = value ? Platform.StringUtilities.toKebabCase(value) : undefined;
+    if (!jslogContext) {
+      jslogContext = value ? Platform.StringUtilities.toKebabCase(value) : undefined;
+    }
     option.setAttribute('jslog', `${VisualLogging.item(jslogContext).track({click: true})}`);
     return option;
   }

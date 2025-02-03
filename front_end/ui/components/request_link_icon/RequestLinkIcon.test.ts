@@ -64,10 +64,7 @@ class MockRequestResolver {
     if (entry) {
       return entry.promise;
     }
-    let resolve: (request: SDK.NetworkRequest.NetworkRequest|null) => void = () => {};
-    const promise = new Promise<SDK.NetworkRequest.NetworkRequest|null>(r => {
-      resolve = r;
-    });
+    const {resolve, promise} = Promise.withResolvers<SDK.NetworkRequest.NetworkRequest|null>();
     this.#promiseMap.set(requestId, {resolve, promise});
     return promise;
   }

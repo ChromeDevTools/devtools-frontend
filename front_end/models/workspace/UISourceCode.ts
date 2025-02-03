@@ -160,10 +160,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   rename(newName: Platform.DevToolsPath.RawPathString): Promise<boolean> {
-    let fulfill: (arg0: boolean) => void;
-    const promise = new Promise<boolean>(x => {
-      fulfill = x;
-    });
+    const {resolve, promise} = Promise.withResolvers<boolean>();
     this.projectInternal.rename(this, newName, innerCallback.bind(this));
     return promise;
 
@@ -175,7 +172,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
             newName as Platform.DevToolsPath.RawPathString, newURL as Platform.DevToolsPath.UrlString,
             newContentType as Common.ResourceType.ResourceType);
       }
-      fulfill(success);
+      resolve(success);
     }
   }
 

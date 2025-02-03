@@ -132,10 +132,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private requestFileSystems(): Promise<IsolatedFileSystem[]> {
-    let fulfill: (arg0: IsolatedFileSystem[]) => void;
-    const promise = new Promise<IsolatedFileSystem[]>(f => {
-      fulfill = f;
-    });
+    const {resolve, promise} = Promise.withResolvers<IsolatedFileSystem[]>();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
@@ -153,7 +150,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     }
 
     function onFileSystemsAdded(fileSystems: (IsolatedFileSystem|null)[]): void {
-      fulfill(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
+      resolve(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
     }
   }
 

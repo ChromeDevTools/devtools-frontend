@@ -1201,6 +1201,7 @@ export class ChatView extends HTMLElement {
         <textarea class=${cls}
           .disabled=${this.#isTextInputDisabled()}
           wrap="hard"
+          maxlength="10000"
           @keydown=${this.#handleTextAreaKeyDown}
           placeholder=${this.#getInputPlaceholderString()}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}

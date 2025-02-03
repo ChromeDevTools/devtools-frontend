@@ -547,7 +547,7 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<SecurityModel> {
-  readonly mainView!: SecurityMainView;
+  readonly mainView: SecurityMainView;
   readonly sidebar!: SecurityPanelSidebar;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
   private readonly origins: Map<string, OriginState>;
@@ -564,11 +564,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     <devtools-split-widget
     .options=${{vertical: true, settingName: 'security'}}
     ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
-        <devtools-widget
-          slot="main"
-          .widgetConfig=${widgetConfig(SecurityMainView, {panel: input.panel})}
-          ${UI.Widget.widgetRef(SecurityMainView, e => {output.mainView = e;})}>
-        </devtools-widget>
         <devtools-widget
           slot="sidebar"
           .widgetConfig=${widgetConfig(SecurityPanelSidebar)}
@@ -588,6 +583,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.sidebar.element.classList.add('panel-sidebar');
     this.sidebar.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
+    this.mainView = new SecurityMainView();
+    this.mainView.panel = this;
     this.element.addEventListener(ShowOriginEvent.eventName, (event: ShowOriginEvent) => {
       if (event.origin) {
         this.showOrigin(event.origin);

@@ -24,8 +24,8 @@ describeWithEnvironment('DataGridWithPreview', () => {
   ] as DataGrid.DataGrid.ColumnDescriptor[];
 
   const MOCK_ITEMS = [
-    ['foo', 'value1'],
-    ['bar', 'value2'],
+    {key: 'foo', value: 'value1'},
+    {key: 'bar', value: 'value2'},
   ];
 
   const createPreviewFunc = sinon.stub<[string, string]>();
@@ -72,7 +72,7 @@ describeWithEnvironment('DataGridWithPreview', () => {
   });
 
   it('updates preview when key selected', async () => {
-    const [key, value] = MOCK_ITEMS[0];
+    const {key, value} = MOCK_ITEMS[0];
 
     const createPreviewPromise = expectCreatePreviewCalled(key, value);
 
@@ -90,7 +90,7 @@ describeWithEnvironment('DataGridWithPreview', () => {
 
   it('shows empty preview when no row is selected', async () => {
     // Select the first item by key.
-    const node = selectNodeByKey(dataGridWithPreview.dataGridForTesting, MOCK_ITEMS[0][0]);
+    const node = selectNodeByKey(dataGridWithPreview.dataGridForTesting, MOCK_ITEMS[0].key);
     assert.isNotNull(node);
 
     await raf();
@@ -106,7 +106,7 @@ describeWithEnvironment('DataGridWithPreview', () => {
   });
 
   it('preview changed when value changes', async () => {
-    const [key, value] = MOCK_ITEMS[0];
+    const {key, value} = MOCK_ITEMS[0];
 
     let createPreviewPromise = expectCreatePreviewCalled(key, value);
 
@@ -121,7 +121,7 @@ describeWithEnvironment('DataGridWithPreview', () => {
     // would trigger the refreshItems callback - which would fetch new data and
     // call showItems again).
     const updatedItems = structuredClone(MOCK_ITEMS);
-    updatedItems[0][1] = 'newValue';
+    updatedItems[0].value = 'newValue';
 
     createPreviewPromise = expectCreatePreviewCalled(key, 'newValue');
     dataGridWithPreview.showItems(updatedItems);

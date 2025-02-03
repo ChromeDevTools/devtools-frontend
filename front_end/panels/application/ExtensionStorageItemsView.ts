@@ -205,14 +205,21 @@ export class ExtensionStorageItemsView extends StorageItemsView {
   }
 
   override refreshItems(): void {
-    const filteredItems = (item: string[]): string => `${item[0]} ${item[1]}`;
-    void this.#extensionStorage.getItems().then(items => {
-      const itemsArray =
-          Object.entries(items).map(([key, value]) => [key, typeof value === 'string' ? value : JSON.stringify(value)]);
-      items && this.#grid.showItems(this.filter(itemsArray, filteredItems));
-      this.extensionStorageItemsDispatcher.dispatchEventToListeners(
-          ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED);
-    });
+    void this.#refreshItems();
+  }
+
+  async #refreshItems(): Promise<void> {
+    const items = await this.#extensionStorage.getItems();
+    if (!items) {
+      return;
+    }
+    const filteredItems = this.filter(
+        Object.entries(items).map(
+            ([key, value]) => ({key, value: typeof value === 'string' ? value : JSON.stringify(value)})),
+        item => `${item.key} ${item.value}`);
+    this.#grid.showItems(filteredItems);
+    this.extensionStorageItemsDispatcher.dispatchEventToListeners(
+        ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED);
   }
 
   override deleteAllItems(): void {

@@ -29,9 +29,18 @@
  */
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
-import {ARIAUtils, EmptyWidget, SplitWidget, Widget} from '../../legacy.js';
+import * as UI from '../../legacy.js';
 
 import {type ColumnDescriptor, DataGridImpl, DataGridNode, Events} from './DataGrid.js';
+
+const {ARIAUtils} = UI;
+const {EmptyWidget} = UI.EmptyWidget;
+const {SplitWidget} = UI.SplitWidget;
+const {Widget, VBox} = UI.Widget;
+
+type Widget = UI.Widget.Widget;
+type SplitWidget = UI.SplitWidget.SplitWidget;
+type VBox = UI.Widget.VBox;
 
 const UIStrings = {
   /**
@@ -64,7 +73,7 @@ interface Callbacks {
   // Called when the selection state changes.
   setCanDeleteSelected: (canSelect: boolean) => void;
   // Called to create the preview widget when a new item is selected.
-  createPreview: (key: string, value: string) => Promise<Widget.Widget|null>;
+  createPreview: (key: string, value: string) => Promise<Widget|null>;
 }
 
 interface Messages {
@@ -79,9 +88,9 @@ interface Messages {
  */
 export class DataGridWithPreview {
   #dataGrid: DataGridImpl<unknown>;
-  readonly #splitWidget: SplitWidget.SplitWidget;
-  readonly #previewPanel: Widget.VBox;
-  #preview: Widget.Widget|null;
+  readonly #splitWidget: SplitWidget;
+  readonly #previewPanel: VBox;
+  #preview: Widget|null;
   #previewValue: string|null;
 
   #callbacks: Callbacks;
@@ -110,11 +119,11 @@ export class DataGridWithPreview {
     this.#dataGrid.setStriped(true);
     this.#dataGrid.setName(`${id}-datagrid-with-preview`);
 
-    this.#splitWidget = new SplitWidget.SplitWidget(
+    this.#splitWidget = new SplitWidget(
         /* isVertical: */ false, /* secondIsSidebar: */ true, `${id}-split-view-state`);
     this.#splitWidget.show(parent);
 
-    this.#previewPanel = new Widget.VBox();
+    this.#previewPanel = new VBox();
     this.#previewPanel.setMinimumSize(0, 50);
     this.#previewPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
     const resizer = this.#previewPanel.element.createChild('div', 'preview-panel-resizer');
@@ -134,7 +143,7 @@ export class DataGridWithPreview {
     return this.#dataGrid;
   }
 
-  get previewPanelForTesting(): Widget.VBox {
+  get previewPanelForTesting(): VBox {
     return this.#previewPanel;
   }
 
@@ -159,12 +168,9 @@ export class DataGridWithPreview {
     }
   }
 
-  addItem(item: string[]): void {
+  addItem(key: string, value: string): void {
     const rootNode = this.#dataGrid.rootNode();
     const children = rootNode.children;
-
-    const key = item[0];
-    const value = item[1];
 
     for (let i = 0; i < children.length; ++i) {
       if (children[i].data.key === key) {
@@ -194,7 +200,7 @@ export class DataGridWithPreview {
     this.#callbacks.setCanDeleteSelected(true);
   }
 
-  showItems(items: string[][]): void {
+  showItems(items: {key: string, value: string}[]): void {
     const rootNode = this.#dataGrid.rootNode();
     let selectedKey: null = null;
     for (const node of rootNode.children) {
@@ -208,12 +214,10 @@ export class DataGridWithPreview {
     let selectedNode: DataGridNode<unknown>|null = null;
     const sortDirection = this.#dataGrid.isSortOrderAscending() ? 1 : -1;
     // Make a copy to avoid sorting the original array.
-    const filteredList = [...items].sort(function(item1: string[], item2: string[]): number {
-      return sortDirection * (item1[0] > item2[0] ? 1 : -1);
+    const filteredList = [...items].sort((item1, item2) => {
+      return sortDirection * (item1.key > item2.key ? 1 : -1);
     });
-    for (const item of filteredList) {
-      const key = item[0];
-      const value = item[1];
+    for (const {key, value} of filteredList) {
       const node = new DataGridNode({key, value}, false);
       node.selectable = true;
       rootNode.appendChild(node);
@@ -271,7 +275,7 @@ export class DataGridWithPreview {
     ARIAUtils.alert(this.#messages.itemDeleted);
   }
 
-  showPreview(preview: Widget.Widget|null, value: string|null): void {
+  showPreview(preview: Widget|null, value: string|null): void {
     if (this.#preview && this.#previewValue === value) {
       return;
     }
@@ -279,8 +283,7 @@ export class DataGridWithPreview {
       this.#preview.detach();
     }
     if (!preview) {
-      preview = new EmptyWidget.EmptyWidget(
-          i18nString(UIStrings.noPreviewSelected), i18nString(UIStrings.selectAValueToPreview));
+      preview = new EmptyWidget(i18nString(UIStrings.noPreviewSelected), i18nString(UIStrings.selectAValueToPreview));
     }
     this.#previewValue = value;
     this.#preview = preview;

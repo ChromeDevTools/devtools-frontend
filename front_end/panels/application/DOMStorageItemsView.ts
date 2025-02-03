@@ -167,7 +167,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.grid.addItem([event.data.key, event.data.value]);
+    this.grid.addItem(event.data.key, event.data.value);
   }
 
   private domStorageItemUpdated(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemUpdatedEvent>):
@@ -184,8 +184,17 @@ export class DOMStorageItemsView extends StorageItemsView {
   }
 
   override refreshItems(): void {
-    const filteredItems = (item: string[]): string => `${item[0]} ${item[1]}`;
-    void this.domStorage.getItems().then(items => items && this.grid.showItems(this.filter(items, filteredItems)));
+    void this.#refreshItems();
+  }
+
+  async #refreshItems(): Promise<void> {
+    const items = await this.domStorage.getItems();
+    if (!items) {
+      return;
+    }
+    const filteredItems =
+        this.filter(items.map(item => ({key: item[0], value: item[1]})), item => `${item.key} ${item.value}`);
+    this.grid.showItems(filteredItems);
   }
 
   override deleteAllItems(): void {

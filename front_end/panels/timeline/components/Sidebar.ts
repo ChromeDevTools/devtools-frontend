@@ -106,7 +106,7 @@ export class SidebarWidget extends UI.Widget.VBox {
   #updateAnnotationsCountBadge(): void {
     const annotations = this.#annotationsView.deduplicatedAnnotations();
     if (annotations.length) {
-      this.#tabbedPane.setBadge('annotations', annotations.length.toString(), 'primary');
+      this.#tabbedPane.setBadge('annotations', annotations.length.toString());
     }
   }
 

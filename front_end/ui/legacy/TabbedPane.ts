@@ -446,10 +446,10 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateTabElements();
   }
 
-  setBadge(id: string, content: string|null, className?: string): void {
+  setBadge(id: string, content: string|null): void {
     const badge = document.createElement('span');
     badge.textContent = content;
-    badge.classList.add('badge', className ?? '');
+    badge.classList.add('badge');
     this.setSuffixElement(id, content ? badge : null);
   }
 

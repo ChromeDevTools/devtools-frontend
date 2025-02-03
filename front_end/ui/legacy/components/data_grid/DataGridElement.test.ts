@@ -53,7 +53,7 @@ describeWithEnvironment('DataGrid', () => {
     container.style.display = 'flex';
     container.style.width = '640px';
     container.style.height = '480px';
-    render(template, container, {host: {}});  // eslint-disable-line rulesdir/lit-host-this
+    render(template, container, {host: {}});
     await RenderCoordinator.done({waitForWork: true});
     return container.querySelector('devtools-data-grid') as HTMLElement;
   }

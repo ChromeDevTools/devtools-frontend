@@ -150,8 +150,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
           ${renderFeedbackForm(input)}
         `,
         target,
-        // eslint-disable-next-line rulesdir/lit-host-this
-        {host: target},
+        {host: target}
       );
     }) as View;
     // clang-format on

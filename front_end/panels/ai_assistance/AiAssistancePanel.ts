@@ -145,7 +145,7 @@ function defaultView(input: ChatViewProps, output: ViewOutput, target: HTMLEleme
 
       output.chatView = el;
     })}></devtools-ai-chat-view>
-  `, target, {host: input}); // eslint-disable-line rulesdir/lit-host-this
+  `, target, {host: input});
   // clang-format on
 }
 

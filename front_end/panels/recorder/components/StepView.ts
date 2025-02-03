@@ -6,7 +6,6 @@
    bind all of them upfront. We disable the lit_html_host_this since we
    do not define any host for Lit.render and the rule is not happy
    about it. */
-/* eslint-disable rulesdir/lit-host-this */
 
 import '../../../ui/components/icon_button/icon_button.js';
 import './StepEditor.js';

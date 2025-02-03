@@ -26,7 +26,7 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
 
 function renderTemplateResult(templateResult: Lit.TemplateResult): HTMLElement {
   const container = document.createElement('container');
-  Lit.render(templateResult, container);  // eslint-disable-line rulesdir/lit-host-this
+  Lit.render(templateResult, container);
   return container;
 }
 

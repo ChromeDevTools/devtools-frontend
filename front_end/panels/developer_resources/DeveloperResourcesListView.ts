@@ -147,7 +147,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                   </tr>`)}
               </table>
             </devtools-data-grid>`,
-            target, {host: input});  // eslint-disable-line rulesdir/lit-host-this
+            target, {host: input});
     // clang-format on
     function renderUrl(url: string): HTMLElement {
       const outer = document.createElement('div');

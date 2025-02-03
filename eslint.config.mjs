@@ -557,7 +557,6 @@ export default [
       'rulesdir/check-enumerated-histograms': 'error',
       'rulesdir/check-was-shown-methods': 'error',
       'rulesdir/static-custom-event-names': 'error',
-      'rulesdir/lit-host-this': 'error',
       'rulesdir/lit-no-attribute-quotes': 'error',
       'rulesdir/lit-template-result-or-nothing': 'error',
       'rulesdir/inject-checkbox-styles': 'error',

@@ -189,8 +189,7 @@ export interface ViewInput {
   selector: UI.Toolbar.ToolbarComboBox;
 }
 
-export interface ViewOutput {
-}
+export interface ViewOutput {}
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
@@ -308,7 +307,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
               ${input.selector.element}
             </devtools-toolbar>`,
         target,
-        {host: input},  // eslint-disable-line rulesdir/lit-host-this
+        {host: input}
     );
     // clang-format on
   }) {

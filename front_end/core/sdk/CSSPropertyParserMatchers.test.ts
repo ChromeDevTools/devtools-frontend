@@ -578,9 +578,12 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
   });
 
   it('matches lengths', () => {
-    const {match, text} = matchSingleValue('min-width', '100px', new SDK.CSSPropertyParserMatchers.LengthMatcher());
-    assert.exists(match, text);
-    assert.strictEqual(match.text, '100px');
+    for (const unit of SDK.CSSPropertyParserMatchers.LengthMatcher.LENGTH_UNITS) {
+      const {match, text} =
+          matchSingleValue('min-width', `100${unit}`, new SDK.CSSPropertyParserMatchers.LengthMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, `100${unit}`);
+    }
   });
 
   it('match css keywords', () => {

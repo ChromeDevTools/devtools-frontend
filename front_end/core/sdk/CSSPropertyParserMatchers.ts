@@ -490,8 +490,10 @@ export class LengthMatch implements Match {
 export class LengthMatcher extends matcherBase(LengthMatch) {
   // clang-format on
   static readonly LENGTH_UNITS = new Set([
-    'cm', 'mm', 'Q',    'in',   'pc',  'pt',  'px',  'em',  'ex',    'ch',   'rem',
-    'vw', 'vh', 'vmin', 'vmax', 'cqw', 'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax'
+    'em',    'ex',    'ch',    'cap', 'ic',  'lh',    'rem',   'rex',   'rch',   'rlh',  'ric',  'rcap', 'px',  'pt',
+    'pc',    'in',    'cm',    'mm',  'Q',   'vw',    'vh',    'vi',    'vb',    'vmin', 'vmax', 'dvw',  'dvh', 'dvi',
+    'dvb',   'dvmin', 'dvmax', 'svw', 'svh', 'svi',   'svb',   'svmin', 'svmax', 'lvw',  'lvh',  'lvi',  'lvb', 'lvmin',
+    'lvmax', 'cqw',   'cqh',   'cqi', 'cqb', 'cqmin', 'cqmax', 'cqem',  'cqlh',  'cqex', 'cqch',
   ]);
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     if (node.name !== 'NumberLiteral') {

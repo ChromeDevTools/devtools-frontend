@@ -31,3 +31,4 @@ exports.aliases = {
     input: ":is(input, textarea, select, button)",
     text: "input:is(:not([type!='']), [type=text])",
 };
+//# sourceMappingURL=aliases.js.map

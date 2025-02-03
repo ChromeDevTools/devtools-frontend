@@ -84,7 +84,7 @@ import {
 
     _INLINE,
     _NOINLINE,
-    _PURE
+    _PURE,
 } from "../ast.js";
 import { make_node, has_annotation } from "../utils/index.js";
 import "../size.js";
@@ -148,18 +148,45 @@ function scope_encloses_variables_in_this_scope(scope, pulled_scope) {
     return false;
 }
 
-export function inline_into_symbolref(self, compressor) {
-    const parent = compressor.parent();
+/**
+ * An extra check function for `top_retain` option, compare the length of const identifier
+ * and init value length and return true if init value is longer than identifier. for example:
+ * ```
+ * // top_retain: ["example"]
+ * const example = 100
+ * ```
+ * it will return false because length of "100" is short than identifier "example".
+ */
+function is_const_symbol_short_than_init_value(def, fixed_value) {
+    if (def.orig.length === 1 && fixed_value) {
+        const init_value_length = fixed_value.size();
+        const identifer_length = def.name.length;
+        return init_value_length > identifer_length;
+    }
+    return true;
+}
 
+export function inline_into_symbolref(self, compressor) {
+    if (compressor.in_computed_key()) return self;
+
+    const parent = compressor.parent();
     const def = self.definition();
     const nearest_scope = compressor.find_scope();
-    if (compressor.top_retain && def.global && compressor.top_retain(def)) {
+    let fixed = self.fixed_value();
+    if (
+        compressor.top_retain &&
+        def.global && 
+        compressor.top_retain(def) && 
+        // when identifier is in top_retain option dose not mean we can always inline it.
+        // if identifier name is longer then init value, we can replace it.
+        is_const_symbol_short_than_init_value(def, fixed)
+    ) {
+        // keep it
         def.fixed = false;
         def.single_use = false;
         return self;
     }
 
-    let fixed = self.fixed_value();
     let single_use = def.single_use
         && !(parent instanceof AST_Call
             && (parent.is_callee_pure(compressor))
@@ -172,6 +199,10 @@ export function inline_into_symbolref(self, compressor) {
         single_use =
             !fixed.has_side_effects(compressor)
             && !fixed.may_throw(compressor);
+    }
+
+    if (fixed instanceof AST_Class && def.scope !== self.scope) {
+        return self;
     }
 
     if (single_use && (fixed instanceof AST_Lambda || fixed instanceof AST_Class)) {
@@ -273,7 +304,7 @@ export function inline_into_symbolref(self, compressor) {
             let overhead = 0;
             if (compressor.option("unused") && !compressor.exposed(def)) {
                 overhead =
-                    (name_length + 2 + replace_size) /
+                    (name_length + 2 + fixed.size(compressor)) /
                     (def.references.length - def.assignments);
             }
 
@@ -286,8 +317,11 @@ export function inline_into_symbolref(self, compressor) {
     return self;
 }
 
-export function inline_into_call(self, fn, compressor) {
+export function inline_into_call(self, compressor) {
+    if (compressor.in_computed_key()) return self;
+
     var exp = self.expression;
+    var fn = exp;
     var simple_args = self.args.every((arg) => !(arg instanceof AST_Expansion));
 
     if (compressor.option("reduce_vars")
@@ -295,9 +329,15 @@ export function inline_into_call(self, fn, compressor) {
         && !has_annotation(self, _NOINLINE)
     ) {
         const fixed = fn.fixed_value();
-        if (!retain_top_func(fixed, compressor)) {
-            fn = fixed;
+
+        if (
+            retain_top_func(fixed, compressor)
+            || !compressor.toplevel.funcs && exp.definition().global
+        ) {
+            return self;
         }
+
+        fn = fixed;
     }
 
     var is_func = fn instanceof AST_Lambda;

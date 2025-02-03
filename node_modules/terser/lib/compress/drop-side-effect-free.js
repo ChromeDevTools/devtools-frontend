@@ -155,9 +155,13 @@ def_drop_side_effect_free(AST_Arrow, return_null);
 
 def_drop_side_effect_free(AST_Class, function (compressor) {
     const with_effects = [];
+
+    if (this.is_self_referential() && this.has_side_effects(compressor)) {
+        return this;
+    }
+
     const trimmed_extends = this.extends && this.extends.drop_side_effect_free(compressor);
-    if (trimmed_extends)
-        with_effects.push(trimmed_extends);
+    if (trimmed_extends) with_effects.push(trimmed_extends);
 
     for (const prop of this.properties) {
         if (prop instanceof AST_ClassStaticBlock) {
@@ -166,11 +170,7 @@ def_drop_side_effect_free(AST_Class, function (compressor) {
             }
         } else {
             const trimmed_prop = prop.drop_side_effect_free(compressor);
-            if (trimmed_prop) {
-                if (trimmed_prop.contains_this()) return this;
-
-                with_effects.push(trimmed_prop);
-            }
+            if (trimmed_prop) with_effects.push(trimmed_prop);
         }
     }
 
@@ -321,7 +321,9 @@ def_drop_side_effect_free(AST_Dot, function (compressor, first_in_statement) {
     if (is_nullish_shortcircuited(this, compressor)) {
         return this.expression.drop_side_effect_free(compressor, first_in_statement);
     }
-    if (this.expression.may_throw_on_access(compressor)) return this;
+    if (!this.optional && this.expression.may_throw_on_access(compressor)) {
+        return this;
+    }
 
     return this.expression.drop_side_effect_free(compressor, first_in_statement);
 });
@@ -330,15 +332,17 @@ def_drop_side_effect_free(AST_Sub, function (compressor, first_in_statement) {
     if (is_nullish_shortcircuited(this, compressor)) {
         return this.expression.drop_side_effect_free(compressor, first_in_statement);
     }
-    if (this.expression.may_throw_on_access(compressor)) return this;
+    if (!this.optional && this.expression.may_throw_on_access(compressor)) {
+        return this;
+    }
+
+    var property = this.property.drop_side_effect_free(compressor);
+    if (property && this.optional) return this;
 
     var expression = this.expression.drop_side_effect_free(compressor, first_in_statement);
-    if (!expression)
-        return this.property.drop_side_effect_free(compressor, first_in_statement);
-    var property = this.property.drop_side_effect_free(compressor);
-    if (!property)
-        return expression;
-    return make_sequence(this, [expression, property]);
+
+    if (expression && property) return make_sequence(this, [expression, property]);
+    return expression || property;
 });
 
 def_drop_side_effect_free(AST_Chain, function (compressor, first_in_statement) {

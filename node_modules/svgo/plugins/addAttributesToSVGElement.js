@@ -1,8 +1,6 @@
 'use strict';
 
 exports.name = 'addAttributesToSVGElement';
-exports.type = 'visitor';
-exports.active = false;
 exports.description = 'adds attributes to an outer <svg> element';
 
 var ENOCLS = `Error in plugin "addAttributesToSVGElement": absent parameters.
@@ -49,10 +47,7 @@ plugins: [
  *
  * @author April Arcus
  *
- * @type {import('../lib/types').Plugin<{
- *   attribute?: string | Record<string, null | string>,
- *   attributes?: Array<string | Record<string, null | string>>
- * }>}
+ * @type {import('./plugins-types').Plugin<'addAttributesToSVGElement'>}
  */
 exports.fn = (root, params) => {
   if (!Array.isArray(params.attributes) && !params.attribute) {

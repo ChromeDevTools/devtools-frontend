@@ -3,8 +3,6 @@
 const { detachNodeFromParent } = require('../lib/xast.js');
 
 exports.name = 'removeXMLProcInst';
-exports.type = 'visitor';
-exports.active = true;
 exports.description = 'removes XML processing instructions';
 
 /**
@@ -15,7 +13,7 @@ exports.description = 'removes XML processing instructions';
  *
  * @author Kir Belevich
  *
- * @type {import('../lib/types').Plugin<void>}
+ * @type {import('./plugins-types').Plugin<'removeXMLProcInst'>}
  */
 exports.fn = () => {
   return {

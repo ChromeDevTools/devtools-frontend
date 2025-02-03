@@ -1,4 +1,4 @@
-declare function _exports(node: any, property: 'value' | 'params' | 'selector', options: {
+declare function _exports(node: any, property: "value" | "params" | "selector", options: {
     precision: number;
     preserve: boolean;
     warnWhenCannotResolve: boolean;

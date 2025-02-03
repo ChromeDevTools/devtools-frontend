@@ -3,8 +3,6 @@
 const { detachNodeFromParent } = require('../lib/xast.js');
 
 exports.name = 'removeMetadata';
-exports.type = 'visitor';
-exports.active = true;
 exports.description = 'removes <metadata>';
 
 /**
@@ -14,7 +12,7 @@ exports.description = 'removes <metadata>';
  *
  * @author Kir Belevich
  *
- * @type {import('../lib/types').Plugin<void>}
+ * @type {import('./plugins-types').Plugin<'removeMetadata'>}
  */
 exports.fn = () => {
   return {

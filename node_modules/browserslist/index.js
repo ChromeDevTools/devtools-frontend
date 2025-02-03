@@ -1,15 +1,16 @@
 var jsReleases = require('node-releases/data/processed/envs.json')
 var agents = require('caniuse-lite/dist/unpacker/agents').agents
+var e2c = require('electron-to-chromium/versions')
 var jsEOL = require('node-releases/data/release-schedule/release-schedule.json')
 var path = require('path')
-var e2c = require('electron-to-chromium/versions')
 
 var BrowserslistError = require('./error')
-var parse = require('./parse')
-var env = require('./node') // Will load browser.js in webpack
+var env = require('./node')
+var parseWithoutCache = require('./parse') // Will load browser.js in webpack
 
 var YEAR = 365.259641 * 24 * 60 * 60 * 1000
-var ANDROID_EVERGREEN_FIRST = 37
+var ANDROID_EVERGREEN_FIRST = '37'
+var OP_MOB_BLINK_FIRST = 14
 
 // Helpers
 
@@ -81,11 +82,11 @@ function generateFilter(sign, version) {
   version = parseFloat(version)
   if (sign === '>') {
     return function (v) {
-      return parseFloat(v) > version
+      return parseLatestFloat(v) > version
     }
   } else if (sign === '>=') {
     return function (v) {
-      return parseFloat(v) >= version
+      return parseLatestFloat(v) >= version
     }
   } else if (sign === '<') {
     return function (v) {
@@ -95,6 +96,10 @@ function generateFilter(sign, version) {
     return function (v) {
       return parseFloat(v) <= version
     }
+  }
+
+  function parseLatestFloat(v) {
+    return parseFloat(v.split('-')[1] || v)
   }
 }
 
@@ -223,21 +228,6 @@ function cloneData(data) {
   }
 }
 
-function mapVersions(data, map) {
-  data.versions = data.versions.map(function (i) {
-    return map[i] || i
-  })
-  data.released = data.released.map(function (i) {
-    return map[i] || i
-  })
-  var fixedDate = {}
-  for (var i in data.releaseDate) {
-    fixedDate[map[i] || i] = data.releaseDate[i]
-  }
-  data.releaseDate = fixedDate
-  return data
-}
-
 function byName(name, context) {
   name = name.toLowerCase()
   name = browserslist.aliases[name] || name
@@ -248,9 +238,6 @@ function byName(name, context) {
     } else {
       var cloned = cloneData(desktop)
       cloned.name = name
-      if (name === 'op_mob') {
-        cloned = mapVersions(cloned, { '10.0-10.1': '10' })
-      }
       return cloned
     }
   }
@@ -258,18 +245,31 @@ function byName(name, context) {
 }
 
 function normalizeAndroidVersions(androidVersions, chromeVersions) {
-  var firstEvergreen = ANDROID_EVERGREEN_FIRST
-  var last = chromeVersions[chromeVersions.length - 1]
+  var iFirstEvergreen = chromeVersions.indexOf(ANDROID_EVERGREEN_FIRST)
   return androidVersions
     .filter(function (version) {
       return /^(?:[2-4]\.|[34]$)/.test(version)
     })
-    .concat(chromeVersions.slice(firstEvergreen - last - 1))
+    .concat(chromeVersions.slice(iFirstEvergreen))
+}
+
+function copyObject(obj) {
+  var copy = {}
+  for (var key in obj) {
+    copy[key] = obj[key]
+  }
+  return copy
 }
 
 function normalizeAndroidData(android, chrome) {
   android.released = normalizeAndroidVersions(android.released, chrome.released)
   android.versions = normalizeAndroidVersions(android.versions, chrome.versions)
+  android.releaseDate = copyObject(android.releaseDate)
+  android.released.forEach(function (v) {
+    if (android.releaseDate[v] === undefined) {
+      android.releaseDate[v] = chrome.releaseDate[v]
+    }
+  })
   return android
 }
 
@@ -288,20 +288,38 @@ function unknownQuery(query) {
   )
 }
 
-function filterAndroid(list, versions, context) {
-  if (context.mobileToDesktop) return list
-  var released = browserslist.data.android.released
-  var last = released[released.length - 1]
-  var diff = last - ANDROID_EVERGREEN_FIRST - versions
-  if (diff > 0) {
-    return list.slice(-1)
-  } else {
-    return list.slice(diff - 1)
+// Adjusts last X versions queries for some mobile browsers,
+// where caniuse data jumps from a legacy version to the latest
+function filterJumps(list, name, nVersions, context) {
+  var jump = 1
+  switch (name) {
+    case 'android':
+      if (context.mobileToDesktop) return list
+      var released = browserslist.data.chrome.released
+      jump = released.length - released.indexOf(ANDROID_EVERGREEN_FIRST)
+      break
+    case 'op_mob':
+      var latest = browserslist.data.op_mob.released.slice(-1)[0]
+      jump = getMajor(latest) - OP_MOB_BLINK_FIRST + 1
+      break
+    default:
+      return list
   }
+  if (nVersions <= jump) {
+    return list.slice(-1)
+  }
+  return list.slice(jump - 1 - nVersions)
+}
+
+function isSupported(flags, withPartial) {
+  return (
+    typeof flags === 'string' &&
+    (flags.indexOf('y') >= 0 || (withPartial && flags.indexOf('a') >= 0))
+  )
 }
 
 function resolve(queries, context) {
-  return parse(QUERIES, queries).reduce(function (result, node, index) {
+  return parseQueries(queries).reduce(function (result, node, index) {
     if (node.not && index === 0) {
       throw new BrowserslistError(
         'Write any browsers query (for instance, `defaults`) ' +
@@ -377,18 +395,25 @@ function checkQueries(queries) {
 }
 
 var cache = {}
+var parseCache = {}
 
 function browserslist(queries, opts) {
   opts = prepareOpts(opts)
   queries = prepareQueries(queries, opts)
   checkQueries(queries)
 
+  var needsPath = parseQueries(queries).some(function (node) {
+    return QUERIES[node.type].needsPath
+  })
   var context = {
     ignoreUnknownVersions: opts.ignoreUnknownVersions,
     dangerousExtend: opts.dangerousExtend,
     mobileToDesktop: opts.mobileToDesktop,
-    path: opts.path,
     env: opts.env
+  }
+  // Removing to avoid using context.path without marking query as needsPath
+  if (needsPath) {
+    context.path = opts.path
   }
 
   env.oldDataWarning(browserslist.data)
@@ -417,8 +442,18 @@ function browserslist(queries, opts) {
       return compare(name1[0], name2[0])
     }
   })
-  if (!process.env.BROWSERSLIST_DISABLE_CACHE) {
+  if (!env.env.BROWSERSLIST_DISABLE_CACHE) {
     cache[cacheKey] = result
+  }
+  return result
+}
+
+function parseQueries(queries) {
+  var cacheKey = JSON.stringify(queries)
+  if (cacheKey in parseCache) return parseCache[cacheKey]
+  var result = parseWithoutCache(QUERIES, queries)
+  if (!env.env.BROWSERSLIST_DISABLE_CACHE) {
+    parseCache[cacheKey] = result
   }
   return result
 }
@@ -427,7 +462,7 @@ browserslist.parse = function (queries, opts) {
   opts = prepareOpts(opts)
   queries = prepareQueries(queries, opts)
   checkQueries(queries)
-  return parse(QUERIES, queries)
+  return parseQueries(queries)
 }
 
 // Will be filled by Can I Use data below
@@ -459,11 +494,11 @@ browserslist.aliases = {
 
 // Can I Use only provides a few versions for some browsers (e.g. and_chr).
 // Fallback to a similar browser for unknown versions
+// Note op_mob is not included as its chromium versions are not in sync with Opera desktop
 browserslist.desktopNames = {
   and_chr: 'chrome',
   and_ff: 'firefox',
   ie_mob: 'ie',
-  op_mob: 'opera',
   android: 'chrome' // has extra processing logic
 }
 
@@ -473,6 +508,7 @@ browserslist.versionAliases = {}
 browserslist.clearCaches = env.clearCaches
 browserslist.parseConfig = env.parseConfig
 browserslist.readConfig = env.readConfig
+browserslist.findConfigFile = env.findConfigFile
 browserslist.findConfig = env.findConfig
 browserslist.loadConfig = env.loadConfig
 
@@ -589,9 +625,7 @@ var QUERIES = {
         if (!data) return selected
         var list = getMajorVersions(data.released, node.versions)
         list = list.map(nameMapper(data.name))
-        if (data.name === 'android') {
-          list = filterAndroid(list, node.versions, context)
-        }
+        list = filterJumps(list, data.name, node.versions, context)
         return selected.concat(list)
       }, [])
     }
@@ -605,9 +639,7 @@ var QUERIES = {
         if (!data) return selected
         var list = data.released.slice(-node.versions)
         list = list.map(nameMapper(data.name))
-        if (data.name === 'android') {
-          list = filterAndroid(list, node.versions, context)
-        }
+        list = filterJumps(list, data.name, node.versions, context)
         return selected.concat(list)
       }, [])
     }
@@ -640,9 +672,7 @@ var QUERIES = {
       var data = checkName(node.browser, context)
       var validVersions = getMajorVersions(data.released, node.versions)
       var list = validVersions.map(nameMapper(data.name))
-      if (data.name === 'android') {
-        list = filterAndroid(list, node.versions, context)
-      }
+      list = filterJumps(list, data.name, node.versions, context)
       return list
     }
   },
@@ -674,9 +704,7 @@ var QUERIES = {
     select: function (context, node) {
       var data = checkName(node.browser, context)
       var list = data.released.slice(-node.versions).map(nameMapper(data.name))
-      if (data.name === 'android') {
-        list = filterAndroid(list, node.versions, context)
-      }
+      list = filterJumps(list, data.name, node.versions, context)
       return list
     }
   },
@@ -886,18 +914,36 @@ var QUERIES = {
     select: coverQuery
   },
   supports: {
-    matches: ['feature'],
-    regexp: /^supports\s+([\w-]+)$/,
+    matches: ['supportType', 'feature'],
+    regexp: /^(?:(fully|partially)\s+)?supports\s+([\w-]+)$/,
     select: function (context, node) {
       env.loadFeature(browserslist.cache, node.feature)
+      var withPartial = node.supportType !== 'fully'
       var features = browserslist.cache[node.feature]
-      return Object.keys(features).reduce(function (result, version) {
-        var flags = features[version]
-        if (flags.indexOf('y') >= 0 || flags.indexOf('a') >= 0) {
-          result.push(version)
+      var result = []
+      for (var name in features) {
+        var data = byName(name, context)
+        // Only check desktop when latest released mobile has support
+        var iMax = data.released.length - 1
+        while (iMax >= 0) {
+          if (data.released[iMax] in features[name]) break
+          iMax--
         }
-        return result
-      }, [])
+        var checkDesktop =
+          context.mobileToDesktop &&
+          name in browserslist.desktopNames &&
+          isSupported(features[name][data.released[iMax]], withPartial)
+        data.versions.forEach(function (version) {
+          var flags = features[name][version]
+          if (flags === undefined && checkDesktop) {
+            flags = features[browserslist.desktopNames[name]][version]
+          }
+          if (isSupported(flags, withPartial)) {
+            result.push(name + ' ' + version)
+          }
+        })
+      }
+      return result
     }
   },
   electron_range: {
@@ -992,7 +1038,7 @@ var QUERIES = {
     matches: [],
     regexp: /^(firefox|ff|fx)\s+esr$/i,
     select: function () {
-      return ['firefox 102']
+      return ['firefox 128']
     }
   },
   opera_mini_all: {
@@ -1104,6 +1150,7 @@ var QUERIES = {
   browserslist_config: {
     matches: [],
     regexp: /^browserslist config$/i,
+    needsPath: true,
     select: function (context) {
       return browserslist(undefined, context)
     }
@@ -1111,6 +1158,7 @@ var QUERIES = {
   extends: {
     matches: ['config'],
     regexp: /^extends (.+)$/i,
+    needsPath: true,
     select: function (context, node) {
       return resolve(env.loadQueries(context, node.config), context)
     }
@@ -1178,8 +1226,6 @@ var QUERIES = {
       }
     }
   }
-
-  browserslist.versionAliases.op_mob['59'] = '58'
 
   browserslist.nodeVersions = jsReleases.map(function (release) {
     return release.version

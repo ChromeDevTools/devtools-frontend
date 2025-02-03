@@ -1,8 +1,6 @@
 'use strict';
 
-exports.type = 'visitor';
 exports.name = 'sortDefsChildren';
-exports.active = true;
 exports.description = 'Sorts children of <defs> to improve compression';
 
 /**
@@ -11,7 +9,7 @@ exports.description = 'Sorts children of <defs> to improve compression';
  *
  * @author David Leston
  *
- * @type {import('../lib/types').Plugin<void>}
+ * @type {import('./plugins-types').Plugin<'sortDefsChildren'>}
  */
 exports.fn = () => {
   return {

@@ -7,7 +7,7 @@ const { parser } = require('../parser.js');
 const reducer = require('./reducer.js');
 const stringifier = require('./stringifier.js');
 
-const MATCH_CALC = /((?:-(moz|webkit)-)?calc)/i;
+const MATCH_CALC = /((?:-(moz|webkit)-)?calc(?!-))/i;
 
 /**
  * @param {string} value

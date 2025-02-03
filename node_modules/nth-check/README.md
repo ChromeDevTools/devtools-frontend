@@ -4,7 +4,7 @@ Parses and compiles CSS nth-checks to highly optimized functions.
 
 ### About
 
-This module can be used to parse & compile nth-checks, as they are found in CSS 3's `nth-child()` and `nth-last-of-type()`.
+This module can be used to parse & compile nth-checks, as they are found in CSS 3's `nth-child()` and `nth-last-of-type()`. It can be used to check if a given index matches a given nth-rule, or to generate a sequence of indices matching a given nth-rule.
 
 `nth-check` focusses on speed, providing optimized functions for different kinds of nth-child formulas, while still following the [spec](http://www.w3.org/TR/css3-selectors/#nth-child-pseudo).
 
@@ -62,6 +62,62 @@ check(3); // `false`
 check(4); // `true`
 check(5); // `false`
 check(6); // `true`
+```
+
+##### `generate([a, b])`
+
+Returns a function that produces a monotonously increasing sequence of indices.
+
+If the sequence has an end, the returned function will return `null` after the last index in the sequence.
+
+**Example:** An always increasing sequence
+
+```js
+const gen = nthCheck.generate([2, 3]);
+
+gen(); // `1`
+gen(); // `3`
+gen(); // `5`
+gen(); // `8`
+gen(); // `11`
+```
+
+**Example:** With an end value
+
+```js
+const gen = nthCheck.generate([-2, 5]);
+
+gen(); // 0
+gen(); // 2
+gen(); // 4
+gen(); // null
+```
+
+##### `sequence(formula)`
+
+Parses and compiles a formula to a generator that produces a sequence of indices. Combination of `parse` and `generate`.
+
+**Example:** An always increasing sequence
+
+```js
+const gen = nthCheck.sequence("2n+3");
+
+gen(); // `1`
+gen(); // `3`
+gen(); // `5`
+gen(); // `8`
+gen(); // `11`
+```
+
+**Example:** With an end value
+
+```js
+const gen = nthCheck.sequence("-2n+5");
+
+gen(); // 0
+gen(); // 2
+gen(); // 4
+gen(); // null
 ```
 
 ---

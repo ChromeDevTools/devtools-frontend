@@ -3,8 +3,6 @@
 const { detachNodeFromParent } = require('../lib/xast.js');
 
 exports.name = 'removeDoctype';
-exports.type = 'visitor';
-exports.active = true;
 exports.description = 'removes doctype declaration';
 
 /**
@@ -29,7 +27,7 @@ exports.description = 'removes doctype declaration';
  *
  * @author Kir Belevich
  *
- * @type {import('../lib/types').Plugin<void>}
+ * @type {import('./plugins-types').Plugin<'removeDoctype'>}
  */
 exports.fn = () => {
   return {

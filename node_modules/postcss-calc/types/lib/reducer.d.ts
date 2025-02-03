@@ -4,11 +4,11 @@ export = reduce;
  * @param {number} precision
  * @return {import('../parser').CalcNode}
  */
-declare function reduce(node: import('../parser').CalcNode, precision: number): import('../parser').CalcNode;
+declare function reduce(node: import("../parser").CalcNode, precision: number): import("../parser").CalcNode;
 declare namespace reduce {
     export { Collectible };
 }
 type Collectible = {
-    preOperator: '+' | '-';
-    node: import('../parser').CalcNode;
+    preOperator: "+" | "-";
+    node: import("../parser").CalcNode;
 };

@@ -40,28 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 74,
-  header: 'What\'s new in DevTools 133',
+  version: 75,
+  header: 'What\'s new in DevTools 134',
   markdownLinks: [
     {
-      key: 'persistent-chat-history',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#persistent-chat-history',
+      key: 'privacy-and-security',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-134/#privacy-and-security',
     },
     {
-      key: 'perf-nav',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#perf-nav',
+      key: 'calibrated-cpu-throttling',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-134/#calibrated-cpu-throttling',
     },
     {
-      key: 'perf-image-delivery',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#perf-image-delivery',
+      key: 'perf-third-party',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-134/#perf-third-party',
     },
   ],
   videoLinks: [
     {
-      description: 'Highlights of updates from Chrome 130-132',
+      description: 'See also the highlights from Chrome 130-132',
       link: 'https://www.youtube.com/watch?v=kzDUe-f4gac' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-133/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-134/',
 };

@@ -872,6 +872,17 @@ export const generatedProperties = [
  },
  {
   "longhands": [
+   "animation-trigger-timeline",
+   "animation-trigger-type",
+   "animation-trigger-range-start",
+   "animation-trigger-range-end",
+   "animation-trigger-exit-range-start",
+   "animation-trigger-exit-range-end"
+  ],
+  "name": "animation-trigger"
+ },
+ {
+  "longhands": [
    "animation-trigger-exit-range-start",
    "animation-trigger-exit-range-end"
   ],

@@ -24,6 +24,12 @@ const flags = yargs(hideBin(process.argv))
     default: true,
     describe: 'Automatically fix, where possible, problems reported by rules.',
   })
+  .option('debug', {
+    type: 'boolean',
+    default: false,
+    describe:
+      'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+  })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
@@ -37,17 +43,21 @@ const flags = yargs(hideBin(process.argv))
       ],
     });
   })
-  .parse();
+  .parseSync();
 
 if (!flags.fix) {
   console.log('[lint]: fix is disabled; no errors will be autofixed.');
 }
+if (flags.debug) {
+  console.log('[lint]: Cache disabled, linting may take longer.');
+}
+const cacheLinters = !flags.debug;
 
 async function runESLint(scriptFiles) {
   const cli = new ESLint({
     cwd: join(import.meta.dirname, '..', '..'),
     fix: flags.fix,
-    cache: true,
+    cache: cacheLinters,
   });
 
   // We filter out certain files in the `eslint.config.mjs` `Ignore list` entry.
@@ -107,7 +117,7 @@ async function runStylelint(files) {
     fix: flags.fix,
     files,
     formatter: 'string',
-    cache: true,
+    cache: cacheLinters,
     allowEmptyInput: true,
   });
 

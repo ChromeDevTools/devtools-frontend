@@ -212,6 +212,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
     this.registerHandler(PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
+    this.registerHandler(PrivateAPI.Commands.SetFunctionRangesForScript, this.onSetFunctionRangesForScript.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowNetworkPanel, this.onShowNetworkPanel.bind(this));
@@ -444,6 +445,30 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       size: status.size ?? null,
     };
     SDK.PageResourceLoader.PageResourceLoader.instance().resourceLoadedThroughExtension(pageResource);
+    return this.status.OK();
+  }
+
+  private onSetFunctionRangesForScript(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.SetFunctionRangesForScript) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetFunctionRangesForScript}`);
+    }
+    const {scriptUrl, ranges} = message;
+    if (!scriptUrl || !ranges || !ranges.length) {
+      return this.status.E_BADARG('command', 'expected valid scriptUrl and non-empty NamedFunctionRanges');
+    }
+    const uiSourceCode =
+        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptUrl as Platform.DevToolsPath.UrlString);
+    if (!uiSourceCode) {
+      return this.status.E_NOTFOUND(scriptUrl);
+    }
+    if (!uiSourceCode.contentType().isScript() || !uiSourceCode.contentType().isFromSourceMap()) {
+      return this.status.E_BADARG('command', `expected a source map script resource for url: ${scriptUrl}`);
+    }
+    try {
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().setFunctionRanges(uiSourceCode, ranges);
+    } catch (e) {
+      return this.status.E_FAILED(e);
+    }
     return this.status.OK();
   }
 

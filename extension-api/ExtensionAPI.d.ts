@@ -11,9 +11,20 @@ export namespace Chrome {
 
     export interface Resource {
       readonly url: string;
+      readonly type: string;
 
       getContent(callback: (content: string, encoding: string) => unknown): void;
       setContent(content: string, commit: boolean, callback?: (error?: Object) => unknown): void;
+      /**
+       * Augments this resource's scopes information based on the list of {@link NamedFunctionRange}s
+       * for improved debuggability and function naming.
+       *
+       * @throws
+       * If this resource was not produced by a sourcemap or if {@link ranges} are not nested properly.
+       * Concretely: For each range, start position must be less than end position, and
+       * there must be no "straddling" (i.e. partially overlapping ranges).
+       */
+      setFunctionRangesForScript(ranges: NamedFunctionRange[]): Promise<void>;
     }
 
     export interface InspectedWindow {
@@ -296,6 +307,16 @@ export namespace Chrome {
           Promise<void>;
     }
 
+    export interface Position {
+      line: number;
+      column: number;
+    }
+
+    export interface NamedFunctionRange {
+      readonly name: string;
+      readonly start: Position;
+      readonly end: Position;
+    }
 
     export interface RecorderExtensions {
       registerRecorderExtensionPlugin(plugin: RecorderExtensionPlugin, pluginName: string, mediaType?: string):

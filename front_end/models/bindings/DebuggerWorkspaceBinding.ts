@@ -44,6 +44,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     this.pluginManager = new DebuggerLanguagePluginManager(targetManager, resourceMapping.workspace, this);
   }
 
+  setFunctionRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void {
+    for (const modelData of this.#debuggerModelToData.values()) {
+      modelData.compilerMapping.setFunctionRanges(uiSourceCode, ranges);
+    }
+  }
+
   static instance(opts: {
     forceNew: boolean|null,
     resourceMapping: ResourceMapping|null,

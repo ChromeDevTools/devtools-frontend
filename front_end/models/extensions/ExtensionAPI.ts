@@ -92,6 +92,7 @@ export namespace PrivateAPI {
     ShowRecorderView = 'showRecorderView',
     ShowNetworkPanel = 'showNetworkPanel',
     ReportResourceLoad = 'reportResourceLoad',
+    SetFunctionRangesForScript = 'setFunctionRangesForScript',
   }
 
   export const enum LanguageExtensionPluginCommands {
@@ -260,6 +261,11 @@ export namespace PrivateAPI {
     content: string;
     commit: boolean;
   }
+  interface SetFunctionRangesForScriptRequest {
+    command: Commands.SetFunctionRangesForScript;
+    scriptUrl: string;
+    ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[];
+  }
   interface ForwardKeyboardEventRequest {
     command: Commands.ForwardKeyboardEvent;
     entries: Array<KeyboardEventInit&{eventType: string}>;
@@ -307,9 +313,9 @@ export namespace PrivateAPI {
       CreatePanelRequest|ShowPanelRequest|CreateToolbarButtonRequest|UpdateButtonRequest|CreateSidebarPaneRequest|
       SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|OpenResourceRequest|
       SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|EvaluateOnInspectedPageRequest|
-      GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|ForwardKeyboardEventRequest|
-      GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|
-      GetWasmOpRequest|ShowNetworkPanelRequest|ReportResourceLoadRequest;
+      GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|SetFunctionRangesForScriptRequest|
+      ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|
+      GetWasmGlobalRequest|GetWasmOpRequest|ShowNetworkPanelRequest|ReportResourceLoadRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   interface AddRawModuleRequest {
@@ -1324,7 +1330,8 @@ self.injectedExtensionAPI = function(
     this._type = resourceData.type;
   }
 
-  (ResourceImpl.prototype as Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'>) = {
+  (ResourceImpl.prototype as
+   Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'|'setFunctionRangesForScript'>) = {
     get url(): string {
       return (this as APIImpl.Resource)._url;
     },
@@ -1348,6 +1355,30 @@ self.injectedExtensionAPI = function(
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.SetResourceContent, url: this._url, content, commit},
           callback as (response: unknown) => unknown);
+    },
+
+    setFunctionRangesForScript: function(
+        this: APIImpl.Resource, ranges: PublicAPI.Chrome.DevTools.NamedFunctionRange[]): Promise<void> {
+      return new Promise(
+          (resolve, reject) => extensionServer.sendRequest(
+              {
+                command: PrivateAPI.Commands.SetFunctionRangesForScript,
+                scriptUrl: this._url,
+                ranges,
+              },
+              (response: unknown) => {
+                const result = response as {
+                  code: string,
+                  description: string,
+                  details: unknown[],
+                  isError?: boolean,
+                };
+                if (result.isError) {
+                  reject(result);
+                } else {
+                  resolve();
+                }
+              }));
     },
   };
 

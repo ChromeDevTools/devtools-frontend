@@ -38,7 +38,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
-import {buildOriginalScopes, decodePastaRanges} from './SourceMapFunctionRanges.js';
+import {buildOriginalScopes, decodePastaRanges, type NamedFunctionRange} from './SourceMapFunctionRanges.js';
 import {decodeScopes, type OriginalScope, type Position as GeneratedPosition} from './SourceMapScopes.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
@@ -179,6 +179,31 @@ export class SourceMap {
       }
     }
     this.eachSection(this.parseSources.bind(this));
+  }
+
+  augmentWithScopes(scriptUrl: Platform.DevToolsPath.UrlString, ranges: NamedFunctionRange[]): void {
+    this.#ensureMappingsProcessed();
+    if (this.#json && this.#json.version > 3) {
+      throw new Error('Only support augmenting source maps up to version 3.');
+    }
+    // Ensure scriptUrl is associated with sourceMap sources
+    const sourceIdx = this.#sourceIndex(scriptUrl);
+    if (sourceIdx >= 0) {
+      if (!this.#scopesInfo) {
+        // First time seeing this sourcemap, create an new empty scopesInfo object
+        this.#scopesInfo = new SourceMapScopesInfo(this, [], []);
+      }
+      if (!this.#scopesInfo.hasOriginalScopes(sourceIdx)) {
+        const originalScopes = buildOriginalScopes(ranges);
+        this.#scopesInfo.addOriginalScopesAtIndex(sourceIdx, originalScopes);
+      }
+    } else {
+      throw new Error(`Could not find sourceURL ${scriptUrl} in sourceMap`);
+    }
+  }
+
+  #sourceIndex(sourceURL: Platform.DevToolsPath.UrlString): number {
+    return this.#sourceInfos.findIndex(info => info.sourceURL === sourceURL);
   }
 
   compiledURL(): Platform.DevToolsPath.UrlString {

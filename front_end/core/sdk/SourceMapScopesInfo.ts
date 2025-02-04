@@ -34,6 +34,18 @@ export class SourceMapScopesInfo {
     }
   }
 
+  hasOriginalScopes(sourceIdx: number): boolean {
+    return Boolean(this.#originalScopes[sourceIdx]);
+  }
+
+  addOriginalScopesAtIndex(sourceIdx: number, scope: OriginalScope): void {
+    if (!this.#originalScopes[sourceIdx]) {
+      this.#originalScopes[sourceIdx] = scope;
+    } else {
+      throw new Error(`Trying to re-augment existing scopes for source at index: ${sourceIdx}`);
+    }
+  }
+
   /**
    * Given a generated position, returns the original name of the surrounding function as well as
    * all the original function names that got inlined into the surrounding generated function and their

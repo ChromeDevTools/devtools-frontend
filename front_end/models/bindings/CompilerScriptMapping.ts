@@ -91,6 +91,14 @@ export class CompilerScriptMapping implements DebuggerSourceMapping {
     ];
   }
 
+  setFunctionRanges(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      ranges: SDK.SourceMapFunctionRanges.NamedFunctionRange[]): void {
+    for (const sourceMap of this.#uiSourceCodeToSourceMaps.get(uiSourceCode)) {
+      sourceMap.augmentWithScopes(uiSourceCode.url(), ranges);
+    }
+  }
+
   private addStubUISourceCode(script: SDK.Script.Script): void {
     const stubUISourceCode = this.#stubProject.addContentProvider(
         Common.ParsedURL.ParsedURL.concatenate(script.sourceURL, ':sourcemap'),

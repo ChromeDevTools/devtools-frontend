@@ -421,6 +421,7 @@ export const generatedProperties = [
    "column-count",
    "column-fill",
    "column-gap",
+   "column-rule-break",
    "column-rule-color",
    "column-rule-style",
    "column-rule-width",
@@ -1695,6 +1696,15 @@ export const generatedProperties = [
    "column-rule-color"
   ],
   "name": "column-rule"
+ },
+ {
+  "inherited": false,
+  "keywords": [
+   "none",
+   "spanning-item",
+   "intersection"
+  ],
+  "name": "column-rule-break"
  },
  {
   "keywords": [
@@ -4971,6 +4981,13 @@ export const generatedPropertyValues = {
  "column-gap": {
   "values": [
    "normal"
+  ]
+ },
+ "column-rule-break": {
+  "values": [
+   "none",
+   "spanning-item",
+   "intersection"
   ]
  },
  "column-rule-color": {

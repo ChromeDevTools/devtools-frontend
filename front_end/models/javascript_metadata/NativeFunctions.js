@@ -225,7 +225,12 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory","AITranslatorFactory"]
+    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
+  },
+  {
+    name: "create",
+    signatures: [["options"]],
+    receivers: ["AITranslatorFactory"]
   },
   {
     name: "defineProperty",
@@ -2406,7 +2411,13 @@ export const NativeFunctions = [
   },
   {
     name: "startViewTransition",
-    signatures: [["?callbackOptions"],["update"],["opts"]]
+    signatures: [["?callbackOptions"],["update"],["opts"]],
+    receivers: ["Document"]
+  },
+  {
+    name: "startViewTransition",
+    signatures: [["?update"],["opts"]],
+    receivers: ["Element"]
   },
   {
     name: "writeln",

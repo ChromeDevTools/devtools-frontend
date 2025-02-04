@@ -2,6 +2,17 @@
 
 [TOC]
 
+## Design tokens
+
+Design tokens are the building blocks for our design system, and they define
+values like colors, fonts, and sizes. Use these tokens instead of hard coded
+values. You can find the tokens in
+[design\_system\_tokens.css](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/design_system_tokens.css).
+
+*Note*: In rare cases we allow for one-off tokens that are used in the code,
+e.g. if requested explicitly by our UX team. They are defined in
+[application\_tokens.css](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/application_tokens.css).
+
 ## Colors
 
 We define three sets of color token types, **reference/palette tokens**,

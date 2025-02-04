@@ -240,11 +240,19 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #updateNode(node: Node): void {
+  #updateNode(node: Node, selectionOnly: boolean): void {
     const dataRow = node instanceof HTMLElement ? node.closest('tr') : null;
     const dataGridNode = dataRow ? DataGridElementNode.get(dataRow) : null;
     if (dataGridNode) {
-      dataGridNode.refresh();
+      if (selectionOnly) {
+        if (dataRow?.hasAttribute('selected')) {
+          dataGridNode.select();
+        } else {
+          dataGridNode.deselect();
+        }
+      } else {
+        dataGridNode.refresh();
+      }
     }
   }
 
@@ -256,7 +264,7 @@ class DataGridElement extends HTMLElement {
     for (const mutation of mutationList) {
       this.#removeNodes(mutation.removedNodes);
       this.#addNodes(mutation.addedNodes);
-      this.#updateNode(mutation.target);
+      this.#updateNode(mutation.target, mutation.attributeName === 'selected');
     }
   }
 
@@ -280,6 +288,9 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     DataGridElementNode.#elementToNode.set(configElement, this);
     this.#dataGridElement = dataGridElement;
     this.#updateData();
+    if (this.#configElement.hasAttribute('selected')) {
+      this.select();
+    }
   }
 
   static get(configElement: Element|undefined): DataGridElementNode|undefined {
@@ -296,9 +307,6 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
       const cell = cells[i];
       const columnId = this.#dataGridElement.columnsOrder[i];
       this.data[columnId] = cell.dataset.value ?? cell.textContent ?? '';
-    }
-    if (this.#configElement.hasAttribute('selected')) {
-      this.select();
     }
   }
 

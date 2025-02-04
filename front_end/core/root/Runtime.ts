@@ -352,6 +352,9 @@ export interface HostConfigFreestyler {
   enabled: boolean;
   userTier: string;
   executionMode?: HostConfigFreestylerExecutionMode;
+  patching?: boolean;
+  multimodal?: boolean;
+  functionCalling?: boolean;
 }
 
 export interface HostConfigAiAssistanceNetworkAgent {

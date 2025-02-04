@@ -451,9 +451,45 @@
   --sys-size-39: 1024px;
   --sys-size-40: 1152px;
   --sys-size-41: 1280px;
+
   /* Sizes end */
 
   /* Typography begin */
+
+  /* This will be overridden by the platform-X classes that get
+   * added to the html tag on load, but is here as a safe
+   * fallback
+   */
+  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  --monospace-font-size: 10px;
+  --monospace-font-family: monospace;
+  --source-code-font-size: 11px;
+  --source-code-font-family: monospace;
+
+  /* Default fonts */
+  &.platform-linux {
+    --default-font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
+    --monospace-font-size: 11px;
+    --monospace-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+    --source-code-font-size: 11px;
+    --source-code-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
+  }
+
+  &.platform-mac {
+    --default-font-family: system-ui, sans-serif;
+    --monospace-font-size: 11px;
+    --monospace-font-family: monospace;
+    --source-code-font-size: 11px;
+    --source-code-font-family: monospace;
+  }
+
+  &.platform-windows {
+    --default-font-family: system-ui, sans-serif;
+    --monospace-font-size: var(--sys-size-6);
+    --monospace-font-family: monospace;
+    --source-code-font-size: var(--sys-size-6);
+    --source-code-font-family: monospace;
+  }
 
   --ref-typeface-weight-regular: 400;
   --ref-typeface-weight-medium: 500;
@@ -528,8 +564,11 @@
 
   /* Motion begin */
 
-  --sys-motion-duration-long2: 500ms;
   --sys-motion-curve-spatial: cubic-bezier(0.27, 1.06, 0.18, 1.00);
+  --sys-motion-duration-short4: 200ms;
+  --sys-motion-duration-medium2: 300ms;
+  --sys-motion-duration-long2: 500ms;
+  --sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
 
   /* Motion end */
 

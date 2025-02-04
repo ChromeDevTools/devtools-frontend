@@ -18,48 +18,6 @@
   overflow: hidden;
   /* stylelint-disable-next-line property-no-unknown */
   interpolate-size: allow-keywords;
-  /**
-   * NOTE: please don't add to these colours!
-   * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
-   * Chat to jacktfranklin@ or petermueller@ if you have questions.
-   * https://crbug.com/1122511
-   */
-  --legacy-accent-color: #1a73e8;
-  --legacy-focus-ring-inactive-shadow-color: #e0e0e0;
-  --legacy-input-validation-error: #db1600;
-  --legacy-selection-bg-color: var(--legacy-accent-color);
-  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
-  --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
-  --monospace-font-size: 10px;
-  --monospace-font-family: monospace;
-  --source-code-font-size: 11px;
-  --source-code-font-family: monospace;
-  --sys-motion-duration-short4: 200ms;
-  --sys-motion-duration-medium2: 300ms;
-  --sys-motion-duration-long2: 500ms;
-  --sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
-
-  /* This will be overridden by the platform-X classes that get
-   * added to the html tag on load, but is here as a safe
-   * fallback */
-  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
-}
-
-.theme-with-dark-background {
-  /**
-   * Inherit the native form control colors when using a dark theme.
-   * Override them using CSS variables if needed.
-   */
-  color-scheme: dark;
-  /**
-   * NOTE: please don't add to these colours!
-   * We are migrating to a new set of theme colors (see below for details) and over time these colors will be deprecated / removed.
-   * Chat to jacktfranklin@ or petermueller@ if you have questions.
-   * https://crbug.com/1122511
-   */
-  --legacy-accent-color: #0e639c;
-  --legacy-focus-ring-inactive-shadow-color: #5a5a5a;
-  --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
 }
 
 body {
@@ -77,46 +35,8 @@ body {
   background: var(--sys-color-cdt-base-container);
 }
 
-/* Default fonts */
-.platform-linux {
-  --default-font-family: "Google Sans Text", "Google Sans", system-ui, sans-serif;
-}
-
-.platform-mac {
-  --default-font-family: system-ui, sans-serif;
-}
-
-.platform-windows {
-  --default-font-family: system-ui, sans-serif;
-}
-
 :focus {
   outline-width: 0;
-}
-
-/* Monospace font per platform configuration */
-.platform-mac,
-:host-context(.platform-mac) {
-  --monospace-font-size: 11px;
-  --monospace-font-family: monospace;
-  --source-code-font-size: 11px;
-  --source-code-font-family: monospace;
-}
-
-.platform-windows,
-:host-context(.platform-windows) {
-  --monospace-font-size: 12px;
-  --monospace-font-family: monospace;
-  --source-code-font-size: 12px;
-  --source-code-font-family: monospace;
-}
-
-.platform-linux,
-:host-context(.platform-linux) {
-  --monospace-font-size: 11px;
-  --monospace-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
-  --source-code-font-size: 11px;
-  --source-code-font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace;
 }
 
 .monospace {

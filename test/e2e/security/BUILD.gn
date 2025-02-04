@@ -5,7 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("security") {
-  sources = [ "security_test.ts" ]
+  sources = [
+    "privacy_test.ts",
+    "security_test.ts",
+  ]
 
   deps = [
     "../../shared",

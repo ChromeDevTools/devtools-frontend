@@ -964,7 +964,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code ??= data.code;
             step.output ??= data.output;
             step.canceled = data.canceled;
-            if (isAiAssistanceChangeSummariesEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
+            if (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
               this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
             }
             commitStep();
@@ -1058,16 +1058,9 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
-function setAiAssistanceChangeSummariesEnabled(enabled: true): void {
-  if (enabled) {
-    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'true');
-  } else {
-    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'false');
-  }
-}
-
-function isAiAssistanceChangeSummariesEnabled(): boolean {
-  return localStorage.getItem('aiAssistance_changeSummariesEnabled') === 'true';
+function isAiAssistancePatchingEnabled(): boolean {
+  const config = Common.Settings.Settings.instance().getHostConfig();
+  return Boolean(config.devToolsFreestyler?.patching);
 }
 
 function setAiAssistanceServerSideLoggingEnabled(enabled: boolean): void {
@@ -1100,7 +1093,5 @@ function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
 
 // @ts-ignore
 globalThis.setAiAssistanceServerSideLoggingEnabled = setAiAssistanceServerSideLoggingEnabled;
-// @ts-ignore
-globalThis.setAiAssistanceChangeSummariesEnabled = setAiAssistanceChangeSummariesEnabled;
 // @ts-ignore
 globalThis.setAiAssistanceStylingWithFunctionCalling = setAiAssistanceStylingWithFunctionCalling;

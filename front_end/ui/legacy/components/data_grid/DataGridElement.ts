@@ -152,6 +152,7 @@ class DataGridElement extends HTMLElement {
     }
     this.#hideableColumns.clear();
     this.#columnsOrder = [];
+    let hasEditableColumn = false;
     for (const column of this.querySelectorAll('th[id]') || []) {
       const id = column.id as Lowercase<string>;
       this.#columnsOrder.push(id);
@@ -172,6 +173,10 @@ class DataGridElement extends HTMLElement {
         align = undefined;
       }
       const weight = parseFloat(column.getAttribute('weight') || '') ?? undefined;
+      const editable = column.hasAttribute('editable');
+      if (editable) {
+        hasEditableColumn = true;
+      }
       this.#dataGrid.addColumn({
         id,
         title: title as Platform.UIString.LocalizedString,
@@ -180,7 +185,8 @@ class DataGridElement extends HTMLElement {
         fixedWidth,
         width,
         align,
-        weight
+        weight,
+        editable
       });
       if (column.hasAttribute('hideable')) {
         this.#hideableColumns.add(id);
@@ -190,6 +196,8 @@ class DataGridElement extends HTMLElement {
     if (visibleColumns.size) {
       this.#dataGrid.setColumnsVisibility(visibleColumns);
     }
+    this.#dataGrid.editCallback = hasEditableColumn ? this.#editCallback.bind(this) : undefined;
+    this.#dataGrid.deleteCallback = hasEditableColumn ? this.#deleteCallback.bind(this) : undefined;
   }
 
   #needUpdateColumns(mutationList: MutationRecord[]): boolean {
@@ -250,6 +258,15 @@ class DataGridElement extends HTMLElement {
       this.#addNodes(mutation.addedNodes);
       this.#updateNode(mutation.target);
     }
+  }
+
+  #editCallback(node: DataGridElementNode, columnId: string, valueBeforeEditing: string, newText: string): void {
+    this.dispatchEvent(
+        new CustomEvent('edit', {detail: {node: node.configElement, columnId, valueBeforeEditing, newText}}));
+  }
+
+  #deleteCallback(node: DataGridElementNode): void {
+    this.dispatchEvent(new CustomEvent('delete', {detail: node.configElement}));
   }
 }
 

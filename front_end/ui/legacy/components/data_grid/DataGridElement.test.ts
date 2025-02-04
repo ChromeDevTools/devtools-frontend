@@ -157,4 +157,31 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'ArrowDown');
     assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
   });
+
+  it('supports editable columns', async () => {
+    const editCallback = sinon.stub();
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'} @edit=${editCallback as Function}>
+          <table>
+            <tr>
+              <th id="column-1" editable>Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+    sendKeydown(element, 'ArrowDown');
+    sendKeydown(element, 'Enter');
+    getFocusedElement()!.textContent = 'New Value';
+    sendKeydown(element, 'Enter');
+    assert.isTrue(editCallback.calledOnce);
+    assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 1'));
+    assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 2'));
+    assert.strictEqual(editCallback.firstCall.args[0].detail.columnId, 'column-1');
+    assert.strictEqual(editCallback.firstCall.args[0].detail.valueBeforeEditing, 'Value 1');
+    assert.strictEqual(editCallback.firstCall.args[0].detail.newText, 'New Value');
+  });
 });

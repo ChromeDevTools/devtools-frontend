@@ -131,8 +131,8 @@ const elementToIndexMap = new WeakMap<Element, number>();
 export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
   displayName: string;
-  private editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => void)|undefined;
-  private readonly deleteCallback: ((arg0: any) => void)|undefined;
+  editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => void)|undefined;
+  deleteCallback: ((arg0: any) => void)|undefined;
   private readonly refreshCallback: (() => void)|undefined;
   private dataTableHeaders: {
     [x: string]: Element,
@@ -204,9 +204,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     // FIXME: Add a createCallback which is different from editCallback and has different
     // behavior when creating a new node.
-    if (editCallback) {
-      this.dataTable.addEventListener('dblclick', this.ondblclick.bind(this), false);
-    }
+    this.dataTable.addEventListener('dblclick', this.ondblclick.bind(this), false);
     this.dataTable.addEventListener('mousedown', this.mouseDownInDataTable.bind(this));
     this.dataTable.addEventListener('click', this.clickInDataTable.bind(this), true);
 
@@ -565,7 +563,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private ondblclick(event: Event): void {
-    if (this.editing || this.editingNode) {
+    if (!this.editCallback || this.editing || this.editingNode) {
       return;
     }
 

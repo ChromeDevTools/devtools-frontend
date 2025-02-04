@@ -4,11 +4,6 @@
 
 import * as fs from 'fs';
 import * as http from 'http';
-import * as path from 'path';
-
-import {GEN_DIR} from './paths.js';
-
-export const REPO = 'https://chromium.googlesource.com/devtools/devtools-frontend';
 
 // This type mirrors test_result.proto.
 // https://source.chromium.org/chromium/infra/infra/+/main:recipes-py/recipe_proto/go.chromium.org/luci/resultdb/proto/sink/v1/test_result.proto
@@ -22,13 +17,6 @@ export interface TestResult {
   artifacts?: {
     [key: string]: {
       filePath: string,
-    },
-  };
-  testMetadata?: {
-    name: string,
-    location: {
-      repo: string,
-      fileName?: string,
     },
   };
 }
@@ -105,8 +93,4 @@ export function sendTestResult(results: TestResult): void {
   const data = JSON.stringify({testResults: [results]});
   request.write(data);
   request.end();
-}
-
-export function testLocation(file?: string): string|undefined {
-  return file ? `//${path.relative(GEN_DIR, file).replace('.js', '.ts')}` : undefined;
 }

@@ -15,6 +15,10 @@ below.**
 
 [TOC]
 
+## Chromium DevTools Playbook (aka Work With Us)
+
+* See the [playbook](./playbook.md) for step-by-step instructions on how to work with Chromium DevTools to implement your idea.
+
 ## Document Index
 
 ### Design Documents

@@ -41,7 +41,6 @@ import filterStyles from './filter.css.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestions} from './SuggestBox.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import {type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
@@ -274,6 +273,11 @@ interface NamedBitSetFilterUIOptions {
   items: Item[];
   setting?: Common.Settings.Setting<{[key: string]: boolean}>;
 }
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const filterStyleSheet = new CSSStyleSheet();
+filterStyleSheet.replaceSync(filterStyles.cssContent);
+
 export class NamedBitSetFilterUIElement extends HTMLElement {
   #options: NamedBitSetFilterUIOptions = {items: []};
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -311,7 +315,9 @@ export class NamedBitSetFilterUIElement extends HTMLElement {
   }
 
   connectedCallback(): void {
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadow, filterStyles);
+    // TODO(crbug.com/391381439): We cannot simply add a `<style>` element here, because
+    // the `options` setter above clears the shadow DOM.
+    this.#shadow.adoptedStyleSheets = [filterStyleSheet];
   }
 
   #filterChanged(): void {

@@ -846,6 +846,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   }
 
   #bottomUpButtonClicked(): void {
+    // We should also trigger an event to "unhover" the 3P tree row. Since this isn't
+    // triggered when clicking the bottom up button.
+    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, null);
     this.treeView.dispatchEventToListeners(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, this.profileNode);
   }
 }

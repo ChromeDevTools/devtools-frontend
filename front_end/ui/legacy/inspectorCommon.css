@@ -799,6 +799,11 @@ devtools-toolbar {
     }
   }
 
+  .status-buttons {
+    padding: 0 var(--sys-size-2);
+    gap: var(--sys-size-2);
+  }
+
   & > :not(select) {
     padding: 0;
   }

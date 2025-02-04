@@ -46,6 +46,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
     WarningErrorCounter.instanceForTest = this;
 
     const countersWrapper = document.createElement('div');
+    countersWrapper.classList.add('status-buttons');
     this.toolbarItem = new UI.Toolbar.ToolbarItemWithCompactLayout(countersWrapper);
     this.toolbarItem.setVisible(false);
     this.toolbarItem.addEventListener(

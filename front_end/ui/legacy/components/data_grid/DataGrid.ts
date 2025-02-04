@@ -1231,7 +1231,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       nextSelectedNode.select();
     }
 
-    if (handled && this.element !== document.activeElement && !this.element.contains(document.activeElement)) {
+    const activeElement = (Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument) as HTMLElement | null);
+    if (handled && this.element !== activeElement && !this.element.contains(activeElement)) {
       // crbug.com/1005449, crbug.com/1329956
       // navigational or delete keys pressed but current DataGrid panel has lost focus;
       // re-focus to ensure subsequent keydowns can be registered within this DataGrid

@@ -236,7 +236,7 @@
   }
 }
 
-.data-grid tbody tr.revealed:focus-within {
+.data-grid:focus-within tbody tr.revealed.selected {
   background-color: var(--sys-color-tonal-container);
 }
 

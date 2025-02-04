@@ -36,7 +36,7 @@ ruleTester.run('l10n-no-uistrings-export', rule, {
       filename: 'front_end/module/test.ts',
       errors: [
         {
-          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
         },
       ],
       output: ' const UIStrings = {};',
@@ -46,7 +46,7 @@ ruleTester.run('l10n-no-uistrings-export', rule, {
       filename: 'front_end/module/test.ts',
       errors: [
         {
-          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
         },
       ],
     },

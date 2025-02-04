@@ -12,10 +12,11 @@ import {
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    *@description Title of an insight that provides details about the LCP metric, broken down by phases / parts.
    */
@@ -26,9 +27,37 @@ const UIStrings = {
    */
   description:
       'Each [phase has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
+  /**
+   *@description Time to first byte title for the Largest Contentful Paint's phases timespan breakdown.
+   */
+  timeToFirstByte: 'Time to first byte',
+  /**
+   *@description Resource load delay title for the Largest Contentful Paint phases timespan breakdown.
+   */
+  resourceLoadDelay: 'Resource load delay',
+  /**
+   *@description Resource load duration title for the Largest Contentful Paint phases timespan breakdown.
+   */
+  resourceLoadDuration: 'Resource load duration',
+  /**
+   *@description Element render delay title for the Largest Contentful Paint phases timespan breakdown.
+   */
+  elementRenderDelay: 'Element render delay',
+  /**
+   *@description Label used for the phase/component/stage/section of a larger duration.
+   */
+  phase: 'Phase',
+  /**
+   *@description Label used for the percentage a single phase/component/stage/section takes up of a larger duration.
+   */
+  percentLCP: '% of LCP',
+  /**
+   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+   */
+  noLcp: 'No LCP detected',
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPPhases.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
@@ -56,7 +85,7 @@ interface LCPPhases {
   renderDelay: Types.Timing.Milli;
 }
 
-export type LCPPhasesInsightModel = InsightModel<{
+export type LCPPhasesInsightModel = InsightModel<typeof UIStrings, {
   lcpMs?: Types.Timing.Milli,
   lcpTs?: Types.Timing.Milli,
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
@@ -116,8 +145,7 @@ function breakdownPhases(
   };
 }
 
-function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    LCPPhasesInsightModel {
+function finalize(partialModel: PartialInsightModel<LCPPhasesInsightModel>): LCPPhasesInsightModel {
   const relatedEvents = [];
   if (partialModel.lcpEvent) {
     relatedEvents.push(partialModel.lcpEvent);
@@ -126,6 +154,7 @@ function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description
     relatedEvents.push(partialModel.lcpRequest);
   }
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,

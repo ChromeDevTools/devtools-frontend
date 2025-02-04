@@ -11,10 +11,11 @@ import {
   InsightCategory,
   type InsightModel,
   type InsightSetContext,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    * @description Title of an insight that recommends ways to reduce the size of images downloaded and used on the page.
    */
@@ -48,10 +49,23 @@ const UIStrings = {
    */
   useResponsiveSize:
       'This image file is larger than it needs to be ({PH2}) for its displayed dimensions ({PH3}). Use responsive images to reduce the image download size. (Est {PH1})',
+  /**
+   * @description Column header for a table column containing network requests for images which can improve their file size (e.g. use a different format, increase compression, etc).
+   */
+  optimizeFile: 'Optimize file size',
+  /**
+   * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
+   * @example {5} PH1
+   */
+  others: '{PH1} others',
+  /**
+   * @description Text status indicating that no potential optimizations were found for any image file
+   */
+  noOptimizableImages: 'No optimizable images',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ImageDelivery.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
  * Even JPEGs with lots of detail can usually be compressed down to <1 byte per pixel
@@ -112,7 +126,7 @@ export interface OptimizableImage {
   largestImagePaint: Types.Events.PaintImage;
 }
 
-export type ImageDeliveryInsightModel = InsightModel<{
+export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
   optimizableImages: OptimizableImage[],
   totalByteSavings: number,
 }>;
@@ -135,9 +149,9 @@ function getOptimizationMessage(optimization: ImageOptimization): string {
   }
 }
 
-function finalize(partialModel: Omit<ImageDeliveryInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    ImageDeliveryInsightModel {
+function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>): ImageDeliveryInsightModel {
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,

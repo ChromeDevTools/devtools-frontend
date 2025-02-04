@@ -8,9 +8,15 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  type PartialInsightModel,
+  type RequiredData
+} from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
   title: 'Layout shift culprits',
   /**
@@ -19,11 +25,53 @@ const UIStrings = {
    */
   description:
       'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.',
+  /**
+   *@description Text indicating the worst layout shift cluster.
+   */
+  worstLayoutShiftCluster: 'Worst layout shift cluster',
+  /**
+   * @description Text indicating the worst layout shift cluster.
+   */
+  worstCluster: 'Worst cluster',
+  /**
+   * @description Text indicating a layout shift cluster and its start time.
+   * @example {32 ms} PH1
+   */
+  layoutShiftCluster: 'Layout shift cluster @ {PH1}',
+  /**
+   *@description Text indicating the biggest reasons for the layout shifts.
+   */
+  topCulprits: 'Top layout shift culprits',
+  /**
+   * @description Text for a culprit type of Injected iframe.
+   */
+  injectedIframe: 'Injected iframe',
+  /**
+   * @description Text for a culprit type of Font request.
+   */
+  fontRequest: 'Font request',
+  /**
+   * @description Text for a culprit type of Animation.
+   */
+  animation: 'Animation',
+  /**
+   * @description Text for a culprit type of Unsized images.
+   */
+  unsizedImages: 'Unsized Images',
+  /**
+   * @description Text status when there were no layout shifts detected.
+   */
+  noLayoutShifts: 'No layout shifts',
+  /**
+   * @description Text status when there no layout shifts culprits/root causes were found.
+   */
+  noCulprits: 'Could not detect any layout shift culprits',
 };
-const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CLSCulprits.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type CLSCulpritsInsightModel = InsightModel<{
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CLSCulprits.ts', UIStrings);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
   animationFailures: readonly NoncompositedAnimationFailure[],
   shifts: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
   clusters: Types.Events.SyntheticLayoutShiftCluster[],
@@ -425,8 +473,7 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
-function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    CLSCulpritsInsightModel {
+function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): CLSCulpritsInsightModel {
   let maxScore = 0;
   for (const cluster of partialModel.clusters) {
     if (cluster.clusterCumulativeScore > maxScore) {
@@ -435,6 +482,7 @@ function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'descripti
   }
 
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.CLS,

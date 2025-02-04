@@ -13,6 +13,7 @@ import {
   type ForcedReflowAggregatedData,
   InsightCategory,
   type InsightModel,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
@@ -20,7 +21,7 @@ export function deps(): ['Warnings', 'Renderer'] {
   return ['Warnings', 'Renderer'];
 }
 
-const UIStrings = {
+export const UIStrings = {
   /**
    *@description Title of an insight that provides details about Forced reflow.
    */
@@ -30,12 +31,24 @@ const UIStrings = {
    */
   description:
       'Many APIs, typically reading layout geometry, force the rendering engine to pause script execution in order to calculate the style and layout. Learn more about [forced reflow](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) and its mitigations.',
+  /**
+   *@description Title of a list to provide related stack trace data
+   */
+  relatedStackTrace: 'Stack trace',
+  /**
+   *@description Text to describe the top time-consuming function call
+   */
+  topTimeConsumingFunctionCall: 'Top function call',
+  /**
+   * @description Text to describe the total reflow time
+   */
+  totalReflowTime: 'Total reflow time',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ForcedReflow.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type ForcedReflowInsightModel = InsightModel<{
+export type ForcedReflowInsightModel = InsightModel<typeof UIStrings, {
   topLevelFunctionCallData: ForcedReflowAggregatedData | undefined,
   aggregatedBottomUpData: BottomUpCallStack[],
 }>;
@@ -175,9 +188,9 @@ function aggregateForcedReflow(
   return [topLevelFunctionCallData, aggregatedBottomUpData];
 }
 
-function finalize(partialModel: Omit<ForcedReflowInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    ForcedReflowInsightModel {
+function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): ForcedReflowInsightModel {
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,

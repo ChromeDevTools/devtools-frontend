@@ -4,7 +4,6 @@
 
 import './Table.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPPhasesInsightModel} from '../../../../models/trace/insights/LCPPhases.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -13,40 +12,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
-const {html} = Lit;
+const {UIStrings, i18nString} = Trace.Insights.Models.LCPPhases;
 
-const UIStrings = {
-  /**
-   *@description Time to first byte title for the Largest Contentful Paint's phases timespan breakdown.
-   */
-  timeToFirstByte: 'Time to first byte',
-  /**
-   *@description Resource load delay title for the Largest Contentful Paint phases timespan breakdown.
-   */
-  resourceLoadDelay: 'Resource load delay',
-  /**
-   *@description Resource load duration title for the Largest Contentful Paint phases timespan breakdown.
-   */
-  resourceLoadDuration: 'Resource load duration',
-  /**
-   *@description Element render delay title for the Largest Contentful Paint phases timespan breakdown.
-   */
-  elementRenderDelay: 'Element render delay',
-  /**
-   *@description Label used for the phase/component/stage/section of a larger duration.
-   */
-  phase: 'Phase',
-  /**
-   *@description Label used for the percentage a single phase/component/stage/section takes up of a larger duration.
-   */
-  percentLCP: '% of LCP',
-  /**
-   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
-   */
-  noLcp: 'No LCP detected',
-};
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPPhases.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {html} = Lit;
 
 interface PhaseData {
   phase: string;

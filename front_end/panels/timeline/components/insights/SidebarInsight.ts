@@ -20,7 +20,7 @@ export class InsightActivated extends Event {
 
   constructor(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      public model: InsightModel<any>, public insightSetKey: string) {
+      public model: InsightModel<any, any>, public insightSetKey: string) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }

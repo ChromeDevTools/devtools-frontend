@@ -9,9 +9,15 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  type PartialInsightModel,
+  type RequiredData
+} from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
   title: 'Third parties',
   /**
@@ -20,16 +26,26 @@ const UIStrings = {
    */
   description: 'Third party code can significantly impact load performance. ' +
       '[Reduce and defer loading of third party code](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) to prioritize your page\'s content.',
+  /** Label for a table column that displays the name of a third-party provider. */
+  columnThirdParty: 'Third party',
+  /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
+  columnTransferSize: 'Transfer size',
+  /** Label for a table column that displays how much time each row spent blocking other work on the main thread, entries will be the number of milliseconds spent. */
+  columnBlockingTime: 'Blocking time',
+  /**
+   * @description Text block indicating that no third party content was detected on the page
+   */
+  noThirdParties: 'No third parties found',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ThirdParties.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'] {
   return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
 }
 
-export type ThirdPartiesInsightModel = InsightModel<{
+export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   eventsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.Event[]>,
   summaryByEntity: Map<Extras.ThirdParties.Entity, Extras.ThirdParties.Summary>,
   /** The entity for this navigation's URL. Any other entity is from a third party. */
@@ -50,9 +66,9 @@ function getRelatedEvents(
   return relatedEvents;
 }
 
-function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    ThirdPartiesInsightModel {
+function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): ThirdPartiesInsightModel {
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,

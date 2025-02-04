@@ -13,48 +13,12 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.LCPDiscovery;
+
 const {html} = Lit;
 
-const UIStrings = {
-  /**
-   * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
-   * @example {401ms} PH1
-   */
-  lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point.',
-  /**
-   * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
-   */
-  fetchPriorityApplied: 'fetchpriority=high applied',
-  /**
-   * @description Text to tell the user that the LCP request is discoverable in the initial document.
-   */
-  requestDiscoverable: 'Request is discoverable in initial document',
-  /**
-   * @description Text to tell the user that the LCP request does not have the lazy load property applied.
-   */
-  lazyLoadNotApplied: 'lazy load not applied',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
-   */
-  successAriaLabel: 'Insight check passed: {PH1}',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
-   */
-  failedAriaLabel: 'Insight check failed: {PH1}',
-  /**
-   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
-   */
-  noLcp: 'No LCP detected',
-  /**
-   * @description Text status indicating that the Largest Contentful Paint (LCP) metric was text rather than an image. "LCP" is an acronym and should not be translated.
-   */
-  noLcpResource: 'No LCP resource detected because the LCP is not an image',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPDiscovery.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+// eslint-disable-next-line rulesdir/l10n-filename-matches
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 
 interface LCPImageDiscoveryData {
   shouldIncreasePriorityHint: boolean;

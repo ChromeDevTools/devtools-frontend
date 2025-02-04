@@ -10,7 +10,7 @@ import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
 import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 
 export interface ActiveInsight {
-  model: Trace.Insights.Types.InsightModel<{}>;
+  model: Trace.Insights.Types.InsightModel<{}, {}>;
   insightSetKey: string;
 }
 

@@ -16,7 +16,7 @@ const {html} = Lit;
 
 describeWithEnvironment('BaseInsightComponent', () => {
   const {BaseInsightComponent} = Insights.BaseInsightComponent;
-  class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>> {
+  class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel<{}, {}>> {
     override internalName = 'test-insight';
     override createOverlays(): TimelineOverlay[] {
       return [];
@@ -32,6 +32,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponent();
       component.selected = false;
       component.model = {
+        strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
@@ -55,6 +56,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponent();
       component.selected = true;
       component.model = {
+        strings: {},
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,

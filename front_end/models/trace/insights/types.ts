@@ -77,7 +77,9 @@ export enum InsightCategory {
 
 export type RelatedEventsMap = Map<Types.Events.Event, string[]>;
 
-export type InsightModel<R extends Record<string, unknown>> = R&{
+export type InsightModel<UIStrings extends Record<string, string>, R extends Record<string, unknown>> = R&{
+  /** Not used within DevTools - this is for external consumers (like Lighthouse). */
+  strings: UIStrings,
   title: Common.UIString.LocalizedString,
   description: Common.UIString.LocalizedString,
   category: InsightCategory,
@@ -87,6 +89,8 @@ export type InsightModel<R extends Record<string, unknown>> = R&{
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
 };
+
+export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'shouldShow'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

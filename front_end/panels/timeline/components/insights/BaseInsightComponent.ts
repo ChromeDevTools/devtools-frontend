@@ -55,7 +55,7 @@ export interface BaseInsightData {
   insightSetKey: string|null;
 }
 
-export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends HTMLElement {
+export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> extends HTMLElement {
   abstract internalName: string;
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overrwrite this.

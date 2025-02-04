@@ -11,53 +11,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
 
-const {html} = Lit;
+const {UIStrings, i18nString} = Trace.Insights.Models.CLSCulprits;
 
-const UIStrings = {
-  /**
-   *@description Text indicating the worst layout shift cluster.
-   */
-  worstLayoutShiftCluster: 'Worst layout shift cluster',
-  /**
-   * @description Text indicating the worst layout shift cluster.
-   */
-  worstCluster: 'Worst cluster',
-  /**
-   * @description Text indicating a layout shift cluster and its start time.
-   * @example {32 ms} PH1
-   */
-  layoutShiftCluster: 'Layout shift cluster @ {PH1}',
-  /**
-   *@description Text indicating the biggest reasons for the layout shifts.
-   */
-  topCulprits: 'Top layout shift culprits',
-  /**
-   * @description Text for a culprit type of Injected iframe.
-   */
-  injectedIframe: 'Injected iframe',
-  /**
-   * @description Text for a culprit type of Font request.
-   */
-  fontRequest: 'Font request',
-  /**
-   * @description Text for a culprit type of Animation.
-   */
-  animation: 'Animation',
-  /**
-   * @description Text for a culprit type of Unsized images.
-   */
-  unsizedImages: 'Unsized Images',
-  /**
-   * @description Text status when there were no layout shifts detected.
-   */
-  noLayoutShifts: 'No layout shifts',
-  /**
-   * @description Text status when there no layout shifts culprits/root causes were found.
-   */
-  noCulprits: 'Could not detect any layout shift culprits',
-};
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {html} = Lit;
 
 export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cls-culprits`;

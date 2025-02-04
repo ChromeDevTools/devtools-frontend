@@ -6,9 +6,15 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
-import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  type PartialInsightModel,
+  type RequiredData
+} from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    * @description Text to tell the user about the longest user interaction.
    */
@@ -18,22 +24,49 @@ const UIStrings = {
    * @description Title for the performance insight "INP by phase", which shows a breakdown of INP by phases / sections.
    */
   title: 'INP by phase',
+  /**
+   *@description Label used for the phase/component/stage/section of a larger duration.
+   */
+  phase: 'Phase',
+  /**
+   *@description Label used for a time duration.
+   */
+  duration: 'Duration',
+
+  // TODO: these are repeated in InteractionBreakdown. Add a place for common strings?
+  /**
+   *@description Text shown next to the interaction event's input delay time in the detail view.
+   */
+  inputDelay: 'Input delay',
+  /**
+   *@description Text shown next to the interaction event's thread processing duration in the detail view.
+   */
+  processingDuration: 'Processing duration',
+  /**
+   *@description Text shown next to the interaction event's presentation delay time in the detail view.
+   */
+  presentationDelay: 'Presentation delay',
+  /**
+   * @description Text status indicating that no user interactions were detected.
+   */
+  noInteractions: 'No interactions detected',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/InteractionToNextPaint.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['UserInteractions'] {
   return ['UserInteractions'];
 }
 
-export type INPInsightModel = InsightModel<{
+export type INPInsightModel = InsightModel<typeof UIStrings, {
   longestInteractionEvent?: SyntheticInteractionPair,
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-function finalize(partialModel: Omit<INPInsightModel, 'title'|'description'|'category'|'shouldShow'>): INPInsightModel {
+function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,

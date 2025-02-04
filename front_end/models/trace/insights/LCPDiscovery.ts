@@ -12,10 +12,11 @@ import {
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    *@description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
    */
@@ -25,16 +26,51 @@ const UIStrings = {
    */
   description:
       'Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)',
+  /**
+   * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
+   * @example {401ms} PH1
+   */
+  lcpLoadDelay: 'LCP image loaded {PH1} after earliest start point.',
+  /**
+   * @description Text to tell the user that a fetchpriority property value of "high" is applied to the LCP request.
+   */
+  fetchPriorityApplied: 'fetchpriority=high applied',
+  /**
+   * @description Text to tell the user that the LCP request is discoverable in the initial document.
+   */
+  requestDiscoverable: 'Request is discoverable in initial document',
+  /**
+   * @description Text to tell the user that the LCP request does not have the lazy load property applied.
+   */
+  lazyLoadNotApplied: 'lazy load not applied',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
+   *@example {Server response time} PH1
+   */
+  successAriaLabel: 'Insight check passed: {PH1}',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
+   *@example {Server response time} PH1
+   */
+  failedAriaLabel: 'Insight check failed: {PH1}',
+  /**
+   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+   */
+  noLcp: 'No LCP detected',
+  /**
+   * @description Text status indicating that the Largest Contentful Paint (LCP) metric was text rather than an image. "LCP" is an acronym and should not be translated.
+   */
+  noLcpResource: 'No LCP resource detected because the LCP is not an image',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
 }
 
-export type LCPDiscoveryInsightModel = InsightModel<{
+export type LCPDiscoveryInsightModel = InsightModel<typeof UIStrings, {
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
   shouldRemoveLazyLoading?: boolean,
   shouldIncreasePriorityHint?: boolean,
@@ -44,13 +80,13 @@ export type LCPDiscoveryInsightModel = InsightModel<{
   earliestDiscoveryTimeTs?: Types.Timing.Micro,
 }>;
 
-function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    LCPDiscoveryInsightModel {
+function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): LCPDiscoveryInsightModel {
   const relatedEvents = partialModel.lcpEvent && partialModel.lcpRequest ?
       // TODO: add entire request initiator chain?
       [partialModel.lcpEvent, partialModel.lcpRequest] :
       [];
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,

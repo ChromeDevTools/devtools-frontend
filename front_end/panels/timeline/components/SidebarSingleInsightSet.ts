@@ -94,8 +94,8 @@ const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
   'LongCriticalNetworkTree',
 ]);
 
-type InsightNameToComponentMapping =
-    Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>>;
+type InsightNameToComponentMapping = Record<
+    string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}, {}>>>;
 
 /**
  * Every insight (INCLUDING experimental ones).

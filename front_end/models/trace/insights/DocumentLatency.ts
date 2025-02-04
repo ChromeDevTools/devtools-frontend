@@ -11,10 +11,11 @@ import {
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
+  type PartialInsightModel,
   type RequiredData
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    *@description Title of an insight that provides a breakdown for how long it took to download the main document.
    */
@@ -24,10 +25,56 @@ const UIStrings = {
    */
   description:
       'Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.',
+  /**
+   * @description Text to tell the user that the document request does not have redirects.
+   */
+  passingRedirects: 'Avoids redirects',
+  /**
+   * @description Text to tell the user that the document request had redirects.
+   */
+  failedRedirects: 'Had redirects',
+  /**
+   * @description Text to tell the user that the time starting the document request to when the server started responding is acceptable.
+   */
+  passingServerResponseTime: 'Server responds quickly',
+  /**
+   * @description Text to tell the user that the time starting the document request to when the server started responding is not acceptable.
+   */
+  failedServerResponseTime: 'Server responded slowly',
+  /**
+   * @description Text to tell the user that text compression (like gzip) was applied.
+   */
+  passingTextCompression: 'Applies text compression',
+  /**
+   * @description Text to tell the user that text compression (like gzip) was not applied.
+   */
+  failedTextCompression: 'No compression applied',
+  /**
+   * @description Text for a label describing a network request event as having redirects.
+   */
+  redirectsLabel: 'Redirects',
+  /**
+   * @description Text for a label describing a network request event as taking too long to start delivery by the server.
+   */
+  serverResponseTimeLabel: 'Server response time',
+  /**
+   * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
+   */
+  uncompressedDownload: 'Uncompressed download',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
+   *@example {Server response time} PH1
+   */
+  successAriaLabel: 'Insight check passed: {PH1}',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
+   *@example {Server response time} PH1
+   */
+  failedAriaLabel: 'Insight check failed: {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DocumentLatency.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // Due to the way that DevTools throttling works we cannot see if server response took less than ~570ms.
 // We set our failure threshold to 600ms to avoid those false positives but we want devs to shoot for 100ms.
@@ -37,7 +84,7 @@ const TARGET_MS = 100;
 // Threshold for compression savings.
 const IGNORE_THRESHOLD_IN_BYTES = 1400;
 
-export type DocumentLatencyInsightModel = InsightModel<{
+export type DocumentLatencyInsightModel = InsightModel<typeof UIStrings, {
   data?: {
     serverResponseTime: Types.Timing.Milli,
     serverResponseTooSlow: boolean,
@@ -125,8 +172,7 @@ function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): n
   return estimatedSavings < IGNORE_THRESHOLD_IN_BYTES ? 0 : estimatedSavings;
 }
 
-function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    DocumentLatencyInsightModel {
+function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>): DocumentLatencyInsightModel {
   let hasFailure = false;
   if (partialModel.data) {
     hasFailure = partialModel.data.redirectDuration > 0 || partialModel.data.serverResponseTooSlow ||
@@ -134,6 +180,7 @@ function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'descr
   }
 
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,

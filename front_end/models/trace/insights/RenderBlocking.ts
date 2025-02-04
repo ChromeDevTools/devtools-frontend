@@ -16,10 +16,11 @@ import {
   type InsightSetContextWithNavigation,
   InsightWarning,
   type LanternContext,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /**
    * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
    */
@@ -30,12 +31,24 @@ const UIStrings = {
   description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
       '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
       'can move these network requests out of the critical path.',
+  /**
+   * @description Label to describe a network request (that happens to be render-blocking).
+   */
+  renderBlockingRequest: 'Request',
+  /**
+   *@description Label used for a time duration.
+   */
+  duration: 'Duration',
+  /**
+   * @description Text status indicating that no requests blocked the initial render of a navigation
+   */
+  noRenderBlocking: 'No render blocking requests for this navigation',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type RenderBlockingInsightModel = InsightModel<{
+export type RenderBlockingInsightModel = InsightModel<typeof UIStrings, {
   renderBlockingRequests: Types.Events.SyntheticNetworkRequest[],
   requestIdToWastedMs?: Map<string, number>,
 }>;
@@ -150,9 +163,9 @@ function computeSavings(
   return {metricSavings, requestIdToWastedMs};
 }
 
-function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    RenderBlockingInsightModel {
+function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>): RenderBlockingInsightModel {
   return {
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,

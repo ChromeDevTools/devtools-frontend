@@ -6,9 +6,8 @@ import '../../../../ui/components/icon_button/icon_button.js';
 import './Table.js';
 import './NodeLink.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DOMSizeInsightModel} from '../../../../models/trace/insights/DOMSize.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -16,35 +15,7 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type * as NodeLink from './NodeLink.js';
 import type {TableData} from './Table.js';
 
-const UIStrings = {
-  /**
-   * @description Header for a column containing the names of statistics as opposed to the actual statistic values.
-   */
-  statistic: 'Statistic',
-  /**
-   * @description Header for a column containing the value of a statistic.
-   */
-  value: 'Value',
-  /**
-   * @description Header for a column containing the page element related to a statistc.
-   */
-  element: 'Element',
-  /**
-   * @description Label for a value representing the total number of elements on the page.
-   */
-  totalElements: 'Total elements',
-  /**
-   * @description Label for a value representing the maximum depth of the Document Object Model (DOM). "DOM" is a acronym and should not be translated.
-   */
-  maxDOMDepth: 'DOM depth',
-  /**
-   * @description Label for a value representing the maximum number of child elements of any parent element on the page.
-   */
-  maxChildren: 'Most children',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DOMSize.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const {UIStrings, i18nString} = Trace.Insights.Models.DOMSize;
 
 const {html} = Lit;
 

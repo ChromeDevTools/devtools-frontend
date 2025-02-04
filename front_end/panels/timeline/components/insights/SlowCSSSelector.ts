@@ -18,38 +18,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.SlowCSSSelector;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   *@description Column name for count of elements that the engine attempted to match against a style rule
-   */
-  matchAttempts: 'Match attempts',
-  /**
-   *@description Column name for count of elements that matched a style rule
-   */
-  matchCount: 'Match count',
-  /**
-   *@description Column name for elapsed time spent computing a style rule
-   */
-  elapsed: 'Elapsed time',
-  /**
-   *@description Column name for the selectors that took the longest amount of time/effort.
-   */
-  topSelectors: 'Top selectors',
-  /**
-   *@description Column name for a total sum.
-   */
-  total: 'Total',
-  /**
-   * @description Text status indicating that no CSS selector data was found.
-   */
-  enableSelectorData:
-      'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SlowCSSSelector.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;

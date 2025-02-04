@@ -16,25 +16,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.ForcedReflow;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   *@description Title of a list to provide related stack trace data
-   */
-  relatedStackTrace: 'Stack trace',
-  /**
-   *@description Text to describe the top time-consuming function call
-   */
-  topTimeConsumingFunctionCall: 'Top function call',
-  /**
-   * @description Text to describe the total reflow time
-   */
-  totalReflowTime: 'Total reflow time',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ForcedReflow.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;

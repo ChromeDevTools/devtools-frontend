@@ -5,9 +5,8 @@
 import '../../../../ui/components/icon_button/icon_button.js';
 import './Table.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {ImageDeliveryInsightModel} from '../../../../models/trace/insights/ImageDelivery.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -15,26 +14,9 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
 import type {TableDataRow} from './Table.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.ImageDelivery;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   * @description Column header for a table column containing network requests for images which can improve their file size (e.g. use a different format, increase compression, etc).
-   */
-  optimizeFile: 'Optimize file size',
-  /**
-   * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
-   * @example {5} PH1
-   */
-  others: '{PH1} others',
-  /**
-   * @description Text status indicating that no potential optimizations were found for any image file
-   */
-  noOptimizableImages: 'No optimizable images',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ImageDelivery.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const MAX_REQUESTS = 10;
 

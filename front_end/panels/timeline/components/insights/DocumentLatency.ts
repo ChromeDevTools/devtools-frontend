@@ -4,7 +4,6 @@
 
 import '../../../../ui/components/icon_button/icon_button.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DocumentLatencyInsightModel} from '../../../../models/trace/insights/DocumentLatency.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -12,59 +11,9 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.DocumentLatency;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   * @description Text to tell the user that the document request does not have redirects.
-   */
-  passingRedirects: 'Avoids redirects',
-  /**
-   * @description Text to tell the user that the document request had redirects.
-   */
-  failedRedirects: 'Had redirects',
-  /**
-   * @description Text to tell the user that the time starting the document request to when the server started responding is acceptable.
-   */
-  passingServerResponseTime: 'Server responds quickly',
-  /**
-   * @description Text to tell the user that the time starting the document request to when the server started responding is not acceptable.
-   */
-  failedServerResponseTime: 'Server responded slowly',
-  /**
-   * @description Text to tell the user that text compression (like gzip) was applied.
-   */
-  passingTextCompression: 'Applies text compression',
-  /**
-   * @description Text to tell the user that text compression (like gzip) was not applied.
-   */
-  failedTextCompression: 'No compression applied',
-  /**
-   * @description Text for a label describing a network request event as having redirects.
-   */
-  redirectsLabel: 'Redirects',
-  /**
-   * @description Text for a label describing a network request event as taking too long to start delivery by the server.
-   */
-  serverResponseTimeLabel: 'Server response time',
-  /**
-   * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
-   */
-  uncompressedDownload: 'Uncompressed download',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
-   */
-  successAriaLabel: 'Insight check passed: {PH1}',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
-   */
-  failedAriaLabel: 'Insight check failed: {PH1}',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-document-latency`;

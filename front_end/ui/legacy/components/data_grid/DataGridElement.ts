@@ -4,6 +4,7 @@
 
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import inspectorCommonStyles from '../../inspectorCommon.css.js';
 
 import dataGridStyles from './dataGrid.css.js';
 import {Align, Events as DataGridEvents} from './DataGrid.js';
@@ -62,6 +63,7 @@ class DataGridElement extends HTMLElement {
 
     this.#shadowRoot = this.attachShadow({mode: 'open', delegatesFocus: true});
     this.#shadowRoot.createChild('style').textContent = dataGridStyles.cssContent;
+    this.#shadowRoot.createChild('style').textContent = inspectorCommonStyles.cssContent;
     this.#shadowRoot.appendChild(this.#dataGrid.element);
 
     this.#dataGrid.addEventListener(

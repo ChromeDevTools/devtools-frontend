@@ -105,4 +105,33 @@ describe('CSSStyleSheetHeader', () => {
       assert.strictEqual(cssStyleSheetHeader.createPageResourceLoadInitiator().target, target);
     });
   });
+
+  describe('resourceURL()', () => {
+    const frameId = '123' as Protocol.Page.FrameId;
+    const styleSheetId = '456' as Protocol.CSS.StyleSheetId;
+    const sourceURL = 'http://localhost/style.css';
+
+    it('returns a unique resourceURL for inspector originated stylesheet', () => {
+      const target = sinon.createStubInstance(SDK.Target.Target);
+      const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
+      cssModel.target.returns(target);
+      const cssStyleSheetHeader = new SDK.CSSStyleSheetHeader.CSSStyleSheetHeader(cssModel, {
+        styleSheetId,
+        frameId,
+        sourceURL,
+        origin: Protocol.CSS.StyleSheetOrigin.Inspector,
+        title: 'my-frame',
+        disabled: false,
+        isInline: false,
+        isMutable: false,
+        isConstructed: false,
+        startLine: 0,
+        startColumn: 0,
+        length: 10,
+        endLine: 1,
+        endColumn: 8,
+      });
+      assert.strictEqual(cssStyleSheetHeader.resourceURL(), 'inspector://inspector-stylesheet#456');
+    });
+  });
 });

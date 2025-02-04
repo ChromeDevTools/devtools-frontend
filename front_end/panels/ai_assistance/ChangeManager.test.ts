@@ -8,16 +8,22 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Freestyler from './ai_assistance.js';
 
 describe('ChangeManager', () => {
-  const styleSheetId = '1' as Protocol.CSS.StyleSheetId;
+  let styleSheetId = 0;
   const frameId = '1' as Protocol.Page.FrameId;
+  const anotherFrameId = '2' as Protocol.Page.FrameId;
   const agentId = '1';
+
+  beforeEach(() => {
+    styleSheetId = 0;
+  });
 
   function createModel() {
     const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel, {
       // @ts-expect-error stub types
-      createInspectorStylesheet: sinon.stub().callsFake(() => {
+      createInspectorStylesheet: sinon.stub().callsFake(frameId => {
+        styleSheetId++;
         return new SDK.CSSStyleSheetHeader.CSSStyleSheetHeader(cssModel, {
-          styleSheetId,
+          styleSheetId: String(styleSheetId) as Protocol.CSS.StyleSheetId,
           frameId,
           sourceURL: '',
           origin: 'inspector' as Protocol.CSS.StyleSheetOrigin,
@@ -50,9 +56,10 @@ describe('ChangeManager', () => {
       },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
-    assert.deepEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-    ]);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+    );
   });
 
   it('can merge multiple changes with same className', async () => {
@@ -66,6 +73,10 @@ describe('ChangeManager', () => {
         color: 'blue',
       },
     });
+    assert(cssModel.setStyleSheetText.calledOnce);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true]);
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
       selector: 'span',
@@ -75,10 +86,9 @@ describe('ChangeManager', () => {
       },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
-    assert.deepEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
-    ]);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['1', '.ai-style-change-1 {\n  div& {\n    color: green;\n  }\n}', true]);
   });
 
   it('can register multiple changes with the same selector', async () => {
@@ -95,19 +105,21 @@ describe('ChangeManager', () => {
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
       selector: 'div',
-      className: 'ai-style-change-1',
+      className: 'ai-style-change-2',
       styles: {
         color: 'green',
       },
     });
+
     assert(cssModel.setStyleSheetText.calledTwice);
-    assert.deepEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
+    assert.deepEqual(cssModel.setStyleSheetText.lastCall.args, [
+      '1',
+      '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}\n.ai-style-change-2 {\n  div& {\n    color: green;\n  }\n}',
+      true
     ]);
   });
 
-  it('can clear changes', async () => {
+  it('creates a stylesheet per frame', async () => {
     const changeManager = new Freestyler.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
@@ -119,10 +131,43 @@ describe('ChangeManager', () => {
       },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
-    assert.deepEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-    ]);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true]);
+
+    await changeManager.addChange(cssModel, anotherFrameId, {
+      groupId: agentId,
+      selector: 'div',
+      className: 'ai-style-change-2',
+      styles: {
+        color: 'green',
+      },
+    });
+
+    assert(cssModel.setStyleSheetText.calledTwice);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['2', '.ai-style-change-2 {\n  div& {\n    color: green;\n  }\n}', true]);
+  });
+
+  it('can clear changes', async () => {
+    const changeManager = new Freestyler.ChangeManager();
+    let cssModel = createModel();
+    await changeManager.addChange(cssModel, frameId, {
+      groupId: agentId,
+      selector: 'div',
+      className: 'ai-style-change-1',
+      styles: {
+        color: 'blue',
+      },
+    });
+    assert(cssModel.setStyleSheetText.calledOnce);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['1', '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+    );
     await changeManager.clear();
+    cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
       selector: 'body',
@@ -131,11 +176,11 @@ describe('ChangeManager', () => {
         color: 'green',
       },
     });
-    assert(cssModel.setStyleSheetText.calledTwice);
-    assert.deepEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
-      [styleSheetId, '.ai-style-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
-    ]);
+    assert(cssModel.setStyleSheetText.calledOnce);
+    assert.deepEqual(
+        cssModel.setStyleSheetText.lastCall.args,
+        ['2', '.ai-style-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
+    );
   });
 
   describe('format changes', () => {
@@ -153,13 +198,12 @@ describe('ChangeManager', () => {
         groupId: agentId,
         selector: 'div',
         className: 'ai-style-change-1',
-        styles: {
-          color: 'blue',
-        },
+        styles: {color: 'blue', 'background-color': 'green'},
       });
 
       assert.strictEqual(changeManager.formatChanges(agentId), `div {
   color: blue;
+  background-color: green;
 }`);
     });
   });

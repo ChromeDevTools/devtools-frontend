@@ -134,7 +134,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
-    return `inspector://${this.getFrameURLPath()}inspector-stylesheet` as Platform.DevToolsPath.UrlString;
+    return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
   }
 
   private dynamicStyleURL(): Platform.DevToolsPath.UrlString {

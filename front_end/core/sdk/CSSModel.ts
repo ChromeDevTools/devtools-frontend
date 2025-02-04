@@ -609,8 +609,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
-  async createInspectorStylesheet(frameId: Protocol.Page.FrameId): Promise<CSSStyleSheetHeader|null> {
-    const result = await this.agent.invoke_createStyleSheet({frameId});
+  async createInspectorStylesheet(frameId: Protocol.Page.FrameId, force = false): Promise<CSSStyleSheetHeader|null> {
+    const result = await this.agent.invoke_createStyleSheet({frameId, force});
     if (result.getError()) {
       throw new Error(result.getError());
     }

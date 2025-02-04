@@ -67,7 +67,7 @@ describeWithMockConnection('FileAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.model_id,
           'test model',
       );
     });
@@ -78,37 +78,37 @@ describeWithMockConnection('FileAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.temperature,
           1,
       );
     });
 
-    it('structure matches the snapshot', () => {
+    it('structure matches the snapshot', async () => {
       mockHostConfig('test model');
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
+
+      let count = 0;
+      async function* generateAndAnswer() {
+        if (count === 0) {
+          yield {
+            explanation: 'answer',
+            metadata: {},
+            completed: true,
+          };
+        }
+
+        count++;
+      }
+
       const agent = new FileAgent({
-        aidaClient: {} as Host.AidaClient.AidaClient,
+        aidaClient: mockAidaClient(generateAndAnswer),
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'question',
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: 'question',
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'answer',
-        },
-      ];
+      await Array.fromAsync(agent.run('question', {selected: null}));
+
       assert.deepEqual(
-          agent.buildRequest({
-            text: 'test input',
-          }),
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER),
           {
             current_message: {parts: [{text: 'test input'}], role: Host.AidaClient.Role.USER},
             client: 'CHROME_DEVTOOLS',
@@ -271,17 +271,17 @@ content
           },
           {
             type: ResponseType.QUERYING,
-            query: `# Selected file
-File name: script.js
-URL: http://example.test/script.js
-File content:
-\`\`\`
-content
-\`\`\`
+            //             query: `# Selected file
+            // File name: script.js
+            // URL: http://example.test/script.js
+            // File content:
+            // \`\`\`
+            // content
+            // \`\`\`
 
-# User request
+            // # User request
 
-test`,
+            // test`,
           },
           {
             type: ResponseType.ANSWER,

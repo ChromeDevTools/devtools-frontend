@@ -23,11 +23,12 @@ import {
   type ContextResponse,
   ConversationContext,
   debugLog,
+  type FunctionCallHandlerResult,
   type ParsedAnswer,
   type ParsedResponse,
   type RequestOptions,
   ResponseType,
-  type SideEffectResponse,
+  type SideEffectResponse
 } from './AiAgent.js';
 
 /*
@@ -197,7 +198,7 @@ type CreateExtensionScopeFunction = (changes: ChangeManager) => {
 
 interface AgentOptions extends BaseAgentOptions {
   changeManager?: ChangeManager;
-  confirmSideEffectForTest?: typeof Promise.withResolvers;
+
   createExtensionScope?: CreateExtensionScopeFunction;
   execJs?: typeof executeJsCode;
 }
@@ -243,7 +244,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
 export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   override readonly type = AgentType.STYLING;
 
-  readonly preamble = preamble;
+  preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
@@ -410,39 +411,37 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 
   #execJs: typeof executeJsCode;
-  #confirmSideEffect: typeof Promise.withResolvers;
-  #changes: ChangeManager;
-  #createExtensionScope: CreateExtensionScopeFunction;
+
+  changes: ChangeManager;
+  createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
     super({
       aidaClient: opts.aidaClient,
       serverSideLoggingEnabled: opts.serverSideLoggingEnabled,
+      confirmSideEffectForTest: opts.confirmSideEffectForTest,
     });
 
-    this.#changes = opts.changeManager || new ChangeManager();
+    this.changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
-                                   return new ExtensionScope(changes, this.id);
-                                 });
-    this.#confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
+    this.createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                  return new ExtensionScope(changes, this.id);
+                                });
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
   }
 
   onPrimaryPageChanged(): void {
-    void this.#changes.clear();
+    void this.changes.clear();
   }
 
-  async #generateObservation(
+  async generateObservation(
       action: string,
       {
         throwOnSideEffect,
-        confirmExecJs: confirm,
       }: {
         throwOnSideEffect: boolean,
-        confirmExecJs?: Promise<boolean>,
       },
       ): Promise<{
     observation: string,
@@ -459,14 +458,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 }`;
     try {
-      const runConfirmed = await confirm ?? Promise.resolve(true);
-      if (!runConfirmed) {
-        return {
-          observation: 'Error: User denied code execution with side effects.',
-          sideEffect: false,
-          canceled: true,
-        };
-      }
       const result = await Promise.race([
         this.#execJs(
             functionDeclaration,
@@ -592,10 +583,75 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return output.trim();
   }
 
+  async executeAction(action: string, options?: {signal?: AbortSignal, approved?: boolean}):
+      Promise<FunctionCallHandlerResult<unknown>> {
+    debugLog(`Action to execute: ${action}`);
+
+    if (options?.approved === false) {
+      return {
+        error: 'Error: User denied code execution with side effects.',
+      };
+    }
+
+    if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+      return {
+        error: 'Error: JavaScript execution is currently disabled.',
+      };
+    }
+
+    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
+    if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+      return {
+        error: 'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.',
+      };
+    }
+
+    const scope = this.createExtensionScope(this.changes);
+    await scope.install();
+    try {
+      let throwOnSideEffect = true;
+      if (options?.approved) {
+        throwOnSideEffect = false;
+      }
+
+      const result = await this.generateObservation(action, {throwOnSideEffect});
+      debugLog(`Action result: ${JSON.stringify(result)}`);
+      if (result.sideEffect) {
+        if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
+          return {
+            error: 'Error: JavaScript execution that modifies the page is currently disabled.',
+          };
+        }
+
+        if (options?.signal?.aborted) {
+          return {
+            error: 'Error: evaluation has been cancelled',
+          };
+        }
+
+        return {
+          requiresApproval: true,
+        };
+      }
+      if (result.canceled) {
+        return {
+          error: result.observation,
+        };
+      }
+
+      return {
+        result: result.observation,
+      };
+    } finally {
+      await scope.uninstall();
+    }
+  }
+
   override async *
       handleAction(action: string, options?: {signal?: AbortSignal}):
           AsyncGenerator<SideEffectResponse, ActionResponse, void> {
-    debugLog(`Action to execute: ${action}`);
+    let result = await this.executeAction(action, options);
 
     function createCancelledResult(output: string): ActionResponse {
       return {
@@ -606,66 +662,56 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       };
     }
 
-    if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
-      return createCancelledResult('Error: JavaScript execution is currently disabled.');
+    if ('error' in result) {
+      return createCancelledResult(result.error);
     }
 
-    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
-    const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
-    if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
-      return createCancelledResult(
-          'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
-    }
-
-    const scope = this.#createExtensionScope(this.#changes);
-    await scope.install();
-    try {
-      let result = await this.#generateObservation(action, {throwOnSideEffect: true});
-      debugLog(`Action result: ${JSON.stringify(result)}`);
-      if (result.sideEffect) {
-        if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
-          return createCancelledResult('Error: JavaScript execution that modifies the page is currently disabled.');
-        }
-
-        if (options?.signal?.aborted) {
-          return createCancelledResult('Error: evaluation has been cancelled');
-        }
-
-        const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
-
-        void sideEffectConfirmationPromiseWithResolvers.promise.then(result => {
-          Host.userMetrics.actionTaken(
-              result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
-                       Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
-          );
-        });
-
-        options?.signal?.addEventListener('abort', () => {
-          sideEffectConfirmationPromiseWithResolvers.resolve(false);
-        }, {once: true});
-
-        yield {
-          type: ResponseType.SIDE_EFFECT,
-          code: action,
-          confirm: (result: boolean) => {
-            sideEffectConfirmationPromiseWithResolvers.resolve(result);
-          },
-        };
-
-        result = await this.#generateObservation(action, {
-          throwOnSideEffect: false,
-          confirmExecJs: sideEffectConfirmationPromiseWithResolvers.promise,
-        });
+    if ('requiresApproval' in result) {
+      if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
+        return createCancelledResult('Error: JavaScript execution that modifies the page is currently disabled.');
       }
+
+      const sideEffectConfirmationPromiseWithResolvers = this.confirmSideEffect<boolean>();
+
+      void sideEffectConfirmationPromiseWithResolvers.promise.then(result => {
+        Host.userMetrics.actionTaken(
+            result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
+                     Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
+        );
+      });
+
+      options?.signal?.addEventListener('abort', () => {
+        sideEffectConfirmationPromiseWithResolvers.resolve(false);
+      }, {once: true});
+
+      yield {
+        type: ResponseType.SIDE_EFFECT,
+        code: action,
+        confirm: (result: boolean) => {
+          sideEffectConfirmationPromiseWithResolvers.resolve(result);
+        },
+      };
+
+      result = await this.executeAction(action, {
+        ...options,
+        approved: await sideEffectConfirmationPromiseWithResolvers.promise,
+      });
+    }
+
+    if ('result' in result) {
       return {
         type: ResponseType.ACTION,
         code: action,
-        output: result.observation,
-        canceled: result.canceled,
+        output: result.result as string,
+        canceled: false,
       };
-    } finally {
-      await scope.uninstall();
     }
+
+    if ('error' in result) {
+      return createCancelledResult(result.error);
+    }
+
+    return createCancelledResult('Error: Unknown error.');
   }
 
   override async *
@@ -695,5 +741,125 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
 
   override formatParsedAnswer({answer}: ParsedAnswer): string {
     return `ANSWER: ${answer}`;
+  }
+}
+
+/* clang-format off */
+const preambleFunctionCalling = `You are the most advanced CSS debugging assistant integrated into Chrome DevTools.
+You always suggest considering the best web development practices and the newest platform features such as view transitions.
+The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
+
+# Considerations
+* After applying a fix, please ask the user to confirm if the fix worked or not.
+* Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element's parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.
+* Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
+* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
+* When presenting solutions, clearly distinguish between the primary cause and contributing factors.
+* Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
+* When answering, always consider MULTIPLE possible solutions.
+*
+* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about debugging web pages."
+
+Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
+When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.`;
+/* clang-format on */
+
+export class StylingAgentWithFunctionCalling extends StylingAgent {
+  override preamble = preambleFunctionCalling;
+
+  constructor(opts: AgentOptions) {
+    super(opts);
+
+    this.declareFunction<{
+      title: string,
+      thought: string,
+      action: string,
+    }>('gatherInformation', {
+      description:
+          `When you want to gather additional information, call this function giving a THOUGHT, a TITLE and an ACTION.
+* Use \`window.getComputedStyle\` to gather **rendered** styles and make sure that you take the distinction between authored styles and computed styles into account.
+* **CRITICAL** Call \`window.getComputedStyle\` only once per element and store results into a local variable. Never try to return all the styles of the element in \`data\`. Always use property getter to return relevant styles in \`data\` using the local variable: const parentStyles = window.getComputedStyle($0.parentElement); const data = { parentElementColor: parentStyles['color']}.
+* **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
+* **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
+*
+You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
+After that, you can answer the question with ANSWER or run another ACTION query.
+Please run ACTION again if the information you received is not enough to answer the query.`,
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          thought: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'Use THOUGHT to explain why you take the ACTION.',
+          },
+          title: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'Use TITLE to provide a short summary of the thought.',
+          },
+          action: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description:
+                'ACTION (a JavaScript snippet to run on the page to collect additional data, do not wrap in a function definition). Add the data into a new top-level `data` variable. The serialized `data` variable will be returned. If you need to set styles on an HTML element, always call the \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for your actions and should never be presented as a command to the user.',
+          },
+        },
+      },
+      displayInfoFromArgs: params => {
+        return {
+          title: params.title,
+          thought: params.thought,
+          code: params.action,
+        };
+      },
+      handler: async (
+          params,
+          options,
+          ) => {
+        return this.executeAction(params.action, options);
+      },
+    });
+
+    this.declareFunction<{
+      suggestions: [string, ...string[]],
+    }>('suggestions', {
+      description:
+          'Provide suggestions to the user in conjunction with a text answer. You\'re also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          suggestions: {
+            type: Host.AidaClient.ParametersTypes.ARRAY,
+            description: 'Potential responses the user might give.',
+            items: {
+              type: Host.AidaClient.ParametersTypes.STRING,
+              description: 'Potential response the user might give.',
+            }
+          },
+        },
+      },
+      displayInfoFromArgs: params => {
+        if (!params.suggestions) {
+          return {};
+        }
+
+        return {
+          suggestions: params.suggestions,
+        };
+      },
+      handler: async () => {
+        return {
+          result: null,
+        };
+      },
+    });
+  }
+
+  override parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
+    return {
+      answer: response.explanation,
+    };
   }
 }

@@ -214,24 +214,25 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
     };
   }
 
+  #contextSet = new WeakSet();
+
   override async enhanceQuery(query: string, aiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null):
       Promise<string> {
-    const treeStr = aiCallTree?.getItem().serialize();
+    const treeItem = aiCallTree?.getItem();
+    let treeStr = treeItem?.serialize();
 
     // Collect the queries from previous messages in this session
-    const prevQueries: string[] = [];
-    for await (const data of this.runFromHistory()) {
-      if (data.type === ResponseType.QUERYING) {
-        prevQueries.push(data.query);
-      }
-    }
+
     // If this is a followup chat about the same call tree, don't include the call tree serialization again.
     // We don't need to repeat it and we'd rather have more the context window space.
-    if (prevQueries.length && treeStr && prevQueries.find(q => q.startsWith(treeStr))) {
-      aiCallTree = null;
+    if (treeItem && this.#contextSet.has(treeItem) && treeStr) {
+      treeStr = undefined;
+    }
+    if (treeItem && !this.#contextSet.has(treeItem)) {
+      this.#contextSet.add(treeItem);
     }
 
-    const perfEnhancementQuery = aiCallTree ? `${treeStr}\n\n# User request\n\n` : '';
+    const perfEnhancementQuery = treeStr ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
   }
 }

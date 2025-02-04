@@ -40,7 +40,7 @@ import {
 } from './agents/NetworkAgent.js';
 import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
-import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
+import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {
   AiHistoryStorage,
@@ -334,6 +334,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           ...options,
           changeManager: this.#changeManager,
         });
+        if (isAiAssistanceStylingWithFunctionCallingEnabled()) {
+          agent = new StylingAgentWithFunctionCalling({
+            ...options,
+            changeManager: this.#changeManager,
+          });
+        }
+
         break;
       }
       case AgentType.NETWORK: {
@@ -939,9 +946,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             commitStep();
             break;
           }
+          case ResponseType.SUGGESTIONS: {
+            systemMessage.suggestions = data.suggestions;
+            break;
+          }
           case ResponseType.SIDE_EFFECT: {
             step.isLoading = false;
-            step.code = data.code;
+            step.code ??= data.code;
             step.sideEffect = {
               onAnswer: data.confirm,
             };
@@ -950,8 +961,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           }
           case ResponseType.ACTION: {
             step.isLoading = false;
-            step.code = data.code;
-            step.output = data.output;
+            step.code ??= data.code;
+            step.output ??= data.output;
             step.canceled = data.canceled;
             if (isAiAssistanceChangeSummariesEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
               this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
@@ -960,7 +971,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             break;
           }
           case ResponseType.ANSWER: {
-            systemMessage.suggestions = data.suggestions;
+            systemMessage.suggestions ??= data.suggestions;
             systemMessage.answer = data.text;
             systemMessage.rpcId = data.rpcId;
             // When there is an answer without any thinking steps, we don't want to show the thinking step.
@@ -1075,7 +1086,21 @@ function isAiAssistanceServerSideLoggingEnabled(): boolean {
   return localStorage.getItem('aiAssistance_enableServerSideLogging') !== 'false';
 }
 
+function setAiAssistanceStylingWithFunctionCalling(enabled: boolean): void {
+  if (enabled) {
+    localStorage.setItem('aiAssistance_stylingFunctionCalling', 'true');
+  } else {
+    localStorage.setItem('aiAssistance_stylingFunctionCalling', 'false');
+  }
+}
+
+function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
+  return localStorage.getItem('aiAssistance_stylingFunctionCalling') === 'true';
+}
+
 // @ts-ignore
 globalThis.setAiAssistanceServerSideLoggingEnabled = setAiAssistanceServerSideLoggingEnabled;
 // @ts-ignore
 globalThis.setAiAssistanceChangeSummariesEnabled = setAiAssistanceChangeSummariesEnabled;
+// @ts-ignore
+globalThis.setAiAssistanceStylingWithFunctionCalling = setAiAssistanceStylingWithFunctionCalling;

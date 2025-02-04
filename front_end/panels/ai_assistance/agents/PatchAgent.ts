@@ -8,18 +8,13 @@ import type * as Workspace from '../../../models/workspace/workspace.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 
 import {
-  type ActionResponse,
   type AgentOptions as BaseAgentOptions,
   AgentType,
   AiAgent,
   type ContextResponse,
   ConversationContext,
-  debugLog,
-  ErrorType,
-  type ParsedResponse,
   type RequestOptions,
   type ResponseData,
-  ResponseType,
 } from './AiAgent.js';
 
 /* clang-format off */
@@ -71,8 +66,6 @@ export class ProjectContext extends ConversationContext<Workspace.Workspace.Proj
   }
 }
 
-const MAX_STEPS = 10;
-
 function getFiles(project: Workspace.Workspace.Project):
     {files: string[], map: Map<string, Workspace.UISourceCode.UISourceCode>} {
   const files = [];
@@ -90,12 +83,14 @@ function getFiles(project: Workspace.Workspace.Project):
 }
 
 export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
-  #aidaClient: Host.AidaClient.AidaClient;
   #project: ConversationContext<Workspace.Workspace.Project>|undefined;
 
-  override handleContextDetails(_select: ConversationContext<Workspace.Workspace.Project>|
-                                null): AsyncGenerator<ContextResponse, void, void> {
-    throw new Error('Method not implemented.');
+  override async *
+      // eslint-disable-next-line require-yield
+      handleContextDetails(_select: ConversationContext<Workspace.Workspace.Project>|null):
+          AsyncGenerator<ContextResponse, void, void> {
+    // TODO: Implement
+    return;
   }
 
   override readonly type = AgentType.PATCH;
@@ -114,12 +109,8 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
   }
 
   constructor(opts: BaseAgentOptions) {
-    super({
-      aidaClient: opts.aidaClient,
-      serverSideLoggingEnabled: false,
-    });
-    this.#aidaClient = opts.aidaClient;
-    this.declareFunction('listFiles', {
+    super(opts);
+    this.declareFunction<Record<never, unknown>>('listFiles', {
       description: 'returns a list of all files in the project.',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -136,12 +127,14 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
         const project = this.#project.getItem();
         const {files} = getFiles(project);
         return {
-          files,
+          result: {
+            files,
+          }
         };
       },
     });
 
-    this.declareFunction('readFile', {
+    this.declareFunction<{filepath: string}>('readFile', {
       description: 'returns the complement content of a file',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -154,7 +147,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
           },
         },
       },
-      handler: async (params: {filepath: string}) => {
+      handler: async params => {
         if (!this.#project) {
           return {
             error: 'No project available',
@@ -180,13 +173,16 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
             error: 'Non-text files are not supported',
           };
         }
+
         return {
-          content: content.text,
+          result: {
+            content: content.text,
+          }
         };
       },
     });
 
-    this.declareFunction('writeFile', {
+    this.declareFunction<{filepath: string, content: string}>('writeFile', {
       description: '(over)writes the file with the provided content',
       parameters: {
         type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -204,7 +200,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
           },
         },
       },
-      handler: async (params: {filepath: string, content: string}) => {
+      handler: async params => {
         if (!this.#project) {
           return {
             error: 'No project available',
@@ -225,181 +221,18 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
             content.replaceAll('\\n', '\n').replaceAll('\\"', '"').replaceAll('\\\'', '\''),
             false,
         );
-        return {};
+        return {
+          result: null,
+        };
       },
     });
-  }
-
-  override async *
-      aidaFetch(
-          request: Host.AidaClient.AidaRequest,
-          options?: {signal?: AbortSignal},
-          ):
-          AsyncGenerator<
-              {
-                parsedResponse: ParsedResponse,
-                functionCall?: Host.AidaClient.AidaFunctionCallResponse, completed: boolean,
-                rpcId?: Host.AidaClient.RpcGlobalId,
-              },
-              void, void> {
-    let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
-    let rpcId: Host.AidaClient.RpcGlobalId|undefined;
-    for await (rawResponse of this.#aidaClient.fetch(request, options)) {
-      rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
-
-      if (rawResponse.functionCalls?.length) {
-        debugLog('functionCalls.length', rawResponse.functionCalls.length);
-        yield {
-          rpcId,
-          parsedResponse: {answer: ''},
-          functionCall: rawResponse.functionCalls[0],
-          completed: true,
-        };
-        return;
-      }
-
-      const parsedResponse = this.parseResponse(rawResponse);
-      yield {
-        rpcId,
-        parsedResponse,
-        completed: rawResponse.completed,
-      };
-    }
-
-    debugLog({
-      request,
-      response: rawResponse,
-    });
-  }
-
-  #history: Host.AidaClient.Content[] = [];
-  override buildChatHistoryForAida(): Host.AidaClient.Content[] {
-    return [...this.#history];
   }
 
   override async * run(initialQuery: string, options: {
     signal?: AbortSignal, selected: ConversationContext<Workspace.Workspace.Project>|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    await options.selected?.refresh();
-
     this.#project = options.selected ?? undefined;
 
-    let query: Host.AidaClient.Part = {text: initialQuery};
-
-    // Request is built here to capture history up to this point.
-    let request = this.buildRequest(query);
-
-    const response = {
-      type: ResponseType.USER_QUERY,
-      query: JSON.stringify(query),
-    } as const;
-    yield response;
-
-    for (let i = 0; i < MAX_STEPS; i++) {
-      const queryResponse = {
-        type: ResponseType.QUERYING,
-        query: JSON.stringify(query),
-      } as const;
-      yield queryResponse;
-      let rpcId: Host.AidaClient.RpcGlobalId|undefined;
-      let parsedResponse: ParsedResponse|undefined = undefined;
-      let functionCall: Host.AidaClient.AidaFunctionCallResponse|undefined = undefined;
-      try {
-        for await (const fetchResult of this.aidaFetch(request, {signal: options.signal})) {
-          rpcId = fetchResult.rpcId;
-          parsedResponse = fetchResult.parsedResponse;
-          functionCall = fetchResult.functionCall;
-        }
-      } catch (err) {
-        debugLog('Error calling the AIDA API', err);
-
-        if (err instanceof Host.AidaClient.AidaAbortError) {
-          const response = {
-            type: ResponseType.ERROR,
-            error: ErrorType.ABORT,
-          } as const;
-          yield response;
-          break;
-        }
-
-        const error = (err instanceof Host.AidaClient.AidaBlockError) ? ErrorType.BLOCK : ErrorType.UNKNOWN;
-        const response = {
-          type: ResponseType.ERROR,
-          error,
-        } as const;
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-        yield response;
-
-        break;
-      } finally {
-        if (i === 0) {
-          this.#history.push(request.current_message);
-        } else {
-          this.#history.push({
-            ...request.current_message,
-            role: Host.AidaClient.Role.ROLE_UNSPECIFIED,
-          });
-        }
-      }
-
-      if (parsedResponse && 'answer' in parsedResponse && Boolean(parsedResponse.answer)) {
-        const response = {
-          type: ResponseType.ANSWER,
-          text: parsedResponse.answer,
-          rpcId,
-          suggestions: undefined,
-        } as const;
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
-        this.#history.push({
-          parts: [{
-            text: parsedResponse.answer,
-          }],
-          role: Host.AidaClient.Role.MODEL,
-        });
-        yield response;
-        break;
-      } else if (functionCall) {
-        const callResult = await this.callFunction(functionCall.name, functionCall.args);
-        // Capture history state for the next iteration query.
-        query = {
-          functionResponse: {
-            name: functionCall.name,
-            response: callResult,
-          },
-        };
-        this.#history.push({
-          parts: [{
-            functionCall,
-          }],
-          role: Host.AidaClient.Role.MODEL,
-        });
-        request = this.buildRequest(query);
-        const result: ActionResponse = {
-          type: ResponseType.ACTION,
-          code: JSON.stringify(functionCall),
-          output: JSON.stringify(callResult),
-          canceled: false,
-        };
-        yield result;
-      } else {
-        const response = {
-          type: ResponseType.ERROR,
-          error: ErrorType.UNKNOWN,
-        } as const;
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-        yield response;
-        break;
-      }
-
-      if (i === MAX_STEPS - 1) {
-        const response = {
-          type: ResponseType.ERROR,
-          error: ErrorType.MAX_STEPS,
-        } as const;
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-        yield response;
-        break;
-      }
-    }
+    return yield* super.run(initialQuery, options);
   }
 }

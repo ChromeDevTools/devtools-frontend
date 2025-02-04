@@ -10,24 +10,27 @@ import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Role {
-  // Unspecified role.
+  /** Provide this role when giving a function call response  */
   ROLE_UNSPECIFIED = 0,
-  // The user.
+  /** Tags the content came from the user */
   USER = 1,
-  // The model.
+  /** Tags the content came from the LLM */
   MODEL = 2,
 }
 
 export const enum Rating {
+  // Resets the vote to null in the logs
   SENTIMENT_UNSPECIFIED = 'SENTIMENT_UNSPECIFIED',
   POSITIVE = 'POSITIVE',
   NEGATIVE = 'NEGATIVE',
 }
 
-// A `Content` represents a single turn message.
+/**
+ * A `Content` represents a single turn message.
+ */
 export interface Content {
   parts: Part[];
-  // The producer of the content.
+  /** The producer of the content. */
   role: Role;
 }
 
@@ -44,7 +47,7 @@ export type Part = {
     response: Record<string, unknown>,
   },
 }|{
-  // Inline media bytes.
+  /** Inline media bytes. */
   inlineData: MediaBlob,
 };
 
@@ -71,23 +74,23 @@ interface FunctionArrayParam extends BaseFunctionParam {
   items: FunctionPrimitiveParams;
 }
 
-export interface FunctionObjectParam extends BaseFunctionParam {
+export interface FunctionObjectParam<T extends string|number|symbol = string> extends BaseFunctionParam {
   type: ParametersTypes.OBJECT;
   // TODO: this can be also be ObjectParams
-  properties: {[Key in string]: FunctionPrimitiveParams|FunctionArrayParam};
+  properties: Record<T, FunctionPrimitiveParams|FunctionArrayParam>;
 }
 
 /**
  * More about function declaration can be read at
  * https://ai.google.dev/gemini-api/docs/function-calling
  */
-export interface FunctionDeclaration {
+export interface FunctionDeclaration<T extends string|number|symbol = string> {
   name: string;
   /**
    * A description for the LLM to understand what the specific function will do once called.
    */
   description: string;
-  parameters: FunctionObjectParam|FunctionPrimitiveParams|FunctionArrayParam;
+  parameters: FunctionObjectParam<T>;
 }
 
 // Raw media bytes.

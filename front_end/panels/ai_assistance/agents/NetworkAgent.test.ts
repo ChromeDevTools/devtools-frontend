@@ -57,7 +57,7 @@ describeWithMockConnection('NetworkAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.model_id,
           'test model',
       );
     });
@@ -68,63 +68,8 @@ describeWithMockConnection('NetworkAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.temperature,
           1,
-      );
-    });
-
-    it('structure matches the snapshot', () => {
-      mockHostConfig('test model');
-      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
-      const agent = new NetworkAgent({
-        aidaClient: {} as Host.AidaClient.AidaClient,
-        serverSideLoggingEnabled: true,
-      });
-      sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'answer',
-        },
-      ];
-      assert.deepEqual(
-          agent.buildRequest({
-            text: 'test input',
-          }),
-          {
-            current_message: {parts: [{text: 'test input'}], role: Host.AidaClient.Role.USER},
-            client: 'CHROME_DEVTOOLS',
-            preamble: 'preamble',
-            historical_contexts: [
-              {
-                role: 1,
-                parts: [{text: 'questions'}],
-              },
-              {
-                role: 2,
-                parts: [{text: 'answer'}],
-              },
-            ],
-            metadata: {
-              disable_user_content_logging: false,
-              string_session_id: 'sessionId',
-              user_tier: 2,
-            },
-            options: {
-              model_id: 'test model',
-              temperature: undefined,
-            },
-            client_feature: 7,
-            functionality_type: 1,
-          },
       );
     });
   });
@@ -256,8 +201,6 @@ describeWithMockConnection('NetworkAgent', () => {
         },
         {
           type: ResponseType.QUERYING,
-          query:
-              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.4 min\nQueueing (duration): 8.4 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.4 min\n\nRequest initiator chain:\n- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,

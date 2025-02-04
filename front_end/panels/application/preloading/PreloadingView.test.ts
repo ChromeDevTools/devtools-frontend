@@ -538,9 +538,11 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+    const placeholderHeader = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-header');
+    assert.strictEqual(placeholderHeader?.textContent?.trim(), 'No element selected');
 
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+    const placeholderDescription = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-description');
+    assert.strictEqual(placeholderDescription?.textContent, 'Select an element for more details');
   });
 
   // See https://crbug.com/1432880
@@ -600,9 +602,11 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+    const placeholderHeader = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-header');
+    assert.strictEqual(placeholderHeader?.textContent?.trim(), 'No element selected');
 
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+    const placeholderDescription = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-description');
+    assert.strictEqual(placeholderDescription?.textContent, 'Select an element for more details');
   });
 
   it('filters preloading attempts by selected rule set', async () => {

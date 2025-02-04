@@ -386,7 +386,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     await refreshedPromise;
 
     assert.notInstanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-    assert.exists(view.contentElement.querySelector('.placeholder'));
+    assert.exists(view.contentElement.querySelector('.empty-state'));
 
     view.detach();
   });

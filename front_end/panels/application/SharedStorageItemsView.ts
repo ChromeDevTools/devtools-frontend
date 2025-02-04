@@ -43,6 +43,10 @@ const UIStrings = {
    */
   sharedStorageFilteredItemsCleared: 'Shared Storage filtered items cleared',
   /**
+   *@description Text in SharedStorage Items View of the Application panel, if no key/value item has been selected to view. https://developer.chrome.com/docs/devtools/storage/sessionstorage#view
+   */
+  noValueSelected: 'No value selected',
+  /**
    *@description Text in SharedStorage Items View of the Application panel
    */
   selectAValueToPreview: 'Select a value to preview',
@@ -166,9 +170,9 @@ export class SharedStorageItemsView extends StorageItemsView {
     this.outerSplitWidget.setSidebarWidget(this.#noDisplayView);
     this.outerSplitWidget.installResizer(outerResizer);
 
-    this.#noDisplayView.contentElement.classList.add('placeholder');
-    const noDisplayDiv = this.#noDisplayView.contentElement.createChild('div');
-    noDisplayDiv.textContent = i18nString(UIStrings.selectAValueToPreview);
+    const emptyWidget = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noValueSelected), i18nString(UIStrings.selectAValueToPreview));
+    emptyWidget.show(this.#noDisplayView.contentElement);
 
     this.#eventListeners = [];
     Common.EventTarget.removeEventListeners(this.#eventListeners);

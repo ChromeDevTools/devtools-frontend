@@ -205,7 +205,10 @@ class DataGridElement extends HTMLElement {
   #needUpdateColumns(mutationList: MutationRecord[]): boolean {
     for (const mutation of mutationList) {
       for (const element of [...mutation.removedNodes, ...mutation.addedNodes]) {
-        if (element.nodeName === 'TH') {
+        if (!(element instanceof HTMLElement)) {
+          continue;
+        }
+        if (element.nodeName === 'TH' || element.querySelector('th')) {
           return true;
         }
       }
@@ -216,8 +219,25 @@ class DataGridElement extends HTMLElement {
     return false;
   }
 
+  #getDataRows(nodes: NodeList): HTMLElement[] {
+    return [...nodes]
+        .flatMap(node => {
+          if (node instanceof HTMLTableRowElement) {
+            return [node];
+          }
+          if (node instanceof HTMLElement) {
+            return [...node.querySelectorAll('tr')];
+          }
+          return [] as HTMLElement[];
+        })
+        .filter(node => node.querySelector('td'));
+  }
+
   #addNodes(nodes: NodeList): void {
-    for (const element of nodes) {
+    for (const element of this.#getDataRows(nodes)) {
+      if (!element.querySelector('td')) {
+        continue;
+      }
       if (element instanceof HTMLTableRowElement && element.querySelector('td')) {
         const parentNode = this.#dataGrid.rootNode();  // TODO(dsv): support nested nodes
         const nextNode = element.nextElementSibling ? DataGridElementNode.get(element.nextElementSibling) : null;
@@ -232,7 +252,10 @@ class DataGridElement extends HTMLElement {
   }
 
   #removeNodes(nodes: NodeList): void {
-    for (const element of nodes) {
+    for (const element of this.#getDataRows(nodes)) {
+      if (!element.querySelector('td')) {
+        continue;
+      }
       if (element instanceof HTMLTableRowElement && element.querySelector('td')) {
         const node = DataGridElementNode.get(element);
         if (node) {

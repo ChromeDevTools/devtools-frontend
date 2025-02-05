@@ -50,12 +50,17 @@ describeWithEnvironment('DataGrid', () => {
   });
 
   async function renderDataGrid(template: Lit.TemplateResult): Promise<HTMLElement> {
-    container.style.display = 'flex';
-    container.style.width = '640px';
-    container.style.height = '480px';
     render(template, container, {host: {}});
     await RenderCoordinator.done({waitForWork: true});
     return container.querySelector('devtools-data-grid') as HTMLElement;
+  }
+
+  async function renderDataGridContent(template: Lit.TemplateResult): Promise<HTMLElement> {
+    return renderDataGrid(html`<devtools-data-grid striped name="Display Name">${template}</devtools-data-grid>`);
+  }
+
+  async function renderDataGridWithData(columns: Lit.TemplateResult, rows: Lit.TemplateResult): Promise<HTMLElement> {
+    return renderDataGridContent(html`<table>${columns}${rows}</table>`);
   }
 
   it('can be configured from template', async () => {
@@ -84,26 +89,26 @@ describeWithEnvironment('DataGrid', () => {
   });
 
   it('can update data from template', async () => {
-    await renderDataGrid(html`
-        <devtools-data-grid striped name=${'Display Name'}>
-          <table>
+    await renderDataGridWithData(
+        html`
             <tr>
               <th id="column-1">Column 1</th>
               <th id="column-2">Column 2</th>
-            </tr>
+            </tr>`,
+        html`
             <tr>
               <td>Value 1</td>
               <td>Value 2</td>
             </tr>
           </table>
         </devtools-data-grid>`);
-    const element = await renderDataGrid(html`
-        <devtools-data-grid striped name=${'Display Name'}>
-          <table>
+    const element = await renderDataGridWithData(
+        html`
             <tr>
               <th id="column-3">Column 3</th>
               <th id="column-4">Column 4</th>
-            </tr>
+            </tr>`,
+        html`
             <tr>
               <td>Value 3</td>
               <td>Value 4</td>

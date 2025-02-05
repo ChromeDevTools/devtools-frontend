@@ -605,11 +605,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
 
   // node_modules/rxjs/dist/esm5/internal/config.js
   var config = {
-    onUnhandledError: null,
-    onStoppedNotification: null,
-    Promise: undefined,
-    useDeprecatedSynchronousErrorHandling: false,
-    useDeprecatedNextContext: false
+    Promise: undefined
   };
 
   // node_modules/rxjs/dist/esm5/internal/scheduler/timeoutProvider.js
@@ -2835,7 +2831,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.1.1';
+  const packageVersion = '24.2.0';
 
   /**
    * @license
@@ -3616,10 +3612,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([['geolocation', 'geolocation'], ['midi', 'midi'], ['notifications', 'notifications'],
-  // TODO: push isn't a valid type?
-  // ['push', 'push'],
-  ['camera', 'videoCapture'], ['microphone', 'audioCapture'], ['background-sync', 'backgroundSync'], ['ambient-light-sensor', 'sensors'], ['accelerometer', 'sensors'], ['gyroscope', 'sensors'], ['magnetometer', 'sensors'], ['accessibility-events', 'accessibilityEvents'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-write', 'clipboardReadWrite'], ['clipboard-sanitized-write', 'clipboardSanitizedWrite'], ['payment-handler', 'paymentHandler'], ['persistent-storage', 'durableStorage'], ['idle-detection', 'idleDetection'],
+  const WEB_PERMISSION_TO_PROTOCOL_PERMISSION = new Map([['accelerometer', 'sensors'], ['ambient-light-sensor', 'sensors'], ['background-sync', 'backgroundSync'], ['camera', 'videoCapture'], ['clipboard-read', 'clipboardReadWrite'], ['clipboard-sanitized-write', 'clipboardSanitizedWrite'], ['clipboard-write', 'clipboardReadWrite'], ['geolocation', 'geolocation'], ['gyroscope', 'sensors'], ['idle-detection', 'idleDetection'], ['keyboard-lock', 'keyboardLock'], ['magnetometer', 'sensors'], ['microphone', 'audioCapture'], ['midi', 'midi'], ['notifications', 'notifications'], ['payment-handler', 'paymentHandler'], ['persistent-storage', 'durableStorage'], ['pointer-lock', 'pointerLock'],
   // chrome-specific permissions we have.
   ['midi-sysex', 'midiSysex']]);
   /**
@@ -6284,7 +6277,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -6312,7 +6305,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -6355,7 +6348,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -6422,7 +6415,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -8737,7 +8730,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -8764,7 +8757,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -8801,7 +8794,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -8841,7 +8834,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -10618,7 +10611,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -10645,7 +10638,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -10779,7 +10772,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -10852,7 +10845,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11441,7 +11434,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11468,7 +11461,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11502,7 +11495,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11541,7 +11534,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11573,7 +11566,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11611,7 +11604,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -11663,7 +11656,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors | CSS selectors}
        * can be passed as-is and a
        * {@link https://pptr.dev/guides/page-interactions#non-css-selectors | Puppeteer-specific selector syntax}
-       * allows quering by
+       * allows querying by
        * {@link https://pptr.dev/guides/page-interactions#text-selectors--p-text | text},
        * {@link https://pptr.dev/guides/page-interactions#aria-selectors--p-aria | a11y role and name},
        * and
@@ -14800,7 +14793,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
   var _client7 = /*#__PURE__*/new WeakMap();
   var _timeoutSettings2 = /*#__PURE__*/new WeakMap();
-  var _deviceRequestPrompDeferreds = /*#__PURE__*/new WeakMap();
+  var _deviceRequestPromptDeferreds = /*#__PURE__*/new WeakMap();
   var _DeviceRequestPromptManager_brand = /*#__PURE__*/new WeakSet();
   class DeviceRequestPromptManager {
     /**
@@ -14813,7 +14806,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateMethodInitSpec(this, _DeviceRequestPromptManager_brand);
       _classPrivateFieldInitSpec(this, _client7, void 0);
       _classPrivateFieldInitSpec(this, _timeoutSettings2, void 0);
-      _classPrivateFieldInitSpec(this, _deviceRequestPrompDeferreds, new Set());
+      _classPrivateFieldInitSpec(this, _deviceRequestPromptDeferreds, new Set());
       _classPrivateFieldSet(_client7, this, client);
       _classPrivateFieldSet(_timeoutSettings2, this, timeoutSettings);
       _classPrivateFieldGet(_client7, this).on('DeviceAccess.deviceRequestPrompted', event => {
@@ -14829,7 +14822,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     async waitForDevicePrompt(options = {}) {
       assert(_classPrivateFieldGet(_client7, this) !== null, 'Cannot wait for device prompt through detached session!');
-      const needsEnable = _classPrivateFieldGet(_deviceRequestPrompDeferreds, this).size === 0;
+      const needsEnable = _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size === 0;
       let enablePromise;
       if (needsEnable) {
         enablePromise = _classPrivateFieldGet(_client7, this).send('DeviceAccess.enable');
@@ -14848,12 +14841,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           once: true
         });
       }
-      _classPrivateFieldGet(_deviceRequestPrompDeferreds, this).add(deferred);
+      _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).add(deferred);
       try {
         const [result] = await Promise.all([deferred.valueOrThrow(), enablePromise]);
         return result;
       } finally {
-        _classPrivateFieldGet(_deviceRequestPrompDeferreds, this).delete(deferred);
+        _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).delete(deferred);
       }
     }
   }
@@ -14867,15 +14860,15 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   function _onDeviceRequestPrompted(event) {
-    if (!_classPrivateFieldGet(_deviceRequestPrompDeferreds, this).size) {
+    if (!_classPrivateFieldGet(_deviceRequestPromptDeferreds, this).size) {
       return;
     }
     assert(_classPrivateFieldGet(_client7, this) !== null);
     const devicePrompt = new DeviceRequestPrompt(_classPrivateFieldGet(_client7, this), _classPrivateFieldGet(_timeoutSettings2, this), event);
-    for (const promise of _classPrivateFieldGet(_deviceRequestPrompDeferreds, this)) {
+    for (const promise of _classPrivateFieldGet(_deviceRequestPromptDeferreds, this)) {
       promise.resolve(devicePrompt);
     }
-    _classPrivateFieldGet(_deviceRequestPrompDeferreds, this).clear();
+    _classPrivateFieldGet(_deviceRequestPromptDeferreds, this).clear();
   }
   function createEvaluationError(details) {
     let name;
@@ -17901,7 +17894,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         _classPrivateFieldGet(_frameTreeHandled, this)?.resolve();
         _classPrivateFieldSet(_frameTreeHandled, this, Deferred.create());
         // We need to schedule all these commands while the target is paused,
-        // therefore, it needs to happen synchroniously. At the same time we
+        // therefore, it needs to happen synchronously. At the same time we
         // should not start processing execution context and frame events before
         // we received the initial information about the frame tree.
         await Promise.all([_classPrivateFieldGet(_networkManager, this).addClient(client), client.send('Page.enable'), client.send('Page.getFrameTree').then(({
@@ -24364,9 +24357,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '132.0.6834.110',
-    'chrome-headless-shell': '132.0.6834.110',
-    firefox: 'stable_134.0.2'
+    chrome: '133.0.6943.53',
+    'chrome-headless-shell': '133.0.6943.53',
+    firefox: 'stable_135.0'
   });
 
   /**

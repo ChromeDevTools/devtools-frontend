@@ -90,7 +90,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExposeableFunction = void 0;
+exports.ExposableFunction = void 0;
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
@@ -101,9 +101,9 @@ const JSHandle_js_1 = require("./JSHandle.js");
 /**
  * @internal
  */
-class ExposeableFunction {
+class ExposableFunction {
     static async from(frame, name, apply, isolate = false) {
-        const func = new ExposeableFunction(frame, name, apply, isolate);
+        const func = new ExposableFunction(frame, name, apply, isolate);
         await func.#initialize();
         return func;
     }
@@ -285,5 +285,5 @@ class ExposeableFunction {
         }));
     }
 }
-exports.ExposeableFunction = ExposeableFunction;
+exports.ExposableFunction = ExposableFunction;
 //# sourceMappingURL=ExposedFunction.js.map

@@ -61,7 +61,7 @@ export class BrowserLauncher {
         if (this.#browser === 'firefox' &&
             protocol === 'webDriverBiDi' &&
             usePipe) {
-            throw new Error('Pipe connections are not supported wtih Firefox and WebDriver BiDi');
+            throw new Error('Pipe connections are not supported with Firefox and WebDriver BiDi');
         }
         const browserProcess = launch({
             executablePath: launchArgs.executablePath,

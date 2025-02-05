@@ -253,8 +253,8 @@ class BidiFrameRealm extends BidiRealm {
         let promise = Promise.resolve();
         if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, !!this.sandbox),
-                ExposedFunction_js_1.ExposeableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
+                ExposedFunction_js_1.ExposableFunction.from(this.environment, '__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne, !!this.sandbox),
+                ExposedFunction_js_1.ExposableFunction.from(this.environment, '__ariaQuerySelectorAll', async (element, selector) => {
                     const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
                     return await element.realm.evaluateHandle((...elements) => {
                         return elements;

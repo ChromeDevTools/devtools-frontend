@@ -54,7 +54,7 @@ export declare const WEB_PERMISSION_TO_PROTOCOL_PERMISSION: Map<Permission, Prot
 /**
  * @public
  */
-export type Permission = 'geolocation' | 'midi' | 'notifications' | 'camera' | 'microphone' | 'background-sync' | 'ambient-light-sensor' | 'accelerometer' | 'gyroscope' | 'magnetometer' | 'accessibility-events' | 'clipboard-read' | 'clipboard-write' | 'clipboard-sanitized-write' | 'payment-handler' | 'persistent-storage' | 'idle-detection' | 'midi-sysex';
+export type Permission = 'accelerometer' | 'ambient-light-sensor' | 'background-sync' | 'camera' | 'clipboard-read' | 'clipboard-sanitized-write' | 'clipboard-write' | 'geolocation' | 'gyroscope' | 'idle-detection' | 'keyboard-lock' | 'magnetometer' | 'microphone' | 'midi-sysex' | 'midi' | 'notifications' | 'payment-handler' | 'persistent-storage' | 'pointer-lock';
 /**
  * @public
  */

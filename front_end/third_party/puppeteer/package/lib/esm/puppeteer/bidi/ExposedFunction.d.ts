@@ -8,9 +8,9 @@ import type { BidiFrame } from './Frame.js';
 /**
  * @internal
  */
-export declare class ExposeableFunction<Args extends unknown[], Ret> {
+export declare class ExposableFunction<Args extends unknown[], Ret> {
     #private;
-    static from<Args extends unknown[], Ret>(frame: BidiFrame, name: string, apply: (...args: Args) => Awaitable<Ret>, isolate?: boolean): Promise<ExposeableFunction<Args, Ret>>;
+    static from<Args extends unknown[], Ret>(frame: BidiFrame, name: string, apply: (...args: Args) => Awaitable<Ret>, isolate?: boolean): Promise<ExposableFunction<Args, Ret>>;
     readonly name: string;
     constructor(frame: BidiFrame, name: string, apply: (...args: Args) => Awaitable<Ret>, isolate?: boolean);
     [Symbol.dispose](): void;

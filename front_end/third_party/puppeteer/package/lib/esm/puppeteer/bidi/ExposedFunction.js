@@ -65,9 +65,9 @@ import { BidiJSHandle } from './JSHandle.js';
 /**
  * @internal
  */
-export class ExposeableFunction {
+export class ExposableFunction {
     static async from(frame, name, apply, isolate = false) {
-        const func = new ExposeableFunction(frame, name, apply, isolate);
+        const func = new ExposableFunction(frame, name, apply, isolate);
         await func.#initialize();
         return func;
     }

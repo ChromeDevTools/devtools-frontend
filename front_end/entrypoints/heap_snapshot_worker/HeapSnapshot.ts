@@ -3145,7 +3145,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
 
     const node = this.createNode(0);
     for (let i = 0; i < nodeCount; ++i) {
-      if (node.isHidden() || node.isArray()) {
+      if (node.isHidden() || node.isArray() || (node.isNative() && node.rawName() === 'system / ExternalStringData')) {
         owners[i] = kUnvisited;
       } else {
         // The node owns itself.
@@ -3650,6 +3650,10 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
 
   override isSynthetic(): boolean {
     return this.rawType() === this.snapshot.nodeSyntheticType;
+  }
+
+  isNative(): boolean {
+    return this.rawType() === this.snapshot.nodeNativeType;
   }
 
   override isUserRoot(): boolean {

@@ -333,206 +333,12 @@ export abstract class AiAgent<T> {
   get isHistoryEntry(): boolean {
     return this.#generatedFromHistory;
   }
-
   async * run(initialQuery: string, options: {
     signal?: AbortSignal, selected: ConversationContext<T>|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    if (this.#generatedFromHistory) {
-      throw new Error('History entries are read-only.');
-    }
-
-    await options.selected?.refresh();
-
-    // First context set on the agent determines its origin from now on.
-    if (options.selected && this.#origin === undefined && options.selected) {
-      this.#origin = options.selected.getOrigin();
-    }
-    // Remember if the context that is set.
-    if (options.selected && !this.#context) {
-      this.#context = options.selected;
-    }
-
-    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected);
-
-    Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
-
-    let query: Host.AidaClient.Part = {text: enhancedQuery};
-    // Request is built here to capture history up to this point.
-    let request = this.buildRequest(query, Host.AidaClient.Role.USER);
-
-    const response = {
-      type: ResponseType.USER_QUERY,
-      query: initialQuery,
-    } as const;
-    this.#addHistory(response);
-    yield response;
-
-    for await (const response of this.handleContextDetails(options.selected)) {
+    for await (const response of this.#run(initialQuery, options)) {
       this.#addHistory(response);
       yield response;
-    }
-
-    for (let i = 0; i < MAX_STEPS; i++) {
-      const queryResponse = {
-        type: ResponseType.QUERYING,
-      } as const;
-      this.#addHistory(queryResponse);
-      yield queryResponse;
-
-      let rpcId: Host.AidaClient.RpcGlobalId|undefined;
-      let parsedResponse: ParsedResponse|undefined = undefined;
-      let functionCall: Host.AidaClient.AidaFunctionCallResponse|undefined = undefined;
-      try {
-        for await (const fetchResult of this.#aidaFetch(request, {signal: options.signal})) {
-          rpcId = fetchResult.rpcId;
-          parsedResponse = fetchResult.parsedResponse;
-          functionCall = fetchResult.functionCall;
-
-          // Only yield partial responses here and do not add partial answers to the history.
-          if (!fetchResult.completed && !fetchResult.functionCall && 'answer' in parsedResponse &&
-              parsedResponse.answer) {
-            yield {
-              type: ResponseType.ANSWER,
-              text: parsedResponse.answer,
-            };
-          }
-        }
-      } catch (err) {
-        debugLog('Error calling the AIDA API', err);
-
-        this.#removeLastRunParts();
-        if (err instanceof Host.AidaClient.AidaAbortError) {
-          const response = this.#createAbortResponse();
-          this.#addHistory(response);
-          yield response;
-          break;
-        }
-
-        const error = (err instanceof Host.AidaClient.AidaBlockError) ? ErrorType.BLOCK : ErrorType.UNKNOWN;
-        const response = {
-          type: ResponseType.ERROR,
-          error,
-        } as const;
-        this.#addHistory(response);
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-        yield response;
-
-        break;
-      }
-
-      this.#partsHistory.push(request.current_message);
-
-      if (parsedResponse && 'answer' in parsedResponse && Boolean(parsedResponse.answer)) {
-        const response = {
-          type: ResponseType.ANSWER,
-          text: parsedResponse.answer,
-          suggestions: parsedResponse.suggestions,
-          rpcId,
-        } as const;
-        this.#partsHistory.push({
-          parts: [{
-            text: this.formatParsedAnswer(parsedResponse),
-          }],
-          role: Host.AidaClient.Role.MODEL,
-        });
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
-        this.#addHistory(response);
-        yield response;
-        break;
-      } else if (parsedResponse && !('answer' in parsedResponse)) {
-        const {
-          title,
-          thought,
-          action,
-        } = parsedResponse;
-
-        if (title) {
-          const response = {
-            type: ResponseType.TITLE,
-            title,
-            rpcId,
-          } as const;
-          this.#addHistory(response);
-          yield response;
-        }
-
-        if (thought) {
-          const response = {
-            type: ResponseType.THOUGHT,
-            thought,
-            rpcId,
-          } as const;
-          this.#addHistory(response);
-          yield response;
-        }
-
-        this.#partsHistory.push({
-          parts: [{
-            text: this.#formatParsedStep(parsedResponse),
-          }],
-          role: Host.AidaClient.Role.MODEL,
-        });
-
-        if (action) {
-          const result = yield* this.handleAction(action, {signal: options.signal});
-          if (options?.signal?.aborted) {
-            this.#removeLastRunParts();
-            const response = this.#createAbortResponse();
-            this.#addHistory(response);
-
-            yield response;
-            break;
-          }
-          this.#addHistory(result);
-          query = {text: `${OBSERVATION_PREFIX} ${result.output}`};
-          // Capture history state for the next iteration query.
-          request = this.buildRequest(query, Host.AidaClient.Role.USER);
-          yield result;
-        }
-      } else if (functionCall) {
-        try {
-          const result = yield* this.#callFunction(functionCall.name, functionCall.args);
-
-          if (result.result) {
-            const response = {
-              type: ResponseType.ACTION,
-              output: JSON.stringify(result.result),
-              canceled: false,
-            } as const;
-            yield response;
-          }
-
-          query = {
-            functionResponse: {
-              name: functionCall.name,
-              response: result,
-            },
-          };
-          request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
-        } catch {
-          this.#removeLastRunParts();
-          const response = {
-            type: ResponseType.ERROR,
-            error: ErrorType.UNKNOWN,
-          } as const;
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-          yield response;
-          break;
-        }
-      } else {
-        this.#removeLastRunParts();
-        const response = {
-          type: ResponseType.ERROR,
-          error: i - 1 === MAX_STEPS ? ErrorType.MAX_STEPS : ErrorType.UNKNOWN,
-        } as const;
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
-        yield response;
-        break;
-      }
-    }
-
-    if (isDebugMode()) {
-      window.dispatchEvent(new CustomEvent('freestylerdone'));
     }
   }
 
@@ -585,6 +391,168 @@ export abstract class AiAgent<T> {
     throw new Error('Unexpected action found');
   }
 
+  async * #run(initialQuery: string, options: {
+    signal?: AbortSignal, selected: ConversationContext<T>|null,
+  }): AsyncGenerator<ResponseData, void, void> {
+    if (this.#generatedFromHistory) {
+      throw new Error('History entries are read-only.');
+    }
+
+    await options.selected?.refresh();
+
+    // First context set on the agent determines its origin from now on.
+    if (options.selected && this.#origin === undefined && options.selected) {
+      this.#origin = options.selected.getOrigin();
+    }
+    // Remember if the context that is set.
+    if (options.selected && !this.#context) {
+      this.#context = options.selected;
+    }
+
+    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected);
+
+    Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
+
+    let query: Host.AidaClient.Part = {text: enhancedQuery};
+    // Request is built here to capture history up to this point.
+    let request = this.buildRequest(query, Host.AidaClient.Role.USER);
+
+    yield {
+      type: ResponseType.USER_QUERY,
+      query: initialQuery,
+    };
+
+    yield* this.handleContextDetails(options.selected);
+
+    for (let i = 0; i < MAX_STEPS; i++) {
+      yield {
+        type: ResponseType.QUERYING,
+      };
+
+      let rpcId: Host.AidaClient.RpcGlobalId|undefined;
+      let parsedResponse: ParsedResponse|undefined = undefined;
+      let functionCall: Host.AidaClient.AidaFunctionCallResponse|undefined = undefined;
+      try {
+        for await (const fetchResult of this.#aidaFetch(request, {signal: options.signal})) {
+          rpcId = fetchResult.rpcId;
+          parsedResponse = fetchResult.parsedResponse;
+          functionCall = fetchResult.functionCall;
+
+          // Only yield partial responses here and do not add partial answers to the history.
+          if (!fetchResult.completed && !fetchResult.functionCall && 'answer' in parsedResponse &&
+              parsedResponse.answer) {
+            yield {
+              type: ResponseType.ANSWER,
+              text: parsedResponse.answer,
+            };
+          }
+        }
+      } catch (err) {
+        debugLog('Error calling the AIDA API', err);
+
+        let error = ErrorType.UNKNOWN;
+        if (err instanceof Host.AidaClient.AidaAbortError) {
+          error = ErrorType.ABORT;
+        } else if (err instanceof Host.AidaClient.AidaBlockError) {
+          error = ErrorType.BLOCK;
+        }
+        yield this.#createErrorResponse(error);
+
+        break;
+      }
+
+      this.#partsHistory.push(request.current_message);
+
+      if (parsedResponse && 'answer' in parsedResponse && Boolean(parsedResponse.answer)) {
+        this.#partsHistory.push({
+          parts: [{
+            text: this.formatParsedAnswer(parsedResponse),
+          }],
+          role: Host.AidaClient.Role.MODEL,
+        });
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
+        yield {
+          type: ResponseType.ANSWER,
+          text: parsedResponse.answer,
+          suggestions: parsedResponse.suggestions,
+          rpcId,
+        };
+        break;
+      } else if (parsedResponse && !('answer' in parsedResponse)) {
+        const {
+          title,
+          thought,
+          action,
+        } = parsedResponse;
+
+        if (title) {
+          yield {
+            type: ResponseType.TITLE,
+            title,
+            rpcId,
+          };
+        }
+
+        if (thought) {
+          yield {
+            type: ResponseType.THOUGHT,
+            thought,
+            rpcId,
+          };
+        }
+
+        this.#partsHistory.push({
+          parts: [{
+            text: this.#formatParsedStep(parsedResponse),
+          }],
+          role: Host.AidaClient.Role.MODEL,
+        });
+
+        if (action) {
+          const result = yield* this.handleAction(action, {signal: options.signal});
+          if (options?.signal?.aborted) {
+            yield this.#createErrorResponse(ErrorType.ABORT);
+            break;
+          }
+          query = {text: `${OBSERVATION_PREFIX} ${result.output}`};
+          // Capture history state for the next iteration query.
+          request = this.buildRequest(query, Host.AidaClient.Role.USER);
+          yield result;
+        }
+      } else if (functionCall) {
+        try {
+          const result = yield* this.#callFunction(functionCall.name, functionCall.args);
+
+          if (result.result) {
+            yield {
+              type: ResponseType.ACTION,
+              output: JSON.stringify(result.result),
+              canceled: false,
+            };
+          }
+
+          query = {
+            functionResponse: {
+              name: functionCall.name,
+              response: result,
+            },
+          };
+          request = this.buildRequest(query, Host.AidaClient.Role.ROLE_UNSPECIFIED);
+        } catch {
+          yield this.#createErrorResponse(ErrorType.UNKNOWN);
+          break;
+        }
+      } else {
+        yield this.#createErrorResponse(i - 1 === MAX_STEPS ? ErrorType.MAX_STEPS : ErrorType.UNKNOWN);
+        break;
+      }
+    }
+
+    if (isDebugMode()) {
+      window.dispatchEvent(new CustomEvent('freestylerdone'));
+    }
+  }
+
   async * #callFunction(name: string, args: Record<string, unknown>, options?: {
     signal?: AbortSignal,
     approved?: boolean,
@@ -606,39 +574,32 @@ export abstract class AiAgent<T> {
     if (call.displayInfoFromArgs) {
       const {title, thought, code, suggestions} = call.displayInfoFromArgs(args);
       if (title) {
-        const response = {
+        yield {
           type: ResponseType.TITLE,
           title,
-        } as const;
-        this.#addHistory(response);
-        yield response;
+        };
       }
 
       if (thought) {
-        const response = {
+        yield {
           type: ResponseType.THOUGHT,
           thought,
-        } as const;
-        this.#addHistory(response);
-        yield response;
+        };
       }
 
       if (code) {
-        const response = {
+        yield {
           type: ResponseType.ACTION,
           code,
           canceled: false,
-        } as const;
-        this.#addHistory(response);
-        yield response;
+        };
       }
 
       if (suggestions) {
-        const response = {
+        yield {
           type: ResponseType.SUGGESTIONS,
           suggestions,
-        } as const;
-        yield response;
+        };
       }
     }
 
@@ -671,12 +632,11 @@ export abstract class AiAgent<T> {
 
       const approvedRun = await sideEffectConfirmationPromiseWithResolvers.promise;
       if (!approvedRun) {
-        const response = {
+        yield {
           type: ResponseType.ACTION,
           code: '',
           canceled: true,
-        } as const;
-        yield response;
+        };
         return {
           result: 'Error: User denied code execution with side effects.',
         };
@@ -775,10 +735,15 @@ STOP`;
     }));
   }
 
-  #createAbortResponse(): ResponseData {
+  #createErrorResponse(error: ErrorType): ResponseData {
+    this.#removeLastRunParts();
+    if (error !== ErrorType.ABORT) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
+    }
+
     return {
       type: ResponseType.ERROR,
-      error: ErrorType.ABORT,
+      error,
     };
   }
 }

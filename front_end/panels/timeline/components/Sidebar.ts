@@ -88,10 +88,8 @@ export class SidebarWidget extends UI.Widget.VBox {
     // Swap to the Annotations tab if:
     // 1. Insights is currently selected.
     // 2. The Insights tab is disabled (which means we have no insights for this trace)
-    // 3. The annotations tab exists (we can remove this check once annotations
-    //    are non-experimental)
     if (this.#tabbedPane.selectedTabId === SidebarTabs.INSIGHTS &&
-        this.#tabbedPane.tabIsDisabled(SidebarTabs.INSIGHTS) && this.#tabbedPane.hasTab(SidebarTabs.ANNOTATIONS)) {
+        this.#tabbedPane.tabIsDisabled(SidebarTabs.INSIGHTS)) {
       this.#tabbedPane.selectTab(SidebarTabs.ANNOTATIONS);
     }
   }

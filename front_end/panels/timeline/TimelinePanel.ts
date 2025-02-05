@@ -1982,18 +1982,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    let traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
-    if (traceInsightsSets) {
-      // Omit insight sets that don't have anything of interest to show to the user.
-      const filteredTraceInsightsSets = new Map();
-      for (const [key, insightSet] of traceInsightsSets) {
-        if (Object.values(insightSet.model).some(model => model.shouldShow)) {
-          filteredTraceInsightsSets.set(key, insightSet);
-        }
-      }
-
-      traceInsightsSets = filteredTraceInsightsSets.size ? filteredTraceInsightsSets : null;
-    }
+    const traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
     this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
 
     this.flameChart.setModel(parsedTrace, traceMetadata);

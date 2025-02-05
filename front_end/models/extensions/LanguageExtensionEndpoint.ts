@@ -55,7 +55,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
 
   canAccessURL(url: string): boolean {
     try {
-      return this.allowFileAccess || new URL(url).protocol !== 'file:';
+      return !url || this.allowFileAccess || new URL(url).protocol !== 'file:';
     } catch {
       return false;
     }

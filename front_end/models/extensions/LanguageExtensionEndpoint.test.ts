@@ -56,6 +56,8 @@ for (const allowFileAccess of [true, false]) {
       assert.strictEqual(endpointProxyStub.calledTwice, allowFileAccess);
       await endpoint.addRawModule('', 'http://example.com', {url: 'http://example.com'});
       assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 3 : 1);
+      await endpoint.addRawModule('', '', {url: 'http://example.com'});
+      assert.lengthOf(endpointProxyStub.getCalls(), allowFileAccess ? 4 : 2);
     });
   });
 }

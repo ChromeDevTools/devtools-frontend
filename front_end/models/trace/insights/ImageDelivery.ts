@@ -127,6 +127,7 @@ export interface OptimizableImage {
 }
 
 export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
+  /** Sorted by potential byte savings, then by size of image. */
   optimizableImages: OptimizableImage[],
   totalByteSavings: number,
 }>;
@@ -283,6 +284,15 @@ export function generateInsight(
   for (const image of optimizableImages) {
     wastedBytesByRequestId.set(image.request.args.data.requestId, image.byteSavings);
   }
+
+  // Sort by savings, then by size of image.
+  optimizableImages.sort((a, b) => {
+    if (b.byteSavings !== a.byteSavings) {
+      return b.byteSavings - a.byteSavings;
+    }
+
+    return b.request.args.data.decodedBodyLength - a.request.args.data.decodedBodyLength;
+  });
 
   return finalize({
     optimizableImages,

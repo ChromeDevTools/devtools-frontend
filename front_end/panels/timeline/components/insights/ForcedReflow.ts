@@ -56,25 +56,25 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        ${html`<devtools-performance-table
+        <devtools-performance-table
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
             rows: [{values:[this.#linkifyUrl(topLevelFunctionCallData), time(Trace.Types.Timing.Micro(totalReflowTime))]}],
-            } as TableData}>
-        </devtools-performance-table>`}
+          } as TableData}>
+        </devtools-performance-table>
       </div>
       <div class="insight-section">
-        ${html`<devtools-performance-table
-        .data=${{
-          insight: this,
-          headers: [i18nString(UIStrings.relatedStackTrace)],
-          rows: bottomUpCallStackData.map(data => ({
-            values: [this.#linkifyUrl(data.bottomUpData)],
-            overlays: this.#createOverlayForEvents(data.relatedEvents),
-          })),
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.relatedStackTrace)],
+            rows: bottomUpCallStackData.map(data => ({
+              values: [this.#linkifyUrl(data.bottomUpData)],
+              overlays: this.#createOverlayForEvents(data.relatedEvents),
+            })),
         } as TableData}>
-        </devtools-performance-table>`}
+        </devtools-performance-table>
       </div>`;
     // clang-format on
   }

@@ -60,6 +60,22 @@ describeWithEnvironment('ImageDelivery', function() {
                 'https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif',
           },
           {
+            byteSavings: 176040,
+            optimizations: [
+              {
+                byteSavings: 134075,
+                type: ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION,
+              },
+              {
+                byteSavings: 162947,
+                type: ImageOptimizationType.RESPONSIVE_SIZE,
+                fileDimensions: {width: 640, height: 436},
+                displayDimensions: {width: 200, height: 136},
+              },
+            ],
+            url: 'https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png',
+          },
+          {
             byteSavings: 49760,
             optimizations: [
               {
@@ -82,22 +98,6 @@ describeWithEnvironment('ImageDelivery', function() {
             ],
             url:
                 'https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp',
-          },
-          {
-            byteSavings: 176040,
-            optimizations: [
-              {
-                byteSavings: 134075,
-                type: ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION,
-              },
-              {
-                byteSavings: 162947,
-                type: ImageOptimizationType.RESPONSIVE_SIZE,
-                fileDimensions: {width: 640, height: 436},
-                displayDimensions: {width: 200, height: 136},
-              },
-            ],
-            url: 'https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png',
           },
         ],
     );

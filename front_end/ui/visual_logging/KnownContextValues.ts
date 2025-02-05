@@ -2871,6 +2871,7 @@ export const knownContextValues = new Set([
   'roboto',
   'rotate',
   'row-gap',
+  'row-rule-break',
   'rp-id',
   'rpId',
   'ru',

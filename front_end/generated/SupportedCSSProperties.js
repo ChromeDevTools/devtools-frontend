@@ -627,6 +627,7 @@ export const generatedProperties = [
    "right",
    "rotate",
    "row-gap",
+   "row-rule-break",
    "ruby-align",
    "ruby-position",
    "rx",
@@ -3467,6 +3468,15 @@ export const generatedProperties = [
   "name": "row-gap"
  },
  {
+  "inherited": false,
+  "keywords": [
+   "none",
+   "spanning-item",
+   "intersection"
+  ],
+  "name": "row-rule-break"
+ },
+ {
   "inherited": true,
   "keywords": [
    "space-around",
@@ -6008,6 +6018,13 @@ export const generatedPropertyValues = {
  "row-gap": {
   "values": [
    "normal"
+  ]
+ },
+ "row-rule-break": {
+  "values": [
+   "none",
+   "spanning-item",
+   "intersection"
   ]
  },
  "ruby-align": {

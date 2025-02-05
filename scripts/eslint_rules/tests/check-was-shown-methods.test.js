@@ -3,16 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const tsParser = require('@typescript-eslint/parser');
-
 const rule = require('../lib/check-was-shown-methods.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'Please make sure the first call in wasShown is to super.wasShown().';
 

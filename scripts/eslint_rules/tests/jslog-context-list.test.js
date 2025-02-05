@@ -3,17 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 1;
-
-const tsParser = require('@typescript-eslint/parser');
-
 const rule = require('../lib/jslog-context-list.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('jslog-context-list', rule, {
   invalid: [

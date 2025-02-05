@@ -2,17 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const tsParser = require('@typescript-eslint/parser');
 const path = require('path');
 
 const rule = require('../lib/no-imports-in-directory.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('no-imports-in-directory', rule, {
   valid: [

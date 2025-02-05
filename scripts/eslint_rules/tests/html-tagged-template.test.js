@@ -4,12 +4,8 @@
 'use strict';
 
 const rule = require('../lib/html-tagged-template.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 const error = {
   message: 'Use unqualified html tagged template for compatibility with lit-analyzer',

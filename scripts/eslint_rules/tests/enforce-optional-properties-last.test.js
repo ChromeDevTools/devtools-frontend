@@ -3,17 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const tsParser = require('@typescript-eslint/parser');
-
 const rule = require('../lib/enforce-optional-properties-last.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
+const {ruleTester} = require('./utils/utils.js');
 ruleTester.run('optional-properties-last', rule, {
   valid: [
     {

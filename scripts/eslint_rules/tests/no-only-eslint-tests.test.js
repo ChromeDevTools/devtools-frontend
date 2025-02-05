@@ -3,12 +3,8 @@
 // found in the LICENSE file.
 
 const rule = require('../lib/no-only-eslint-tests.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('no-only-eslint-tests', rule, {
   valid: [

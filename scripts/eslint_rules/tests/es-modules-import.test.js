@@ -2,17 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
-const tsParser = require('@typescript-eslint/parser');
-
 const rule = require('../lib/es-modules-import.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('es-modules-import', rule, {
   valid: [
@@ -343,7 +335,6 @@ ruleTester.run('es-modules-import', rule, {
       filename: 'front_end/panels/foo/FooPanel.ts',
       errors: [{messageId: 'doubleSlashInImportPath'}],
       output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
-    }
+    },
   ],
-
 });

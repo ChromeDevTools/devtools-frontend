@@ -158,6 +158,7 @@ class ScriptPathPair extends PathPair {
 
 class ScriptsMochaTests extends Tests {
   override readonly cwd = SOURCE_ROOT;
+
   override run(tests: PathPair[]) {
     return super.run(
         tests.map(test => ScriptPathPair.getFromPair(test)!),
@@ -168,7 +169,8 @@ class ScriptsMochaTests extends Tests {
   }
 
   override match(path: PathPair): boolean {
-    return super.match(ScriptPathPair.getFromPair(path)!);
+    return [this.suite, ...this.extraPaths].some(
+        pathToCheck => isContainedInDirectory(path.sourcePath, pathToCheck.sourcePath));
   }
 }
 

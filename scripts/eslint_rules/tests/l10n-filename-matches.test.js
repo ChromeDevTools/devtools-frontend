@@ -3,18 +3,11 @@
 // found in the LICENSE file.
 
 'use strict';
-
-const tsParser = require('@typescript-eslint/parser');
 const path = require('path');
 
 const rule = require('../lib/l10n-filename-matches.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('l10n-filename-matches', rule, {
   valid: [

@@ -4,12 +4,8 @@
 'use strict';
 
 const rule = require('../lib/no-assert-deep-strict-equal.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('no-assert-deep-strict-equal', rule, {
   valid: [

@@ -4,12 +4,8 @@
 'use strict';
 
 const rule = require('../lib/check-css-import.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {ruleTester} = require('./utils/utils.js');
 
 ruleTester.run('check-css-import', rule, {
   valid: [

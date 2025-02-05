@@ -934,7 +934,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#setModelForActiveTrace();
         this.#removeStatusPane();
         this.#showSidebarIfRequired();
-        this.#dimThirdPartiesIfRequired(newMode.traceIndex);
+        this.flameChart.dimThirdPartiesIfRequired();
         return;
       }
 
@@ -1550,7 +1550,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return;
     }
-    this.#dimThirdPartiesIfRequired(this.#viewMode.traceIndex);
+    this.flameChart.dimThirdPartiesIfRequired();
   }
 
   #extensionDataVisibilityChanged(): void {
@@ -2154,23 +2154,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#splitWidget.showBoth();
     }
     this.#restoreSidebarVisibilityOnTraceLoad = false;
-  }
-
-  // Activates or disables dimming when checkbox is clicked.
-  #dimThirdPartiesIfRequired(traceIndex: number): void {
-    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
-    if (!parsedTrace) {
-      return;
-    }
-
-    const checkboxState = this.#dimThirdPartiesSetting?.getIfNotDisabled() ?? false;
-    const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
-
-    if (checkboxState && thirdPartyEvents.length) {
-      this.flameChart.setActiveThirdPartyDimmingSetting(thirdPartyEvents);
-    } else {
-      this.flameChart.setActiveThirdPartyDimmingSetting(null);
-    }
   }
 
   // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.

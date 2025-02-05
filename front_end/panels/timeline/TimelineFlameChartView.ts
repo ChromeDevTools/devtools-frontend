@@ -437,8 +437,18 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     return this.element;
   }
 
-  setActiveThirdPartyDimmingSetting(thirdPartyEvents: Trace.Types.Events.Event[]|null): void {
-    this.#updateFlameChartDimmerWithEvents(this.#thirdPartyCheckboxDimmer, thirdPartyEvents);
+  // Activates or disables dimming when setting is toggled.
+  dimThirdPartiesIfRequired(): void {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const dim = Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false).get();
+    const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
+    if (dim && thirdPartyEvents.length) {
+      this.#updateFlameChartDimmerWithEvents(this.#thirdPartyCheckboxDimmer, thirdPartyEvents);
+    } else {
+      this.#updateFlameChartDimmerWithEvents(this.#thirdPartyCheckboxDimmer, null);
+    }
   }
 
   #registerFlameChartDimmer(opts: {inclusive: boolean, outline: boolean}): FlameChartDimmer {
@@ -1160,6 +1170,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#updateFlameCharts();
     this.resizeToPreferredHeights();
     this.setMarkers(this.#parsedTrace);
+    this.dimThirdPartiesIfRequired();
   }
 
   setInsights(

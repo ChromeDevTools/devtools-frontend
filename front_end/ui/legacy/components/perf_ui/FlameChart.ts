@@ -315,7 +315,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private totalTime?: number;
   private lastPopoverState: PopoverState;
 
-  private dimIndicies?: Uint8Array|null;
+  private dimIndices?: Uint8Array|null;
   /** When true, all undimmed entries are outlined. When an array, only those indices are outlined (if not dimmed). */
   private dimShouldOutlineUndimmedEntries: boolean|Uint8Array = false;
 
@@ -496,8 +496,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   #shouldDimEvent(entryIndex: number): boolean {
-    if (this.dimIndicies) {
-      return this.dimIndicies[entryIndex] !== 0;
+    if (this.dimIndices) {
+      return this.dimIndices[entryIndex] !== 0;
     }
 
     return false;
@@ -540,7 +540,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   enableDimming(entryIndices: number[], inclusive: boolean, outline: boolean|number[]): void {
-    this.dimIndicies = this.#createTypedIndexArray(entryIndices, inclusive);
+    this.dimIndices = this.#createTypedIndexArray(entryIndices, inclusive);
     this.dimShouldOutlineUndimmedEntries =
         Array.isArray(outline) ? this.#createTypedIndexArray(outline, true) : outline;
 
@@ -548,14 +548,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   disableDimming(): void {
-    this.dimIndicies = null;
+    this.dimIndices = null;
     this.dimShouldOutlineUndimmedEntries = false;
 
     this.draw();
   }
 
   isDimming(): boolean {
-    return Boolean(this.dimIndicies);
+    return Boolean(this.dimIndices);
   }
 
   #transformColor(entryIndex: number, color: string): string {
@@ -3364,7 +3364,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.rawTimelineData = null;
       this.forceDecorationCache = null;
       this.entryColorsCache = null;
-      this.dimIndicies = null;
+      this.dimIndices = null;
       this.colorDimmingCache.clear();
       this.rawTimelineDataLength = 0;
       this.#groupTreeRoot = null;
@@ -3976,7 +3976,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.rawTimelineData = null;
     this.rawTimelineDataLength = 0;
     this.#groupTreeRoot = null;
-    this.dimIndicies = null;
+    this.dimIndices = null;
     this.colorDimmingCache.clear();
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
@@ -4014,6 +4014,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   boundarySpan(): Trace.Types.Timing.Milli {
     return Trace.Types.Timing.Milli(this.maximumBoundary() - this.minimumBoundary());
+  }
+  getDimIndices(): Uint8Array<ArrayBufferLike>|null {
+    return this.dimIndices || null;
   }
 }
 

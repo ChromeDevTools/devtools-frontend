@@ -147,6 +147,31 @@ describeWithEnvironment('AiAgent', () => {
       assert.isUndefined(request.historical_contexts);
     });
 
+    it('builds a request without preamble', async () => {
+      class AiAgentMockWithoutPreamble extends AiAgent<unknown> {
+        type = AiAssistance.AgentType.STYLING;
+        override preamble = undefined;
+        // eslint-disable-next-line require-yield
+        override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
+          return;
+        }
+        clientFeature: Host.AidaClient.ClientFeature = 0;
+        userTier: undefined;
+        options: AiAssistance.RequestOptions = {
+          temperature: 1,
+          modelId: 'test model',
+        };
+      }
+
+      const agent = new AiAgentMockWithoutPreamble({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.isUndefined(request.preamble);
+      assert.isUndefined(request.historical_contexts);
+    });
+
     it('builds a request with chat history', async () => {
       let count = 0;
       async function* generateAndAnswer() {

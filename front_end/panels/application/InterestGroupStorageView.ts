@@ -13,15 +13,34 @@ import interestGroupStorageViewStyles from './interestGroupStorageView.css.js';
 
 const UIStrings = {
   /**
+   *@description Placeholder text shown when nothing has been selected for display
+   *details.
+   * An interest group is an ad targeting group stored on the browser that can
+   * be used to show a certain set of advertisements in the future as the
+   * outcome of a FLEDGE auction.
+   */
+  noValueSelected: 'No interest group selected',
+  /**
    *@description Placeholder text instructing the user how to display interest group
    *details.
+   * An interest group is an ad targeting group stored on the browser that can
+   * be used to show a certain set of advertisements in the future as the
+   * outcome of a FLEDGE auction.
    */
-  clickToDisplayBody: 'Click on any interest group event to display the group\'s current state',
+  clickToDisplayBody: 'Select any interest group event to display the group\'s current state',
   /**
    *@description Placeholder text telling the user no details are available for
    *the selected interest group.
    */
-  noDataAvailable: 'No details available for the selected interest group. The browser may have left the group.',
+  noDataAvailable: 'No details available',
+  /**
+   *@description Placeholder text explaining to the user a potential reason for not having details on
+   * the interest groups.
+   * An interest group is an ad targeting group stored on the browser that can
+   * be used to show a certain set of advertisements in the future as the
+   * outcome of a FLEDGE auction.
+   */
+  noDataDescription: 'The browser may have left the group.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupStorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -48,27 +67,22 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     this.detailsGetter = detailsGetter;
 
     const topPanel = new UI.Widget.VBox();
-    this.noDisplayView = new UI.Widget.VBox();
-    this.noDataView = new UI.Widget.VBox();
+    this.noDisplayView =
+        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noValueSelected), i18nString(UIStrings.clickToDisplayBody));
+    this.noDataView =
+        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noDataAvailable), i18nString(UIStrings.noDataDescription));
 
-    topPanel.setMinimumSize(0, 80);
+    topPanel.setMinimumSize(0, 120);
     this.setMainWidget(topPanel);
-    this.noDisplayView.setMinimumSize(0, 40);
+    this.noDisplayView.setMinimumSize(0, 80);
     this.setSidebarWidget(this.noDisplayView);
-    this.noDataView.setMinimumSize(0, 40);
+    this.noDataView.setMinimumSize(0, 80);
+    this.noDisplayView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
+    this.noDataView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
+    this.hideSidebar();
 
     topPanel.contentElement.appendChild(this.interestGroupGrid);
     this.interestGroupGrid.addEventListener('select', this.onFocus.bind(this));
-
-    this.noDisplayView.contentElement.classList.add('placeholder');
-    this.noDisplayView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
-    const noDisplayDiv = this.noDisplayView.contentElement.createChild('div');
-    noDisplayDiv.textContent = i18nString(UIStrings.clickToDisplayBody);
-
-    this.noDataView.contentElement.classList.add('placeholder');
-    this.noDataView.contentElement.setAttribute('jslog', `${VisualLogging.pane('details').track({resize: true})}`);
-    const noDataDiv = this.noDataView.contentElement.createChild('div');
-    noDataDiv.textContent = i18nString(UIStrings.noDataAvailable);
   }
 
   override wasShown(): void {
@@ -80,6 +94,9 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
   }
 
   addEvent(event: Protocol.Storage.InterestGroupAccessedEvent): void {
+    if (this.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+      this.showBoth();
+    }
     // Only add if not already present.
     const foundEvent = this.events.find(t => eventEquals(t, event));
     if (!foundEvent) {

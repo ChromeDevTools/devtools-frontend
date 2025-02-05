@@ -77,6 +77,8 @@ export enum InsightCategory {
 
 export type RelatedEventsMap = Map<Types.Events.Event, string[]>;
 
+export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIString.LocalizedString, value: boolean}>;
+
 export type InsightModel<UIStrings extends Record<string, string>, R extends Record<string, unknown>> = R&{
   /** Not used within DevTools - this is for external consumers (like Lighthouse). */
   strings: UIStrings,

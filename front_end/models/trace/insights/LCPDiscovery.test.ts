@@ -10,11 +10,12 @@ describeWithEnvironment('LCPDiscovery', function() {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
-    const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
+    const {checklist} = insight;
 
-    assert.isFalse(shouldRemoveLazyLoading);
-    assert.isFalse(shouldPreloadImage);
-    assert.isTrue(shouldIncreasePriorityHint);
+    assert.exists(checklist);
+    assert.isFalse(checklist.priorityHinted.value);
+    assert.isTrue(checklist.requestDiscoverable.value);
+    assert.isTrue(checklist.eagerlyLoaded.value);
   });
 
   it('calculates the LCP optimal time as the document request download start time', async () => {

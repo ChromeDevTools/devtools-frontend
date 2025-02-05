@@ -8,6 +8,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {
+  type Checklist,
   InsightCategory,
   type InsightModel,
   type InsightSetContext,
@@ -44,16 +45,6 @@ export const UIStrings = {
    */
   lazyLoadNotApplied: 'lazy load not applied',
   /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
-   */
-  successAriaLabel: 'Insight check passed: {PH1}',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
-   */
-  failedAriaLabel: 'Insight check failed: {PH1}',
-  /**
    * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
    */
   noLcp: 'No LCP detected',
@@ -72,12 +63,10 @@ export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePain
 
 export type LCPDiscoveryInsightModel = InsightModel<typeof UIStrings, {
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
-  shouldRemoveLazyLoading?: boolean,
-  shouldIncreasePriorityHint?: boolean,
-  shouldPreloadImage?: boolean,
   /** The network request for the LCP image, if there was one. */
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
   earliestDiscoveryTimeTs?: Types.Timing.Micro,
+  checklist?: Checklist<'priorityHinted'|'requestDiscoverable'|'eagerlyLoaded'>,
 }>;
 
 function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): LCPDiscoveryInsightModel {
@@ -91,9 +80,9 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
     shouldShow: Boolean(
-        partialModel.lcpRequest &&
-        (partialModel.shouldIncreasePriorityHint || partialModel.shouldPreloadImage ||
-         partialModel.shouldRemoveLazyLoading)),
+        partialModel.lcpRequest && partialModel.checklist &&
+        (!partialModel.checklist.eagerlyLoaded.value || !partialModel.checklist.requestDiscoverable.value ||
+         !partialModel.checklist.priorityHinted.value)),
     ...partialModel,
     relatedEvents,
   };
@@ -149,10 +138,12 @@ export function generateInsight(
 
   return finalize({
     lcpEvent,
-    shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
-    shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
-    shouldPreloadImage: !imgPreloadedOrFoundInHTML,
     lcpRequest,
     earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.Micro(earliestDiscoveryTime) : undefined,
+    checklist: {
+      priorityHinted: {label: i18nString(UIStrings.fetchPriorityApplied), value: imageFetchPriorityHint === 'high'},
+      requestDiscoverable: {label: i18nString(UIStrings.requestDiscoverable), value: imgPreloadedOrFoundInHTML},
+      eagerlyLoaded: {label: i18nString(UIStrings.lazyLoadNotApplied), value: imageLoadingAttr !== 'lazy'},
+    },
   });
 }

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../../ui/components/icon_button/icon_button.js';
+import './Checklist.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {LCPDiscoveryInsightModel} from '../../../../models/trace/insights/LCPDiscovery.js';
@@ -21,22 +21,20 @@ const {html} = Lit;
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 
 interface LCPImageDiscoveryData {
-  shouldIncreasePriorityHint: boolean;
-  shouldPreloadImage: boolean;
-  shouldRemoveLazyLoading: boolean;
+  checklist: Exclude<LCPDiscoveryInsightModel['checklist'], undefined>;
   request: Trace.Types.Events.SyntheticNetworkRequest;
   discoveryDelay: Trace.Types.Timing.Micro|null;
   estimatedSavings: Trace.Types.Timing.Milli|null;
 }
 
 function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|null {
-  if (model.lcpRequest === undefined) {
+  if (!model.lcpRequest || !model.checklist) {
     return null;
   }
 
-  const shouldIncreasePriorityHint = model.shouldIncreasePriorityHint;
-  const shouldPreloadImage = model.shouldPreloadImage;
-  const shouldRemoveLazyLoading = model.shouldRemoveLazyLoading;
+  const shouldIncreasePriorityHint = !model.checklist.priorityHinted.value;
+  const shouldPreloadImage = !model.checklist.requestDiscoverable.value;
+  const shouldRemoveLazyLoading = !model.checklist.eagerlyLoaded.value;
 
   const imageLCP = shouldIncreasePriorityHint !== undefined && shouldPreloadImage !== undefined &&
       shouldRemoveLazyLoading !== undefined;
@@ -47,9 +45,7 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
   }
 
   const data: LCPImageDiscoveryData = {
-    shouldIncreasePriorityHint,
-    shouldPreloadImage,
-    shouldRemoveLazyLoading,
+    checklist: model.checklist,
     request: model.lcpRequest,
     discoveryDelay: null,
     estimatedSavings: model.metricSavings?.LCP ?? null,
@@ -66,20 +62,6 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-discovery`;
   override internalName: string = 'lcp-discovery';
-
-  #adviceIcon(didFail: boolean, label: string): Lit.TemplateResult {
-    const icon = didFail ? 'clear' : 'check-circle';
-
-    const ariaLabel = didFail ? i18nString(UIStrings.failedAriaLabel, {PH1: label}) :
-                                i18nString(UIStrings.successAriaLabel, {PH1: label});
-    return html`
-      <devtools-icon
-        aria-label=${ariaLabel}
-        name=${icon}
-        class=${didFail ? 'metric-value-bad' : 'metric-value-good'}
-      ></devtools-icon>
-    `;
-  }
 
   #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): Element {
     const timeWrapper = document.createElement('span');
@@ -153,23 +135,8 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        <div class="insight-results">
-          <ul class="insight-icon-results">
-            <li class="insight-entry">
-              ${this.#adviceIcon(imageData.shouldIncreasePriorityHint, i18nString(UIStrings.fetchPriorityApplied))}
-              <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
-            </li>
-            <li class="insight-entry">
-              ${this.#adviceIcon(imageData.shouldPreloadImage, i18nString(UIStrings.requestDiscoverable))}
-              <span>${i18nString(UIStrings.requestDiscoverable)}</span>
-            </li>
-            <li class="insight-entry">
-              ${this.#adviceIcon(imageData.shouldRemoveLazyLoading, i18nString(UIStrings.lazyLoadNotApplied))}
-              <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
-            </li>
-          </ul>
-        </div>
-        ${imageRef(imageData.request)}
+        <devtools-performance-checklist class="insight-section" .checklist=${imageData.checklist}></devtools-performance-checklist>
+        <div class="insight-section">${imageRef(imageData.request)}</div>
       </div>`;
     // clang-format on
   }

@@ -7,6 +7,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {
+  type Checklist,
   InsightCategory,
   type InsightModel,
   type InsightSetContext,
@@ -61,16 +62,6 @@ export const UIStrings = {
    * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
    */
   uncompressedDownload: 'Uncompressed download',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
-   */
-  successAriaLabel: 'Insight check passed: {PH1}',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
-   */
-  failedAriaLabel: 'Insight check failed: {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DocumentLatency.ts', UIStrings);
@@ -87,10 +78,10 @@ const IGNORE_THRESHOLD_IN_BYTES = 1400;
 export type DocumentLatencyInsightModel = InsightModel<typeof UIStrings, {
   data?: {
     serverResponseTime: Types.Timing.Milli,
-    serverResponseTooSlow: boolean,
     redirectDuration: Types.Timing.Milli,
     uncompressedResponseBytes: number,
     documentRequest?: Types.Events.SyntheticNetworkRequest,
+                   checklist: Checklist<'noRedirects'|'serverResponseIsFast'|'usesCompression'>,
   },
 }>;
 
@@ -175,8 +166,8 @@ function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): n
 function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>): DocumentLatencyInsightModel {
   let hasFailure = false;
   if (partialModel.data) {
-    hasFailure = partialModel.data.redirectDuration > 0 || partialModel.data.serverResponseTooSlow ||
-        partialModel.data.uncompressedResponseBytes > 0;
+    hasFailure = !partialModel.data.checklist.usesCompression.value ||
+        !partialModel.data.checklist.serverResponseIsFast.value || !partialModel.data.checklist.noRedirects.value;
   }
 
   return {
@@ -221,14 +212,35 @@ export function generateInsight(
     LCP: overallSavingsMs as Types.Timing.Milli,
   };
 
+  const uncompressedResponseBytes = getCompressionSavings(documentRequest);
+
+  const noRedirects = redirectDuration === 0;
+  const serverResponseIsFast = !serverResponseTooSlow;
+  const usesCompression = uncompressedResponseBytes === 0;
+
   return finalize({
     relatedEvents: [documentRequest],
     data: {
       serverResponseTime,
-      serverResponseTooSlow,
       redirectDuration: Types.Timing.Milli(redirectDuration),
-      uncompressedResponseBytes: getCompressionSavings(documentRequest),
+      uncompressedResponseBytes,
       documentRequest,
+      checklist: {
+        noRedirects: {
+          label: noRedirects ? i18nString(UIStrings.passingRedirects) : i18nString(UIStrings.failedRedirects),
+          value: noRedirects
+        },
+        serverResponseIsFast: {
+          label: serverResponseIsFast ? i18nString(UIStrings.passingServerResponseTime) :
+                                        i18nString(UIStrings.failedServerResponseTime),
+          value: serverResponseIsFast
+        },
+        usesCompression: {
+          label: usesCompression ? i18nString(UIStrings.passingTextCompression) :
+                                   i18nString(UIStrings.failedTextCompression),
+          value: usesCompression
+        },
+      },
     },
     metricSavings,
   });

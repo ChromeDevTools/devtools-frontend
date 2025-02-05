@@ -6,7 +6,7 @@
       "label": "1-build_Debug",
       "type": "shell",
       "command": "npm run build",
-      "group": {"kind": "build", "isDefault": true},
+      "group": { "kind": "build", "isDefault": true },
       "presentation": {
         "echo": true,
         "reveal": "always"
@@ -14,12 +14,13 @@
       "problemMatcher": [
         {
           "owner": "typescript",
-          "fileLocation": ["relative", "${workspaceRoot}/out/Default"],
+          "fileLocation": ["relative", "${workspaceRoot}"],
           "pattern": {
-            "regexp": "^([^\\s].*)\\((\\d+,\\d+)\\):\\s*(.*)$",
+            "regexp": "^([^\\s].*)\\((\\d+,\\d+)\\): error (TS\\d+):\\s*(.*)$",
             "file": 1,
             "location": 2,
-            "message": 3
+            "code": 3,
+            "message": 4
           }
         }
       ]

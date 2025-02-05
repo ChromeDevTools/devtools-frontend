@@ -9,6 +9,8 @@ import os
 import shlex
 import subprocess
 import sys
+import re
+from pathlib import Path
 
 from os import path
 
@@ -219,6 +221,25 @@ def runEsbuild(opts, tsconfig_output_location, tsconfig_output_directory):
     return p.returncode
 
 
+def rewriteTypeScriptErrorPaths(stderr: str):
+    root_path = Path(ROOT_DIRECTORY_OF_REPOSITORY).resolve()
+
+    def rewriteLine(match: re.Match[str]) -> str:
+        absolute_path = Path(match[1]).resolve()
+        relative_path = absolute_path.relative_to(root_path)
+        return f"{relative_path}({match[2]}): error {match[3]}: {match[4]}"
+
+    lines = stderr.splitlines()
+    for i, line in enumerate(lines):
+        lines[i] = re.sub(
+            # We use similar pattern in ".vscode/devtools-workspace-tasks.json"
+            r'^([^\s].*)\((\d+,\d+)\): error (TS\d+):\s*(.*)$',
+            rewriteLine,
+            line)
+
+    return "\n".join(lines)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s',
@@ -357,11 +378,13 @@ def main():
         path.join(tsconfig_output_directory, tsbuildinfo_name))
 
     if found_errors:
+        # Rewrite the TypeScript error paths so you can open them directly
+        errors = rewriteTypeScriptErrorPaths(stderr)
         print('')
         print('TypeScript compilation failed. Used tsconfig %s' %
               opts.tsconfig_output_location)
         print('')
-        print(stderr)
+        print(errors)
         print('')
         return 1
 

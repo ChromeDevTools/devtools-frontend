@@ -26,7 +26,7 @@ Use those functions to fulfill the user query.
 ## Step-by-step instructions
 
 - Think about what the user wants.
-- List all files in the project.
+- List all files in the project or search for relevant files.
 - Identify the files that are likely to be modified.
 - Retrieve the content of those files.
 - Rewrite the files according to the user query.
@@ -37,6 +37,19 @@ Use those functions to fulfill the user query.
 - Always prefer changing the true source files and not the build output.
 - The build output is usually in dist/, out/, build/ folders.
 - *CRITICAL* never make the same function call twice.
+- *CRITICAL* do not make any changes if not prompted.
+
+Instead of using the writeFile function you can also produce  the following diff format:
+
+\`\`\`
+src/index.html
+<meta charset="utf-8">
+<title>Test</title>
+\`\`\`
+
+First output the filename (example, src/index.html), then output the SEARCH block,
+followed by the REPLACE block.
+
 `;
 /* clang-format on */
 
@@ -131,6 +144,82 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
             files,
           }
         };
+      },
+    });
+
+    this.declareFunction<{
+      query: string,
+      caseSensitive: boolean,
+      isRegex: boolean,
+    }>('searchInFiles', {
+      description:
+          'Searches for a query in all files in the project. For each match it returns the positions of matches.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          query: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'The query to search for matches in files',
+            nullable: false,
+          },
+          caseSensitive: {
+            type: Host.AidaClient.ParametersTypes.BOOLEAN,
+            description: 'Whether the query is case sensitive or not',
+            nullable: false,
+          },
+          isRegex: {
+            type: Host.AidaClient.ParametersTypes.BOOLEAN,
+            description: 'Whether the query is a regular expression or not',
+            nullable: true,
+          }
+        },
+      },
+      handler: async params => {
+        if (!this.#project) {
+          return {
+            error: 'No project available',
+          };
+        }
+        const project = this.#project.getItem();
+        const {map} = getFiles(project);
+        const matches = [];
+        for (const [filepath, file] of map.entries()) {
+          const results = await project.searchInFileContent(file, params.query, params.caseSensitive, params.isRegex);
+          for (const result of results) {
+            matches.push({
+              filepath,
+              lineNumber: result.lineNumber,
+              columnNumber: result.columnNumber,
+              matchLength: result.matchLength
+            });
+          }
+        }
+        return {
+          result: {
+            matches,
+          }
+        };
+      },
+    });
+
+    this.declareFunction('changeFile', {
+      description: 'returns a list of all files in the project.',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: true,
+        properties: {
+          filepath: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'A file path that identifies the file to get the content for',
+            nullable: false,
+          },
+        },
+      },
+      handler: async () => {
+        return {result: {}};
       },
     });
 

@@ -9,7 +9,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -38,7 +37,6 @@ import {
   NetworkAgent,
   RequestContext,
 } from './agents/NetworkAgent.js';
-import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
@@ -163,13 +161,6 @@ function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): File
   return new FileContext(file);
 }
 
-function createProjectContext(project: Persistence.FileSystemWorkspaceBinding.FileSystem|null): ProjectContext|null {
-  if (!project) {
-    return null;
-  }
-  return new ProjectContext(project);
-}
-
 function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): RequestContext|null {
   if (!request) {
     return null;
@@ -209,7 +200,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #currentAgent?: AiAgent<unknown>;
 
   #previousSameOriginContext?: ConversationContext<unknown>;
-  #project: ProjectContext|null = null;
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
@@ -356,8 +346,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         break;
       }
       case AgentType.PATCH: {
-        agent = new PatchAgent(options);
-        break;
+        throw new Error('AI Assistance does not support direct usage of the patch agent');
       }
     }
 
@@ -451,8 +440,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedCallTree =
         createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
-    this.#project =
-        createProjectContext(UI.Context.Context.instance().flavor(Persistence.FileSystemWorkspaceBinding.FileSystem)),
     this.#viewProps = {
       ...this.#viewProps,
       agentType: this.#currentAgent?.type,
@@ -473,8 +460,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-    UI.Context.Context.instance().addFlavorChangeListener(
-        Persistence.FileSystemWorkspaceBinding.FileSystem, this.#handlePersistenceFileSystemChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -600,19 +585,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateAgentState(this.#currentAgent);
       };
 
-  #handlePersistenceFileSystemChange =
-      (ev: Common.EventTarget.EventTargetEvent<Persistence.FileSystemWorkspaceBinding.FileSystem>): void => {
-        const newProject = ev.data;
-        if (!newProject) {
-          return;
-        }
-        if (this.#project?.getItem() === newProject) {
-          return;
-        }
-        this.#project = new ProjectContext(ev.data as Workspace.Workspace.Project);
-        this.#updateAgentState(this.#currentAgent);
-      };
-
   #handleAiAssistanceEnabledSettingChanged = (): void => {
     const nextChatUiState = this.#getChatUiState();
     if (this.#viewProps.state === nextChatUiState) {
@@ -674,11 +646,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     let targetAgentType: AgentType|undefined;
     switch (actionId) {
-      case 'ai-assistance.filesystem': {
-        // TODO: metrics if needed.
-        targetAgentType = AgentType.PATCH;
-        break;
-      }
       case 'freestyler.elements-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromElementsPanelFloatingButton);
         targetAgentType = AgentType.STYLING;
@@ -856,8 +823,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         context = this.#selectedCallTree;
         break;
       case AgentType.PATCH:
-        context = this.#project;
-        break;
+        throw new Error('AI Assistance does not support direct usage of the patch agent');
     }
     return context;
   }
@@ -1035,8 +1001,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-context':
       case 'drjones.sources-floating-button':
-      case 'drjones.sources-panel-context':
-      case 'ai-assistance.filesystem': {
+      case 'drjones.sources-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(
               AiAssistancePanel.panelName,

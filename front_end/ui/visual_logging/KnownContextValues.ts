@@ -335,7 +335,6 @@ export const knownContextValues = new Set([
   'affected-sources',
   'ai-assistance-enabled',
   'ai-assistance-history-entries',
-  'ai-assistance.filesystem',
   'ai_assistance',
   'align-content',
   'align-content-center',

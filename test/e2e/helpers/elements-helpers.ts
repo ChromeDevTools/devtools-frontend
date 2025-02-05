@@ -962,7 +962,6 @@ function veImpressionForAccessibilityPane() {
             'Section', 'accessibility-tree',
             [
               veImpression('Toggle', 'full-accessibility-tree'),
-              veImpression('TreeItem', undefined, [veImpression('Expand'), veImpression('TreeItem')]),
             ]),
         veImpression('SectionHeader', 'aria-attributes'),
         veImpression('Section', 'aria-attributes'),

@@ -147,6 +147,9 @@ export class AccessibilityTreeView extends UI.Widget.VBox implements
   treeUpdated({data}: Common.EventTarget
                   .EventTargetEvent<SDK.AccessibilityModel.EventTypes[SDK.AccessibilityModel.Events.TREE_UPDATED]>):
       void {
+    if (!this.isShowing()) {
+      return;
+    }
     if (!data.root) {
       void this.renderTree();
       return;

@@ -412,6 +412,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,
       Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES,
       Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS,
+      Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

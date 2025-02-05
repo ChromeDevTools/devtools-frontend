@@ -94,14 +94,6 @@ export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicro): 
   };
 }
 
-export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilli):
-    Types.Timing.TraceWindowMicro {
-  return {
-    min: milliToMicro(bounds.min),
-    max: milliToMicro(bounds.max),
-    range: milliToMicro(bounds.range),
-  };
-}
 export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.TraceWindowMicro):
     Types.Timing.TraceWindowMilli {
   return {

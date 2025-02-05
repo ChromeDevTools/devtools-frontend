@@ -70,10 +70,6 @@ class TCPConnection {
     this.warmed = warmed;
   }
 
-  isWarm(): boolean {
-    return this.warmed;
-  }
-
   isH2(): boolean {
     return this.h2;
   }

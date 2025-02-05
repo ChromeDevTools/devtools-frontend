@@ -556,6 +556,7 @@ class PageDependencyGraph {
     return rootNode;
   }
 
+  // Unused, but useful for debugging.
   static printGraph(rootNode: Node, widthInCharacters = 100): void {
     function padRight(str: string, target: number, padChar = ' '): string {
       return str + padChar.repeat(Math.max(target - str.length, 0));

@@ -535,6 +535,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
     return Math.round(wastedMs / 10) * 10;
   }
 
+  // Used by Lighthouse asset-saver
   static get allNodeTimings(): Map<string, Map<Graph.Node, CompleteNodeTiming>> {
     return ALL_SIMULATION_NODE_TIMINGS;
   }

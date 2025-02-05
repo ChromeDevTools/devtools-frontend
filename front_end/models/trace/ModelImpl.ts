@@ -251,7 +251,3 @@ declare global {
 export function isModelUpdateDataComplete(eventData: ModelUpdateEventData): eventData is ModelUpdateEventComplete {
   return eventData.type === ModelUpdateType.COMPLETE;
 }
-
-export function isModelUpdateDataProgress(eventData: ModelUpdateEventData): eventData is ModelUpdateEventProgress {
-  return eventData.type === ModelUpdateType.PROGRESS_UPDATE;
-}

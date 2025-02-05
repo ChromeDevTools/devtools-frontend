@@ -1678,17 +1678,6 @@ export function isDrawFrame(event: Event): event is DrawFrame {
   // The extra check for INSTANT here is because in the past DrawFrame events had an ASYNC_NESTABLE_START and ASYNC_NESTABLE_END pair. We don't want to support those old events, so we have to check we are dealing with an instant event.
   return event.name === Name.DRAW_FRAME && event.ph === Phase.INSTANT;
 }
-export interface LegacyDrawFrameBegin extends Async {
-  name: Name.DRAW_FRAME;
-  ph: Phase.ASYNC_NESTABLE_START;
-  args: Args&{
-    layerTreeId: number,
-    frameSeqId: number,
-  };
-}
-export function isLegacyTraceEventDrawFrameBegin(event: Event): event is LegacyDrawFrameBegin {
-  return event.name === Name.DRAW_FRAME && event.ph === Phase.ASYNC_NESTABLE_START;
-}
 
 export interface BeginFrame extends Instant {
   name: Name.BEGIN_FRAME;

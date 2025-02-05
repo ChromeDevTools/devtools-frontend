@@ -322,14 +322,6 @@ export function makeFlowEvents(events: Trace.Types.Events.Event[], flowId: numbe
   return [flowStart, ...flowSteps, flowEnd];
 }
 
-export function makeCompleteEventInMilliseconds(
-    name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
-    tid: number = 0): Trace.Types.Events.Complete {
-  return makeCompleteEvent(
-      name, Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(tsMillis)),
-      Trace.Helpers.Timing.milliToMicro(Trace.Types.Timing.Milli(durMillis)), cat, pid, tid);
-}
-
 /**
  * Builds a mock Instant.
  */

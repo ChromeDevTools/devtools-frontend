@@ -61,10 +61,6 @@ export class ReportSelector {
     return this.itemByOptionElement.get(option as Element) as Item;
   }
 
-  hasCurrentSelection(): boolean {
-    return Boolean(this.selectedItem());
-  }
-
   hasItems(): boolean {
     return this.itemByOptionElement.size > 0;
   }

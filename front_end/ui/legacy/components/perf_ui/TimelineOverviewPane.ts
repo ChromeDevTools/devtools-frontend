@@ -213,10 +213,6 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.markers = markers;
   }
 
-  getMarkers(): Map<number, HTMLDivElement> {
-    return this.markers;
-  }
-
   /**
    * Dim the time marker outside the highlight time bounds.
    *

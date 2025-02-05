@@ -132,6 +132,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
     this.dependencies.splice(this.dependencies.indexOf(node), 1);
   }
 
+  // Unused in devtools, but used in LH.
   removeAllDependencies(): void {
     for (const node of this.dependencies.slice()) {
       this.removeDependency(node);

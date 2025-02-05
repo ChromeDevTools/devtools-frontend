@@ -164,11 +164,6 @@ export class TimelineGrid {
     return this.dividersLabelBarElementInternal;
   }
 
-  removeDividers(): void {
-    this.dividersElementInternal.removeChildren();
-    this.dividersLabelBarElementInternal.removeChildren();
-  }
-
   updateDividers(calculator: Calculator, freeZoneAtLeft?: number): boolean {
     const dividersData = TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
     const dividerOffsets = dividersData.offsets;
@@ -259,14 +254,6 @@ export class TimelineGrid {
 
   showEventDividers(): void {
     this.eventDividersElement.classList.remove('hidden');
-  }
-
-  hideDividers(): void {
-    this.dividersElementInternal.classList.add('hidden');
-  }
-
-  showDividers(): void {
-    this.dividersElementInternal.classList.remove('hidden');
   }
 
   setScrollTop(scrollTop: number): void {

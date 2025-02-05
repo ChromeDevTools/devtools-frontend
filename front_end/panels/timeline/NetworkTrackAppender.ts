@@ -117,7 +117,7 @@ export class NetworkTrackAppender implements TrackAppender {
    * trace events (the first available level to append next track).
    */
   #appendEventsAtLevel(events: NetworkTrackEvent[], trackStartLevel: number): number {
-    // Appending everything to the same level isn't "correct", but filterTimelineDataBetweenTimes() will handle that
+    // Appending everything to the same level isn't "correct", but relayoutEntriesWithinBounds() will handle that
     // before anything is rendered.
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];

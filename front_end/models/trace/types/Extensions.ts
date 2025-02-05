@@ -24,10 +24,6 @@ export const extensionPalette = [
 
 export type ExtensionColorFromPalette = typeof extensionPalette[number];
 
-export function colorIsValid(color: string): boolean {
-  return (extensionPalette as readonly string[]).includes(color);
-}
-
 export interface ExtensionDataPayloadBase {
   color?: ExtensionColorFromPalette;
   properties?: [string, string][];

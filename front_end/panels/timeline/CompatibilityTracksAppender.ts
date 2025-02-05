@@ -491,18 +491,6 @@ export class CompatibilityTracksAppender {
     return this.eventsForTreeView(track);
   }
 
-  /**
-   * Caches the track appender that owns a level. An appender takes
-   * ownership of a level when it appends data to it.
-   * The cache is useful to determine what appender should handle a
-   * query from the flame chart renderer when an event's feature (like
-   * style, title, etc.) is needed.
-   */
-  registerTrackForLevel(level: number, appender: TrackAppender): void {
-    // TODO(crbug.com/1442454) Figure out how to avoid the circular calls.
-    this.#trackForLevel.set(level, appender);
-  }
-
   groupForLevel(level: number): PerfUI.FlameChart.Group|null {
     const appenderForLevel = this.#trackForLevel.get(level);
     if (!appenderForLevel) {

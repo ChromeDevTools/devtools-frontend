@@ -669,11 +669,6 @@ export function eventHasCategory(event: Types.Events.Event, category: string): b
   return parsedCategoriesForEvent.has(category);
 }
 
-export function nodeIdForInvalidationEvent(event: Types.Events.InvalidationTrackingEvent): Protocol.DOM.BackendNodeId|
-    null {
-  return event.args.data.nodeId ?? null;
-}
-
 /**
  * This compares Types.Events.CallFrame with Protocol.Runtime.CallFrame and checks for equality.
  */

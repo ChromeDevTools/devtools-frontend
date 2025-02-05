@@ -310,11 +310,6 @@ export class UserMetrics {
         EnumeratedHistogram.LighthouseCategoryUsed, type, LighthouseCategoryUsed.MAX_VALUE);
   }
 
-  cssPropertyDocumentation(type: CSSPropertyDocumentation): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.CSSPropertyDocumentation, type, CSSPropertyDocumentation.MAX_VALUE);
-  }
-
   swatchActivated(swatch: SwatchType): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.SwatchActivated, swatch, SwatchType.MAX_VALUE);
@@ -998,13 +993,6 @@ export enum DevtoolsExperiments {
 
   // Increment this when new experiments are added.
   MAX_VALUE = 107,
-}
-
-export const enum CSSPropertyDocumentation {
-  SHOWN = 0,
-  TOGGLED_ON = 1,
-  TOGGLED_OFF = 2,
-  MAX_VALUE = 3,
 }
 
 // Update DevToolsIssuesPanelIssueExpanded from tools/metrics/histograms/enums.xml if new enum is added.

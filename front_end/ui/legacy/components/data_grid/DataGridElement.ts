@@ -120,7 +120,7 @@ class DataGridElement extends HTMLElement {
   }
 
   get striped(): boolean {
-    return this.hasAttribute('striped');
+    return hasBooleanAttribute(this, 'striped');
   }
 
   set inline(striped: boolean) {
@@ -128,7 +128,7 @@ class DataGridElement extends HTMLElement {
   }
 
   get inline(): boolean {
-    return this.hasAttribute('inline');
+    return hasBooleanAttribute(this, 'inline');
   }
 
   set displayName(displayName: string) {
@@ -167,7 +167,7 @@ class DataGridElement extends HTMLElement {
           title += child.shadowRoot ? child.shadowRoot.textContent : child.textContent;
         }
       }
-      const sortable = column.hasAttribute('sortable');
+      const sortable = hasBooleanAttribute(column, 'sortable');
       const width = column.getAttribute('width') ?? undefined;
       const fixedWidth = column.hasAttribute('fixed');
       let align = column.getAttribute('align') ?? undefined;
@@ -190,7 +190,7 @@ class DataGridElement extends HTMLElement {
         weight,
         editable
       });
-      if (column.hasAttribute('hideable')) {
+      if (hasBooleanAttribute(column, 'hideable')) {
         this.#hideableColumns.add(id);
       }
     }
@@ -224,7 +224,7 @@ class DataGridElement extends HTMLElement {
         const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
         const node = new DataGridElementNode(element, this);
         parentNode.insertChild(node, index);
-        if (element.hasAttribute('selected')) {
+        if (hasBooleanAttribute(element, 'selected')) {
           node.select();
         }
       }
@@ -247,7 +247,7 @@ class DataGridElement extends HTMLElement {
     const dataGridNode = dataRow ? DataGridElementNode.get(dataRow) : null;
     if (dataGridNode) {
       if (selectionOnly) {
-        if (dataRow?.hasAttribute('selected')) {
+        if (dataRow && hasBooleanAttribute(dataRow, 'selected')) {
           dataGridNode.select();
         } else {
           dataGridNode.deselect();
@@ -290,9 +290,6 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     DataGridElementNode.#elementToNode.set(configElement, this);
     this.#dataGridElement = dataGridElement;
     this.#updateData();
-    if (this.#configElement.hasAttribute('selected')) {
-      this.select();
-    }
   }
 
   static get(configElement: Element|undefined): DataGridElementNode|undefined {
@@ -373,5 +370,8 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   }
 }
 
-// TODO(dsv): Rename to devtools-data-grid once the other one is removed.
 customElements.define('devtools-data-grid', DataGridElement);
+
+function hasBooleanAttribute(element: Element, name: string): boolean {
+  return element.hasAttribute(name) && element.getAttribute(name) !== 'false';
+}

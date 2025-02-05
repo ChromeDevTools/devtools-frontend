@@ -158,6 +158,48 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
   });
 
+  it('can set selection from template', async () => {
+    let element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+            <tr selected>
+              <td>Value 3</td>
+              <td>Value 4</td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+    // clang-format off
+    assert.strictEqual(getAccessibleText(element), 'Display Name Row  Column 1: Value 3, Column 2: Value 4');
+
+    element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}>
+          <table>
+            <tr>
+              <th id="column-1">Column 1</th>
+              <th id="column-2">Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+            <tr selected="false">
+              <td>Value 3</td>
+              <td>Value 4</td>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+    // clang-format off
+    assert.isTrue(getAccessibleText(element).startsWith('Display Name Rows: 2'));
+  });
+
   it('supports editable columns', async () => {
     const editCallback = sinon.stub();
     const element = await renderDataGrid(html`

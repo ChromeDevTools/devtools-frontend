@@ -76,6 +76,8 @@ export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
   shifts: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
   clusters: Types.Events.SyntheticLayoutShiftCluster[],
   worstCluster: Types.Events.SyntheticLayoutShiftCluster | undefined,
+  /** The top 3 shift root causes for each cluster. */
+  topCulpritsByCluster: Map<Types.Events.SyntheticLayoutShiftCluster, Platform.UIString.LocalizedString[]>,
 }>;
 
 export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
@@ -473,21 +475,59 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
-function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): CLSCulpritsInsightModel {
-  let maxScore = 0;
-  for (const cluster of partialModel.clusters) {
-    if (cluster.clusterCumulativeScore > maxScore) {
-      maxScore = cluster.clusterCumulativeScore;
+/**
+ * Returns the top 3 shift root causes based on the given cluster.
+ */
+function getTopCulprits(
+    cluster: Types.Events.SyntheticLayoutShiftCluster,
+    culpritsByShift: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>):
+    Platform.UIString.LocalizedString[] {
+  const MAX_TOP_CULPRITS = 3;
+  const causes: Platform.UIString.LocalizedString[] = [];
+
+  const shifts = cluster.events;
+  for (const shift of shifts) {
+    const culprits = culpritsByShift.get(shift);
+    if (!culprits) {
+      continue;
+    }
+
+    const fontReq = culprits.fontRequests;
+    const iframes = culprits.iframeIds;
+    const animations = culprits.nonCompositedAnimations;
+    const unsizedImages = culprits.unsizedImages;
+
+    for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
+      causes.push(i18nString(UIStrings.fontRequest));
+    }
+    for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
+      causes.push(i18nString(UIStrings.injectedIframe));
+    }
+    for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
+      causes.push(i18nString(UIStrings.animation));
+    }
+    for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
+      causes.push(i18nString(UIStrings.unsizedImages));
+    }
+
+    if (causes.length >= MAX_TOP_CULPRITS) {
+      break;
     }
   }
+
+  return causes.slice(0, MAX_TOP_CULPRITS);
+}
+
+function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): CLSCulpritsInsightModel {
+  const topCulprits =
+      partialModel.worstCluster ? partialModel.topCulpritsByCluster.get(partialModel.worstCluster) ?? [] : [];
 
   return {
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.CLS,
-    // TODO: getTopCulprits in component needs to move to model so this can be set properly here.
-    shouldShow: maxScore > 0,
+    shouldShow: topCulprits.length > 0,
     ...partialModel,
   };
 }
@@ -530,11 +570,17 @@ export function generateInsight(
     relatedEvents.push(worstCluster);
   }
 
+  const topCulpritsByCluster = new Map<Types.Events.SyntheticLayoutShiftCluster, Platform.UIString.LocalizedString[]>();
+  for (const cluster of clusters) {
+    topCulpritsByCluster.set(cluster, getTopCulprits(cluster, rootCausesByShift));
+  }
+
   return finalize({
     relatedEvents,
     animationFailures,
     shifts: rootCausesByShift,
     clusters,
     worstCluster,
+    topCulpritsByCluster,
   });
 }

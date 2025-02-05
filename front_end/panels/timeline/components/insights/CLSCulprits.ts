@@ -42,50 +42,6 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     }];
   }
 
-  /**
-   * getTopCulprits gets the top 3 shift root causes based on worst cluster.
-   */
-  getTopCulprits(
-      cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
-      culpritsByShift:
-          Map<Trace.Types.Events.SyntheticLayoutShift, Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData>):
-      string[] {
-    const MAX_TOP_CULPRITS = 3;
-    const causes: Array<string> = [];
-    if (causes.length === MAX_TOP_CULPRITS) {
-      return causes;
-    }
-    const shifts = cluster.events;
-    for (const shift of shifts) {
-      if (causes.length === MAX_TOP_CULPRITS) {
-        break;
-      }
-
-      const culprits = culpritsByShift.get(shift);
-      if (!culprits) {
-        continue;
-      }
-      const fontReq = culprits.fontRequests;
-      const iframes = culprits.iframeIds;
-      const animations = culprits.nonCompositedAnimations;
-      const unsizedImages = culprits.unsizedImages;
-
-      for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-        causes.push(i18nString(UIStrings.fontRequest));
-      }
-      for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-        causes.push(i18nString(UIStrings.injectedIframe));
-      }
-      for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
-        causes.push(i18nString(UIStrings.animation));
-      }
-      for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
-        causes.push(i18nString(UIStrings.unsizedImages));
-      }
-    }
-    return causes.slice(0, MAX_TOP_CULPRITS);
-  }
-
   #clickEvent(event: Trace.Types.Events.Event): void {
     this.dispatchEvent(new EventReferenceClick(event));
   }
@@ -100,10 +56,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     }
 
     const worstCluster = this.model.worstCluster;
-    const culpritsByShift = this.model.shifts;
-
-    // TODO: getTopCulprits needs to move to model.
-    const culprits = this.getTopCulprits(worstCluster, culpritsByShift);
+    const culprits = this.model.topCulpritsByCluster.get(worstCluster) ?? [];
     if (culprits.length === 0) {
       return html`<div class="insight-section">${i18nString(UIStrings.noCulprits)}</div>`;
     }

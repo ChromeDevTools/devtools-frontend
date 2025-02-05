@@ -256,9 +256,15 @@ export class TopDownRootNode extends TopDownNode {
   override selfTime: number;
 
   constructor(
-      events: Types.Events.Event[], filters: TraceFilter[], startTime: Types.Timing.Milli, endTime: Types.Timing.Milli,
-      doNotAggregate?: boolean, eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
-      includeInstantEvents?: boolean) {
+      events: Types.Events.Event[],
+      {filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents}: {
+        filters: TraceFilter[],
+        startTime: Types.Timing.Milli,
+        endTime: Types.Timing.Milli,
+        doNotAggregate?: boolean,
+        eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
+        includeInstantEvents?: boolean,
+      }) {
     super('', events[0], null);
     this.event = events[0];
     this.root = this;
@@ -273,7 +279,6 @@ export class TopDownRootNode extends TopDownNode {
     this.totalTime = endTime - startTime;
     this.selfTime = this.totalTime;
   }
-
   override children(): ChildrenCache {
     return this.childrenInternal || this.grouppedTopNodes();
   }
@@ -313,13 +318,16 @@ export class BottomUpRootNode extends Node {
   readonly filter: (e: Types.Events.Event) => boolean;
   readonly startTime: Types.Timing.Milli;
   readonly endTime: Types.Timing.Milli;
-  private eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null;
+  private eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   override totalTime: number;
 
-  constructor(
-      events: Types.Events.Event[], textFilter: TraceFilter, filters: readonly TraceFilter[],
-      startTime: Types.Timing.Milli, endTime: Types.Timing.Milli,
-      eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null) {
+  constructor(events: Types.Events.Event[], {textFilter, filters, startTime, endTime, eventGroupIdCallback}: {
+    textFilter: TraceFilter,
+    filters: readonly TraceFilter[],
+    startTime: Types.Timing.Milli,
+    endTime: Types.Timing.Milli,
+    eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
+  }) {
     super('', events[0]);
     this.childrenInternal = null;
     this.events = events;

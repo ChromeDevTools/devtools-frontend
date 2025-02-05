@@ -70,9 +70,13 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     const entityMapper = this.entityMapper();
 
     if (!parsedTrace || !entityMapper) {
-      return new Trace.Extras.TraceTree.BottomUpRootNode(
-          [], this.textFilter(), this.filtersWithoutTextFilter(), this.startTime, this.endTime,
-          this.groupingFunction());
+      return new Trace.Extras.TraceTree.BottomUpRootNode([], {
+        textFilter: this.textFilter(),
+        filters: this.filtersWithoutTextFilter(),
+        startTime: this.startTime,
+        endTime: this.endTime,
+        eventGroupIdCallback: this.groupingFunction(),
+      });
     }
 
     // Update summaries.
@@ -91,8 +95,13 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // the main flame chart).
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
         Utils.EntryStyles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
-    const node = new Trace.Extras.TraceTree.BottomUpRootNode(
-        relatedEvents, this.textFilter(), [filter], this.startTime, this.endTime, this.groupingFunction());
+    const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
+      textFilter: this.textFilter(),
+      filters: [filter],
+      startTime: this.startTime,
+      endTime: this.endTime,
+      eventGroupIdCallback: this.groupingFunction(),
+    });
     return node;
   }
 

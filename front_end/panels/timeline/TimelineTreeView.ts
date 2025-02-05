@@ -437,10 +437,15 @@ export class TimelineTreeView extends
     throw new Error('Not Implemented');
   }
 
-  buildTopDownTree(doNotAggregate: boolean, groupIdCallback: ((arg0: Trace.Types.Events.Event) => string)|null):
+  buildTopDownTree(doNotAggregate: boolean, eventGroupIdCallback: ((arg0: Trace.Types.Events.Event) => string)|null):
       Trace.Extras.TraceTree.Node {
-    return new Trace.Extras.TraceTree.TopDownRootNode(
-        this.selectedEvents(), this.filters(), this.startTime, this.endTime, doNotAggregate, groupIdCallback);
+    return new Trace.Extras.TraceTree.TopDownRootNode(this.selectedEvents(), {
+      filters: this.filters(),
+      startTime: this.startTime,
+      endTime: this.endTime,
+      doNotAggregate,
+      eventGroupIdCallback,
+    });
   }
 
   populateColumns(columns: DataGrid.DataGrid.ColumnDescriptor[]): void {
@@ -1153,9 +1158,13 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   }
 
   override buildTree(): Trace.Extras.TraceTree.Node {
-    return new Trace.Extras.TraceTree.BottomUpRootNode(
-        this.selectedEvents(), this.textFilter(), this.filtersWithoutTextFilter(), this.startTime, this.endTime,
-        this.groupingFunction(this.groupBySetting.get()));
+    return new Trace.Extras.TraceTree.BottomUpRootNode(this.selectedEvents(), {
+      textFilter: this.textFilter(),
+      filters: this.filtersWithoutTextFilter(),
+      startTime: this.startTime,
+      endTime: this.endTime,
+      eventGroupIdCallback: this.groupingFunction(this.groupBySetting.get()),
+    });
   }
 }
 

@@ -84,8 +84,13 @@ export class AICallTree {
     const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
     const customFilter = new AITreeFilter(selectedEvent);
     // Build a tree bounded by the selected event's timestamps, and our other filters applied
-    const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(
-        overlappingEvents, [visibleEventsFilter, customFilter], startTime, endTime, false, null, true);
+
+    const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
+      filters: [visibleEventsFilter, customFilter],
+      startTime,
+      endTime,
+      includeInstantEvents: true,
+    });
 
     // Walk the tree to find selectedNode
     let selectedNode: Trace.Extras.TraceTree.Node|null = null;

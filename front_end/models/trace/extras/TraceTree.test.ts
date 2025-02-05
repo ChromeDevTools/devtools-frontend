@@ -29,8 +29,11 @@ describeWithEnvironment('TraceTree', () => {
         eventB,
         eventC,
       ];
-      const root =
-          new TraceTree.TopDownRootNode(events, [], Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(200_000));
+      const root = new TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -57,8 +60,11 @@ describeWithEnvironment('TraceTree', () => {
         eventD,
         eventB,
       ];
-      const root =
-          new TraceTree.TopDownRootNode(events, [], Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(200_000));
+      const root = new TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -92,8 +98,11 @@ describeWithEnvironment('TraceTree', () => {
         eventC,
         eventD,
       ];
-      const root =
-          new TraceTree.TopDownRootNode(events, [], Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(200_000));
+      const root = new TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -130,8 +139,11 @@ describeWithEnvironment('TraceTree', () => {
         eventD,
         eventE,
       ];
-      const root =
-          new TraceTree.TopDownRootNode(events, [], Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(200_000));
+      const root = new TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -175,8 +187,11 @@ describeWithEnvironment('TraceTree', () => {
         eventB,
         eventC,
       ];
-      const root =
-          new TraceTree.TopDownRootNode(events, [], Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(200_000));
+      const root = new TraceTree.TopDownRootNode(events, {
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -203,9 +218,12 @@ describeWithEnvironment('TraceTree', () => {
         eventD,
         eventB,
       ];
-      const root = new TraceTree.BottomUpRootNode(
-          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.Milli(0),
-          Trace.Types.Timing.Milli(200_000), null);
+      const root = new TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -257,9 +275,12 @@ describeWithEnvironment('TraceTree', () => {
         eventD,
       ];
 
-      const root = new TraceTree.BottomUpRootNode(
-          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.Milli(0),
-          Trace.Types.Timing.Milli(200_000), null);
+      const root = new TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -313,9 +334,13 @@ describeWithEnvironment('TraceTree', () => {
         eventD,
         eventE,
       ];
-      const root = new TraceTree.BottomUpRootNode(
-          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.Milli(0),
-          Trace.Types.Timing.Milli(200_000), null);
+
+      const root = new TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+      });
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 5);
@@ -351,8 +376,12 @@ describeWithEnvironment('TraceTree', () => {
           Trace.Types.Events.Name.RUN_TASK,
         ]),
       ];
-      const root =
-          new TraceTree.BottomUpRootNode(mainThread.entries, textFilter, modelFilters, bounds.min, bounds.max, null);
+      const root = new TraceTree.BottomUpRootNode(mainThread.entries, {
+        textFilter,
+        filters: modelFilters,
+        startTime: bounds.min,
+        endTime: bounds.max,
+      });
       const rootChildren = root.children();
       const values = Array.from(rootChildren.values());
       // Find the list of profile calls that have been calculated as the top level rows in the Bottom Up table.

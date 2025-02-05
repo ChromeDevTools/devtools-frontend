@@ -250,12 +250,12 @@
   color: var(--sys-color-primary);
 }
 
-.tabbed-pane-header-tab.dragging {
+.tabbed-pane-header-tab.selected.dragging {
   --override-dragging-box-shadow-color: rgb(0 0 0 / 37%);
 
   position: relative;
   box-shadow: 0 1px 4px 0 var(--override-dragging-box-shadow-color);
-  background-color: var(--sys-color-state-hover-on-subtle);
+  background-color: var(--app-color-toolbar-background);
 }
 
 .theme-with-dark-background .tabbed-pane-header-tab.dragging,

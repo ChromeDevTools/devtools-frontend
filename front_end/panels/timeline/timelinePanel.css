@@ -559,9 +559,19 @@
 }
 
 .timeline-details-range-summary {
-  overflow: auto;
   height: 100%;
   margin: var(--sys-size-4) 0;
+
+  & > devtools-performance-timeline-summary {
+    /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
+       Also this style can't be applied on the element's :host without !important, thus its here. */
+    min-width: 192px;
+  }
+}
+
+/* Dont need to see insight chips in range summary */
+.timeline-details-range-summary + devtools-related-insight-chips {
+  display:none;
 }
 
 .timeline-details-chip-title > div {
@@ -660,7 +670,8 @@ devtools-performance-third-party-tree-view {
 
     /* Default data-grid has this element on the edge of the rows,
       we don't need them for the 3P table. So for now set display to none. */
-    .corner {
+    .corner,
+    &.data-grid-fits-viewport .corner {
       display: none;
     }
 
@@ -673,7 +684,7 @@ devtools-performance-third-party-tree-view {
     /* See column width comments in populateColumns() */
     max-width: min(100%, 550px);
     min-width: 350px; /* Lower than this, there's not enough room for the entity name */
-    padding: 0 var(--sys-size-8) 0 var(--sys-size-6);
+    padding: 0 0 0 var(--sys-size-6);
     border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 

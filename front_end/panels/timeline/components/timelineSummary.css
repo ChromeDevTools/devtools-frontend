@@ -5,24 +5,21 @@
  */
 
 :host {
-  display: contents;
+  max-height: 100%;
+  overflow: hidden auto;
+  scrollbar-width: thin; /* ~11px wide reserved for gutter */
 }
 
 .timeline-summary {
   font-size: var(--sys-typescale-body4-size);
-  display: flex;
   flex-direction: column;
   padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
-  gap: 2px;
-  min-width: 192px;
-
 }
 
 .summary-range {
   font-weight: var(--ref-typeface-weight-medium);
-  height: 23px;
-  line-height: 21px;
-  padding-top: 0.5px;
+  height: 24.5px;
+  line-height: 22px;
 }
 
 .category-summary {

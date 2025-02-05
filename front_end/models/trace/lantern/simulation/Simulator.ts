@@ -279,7 +279,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
   }
 
   /**
-   * Estimates the number of milliseconds remaining given current condidtions before the node is complete.
+   * Estimates the number of milliseconds remaining given current conditions before the node is complete.
    */
   estimateTimeRemaining(node: Graph.Node): number {
     if (node.type === Graph.BaseNode.types.CPU) {
@@ -353,7 +353,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
   }
 
   /**
-   * Given a time period, computes the progress toward completion that the node made durin that time.
+   * Given a time period, computes the progress toward completion that the node made during that time.
    */
   updateProgressMadeInTimePeriod(node: Graph.Node, timePeriodLength: number, totalElapsedTime: number): void {
     const timingData = this.nodeTimings.getInProgress(node);
@@ -488,7 +488,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
         throw new Core.LanternError('Failed to start a node');
       }
 
-      // set the available throughput for all connections based on # inflight
+      // set the available throughput for all connections based on # in-flight
       this.updateNetworkCapacity();
 
       // find the time that the next node will finish

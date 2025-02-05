@@ -47,7 +47,7 @@ export class AICallTree {
     // We allow two thread types to deal with the NodeJS use case.
     // MAIN_THREAD is used when a trace has been generated through Chrome
     //   tracing on a website (and we have a renderer)
-    // CPU_PROFILE is used only when we have recieved a CPUProfile - in this
+    // CPU_PROFILE is used only when we have received a CPUProfile - in this
     //   case all the threads are CPU_PROFILE so we allow those. If we only allow
     //   MAIN_THREAD then we wouldn't ever allow NodeJS users to use the AI
     //   integration.

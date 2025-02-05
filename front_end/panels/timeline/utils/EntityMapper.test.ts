@@ -39,7 +39,7 @@ describeWithEnvironment('EntityMapper', function() {
       });
     });
 
-    // Additioanlly make sure they sum up.
+    // Additionally make sure they sum up.
     mappings.eventsByEntity.entries().forEach(([entity, events]) => {
       const eventsInNetwork = fromNetwork.get(entity) ?? [];
       const eventsInRenderer = fromRenderer.get(entity) ?? [];

@@ -1001,8 +1001,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     /**
      * When a hovered entry on any track is double clicked, create a label for it.
      *
-     * Checking the existance of `highlightedEntryIndex` is enough to make sure that the double
-     * click happenned on the entry since an entry is only highlighted if the mouse is hovering it.
+     * Checking the existence of `highlightedEntryIndex` is enough to make sure that the double
+     * click happened on the entry since an entry is only highlighted if the mouse is hovering it.
      */
     if (this.highlightedEntryIndex !== -1) {
       this.#selectGroup(groupIndex);
@@ -1943,7 +1943,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const startTime = timelineData.entryStartTimes[index];
     const duration = timelineData.entryTotalTimes[index];
     const endX = this.chartViewport.timeToPosition(startTime + duration);
-    // The arrow icon is square, thefore the width is equal to the bar height
+    // The arrow icon is square, therefore the width is equal to the bar height
     const barHeight = this.#eventBarHeight(timelineData, index);
     const arrowWidth = barHeight;
     if (endX - arrowWidth - this.hitMarginPx < x && x < endX + this.hitMarginPx) {
@@ -2452,7 +2452,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   /**
    * Draws (but does not fill) a rectangle for a given event onto the provided
    * context. Because sometimes we need to draw a portion of the rect, it
-   * optionally allows the start X and width of the rect to be overriden by
+   * optionally allows the start X and width of the rect to be overridden by
    * custom pixel values. It currently does not allow the start Y and height to
    * be changed because we have no need to do so, but this can be extended in
    * the future if required.
@@ -2513,7 +2513,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   /**
    * Preprocess the data to be drawn to speed the rendering time.
-   * Especifically:
+   * Specifically:
    *  - Groups events into draw batches - same color + same outline - to help drawing performance
    *    by reducing how often `context.fillStyle` is changed.
    *  - Discards non visible events.
@@ -2935,7 +2935,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         const hasArrowDecoration =
             this.entryHasDecoration(entryIndex, FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW);
         // Set the max width to be the width of the bar plus some padding. If the bar has an arrow decoration and the bar is wide enough for the larger
-        // version of the decoration that is a square button, also substract the width of the decoration.
+        // version of the decoration that is a square button, also subtract the width of the decoration.
         // Because the decoration is square, it's width is equal to this.barHeight
         const maxBarWidth = (hasArrowDecoration && barWidth > barHeight * 2) ? barWidth - textPadding - this.barHeight :
                                                                                barWidth - 2 * textPadding;
@@ -3475,7 +3475,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   /**
-   * Builds a tree for the given group array, the tree will be builded based on the nesting level.
+   * Builds a tree for the given group array, the tree will be built based on the nesting level.
    * We will add one fake root to represent the top level parent, and the for each tree node, its children means the
    * group nested in. The order of the children matters because it represent the order of groups.
    * So for example if there are Group 0-7, Group 0, 3, 4 have nestingLevel 0, Group 1, 2, 5, 6, 7 have nestingLevel 1.
@@ -4244,12 +4244,12 @@ export const enum Events {
    * away from any events)
    */
   ENTRY_INVOKED = 'EntryInvoked',
-  // Emmited when entry label annotation is added through a shotcut or a context menu.
+  // Emitted when entry label annotation is added through a shortcut or a context menu.
   ENTRY_LABEL_ANNOTATION_ADDED = 'EntryLabelAnnotationAdded',
-  // Emmited when entries link annotation is added through a shotcut or a context menu.
+  // Emitted when entries link annotation is added through a shortcut or a context menu.
   ENTRIES_LINK_ANNOTATION_CREATED = 'EntriesLinkAnnotationCreated',
   /**
-   * Emmited when the user enters or exits 'reorder tracks' view.
+   * Emitted when the user enters or exits 'reorder tracks' view.
    * If the event value is 'true', the 'reorder tracks' state was entered,
    * if it's false, the reorder state was exited.
    */

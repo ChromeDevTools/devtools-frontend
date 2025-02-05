@@ -442,7 +442,7 @@ export interface MetricScore {
   metricName: MetricName;
   classification: ScoreClassification;
   event?: Types.Events.PageLoadEvent;
-  // The last navigation that occured before this metric score.
+  // The last navigation that occurred before this metric score.
   navigation?: Types.Events.NavigationStart;
   estimated?: boolean;
   timing: Types.Timing.Micro;

@@ -99,7 +99,7 @@ export interface NetworkRequest<T = AnyNetworkObject> {
   networkRequestTime: number;
   /**
    * When the last byte of the response headers is received, in milliseconds.
-   * Equal to networkRequestTime if no data is recieved over the
+   * Equal to networkRequestTime if no data is received over the
    * network (ex: cached requests or data urls).
    */
   responseHeadersEndTime: number;
@@ -138,7 +138,7 @@ export interface NetworkRequest<T = AnyNetworkObject> {
    */
   serverResponseTime?: number;
   /**
-   * Implementation-specific canoncial data structure that this Lantern NetworkRequest
+   * Implementation-specific canonical data structure that this Lantern NetworkRequest
    * was derived from.
    * Users of Lantern create a NetworkRequest matching this interface,
    * but can store the source-of-truth for their network model in this property.

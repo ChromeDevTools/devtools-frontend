@@ -109,7 +109,7 @@ export function treify(entries: Types.Events.Event[], options?: {
     const parentEnd = parentBegin + parentDuration;
     // Check the relationship between the parent event at the top of the stack,
     // and the current event being processed. There are only 4 distinct
-    // possiblities, only 2 of them actually valid, given the assumed sorting:
+    // possibilities, only 2 of them actually valid, given the assumed sorting:
     // 1. Current event starts before the parent event, ends whenever. (invalid)
     // 2. Current event starts after the parent event, ends whenever. (valid)
     // 3. Current event starts during the parent event, ends after. (invalid)

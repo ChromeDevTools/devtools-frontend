@@ -248,7 +248,7 @@ export function assignThreadName(
 /**
  * Removes unneeded trace data opportunistically stored while handling events.
  * This currently does the following:
- *  - Deletes processes with an unkonwn origin.
+ *  - Deletes processes with an unknown origin.
  */
 export function sanitizeProcesses(processes: Map<Types.Events.ProcessID, RendererProcess>): void {
   const auctionWorklets = auctionWorkletsData().worklets;

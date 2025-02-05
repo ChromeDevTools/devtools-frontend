@@ -32,7 +32,7 @@ import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder} from './Trace
  * the duration of the calls in the tracking stack.
  *
  * note: Although this approach has been implemented since long ago, and
- * is relatively efficent (adds a complexity over the trace parsing of
+ * is relatively efficient (adds a complexity over the trace parsing of
  * O(n) where n is the number of samples) it has proven to be faulty.
  * It might be worthwhile experimenting with improvements or with a
  * completely different approach. Improving the approach is tracked in
@@ -40,7 +40,7 @@ import {extractSampleTraceId, makeProfileCall, mergeEventsInOrder} from './Trace
  */
 export class SamplesIntegrator {
   /**
-   * The result of runing the samples integrator. Holds the JS calls
+   * The result of running the samples integrator. Holds the JS calls
    * with their approximated duration after integrating samples into the
    * trace event tree.
    */

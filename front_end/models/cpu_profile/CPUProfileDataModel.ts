@@ -91,7 +91,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     this.samples = profile.samples;
 
     // Lines are available only in profiles coming from tracing.
-    // Elements in the lines array have a 1 to 1 correspondance with
+    // Elements in the lines array have a 1 to 1 correspondence with
     // samples, by array position. They can be 1 or 0 and indicate if
     // there is line data for a given sample, i.e. if a given sample
     // needs to be included to calculate the line level execution time
@@ -334,7 +334,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     // apart when they shouldn't.
     // Here's a workaround for that. When there's a single (program) sample
     // between two call stacks sharing the same bottom node, it is replaced
-    // with the preceeding sample.
+    // with the preceding sample.
     const samples = this.samples;
     if (!samples) {
       return;

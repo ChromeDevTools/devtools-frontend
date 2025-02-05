@@ -145,7 +145,7 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/f
 
 ### two-workers
 
-Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculcate fibonnaci numbers.
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculate fibonnaci numbers.
 
 ### timer-initiators
 

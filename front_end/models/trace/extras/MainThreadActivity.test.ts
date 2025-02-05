@@ -52,7 +52,7 @@ describe('MainThreadActivity', function() {
     // Therefore, the window focuses on the time period of 1 to 280ms (280 is
     // the end time of the event that starts at 230ms).
     // The right number looks odd because when we zoom the window we adjust it
-    // postively by 5% for the upper bound to give it some breathing room.
+    // positively by 5% for the upper bound to give it some breathing room.
     assert.strictEqual(win.min, milliToMicro(1));
     assert.strictEqual(win.max, milliToMicro(293.95));
   });

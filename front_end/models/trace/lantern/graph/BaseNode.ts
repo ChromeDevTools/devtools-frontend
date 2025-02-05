@@ -179,7 +179,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
    * node this was called on is not included in the resulting filtered graph, the method will throw.
    *
    * This does not clone NetworkNode's `record` or `rawRecord` fields. It may be reasonable to clone the former,
-   * to assist in graph construction, but the latter should never be cloned as one contraint of Lantern is that
+   * to assist in graph construction, but the latter should never be cloned as one constraint of Lantern is that
    * the underlying data records are accessible for plain object reference equality checks.
    */
   cloneWithRelationships(predicate?: (arg0: Node) => boolean): Node {

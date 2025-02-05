@@ -295,7 +295,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
         totalOccurrences: 0,
         isUnrecognized: true,
       };
-      // Set a fake entity for this event that should get overriden. Initially
+      // Set a fake entity for this event that should get overridden. Initially
       // both traces are mapped together, after the sourcemap that should change
       mapper.mappings().entityByEvent.set(profileCall, testEntity);
       mapper.mappings().entityByEvent.set(profileCallUnmapped, testEntity);

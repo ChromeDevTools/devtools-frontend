@@ -595,7 +595,7 @@ export interface ForEachEventConfig {
  * 9. End A
  *
  * By default, async events are skipped. This behaviour can be
- * overriden making use of the config.ignoreAsyncEvents parameter.
+ * overridden making use of the config.ignoreAsyncEvents parameter.
  */
 export function forEachEvent(
     events: Types.Events.Event[],

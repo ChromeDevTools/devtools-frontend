@@ -207,7 +207,7 @@ const UIStrings = {
    */
   xhrReadyStateChange: '`XHR` `readyState` change',
   /**
-   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
+   * @description Text for an event. Shown in the timeline in the Performance panel.
    * XHR refers to XmlHttpRequest, a Web API. (see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
    * The text is shown when a XmlHttpRequest load event happens on the inspected page.
    */
@@ -241,7 +241,7 @@ const UIStrings = {
    */
   cacheModule: 'Cache module code',
   /**
-   * @description Text for an event. Shown in the timeline in the Perforamnce panel.
+   * @description Text for an event. Shown in the timeline in the Performance panel.
    * "Module" refers to JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
    * JavaScript modules are a way to organize JavaScript code.
    * "Evaluate" is the phase when the JavaScript code of a module is executed.
@@ -610,7 +610,7 @@ let categoryStyles: CategoryPalette|null;
 /**
  * This map defines the styles for events shown in the panel. This
  * includes its color (which on the event's category, the label it's
- * displayed with and flag to know wether it's visible in the flamechart
+ * displayed with and flag to know weather it's visible in the flamechart
  * or not).
  * The thread appenders use this map to determine if an event should be
  * shown in the flame chart. If an event is not in the map, then it

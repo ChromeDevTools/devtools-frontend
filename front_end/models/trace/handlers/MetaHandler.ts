@@ -44,7 +44,7 @@ const traceBounds: Types.Timing.TraceWindowMicro = {
  * Note that these Maps will have the same values in them; these are just keyed
  * differently to make look-ups easier.
  *
- * We also additionally maintain an array of only navigations that occured on
+ * We also additionally maintain an array of only navigations that occurred on
  * the main frame. In many places in the UI we only care about highlighting
  * main frame navigations, so calculating this list here is better than
  * filtering either of the below maps over and over again at the UI layer.
@@ -236,7 +236,7 @@ export function handleEvent(event: Types.Events.Event): void {
           mainFrameURL = frame.url;
         }
       } else if (traceHasOutermostMainFrameFlag) {
-        // Less ideal: "guess" at the main thread by using this falg.
+        // Less ideal: "guess" at the main thread by using this flag.
         if (frame.isOutermostMainFrame) {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
@@ -376,7 +376,7 @@ export async function finalize(): Promise<void> {
   // the previous page. This doesn't matter too much except we often use this
   // URL as the visual name of the trace shown to the user (e.g. in the history
   // dropdown). We can be more accurate by finding the first main frame
-  // navigaton, and using its URL, if we have it.
+  // navigation, and using its URL, if we have it.
   // However, to avoid doing this in a case where the first navigation is far
   // into the trace's lifecycle, we only do this in situations where the first
   // navigation happened very soon (0.5 seconds) after the trace started

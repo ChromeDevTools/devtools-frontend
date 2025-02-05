@@ -354,7 +354,7 @@ function createNetworkRequests(
     }
 
     // Apply the `:redirect` requestId convention: only redirects[0].requestId is the actual
-    // requestId, all the rest have n occurences of `:redirect` as a suffix.
+    // requestId, all the rest have n occurrences of `:redirect` as a suffix.
     for (let i = 1; i < requestChain.length; i++) {
       requestChain[i].requestId = `${requestChain[i - 1].requestId}:redirect`;
     }

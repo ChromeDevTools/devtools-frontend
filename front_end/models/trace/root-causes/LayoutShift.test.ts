@@ -40,7 +40,7 @@ function createMockMatchedRules(cssProperties: {name: string, value: string}[]):
 describeWithMockConnection('LayoutShift root causes', () => {
   /*
      * This test has to do a lot of mocking and creating of fake data in order
-     * to function. Normally in the perfomance panel tests we prefer to parse a
+     * to function. Normally in the performance panel tests we prefer to parse a
      * real trace and use that, but in this case because LayoutShift root causes
      * rely on having an actual DevTools instance open with access to the DOM,
      * we can't do that. So therefore we completely mock the set of data
@@ -265,7 +265,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
              return cause.unsizedMedia.map(media => Number(media.node.backendNodeId));
            });
 
-           // Test the nodes from the LI events are assinged as the potential root causes to layout shifts correctly.
+           // Test the nodes from the LI events are assigned as the potential root causes to layout shifts correctly.
            assert.lengthOf(shiftCausesNodeIds[0], 1);
            assert.strictEqual(shiftCausesNodeIds[0][0], resizeEventsNodeIds[0]);
 
@@ -432,7 +432,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
              return cause.iframes.map(node => Number(node.iframe.backendNodeId));
            });
 
-           // Test the nodes from the LI events are assinged as the potential root causes to layout shifts correctly.
+           // Test the nodes from the LI events are assigned as the potential root causes to layout shifts correctly.
            assert.lengthOf(shiftCausesNodeIds[0], 1);
            assert.strictEqual(shiftCausesNodeIds[0][0], iframesNodeIds[0]);
 

@@ -30,7 +30,7 @@ export class EntityMapper {
    * the NetworkRequestsHandler.
    */
   #initializeEntityMappings(parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Handlers.Helpers.EntityMappings {
-    // NetworkRequestHander caches.
+    // NetworkRequestHandler caches.
     const entityByNetworkEvent = parsedTrace.NetworkRequests.entityMappings.entityByEvent;
     const networkEventsByEntity = parsedTrace.NetworkRequests.entityMappings.eventsByEntity;
     const networkCreatedCache = parsedTrace.NetworkRequests.entityMappings.createdEntityCache;

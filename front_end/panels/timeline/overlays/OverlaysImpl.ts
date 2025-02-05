@@ -490,7 +490,7 @@ export class Overlays extends EventTarget {
    */
   #overlaysContainer: HTMLElement;
 
-  // Setting that specififed if the annotations overlays need to be visible.
+  // Setting that specified if the annotations overlays need to be visible.
   // It is switched on/off from the annotations tab in the sidebar.
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
 
@@ -691,7 +691,7 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * Update the dimenions of a chart.
+   * Update the dimensions of a chart.
    * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
    */
   updateChartDimensions(chart: EntryChartLocation, dimensions: FlameChartDimensions): void {
@@ -709,7 +709,7 @@ export class Overlays extends EventTarget {
   /**
    * Clears all overlays and all data. Call this when the trace is changing
    * (e.g. the user has imported/recorded a new trace) and we need to start from
-   * scratch and remove all overlays relating to the preivous trace.
+   * scratch and remove all overlays relating to the previous trace.
    */
   reset(): void {
     if (this.#overlaysContainer) {
@@ -1027,7 +1027,7 @@ export class Overlays extends EventTarget {
 
         // Available space between the bottom of the overlay and top of the chart.
         const minSpace = Math.max(bottom, 0);
-        // Contrain height to available space.
+        // Constrain height to available space.
         const height = Math.min(MAX_BOX_HEIGHT, minSpace);
 
         const top = bottom - height;
@@ -1241,7 +1241,7 @@ export class Overlays extends EventTarget {
       return null;
     }
 
-    // Position the start of label overlay at the start of the entry + length of connector + legth of the label element
+    // Position the start of label overlay at the start of the entry + length of connector + length of the label element
     element.style.top = `${y - Components.EntryLabelOverlay.EntryLabelOverlay.LABEL_AND_CONNECTOR_HEIGHT}px`;
     element.style.left = `${x}px`;
     element.style.width = `${entryWidth}px`;
@@ -1372,7 +1372,7 @@ export class Overlays extends EventTarget {
       widthPixels = customPos.width;
     }
 
-    // Calculate the visible overlay width by substracting the entry width that is outside of the flamechart width
+    // Calculate the visible overlay width by subtracting the entry width that is outside of the flamechart width
     const cutOffRight = (x + widthPixels > chartWidth) ? (x + widthPixels) - chartWidth : null;
     const cutOffLeft = (x < 0) ? Math.abs(x) : null;
     element.classList.toggle('cut-off-right', cutOffRight !== null);
@@ -1786,7 +1786,7 @@ export class Overlays extends EventTarget {
   /**
    * Calculate if an entry is visible vertically on the chart. A bit fiddly as
    * we have to figure out its pixel offset and go on that. Unlike horizontal
-   * visibility, we can't work soley from its microsecond values.
+   * visibility, we can't work solely from its microsecond values.
    */
   #entryIsVerticallyVisibleOnChart(entry: OverlayEntry): boolean {
     const chartName = chartForEntry(entry);

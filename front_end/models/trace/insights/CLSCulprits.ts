@@ -266,7 +266,7 @@ function getShiftsByPrePaintEvents(
     layoutShifts: Types.Events.SyntheticLayoutShift[],
     prePaintEvents: Types.Events.PrePaint[],
     ): Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]> {
-  // Maps from PrePaint events to LayoutShifts that occured in each one.
+  // Maps from PrePaint events to LayoutShifts that occurred in each one.
   const shiftsByPrePaint = new Map<Types.Events.PrePaint, Types.Events.SyntheticLayoutShift[]>();
 
   // Associate all shifts to their corresponding PrePaint.

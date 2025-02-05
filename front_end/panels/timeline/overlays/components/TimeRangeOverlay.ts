@@ -46,7 +46,7 @@ export class TimeRangeOverlay extends HTMLElement {
   #label: string;
 
   // The label is set to editable and in focus anytime the label is empty and when the label it is double clicked.
-  // If the user clicks away from the selected range element and the label is not empty, the lable is set to not editable until it is double clicked.
+  // If the user clicks away from the selected range element and the label is not empty, the label is set to not editable until it is double clicked.
   #isLabelEditable: boolean = true;
 
   #rangeContainer: HTMLElement|null = null;

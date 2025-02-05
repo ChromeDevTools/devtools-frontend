@@ -1452,7 +1452,7 @@ interface ChromeFrameReporter {
   /**  Identifies a BeginFrameArgs (along with the source_id).
        See comments in components/viz/common/frame_sinks/begin_frame_args.h. */
   frame_sequence: number;
-  /**  If this is a droped frame (i.e. if |state| is set to |STATE_DROPPED| or
+  /**  If this is a dropped frame (i.e. if |state| is set to |STATE_DROPPED| or
        |STATE_PRESENTED_PARTIAL|), then indicates whether this frame impacts smoothness. */
   affects_smoothness: boolean;
   /** The type of active scroll. */
@@ -1612,7 +1612,7 @@ export interface SyntheticInteractionPair extends SyntheticEventPair<EventTiming
  * trace event.
  *
  * We store the sampleIndex, profileId and nodeId so that we can easily link
- * back a Synthetic Trace Entry to an indivdual Sample trace event within a
+ * back a Synthetic Trace Entry to an individual Sample trace event within a
  * Profile.
  *
  * Because a sample contains a set of call frames representing the stack at the

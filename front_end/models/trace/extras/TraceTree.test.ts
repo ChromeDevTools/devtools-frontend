@@ -343,7 +343,7 @@ describeWithEnvironment('TraceTree', () => {
       const mainThread = getMainThread(parsedTrace.Renderer);
       const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
 
-      // Replicate the filters as they would be when renderering in the actual panel.
+      // Replicate the filters as they would be when rendering in the actual panel.
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
       const modelFilters = [
         Timeline.TimelineUIUtils.TimelineUIUtils.visibleEventsFilter(),

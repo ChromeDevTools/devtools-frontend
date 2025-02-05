@@ -475,13 +475,14 @@ export abstract class AiAgent<T> {
       request,
       response: aidaResponse,
     });
-
-    this.#structuredLog.push({
-      request: structuredClone(request),
-      response,
-      aidaResponse,
-    });
-    localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
+    if (isDebugMode()) {
+      this.#structuredLog.push({
+        request: structuredClone(request),
+        response,
+        aidaResponse,
+      });
+      localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
+    }
   }
 
   buildRequest(part: Host.AidaClient.Part, role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED):

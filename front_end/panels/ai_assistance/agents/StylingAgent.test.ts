@@ -897,7 +897,7 @@ STOP`,
         },
       ]);
       sinon.assert.notCalled(execJs);
-      assert.deepEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
         {
           role: 1,
           parts: [{text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'}],
@@ -1195,7 +1195,7 @@ STOP
         },
       ]);
       sinon.assert.notCalled(execJs);
-      assert.deepEqual(agent.chatHistoryForTesting, []);
+      assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
     });
 
     it('generates an action response if action and answer both present', async () => {
@@ -1303,7 +1303,7 @@ ANSWER: this is the answer`,
 
       await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
 
-      assert.deepEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
         {
           role: 1,
           parts: [{text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'}],
@@ -1373,7 +1373,7 @@ ANSWER: this is the answer`,
       await Array.fromAsync(
           agent.run('test', {selected: new AiAssistance.NodeContext(element), signal: controller.signal}));
 
-      assert.deepEqual(agent.chatHistoryForTesting, []);
+      assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
     });
   });
 

@@ -303,7 +303,7 @@ describeWithEnvironment('AiAgent', () => {
 
         await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
 
-        assert.deepEqual(agent.chatHistoryForTesting, [
+        assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
           {
             role: Host.AidaClient.Role.USER,
             parts: [{text: 'query'}],

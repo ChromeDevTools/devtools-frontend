@@ -205,7 +205,7 @@ self: 3
         },
       ]);
 
-      assert.deepEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
         {
           role: 1,
           parts: [{text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`}],

@@ -315,7 +315,6 @@ export const enum ExperimentName {
   TIMELINE_EXPERIMENTAL_INSIGHTS = 'timeline-experimental-insights',
   TIMELINE_DIM_UNRELATED_EVENTS = 'timeline-dim-unrelated-events',
   TIMELINE_ALTERNATIVE_NAVIGATION = 'timeline-alternative-navigation',
-  TIMELINE_THIRD_PARTY_DEPENDENCIES = 'timeline-third-party-dependencies',
   // when adding to this enum, you'll need to also add to REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts
 }
 

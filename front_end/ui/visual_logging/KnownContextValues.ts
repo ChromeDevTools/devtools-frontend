@@ -3467,7 +3467,6 @@ export const knownContextValues = new Set([
   'timeline-show-screenshots',
   'timeline-show-settings-toolbar',
   'timeline-status',
-  'timeline-third-party-dependencies',
   'timeline-tree-current-thread',
   'timeline-tree-group-by',
   'timeline-user-has-opened-sidebar-once',

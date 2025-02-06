@@ -548,12 +548,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
-      this.#dimThirdPartiesSetting =
-          Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
-      this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
-      this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
-    }
+    this.#dimThirdPartiesSetting =
+        Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
+    this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
+    this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
 
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
@@ -1161,8 +1159,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
     this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES) &&
-        this.#dimThirdPartiesSetting) {
+    if (this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox =
           this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.thirdPartiesByThirdPartyWeb));
       this.#thirdPartyCheckbox = dimThirdPartiesCheckbox;

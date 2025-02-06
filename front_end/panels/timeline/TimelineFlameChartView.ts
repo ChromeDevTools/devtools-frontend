@@ -383,10 +383,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     });
 
     this.detailsView.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
-      if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
-        return;
-      }
-
       this.#updateFlameChartDimmerWithEvents(this.#thirdPartyRowHoverDimmer, node.data);
     });
 

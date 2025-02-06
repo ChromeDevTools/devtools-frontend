@@ -2206,14 +2206,11 @@ export class TimelineUIUtils {
       selectedEvents,
     };
     element.append(categorySummaryTable);
-
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
-      // Add the 3p datagrid
-      const treeView = new ThirdPartyTreeView.ThirdPartyTreeElement();
-      treeView.treeView = thirdPartyTree;
-      UI.ARIAUtils.setLabel(treeView, i18nString(UIStrings.thirdPartyTable));
-      element.append(treeView);
-    }
+    // Add the 3p datagrid
+    const treeView = new ThirdPartyTreeView.ThirdPartyTreeElement();
+    treeView.treeView = thirdPartyTree;
+    UI.ARIAUtils.setLabel(treeView, i18nString(UIStrings.thirdPartyTable));
+    element.append(treeView);
 
     return element;
   }

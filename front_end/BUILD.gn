@@ -235,6 +235,7 @@ group("unittests") {
     "ui/components/switch:unittests",
     "ui/components/text_editor:unittests",
     "ui/components/text_prompt:unittests",
+    "ui/components/tooltip:unittests",
     "ui/components/tree_outline:unittests",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",

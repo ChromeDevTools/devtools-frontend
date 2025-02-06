@@ -58,6 +58,7 @@ group("docs") {
     "./text_editor",
     "./text_prompt",
     "./theme_colors",
+    "./tooltip",
     "./tree_outline",
     "./user_agent_client_hints",
   ]

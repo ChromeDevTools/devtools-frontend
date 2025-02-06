@@ -1,0 +1,41 @@
+/*
+ * Copyright 2025 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  /* Reset the browser's default styles for [popover] elements. */
+  margin: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  overflow: visible;
+  position-area: bottom;
+  justify-self: anchor-center;
+  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+
+  & .container {
+    color: var(--sys-color-inverse-on-surface);
+    background-color: var(--sys-color-inverse-surface);
+    box-shadow: var(--sys-elevation-level2);
+    border-radius: var(--sys-shape-corner-extra-small);
+    padding: var(--sys-size-4) var(--sys-size-5);
+  }
+}
+
+:host([variant="rich"]) {
+  justify-self: unset;
+  position-area: bottom span-right;
+
+  & .container {
+    color: var(--sys-color-on-surface);
+    background-color: var(--sys-color-base-container-elevated);
+    border-radius: var(--sys-shape-corner-small);
+    padding: var(--sys-size-6) var(--sys-size-8);
+  }
+}
+
+.container {
+  margin: var(--sys-size-2);
+}

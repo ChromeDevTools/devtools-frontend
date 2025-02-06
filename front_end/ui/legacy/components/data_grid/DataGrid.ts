@@ -131,7 +131,8 @@ const elementToIndexMap = new WeakMap<Element, number>();
 export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
   displayName: string;
-  editCallback: ((arg0: any, arg1: string, arg2: any, arg3: any) => void)|undefined;
+  editCallback:
+      ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void)|undefined;
   deleteCallback: ((arg0: any) => void)|undefined;
   private readonly refreshCallback: (() => void)|undefined;
   private dataTableHeaders: {
@@ -169,7 +170,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private rootNodeInternal?: DataGridNode<T>;
   private editingNode?: DataGridNode<T>|null;
   private columnWeightsSetting?: Common.Settings.Setting<any>;
-  creationNode?: CreationDataGridNode<any>;
+  creationNode?: DataGridNode<any>;
   private currentResizer?: EventTarget|null;
   private dataGridWidget?: any;
 
@@ -775,7 +776,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     // Make the callback - expects an editing node (table row), the column number that is being edited,
     // the text that used to be there, and the new text.
-    this.editCallback(this.editingNode, columnId, valueBeforeEditing, newText);
+    this.editCallback(this.editingNode, columnId, valueBeforeEditing, newText, moveDirection);
 
     if (this.editingNode instanceof CreationDataGridNode && this.editingNode.isCreationNode) {
       this.addCreationNode(false);
@@ -1119,7 +1120,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   addCreationNode(hasChildren?: boolean): void {
     if (this.creationNode) {
-      this.creationNode.makeNormal();
+      this.creationNode.isCreationNode = false;
     }
     const emptyData: {
       [x: string]: any,
@@ -1262,8 +1263,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     while (nextSelectedNode && !nextSelectedNode.selectable) {
       nextSelectedNode = nextSelectedNode.traverseNextNode(true);
     }
-    const isCreationNode = nextSelectedNode instanceof CreationDataGridNode && nextSelectedNode.isCreationNode;
-    if (!nextSelectedNode || isCreationNode) {
+    if (!nextSelectedNode || nextSelectedNode.isCreationNode) {
       if (!root) {
         return;
       }
@@ -2481,10 +2481,6 @@ export class CreationDataGridNode<T> extends DataGridNode<T> {
     super(data, hasChildren);
     this.isCreationNode = true;
   }
-
-  makeNormal(): void {
-    this.isCreationNode = false;
-  }
 }
 
 export class DataGridWidget<T> extends UI.Widget.VBox {
@@ -2609,7 +2605,7 @@ customElements.define('devtools-data-grid-widget', DataGridWidgetElement);
 export interface Parameters {
   displayName: string;
   columns: ColumnDescriptor[];
-  editCallback?: ((arg0: any, arg1: string, arg2: any, arg3: any) => void);
+  editCallback?: ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void);
   deleteCallback?: ((arg0: any) => void);
   refreshCallback?: (() => void);
 }

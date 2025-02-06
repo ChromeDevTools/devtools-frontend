@@ -231,4 +231,39 @@ describeWithEnvironment('DataGrid', () => {
     assert.strictEqual(editCallback.firstCall.args[0].detail.valueBeforeEditing, 'Value 1');
     assert.strictEqual(editCallback.firstCall.args[0].detail.newText, 'New Value');
   });
+
+  it('supports creation node', async () => {
+    const createCallback = sinon.stub();
+    const editCallback = sinon.stub();
+    const element = await renderDataGrid(html`
+        <devtools-data-grid striped name=${'Display Name'}
+                            @create=${createCallback as Function}
+                            @edit=${editCallback as Function}>
+          <table>
+            <tr>
+              <th id="column-1" editable>Column 1</th>
+              <th id="column-2" editable>Column 2</th>
+            </tr>
+            <tr>
+              <td>Value 1</td>
+              <td>Value 2</td>
+            </tr>
+            <tr placeholder>
+            </tr>
+          </table>
+        </devtools-data-grid>`);
+    sendKeydown(element, 'ArrowDown');
+    sendKeydown(element, 'ArrowDown');
+    sendKeydown(element, 'Enter');
+    getFocusedElement()!.textContent = 'New Value 1';
+    sendKeydown(element, 'Tab');
+    assert.isFalse(editCallback.called);
+    assert.isFalse(createCallback.called);
+    getFocusedElement()!.textContent = 'New Value 2';
+    sendKeydown(element, 'Tab');
+    assert.isFalse(editCallback.called);
+    assert.isTrue(createCallback.calledOnce);
+    assert.deepEqual(createCallback.firstCall.args[0].detail,
+                           {'column-1': 'New Value 1', 'column-2': 'New Value 2'});
+  });
 });

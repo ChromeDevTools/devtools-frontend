@@ -424,10 +424,10 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
   }
 
   override removeChild(child: DataGridNode<ViewportDataGridNode<T>>): void {
-    this.clearFlatNodes();
     if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(child, false);
     }
+    this.clearFlatNodes();
     if (child.previousSibling) {
       child.previousSibling.nextSibling = child.nextSibling;
     }
@@ -450,10 +450,10 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
   }
 
   override removeChildren(): void {
-    this.clearFlatNodes();
     if (this.dataGrid) {
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
     }
+    this.clearFlatNodes();
     for (let i = 0; i < this.children.length; ++i) {
       (this.children[i] as ViewportDataGridNode<T>).unlink();
     }

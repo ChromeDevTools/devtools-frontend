@@ -43,6 +43,12 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
   static Comparator<T>(
       comparator: (arg0: SortableDataGridNode<T>, arg1: SortableDataGridNode<T>) => number, reverseMode: boolean,
       a: SortableDataGridNode<T>, b: SortableDataGridNode<T>): number {
+    if (a.isCreationNode && !b.isCreationNode) {
+      return 1;
+    }
+    if (!a.isCreationNode && b.isCreationNode) {
+      return -1;
+    }
     return reverseMode ? comparator(b, a) : comparator(a, b);
   }
 

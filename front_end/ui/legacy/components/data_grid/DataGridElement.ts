@@ -54,6 +54,7 @@ class DataGridElement extends HTMLElement {
   #columnsOrder: string[] = [];
   #hideableColumns = new Set<string>();
   #hiddenColumns = new Set<string>();
+  #usedCreationNode: DataGridElementNode|null = null;
 
   constructor() {
     super();
@@ -230,37 +231,37 @@ class DataGridElement extends HTMLElement {
           }
           return [] as HTMLElement[];
         })
-        .filter(node => node.querySelector('td'));
+        .filter(node => node.querySelector('td') && !hasBooleanAttribute(node, 'placeholder'));
+  }
+
+  #findNextExistingNode(element: Element): DataGridElementNode|null {
+    for (let e = element.nextElementSibling; e; e = e.nextElementSibling) {
+      const nextNode = DataGridElementNode.get(e);
+      if (nextNode) {
+        return nextNode;
+      }
+    }
+    return null;
   }
 
   #addNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
-      if (!element.querySelector('td')) {
-        continue;
-      }
-      if (element instanceof HTMLTableRowElement && element.querySelector('td')) {
-        const parentNode = this.#dataGrid.rootNode();  // TODO(dsv): support nested nodes
-        const nextNode = element.nextElementSibling ? DataGridElementNode.get(element.nextElementSibling) : null;
-        const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
-        const node = new DataGridElementNode(element, this);
-        parentNode.insertChild(node, index);
-        if (hasBooleanAttribute(element, 'selected')) {
-          node.select();
-        }
+      const parentNode = this.#dataGrid.rootNode();  // TODO(dsv): support nested nodes
+      const nextNode = this.#findNextExistingNode(element);
+      const index = nextNode ? parentNode.children.indexOf(nextNode) : parentNode.children.length;
+      const node = new DataGridElementNode(element, this);
+      parentNode.insertChild(node, index);
+      if (hasBooleanAttribute(element, 'selected')) {
+        node.select();
       }
     }
   }
 
   #removeNodes(nodes: NodeList): void {
     for (const element of this.#getDataRows(nodes)) {
-      if (!element.querySelector('td')) {
-        continue;
-      }
-      if (element instanceof HTMLTableRowElement && element.querySelector('td')) {
-        const node = DataGridElementNode.get(element);
-        if (node) {
-          node.remove();
-        }
+      const node = DataGridElementNode.get(element);
+      if (node) {
+        node.remove();
       }
     }
   }
@@ -281,10 +282,29 @@ class DataGridElement extends HTMLElement {
     }
   }
 
+  #updateCreationNode(): void {
+    if (this.#usedCreationNode) {
+      DataGridElementNode.remove(this.#usedCreationNode);
+      this.#usedCreationNode = null;
+      this.#dataGrid.creationNode = undefined;
+    }
+    const placeholder = this.querySelector('tr[placeholder]');
+    if (!placeholder) {
+      this.#dataGrid.creationNode?.remove();
+      this.#dataGrid.creationNode = undefined;
+    } else if (!DataGridElementNode.get(placeholder)) {
+      this.#dataGrid.creationNode?.remove();
+      const node = new DataGridElementNode(placeholder, this);
+      this.#dataGrid.creationNode = node;
+      this.#dataGrid.rootNode().appendChild(node);
+    }
+  }
+
   #onChange(mutationList: MutationRecord[]): void {
     if (this.#needUpdateColumns(mutationList)) {
       this.#updateColumns();
     }
+    this.#updateCreationNode();
 
     for (const mutation of mutationList) {
       this.#removeNodes(mutation.removedNodes);
@@ -293,7 +313,21 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #editCallback(node: DataGridElementNode, columnId: string, valueBeforeEditing: string, newText: string): void {
+  #editCallback(
+      node: DataGridElementNode, columnId: string, valueBeforeEditing: string, newText: string,
+      moveDirection?: string): void {
+    if (node.isCreationNode) {
+      this.#usedCreationNode = node;
+      if (moveDirection === 'forward') {
+        const hasNextEditableColumn = this.columnsOrder.slice(this.columnsOrder.indexOf(columnId) + 1)
+                                          .some(columnId => this.#dataGrid.columns[columnId].editable);
+        if (!hasNextEditableColumn) {
+          node.deselect();
+        }
+      }
+      return;
+    }
+
     this.dispatchEvent(
         new CustomEvent('edit', {detail: {node: node.configElement, columnId, valueBeforeEditing, newText}}));
   }
@@ -313,6 +347,7 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     DataGridElementNode.#elementToNode.set(configElement, this);
     this.#dataGridElement = dataGridElement;
     this.#updateData();
+    this.isCreationNode = hasBooleanAttribute(this.#configElement, 'placeholder');
   }
 
   static get(configElement: Element|undefined): DataGridElementNode|undefined {
@@ -372,12 +407,15 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   }
 
   override createCell(columnId: string): HTMLElement {
+    const cell = this.createTD(columnId);
+    if (this.isCreationNode) {
+      return cell;
+    }
     const index = this.#dataGridElement.columnsOrder.indexOf(columnId);
     const configCell = this.#configElement.querySelectorAll('td')[index];
     if (!configCell) {
       throw new Error(`Column ${columnId} not found in the data grid`);
     }
-    const cell = this.createTD(columnId);
     for (const child of configCell.childNodes) {
       cell.appendChild(child.cloneNode(true));
     }
@@ -390,6 +428,18 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     }
 
     return cell;
+  }
+
+  static remove(node: DataGridElementNode): void {
+    DataGridElementNode.#elementToNode.delete(node.#configElement);
+    node.remove();
+  }
+
+  override deselect(): void {
+    super.deselect();
+    if (this.isCreationNode) {
+      this.#dataGridElement.dispatchEvent(new CustomEvent('create', {detail: this.data}));
+    }
   }
 }
 

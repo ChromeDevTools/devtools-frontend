@@ -384,8 +384,12 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return 'ALL';
   }
 
+  resolveDeviceOptionToScope(option: DeviceOption): DeviceScope {
+    return option === 'AUTO' ? this.#getAutoDeviceScope() : option;
+  }
+
   getSelectedDeviceScope(): DeviceScope {
-    return this.fieldDeviceOption === 'AUTO' ? this.#getAutoDeviceScope() : this.fieldDeviceOption;
+    return this.resolveDeviceOptionToScope(this.fieldDeviceOption);
   }
 
   getSelectedScope(): Scope {

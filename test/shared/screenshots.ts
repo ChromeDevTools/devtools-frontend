@@ -189,7 +189,7 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
   }
 
   try {
-    await compare(goldenScreenshotPath, generatedScreenshotPath, maximumDiffThreshold);
+    await compare(goldenScreenshotPath, generatedScreenshotPath, maximumDiffThreshold, shouldUpdate);
   } catch (compareError) {
     if (!onBotAndImageNotFound) {
       console.log(`=> Test failed. Retrying (retry ${retryCount} of ${maximumRetries} maximum).`);
@@ -275,7 +275,7 @@ async function execImageDiffCommand(cmd: string) {
   });
 }
 
-async function compare(golden: string, generated: string, maximumDiffThreshold: number) {
+async function compare(golden: string, generated: string, maximumDiffThreshold: number, isInDiffUpdateMode: boolean) {
   const isOnBot = process.env.LUCI_CONTEXT !== undefined;
   if (!isOnBot && process.env.SKIP_SCREENSHOT_COMPARISONS_FOR_FAST_COVERAGE) {
     // When checking test coverage locally the tests get sped up significantly
@@ -304,7 +304,7 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
   let debugInfo = '';
   if (isOnBot) {
     debugInfo = `${base64TestGeneratedImageLog}\n${base64DiffImageLog}\n`;
-  } else {
+  } else if (!isInDiffUpdateMode) {
     debugInfo = `Run the tests again with --on-diff=update to update all tests that fail.
   Only do this if you expected this screenshot to have changed!
 

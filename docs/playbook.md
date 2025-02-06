@@ -2,12 +2,9 @@
 
 This document serves as the Chrome DevTools Playbook and thereby provides guidance on how to work with Chrome DevTools, the types of Chrome DevTools support available, how you and your team can take advantage of that support to contribute features, and how to get help when in doubt of the type of support needed or if you need more support.
 
-## Instruction for Googlers
-
-**Are you a Googler?** See [go/chrome-devtools/work-with-us](go/chrome-devtools/work-with-us) for additional information.
-
 ## Getting Started
 
+*   If you are a **Googler** see [go/chrome-devtools/work-with-us](go/chrome-devtools/work-with-us) for additional information.
 *   If you're a **first-time contributor** and would like some guidance to begin with, please jump to the [First Time Contributor](#first-time-devtools-contributor) section at the end of this document.
 *   If you are only looking for **DevTools documentations**, here is the [list](#devtools-documentation).
 
@@ -164,9 +161,16 @@ Depending on your answers above *and/or* your current feature stage, you may nee
 
 If you haven't worked with the Chrome DevTools team before, or if you're unsure where your feature fits, please follow the steps outlined below.
 
-1.  Ask yourself who will be using your features and what kind of tooling support they might need to ensure a smooth adoption of your feature. Try to think in terms of tasks and challenges developers may face, not UI elements.
-2.  Write a short email to chrome-devtools@ with your best shot at answering those questions. It doesn't have to be perfect, and it is not a questionnaire you need to fill to satisfy some formal process. We are mostly interested in a positive end user experience and are willing to work with you together to achieve that.
-3.  We will get back to you with some initial thoughts and probably will ask to have a quick VC (or in-person meeting if you are in DE-MUC) to align on the details. We will provide you with some information on how DevTools works, relevant to your case.
-4.  We might need to write together a PRD or incorporate the developer story into the main feature PRD.
-5.  Most likely we will ask you to book an office hours with our UXD to discuss your feature’s UX, so that developers have a consistent experience on DevTools. Complex features where developers have to be introduced to significant new capabilities may take multiple iterations. It’s important to get this step right.
-6.  Depending on the details, we will probably ask you to help us get the information exposed over the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/). We might also ask you to write a few straightforward CLs to implement the UI. Don't worry, we won't ask you to re-architect our code to accommodate your feature. We will also offer all the support you need along the way.
+1.  Ask yourself who will be using your features and what kind of tooling support they might need to ensure a smooth adoption of your feature.
+    Try to think in terms of tasks and challenges developers may face, not UI elements.
+2.  Write a short email to devtools-dev@ with your best shot at answering those questions. It doesn't have to be perfect, and it is not a questionnaire
+    you need to fill to satisfy some formal process. We are mostly interested in a positive end user experience and are willing to work with you together
+    to achieve that.
+3.  We will get back to you with some initial thoughts and might ask to formalize your ideas in a design document.
+4.  Most likely we will ask you to book an office hours with our UXD to discuss your feature’s UX, so that developers have a consistent experience on
+    DevTools. Complex features where developers have to be introduced to significant new capabilities may take multiple iterations. It’s important to
+    get this step right.
+5.  Depending on the details, we will probably ask you to help us get the information exposed over the
+    [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/). We might also ask you to write a few straightforward CLs to
+    implement the UI. Don't worry, we won't ask you to re-architect our code to accommodate your feature. We will also offer all the support you
+    need along the way.

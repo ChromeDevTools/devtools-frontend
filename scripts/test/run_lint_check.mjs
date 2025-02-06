@@ -53,7 +53,16 @@ if (flags.debug) {
 }
 const cacheLinters = !flags.debug;
 
+function debugLogging(...args) {
+  if (!flags.debug) {
+    return;
+  }
+
+  console.log(...args);
+}
+
 async function runESLint(scriptFiles) {
+  debugLogging('[lint]: Running EsLint...');
   const cli = new ESLint({
     cwd: join(import.meta.dirname, '..', '..'),
     fix: flags.fix,
@@ -111,6 +120,7 @@ async function runESLint(scriptFiles) {
 }
 
 async function runStylelint(files) {
+  debugLogging('[lint]: Running StyleLint...');
   const { report, errored } = await stylelint.lint({
     configFile: join(import.meta.dirname, '..', '..', '.stylelintrc.json'),
     ignorePath: join(import.meta.dirname, '..', '..', '.stylelintignore'),
@@ -137,6 +147,8 @@ async function runStylelint(files) {
  * @param {string[]} files the input files to analyze.
  */
 async function runLitAnalyzer(files) {
+  debugLogging('[lint]: Running LitAnalyzer...');
+
   const readLitAnalyzerConfigFromCompilerOptions = () => {
     const { compilerOptions } = JSON.parse(
       readFileSync(tsconfigJsonPath(), 'utf-8'),
@@ -154,6 +166,11 @@ async function runLitAnalyzer(files) {
   };
 
   const { rules } = readLitAnalyzerConfigFromCompilerOptions();
+  /**
+   *
+   * @param {string[]} subsetFiles
+   * @returns {{output: string, error: string, status:boolean}}
+   */
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
@@ -217,7 +234,9 @@ async function runLitAnalyzer(files) {
     }),
   );
   for (const result of results) {
-    if (result.output) {
+    // Don't print if no problems are found
+    // Mimics the other tools
+    if (result.output && !result.output.includes('Found 0 problems')) {
       console.log(result.output);
     }
     if (result.error) {

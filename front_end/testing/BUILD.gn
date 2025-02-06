@@ -8,6 +8,7 @@ ts_library("testing") {
   testonly = true
 
   sources = [
+    "AiAssistanceHelpers.ts",
     "ConsoleHelpers.ts",
     "ContextMenuHelpers.ts",
     "Cookies.ts",

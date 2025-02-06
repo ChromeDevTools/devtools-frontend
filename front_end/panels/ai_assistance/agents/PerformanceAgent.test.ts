@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../../models/trace/trace.js';
+import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
@@ -17,15 +18,6 @@ describeWithEnvironment('PerformanceAgent', () => {
         temperature,
       },
     });
-  }
-
-  function mockAidaClient(
-      fetch: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
-      ): Host.AidaClient.AidaClient {
-    return {
-      fetch,
-      registerClientEvent: () => Promise.resolve({}),
-    };
   }
 
   describe('getOrigin()', () => {
@@ -84,22 +76,8 @@ describeWithEnvironment('PerformanceAgent', () => {
     it('structure matches the snapshot', async () => {
       mockHostConfig('test model');
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
-
-      let count = 0;
-      async function* generateAndAnswer() {
-        if (count === 0) {
-          yield {
-            explanation: 'answer',
-            metadata: {},
-            completed: true,
-          };
-        }
-
-        count++;
-      }
-
       const agent = new PerformanceAgent({
-        aidaClient: mockAidaClient(generateAndAnswer),
+        aidaClient: mockAidaClient([[{explanation: 'answer'}]]),
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
@@ -150,18 +128,13 @@ describeWithEnvironment('PerformanceAgent', () => {
       const aiCallTree = TimelineUtils.AICallTree.AICallTree.from(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);
 
-      async function* generateAnswer() {
-        yield {
+      const agent = new PerformanceAgent({
+        aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
           metadata: {
             rpcGlobalId: 123,
           },
-          completed: true,
-        };
-      }
-
-      const agent = new PerformanceAgent({
-        aidaClient: mockAidaClient(generateAnswer),
+        }]]),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new CallTreeContext(aiCallTree)}));

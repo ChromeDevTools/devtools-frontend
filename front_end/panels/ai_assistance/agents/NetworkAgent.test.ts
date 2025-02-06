@@ -7,6 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
+import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   getGetHostConfigStub,
 } from '../../../testing/EnvironmentHelpers.js';
@@ -142,28 +143,14 @@ describeWithMockConnection('NetworkAgent', () => {
       sinon.restore();
     });
 
-    function mockAidaClient(
-        fetch: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
-        ): Host.AidaClient.AidaClient {
-      return {
-        fetch,
-        registerClientEvent: () => Promise.resolve({}),
-      };
-    }
-
     it('generates an answer', async () => {
-      async function* generateAnswer() {
-        yield {
+      const agent = new NetworkAgent({
+        aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
           metadata: {
             rpcGlobalId: 123,
           },
-          completed: true,
-        };
-      }
-
-      const agent = new NetworkAgent({
-        aidaClient: mockAidaClient(generateAnswer),
+        }]]),
       });
 
       const responses =

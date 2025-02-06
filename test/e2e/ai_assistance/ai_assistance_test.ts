@@ -90,13 +90,17 @@ describe('AI Assistance', function() {
     }, messages);
   }
 
-  async function inspectNode(selector: string, iframeId?: string): Promise<void> {
+  async function inspectNode(selector: string, iframeId?: string, shadowRoot?: string): Promise<void> {
     const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);
     await frontend.locator('aria/Console prompt').click();
     let inspectText = `inspect(document.querySelector(${JSON.stringify(selector)}))`;
     if (iframeId) {
       inspectText = `inspect(document.querySelector('iframe#${iframeId}').contentDocument.querySelector((${
+          JSON.stringify(selector)})))`;
+    }
+    if (shadowRoot) {
+      inspectText = `inspect(document.querySelector(${JSON.stringify(shadowRoot)}).shadowRoot.querySelector((${
           JSON.stringify(selector)})))`;
     }
     await frontend.keyboard.type(inspectText);
@@ -183,6 +187,7 @@ describe('AI Assistance', function() {
     resource?: string,
     node?: string,
     iframeId?: string,
+    shadowRoot?: string,
     waitForSideEffect?: boolean,
   }) {
     const {
@@ -191,6 +196,7 @@ describe('AI Assistance', function() {
       resource = '../resources/recorder/recorder.html',
       node = 'div',
       iframeId,
+      shadowRoot,
       waitForSideEffect
     } = options;
 
@@ -211,6 +217,7 @@ describe('AI Assistance', function() {
     return await sendAiAssistanceMessage({
       node,
       iframeId,
+      shadowRoot,
       query,
       messages,
       waitForSideEffect,
@@ -222,12 +229,13 @@ describe('AI Assistance', function() {
     messages: string[],
     node?: string,
     iframeId?: string,
+    shadowRoot?: string,
     waitForSideEffect?: boolean,
   }) {
-    const {messages, query, node = 'div', iframeId, waitForSideEffect} = options;
+    const {messages, query, node = 'div', iframeId, shadowRoot, waitForSideEffect} = options;
 
     await resetMockMessages(messages);
-    await inspectNode(node, iframeId);
+    await inspectNode(node, iframeId, shadowRoot);
     await typeQuery(query);
     return await submitAndWaitTillDone(waitForSideEffect);
   }
@@ -364,6 +372,53 @@ STOP`,
     await target.waitForFunction(() => {
       // @ts-ignore page context.
       return window.getComputedStyle(document.querySelector('button')).backgroundColor === 'rgb(0, 128, 0)';
+    });
+  });
+
+  it('modifies multiple styles for elements inside shadow DOM', async () => {
+    await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'blue' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      resource: '../resources/recorder/shadow-open.html',
+      node: 'button',
+      shadowRoot: 'login-element',
+    });
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      // @ts-ignore page context.
+      return window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'))
+                 .backgroundColor === 'rgb(0, 0, 255)';
+    });
+
+    await sendAiAssistanceMessage({
+      query: 'Change the font color for this element to green',
+      messages: [
+        `THOUGHT: I can change the font color of an element by setting the color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'color': 'green' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      node: 'button',
+      shadowRoot: 'login-element',
+    });
+
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      const buttonStyles =
+          // @ts-ignore page context.
+          window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'));
+      return buttonStyles.backgroundColor === 'rgb(0, 0, 255)' && buttonStyles.color === 'rgb(0, 128, 0)';
     });
   });
 

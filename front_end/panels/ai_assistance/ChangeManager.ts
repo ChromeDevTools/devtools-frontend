@@ -84,7 +84,7 @@ export class ChangeManager {
     }
   }
 
-  async addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<void> {
+  async addChange(cssModel: SDK.CSSModel.CSSModel, frameId: Protocol.Page.FrameId, change: Change): Promise<string> {
     const stylesheetId = await this.#getStylesheet(cssModel, frameId);
     const changes = this.#stylesheetChanges.get(stylesheetId) || [];
     const existingChange = changes.find(c => c.className === change.className);
@@ -101,6 +101,7 @@ export class ChangeManager {
     }
     await cssModel.setStyleSheetText(stylesheetId, this.buildChanges(changes), true);
     this.#stylesheetChanges.set(stylesheetId, changes);
+    return this.buildChanges(changes);
   }
 
   formatChanges(groupId: string): string {

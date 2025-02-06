@@ -37,6 +37,10 @@ export const UIStrings = {
    */
   fetchPriorityApplied: 'fetchpriority=high applied',
   /**
+   * @description Text to tell the user that a fetchpriority property value of "high" should be applied to the LCP request.
+   */
+  fetchPriorityShouldBeApplied: 'fetchpriority=high should be applied',
+  /**
    * @description Text to tell the user that the LCP request is discoverable in the initial document.
    */
   requestDiscoverable: 'Request is discoverable in initial document',
@@ -136,12 +140,18 @@ export function generateInsight(
           Helpers.Timing.milliToMicro(docRequest.args.data.timing.receiveHeadersStart) :
       undefined;
 
+  const priorityHintFound = imageFetchPriorityHint === 'high';
+
   return finalize({
     lcpEvent,
     lcpRequest,
     earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.Micro(earliestDiscoveryTime) : undefined,
     checklist: {
-      priorityHinted: {label: i18nString(UIStrings.fetchPriorityApplied), value: imageFetchPriorityHint === 'high'},
+      priorityHinted: {
+        label: priorityHintFound ? i18nString(UIStrings.fetchPriorityApplied) :
+                                   i18nString(UIStrings.fetchPriorityShouldBeApplied),
+        value: priorityHintFound
+      },
       requestDiscoverable: {label: i18nString(UIStrings.requestDiscoverable), value: imgPreloadedOrFoundInHTML},
       eagerlyLoaded: {label: i18nString(UIStrings.lazyLoadNotApplied), value: imageLoadingAttr !== 'lazy'},
     },

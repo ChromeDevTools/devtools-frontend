@@ -254,3 +254,7 @@ A trace generated from crrev.com/c/6197645 (January 2025), which changed the for
 ### dom-size-overlap
 
 Trace containing a cross-origin navigation where DOM size events from the pre-navigation page are emitted *after* the navigation event.
+
+### lcp-fetchpriority-high
+
+A page that loads an image as the LCP resource with fetchpriority=high set.

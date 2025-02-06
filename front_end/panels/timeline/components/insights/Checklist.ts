@@ -92,7 +92,7 @@ export class Checklist extends HTMLElement {
           <ul>
             ${Object.values(this.#checklist).map(check => html`<li>
                 ${this.#getIcon(check)}
-                <span>${check.label}</span>
+                <span data-checklist-label>${check.label}</span>
             </li>`)}
           </ul>`,
         this.#shadow, {host: this});

@@ -48,6 +48,7 @@ copy_to_gen("traces") {
     "large-layout-small-recalc.json.gz",
     "large-profile.cpuprofile.gz",
     "large-recalc-style.json.gz",
+    "lcp-fetchpriority-high.json.gz",
     "lcp-images-rasterizer.json.gz",
     "lcp-images.json.gz",
     "lcp-late-paint-event.json.gz",

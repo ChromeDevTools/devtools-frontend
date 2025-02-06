@@ -4,7 +4,6 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as Lit from '../../../ui/lit/lit.js';
-import {AiHistoryStorage} from '../AiHistoryStorage.js';
 
 export const enum ResponseType {
   CONTEXT = 'context',
@@ -131,14 +130,7 @@ export const enum AgentType {
   PATCH = 'patch',
 }
 
-export interface SerializedAgent {
-  id: string;
-  type: AgentType;
-  history: HistoryEntryStorage;
-}
-
 export const MAX_STEPS = 10;
-export type HistoryEntryStorage = ResponseData[];
 
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
@@ -240,23 +232,12 @@ export abstract class AiAgent<T> {
   #origin?: string;
   #context?: ConversationContext<T>;
   #id: string = crypto.randomUUID();
-  #generatedFromHistory = false;
-  /**
-   * Historical responses.
-   */
-  #history: HistoryEntryStorage = [];
-  #partsHistory: Host.AidaClient.Content[] = [];
+  #history: Host.AidaClient.Content[] = [];
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
-  }
-
-  populateHistoryFromStorage(entry: SerializedAgent): void {
-    this.#id = entry.id;
-    this.#history = entry.history;
-    this.#generatedFromHistory = true;
   }
 
   async enhanceQuery(query: string, selected: ConversationContext<T>|null): Promise<string>;
@@ -270,7 +251,7 @@ export abstract class AiAgent<T> {
       parts: [part],
       role,
     };
-    const history = [...this.#partsHistory];
+    const history = [...this.#history];
     const declarations: Host.AidaClient.FunctionDeclaration[] = [];
     for (const [name, definition] of this.#functionDeclarations.entries()) {
       declarations.push({
@@ -321,38 +302,6 @@ export abstract class AiAgent<T> {
     return this.#origin;
   }
 
-  get title(): string|undefined {
-    return this.#history
-        .filter(response => {
-          return response.type === ResponseType.USER_QUERY;
-        })
-        .at(0)
-        ?.query;
-  }
-
-  get isHistoryEntry(): boolean {
-    return this.#generatedFromHistory;
-  }
-  async * run(initialQuery: string, options: {
-    signal?: AbortSignal, selected: ConversationContext<T>|null,
-  }): AsyncGenerator<ResponseData, void, void> {
-    for await (const response of this.#run(initialQuery, options)) {
-      this.#addHistory(response);
-      yield response;
-    }
-  }
-
-  async * runFromHistory(): AsyncGenerator<ResponseData, void, void> {
-    if (this.isEmpty) {
-      return;
-    }
-
-    this.#generatedFromHistory = true;
-    for (const entry of this.#history) {
-      yield entry;
-    }
-  }
-
   parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
     if (response.functionCalls && response.completed) {
       throw new Error('Function calling not supported yet');
@@ -391,13 +340,9 @@ export abstract class AiAgent<T> {
     throw new Error('Unexpected action found');
   }
 
-  async * #run(initialQuery: string, options: {
+  async * run(initialQuery: string, options: {
     signal?: AbortSignal, selected: ConversationContext<T>|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    if (this.#generatedFromHistory) {
-      throw new Error('History entries are read-only.');
-    }
-
     await options.selected?.refresh();
 
     // First context set on the agent determines its origin from now on.
@@ -461,10 +406,10 @@ export abstract class AiAgent<T> {
         break;
       }
 
-      this.#partsHistory.push(request.current_message);
+      this.#history.push(request.current_message);
 
       if (parsedResponse && 'answer' in parsedResponse && Boolean(parsedResponse.answer)) {
-        this.#partsHistory.push({
+        this.#history.push({
           parts: [{
             text: this.formatParsedAnswer(parsedResponse),
           }],
@@ -501,7 +446,7 @@ export abstract class AiAgent<T> {
           };
         }
 
-        this.#partsHistory.push({
+        this.#history.push({
           parts: [{
             text: this.#formatParsedStep(parsedResponse),
           }],
@@ -561,7 +506,7 @@ export abstract class AiAgent<T> {
     if (!call) {
       throw new Error(`Function ${name} is not found.`);
     }
-    this.#partsHistory.push({
+    this.#history.push({
       parts: [{
         functionCall: {
           name,
@@ -651,14 +596,6 @@ export abstract class AiAgent<T> {
     return result as {result: unknown};
   }
 
-  #serialized(): SerializedAgent {
-    return {
-      id: this.id,
-      type: this.type,
-      history: this.#history,
-    };
-  }
-
   async *
       #aidaFetch(request: Host.AidaClient.AidaRequest, options?: {signal?: AbortSignal}): AsyncGenerator<
           {
@@ -724,13 +661,8 @@ STOP`;
     return text;
   }
 
-  #addHistory(data: ResponseData): void {
-    this.#history.push(data);
-    void AiHistoryStorage.instance().upsertHistoryEntry(this.#serialized());
-  }
-
   #removeLastRunParts(): void {
-    this.#partsHistory.splice(this.#partsHistory.findLastIndex(item => {
+    this.#history.splice(this.#history.findLastIndex(item => {
       return item.role === Host.AidaClient.Role.USER;
     }));
   }

@@ -291,54 +291,6 @@ describeWithEnvironment('AiAgent', () => {
     });
   });
 
-  describe('runFromHistory', () => {
-    it('should run', async () => {
-      const agent = new AiAgentMock({
-        aidaClient: mockAidaClient([
-          [{
-            explanation: 'first answer',
-          }],
-          [{
-            explanation: 'second answer',
-          }]
-        ]),
-        serverSideLoggingEnabled: true,
-      });
-      await Array.fromAsync(agent.run('first question', {selected: null}));
-      await Array.fromAsync(agent.run('second question', {selected: null}));
-
-      const responses = await Array.fromAsync(agent.runFromHistory());
-      assert.deepEqual(responses, [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'first question',
-        },
-        {
-          type: ResponseType.QUERYING,
-        },
-        {
-          type: ResponseType.ANSWER,
-          suggestions: undefined,
-          rpcId: undefined,
-          text: 'first answer',
-        },
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'second question',
-        },
-        {
-          type: ResponseType.QUERYING,
-        },
-        {
-          type: ResponseType.ANSWER,
-          suggestions: undefined,
-          rpcId: undefined,
-          text: 'second answer',
-        },
-      ]);
-    });
-  });
-
   describe('ConversationContext', () => {
     function getTestContext(origin: string) {
       class TestContext extends ConversationContext<undefined> {

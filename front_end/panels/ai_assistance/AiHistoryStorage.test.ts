@@ -7,19 +7,19 @@ import * as Common from '../../core/common/common.js';
 import * as AiAssistance from './ai_assistance.js';
 
 describe('AiHistoryStorage', () => {
-  const agent1: AiAssistance.SerializedAgent = {
+  const agent1: AiAssistance.SerializedConversation = {
     id: 'id1',
-    type: AiAssistance.AgentType.STYLING,
+    type: AiAssistance.ConversationType.STYLING,
     history: [],
   };
-  const agent2: AiAssistance.SerializedAgent = {
+  const agent2: AiAssistance.SerializedConversation = {
     id: 'id2',
-    type: AiAssistance.AgentType.FILE,
+    type: AiAssistance.ConversationType.FILE,
     history: [],
   };
-  const agent3: AiAssistance.SerializedAgent = {
+  const agent3: AiAssistance.SerializedConversation = {
     id: 'id3',
-    type: AiAssistance.AgentType.NETWORK,
+    type: AiAssistance.ConversationType.NETWORK,
     history: [],
   };
 
@@ -59,7 +59,7 @@ describe('AiHistoryStorage', () => {
         storage.getHistory(),
         [{
           id: 'id1',
-          type: 'freestyler' as AiAssistance.AgentType,
+          type: 'freestyler' as AiAssistance.ConversationType,
           history: [],
         }],
     );
@@ -69,12 +69,12 @@ describe('AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as AiAssistance.AgentType,
+            type: 'freestyler' as AiAssistance.ConversationType,
             history: [],
           },
           {
             id: 'id2',
-            type: 'drjones-file' as AiAssistance.AgentType,
+            type: 'drjones-file' as AiAssistance.ConversationType,
             history: [],
           },
         ],
@@ -99,7 +99,7 @@ describe('AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as AiAssistance.AgentType,
+            type: 'freestyler' as AiAssistance.ConversationType,
             history: [
               {
                 type: AiAssistance.ResponseType.USER_QUERY,
@@ -109,7 +109,7 @@ describe('AiHistoryStorage', () => {
           },
           {
             id: 'id2',
-            type: 'drjones-file' as AiAssistance.AgentType,
+            type: 'drjones-file' as AiAssistance.ConversationType,
             history: [],
           },
         ],
@@ -121,7 +121,7 @@ describe('AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as AiAssistance.AgentType,
+            type: 'freestyler' as AiAssistance.ConversationType,
             history: [
               {
                 type: AiAssistance.ResponseType.USER_QUERY,
@@ -131,12 +131,12 @@ describe('AiHistoryStorage', () => {
           },
           {
             id: 'id2',
-            type: 'drjones-file' as AiAssistance.AgentType,
+            type: 'drjones-file' as AiAssistance.ConversationType,
             history: [],
           },
           {
             id: 'id3',
-            type: 'drjones-network-request' as AiAssistance.AgentType,
+            type: 'drjones-network-request' as AiAssistance.ConversationType,
             history: [],
           },
         ],
@@ -154,14 +154,14 @@ describe('AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as AiAssistance.AgentType,
+            type: 'freestyler' as AiAssistance.ConversationType,
             history: [
 
             ],
           },
           {
             id: 'id3',
-            type: 'drjones-network-request' as AiAssistance.AgentType,
+            type: 'drjones-network-request' as AiAssistance.ConversationType,
             history: [],
           },
         ],

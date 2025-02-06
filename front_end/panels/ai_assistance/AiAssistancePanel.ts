@@ -27,7 +27,6 @@ import {
   ErrorType,
   type ResponseData,
   ResponseType,
-  type SerializedAgent,
 } from './agents/AiAgent.js';
 import {
   FileAgent,
@@ -40,9 +39,7 @@ import {
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
-import {
-  AiHistoryStorage,
-} from './AiHistoryStorage.js';
+import {AiHistoryStorage, Conversation, ConversationType} from './AiHistoryStorage.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   ChatMessageEntity,
@@ -175,6 +172,21 @@ function createCallTreeContext(callTree: TimelineUtils.AICallTree.AICallTree|nul
   return new CallTreeContext(callTree);
 }
 
+function agentTypeToConversationType(type: AgentType): ConversationType {
+  switch (type) {
+    case AgentType.STYLING:
+      return ConversationType.STYLING;
+    case AgentType.NETWORK:
+      return ConversationType.NETWORK;
+    case AgentType.FILE:
+      return ConversationType.FILE;
+    case AgentType.PERFORMANCE:
+      return ConversationType.PERFORMANCE;
+    case AgentType.PATCH:
+      throw new Error('PATCH AgentType does not have a corresponding ConversationType.');
+  }
+}
+
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
@@ -196,8 +208,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #deleteHistoryEntryButton =
       new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteChat), 'bin', undefined, 'freestyler.delete');
 
-  #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
+  #currentConversation?: Conversation;
+  #conversations: Conversation[] = [];
 
   #previousSameOriginContext?: ConversationContext<unknown>;
   #selectedFile: FileContext|null = null;
@@ -246,9 +259,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       isReadOnly: false,
     };
 
-    for (const historyEntry of AiHistoryStorage.instance().getHistory()) {
-      this.#createAgent(historyEntry.type, historyEntry);
-    }
+    this.#conversations = AiHistoryStorage.instance().getHistory().map(item => Conversation.fromSerialized(item));
   }
 
   #createToolbar(): void {
@@ -312,7 +323,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  #createAgent(agentType: AgentType, history?: SerializedAgent): AiAgent<unknown> {
+  #createAgent(agentType: AgentType): AiAgent<unknown> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
@@ -349,17 +360,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         throw new Error('AI Assistance does not support direct usage of the patch agent');
       }
     }
-
-    if (history) {
-      agent.populateHistoryFromStorage(history);
-    }
-
-    this.#agents.add(agent);
     return agent;
   }
 
   #updateToolbarState(): void {
-    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
+    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentConversation && !this.#currentConversation.isEmpty));
   }
 
   static async instance(opts: {
@@ -418,7 +423,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#viewProps.messages = [];
       this.#viewProps.changeSummary = undefined;
       this.#viewProps.isLoading = false;
-      this.#viewProps.isReadOnly = this.#currentAgent?.isHistoryEntry ?? false;
+      if (this.#currentAgent?.type) {
+        this.#currentConversation =
+            new Conversation(agentTypeToConversationType(this.#currentAgent.type), [], agent?.id, false);
+        this.#conversations.push(this.#currentConversation);
+        this.#viewProps.isReadOnly = false;
+      }
     }
 
     this.#onContextSelectionChanged();
@@ -688,8 +698,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     let agent = this.#currentAgent;
-    if (!this.#currentAgent || this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry ||
-        targetAgentType === AgentType.PERFORMANCE) {
+    if (!this.#currentConversation || !this.#currentAgent || this.#currentAgent.type !== targetAgentType ||
+        this.#currentConversation?.isEmpty || targetAgentType === AgentType.PERFORMANCE) {
       agent = this.#createAgent(targetAgentType);
     }
     this.#updateAgentState(agent);
@@ -704,18 +714,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       useSoftMenu: true,
     });
 
-    for (const agent of [...this.#agents].reverse()) {
-      if (agent.isEmpty) {
+    for (const conversation of [...this.#conversations].reverse()) {
+      if (conversation.isEmpty) {
         continue;
       }
-      const title = agent.title;
+      const title = conversation.title;
       if (!title) {
         continue;
       }
 
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
-        void this.#switchAgent(agent);
-      }, {checked: (this.#currentAgent === agent)});
+        void this.#openConversation(conversation);
+      }, {checked: (this.#currentConversation === conversation)});
     }
 
     const historyEmpty = contextMenu.defaultSection().items.length === 0;
@@ -739,14 +749,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #clearHistory(): void {
-    this.#agents = new Set();
+    this.#conversations = [];
+    this.#currentConversation = undefined;
     void AiHistoryStorage.instance().deleteAll();
     this.#updateAgentState();
   }
 
   #onDeleteClicked(): void {
     if (this.#currentAgent) {
-      this.#agents.delete(this.#currentAgent);
+      this.#conversations = this.#conversations.filter(conversation => conversation !== this.#currentConversation);
+      this.#currentConversation = undefined;
       void AiHistoryStorage.instance().deleteHistoryEntry(this.#currentAgent.id);
     }
     this.#updateAgentState();
@@ -754,13 +766,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }
 
-  async #switchAgent(agent: AiAgent<unknown>): Promise<void> {
-    if (this.#currentAgent === agent) {
+  async #openConversation(conversation: Conversation): Promise<void> {
+    if (this.#currentConversation === conversation) {
       return;
     }
-    this.#updateAgentState(agent);
-    this.#viewProps.isReadOnly = true;
-    await this.#doConversation(agent.runFromHistory());
+    this.#currentConversation = conversation;
+    this.#viewProps.messages = [];
+    this.#viewProps.isReadOnly = this.#currentConversation?.isReadOnly ?? false;
+    await this.#doConversation(conversation.history);
   }
 
   #handleNewChatRequest(): void {
@@ -848,11 +861,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       selected: context,
     });
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
-    await this.#doConversation(runner);
+    await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
-  async #doConversation(generator: AsyncGenerator<ResponseData, void, void>): Promise<void> {
+  async *
+      #saveResponsesToCurrentConversation(items: AsyncIterable<ResponseData, void, void>):
+          AsyncGenerator<ResponseData, void, void> {
+    for await (const data of items) {
+      this.#currentConversation?.addHistoryItem(data);
+      yield data;
+    }
+  }
+
+  async #doConversation(items: Iterable<ResponseData, void, void>|AsyncIterable<ResponseData, void, void>):
+      Promise<void> {
     const release = await this.#mutex.acquire();
     try {
       let systemMessage: ModelChatMessage = {
@@ -871,7 +894,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       this.#viewProps.isLoading = true;
-      for await (const data of generator) {
+      for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
           case ResponseType.USER_QUERY: {
@@ -930,7 +953,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code ??= data.code;
             step.output ??= data.output;
             step.canceled = data.canceled;
-            if (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
+            if (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) {
               this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
             }
             commitStep();

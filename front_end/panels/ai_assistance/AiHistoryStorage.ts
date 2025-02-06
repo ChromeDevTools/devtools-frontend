@@ -5,11 +5,68 @@
 
 import * as Common from '../../core/common/common.js';
 
-import type {SerializedAgent} from './agents/AiAgent.js';
+import {type ResponseData, ResponseType} from './agents/AiAgent.js';
+
+export const enum ConversationType {
+  STYLING = 'freestyler',
+  FILE = 'drjones-file',
+  NETWORK = 'drjones-network-request',
+  PERFORMANCE = 'drjones-performance',
+}
+
+export interface SerializedConversation {
+  id: string;
+  type: ConversationType;
+  history: ResponseData[];
+}
+
+export class Conversation {
+  static fromSerialized(serialized: SerializedConversation): Conversation {
+    return new Conversation(serialized.type, serialized.history, serialized.id, true);
+  }
+
+  readonly id: string;
+  readonly history: ResponseData[];
+  readonly type: ConversationType;
+  readonly isReadOnly: boolean;
+
+  constructor(type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true) {
+    this.type = type;
+    this.history = data;
+    this.id = id;
+    this.isReadOnly = isReadOnly;
+  }
+
+  get title(): string|undefined {
+    return this.history
+        .filter(response => {
+          return response.type === ResponseType.USER_QUERY;
+        })
+        .at(0)
+        ?.query;
+  }
+
+  get isEmpty(): boolean {
+    return this.history.length === 0;
+  }
+
+  addHistoryItem(item: ResponseData): void {
+    this.history.push(item);
+    void AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
+  }
+
+  serialize(): SerializedConversation {
+    return {
+      id: this.id,
+      history: this.history,
+      type: this.type,
+    };
+  }
+}
 
 let instance: AiHistoryStorage|null = null;
 export class AiHistoryStorage {
-  #historySetting: Common.Settings.Setting<SerializedAgent[]>;
+  #historySetting: Common.Settings.Setting<SerializedConversation[]>;
   #mutex = new Common.Mutex.Mutex();
 
   constructor() {
@@ -21,7 +78,7 @@ export class AiHistoryStorage {
     this.#historySetting.set([]);
   }
 
-  async upsertHistoryEntry(agentEntry: SerializedAgent): Promise<void> {
+  async upsertHistoryEntry(agentEntry: SerializedConversation): Promise<void> {
     const release = await this.#mutex.acquire();
     try {
       const history = structuredClone(await this.#historySetting.forceGet());
@@ -58,7 +115,7 @@ export class AiHistoryStorage {
     }
   }
 
-  getHistory(): SerializedAgent[] {
+  getHistory(): SerializedConversation[] {
     return structuredClone(this.#historySetting.get());
   }
 

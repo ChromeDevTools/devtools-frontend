@@ -436,6 +436,14 @@ export const generatedProperties = [
    "container-type",
    "content",
    "content-visibility",
+   "corner-bottom-left-shape",
+   "corner-bottom-right-shape",
+   "corner-end-end-shape",
+   "corner-end-start-shape",
+   "corner-start-end-shape",
+   "corner-start-start-shape",
+   "corner-top-left-shape",
+   "corner-top-right-shape",
    "counter-increment",
    "counter-reset",
    "counter-set",
@@ -1827,6 +1835,30 @@ export const generatedProperties = [
    "hidden"
   ],
   "name": "content-visibility"
+ },
+ {
+  "name": "corner-bottom-left-shape"
+ },
+ {
+  "name": "corner-bottom-right-shape"
+ },
+ {
+  "name": "corner-end-end-shape"
+ },
+ {
+  "name": "corner-end-start-shape"
+ },
+ {
+  "name": "corner-start-end-shape"
+ },
+ {
+  "name": "corner-start-start-shape"
+ },
+ {
+  "name": "corner-top-left-shape"
+ },
+ {
+  "name": "corner-top-right-shape"
  },
  {
   "keywords": [

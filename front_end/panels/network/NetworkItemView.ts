@@ -172,11 +172,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         i18nString(UIStrings.headers));
 
     if (this.requestInternal.hasOverriddenHeaders()) {
-      const icon = new IconButton.Icon.Icon();
-      icon.data =
-          {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
-      icon.title = i18nString(UIStrings.containsOverriddenHeaders);
-      this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, icon);
+      const statusDot = document.createElement('div');
+      statusDot.className = 'status-dot';
+      statusDot.title = i18nString(UIStrings.containsOverriddenHeaders);
+      this.setSuffixElement(NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, statusDot);
     }
 
     this.payloadView = null;
@@ -216,11 +215,10 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
           i18nString(UIStrings.rawResponseData));
 
       if (this.requestInternal.hasOverriddenContent) {
-        const icon = new IconButton.Icon.Icon();
-        icon.title = i18nString(UIStrings.responseIsOverridden);
-        icon.data =
-            {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
-        this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE, icon);
+        const statusDot = document.createElement('div');
+        statusDot.className = 'status-dot';
+        statusDot.title = i18nString(UIStrings.responseIsOverridden);
+        this.setSuffixElement(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE, statusDot);
       }
     }
 

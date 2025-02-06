@@ -176,10 +176,15 @@
   height: var(--sys-size-8);
   width: var(--sys-size-8);
   padding-left: var(--sys-size-2);
+  align-content: center;
 
   &:has(.badge) {
     width: 17px;
     margin-left: var(--sys-size-2);
+  }
+
+  &:has(.status-dot) {
+    width: 9px;
   }
 }
 
@@ -205,6 +210,16 @@
   }
 }
 
+.status-dot {
+  height: var(--sys-size-4);
+  width: var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-full);
+  background-color: var(--sys-color-error);
+  margin-left: var(--sys-size-1);
+  justify-self: center;
+  position: relative;
+  top: 0.75px;
+}
 
 .tabbed-pane-header-tab {
   font: var(--sys-typescale-body4-medium);

@@ -220,7 +220,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     const labelNode = UI.UIUtils.CheckboxLabel.create(
         Sources.CategorizedBreakpointL10n.getLocalizedBreakpointName(breakpoint.name), undefined, undefined,
         Platform.StringUtilities.toKebabCase(breakpoint.name), /* small */ true);
-    labelNode.classList.add('source-code');
+    labelNode.classList.add('source-code', 'breakpoint');
     labelNode.checkboxElement.addEventListener('click', this.breakpointCheckboxClicked.bind(this, breakpoint), true);
     labelNode.checkboxElement.tabIndex = -1;
 

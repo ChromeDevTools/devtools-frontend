@@ -54,6 +54,10 @@ body {
   }
 }
 
+.source-code.breakpoint {
+  white-space: nowrap;
+}
+
 .source-code .devtools-link.text-button {
   max-width: 100%;
   overflow: hidden;

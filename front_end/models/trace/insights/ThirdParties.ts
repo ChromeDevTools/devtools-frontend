@@ -30,8 +30,8 @@ export const UIStrings = {
   columnThirdParty: 'Third party',
   /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
   columnTransferSize: 'Transfer size',
-  /** Label for a table column that displays how much time each row spent blocking other work on the main thread, entries will be the number of milliseconds spent. */
-  columnBlockingTime: 'Blocking time',
+  /** Label for a table column that displays how much time each row spent running on the main thread, entries will be the number of milliseconds spent. */
+  columnMainThreadTimeTime: 'Main thread time',
   /**
    * @description Text block indicating that no third party content was detected on the page
    */

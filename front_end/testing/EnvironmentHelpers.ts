@@ -551,10 +551,15 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
     } as Root.Runtime.HostConfigAiAssistancePerformanceAgent,
     devToolsImprovedWorkspaces: {
       enabled: false,
+      ...config.devToolsImprovedWorkspaces,
     },
     devToolsVeLogging: {
       enabled: true,
       testing: false,
+    },
+    devToolsWellKnown: {
+      enabled: false,
+      ...config.devToolsWellKnown,
     },
     devToolsPrivacyUI: {
       enabled: false,

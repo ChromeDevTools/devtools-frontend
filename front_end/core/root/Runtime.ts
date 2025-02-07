@@ -389,6 +389,10 @@ export interface HostConfigVeLogging {
   testing: boolean;
 }
 
+export interface HostConfigWellKnown {
+  enabled: boolean;
+}
+
 export interface HostConfigPrivacyUI {
   enabled: boolean;
 }
@@ -425,6 +429,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsImprovedWorkspaces: HostConfigImprovedWorkspaces,
   devToolsVeLogging: HostConfigVeLogging,
+  devToolsWellKnown: HostConfigWellKnown,
   devToolsPrivacyUI: HostConfigPrivacyUI,
   /**
    * OffTheRecord here indicates that the user's profile is either incognito,

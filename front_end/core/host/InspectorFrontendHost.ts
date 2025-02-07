@@ -430,6 +430,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         enabled: true,
         testing: false,
       },
+      devToolsWellKnown: {
+        enabled: true,
+      },
       devToolsPrivacyUI: {
         enabled: false,
       },

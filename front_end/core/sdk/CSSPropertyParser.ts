@@ -185,7 +185,7 @@ export type Constructor<T = any> = (abstract new (...args: any[]) => T)|(new (..
 export interface Matcher<MatchT extends Match> {
   readonly matchType: Constructor<MatchT>;
   accepts(propertyName: string): boolean;
-  matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null;
+  matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MatchT|null;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -196,7 +196,7 @@ export function matcherBase<MatchT extends Match>(matchT: Constructor<MatchT>) {
       return true;
     }
 
-    matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): Match|null {
+    matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): MatchT|null {
       return null;
     }
   }
@@ -520,7 +520,7 @@ export class VariableMatcher extends matcherBase(VariableMatch) {
     this.#computedTextCallback = computedTextCallback;
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): VariableMatch|null {
     const callee = node.getChild('Callee');
     const args = node.getChild('ArgList');
     if (node.name !== 'CallExpression' || !callee || (matching.ast.text(callee) !== 'var') || !args) {
@@ -581,7 +581,7 @@ class TextMatcher extends matcherBase(TextMatch) {
   override accepts(): boolean {
     return true;
   }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): TextMatch|null {
     if (!node.firstChild || node.name === 'NumberLiteral' /* may have a Unit child */) {
       // Leaf node, just emit text
       const text = matching.ast.text(node);

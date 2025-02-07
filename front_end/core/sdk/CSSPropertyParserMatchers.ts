@@ -41,7 +41,7 @@ export class AngleMatcher extends matcherBase(AngleMatch) {
   override accepts(propertyName: string): boolean {
     return cssMetadata().isAngleAwareProperty(propertyName);
   }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AngleMatch|null {
     if (node.name !== 'NumberLiteral') {
       return null;
     }
@@ -77,7 +77,7 @@ export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
   override accepts(propertyName: string): boolean {
     return cssMetadata().isColorAwareProperty(propertyName);
   }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ColorMixMatch|null {
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'color-mix') {
       return null;
     }
@@ -136,7 +136,7 @@ export class URLMatch implements Match {
 // clang-format off
 export class URLMatcher extends matcherBase(URLMatch) {
   // clang-format on
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): URLMatch|null {
     if (node.name !== 'CallLiteral') {
       return null;
     }
@@ -197,7 +197,7 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
     return cssMetadata().isColorAwareProperty(propertyName);
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ColorMatch|null {
     const text = matching.ast.text(node);
     if (node.name === 'ColorLiteral') {
       return new ColorMatch(text, node);
@@ -235,7 +235,7 @@ export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
     return cssMetadata().isColorAwareProperty(propertyName);
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LightDarkColorMatch|null {
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== 'light-dark') {
       return null;
     }
@@ -257,7 +257,7 @@ export class AutoBaseMatch implements Match {
 // clang-format off
 export class AutoBaseMatcher extends matcherBase(AutoBaseMatch) {
   // clang-format on
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AutoBaseMatch|null {
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== '-internal-auto-base') {
       return null;
     }
@@ -331,7 +331,8 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
       }),
   );
 
-  private matchAnimationNameInShorthand(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  private matchAnimationNameInShorthand(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LinkableNameMatch|
+      null {
     // Order is important within each animation definition for distinguishing <keyframes-name> values from other keywords.
     // When parsing, keywords that are valid for properties other than animation-name
     // whose values were not found earlier in the shorthand must be accepted for those properties rather than for animation-name.
@@ -381,7 +382,7 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
     return LinkableNameMatcher.isLinkableNameProperty(propertyName);
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LinkableNameMatch|null {
     const {propertyName} = matching.ast;
     const text = matching.ast.text(node);
     const parentNode = node.parent;
@@ -466,7 +467,7 @@ export class ShadowMatcher extends matcherBase(ShadowMatch) {
   override accepts(propertyName: string): boolean {
     return cssMetadata().isShadowProperty(propertyName);
   }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ShadowMatch|null {
     if (node.name !== 'Declaration') {
       return null;
     }
@@ -519,7 +520,7 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
     'dvb',   'dvmin', 'dvmax', 'svw', 'svh', 'svi',   'svb',   'svmin', 'svmax', 'lvw',  'lvh',  'lvi',  'lvb', 'lvmin',
     'lvmax', 'cqw',   'cqh',   'cqi', 'cqb', 'cqmin', 'cqmax', 'cqem',  'cqlh',  'cqex', 'cqch',
   ]);
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LengthMatch|null {
     if (node.name !== 'NumberLiteral') {
       return null;
     }
@@ -542,7 +543,7 @@ export class SelectFunctionMatch implements Match {
 // clang-format off
 export class SelectFunctionMatcher extends matcherBase(SelectFunctionMatch) {
   // clang-format on
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): SelectFunctionMatch|null {
     if (node.name !== 'CallExpression') {
       return null;
     }
@@ -573,7 +574,7 @@ export class FlexGridMatcher extends matcherBase(FlexGridMatch) {
     return propertyName === 'display';
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): FlexGridMatch|null {
     if (node.name !== 'Declaration') {
       return null;
     }
@@ -606,7 +607,7 @@ export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
   override accepts(propertyName: string): boolean {
     return cssMetadata().isGridAreaDefiningProperty(propertyName);
   }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): GridTemplateMatch|null {
     if (node.name !== 'Declaration' || matching.hasUnresolvedVars(node)) {
       return null;
     }
@@ -705,7 +706,7 @@ export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
     return null;
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AnchorFunctionMatch|null {
     if (node.name === 'VariableName') {
       // Double-dashed anchor reference to be rendered with a link to its matching anchor.
       let parent = node.parent;
@@ -748,7 +749,7 @@ export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
     return propertyName === 'position-anchor';
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionAnchorMatch|null {
     if (node.name !== 'VariableName') {
       return null;
     }
@@ -778,7 +779,7 @@ export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
     super();
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): CSSWideKeywordMatch|null {
     const parentNode = node.parent;
     if (node.name !== 'ValueName' || parentNode?.name !== 'Declaration') {
       return null;
@@ -813,7 +814,7 @@ export class PositionTryMatcher extends matcherBase(PositionTryMatch) {
         propertyName === LinkableNameProperties.POSITION_TRY_FALLBACKS;
   }
 
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionTryMatch|null {
     if (node.name !== 'Declaration') {
       return null;
     }

@@ -49,7 +49,7 @@ import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
 import {categorizePropertyName, type Category, DefaultCategoryOrder} from './PropertyNameCategories.js';
-import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
+import {Renderer, rendererBase, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 
 const {html} = Lit;
@@ -178,8 +178,10 @@ const createTraceElement =
       return trace;
     };
 
-class ColorRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.ColorMatch> {
-  render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {
+// clang-format off
+class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
+  // clang-format on
+  override render(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext): Node[] {
     const color = Common.Color.parse(match.text);
     if (!color) {
       return [document.createTextNode(match.text)];

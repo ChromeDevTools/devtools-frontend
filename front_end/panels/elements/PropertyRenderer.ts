@@ -39,8 +39,23 @@ function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {
 }
 
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
-  matcher(): SDK.CSSPropertyParser.Matcher<MatchT>;
+  readonly matchType: SDK.CSSPropertyParser.Constructor<MatchT>;
   render(match: MatchT, context: RenderingContext): Node[];
+  matcher(): SDK.CSSPropertyParser.Matcher<MatchT>;
+}
+
+// A mixin to automatically expose the match type on specific renrerers
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
+    matchT: SDK.CSSPropertyParser.Constructor<MatchT>) {
+  abstract class RendererBase implements MatchRenderer<MatchT> {
+    abstract matcher(): SDK.CSSPropertyParser.Matcher<MatchT>;
+    readonly matchType = matchT;
+    render(_match: MatchT, _context: RenderingContext): Node[] {
+      return [];
+    }
+  }
+  return RendererBase;
 }
 
 export class RenderingContext {
@@ -172,7 +187,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     for (const renderer of renderers) {
       const matcher = renderer.matcher();
       matchers.push(matcher);
-      rendererMap.set(matcher.matchType, renderer);
+      rendererMap.set(renderer.matchType, renderer);
     }
     const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, matchers);
     ast.trailingNodes.forEach(n => matchedResult.matchText(n));
@@ -182,10 +197,14 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     return valueElement;
   }
 }
-export class URLRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.URLMatch> {
+
+// clang-format off
+export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLMatch) {
+  // clang-format on
   constructor(private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null) {
+    super();
   }
-  render(match: SDK.CSSPropertyParserMatchers.URLMatch): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.URLMatch): Node[] {
     const url = unescapeCssString(match.url) as Platform.DevToolsPath.UrlString;
     const container = document.createDocumentFragment();
     UI.UIUtils.createTextChild(container, 'url(');
@@ -218,8 +237,10 @@ export class URLRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.
   }
 }
 
-export class StringRenderer implements MatchRenderer<SDK.CSSPropertyParserMatchers.StringMatch> {
-  render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[] {
+// clang-format off
+export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.StringMatch) {
+  // clang-format on
+  override render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[] {
     const element = document.createElement('span');
     element.innerText = match.text;
     UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));

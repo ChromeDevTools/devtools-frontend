@@ -293,7 +293,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
       const icon = new IconButton.Icon.Icon();
       icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
       icon.title = i18nString(UIStrings.thirdPartyPhaseout);
-      this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);
+      this.setTrailingTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES, icon);
     }
   }
 

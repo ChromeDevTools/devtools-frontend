@@ -1392,8 +1392,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         assert.exists(dark);
         const active = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? light : dark;
         const inactive = colorScheme === SDK.CSSModel.ColorScheme.LIGHT ? dark : light;
-        assert.strictEqual(inactive.parentElement?.style.textDecoration, 'line-through');
-        assert.strictEqual(active.parentElement?.style.textDecoration, '');
+        assert.isTrue(inactive.parentElement?.classList.contains('inactive-value'));
+        assert.isFalse(active.parentElement?.classList.contains('inactive-value'));
       }
 
       await check(SDK.CSSModel.ColorScheme.LIGHT, 'red', 'blue');
@@ -1566,9 +1566,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           undefined;
       assert.exists(values);
       assert.strictEqual(values?.length, 3);
-      assert.strictEqual(values[0].style.textDecoration, 'line-through');
-      assert.strictEqual(values[1].style.textDecoration, '');
-      assert.strictEqual(values[2].style.textDecoration, 'line-through');
+      assert.isTrue(values[0].classList.contains('inactive-value'));
+      assert.isFalse(values[1].classList.contains('inactive-value'));
+      assert.isTrue(values[2].classList.contains('inactive-value'));
     });
 
     it('renders the position-try correctly with keyword', () => {
@@ -1582,9 +1582,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           undefined;
       assert.exists(values);
       assert.strictEqual(values?.length, 3);
-      assert.strictEqual(values[0].style.textDecoration, 'line-through');
-      assert.strictEqual(values[1].style.textDecoration, '');
-      assert.strictEqual(values[2].style.textDecoration, 'line-through');
+      assert.isTrue(values[0].classList.contains('inactive-value'));
+      assert.isFalse(values[1].classList.contains('inactive-value'));
+      assert.isTrue(values[2].classList.contains('inactive-value'));
     });
   });
 
@@ -1633,7 +1633,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
       assert.deepEqual(
-          Array.from(args.values()).map(arg => arg.style.textDecoration), ['line-through', '', 'line-through']);
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [true, false, true]);
     });
   });
 
@@ -1647,14 +1647,16 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       let args = stylePropertyTreeElement.valueElement?.querySelectorAll('span') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
-      assert.deepEqual(Array.from(args.values()).map(arg => arg.style.textDecoration), ['', '', 'line-through']);
+      assert.deepEqual(
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, false, true]);
 
       stylePropertyTreeElement.setComputedStyles(new Map([['appearance', 'base-select']]));
       stylePropertyTreeElement.updateTitle();
 
       args = stylePropertyTreeElement.valueElement?.querySelectorAll('span') as NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
-      assert.deepEqual(Array.from(args.values()).map(arg => arg.style.textDecoration), ['', 'line-through', '']);
+      assert.deepEqual(
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, true, false]);
     });
   });
 

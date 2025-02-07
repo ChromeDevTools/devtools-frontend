@@ -521,7 +521,7 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
     const inactiveColor = (activeColor === match.light) ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common.Color.parse(colorText);
-    inactiveColor.style.textDecoration = 'line-through';
+    inactiveColor.classList.add('inactive-value');
     if (color) {
       colorSwatch.renderColor(color);
     }
@@ -851,9 +851,9 @@ export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 
     const activeAppearance = this.#treeElement.getComputedStyle('appearance');
     if (activeAppearance?.startsWith('base')) {
-      auto.style.textDecoration = 'line-through';
+      auto.classList.add('inactive-value');
     } else {
-      base.style.textDecoration = 'line-through';
+      base.classList.add('inactive-value');
     }
 
     return [content];
@@ -1314,7 +1314,7 @@ export class SelectFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
     }
     for (let i = 0; i < renderedArgs.length; ++i) {
       if (evaledArgs.results[i] !== functionResult) {
-        renderedArgs[i].style.textDecoration = 'line-through';
+        renderedArgs[i].classList.add('inactive-value');
       }
     }
   }
@@ -1443,7 +1443,7 @@ export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatch
         fallbackContent.appendChild(document.createTextNode(', '));
       }
       if (i !== this.#treeElement.matchedStyles().activePositionFallbackIndex()) {
-        fallbackContent.style.textDecoration = 'line-through';
+        fallbackContent.classList.add('inactive-value');
       }
       Renderer.renderInto(fallback, context, fallbackContent);
 

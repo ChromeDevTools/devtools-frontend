@@ -546,6 +546,7 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
       modelId: '',
       temperature: -1,
       enabled: false,
+      insightsEnabled: false,
       ...config.devToolsAiAssistancePerformanceAgent,
     } as Root.Runtime.HostConfigAiAssistancePerformanceAgent,
     devToolsImprovedWorkspaces: {

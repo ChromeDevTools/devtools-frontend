@@ -369,6 +369,8 @@ export interface HostConfigAiAssistancePerformanceAgent {
   temperature: number;
   enabled: boolean;
   userTier: string;
+  // Introduced in crrev.com/c/6243415
+  insightsEnabled?: boolean;
 }
 
 export interface HostConfigAiAssistanceFileAgent {

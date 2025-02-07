@@ -75,7 +75,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
   #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
   securityOverviewElement: OriginTreeElement;
   readonly #cookieControlsTreeElement: CookieControlsTreeElement|undefined;
-  readonly #cookieReportTreeElement: CookieReportTreeElement|undefined;
+  readonly cookieReportTreeElement: CookieReportTreeElement|undefined;
   readonly #elementsByOrigin: Map<string, OriginTreeElement>;
   readonly #mainViewReloadMessage: UI.TreeOutline.TreeElement;
   #mainOrigin: string|null;
@@ -97,8 +97,8 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
       this.#cookieControlsTreeElement =
           new CookieControlsTreeElement(i18nString(UIStrings.flagControls), 'cookie-flag-controls');
       privacyTreeSection.appendChild(this.#cookieControlsTreeElement);
-      this.#cookieReportTreeElement = new CookieReportTreeElement(i18nString(UIStrings.cookieReport), 'cookie-report');
-      privacyTreeSection.appendChild(this.#cookieReportTreeElement);
+      this.cookieReportTreeElement = new CookieReportTreeElement(i18nString(UIStrings.cookieReport), 'cookie-report');
+      privacyTreeSection.appendChild(this.cookieReportTreeElement);
 
       // If this if the first time this setting is set, go to the controls tool
       if (this.#securitySidebarLastItemSetting.get() === '') {
@@ -175,10 +175,10 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
       this.#cookieControlsTreeElement.select();
       this.#cookieControlsTreeElement.showElement();
     } else if (
-        this.#cookieReportTreeElement &&
-        this.#securitySidebarLastItemSetting.get() === this.#cookieReportTreeElement.elemId) {
-      this.#cookieReportTreeElement.select();
-      this.#cookieReportTreeElement.showElement();
+        this.cookieReportTreeElement &&
+        this.#securitySidebarLastItemSetting.get() === this.cookieReportTreeElement.elemId) {
+      this.cookieReportTreeElement.select();
+      this.cookieReportTreeElement.showElement();
     } else {
       this.securityOverviewElement.select();
       this.securityOverviewElement.showElement();

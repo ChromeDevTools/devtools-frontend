@@ -398,6 +398,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showBoth(animate?: boolean): void {
+    // Do nothing if both components are already showing.
+    if (!this.mainElement.classList.contains('hidden') && !this.sidebarElementInternal.classList.contains('hidden')) {
+      return;
+    }
+
     if (this.showModeInternal === ShowMode.BOTH) {
       animate = false;
     }

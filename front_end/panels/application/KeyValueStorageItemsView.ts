@@ -1,4 +1,4 @@
-// Copyright 2024 The Chromium Authors. All rights reserved.
+// Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -27,17 +27,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-import * as i18n from '../../../../core/i18n/i18n.js';
-import * as VisualLogging from '../../../visual_logging/visual_logging.js';
-import * as UI from '../../legacy.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type ColumnDescriptor, DataGridImpl, DataGridNode, Events} from './DataGrid.js';
+import {StorageItemsView} from './StorageItemsView.js';
 
 const {ARIAUtils} = UI;
 const {EmptyWidget} = UI.EmptyWidget;
 const {SplitWidget} = UI.SplitWidget;
 const {Widget, VBox} = UI.Widget;
+const {DataGridImpl, DataGridNode, Events} = DataGrid.DataGrid;
 
+type DataGridImpl<T> = DataGrid.DataGrid.DataGridImpl<T>;
+type DataGridNode<T> = DataGrid.DataGrid.DataGridNode<T>;
+type Events = DataGrid.DataGrid.Events;
 type Widget = UI.Widget.Widget;
 type SplitWidget = UI.SplitWidget.SplitWidget;
 type VBox = UI.Widget.VBox;
@@ -56,58 +61,43 @@ const UIStrings = {
    *@example {5} PH1
    */
   numberEntries: 'Number of entries shown in table: {PH1}',
+  /**
+   *@description Text in DOMStorage Items View of the Application panel
+   */
+  key: 'Key',
+  /**
+   *@description Text for the value of something
+   */
+  value: 'Value',
 };
-const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGridWithPreview.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/KeyValueStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-interface Callbacks {
-  // Called to refresh items, e.g when the sorting order is changed.
-  refreshItems: () => void;
-  // Edit callbacks. If undefined, the data grid is not editable.
-  edit?: {
-    // Called when a key is deleted in the UI.
-    removeItem: (key: string) => void,
-    // Called when an item is created or updated in the UI.
-    setItem: (key: string, value: string) => void,
-  };
-  // Called when the selection state changes.
-  setCanDeleteSelected: (canSelect: boolean) => void;
-  // Called to create the preview widget when a new item is selected.
-  createPreview: (key: string, value: string) => Promise<Widget|null>;
-}
-
-interface Messages {
-  title: string;
-  itemDeleted: string;
-  itemsCleared: string;
-}
 
 /**
  * A helper typically used in the Application panel. Renders a split view
  * between a DataGrid displaying key-value pairs and a preview Widget.
  */
-export class DataGridWithPreview {
+export abstract class KeyValueStorageItemsView extends StorageItemsView {
   #dataGrid: DataGridImpl<unknown>;
   readonly #splitWidget: SplitWidget;
   readonly #previewPanel: VBox;
   #preview: Widget|null;
   #previewValue: string|null;
 
-  #callbacks: Callbacks;
-  #messages: Messages;
-
-  constructor(id: string, parent: HTMLElement, columns: ColumnDescriptor[], callbacks: Callbacks, messages: Messages) {
-    this.#callbacks = callbacks;
-    this.#messages = messages;
+  constructor(title: string, id: string, editable: boolean) {
+    super(title, id);
     this.#dataGrid = new DataGridImpl({
-      displayName: this.#messages.title,
-      columns,
-      refreshCallback: this.#callbacks.refreshItems,
-      ...(this.#callbacks.edit ? {
+      displayName: title,
+      columns: [
+        {id: 'key', title: i18nString(UIStrings.key), sortable: true, editable, longText: true, weight: 50},
+        {id: 'value', title: i18nString(UIStrings.value), sortable: false, editable, longText: true, weight: 50}
+      ],
+      refreshCallback: this.refreshItems.bind(this),
+      ...(editable ? {
         editCallback: this.#editingCallback.bind(this),
         deleteCallback: this.#deleteCallback.bind(this),
       } :
-                                 {}),
+                     {}),
     });
     this.#dataGrid.addEventListener(Events.SELECTED_NODE, event => {
       void this.#previewEntry(event.data);
@@ -115,13 +105,13 @@ export class DataGridWithPreview {
     this.#dataGrid.addEventListener(Events.DESELECTED_NODE, () => {
       void this.#previewEntry(null);
     });
-    this.#dataGrid.addEventListener(Events.SORTING_CHANGED, this.#callbacks.refreshItems, this);
+    this.#dataGrid.addEventListener(Events.SORTING_CHANGED, this.refreshItems, this);
     this.#dataGrid.setStriped(true);
     this.#dataGrid.setName(`${id}-datagrid-with-preview`);
 
     this.#splitWidget = new SplitWidget(
         /* isVertical: */ false, /* secondIsSidebar: */ true, `${id}-split-view-state`);
-    this.#splitWidget.show(parent);
+    this.#splitWidget.show(this.contentElement);
 
     this.#previewPanel = new VBox();
     this.#previewPanel.setMinimumSize(0, 50);
@@ -147,14 +137,13 @@ export class DataGridWithPreview {
     return this.#previewPanel;
   }
 
-  clearItems(): void {
+  itemsCleared(): void {
     this.#dataGrid.rootNode().removeChildren();
     this.#dataGrid.addCreationNode(false);
-    ARIAUtils.alert(this.#messages.itemsCleared);
-    this.#callbacks.setCanDeleteSelected(false);
+    this.setCanDeleteSelected(false);
   }
 
-  removeItem(key: string): void {
+  itemRemoved(key: string): void {
     const rootNode = this.#dataGrid.rootNode();
     const children = rootNode.children;
 
@@ -162,13 +151,13 @@ export class DataGridWithPreview {
       const childNode = children[i];
       if (childNode.data.key === key) {
         rootNode.removeChild(childNode);
-        this.#callbacks.setCanDeleteSelected(children.length > 1);
+        this.setCanDeleteSelected(children.length > 1);
         return;
       }
     }
   }
 
-  addItem(key: string, value: string): void {
+  itemAdded(key: string, value: string): void {
     const rootNode = this.#dataGrid.rootNode();
     const children = rootNode.children;
 
@@ -182,7 +171,7 @@ export class DataGridWithPreview {
     rootNode.insertChild(childNode, children.length - 1);
   }
 
-  updateItem(key: string, value: string): void {
+  itemUpdated(key: string, value: string): void {
     const childNode = this.#dataGrid.rootNode().children.find((child: DataGridNode<unknown>) => child.data.key === key);
     if (!childNode) {
       return;
@@ -197,7 +186,7 @@ export class DataGridWithPreview {
     if (this.#previewValue !== value) {
       void this.#previewEntry(childNode);
     }
-    this.#callbacks.setCanDeleteSelected(true);
+    this.setCanDeleteSelected(true);
   }
 
   showItems(items: {key: string, value: string}[]): void {
@@ -229,11 +218,11 @@ export class DataGridWithPreview {
       selectedNode.selected = true;
     }
     this.#dataGrid.addCreationNode(false);
-    this.#callbacks.setCanDeleteSelected(Boolean(selectedNode));
+    this.setCanDeleteSelected(Boolean(selectedNode));
     ARIAUtils.alert(i18nString(UIStrings.numberEntries, {PH1: filteredList.length}));
   }
 
-  deleteSelectedItem(): void {
+  override deleteSelectedItem(): void {
     if (!this.#dataGrid.selectedNode) {
       return;
     }
@@ -245,12 +234,12 @@ export class DataGridWithPreview {
       void {
     if (columnIdentifier === 'key') {
       if (typeof oldText === 'string') {
-        this.#callbacks.edit?.removeItem(oldText);
+        this.removeItem(oldText);
       }
-      this.#callbacks.edit?.setItem(newText, editingNode.data.value || '');
+      this.setItem(newText, editingNode.data.value || '');
       this.#removeDupes(editingNode);
     } else {
-      this.#callbacks.edit?.setItem(editingNode.data.key || '', newText);
+      this.setItem(editingNode.data.key || '', newText);
     }
   }
 
@@ -270,9 +259,7 @@ export class DataGridWithPreview {
       return;
     }
 
-    this.#callbacks.edit?.removeItem(node.data.key);
-
-    ARIAUtils.alert(this.#messages.itemDeleted);
+    this.removeItem(node.data.key);
   }
 
   showPreview(preview: Widget|null, value: string|null): void {
@@ -293,7 +280,7 @@ export class DataGridWithPreview {
   async #previewEntry(entry: DataGridNode<unknown>|null): Promise<void> {
     const value = entry && entry.data && entry.data.value;
     if (entry && entry.data && entry.data.value) {
-      const preview = await this.#callbacks.createPreview(entry.data.key, value as string);
+      const preview = await this.createPreview(entry.data.key, value as string);
       // Selection could've changed while the preview was loaded
       if (entry.selected) {
         this.showPreview(preview, value);
@@ -303,7 +290,17 @@ export class DataGridWithPreview {
     }
   }
 
-  detach(): void {
-    this.#splitWidget.detach();
+  set editable(editable: boolean) {
+    if (editable) {
+      this.#dataGrid.editCallback = this.#editingCallback.bind(this);
+      this.#dataGrid.deleteCallback = this.#deleteCallback.bind(this);
+    } else {
+      this.#dataGrid.editCallback = undefined;
+      this.#dataGrid.deleteCallback = undefined;
+    }
   }
+
+  protected abstract setItem(key: string, value: string): void;
+  protected abstract removeItem(key: string): void;
+  protected abstract createPreview(key: string, value: string): Promise<Widget|null>;
 }

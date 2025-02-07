@@ -563,13 +563,18 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return rootNode;
   }
 
+  isColumnEditable(columnId: string): boolean {
+    const column = this.columns[columnId];
+    return Boolean(column && column.editable && this.editCallback);
+  }
+
   private ondblclick(event: Event): void {
     if (!this.editCallback || this.editing || this.editingNode) {
       return;
     }
 
     const columnId = this.columnIdFromNode((event.target as Node));
-    if (!columnId || !this.columns[columnId].editable) {
+    if (!columnId || !this.isColumnEditable(columnId)) {
       return;
     }
     this.startEditing((event.target as Node));
@@ -796,7 +801,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const start = inclusive ? cellIndex : cellIndex + increment;
     const columns = this.visibleColumnsArray;
     for (let i = start; (i >= 0) && (i < columns.length); i += increment) {
-      if (columns[i].editable) {
+      if (this.isColumnEditable(columns[i].id)) {
         return i;
       }
     }
@@ -1452,7 +1457,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           const firstEditColumnIndex = this.nextEditableColumn(-1);
           if (firstEditColumnIndex > -1) {
             const firstColumn = this.visibleColumnsArray[firstEditColumnIndex];
-            if (firstColumn && firstColumn.editable) {
+            if (firstColumn && this.isColumnEditable(firstColumn.id)) {
               contextMenu.defaultSection().appendItem(
                   i18nString(UIStrings.editS, {PH1: String(firstColumn.title)}),
                   this.startEditingColumnOfDataGridNode.bind(this, gridNode, firstEditColumnIndex),
@@ -1461,7 +1466,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           }
         } else {
           const columnId = this.columnIdFromNode(target);
-          if (columnId && this.columns[columnId].editable) {
+          if (columnId && this.isColumnEditable(columnId)) {
             contextMenu.defaultSection().appendItem(
                 i18nString(UIStrings.editS, {PH1: String(this.columns[columnId].title)}),
                 this.startEditing.bind(this, target), {jslogContext: 'edit'});
@@ -1995,7 +2000,7 @@ export class DataGridNode<T> {
     nodeToColumnIdMap.set(cell, columnId);
 
     if (this.dataGrid) {
-      const editableCell = this.dataGrid.columns[columnId].editable;
+      const editableCell = this.dataGrid.isColumnEditable(columnId);
 
       cell.setAttribute(
           'jslog',

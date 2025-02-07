@@ -34,28 +34,14 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as JSON5 from '../../third_party/json5/json5.js';
-import type * as DataGridImpl from '../../ui/legacy/components/data_grid/data_grid.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ExtensionStorage} from './ExtensionStorageModel.js';
-import {StorageItemsView} from './StorageItemsView.js';
+import {KeyValueStorageItemsView} from './KeyValueStorageItemsView.js';
 
 const UIStrings = {
-  /**
-   *@description Text in ExtensionStorage Items View of the Application panel
-   */
-  extensionStorage: 'Extension Storage',
-  /**
-   *@description Text in ExtensionStorage Items View of the Application panel
-   */
-  key: 'Key',
-  /**
-   *@description Text for the value of something
-   */
-  value: 'Value',
   /**
    *@description Name for the "Extension Storage Items" table that shows the content of the extension Storage.
    */
@@ -65,10 +51,6 @@ const UIStrings = {
    * entries were deleted.
    */
   extensionStorageItemsCleared: 'Extension Storage Items cleared',
-  /**
-   *@description Text for announcing a Extension Storage key/value item has been deleted
-   */
-  extensionStorageItemDeleted: 'The storage item was deleted.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ExtensionStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -85,24 +67,21 @@ export namespace ExtensionStorageItemsDispatcher {
   }
 }
 
-export class ExtensionStorageItemsView extends StorageItemsView {
-  #extensionStorage: ExtensionStorage;
-  #grid: DataGrid.DataGridWithPreview.DataGridWithPreview;
+export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
+  #extensionStorage!: ExtensionStorage;
   readonly extensionStorageItemsDispatcher:
       Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>;
 
   constructor(extensionStorage: ExtensionStorage) {
-    super(i18nString(UIStrings.extensionStorage), 'extensionStoragePanel');
+    super(i18nString(UIStrings.extensionStorageItems), 'extension-storage', true);
 
-    this.#extensionStorage = extensionStorage;
     this.element.setAttribute('jslog', `${VisualLogging.pane().context('extension-storage-data')}`);
     this.element.classList.add('storage-view', 'table');
 
     this.extensionStorageItemsDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<ExtensionStorageItemsDispatcher.EventTypes>();
 
-    this.#grid = this.#createGrid();
-    this.refreshItems();
+    this.setStorage(extensionStorage);
   }
 
   get #isEditable(): boolean {
@@ -123,47 +102,20 @@ export class ExtensionStorageItemsView extends StorageItemsView {
     }
   }
 
-  #createGrid(): DataGrid.DataGridWithPreview.DataGridWithPreview {
-    const columns = ([
-      {id: 'key', title: i18nString(UIStrings.key), sortable: true, editable: true, longText: true, weight: 50},
-      {id: 'value', title: i18nString(UIStrings.value), sortable: false, editable: true, longText: true, weight: 50},
-    ] as DataGrid.DataGrid.ColumnDescriptor[]);
-
-    const grid = new DataGrid.DataGridWithPreview.DataGridWithPreview(
-        'extension-storage', this.element, columns, {
-          refreshItems: this.refreshItems.bind(this),
-          edit: this.#isEditable ? {
-            removeItem: async key => {
-              await this.#extensionStorage.removeItem(key);
-              this.refreshItems();
-            },
-            setItem: async (key, value) => {
-              await this.#extensionStorage.setItem(key, this.parseValue(value));
-              this.refreshItems();
-              this.extensionStorageItemsDispatcher.dispatchEventToListeners(
-                  ExtensionStorageItemsDispatcher.Events.ITEM_EDITED);
-            },
-          } :
-                                   undefined,
-          createPreview: this.#createPreview.bind(this),
-          setCanDeleteSelected: canSelect => {
-            if (!this.#isEditable) {
-              return;
-            }
-            this.setCanDeleteSelected(canSelect);
-          },
-        },
-        {
-          title: i18nString(UIStrings.extensionStorageItems),
-          itemDeleted: i18nString(UIStrings.extensionStorageItemDeleted),
-          itemsCleared: i18nString(UIStrings.extensionStorageItemsCleared),
-        });
-    grid.showPreview(null, null);
-
-    return grid;
+  protected removeItem(key: string): void {
+    void this.#extensionStorage.removeItem(key).then(() => {
+      this.refreshItems();
+    });
   }
 
-  #createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
+  protected setItem(key: string, value: string): void {
+    void this.#extensionStorage.setItem(key, this.parseValue(value)).then(() => {
+      this.refreshItems();
+      this.extensionStorageItemsDispatcher.dispatchEventToListeners(ExtensionStorageItemsDispatcher.Events.ITEM_EDITED);
+    });
+  }
+
+  protected createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
     const url = 'extension-storage://' + this.#extensionStorage.extensionId + '/' + this.#extensionStorage.storageArea +
             '/preview/' + key as Platform.DevToolsPath.UrlString;
     const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
@@ -180,11 +132,7 @@ export class ExtensionStorageItemsView extends StorageItemsView {
   setStorage(extensionStorage: ExtensionStorage): void {
     this.#extensionStorage = extensionStorage;
 
-    // When changing storage area, recreate the grid. This is needed as
-    // DataGridImpl does not currently changing from editable to non-editable
-    // after creation.
-    this.#grid.detach();
-    this.#grid = this.#createGrid();
+    this.editable = this.#isEditable;
 
     this.refreshItems();
   }
@@ -194,14 +142,15 @@ export class ExtensionStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.#grid.clearItems();
+    this.itemsCleared();
+    UI.ARIAUtils.alert(i18nString(UIStrings.extensionStorageItemsCleared));
   }
 
   override deleteSelectedItem(): void {
     if (!this.#isEditable) {
       return;
     }
-    this.#grid.deleteSelectedItem();
+    this.deleteSelectedItem();
   }
 
   override refreshItems(): void {
@@ -217,7 +166,7 @@ export class ExtensionStorageItemsView extends StorageItemsView {
         Object.entries(items).map(
             ([key, value]) => ({key, value: typeof value === 'string' ? value : JSON.stringify(value)})),
         item => `${item.key} ${item.value}`);
-    this.#grid.showItems(filteredItems);
+    this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
         ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED);
   }
@@ -236,13 +185,9 @@ export class ExtensionStorageItemsView extends StorageItemsView {
   }
 
   getEntriesForTesting(): Array<{key: string, value: string}> {
-    return this.#grid.dataGridForTesting.rootNode().children.filter(node => node.data.key).map(node => (node.data as {
-                                                                                                 key: string,
-                                                                                                 value: string,
-                                                                                               }));
-  }
-
-  get dataGridForTesting(): DataGridImpl.DataGrid.DataGridImpl<unknown> {
-    return this.#grid.dataGridForTesting;
+    return this.dataGridForTesting.rootNode().children.filter(node => node.data.key).map(node => (node.data as {
+                                                                                           key: string,
+                                                                                           value: string,
+                                                                                         }));
   }
 }

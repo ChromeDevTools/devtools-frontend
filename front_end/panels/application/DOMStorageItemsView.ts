@@ -32,27 +32,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DOMStorage} from './DOMStorageModel.js';
-import {StorageItemsView} from './StorageItemsView.js';
+import {KeyValueStorageItemsView} from './KeyValueStorageItemsView.js';
 
 const UIStrings = {
-  /**
-   *@description Text in DOMStorage Items View of the Application panel
-   */
-  domStorage: 'DOM Storage',
-  /**
-   *@description Text in DOMStorage Items View of the Application panel
-   */
-  key: 'Key',
-  /**
-   *@description Text for the value of something
-   */
-  value: 'Value',
   /**
    *@description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
    */
@@ -69,13 +56,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/DOMStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class DOMStorageItemsView extends StorageItemsView {
+export class DOMStorageItemsView extends KeyValueStorageItemsView {
   private domStorage: DOMStorage;
   private eventListeners: Common.EventTarget.EventDescriptor[];
-  private grid: DataGrid.DataGridWithPreview.DataGridWithPreview;
 
   constructor(domStorage: DOMStorage) {
-    super(i18nString(UIStrings.domStorage), 'domStoragePanel');
+    super(i18nString(UIStrings.domStorageItems), 'dom-storage', true);
 
     this.domStorage = domStorage;
     if (domStorage.storageKey) {
@@ -84,37 +70,13 @@ export class DOMStorageItemsView extends StorageItemsView {
 
     this.element.classList.add('storage-view', 'table');
 
-    const columns = ([
-      {id: 'key', title: i18nString(UIStrings.key), sortable: true, editable: true, longText: true, weight: 50},
-      {id: 'value', title: i18nString(UIStrings.value), sortable: false, editable: true, longText: true, weight: 50},
-    ] as DataGrid.DataGrid.ColumnDescriptor[]);
-
-    this.grid = new DataGrid.DataGridWithPreview.DataGridWithPreview(
-        'dom-storage', this.element, columns, {
-          refreshItems: this.refreshItems.bind(this),
-          edit: {
-            removeItem: key => this.domStorage?.removeItem(key),
-            setItem: (key, value) => this.domStorage?.setItem(key, value),
-          },
-          createPreview: this.createPreview.bind(this),
-          setCanDeleteSelected: this.setCanDeleteSelected.bind(this),
-        },
-        {
-          title: i18nString(UIStrings.domStorageItems),
-          itemDeleted: i18nString(UIStrings.domStorageItemDeleted),
-          itemsCleared: i18nString(UIStrings.domStorageItemsCleared),
-        });
-    this.grid.showPreview(null, null);
+    this.showPreview(null, null);
 
     this.eventListeners = [];
     this.setStorage(domStorage);
   }
 
-  get dataGridForTesting(): DataGrid.DataGrid.DataGridImpl<unknown> {
-    return this.grid.dataGridForTesting;
-  }
-
-  private createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
+  protected createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
     const protocol = this.domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
     const url = `${protocol}://${key}` as Platform.DevToolsPath.UrlString;
     const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
@@ -150,7 +112,12 @@ export class DOMStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.grid.clearItems();
+    this.itemsCleared();
+  }
+
+  override itemsCleared(): void {
+    super.itemsCleared();
+    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemsCleared));
   }
 
   private domStorageItemRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemRemovedEvent>):
@@ -159,7 +126,12 @@ export class DOMStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.grid.removeItem(event.data.key);
+    this.itemRemoved(event.data.key);
+  }
+
+  override itemRemoved(key: string): void {
+    super.itemRemoved(key);
+    UI.ARIAUtils.alert(i18nString(UIStrings.domStorageItemDeleted));
   }
 
   private domStorageItemAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemAddedEvent>): void {
@@ -167,7 +139,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.grid.addItem(event.data.key, event.data.value);
+    this.itemAdded(event.data.key, event.data.value);
   }
 
   private domStorageItemUpdated(event: Common.EventTarget.EventTargetEvent<DOMStorage.DOMStorageItemUpdatedEvent>):
@@ -176,11 +148,7 @@ export class DOMStorageItemsView extends StorageItemsView {
       return;
     }
 
-    this.grid.updateItem(event.data.key, event.data.value);
-  }
-
-  override deleteSelectedItem(): void {
-    this.grid.deleteSelectedItem();
+    this.itemUpdated(event.data.key, event.data.value);
   }
 
   override refreshItems(): void {
@@ -194,12 +162,20 @@ export class DOMStorageItemsView extends StorageItemsView {
     }
     const filteredItems =
         this.filter(items.map(item => ({key: item[0], value: item[1]})), item => `${item.key} ${item.value}`);
-    this.grid.showItems(filteredItems);
+    this.showItems(filteredItems);
   }
 
   override deleteAllItems(): void {
     this.domStorage.clear();
     // explicitly clear the view because the event won't be fired when it has no items
     this.domStorageItemsCleared();
+  }
+
+  protected removeItem(key: string): void {
+    this.domStorage?.removeItem(key);
+  }
+
+  protected setItem(key: string, value: string): void {
+    this.domStorage?.setItem(key, value);
   }
 }

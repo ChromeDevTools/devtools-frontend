@@ -3588,6 +3588,7 @@ export const knownContextValues = new Set([
   'timeline.toggle-insight.inp',
   'timeline.toggle-insight.lcp-by-phase',
   'timeline.toggle-insight.lcp-discovery',
+  'timeline.toggle-insight.long-critical-network-tree',
   'timeline.toggle-insight.render-blocking-requests',
   'timeline.toggle-insight.slow-css-selector',
   'timeline.toggle-insight.third-parties',

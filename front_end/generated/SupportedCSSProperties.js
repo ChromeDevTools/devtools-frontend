@@ -638,6 +638,7 @@ export const generatedProperties = [
    "rotate",
    "row-gap",
    "row-rule-break",
+   "row-rule-outset",
    "ruby-align",
    "ruby-position",
    "rx",
@@ -3516,6 +3517,10 @@ export const generatedProperties = [
    "intersection"
   ],
   "name": "row-rule-break"
+ },
+ {
+  "inherited": false,
+  "name": "row-rule-outset"
  },
  {
   "inherited": true,

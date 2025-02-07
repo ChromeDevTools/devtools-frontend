@@ -2881,6 +2881,7 @@ export const knownContextValues = new Set([
   'rotate',
   'row-gap',
   'row-rule-break',
+  'row-rule-outset',
   'rp-id',
   'rpId',
   'ru',

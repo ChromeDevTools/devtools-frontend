@@ -462,12 +462,12 @@ class Example {
     }
     const executionStartTime = performance.now();
     await this.#devtoolsPage.waitForFunction(() => {
-      return 'setDebugFreestylerEnabled' in window;
+      return 'setDebugAiAssistanceEnabled' in window;
     });
 
     await this.#devtoolsPage.evaluate(() => {
       // @ts-ignore this is run in the DevTools page context where this function does exist.
-      setDebugFreestylerEnabled(true);
+      setDebugAiAssistanceEnabled(true);
     });
 
     /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
@@ -506,7 +506,7 @@ class Example {
 
       const done = this.#devtoolsPage.evaluate(() => {
         return /** @type {Promise<void>} */ (new Promise(resolve => {
-          window.addEventListener('freestylerdone', () => {
+          window.addEventListener('aiassistancedone', () => {
             resolve();
           }, {
             once: true,
@@ -519,10 +519,10 @@ class Example {
       abort.abort();
 
       const logs = await devtoolsPage.evaluate(() => {
-        return localStorage.getItem('freestylerStructuredLog');
+        return localStorage.getItem('aiAssistanceStructuredLog');
       });
       if (!logs) {
-        throw new Error('No freestylerStructuredLog entries were found.');
+        throw new Error('No aiAssistanceStructuredLog entries were found.');
       }
       /** @type {import('./types').IndividualPromptRequestResponse[]} */
       const results = JSON.parse(logs);

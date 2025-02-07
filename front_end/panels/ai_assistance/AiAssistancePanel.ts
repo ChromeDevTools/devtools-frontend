@@ -1051,35 +1051,12 @@ function isAiAssistancePatchingEnabled(): boolean {
   return Boolean(config.devToolsFreestyler?.patching);
 }
 
-function setAiAssistanceServerSideLoggingEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('aiAssistance_enableServerSideLogging', 'true');
-  } else {
-    localStorage.setItem('aiAssistance_enableServerSideLogging', 'false');
-  }
-}
-
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
   const config = Common.Settings.Settings.instance().getHostConfig();
-  if (config.aidaAvailability?.disallowLogging) {
-    return false;
-  }
-  return localStorage.getItem('aiAssistance_enableServerSideLogging') !== 'false';
-}
-
-function setAiAssistanceStylingWithFunctionCalling(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('aiAssistance_stylingFunctionCalling', 'true');
-  } else {
-    localStorage.setItem('aiAssistance_stylingFunctionCalling', 'false');
-  }
+  return !config.aidaAvailability?.disallowLogging;
 }
 
 function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
-  return localStorage.getItem('aiAssistance_stylingFunctionCalling') === 'true';
+  const config = Common.Settings.Settings.instance().getHostConfig();
+  return Boolean(config.devToolsFreestyler?.functionCalling);
 }
-
-// @ts-ignore
-globalThis.setAiAssistanceServerSideLoggingEnabled = setAiAssistanceServerSideLoggingEnabled;
-// @ts-ignore
-globalThis.setAiAssistanceStylingWithFunctionCalling = setAiAssistanceStylingWithFunctionCalling;

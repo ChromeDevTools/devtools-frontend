@@ -1195,6 +1195,7 @@ grd_files_debug_sources = [
   "front_end/panels/ai_assistance/components/userActionRow.css.js",
   "front_end/panels/ai_assistance/data_formatters/FileFormatter.js",
   "front_end/panels/ai_assistance/data_formatters/NetworkRequestFormatter.js",
+  "front_end/panels/ai_assistance/debug.js",
   "front_end/panels/animation/AnimationGroupPreviewUI.js",
   "front_end/panels/animation/AnimationScreenshotPopover.js",
   "front_end/panels/animation/AnimationTimeline.js",

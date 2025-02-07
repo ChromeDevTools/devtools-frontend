@@ -125,11 +125,11 @@ describe('AI Assistance', function() {
   async function enableDebugModeForFreestyler(): Promise<void> {
     const {frontend} = getBrowserAndPages();
     await frontend.waitForFunction(() => {
-      return 'setDebugFreestylerEnabled' in window;
+      return 'setDebugAiAssistanceEnabled' in window;
     });
     await frontend.evaluate(() => {
       // @ts-ignore
-      setDebugFreestylerEnabled(true);
+      setDebugAiAssistanceEnabled(true);
     });
   }
 
@@ -152,7 +152,7 @@ describe('AI Assistance', function() {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
-        window.addEventListener('freestylerdone', resolve, {
+        window.addEventListener('aiassistancedone', resolve, {
           once: true,
         });
       });
@@ -162,7 +162,7 @@ describe('AI Assistance', function() {
     if (waitForSideEffect) {
       await frontend.waitForSelector('aria/Continue');
       return JSON.parse(await frontend.evaluate((): string => {
-        return localStorage.getItem('freestylerStructuredLog') as string;
+        return localStorage.getItem('aiAssistanceStructuredLog') as string;
       })) as Array<Log>;
     }
 
@@ -177,7 +177,7 @@ describe('AI Assistance', function() {
     await done;
     abort.abort();
     return JSON.parse(await frontend.evaluate((): string => {
-      return localStorage.getItem('freestylerStructuredLog') as string;
+      return localStorage.getItem('aiAssistanceStructuredLog') as string;
     })) as Array<Log>;
   }
 
@@ -486,7 +486,7 @@ STOP`,
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
-        window.addEventListener('freestylerdone', resolve, {
+        window.addEventListener('aiassistancedone', resolve, {
           once: true,
         });
       });

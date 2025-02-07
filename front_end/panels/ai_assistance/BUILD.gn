@@ -33,6 +33,7 @@ devtools_module("ai_assistance") {
     "components/UserActionRow.ts",
     "data_formatters/FileFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
+    "debug.ts",
   ]
 
   deps = [

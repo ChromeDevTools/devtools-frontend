@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as Lit from '../../../ui/lit/lit.js';
+import {debugLog, isDebugMode} from '../debug.js';
 
 export const enum ResponseType {
   CONTEXT = 'context',
@@ -494,7 +495,7 @@ export abstract class AiAgent<T> {
     }
 
     if (isDebugMode()) {
-      window.dispatchEvent(new CustomEvent('freestylerdone'));
+      window.dispatchEvent(new CustomEvent('aiassistancedone'));
     }
   }
 
@@ -640,7 +641,7 @@ export abstract class AiAgent<T> {
         response,
         aidaResponse,
       });
-      localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
+      localStorage.setItem('aiAssistanceStructuredLog', JSON.stringify(this.#structuredLog));
     }
   }
 
@@ -679,26 +680,3 @@ STOP`;
     };
   }
 }
-
-export function isDebugMode(): boolean {
-  return Boolean(localStorage.getItem('debugFreestylerEnabled'));
-}
-
-export function debugLog(...log: unknown[]): void {
-  if (!isDebugMode()) {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(...log);
-}
-
-function setDebugFreestylerEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugFreestylerEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugFreestylerEnabled');
-  }
-}
-// @ts-ignore
-globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

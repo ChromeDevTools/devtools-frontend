@@ -166,11 +166,6 @@ describeWithEnvironment('FreestylerPanel', () => {
   });
 
   describe('on rate click', () => {
-    afterEach(() => {
-      // @ts-expect-error global test variable
-      setAiAssistanceServerSideLoggingEnabled(false);
-    });
-
     it('renders a button linking to settings', () => {
       const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
 
@@ -187,8 +182,6 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should allow logging if configured', () => {
-      // @ts-expect-error global test variable
-      setAiAssistanceServerSideLoggingEnabled(true);
       const stub = getGetHostConfigStub({
         aidaAvailability: {
           disallowLogging: false,

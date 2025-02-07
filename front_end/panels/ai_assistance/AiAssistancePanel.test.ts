@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
@@ -20,16 +21,6 @@ import * as TimelineUtils from '../timeline/utils/utils.js';
 import * as AiAssistance from './ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
-
-function getTestAidaClient() {
-  return {
-    async *
-        fetch() {
-          yield {explanation: 'test', metadata: {}, completed: true};
-        },
-    registerClientEvent: sinon.spy(),
-  };
-}
 
 function getTestSyncInfo(): Host.InspectorFrontendHostAPI.SyncInformation {
   return {isSyncActive: true};
@@ -59,7 +50,7 @@ describeWithEnvironment('FreestylerPanel', () => {
   describe('consent view', () => {
     it('should render consent view when the consent is not given before', async () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -71,7 +62,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     it('should switch from consent view to chat view when enabling setting', async () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -88,7 +79,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -107,7 +98,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
 
       panel = new AiAssistance.AiAssistancePanel(viewStub, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -132,7 +123,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
 
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -147,7 +138,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
         syncInfo: getTestSyncInfo(),
       });
@@ -184,7 +175,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
 
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -204,7 +195,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         },
       });
 
-      const aidaClient = getTestAidaClient();
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -216,7 +207,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       mockView.reset();
       callArgs.onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
 
-      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         disable_user_content_logging: false,
       }));
       stub.restore();
@@ -225,7 +216,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {
       const RPC_ID = 0;
 
-      const aidaClient = getTestAidaClient();
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -237,7 +228,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       mockView.reset();
       callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
 
-      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
@@ -250,7 +241,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     it('should send NEGATIVE rating to aida client when the user clicks on positive rating', () => {
       const RPC_ID = 0;
-      const aidaClient = getTestAidaClient();
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -262,7 +253,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       mockView.reset();
       callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
 
-      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
@@ -276,7 +267,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     it('should send feedback text with data', () => {
       const RPC_ID = 0;
       const feedback = 'This helped me a ton.';
-      const aidaClient = getTestAidaClient();
+      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
         aidaClient,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -288,7 +279,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       mockView.reset();
       callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
 
-      sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
+      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
@@ -308,7 +299,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set the selected element when the widget is shown', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -329,7 +320,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should update the selected element when the changed DOMNode flavor is an ELEMENT_NODE', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -353,7 +344,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set selected element to null when the change DOMNode flavor is not an ELEMENT_NODE', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -377,7 +368,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should not handle DOMNode flavor changes if the widget is not shown', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -395,7 +386,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set the selected network request when the widget is shown', () => {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -414,7 +405,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set selected network request when the NetworkRequest flavor changes', () => {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -436,7 +427,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should not handle NetworkRequest flavor changes if the widget is not shown', () => {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -452,7 +443,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set the selected call tree when the widget is shown', () => {
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -471,7 +462,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set selected call tree when the AICallTree flavor changes', () => {
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -493,7 +484,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should not handle AICallTree flavor changes if the widget is not shown', () => {
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -509,7 +500,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set selected file when the widget is shown', () => {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -528,7 +519,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should set selected file when the UISourceCode flavor changes', () => {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -550,7 +541,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       it('should not handle NetworkRequest flavor changes if the widget is not shown', () => {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -573,7 +564,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     it('should set inspectElementToggled when the widget is shown', () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -590,7 +581,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     it('should update inspectElementToggled when the action is toggled', () => {
       toggleSearchElementAction.setToggled(false);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -611,7 +602,7 @@ describeWithEnvironment('FreestylerPanel', () => {
        () => {
          toggleSearchElementAction.setToggled(false);
          panel = new AiAssistance.AiAssistancePanel(mockView, {
-           aidaClient: getTestAidaClient(),
+           aidaClient: mockAidaClient([[{explanation: 'test'}]]),
            aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
            syncInfo: getTestSyncInfo(),
          });
@@ -625,7 +616,7 @@ describeWithEnvironment('FreestylerPanel', () => {
   describe('history interactions', () => {
     it('should have empty messages after new chat', async () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -659,7 +650,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         },
       });
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -693,7 +684,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     it('should switch agents and restore history', async () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -723,7 +714,7 @@ describeWithEnvironment('FreestylerPanel', () => {
           text: 'User question to DrJones?',
         },
         {
-          answer: 'test',
+          answer: 'test2',
           entity: AiAssistance.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
@@ -759,7 +750,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
   it('should have empty state after clear chat', async () => {
     panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: getTestAidaClient(),
+      aidaClient: mockAidaClient([[{explanation: 'test'}]]),
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       syncInfo: getTestSyncInfo(),
     });
@@ -794,7 +785,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       },
     });
     panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: getTestAidaClient(),
+      aidaClient: mockAidaClient([[{explanation: 'test'}]]),
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       syncInfo: getTestSyncInfo(),
     });
@@ -827,7 +818,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
   it('should have empty state after clear chat history', async () => {
     panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: getTestAidaClient(),
+      aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       syncInfo: getTestSyncInfo(),
     });
@@ -857,7 +848,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         text: 'User question to DrJones?',
       },
       {
-        answer: 'test',
+        answer: 'test2',
         entity: AiAssistance.ChatMessageEntity.MODEL,
         rpcId: undefined,
         suggestions: undefined,
@@ -897,7 +888,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -936,7 +927,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         },
       });
       panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: getTestAidaClient(),
+        aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
@@ -988,7 +979,7 @@ describeWithEnvironment('FreestylerPanel', () => {
           text: 'test2',
         },
         {
-          answer: 'test',
+          answer: 'test2',
           entity: AiAssistance.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
@@ -1012,7 +1003,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1036,7 +1027,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1062,7 +1053,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1085,7 +1076,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1108,7 +1099,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1135,7 +1126,7 @@ describeWithEnvironment('FreestylerPanel', () => {
                NetworkPanel.NetworkPanel.NetworkPanel,
                sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
            panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: getTestAidaClient(),
+             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
              aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
              syncInfo: getTestSyncInfo(),
            });
@@ -1158,7 +1149,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1181,7 +1172,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1208,7 +1199,7 @@ describeWithEnvironment('FreestylerPanel', () => {
                SourcesPanel.SourcesPanel.SourcesPanel,
                sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
            panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: getTestAidaClient(),
+             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
              aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
              syncInfo: getTestSyncInfo(),
            });
@@ -1232,7 +1223,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             TimelinePanel.TimelinePanel.TimelinePanel,
             sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1256,7 +1247,7 @@ describeWithEnvironment('FreestylerPanel', () => {
             TimelinePanel.TimelinePanel.TimelinePanel,
             sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
         panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: getTestAidaClient(),
+          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
@@ -1283,7 +1274,7 @@ describeWithEnvironment('FreestylerPanel', () => {
                TimelinePanel.TimelinePanel.TimelinePanel,
                sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
            panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: getTestAidaClient(),
+             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
              aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
              syncInfo: getTestSyncInfo(),
            });

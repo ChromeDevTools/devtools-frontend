@@ -12,7 +12,9 @@ import {
   describeWithDevtoolsExtension,
   getExtensionOrigin,
 } from '../../testing/ExtensionHelpers.js';
+import {MockProtocolBackend} from '../../testing/MockScopeChain.js';
 import {addChildFrame, FRAME_URL, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
+import {encodeSourceMap} from '../../testing/SourceMapEncoder.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Extensions from '../extensions/extensions.js';
@@ -959,3 +961,72 @@ for (const allowFileAccess of [true, false]) {
         });
       });
 }
+
+describeWithDevtoolsExtension('validate attachSourceMapURL ', {}, context => {
+  it('correctly attaches a source map to a registered script', async () => {
+    const sourceRoot = 'http://example.com';
+    const scriptName = 'script.ts';
+    const scriptInfo = {
+      url: urlString`${sourceRoot}/script.js`,
+      content: 'function f(x) { console.log(x); } function ignore(y){ console.log(y); }',
+    };
+    const sourceMap = encodeSourceMap(
+        [
+          `0:9 => ${scriptName}:0:1`,
+          `1:0 => ${scriptName}:4:0`,
+          `1:2 => ${scriptName}:4:2`,
+          `2:0 => ${scriptName}:2:0`,
+        ],
+        sourceRoot);
+
+    const sourceMapString = {
+      version: 3,
+      names: ['f', 'console', 'log', 'ignore'],
+      sources: [scriptInfo.url],
+      mappings: sourceMap.mappings,
+      file: `${scriptInfo.url}.map`,
+    };
+
+    const target = createTarget({type: SDK.Target.Type.FRAME});
+    const targetManager = target.targetManager();
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
+        {forceNew: false, resourceMapping, targetManager});
+    const backend = new MockProtocolBackend();
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
+
+    // Before any script is registered, there shouldn't be any uiSourceCodes.
+    assert.isNull(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptInfo.url));
+
+    // Create promise to await the uiSourceCode given the url and its target.
+    const uiSourceCodePromise = debuggerWorkspaceBinding.waitForUISourceCodeAdded(scriptInfo.url, target);
+
+    // Register the script.
+    const currentScript = await backend.addScript(target, scriptInfo, null);
+
+    // Await the promise for sourceCode to be added.
+    await uiSourceCodePromise;
+
+    assert.exists(context.chrome.devtools);
+
+    const resources = await new Promise<Chrome.DevTools.Resource[]>(r => {
+      context.chrome.devtools?.inspectedWindow.getResources(r);
+    });
+
+    // Validate that resource is registered.
+    assert.isTrue(resources && resources.length > 0);
+
+    // Script should not have a source map url attached yet.
+    assert.notExists(currentScript.sourceMapURL);
+
+    // Call attachSourceMapURL with encoded source map as a dataURL
+    const scriptResource = resources.find(item => item.url === scriptInfo.url.toString());
+    const encodedSourceMap = `data:text/plain;base64,${btoa(JSON.stringify(sourceMapString))}`;
+
+    await scriptResource?.attachSourceMapURL(encodedSourceMap);
+
+    // Validate that the script has the sourcemap dataURL attached.
+    assert.deepEqual(currentScript.sourceMapURL, encodedSourceMap);
+  });
+});

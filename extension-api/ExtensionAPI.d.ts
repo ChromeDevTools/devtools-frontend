@@ -25,6 +25,7 @@ export namespace Chrome {
        * there must be no "straddling" (i.e. partially overlapping ranges).
        */
       setFunctionRangesForScript(ranges: NamedFunctionRange[]): Promise<void>;
+      attachSourceMapURL(sourceMapURL: string): Promise<void>;
     }
 
     export interface InspectedWindow {

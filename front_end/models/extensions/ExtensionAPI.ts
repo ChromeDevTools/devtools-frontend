@@ -82,6 +82,7 @@ export namespace PrivateAPI {
     ShowPanel = 'showPanel',
     Unsubscribe = 'unsubscribe',
     UpdateButton = 'updateButton',
+    AttachSourceMapToResource = 'attachSourceMapToResource',
     RegisterLanguageExtensionPlugin = 'registerLanguageExtensionPlugin',
     GetWasmLinearMemory = 'getWasmLinearMemory',
     GetWasmLocal = 'getWasmLocal',
@@ -255,6 +256,11 @@ export namespace PrivateAPI {
     command: Commands.GetResourceContent;
     url: string;
   }
+  interface AttachSourceMapToResourceRequest {
+    command: Commands.AttachSourceMapToResource;
+    contentUrl: string;
+    sourceMapURL: string;
+  }
   interface SetResourceContentRequest {
     command: Commands.SetResourceContent;
     url: string;
@@ -314,8 +320,9 @@ export namespace PrivateAPI {
       SetSidebarHeightRequest|SetSidebarContentRequest|SetSidebarPageRequest|OpenResourceRequest|
       SetOpenResourceHandlerRequest|SetThemeChangeHandlerRequest|ReloadRequest|EvaluateOnInspectedPageRequest|
       GetRequestContentRequest|GetResourceContentRequest|SetResourceContentRequest|SetFunctionRangesForScriptRequest|
-      ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|GetWasmLinearMemoryRequest|GetWasmLocalRequest|
-      GetWasmGlobalRequest|GetWasmOpRequest|ShowNetworkPanelRequest|ReportResourceLoadRequest;
+      AttachSourceMapToResourceRequest|ForwardKeyboardEventRequest|GetHARRequest|GetPageResourcesRequest|
+      GetWasmLinearMemoryRequest|GetWasmLocalRequest|GetWasmGlobalRequest|GetWasmOpRequest|ShowNetworkPanelRequest|
+      ReportResourceLoadRequest;
   export type ExtensionServerRequestMessage = PrivateAPI.ServerRequests&{requestId?: number};
 
   interface AddRawModuleRequest {
@@ -1331,7 +1338,7 @@ self.injectedExtensionAPI = function(
   }
 
   (ResourceImpl.prototype as
-   Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'|'setFunctionRangesForScript'>) = {
+   Pick<APIImpl.Resource, 'url'|'type'|'getContent'|'setContent'|'setFunctionRangesForScript'|'attachSourceMapURL'>) = {
     get url(): string {
       return (this as APIImpl.Resource)._url;
     },
@@ -1375,6 +1382,25 @@ self.injectedExtensionAPI = function(
                 };
                 if (result.isError) {
                   reject(result);
+                } else {
+                  resolve();
+                }
+              }));
+    },
+
+    attachSourceMapURL: function(this: APIImpl.Resource, sourceMapURL: string): Promise<void> {
+      return new Promise(
+          (resolve, reject) => extensionServer.sendRequest(
+              {command: PrivateAPI.Commands.AttachSourceMapToResource, contentUrl: this._url, sourceMapURL},
+              (response: unknown) => {
+                const result = response as {
+                  code: string,
+                  description: string,
+                  details: unknown[],
+                  isError?: boolean,
+                };
+                if (result.isError) {
+                  reject(new Error(result.description));
                 } else {
                   resolve();
                 }

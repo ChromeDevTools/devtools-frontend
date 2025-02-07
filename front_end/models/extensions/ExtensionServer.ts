@@ -195,6 +195,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.SetOpenResourceHandler, this.onSetOpenResourceHandler.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetThemeChangeHandler, this.onSetThemeChangeHandler.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetResourceContent, this.onSetResourceContent.bind(this));
+    this.registerHandler(PrivateAPI.Commands.AttachSourceMapToResource, this.onAttachSourceMapToResource.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarHeight, this.onSetSidebarHeight.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarContent, this.onSetSidebarContent.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarPage, this.onSetSidebarPage.bind(this));
@@ -996,6 +997,34 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     void this.getResourceContent(contentProvider, message, port);
     return undefined;
+  }
+
+  private onAttachSourceMapToResource(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.AttachSourceMapToResource) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
+    }
+
+    if (!message.sourceMapURL) {
+      return this.status.E_FAILED('Expected a source map URL but got null');
+    }
+
+    const url = message.contentUrl as Platform.DevToolsPath.UrlString;
+    const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    if (!contentProvider) {
+      return this.status.E_NOTFOUND(url);
+    }
+
+    const debuggerBindingsInstance = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const scriptFiles = debuggerBindingsInstance.scriptsForUISourceCode(contentProvider);
+    if (scriptFiles.length > 0) {
+      for (const script of scriptFiles) {
+        const resourceFile = debuggerBindingsInstance.scriptFile(
+            contentProvider as Workspace.UISourceCode.UISourceCode, script.debuggerModel);
+        resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString);
+      }
+    }
+
+    return this.status.OK();
   }
 
   private onSetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {

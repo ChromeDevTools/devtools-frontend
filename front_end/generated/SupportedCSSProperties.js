@@ -423,6 +423,7 @@ export const generatedProperties = [
    "column-gap",
    "column-rule-break",
    "column-rule-color",
+   "column-rule-outset",
    "column-rule-style",
    "column-rule-width",
    "column-span",
@@ -630,6 +631,7 @@ export const generatedProperties = [
    "r",
    "range",
    "reading-flow",
+   "reading-order",
    "resize",
    "result",
    "right",
@@ -1720,6 +1722,10 @@ export const generatedProperties = [
    "currentcolor"
   ],
   "name": "column-rule-color"
+ },
+ {
+  "inherited": false,
+  "name": "column-rule-outset"
  },
  {
   "keywords": [
@@ -3469,6 +3475,9 @@ export const generatedProperties = [
    "grid-order"
   ],
   "name": "reading-flow"
+ },
+ {
+  "name": "reading-order"
  },
  {
   "keywords": [

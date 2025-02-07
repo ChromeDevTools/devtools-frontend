@@ -268,9 +268,9 @@ export function formatNetworkRequest(
     string {
   return `Request: ${request.url()}
 
-${AiAssistance.formatHeaders('Request headers:', request.requestHeaders())}
+${AiAssistance.NetworkRequestFormatter.formatHeaders('Request headers:', request.requestHeaders())}
 
-${AiAssistance.formatHeaders('Response headers:', request.responseHeaders)}
+${AiAssistance.NetworkRequestFormatter.formatHeaders('Response headers:', request.responseHeaders)}
 
 Response status: ${request.statusCode} ${request.statusText}`;
 }

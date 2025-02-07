@@ -31,6 +31,8 @@ devtools_module("ai_assistance") {
     "agents/StylingAgent.ts",
     "components/ChatView.ts",
     "components/UserActionRow.ts",
+    "data_formatters/FileFormatter.ts",
+    "data_formatters/NetworkRequestFormatter.ts",
   ]
 
   deps = [
@@ -97,6 +99,8 @@ ts_library("unittests") {
     "agents/StylingAgent.test.ts",
     "components/ChatView.test.ts",
     "components/UserActionRow.test.ts",
+    "data_formatters/FileFormatter.test.ts",
+    "data_formatters/NetworkRequestFormatter.test.ts",
   ]
 
   deps = [

@@ -444,10 +444,10 @@ export interface SyncInformation {
  * Warning: There is another definition of this enum in the DevTools code
  * base, keep them in sync:
  * front_end/devtools_compatibility.js
- * @readonly
  */
 export const enum EnumeratedHistogram {
   /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
+  // LINT.IfChange(EnumeratedHistogram)
   ActionTaken = 'DevTools.ActionTaken',
   PanelShown = 'DevTools.PanelShown',
   PanelShownInLocation = 'DevTools.PanelShownInLocation',
@@ -486,5 +486,5 @@ export const enum EnumeratedHistogram {
   SwatchActivated = 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',
   AnimationPointDragged = 'DevTools.AnimationPointDragged',
-
+  // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

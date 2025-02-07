@@ -406,6 +406,7 @@ window.DevToolsAPI = DevToolsAPI;
  * @enum {string}
  */
 const EnumeratedHistogram = {
+  // LINT.IfChange(EnumeratedHistogram)
   ActionTaken: 'DevTools.ActionTaken',
   CSSHintShown: 'DevTools.CSSHintShown',
   DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',
@@ -444,6 +445,7 @@ const EnumeratedHistogram = {
   SwatchActivated: 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged: 'DevTools.AnimationPlaybackRateChanged',
   AnimationPointDragged: 'DevTools.AnimationPointDragged',
+  // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
 };
 
 /**

@@ -323,7 +323,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
           null,
       );
-      const detailsData = getRowDataForDetailsElement(details).at(0);
+      const detailsData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Function'));
       assert.exists(detailsData);
       assert.deepEqual(detailsData, {title: 'Function', value: 'someFunction @ gen.js:1:52'});
     });
@@ -558,6 +558,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           title: 'Warning',
           value: 'Long interaction is indicating poor page responsiveness.',
         },
+        {title: 'Duration', value: '979.97\xA0ms'},
         {
           title: 'ID',
           value: '4122',
@@ -594,6 +595,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
+        {title: 'Duration', value: '0.22\xA0ms (self 0.20\xA0ms)'},
         {
           title: '',
           // Generic traces get their events rendered as JSON
@@ -635,6 +637,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
+        {title: 'Duration', value: '0.19\xA0ms'},
         {
           title: 'Elements affected',
           value: '3',
@@ -724,6 +727,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           title: 'Timestamp',
           value: '1,005.5\xA0ms',
         },
+        {title: 'Duration', value: '500.00\xA0ms'},
         {
           title: 'Details',
           value:
@@ -748,6 +752,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
+        {title: 'Duration', value: '0.98\xA0ms (self 34\xA0μs)'},
         {
           title: 'Script',
           // URL plus line/col number
@@ -777,10 +782,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
           null,
       );
-      const rowData = getRowDataForDetailsElement(details).slice(0, 2);
+      const rowData = getRowDataForDetailsElement(details).slice(0, 3);
       assert.deepEqual(
           rowData,
           [
+            {title: 'Duration', value: '1.00\xA0s (self 400.50\xA0ms)'},
             {
               title: 'Description',
               value: 'This is a child task',
@@ -1032,6 +1038,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
               title: 'Warning',
               value: 'Long task took 1.30\u00A0s.',
             },
+            {title: 'Duration', value: '1.30\xA0s (self 47\xA0μs)'},
           ],
       );
     });
@@ -1140,6 +1147,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
+        {title: 'Duration', value: '1.00\xA0s'},
         {
           title: 'Description',
           value: 'Description of top level task 1',
@@ -1185,6 +1193,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
       const rowData = getRowDataForDetailsElement(runDetails);
       assert.deepEqual(rowData, [
+        {title: 'Duration', value: '161.18\xA0ms (self 63\xA0μs)'},
         {title: 'Delay', value: '200\xA0ms'},
         {title: 'Priority', value: 'user-visible'},
         {
@@ -1252,7 +1261,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         entityMapper,
     );
 
-    const rowData = getRowDataForDetailsElement(details)[2];
+    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Third'));
     assert.deepEqual(rowData, {
       title: 'Third party',
       value: 'Google Analytics',

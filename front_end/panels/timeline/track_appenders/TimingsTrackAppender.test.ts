@@ -40,7 +40,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
   function getMockInfo(event?: Trace.Types.Events.Event) {
     const defaultInfo: Timeline.CompatibilityTracksAppender.PopoverInfo = {
       title: event ? timingsTrackAppender.titleForEvent(event) : 'title',
-      formattedTime: event ? Timeline.AppenderUtils.getFormattedTime(event.dur) : 'time',
+      formattedTime: event ? Timeline.AppenderUtils.getDurationString(event.dur) : 'time',
       warningElements: [],
       additionalElements: [],
       url: null,

@@ -5,7 +5,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getDurationString} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type PopoverInfo,
@@ -107,6 +107,6 @@ export class ExtensionTrackAppender implements TrackAppender {
     info.title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
         event.args.tooltipText :
         this.titleForEvent(event);
-    info.formattedTime = getFormattedTime(event.dur);
+    info.formattedTime = getDurationString(event.dur);
   }
 }

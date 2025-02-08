@@ -10,7 +10,7 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
-import {getEventLevel, getFormattedTime, type LastTimestampByLevel} from './AppenderUtils.js';
+import {getDurationString, getEventLevel, type LastTimestampByLevel} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import {ExtensionTrackAppender} from './ExtensionTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
@@ -459,8 +459,8 @@ export class CompatibilityTracksAppender {
    * Returns number of tracks of given type already appended.
    * Used to name the "Raster Thread 6" tracks, etc
    */
-  getCurrentTrackCountForThreadType(threadType: Trace.Handlers.Threads.ThreadType.RASTERIZER|
-                                    Trace.Handlers.Threads.ThreadType.THREAD_POOL): number {
+  getCurrentTrackCountForThreadType(
+      threadType: Trace.Handlers.Threads.ThreadType.RASTERIZER|Trace.Handlers.Threads.ThreadType.THREAD_POOL): number {
     return this.#threadAppenders.filter(appender => appender.threadType === threadType && appender.headerAppended())
         .length;
   }
@@ -642,7 +642,7 @@ export class CompatibilityTracksAppender {
     // Defaults here, though tracks may chose to redefine title/formattedTime
     const info: PopoverInfo = {
       title: this.titleForEvent(event, level),
-      formattedTime: getFormattedTime(event.dur),
+      formattedTime: getDurationString(event.dur),
       warningElements: TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#parsedTrace),
       additionalElements: [],
       url: null,

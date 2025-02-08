@@ -14,7 +14,7 @@ import {
   addDecorationToEvent,
   buildGroupStyle,
   buildTrackHeader,
-  getFormattedTime,
+  getDurationString,
 } from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
@@ -581,6 +581,6 @@ export class ThreadAppender implements TrackAppender {
       info.title += ` - ${url} [${range}]`;
     }
     const selfTime = this.#parsedTrace.Renderer.entryToNode.get(event)?.selfTime;
-    info.formattedTime = getFormattedTime(event.dur, selfTime);
+    info.formattedTime = getDurationString(event.dur, selfTime);
   }
 }

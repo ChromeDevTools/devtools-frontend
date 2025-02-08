@@ -51,6 +51,7 @@ import imagePreviewStylesRaw from '../../ui/legacy/components/utils/imagePreview
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {getDurationString} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
@@ -158,14 +159,6 @@ const UIStrings = {
    *@description Text to inform the user that the script they are looking at was not eligible to be loaded from the browser's cache.
    */
   scriptNotEligibleToBeLoadedFromCache: 'script not eligible',
-  /**
-   *@description Text for the total time of something
-   */
-  totalTime: 'Total time',
-  /**
-   *@description Time of a single activity, as opposed to the total time
-   */
-  selfTime: 'Self time',
   /**
    *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
    */
@@ -534,6 +527,11 @@ interface LinkifyLocationOptions {
   linkifier: LegacyComponents.Linkifier.Linkifier;
   isFreshRecording?: boolean;
   columnNumber?: number;
+}
+
+interface TimeRangeCategoryStats {
+  // The number values are Microseconds, but proper type safety isn't possible due to all the math.
+  [categoryName: string]: number;
 }
 
 export class TimelineUIUtils {
@@ -1048,11 +1046,11 @@ export class TimelineUIUtils {
       parsedTrace: Trace.Handlers.Types.ParsedTrace,
       event: Trace.Types.Events.Event,
       linkifier: LegacyComponents.Linkifier.Linkifier,
-      detailed: boolean,
+      canShowPieChart: boolean,
       entityMapper: Utils.EntityMapper.EntityMapper|null,
       ): Promise<DocumentFragment> {
     const maybeTarget = targetForEvent(parsedTrace, event);
-    const {duration} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const {duration} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
     const selfTime = getEventSelfTime(event, parsedTrace);
     const relatedNodesMap = await Trace.Extras.FetchNodes.extractRelatedDOMNodesFromEvent(
         parsedTrace,
@@ -1076,11 +1074,6 @@ export class TimelineUIUtils {
         // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
         event[previewElementSymbol] = previewElement;
       }
-    }
-
-    if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
-      // Ensure that there are no pie charts or extended info for layout shifts.
-      detailed = false;
     }
 
     // This message may vary per event.name;
@@ -1123,10 +1116,9 @@ export class TimelineUIUtils {
     }
 
     // Only show total time and self time for events with non-zero durations.
-    if (detailed && !Number.isNaN(duration || 0) && duration !== 0) {
-      contentHelper.appendTextRow(
-          i18nString(UIStrings.totalTime), i18n.TimeUtilities.millisToString(duration || 0, true));
-      contentHelper.appendTextRow(i18nString(UIStrings.selfTime), i18n.TimeUtilities.millisToString(selfTime, true));
+    if (duration !== 0 && !Number.isNaN(duration)) {
+      const timeStr = getDurationString(duration, selfTime);
+      contentHelper.appendTextRow(i18nString(UIStrings.duration), timeStr);
     }
 
     if (Trace.Types.Events.isPerformanceMark(event) && event.args.data?.detail) {
@@ -1593,11 +1585,9 @@ export class TimelineUIUtils {
       TimelineUIUtils.renderEventJson(event, contentHelper);
     }
 
-    const stats: {
-      [x: string]: number,
-    } = {};
+    const stats: TimeRangeCategoryStats = {};
     const showPieChart =
-        detailed && parsedTrace && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
+        canShowPieChart && parsedTrace && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, parsedTrace, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
       const pieChart = TimelineUIUtils.generatePieChart(stats, TimelineUIUtils.eventStyle(event).category, selfTime);
@@ -1608,9 +1598,8 @@ export class TimelineUIUtils {
   }
 
   static statsForTimeRange(
-      events: Trace.Types.Events.Event[], startTime: Trace.Types.Timing.Milli, endTime: Trace.Types.Timing.Milli): {
-    [x: string]: number,
-  } {
+      events: Trace.Types.Events.Event[], startTime: Trace.Types.Timing.Milli,
+      endTime: Trace.Types.Timing.Milli): TimeRangeCategoryStats {
     if (!events.length) {
       return {idle: endTime - startTime};
     }
@@ -1621,12 +1610,8 @@ export class TimelineUIUtils {
     aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
     return aggregatedStats;
 
-    function aggregatedStatsAtTime(time: number): {
-      [x: string]: number,
-    } {
-      const stats: {
-        [x: string]: number,
-      } = {};
+    function aggregatedStatsAtTime(time: number): TimeRangeCategoryStats {
+      const stats: TimeRangeCategoryStats = {};
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
@@ -1650,15 +1635,7 @@ export class TimelineUIUtils {
       return stats;
     }
 
-    function subtractStats(
-        a: {
-          [x: string]: number,
-        },
-        b: {
-          [x: string]: number,
-        }): {
-      [x: string]: number,
-    } {
+    function subtractStats(a: TimeRangeCategoryStats, b: TimeRangeCategoryStats): TimeRangeCategoryStats {
       const result = Object.assign({}, a);
       for (const key in b) {
         result[key] -= b[key];
@@ -1675,7 +1652,7 @@ export class TimelineUIUtils {
       // aggeregatedStats is a map by categories. For each category there's an array
       // containing sorted time points which records accumulated value of the category.
       const aggregatedStats: {
-        [x: string]: {
+        [categoryName: string]: {
           time: number[],
           value: number[],
         },
@@ -1766,8 +1743,8 @@ export class TimelineUIUtils {
     return highlightContainer;
   }
 
-  static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|
-                                  Trace.Types.Events.CallFrame[]): Protocol.Runtime.StackTrace {
+  static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|Trace.Types.Events.CallFrame[]):
+      Protocol.Runtime.StackTrace {
     return {callFrames} as Protocol.Runtime.StackTrace;
   }
 
@@ -1980,18 +1957,16 @@ export class TimelineUIUtils {
     }
   }
 
+  /** Populates the passed object then returns true/false if it makes sense to show the pie chart */
   private static aggregatedStatsForTraceEvent(
-      total: {
-        [x: string]: number,
-      },
-      parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): boolean {
+      total: TimeRangeCategoryStats, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      event: Trace.Types.Events.Event): boolean {
     const events = parsedTrace.Renderer?.allTraceEntries || [];
     const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
     function eventComparator(startTime: number, e: Trace.Types.Events.Event): number {
-      const {startTime: eventStartTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(e);
-      return startTime - eventStartTime;
+      return startTime - e.ts;
     }
-
+    // Find index of selected event amongst allTraceEntries.
     const index = Platform.ArrayUtilities.binaryIndexOf(events, startTime, eventComparator);
     // Not a main thread event?
     if (index < 0) {
@@ -2001,8 +1976,7 @@ export class TimelineUIUtils {
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        const {startTime: nextEventStartTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(nextEvent);
-        if (nextEventStartTime >= endTime) {
+        if (nextEvent.ts >= endTime) {
           break;
         }
         const nextEventSelfTime = getEventSelfTime(nextEvent, parsedTrace);
@@ -2026,11 +2000,18 @@ export class TimelineUIUtils {
           aggregatedTotal += total[categoryName];
         }
 
-        const deltaInMillis = Trace.Helpers.Timing.microToMilli((endTime - startTime) as Trace.Types.Timing.Micro);
-        total['idle'] = Math.max(0, deltaInMillis - aggregatedTotal);
+        const deltaInMicro = (endTime - startTime) as Trace.Types.Timing.Micro;
+        total['idle'] = Math.max(0, deltaInMicro - aggregatedTotal);
       }
       return false;
     }
+
+    for (const categoryName in total) {
+      const value = total[categoryName] as Trace.Types.Timing.Micro;
+      // Up until now we've kept the math all in micro integers. Finally switch these sums to milli.
+      total[categoryName] = Trace.Helpers.Timing.microToMilli(value);
+    }
+
     return hasChildren;
   }
 
@@ -2113,10 +2094,8 @@ export class TimelineUIUtils {
   }
 
   static generatePieChart(
-      aggregatedStats: {
-        [x: string]: number,
-      },
-      selfCategory?: Utils.EntryStyles.TimelineCategory, selfTime?: number): Element {
+      aggregatedStats: TimeRangeCategoryStats, selfCategory?: Utils.EntryStyles.TimelineCategory,
+      selfTime?: Trace.Types.Timing.Micro): Element {
     let total = 0;
     for (const categoryName in aggregatedStats) {
       total += aggregatedStats[categoryName];
@@ -2142,14 +2121,15 @@ export class TimelineUIUtils {
 
     // In case of self time, first add self, then children of the same category.
     if (selfCategory) {
+      const selfTimeMilli = Trace.Helpers.Timing.microToMilli(selfTime || 0 as Trace.Types.Timing.Micro);
       if (selfTime) {
         appendLegendRow(
-            selfCategory.name, i18nString(UIStrings.sSelf, {PH1: selfCategory.title}), selfTime,
+            selfCategory.name, i18nString(UIStrings.sSelf, {PH1: selfCategory.title}), selfTimeMilli,
             selfCategory.getCSSValue());
       }
       // Children of the same category.
       const categoryTime = aggregatedStats[selfCategory.name];
-      const value = categoryTime - (selfTime || 0);
+      const value = categoryTime - (selfTimeMilli || 0);
       if (value > 0) {
         appendLegendRow(
             selfCategory.name, i18nString(UIStrings.sChildren, {PH1: selfCategory.title}), value,
@@ -2598,10 +2578,10 @@ export function isMarkerEvent(parsedTrace: Trace.Handlers.Types.ParsedTrace, eve
 }
 
 function getEventSelfTime(
-    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.Milli {
+    event: Trace.Types.Events.Event, parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.Micro {
   const mapToUse = Trace.Types.Extensions.isSyntheticExtensionEntry(event) ?
       parsedTrace.ExtensionTraceData.entryToNode :
       parsedTrace.Renderer.entryToNode;
   const selfTime = mapToUse.get(event)?.selfTime;
-  return selfTime ? Trace.Helpers.Timing.microToMilli(selfTime) : Trace.Types.Timing.Milli(0);
+  return selfTime ? selfTime : Trace.Types.Timing.Micro(0);
 }

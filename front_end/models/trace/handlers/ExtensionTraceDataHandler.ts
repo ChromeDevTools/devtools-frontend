@@ -19,6 +19,7 @@ const syntheticConsoleEntriesForTimingsTrack: Types.Events.SyntheticConsoleTimeS
 export interface ExtensionTraceData {
   extensionTrackData: readonly Types.Extensions.ExtensionTrackData[];
   extensionMarkers: readonly Types.Extensions.SyntheticExtensionMarker[];
+  // TODO(andoli): Can we augment Renderer's entryToNode instead? To avoid the split of TimelineUIUtils's getEventSelfTime()?
   entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>;
   syntheticConsoleEntriesForTimingsTrack: Types.Events.SyntheticConsoleTimeStamp[];
 }
@@ -176,7 +177,8 @@ export function extractPerformanceAPIExtensionEntries(
 
     const extensionSyntheticEntry = {
       name: timing.name,
-      ph: Types.Events.Phase.COMPLETE,
+      ph: Types.Extensions.isExtensionPayloadMarker(extensionPayload) ? Types.Events.Phase.INSTANT :
+                                                                        Types.Events.Phase.COMPLETE,
       pid: timing.pid,
       tid: timing.tid,
       ts: timing.ts,
@@ -206,8 +208,8 @@ export function extractPerformanceAPIExtensionEntries(
   }
 }
 
-export function extensionDataInPerformanceTiming(timing: Types.Events.SyntheticUserTimingPair|
-                                                 Types.Events.PerformanceMark): Types.Extensions.ExtensionDataPayload|
+export function extensionDataInPerformanceTiming(
+    timing: Types.Events.SyntheticUserTimingPair|Types.Events.PerformanceMark): Types.Extensions.ExtensionDataPayload|
     null {
   const timingDetail =
       Types.Events.isPerformanceMark(timing) ? timing.args.data?.detail : timing.args.data.beginEvent.args.detail;

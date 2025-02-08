@@ -286,7 +286,7 @@ describeWithEnvironment('ThreadAppender', function() {
     }
     const infoForLongEvent = getDefaultInfo();
     threadAppenders[0].setPopoverInfo(longTask, infoForLongEvent);
-    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\u00A0μs)');
+    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\xA0μs)');
   });
 
   it('shows the correct title for a ParseHTML event', async function() {
@@ -305,7 +305,7 @@ describeWithEnvironment('ThreadAppender', function() {
     }
     const infoForLongEvent = getDefaultInfo();
     threadAppenders[0].setPopoverInfo(longTask, infoForLongEvent);
-    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\u00A0μs)');
+    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\xA0μs)');
   });
 
   it('shows the right time for a profile call when hovered', async function() {

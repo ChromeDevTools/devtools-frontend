@@ -96,7 +96,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
           <devtools-performance-table
             .data=${{
               insight: this,
-              headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnMainThreadTimeTime)],
+              headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnMainThreadTime)],
               rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
                 values: [
                   entity.name,

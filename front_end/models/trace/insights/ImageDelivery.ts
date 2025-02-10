@@ -27,28 +27,24 @@ export const UIStrings = {
       'Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)',
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
-   * @example {50 MB} PH1
    */
-  useCompression: 'Increasing the image compression factor could improve this image\'s download size. (Est {PH1})',
+  useCompression: 'Increasing the image compression factor could improve this image\'s download size.',
   /**
    * @description Message displayed in a chip explaining that an image file size is large for the # of pixels it has and recommends possible adjustments to improve the image size.
-   * @example {50 MB} PH1
    */
   useModernFormat:
-      'Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image\'s download size. (Est {PH1})',
+      'Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image\'s download size.',
   /**
    * @description Message displayed in a chip advising the user to use video formats instead of GIFs because videos generally have smaller file sizes.
-   * @example {50 MB} PH1
    */
-  useVideoFormat: 'Using video formats instead of GIFs can improve the download size of animated content. (Est {PH1})',
+  useVideoFormat: 'Using video formats instead of GIFs can improve the download size of animated content.',
   /**
    * @description Message displayed in a chip explaining that an image was displayed on the page with dimensions much smaller than the image file dimensions.
-   * @example {50 MB} PH1
-   * @example {1000x500} PH2
-   * @example {100x50} PH3
+   * @example {1000x500} PH1
+   * @example {100x50} PH2
    */
   useResponsiveSize:
-      'This image file is larger than it needs to be ({PH2}) for its displayed dimensions ({PH3}). Use responsive images to reduce the image download size. (Est {PH1})',
+      'This image file is larger than it needs to be ({PH1}) for its displayed dimensions ({PH2}). Use responsive images to reduce the image download size.',
   /**
    * @description Column header for a table column containing network requests for images which can improve their file size (e.g. use a different format, increase compression, etc).
    */
@@ -62,6 +58,12 @@ export const UIStrings = {
    * @description Text status indicating that no potential optimizations were found for any image file
    */
   noOptimizableImages: 'No optimizable images',
+  /**
+   * @description Text describing the estimated number of bytes that an image file optimization can save. This text is appended to another block of text describing the image optimization in more detail. "Est" means "Estimated".
+   * @example {Use the correct image dimensions to reduce the image file size.} PH1
+   * @example {50 MB} PH2
+   */
+  estimatedSavings: '{PH1} (Est {PH2})',
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ImageDelivery.ts', UIStrings);
@@ -132,22 +134,26 @@ export type ImageDeliveryInsightModel = InsightModel<typeof UIStrings, {
   totalByteSavings: number,
 }>;
 
-function getOptimizationMessage(optimization: ImageOptimization): string {
-  const byteSavingsText = i18n.ByteUtilities.bytesToString(optimization.byteSavings);
+export function getOptimizationMessage(optimization: ImageOptimization): string {
   switch (optimization.type) {
     case ImageOptimizationType.ADJUST_COMPRESSION:
-      return i18nString(UIStrings.useCompression, {PH1: byteSavingsText});
+      return i18nString(UIStrings.useCompression);
     case ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION:
-      return i18nString(UIStrings.useModernFormat, {PH1: byteSavingsText});
+      return i18nString(UIStrings.useModernFormat);
     case ImageOptimizationType.VIDEO_FORMAT:
-      return i18nString(UIStrings.useVideoFormat, {PH1: byteSavingsText});
+      return i18nString(UIStrings.useVideoFormat);
     case ImageOptimizationType.RESPONSIVE_SIZE:
       return i18nString(UIStrings.useResponsiveSize, {
-        PH1: byteSavingsText,
-        PH2: `${optimization.fileDimensions.width}x${optimization.fileDimensions.height}`,
-        PH3: `${optimization.displayDimensions.width}x${optimization.displayDimensions.height}`,
+        PH1: `${optimization.fileDimensions.width}x${optimization.fileDimensions.height}`,
+        PH2: `${optimization.displayDimensions.width}x${optimization.displayDimensions.height}`,
       });
   }
+}
+
+export function getOptimizationMessageWithBytes(optimization: ImageOptimization): string {
+  const byteSavingsText = i18n.ByteUtilities.bytesToString(optimization.byteSavings);
+  const optimizationMessage = getOptimizationMessage(optimization);
+  return i18nString(UIStrings.estimatedSavings, {PH1: optimizationMessage, PH2: byteSavingsText});
 }
 
 function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>): ImageDeliveryInsightModel {
@@ -158,8 +164,8 @@ function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>):
     category: InsightCategory.LCP,
     state: partialModel.optimizableImages.length > 0 ? 'fail' : 'pass',
     ...partialModel,
-    relatedEvents: new Map(
-        partialModel.optimizableImages.map(image => [image.request, image.optimizations.map(getOptimizationMessage)])),
+    relatedEvents: new Map(partialModel.optimizableImages.map(
+        image => [image.request, image.optimizations.map(getOptimizationMessageWithBytes)])),
   };
 }
 

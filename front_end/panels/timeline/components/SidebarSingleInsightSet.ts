@@ -392,10 +392,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
       </div>`;
       // clang-format on
 
-      if (model.shouldShow) {
-        shownInsights.push(component);
-      } else {
+      if (model.state === 'pass') {
         passedInsights.push(component);
+      } else {
+        shownInsights.push(component);
       }
     }
 

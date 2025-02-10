@@ -156,7 +156,7 @@ function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>):
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    shouldShow: partialModel.optimizableImages.length > 0,
+    state: partialModel.optimizableImages.length > 0 ? 'fail' : 'pass',
     ...partialModel,
     relatedEvents: new Map(
         partialModel.optimizableImages.map(image => [image.request, image.optimizations.map(getOptimizationMessage)])),

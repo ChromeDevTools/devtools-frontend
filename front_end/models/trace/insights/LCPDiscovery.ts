@@ -83,10 +83,11 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    shouldShow: Boolean(
-        partialModel.lcpRequest && partialModel.checklist &&
-        (!partialModel.checklist.eagerlyLoaded.value || !partialModel.checklist.requestDiscoverable.value ||
-         !partialModel.checklist.priorityHinted.value)),
+    state: partialModel.lcpRequest && partialModel.checklist &&
+            (!partialModel.checklist.eagerlyLoaded.value || !partialModel.checklist.requestDiscoverable.value ||
+             !partialModel.checklist.priorityHinted.value) ?
+        'fail' :
+        'pass',
     ...partialModel,
     relatedEvents,
   };

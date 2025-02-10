@@ -47,7 +47,7 @@ function finalize(partialModel: PartialInsightModel<LongCriticalNetworkTreeInsig
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    shouldShow: partialModel.longChains.length > 0,
+    state: partialModel.longChains.length > 0 ? 'fail' : 'pass',
     ...partialModel,
   };
 }

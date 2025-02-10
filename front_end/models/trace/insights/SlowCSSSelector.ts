@@ -105,7 +105,8 @@ function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
-    shouldShow: partialModel.topElapsedMs.length !== 0 && partialModel.topMatchAttempts.length !== 0,
+    state: partialModel.topElapsedMs.length !== 0 && partialModel.topMatchAttempts.length !== 0 ? 'informative' :
+                                                                                                  'pass',
     ...partialModel,
   };
 }

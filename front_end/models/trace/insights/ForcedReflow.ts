@@ -194,7 +194,9 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
-    shouldShow: partialModel.topLevelFunctionCallData !== undefined && partialModel.aggregatedBottomUpData.length !== 0,
+    state: partialModel.topLevelFunctionCallData !== undefined && partialModel.aggregatedBottomUpData.length !== 0 ?
+        'fail' :
+        'pass',
     ...partialModel,
   };
 }

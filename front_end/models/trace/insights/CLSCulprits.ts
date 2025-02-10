@@ -527,7 +527,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.CLS,
-    shouldShow: topCulprits.length > 0,
+    state: topCulprits.length > 0 ? 'fail' : 'pass',
     ...partialModel,
   };
 }

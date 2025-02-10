@@ -85,14 +85,13 @@ export type InsightModel<UIStrings extends Record<string, string>, R extends Rec
   title: Common.UIString.LocalizedString,
   description: Common.UIString.LocalizedString,
   category: InsightCategory,
-  /** True if there is anything of interest to display to the user. */
-  shouldShow: boolean,
+  state: 'pass' | 'fail' | 'informative',
   relatedEvents?: RelatedEventsMap | Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
 };
 
-export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'shouldShow'>;
+export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'state'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

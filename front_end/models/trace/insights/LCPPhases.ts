@@ -158,8 +158,7 @@ function finalize(partialModel: PartialInsightModel<LCPPhasesInsightModel>): LCP
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    // TODO: should move the component's "getPhaseData" to model.
-    shouldShow: Boolean(partialModel.phases) && (partialModel.lcpMs ?? 0) > 0,
+    state: partialModel.lcpEvent || partialModel.lcpRequest ? 'informative' : 'pass',
     ...partialModel,
     relatedEvents,
   };

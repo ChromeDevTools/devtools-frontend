@@ -36,7 +36,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
-        shouldShow: true,
+        state: 'fail',
       };
       renderElementIntoDOM(component);
 
@@ -60,7 +60,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         title: 'LCP by Phase' as Common.UIString.LocalizedString,
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
-        shouldShow: true,
+        state: 'fail',
       };
       renderElementIntoDOM(component);
 

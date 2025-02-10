@@ -79,7 +79,7 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    shouldShow: relatedEvents.length > 0,
+    state: relatedEvents.length > 0 ? 'fail' : 'pass',
     ...partialModel,
     relatedEvents,
   };

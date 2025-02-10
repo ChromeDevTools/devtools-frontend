@@ -50,7 +50,7 @@ function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): F
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    shouldShow: Boolean(partialModel.fonts.find(font => font.wastedTime > 0)),
+    state: partialModel.fonts.find(font => font.wastedTime > 0) ? 'fail' : 'pass',
     ...partialModel,
   };
 }

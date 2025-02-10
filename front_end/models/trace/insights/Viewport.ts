@@ -43,7 +43,7 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    shouldShow: partialModel.mobileOptimized === false,
+    state: partialModel.mobileOptimized === false ? 'fail' : 'pass',
     ...partialModel,
   };
 }

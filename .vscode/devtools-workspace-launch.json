@@ -2,16 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "name": "Run unit tests in VS Code debugger",
       "preLaunchTask": "1-build_Debug",
-      "runtimeExecutable": "/usr/bin/npm",
-      "runtimeArgs": [
-        "run",
-        "test",
-        "front_end"
-      ],
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "front_end"],
       "port": 7722,
       "timeout": 30000,
       "browserLaunchLocation": "workspace",
@@ -19,43 +15,29 @@
       "trace": true
     },
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Run end-to-end tests in VS Code debugger",
       "preLaunchTask": "1-build_Debug",
-      "runtimeExecutable": "/usr/bin/npm",
-      "runtimeArgs": [
-        "run",
-        "test",
-        "test/e2e"
-      ]
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "test/e2e"]
     },
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Run test",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "/usr/bin/npm",
-      "runtimeArgs": [
-        "run",
-        "test",
-        "--",
-        "${file}"
-      ]
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "${file}"]
     },
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Debug test",
       "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "/usr/bin/npm",
-      "runtimeArgs": [
-        "run",
-        "test",
-        "--",
-        "--debug",
-        "${file}"
-      ]
+      "runtimeExecutable": "npm",
+      "console": "integratedTerminal",
+      "runtimeArgs": ["run", "test", "--", "--debug", "${file}"]
     }
   ]
 }

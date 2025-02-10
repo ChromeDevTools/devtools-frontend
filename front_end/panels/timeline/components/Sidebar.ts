@@ -103,9 +103,7 @@ export class SidebarWidget extends UI.Widget.VBox {
 
   #updateAnnotationsCountBadge(): void {
     const annotations = this.#annotationsView.deduplicatedAnnotations();
-    if (annotations.length) {
-      this.#tabbedPane.setBadge('annotations', annotations.length.toString());
-    }
+    this.#tabbedPane.setBadge('annotations', annotations.length > 0 ? annotations.length.toString() : null);
   }
 
   setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {

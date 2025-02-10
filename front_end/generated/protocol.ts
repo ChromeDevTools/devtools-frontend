@@ -11888,6 +11888,18 @@ export namespace Page {
   }
 
   /**
+   * Additional information about the frame document's security origin.
+   */
+  export interface SecurityOriginDetails {
+    /**
+     * Indicates whether the frame document's security origin is one
+     * of the local hostnames (e.g. "localhost") or IP addresses (IPv4
+     * 127.0.0.0/8 or IPv6 ::1).
+     */
+    isLocalhost: boolean;
+  }
+
+  /**
    * Information about the Frame on the page.
    */
   export interface Frame {
@@ -11926,6 +11938,10 @@ export namespace Page {
      * Frame document's security origin.
      */
     securityOrigin: string;
+    /**
+     * Additional details about the frame document's security origin.
+     */
+    securityOriginDetails?: SecurityOriginDetails;
     /**
      * Frame document's mimeType as determined by the browser.
      */

@@ -17636,6 +17636,19 @@
                     ]
                 },
                 {
+                    "id": "SecurityOriginDetails",
+                    "description": "Additional information about the frame document's security origin.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "isLocalhost",
+                            "description": "Indicates whether the frame document's security origin is one\nof the local hostnames (e.g. \"localhost\") or IP addresses (IPv4\n127.0.0.0/8 or IPv6 ::1).",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "Frame",
                     "description": "Information about the Frame on the page.",
                     "type": "object",
@@ -17684,6 +17697,13 @@
                             "name": "securityOrigin",
                             "description": "Frame document's security origin.",
                             "type": "string"
+                        },
+                        {
+                            "name": "securityOriginDetails",
+                            "description": "Additional details about the frame document's security origin.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "SecurityOriginDetails"
                         },
                         {
                             "name": "mimeType",

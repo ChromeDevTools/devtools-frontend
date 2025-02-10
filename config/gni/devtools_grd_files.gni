@@ -1296,7 +1296,6 @@ grd_files_debug_sources = [
   "front_end/panels/application/preloading/helper/PreloadingForward.js",
   "front_end/panels/application/preloading/preloadingView.css.js",
   "front_end/panels/application/preloading/preloadingViewDropDown.css.js",
-  "front_end/panels/application/reportingApiReportsView.css.js",
   "front_end/panels/application/resourcesPanel.css.js",
   "front_end/panels/application/resourcesSidebar.css.js",
   "front_end/panels/application/serviceWorkerCacheViews.css.js",

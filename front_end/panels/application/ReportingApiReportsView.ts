@@ -10,9 +10,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import reportingApiReportsViewStyles from './reportingApiReportsView.css.js';
 
 const UIStrings = {
+  /**
+   *@description Placeholder text that shows if no report was selected for viewing
+   *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).
+   */
+  noReportSelected: 'No report selected',
   /**
    *@description Placeholder text instructing the user how to display a Reporting API
    *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).
@@ -29,19 +33,17 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
   constructor(networkManager: SDK.NetworkManager.NetworkManager) {
     super(/* isVertical: */ false, /* secondIsSidebar: */ true);
     const topPanel = new UI.Widget.VBox();
-    const bottomPanel = new UI.Widget.VBox();
+    const bottomPanel = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noReportSelected), i18nString(UIStrings.clickToDisplayBody));
     topPanel.setMinimumSize(0, 80);
     this.setMainWidget(topPanel);
     bottomPanel.setMinimumSize(0, 40);
     bottomPanel.element.setAttribute('jslog', `${VisualLogging.pane('preview').track({resize: true})}`);
     this.setSidebarWidget(bottomPanel);
+    this.hideSidebar();
 
     topPanel.contentElement.appendChild(this.reportsGrid);
     this.reportsGrid.addEventListener('select', this.onFocus.bind(this));
-
-    bottomPanel.contentElement.classList.add('placeholder');
-    const centered = bottomPanel.contentElement.createChild('div');
-    centered.textContent = i18nString(UIStrings.clickToDisplayBody);
 
     networkManager.addEventListener(
         SDK.NetworkManager.Events.ReportingApiReportAdded, event => this.onReportAdded(event.data), this);
@@ -49,15 +51,10 @@ export class ReportingApiReportsView extends UI.SplitWidget.SplitWidget {
         SDK.NetworkManager.Events.ReportingApiReportUpdated, event => this.onReportUpdated(event.data), this);
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    const sbw = this.sidebarWidget();
-    if (sbw) {
-      sbw.registerRequiredCSS(reportingApiReportsViewStyles);
-    }
-  }
-
   private onReportAdded(report: Protocol.Network.ReportingApiReport): void {
+    if (this.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+      this.showBoth();
+    }
     this.reports.push(report);
     this.reportsGrid.data = {reports: this.reports};
   }

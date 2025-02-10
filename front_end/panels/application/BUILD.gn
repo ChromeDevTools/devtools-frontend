@@ -18,7 +18,6 @@ generate_css("css_files") {
     "openedWindowDetailsView.css",
     "preloading/preloadingView.css",
     "preloading/preloadingViewDropDown.css",
-    "reportingApiReportsView.css",
     "resourcesPanel.css",
     "resourcesSidebar.css",
     "serviceWorkerCacheViews.css",

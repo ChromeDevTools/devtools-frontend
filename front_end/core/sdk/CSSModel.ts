@@ -362,7 +362,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       shouldGetAnimatedStyles ? this.agent.invoke_getAnimatedStylesForNode({nodeId}) : undefined,
     ]);
 
-    if (matchedStylesResponse.getError() || animatedStylesResponse?.getError()) {
+    if (matchedStylesResponse.getError()) {
       return null;
     }
 

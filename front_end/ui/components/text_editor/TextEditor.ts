@@ -18,7 +18,6 @@ declare global {
 }
 
 export class TextEditor extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeEditor: CodeMirror.EditorView|undefined = undefined;
   #dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
@@ -153,7 +152,6 @@ export class TextEditor extends HTMLElement {
     }
     this.#activeSettingListeners = [];
 
-    const settings = Common.Settings.Settings.instance();
     for (const dynamicSetting of dynamicSettings) {
       const handler = ({data}: {data: unknown}): void => {
         const change = dynamicSetting.sync(this.state, data);
@@ -161,7 +159,7 @@ export class TextEditor extends HTMLElement {
           this.#activeEditor.dispatch({effects: change});
         }
       };
-      const setting = settings.moduleSetting(dynamicSetting.settingName);
+      const setting = Common.Settings.Settings.instance().moduleSetting(dynamicSetting.settingName);
       setting.addChangeListener(handler);
       this.#activeSettingListeners.push([setting, handler]);
     }

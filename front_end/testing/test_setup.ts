@@ -12,7 +12,7 @@ import * as Trace from '../models/trace/trace.js';
 import * as Timeline from '../panels/timeline/timeline.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
-import {resetTestDOM} from './DOMHelpers.js';
+import {cleanTestDOM, setupTestDOM} from './DOMHelpers.js';
 import {createFakeSetting} from './EnvironmentHelpers.js';
 import {
   checkForPendingActivity,
@@ -20,8 +20,8 @@ import {
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
 
-beforeEach(() => {
-  resetTestDOM();
+beforeEach(async () => {
+  await setupTestDOM();
   // Ensure that no trace data leaks between tests when testing the trace engine.
   for (const handler of Object.values(Trace.Handlers.ModelHandlers)) {
     handler.reset();
@@ -42,6 +42,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  await cleanTestDOM();
   await checkForPendingActivity();
   sinon.restore();
   stopTrackingAsyncActivity();

@@ -80,8 +80,12 @@ export class DevToolsFrontendTab {
     // Clear any local storage settings.
     await this.page.evaluate(() => {
       localStorage.clear();
-      // @ts-ignore Test logging needs debug event logging, which is controlled via localStorage, hence we need to restart test logging here
-      globalThis.setVeDebugLoggingEnabled(true, 'Test');
+
+      // Test logging needs debug event logging,
+      // which is controlled via localStorage, hence we need to restart test logging here
+      // This can be called after a page fails to load DevTools so make it conditional
+      // @ts-expect-error
+      globalThis?.setVeDebugLoggingEnabled(true, 'Test');
     });
     await this.reload();
   }

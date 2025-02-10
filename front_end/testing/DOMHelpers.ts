@@ -55,21 +55,37 @@ function removeChildren(node: Node): void {
     node.removeChild(firstChild);
   }
 }
+
+/**
+ * Sets up the DOM for testing,
+ * If not clean logs an error and cleans itself
+ **/
+export const setupTestDOM = async () => {
+  const previousContainer = document.getElementById(TEST_CONTAINER_ID);
+  if (previousContainer) {
+    // This should not be reachable, unless the
+    // AfterEach hook fails before cleaning the DOM.
+    // Clean it here and report
+    console.error('Non clean test state found!');
+    await cleanTestDOM();
+  }
+  const newContainer = document.createElement('div');
+  newContainer.id = TEST_CONTAINER_ID;
+
+  document.body.appendChild(newContainer);
+};
+
 /**
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.
  **/
-export const resetTestDOM = () => {
+export const cleanTestDOM = async () => {
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
     removeChildren(previousContainer);
     previousContainer.remove();
   }
-
-  const newContainer = document.createElement('div');
-  newContainer.id = TEST_CONTAINER_ID;
-
-  document.body.appendChild(newContainer);
+  await raf();
 };
 
 interface Constructor<T> {

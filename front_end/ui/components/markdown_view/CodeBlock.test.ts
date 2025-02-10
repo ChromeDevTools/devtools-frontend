@@ -6,7 +6,6 @@ import * as Host from '../../../core/host/host.js';
 import {
   dispatchClickEvent,
   renderElementIntoDOM,
-  resetTestDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
@@ -44,33 +43,24 @@ describeWithEnvironment('CodeBlock', () => {
       assert.strictEqual(buttonContainer.textContent?.trim(), '');
     } finally {
       clock.restore();
-      resetTestDOM();
     }
   });
 
   it('renders no legal notice by default', () => {
-    try {
-      const component = new MarkdownView.CodeBlock.CodeBlock();
-      component.code = 'test';
-      renderElementIntoDOM(component);
-      const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
-      assert(notice === null, '.notice was found');
-    } finally {
-      resetTestDOM();
-    }
+    const component = new MarkdownView.CodeBlock.CodeBlock();
+    component.code = 'test';
+    renderElementIntoDOM(component);
+    const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
+    assert(notice === null, '.notice was found');
   });
 
   it('renders legal notice if configured', () => {
-    try {
-      const component = new MarkdownView.CodeBlock.CodeBlock();
-      component.code = 'test';
-      component.displayNotice = true;
-      renderElementIntoDOM(component);
-      const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
-      assert.exists(notice);
-      assert.strictEqual(notice!.innerText, 'Use code snippets with caution');
-    } finally {
-      resetTestDOM();
-    }
+    const component = new MarkdownView.CodeBlock.CodeBlock();
+    component.code = 'test';
+    component.displayNotice = true;
+    renderElementIntoDOM(component);
+    const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
+    assert.exists(notice);
+    assert.strictEqual(notice!.innerText, 'Use code snippets with caution');
   });
 });

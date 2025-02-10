@@ -37,6 +37,7 @@ import {
   RequestContext,
 } from './agents/NetworkAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
+import {InsightContext, PerformanceInsightsAgent} from './agents/PerformanceInsightsAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
 import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {AiHistoryStorage, Conversation, ConversationType} from './AiHistoryStorage.js';
@@ -171,6 +172,12 @@ function createCallTreeContext(callTree: TimelineUtils.AICallTree.AICallTree|nul
   }
   return new CallTreeContext(callTree);
 }
+function createPerfInsightContext(insight: TimelineUtils.InsightAIContext.InsightAIContext|null): InsightContext|null {
+  if (!insight) {
+    return null;
+  }
+  return new InsightContext(insight);
+}
 
 function agentTypeToConversationType(type: AgentType): ConversationType {
   switch (type) {
@@ -182,6 +189,8 @@ function agentTypeToConversationType(type: AgentType): ConversationType {
       return ConversationType.FILE;
     case AgentType.PERFORMANCE:
       return ConversationType.PERFORMANCE;
+    case AgentType.PERFORMANCE_INSIGHT:
+      return ConversationType.PERFORMANCE_INSIGHT;
     case AgentType.PATCH:
       throw new Error('PATCH AgentType does not have a corresponding ConversationType.');
   }
@@ -216,6 +225,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
+  #selectedInsight: InsightContext|null = null;
   #selectedRequest: RequestContext|null = null;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
@@ -356,6 +366,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         agent = new PerformanceAgent(options);
         break;
       }
+      case AgentType.PERFORMANCE_INSIGHT: {
+        agent = new PerformanceInsightsAgent(options);
+        break;
+      }
       case AgentType.PATCH: {
         throw new Error('AI Assistance does not support direct usage of the patch agent');
       }
@@ -409,6 +423,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetAgentType = AgentType.FILE;
     } else if (isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetAgentType = AgentType.PERFORMANCE;
+    } else if (
+        isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled &&
+        config.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
+      targetAgentType = AgentType.PERFORMANCE_INSIGHT;
     }
 
     const agent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;
@@ -449,6 +467,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
     this.#selectedCallTree =
         createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
+    this.#selectedInsight =
+        createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.InsightAIContext));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
     this.#viewProps = {
       ...this.#viewProps,
@@ -834,6 +854,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         break;
       case AgentType.PERFORMANCE:
         context = this.#selectedCallTree;
+        break;
+      case AgentType.PERFORMANCE_INSIGHT:
+        context = this.#selectedInsight;
         break;
       case AgentType.PATCH:
         throw new Error('AI Assistance does not support direct usage of the patch agent');

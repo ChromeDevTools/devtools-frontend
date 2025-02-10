@@ -152,6 +152,14 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForPerformanceAgentNoContext: 'Select an item to ask a question',
   /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceInsightsAgent: 'Ask a question about the selected performance insight',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceInsightsAgentNoContext: 'Select a performance insight to ask a question',
+  /**
    * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
    */
   crossOriginError: 'To talk about data from another origin, start a new chat',
@@ -1042,6 +1050,9 @@ export class ChatView extends HTMLElement {
           'Where is most of the time being spent in this call tree?',
           'How can I reduce the time of this call tree?',
         ];
+      case AgentType.PERFORMANCE_INSIGHT:
+        // TODO(b/393061683): Define these.
+        return ['Placeholder', 'Suggestions', 'For now'];
       case AgentType.PATCH:
         return [
           'What can you help me with?',
@@ -1078,6 +1089,10 @@ export class ChatView extends HTMLElement {
         return this.#props.selectedContext ?
             lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceAgent) :
             lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceAgentNoContext);
+      case AgentType.PERFORMANCE_INSIGHT:
+        return this.#props.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsightsAgent) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsightsAgentNoContext);
     }
   }
 
@@ -1242,6 +1257,12 @@ export class ChatView extends HTMLElement {
         }
         return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkAgent);
       case AgentType.PERFORMANCE:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceAgentEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceAgent);
+      case AgentType.PERFORMANCE_INSIGHT:
+        // TODO(b/393061683): Define these rather than reuse the existing performance agent.
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceAgentEnterpriseNoLogging);
         }

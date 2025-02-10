@@ -28,6 +28,7 @@ devtools_module("ai_assistance") {
     "agents/NetworkAgent.ts",
     "agents/PatchAgent.ts",
     "agents/PerformanceAgent.ts",
+    "agents/PerformanceInsightsAgent.ts",
     "agents/StylingAgent.ts",
     "components/ChatView.ts",
     "components/UserActionRow.ts",

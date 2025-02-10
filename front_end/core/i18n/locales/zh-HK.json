@@ -104,6 +104,9 @@
   "core/common/Revealer.ts | networkPanel": {
     "message": "網絡面板"
   },
+  "core/common/Revealer.ts | securityPanel": {
+    "message": "Security panel"
+  },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "原始碼面板"
   },
@@ -209,6 +212,21 @@
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "設定檔 {PH1}"
   },
+  "core/sdk/CPUThrottlingManager.ts | calibratedLowTierMobile": {
+    "message": "低階流動裝置"
+  },
+  "core/sdk/CPUThrottlingManager.ts | calibratedMidTierMobile": {
+    "message": "中階流動裝置"
+  },
+  "core/sdk/CPUThrottlingManager.ts | calibrationErrorDeviceTooWeak": {
+    "message": "裝置效能不足"
+  },
+  "core/sdk/CPUThrottlingManager.ts | dSlowdown": {
+    "message": "{PH1} 倍放慢"
+  },
+  "core/sdk/CPUThrottlingManager.ts | noThrottling": {
+    "message": "沒有節流"
+  },
   "core/sdk/CSSStyleSheetHeader.ts | couldNotFindTheOriginalStyle": {
     "message": "找不到原始的 CSS 樣式表。"
   },
@@ -220,6 +238,9 @@
   },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "無法載入 {PH1} 的內容 ({PH2})"
+  },
+  "core/sdk/Connections.ts | websocketDisconnected": {
+    "message": "WebSocket 已中斷連線"
   },
   "core/sdk/ConsoleModel.ts | bfcacheNavigation": {
     "message": "系統已從向前/返回快取還原 {PH1} 的瀏覽畫面 (詳情請參閱 https://web.dev/bfcache/)"
@@ -1710,7 +1731,7 @@
     "message": "版面配置轉換起因"
   },
   "models/trace/insights/DOMSize.ts | description": {
-    "message": "大型 DOM 會增加記憶體用量、延長樣式運算的時間，並產生費用高昂的版面配置重排，繼而影響頁面回應速度。[瞭解如何避免 DOM 過大](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)。"
+    "message": "大型 DOM 可能會增加樣式運算和版面配置重排的時長，繼而影響頁面回應速度。大型 DOM 也會增加記憶體用量。[瞭解如何避免 DOM 過大](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)。"
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "優化 DOM 大小"
@@ -1726,6 +1747,12 @@
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "字型顯示"
+  },
+  "models/trace/insights/ForcedReflow.ts | description": {
+    "message": "很多 API (通常讀取版面配置幾何圖形) 會強制輸出引擎暫停執行指令碼，以計算樣式和版面配置。進一步瞭解[強制重排](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)及其緩解措施。"
+  },
+  "models/trace/insights/ForcedReflow.ts | title": {
+    "message": "強制重排"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "縮短圖像下載時間，可縮減使用者感知的網頁載入時間，並提升 LCP 數據的表現。[進一步瞭解如何優化圖像大小](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
@@ -1762,6 +1789,12 @@
   },
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "按階段劃分 LCP"
+  },
+  "models/trace/insights/LongCriticalNetworkTree.ts | description": {
+    "message": "如要[避免鏈結關鍵要求](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains)，你可以縮短鏈結長度、縮減下載資源的大小或延遲下載不必要資源，以提高頁面載入速度。"
+  },
+  "models/trace/insights/LongCriticalNetworkTree.ts | title": {
+    "message": "關鍵網絡樹過長"
   },
   "models/trace/insights/RenderBlocking.ts | description": {
     "message": "要求會封鎖頁面的初始輸出，可能會導致 LCP 延遲。[延遲或內嵌](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/)可以將這些網絡要求移離關鍵路徑。"
@@ -2627,11 +2660,14 @@
   "panels/application/ApplicationPanelSidebar.ts | cookies": {
     "message": "Cookie"
   },
+  "panels/application/ApplicationPanelSidebar.ts | cookiesDescription": {
+    "message": "你可在此頁查看、新增、編輯和刪除 Cookie。"
+  },
   "panels/application/ApplicationPanelSidebar.ts | cookiesUsedByFramesFromS": {
     "message": "來自 {PH1} 頁框使用的 Cookie"
   },
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
-    "message": "無法提供文件"
+    "message": "未偵測到文件"
   },
   "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
     "message": "本機"
@@ -2645,6 +2681,9 @@
   "panels/application/ApplicationPanelSidebar.ts | extensionStorage": {
     "message": "擴充程式儲存空間"
   },
+  "panels/application/ApplicationPanelSidebar.ts | extensionStorageDescription": {
+    "message": "你可在此頁查看、新增、編輯和刪除擴充程式儲存空間鍵值組合。"
+  },
   "panels/application/ApplicationPanelSidebar.ts | extensionSyncStorage": {
     "message": "同步處理"
   },
@@ -2653,6 +2692,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | indexeddb": {
     "message": "IndexedDB"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | indexeddbDescription": {
+    "message": "你可在此頁查看及刪除 indexedDB 鍵值組合和資料庫。"
   },
   "panels/application/ApplicationPanelSidebar.ts | keyPathS": {
     "message": "金鑰路徑：{PH1}"
@@ -2663,11 +2705,32 @@
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
     "message": "本機儲存空間"
   },
+  "panels/application/ApplicationPanelSidebar.ts | localStorageDescription": {
+    "message": "你可在此頁查看、新增、編輯和刪除本機儲存空間鍵值組合。"
+  },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "資訊清單"
   },
+  "panels/application/ApplicationPanelSidebar.ts | manifestDescription": {
+    "message": "資訊清單界定應用程式在手機主畫面的顯示方式，以及啟動時的外觀。"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noCookies": {
+    "message": "未設定 Cookie"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noExtensionStorage": {
+    "message": "未偵測到擴充程式儲存空間"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noIndexeddb": {
+    "message": "未偵測到 indexedDB"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noLocalStorage": {
+    "message": "未偵測到本機儲存空間"
+  },
   "panels/application/ApplicationPanelSidebar.ts | noManifestDetected": {
     "message": "沒有偵測到資訊清單"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | noSessionStorage": {
+    "message": "未偵測到工作階段儲存空間"
   },
   "panels/application/ApplicationPanelSidebar.ts | onInvokeAlert": {
     "message": "碌咗去{PH1}"
@@ -2678,11 +2741,20 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "已開啟的視窗"
   },
+  "panels/application/ApplicationPanelSidebar.ts | openedWindowsDescription": {
+    "message": "你可在此頁查看透過 window.open() 開啟的視窗。"
+  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "重新整理 IndexedDB"
   },
+  "panels/application/ApplicationPanelSidebar.ts | resourceDescription": {
+    "message": "你可在此頁查看頁框資源。"
+  },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
     "message": "工作階段儲存空間"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | sessionStorageDescription": {
+    "message": "你可在此頁查看、新增、編輯和刪除工作階段儲存空間鍵值組合。"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "儲存空間"
@@ -2707,6 +2779,9 @@
   },
   "panels/application/ApplicationPanelSidebar.ts | worker": {
     "message": "worker"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | workerDescription": {
+    "message": "你可在此頁查看由父頁框建立的專屬工作者。"
   },
   "panels/application/BackForwardCacheTreeElement.ts | backForwardCache": {
     "message": "向前/返回快取"
@@ -2801,6 +2876,9 @@
   "panels/application/CookieItemsView.ts | cookies": {
     "message": "Cookie"
   },
+  "panels/application/CookieItemsView.ts | noCookieSelected": {
+    "message": "未選取 Cookie"
+  },
   "panels/application/CookieItemsView.ts | numberOfCookiesShownInTableS": {
     "message": "表格入面顯示嘅 Cookie 數目：{PH1} 個"
   },
@@ -2816,9 +2894,6 @@
   "panels/application/CookieItemsView.ts | showUrlDecoded": {
     "message": "顯示已解碼的網址"
   },
-  "panels/application/DOMStorageItemsView.ts | domStorage": {
-    "message": "DOM 儲存空間"
-  },
   "panels/application/DOMStorageItemsView.ts | domStorageItemDeleted": {
     "message": "刪除咗儲存空間項目。"
   },
@@ -2828,29 +2903,11 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "已清除 DOM 儲存空間項目"
   },
-  "panels/application/DOMStorageItemsView.ts | key": {
-    "message": "金鑰"
-  },
-  "panels/application/DOMStorageItemsView.ts | value": {
-    "message": "值"
-  },
-  "panels/application/ExtensionStorageItemsView.ts | extensionStorage": {
-    "message": "擴充程式儲存空間"
-  },
-  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemDeleted": {
-    "message": "刪除咗儲存空間項目。"
-  },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
     "message": "擴充程式儲存空間項目"
   },
   "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
     "message": "清除咗擴充程式儲存空間項目"
-  },
-  "panels/application/ExtensionStorageItemsView.ts | key": {
-    "message": "金鑰"
-  },
-  "panels/application/ExtensionStorageItemsView.ts | value": {
-    "message": "值"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
     "message": "清除物件存檔"
@@ -3002,8 +3059,14 @@
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "快取儲存空間"
   },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorageDescription": {
+    "message": "你可在此頁查看和刪除快取資料。"
+  },
   "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
     "message": "刪除"
+  },
+  "panels/application/ServiceWorkerCacheTreeElement.ts | noCacheStorage": {
+    "message": "未偵測到快取儲存空間"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | refreshCaches": {
     "message": "重新整理快取"
@@ -3025,6 +3088,9 @@
   },
   "panels/application/ServiceWorkerCacheViews.ts | name": {
     "message": "名稱"
+  },
+  "panels/application/ServiceWorkerCacheViews.ts | noCacheEntrySelected": {
+    "message": "未選取快取項目"
   },
   "panels/application/ServiceWorkerCacheViews.ts | preview": {
     "message": "預覽"
@@ -3206,8 +3272,14 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "共用儲存空間"
   },
+  "panels/application/StorageBucketsTreeElement.ts | noStorageBuckets": {
+    "message": "未偵測到儲存空間儲存區"
+  },
   "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
     "message": "儲存區"
+  },
+  "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
+    "message": "你可在此頁查看和刪除儲存空間儲存區及其相關 storageAPI。"
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "清除全部項目"
@@ -4073,9 +4145,6 @@
   "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
     "message": "存取權類型"
   },
-  "panels/application/components/SharedStorageAccessGrid.ts | mainFrameId": {
-    "message": "主頁框 ID"
-  },
   "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
     "message": "沒有記錄任何共用儲存空間事件。"
   },
@@ -4874,11 +4943,14 @@
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | checked": {
     "message": "已勾選"
   },
+  "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsDescription": {
+    "message": "變更 DOM 節點或其子項的程式碼會暫停 DOM 節點。"
+  },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | domBreakpointsList": {
     "message": "DOM 中斷點清單"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "沒有中斷點"
+    "message": "No DOM breakpoints set"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "已移除節點"
@@ -4994,14 +5066,20 @@
   "panels/changes/ChangesSidebar.ts | sFromSourceMap": {
     "message": "{PH1} (來自來源對應)"
   },
-  "panels/changes/ChangesView.ts | binaryData": {
-    "message": "二進制資料"
+  "panels/changes/ChangesView.ts | binaryDataDescription": {
+    "message": "The changes tab doesn't show binary data changes"
+  },
+  "panels/changes/ChangesView.ts | changesViewDescription": {
+    "message": "On this page you can track code changes made within DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "複製"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "沒有變更"
+    "message": "No changes yet"
+  },
+  "panels/changes/ChangesView.ts | noTextualDiff": {
+    "message": "No textual diff available"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# 行已刪除的程式碼 (-)}other{# 行已刪除的程式碼 (-)}}"
@@ -5101,6 +5179,9 @@
   },
   "panels/console/ConsoleView.ts | consoleSidebarShown": {
     "message": "顯示咗控制器側欄"
+  },
+  "panels/console/ConsoleView.ts | copyConsole": {
+    "message": "複製控制台"
   },
   "panels/console/ConsoleView.ts | copyVisibleStyledSelection": {
     "message": "複製可顯示樣式選項"
@@ -5215,6 +5296,9 @@
   },
   "panels/console/ConsoleViewMessage.ts | Mxx": {
     "message": " M<XX>"
+  },
+  "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
+    "message": "Click to open privacy and security panel and show third-party cookie report"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "聲明失敗： "
@@ -6638,6 +6722,9 @@
   "panels/explain/components/ConsoleInsight.ts | relatedCode": {
     "message": "相關代碼"
   },
+  "panels/explain/components/ConsoleInsight.ts | relatedContent": {
+    "message": "相關內容"
+  },
   "panels/explain/components/ConsoleInsight.ts | reloadRecommendation": {
     "message": "請重新載入頁面，擷取與此訊息相關的網絡要求資料，製作更完善的分析資料。"
   },
@@ -6658,6 +6745,9 @@
   },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "堆疊追蹤"
+  },
+  "panels/explain/components/ConsoleInsight.ts | timedOut": {
+    "message": "Generating a response took too long. Please try again."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "開啟{PH1}即可獲取 AI 協助，瞭解並應對控制台警告和錯誤訊息。"
@@ -7102,6 +7192,9 @@
   },
   "panels/layer_viewer/LayerDetailsView.ts | nearestLayerShiftingStickyBox": {
     "message": "最接近圖層轉移固定框"
+  },
+  "panels/layer_viewer/LayerDetailsView.ts | noLayerSelected": {
+    "message": "未選取圖層"
   },
   "panels/layer_viewer/LayerDetailsView.ts | nonFastScrollable": {
     "message": "不可快速捲動"
@@ -7778,6 +7871,9 @@
   "panels/media/media-meta.ts | video": {
     "message": "影片"
   },
+  "panels/mobile_throttling/CalibrationController.ts | runningCalibration": {
+    "message": "正在校正 CPU，請勿離開此分頁或關閉開發人員工具。"
+  },
   "panels/mobile_throttling/MobileThrottlingSelector.ts | advanced": {
     "message": "進階"
   },
@@ -7814,6 +7910,9 @@
   "panels/mobile_throttling/ThrottlingManager.ts | addS": {
     "message": "加「{PH1}」"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
+    "message": "Calibrate…"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU 節流"
   },
@@ -7835,8 +7934,11 @@
   "panels/mobile_throttling/ThrottlingManager.ts | offline": {
     "message": "離線"
   },
+  "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
+    "message": "Recalibrate…"
+  },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
-    "message": "{PH1} - 建議選項"
+    "message": "{PH1} – 建議"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | resetConcurrency": {
     "message": "重設為預設值"
@@ -7856,6 +7958,12 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdown": {
     "message": "快速 3G 和 4 倍 CPU 減速"
   },
+  "panels/mobile_throttling/ThrottlingPresets.ts | fastGXCpuSlowdownCalibrated": {
+    "message": "快速 3G 和 {PH1} 倍 CPU 減速"
+  },
+  "panels/mobile_throttling/ThrottlingPresets.ts | lowTierMobile": {
+    "message": "低階流動裝置"
+  },
   "panels/mobile_throttling/ThrottlingPresets.ts | midtierMobile": {
     "message": "中階流動裝置"
   },
@@ -7868,8 +7976,44 @@
   "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdown": {
     "message": "緩慢 3G 和 6 倍 CPU 減速"
   },
+  "panels/mobile_throttling/ThrottlingPresets.ts | slowGXCpuSlowdownCalibrated": {
+    "message": "緩慢 3G 和 {PH1} 倍 CPU 減速"
+  },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
     "message": "新增個人檔案"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrate": {
+    "message": "校正"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationCTA": {
+    "message": "如要使用 CPU 節流預設值，請執行校正程序，以確定裝置的理想節流率。"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationConfirmationPrompt": {
+    "message": "校正需時約 5 秒，而且會暫時離開目前頁面。確定要繼續嗎？"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningHighCPU": {
+    "message": "CPU 使用率過高"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningLowBattery": {
+    "message": "裝置電量不足 (<20%)，結果可能會受 CPU 節流影響"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | calibrationWarningRunningOnBattery": {
+    "message": "裝置目前使用電池供電，請插上充電器以獲得最佳效果"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | cancel": {
+    "message": "取消"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | continue": {
+    "message": "繼續"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | cpuCalibrationDescription": {
+    "message": "這些預設值會調節 CPU 流量，讓效能大致相當於一般低階或中階流動裝置。"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | cpuThrottlingPresets": {
+    "message": "CPU 節流預設值"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | dSlowdown": {
+    "message": "{PH1} 倍放慢"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
     "message": "{PH1} ms"
@@ -7888,6 +8032,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | latencyMustBeAnIntegerBetweenSms": {
     "message": "延遲時間必須介乎 {PH1} ms到 {PH2} ms之間的整數"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | needsCalibration": {
+    "message": "需要校正"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
     "message": "網絡節流設定檔"
@@ -7927,6 +8074,9 @@
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | profileNameCharactersLengthMust": {
     "message": "設定檔名稱字元長度必須介乎 1 和 {PH1} 之間"
+  },
+  "panels/mobile_throttling/ThrottlingSettingsTab.ts | recalibrate": {
+    "message": "重新校正"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | sMustBeANumberBetweenSkbsToSkbs": {
     "message": "{PH1} 必須是介乎 {PH2} kbit/s到 {PH3} kbit/s之間的數值"
@@ -8744,14 +8894,17 @@
   "panels/network/RequestCookiesView.ts | thisRequestHasNoCookies": {
     "message": "此要求沒有 Cookie。"
   },
+  "panels/network/RequestInitiatorView.ts | noInitiator": {
+    "message": "No initiator data"
+  },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "要求呼叫堆疊"
   },
   "panels/network/RequestInitiatorView.ts | requestInitiatorChain": {
     "message": "要求啟動器系統"
   },
-  "panels/network/RequestInitiatorView.ts | thisRequestHasNoInitiatorData": {
-    "message": "此要求沒有啟動器資料。"
+  "panels/network/RequestPayloadView.ts | copyPayload": {
+    "message": "複製"
   },
   "panels/network/RequestPayloadView.ts | copyValue": {
     "message": "複製值"
@@ -8807,8 +8960,11 @@
   "panels/network/RequestResponseView.ts | failedToLoadResponseData": {
     "message": "無法載入回應資料"
   },
+  "panels/network/RequestResponseView.ts | noPreview": {
+    "message": "Nothing to preview"
+  },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "此要求沒有可用的回應資料。"
+    "message": "This request has no response data available"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "快取儲存空間快取名稱：{PH1}"
@@ -8986,6 +9142,9 @@
   },
   "panels/network/ResourceWebSocketFrameView.ts | na": {
     "message": "不適用"
+  },
+  "panels/network/ResourceWebSocketFrameView.ts | noMessageSelected": {
+    "message": "未選取訊息"
   },
   "panels/network/ResourceWebSocketFrameView.ts | pingMessage": {
     "message": "Ping 訊息"
@@ -9196,6 +9355,9 @@
   },
   "panels/network/components/RequestTrustTokensView.ts | parameters": {
     "message": "參數"
+  },
+  "panels/network/components/RequestTrustTokensView.ts | perSiteLimit": {
+    "message": "各網站的核發機構數目已達上限。"
   },
   "panels/network/components/RequestTrustTokensView.ts | refreshPolicy": {
     "message": "重新整理政策"
@@ -9450,10 +9612,10 @@
     "message": "已選取的大小：{PH1}"
   },
   "panels/profiler/HeapProfileView.ts | selfSize": {
-    "message": "自行調整大小"
+    "message": "自身大小"
   },
   "panels/profiler/HeapProfileView.ts | selfSizeBytes": {
-    "message": "自身大小 (字節)"
+    "message": "自身大小"
   },
   "panels/profiler/HeapProfileView.ts | skb": {
     "message": "{PH1} KB"
@@ -9471,7 +9633,7 @@
     "message": "大小總計"
   },
   "panels/profiler/HeapProfileView.ts | totalSizeBytes": {
-    "message": "大小總計 (字節)"
+    "message": "大小總計"
   },
   "panels/profiler/HeapProfileView.ts | url": {
     "message": "網址"
@@ -9697,6 +9859,12 @@
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "已分離的 DOM 節點保留的物件"
+  },
+  "panels/profiler/HeapSnapshotView.ts | otherJSObjects": {
+    "message": "其他 JS 物件"
+  },
+  "panels/profiler/HeapSnapshotView.ts | otherNonJSObjects": {
+    "message": "其他非 JS 物件 (例如 HTML 和 CSS)"
   },
   "panels/profiler/HeapSnapshotView.ts | percentagePlaceholder": {
     "message": "{PH1}%"
@@ -10016,6 +10184,27 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "停止記錄堆分配"
   },
+  "panels/protocol_monitor/JSONEditor.ts | addCustomProperty": {
+    "message": "新增自訂屬性"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | addParameter": {
+    "message": "新增參數"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | copyCommand": {
+    "message": "複製指令"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | deleteParameter": {
+    "message": "刪除參數"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | resetDefaultValue": {
+    "message": "重設為預設值"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | sendCommandCmdEnter": {
+    "message": "傳送指令 - ⌘+Enter 鍵"
+  },
+  "panels/protocol_monitor/JSONEditor.ts | sendCommandCtrlEnter": {
+    "message": "傳送指令 - Ctrl + Enter 鍵"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
     "message": "隱藏咗 CDP 指令編輯器"
   },
@@ -10044,7 +10233,7 @@
     "message": "方法"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | noMessageSelected": {
-    "message": "沒有選取任何訊息"
+    "message": "未選取訊息"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | record": {
     "message": "記錄"
@@ -10060,6 +10249,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | save": {
     "message": "儲存"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
+    "message": "Select a message to see its details"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "選取目標"
@@ -10085,27 +10277,6 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "類型"
   },
-  "panels/protocol_monitor/components/JSONEditor.ts | addCustomProperty": {
-    "message": "新增自訂屬性"
-  },
-  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
-    "message": "新增參數"
-  },
-  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
-    "message": "刪除參數"
-  },
-  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
-    "message": "重設為預設值"
-  },
-  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
-    "message": "複製指令"
-  },
-  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCmdEnter": {
-    "message": "傳送指令 - ⌘+Enter 鍵"
-  },
-  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCtrlEnter": {
-    "message": "傳送指令 - Ctrl + Enter 鍵"
-  },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "通訊協定監察器"
   },
@@ -10119,7 +10290,7 @@
     "message": "複製錄製內容或已選取的步驟"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "建立新的錄製內容"
+    "message": "Create recording"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "刪除錄製內容"
@@ -10136,14 +10307,23 @@
   "panels/recorder/RecorderController.ts | getExtensions": {
     "message": "取得擴充程式…"
   },
+  "panels/recorder/RecorderController.ts | header": {
+    "message": "Nothing recorded yet"
+  },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "匯入錄製內容"
+  },
+  "panels/recorder/RecorderController.ts | learnMore": {
+    "message": "Learn more"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "(沒有任何記錄內容)"
   },
   "panels/recorder/RecorderController.ts | numberOfRecordings": {
     "message": "記錄內容"
+  },
+  "panels/recorder/RecorderController.ts | recordingDescription": {
+    "message": "Use recordings to create automated end-to-end tests or performance traces."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "重播錄製內容"
@@ -10327,24 +10507,6 @@
   },
   "panels/recorder/components/ReplaySection.ts | speedGroup": {
     "message": "速度"
-  },
-  "panels/recorder/components/StartView.ts | createRecording": {
-    "message": "建立新的錄製內容"
-  },
-  "panels/recorder/components/StartView.ts | header": {
-    "message": "評估整個使用者體驗的效能"
-  },
-  "panels/recorder/components/StartView.ts | quickStart": {
-    "message": "快速入門：瞭解開發人員工具中的全新「錄製工具」面板"
-  },
-  "panels/recorder/components/StartView.ts | step1": {
-    "message": "錄製網站或應用程式上常見的使用者體驗"
-  },
-  "panels/recorder/components/StartView.ts | step2": {
-    "message": "重播錄製內容即可查看流程是否可行"
-  },
-  "panels/recorder/components/StartView.ts | step3": {
-    "message": "產生詳細的效能追蹤記錄或匯出用於測試的 Puppeteer 指令碼"
   },
   "panels/recorder/components/StepEditor.ts | addAttribute": {
     "message": "新增「{attributeName}」"
@@ -10574,6 +10736,12 @@
   "panels/security/CookieControlsView.ts | cardTitle": {
     "message": "暫時限制第三方 Cookie"
   },
+  "panels/security/CookieControlsView.ts | enableFlag": {
+    "message": "如要使用，請將 {PH1} 設為「Default」"
+  },
+  "panels/security/CookieControlsView.ts | enrollGracePeriod": {
+    "message": "如要使用，請在{PH1}註冊此網站或其嵌入的網站"
+  },
   "panels/security/CookieControlsView.ts | enterpriseDisclaimer": {
     "message": "此網站的第三方 Cookie 存取權由你的機構管理"
   },
@@ -10607,11 +10775,17 @@
   "panels/security/CookieControlsView.ts | siteReloadMessage": {
     "message": "如要套用更新後的控制項，請重新載入頁面"
   },
+  "panels/security/CookieControlsView.ts | tpcdHeuristicsGrants": {
+    "message": "#tpcd-heuristics-grants"
+  },
+  "panels/security/CookieControlsView.ts | tpcdMetadataGrants": {
+    "message": "#tpcd-metadata-grants"
+  },
   "panels/security/CookieControlsView.ts | viewDetails": {
     "message": "查看詳情"
   },
   "panels/security/CookieControlsView.ts | viewExplanation": {
-    "message": "測試使用者選擇在 Chrome 中限制第三方 Cookie 時，此網站的運作情況"
+    "message": "測試第三方 Cookie 在 Chrome 中受限時，此網站的運作情況"
   },
   "panels/security/CookieControlsView.ts | viewTitle": {
     "message": "控制項"
@@ -10632,7 +10806,7 @@
     "message": "已封鎖"
   },
   "panels/security/CookieReportView.ts | body": {
-    "message": "根據使用者的設定，系統可能會限制使用第三方 Cookie。如果使用者選擇限制 Cookie，此網站就可能無法正常運作。"
+    "message": "如果 Chrome 限制第三方 Cookie 和其他 Cookie，此網站可能無法正常運作。"
   },
   "panels/security/CookieReportView.ts | cdnCookieTypeString": {
     "message": "CDN"
@@ -10656,7 +10830,7 @@
     "message": "未發現第三方 Cookie 問題"
   },
   "panels/security/CookieReportView.ts | gitHubResource": {
-    "message": "查看第三方網站的{PH1}。"
+    "message": "查看第三方網站的{PH1}"
   },
   "panels/security/CookieReportView.ts | gitHubResourceInsightTypeString": {
     "message": "GitHub"
@@ -10671,7 +10845,7 @@
     "message": "指引"
   },
   "panels/security/CookieReportView.ts | heuristics": {
-    "message": "稍後需採取行動。已啟用啟發式演算法例外情況"
+    "message": "稍後需採取行動。已啟用啟發式演算法例外情況。"
   },
   "panels/security/CookieReportView.ts | heuristicsInisightTypeString": {
     "message": "啟發式演算法"
@@ -10708,6 +10882,9 @@
   },
   "panels/security/CookieReportView.ts | reportedIssues": {
     "message": "已舉報的問題"
+  },
+  "panels/security/CookieReportView.ts | showRequestsWithThisCookie": {
+    "message": "顯示具有此 Cookie 的要求"
   },
   "panels/security/CookieReportView.ts | socialCookieTypeString": {
     "message": "社交"
@@ -11042,12 +11219,6 @@
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "主要來源"
   },
-  "panels/security/SecurityPanelSidebar.ts | mainOriginNonsecure": {
-    "message": "主要來源 (不安全)"
-  },
-  "panels/security/SecurityPanelSidebar.ts | mainOriginSecure": {
-    "message": "主要來源 (安全)"
-  },
   "panels/security/SecurityPanelSidebar.ts | nonsecureOrigins": {
     "message": "不安全的來源"
   },
@@ -11069,17 +11240,17 @@
   "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
     "message": "不明/已取消"
   },
+  "panels/security/security-meta.ts | PrivacyAndSecurity": {
+    "message": "私隱權和安全性"
+  },
   "panels/security/security-meta.ts | security": {
     "message": "安全性"
   },
-  "panels/security/security-meta.ts | securityAndPrivacy": {
-    "message": "安全和私隱"
+  "panels/security/security-meta.ts | showPrivacyAndSecurity": {
+    "message": "顯示「私隱權和安全性」"
   },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "顯示安全性"
-  },
-  "panels/security/security-meta.ts | showSecurityAndPrivacy": {
-    "message": "顯示「安全和私隱」"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "新增位置"
@@ -11324,11 +11495,14 @@
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "控制器訊息、相關堆疊追蹤、相關原始碼及相關網絡標題會傳送至 Google 以生成說明。另外，資料可能會送交人手審查以改善有關功能。"
   },
+  "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
+    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+  },
   "panels/settings/AISettingsTab.ts | dataCollection": {
-    "message": "視乎所在區域而定，Google 可能會停止收集資料。"
+    "message": "視乎所在區域而定，Google 可能會停止收集資料"
   },
   "panels/settings/AISettingsTab.ts | dataCollectionNoLogging": {
-    "message": "人手審查員不會將你的內容用於提升 AI 技術，你的機構隨時可變更這些設定。視乎 Google 帳戶管理和/或所在區域而定，Google 可能會停止收集資料。"
+    "message": "視乎 Google 帳戶管理和/或所在區域而定，Google 可能會停止收集資料"
   },
   "panels/settings/AISettingsTab.ts | enableAiAssistance": {
     "message": "啟用 AI 輔助"
@@ -11337,7 +11511,7 @@
     "message": "啟用「Console insights」"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
-    "message": "這些仍處於實驗階段的功能採用生成式 AI，可能會提供不準確或令人反感的資料，並不代表 Google 的觀點。"
+    "message": "這些功能採用生成式 AI，可能會提供不準確或令人反感的資料，並不代表 Google 的觀點"
   },
   "panels/settings/AISettingsTab.ts | explainConsole": {
     "message": "取得控制器警告和錯誤的說明"
@@ -11356,6 +11530,9 @@
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
     "message": "所檢查頁面能透過 Web API、網絡要求、檔案和效能追蹤記錄存取的任何資料會傳送至 Google，以生成剖析。另外，資料可能會送交人手審查以改善有關功能。請勿在包含個人或敏感資料的頁面使用此功能。"
+  },
+  "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
+    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "助你瞭解和修正控制器警告及錯誤"
@@ -11392,6 +11569,9 @@
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
     "message": "這些功能會傳送相關資料至 Google。Google 透過收集這些資料和意見配合人手審查，改善旗下產品和服務。請勿分享敏感或個人資料。"
+  },
+  "panels/settings/AISettingsTab.ts | sendsDataToGoogleNoLogging": {
+    "message": "人手審查員不會將你的內容用於提升 AI 技術，你的機構隨時可變更這些設定。"
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "顯示較少"
@@ -11747,6 +11927,9 @@
   "panels/snippets/SnippetsQuickOpen.ts | run": {
     "message": "執行"
   },
+  "panels/snippets/SnippetsQuickOpen.ts | runSnippet": {
+    "message": "執行程式碼片段"
+  },
   "panels/snippets/SnippetsQuickOpen.ts | snippet": {
     "message": "程式碼片段"
   },
@@ -12045,28 +12228,28 @@
     "message": "{PH1} (已在忽略清單上)"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentLineSTypeALineNumber": {
-    "message": "目前位於第 {PH1} 行。輸入介乎 1 至 {PH2} 的行數，即可前往相應位置。"
+    "message": "輸入介乎 1 至 {PH1} 的行數，即可前往相應位置"
   },
   "panels/sources/GoToLineQuickOpen.ts | currentPositionXsTypeAnOffset": {
-    "message": "目前位置：0x{PH1}。輸入介乎 0x{PH2} 至 0x{PH3} 之間的偏差值，即可前往相應位置。"
+    "message": "輸入介乎 0x{PH1} 至 0x{PH2} 的偏差值，即可前往相應位置"
   },
   "panels/sources/GoToLineQuickOpen.ts | goToLineS": {
-    "message": "前往第 {PH1} 行。"
+    "message": "前往第 {PH1} 行"
   },
   "panels/sources/GoToLineQuickOpen.ts | goToLineSAndColumnS": {
-    "message": "前往第 {PH1} 行和第 {PH2} 欄。"
+    "message": "前往第 {PH1} 行和第 {PH2} 欄"
   },
   "panels/sources/GoToLineQuickOpen.ts | goToOffsetXs": {
-    "message": "前往偏移值 0x{PH1}。"
+    "message": "前往偏移值 0x{PH1}"
   },
   "panels/sources/GoToLineQuickOpen.ts | noFileSelected": {
-    "message": "未選取檔案。"
+    "message": "未選取檔案"
   },
   "panels/sources/GoToLineQuickOpen.ts | noResultsFound": {
     "message": "找不到任何結果"
   },
   "panels/sources/GoToLineQuickOpen.ts | typeANumberToGoToThatLine": {
-    "message": "輸入數字即可前往相應的行。"
+    "message": "輸入數字即可前往相應的行"
   },
   "panels/sources/InplaceFormatterEditorAction.ts | format": {
     "message": "格式"
@@ -12195,22 +12378,31 @@
     "message": "建立新程式碼片段"
   },
   "panels/sources/SourcesNavigator.ts | explainContentScripts": {
-    "message": "查看擴充程式提供的內容指令碼"
+    "message": "查看擴充程式提供的內容指令碼。"
   },
   "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
-    "message": "在本機上覆寫網絡要求和網絡內容，以模擬遠端資源"
+    "message": "在本機上覆寫網絡要求和網絡內容，以模擬遠端資源。"
   },
   "panels/sources/SourcesNavigator.ts | explainSnippets": {
-    "message": "儲存你經常執行的 JavaScript 程式碼，以便隨時再次執行"
+    "message": "將你經常執行的 JavaScript 程式碼儲存到程式碼片段，以便隨時再次執行。"
   },
   "panels/sources/SourcesNavigator.ts | explainWorkspace": {
-    "message": "設定工作區，直接將編輯內容同步至你開發的來源"
-  },
-  "panels/sources/SourcesNavigator.ts | learnMore": {
-    "message": "瞭解詳情"
+    "message": "設定工作區，直接將編輯內容同步至你開發的來源。"
   },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "新程式碼片段"
+  },
+  "panels/sources/SourcesNavigator.ts | noContentScripts": {
+    "message": "未偵測到內容指令碼"
+  },
+  "panels/sources/SourcesNavigator.ts | noLocalOverrides": {
+    "message": "未設定本機覆寫"
+  },
+  "panels/sources/SourcesNavigator.ts | noSnippets": {
+    "message": "未儲存任何程式碼片段"
+  },
+  "panels/sources/SourcesNavigator.ts | noWorkspace": {
+    "message": "未設定工作區"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "移除"
@@ -12584,6 +12776,9 @@
   "panels/sources/sources-meta.ts | goToLine": {
     "message": "前往指定的行"
   },
+  "panels/sources/sources-meta.ts | goToSymbol": {
+    "message": "前往符號"
+  },
   "panels/sources/sources-meta.ts | incrementCssUnitBy": {
     "message": "將 CSS 單位增加 {PH1}"
   },
@@ -12611,6 +12806,9 @@
   "panels/sources/sources-meta.ts | open": {
     "message": "開啟"
   },
+  "panels/sources/sources-meta.ts | openFile": {
+    "message": "開啟檔案"
+  },
   "panels/sources/sources-meta.ts | pauseScriptExecution": {
     "message": "暫停執行指令碼"
   },
@@ -12633,7 +12831,7 @@
     "message": "在導覽工具側欄中顯示使用中的檔案"
   },
   "panels/sources/sources-meta.ts | runSnippet": {
-    "message": "執行訊息摘錄"
+    "message": "執行指令碼片段"
   },
   "panels/sources/sources-meta.ts | save": {
     "message": "儲存"
@@ -12842,6 +13040,18 @@
   "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
     "message": "此發佈途徑包含從 Server-Timing 網絡回應標題中提取的時間資料。相應的開始時間只是估算值，未必準確。"
   },
+  "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
+    "message": "1st / 3rd party"
+  },
+  "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
+    "message": "個別時間"
+  },
+  "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
+    "message": "傳輸大小"
+  },
+  "panels/timeline/ThirdPartyTreeView.ts | unattributed": {
+    "message": "[未歸因]"
+  },
   "panels/timeline/ThreadAppender.ts | bidderWorklet": {
     "message": "出價者 Worklet"
   },
@@ -13044,7 +13254,7 @@
     "message": "描述"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "校暗第三方元素"
+    "message": "Dim 3rd parties"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "停用 JavaScript 範例"
@@ -13053,7 +13263,7 @@
     "message": "停用 JavaScript 取樣功能，減少流動裝置執行時所需的用量"
   },
   "panels/timeline/TimelinePanel.ts | downloadAfterError": {
-    "message": "下載原始追蹤活動"
+    "message": "下載追蹤記錄"
   },
   "panels/timeline/TimelinePanel.ts | dropTimelineFileOrUrlHere": {
     "message": "將時間軸檔案或網址拖曳到這裡"
@@ -13163,20 +13373,23 @@
   "panels/timeline/TimelinePanel.ts | stoppingTimeline": {
     "message": "正在停止時間軸…"
   },
+  "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
+    "message": "3rd parties classified by third-party-web"
+  },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "時間"
   },
   "panels/timeline/TimelinePanel.ts | timelineFastZoomInOut": {
-    "message": "時間軸快速放大/縮小"
+    "message": "快速放大/縮小"
   },
   "panels/timeline/TimelinePanel.ts | timelinePanLeftRight": {
-    "message": "向左/右平移時間軸"
+    "message": "向左/右移"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollUpDown": {
-    "message": "在時間軸上向上/向下捲動"
+    "message": "向上/下移"
   },
   "panels/timeline/TimelinePanel.ts | timelineZoomInOut": {
-    "message": "時間軸放大/縮小"
+    "message": "放大/縮小"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "複製表格"
@@ -13223,8 +13436,17 @@
   "panels/timeline/TimelineTreeView.ts | activity": {
     "message": "活動"
   },
+  "panels/timeline/TimelineTreeView.ts | bottomUp": {
+    "message": "從下至上"
+  },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome 擴充程式用量]"
+  },
+  "panels/timeline/TimelineTreeView.ts | extension": {
+    "message": "擴充程式"
+  },
+  "panels/timeline/TimelineTreeView.ts | firstParty": {
+    "message": "第一方"
   },
   "panels/timeline/TimelineTreeView.ts | groupBy": {
     "message": "分類依據"
@@ -13303,6 +13525,9 @@
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
     "message": "[V8 執行階段]"
+  },
+  "panels/timeline/TimelineTreeView.ts | viewBottomUp": {
+    "message": "從下至上檢視"
   },
   "panels/timeline/TimelineUIUtils.ts | UnknownNode": {
     "message": "[ 不明節點 ]"
@@ -13403,18 +13628,6 @@
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "已使用的快取大小"
   },
-  "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
-    "message": "累計版面配置轉移"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cumulativeScore": {
-    "message": "累計分數"
-  },
-  "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
-    "message": "目前的叢集 ID"
-  },
-  "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
-    "message": "目前的叢集分數"
-  },
   "panels/timeline/TimelineUIUtils.ts | delay": {
     "message": "延遲"
   },
@@ -13439,11 +13652,11 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
+  "panels/timeline/TimelineUIUtils.ts | entity": {
+    "message": "Third party"
+  },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(已隱藏項目)"
-  },
-  "panels/timeline/TimelineUIUtils.ts | evolvedClsLink": {
-    "message": "已轉變"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "無法從快取載入指令碼"
@@ -13459,9 +13672,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
     "message": "函數"
-  },
-  "panels/timeline/TimelineUIUtils.ts | hadRecentInput": {
-    "message": "包含最近的輸入內容"
   },
   "panels/timeline/TimelineUIUtils.ts | idleCallbackRequested": {
     "message": "已要求閒置回調"
@@ -13514,15 +13724,6 @@
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "模組"
   },
-  "panels/timeline/TimelineUIUtils.ts | movedFrom": {
-    "message": "從下列位置移動："
-  },
-  "panels/timeline/TimelineUIUtils.ts | movedTo": {
-    "message": "已移至"
-  },
-  "panels/timeline/TimelineUIUtils.ts | no": {
-    "message": "否"
-  },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "需要版面配置的節點"
   },
@@ -13574,9 +13775,6 @@
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} (在 {PH2}時)"
   },
-  "panels/timeline/TimelineUIUtils.ts | sCLSInformation": {
-    "message": "{PH1}可能會對使用者體驗造成負面影響。該項目最近{PH2}。"
-  },
   "panels/timeline/TimelineUIUtils.ts | sChildren": {
     "message": "{PH1} (子項)"
   },
@@ -13607,9 +13805,6 @@
   "panels/timeline/TimelineUIUtils.ts | sSs": {
     "message": "{PH1} [{PH2}…{PH3}]"
   },
-  "panels/timeline/TimelineUIUtils.ts | score": {
-    "message": "分數"
-  },
   "panels/timeline/TimelineUIUtils.ts | script": {
     "message": "指令碼"
   },
@@ -13636,6 +13831,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | stylesheetUrl": {
     "message": "樣式表網址"
+  },
+  "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
+    "message": "1st / 3rd party table"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "輸出使用時間"
@@ -13666,9 +13864,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | warning": {
     "message": "警告"
-  },
-  "panels/timeline/TimelineUIUtils.ts | yes": {
-    "message": "是"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "時間"
@@ -13724,20 +13919,29 @@
   "panels/timeline/components/BreadcrumbsUI.ts | removeChildBreadcrumbs": {
     "message": "移除子導航標示"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
+    "message": "Calibrate…"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU：{PH1}"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpuThrottling": {
     "message": "CPU 節流：{PH1}"
   },
+  "panels/timeline/components/CPUThrottlingSelector.ts | labelCalibratedPresets": {
+    "message": "已校正的預設值"
+  },
+  "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
+    "message": "Recalibrate…"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
-    "message": "{PH1} - 建議選項"
+    "message": "{PH1} – 建議"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "建議變更設定，以模擬實際使用者環境"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
-    "message": "已強制使用自動重排"
+    "message": "已強制使用重排"
   },
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
     "message": "閒置回呼執行超時 {PH1}"
@@ -14219,6 +14423,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "已編碼的資料"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | entity": {
+    "message": "Third party"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "來自快取"
   },
@@ -14289,7 +14496,7 @@
     "message": "預設"
   },
   "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottling": {
-    "message": "{PH1} - 建議選項"
+    "message": "{PH1} – 建議"
   },
   "panels/timeline/components/NetworkThrottlingSelector.ts | recommendedThrottlingReason": {
     "message": "建議變更設定，以模擬實際使用者環境"
@@ -14360,11 +14567,32 @@
   "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
     "message": "分析資料是實驗版功能，你的意見將有助我們改善使用體驗。"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
+    "message": "Dismiss"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
+    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
+    "message": "Field & local metrics mismatch"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
+    "message": "Field ({PH1})"
+  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}：{PH2} (分數等級：{PH3})"
   },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScoreUnavailable": {
+    "message": "{PH1}：沒有資料"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | originOption": {
+    "message": "來源"
+  },
   "panels/timeline/components/SidebarSingleInsightSet.ts | passedInsights": {
     "message": "已通過的分析資料 ({PH1})"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | urlOption": {
+    "message": "網址"
   },
   "panels/timeline/components/TimelineSummary.ts | rangeSS": {
     "message": "範圍：{PH1} - {PH2}"
@@ -14387,188 +14615,17 @@
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
     "message": "查看「{PH1}」的詳情"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | animation": {
-    "message": "動畫"
+  "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
+    "message": "{PH1} - 欄位 ({PH2})"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
-    "message": "字型要求"
+  "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerLocal": {
+    "message": "{PH1} - 本機"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | injectedIframe": {
-    "message": "已插入 iframe"
+  "panels/timeline/overlays/OverlaysImpl.ts | originOption": {
+    "message": "來源"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
-    "message": "版面配置轉移叢集 @ {PH1}"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | noCulprits": {
-    "message": "無法偵測任何版面配置轉移起因"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | noLayoutShifts": {
-    "message": "沒有版面配置轉移"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
-    "message": "版面配置轉移的主要原因"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | unsizedImages": {
-    "message": "未設定大小的圖片"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
-    "message": "最差的叢集"
-  },
-  "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
-    "message": "最差的版面配置轉移叢集"
-  },
-  "panels/timeline/components/insights/DOMSize.ts | noLargeRenderTasks": {
-    "message": "DOM 大小沒有影響任何輸出工作"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
-    "message": "無法檢查分析資料：{PH1}"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | failedRedirects": {
-    "message": "有重新導向"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | failedServerResponseTime": {
-    "message": "伺服器回應緩慢"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | failedTextCompression": {
-    "message": "未套用任何壓縮"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | passingRedirects": {
-    "message": "避免重新導向"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | passingServerResponseTime": {
-    "message": "伺服器回應迅速"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | passingTextCompression": {
-    "message": "套用文字壓縮"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | redirectsLabel": {
-    "message": "重新導向"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | serverResponseTimeLabel": {
-    "message": "伺服器回應時間"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
-    "message": "通過分析資料檢查：{PH1}"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
-    "message": "未壓縮下載"
-  },
-  "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
-    "message": "字型"
-  },
-  "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
-    "message": "浪費的時間"
-  },
-  "panels/timeline/components/insights/ImageDelivery.ts | noOptimizableImages": {
-    "message": "沒有可優化的圖像"
-  },
-  "panels/timeline/components/insights/ImageDelivery.ts | optimizeFile": {
-    "message": "優化檔案大小"
-  },
-  "panels/timeline/components/insights/ImageDelivery.ts | others": {
-    "message": "還有另外 {PH1} 個項目"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
-    "message": "時間長度"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
-    "message": "輸入延遲"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | noInteractions": {
-    "message": "未能偵測到互動"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
-    "message": "階段"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | presentationDelay": {
-    "message": "簡報顯示延遲"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | processingDuration": {
-    "message": "處理時間長度"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
-    "message": "無法檢查分析資料：{PH1}"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
-    "message": "已套用 fetchpriority 的 high 屬性值"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
-    "message": "未套用延遲載入"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | lcpLoadDelay": {
-    "message": "LCP 圖片在最早的開始點 {PH1} 後載入。"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | noLcp": {
-    "message": "未能偵測到 LCP"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | noLcpResource": {
-    "message": "LCP 不是圖像，因此未偵測到 LCP 資源"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
-    "message": "要求內容可於初始文件中查看"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
-    "message": "通過分析資料檢查：{PH1}"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
-    "message": "元素輸出延遲"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | noLcp": {
-    "message": "未能偵測到 LCP"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
-    "message": "% 的 LCP"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | phase": {
-    "message": "階段"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
-    "message": "資源載入延遲"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDuration": {
-    "message": "資源載入時長"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
-    "message": "首個字節時間"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | duration": {
-    "message": "時間長度"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | noRenderBlocking": {
-    "message": "此導覽沒有輸出封鎖要求"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
-    "message": "要求"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
-    "message": "經過時間"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | enableSelectorData": {
-    "message": "找不到任何 CSS 選取器資料。你需要在成效面板設定中，啟用 CSS 選取器統計資料。"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
-    "message": "嘗試配對次數"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
-    "message": "相符數量"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
-    "message": "最花時間/心力的選取器"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | total": {
-    "message": "總計"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | columnBlockingTime": {
-    "message": "封鎖時間"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | columnThirdParty": {
-    "message": "第三方"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
-    "message": "傳輸大小"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | noThirdParties": {
-    "message": "找不到第三方內容"
+  "panels/timeline/overlays/OverlaysImpl.ts | urlOption": {
+    "message": "網址"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "項目之間的連結"
@@ -14629,6 +14686,9 @@
   },
   "panels/timeline/utils/EntryName.ts | frame": {
     "message": "頁框"
+  },
+  "panels/timeline/utils/EntryName.ts | layoutShift": {
+    "message": "版面配置轉移"
   },
   "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
     "message": "已關閉 WebSocket"
@@ -15178,36 +15238,6 @@
   },
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
     "message": "新功能"
-  },
-  "ui/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "欄排序狀態：{PH1}。㩒 Enter 掣就可以套用排序篩選器"
-  },
-  "ui/components/data_grid/DataGrid.ts | headerOptions": {
-    "message": "標題選項"
-  },
-  "ui/components/data_grid/DataGrid.ts | resetColumns": {
-    "message": "重設欄"
-  },
-  "ui/components/data_grid/DataGrid.ts | sortAsc": {
-    "message": "遞增"
-  },
-  "ui/components/data_grid/DataGrid.ts | sortBy": {
-    "message": "排序方式"
-  },
-  "ui/components/data_grid/DataGrid.ts | sortDesc": {
-    "message": "遞減"
-  },
-  "ui/components/data_grid/DataGrid.ts | sortNone": {
-    "message": "沒有"
-  },
-  "ui/components/data_grid/DataGridController.ts | sortInAscendingOrder": {
-    "message": "根據遞增順序排{PH1}"
-  },
-  "ui/components/data_grid/DataGridController.ts | sortInDescendingOrder": {
-    "message": "根據遞減順序排{PH1}"
-  },
-  "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
-    "message": "取消咗{PH1}排序"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "關閉"
@@ -15824,6 +15854,9 @@
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
     "message": "已建立空白的表格列。如要編輯，請按兩下或使用內容選單。"
   },
+  "ui/legacy/components/data_grid/DataGrid.ts | enterToSort": {
+    "message": "欄排序狀態：{PH1}。㩒 Enter 掣就可以套用排序篩選器"
+  },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
     "message": "已經展開"
   },
@@ -15851,11 +15884,8 @@
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
     "message": "排序方式"
   },
-  "ui/legacy/components/data_grid/DataGridWithPreview.ts | numberEntries": {
-    "message": "表格入面顯示嘅項目數目：{PH1} 個"
-  },
-  "ui/legacy/components/data_grid/DataGridWithPreview.ts | selectAValueToPreview": {
-    "message": "選取值即可預覽"
+  "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
+    "message": "Sortable column. Press enter to apply sorting filter"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "顯示全部 ({PH1})"
@@ -16130,6 +16160,9 @@
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
     "message": "執行"
   },
+  "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
+    "message": "執行指令"
+  },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "找不到任何結果"
   },
@@ -16187,8 +16220,11 @@
   "ui/legacy/components/source_frame/JSONView.ts | find": {
     "message": "尋找"
   },
+  "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
+    "message": "Failed to load data"
+  },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "無可供預覽的內容"
+    "message": "Nothing to preview"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "尋找"
@@ -16324,8 +16360,5 @@
   },
   "ui/legacy/components/utils/Linkifier.ts | unknown": {
     "message": "(未知)"
-  },
-  "ui/legacy/components/utils/TargetDetachedDialog.ts | websocketDisconnected": {
-    "message": "WebSocket 已中斷連線"
   }
 }

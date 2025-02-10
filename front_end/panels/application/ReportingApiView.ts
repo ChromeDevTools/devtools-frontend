@@ -32,15 +32,11 @@ export class ReportingApiView extends UI.SplitWidget.SplitWidget {
       reportingApiEndpointsView.contentElement.appendChild(this.endpointsGrid);
       this.setMainWidget(reportingApiReportsView);
       this.setSidebarWidget(reportingApiEndpointsView);
-      this.hideSidebar();
       void networkManager.enableReportingApi();
     }
   }
 
   private onEndpointsChangedForOrigin(data: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent): void {
-    if (this.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
-      this.showBoth();
-    }
     this.endpoints.set(data.origin, data.endpoints);
     this.endpointsGrid.data = {endpoints: this.endpoints};
   }

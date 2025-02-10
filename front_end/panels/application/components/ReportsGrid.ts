@@ -116,8 +116,8 @@ export class ReportsGrid extends HTMLElement {
     // clang-format off
     render(html`
       <div class="reporting-container" jslog=${VisualLogging.section('reports')}>
+        <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
         ${this.#reports.length > 0 ? html`
-          <div class="reporting-header">${i18n.i18n.lockedString('Reports')}</div>
           <devtools-data-grid striped @select=${this.#onSelect}>
             <table>
               <tr>

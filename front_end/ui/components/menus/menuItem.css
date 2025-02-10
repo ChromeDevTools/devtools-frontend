@@ -22,7 +22,7 @@
 }
 
 :host-context(devtools-menu-group) .menu-item {
-  padding: 4px 30px 4px 36px;
+  padding: var(--sys-size-3) 0 var(--sys-size-3) 26px;
 }
 
 .is-selected-item::before {

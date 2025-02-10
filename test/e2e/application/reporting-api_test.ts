@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {
-  $,
   click,
   getBrowserAndPages,
   getTestServerPort,
@@ -55,10 +54,9 @@ describe('The Reporting API Page', () => {
     await click('#tab-resources');
     await waitFor('.storage-group-list-item');  // Make sure the application navigation list is shown
     await click(REPORTING_API_SELECTOR);
-    const endpointsGrid = await $('devtools-resources-endpoints-grid');
-    if (!endpointsGrid) {
-      assert.fail('Could not find data-grid');
-    }
+
+    const endpointsGrid = await waitFor('devtools-resources-endpoints-grid');
+
     const innerText = await getInnerTextOfDataGridCells(endpointsGrid, 2, true);
     assert.strictEqual(innerText[0][0], `https://localhost:${getTestServerPort()}`);
     assert.strictEqual(innerText[0][1], 'default');

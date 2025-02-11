@@ -12,6 +12,7 @@ export * from './AiAssistancePanel.js';
 export * from './AiHistoryStorage.js';
 export * from './ChangeManager.js';
 export * from './components/ChatView.js';
+export * from './components/MarkdownRendererWithCodeBlock.js';
 export * from './components/UserActionRow.js';
 export * from './EvaluateAction.js';
 export * from './ExtensionScope.js';

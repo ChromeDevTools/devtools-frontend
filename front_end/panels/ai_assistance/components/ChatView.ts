@@ -19,6 +19,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 
 import stylesRaw from './chatView.css.js';
+import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
 import {UserActionRow} from './UserActionRow.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -335,56 +336,6 @@ export interface Props {
   changeSummary?: string;
 }
 
-// The model returns multiline code blocks in an erroneous way with the language being in new line.
-// This renderer takes that into account and correctly updates the parsed multiline token with the language
-// correctly identified and stripped from the content.
-// Example:
-// ```
-// css <-- This should have been on the first line.
-// * {
-//   color: red;
-// }
-// ```
-class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-  #stripLinks: boolean = false;
-  constructor(opts: {stripLinks?: boolean} = {}) {
-    super();
-    this.#stripLinks = Boolean(opts.stripLinks);
-  }
-  override templateForToken(token: Marked.Marked.MarkedToken): Lit.TemplateResult|null {
-    if (token.type === 'code') {
-      const lines = (token.text as string).split('\n');
-      if (lines[0]?.trim() === 'css') {
-        token.lang = 'css';
-        token.text = lines.slice(1).join('\n');
-      }
-    }
-
-    // Potentially remove links from the rendered result
-    if (this.#stripLinks && (token.type === 'link' || token.type === 'image')) {
-      // Insert an extra text node at the end after any link text. Show the link as plaintext (surrounded by parentheses)
-      const urlText = ` ( ${token.href} )`;
-      // Images would be turned into as links (but we'll skip that) https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/components/markdown_view/MarkdownView.ts;l=286-291;drc=d2cc89e48c913666655542d818ad0a09d25d0d08
-      const childTokens = token.type === 'image' ? undefined : [
-        ...token.tokens,
-        {type: 'text', text: urlText, raw: urlText},
-      ];
-
-      token = {
-        ...token,
-        // Marked doesn't read .text or .raw of a link, but we'll update anyway
-        // https://github.com/markedjs/marked/blob/035af38ab1e5aae95ece213dcc9a9c6d79cff46f/src/Renderer.ts#L178-L191
-        text: `${token.text}${urlText}`,
-        raw: `${token.text}${urlText}`,
-        type: 'text',
-        tokens: childTokens,
-      };
-    }
-
-    return super.templateForToken(token);
-  }
-}
-
 export class ChatView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #markdownRenderer = new MarkdownRendererWithCodeBlock();
@@ -581,438 +532,6 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #renderChangeSummary(): Lit.LitTemplate {
-    if (!this.#props.changeSummary) {
-      return Lit.nothing;
-    }
-
-    return html`<details class="change-summary">
-        <summary>
-          <devtools-icon class="difference-icon" .name=${'difference'}
-          ></devtools-icon>
-          <span class="header-text">
-            ${lockedString(UIStringsNotTranslate.changeSummary)}
-          </span>
-          <devtools-icon
-            class="arrow"
-            .name=${'chevron-up'}
-          ></devtools-icon>
-        </summary>
-        <devtools-code-block
-          .code=${this.#props.changeSummary}
-          .codeLang=${'css'}
-          .displayNotice=${false}
-        ></devtools-code-block>
-      </details>`;
-  }
-
-  #renderTextAsMarkdown(text: string, {animate, ref: refFn}: {
-    animate?: boolean,
-    ref?: (element?: Element) => void,
-  } = {}): Lit.TemplateResult {
-    let tokens = [];
-    try {
-      tokens = Marked.Marked.lexer(text);
-      for (const token of tokens) {
-        // Try to render all the tokens to make sure that
-        // they all have a template defined for them. If there
-        // isn't any template defined for a token, we'll fallback
-        // to rendering the text as plain text instead of markdown.
-        this.#markdownRenderer.renderToken(token);
-      }
-    } catch {
-      // The tokens were not parsed correctly or
-      // one of the tokens are not supported, so we
-      // continue to render this as text.
-      return html`${text}`;
-    }
-
-    // clang-format off
-    return html`<devtools-markdown-view
-      .data=${{tokens, renderer: this.#markdownRenderer, animationEnabled: animate} as MarkdownView.MarkdownView.MarkdownViewData}
-      ${refFn ? ref(refFn) : Lit.nothing}>
-    </devtools-markdown-view>`;
-    // clang-format on
-  }
-
-  #renderTitle(step: Step): Lit.LitTemplate {
-    const paused = step.sideEffect ? html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
-                                     Lit.nothing;
-    const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
-
-    return html`<span class="title">${paused}${actionTitle}</span>`;
-  }
-
-  #renderStepCode(step: Step): Lit.LitTemplate {
-    if (!step.code && !step.output) {
-      return Lit.nothing;
-    }
-
-    // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
-    // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-    const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
-                                                              lockedString(UIStringsNotTranslate.codeToExecute);
-
-    // If there is output, we don't show notice on this code block and instead show
-    // it in the data returned code block.
-    // clang-format off
-    const code = step.code ? html`<div class="action-result">
-        <devtools-code-block
-          .code=${step.code.trim()}
-          .codeLang=${'js'}
-          .displayNotice=${!Boolean(step.output)}
-          .header=${codeHeadingText}
-          .showCopyButton=${true}
-        ></devtools-code-block>
-    </div>` :
-                             Lit.nothing;
-    const output = step.output ? html`<div class="js-code-output">
-      <devtools-code-block
-        .code=${step.output}
-        .codeLang=${'js'}
-        .displayNotice=${true}
-        .header=${lockedString(UIStringsNotTranslate.dataReturned)}
-        .showCopyButton=${false}
-      ></devtools-code-block>
-    </div>` :
-                                 Lit.nothing;
-
-    return html`<div class="step-code">${code}${output}</div>`;
-    // clang-format on
-  }
-
-  #renderStepDetails(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
-    const sideEffects = options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : Lit.nothing;
-    const thought = step.thought ? html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : Lit.nothing;
-
-    // clang-format off
-    const contextDetails = step.contextDetails ?
-    html`${Lit.Directives.repeat(
-      step.contextDetails,
-        contextDetail => {
-          return html`<div class="context-details">
-        <devtools-code-block
-          .code=${contextDetail.text}
-          .codeLang=${contextDetail.codeLang || ''}
-          .displayNotice=${false}
-          .header=${contextDetail.title}
-          .showCopyButton=${true}
-        ></devtools-code-block>
-      </div>`;
-        },
-      )}` : Lit.nothing;
-
-    return html`<div class="step-details">
-      ${thought}
-      ${this.#renderStepCode(step)}
-      ${sideEffects}
-      ${contextDetails}
-    </div>`;
-    // clang-format on
-  }
-
-  #renderStepBadge(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
-    if (this.#props.isLoading && options.isLast && !step.sideEffect) {
-      return html`<devtools-spinner></devtools-spinner>`;
-    }
-
-    let iconName: string = 'checkmark';
-    let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
-    let role: 'button'|undefined = 'button';
-    if (options.isLast && step.sideEffect) {
-      role = undefined;
-      ariaLabel = undefined;
-      iconName = 'pause-circle';
-    } else if (step.canceled) {
-      ariaLabel = lockedString(UIStringsNotTranslate.canceled);
-      iconName = 'cross';
-    }
-
-    return html`<devtools-icon
-        class="indicator"
-        role=${ifDefined(role)}
-        aria-label=${ifDefined(ariaLabel)}
-        .name=${iconName}
-      ></devtools-icon>`;
-  }
-
-  #renderStep(step: Step, options: {isLast: boolean}): Lit.LitTemplate {
-    const stepClasses = Lit.Directives.classMap({
-      step: true,
-      empty: !step.thought && !step.code && !step.contextDetails,
-      paused: Boolean(step.sideEffect),
-      canceled: Boolean(step.canceled),
-    });
-    // clang-format off
-    return html`
-      <details class=${stepClasses}
-        jslog=${VisualLogging.section('step')}
-        .open=${Boolean(step.sideEffect)}>
-        <summary>
-          <div class="summary">
-            ${this.#renderStepBadge(step, options)}
-            ${this.#renderTitle(step)}
-            <devtools-icon
-              class="arrow"
-              .name=${'chevron-down'}
-            ></devtools-icon>
-          </div>
-        </summary>
-        ${this.#renderStepDetails(step, {
-          isLast: options.isLast,
-        })}
-      </details>`;
-    // clang-format on
-  }
-
-  #renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
-    if (!step.sideEffect) {
-      return Lit.nothing;
-    }
-
-    const sideEffectAction = (answer: boolean): void => {
-      step.sideEffect?.onAnswer(answer);
-      step.sideEffect = undefined;
-      this.#render();
-    };
-
-    // clang-format off
-    return html`<div
-      class="side-effect-confirmation"
-      jslog=${VisualLogging.section('side-effect-confirmation')}
-    >
-      <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
-      <div class="side-effect-buttons-container">
-        <devtools-button
-          .data=${
-            {
-              variant: Buttons.Button.Variant.OUTLINED,
-              jslogContext: 'decline-execute-code',
-            } as Buttons.Button.ButtonData
-          }
-          @click=${() => sideEffectAction(false)}
-        >${lockedString(
-          UIStringsNotTranslate.negativeSideEffectConfirmation,
-        )}</devtools-button>
-        <devtools-button
-          .data=${
-            {
-              variant: Buttons.Button.Variant.PRIMARY,
-              jslogContext: 'accept-execute-code',
-              iconName: 'play',
-            } as Buttons.Button.ButtonData
-          }
-          @click=${() => sideEffectAction(true)}
-        >${
-            lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
-        }</devtools-button>
-      </div>
-    </div>`;
-    // clang-format on
-  }
-
-  #renderError(message: ModelChatMessage): Lit.LitTemplate {
-    if (message.error) {
-      let errorMessage;
-      switch (message.error) {
-        case ErrorType.UNKNOWN:
-        case ErrorType.BLOCK:
-          errorMessage = UIStringsNotTranslate.systemError;
-          break;
-        case ErrorType.MAX_STEPS:
-          errorMessage = UIStringsNotTranslate.maxStepsError;
-          break;
-        case ErrorType.ABORT:
-          return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
-              lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
-      }
-
-      return html`<p class="error" jslog=${VisualLogging.section('error')}>${lockedString(errorMessage)}</p>`;
-    }
-
-    return Lit.nothing;
-  }
-
-  #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): Lit.TemplateResult => {
-    if (message.entity === ChatMessageEntity.USER) {
-      const name = this.#props.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
-      const image = this.#props.userInfo.accountImage ?
-          html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
-          html`<devtools-icon
-            .name=${'profile'}
-          ></devtools-icon>`;
-      // clang-format off
-      return html`<section
-        class="chat-message query"
-        jslog=${VisualLogging.section('question')}
-      >
-        <div class="message-info">
-          ${image}
-          <div class="message-name">
-            <h2>${name}</h2>
-          </div>
-        </div>
-        <div class="message-content">${this.#renderTextAsMarkdown(message.text)}</div>
-      </section>`;
-      // clang-format on
-    }
-
-    // clang-format off
-    return html`
-      <section
-        class="chat-message answer"
-        jslog=${VisualLogging.section('answer')}
-      >
-        <div class="message-info">
-          <devtools-icon name="smart-assistant"></devtools-icon>
-          <div class="message-name">
-            <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
-          </div>
-        </div>
-        ${Lit.Directives.repeat(
-          message.steps,
-          (_, index) => index,
-          step => {
-            return this.#renderStep(step, {
-              isLast: [...message.steps.values()].at(-1) === step && isLast,
-            });
-          },
-        )}
-        ${message.answer
-          ? html`<p>${this.#renderTextAsMarkdown(message.answer, { animate: !this.#props.isReadOnly, ref: this.#handleLastAnswerMarkdownViewRef })}</p>`
-          : Lit.nothing}
-        ${this.#renderError(message)}
-        ${isLast && this.#props.isLoading
-          ? Lit.nothing
-          : html`<devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
-              showRateButtons: message.rpcId !== undefined,
-              onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback: string) => {
-                if (!message.rpcId) {
-                  return;
-                }
-                this.#props.onFeedbackSubmit(message.rpcId, rating, feedback);
-              },
-              suggestions: isLast ? message.suggestions : undefined,
-              onSuggestionClick: this.#handleSuggestionClick,
-              canShowFeedbackForm: this.#props.canShowFeedbackForm,
-            })}></devtools-widget>`
-        }
-      </section>
-    `;
-    // clang-format on
-  };
-
-  #renderSelection(): Lit.LitTemplate {
-    if (!this.#props.agentType) {
-      return Lit.nothing;
-    }
-    return this.#renderContextSelector();
-  }
-
-  #renderContextSelector(): Lit.LitTemplate {
-    // TODO: currently the picker behavior is SDKNode specific.
-    const hasPickerBehavior = this.#props.agentType === AgentType.STYLING;
-
-    const resourceClass = Lit.Directives.classMap({
-      'not-selected': !this.#props.selectedContext,
-      'resource-link': true,
-      'allow-overflow': hasPickerBehavior,
-    });
-
-    if (!this.#props.selectedContext && !hasPickerBehavior) {
-      return Lit.nothing;
-    }
-
-    const icon = this.#props.selectedContext?.getIcon() ?? Lit.nothing;
-
-    const handleKeyDown = (ev: KeyboardEvent): void => {
-      if (ev.key === 'Enter') {
-        void this.#props.onContextClick();
-      }
-    };
-
-    // clang-format off
-    return html`<div class="select-element">
-      ${
-        hasPickerBehavior ? html`
-          <devtools-button
-            .data=${{
-                variant: Buttons.Button.Variant.ICON_TOGGLE,
-                size: Buttons.Button.Size.REGULAR,
-                iconName: 'select-element',
-                toggledIconName: 'select-element',
-                toggleType: Buttons.Button.ToggleType.PRIMARY,
-                toggled: this.#props.inspectElementToggled,
-                title: lockedString(UIStringsNotTranslate.selectAnElement),
-                jslogContext: 'select-element',
-            } as Buttons.Button.ButtonData}
-            @click=${this.#props.onInspectElementClick}
-          ></devtools-button>
-        ` : Lit.nothing
-      }
-      <div
-        role=button
-        class=${resourceClass}
-        tabindex=${hasPickerBehavior ? '-1' : '0'}
-        @click=${this.#props.onContextClick}
-        @keydown=${handleKeyDown}
-      >
-        ${icon}${this.#props.selectedContext?.getTitle() ?? html`<span>${
-          lockedString(UIStringsNotTranslate.noElementSelected)
-        }</span>`}
-      </div>
-    </div>`;
-    // clang-format on
-  }
-
-  #renderMessages = (): Lit.TemplateResult => {
-    // clang-format off
-    return html`
-      <div class="messages-container" ${ref(this.#handleMessageContainerRef)}>
-        ${this.#props.messages.map((message, _, array) =>
-          this.#renderChatMessage(message, {
-            isLast: array.at(-1) === message,
-          }),
-        )}
-      </div>
-    `;
-    // clang-format on
-  };
-
-  #renderEmptyState = (): Lit.TemplateResult => {
-    const suggestions = this.#getEmptyStateSuggestions();
-
-    // clang-format off
-    return html`<div class="empty-state-container">
-      <div class="header">
-        <div class="icon">
-          <devtools-icon
-            name="smart-assistant"
-          ></devtools-icon>
-        </div>
-        <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
-      </div>
-      <div class="empty-state-content">
-        ${suggestions.map(suggestion => {
-          return html`<devtools-button
-            class="suggestion"
-            @click=${() => this.#handleSuggestionClick(suggestion)}
-            .data=${
-              {
-                variant: Buttons.Button.Variant.OUTLINED,
-                size: Buttons.Button.Size.REGULAR,
-                title: suggestion,
-                jslogContext: 'suggestion',
-                disabled: this.#isTextInputDisabled(),
-              } as Buttons.Button.ButtonData
-            }
-          >${suggestion}</devtools-button>`;
-        })}
-      </div>
-    </div>`;
-    // clang-format on
-  };
-
   #onNewConversation(): void {
     this.#props.onNewConversation();
   }
@@ -1096,139 +615,6 @@ export class ChatView extends HTMLElement {
     }
   }
 
-  #renderReadOnlySection(): Lit.LitTemplate {
-    if (!this.#props.agentType) {
-      return Lit.nothing;
-    }
-
-    // clang-format off
-    return html`<div
-      class="chat-readonly-container"
-      jslog=${VisualLogging.section('read-only')}
-    >
-      <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
-      <devtools-button
-        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-        class="chat-inline-button"
-        @click=${this.#onNewConversation}
-        .data=${{
-          variant: Buttons.Button.Variant.TEXT,
-          title: lockedString(UIStringsNotTranslate.startNewChat),
-          jslogContext: 'start-new-chat',
-        } as Buttons.Button.ButtonData}
-      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-    </div>`;
-    // clang-format on
-  }
-
-  #renderChatInputButtons(): Lit.TemplateResult {
-    if (this.#props.isLoading) {
-      // clang-format off
-      return html`<devtools-button
-        class="chat-input-button"
-        aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
-        @click=${this.#handleCancel}
-        .data=${
-          {
-            variant: Buttons.Button.Variant.ICON,
-            size: Buttons.Button.Size.REGULAR,
-            iconName: 'record-stop',
-            title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
-            jslogContext: 'stop',
-          } as Buttons.Button.ButtonData
-        }
-      ></devtools-button>`;
-      // clang-format on
-    }
-    if (this.#props.blockedByCrossOrigin) {
-      // clang-format off
-      return html`
-        ${this.#props.blockedByCrossOrigin && Boolean(this.#props.onCancelCrossOriginChat) ? html`<devtools-button
-          class="chat-cancel-context-button"
-          @click=${this.#onCancelCrossOriginChat}
-          .data=${
-            {
-              variant: Buttons.Button.Variant.TEXT,
-              size: Buttons.Button.Size.REGULAR,
-              jslogContext: 'cancel-cross-origin-context-chat',
-            } as Buttons.Button.ButtonData
-          }
-        >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : Lit.nothing}
-        <devtools-button
-          class="chat-input-button"
-          aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-          @click=${this.#onNewConversation}
-          .data=${
-            {
-              variant: Buttons.Button.Variant.PRIMARY,
-              size: Buttons.Button.Size.REGULAR,
-              title: lockedString(UIStringsNotTranslate.startNewChat),
-              jslogContext: 'start-new-chat',
-            } as Buttons.Button.ButtonData
-          }
-        >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
-      `;
-      // clang-format on
-    }
-    // clang-format off
-    return html`<devtools-button
-      class="chat-input-button"
-      aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
-      .data=${
-        {
-          type: 'submit',
-          variant: Buttons.Button.Variant.ICON,
-          size: Buttons.Button.Size.REGULAR,
-          disabled: this.#isTextInputDisabled(),
-          iconName: 'send',
-          title: lockedString(UIStringsNotTranslate.sendButtonTitle),
-          jslogContext: 'send',
-        } as Buttons.Button.ButtonData
-      }
-    ></devtools-button>`;
-  }
-
-  #renderChatInput = (): Lit.LitTemplate => {
-    if (!this.#props.agentType) {
-      return Lit.nothing;
-    }
-
-    const cls = Lit.Directives.classMap({
-      'chat-input': true,
-      'two-big-buttons': this.#props.blockedByCrossOrigin,
-    });
-
-    // clang-format off
-    return html`
-    <form class="input-form" @submit=${this.#handleSubmit}>
-      <div class="input-form-shadow-container">
-        <div class="input-form-shadow"></div>
-      </div>
-      ${this.#props.state !== State.CONSENT_VIEW ? html`
-        <div class="input-header">
-          <div class="header-link-container">
-            ${this.#renderSelection()}
-          </div>
-          ${this.#renderChangeSummary()}
-        </div>
-      ` : Lit.nothing}
-      <div class="chat-input-container">
-        <textarea class=${cls}
-          .disabled=${this.#isTextInputDisabled()}
-          wrap="hard"
-          maxlength="10000"
-          @keydown=${this.#handleTextAreaKeyDown}
-          placeholder=${this.#getInputPlaceholderString()}
-          jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
-        ></textarea>
-        <div class="chat-input-buttons">
-          ${this.#renderChatInputButtons()}
-        </div>
-      </div>
-    </form>`;
-    // clang-format on
-  };
-
   #getDisclaimerText = (): Platform.UIString.LocalizedString => {
     if (this.#props.state === State.CONSENT_VIEW || !this.#props.agentType || this.#props.isReadOnly) {
       return i18nString(UIStrings.inputDisclaimerForEmptyState);
@@ -1311,132 +697,26 @@ export class ChatView extends HTMLElement {
     }
   }
 
-  #renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
-    // clang-format off
-    return html`
-      <div class="empty-state-container">
-        <div class="disabled-view">
-          <div class="disabled-view-icon-container">
-            <devtools-icon .data=${{
-              iconName: 'smart-assistant',
-              width: 'var(--sys-size-8)',
-              height: 'var(--sys-size-8)',
-            } as IconButton.Icon.IconData}>
-            </devtools-icon>
-          </div>
-          <div>
-            ${contents}
-          </div>
-        </div>
-      </div>
-    `;
-    // clang-format on
-  }
-
-  #renderNoAgentState(): Lit.TemplateResult {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const featureCards: {
-      icon: string,
-      heading: string,
-      content: Lit.TemplateResult,
-    }[] =
-        [
-          ...(config.devToolsFreestyler?.enabled ? [{
-            icon: 'brush-2',
-            heading: 'CSS styles',
-            content: html`Open <button class="link" role="link" jslog=${
-                VisualLogging.link('open-elements-panel').track({click: true})} @click=${() => {
-              void UI.ViewManager.ViewManager.instance().showView('elements');
-            }}>Elements</button> to ask about CSS styles`,
-          }] :
-                                                   []),
-          ...(config.devToolsAiAssistanceNetworkAgent?.enabled) ? [{
-            icon: 'arrow-up-down',
-            heading: 'Network',
-            content: html`Open <button class="link" role="link" jslog=${
-                VisualLogging.link('open-network-panel').track({click: true})} @click=${() => {
-              void UI.ViewManager.ViewManager.instance().showView('network');
-            }}>Network</button> to ask about a request's details`,
-          }] :
-                                                                  [],
-          ...(config.devToolsAiAssistanceFileAgent?.enabled) ? [{
-            icon: 'document',
-            heading: 'Files',
-            content: html`Open <button class="link" role="link" jslog=${
-                VisualLogging.link('open-sources-panel').track({click: true})} @click=${() => {
-              void UI.ViewManager.ViewManager.instance().showView('sources');
-            }}>Sources</button> to ask about a file's content`,
-          }] :
-                                                               [],
-          ...(config.devToolsAiAssistancePerformanceAgent?.enabled ? [{
-            icon: 'performance',
-            heading: 'Performance',
-            content: html`Open <button class="link" role="link" jslog=${
-                VisualLogging.link('open-performance-panel').track({click: true})} @click=${() => {
-              void UI.ViewManager.ViewManager.instance().showView('timeline');
-            }}>Performance</button> to ask about a trace item`,
-          }] :
-                                                                     []),
-        ];
-
-    // clang-format off
-    return html`
-      <div class="empty-state-container">
-        <div class="header">
-          <div class="icon">
-            <devtools-icon
-              name="smart-assistant"
-            ></devtools-icon>
-          </div>
-          <h1>${lockedString(UIStringsNotTranslate.noAgentStateText)}</h1>
-          <p>To chat about an item, right-click and select <strong>Ask AI</strong></p>
-        </div>
-        <div class="empty-state-content">
-          ${featureCards.map(featureCard => html`
-            <div class="feature-card">
-              <div class="feature-card-icon">
-                <devtools-icon name=${featureCard.icon}></devtools-icon>
-              </div>
-              <div class="feature-card-content">
-                <h3>${featureCard.heading}</h3>
-                <p>${featureCard.content}</p>
-              </div>
-            </div>
-          `)}
-        </div>
-      </div>`;
-    // clang-format on
-  }
-
-  #renderMainContents(): Lit.TemplateResult {
-    if (this.#props.state === State.CONSENT_VIEW) {
-      return this.#renderDisabledState(this.#getConsentViewContents());
-    }
-
-    if (this.#props.aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
-      return this.#renderDisabledState(this.#getUnavailableAidaAvailabilityContents(this.#props.aidaAvailability));
-    }
-
-    if (!this.#props.agentType) {
-      return this.#renderNoAgentState();
-    }
-
-    if (this.#props.messages.length > 0) {
-      return this.#renderMessages();
-    }
-
-    return this.#renderEmptyState();
-  }
-
   #render(): void {
     // clang-format off
     Lit.render(html`
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
-          ${this.#renderMainContents()}
+          ${renderMainContents(this.#props.state, this.#props.aidaAvailability, this.#props.messages,
+            this.#props.isLoading, this.#props.isReadOnly, this.#props.canShowFeedbackForm, this.#isTextInputDisabled(),
+            this.#getEmptyStateSuggestions(), this.#getConsentViewContents(),
+            this.#props.userInfo, this.#markdownRenderer, this.#handleSuggestionClick, this.#props.onFeedbackSubmit,
+            this.#handleLastAnswerMarkdownViewRef, this.#handleMessageContainerRef, this.#render,
+            this.#getUnavailableAidaAvailabilityContents,
+            this.#props.agentType)}
           ${this.#props.isReadOnly ?
-              this.#renderReadOnlySection() :
-              this.#renderChatInput()
+              renderReadOnlySection(this.#onNewConversation, this.#props.agentType) :
+              renderChatInput(this.#props.isLoading, this.#props.blockedByCrossOrigin, this.#isTextInputDisabled(),
+              this.#getInputPlaceholderString(), this.#props.state, this.#props.selectedContext,
+              this.#props.inspectElementToggled, this.#props.onContextClick, this.#props.onInspectElementClick,
+              this.#handleSubmit, this.#handleTextAreaKeyDown, this.#handleCancel, this.#onNewConversation,
+              this.#onCancelCrossOriginChat,
+              this.#props.agentType, this.#props.changeSummary)
           }
         </main>
         <footer class="disclaimer" jslog=${VisualLogging.section('footer')}>
@@ -1458,6 +738,730 @@ export class ChatView extends HTMLElement {
     `, this.#shadow, {host: this});
     // clang-format on
   }
+}
+
+function renderChangeSummary(changeSummary?: string): Lit.LitTemplate {
+  if (!changeSummary) {
+    return Lit.nothing;
+  }
+
+  return html`<details class="change-summary">
+      <summary>
+        <devtools-icon class="difference-icon" .name=${'difference'}
+        ></devtools-icon>
+        <span class="header-text">
+          ${lockedString(UIStringsNotTranslate.changeSummary)}
+        </span>
+        <devtools-icon
+          class="arrow"
+          .name=${'chevron-up'}
+        ></devtools-icon>
+      </summary>
+      <devtools-code-block
+        .code=${changeSummary}
+        .codeLang=${'css'}
+        .displayNotice=${false}
+      ></devtools-code-block>
+    </details>`;
+}
+
+function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownRendererWithCodeBlock, {animate, ref: refFn}: {
+  animate?: boolean,
+  ref?: (element?: Element) => void,
+} = {}): Lit.TemplateResult {
+  let tokens = [];
+  try {
+    tokens = Marked.Marked.lexer(text);
+    for (const token of tokens) {
+      // Try to render all the tokens to make sure that
+      // they all have a template defined for them. If there
+      // isn't any template defined for a token, we'll fallback
+      // to rendering the text as plain text instead of markdown.
+      markdownRenderer.renderToken(token);
+    }
+  } catch {
+    // The tokens were not parsed correctly or
+    // one of the tokens are not supported, so we
+    // continue to render this as text.
+    return html`${text}`;
+  }
+
+  // clang-format off
+  return html`<devtools-markdown-view
+    .data=${{tokens, renderer: markdownRenderer, animationEnabled: animate} as MarkdownView.MarkdownView.MarkdownViewData}
+    ${refFn ? ref(refFn) : Lit.nothing}>
+  </devtools-markdown-view>`;
+  // clang-format on
+}
+
+function renderTitle(step: Step): Lit.LitTemplate {
+  const paused =
+      step.sideEffect ? html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` : Lit.nothing;
+  const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
+
+  return html`<span class="title">${paused}${actionTitle}</span>`;
+}
+
+function renderStepCode(step: Step): Lit.LitTemplate {
+  if (!step.code && !step.output) {
+    return Lit.nothing;
+  }
+
+  // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
+  // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
+  const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
+                                                            lockedString(UIStringsNotTranslate.codeToExecute);
+
+  // If there is output, we don't show notice on this code block and instead show
+  // it in the data returned code block.
+  // clang-format off
+  const code = step.code ? html`<div class="action-result">
+      <devtools-code-block
+        .code=${step.code.trim()}
+        .codeLang=${'js'}
+        .displayNotice=${!Boolean(step.output)}
+        .header=${codeHeadingText}
+        .showCopyButton=${true}
+      ></devtools-code-block>
+  </div>` :
+                           Lit.nothing;
+  const output = step.output ? html`<div class="js-code-output">
+    <devtools-code-block
+      .code=${step.output}
+      .codeLang=${'js'}
+      .displayNotice=${true}
+      .header=${lockedString(UIStringsNotTranslate.dataReturned)}
+      .showCopyButton=${false}
+    ></devtools-code-block>
+  </div>` :
+                               Lit.nothing;
+
+  return html`<div class="step-code">${code}${output}</div>`;
+  // clang-format on
+}
+
+function renderStepDetails(
+    step: Step, markdownRenderer: MarkdownRendererWithCodeBlock, options: {isLast: boolean},
+    render: () => void): Lit.LitTemplate {
+  const sideEffects = options.isLast && step.sideEffect ? renderSideEffectConfirmationUi(step, render) : Lit.nothing;
+  const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
+
+  // clang-format off
+  const contextDetails = step.contextDetails ?
+  html`${Lit.Directives.repeat(
+    step.contextDetails,
+      contextDetail => {
+        return html`<div class="context-details">
+      <devtools-code-block
+        .code=${contextDetail.text}
+        .codeLang=${contextDetail.codeLang || ''}
+        .displayNotice=${false}
+        .header=${contextDetail.title}
+        .showCopyButton=${true}
+      ></devtools-code-block>
+    </div>`;
+      },
+    )}` : Lit.nothing;
+
+  return html`<div class="step-details">
+    ${thought}
+    ${renderStepCode(step)}
+    ${sideEffects}
+    ${contextDetails}
+  </div>`;
+  // clang-format on
+}
+
+function renderStepBadge(step: Step, isLoading: boolean, options: {isLast: boolean}): Lit.LitTemplate {
+  if (isLoading && options.isLast && !step.sideEffect) {
+    return html`<devtools-spinner></devtools-spinner>`;
+  }
+
+  let iconName: string = 'checkmark';
+  let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
+  let role: 'button'|undefined = 'button';
+  if (options.isLast && step.sideEffect) {
+    role = undefined;
+    ariaLabel = undefined;
+    iconName = 'pause-circle';
+  } else if (step.canceled) {
+    ariaLabel = lockedString(UIStringsNotTranslate.canceled);
+    iconName = 'cross';
+  }
+
+  return html`<devtools-icon
+      class="indicator"
+      role=${ifDefined(role)}
+      aria-label=${ifDefined(ariaLabel)}
+      .name=${iconName}
+    ></devtools-icon>`;
+}
+
+function renderStep(
+    step: Step, isLoading: boolean, markdownRenderer: MarkdownRendererWithCodeBlock, options: {isLast: boolean},
+    render: () => void): Lit.LitTemplate {
+  const stepClasses = Lit.Directives.classMap({
+    step: true,
+    empty: !step.thought && !step.code && !step.contextDetails,
+    paused: Boolean(step.sideEffect),
+    canceled: Boolean(step.canceled),
+  });
+  // clang-format off
+  return html`
+    <details class=${stepClasses}
+      jslog=${VisualLogging.section('step')}
+      .open=${Boolean(step.sideEffect)}>
+      <summary>
+        <div class="summary">
+          ${renderStepBadge(step, isLoading, options)}
+          ${renderTitle(step)}
+          <devtools-icon
+            class="arrow"
+            .name=${'chevron-down'}
+          ></devtools-icon>
+        </div>
+      </summary>
+      ${renderStepDetails(step, markdownRenderer, {
+        isLast: options.isLast,
+      }, render)}
+    </details>`;
+  // clang-format on
+}
+
+function renderSideEffectConfirmationUi(step: Step, render: () => void): Lit.LitTemplate {
+  if (!step.sideEffect) {
+    return Lit.nothing;
+  }
+
+  const sideEffectAction = (answer: boolean): void => {
+    step.sideEffect?.onAnswer(answer);
+    step.sideEffect = undefined;
+    render();
+  };
+
+  // clang-format off
+  return html`<div
+    class="side-effect-confirmation"
+    jslog=${VisualLogging.section('side-effect-confirmation')}
+  >
+    <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
+    <div class="side-effect-buttons-container">
+      <devtools-button
+        .data=${
+          {
+            variant: Buttons.Button.Variant.OUTLINED,
+            jslogContext: 'decline-execute-code',
+          } as Buttons.Button.ButtonData
+        }
+        @click=${() => sideEffectAction(false)}
+      >${lockedString(
+        UIStringsNotTranslate.negativeSideEffectConfirmation,
+      )}</devtools-button>
+      <devtools-button
+        .data=${
+          {
+            variant: Buttons.Button.Variant.PRIMARY,
+            jslogContext: 'accept-execute-code',
+            iconName: 'play',
+          } as Buttons.Button.ButtonData
+        }
+        @click=${() => sideEffectAction(true)}
+      >${
+          lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
+      }</devtools-button>
+    </div>
+  </div>`;
+  // clang-format on
+}
+
+function renderError(message: ModelChatMessage): Lit.LitTemplate {
+  if (message.error) {
+    let errorMessage;
+    switch (message.error) {
+      case ErrorType.UNKNOWN:
+      case ErrorType.BLOCK:
+        errorMessage = UIStringsNotTranslate.systemError;
+        break;
+      case ErrorType.MAX_STEPS:
+        errorMessage = UIStringsNotTranslate.maxStepsError;
+        break;
+      case ErrorType.ABORT:
+        return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
+            lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
+    }
+
+    return html`<p class="error" jslog=${VisualLogging.section('error')}>${lockedString(errorMessage)}</p>`;
+  }
+
+  return Lit.nothing;
+}
+
+function renderChatMessage(
+    message: ChatMessage, isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean,
+    {isLast}: {isLast: boolean},
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
+    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void, render: () => void): Lit.TemplateResult {
+  if (message.entity === ChatMessageEntity.USER) {
+    const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
+    const image = userInfo.accountImage ?
+        html`<img src="data:image/png;base64, ${userInfo.accountImage}" alt="Account avatar" />` :
+        html`<devtools-icon
+          .name=${'profile'}
+        ></devtools-icon>`;
+    // clang-format off
+    return html`<section
+      class="chat-message query"
+      jslog=${VisualLogging.section('question')}
+    >
+      <div class="message-info">
+        ${image}
+        <div class="message-name">
+          <h2>${name}</h2>
+        </div>
+      </div>
+      <div class="message-content">${renderTextAsMarkdown(message.text, markdownRenderer)}</div>
+    </section>`;
+    // clang-format on
+  }
+
+  // clang-format off
+  return html`
+    <section
+      class="chat-message answer"
+      jslog=${VisualLogging.section('answer')}
+    >
+      <div class="message-info">
+        <devtools-icon name="smart-assistant"></devtools-icon>
+        <div class="message-name">
+          <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
+        </div>
+      </div>
+      ${Lit.Directives.repeat(
+        message.steps,
+        (_, index) => index,
+        step => {
+          return renderStep(step, isLoading, markdownRenderer, {
+            isLast: [...message.steps.values()].at(-1) === step && isLast,
+          }, render);
+        },
+      )}
+      ${message.answer
+        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly, ref: handleLastAnswerMarkdownViewRef })}</p>`
+        : Lit.nothing}
+      ${renderError(message)}
+      ${isLast && isLoading
+        ? Lit.nothing
+        : html`<devtools-widget class="actions" .widgetConfig=${UI.Widget.widgetConfig(UserActionRow, {
+            showRateButtons: message.rpcId !== undefined,
+            onFeedbackSubmit: (rating: Host.AidaClient.Rating, feedback: string) => {
+              if (!message.rpcId) {
+                return;
+              }
+              onFeedbackSubmit(message.rpcId, rating, feedback);
+            },
+            suggestions: isLast ? message.suggestions : undefined,
+            onSuggestionClick: handleSuggestionClick,
+            canShowFeedbackForm,
+          })}></devtools-widget>`
+      }
+    </section>
+  `;
+  // clang-format on
+}
+
+function renderSelection(
+    selectedContext: ConversationContext<unknown>|null, inspectElementToggled: boolean,
+    onContextClick: () => void|Promise<void>, onInspectElementClick: () => void,
+    agentType?: AgentType): Lit.LitTemplate {
+  if (!agentType) {
+    return Lit.nothing;
+  }
+
+  // TODO: currently the picker behavior is SDKNode specific.
+  const hasPickerBehavior = agentType === AgentType.STYLING;
+
+  const resourceClass = Lit.Directives.classMap({
+    'not-selected': !selectedContext,
+    'resource-link': true,
+    'allow-overflow': hasPickerBehavior,
+  });
+
+  if (!selectedContext && !hasPickerBehavior) {
+    return Lit.nothing;
+  }
+
+  const icon = selectedContext?.getIcon() ?? Lit.nothing;
+
+  const handleKeyDown = (ev: KeyboardEvent): void => {
+    if (ev.key === 'Enter') {
+      void onContextClick();
+    }
+  };
+
+  // clang-format off
+  return html`<div class="select-element">
+    ${
+      hasPickerBehavior ? html`
+        <devtools-button
+          .data=${{
+              variant: Buttons.Button.Variant.ICON_TOGGLE,
+              size: Buttons.Button.Size.REGULAR,
+              iconName: 'select-element',
+              toggledIconName: 'select-element',
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              toggled: inspectElementToggled,
+              title: lockedString(UIStringsNotTranslate.selectAnElement),
+              jslogContext: 'select-element',
+          } as Buttons.Button.ButtonData}
+          @click=${onInspectElementClick}
+        ></devtools-button>
+      ` : Lit.nothing
+    }
+    <div
+      role=button
+      class=${resourceClass}
+      tabindex=${hasPickerBehavior ? '-1' : '0'}
+      @click=${onContextClick}
+      @keydown=${handleKeyDown}
+    >
+      ${icon}${selectedContext?.getTitle() ?? html`<span>${
+        lockedString(UIStringsNotTranslate.noElementSelected)
+      }</span>`}
+    </div>
+  </div>`;
+  // clang-format on
+}
+
+function renderMessages(
+    messages: ChatMessage[], isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean,
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
+    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+    handleMessageContainerRef: (el: Element|undefined) => void, render: () => void): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <div class="messages-container" ${ref(handleMessageContainerRef)}>
+      ${messages.map((message, _, array) =>
+        renderChatMessage(message, isLoading, isReadOnly, canShowFeedbackForm, {
+          isLast: array.at(-1) === message,
+        }, userInfo, markdownRenderer, handleSuggestionClick, onFeedbackSubmit, handleLastAnswerMarkdownViewRef, render),
+      )}
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderEmptyState(
+    isTextInputDisabled: boolean, suggestions: string[],
+    handleSuggestionClick: (suggestion: string) => void): Lit.TemplateResult {
+  // clang-format off
+  return html`<div class="empty-state-container">
+    <div class="header">
+      <div class="icon">
+        <devtools-icon
+          name="smart-assistant"
+        ></devtools-icon>
+      </div>
+      <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
+    </div>
+    <div class="empty-state-content">
+      ${suggestions.map(suggestion => {
+        return html`<devtools-button
+          class="suggestion"
+          @click=${() => handleSuggestionClick(suggestion)}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.OUTLINED,
+              size: Buttons.Button.Size.REGULAR,
+              title: suggestion,
+              jslogContext: 'suggestion',
+              disabled: isTextInputDisabled,
+            } as Buttons.Button.ButtonData
+          }
+        >${suggestion}</devtools-button>`;
+      })}
+    </div>
+  </div>`;
+  // clang-format on
+}
+
+function renderReadOnlySection(onNewConversation: () => void, agentType?: AgentType): Lit.LitTemplate {
+  if (!agentType) {
+    return Lit.nothing;
+  }
+
+  // clang-format off
+  return html`<div
+    class="chat-readonly-container"
+    jslog=${VisualLogging.section('read-only')}
+  >
+    <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
+    <devtools-button
+      aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+      class="chat-inline-button"
+      @click=${onNewConversation}
+      .data=${{
+        variant: Buttons.Button.Variant.TEXT,
+        title: lockedString(UIStringsNotTranslate.startNewChat),
+        jslogContext: 'start-new-chat',
+      } as Buttons.Button.ButtonData}
+    >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
+  </div>`;
+  // clang-format on
+}
+
+function renderChatInputButtons(
+    isLoading: boolean, blockedByCrossOrigin: boolean, isTextInputDisabled: boolean,
+    handleCancel: (ev: SubmitEvent) => void, onNewConversation: () => void,
+    onCancelCrossOriginChat?: () => void): Lit.TemplateResult {
+  if (isLoading) {
+    // clang-format off
+    return html`<devtools-button
+      class="chat-input-button"
+      aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
+      @click=${handleCancel}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.ICON,
+          size: Buttons.Button.Size.REGULAR,
+          iconName: 'record-stop',
+          title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
+          jslogContext: 'stop',
+        } as Buttons.Button.ButtonData
+      }
+    ></devtools-button>`;
+    // clang-format on
+  }
+  if (blockedByCrossOrigin) {
+    // clang-format off
+    return html`
+      ${blockedByCrossOrigin && Boolean(onCancelCrossOriginChat) ? html`<devtools-button
+        class="chat-cancel-context-button"
+        @click=${onCancelCrossOriginChat}
+        .data=${
+          {
+            variant: Buttons.Button.Variant.TEXT,
+            size: Buttons.Button.Size.REGULAR,
+            jslogContext: 'cancel-cross-origin-context-chat',
+          } as Buttons.Button.ButtonData
+        }
+      >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : Lit.nothing}
+      <devtools-button
+        class="chat-input-button"
+        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+        @click=${onNewConversation}
+        .data=${
+          {
+            variant: Buttons.Button.Variant.PRIMARY,
+            size: Buttons.Button.Size.REGULAR,
+            title: lockedString(UIStringsNotTranslate.startNewChat),
+            jslogContext: 'start-new-chat',
+          } as Buttons.Button.ButtonData
+        }
+      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
+    `;
+    // clang-format on
+  }
+  // clang-format off
+  return html`<devtools-button
+    class="chat-input-button"
+    aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
+    .data=${
+      {
+        type: 'submit',
+        variant: Buttons.Button.Variant.ICON,
+        size: Buttons.Button.Size.REGULAR,
+        disabled: isTextInputDisabled,
+        iconName: 'send',
+        title: lockedString(UIStringsNotTranslate.sendButtonTitle),
+        jslogContext: 'send',
+      } as Buttons.Button.ButtonData
+    }
+  ></devtools-button>`;
+}
+
+function renderChatInput(isLoading: boolean, blockedByCrossOrigin: boolean, isTextInputDisabled: boolean,
+  inputPlaceholderString: Platform.UIString.LocalizedString, state: State,
+  selectedContext: ConversationContext<unknown> | null, inspectElementToggled: boolean,
+  onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
+  handleSubmit: (ev: SubmitEvent) => void, handleTextAreaKeyDown: (ev: KeyboardEvent) => void,
+  handleCancel: (ev: SubmitEvent) => void, onNewConversation: () => void, onCancelCrossOriginChat?: () => void,
+  agentType?: AgentType, changeSummary?: string): Lit.LitTemplate {
+  if (!agentType) {
+    return Lit.nothing;
+  }
+
+  const cls = Lit.Directives.classMap({
+    'chat-input': true,
+    'two-big-buttons': blockedByCrossOrigin,
+  });
+
+  // clang-format off
+  return html`
+  <form class="input-form" @submit=${handleSubmit}>
+    <div class="input-form-shadow-container">
+      <div class="input-form-shadow"></div>
+    </div>
+    ${state !== State.CONSENT_VIEW ? html`
+      <div class="input-header">
+        <div class="header-link-container">
+          ${renderSelection(selectedContext, inspectElementToggled, onContextClick,
+          onInspectElementClick, agentType)}
+        </div>
+        ${renderChangeSummary(changeSummary)}
+      </div>
+    ` : Lit.nothing}
+    <div class="chat-input-container">
+      <textarea class=${cls}
+        .disabled=${isTextInputDisabled}
+        wrap="hard"
+        maxlength="10000"
+        @keydown=${handleTextAreaKeyDown}
+        placeholder=${inputPlaceholderString}
+        jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
+      ></textarea>
+      <div class="chat-input-buttons">
+        ${renderChatInputButtons(isLoading, blockedByCrossOrigin, isTextInputDisabled,
+          handleCancel, onNewConversation, onCancelCrossOriginChat)}
+      </div>
+    </div>
+  </form>`;
+  // clang-format on
+}
+
+function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
+  // clang-format off
+  return html`
+    <div class="empty-state-container">
+      <div class="disabled-view">
+        <div class="disabled-view-icon-container">
+          <devtools-icon .data=${{
+            iconName: 'smart-assistant',
+            width: 'var(--sys-size-8)',
+            height: 'var(--sys-size-8)',
+          } as IconButton.Icon.IconData}>
+          </devtools-icon>
+        </div>
+        <div>
+          ${contents}
+        </div>
+      </div>
+    </div>
+  `;
+  // clang-format on
+}
+
+function renderNoAgentState(): Lit.TemplateResult {
+  const config = Common.Settings.Settings.instance().getHostConfig();
+  const featureCards: {
+    icon: string,
+    heading: string,
+    content: Lit.TemplateResult,
+  }[] =
+      [
+        ...(config.devToolsFreestyler?.enabled ? [{
+          icon: 'brush-2',
+          heading: 'CSS styles',
+          content: html`Open <button class="link" role="link" jslog=${
+              VisualLogging.link('open-elements-panel').track({click: true})} @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('elements');
+          }}>Elements</button> to ask about CSS styles`,
+        }] :
+                                                 []),
+        ...(config.devToolsAiAssistanceNetworkAgent?.enabled) ? [{
+          icon: 'arrow-up-down',
+          heading: 'Network',
+          content: html`Open <button class="link" role="link" jslog=${
+              VisualLogging.link('open-network-panel').track({click: true})} @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('network');
+          }}>Network</button> to ask about a request's details`,
+        }] :
+                                                                [],
+        ...(config.devToolsAiAssistanceFileAgent?.enabled) ? [{
+          icon: 'document',
+          heading: 'Files',
+          content: html`Open <button class="link" role="link" jslog=${
+              VisualLogging.link('open-sources-panel').track({click: true})} @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('sources');
+          }}>Sources</button> to ask about a file's content`,
+        }] :
+                                                             [],
+        ...(config.devToolsAiAssistancePerformanceAgent?.enabled ? [{
+          icon: 'performance',
+          heading: 'Performance',
+          content: html`Open <button class="link" role="link" jslog=${
+              VisualLogging.link('open-performance-panel').track({click: true})} @click=${() => {
+            void UI.ViewManager.ViewManager.instance().showView('timeline');
+          }}>Performance</button> to ask about a trace item`,
+        }] :
+                                                                   []),
+      ];
+
+  // clang-format off
+  return html`
+    <div class="empty-state-container">
+      <div class="header">
+        <div class="icon">
+          <devtools-icon
+            name="smart-assistant"
+          ></devtools-icon>
+        </div>
+        <h1>${lockedString(UIStringsNotTranslate.noAgentStateText)}</h1>
+        <p>To chat about an item, right-click and select <strong>Ask AI</strong></p>
+      </div>
+      <div class="empty-state-content">
+        ${featureCards.map(featureCard => html`
+          <div class="feature-card">
+            <div class="feature-card-icon">
+              <devtools-icon name=${featureCard.icon}></devtools-icon>
+            </div>
+            <div class="feature-card-content">
+              <h3>${featureCard.heading}</h3>
+              <p>${featureCard.content}</p>
+            </div>
+          </div>
+        `)}
+      </div>
+    </div>`;
+  // clang-format on
+}
+
+function renderMainContents(
+    state: State, aidaAvailability: Host.AidaClient.AidaAccessPreconditions, messages: ChatMessage[],
+    isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean, isTextInputDisabled: boolean,
+    suggestions: string[], consentViewContents: Lit.TemplateResult,
+    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
+    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+    handleMessageContainerRef: (el: Element|undefined) => void, render: () => void,
+    getUnavailableAidaAvailabilityContents:
+        (aidaAvailability:
+             Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>) =>
+            Lit.TemplateResult,
+    agentType?: AgentType): Lit.TemplateResult {
+  if (state === State.CONSENT_VIEW) {
+    return renderDisabledState(consentViewContents);
+  }
+
+  if (aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+    return renderDisabledState(getUnavailableAidaAvailabilityContents(aidaAvailability));
+  }
+
+  if (!agentType) {
+    return renderNoAgentState();
+  }
+
+  if (messages.length > 0) {
+    return renderMessages(
+        messages, isLoading, isReadOnly, canShowFeedbackForm, userInfo, markdownRenderer, handleSuggestionClick,
+        onFeedbackSubmit, handleLastAnswerMarkdownViewRef, handleMessageContainerRef, render);
+  }
+
+  return renderEmptyState(isTextInputDisabled, suggestions, handleSuggestionClick);
 }
 
 declare global {

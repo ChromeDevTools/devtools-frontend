@@ -31,6 +31,7 @@ devtools_module("ai_assistance") {
     "agents/PerformanceInsightsAgent.ts",
     "agents/StylingAgent.ts",
     "components/ChatView.ts",
+    "components/MarkdownRendererWithCodeBlock.ts",
     "components/UserActionRow.ts",
     "data_formatters/FileFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",

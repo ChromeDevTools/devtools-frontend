@@ -1191,6 +1191,7 @@ grd_files_debug_sources = [
   "front_end/panels/ai_assistance/agents/StylingAgent.js",
   "front_end/panels/ai_assistance/aiAssistancePanel.css.js",
   "front_end/panels/ai_assistance/components/ChatView.js",
+  "front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.js",
   "front_end/panels/ai_assistance/components/UserActionRow.js",
   "front_end/panels/ai_assistance/components/chatView.css.js",
   "front_end/panels/ai_assistance/components/userActionRow.css.js",

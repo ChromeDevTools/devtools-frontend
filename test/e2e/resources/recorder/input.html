@@ -3,6 +3,7 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
+<!DOCTYPE html>
 <input id="one" />
 <input id="two" />
 <input id="checkbox" type="checkbox" />
@@ -31,21 +32,21 @@
 <input id="contiguous-field-2" type="text" />
 <pre id="log"></pre>
 <script>
-  window.addEventListener('input', (e) => {
+  window.addEventListener('input', e => {
     log.innerText += e.target.id + ':' + e.target.value + '\n';
   });
-  window.addEventListener('mousedown', (e) => {
+  window.addEventListener('mousedown', e => {
     if (e.target.id === 'to-be-modified') {
       e.target.id = 'modified';
     }
   });
   document.getElementById('contiguous-field-1').addEventListener(
     'keydown',
-    (e) => {
+    e => {
       if (e.target.value === 'something') {
         document.getElementById('contiguous-field-2').focus();
       }
     },
-    true
+    true,
   );
 </script>

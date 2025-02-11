@@ -647,7 +647,7 @@ describe('User Metrics for clicking stylesheet request initiators', () => {
     actionCode: 80,  // StyleSheetInitiatorLinkClicked
   };
   it('dispatches an event when clicked in the console', async () => {
-    async function clickOnLinkWithText(text: string, root?: puppeteer.JSHandle) {
+    async function clickOnLinkWithText(text: string, root?: puppeteer.ElementHandle) {
       const element = await click(`text/${text}`, {root});
       assert.isTrue(
           await element.evaluate(e => e.classList.contains('devtools-link')),

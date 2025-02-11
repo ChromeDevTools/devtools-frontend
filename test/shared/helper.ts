@@ -31,7 +31,7 @@ declare global {
 const globalThis: any = global;
 
 export interface ClickOptions {
-  root?: puppeteer.JSHandle;
+  root?: puppeteer.ElementHandle;
   clickOptions?: puppeteer.ClickOptions;
   maxPixelsFromLeft?: number;
 }
@@ -54,14 +54,14 @@ export const click = async (selector: string, options?: ClickOptions) => {
       selector, {root: options?.root}, element => element.click(options?.clickOptions));
 };
 
-export const hover = async (selector: string, options?: {root?: puppeteer.JSHandle}) => {
+export const hover = async (selector: string, options?: {root?: puppeteer.ElementHandle}) => {
   return await performActionOnSelector(selector, {root: options?.root}, element => element.hover());
 };
 
 type Action = (element: puppeteer.ElementHandle) => Promise<void>;
 
 async function performActionOnSelector(
-    selector: string, options: {root?: puppeteer.JSHandle}, action: Action): Promise<puppeteer.ElementHandle> {
+    selector: string, options: {root?: puppeteer.ElementHandle}, action: Action): Promise<puppeteer.ElementHandle> {
   // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
   // Puppeteer's syntax for selectors.
   const queryHandlers = new Set([
@@ -138,7 +138,7 @@ export async function hoverElement(element: puppeteer.ElementHandle): Promise<vo
 }
 
 export const doubleClick =
-    async (selector: string, options?: {root?: puppeteer.JSHandle, clickOptions?: puppeteer.ClickOptions}) => {
+    async (selector: string, options?: {root?: puppeteer.ElementHandle, clickOptions?: puppeteer.ClickOptions}) => {
   const passedClickOptions = (options && options.clickOptions) || {};
   const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
     ...passedClickOptions,
@@ -200,10 +200,10 @@ export const pasteText = async (text: string) => {
 };
 
 // Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
-export const $ =
-    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
+export const $ = async<ElementType extends Element = Element>(
+    selector: string, root?: puppeteer.ElementHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
-  const rootElement = root ? root as puppeteer.ElementHandle : frontend;
+  const rootElement = root ? root : frontend;
   const element = await rootElement.$(`${handler}/${selector}`) as puppeteer.ElementHandle<ElementType>;
   return element;
 };
@@ -223,7 +223,7 @@ export const $$ =
  * @param textContent The text content to search for.
  * @param root The root of the search.
  */
-export const $textContent = async (textContent: string, root?: puppeteer.JSHandle) => {
+export const $textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
   return $(textContent, root, 'pierceShadowText');
 };
 
@@ -233,14 +233,14 @@ export const $textContent = async (textContent: string, root?: puppeteer.JSHandl
  * @param textContent The text content to search for.
  * @param root The root of the search.
  */
-export const $$textContent = async (textContent: string, root?: puppeteer.JSHandle) => {
+export const $$textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
   return $$(textContent, root, 'pierceShadowText');
 };
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
 
 export const getTextContent =
-    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle) => {
+    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.ElementHandle) => {
   const text = await (await $<ElementType>(selector, root))?.evaluate(node => node.textContent);
   return text ?? undefined;
 };
@@ -266,7 +266,7 @@ export const getVisibleTextContents = async (selector: string) => {
 };
 
 export const waitFor = async<ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+    selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const element = await $<ElementType>(selector, root, handler);
                                  return (element || undefined);
@@ -274,7 +274,7 @@ export const waitFor = async<ElementType extends Element = Element>(
 };
 
 export const waitForVisible = async<ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+    selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const element = await $<ElementType>(selector, root, handler);
                                  const visible = await element.evaluate(node => node.checkVisibility());
@@ -283,7 +283,8 @@ export const waitForVisible = async<ElementType extends Element = Element>(
 };
 
 export const waitForMany = async (
-    selector: string, count: number, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+    selector: string, count: number, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(),
+    handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const elements = await $$(selector, root, handler);
                                  return elements.length >= count ? elements : undefined;
@@ -291,7 +292,7 @@ export const waitForMany = async (
 };
 
 export const waitForNone =
-    async (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope(), handler?: string) => {
+    async (selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
                                  const elements = await $$(selector, root, handler);
                                  if (elements.length === 0) {
@@ -302,21 +303,21 @@ export const waitForNone =
 };
 
 export const waitForAria = <ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+    selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
   return waitFor<ElementType>(selector, root, asyncScope, 'aria');
 };
 
-export const waitForAriaNone = (selector: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+export const waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
   return waitForNone(selector, root, asyncScope, 'aria');
 };
 
 export const waitForElementWithTextContent =
-    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
       return waitFor(textContent, root, asyncScope, 'pierceShadowText');
     };
 
 export const waitForElementsWithTextContent =
-    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
       return asyncScope.exec(() => waitForFunction(async () => {
                                const elems = await $$textContent(textContent, root);
                                if (elems && elems.length) {
@@ -328,7 +329,7 @@ export const waitForElementsWithTextContent =
     };
 
 export const waitForNoElementsWithTextContent =
-    (textContent: string, root?: puppeteer.JSHandle, asyncScope = new AsyncScope()) => {
+    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
       return asyncScope.exec(() => waitForFunction(async () => {
                                const elems = await $$textContent(textContent, root);
                                if (elems && elems.length === 0) {
@@ -374,7 +375,7 @@ export const waitForFunctionWithTries = async<T>(
 };
 
 export const waitForWithTries = async (
-    selector: string, root?: puppeteer.JSHandle, options: {tries: number} = {
+    selector: string, root?: puppeteer.ElementHandle, options: {tries: number} = {
       tries: Number.MAX_SAFE_INTEGER,
     },
     asyncScope = new AsyncScope(), handler?: string) => {
@@ -653,7 +654,7 @@ export const selectOption = async (select: puppeteer.ElementHandle<HTMLSelectEle
   }, value);
 };
 
-export const scrollElementIntoView = async (selector: string, root?: puppeteer.JSHandle) => {
+export const scrollElementIntoView = async (selector: string, root?: puppeteer.ElementHandle) => {
   const element = await $(selector, root);
 
   if (!element) {

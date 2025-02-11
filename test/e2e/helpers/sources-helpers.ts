@@ -196,7 +196,7 @@ export async function getBreakpointHitLocation() {
   const locationHandle = await waitFor('.location', breakpointHitHandle);
   const locationText = await locationHandle.evaluate(location => location.textContent);
 
-  const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement);
+  const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement!);
   const groupHeaderTitleHandle = await waitFor('.group-header-title', groupHandle);
   const groupHeaderTitle = await groupHeaderTitleHandle?.evaluate(header => header.textContent);
 

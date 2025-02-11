@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as puppeteer from 'puppeteer-core';
+
 import {
   assertNotNullOrUndefined,
   click,
@@ -33,8 +35,9 @@ describe('Accessibility Tree in the Elements Tab', function() {
         `RootWebArea\xa0"Simple page with aria labeled element" focusable:\xa0true url:\xa0${
             getResourcesPath()}/elements/accessibility-simple-page.html`);
     const arrowIconContainer =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await iframeDoc.evaluateHandle(node => (node as any).parentElementOrShadowHost().parentElement.parentElement);
+        (await iframeDoc.evaluateHandle(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            node => (node as any).parentElementOrShadowHost().parentElement.parentElement)) as puppeteer.ElementHandle;
     assertNotNullOrUndefined(arrowIconContainer);
     await click('.arrow-icon', {root: arrowIconContainer});
     await waitForElementWithTextContent(`link\xa0"cats" focusable:\xa0true url:\xa0${getResourcesPath()}/elements/x`);

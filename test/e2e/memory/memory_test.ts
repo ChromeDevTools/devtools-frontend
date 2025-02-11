@@ -319,7 +319,7 @@ describe('The Memory Panel', function() {
 
     const header = await waitForElementWithTextContent('Live Count');
     const table = await header.evaluateHandle(node => {
-      return node.closest('.data-grid');
+      return node.closest('.data-grid')!;
     });
     await waitFor('.data-grid-data-grid-node', table);
   });

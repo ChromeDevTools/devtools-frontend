@@ -38,7 +38,7 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu(root?: puppeteer.JSHandle) {
+export async function getHideIssuesMenu(root?: puppeteer.ElementHandle) {
   return await waitFor(HIDE_ISSUES_MENU, root);
 }
 

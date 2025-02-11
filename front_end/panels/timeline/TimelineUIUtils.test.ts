@@ -1261,9 +1261,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
         entityMapper,
     );
 
-    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Third'));
+    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('3rd'));
     assert.deepEqual(rowData, {
-      title: 'Third party',
+      title: '3rd party',
       value: 'Google Analytics',
     });
   });

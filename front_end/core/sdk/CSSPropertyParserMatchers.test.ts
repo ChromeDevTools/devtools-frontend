@@ -65,7 +65,7 @@ function injectVariableSubstitutions(variables: Record<string, string>) {
                        if (!resolvedValue) {
                          return getMatch.call(this, node);
                        }
-                       return new SDK.CSSPropertyParser.VariableMatch(
+                       return new SDK.CSSPropertyParserMatchers.BaseVariableMatch(
                            this.ast.text(node), node, resolvedValue.varName, [], this, () => resolvedValue.value);
                      });
 }

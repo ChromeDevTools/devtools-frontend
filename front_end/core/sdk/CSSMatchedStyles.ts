@@ -9,6 +9,7 @@ import {CSSMetadata, cssMetadata, CSSWideKeyword} from './CSSMetadata.js';
 import type {CSSModel} from './CSSModel.js';
 import {CSSProperty} from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
+import {BaseVariableMatcher} from './CSSPropertyParserMatchers.js';
 import {
   CSSFontPaletteValuesRule,
   CSSKeyframesRule,
@@ -1166,7 +1167,7 @@ class DOMInheritanceCascade {
     const record = sccRecord.add(nodeCascade, variableName);
 
     const matching = PropertyParser.BottomUpTreeMatching.walk(
-        ast, [new PropertyParser.VariableMatcher((match: PropertyParser.VariableMatch) => {
+        ast, [new BaseVariableMatcher(match => {
           const parentStyle = definedValue.declaration.style;
           const nodeCascade = this.#styleToNodeCascade.get(parentStyle);
           if (!nodeCascade) {

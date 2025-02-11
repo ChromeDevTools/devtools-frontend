@@ -100,6 +100,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  */
 const propertyContentsCache = new Map<string, {name: Element, value: Element}>();
 
+function matchProperty(name: string, value: string): SDK.CSSPropertyParser.BottomUpTreeMatching|null {
+  return SDK.CSSPropertyParser.matchDeclaration(name, value, [
+    new SDK.CSSPropertyParserMatchers.ColorMatcher(), new SDK.CSSPropertyParserMatchers.URLMatcher(),
+    new SDK.CSSPropertyParserMatchers.StringMatcher()
+  ]);
+}
+
 function renderPropertyContents(
     node: SDK.DOMModel.DOMNode, propertyName: string, propertyValue: string): {name: Element, value: Element} {
   const cacheKey = propertyName + ':' + propertyValue;
@@ -110,7 +117,8 @@ function renderPropertyContents(
   const name = Renderer.renderNameElement(propertyName);
   name.slot = 'name';
   const value = Renderer.renderValueElement(
-      propertyName, propertyValue, [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
+      propertyName, propertyValue, matchProperty(propertyName, propertyValue),
+      [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
   value.slot = 'value';
   propertyContentsCache.set(cacheKey, {name, value});
   return {name, value};
@@ -148,7 +156,8 @@ const createTraceElement =
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const valueElement = Renderer.renderValueElement(
-          property.name, property.value, [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
+          property.name, property.value, matchProperty(property.name, property.value),
+          [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);
 

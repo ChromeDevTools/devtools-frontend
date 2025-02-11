@@ -5,6 +5,8 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 
+import {TextMatcher} from './CSSPropertyParserMatchers.js';
+
 const globalValues = new Set<string>(['inherit', 'initial', 'unset']);
 
 const tagRegexp = /[\x20-\x7E]{4}/;
@@ -495,104 +497,6 @@ export namespace ASTUtils {
   }
 }
 
-export class VariableMatch implements Match {
-  constructor(
-      readonly text: string,
-      readonly node: CodeMirror.SyntaxNode,
-      readonly name: string,
-      readonly fallback: CodeMirror.SyntaxNode[],
-      readonly matching: BottomUpTreeMatching,
-      readonly computedTextCallback: (match: VariableMatch, matching: BottomUpTreeMatching) => string | null,
-  ) {
-  }
-
-  computedText(): string|null {
-    return this.computedTextCallback(this, this.matching);
-  }
-}
-
-// clang-format off
-export class VariableMatcher extends matcherBase(VariableMatch) {
-  // clang-format on
-  readonly #computedTextCallback: (match: VariableMatch, matching: BottomUpTreeMatching) => string | null;
-  constructor(computedTextCallback: (match: VariableMatch, matching: BottomUpTreeMatching) => string | null) {
-    super();
-    this.#computedTextCallback = computedTextCallback;
-  }
-
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): VariableMatch|null {
-    const callee = node.getChild('Callee');
-    const args = node.getChild('ArgList');
-    if (node.name !== 'CallExpression' || !callee || (matching.ast.text(callee) !== 'var') || !args) {
-      return null;
-    }
-
-    const [lparenNode, nameNode, ...fallbackOrRParenNodes] = ASTUtils.children(args);
-
-    if (lparenNode?.name !== '(' || nameNode?.name !== 'VariableName') {
-      return null;
-    }
-
-    if (fallbackOrRParenNodes.length <= 1 && fallbackOrRParenNodes[0]?.name !== ')') {
-      return null;
-    }
-
-    let fallback: CodeMirror.SyntaxNode[] = [];
-    if (fallbackOrRParenNodes.length > 1) {
-      if (fallbackOrRParenNodes.shift()?.name !== ',') {
-        return null;
-      }
-      if (fallbackOrRParenNodes.pop()?.name !== ')') {
-        return null;
-      }
-      fallback = fallbackOrRParenNodes;
-      if (fallback.length === 0) {
-        return null;
-      }
-      if (fallback.some(n => n.name === ',')) {
-        return null;
-      }
-    }
-
-    const varName = matching.ast.text(nameNode);
-    if (!varName.startsWith('--')) {
-      return null;
-    }
-
-    return new VariableMatch(matching.ast.text(node), node, varName, fallback, matching, this.#computedTextCallback);
-  }
-}
-
-export class TextMatch implements Match {
-  computedText?: () => string;
-  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
-    if (node.name === 'Comment') {
-      this.computedText = () => '';
-    }
-  }
-  render(): Node[] {
-    return [document.createTextNode(this.text)];
-  }
-}
-
-// clang-format off
-class TextMatcher extends matcherBase(TextMatch) {
-  // clang-format on
-  override accepts(): boolean {
-    return true;
-  }
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): TextMatch|null {
-    if (!node.firstChild || node.name === 'NumberLiteral' /* may have a Unit child */) {
-      // Leaf node, just emit text
-      const text = matching.ast.text(node);
-      if (text.length) {
-        return new TextMatch(text, node);
-      }
-    }
-    return null;
-  }
-}
-
 function declaration(rule: string): CodeMirror.SyntaxNode|null {
   return cssParser.parse(rule).topNode.getChild('RuleSet')?.getChild('Block')?.getChild('Declaration') ?? null;
 }
@@ -646,6 +550,13 @@ export function tokenizePropertyName(name: string): string|null {
   }
 
   return nodeText(propertyName, rule);
+}
+
+export function matchDeclaration(name: string, value: string, matchers: Matcher<Match>[]): BottomUpTreeMatching|null {
+  const ast = tokenizeDeclaration(name, value);
+  const matchedResult = ast && BottomUpTreeMatching.walk(ast, matchers);
+  ast?.trailingNodes.forEach(n => matchedResult?.matchText(n));
+  return matchedResult;
 }
 
 export class TreeSearch extends TreeWalker {

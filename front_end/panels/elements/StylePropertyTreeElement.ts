@@ -208,7 +208,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
 }
 
 // clang-format off
-export class VariableRenderer extends rendererBase(SDK.CSSPropertyParser.VariableMatch) {
+export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch) {
   // clang-format on
   readonly #treeElement: StylePropertyTreeElement;
   readonly #style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
@@ -218,32 +218,16 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParser.Variabl
     this.#style = style;
   }
 
-  matcher(): SDK.CSSPropertyParser.VariableMatcher {
-    return new SDK.CSSPropertyParser.VariableMatcher(this.computedText.bind(this));
+  matcher(): SDK.CSSPropertyParserMatchers.VariableMatcher {
+    return new SDK.CSSPropertyParserMatchers.VariableMatcher(this.#treeElement.matchedStyles(), this.#style);
   }
 
-  resolveVariable(match: SDK.CSSPropertyParser.VariableMatch): SDK.CSSMatchedStyles.CSSVariableValue|null {
-    return this.#matchedStyles.computeCSSVariable(this.#style, match.name);
-  }
-
-  fallbackValue(match: SDK.CSSPropertyParser.VariableMatch): string|null {
-    if (match.fallback.length === 0 ||
-        match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
-      return null;
-    }
-    return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);
-  }
-
-  computedText(match: SDK.CSSPropertyParser.VariableMatch): string|null {
-    return this.resolveVariable(match)?.value ?? this.fallbackValue(match);
-  }
-
-  override render(match: SDK.CSSPropertyParser.VariableMatch, context: RenderingContext): Node[] {
+  override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
-    const {declaration, value: variableValue} = this.resolveVariable(match) ?? {};
+    const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
-    const computedValue = variableValue ?? this.fallbackValue(match);
+    const computedValue = variableValue ?? match.fallbackValue();
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
     varSwatch.data = {
@@ -294,10 +278,6 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParser.Variabl
 
   get #pane(): StylesSidebarPane {
     return this.#treeElement.parentPane();
-  }
-
-  get #matchedStyles(): SDK.CSSMatchedStyles.CSSMatchedStyles {
-    return this.#treeElement.matchedStyles();
   }
 
   #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {
@@ -1074,7 +1054,7 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
           return null;
         }
         properties.push({value, source, length, propertyType, expansionContext});
-      } else if (match instanceof SDK.CSSPropertyParser.VariableMatch) {
+      } else if (match instanceof SDK.CSSPropertyParserMatchers.VariableMatch) {
         // This doesn't come from any computed text, so we can rely on context here
         const computedValue = context.matchedResult.getComputedText(value);
         const computedValueAst = SDK.CSSPropertyParser.tokenizeDeclaration('--property', computedValue);
@@ -1857,18 +1837,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const matching: SDK.CSSPropertyParser.BottomUpTreeMatching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(
-        ast, [new SDK.CSSPropertyParser.VariableMatcher((match: SDK.CSSPropertyParser.VariableMatch) => {
-          const variableValue = this.matchedStylesInternal.computeCSSVariable(style, match.name)?.value;
-          if (variableValue !== undefined) {
-            return variableValue;
-          }
-
-          if (match.fallback.length === 0 ||
-              match.matching.hasUnresolvedVarsRange(match.fallback[0], match.fallback[match.fallback.length - 1])) {
-            return null;
-          }
-          return match.matching.getComputedTextRange(match.fallback[0], match.fallback[match.fallback.length - 1]);
-        })]);
+        ast, [new SDK.CSSPropertyParserMatchers.VariableMatcher(this.matchedStylesInternal, style)]);
 
     const decl = SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
     return decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : '';
@@ -1926,7 +1895,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     this.listItemElement.removeChildren();
-    this.valueElement = Renderer.renderValueElement(this.name, this.value, renderers);
+    const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
+    this.valueElement = Renderer.renderValueElement(this.name, this.value, matchedResult, renderers);
     this.nameElement = Renderer.renderNameElement(this.name);
     if (this.property.name.startsWith('--') && this.nameElement) {
       this.parentPaneInternal.addPopover(this.nameElement, {

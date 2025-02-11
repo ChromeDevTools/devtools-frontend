@@ -160,21 +160,15 @@ export class ExtensionScope {
 
 const freestylerBinding = `if (!globalThis.freestyler) {
   globalThis.freestyler = (args) => {
-    let resolver;
-    let rejecter;
-    const p = new Promise((resolve, reject) => {
-      resolver = resolve;
-      rejecter = reject;
-    });
+    const {resolve, promise } = Promise.withResolvers();
     freestyler.callbacks.set(freestyler.id , {
       args: JSON.stringify(args),
       callbackId: freestyler.id,
-      resolver,
-      rejecter
+      resolve,
     });
     ${FREESTYLER_BINDING_NAME}(String(freestyler.id));
     freestyler.id++;
-    return p;
+    return promise;
   }
   freestyler.id = 1;
   freestyler.callbacks = new Map();
@@ -182,7 +176,7 @@ const freestylerBinding = `if (!globalThis.freestyler) {
     return freestyler.callbacks.get(callbackId).args;
   }
   freestyler.respond = (callbackId, styleChanges) => {
-    freestyler.callbacks.get(callbackId).resolver(styleChanges);
+    freestyler.callbacks.get(callbackId).resolve(styleChanges);
     freestyler.callbacks.delete(callbackId);
   }
 }`;

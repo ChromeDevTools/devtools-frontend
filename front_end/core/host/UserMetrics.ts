@@ -290,11 +290,6 @@ export class UserMetrics {
         EnumeratedHistogram.RecordingCopiedToClipboard, value, RecordingCopiedToClipboard.MAX_VALUE);
   }
 
-  styleTextCopied(value: StyleTextCopied): void {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.StyleTextCopied, value, StyleTextCopied.MAX_VALUE);
-  }
-
   cssHintShown(type: CSSHintType): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.CSSHintShown, type, CSSHintType.MAX_VALUE);
@@ -1318,20 +1313,6 @@ export const enum RecordingCopiedToClipboard {
   COPIED_STEP_WITH_REPLAY = 7,
   COPIED_STEP_WITH_EXTENSION = 8,
   MAX_VALUE = 9,
-}
-
-export const enum StyleTextCopied {
-  DECLARATION_VIA_CHANGED_LINE = 1,
-  ALL_CHANGES_VIA_STYLES_TAB = 2,
-  DECLARATION_VIA_CONTEXT_MENU = 3,
-  PROPERTY_VIA_CONTEXT_MENU = 4,
-  VALUE_VIA_CONTEXT_MENU = 5,
-  DECLARATION_AS_JS_VIA_CONTEXT_MENU = 6,
-  RULE_VIA_CONTEXT_MENU = 7,
-  ALL_DECLARATIONS_VIA_CONTEXT_MENU = 8,
-  ALL_DECLARATINS_AS_JS_VIA_CONTEXT_MENU = 9,
-  SELECTOR_VIA_CONTEXT_MENU = 10,
-  MAX_VALUE = 11,
 }
 
 export enum ManifestSectionCodes {

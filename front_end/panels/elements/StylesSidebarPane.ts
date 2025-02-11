@@ -1724,7 +1724,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     copyAllChangesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, async () => {
       const allChanges = await this.getFormattedChanges();
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allChanges);
-      Host.userMetrics.styleTextCopied(Host.UserMetrics.StyleTextCopied.ALL_CHANGES_VIA_STYLES_TAB);
       if (timeout) {
         clearTimeout(timeout);
         timeout = undefined;

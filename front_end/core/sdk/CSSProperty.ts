@@ -160,11 +160,6 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return this.#active;
   }
 
-  trimmedValueWithoutImportant(): string {
-    const important = '!important';
-    return this.value.endsWith(important) ? this.value.slice(0, -important.length).trim() : this.value.trim();
-  }
-
   async setText(propertyText: string, majorChange: boolean, overwrite?: boolean): Promise<boolean> {
     if (!this.ownerStyle) {
       throw new Error('No ownerStyle for property');

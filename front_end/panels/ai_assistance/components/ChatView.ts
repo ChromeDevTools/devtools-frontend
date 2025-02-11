@@ -712,7 +712,6 @@ export class ChatView extends HTMLElement {
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
             onLastAnswerMarkdownViewRef: this.#handleLastAnswerMarkdownViewRef,
             onMessageContainerRef: this.#handleMessageContainerRef,
-            render: this.#render,
           })}
           ${this.#props.isReadOnly
             ? renderReadOnlySection({
@@ -860,13 +859,16 @@ function renderStepCode(step: Step): Lit.LitTemplate {
   // clang-format on
 }
 
-function renderStepDetails({step, markdownRenderer, isLast, render}: {
+function renderStepDetails({
+  step,
+  markdownRenderer,
+  isLast,
+}: {
   step: Step,
   markdownRenderer: MarkdownRendererWithCodeBlock,
   isLast: boolean,
-  render: () => void,
 }): Lit.LitTemplate {
-  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step, render) : Lit.nothing;
+  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step) : Lit.nothing;
   const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
 
   // clang-format off
@@ -924,12 +926,11 @@ function renderStepBadge({step, isLoading, isLast}: {
     ></devtools-icon>`;
 }
 
-function renderStep({step, isLoading, markdownRenderer, isLast, render}: {
+function renderStep({step, isLoading, markdownRenderer, isLast}: {
   step: Step,
   isLoading: boolean,
   markdownRenderer: MarkdownRendererWithCodeBlock,
   isLast: boolean,
-  render: () => void,
 }): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
     step: true,
@@ -952,21 +953,15 @@ function renderStep({step, isLoading, markdownRenderer, isLast, render}: {
           ></devtools-icon>
         </div>
       </summary>
-      ${renderStepDetails({step, markdownRenderer, isLast, render})}
+      ${renderStepDetails({step, markdownRenderer, isLast})}
     </details>`;
   // clang-format on
 }
 
-function renderSideEffectConfirmationUi(step: Step, render: () => void): Lit.LitTemplate {
+function renderSideEffectConfirmationUi(step: Step): Lit.LitTemplate {
   if (!step.sideEffect) {
     return Lit.nothing;
   }
-
-  const sideEffectAction = (answer: boolean): void => {
-    step.sideEffect?.onAnswer(answer);
-    step.sideEffect = undefined;
-    render();
-  };
 
   // clang-format off
   return html`<div
@@ -982,7 +977,7 @@ function renderSideEffectConfirmationUi(step: Step, render: () => void): Lit.Lit
             jslogContext: 'decline-execute-code',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => sideEffectAction(false)}
+        @click=${() => step.sideEffect?.onAnswer(false)}
       >${lockedString(
         UIStringsNotTranslate.negativeSideEffectConfirmation,
       )}</devtools-button>
@@ -994,7 +989,7 @@ function renderSideEffectConfirmationUi(step: Step, render: () => void): Lit.Lit
             iconName: 'play',
           } as Buttons.Button.ButtonData
         }
-        @click=${() => sideEffectAction(true)}
+        @click=${() => step.sideEffect?.onAnswer(true)}
       >${
           lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
       }</devtools-button>
@@ -1036,7 +1031,6 @@ function renderChatMessage({
   onSuggestionClick,
   onFeedbackSubmit,
   onLastAnswerMarkdownViewRef,
-  render
 }: {
   message: ChatMessage,
   isLoading: boolean,
@@ -1048,7 +1042,6 @@ function renderChatMessage({
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
-  render: () => void,
 }): Lit.TemplateResult {
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
@@ -1094,7 +1087,6 @@ function renderChatMessage({
             isLoading,
             markdownRenderer,
             isLast: [...message.steps.values()].at(-1) === step && isLast,
-            render
           });
         },
       )}
@@ -1203,7 +1195,6 @@ function renderMessages({
   onFeedbackSubmit,
   onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
-  render
 }: {
   messages: ChatMessage[],
   isLoading: boolean,
@@ -1215,7 +1206,6 @@ function renderMessages({
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
   onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
   onMessageContainerRef: (el: Element|undefined) => void,
-  render: () => void,
 }): Lit.TemplateResult {
   // clang-format off
   return html`
@@ -1232,7 +1222,6 @@ function renderMessages({
           onSuggestionClick,
           onFeedbackSubmit,
           onLastAnswerMarkdownViewRef,
-          render
         }),
       )}
     </div>
@@ -1575,7 +1564,6 @@ function renderMainContents({
   onFeedbackSubmit,
   onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
-  render,
 }: {
   state: State,
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -1598,7 +1586,6 @@ function renderMainContents({
                void,
            onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
            onMessageContainerRef: (el: Element|undefined) => void,
-           render: () => void,
 }): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(consentViewContents);
@@ -1624,7 +1611,6 @@ function renderMainContents({
       onFeedbackSubmit,
       onLastAnswerMarkdownViewRef,
       onMessageContainerRef,
-      render
     });
   }
 

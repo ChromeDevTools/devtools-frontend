@@ -966,7 +966,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.isLoading = false;
             step.code ??= data.code;
             step.sideEffect = {
-              onAnswer: data.confirm,
+              onAnswer: (result: boolean) => {
+                data.confirm(result);
+                step.sideEffect = undefined;
+                void this.doUpdate();
+              },
             };
             commitStep();
             break;

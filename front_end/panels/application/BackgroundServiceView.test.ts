@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -33,7 +34,7 @@ describeWithMockConnection('BackgroundServiceView', () => {
     sinon.stub(UI.ShortcutRegistry.ShortcutRegistry, 'instance').returns({
       shortcutTitleForAction: () => {},
       shortcutsForAction: () => [new UI.KeyboardShortcut.KeyboardShortcut(
-          [{key: 0, name: ''}], '', UI.KeyboardShortcut.Type.DEFAULT_SHORTCUT)],
+          [{key: UI.KeyboardShortcut.Keys.Ctrl.code, name: 'Ctrl'}], '', UI.KeyboardShortcut.Type.DEFAULT_SHORTCUT)],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     assert.exists(backgroundServiceModel);
     view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
@@ -70,5 +71,25 @@ describeWithMockConnection('BackgroundServiceView', () => {
       dataRow.getElementsByClassName('instance-id-column')[0].textContent,
     ];
     assert.deepEqual(actualData, expectedData);
+  });
+
+  it('shows placeholder text', () => {
+    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
+    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
+    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
+    assert.deepEqual(header, 'No recording yet');
+    assert.deepEqual(
+        description,
+        'Start to debug background services by using the "Start recording events" button or by hitting Ctrl.Learn more');
+  });
+
+  it('Triggers record on button click', async () => {
+    const recordButton = view.contentElement.querySelector('.empty-state devtools-button');
+    Platform.assertNotNullOrUndefined(recordButton);
+    assert.deepEqual(recordButton?.textContent, 'Start recording events');
+
+    const recordingSpy = sinon.spy(view, 'toggleRecording');
+    dispatchClickEvent(recordButton);
+    assert.isTrue(recordingSpy.calledOnce);
   });
 });

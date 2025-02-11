@@ -3292,6 +3292,7 @@ export const knownContextValues = new Set([
   'standard-emulated-device-list',
   'start',
   'start-new-chat',
+  'start-recording',
   'start-time',
   'start-url',
   'start-view',

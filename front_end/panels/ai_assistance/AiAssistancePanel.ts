@@ -400,9 +400,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // We select the default agent based on the open panels if
   // there isn't any active conversation.
   #selectDefaultAgentIfNeeded(): void {
-    // If there already is an agent and not it is not empty,
-    // we don't automatically change the agent.
-    if (this.#currentAgent && !this.#currentAgent.isEmpty) {
+    // If there already is an agent and if it is not empty,
+    // we don't automatically change the agent. In addition to this,
+    // we don't change the current agent when there is a message in flight.
+    if ((this.#currentAgent && !this.#currentAgent.isEmpty) || this.#viewProps.isLoading) {
       return;
     }
 

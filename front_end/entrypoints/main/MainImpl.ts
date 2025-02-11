@@ -48,6 +48,7 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as LiveMetrics from '../../models/live-metrics/live-metrics.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as ProjectSettings from '../../models/project_settings/project_settings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Snippets from '../../panels/snippets/snippets.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -473,7 +474,8 @@ export class MainImpl {
     UI.DockController.DockController.instance({forceNew: true, canDock});
     SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
     SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
-    SDK.TargetManager.TargetManager.instance().addEventListener(
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.addEventListener(
         SDK.TargetManager.Events.SUSPEND_STATE_CHANGED, this.#onSuspendStateChanged.bind(this));
 
     Workspace.FileManager.FileManager.instance({forceNew: true});
@@ -481,30 +483,29 @@ export class MainImpl {
 
     Bindings.NetworkProject.NetworkProjectManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(
-        SDK.TargetManager.TargetManager.instance(),
+        targetManager,
         Workspace.Workspace.WorkspaceImpl.instance(),
     );
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
-      targetManager: SDK.TargetManager.TargetManager.instance(),
+      targetManager,
     });
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
-      targetManager: SDK.TargetManager.TargetManager.instance(),
+      targetManager,
     });
-    SDK.TargetManager.TargetManager.instance().setScopeTarget(
-        SDK.TargetManager.TargetManager.instance().primaryPageTarget());
+    targetManager.setScopeTarget(targetManager.primaryPageTarget());
     UI.Context.Context.instance().addFlavorChangeListener(SDK.Target.Target, ({data}) => {
       const outermostTarget = data?.outermostTarget();
-      SDK.TargetManager.TargetManager.instance().setScopeTarget(outermostTarget);
+      targetManager.setScopeTarget(outermostTarget);
     });
     Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
-      targetManager: SDK.TargetManager.TargetManager.instance(),
+      targetManager,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
     // @ts-ignore e2e test global
@@ -524,10 +525,17 @@ export class MainImpl {
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
         {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 
-    new ExecutionContextSelector(SDK.TargetManager.TargetManager.instance(), UI.Context.Context.instance());
+    new ExecutionContextSelector(targetManager, UI.Context.Context.instance());
     Bindings.IgnoreListManager.IgnoreListManager.instance({
       forceNew: true,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+    });
+
+    ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.instance({
+      forceNew: true,
+      hostConfig: Common.Settings.Settings.instance().getHostConfig(),
+      pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader.instance(),
+      targetManager,
     });
 
     AutofillManager.AutofillManager.AutofillManager.instance();

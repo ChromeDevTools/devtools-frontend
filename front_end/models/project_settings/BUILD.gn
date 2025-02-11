@@ -1,0 +1,42 @@
+# Copyright 2025 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+devtools_module("project_settings") {
+  sources = [ "ProjectSettingsModel.ts" ]
+
+  deps = [
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "project_settings.ts"
+
+  deps = [ ":project_settings" ]
+
+  visibility = [
+    ":*",
+    "../../entrypoints/main",
+  ]
+
+  visibility += devtools_models_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+  sources = [ "ProjectSettingsModel.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

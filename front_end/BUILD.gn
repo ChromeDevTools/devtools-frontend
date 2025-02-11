@@ -131,6 +131,7 @@ group("unittests") {
     "models/javascript_metadata:unittests",
     "models/logs:unittests",
     "models/persistence:unittests",
+    "models/project_settings:unittests",
     "models/source_map_scopes:unittests",
     "models/text_utils:unittests",
     "models/trace:unittests",

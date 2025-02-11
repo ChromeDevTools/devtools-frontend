@@ -28,6 +28,7 @@ devtools_module("main") {
     "../../models/issues_manager:bundle",
     "../../models/logs:bundle",
     "../../models/persistence:bundle",
+    "../../models/project_settings:bundle",
     "../../models/workspace:bundle",
     "../../panels/snippets:bundle",
     "../../panels/timeline:bundle",

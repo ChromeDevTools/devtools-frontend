@@ -15,6 +15,7 @@ import * as Bindings from '../models/bindings/bindings.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
+import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
 import type * as UIModule from '../ui/legacy/legacy.js';
 
@@ -350,6 +351,7 @@ export async function deinitializeGlobalVars() {
   Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.removeInstance();
   IssuesManager.IssuesManager.IssuesManager.removeInstance();
   Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.removeInstance();
+  ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.removeInstance();
 
   Common.Settings.resetSettings();
 

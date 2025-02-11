@@ -1387,6 +1387,7 @@ export interface PerformanceMeasureBegin extends PairableUserTiming {
     detail?: string,
     stackTrace?: CallFrame[],
     callTime?: Micro,
+    traceId?: number,
   };
   ph: Phase.ASYNC_NESTABLE_START;
 }
@@ -1437,6 +1438,16 @@ export interface ConsoleTimeStamp extends Event {
 export interface SyntheticConsoleTimeStamp extends Event, SyntheticBased {
   cat: 'disabled-by-default-v8.inspector';
   ph: Phase.COMPLETE;
+}
+
+export interface UserTimingMeasure extends Event {
+  cat: 'devtools.timeline';
+  ph: Phase.COMPLETE;
+  name: Name.USER_TIMING_MEASURE;
+  args: Args&{
+    sampleTraceId: number,
+    traceId: number,
+  };
 }
 
 /** ChromeFrameReporter args for PipelineReporter event.
@@ -2284,6 +2295,10 @@ export function isConsoleTimeStamp(event: Event): event is ConsoleTimeStamp {
   return event.ph === Phase.COMPLETE && event.name === Name.CONSOLE_TIME_STAMP;
 }
 
+export function isUserTimingMeasure(event: Event): event is UserTimingMeasure {
+  return event.name === Name.USER_TIMING_MEASURE;
+}
+
 export function isParseHTML(event: Event): event is ParseHTML {
   return event.name === 'ParseHTML';
 }
@@ -2998,7 +3013,8 @@ export const enum Name {
   ANIMATION_FRAME = 'AnimationFrame',
   ANIMATION_FRAME_PRESENTATION = 'AnimationFrame::Presentation',
 
-  SYNTHETIC_NETWORK_REQUEST = 'SyntheticNetworkRequest'
+  SYNTHETIC_NETWORK_REQUEST = 'SyntheticNetworkRequest',
+  USER_TIMING_MEASURE = 'UserTiming::Measure',
 }
 
 // NOT AN EXHAUSTIVE LIST: just some categories we use and refer

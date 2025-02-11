@@ -690,6 +690,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       performanceMarks: [],
       performanceMeasures: [],
       timestampEvents: [],
+      measureTraceByTraceId: new Map(),
     },
     LargestImagePaint: {lcpRequestByNavigation: new Map()},
     LargestTextPaint: new Map(),

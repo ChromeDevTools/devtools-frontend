@@ -11,6 +11,18 @@ import * as Types from '../types/types.js';
  * UserTimings and the trace events we parse currently.
  **/
 let syntheticEvents: Types.Events.SyntheticEventPair<Types.Events.PairableAsync>[] = [];
+
+// There are two events dispatched for performance.measure calls: one to
+// represent the measured timing in the tracing clock (which we type as
+// PerformanceMeasure) and another one for the call itself (which we
+// type as UserTimingMeasure). The two events corresponding to the same
+// call are linked together by a common trace_id. The reason two events
+// are dispatched is because the first was originally added with the
+// implementation of the performance.measure API and it uses an
+// overridden timestamp and duration. To prevent breaking potential deps
+// created since then, a second event was added instead of changing the
+// params of the first.
+const measureTraceByTraceId: Map<number, Types.Events.UserTimingMeasure> = new Map();
 const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
 const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
@@ -40,6 +52,11 @@ export interface UserTimingsData {
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
    */
   timestampEvents: readonly Types.Events.ConsoleTimeStamp[];
+  /**
+   * Events triggered to trace the call to performance.measure itself,
+   * cached by trace_id.
+   */
+  measureTraceByTraceId: Map<number, Types.Events.UserTimingMeasure>;
 }
 
 export function reset(): void {
@@ -48,6 +65,7 @@ export function reset(): void {
   performanceMarkEvents.length = 0;
   consoleTimings.length = 0;
   timestampEvents.length = 0;
+  measureTraceByTraceId.clear();
 }
 
 const resourceTimingNames = [
@@ -142,7 +160,9 @@ export function handleEvent(event: Types.Events.Event): void {
   if (ignoredNames.includes(event.name)) {
     return;
   }
-
+  if (Types.Events.isUserTimingMeasure(event)) {
+    measureTraceByTraceId.set(event.args.traceId, event);
+  }
   if (Types.Events.isPerformanceMeasure(event)) {
     performanceMeasureEvents.push(event);
     return;
@@ -172,5 +192,6 @@ export function data(): UserTimingsData {
     // TODO(crbug/41484172): UserTimingsHandler.test.ts fails if this is not copied.
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
+    measureTraceByTraceId: new Map(measureTraceByTraceId),
   };
 }

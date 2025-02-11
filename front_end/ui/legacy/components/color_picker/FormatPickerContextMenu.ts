@@ -27,10 +27,10 @@ export class FormatPickerContextMenu {
   }
 
   async show(e: Event, onSelect: OnSelectFn): Promise<void> {
-    let resolveShowPromise: (() => void)|undefined = undefined;
-    const showPromise = new Promise<void>(resolve => {
-      resolveShowPromise = resolve;
-    });
+    const {
+      resolve,
+      promise: showPromise,
+    } = Promise.withResolvers<void>();
 
     const legacyFormats = [
       Common.Color.Format.HEX,
@@ -55,7 +55,7 @@ export class FormatPickerContextMenu {
       Common.Color.Format.XYZ_D50,
       Common.Color.Format.XYZ_D65,
     ];
-    const menu = new UI.ContextMenu.ContextMenu(e, {onSoftMenuClosed: () => resolveShowPromise?.()});
+    const menu = new UI.ContextMenu.ContextMenu(e, {onSoftMenuClosed: () => resolve()});
     const legacySection = menu.section('legacy');
     const wideSection = menu.section('wide');
     const colorFunctionSection = menu.section('color-function').appendSubMenuItem('color()', false, 'color').section();

@@ -86,21 +86,9 @@ export async function openCaptureSettings(sectionClassName: string) {
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
   await waitFor('devtools-performance-timeline-summary');
   await summonSearchBox();
-  // TODO: it should actually wait rendering to finish.
-  await frontend.evaluate(async () => {
-    await new Promise(resolve => setTimeout(resolve, 0));
-  });
   await waitFor('.search-bar');
-  // TODO: it should actually wait rendering to finish.
-  await frontend.evaluate(async () => {
-    await new Promise(resolve => setTimeout(resolve, 0));
-  });
   await frontend.keyboard.type(searchEntry);
   await frontend.keyboard.press('Tab');
-  // TODO: it should actually wait rendering to finish.
-  await frontend.evaluate(async () => {
-    await new Promise(resolve => setTimeout(resolve, 0));
-  });
   await expectVeEvents([
     veKeyDown(''),
     veImpressionsUnder('Panel: timeline', [veImpression(

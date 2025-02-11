@@ -59,25 +59,22 @@ describe('The Sources panel', () => {
         await waitFor('.navigator-file-tree-item[aria-label="index.html, file"][aria-selected="true"]');
       });
 
-      // Flaky with crbug.com/361078921
-      it.skip(
-          '[crbug.com/361078921]: which does not automatically reveal newly opened files when the setting is disabled',
-          async () => {
-            // Navigate and open minified-errors.html.
-            await openSourceCodeEditorForFile('minified-errors.html', 'minified-errors.html');
-            // Wait for the file to be selected in the 'Page' tree.
-            await waitFor('.navigator-file-tree-item[aria-label="minified-errors.html, file"][aria-selected="true"]');
-            // Disable the automatic reveal feature.
-            await runCommandWithQuickOpen('Do not automatically reveal files in sidebar');
+      it('which does not automatically reveal newly opened files when the setting is disabled', async () => {
+        // Navigate and open minified-errors.html.
+        await openSourceCodeEditorForFile('minified-errors.html', 'minified-errors.html');
+        // Wait for the file to be selected in the 'Page' tree.
+        await waitFor('.navigator-file-tree-item[aria-label="minified-errors.html, file"][aria-selected="true"]');
+        // Disable the automatic reveal feature.
+        await runCommandWithQuickOpen('Do not automatically reveal files in sidebar');
 
-            // Open another file via the command menu.
-            await openFileWithQuickOpen('minified-errors.js');
+        // Open another file via the command menu.
+        await openFileWithQuickOpen('minified-errors.js');
 
-            // Check that the selected item in the tree is still minified-errors.html.
-            const selectedTreeItem = await waitFor('.navigator-file-tree-item[aria-selected="true"]');
-            const selectedTreeItemText = await selectedTreeItem.evaluate(node => node.textContent);
-            assert.strictEqual(selectedTreeItemText, 'minified-errors.html');
-          });
+        // Check that the selected item in the tree is still minified-errors.html.
+        const selectedTreeItem = await waitFor('.navigator-file-tree-item[aria-selected="true"]');
+        const selectedTreeItemText = await selectedTreeItem.evaluate(node => node.textContent);
+        assert.strictEqual(selectedTreeItemText, 'minified-errors.html');
+      });
 
       it('which reveals the correct file via the "Reveal in navigator sidebar" context menu option (in the code editor)',
          async () => {

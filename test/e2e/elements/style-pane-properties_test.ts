@@ -264,8 +264,7 @@ describe('The Styles pane', () => {
         'The correct rule is displayed');
   });
 
-  // Flaky with crbug.com/361078921
-  it.skip('[crbug.com/361078921]: can edit multiple constructed stylesheets', async () => {
+  it('can edit multiple constructed stylesheets', async () => {
     await goToResourceAndWaitForStyleSection('elements/multiple-constructed-stylesheets.html');
 
     // Select div that we will remove a CSS property from.
@@ -328,8 +327,7 @@ describe('The Styles pane', () => {
     assert.deepEqual(computedStyles, ['rgb(255, 0, 0)', 'rgb(255, 0, 0)'], 'Styles are not correct after the update');
   });
 
-  // Flaky with crbug.com/361078921
-  it.skip('[crbug.com/361078921]: can display and edit container queries', async () => {
+  it('can display and edit container queries', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-container-queries.html');
 
     // Select the child that has container queries.

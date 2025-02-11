@@ -131,11 +131,6 @@ describe('Scope View', () => {
 
       // Wait until we pause in the other worker.
       await waitFor(PAUSE_INDICATOR_SELECTOR);
-      // TODO: it should actually wait rendering to finish.
-      const {frontend} = getBrowserAndPages();
-      await frontend.evaluate(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
-      });
       const scriptLocation = await retrieveTopCallFrameWithoutResuming();
       assert.deepEqual(scriptLocation, 'memory-worker1.rawresponse:10');
     });

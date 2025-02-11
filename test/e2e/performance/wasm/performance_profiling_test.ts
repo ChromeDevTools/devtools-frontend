@@ -132,8 +132,9 @@ describe('The Performance panel', function() {
   });
 
   // Flaky test
-  it.skip(
-      '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up', async () => {
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up',
+      async () => {
         const {frontend} = getBrowserAndPages();
         const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
 
@@ -154,8 +155,9 @@ describe('The Performance panel', function() {
       });
 
   // Flaky test
-  it.skip(
-      '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the call tree', async () => {
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the call tree',
+      async () => {
         const {frontend} = getBrowserAndPages();
         const expectedActivities = [
           'Run microtasks',

@@ -15,8 +15,9 @@ function initTrackAppender(
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.GPUTrackAppender.GPUTrackAppender {
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, parsedTrace, entryData, entryTypeByLevel);
+      flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
   return compatibilityTracksAppender.gpuTrackAppender();
 }
 

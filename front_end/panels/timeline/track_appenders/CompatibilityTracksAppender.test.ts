@@ -22,8 +22,9 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
     flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     entryTypeByLevel = [];
     ({parsedTrace} = await TraceLoader.traceEngine(context, fixture));
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
     tracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-        flameChartData, parsedTrace, entryData, entryTypeByLevel);
+        flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
     const timingsTrack = tracksAppender.timingsTrackAppender();
     const gpuTrack = tracksAppender.gpuTrackAppender();
     const threadAppenders = tracksAppender.threadAppenders();

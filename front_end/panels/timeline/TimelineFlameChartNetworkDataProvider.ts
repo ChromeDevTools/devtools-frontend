@@ -38,6 +38,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   // -1 means no entry is selected.
   #lastInitiatorEntry: number = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
+  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
 
   constructor() {
     this.reset();
@@ -60,9 +61,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#networkTrackAppender = null;
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace, entityMapper: TimelineUtils.EntityMapper.EntityMapper): void {
     this.reset();
     this.#parsedTrace = parsedTrace;
+    this.#entityMapper = entityMapper;
 
     this.setEvents(this.#parsedTrace);
     this.#setTimingBoundsData(this.#parsedTrace);
@@ -415,7 +417,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
       const contents = root.createChild('div', 'timeline-flamechart-popover');
       const infoElement = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
-      infoElement.networkRequest = event;
+      infoElement.data = {networkRequest: event, entityMapper: this.#entityMapper};
       contents.appendChild(infoElement);
       return element;
     }

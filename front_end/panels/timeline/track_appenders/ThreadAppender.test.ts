@@ -30,8 +30,9 @@ function initTrackAppender(
   compatibilityTracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender,
 } {
   setupIgnoreListManagerEnvironment();
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, parsedTrace, entryData, entryTypeByLevel);
+      flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
   return {threadAppenders: compatibilityTracksAppender.threadAppenders(), compatibilityTracksAppender};
 }
 
@@ -464,7 +465,10 @@ describeWithEnvironment('ThreadAppender', function() {
         AuctionWorklets: {worklets: new Map()},
         Meta: {
           traceIsGeneric: false,
+          navigationsByNavigationId: new Map(),
         },
+        NetworkRequests:
+            {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
         ExtensionTraceData: {entryToNode: new Map(), extensionMarkers: [], extensionTrackData: []},
       } as unknown as Trace.Handlers.Types.ParsedTrace;
 

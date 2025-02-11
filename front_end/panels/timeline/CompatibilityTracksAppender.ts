@@ -202,6 +202,7 @@ export class CompatibilityTracksAppender {
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
   #threadAppenders: ThreadAppender[] = [];
   #serverTimingsTrackAppender: ServerTimingsTrackAppender;
+  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null;
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -215,12 +216,15 @@ export class CompatibilityTracksAppender {
    * is needed only for compatibility with the legacy flamechart
    * architecture and should be removed once all tracks use the new
    * system.
+   * @param entityMapper 3P entity data for the trace.
    */
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[]) {
+      entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[],
+      entityMapper: TimelineUtils.EntityMapper.EntityMapper|null) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
+    this.#entityMapper = entityMapper;
     this.#entryData = entryData;
     this.#colorGenerator = new Common.Color.Generator(
         /* hueSpace= */ {min: 30, max: 55, count: undefined},
@@ -659,13 +663,14 @@ export class CompatibilityTracksAppender {
         '');
     if (url) {
       const MAX_PATH_LENGTH = 45;
-      const MAX_ORIGIN_LENGTH = 30;
       const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);
-      const origin =
-          Platform.StringUtilities.trimEndWithMaxLength(url.origin.replace('https://', ''), MAX_ORIGIN_LENGTH);
       const urlElems = document.createElement('div');
       urlElems.createChild('span', 'popoverinfo-url-path').textContent = path;
-      urlElems.createChild('span', 'popoverinfo-url-origin').textContent = `(${origin})`;
+      const entity = this.#entityMapper ? this.#entityMapper.entityForEvent(event) : null;
+      // Include entity with origin if it's non made-up entity, otherwise there'd be
+      // repetition with the origin.
+      const originWithEntity = TimelineUtils.Helpers.formatOriginWithEntity(url, entity);
+      urlElems.createChild('span', 'popoverinfo-url-origin').textContent = `(${originWithEntity})`;
       info.additionalElements.push(urlElems);
     }
 

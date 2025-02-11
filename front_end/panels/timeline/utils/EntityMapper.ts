@@ -56,6 +56,9 @@ export class EntityMapper {
     // As a starting point, we consider the first navigation as the 1P.
     const nav = Array.from(this.#parsedTrace.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
     const firstPartyUrl = nav?.args.data?.documentLoaderURL ?? this.#parsedTrace.Meta.mainFrameURL;
+    if (!firstPartyUrl) {
+      return null;
+    }
     return Trace.Handlers.Helpers.getEntityForUrl(firstPartyUrl, this.#entityMappings.createdEntityCache) ?? null;
   }
 

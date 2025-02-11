@@ -18,7 +18,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     it('returns the correct events for tree views given a flame chart group', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
-      dataProvider.setModel(parsedTrace);
+      const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+      dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
@@ -36,7 +37,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     it('filters out async events if they cannot be added to the tree', async function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
-      dataProvider.setModel(parsedTrace);
+      const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+      dataProvider.setModel(parsedTrace, entityMapper);
       const timingsTrackGroup = dataProvider.timelineData().groups.find(g => g.name === 'Timings');
       if (!timingsTrackGroup) {
         assert.fail('Could not find Timings track flame chart group');
@@ -52,7 +54,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
 
     // Need to use an index that is not a frame, so jump past the frames.
     const event = dataProvider.eventByIndex(100);
@@ -63,7 +66,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     const groupNames = dataProvider.timelineData().groups.map(g => g.name);
     assert.deepEqual(
         groupNames,
@@ -89,7 +93,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     // Force the track appenders to run and populate the chart data.
     dataProvider.timelineData();
 
@@ -105,7 +110,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     dataProvider.timelineData();
 
     const {entryDecorations} = dataProvider.timelineData();
@@ -137,7 +143,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('populates the frames track with frames and screenshots', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     const framesTrack = dataProvider.timelineData().groups.find(g => {
       return g.name.includes('Frames');
     });
@@ -164,14 +171,15 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      dataProvider.setModel(parsedTrace);
+      const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+      dataProvider.setModel(parsedTrace, entityMapper);
 
       const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;
 
       const SCRIPT_TO_IGNORE = urlString`https://unpkg.com/react@18.2.0/umd/react.development.js`;
       // Clear the data provider cache and add the React script to the ignore list.
       dataProvider.reset();
-      dataProvider.setModel(parsedTrace);
+      dataProvider.setModel(parsedTrace, entityMapper);
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);
 
       const eventCountAfterIgnoreList = dataProvider.timelineData().entryStartTimes.length;
@@ -181,7 +189,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
       // Clear the data provider cache and unignore the script again
       dataProvider.reset();
-      dataProvider.setModel(parsedTrace);
+      dataProvider.setModel(parsedTrace, entityMapper);
       ignoreListManager.unIgnoreListURL(SCRIPT_TO_IGNORE);
       // Ensure that now we have un-ignored the URL that we get the full set of events again.
       assert.strictEqual(dataProvider.timelineData().entryStartTimes.length, eventCountBeforeIgnoreList);
@@ -191,8 +199,9 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('filters navigations to only return those that happen on the main frame', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
-    dataProvider.setModel(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
 
     const mainFrameID = parsedTrace.Meta.mainFrameId;
     const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
@@ -205,7 +214,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('can search for entries within a given time-range', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
 
     const bounds = parsedTrace.Meta.traceBounds;
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate script/);
@@ -217,7 +227,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('delete annotations associated with an event', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     const entryIndex = 0;
     const eventToFindAssociatedEntriesFor = dataProvider.eventByIndex(entryIndex);
     const event = dataProvider.eventByIndex(1);
@@ -245,7 +256,8 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   it('correctly identifies if an event has annotations', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    dataProvider.setModel(parsedTrace);
+    const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+    dataProvider.setModel(parsedTrace, entityMapper);
     const eventIndex = 0;
     const event = dataProvider.eventByIndex(eventIndex);
     assert.exists(event);

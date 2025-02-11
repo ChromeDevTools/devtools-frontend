@@ -49,11 +49,12 @@ export async function getMainFlameChartWithTracks(
 
   // This function is used to load a component example.
   const {parsedTrace} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
 
   const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   // The data provider still needs a reference to the legacy model to
   // work properly.
-  dataProvider.setModel(parsedTrace);
+  dataProvider.setModel(parsedTrace, entityMapper);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
   dataProvider.buildFromTrackAppendersForTest(
@@ -83,10 +84,11 @@ export async function getNetworkFlameChart(traceFileName: string, expanded: bool
   await initializeGlobalVars();
 
   const {parsedTrace} = await TraceLoader.traceEngine(/* context= */ null, traceFileName);
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const minTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
   const maxTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
   const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-  dataProvider.setModel(parsedTrace);
+  dataProvider.setModel(parsedTrace, entityMapper);
   dataProvider.setWindowTimes(minTime, maxTime);
   dataProvider.timelineData().groups.forEach(group => {
     group.expanded = expanded;

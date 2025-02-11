@@ -8,7 +8,9 @@ import * as Types from '../types/types.js';
 
 import type {ParsedTrace} from './types.js';
 
-export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
+export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number]&{
+  isUnrecognized?: boolean,
+};
 
 export interface EntityMappings {
   createdEntityCache: Map<string, Entity>;

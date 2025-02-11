@@ -18,8 +18,9 @@ function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.ExtensionTrackAppender.ExtensionTrackAppender[] {
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, parsedTrace, entryData, entryTypeByLevel);
+      flameChartData, parsedTrace, entryData, entryTypeByLevel, entityMapper);
 
   return compatibilityTracksAppender.allVisibleTrackAppenders().filter(track => track.appenderName === 'Extension') as
       Timeline.ExtensionTrackAppender.ExtensionTrackAppender[];

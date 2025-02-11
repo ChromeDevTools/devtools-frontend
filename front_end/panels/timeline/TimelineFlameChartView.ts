@@ -1157,8 +1157,8 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     this.#entityMapper = new Utils.EntityMapper.EntityMapper(this.#parsedTrace);
     // order is important: |reset| needs to be called after the trace
     // model has been set in the data providers.
-    this.mainDataProvider.setModel(this.#parsedTrace);
-    this.networkDataProvider.setModel(this.#parsedTrace);
+    this.mainDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
+    this.networkDataProvider.setModel(this.#parsedTrace, this.#entityMapper);
     this.reset();
     this.setupWindowTimes();
     this.updateSearchResults(false, false);

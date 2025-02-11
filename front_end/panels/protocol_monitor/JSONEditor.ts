@@ -901,6 +901,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
           ${repeat(this.targets, target => {
           return html`
                 <devtools-menu-item
+                  class="no-checkmark"
                   .value=${target.id()}>
                     ${this.#computeTargetLabel(target)}
                 </devtools-menu-item>

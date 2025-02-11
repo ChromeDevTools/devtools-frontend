@@ -674,7 +674,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
   const {promise, resolve: success, reject: fail} = Promise.withResolvers<void>();
   pendingEventExpectation = {expectedEvents, success, fail};
   checkPendingEventExpectation();
-  setTimeout(() => {
+
+  const timeout = setTimeout(() => {
     if (pendingEventExpectation?.missingEvents) {
       pendingEventExpectation.fail(new Error(
           'Missing VE Events: ' +
@@ -683,7 +684,10 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
               .join('\n')));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
-  return promise;
+
+  return promise.finally(() => {
+    clearTimeout(timeout);
+  });
 }
 
 let numMatchedEvents = 0;

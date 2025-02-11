@@ -532,14 +532,6 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #onNewConversation(): void {
-    this.#props.onNewConversation();
-  }
-
-  #onCancelCrossOriginChat(): void {
-    this.#props.onCancelCrossOriginChat?.();
-  }
-
   #getEmptyStateSuggestions = (): string[] => {
     if (!this.#props.agentType) {
       return [];
@@ -702,21 +694,49 @@ export class ChatView extends HTMLElement {
     Lit.render(html`
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll} ${ref(this.#mainElementRef)}>
-          ${renderMainContents(this.#props.state, this.#props.aidaAvailability, this.#props.messages,
-            this.#props.isLoading, this.#props.isReadOnly, this.#props.canShowFeedbackForm, this.#isTextInputDisabled(),
-            this.#getEmptyStateSuggestions(), this.#getConsentViewContents(),
-            this.#props.userInfo, this.#markdownRenderer, this.#handleSuggestionClick, this.#props.onFeedbackSubmit,
-            this.#handleLastAnswerMarkdownViewRef, this.#handleMessageContainerRef, this.#render,
-            this.#getUnavailableAidaAvailabilityContents,
-            this.#props.agentType)}
-          ${this.#props.isReadOnly ?
-              renderReadOnlySection(this.#onNewConversation, this.#props.agentType) :
-              renderChatInput(this.#props.isLoading, this.#props.blockedByCrossOrigin, this.#isTextInputDisabled(),
-              this.#getInputPlaceholderString(), this.#props.state, this.#props.selectedContext,
-              this.#props.inspectElementToggled, this.#props.onContextClick, this.#props.onInspectElementClick,
-              this.#handleSubmit, this.#handleTextAreaKeyDown, this.#handleCancel, this.#onNewConversation,
-              this.#onCancelCrossOriginChat,
-              this.#props.agentType, this.#props.changeSummary)
+          ${renderMainContents({
+            state: this.#props.state,
+            aidaAvailability: this.#props.aidaAvailability,
+            messages: this.#props.messages,
+            isLoading: this.#props.isLoading,
+            isReadOnly: this.#props.isReadOnly,
+            canShowFeedbackForm: this.#props.canShowFeedbackForm,
+            isTextInputDisabled: this.#isTextInputDisabled(),
+            suggestions: this.#getEmptyStateSuggestions(),
+            consentViewContents: this.#getConsentViewContents(),
+            userInfo: this.#props.userInfo,
+            markdownRenderer: this.#markdownRenderer,
+            agentType: this.#props.agentType,
+            getUnavailableAidaAvailabilityContents: this.#getUnavailableAidaAvailabilityContents,
+            onSuggestionClick: this.#handleSuggestionClick,
+            onFeedbackSubmit: this.#props.onFeedbackSubmit,
+            onLastAnswerMarkdownViewRef: this.#handleLastAnswerMarkdownViewRef,
+            onMessageContainerRef: this.#handleMessageContainerRef,
+            render: this.#render,
+          })}
+          ${this.#props.isReadOnly
+            ? renderReadOnlySection({
+                agentType: this.#props.agentType,
+                onNewConversation: this.#props.onNewConversation,
+              })
+            : renderChatInput({
+                isLoading: this.#props.isLoading,
+                blockedByCrossOrigin: this.#props.blockedByCrossOrigin,
+                isTextInputDisabled: this.#isTextInputDisabled(),
+                inputPlaceholderString: this.#getInputPlaceholderString(),
+                state: this.#props.state,
+                selectedContext: this.#props.selectedContext,
+                inspectElementToggled: this.#props.inspectElementToggled,
+                agentType: this.#props.agentType,
+                changeSummary: this.#props.changeSummary,
+                onContextClick: this.#props.onContextClick,
+                onInspectElementClick: this.#props.onInspectElementClick,
+                onSubmit: this.#handleSubmit,
+                onTextAreaKeyDown: this.#handleTextAreaKeyDown,
+                onCancel: this.#handleCancel,
+                onNewConversation: this.#props.onNewConversation,
+                onCancelCrossOriginChat: this.#props.onCancelCrossOriginChat,
+              })
           }
         </main>
         <footer class="disclaimer" jslog=${VisualLogging.section('footer')}>
@@ -840,10 +860,13 @@ function renderStepCode(step: Step): Lit.LitTemplate {
   // clang-format on
 }
 
-function renderStepDetails(
-    step: Step, markdownRenderer: MarkdownRendererWithCodeBlock, options: {isLast: boolean},
-    render: () => void): Lit.LitTemplate {
-  const sideEffects = options.isLast && step.sideEffect ? renderSideEffectConfirmationUi(step, render) : Lit.nothing;
+function renderStepDetails({step, markdownRenderer, isLast, render}: {
+  step: Step,
+  markdownRenderer: MarkdownRendererWithCodeBlock,
+  isLast: boolean,
+  render: () => void,
+}): Lit.LitTemplate {
+  const sideEffects = isLast && step.sideEffect ? renderSideEffectConfirmationUi(step, render) : Lit.nothing;
   const thought = step.thought ? html`<p>${renderTextAsMarkdown(step.thought, markdownRenderer)}</p>` : Lit.nothing;
 
   // clang-format off
@@ -872,15 +895,19 @@ function renderStepDetails(
   // clang-format on
 }
 
-function renderStepBadge(step: Step, isLoading: boolean, options: {isLast: boolean}): Lit.LitTemplate {
-  if (isLoading && options.isLast && !step.sideEffect) {
+function renderStepBadge({step, isLoading, isLast}: {
+  step: Step,
+  isLoading: boolean,
+  isLast: boolean,
+}): Lit.LitTemplate {
+  if (isLoading && isLast && !step.sideEffect) {
     return html`<devtools-spinner></devtools-spinner>`;
   }
 
   let iconName: string = 'checkmark';
   let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
   let role: 'button'|undefined = 'button';
-  if (options.isLast && step.sideEffect) {
+  if (isLast && step.sideEffect) {
     role = undefined;
     ariaLabel = undefined;
     iconName = 'pause-circle';
@@ -897,9 +924,13 @@ function renderStepBadge(step: Step, isLoading: boolean, options: {isLast: boole
     ></devtools-icon>`;
 }
 
-function renderStep(
-    step: Step, isLoading: boolean, markdownRenderer: MarkdownRendererWithCodeBlock, options: {isLast: boolean},
-    render: () => void): Lit.LitTemplate {
+function renderStep({step, isLoading, markdownRenderer, isLast, render}: {
+  step: Step,
+  isLoading: boolean,
+  markdownRenderer: MarkdownRendererWithCodeBlock,
+  isLast: boolean,
+  render: () => void,
+}): Lit.LitTemplate {
   const stepClasses = Lit.Directives.classMap({
     step: true,
     empty: !step.thought && !step.code && !step.contextDetails,
@@ -913,7 +944,7 @@ function renderStep(
       .open=${Boolean(step.sideEffect)}>
       <summary>
         <div class="summary">
-          ${renderStepBadge(step, isLoading, options)}
+          ${renderStepBadge({ step, isLoading, isLast })}
           ${renderTitle(step)}
           <devtools-icon
             class="arrow"
@@ -921,9 +952,7 @@ function renderStep(
           ></devtools-icon>
         </div>
       </summary>
-      ${renderStepDetails(step, markdownRenderer, {
-        isLast: options.isLast,
-      }, render)}
+      ${renderStepDetails({step, markdownRenderer, isLast, render})}
     </details>`;
   // clang-format on
 }
@@ -996,13 +1025,31 @@ function renderError(message: ModelChatMessage): Lit.LitTemplate {
   return Lit.nothing;
 }
 
-function renderChatMessage(
-    message: ChatMessage, isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean,
-    {isLast}: {isLast: boolean},
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
-    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void, render: () => void): Lit.TemplateResult {
+function renderChatMessage({
+  message,
+  isLoading,
+  isReadOnly,
+  canShowFeedbackForm,
+  isLast,
+  userInfo,
+  markdownRenderer,
+  onSuggestionClick,
+  onFeedbackSubmit,
+  onLastAnswerMarkdownViewRef,
+  render
+}: {
+  message: ChatMessage,
+  isLoading: boolean,
+  isReadOnly: boolean,
+  canShowFeedbackForm: boolean,
+  isLast: boolean,
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+  markdownRenderer: MarkdownRendererWithCodeBlock,
+  onSuggestionClick: (suggestion: string) => void,
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+  render: () => void,
+}): Lit.TemplateResult {
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
     const image = userInfo.accountImage ?
@@ -1042,13 +1089,17 @@ function renderChatMessage(
         message.steps,
         (_, index) => index,
         step => {
-          return renderStep(step, isLoading, markdownRenderer, {
+          return renderStep({
+            step,
+            isLoading,
+            markdownRenderer,
             isLast: [...message.steps.values()].at(-1) === step && isLast,
-          }, render);
+            render
+          });
         },
       )}
       ${message.answer
-        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly, ref: handleLastAnswerMarkdownViewRef })}</p>`
+        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly, ref: onLastAnswerMarkdownViewRef })}</p>`
         : Lit.nothing}
       ${renderError(message)}
       ${isLast && isLoading
@@ -1062,7 +1113,7 @@ function renderChatMessage(
               onFeedbackSubmit(message.rpcId, rating, feedback);
             },
             suggestions: isLast ? message.suggestions : undefined,
-            onSuggestionClick: handleSuggestionClick,
+            onSuggestionClick,
             canShowFeedbackForm,
           })}></devtools-widget>`
       }
@@ -1071,10 +1122,17 @@ function renderChatMessage(
   // clang-format on
 }
 
-function renderSelection(
-    selectedContext: ConversationContext<unknown>|null, inspectElementToggled: boolean,
-    onContextClick: () => void|Promise<void>, onInspectElementClick: () => void,
-    agentType?: AgentType): Lit.LitTemplate {
+function renderSelection({
+  selectedContext,
+  inspectElementToggled,
+  agentType,
+  onContextClick,
+  onInspectElementClick,
+}: {
+  selectedContext: ConversationContext<unknown>|null,
+  inspectElementToggled: boolean,
+  agentType?: AgentType, onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
+}): Lit.LitTemplate {
   if (!agentType) {
     return Lit.nothing;
   }
@@ -1134,29 +1192,59 @@ function renderSelection(
   // clang-format on
 }
 
-function renderMessages(
-    messages: ChatMessage[], isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean,
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
-    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
-    handleMessageContainerRef: (el: Element|undefined) => void, render: () => void): Lit.TemplateResult {
+function renderMessages({
+  messages,
+  isLoading,
+  isReadOnly,
+  canShowFeedbackForm,
+  userInfo,
+  markdownRenderer,
+  onSuggestionClick,
+  onFeedbackSubmit,
+  onLastAnswerMarkdownViewRef,
+  onMessageContainerRef,
+  render
+}: {
+  messages: ChatMessage[],
+  isLoading: boolean,
+  isReadOnly: boolean,
+  canShowFeedbackForm: boolean,
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+  markdownRenderer: MarkdownRendererWithCodeBlock,
+  onSuggestionClick: (suggestion: string) => void,
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+  onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+  onMessageContainerRef: (el: Element|undefined) => void,
+  render: () => void,
+}): Lit.TemplateResult {
   // clang-format off
   return html`
-    <div class="messages-container" ${ref(handleMessageContainerRef)}>
+    <div class="messages-container" ${ref(onMessageContainerRef)}>
       ${messages.map((message, _, array) =>
-        renderChatMessage(message, isLoading, isReadOnly, canShowFeedbackForm, {
+        renderChatMessage({
+          message,
+          isLoading,
+          isReadOnly,
+          canShowFeedbackForm,
           isLast: array.at(-1) === message,
-        }, userInfo, markdownRenderer, handleSuggestionClick, onFeedbackSubmit, handleLastAnswerMarkdownViewRef, render),
+          userInfo,
+          markdownRenderer,
+          onSuggestionClick,
+          onFeedbackSubmit,
+          onLastAnswerMarkdownViewRef,
+          render
+        }),
       )}
     </div>
   `;
   // clang-format on
 }
 
-function renderEmptyState(
-    isTextInputDisabled: boolean, suggestions: string[],
-    handleSuggestionClick: (suggestion: string) => void): Lit.TemplateResult {
+function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}: {
+  isTextInputDisabled: boolean,
+  suggestions: string[],
+  onSuggestionClick: (suggestion: string) => void,
+}): Lit.TemplateResult {
   // clang-format off
   return html`<div class="empty-state-container">
     <div class="header">
@@ -1171,7 +1259,7 @@ function renderEmptyState(
       ${suggestions.map(suggestion => {
         return html`<devtools-button
           class="suggestion"
-          @click=${() => handleSuggestionClick(suggestion)}
+          @click=${() => onSuggestionClick(suggestion)}
           .data=${
             {
               variant: Buttons.Button.Variant.OUTLINED,
@@ -1188,7 +1276,10 @@ function renderEmptyState(
   // clang-format on
 }
 
-function renderReadOnlySection(onNewConversation: () => void, agentType?: AgentType): Lit.LitTemplate {
+function renderReadOnlySection({onNewConversation, agentType}: {
+  onNewConversation: () => void,
+  agentType?: AgentType,
+}): Lit.LitTemplate {
   if (!agentType) {
     return Lit.nothing;
   }
@@ -1214,15 +1305,20 @@ function renderReadOnlySection(onNewConversation: () => void, agentType?: AgentT
 }
 
 function renderChatInputButtons(
-    isLoading: boolean, blockedByCrossOrigin: boolean, isTextInputDisabled: boolean,
-    handleCancel: (ev: SubmitEvent) => void, onNewConversation: () => void,
-    onCancelCrossOriginChat?: () => void): Lit.TemplateResult {
+    {isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat}: {
+      isLoading: boolean,
+      blockedByCrossOrigin: boolean,
+      isTextInputDisabled: boolean,
+      onCancel: (ev: SubmitEvent) => void,
+      onNewConversation: () => void,
+      onCancelCrossOriginChat?: () => void,
+    }): Lit.TemplateResult {
   if (isLoading) {
     // clang-format off
     return html`<devtools-button
       class="chat-input-button"
       aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
-      @click=${handleCancel}
+      @click=${onCancel}
       .data=${
         {
           variant: Buttons.Button.Variant.ICON,
@@ -1283,13 +1379,41 @@ function renderChatInputButtons(
   ></devtools-button>`;
 }
 
-function renderChatInput(isLoading: boolean, blockedByCrossOrigin: boolean, isTextInputDisabled: boolean,
-  inputPlaceholderString: Platform.UIString.LocalizedString, state: State,
-  selectedContext: ConversationContext<unknown> | null, inspectElementToggled: boolean,
-  onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
-  handleSubmit: (ev: SubmitEvent) => void, handleTextAreaKeyDown: (ev: KeyboardEvent) => void,
-  handleCancel: (ev: SubmitEvent) => void, onNewConversation: () => void, onCancelCrossOriginChat?: () => void,
-  agentType?: AgentType, changeSummary?: string): Lit.LitTemplate {
+function renderChatInput({
+  isLoading,
+  blockedByCrossOrigin,
+  isTextInputDisabled,
+  inputPlaceholderString,
+  state,
+  selectedContext,
+  inspectElementToggled,
+  agentType,
+  changeSummary,
+  onContextClick,
+  onInspectElementClick,
+  onSubmit,
+  onTextAreaKeyDown,
+  onCancel,
+  onNewConversation,
+  onCancelCrossOriginChat,
+}: {
+  isLoading: boolean,
+  blockedByCrossOrigin: boolean,
+  isTextInputDisabled: boolean,
+  inputPlaceholderString: Platform.UIString.LocalizedString,
+  state: State,
+  selectedContext: ConversationContext<unknown> | null,
+  inspectElementToggled: boolean,
+  agentType?: AgentType,
+  changeSummary?: string,
+  onContextClick: () => void | Promise<void>,
+  onInspectElementClick: () => void,
+  onSubmit: (ev: SubmitEvent) => void,
+  onTextAreaKeyDown: (ev: KeyboardEvent) => void,
+  onCancel: (ev: SubmitEvent) => void,
+  onNewConversation: () => void,
+  onCancelCrossOriginChat?: () => void,
+}): Lit.LitTemplate {
   if (!agentType) {
     return Lit.nothing;
   }
@@ -1301,15 +1425,20 @@ function renderChatInput(isLoading: boolean, blockedByCrossOrigin: boolean, isTe
 
   // clang-format off
   return html`
-  <form class="input-form" @submit=${handleSubmit}>
+  <form class="input-form" @submit=${onSubmit}>
     <div class="input-form-shadow-container">
       <div class="input-form-shadow"></div>
     </div>
     ${state !== State.CONSENT_VIEW ? html`
       <div class="input-header">
         <div class="header-link-container">
-          ${renderSelection(selectedContext, inspectElementToggled, onContextClick,
-          onInspectElementClick, agentType)}
+          ${renderSelection({
+            selectedContext,
+            inspectElementToggled,
+            agentType,
+            onContextClick,
+            onInspectElementClick,
+          })}
         </div>
         ${renderChangeSummary(changeSummary)}
       </div>
@@ -1319,13 +1448,12 @@ function renderChatInput(isLoading: boolean, blockedByCrossOrigin: boolean, isTe
         .disabled=${isTextInputDisabled}
         wrap="hard"
         maxlength="10000"
-        @keydown=${handleTextAreaKeyDown}
+        @keydown=${onTextAreaKeyDown}
         placeholder=${inputPlaceholderString}
         jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
       ></textarea>
       <div class="chat-input-buttons">
-        ${renderChatInputButtons(isLoading, blockedByCrossOrigin, isTextInputDisabled,
-          handleCancel, onNewConversation, onCancelCrossOriginChat)}
+        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat })}
       </div>
     </div>
   </form>`;
@@ -1429,20 +1557,49 @@ function renderNoAgentState(): Lit.TemplateResult {
   // clang-format on
 }
 
-function renderMainContents(
-    state: State, aidaAvailability: Host.AidaClient.AidaAccessPreconditions, messages: ChatMessage[],
-    isLoading: boolean, isReadOnly: boolean, canShowFeedbackForm: boolean, isTextInputDisabled: boolean,
-    suggestions: string[], consentViewContents: Lit.TemplateResult,
-    userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
-    markdownRenderer: MarkdownRendererWithCodeBlock, handleSuggestionClick: (suggestion: string) => void,
-    onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-    handleLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
-    handleMessageContainerRef: (el: Element|undefined) => void, render: () => void,
-    getUnavailableAidaAvailabilityContents:
-        (aidaAvailability:
-             Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>) =>
-            Lit.TemplateResult,
-    agentType?: AgentType): Lit.TemplateResult {
+function renderMainContents({
+  state,
+  aidaAvailability,
+  messages,
+  isLoading,
+  isReadOnly,
+  canShowFeedbackForm,
+  isTextInputDisabled,
+  suggestions,
+  consentViewContents,
+  userInfo,
+  markdownRenderer,
+  agentType,
+  getUnavailableAidaAvailabilityContents,
+  onSuggestionClick,
+  onFeedbackSubmit,
+  onLastAnswerMarkdownViewRef,
+  onMessageContainerRef,
+  render,
+}: {
+  state: State,
+  aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
+  messages: ChatMessage[],
+  isLoading: boolean,
+  isReadOnly: boolean,
+  canShowFeedbackForm: boolean,
+  isTextInputDisabled: boolean,
+  suggestions: string[],
+  consentViewContents: Lit.TemplateResult,
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
+  markdownRenderer: MarkdownRendererWithCodeBlock,
+  agentType?: AgentType,
+           getUnavailableAidaAvailabilityContents:
+               (aidaAvailability: Exclude<
+                   Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>) =>
+                   Lit.TemplateResult,
+           onSuggestionClick: (suggestion: string) => void,
+           onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) =>
+               void,
+           onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+           onMessageContainerRef: (el: Element|undefined) => void,
+           render: () => void,
+}): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(consentViewContents);
   }
@@ -1456,12 +1613,22 @@ function renderMainContents(
   }
 
   if (messages.length > 0) {
-    return renderMessages(
-        messages, isLoading, isReadOnly, canShowFeedbackForm, userInfo, markdownRenderer, handleSuggestionClick,
-        onFeedbackSubmit, handleLastAnswerMarkdownViewRef, handleMessageContainerRef, render);
+    return renderMessages({
+      messages,
+      isLoading,
+      isReadOnly,
+      canShowFeedbackForm,
+      userInfo,
+      markdownRenderer,
+      onSuggestionClick,
+      onFeedbackSubmit,
+      onLastAnswerMarkdownViewRef,
+      onMessageContainerRef,
+      render
+    });
   }
 
-  return renderEmptyState(isTextInputDisabled, suggestions, handleSuggestionClick);
+  return renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick});
 }
 
 declare global {

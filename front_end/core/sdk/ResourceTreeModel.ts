@@ -665,7 +665,8 @@ export class ResourceTreeFrame {
   #nameInternal: string|null|undefined;
   #urlInternal: Platform.DevToolsPath.UrlString;
   #domainAndRegistryInternal: string;
-  #securityOriginInternal: string|null;
+  #securityOrigin: string|null;
+  #securityOriginDetails?: Protocol.Page.SecurityOriginDetails;
   #storageKeyInternal?: Promise<string|null>;
   #unreachableUrlInternal: Platform.DevToolsPath.UrlString;
   #adFrameStatusInternal?: Protocol.Page.AdFrameStatus;
@@ -699,7 +700,8 @@ export class ResourceTreeFrame {
     this.#urlInternal =
         payload && payload.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
     this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
-    this.#securityOriginInternal = payload && payload.securityOrigin;
+    this.#securityOrigin = payload && payload.securityOrigin;
+    this.#securityOriginDetails = payload?.securityOriginDetails;
     this.#unreachableUrlInternal =
         (payload && payload.unreachableUrl as Platform.DevToolsPath.UrlString) || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = payload?.adFrameStatus;
@@ -752,7 +754,8 @@ export class ResourceTreeFrame {
     this.#nameInternal = framePayload.name;
     this.#urlInternal = framePayload.url as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
-    this.#securityOriginInternal = framePayload.securityOrigin;
+    this.#securityOrigin = framePayload.securityOrigin;
+    this.#securityOriginDetails = framePayload.securityOriginDetails;
     void this.getStorageKey(/* forceFetch */ true);
     this.#unreachableUrlInternal =
         framePayload.unreachableUrl as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
@@ -800,7 +803,11 @@ export class ResourceTreeFrame {
   }
 
   get securityOrigin(): string|null {
-    return this.#securityOriginInternal;
+    return this.#securityOrigin;
+  }
+
+  get securityOriginDetails(): Protocol.Page.SecurityOriginDetails|null {
+    return this.#securityOriginDetails ?? null;
   }
 
   getStorageKey(forceFetch: boolean): Promise<string|null> {
@@ -1053,9 +1060,10 @@ export class ResourceTreeFrame {
     return response.originTrials;
   }
 
-  setCreationStackTrace(creationStackTraceData:
-                            {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: Target}):
-      void {
+  setCreationStackTrace(creationStackTraceData: {
+    creationStackTrace: Protocol.Runtime.StackTrace|null,
+    creationStackTraceTarget: Target,
+  }): void {
     this.#creationStackTrace = creationStackTraceData.creationStackTrace;
     this.#creationStackTraceTarget = creationStackTraceData.creationStackTraceTarget;
   }

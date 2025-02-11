@@ -55,7 +55,8 @@ describeWithMockConnection('CookieReportView', () => {
   it('should contain no rows if no issues were created', async () => {
     const view = new Security.CookieReportView.CookieReportView(undefined, mockView);
 
-    assert.lengthOf(view.gridData, 0);
+    await view.updateComplete;
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 0);
   });
 
   it('should have row when there was a preexisting cookie issue', async () => {
@@ -65,20 +66,20 @@ describeWithMockConnection('CookieReportView', () => {
     const view = new Security.CookieReportView.CookieReportView(undefined, mockView);
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 1);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 1);
   });
 
   it('should add row when issue added after view creation', async () => {
     const view = new Security.CookieReportView.CookieReportView(undefined, mockView);
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 0);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 0);
 
     // @ts-ignore
     globalThis.addIssueForTest(getTestCookieIssue());
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 1);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 1);
   });
 
   it('should ignore non-third-party-cookie related exclusionReason', async () => {
@@ -89,15 +90,15 @@ describeWithMockConnection('CookieReportView', () => {
         getTestCookieIssue(undefined, Protocol.Audits.CookieExclusionReason.ExcludeSameSiteNoneInsecure));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 0);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 0);
 
     // Make sure ExcludeThirdPartyPhaseout (default) is added.
     // @ts-ignore
     globalThis.addIssueForTest(getTestCookieIssue());
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 1);
-    assert.strictEqual(view.gridData[0].data.status, 'Blocked');
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 1);
+    assert.strictEqual(mockView.lastCall.firstArg.cookieRows[0].status, IssuesManager.CookieIssue.CookieStatus.BLOCKED);
   });
 
   it('should ignore non-third-party-cookie related warningReason', async () => {
@@ -108,7 +109,7 @@ describeWithMockConnection('CookieReportView', () => {
         getTestCookieIssue(undefined, undefined, Protocol.Audits.CookieWarningReason.WarnSameSiteLaxCrossDowngradeLax));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 0);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 0);
 
     // Make sure warning 3pc warning reasons are added
     // @ts-ignore
@@ -122,10 +123,13 @@ describeWithMockConnection('CookieReportView', () => {
         undefined, undefined, Protocol.Audits.CookieWarningReason.WarnThirdPartyPhaseout, 'phaseout'));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 3);
-    assert.strictEqual(view.gridData[0].data.status, 'Allowed by exception');
-    assert.strictEqual(view.gridData[1].data.status, 'Allowed by exception');
-    assert.strictEqual(view.gridData[2].data.status, 'Allowed');
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 3);
+    assert.strictEqual(
+        mockView.lastCall.firstArg.cookieRows[0].status,
+        IssuesManager.CookieIssue.CookieStatus.ALLOWED_BY_GRACE_PERIOD);
+    assert.strictEqual(
+        mockView.lastCall.firstArg.cookieRows[1].status, IssuesManager.CookieIssue.CookieStatus.ALLOWED_BY_HEURISTICS);
+    assert.strictEqual(mockView.lastCall.firstArg.cookieRows[2].status, IssuesManager.CookieIssue.CookieStatus.ALLOWED);
   });
 
   it('should only have a single entry for same cookie with a read and a write operations', async () => {
@@ -137,7 +141,7 @@ describeWithMockConnection('CookieReportView', () => {
     globalThis.addIssueForTest(getTestCookieIssue(false));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 1);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 1);
   });
 
   it('should have zero entries after the primary page was changed', async () => {
@@ -147,11 +151,11 @@ describeWithMockConnection('CookieReportView', () => {
     globalThis.addIssueForTest(getTestCookieIssue(true));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 1);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 1);
 
     navigate(getMainFrame(target));
     await view.updateComplete;
 
-    assert.lengthOf(view.gridData, 0);
+    assert.lengthOf(mockView.lastCall.firstArg.cookieRows, 0);
   });
 });

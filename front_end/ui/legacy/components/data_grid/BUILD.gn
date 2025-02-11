@@ -48,10 +48,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [
-    "DataGrid.test.ts",
-    "DataGridElement.test.ts",
-  ]
+  sources = [ "DataGridElement.test.ts" ]
 
   deps = [
     ":bundle",

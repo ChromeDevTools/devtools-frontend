@@ -43,12 +43,13 @@ import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
 import {AiHistoryStorage, Conversation, ConversationType} from './AiHistoryStorage.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
+  type ChatMessage,
   ChatMessageEntity,
   ChatView,
   type ModelChatMessage,
   type Props as ChatViewProps,
   State as ChatViewState,
-  type Step,
+  type Step
 } from './components/ChatView.js';
 
 const {html} = Lit;
@@ -203,7 +204,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #toggleSearchElementAction: UI.ActionRegistration.Action;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
-  #viewProps: ChatViewProps;
   #viewOutput: ViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
@@ -228,6 +228,28 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedInsight: InsightContext|null = null;
   #selectedRequest: RequestContext|null = null;
 
+  // Messages displayed in the `ChatView` component.
+  #messages: ChatMessage[] = [];
+  // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+  // This happens when the conversation's context has a different
+  // origin than the selected context.
+  #blockedByCrossOrigin: boolean = false;
+  // Whether the UI should show loading or not.
+  #isLoading: boolean = false;
+  // Selected conversation context. The reason we keep this as a
+  // state field rather than using `#getConversationContext` is that,
+  // there is a case where the context differs from the selectedElement (or other selected context type).
+  // Specifically, it allows restoring the previous context when a new selection is cross-origin.
+  // See `#onContextSelectionChanged` for details.
+  #selectedContext: ConversationContext<unknown>|null = null;
+  // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
+  #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+  // Info of the currently logged in user.
+  #userInfo: {
+    accountImage?: string,
+    accountFullName?: string,
+  };
+
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -242,31 +264,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'chat-container');
-
-    this.#viewProps = {
-      state: this.#getChatUiState(),
-      aidaAvailability,
-      messages: [],
-      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      isLoading: false,
-      onTextSubmit: (text: string) => {
-        void this.#startConversation(text);
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-      },
-      onInspectElementClick: this.#handleSelectElementClick.bind(this),
-      onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
-      onCancelClick: this.#cancel.bind(this),
-      onContextClick: this.#handleContextClick.bind(this),
-      onNewConversation: this.#handleNewChatRequest.bind(this),
-      canShowFeedbackForm: this.#serverSideLoggingEnabled,
-      userInfo: {
-        accountImage: syncInfo.accountImage,
-        accountFullName: syncInfo.accountFullName,
-      },
-      selectedContext: null,
-      blockedByCrossOrigin: false,
-      stripLinks: false,
-      isReadOnly: false,
+    this.#aidaAvailability = aidaAvailability;
+    this.#userInfo = {
+      accountImage: syncInfo.accountImage,
+      accountFullName: syncInfo.accountFullName,
     };
 
     this.#conversations = AiHistoryStorage.instance().getHistory().map(item => Conversation.fromSerialized(item));
@@ -437,16 +438,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #updateAgentState(agent?: AiAgent<unknown>): void {
     if (this.#currentAgent !== agent) {
       this.#cancel();
+      this.#messages = [];
+      this.#isLoading = false;
       this.#currentAgent = agent;
-      this.#viewProps.agentType = this.#currentAgent?.type;
-      this.#viewProps.messages = [];
-      this.#viewProps.changeSummary = undefined;
-      this.#viewProps.isLoading = false;
       if (this.#currentAgent?.type) {
         this.#currentConversation =
             new Conversation(agentTypeToConversationType(this.#currentAgent.type), [], agent?.id, false);
         this.#conversations.push(this.#currentConversation);
-        this.#viewProps.isReadOnly = false;
       }
     }
 
@@ -460,8 +458,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#viewOutput.chatView?.focusTextInput();
     this.#selectDefaultAgentIfNeeded();
     void this.#handleAidaAvailabilityChange();
-    void this
-        .#handleAiAssistanceEnabledSettingChanged();  // If the setting was switched on/off while the AiAssistancePanel was not shown.
     this.#selectedElement =
         createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
     this.#selectedRequest =
@@ -471,19 +467,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedInsight =
         createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.InsightAIContext));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
-    this.#viewProps = {
-      ...this.#viewProps,
-      agentType: this.#currentAgent?.type,
-      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedContext: this.#getConversationContext(),
-    };
     void this.doUpdate();
 
-    this.#aiAssistanceEnabledSetting?.addChangeListener(this.#handleAiAssistanceEnabledSettingChanged, this);
+    this.#aiAssistanceEnabledSetting?.addChangeListener(this.doUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.addEventListener(
-        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.doUpdate, this);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -507,11 +496,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   override willHide(): void {
-    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.#handleAiAssistanceEnabledSettingChanged, this);
+    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.doUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.removeEventListener(
-        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    this.#toggleSearchElementAction.removeEventListener(UI.ActionRegistration.Events.TOGGLED, this.doUpdate, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -543,26 +531,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#viewProps.aidaAvailability) {
-      this.#viewProps.aidaAvailability = currentAidaAvailability;
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
       const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
           resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
-      this.#viewProps.userInfo = {
+      this.#userInfo = {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       };
-      this.#viewProps.state = this.#getChatUiState();
       void this.doUpdate();
     }
-  };
-
-  #handleSearchElementActionToggled = (ev: Common.EventTarget.EventTargetEvent<boolean>): void => {
-    if (this.#viewProps.inspectElementToggled === ev.data) {
-      return;
-    }
-
-    this.#viewProps.inspectElementToggled = ev.data;
-    void this.doUpdate();
   };
 
   #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
@@ -616,19 +594,40 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateAgentState(this.#currentAgent);
       };
 
-  #handleAiAssistanceEnabledSettingChanged = (): void => {
-    const nextChatUiState = this.#getChatUiState();
-    if (this.#viewProps.state === nextChatUiState) {
-      return;
-    }
-
-    this.#viewProps.state = nextChatUiState;
-    void this.doUpdate();
-  };
-
   async doUpdate(): Promise<void> {
     this.#updateToolbarState();
-    this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
+    this.view(
+        {
+          state: this.#getChatUiState(),
+          blockedByCrossOrigin: this.#blockedByCrossOrigin,
+          aidaAvailability: this.#aidaAvailability,
+          isLoading: this.#isLoading,
+          messages: this.#messages,
+          selectedContext: this.#selectedContext,
+          agentType: this.#currentAgent?.type,
+          isReadOnly: this.#currentConversation?.isReadOnly ?? false,
+          changeSummary:
+              (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) ?
+              this.#changeManager.formatChanges(this.#currentAgent.id) :
+              undefined,
+          stripLinks: this.#currentAgent?.type === AgentType.PERFORMANCE,
+          inspectElementToggled: this.#toggleSearchElementAction.toggled(),
+          userInfo: this.#userInfo,
+          canShowFeedbackForm: this.#serverSideLoggingEnabled,
+          onTextSubmit: (text: string) => {
+            void this.#startConversation(text);
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+          },
+          onInspectElementClick: this.#handleSelectElementClick.bind(this),
+          onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
+          onCancelClick: this.#cancel.bind(this),
+          onContextClick: this.#handleContextClick.bind(this),
+          onNewConversation: this.#handleNewChatRequest.bind(this),
+          onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
+              this.#handleCrossOriginChatCancellation.bind(this) :
+              undefined,
+        },
+        this.#viewOutput, this.#contentContainer);
   }
 
   #handleSelectElementClick(): void {
@@ -651,7 +650,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleContextClick(): void|Promise<void> {
-    const context = this.#viewProps.selectedContext;
+    const context = this.#selectedContext;
     if (context instanceof RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
@@ -668,7 +667,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   handleAction(actionId: string): void {
-    if (this.#viewProps.isLoading) {
+    if (this.#isLoading) {
       // If running some queries already, focus the input with the abort
       // button and do nothing.
       this.#viewOutput.chatView?.focusTextInput();
@@ -792,8 +791,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
     this.#currentConversation = conversation;
-    this.#viewProps.messages = [];
-    this.#viewProps.isReadOnly = this.#currentConversation?.isReadOnly ?? false;
+    this.#messages = [];
     await this.#doConversation(conversation.history);
   }
 
@@ -813,29 +811,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
-    this.#viewProps.isLoading = false;
+    this.#isLoading = false;
     void this.doUpdate();
   }
 
   #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
     if (!this.#currentAgent) {
-      this.#viewProps.blockedByCrossOrigin = false;
+      this.#blockedByCrossOrigin = false;
       return;
     }
     const currentContext = contextToRestore ?? this.#getConversationContext();
-    this.#viewProps.selectedContext = currentContext;
+    this.#selectedContext = currentContext;
     if (!currentContext) {
-      this.#viewProps.blockedByCrossOrigin = false;
+      this.#blockedByCrossOrigin = false;
       return;
     }
-    this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
-    if (!this.#viewProps.blockedByCrossOrigin) {
+    this.#blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
+    if (!this.#blockedByCrossOrigin) {
       this.#previousSameOriginContext = currentContext;
     }
-    if (this.#viewProps.blockedByCrossOrigin && this.#previousSameOriginContext) {
-      this.#viewProps.onCancelCrossOriginChat = this.#handleCrossOriginChatCancellation.bind(this);
-    }
-    this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.PERFORMANCE;
   }
 
   #getConversationContext(): ConversationContext<unknown>|null {
@@ -917,12 +911,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
       }
 
-      this.#viewProps.isLoading = true;
+      this.#isLoading = true;
       for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
           case ResponseType.USER_QUERY: {
-            this.#viewProps.messages.push({
+            this.#messages.push({
               entity: ChatMessageEntity.USER,
               text: data.query,
             });
@@ -930,7 +924,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               entity: ChatMessageEntity.MODEL,
               steps: [],
             };
-            this.#viewProps.messages.push(systemMessage);
+            this.#messages.push(systemMessage);
             break;
           }
           case ResponseType.QUERYING: {
@@ -981,9 +975,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             step.code ??= data.code;
             step.output ??= data.output;
             step.canceled = data.canceled;
-            if (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) {
-              this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
-            }
             commitStep();
             break;
           }
@@ -1019,7 +1010,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         // Commit update intermediated step when not
         // in read only mode.
-        if (!this.#viewProps.isReadOnly) {
+        if (!this.#currentConversation?.isReadOnly) {
           void this.doUpdate();
 
           // This handles scrolling to the bottom for live conversations when:
@@ -1031,7 +1022,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
       }
 
-      this.#viewProps.isLoading = false;
+      this.#isLoading = false;
       this.#viewOutput.chatView?.finishTextAnimations();
       void this.doUpdate();
     } finally {

@@ -950,6 +950,7 @@ experimental domain Audits
       RelyingPartyOriginIsOpaque
       TypeNotMatching
       UiDismissedNoEmbargo
+      CorsError
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -11293,6 +11294,8 @@ domain Target
       TargetID targetId
       # Binding name, 'cdp' if not specified.
       optional string bindingName
+      # If true, inherits the current root session's permissions (default: false).
+      optional boolean inheritPermissions
 
   # Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
   # one.

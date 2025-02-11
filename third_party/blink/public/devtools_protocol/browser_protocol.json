@@ -1821,7 +1821,8 @@
                         "InvalidFieldsSpecified",
                         "RelyingPartyOriginIsOpaque",
                         "TypeNotMatching",
-                        "UiDismissedNoEmbargo"
+                        "UiDismissedNoEmbargo",
+                        "CorsError"
                     ]
                 },
                 {
@@ -23967,6 +23968,12 @@
                             "description": "Binding name, 'cdp' if not specified.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "inheritPermissions",
+                            "description": "If true, inherits the current root session's permissions (default: false).",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

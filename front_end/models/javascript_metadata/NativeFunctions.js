@@ -6762,7 +6762,13 @@ export const NativeFunctions = [
   },
   {
     name: "redirect",
-    signatures: [["url","?status"]]
+    signatures: [["url","?status"]],
+    receivers: ["Response"]
+  },
+  {
+    name: "redirect",
+    signatures: [["url"]],
+    receivers: ["NavigateEvent"]
   },
   {
     name: "Blob",

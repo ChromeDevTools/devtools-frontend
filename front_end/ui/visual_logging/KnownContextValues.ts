@@ -930,6 +930,7 @@ export const knownContextValues = new Set([
   'corner-bottom-right-shape',
   'corner-end-end-shape',
   'corner-end-start-shape',
+  'corner-shape',
   'corner-start-end-shape',
   'corner-start-start-shape',
   'corner-top-left-shape',

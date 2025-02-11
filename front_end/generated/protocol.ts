@@ -1242,6 +1242,7 @@ export namespace Audits {
     RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
     TypeNotMatching = 'TypeNotMatching',
     UiDismissedNoEmbargo = 'UiDismissedNoEmbargo',
+    CorsError = 'CorsError',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -15848,6 +15849,10 @@ export namespace Target {
      * Binding name, 'cdp' if not specified.
      */
     bindingName?: string;
+    /**
+     * If true, inherits the current root session's permissions (default: false).
+     */
+    inheritPermissions?: boolean;
   }
 
   export interface CreateBrowserContextRequest {

@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, goToResource, waitForAria} from '../../shared/helper.js';
+import {click, getBrowserAndPages, goToResource, waitForAria} from '../../shared/helper.js';
 import {getPausedMessages, openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
 
 describe('Breakpoints on CSP Violation', () => {
@@ -22,6 +22,11 @@ describe('Breakpoints on CSP Violation', () => {
     assert.strictEqual(status1.statusSub, 'Trusted Type Policy Violation');
 
     await click('[aria-label="Resume script execution"]');
+    // TODO: it should actually wait rendering to finish.
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluate(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
     const status2 = await getPausedMessages();
     assert.strictEqual(status2.statusMain, 'Paused on exception');
     assert.strictEqual(

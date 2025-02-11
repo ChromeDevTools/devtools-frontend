@@ -576,7 +576,8 @@ describe('The Memory Panel', function() {
     assert.isTrue(!(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false)));
   });
 
-  it('Groups objects by constructor location', async () => {
+  // Flaky with crbug.com/361078921
+  it.skip('[crbug.com/361078921]: Groups objects by constructor location', async () => {
     await goToResource('memory/duplicated-names.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

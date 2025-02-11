@@ -53,6 +53,16 @@ export const openSettingsTab = async (tabTitle: string) => {
   // Click on the Settings tab and wait for the panel to appear.
   await click(settingsMenuSelector);
   await waitFor(panelSelector);
+
+  const {frontend} = getBrowserAndPages();
+  // TODO: it should actually wait rendering to finish.
+  await frontend.evaluate(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
+  });
 };
 
 export const closeSettings = async () => {

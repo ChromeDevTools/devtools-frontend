@@ -8,7 +8,8 @@ import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  it('interacts with the global scope correctly', async () => {
+  // Flaky with crbug.com/361078921
+  it.skip('[crbug.com/361078921]: interacts with the global scope correctly', async () => {
     const {frontend} = getBrowserAndPages();
 
     await step('navigate to the Console tab', async () => {

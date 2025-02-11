@@ -28,19 +28,36 @@ describe('Snippet creation', () => {
     await openCommandMenu();
     await showSnippetsAutocompletion();
 
+    // TODO: it should actually wait rendering to finish.
+    await frontend.evaluate(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
+
     assert.deepEqual(await getAvailableSnippets(), [
       'New snippet\u200B',
     ]);
 
     await typeText('New ');
+    // TODO: it should actually wait rendering to finish.
+    await frontend.evaluate(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
     assert.deepEqual(await getAvailableSnippets(), [
       'New snippet\u200B',
     ]);
 
     await typeText('w');
+    // TODO: it should actually wait rendering to finish.
+    await frontend.evaluate(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
     assert.deepEqual(await getAvailableSnippets(), []);
 
     await frontend.keyboard.press('Backspace');
+    // TODO: it should actually wait rendering to finish.
+    await frontend.evaluate(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
     assert.deepEqual(await getAvailableSnippets(), [
       'New snippet\u200B',
     ]);

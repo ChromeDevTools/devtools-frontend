@@ -885,6 +885,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           <devtools-button class="toolbar-button"
                            jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-undock')}
                            title=${i18nString(UIStrings.undockIntoSeparateWindow)}
+                           aria-label=${i18nString(UIStrings.undockIntoSeparateWindow)}
                            .iconName=${'dock-window'}
                            .toggled=${dockController.dockSide() === UI.DockController.DockState.UNDOCKED}
                            .toggledIconName=${'dock-window'}
@@ -894,6 +895,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           <devtools-button class="toolbar-button"
                            jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-left')}
                            title=${i18nString(UIStrings.dockToLeft)}
+                           aria-label=${i18nString(UIStrings.dockToLeft)}
                            .iconName=${'dock-left'}
                            .toggled=${dockController.dockSide() === UI.DockController.DockState.LEFT}
                            .toggledIconName=${'dock-left'}
@@ -903,6 +905,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           <devtools-button class="toolbar-button"
                            jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-bottom')}
                            title=${i18nString(UIStrings.dockToBottom)}
+                           aria-label=${i18nString(UIStrings.dockToBottom)}
                            .iconName=${'dock-bottom'}
                            .toggled=${dockController.dockSide() === UI.DockController.DockState.BOTTOM}
                            .toggledIconName=${'dock-bottom'}
@@ -912,6 +915,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
           <devtools-button class="toolbar-button"
                            jslog=${VisualLogging.toggle().track({click: true}).context('current-dock-state-right')}
                            title=${i18nString(UIStrings.dockToRight)}
+                           aria-label=${i18nString(UIStrings.dockToRight)}
                            .iconName=${'dock-right'}
                            .toggled=${dockController.dockSide() === UI.DockController.DockState.RIGHT}
                            .toggledIconName=${'dock-right'}

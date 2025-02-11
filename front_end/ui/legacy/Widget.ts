@@ -666,7 +666,11 @@ export class Widget {
   }
 
   setMinimumSize(width: number, height: number): void {
-    this.constraintsInternal = new Constraints(new Size(width, height));
+    this.minimumSize = new Size(width, height);
+  }
+
+  set minimumSize(size: Size) {
+    this.constraintsInternal = new Constraints(size);
     this.invalidateConstraints();
   }
 
@@ -797,7 +801,11 @@ const storedScrollPositions = new WeakMap<Element, {
 }>();
 
 export class VBox extends Widget {
-  constructor(useShadowDom?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
+  constructor(useShadowDom?: boolean|HTMLElement, delegatesFocus?: boolean, element?: HTMLElement) {
+    if (useShadowDom instanceof HTMLElement) {
+      element = useShadowDom;
+      useShadowDom = false;
+    }
     super(useShadowDom, delegatesFocus, element);
     this.contentElement.classList.add('vbox');
   }

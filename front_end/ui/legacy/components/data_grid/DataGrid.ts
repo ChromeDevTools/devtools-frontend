@@ -134,7 +134,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   editCallback:
       ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void)|undefined;
   deleteCallback: ((arg0: any) => void)|undefined;
-  private readonly refreshCallback: (() => void)|undefined;
+  refreshCallback: (() => void)|undefined;
   private dataTableHeaders: {
     [x: string]: Element,
   };

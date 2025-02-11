@@ -72,6 +72,9 @@ class DataGridElement extends HTMLElement {
         e => this.dispatchEvent(new CustomEvent('select', {detail: (e.data as DataGridElementNode).configElement})));
     this.#dataGrid.addEventListener(
         DataGridEvents.DESELECTED_NODE, () => this.dispatchEvent(new CustomEvent('select', {detail: null})));
+    this.#dataGrid.addEventListener(DataGridEvents.SORTING_CHANGED, () => this.dispatchEvent(new CustomEvent('sort', {
+      detail: {columnId: this.#dataGrid.sortColumnId(), ascending: this.#dataGrid.isSortOrderAscending()}
+    })));
     this.#dataGrid.setRowContextMenuCallback((menu, node) => {
       this.dispatchEvent(
           new CustomEvent('contextmenu', {detail: {menu, element: (node as DataGridElementNode).configElement}}));
@@ -334,6 +337,23 @@ class DataGridElement extends HTMLElement {
 
   #deleteCallback(node: DataGridElementNode): void {
     this.dispatchEvent(new CustomEvent('delete', {detail: node.configElement}));
+  }
+
+  override addEventListener<K extends keyof HTMLElementEventMap>(
+      type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => void,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener(
+      type: string, listener: EventListenerOrEventListenerObject,
+      options?: boolean|AddEventListenerOptions|undefined): void;
+  override addEventListener(...args: Parameters<HTMLElement['addEventListener']>): void {
+    super.addEventListener(...args);
+    if (args[0] === 'refresh') {
+      this.#dataGrid.refreshCallback = this.#refreshCallback.bind(this);
+    }
+  }
+
+  #refreshCallback(): void {
+    this.dispatchEvent(new CustomEvent('refresh'));
   }
 }
 

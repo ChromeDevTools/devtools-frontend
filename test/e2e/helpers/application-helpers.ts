@@ -16,6 +16,7 @@ import {
   waitForNone,
 } from '../../shared/helper.js';
 
+import {getDataGridRows} from './datagrid-helpers.js';
 import {expectVeEvents, veChange, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
 
 export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
@@ -247,8 +248,9 @@ export async function clearStorageItems() {
 export async function selectStorageItemAtIndex(index: number) {
   await waitForFunction(async () => {
     try {
-      const dataGridNodes = await $$('.storage-view .data-grid-data-grid-node:not(.creation-node)');
-      await dataGridNodes[index].click();
+      const dataGridNodes = await getDataGridRows(
+          index + 1, await waitFor('.storage-view devtools-data-grid'), /* matchExactNumberOfRows=*/ false);
+      await dataGridNodes[index][1].click();
       await expectVeEvents([veClick('Panel: resources > Pane: session-storage-data > TableRow > TableCell: value')]);
     } catch (error) {
       if (error.message === 'Node is detached from document') {

@@ -8,15 +8,13 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
-import {
-  selectNodeByKey,
-} from '../../testing/StorageItemsViewHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
 describeWithEnvironment('KeyValueStorageItemsView', () => {
   let keyValueStorageItemsView: Application.KeyValueStorageItemsView.KeyValueStorageItemsView;
+  let viewFunction: sinon.SinonStub;
 
   const MOCK_ITEMS = [
     {key: 'foo', value: 'value1'},
@@ -55,7 +53,14 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     container.markAsRoot();
     container.show(div);
 
-    keyValueStorageItemsView = new TestKeyValueStorageItemsView('Items', 'key-value-storage-items-view', true);
+    viewFunction = sinon.stub();
+    viewFunction.callsFake((_input, output, _target) => {
+      output.splitWidget = sinon.createStubInstance(UI.SplitWidget.SplitWidget);
+      output.preview = new UI.Widget.VBox();
+      output.resizer = sinon.createStubInstance(HTMLElement);
+    });
+    keyValueStorageItemsView =
+        new TestKeyValueStorageItemsView('Items', 'key-value-storage-items-view', true, viewFunction);
 
     keyValueStorageItemsView.showItems(MOCK_ITEMS);
   });
@@ -70,29 +75,17 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     const createPreviewPromise = expectCreatePreviewCalled(key, value);
 
     // Select the first item by key.
-    const node = selectNodeByKey(keyValueStorageItemsView.dataGridForTesting, key);
-    assert.isNotNull(node);
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key, value}}}));
 
     // Check createPreview function was called.
     await createPreviewPromise;
-
-    // Check preview was updated.
-    await raf();
     assert.include(keyValueStorageItemsView.previewPanelForTesting.element.innerText, `${key}:${value}`);
   });
 
   it('shows empty preview when no row is selected', async () => {
-    // Select the first item by key.
-    const node = selectNodeByKey(keyValueStorageItemsView.dataGridForTesting, MOCK_ITEMS[0].key);
-    assert.isNotNull(node);
-
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: MOCK_ITEMS[0].key}}}));
     await raf();
-
-    // Deselect node.
-    node.deselect();
-
-    await raf();
-
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: null}));
     // Check preview was updated.
     assert.include(
         keyValueStorageItemsView.previewPanelForTesting.element.innerText,
@@ -105,8 +98,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     let createPreviewPromise = expectCreatePreviewCalled(key, value);
 
     // Select the first item.
-    const node = selectNodeByKey(keyValueStorageItemsView.dataGridForTesting, key);
-    assert.isNotNull(node);
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key, value}}}));
 
     // Check createPreview function was called.
     await createPreviewPromise;

@@ -31,6 +31,7 @@ import {
   waitForAria,
   waitForFunction,
   waitForFunctionWithTries,
+  waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
 
@@ -314,11 +315,10 @@ export async function disableInlineBreakpointForLine(line: number, index: number
 export async function checkBreakpointDidNotActivate() {
   await step('check that the script did not pause', async () => {
     // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
-    const pauseIndicators = await $$(PAUSE_INDICATOR_SELECTOR);
-    const breakpointIndicator = await Promise.all(pauseIndicators.map(elements => {
-      return elements.evaluate(el => el.className);
-    }));
-    assert.lengthOf(breakpointIndicator, 0, 'script had been paused');
+
+    // TODO: it should actually wait for rendering to finish.
+    await drainFrontendTaskQueue();
+    await waitForNone(PAUSE_INDICATOR_SELECTOR);
   });
 }
 

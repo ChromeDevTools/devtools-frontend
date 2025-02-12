@@ -1385,7 +1385,6 @@ export type PairableUserTiming = UserTiming&PairableAsync;
 export interface PerformanceMeasureBegin extends PairableUserTiming {
   args: Args&{
     detail?: string,
-    stackTrace?: CallFrame[],
     callTime?: Micro,
     traceId?: number,
   };
@@ -1399,7 +1398,6 @@ export interface PerformanceMark extends UserTiming {
   args: Args&{
     data?: ArgsData & {
       detail?: string,
-      stackTrace?: CallFrame[],
       callTime?: Micro,
     },
   };

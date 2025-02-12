@@ -25,6 +25,7 @@ import {
   getEventOfType,
   getMainThread,
   makeCompleteEvent,
+  makeInstantEvent,
   makeMockRendererHandlerData,
   makeMockSamplesHandlerData,
   makeProfileCall,
@@ -705,6 +706,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: '1,058.3\xA0ms',
         },
         {title: 'Details', value: '{   "hello": "world"\n}'},
+        {title: undefined, value: '(anonymous) @ localhost:8787/perf-details/app.js:1:12'}
       ]);
     });
 
@@ -919,7 +921,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
       );
     });
-    it('renders the stack trace of extension entries properly', async function() {
+    async function basicStackTraceParsedTrace():
+        Promise<Readonly<Trace.Handlers.Types.EnabledHandlerDataWithMeta<typeof Trace.Handlers.ModelHandlers>>> {
+      const pid = 0;
+      const traceId = 0;
+      const tid = 0;
       Common.Linkifier.registerLinkifier({
         contextTypes() {
           return [Timeline.CLSLinkifier.CLSRect];
@@ -929,90 +935,139 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
       });
 
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
-      TraceLoader.initTraceBoundsManager(parsedTrace);
-      const [extensionMarker] = parsedTrace.ExtensionTraceData.extensionMarkers.values();
-      const [extensionTrackData] = parsedTrace.ExtensionTraceData.extensionTrackData.values();
-      const [[extensionTrackEntry]] = Object.values(extensionTrackData.entriesByTrack);
+      // Build the following hierarchy
+      //       |-----------------v8.run--------------------|
+      //        |--V8.ParseFuntion--||---------f1-------|
+      //                             |---f2---||---f3---|
+      //                             |measure|  |mark|
+      const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500, '', pid, tid);
+      const v8Run = makeCompleteEvent('v8.run', 10, 490, '', pid, tid);
+      const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1, '', pid, tid);
+      const function1 = makeProfileCall('function 1', 300, 130, pid, tid);
+      const function2 = makeProfileCall('function 2', 300, 50, pid, tid);
+      const function3 = makeProfileCall('function 3', 351, 20, pid, tid);
+      const measure = makeCompleteEvent(Trace.Types.Events.Name.USER_TIMING, 300, 50, 'blink.user_timing', pid, tid) as
+          unknown as Trace.Types.Events.PerformanceMeasureBegin;
+      const measureTrace = makeCompleteEvent(Trace.Types.Events.Name.USER_TIMING_MEASURE, 300, 50, 'cat', pid, tid) as
+          Trace.Types.Events.UserTimingMeasure;
+      const mark = makeInstantEvent('Mark', 352, 'blink.user_timing', pid, tid);
+
+      const rendererHandlerData = makeMockRendererHandlerData(
+          [evaluateScript, v8Run, parseFunction, function1, function2, measure, measureTrace, function3, mark]);
+      measureTrace.args.traceId = traceId;
+      measure.args.traceId = traceId;
+      Trace.Handlers.ModelHandlers.UserTimings.handleEvent(measureTrace);
+      await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+      const timingsData = Trace.Handlers.ModelHandlers.UserTimings.data();
+
+      const traceData = getBaseTraceParseModelData({UserTimings: timingsData, Renderer: rendererHandlerData});
+      TraceLoader.initTraceBoundsManager(traceData);
+      return traceData;
+    }
+    it('renders the stack trace of extension entries properly', async function() {
+      const traceData = await basicStackTraceParsedTrace();
+      const [function1, function2, function3] =
+          traceData.Renderer.allTraceEntries.filter(Trace.Types.Events.isProfileCall);
+      const mark = traceData.Renderer.allTraceEntries.find(event => event.name === 'Mark');
+      const measure =
+          traceData.Renderer.allTraceEntries.find(event => event.name === Trace.Types.Events.Name.USER_TIMING) as
+          Trace.Types.Events.UserTimingMeasure;
+      assert.exists(mark);
+      assert.exists(measure);
+
+      const markerExtensionEntry = {
+        cat: 'devtools.extension',
+        ts: function3.ts,
+        pid: function3.pid,
+        tid: function3.tid,
+        args: {},
+        rawSourceEvent: mark,
+      } as unknown as Trace.Types.Extensions.SyntheticExtensionEntry;
 
       const markerDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          extensionMarker,
+          traceData,
+          markerExtensionEntry,
           new Components.Linkifier.Linkifier(),
           false,
           null,
       );
       const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
       assert.exists(markerStackTraceData);
-      assert.lengthOf(markerStackTraceData, 15);
       assert.deepEqual(
-          markerStackTraceData.slice(0, 3),
+          markerStackTraceData,
           [
-            'mockChangeDetection @ localhost:3000/static/js/bundle.js:282:31',
-            'appendACorgi @ localhost:3000/static/js/bundle.js:216:24',
-            'invokeGuardedCallbackDev @ localhost:3000/static/js/bundle.js:11204:70',
+            `${function3.callFrame.functionName} @ `,
+            `${function1.callFrame.functionName} @ `,
           ],
       );
 
+      const mockExtensionTrackEntry = {
+        cat: 'devtools.extension',
+        ts: function2.ts,
+        pid: function2.pid,
+        tid: function2.tid,
+        args: {},
+        rawSourceEvent: {
+          cat: 'blink.user_timing',
+          args: {traceId: measure.args.traceId},
+          ph: Trace.Types.Events.Phase.ASYNC_NESTABLE_START,
+        },
+      } as Trace.Types.Extensions.SyntheticExtensionEntry;
+
       const trackEntryDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          extensionTrackEntry,
+          traceData,
+          mockExtensionTrackEntry,
           new Components.Linkifier.Linkifier(),
           false,
           null,
       );
       const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
       assert.exists(trackEntryStackTraceData);
-      assert.lengthOf(trackEntryStackTraceData, 14);
-      assert.deepEqual(
-          trackEntryStackTraceData.slice(0, 3),
-          [
-            'appendACorgi @ localhost:3000/static/js/bundle.js:216:24',
-            'invokeGuardedCallbackDev @ localhost:3000/static/js/bundle.js:11204:70',
-            'invokeGuardedCallback @ localhost:3000/static/js/bundle.js:11347:35',
-          ],
-      );
+      assert.deepEqual(trackEntryStackTraceData, [
+        `${function2.callFrame.functionName} @ `,
+        `${function1.callFrame.functionName} @ `,
+      ]);
     });
     it('renders the stack trace of user timings properly', async function() {
-      Common.Linkifier.registerLinkifier({
-        contextTypes() {
-          return [Timeline.CLSLinkifier.CLSRect];
-        },
-        async loadLinkifier() {
-          return Timeline.CLSLinkifier.Linkifier.instance();
-        },
-      });
+      const traceData = await basicStackTraceParsedTrace();
+      const [function1, function2, function3] =
+          traceData.Renderer.allTraceEntries.filter(Trace.Types.Events.isProfileCall);
+      const mark = traceData.Renderer.allTraceEntries.find(event => event.name === 'Mark');
+      const measure =
+          traceData.Renderer.allTraceEntries.find(event => event.name === Trace.Types.Events.Name.USER_TIMING);
+      assert.exists(mark);
+      assert.exists(measure);
 
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
-      TraceLoader.initTraceBoundsManager(parsedTrace);
-      const [performanceMark] = parsedTrace.UserTimings.performanceMarks.values();
-      const [performanceMeasure] = parsedTrace.UserTimings.performanceMeasures.values();
-
-      const markDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          performanceMark,
+      const markerDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          mark,
           new Components.Linkifier.Linkifier(),
           false,
           null,
       );
-      const markStackTraceData = getStackTraceForDetailsElement(markDetails);
+      const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
+      assert.exists(markerStackTraceData);
       assert.deepEqual(
-          markStackTraceData,
-          ['addTimingMark @ chromedevtools.github.io/performance-stories/user-timings/app.js:2:1'],
+          markerStackTraceData,
+          [
+            `${function3.callFrame.functionName} @ `,
+            `${function1.callFrame.functionName} @ `,
+          ],
       );
 
-      const measureDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
-          parsedTrace,
-          performanceMeasure,
+      const trackEntryDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          traceData,
+          measure,
           new Components.Linkifier.Linkifier(),
           false,
           null,
       );
-      const measureStackTraceData = getStackTraceForDetailsElement(measureDetails);
-      assert.deepEqual(
-          measureStackTraceData,
-          ['addTimingMeasure @ chromedevtools.github.io/performance-stories/user-timings/app.js:2:1'],
-      );
+      const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
+      assert.exists(trackEntryStackTraceData);
+      assert.deepEqual(trackEntryStackTraceData, [
+        `${function2.callFrame.functionName} @ `,
+        `${function1.callFrame.functionName} @ `,
+      ]);
     });
     it('renders the warning for a trace event in its details', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');

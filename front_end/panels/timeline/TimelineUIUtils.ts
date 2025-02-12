@@ -1576,7 +1576,8 @@ export class TimelineUIUtils {
     }
 
     const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
-    if (Trace.Types.Events.isProfileCall(event) || initiator || initiatorFor || stackTrace ||
+    if (Trace.Types.Events.isUserTiming(event) || Trace.Types.Extensions.isSyntheticExtensionEntry(event) ||
+        Trace.Types.Events.isProfileCall(event) || initiator || initiatorFor || stackTrace ||
         parsedTrace?.Invalidations.invalidationsForEvent.get(event)) {
       await TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }

@@ -39,12 +39,6 @@ export function stackTraceInEvent(event: Types.Events.Event): Types.Events.CallF
   if (Types.Events.isUpdateLayoutTree(event)) {
     return event.args.beginData?.stackTrace || null;
   }
-  if (Types.Extensions.isSyntheticExtensionEntry(event)) {
-    return stackTraceInEvent(event.rawSourceEvent);
-  }
-  if (Types.Events.isSyntheticUserTiming(event)) {
-    return stackTraceInEvent(event.rawSourceEvent);
-  }
   if (Types.Events.isFunctionCall(event)) {
     const data = event.args.data;
     if (!data) {
@@ -686,6 +680,9 @@ export function eventContainsTimestamp(event: Types.Events.Event, ts: Types.Timi
 export function extractSampleTraceId(event: Types.Events.Event): number|null {
   if (Types.Events.isConsoleRunTask(event) || Types.Events.isConsoleTimeStamp(event)) {
     return event.args?.data?.sampleTraceId || null;
+  }
+  if (Types.Events.isUserTimingMeasure(event)) {
+    return event.args.sampleTraceId;
   }
   return null;
 }

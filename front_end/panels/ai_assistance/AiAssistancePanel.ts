@@ -404,7 +404,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     // If there already is an agent and if it is not empty,
     // we don't automatically change the agent. In addition to this,
     // we don't change the current agent when there is a message in flight.
-    if ((this.#currentAgent && !this.#currentAgent.isEmpty) || this.#viewProps.isLoading) {
+    if ((this.#currentAgent && !this.#currentAgent.isEmpty) || this.#isLoading) {
       return;
     }
 

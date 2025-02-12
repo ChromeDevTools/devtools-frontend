@@ -689,6 +689,84 @@ describeWithEnvironment('FreestylerPanel', () => {
       assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
     });
 
+    it('should select the performance insights agent if it is enabled', async () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsAiAssistancePerformanceAgent: {
+          enabled: true,
+          insightsEnabled: true,
+        },
+      });
+      panel = new AiAssistance.AiAssistancePanel(mockView, {
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      mockView.lastCall.args[0].onTextSubmit('test');
+      await drainMicroTasks();
+      UI.Context.Context.instance().setFlavor(
+          TimelinePanel.TimelinePanel.TimelinePanel,
+          sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
+        {
+          entity: AiAssistance.ChatMessageEntity.USER,
+          text: 'test',
+        },
+        {
+          answer: 'test',
+          entity: AiAssistance.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
+      assert.instanceOf(button, HTMLElement);
+      dispatchClickEvent(button);
+      assert.deepEqual(mockView.lastCall.args[0].messages, []);
+      assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
+    });
+
+    it('should select the Dr Jones performance agent if insights are not enabled', async () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsAiAssistancePerformanceAgent: {
+          enabled: true,
+          insightsEnabled: false,
+        },
+      });
+      panel = new AiAssistance.AiAssistancePanel(mockView, {
+        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      mockView.lastCall.args[0].onTextSubmit('test');
+      await drainMicroTasks();
+      UI.Context.Context.instance().setFlavor(
+          TimelinePanel.TimelinePanel.TimelinePanel,
+          sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
+        {
+          entity: AiAssistance.ChatMessageEntity.USER,
+          text: 'test',
+        },
+        {
+          answer: 'test',
+          entity: AiAssistance.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
+      assert.instanceOf(button, HTMLElement);
+      dispatchClickEvent(button);
+      assert.deepEqual(mockView.lastCall.args[0].messages, []);
+      assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE);
+    });
+
     it('should switch agents and restore history', async () => {
       panel = new AiAssistance.AiAssistancePanel(mockView, {
         aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),

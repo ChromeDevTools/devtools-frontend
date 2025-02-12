@@ -442,12 +442,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetAgentType = AgentType.NETWORK;
     } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
       targetAgentType = AgentType.FILE;
-    } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-      targetAgentType = AgentType.PERFORMANCE;
     } else if (
         isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled &&
         hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
       targetAgentType = AgentType.PERFORMANCE_INSIGHT;
+    } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
+      targetAgentType = AgentType.PERFORMANCE;
     }
 
     const agent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;

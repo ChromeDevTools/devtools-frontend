@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Freestyler from '../ai_assistance.js';
@@ -183,7 +184,7 @@ css
 
     describe('no agent empty state', () => {
       it('should show feature cards for enabled features', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsFreestyler: {
             enabled: true,
           },
@@ -209,12 +210,10 @@ css
         assert.strictEqual(featureCards[1].querySelector('.feature-card-content h3')?.textContent, 'Network');
         assert.strictEqual(featureCards[2].querySelector('.feature-card-content h3')?.textContent, 'Files');
         assert.strictEqual(featureCards[3].querySelector('.feature-card-content h3')?.textContent, 'Performance');
-
-        stub.restore();
       });
 
       it('should not show any feature cards if none of the entrypoints are available', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsFreestyler: {
             enabled: false,
           },
@@ -236,8 +235,6 @@ css
         const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
         assert.isDefined(featureCards);
         assert.strictEqual(featureCards?.length, 0);
-
-        stub.restore();
       });
     });
   });

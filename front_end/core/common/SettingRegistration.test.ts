@@ -8,7 +8,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Root from '../root/root.js';
+import * as Root from '../root/root.js';
 
 import * as Common from './common.js';
 
@@ -108,6 +108,13 @@ describe('SettingRegistration', () => {
 
   it('can handle settings with condition which depends on host config', () => {
     const configSettingName = 'mock-setting-with-host-config';
+    Object.assign(Root.Runtime.hostConfig, {
+      devToolsConsoleInsights: {
+        modelId: 'mockModel',
+        temperature: -1,
+        enabled: true,
+      },
+    });
     Common.Settings.registerSettingExtension({
       settingName: configSettingName,
       settingType: Common.Settings.SettingType.BOOLEAN,
@@ -124,13 +131,6 @@ describe('SettingRegistration', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      config: {
-        devToolsConsoleInsights: {
-          modelId: 'mockModel',
-          temperature: -1,
-          enabled: true,
-        },
-      } as Root.Runtime.HostConfig,
     });
     const setting = Common.Settings.Settings.instance().moduleSetting(configSettingName);
     assert.isNotNull(setting);

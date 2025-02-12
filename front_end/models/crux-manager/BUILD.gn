@@ -11,6 +11,7 @@ devtools_module("crux-manager") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../emulation:bundle",
   ]

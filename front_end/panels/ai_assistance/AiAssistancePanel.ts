@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -339,8 +340,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #getChatUiState(): ChatViewState {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const blockedByAge = config.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     return (this.#aiAssistanceEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? ChatViewState.CHAT_VIEW :
                                                                                      ChatViewState.CONSENT_VIEW;
   }
@@ -427,7 +427,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
 
-    const config = Common.Settings.Settings.instance().getHostConfig();
+    const {hostConfig} = Root.Runtime;
     const isElementsPanelVisible =
         Boolean(UI.Context.Context.instance().flavor(ElementsPanel.ElementsPanel.ElementsPanel));
     const isNetworkPanelVisible = Boolean(UI.Context.Context.instance().flavor(NetworkPanel.NetworkPanel.NetworkPanel));
@@ -436,17 +436,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel));
 
     let targetAgentType: AgentType|undefined = undefined;
-    if (isElementsPanelVisible && config.devToolsFreestyler?.enabled) {
+    if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
       targetAgentType = AgentType.STYLING;
-    } else if (isNetworkPanelVisible && config.devToolsAiAssistanceNetworkAgent?.enabled) {
+    } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
       targetAgentType = AgentType.NETWORK;
-    } else if (isSourcesPanelVisible && config.devToolsAiAssistanceFileAgent?.enabled) {
+    } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
       targetAgentType = AgentType.FILE;
-    } else if (isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled) {
+    } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetAgentType = AgentType.PERFORMANCE;
     } else if (
-        isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled &&
-        config.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
+        isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled &&
+        hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
       targetAgentType = AgentType.PERFORMANCE_INSIGHT;
     }
 
@@ -1122,16 +1122,16 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 }
 
 function isAiAssistancePatchingEnabled(): boolean {
-  const config = Common.Settings.Settings.instance().getHostConfig();
-  return Boolean(config.devToolsFreestyler?.patching);
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.patching);
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
-  const config = Common.Settings.Settings.instance().getHostConfig();
-  return !config.aidaAvailability?.disallowLogging;
+  const {hostConfig} = Root.Runtime;
+  return !hostConfig.aidaAvailability?.disallowLogging;
 }
 
 function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
-  const config = Common.Settings.Settings.instance().getHostConfig();
-  return Boolean(config.devToolsFreestyler?.functionCalling);
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.functionCalling);
 }

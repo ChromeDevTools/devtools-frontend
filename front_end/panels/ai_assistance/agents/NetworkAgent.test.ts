@@ -4,13 +4,12 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {
-  getGetHostConfigStub,
-} from '../../../testing/EnvironmentHelpers.js';
+import {} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -27,7 +26,7 @@ describeWithMockConnection('NetworkAgent', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   function mockHostConfig(modelId?: string, temperature?: number) {
-    getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       devToolsAiAssistanceNetworkAgent: {
         modelId,
         temperature,

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 
@@ -139,7 +140,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
      * This behaviour has been approved by Chrome Privacy as part of the launch
      * review.
      */
-    const hostConfig = Common.Settings.Settings.instance().getHostConfig();
+    const {hostConfig} = Root.Runtime;
     const useSessionStorage = !hostConfig || hostConfig.isOffTheRecord === true;
     const storageTypeForConsent =
         useSessionStorage ? Common.Settings.SettingStorageType.SESSION : Common.Settings.SettingStorageType.GLOBAL;

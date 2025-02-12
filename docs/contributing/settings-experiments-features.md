@@ -131,9 +131,9 @@ out/Default/chrome --enable-features="DevToolsNewFeature:string_param/foo/double
 
 ### In DevTools, use the new property added to HostConfig
 
-* Update the type definition in [`Runtime.ts`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/core/root/Runtime.ts;l=326;drc=a1e6997df9503f1c29f84e7ffebcdadbaa91ed71).
-* Update the dummy value in [`InspectorFrontendHost.ts`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/core/host/InspectorFrontendHost.ts;l=401;drc=197a33e1793066c8d32b8670e06cd55364121537).
-* For tests, update the stub in [`EnvironmentHelpers.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/testing/EnvironmentHelpers.ts;l=494;drc=f1699bd12f8a486c749a849561391d890208f613).
-* Access the host config via `Common.Settings.Settings.instance().getHostConfig()`.
+* Update the type definition in [`Runtime.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/root/Runtime.ts).
+* Update the dummy value returned by `getHostConfig` in [`InspectorFrontendHost.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/InspectorFrontendHost.ts).
+* For tests, update the `HOST_CONFIG` in [`EnvironmentHelpers.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/testing/EnvironmentHelpers.ts).
+* Access the host config via `Root.Runtime.hostConfig`.
 
 Please refer to this [example CL](https://crrev.com/c/5626314).

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Root from '../root/root.js';
+import * as Root from '../root/root.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
@@ -268,14 +268,14 @@ export class AidaClient {
       functionality_type: FunctionalityType.EXPLAIN_ERROR,
       client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
     };
-    const config = Common.Settings.Settings.instance().getHostConfig();
+    const {hostConfig} = Root.Runtime;
     let temperature = -1;
     let modelId = '';
-    if (config.devToolsConsoleInsights?.enabled) {
-      temperature = config.devToolsConsoleInsights.temperature ?? -1;
-      modelId = config.devToolsConsoleInsights.modelId || '';
+    if (hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = hostConfig.devToolsConsoleInsights.modelId || '';
     }
-    const disallowLogging = config.aidaAvailability?.disallowLogging ?? true;
+    const disallowLogging = hostConfig.aidaAvailability?.disallowLogging ?? true;
 
     if (temperature >= 0) {
       request.options ??= {};
@@ -498,9 +498,9 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
     const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
-      const config = await new Promise<Root.Runtime.HostConfig>(
-          resolve => InspectorFrontendHostInstance.getHostConfig(config => resolve(config)));
-      Common.Settings.Settings.instance().setHostConfig(config);
+      const config =
+          await new Promise<Root.Runtime.HostConfig>(resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
+      Object.assign(Root.Runtime.hostConfig, config);
       this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
     }
   }

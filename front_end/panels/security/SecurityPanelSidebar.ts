@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -92,7 +93,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.sidebarTree.element.classList.add('security-sidebar');
     this.contentElement.appendChild(this.sidebarTree.element);
 
-    if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled) {
+    if (Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled) {
       const privacyTreeSection = this.#addSidebarSection(i18nString(UIStrings.privacy), 'privacy');
       this.#cookieControlsTreeElement =
           new CookieControlsTreeElement(i18nString(UIStrings.flagControls), 'cookie-flag-controls');

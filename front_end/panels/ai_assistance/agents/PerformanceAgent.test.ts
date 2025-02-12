@@ -3,16 +3,17 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {CallTreeContext, PerformanceAgent, ResponseType} from '../ai_assistance.js';
 
 describeWithEnvironment('PerformanceAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
-    getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       devToolsAiAssistancePerformanceAgent: {
         modelId,
         temperature,

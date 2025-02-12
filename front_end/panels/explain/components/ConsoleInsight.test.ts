@@ -4,12 +4,13 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import {
   dispatchClickEvent,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Explain from '../explain.js';
 
 describeWithEnvironment('ConsoleInsight', () => {
@@ -71,7 +72,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('shows opt-in teaser when blocked by age', async () => {
-    const stub = getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       aidaAvailability: {
         blockedByAge: true,
       },
@@ -90,7 +91,6 @@ describeWithEnvironment('ConsoleInsight', () => {
           'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
         ],
     );
-    stub.restore();
   });
 
   it('generates an explanation when the user logs in', async () => {
@@ -191,7 +191,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   const reportsRating = (positive: boolean) => async () => {
-    const stub = getGetHostConfigStub({});
+    Object.assign(Root.Runtime.hostConfig, {});
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
     const aidaClient = getTestAidaClient();
     component = new Explain.ConsoleInsight(
@@ -219,14 +219,13 @@ describeWithEnvironment('ConsoleInsight', () => {
     });
     // Can only rate once.
     assert(aidaClient.registerClientEvent.calledOnce);
-    stub.restore();
   };
 
   it('reports positive rating', reportsRating(true));
   it('reports negative rating', reportsRating(false));
 
   it('has no thumbs up/down buttons if logging is disabled', async () => {
-    const stub = getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       aidaAvailability: {
         disallowLogging: true,
       },
@@ -242,8 +241,6 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.isNull(thumbsUpButton);
     const thumbsDownButton = component.shadowRoot!.querySelector('.rating [data-rating="false"]');
     assert.isNull(thumbsDownButton);
-
-    stub.restore();
   });
 
   it('report if the user is not logged in', async () => {

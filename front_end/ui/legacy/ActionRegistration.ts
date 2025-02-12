@@ -263,13 +263,10 @@ export function getRegisteredActionExtensions(): Array<Action> {
           }
         }
 
-        return Root.Runtime.Runtime.isDescriptorEnabled(
-            {
-              experiment: action.experiment(),
-              condition: action.condition(),
-            },
-            Common.Settings.Settings.instance().getHostConfig(),
-        );
+        return Root.Runtime.Runtime.isDescriptorEnabled({
+          experiment: action.experiment(),
+          condition: action.condition(),
+        });
       })
       .sort((firstAction, secondAction) => {
         const order1 = firstAction.order() || 0;

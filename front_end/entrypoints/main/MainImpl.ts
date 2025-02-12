@@ -149,21 +149,22 @@ export class MainImpl {
   async #loaded(): Promise<void> {
     console.timeStamp('Main._loaded');
     Root.Runtime.Runtime.setPlatform(Host.Platform.platform());
-    const prefsPromise = new Promise<{[key: string]: string}>(resolve => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve);
-    });
-    const configPromise = new Promise<Root.Runtime.HostConfig>(resolve => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(resolve);
-    });
-    const [prefs, config] = await Promise.all([prefsPromise, configPromise]);
+    const [config, prefs] = await Promise.all([
+      new Promise<Root.Runtime.HostConfig>(resolve => {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.getHostConfig(resolve);
+      }),
+      new Promise<{[key: string]: string}>(
+          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getPreferences(resolve)),
+    ]);
 
     console.timeStamp('Main._gotPreferences');
     this.#initializeGlobalsForLayoutTests();
-    this.createSettings(prefs, config);
+    Object.assign(Root.Runtime.hostConfig, config);
+    this.createSettings(prefs);
     await this.requestAndRegisterLocaleData();
 
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync-preferences').get());
-    const veLogging = Common.Settings.Settings.instance().getHostConfig()?.devToolsVeLogging;
+    const veLogging = config.devToolsVeLogging;
     if (veLogging?.enabled) {
       if (veLogging?.testing) {
         VisualLogging.setVeDebugLoggingEnabled(true, VisualLogging.DebugLoggingFormat.TEST);
@@ -229,11 +230,7 @@ export class MainImpl {
     }
   }
 
-  createSettings(
-      prefs: {
-        [x: string]: string,
-      },
-      config: Root.Runtime.HostConfig): void {
+  createSettings(prefs: {[x: string]: string}): void {
     this.#initializeExperiments();
     let storagePrefix = '';
     if (Host.Platform.isCustomDevtoolsFrontend()) {
@@ -277,7 +274,7 @@ export class MainImpl {
     // setting can't change storage buckets during a single DevTools session.
     const syncedStorage = new Common.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
     const globalStorage = new Common.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
-    Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage, config});
+    Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage});
 
     if (!Host.InspectorFrontendHost.isUnderTest()) {
       new Common.Settings.VersionController().updateVersion();
@@ -533,7 +530,7 @@ export class MainImpl {
 
     ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.instance({
       forceNew: true,
-      hostConfig: Common.Settings.Settings.instance().getHostConfig(),
+      hostConfig: Root.Runtime.hostConfig,
       pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader.instance(),
       targetManager,
     });
@@ -970,8 +967,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
     contextMenu.appendItemsAtLocation('mainMenu');
     const moreTools =
         contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools), false, 'more-tools');
-    const viewExtensions =
-        UI.ViewManager.getRegisteredViewExtensions(Common.Settings.Settings.instance().getHostConfig());
+    const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
     viewExtensions.sort((extension1, extension2) => {
       const title1 = extension1.title();
       const title2 = extension2.title();

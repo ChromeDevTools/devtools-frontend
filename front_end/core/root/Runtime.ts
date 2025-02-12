@@ -80,12 +80,7 @@ export class Runtime {
     return runtimePlatform;
   }
 
-  static isDescriptorEnabled(
-      descriptor: {
-        experiment: ((string | undefined)|null),
-        condition?: Condition,
-      },
-      config?: HostConfig): boolean {
+  static isDescriptorEnabled(descriptor: {experiment?: string|null, condition?: Condition}): boolean {
     const {experiment} = descriptor;
     if (experiment === '*') {
       return true;
@@ -97,7 +92,7 @@ export class Runtime {
       return false;
     }
     const {condition} = descriptor;
-    return condition ? condition(config) : true;
+    return condition ? condition(hostConfig) : true;
   }
 
   loadLegacyModule(modulePath: string): Promise<void> {
@@ -412,13 +407,19 @@ export interface HostConfigThirdPartyCookieControls {
   managedBlockThirdPartyCookies: string|boolean;
 }
 
-// We use `RecursivePartial` here to enforce that DevTools code is able to
-// handle `HostConfig` objects of an unexpected shape. This can happen if
-// the implementation in the Chromium backend is changed without correctly
-// updating the DevTools frontend. Or if remote debugging a different version
-// of Chrome, resulting in the local browser window and the local DevTools
-// window being of different versions, and consequently potentially having
-// differently shaped `HostConfig`s.
+/**
+ * The host configuration that we expect from the DevTools back-end.
+ *
+ * We use `RecursivePartial` here to enforce that DevTools code is able to
+ * handle `HostConfig` objects of an unexpected shape. This can happen if
+ * the implementation in the Chromium backend is changed without correctly
+ * updating the DevTools frontend. Or if remote debugging a different version
+ * of Chrome, resulting in the local browser window and the local DevTools
+ * window being of different versions, and consequently potentially having
+ * differently shaped `HostConfig`s.
+ *
+ * @see hostConfig
+ */
 export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   aidaAvailability: AidaAvailability,
   devToolsConsoleInsights: HostConfigConsoleInsights,
@@ -439,6 +440,22 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
 }>;
+
+/**
+ * The host configuration for this DevTools instance.
+ *
+ * This is initialized early during app startup and should not be modified
+ * afterwards. In some cases it can be necessary to re-request the host
+ * configuration from Chrome while DevTools is already running. In these
+ * cases, the new host configuration should be reflected here, e.g.:
+ *
+ * ```js
+ * const config = await new Promise<Root.Runtime.HostConfig>(
+ *   resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
+ * Object.assign(Root.runtime.hostConfig, config);
+ * ```
+ */
+export const hostConfig: HostConfig = Object.create(null);
 
 /**
  * When defining conditions make sure that objects used by the function have

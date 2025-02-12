@@ -13,6 +13,7 @@ devtools_module("workspace_diff") {
   deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/root:bundle",
     "../../models/formatter:bundle",
     "../../models/persistence:bundle",
     "../../models/text_utils:bundle",

@@ -58,11 +58,12 @@ export class Settings {
   #eventSupport: ObjectWrapper<GenericEvents>;
   #registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
-  #config: Root.Runtime.HostConfig;
 
   private constructor(
-      readonly syncedStorage: SettingsStorage, readonly globalStorage: SettingsStorage,
-      readonly localStorage: SettingsStorage, config?: Root.Runtime.HostConfig) {
+      readonly syncedStorage: SettingsStorage,
+      readonly globalStorage: SettingsStorage,
+      readonly localStorage: SettingsStorage,
+  ) {
     this.#sessionStorage = new SettingsStorage({});
 
     this.settingNameSet = new Set();
@@ -73,12 +74,12 @@ export class Settings {
     this.#registry = new Map();
     this.moduleSettings = new Map();
 
-    this.#config = config || {};
     for (const registration of this.getRegisteredSettings()) {
       const {settingName, defaultValue, storageType} = registration;
       const isRegex = registration.settingType === SettingType.REGEX;
 
-      const evaluatedDefaultValue = typeof defaultValue === 'function' ? defaultValue(this.#config) : defaultValue;
+      const evaluatedDefaultValue =
+          typeof defaultValue === 'function' ? defaultValue(Root.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === 'string' ?
           this.createRegExpSetting(settingName, evaluatedDefaultValue, undefined, storageType) :
           this.createSetting(settingName, evaluatedDefaultValue, storageType);
@@ -94,7 +95,7 @@ export class Settings {
   }
 
   getRegisteredSettings(): SettingRegistration[] {
-    return getRegisteredSettingsInternal(this.#config);
+    return getRegisteredSettingsInternal();
   }
 
   static hasInstance(): boolean {
@@ -106,15 +107,14 @@ export class Settings {
     syncedStorage: SettingsStorage|null,
     globalStorage: SettingsStorage|null,
     localStorage: SettingsStorage|null,
-    config?: Root.Runtime.HostConfig,
   } = {forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null}): Settings {
-    const {forceNew, syncedStorage, globalStorage, localStorage, config} = opts;
+    const {forceNew, syncedStorage, globalStorage, localStorage} = opts;
     if (!settingsInstance || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
-      settingsInstance = new Settings(syncedStorage, globalStorage, localStorage, config);
+      settingsInstance = new Settings(syncedStorage, globalStorage, localStorage);
     }
 
     return settingsInstance;
@@ -122,14 +122,6 @@ export class Settings {
 
   static removeInstance(): void {
     settingsInstance = undefined;
-  }
-
-  getHostConfig(): Root.Runtime.HostConfig {
-    return this.#config;
-  }
-
-  setHostConfig(config: Root.Runtime.HostConfig): void {
-    this.#config = config;
   }
 
   private registerModuleSetting(setting: Setting<unknown>): void {
@@ -421,7 +413,7 @@ export class Setting<V> {
 
   disabled(): boolean {
     if (this.#registration?.disabledCondition) {
-      const {disabled} = this.#registration.disabledCondition(Settings.instance().getHostConfig());
+      const {disabled} = this.#registration.disabledCondition(Root.Runtime.hostConfig);
       // If registration does not disable it, pass through to #disabled
       // attribute check.
       if (disabled) {
@@ -433,7 +425,7 @@ export class Setting<V> {
 
   disabledReasons(): string[] {
     if (this.#registration?.disabledCondition) {
-      const result = this.#registration.disabledCondition(Settings.instance().getHostConfig());
+      const result = this.#registration.disabledCondition(Root.Runtime.hostConfig);
       if (result.disabled) {
         return result.reasons;
       }

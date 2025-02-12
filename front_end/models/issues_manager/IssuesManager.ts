@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
@@ -307,7 +308,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
 
   #onIssueAddedEvent(event: Common.EventTarget.EventTargetEvent<SDK.IssuesModel.IssueAddedEvent>): void {
     const {issuesModel, inspectorIssue} = event.data;
-    const isPrivacyUiEnabled = Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled;
+    const isPrivacyUiEnabled = Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled;
 
     const issues = createIssuesFromProtocolIssue(issuesModel, inspectorIssue);
     for (const issue of issues) {

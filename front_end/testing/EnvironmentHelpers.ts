@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Sinon from 'sinon';
-
 import * as Common from '../core/common/common.js';
 import * as Host from '../core/host/host.js';
 import * as i18n from '../core/i18n/i18n.js';
@@ -503,85 +501,65 @@ export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[]
   });
 }
 
-// This is needed as trying to stub a stub throws
-let hostConfigStub: Sinon.SinonStub<
-    Parameters<Common.Settings.Settings['getHostConfig']>, ReturnType<Common.Settings.Settings['getHostConfig']>>;
-export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.SinonStub {
-  const settings = Common.Settings.Settings.instance();
-
-  if (settings.getHostConfig !== hostConfigStub) {
-    hostConfigStub = sinon.stub(settings, 'getHostConfig');
-  }
-
-  return hostConfigStub.returns({
-    aidaAvailability: {
-      disallowLogging: false,
-      enterprisePolicyValue: 0,
-      ...config.aidaAvailability,
-    },
-    devToolsConsoleInsights: {
-      enabled: false,
-      modelId: '',
-      temperature: -1,
-      ...config.devToolsConsoleInsights,
-    } as Root.Runtime.HostConfigConsoleInsights,
-    devToolsFreestyler: {
-      modelId: '',
-      temperature: -1,
-      enabled: false,
-      ...config.devToolsFreestyler,
-    } as Root.Runtime.HostConfigFreestyler,
-    devToolsAiAssistanceNetworkAgent: {
-      modelId: '',
-      temperature: -1,
-      enabled: false,
-      ...config.devToolsAiAssistanceNetworkAgent,
-    } as Root.Runtime.HostConfigAiAssistanceNetworkAgent,
-    devToolsAiAssistanceFileAgent: {
-      modelId: '',
-      temperature: -1,
-      enabled: false,
-      ...config.devToolsAiAssistanceFileAgent,
-    } as Root.Runtime.HostConfigAiAssistanceFileAgent,
-    devToolsAiAssistancePerformanceAgent: {
-      modelId: '',
-      temperature: -1,
-      enabled: false,
-      insightsEnabled: false,
-      ...config.devToolsAiAssistancePerformanceAgent,
-    } as Root.Runtime.HostConfigAiAssistancePerformanceAgent,
-    devToolsImprovedWorkspaces: {
-      enabled: false,
-      ...config.devToolsImprovedWorkspaces,
-    },
-    devToolsVeLogging: {
-      enabled: true,
-      testing: false,
-    },
-    devToolsWellKnown: {
-      enabled: false,
-      ...config.devToolsWellKnown,
-    },
-    devToolsPrivacyUI: {
-      enabled: false,
-      ...config.devToolsPrivacyUI,
-    } as Root.Runtime.HostConfigPrivacyUI,
-    devToolsEnableOriginBoundCookies: {
-      portBindingEnabled: false,
-      schemeBindingEnabled: false,
-      ...config.devToolsEnableOriginBoundCookies,
-    } as Root.Runtime.HostConfigEnableOriginBoundCookies,
-    devToolsAnimationStylesInStylesTab: {
-      enabled: false,
-      ...config.devToolsAnimationStylesInStylesTab,
-    } as Root.Runtime.HostConfigAnimationStylesInStylesTab,
-    isOffTheRecord: false,
-    thirdPartyCookieControls: {
-      thirdPartyCookieRestrictionEnabled: false,
-      thirdPartyCookieMetadataEnabled: true,
-      thirdPartyCookieHeuristicsEnabled: true,
-      managedBlockThirdPartyCookies: 'Unset',
-      ...config.thirdPartyCookieControls,
-    } as Root.Runtime.HostConfigThirdPartyCookieControls,
-  });
-}
+/**
+ * The default host configuration used for unit tests.
+ */
+export const HOST_CONFIG: Readonly<Root.Runtime.HostConfig> = Object.freeze({
+  aidaAvailability: {
+    disallowLogging: false,
+    enterprisePolicyValue: 0,
+  },
+  devToolsConsoleInsights: {
+    enabled: false,
+    modelId: '',
+    temperature: -1,
+  },
+  devToolsFreestyler: {
+    modelId: '',
+    temperature: -1,
+    enabled: false,
+  },
+  devToolsAiAssistanceNetworkAgent: {
+    modelId: '',
+    temperature: -1,
+    enabled: false,
+  },
+  devToolsAiAssistanceFileAgent: {
+    modelId: '',
+    temperature: -1,
+    enabled: false,
+  },
+  devToolsAiAssistancePerformanceAgent: {
+    modelId: '',
+    temperature: -1,
+    enabled: false,
+    insightsEnabled: false,
+  },
+  devToolsImprovedWorkspaces: {
+    enabled: false,
+  },
+  devToolsVeLogging: {
+    enabled: true,
+    testing: false,
+  },
+  devToolsWellKnown: {
+    enabled: false,
+  },
+  devToolsPrivacyUI: {
+    enabled: false,
+  },
+  devToolsEnableOriginBoundCookies: {
+    portBindingEnabled: false,
+    schemeBindingEnabled: false,
+  },
+  devToolsAnimationStylesInStylesTab: {
+    enabled: false,
+  },
+  isOffTheRecord: false,
+  thirdPartyCookieControls: {
+    thirdPartyCookieRestrictionEnabled: false,
+    thirdPartyCookieMetadataEnabled: true,
+    thirdPartyCookieHeuristicsEnabled: true,
+    managedBlockThirdPartyCookies: 'Unset',
+  },
+});

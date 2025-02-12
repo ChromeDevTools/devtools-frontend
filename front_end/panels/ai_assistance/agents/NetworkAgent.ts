@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as PanelUtils from '../../utils/utils.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
@@ -129,13 +129,13 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier(): string|undefined {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistanceNetworkAgent?.userTier;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options(): RequestOptions {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = config.devToolsAiAssistanceNetworkAgent?.modelId;
+    const {hostConfig} = Root.Runtime;
+    const temperature = hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
 
     return {
       temperature,

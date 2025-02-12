@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -247,20 +246,18 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier(): string|undefined {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-
-    return config.devToolsFreestyler?.userTier;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-
-    return config.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
 
   get options(): RequestOptions {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsFreestyler?.temperature;
-    const modelId = config.devToolsFreestyler?.modelId;
+    const {hostConfig} = Root.Runtime;
+    const temperature = hostConfig.devToolsFreestyler?.temperature;
+    const modelId = hostConfig.devToolsFreestyler?.modelId;
 
     return {
       temperature,

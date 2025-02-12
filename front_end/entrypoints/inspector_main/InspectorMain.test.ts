@@ -9,7 +9,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   createTarget,
-  getGetHostConfigStub,
   stubNoopSettings,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
@@ -76,7 +75,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
     function setBrowserConfig(
         thirdPartyCookieRestrictionEnabled?: boolean, thirdPartyCookieMetadataEnabled?: boolean,
         thirdPartyCookieHeuristicsEnabled?: boolean, managedBlockThirdPartyCookies?: boolean|string) {
-      getGetHostConfigStub({
+      Object.assign(Root.Runtime.hostConfig, {
         thirdPartyCookieControls: {
           thirdPartyCookieRestrictionEnabled,
           thirdPartyCookieHeuristicsEnabled,
@@ -177,7 +176,7 @@ describeWithMockConnection('InspectorMainImpl', () => {
   describe('withNoopSettings', () => {
     beforeEach(() => {
       stubNoopSettings();
-      getGetHostConfigStub({devToolsPrivacyUI: {enabled: false}});
+      Object.assign(Root.Runtime.hostConfig, {devToolsPrivacyUI: {enabled: false}});
     });
 
     it('continues only after primary page target is available', async () => {

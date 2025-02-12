@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
@@ -185,13 +186,13 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistancePerformanceAgent?.userTier;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options(): RequestOptions {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = config.devToolsAiAssistancePerformanceAgent?.modelId;
+    const {hostConfig} = Root.Runtime;
+    const temperature = hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
 
     return {
       temperature,

@@ -865,7 +865,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   override onComputedStyleChanged(): void {
-    if (!Common.Settings.Settings.instance().getHostConfig().devToolsAnimationStylesInStylesTab?.enabled) {
+    if (!Root.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled) {
       return;
     }
 
@@ -1373,8 +1373,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     await this.createNewRuleInStyleSheet(styleSheetHeader);
   }
 
-  private async createNewRuleInStyleSheet(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|
-                                          null): Promise<void> {
+  private async createNewRuleInStyleSheet(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|null):
+      Promise<void> {
     if (!styleSheetHeader) {
       return;
     }

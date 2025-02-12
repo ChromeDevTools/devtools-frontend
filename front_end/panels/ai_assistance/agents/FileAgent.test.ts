@@ -3,19 +3,18 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {createUISourceCode, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {
-  getGetHostConfigStub,
-} from '../../../testing/EnvironmentHelpers.js';
+import {} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {FileAgent, FileContext, ResponseType} from '../ai_assistance.js';
 
 describeWithMockConnection('FileAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
-    getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       devToolsAiAssistanceFileAgent: {
         modelId,
         temperature,

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -34,8 +35,7 @@ describeWithMockConnection('CookieControlsView', () => {
   });
 
   it('should invoke getAffectedUrlsForThirdPartyCookieMetadata upon construction', async () => {
-    Common.Settings.Settings.instance().setHostConfig(
-        {thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
+    Object.assign(Root.Runtime.hostConfig, {thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
 
     target = createTarget();
     const getAffectedUrlsSpy = sinon.spy(target.storageAgent(), 'invoke_getAffectedUrlsForThirdPartyCookieMetadata');
@@ -45,8 +45,7 @@ describeWithMockConnection('CookieControlsView', () => {
   });
 
   it('should invoke getAffectedUrlsForThirdPartyCookieMetadata when a resource is added', async () => {
-    Common.Settings.Settings.instance().setHostConfig(
-        {thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
+    Object.assign(Root.Runtime.hostConfig, {thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
     new Security.CookieControlsView.CookieControlsView(undefined, mockView);
 
     target = createTarget();

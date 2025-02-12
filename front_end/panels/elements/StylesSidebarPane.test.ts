@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -10,7 +11,6 @@ import {
   createTarget,
   describeWithEnvironment,
   describeWithLocale,
-  getGetHostConfigStub,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -125,18 +125,13 @@ describe('StylesSidebarPane', () => {
         setMockConnectionResponseHandler('CSS.getAnimatedStylesForNode', () => response);
       }
 
-      let hostConfigStub: sinon.SinonStub;
       beforeEach(() => {
         sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(document.createTextNode('link')));
-        hostConfigStub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAnimationStylesInStylesTab: {
             enabled: true,
           },
         });
-      });
-
-      afterEach(() => {
-        hostConfigStub.restore();
       });
 
       it('should render transition & animation styles in the styles tab', async () => {

@@ -5,12 +5,13 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, getGetHostConfigStub, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsPanel from '../elements/elements.js';
 import * as NetworkPanel from '../network/network.js';
@@ -113,7 +114,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     it('should render the consent view when blocked by age', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      const stub = getGetHostConfigStub({
+      Object.assign(Root.Runtime.hostConfig, {
         aidaAvailability: {
           blockedByAge: true,
         },
@@ -131,7 +132,6 @@ describeWithEnvironment('FreestylerPanel', () => {
       panel.show(document.body);
 
       sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
-      stub.restore();
     });
 
     it('updates when the user logs in', async () => {
@@ -160,7 +160,6 @@ describeWithEnvironment('FreestylerPanel', () => {
         state: AiAssistance.State.CHAT_VIEW,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       }));
-
       stub.restore();
     });
   });
@@ -178,11 +177,10 @@ describeWithEnvironment('FreestylerPanel', () => {
       assert.instanceOf(button, HTMLElement);
       button.click();
       assert.isTrue(stub.calledWith('chrome-ai'));
-      stub.restore();
     });
 
     it('should allow logging if configured', () => {
-      const stub = getGetHostConfigStub({
+      Object.assign(Root.Runtime.hostConfig, {
         aidaAvailability: {
           disallowLogging: false,
         },
@@ -203,10 +201,15 @@ describeWithEnvironment('FreestylerPanel', () => {
       sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         disable_user_content_logging: false,
       }));
-      stub.restore();
     });
 
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+        }
+      });
       const RPC_ID = 0;
 
       const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
@@ -233,6 +236,12 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should send NEGATIVE rating to aida client when the user clicks on positive rating', () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+        }
+      });
       const RPC_ID = 0;
       const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
       panel = new AiAssistance.AiAssistancePanel(mockView, {
@@ -258,6 +267,12 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should send feedback text with data', () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        aidaAvailability: {
+          enabled: true,
+          disallowLogging: true,
+        }
+      });
       const RPC_ID = 0;
       const feedback = 'This helped me a ton.';
       const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
@@ -637,7 +652,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should select default agent after new chat', async () => {
-      const stub = getGetHostConfigStub({
+      Object.assign(Root.Runtime.hostConfig, {
         devToolsFreestyler: {
           enabled: true,
         },
@@ -672,7 +687,6 @@ describeWithEnvironment('FreestylerPanel', () => {
       dispatchClickEvent(button);
       assert.deepEqual(mockView.lastCall.args[0].messages, []);
       assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
-      stub.restore();
     });
 
     it('should switch agents and restore history', async () => {
@@ -772,7 +786,7 @@ describeWithEnvironment('FreestylerPanel', () => {
   });
 
   it('should select default agent based on open panel after clearing the chat', async () => {
-    const stub = getGetHostConfigStub({
+    Object.assign(Root.Runtime.hostConfig, {
       devToolsFreestyler: {
         enabled: true,
       },
@@ -806,7 +820,6 @@ describeWithEnvironment('FreestylerPanel', () => {
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);
     assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
-    stub.restore();
   });
 
   it('should have empty state after clear chat history', async () => {
@@ -914,7 +927,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should be able to continue same-origin requests', async () => {
-      const stub = getGetHostConfigStub({
+      Object.assign(Root.Runtime.hostConfig, {
         devToolsFreestyler: {
           enabled: true,
         },
@@ -979,15 +992,13 @@ describeWithEnvironment('FreestylerPanel', () => {
           steps: [],
         },
       ]);
-
-      stub.restore();
     });
   });
 
   describe('auto agent selection for panels', () => {
     describe('Elements panel', () => {
       it('should select FREESTYLER agent when the Elements panel is open in initial render', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsFreestyler: {
             enabled: true,
           },
@@ -1007,11 +1018,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         sinon.assert.calledWith(mockView, sinon.match({
           agentType: AiAssistance.AgentType.STYLING,
         }));
-        stub.restore();
       });
 
       it('should update to no agent state when the Elements panel is closed and no other panels are open', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsFreestyler: {
             enabled: true,
           },
@@ -1033,11 +1043,10 @@ describeWithEnvironment('FreestylerPanel', () => {
 
         UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
         assert.isUndefined(mockView.lastCall.args[0].agentType);
-        stub.restore();
       });
 
       it('should render no agent state when Elements panel is open but Freestyler is not enabled', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsFreestyler: {
             enabled: false,
           },
@@ -1055,13 +1064,12 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.show(document.body);
 
         assert.isUndefined(mockView.lastCall.args[0].agentType);
-        stub.restore();
       });
     });
 
     describe('Network panel', () => {
       it('should select DRJONES_NETWORK agent when the Network panel is open in initial render', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistanceNetworkAgent: {
             enabled: true,
           },
@@ -1080,11 +1088,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         sinon.assert.calledWith(mockView, sinon.match({
           agentType: AiAssistance.AgentType.NETWORK,
         }));
-        stub.restore();
       });
 
       it('should update to no agent state when the Network panel is closed and no other panels are open', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistanceNetworkAgent: {
             enabled: true,
           },
@@ -1105,12 +1112,11 @@ describeWithEnvironment('FreestylerPanel', () => {
 
         UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
         assert.isUndefined(mockView.lastCall.args[0].agentType);
-        stub.restore();
       });
 
       it('should render no agent state when Network panel is open but devToolsAiAssistanceNetworkAgent is not enabled',
          () => {
-           const stub = getGetHostConfigStub({
+           Object.assign(Root.Runtime.hostConfig, {
              devToolsAiAssistanceNetworkAgent: {
                enabled: false,
              },
@@ -1128,13 +1134,12 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.show(document.body);
 
            assert.isUndefined(mockView.lastCall.args[0].agentType);
-           stub.restore();
          });
     });
 
     describe('Sources panel', () => {
       it('should select DRJONES_FILE agent when the Sources panel is open in initial render', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistanceFileAgent: {
             enabled: true,
           },
@@ -1153,11 +1158,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         sinon.assert.calledWith(mockView, sinon.match({
           agentType: AiAssistance.AgentType.FILE,
         }));
-        stub.restore();
       });
 
       it('should update to no agent state when the Sources panel is closed and no other panels are open', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistanceFileAgent: {
             enabled: true,
           },
@@ -1178,12 +1182,11 @@ describeWithEnvironment('FreestylerPanel', () => {
 
         UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
         assert.isUndefined(mockView.lastCall.args[0].agentType);
-        stub.restore();
       });
 
       it('should render no agent state when Sources panel is open but devToolsAiAssistanceFileAgent is not enabled',
          () => {
-           const stub = getGetHostConfigStub({
+           Object.assign(Root.Runtime.hostConfig, {
              devToolsAiAssistanceFileAgent: {
                enabled: false,
              },
@@ -1201,13 +1204,12 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.show(document.body);
 
            assert.isUndefined(mockView.lastCall.args[0].agentType);
-           stub.restore();
          });
     });
 
     describe('Performance panel', () => {
       it('should select DRJONES_PERFORMANCE agent when the Performance panel is open in initial render', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistancePerformanceAgent: {
             enabled: true,
           },
@@ -1227,11 +1229,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         sinon.assert.calledWith(mockView, sinon.match({
           agentType: AiAssistance.AgentType.PERFORMANCE,
         }));
-        stub.restore();
       });
 
       it('should update to no agent state when the Performance panel is closed and no other panels are open', () => {
-        const stub = getGetHostConfigStub({
+        Object.assign(Root.Runtime.hostConfig, {
           devToolsAiAssistancePerformanceAgent: {
             enabled: true,
           },
@@ -1253,12 +1254,11 @@ describeWithEnvironment('FreestylerPanel', () => {
 
         UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
         assert.isUndefined(mockView.lastCall.args[0].agentType);
-        stub.restore();
       });
 
       it('should render no agent state when Performance panel is open but devToolsAiAssistancePerformanceAgent is not enabled',
          () => {
-           const stub = getGetHostConfigStub({
+           Object.assign(Root.Runtime.hostConfig, {
              devToolsAiAssistancePerformanceAgent: {
                enabled: false,
              },
@@ -1276,7 +1276,6 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.show(document.body);
 
            assert.isUndefined(mockView.lastCall.args[0].agentType);
-           stub.restore();
          });
     });
   });

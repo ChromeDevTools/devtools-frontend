@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
@@ -124,7 +125,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     // a binding (as part of the kDevToolsImprovedWorkspaces feature).
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         this.#persistence.binding(uiSourceCode) === null &&
-        Common.Settings.Settings.instance().getHostConfig().devToolsImprovedWorkspaces?.enabled) {
+        Root.Runtime.hostConfig.devToolsImprovedWorkspaces?.enabled) {
       return true;
     }
 

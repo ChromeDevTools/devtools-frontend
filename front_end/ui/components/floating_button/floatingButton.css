@@ -17,20 +17,31 @@
   position: relative;
   width: var(--sys-size-8);
   height: var(--sys-size-8);
-  background-color: var(--sys-color-surface);
   box-shadow: var(--sys-elevation-level2);
   border-radius: var(--sys-shape-corner-extra-small);
   display: flex;
   justify-content: center;
   align-items: center;
 
+  :host-context(:not(.theme-with-dark-background)) & {
+    background-color: var(--sys-color-tonal-container);
+  }
+
   :host-context(.theme-with-dark-background) & {
-    border: 1px solid var(--sys-color-neutral-outline);
+    background-color: var(--sys-color-primary);
   }
 
   & .icon {
     width: var(--sys-size-7);
     height: var(--sys-size-7);
+  }
+
+  :host-context(:not(.theme-with-dark-background)) & .icon {
+    color: var(--sys-color-on-tonal-container);
+  }
+
+  :host-context(.theme-with-dark-background) & .icon {
+    color: var(--sys-color-on-primary);
   }
 
   &:not(:disabled):hover::after,

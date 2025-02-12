@@ -5,31 +5,30 @@
  */
 
 .widget {
-  padding: 20px;
   box-sizing: border-box;
   max-width: 400px;
   overflow: hidden;
 }
 
-/* Center-align text in the message class */
-.message {
-  text-align: center;
+.header {
+  display: flex;
+  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+  font: var(--sys-typescale-body2-medium);
 }
 
-.message,
-.button {
-  font-size: larger;
+.message {
+  font: var(--sys-typescale-body4-regular);
   white-space: pre;
-  margin: 10px 0;
+  margin: 0 var(--sys-size-8);
 }
 
 /* Center-align text and added margin to the button class */
 .button {
   text-align: center;
-  margin-top: 20px;
+  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
   display: flex;
   flex-direction: row-reverse;
-  gap: var(--sys-size-6);
+  gap: var(--sys-size-5);
 }
 
 /* Ensure the button has a minimum width */
@@ -50,6 +49,4 @@
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 5px;
-  margin: 0;
 }

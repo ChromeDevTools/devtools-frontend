@@ -974,7 +974,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private async handleContextMenuExclude(
       project: Workspace.Workspace.Project, path: Platform.DevToolsPath.EncodedPathString): Promise<void> {
     const shouldExclude = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.areYouSureYouWantToExcludeThis), undefined, {jslogContext: 'exclude-folder-confirmation'});
+        i18nString(UIStrings.areYouSureYouWantToExcludeThis), undefined, undefined,
+        {jslogContext: 'exclude-folder-confirmation'});
     if (shouldExclude) {
       UI.UIUtils.startBatchUpdate();
       project.excludeFolder(
@@ -985,7 +986,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private async handleContextMenuDelete(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const shouldDelete = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.areYouSureYouWantToDeleteThis), undefined, {jslogContext: 'delete-file-confirmation'});
+        i18nString(UIStrings.areYouSureYouWantToDeleteThis), undefined, undefined,
+        {jslogContext: 'delete-file-confirmation'});
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
@@ -1015,8 +1017,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private async handleDeleteFolder(node: NavigatorTreeNode): Promise<void> {
     const warningMsg =
         `${i18nString(UIStrings.areYouSureYouWantToDeleteFolder)}\n${i18nString(UIStrings.actionCannotBeUndone)}`;
-    const shouldRemove =
-        await UI.UIUtils.ConfirmDialog.show(warningMsg, undefined, {jslogContext: 'delete-folder-confirmation'});
+    const shouldRemove = await UI.UIUtils.ConfirmDialog.show(
+        warningMsg, undefined, undefined, {jslogContext: 'delete-folder-confirmation'});
     if (shouldRemove) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideTabDeleteFolderContextMenu);
       const topNode = this.findTopNonMergedNode(node);
@@ -1111,13 +1113,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       if (!isFileOverrides) {
         if (node instanceof NavigatorGroupTreeNode) {
           contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
-            const warningMessage = `${i18nString(UIStrings.areYouSureYouWantToRemoveThis, {
-              PH1: (node as NavigatorGroupTreeNode).title,
-            })}\n${i18nString(UIStrings.workspaceStopSyncing)}`;
-            const shouldRemove = await UI.UIUtils.ConfirmDialog.show(warningMessage, undefined, {
-              okButtonLabel: i18nString(UIStrings.remove),
-              jslogContext: 'remove-folder-from-workspace-confirmation',
-            });
+            const header =
+                i18nString(UIStrings.areYouSureYouWantToRemoveThis, {PH1: (node as NavigatorGroupTreeNode).title});
+            const shouldRemove =
+                await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.workspaceStopSyncing), header, undefined, {
+                  okButtonLabel: i18nString(UIStrings.remove),
+                  jslogContext: 'remove-folder-from-workspace-confirmation',
+                });
             if (shouldRemove) {
               project.remove();
             }

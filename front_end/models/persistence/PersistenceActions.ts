@@ -192,7 +192,7 @@ export class ContextMenuProvider implements
         i18nString(UIStrings.overrideSourceMappedFileExplanation, {PH1: originalName});
 
     const shouldJumpToDeployedFile = await UI.UIUtils.ConfirmDialog.show(
-        warningMessage, undefined, {jslogContext: 'override-source-mapped-file-warning'});
+        warningMessage, undefined, undefined, {jslogContext: 'override-source-mapped-file-warning'});
 
     if (shouldJumpToDeployedFile) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);

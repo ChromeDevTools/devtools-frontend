@@ -1641,13 +1641,17 @@ export class MessageDialog {
 }
 
 export class ConfirmDialog {
-  static async show(message: string, where?: Element|Document, options?: ConfirmDialogOptions): Promise<boolean> {
+  static async show(message: string, header?: string, where?: Element|Document, options?: ConfirmDialogOptions):
+      Promise<boolean> {
     const dialog = new Dialog(options?.jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
+    if (header) {
+      content.createChild('span', 'header').textContent = header;
+    }
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
     const result = await new Promise<boolean>(resolve => {

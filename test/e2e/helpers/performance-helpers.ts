@@ -96,6 +96,8 @@ export async function searchForComponent(frontend: puppeteer.Page, searchEntry: 
   await frontend.keyboard.press('Tab');
   // TODO: it should actually wait for rendering to finish.
   await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
   await expectVeEvents([
     veKeyDown(''),
     veImpressionsUnder('Panel: timeline', [veImpression(

@@ -43,7 +43,7 @@ export function getStatusText(statusCode: number): string {
     410: 'Gone',
     411: 'Length Required',
     412: 'Precondition Failed',
-    413: 'Payload Too Large',
+    413: 'Content Too Large',
     414: 'URI Too Long',
     415: 'Unsupported Media Type',
     416: 'Range Not Satisfiable',

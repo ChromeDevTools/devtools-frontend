@@ -239,7 +239,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       <devtools-report-section>
         <devtools-button
           aria-label=${i18nString(UIStrings.deleteBucket)}
-          .variant=${Buttons.Button.Variant.PRIMARY}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           @click=${this.#deleteBucket}>
           ${i18nString(UIStrings.deleteBucket)}
         </devtools-button>

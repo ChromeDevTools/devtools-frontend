@@ -576,7 +576,7 @@ export class Widget {
     this.doResize();
   }
 
-  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+  registerRequiredCSS(...cssFiles: Array<{cssContent: string}>): void {
     for (const cssFile of cssFiles) {
       ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
     }

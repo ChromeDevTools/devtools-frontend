@@ -186,7 +186,7 @@ function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): Lit.Templa
 }
 
 function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithStatus):
-    TreeNode<OriginTrialTreeNodeData>[] {
+    Array<TreeNode<OriginTrialTreeNodeData>> {
   return [
     {
       treeNodeData: token,

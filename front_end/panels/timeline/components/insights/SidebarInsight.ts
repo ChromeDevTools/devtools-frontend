@@ -50,7 +50,7 @@ export class InsightProvideOverlays extends Event {
   static readonly eventName = 'insightprovideoverlays';
 
   constructor(
-      public overlays: Array<Overlays.Overlays.TimelineOverlay>,
+      public overlays: Overlays.Overlays.TimelineOverlay[],
       public options: Overlays.Overlays.TimelineOverlaySetOptions) {
     super(InsightProvideOverlays.eventName, {bubbles: true, composed: true});
   }

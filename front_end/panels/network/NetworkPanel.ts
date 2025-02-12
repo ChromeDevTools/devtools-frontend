@@ -389,10 +389,10 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return networkPanelInstance;
   }
 
-  static revealAndFilter(filters: {
-    filterType: NetworkForward.UIFilter.FilterType|null,
+  static revealAndFilter(filters: Array<{
+    filterType: NetworkForward.UIFilter.FilterType | null,
     filterValue: string,
-  }[]): Promise<void> {
+  }>): Promise<void> {
     const panel = NetworkPanel.instance();
     let filterString = '';
     for (const filter of filters) {

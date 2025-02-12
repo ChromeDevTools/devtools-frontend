@@ -59,7 +59,7 @@ export class EventsSerializer {
       const rawEvents = Trace.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
       return rawEvents[eventValues.rawIndex];
     }
-    throw new Error(`Unknown trace event serializable key values: ${(eventValues as Array<unknown>).join('-')}`);
+    throw new Error(`Unknown trace event serializable key values: ${(eventValues as unknown[]).join('-')}`);
   }
 
   static isProfileCallKey(key: Trace.Types.File.SerializableKeyValues): key is Trace.Types.File.ProfileCallKeyValues {

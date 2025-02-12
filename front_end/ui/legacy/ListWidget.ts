@@ -316,7 +316,7 @@ export class Editor<T> {
   private errorMessageContainer: HTMLElement;
   private readonly controls: EditorControl[];
   private readonly controlByName: Map<string, EditorControl>;
-  private readonly validators: ((arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult)[];
+  private readonly validators: Array<(arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult>;
   private commit: (() => void)|null;
   private cancel: (() => void)|null;
   private item: T|null;

@@ -138,7 +138,7 @@ export class FormatterWorkerPool {
         .then(text => text || '');
   }
 
-  parseCSS(content: string, callback: (arg0: boolean, arg1: Array<CSSRule>) => void): void {
+  parseCSS(content: string, callback: (arg0: boolean, arg1: CSSRule[]) => void): void {
     this.runChunkedTask(FormatterActions.FormatterActions.PARSE_CSS, {content}, onDataChunk);
 
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

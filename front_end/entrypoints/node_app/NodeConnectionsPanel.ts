@@ -83,9 +83,9 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
   readonly #callback: (arg0: Adb.NetworkDiscoveryConfig) => void;
   readonly #list: UI.ListWidget.ListWidget<Adb.PortForwardingRule>;
   #editor: UI.ListWidget.Editor<Adb.PortForwardingRule>|null;
-  #networkDiscoveryConfig: {
+  #networkDiscoveryConfig: Array<{
     address: string,
-  }[];
+  }>;
   constructor(callback: (arg0: Adb.NetworkDiscoveryConfig) => void) {
     super();
     this.#callback = callback;

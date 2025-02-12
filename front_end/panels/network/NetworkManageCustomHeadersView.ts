@@ -44,10 +44,10 @@ export class NetworkManageCustomHeadersView extends UI.Widget.VBox implements UI
   private editor?: UI.ListWidget.Editor<CustomHeader>;
 
   constructor(
-      columnData: {
+      columnData: Array<{
         title: string,
         editable: boolean,
-      }[],
+      }>,
       addHeaderColumnCallback: (arg0: string) => boolean,
       changeHeaderColumnCallback: (arg0: string, arg1: string) => boolean,
       removeHeaderColumnCallback: (arg0: string) => boolean) {

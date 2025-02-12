@@ -157,7 +157,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.exists(resourceTreeModel);
 
     const primaryPageChangedEvents:
-        {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}[] = [];
+        Array<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}> = [];
     resourceTreeModel.addEventListener(
         SDK.ResourceTreeModel.Events.PrimaryPageChanged, event => primaryPageChangedEvents.push(event.data));
 
@@ -176,7 +176,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const prerenderTarget = createTarget({parentTarget: tabTarget, subtype: 'prerender'});
 
     const primaryPageChangedEvents:
-        {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}[] = [];
+        Array<{frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}> = [];
 
     [getResourceTreeModel(mainFrameTarget), getResourceTreeModel(subframeTarget), getResourceTreeModel(prerenderTarget)]
         .forEach(resourceTreeModel => {

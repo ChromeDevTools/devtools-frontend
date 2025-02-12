@@ -127,7 +127,7 @@ export class SharedStorageEventsView extends UI.SplitWidget.SplitWidget {
     this.#defaultId = id;
   }
 
-  getEventsForTesting(): Array<Protocol.Storage.SharedStorageAccessedEvent> {
+  getEventsForTesting(): Protocol.Storage.SharedStorageAccessedEvent[] {
     return this.#events;
   }
 

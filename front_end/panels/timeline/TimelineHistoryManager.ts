@@ -107,10 +107,10 @@ export class TimelineHistoryManager {
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
-  private readonly allOverviews: {
+  private readonly allOverviews: Array<{
     constructor: (parsedTrace: Trace.Handlers.Types.ParsedTrace) => TimelineEventOverview,
     height: number,
-  }[];
+  }>;
   private totalHeight: number;
   private enabled: boolean;
   private lastActiveTrace: RecordingData|null = null;

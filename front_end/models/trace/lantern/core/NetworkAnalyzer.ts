@@ -587,14 +587,14 @@ class NetworkAnalyzer {
     };
   }
 
-  static findResourceForUrl<T extends Lantern.NetworkRequest>(records: Array<T>, resourceUrl: string): T|undefined {
+  static findResourceForUrl<T extends Lantern.NetworkRequest>(records: T[], resourceUrl: string): T|undefined {
     // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
     return records.find(
         request => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl),
     );
   }
 
-  static findLastDocumentForUrl<T extends Lantern.NetworkRequest>(records: Array<T>, resourceUrl: string): T|undefined {
+  static findLastDocumentForUrl<T extends Lantern.NetworkRequest>(records: T[], resourceUrl: string): T|undefined {
     // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
     const matchingRequests = records.filter(
         request => request.resourceType === 'Document' && !request.failed &&

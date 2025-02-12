@@ -60,7 +60,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
-  private metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
+  private metricsBuffer: Array<{timestamp: number, metrics: Map<string, number>}>;
   private readonly pixelsPerMs: number;
   private pollIntervalMs: number;
   private readonly scaleHeight: number;
@@ -676,7 +676,7 @@ export interface MetricInfo {
 }
 export interface ChartInfo {
   title: Common.UIString.LocalizedString;
-  metrics: {name: string, color: string}[];
+  metrics: Array<{name: string, color: string}>;
   max?: number;
   currentMax?: number;
   format?: Format;

@@ -211,7 +211,7 @@ interface RetainerChainEntry {
   retainerClassName: string;
 }
 
-export async function assertRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
+export async function assertRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
   const retainerChain = [];
@@ -237,7 +237,7 @@ export async function assertRetainerChainSatisfies(p: (retainerChain: Array<Reta
   return p(retainerChain);
 }
 
-export async function waitUntilRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
+export async function waitUntilRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
   await waitForFunction(assertRetainerChainSatisfies.bind(null, p));
 }
 
@@ -266,7 +266,7 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
   return false;
 }
 
-export async function waitForRetainerChain(expectedRetainers: Array<string>) {
+export async function waitForRetainerChain(expectedRetainers: string[]) {
   await waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);

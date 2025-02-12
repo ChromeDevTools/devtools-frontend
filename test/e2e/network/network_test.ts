@@ -83,7 +83,7 @@ describe('The Network Tab', function() {
     // Navigate to a new page, and wait for the same requests to still be there.
     await goTo('about:blank');
     await waitForSomeRequestsToAppear(SIMPLE_PAGE_REQUEST_NUMBER + 1);
-    let secondPageRequestNames: (string|null)[] = [];
+    let secondPageRequestNames: Array<string|null> = [];
     await waitForFunction(async () => {
       secondPageRequestNames = await getAllRequestNames();
       return secondPageRequestNames.length === SIMPLE_PAGE_REQUEST_NUMBER + 1;

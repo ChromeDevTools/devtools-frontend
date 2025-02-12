@@ -121,7 +121,7 @@ export class CookiesTable extends UI.Widget.VBox {
   private readonly deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void);
   private dataGrid: DataGrid.DataGrid.DataGridImpl<DataGridNode>;
   private lastEditedColumnId: string|null;
-  private data: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[];
+  private data: Array<{folderName: string | null, cookies: SDK.Cookie.Cookie[]|null}>;
   private cookieDomain: string;
   private cookieToBlockedReasons: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>|null;
   private cookieToExemptionReason: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>|null;
@@ -316,7 +316,7 @@ export class CookiesTable extends UI.Widget.VBox {
   }
 
   setCookieFolders(
-      cookieFolders: {folderName: string|null, cookies: Array<SDK.Cookie.Cookie>|null}[],
+      cookieFolders: Array<{folderName: string | null, cookies: SDK.Cookie.Cookie[]|null}>,
       cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
       cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>): void {
     this.data = cookieFolders;

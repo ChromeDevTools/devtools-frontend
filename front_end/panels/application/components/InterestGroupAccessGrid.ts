@@ -75,14 +75,15 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InterestGroupAccessGrid extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #datastores: Array<Protocol.Storage.InterestGroupAccessedEvent> = [];
+  #datastores: Protocol.Storage.InterestGroupAccessedEvent[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [interestGroupAccessGridStyles, inspectorCommonStyles];
     this.#render();
   }
 
-  set data(data: Array<Protocol.Storage.InterestGroupAccessedEvent>) {
+  // eslint-disable-next-line rulesdir/set-data-type-reference
+  set data(data: Protocol.Storage.InterestGroupAccessedEvent[]) {
     this.#datastores = data;
     this.#render();
   }

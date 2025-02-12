@@ -116,6 +116,6 @@ function getRegisteredListeners(): ContextFlavorListenerRegistration[] {
   return registeredListeners;
 }
 export interface ContextFlavorListenerRegistration {
-  contextTypes: () => Array<Function>;
+  contextTypes: () => Function[];
   loadListener: () => Promise<ContextFlavorListener>;
 }

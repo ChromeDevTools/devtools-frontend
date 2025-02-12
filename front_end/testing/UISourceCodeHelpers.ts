@@ -14,12 +14,12 @@ import * as Workspace from '../models/workspace/workspace.js';
 const {urlString} = Platform.DevToolsPath;
 
 export function createContentProviderUISourceCodes(options: {
-  items: {
+  items: Array<{
     url: Platform.DevToolsPath.UrlString,
     content?: string, mimeType: string,
     resourceType?: Common.ResourceType.ResourceType,
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
-  }[],
+  }>,
   projectType?: Workspace.Workspace.projectTypes,
   projectId?: string,
   target?: SDK.Target.Target,

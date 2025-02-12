@@ -59,7 +59,7 @@ export class BreakpointManager extends Common.ObjectWrapper.ObjectWrapper<EventT
   readonly #breakpointsForUISourceCode =
       new Map<Workspace.UISourceCode.UISourceCode, Map<string, BreakpointLocation>>();
   readonly #breakpointByStorageId = new Map<string, Breakpoint>();
-  #updateBindingsCallbacks: ((uiSourceCode: Workspace.UISourceCode.UISourceCode) => Promise<void>)[] = [];
+  #updateBindingsCallbacks: Array<(uiSourceCode: Workspace.UISourceCode.UISourceCode) => Promise<void>> = [];
 
   private constructor(
       targetManager: SDK.TargetManager.TargetManager, workspace: Workspace.Workspace.WorkspaceImpl,

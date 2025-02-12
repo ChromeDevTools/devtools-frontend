@@ -162,7 +162,7 @@ async function process(): Promise<void> {
   const {loggables, shadowRoots} = getDomState(documents);
   const visibleLoggables: Loggable[] = [];
   observeMutations(shadowRoots);
-  const nonDomRoots: (Loggable|undefined)[] = [undefined];
+  const nonDomRoots: Array<Loggable|undefined> = [undefined];
 
   for (const {element, parent} of loggables) {
     const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent);

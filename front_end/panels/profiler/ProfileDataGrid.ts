@@ -70,7 +70,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   populated: boolean;
   savedSelf?: number;
   savedTotal?: number;
-  savedChildren?: DataGrid.DataGrid.DataGridNode<unknown>[];
+  savedChildren?: Array<DataGrid.DataGrid.DataGridNode<unknown>>;
 
   constructor(
       profileNode: CPUProfile.ProfileTreeModel.ProfileNode, owningTree: ProfileDataGridTree, hasChildren: boolean) {
@@ -343,9 +343,9 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   childrenByCallUID: Map<string, ProfileDataGridNode>;
   deepSearch: boolean;
   populated: boolean;
-  searchResults!: {
+  searchResults!: Array<{
     profileNode: ProfileDataGridNode,
-  }[];
+  }>;
   savedTotal?: number;
   savedChildren?: ProfileDataGridNode[]|null;
   searchResultIndex: number = -1;
@@ -682,7 +682,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 }
 
-const propertyComparators: {[key: string]: unknown}[] = [{}, {}];
+const propertyComparators: Array<{[key: string]: unknown}> = [{}, {}];
 
 export interface Formatter {
   formatValue(value: number, node: ProfileDataGridNode): string;

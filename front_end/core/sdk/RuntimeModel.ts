@@ -753,7 +753,7 @@ export interface CallFunctionOptions {
   returnByValue?: boolean;
   throwOnSideEffect?: boolean;
   allowUnsafeEvalBlockedByCSP?: boolean;
-  arguments: Array<Protocol.Runtime.CallArgument>;
+  arguments: Protocol.Runtime.CallArgument[];
   userGesture: boolean;
   awaitPromise: boolean;
 }

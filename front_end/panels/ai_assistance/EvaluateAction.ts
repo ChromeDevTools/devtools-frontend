@@ -76,7 +76,7 @@ export interface Options {
 }
 export class EvaluateAction {
   static async execute(
-      functionDeclaration: string, args: Array<SDK.RemoteObject.RemoteObject>,
+      functionDeclaration: string, args: SDK.RemoteObject.RemoteObject[],
       executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options): Promise<string> {
     if (executionContext.debuggerModel.selectedCallFrame()) {
       return formatError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');

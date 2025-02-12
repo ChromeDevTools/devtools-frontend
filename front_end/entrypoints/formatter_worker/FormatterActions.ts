@@ -46,7 +46,7 @@ export const enum DefinitionKind {
 }
 
 export interface ScopeTreeNode {
-  variables: {name: string, kind: DefinitionKind, offsets: number[]}[];
+  variables: Array<{name: string, kind: DefinitionKind, offsets: number[]}>;
   start: number;
   end: number;
   children: ScopeTreeNode[];

@@ -411,7 +411,7 @@ c`;
     });
 
     it('should describe an element with child element and text nodes', async () => {
-      const childNodes: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>[] = [
+      const childNodes: Array<sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>> = [
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -444,7 +444,7 @@ c`;
 
       const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
       parentNode.simpleSelector.returns('div#grandparentElement');
-      const parentChildNodes: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>[] = [
+      const parentChildNodes: Array<sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>> = [
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
         sinon.createStubInstance(SDK.DOMModel.DOMNode),
       ];

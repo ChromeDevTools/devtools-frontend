@@ -149,7 +149,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         sortable: true,
         tooltip: i18nString(UIStrings.urlOfTheScriptSource),
       },
-    ] as ({tooltip: Common.UIString.LocalizedString} & DataGrid.DataGrid.ColumnDescriptor)[];
+    ] as Array<{tooltip: Common.UIString.LocalizedString}&DataGrid.DataGrid.ColumnDescriptor>;
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.heapProfile),
       columns,
@@ -208,7 +208,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
 
   update(
       isolates: SDK.IsolateManager.Isolate[] = [],
-      profiles: (Protocol.HeapProfiler.SamplingHeapProfile|null)[] = []): void {
+      profiles: Array<Protocol.HeapProfiler.SamplingHeapProfile|null> = []): void {
     const dataByUrl = new Map<string, {
       size: number,
       isolates: Set<SDK.IsolateManager.Isolate>,

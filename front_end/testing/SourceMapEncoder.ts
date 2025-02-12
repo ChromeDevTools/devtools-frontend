@@ -38,7 +38,7 @@ export function encodeSourceMap(textMap: string[], sourceRoot?: string): SDK.Sou
   let mappings = '';
   const sources: string[] = [];
   const names: string[] = [];
-  let sourcesContent: (null|string)[]|undefined;
+  let sourcesContent: Array<null|string>|undefined;
 
   const state = {
     line: -1,
@@ -234,7 +234,7 @@ export class GeneratedRangeBuilder {
     isHidden?: boolean,
     definition?: {sourceIdx: number, scopeIdx: number},
     callsite?: {sourceIdx: number, line: number, column: number},
-    bindings?: (string|undefined|{line: number, column: number, name: string|undefined}[])[],
+    bindings?: Array<string|undefined|Array<{line: number, column: number, name: string|undefined}>>,
   }): this {
     this.#emitLineSeparator(line);
     this.#emitItemSepratorIfRequired();

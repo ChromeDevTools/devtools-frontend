@@ -84,10 +84,10 @@ export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean
 
 interface SerializableSettings {
   valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[];
-  valueTypeModes: [
+  valueTypeModes: Array<[
     LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType,
     LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode,
-  ][];
+  ]>;
   endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness;
 }
 

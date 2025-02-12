@@ -121,7 +121,7 @@ export class ThrottlingPresets {
     };
   }
 
-  static getMobilePresets(): (Conditions|PlaceholderConditions)[] {
+  static getMobilePresets(): Array<Conditions|PlaceholderConditions> {
     return [
       ThrottlingPresets.getMidTierMobileConditions(),
       ThrottlingPresets.getLowEndMobileConditions(),
@@ -208,10 +208,10 @@ export interface NetworkThrottlingConditionsGroup {
 
 export interface MobileThrottlingConditionsGroup {
   title: string;
-  items: (Conditions|PlaceholderConditions)[];
+  items: Array<Conditions|PlaceholderConditions>;
 }
 
-export type ConditionsList = (Conditions|PlaceholderConditions|null)[];
+export type ConditionsList = Array<Conditions|PlaceholderConditions|null>;
 
 export interface PlaceholderConditions {
   title: string;

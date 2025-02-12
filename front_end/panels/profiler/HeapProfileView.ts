@@ -680,10 +680,10 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
     if (!node) {
       return null;
     }
-    const popoverInfo: {
+    const popoverInfo: Array<{
       title: string,
       value: string,
-    }[] = [];
+    }> = [];
     function pushRow(title: string, value: string): void {
       popoverInfo.push({title, value});
     }

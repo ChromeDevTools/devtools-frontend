@@ -135,7 +135,7 @@ const defaultValuesByAttribute = deepFreeze({
 
 const attributesByType = deepFreeze<{
   [Type in Models.Schema.StepType]:
-      {required: Exclude<RequiredKeys<StepFor<Type>>, 'type'>[], optional: OptionalKeys<StepFor<Type>>[]};
+      {required: Array<Exclude<RequiredKeys<StepFor<Type>>, 'type'>>, optional: Array<OptionalKeys<StepFor<Type>>>};
 }>({
   [Models.Schema.StepType.Click]: {
     required: ['selectors', 'offsetX', 'offsetY'],

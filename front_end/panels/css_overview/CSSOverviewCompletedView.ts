@@ -685,7 +685,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   }
 
   #groupToFragment(
-      items: Map<string, (number | UnusedDeclaration | Protocol.CSS.CSSMedia)[]>, type: string, dataLabel: string,
+      items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
       path: string = ''): UI.Fragment.Fragment {
     // Sort by number of items descending.
     const values = Array.from(items.entries()).sort((d1, d2) => {
@@ -1025,7 +1025,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     if ('nodeId' in firstItem && visibility.has('node-id')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
-      const nodeIds = (data as {nodeId: Protocol.DOM.BackendNodeId}[]).reduce((prev, curr) => {
+      const nodeIds = (data as Array<{nodeId: Protocol.DOM.BackendNodeId}>).reduce((prev, curr) => {
         const nodeId = curr.nodeId;
         if (CSSOverviewCompletedView.pushedNodes.has(nodeId)) {
           return prev;

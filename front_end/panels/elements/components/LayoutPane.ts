@@ -176,7 +176,7 @@ let layoutPaneWrapperInstance: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widg
 
 export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #settings: Readonly<Setting[]> = [];
+  #settings: readonly Setting[] = [];
   readonly #uaShadowDOMSetting: Common.Settings.Setting<boolean>;
   #domModels: SDK.DOMModel.DOMModel[];
 
@@ -217,10 +217,10 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     this.#domModels = this.#domModels.filter(model => model !== domModel);
   }
 
-  async #fetchNodesByStyle(style: {
+  async #fetchNodesByStyle(style: Array<{
     name: string,
     value: string,
-  }[]): Promise<SDK.DOMModel.DOMNode[]> {
+  }>): Promise<SDK.DOMModel.DOMNode[]> {
     const showUAShadowDOM = this.#uaShadowDOMSetting.get();
 
     const nodes = [];

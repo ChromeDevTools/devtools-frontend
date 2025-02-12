@@ -4,8 +4,8 @@
 
 import * as CodeHighlighter from './code_highlighter.js';
 
-function parseTokens(code: string): [string, string][] {
-  const token = /\[(\S+) ([^\]]+)\]/g, tokens: [string, string][] = [];
+function parseTokens(code: string): Array<[string, string]> {
+  const token = /\[(\S+) ([^\]]+)\]/g, tokens: Array<[string, string]> = [];
   for (let pos = 0;;) {
     const match = token.exec(code);
     const next = match ? match.index : code.length;

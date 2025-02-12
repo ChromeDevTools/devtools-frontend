@@ -212,7 +212,7 @@ export class ChunkedFileReader implements ChunkedReader {
 }
 
 export class FileOutputStream implements Common.StringOutputStream.OutputStream {
-  #writeCallbacks: (() => void)[];
+  #writeCallbacks: Array<() => void>;
   #fileName!: Platform.DevToolsPath.RawPathString|Platform.DevToolsPath.UrlString;
   #closed?: boolean;
   constructor() {

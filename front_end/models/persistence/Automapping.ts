@@ -27,7 +27,7 @@ export class Automapping {
   private readonly filesIndex: FilePathIndex;
   private readonly projectFoldersIndex: FolderIndex;
   private readonly activeFoldersIndex: FolderIndex;
-  private readonly interceptors: ((arg0: Workspace.UISourceCode.UISourceCode) => boolean)[];
+  private readonly interceptors: Array<(arg0: Workspace.UISourceCode.UISourceCode) => boolean>;
   constructor(
       workspace: Workspace.Workspace.WorkspaceImpl, onStatusAdded: (arg0: AutomappingStatus) => Promise<void>,
       onStatusRemoved: (arg0: AutomappingStatus) => Promise<void>) {

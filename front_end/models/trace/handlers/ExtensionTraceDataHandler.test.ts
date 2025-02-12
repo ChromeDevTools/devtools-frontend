@@ -364,7 +364,7 @@ describe('ExtensionTraceDataHandler', function() {
 
     describe('Track groups', () => {
       it('builds extension track data for grouped tracks correctly', async function() {
-        const extensionDevToolsObjects: PerformanceAPIExtensionTestData['detail']['devtools'][] = [
+        const extensionDevToolsObjects: Array<PerformanceAPIExtensionTestData['detail']['devtools']> = [
           // Track group 1
           {
             dataType: 'track-entry',

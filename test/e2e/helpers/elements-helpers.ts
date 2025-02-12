@@ -96,7 +96,7 @@ export const openLayoutPane = async () => {
   ]);
 };
 
-export const waitForAdorners = async (expectedAdorners: {textContent: string, isActive: boolean}[]) => {
+export const waitForAdorners = async (expectedAdorners: Array<{textContent: string, isActive: boolean}>) => {
   await waitForFunction(async () => {
     const actualAdorners = await $$(ADORNER_SELECTOR);
     const actualAdornersStates = await Promise.all(actualAdorners.map(n => {

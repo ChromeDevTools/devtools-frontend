@@ -1695,7 +1695,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   nonBlockedResponseCookies(): Cookie[] {
-    const blockedCookieLines: (string|null)[] =
+    const blockedCookieLines: Array<string|null> =
         this.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
     // Use array and remove 1 by 1 to handle the (potential) case of multiple
     // identical cookies, only some of which are blocked.
@@ -2045,10 +2045,10 @@ export interface EventSourceMessage {
 }
 
 export interface ExtraRequestInfo {
-  blockedRequestCookies: {
+  blockedRequestCookies: Array<{
     blockedReasons: Protocol.Network.CookieBlockedReason[],
     cookie: Cookie,
-  }[];
+  }>;
   requestHeaders: NameValue[];
   includedRequestCookies: IncludedCookieWithReason[];
   clientSecurityState?: Protocol.Network.ClientSecurityState;
@@ -2057,22 +2057,22 @@ export interface ExtraRequestInfo {
 }
 
 export interface ExtraResponseInfo {
-  blockedResponseCookies: {
+  blockedResponseCookies: Array<{
     blockedReasons: Protocol.Network.SetCookieBlockedReason[],
     cookieLine: string,
     cookie: Cookie|null,
-  }[];
+  }>;
   responseHeaders: NameValue[];
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
   statusCode: number|undefined;
   cookiePartitionKey?: Protocol.Network.CookiePartitionKey;
   cookiePartitionKeyOpaque: boolean|undefined;
-  exemptedResponseCookies: {
+  exemptedResponseCookies: Array<{
     cookie: Cookie,
     cookieLine: string,
     exemptionReason: Protocol.Network.CookieExemptionReason,
-  }[]|undefined;
+  }>|undefined;
 }
 
 export interface EarlyHintsInfo {

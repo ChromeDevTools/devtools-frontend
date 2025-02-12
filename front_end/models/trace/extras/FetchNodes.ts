@@ -11,7 +11,7 @@ const domLookUpSingleNodeCache =
     new Map<Handlers.Types.ParsedTrace, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
 const domLookUpBatchNodesCache = new Map<
     Handlers.Types.ParsedTrace,
-    Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
+    Map<Protocol.DOM.BackendNodeId[], Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
 
 export function clearCacheForTesting(): void {
   domLookUpSingleNodeCache.clear();
@@ -123,7 +123,7 @@ export async function extractRelatedDOMNodesFromEvent(modelData: Handlers.Types.
  */
 export async function domNodesForMultipleBackendNodeIds(
     modelData: Handlers.Types.ParsedTrace,
-    nodeIds: Array<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
+    nodeIds: Protocol.DOM.BackendNodeId[]): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const fromCache = domLookUpBatchNodesCache.get(modelData)?.get(nodeIds);
   if (fromCache) {
     return fromCache;
@@ -137,7 +137,7 @@ export async function domNodesForMultipleBackendNodeIds(
   const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(new Set(nodeIds)) || new Map();
 
   const cacheForModel = domLookUpBatchNodesCache.get(modelData) ||
-      new Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
+      new Map<Protocol.DOM.BackendNodeId[], Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
   cacheForModel.set(nodeIds, domNodesMap);
   domLookUpBatchNodesCache.set(modelData, cacheForModel);
 

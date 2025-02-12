@@ -148,7 +148,7 @@ describe('AI Assistance', function() {
     };
   }
 
-  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Array<Log>> {
+  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Log[]> {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
@@ -163,7 +163,7 @@ describe('AI Assistance', function() {
       await frontend.waitForSelector('aria/Continue');
       return JSON.parse(await frontend.evaluate((): string => {
         return localStorage.getItem('aiAssistanceStructuredLog') as string;
-      })) as Array<Log>;
+      })) as Log[];
     }
 
     const abort = new AbortController();
@@ -178,7 +178,7 @@ describe('AI Assistance', function() {
     abort.abort();
     return JSON.parse(await frontend.evaluate((): string => {
       return localStorage.getItem('aiAssistanceStructuredLog') as string;
-    })) as Array<Log>;
+    })) as Log[];
   }
 
   async function runAiAssistance(options: {

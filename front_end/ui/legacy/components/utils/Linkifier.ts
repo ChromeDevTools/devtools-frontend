@@ -743,18 +743,18 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     return info ? info.uiLocation : null;
   }
 
-  static linkActions(info: LinkInfo): {
+  static linkActions(info: LinkInfo): Array<{
     section: string,
     title: string,
     jslogContext: string,
     handler: () => Promise<void>| void,
-  }[] {
-    const result: {
+  }> {
+    const result: Array<{
       section: string,
       title: string,
       jslogContext: string,
       handler: () => Promise<void>| void,
-    }[] = [];
+    }> = [];
 
     if (!info) {
       return result;

@@ -274,9 +274,9 @@ export interface Calculator {
 }
 
 export interface DividersData {
-  offsets: {
+  offsets: Array<{
     position: number,
     time: number,
-  }[];
+  }>;
   precision: number;
 }

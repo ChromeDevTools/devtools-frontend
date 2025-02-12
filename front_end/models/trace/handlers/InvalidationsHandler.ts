@@ -12,7 +12,7 @@ let lastRecalcStyleEvent: Types.Events.UpdateLayoutTree|null = null;
 // Used to track paints so we track invalidations correctly per paint.
 let hasPainted = false;
 
-const allInvalidationTrackingEvents: Array<Types.Events.InvalidationTrackingEvent> = [];
+const allInvalidationTrackingEvents: Types.Events.InvalidationTrackingEvent[] = [];
 
 export function reset(): void {
   invalidationsForEvent.clear();

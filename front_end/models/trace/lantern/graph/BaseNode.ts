@@ -241,8 +241,9 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
    * The `getNextNodes` function takes a visited node and returns which nodes to
    * visit next. It defaults to returning the node's dependents.
    */
-  traverse(callback: (node: Node<T>, traversalPath: Node<T>[]) => void, getNextNodes?: (arg0: Node<T>) => Node<T>[]):
-      void {
+  traverse(
+      callback: (node: Node<T>, traversalPath: Array<Node<T>>) => void,
+      getNextNodes?: (arg0: Node<T>) => Array<Node<T>>): void {
     for (const {node, traversalPath} of this.traverseGenerator(getNextNodes)) {
       callback(node, traversalPath);
     }

@@ -12,13 +12,13 @@ import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
 import rulesdirPlugin from 'eslint-plugin-rulesdir';
 import globals from 'globals';
-import { join } from 'path';
+import {join} from 'path';
 
 rulesdirPlugin.RULES_DIR = join(
-  import.meta.dirname,
-  'scripts',
-  'eslint_rules',
-  'lib',
+    import.meta.dirname,
+    'scripts',
+    'eslint_rules',
+    'lib',
 );
 
 /**
@@ -302,15 +302,21 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-          import.meta.dirname,
-          'config',
-          'typescript',
-          'tsconfig.eslint.json',
-        ),
+            import.meta.dirname,
+            'config',
+            'typescript',
+            'tsconfig.eslint.json',
+            ),
       },
     },
 
     rules: {
+      '@typescript-eslint/array-type': [
+        'error',
+        {
+          default: 'array-simple',
+        },
+      ],
       '@typescript-eslint/no-explicit-any': [
         'error',
         {
@@ -487,7 +493,6 @@ export default [
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
 
       'rulesdir/no-underscored-properties': 'error',
-      'rulesdir/prefer-readonly-keyword': 'error',
       'rulesdir/inline-type-imports': 'error',
 
       'rulesdir/enforce-default-import-name': [
@@ -495,12 +500,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-            import.meta.dirname,
-            'front_end',
-            'models',
-            'trace',
-            'trace.js',
-          ),
+              import.meta.dirname,
+              'front_end',
+              'models',
+              'trace',
+              'trace.js',
+              ),
           importName: 'Trace',
         },
       ],

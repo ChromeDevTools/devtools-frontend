@@ -440,7 +440,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   async navigationHistory(): Promise<{
     currentIndex: number,
-    entries: Array<Protocol.Page.NavigationEntry>,
+    entries: Protocol.Page.NavigationEntry[],
   }|null> {
     const response = await this.agent.invoke_getNavigationHistory();
     if (response.getError()) {
@@ -460,7 +460,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   async fetchAppManifest(): Promise<{
     url: Platform.DevToolsPath.UrlString,
     data: string|null,
-    errors: Array<Protocol.Page.AppManifestError>,
+    errors: Protocol.Page.AppManifestError[],
   }> {
     const response = await this.agent.invoke_getAppManifest({});
     if (response.getError()) {

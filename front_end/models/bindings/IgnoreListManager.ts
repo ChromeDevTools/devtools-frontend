@@ -471,7 +471,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   private async patternChanged(): Promise<void> {
     this.#isIgnoreListedURLCache.clear();
 
-    const promises: Promise<unknown>[] = [];
+    const promises: Array<Promise<unknown>> = [];
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this.setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();

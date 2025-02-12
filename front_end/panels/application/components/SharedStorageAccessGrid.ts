@@ -84,14 +84,15 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SharedStorageAccessGrid extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #datastores: Array<Protocol.Storage.SharedStorageAccessedEvent> = [];
+  #datastores: Protocol.Storage.SharedStorageAccessedEvent[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [sharedStorageAccessGridStyles, inspectorCommonStyles];
     this.#render();
   }
 
-  set data(data: Array<Protocol.Storage.SharedStorageAccessedEvent>) {
+  // eslint-disable-next-line rulesdir/set-data-type-reference
+  set data(data: Protocol.Storage.SharedStorageAccessedEvent[]) {
     this.#datastores = data.sort((a, b) => a.accessTime - b.accessTime);
     this.#render();
   }

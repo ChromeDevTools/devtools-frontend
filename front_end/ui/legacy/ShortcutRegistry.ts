@@ -93,10 +93,10 @@ export class ShortcutRegistry {
     return [...this.actionToShortcut.get(action)];
   }
 
-  actionsForDescriptors(descriptors: {
+  actionsForDescriptors(descriptors: Array<{
     key: number,
     name: string,
-  }[]): string[] {
+  }>): string[] {
     let keyMapNode: (ShortcutTreeNode|null)|ShortcutTreeNode = this.keyMap;
     for (const {key} of descriptors) {
       if (!keyMapNode) {
@@ -343,10 +343,10 @@ export class ShortcutRegistry {
     const keybindSet = this.keybindSetSetting.get();
     this.disabledDefaultShortcutsForAction.clear();
     this.devToolsDefaultShortcutActions.clear();
-    const forwardedKeys: {
+    const forwardedKeys: Array<{
       keyCode: number,
       modifiers: number,
-    }[] = [];
+    }> = [];
     const userShortcuts = this.userShortcutsSetting.get();
     for (const userShortcut of userShortcuts) {
       const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
@@ -417,10 +417,10 @@ export class ShortcutRegistry {
   }
 
   private isDisabledDefault(
-      shortcutDescriptors: {
+      shortcutDescriptors: Array<{
         key: number,
         name: string,
-      }[],
+      }>,
       action: string): boolean {
     const disabledDefaults = this.disabledDefaultShortcutsForAction.get(action);
     for (const disabledDefault of disabledDefaults) {

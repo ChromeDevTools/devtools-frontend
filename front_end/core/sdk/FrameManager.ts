@@ -35,7 +35,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     creationStackTrace?: Protocol.Runtime.StackTrace,
     creationStackTraceTarget?: Target,
   }>();
-  #awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}[]> = new Map();
+  #awaitedFrames: Map<string, Array<{notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}>> = new Map();
 
   constructor() {
     super();

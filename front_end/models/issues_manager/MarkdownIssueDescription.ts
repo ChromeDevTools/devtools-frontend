@@ -13,13 +13,13 @@ import * as Marked from '../../third_party/marked/marked.js';
 export interface MarkdownIssueDescription {
   file: string;
   substitutions?: Map<string, string>;
-  links: {link: string, linkTitle: string}[];
+  links: Array<{link: string, linkTitle: string}>;
 }
 
 export interface LazyMarkdownIssueDescription {
   file: string;
   substitutions?: Map<string, () => string>;
-  links: {link: string, linkTitle: () => string}[];
+  links: Array<{link: string, linkTitle: () => string}>;
 }
 
 /**
@@ -52,7 +52,7 @@ export function resolveLazyDescription(lazyDescription: LazyMarkdownIssueDescrip
 export interface IssueDescription {
   title: string;
   markdown: Marked.Marked.Token[];
-  links: {link: string, linkTitle: string}[];
+  links: Array<{link: string, linkTitle: string}>;
 }
 
 export async function getFileContent(url: URL): Promise<string> {

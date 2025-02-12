@@ -18,10 +18,10 @@ const fontVariationSettingsRegexp =
  * Extracts information about font variation settings assuming
  * value is valid according to the spec: https://drafts.csswg.org/css-fonts-4/#font-variation-settings-def
  */
-export function parseFontVariationSettings(value: string): {
+export function parseFontVariationSettings(value: string): Array<{
   tag: string,
   value: number,
-}[] {
+}> {
   if (globalValues.has(value.trim()) || value.trim() === 'normal') {
     return [];
   }
@@ -207,7 +207,7 @@ export function matcherBase<MatchT extends Match>(matchT: Constructor<MatchT>) {
 
 type MatchKey = Platform.Brand.Brand<string, 'MatchKey'>;
 export class BottomUpTreeMatching extends TreeWalker {
-  #matchers: Matcher<Match>[] = [];
+  #matchers: Array<Matcher<Match>> = [];
   #matchedNodes = new Map<MatchKey, Match>();
   readonly computedText: ComputedText;
 
@@ -215,7 +215,7 @@ export class BottomUpTreeMatching extends TreeWalker {
     return `${node.from}:${node.to}` as MatchKey;
   }
 
-  constructor(ast: SyntaxTree, matchers: Matcher<Match>[]) {
+  constructor(ast: SyntaxTree, matchers: Array<Matcher<Match>>) {
     super(ast);
     this.computedText = new ComputedText(ast.rule.substring(ast.tree.from));
     this.#matchers.push(...matchers.filter(m => !ast.propertyName || m.accepts(ast.propertyName)));
@@ -552,7 +552,8 @@ export function tokenizePropertyName(name: string): string|null {
   return nodeText(propertyName, rule);
 }
 
-export function matchDeclaration(name: string, value: string, matchers: Matcher<Match>[]): BottomUpTreeMatching|null {
+export function matchDeclaration(name: string, value: string, matchers: Array<Matcher<Match>>): BottomUpTreeMatching|
+    null {
   const ast = tokenizeDeclaration(name, value);
   const matchedResult = ast && BottomUpTreeMatching.walk(ast, matchers);
   ast?.trailingNodes.forEach(n => matchedResult?.matchText(n));

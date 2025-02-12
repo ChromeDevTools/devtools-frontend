@@ -551,7 +551,7 @@ export class DOMNode {
     });
   }
 
-  getChildNodes(callback: (arg0: Array<DOMNode>|null) => void): void {
+  getChildNodes(callback: (arg0: DOMNode[]|null) => void): void {
     if (this.childrenInternal) {
       callback(this.children());
       return;
@@ -1565,10 +1565,10 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   async getNodesByStyle(
-      computedStyles: {
+      computedStyles: Array<{
         name: string,
         value: string,
-      }[],
+      }>,
       pierce: boolean = false): Promise<Protocol.DOM.NodeId[]> {
     await this.requestDocument();
     if (!this.#document) {

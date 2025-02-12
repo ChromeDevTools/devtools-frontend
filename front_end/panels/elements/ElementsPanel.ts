@@ -199,11 +199,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private readonly computedStyleWidget: ComputedStyleWidget;
   private readonly metricsWidget: MetricsSidebarPane;
   private treeOutlines: Set<ElementsTreeOutline> = new Set();
-  private searchResults!: {
+  private searchResults!: Array<{
     domModel: SDK.DOMModel.DOMModel,
     index: number,
     node: ((SDK.DOMModel.DOMNode | undefined)|null),
-  }[]|undefined;
+  }>|undefined;
   private currentSearchResultIndex: number;
   pendingNodeReveal: boolean;
   private readonly adornerManager: ElementsComponents.AdornerManager.AdornerManager;
@@ -1176,7 +1176,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private trackedCSSPropertiesUpdated({data: domNodes}:
-                                          Common.EventTarget.EventTargetEvent<(SDK.DOMModel.DOMNode | null)[]>): void {
+                                          Common.EventTarget.EventTargetEvent<Array<SDK.DOMModel.DOMNode|null>>): void {
     for (const domNode of domNodes) {
       if (!domNode) {
         continue;

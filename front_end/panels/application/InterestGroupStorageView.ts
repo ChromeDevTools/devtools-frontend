@@ -137,7 +137,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     this.sidebarUpdatedForTesting();
   }
 
-  getEventsForTesting(): Array<Protocol.Storage.InterestGroupAccessedEvent> {
+  getEventsForTesting(): Protocol.Storage.InterestGroupAccessedEvent[] {
     return this.events;
   }
 

@@ -1513,15 +1513,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       markerToExtension.set(decoratorExtension.marker, decoratorExtension);
     }
 
-    const promises: Promise<void>[] = [];
-    const decorations: {
+    const promises: Array<Promise<void>> = [];
+    const decorations: Array<{
       title: string,
       color: string,
-    }[] = [];
-    const descendantDecorations: {
+    }> = [];
+    const descendantDecorations: Array<{
       title: string,
       color: string,
-    }[] = [];
+    }> = [];
     node.traverseMarkers(visitor);
 
     function visitor(n: SDK.DOMModel.DOMNode, marker: string): void {
@@ -1815,7 +1815,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   private convertWhitespaceToEntities(text: string): {
     text: string,
-    entityRanges: Array<TextUtils.TextRange.SourceRange>,
+    entityRanges: TextUtils.TextRange.SourceRange[],
   } {
     let result = '';
     let lastIndexAfterEntity = 0;

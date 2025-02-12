@@ -256,7 +256,7 @@ export class ThrottlingManager {
   }
 
   createNetworkThrottlingSelector(selectElement: HTMLSelectElement): NetworkThrottlingSelectorWrapper {
-    let options: (SDK.NetworkManager.Conditions|null)[] = [];
+    let options: Array<SDK.NetworkManager.Conditions|null> = [];
     let titles: string[] = [];
     let optionEls: HTMLOptionElement[] = [];
     const selector = new NetworkThrottlingSelector(populate, select, this.customNetworkConditionsSetting);
@@ -268,7 +268,7 @@ export class ThrottlingManager {
                 .context(this.currentNetworkThrottlingConditionsSetting.name)}`);
     selectElement.addEventListener('change', optionSelected, false);
 
-    function populate(groups: NetworkThrottlingConditionsGroup[]): (SDK.NetworkManager.Conditions|null)[] {
+    function populate(groups: NetworkThrottlingConditionsGroup[]): Array<SDK.NetworkManager.Conditions|null> {
       selectElement.removeChildren();
       options = [];
       titles = [];

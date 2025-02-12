@@ -97,7 +97,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   private returnCount: number|null;
   private summaryBarElement: Element|null;
   private loadingPromise: Promise<{
-    entries: Array<Protocol.CacheStorage.DataEntry>,
+    entries: Protocol.CacheStorage.DataEntry[],
     returnCount: number,
   }>|null;
   private readonly metadataView = new ApplicationComponents.StorageMetadataView.StorageMetadataView();

@@ -25,14 +25,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkThrottlingSelector {
-  private populateCallback:
-      (arg0: Array<NetworkThrottlingConditionsGroup>) => Array<SDK.NetworkManager.Conditions|null>;
+  private populateCallback: (arg0: NetworkThrottlingConditionsGroup[]) => Array<SDK.NetworkManager.Conditions|null>;
   private readonly selectCallback: (arg0: number) => void;
   private readonly customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
-  private options!: (SDK.NetworkManager.Conditions|null)[];
+  private options!: Array<SDK.NetworkManager.Conditions|null>;
 
   constructor(
-      populateCallback: (arg0: Array<NetworkThrottlingConditionsGroup>) => Array<SDK.NetworkManager.Conditions|null>,
+      populateCallback: (arg0: NetworkThrottlingConditionsGroup[]) => Array<SDK.NetworkManager.Conditions|null>,
       selectCallback: (arg0: number) => void,
       customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>) {
     this.populateCallback = populateCallback;

@@ -73,7 +73,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/KeyValueStorageItem
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
-  items: {key: string, value: string}[];
+  items: Array<{key: string, value: string}>;
   selectedKey: string|null;
   editable: boolean;
   onSelect: (event: CustomEvent<HTMLElement|null>) => void;
@@ -102,7 +102,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
   #preview: Widget|null;
   #previewValue: string|null;
 
-  #items: {key: string, value: string}[] = [];
+  #items: Array<{key: string, value: string}> = [];
   #selectedKey: string|null = null;
   #view: View;
   #resizer!: HTMLElement;
@@ -262,7 +262,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
     this.setCanDeleteSelected(true);
   }
 
-  showItems(items: {key: string, value: string}[]): void {
+  showItems(items: Array<{key: string, value: string}>): void {
     const sortDirection = this.#isSortOrderAscending ? 1 : -1;
     this.#items = [...items].sort((item1, item2) => sortDirection * (item1.key > item2.key ? 1 : -1));
     const selectedItem = this.#items.find(item => item.key === this.#selectedKey);

@@ -84,8 +84,8 @@ const DEADLOCK_TIMEOUT = 1500;
   return hasPendingWork() ? 1 : 0;
 };
 
-let pendingReaders: WorkItem<unknown>[] = [];
-let pendingWriters: WorkItem<unknown>[] = [];
+let pendingReaders: Array<WorkItem<unknown>> = [];
+let pendingWriters: Array<WorkItem<unknown>> = [];
 let scheduledWorkId = 0;
 
 export function hasPendingWork(): boolean {
@@ -274,7 +274,7 @@ function scheduleWork(): void {
   });
 }
 
-function rejectAll(handlers: WorkItem<unknown>[], error: Error): void {
+function rejectAll(handlers: Array<WorkItem<unknown>>, error: Error): void {
   for (const handler of handlers) {
     handler.cancel(error);
   }

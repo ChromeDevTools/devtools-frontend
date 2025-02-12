@@ -141,7 +141,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     return styleMap;
   }
 
-  private static buildResourceTypeStyle(): Map<Common.ResourceType.ResourceType, LayerStyle>[] {
+  private static buildResourceTypeStyle(): Array<Map<Common.ResourceType.ResourceType, LayerStyle>> {
     const baseResourceTypeColors = new Map([
       ['document', 'hsl(215, 100%, 80%)'],
       ['font', 'hsl(8, 100%, 80%)'],

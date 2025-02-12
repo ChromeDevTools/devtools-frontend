@@ -82,7 +82,7 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
-  async addObjects(objects: (SDK.RemoteObject.RemoteObject|null)[]): Promise<void> {
+  async addObjects(objects: Array<SDK.RemoteObject.RemoteObject|null>): Promise<void> {
     this.reset();
     await Promise.all(objects.map(obj => obj ? this.addObject(obj) : Promise.resolve()));
     this.addEmptyHolderIfNeeded();

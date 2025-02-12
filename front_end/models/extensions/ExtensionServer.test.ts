@@ -868,8 +868,8 @@ class StubLanguageExtension implements Chrome.DevTools.LanguageExtensionPlugin {
   }
   async removeRawModule(): Promise<void> {
   }
-  async getFunctionInfo(): Promise<{frames: Array<Chrome.DevTools.FunctionInfo>, missingSymbolFiles: Array<string>}|
-                                   {missingSymbolFiles: Array<string>}|{frames: Array<Chrome.DevTools.FunctionInfo>}> {
+  async getFunctionInfo(): Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: string[]}|
+                                   {missingSymbolFiles: string[]}|{frames: Chrome.DevTools.FunctionInfo[]}> {
     return {frames: []};
   }
   async getInlinedFunctionRanges(): Promise<Chrome.DevTools.RawLocationRange[]> {

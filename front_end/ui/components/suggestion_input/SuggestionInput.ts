@@ -128,8 +128,8 @@ class SuggestEvent extends Event {
  */
 class SuggestionInitEvent extends Event {
   static readonly eventName = 'suggestioninit';
-  listeners: [string, (event: Event) => void][];
-  constructor(listeners: [string, (event: Event) => void][]) {
+  listeners: Array<[string, (event: Event) => void]>;
+  constructor(listeners: Array<[string, (event: Event) => void]>) {
     super(SuggestionInitEvent.eventName);
     this.listeners = listeners;
   }
@@ -148,7 +148,7 @@ const defaultSuggestionFilter = (option: string, query: string): boolean =>
 class SuggestionBox extends LitElement {
   static override styles = [contentEditableStyles];
 
-  @property(jsonPropertyOptions) declare options: Readonly<string[]>;
+  @property(jsonPropertyOptions) declare options: readonly string[];
   @property() declare expression: string;
   @property() declare suggestionFilter?: SuggestionFilter;
 
@@ -256,7 +256,7 @@ export class SuggestionInput extends LitElement {
   /**
    * State passed to devtools-suggestion-box.
    */
-  @property(jsonPropertyOptions) declare options: Readonly<string[]>;
+  @property(jsonPropertyOptions) declare options: readonly string[];
   @property({type: Boolean}) declare autocomplete?: boolean;
   @property() declare suggestionFilter?: SuggestionFilter;
   @state() declare expression: string;

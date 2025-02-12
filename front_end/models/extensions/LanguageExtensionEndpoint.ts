@@ -32,7 +32,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   private readonly supportedScriptTypes: {
     language: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    symbol_types: Array<string>,
+    symbol_types: string[],
   };
   private readonly endpoint: LanguageExtensionEndpointImpl;
   private readonly extensionOrigin: string;
@@ -43,7 +43,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
       allowFileAccess: boolean, extensionOrigin: string, name: string, supportedScriptTypes: {
         language: string,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        symbol_types: Array<string>,
+        symbol_types: string[],
       },
       port: MessagePort) {
     this.name = name;
@@ -135,11 +135,11 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   /** List all function names (including inlined frames) at location
    */
   getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
-    frames: Array<Chrome.DevTools.FunctionInfo>,
+    frames: Chrome.DevTools.FunctionInfo[],
   }> {
     return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation}) as
         Promise<{
-             frames: Array<Chrome.DevTools.FunctionInfo>,
+             frames: Chrome.DevTools.FunctionInfo[],
            }>;
   }
 

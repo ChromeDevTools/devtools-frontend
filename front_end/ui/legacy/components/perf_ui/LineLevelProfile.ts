@@ -181,7 +181,7 @@ export class Helper {
     this.locationPool.disposeAll();
     // Map from sources to line->value profile maps.
     const decorationsBySource = new Map<Workspace.UISourceCode.UISourceCode, Map<number, number>>();
-    const pending: Promise<void>[] = [];
+    const pending: Array<Promise<void>> = [];
 
     for (const [target, scriptToLineMap] of this.lineData) {
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;

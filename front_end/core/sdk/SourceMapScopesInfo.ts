@@ -11,7 +11,7 @@ import type {GeneratedRange, OriginalPosition, OriginalScope, Position,} from '.
 
 export class SourceMapScopesInfo {
   readonly #sourceMap: SourceMap;
-  readonly #originalScopes: (OriginalScope|undefined)[];
+  readonly #originalScopes: Array<OriginalScope|undefined>;
   readonly #generatedRanges: GeneratedRange[];
 
   #cachedVariablesAndBindingsPresent: boolean|null = null;
@@ -22,7 +22,7 @@ export class SourceMapScopesInfo {
     this.#generatedRanges = generatedRanges;
   }
 
-  addOriginalScopes(scopes: (OriginalScope|undefined)[]): void {
+  addOriginalScopes(scopes: Array<OriginalScope|undefined>): void {
     for (const scope of scopes) {
       this.#originalScopes.push(scope);
     }
@@ -142,7 +142,7 @@ export class SourceMapScopesInfo {
     // We check whether any original scope has a non-empty list of variables, and
     // generated ranges with a non-empty binding list.
 
-    function walkTree(nodes: (OriginalScope|undefined)[]|GeneratedRange[]): boolean {
+    function walkTree(nodes: Array<OriginalScope|undefined>|GeneratedRange[]): boolean {
       for (const node of nodes) {
         if (!node) {
           continue;
@@ -320,7 +320,7 @@ export class SourceMapScopesInfo {
  * The inlined functions are sorted from inner to outer (or top to bottom on the stack).
  */
 export interface InlineInfo {
-  inlinedFunctions: {name: string, callsite: OriginalPosition}[];
+  inlinedFunctions: Array<{name: string, callsite: OriginalPosition}>;
   originalFunctionName: string;
 }
 

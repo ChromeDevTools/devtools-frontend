@@ -98,9 +98,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   #fileSystem: FileSystem|null = null;
 
   recordedCountHistograms:
-      {histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number}[] = [];
-  recordedEnumeratedHistograms: {actionName: EnumeratedHistogram, actionCode: number}[] = [];
-  recordedPerformanceHistograms: {histogramName: string, duration: number}[] = [];
+      Array<{histogramName: string, sample: number, min: number, exclusiveMax: number, bucketSize: number}> = [];
+  recordedEnumeratedHistograms: Array<{actionName: EnumeratedHistogram, actionCode: number}> = [];
+  recordedPerformanceHistograms: Array<{histogramName: string, duration: number}> = [];
 
   constructor() {
     this.#urlsBeingSaved = new Map();

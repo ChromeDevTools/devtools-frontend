@@ -2106,11 +2106,11 @@ export class TimelineUIUtils {
     element.classList.add('hbox');
 
     const pieChart = new PerfUI.PieChart.PieChart();
-    const slices: {
+    const slices: Array<{
       value: number,
       color: string,
       title: string,
-    }[] = [];
+    }> = [];
 
     function appendLegendRow(name: string, title: string, value: number, color: string): void {
       if (!value) {

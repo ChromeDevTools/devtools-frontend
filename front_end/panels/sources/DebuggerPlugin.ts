@@ -220,7 +220,7 @@ export class DebuggerPlugin extends Plugin {
   // content is edited and later saved, these are used as a source of
   // truth for re-creating the breakpoints.
   private breakpoints: BreakpointDescription[] = [];
-  private continueToLocations: {from: number, to: number, async: boolean, click: () => void}[]|null = null;
+  private continueToLocations: Array<{from: number, to: number, async: boolean, click: () => void}>|null = null;
   private readonly liveLocationPool: Bindings.LiveLocation.LiveLocationPool;
   // When the editor content is changed by the user, this becomes
   // true. When the plugin is muted, breakpoints show up as disabled
@@ -1052,7 +1052,7 @@ export class DebuggerPlugin extends Plugin {
       return null;
     }
 
-    const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [];
+    const decorations: Array<CodeMirror.Range<CodeMirror.Decoration>> = [];
 
     for (const [line, names] of variablesByLine) {
       const prevLine = variablesByLine.get(line - 1);
@@ -1189,10 +1189,10 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  private fetchBreakpoints(): {
+  private fetchBreakpoints(): Array<{
     position: number,
     breakpoint: Breakpoints.BreakpointManager.Breakpoint,
-  }[] {
+  }> {
     if (!this.editor) {
       return [];
     }
@@ -1225,12 +1225,12 @@ export class DebuggerPlugin extends Plugin {
   // gutter and inline in the code)
   private async computeBreakpointDecoration(state: CodeMirror.EditorState, breakpoints: BreakpointDescription[]):
       Promise<BreakpointDecoration> {
-    const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [];
-    const gutterMarkers: CodeMirror.Range<CodeMirror.GutterMarker>[] = [];
+    const decorations: Array<CodeMirror.Range<CodeMirror.Decoration>> = [];
+    const gutterMarkers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
     const breakpointsByLine = new Map<number, Breakpoints.BreakpointManager.Breakpoint[]>();
     const inlineMarkersByLine =
-        new Map<number, {breakpoint: Breakpoints.BreakpointManager.Breakpoint | null, column: number}[]>();
-    const possibleBreakpointRequests: Promise<void>[] = [];
+        new Map<number, Array<{breakpoint: Breakpoints.BreakpointManager.Breakpoint | null, column: number}>>();
+    const possibleBreakpointRequests: Array<Promise<void>> = [];
     const inlineMarkerPositions = new Set<number>();
 
     const addInlineMarker =
@@ -1813,7 +1813,7 @@ const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
   },
   provide: (field): CodeMirror.Extension => CodeMirror.showPanel.computeN(
       [field],
-      (state): (() => CodeMirror.Panel)[] =>
+      (state): Array<() => CodeMirror.Panel> =>
           state.field(field).map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
 });
 
@@ -1849,7 +1849,7 @@ const muteBreakpoints = CodeMirror.StateEffect.define<null>();
 
 function muteGutterMarkers(markers: CodeMirror.RangeSet<CodeMirror.GutterMarker>, doc: CodeMirror.Text):
     CodeMirror.RangeSet<CodeMirror.GutterMarker> {
-  const newMarkers: CodeMirror.Range<CodeMirror.GutterMarker>[] = [];
+  const newMarkers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
   markers.between(0, doc.length, (from, _to, marker) => {
     let className: string = marker.elementClass;
     if (!/cm-breakpoint-disabled/.test(className)) {
@@ -2007,7 +2007,7 @@ const markIfContinueTo = CodeMirror.EditorView.contentAttributes.compute([contin
 // Variable value decorations
 
 class ValueDecoration extends CodeMirror.WidgetType {
-  constructor(readonly pairs: [string, SDK.RemoteObject.RemoteObject][]) {
+  constructor(readonly pairs: Array<[string, SDK.RemoteObject.RemoteObject]>) {
     super();
   }
 
@@ -2063,12 +2063,12 @@ function isScopeNode(tokenType: string): boolean {
 
 class SiblingScopeVariables {
   blockList: Set<string> = new Set<string>();
-  variables: {line: number, from: number, id: string}[] = [];
+  variables: Array<{line: number, from: number, id: string}> = [];
 }
 
 export function getVariableNamesByLine(
     editorState: CodeMirror.EditorState, fromPos: number, toPos: number,
-    currentPos: number): {line: number, from: number, id: string}[] {
+    currentPos: number): Array<{line: number, from: number, id: string}> {
   const fromLine = editorState.doc.lineAt(fromPos);
   fromPos = Math.min(fromLine.to, fromPos);
   toPos = editorState.doc.lineAt(toPos).from;
@@ -2080,12 +2080,12 @@ export function getVariableNamesByLine(
     return isScopeNode(node.name) && (node.to < currentPos || currentPos < node.from);
   }
 
-  const names: {line: number, from: number, id: string}[] = [];
+  const names: Array<{line: number, from: number, id: string}> = [];
   let curLine = fromLine;
   const siblingStack: SiblingScopeVariables[] = [];
   let currentLetConstDefinition: CodeMirror.SyntaxNode|null = null;
 
-  function currentNames(): {line: number, from: number, id: string}[] {
+  function currentNames(): Array<{line: number, from: number, id: string}> {
     return siblingStack.length ? siblingStack[siblingStack.length - 1].variables : names;
   }
 
@@ -2143,9 +2143,9 @@ export function getVariableNamesByLine(
 export async function computeScopeMappings(
     callFrame: SDK.DebuggerModel.CallFrame,
     rawLocationToEditorOffset: (l: SDK.DebuggerModel.Location|null) => Promise<number|null>):
-    Promise<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[]> {
+    Promise<Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>> {
   const scopeMappings:
-      {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[] = [];
+      Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}> = [];
   for (const scope of callFrame.scopeChain()) {
     const scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
     if (!scopeStart) {
@@ -2174,9 +2174,10 @@ export async function computeScopeMappings(
 }
 
 export function getVariableValuesByLine(
-    scopeMappings: {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[],
-    variableNames: {line: number, from: number, id: string}[]): Map<number, Map<string, SDK.RemoteObject.RemoteObject>>|
-    null {
+    scopeMappings:
+        Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>,
+    variableNames: Array<{line: number, from: number, id: string}>):
+    Map<number, Map<string, SDK.RemoteObject.RemoteObject>>|null {
   const namesPerLine = new Map<number, Map<string, SDK.RemoteObject.RemoteObject>>();
   for (const {line, from, id} of variableNames) {
     const varValue = findVariableInChain(id, from, scopeMappings);
@@ -2195,7 +2196,8 @@ export function getVariableValuesByLine(
   function findVariableInChain(
       name: string,
       pos: number,
-      scopeMappings: {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[],
+      scopeMappings:
+          Array<{scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}>,
       ): SDK.RemoteObject.RemoteObject|null {
     for (const scope of scopeMappings) {
       if (pos < scope.scopeStart || pos >= scope.scopeEnd) {

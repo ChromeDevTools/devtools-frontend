@@ -73,7 +73,7 @@ export class DynamicSetting<T> {
     return new DynamicSetting<boolean>(name, val => val ? enabled : disabled);
   }
 
-  static none: readonly DynamicSetting<unknown>[] = [];
+  static none: ReadonlyArray<DynamicSetting<unknown>> = [];
 }
 
 export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{

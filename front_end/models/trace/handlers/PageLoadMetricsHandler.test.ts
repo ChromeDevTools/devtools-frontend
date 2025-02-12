@@ -7,9 +7,9 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 function countMetricOcurrences(
-    scoresByMetricName:
+    scoresByMetricName: Array<
         Map<Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName,
-            Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricScore>[],
+            Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricScore>>,
     metricName: Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName): number {
   return scoresByMetricName.reduce((acc, val) => {
     if (val.get(metricName)) {

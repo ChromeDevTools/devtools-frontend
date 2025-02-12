@@ -615,7 +615,7 @@ export function anotherProfilerActiveLabel(): string {
 }
 
 export function asyncStackTraceLabel(
-    description: string|undefined, previousCallFrames: {functionName: string}[]): string {
+    description: string|undefined, previousCallFrames: Array<{functionName: string}>): string {
   if (description) {
     if (description === 'Promise.resolve') {
       return i18nString(UIStrings.promiseResolvedAsync);
@@ -951,10 +951,10 @@ export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): 
 }
 
 export function animateFunction(
-    window: Window, func: Function, params: {
+    window: Window, func: Function, params: Array<{
       from: number,
       to: number,
-    }[],
+    }>,
     duration: number, animationComplete?: (() => void)): () => void {
   const start = window.performance.now();
   let raf = window.requestAnimationFrame(animationStep);
@@ -1176,7 +1176,8 @@ export function createHistoryInput(type = 'search', className?: string): HTMLInp
   }
 }
 
-export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {
+export function createSelect(
+    name: string, options: string[]|Array<Map<string, string[]>>|Set<string>): HTMLSelectElement {
   const select = document.createElement('select');
   ARIAUtils.setLabel(select, name);
   for (const option of options) {
@@ -1813,7 +1814,7 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
 }
 export interface RendererRegistration {
   loadRenderer: () => Promise<Renderer>;
-  contextTypes: () => Array<Function>;
+  contextTypes: () => Function[];
 }
 
 export interface ConfirmDialogOptions {
@@ -1886,7 +1887,8 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element, options: {cssFile?: ({cssContent: string})[]|{cssContent: string}, delegatesFocus?: boolean} = {
+    element: Element,
+    options: {cssFile?: Array<{cssContent: string}>|{cssContent: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {

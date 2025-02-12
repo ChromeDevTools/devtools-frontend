@@ -98,7 +98,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getAllRuleSets(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
+  getAllRuleSets(): Array<WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>> {
     return this.currentDocument()?.ruleSets.getAll() || [];
   }
 
@@ -139,8 +139,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getRepresentativePreloadingAttempts(ruleSetId: Protocol.Preload.RuleSetId|
-                                      null): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+  getRepresentativePreloadingAttempts(ruleSetId: Protocol.Preload.RuleSetId|null):
+      Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     const document = this.currentDocument();
     if (document === null) {
       return [];
@@ -153,7 +153,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getRepresentativePreloadingAttemptsOfPreviousPage(): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+  getRepresentativePreloadingAttemptsOfPreviousPage(): Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     if (this.loaderIds.length <= 1) {
       return [];
     }
@@ -397,7 +397,7 @@ class RuleSetRegistry {
 
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
-  getAll(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
+  getAll(): Array<WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>> {
     return Array.from(this.map.entries()).map(([id, value]) => ({id, value}));
   }
 
@@ -656,7 +656,7 @@ class PreloadingAttemptRegistry {
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
   getAllRepresentative(ruleSetId: Protocol.Preload.RuleSetId|null, sources: SourceRegistry):
-      WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+      Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     return [...this.map.entries()]
         .map(([id, value]) => ({id, value: this.enrich(value, sources.getById(id))}))
         .filter(({value}) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))

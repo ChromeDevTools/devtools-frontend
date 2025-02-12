@@ -444,7 +444,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  private readDirectory(dirEntry: DirectoryEntry, callback: (arg0: Array<FileEntry>) => void): void {
+  private readDirectory(dirEntry: DirectoryEntry, callback: (arg0: FileEntry[]) => void): void {
     const dirReader = dirEntry.createReader();
     let entries: FileEntry[] = [];
 
@@ -470,7 +470,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  private requestEntries(path: Platform.DevToolsPath.RawPathString, callback: (arg0: Array<FileEntry>) => void): void {
+  private requestEntries(path: Platform.DevToolsPath.RawPathString, callback: (arg0: FileEntry[]) => void): void {
     this.domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
 
     function innerCallback(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {

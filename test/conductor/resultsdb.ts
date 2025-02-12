@@ -13,7 +13,7 @@ export interface TestResult {
   status?: 'PASS'|'FAIL'|'SKIP';
   summaryHtml?: string;
   duration?: string;
-  tags?: {key: string, value: string}[];
+  tags?: Array<{key: string, value: string}>;
   artifacts?: {
     [key: string]: {
       filePath: string,

@@ -342,7 +342,7 @@ describe('The Console Tab', () => {
 
   describe('Console log message formatters', () => {
     async function getConsoleMessageTextChunksWithStyle(
-        frontend: puppeteer.Page, styles: (keyof CSSStyleDeclaration)[] = []): Promise<string[][][]> {
+        frontend: puppeteer.Page, styles: Array<keyof CSSStyleDeclaration> = []): Promise<string[][][]> {
       return await frontend.evaluate((selector, styles) => {
         return [...document.querySelectorAll(selector)].map(message => [...message.childNodes].map(node => {
           // For all nodes, extract text.

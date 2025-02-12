@@ -50,7 +50,7 @@ import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
-function sourceFramePlugins(): (typeof Plugin)[] {
+function sourceFramePlugins(): Array<typeof Plugin> {
   // The order of these plugins matters for toolbar items and editor
   // extension precedence
   return [

@@ -1499,7 +1499,7 @@ export abstract class HeapSnapshot {
     const node = this.createNode(rootNodeIndex);
     const list = [rootNodeIndex];
     const sizes = [-1];
-    const classKeys: (string|number)[] = [];
+    const classKeys: Array<string|number> = [];
 
     const seenClassKeys = new Map<string|number, boolean>();
     const nodeFieldCount = this.nodeFieldCount;

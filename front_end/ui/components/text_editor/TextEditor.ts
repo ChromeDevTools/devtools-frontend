@@ -20,8 +20,8 @@ declare global {
 export class TextEditor extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeEditor: CodeMirror.EditorView|undefined = undefined;
-  #dynamicSettings: readonly DynamicSetting<unknown>[] = DynamicSetting.none;
-  #activeSettingListeners: [Common.Settings.Setting<unknown>, (event: {data: unknown}) => void][] = [];
+  #dynamicSettings: ReadonlyArray<DynamicSetting<unknown>> = DynamicSetting.none;
+  #activeSettingListeners: Array<[Common.Settings.Setting<unknown>, (event: {data: unknown}) => void]> = [];
   #pendingState: CodeMirror.EditorState|undefined;
   #lastScrollSnapshot: CodeMirror.StateEffect<unknown>|undefined;
   #resizeTimeout = -1;
@@ -140,7 +140,7 @@ export class TextEditor extends HTMLElement {
 
   #ensureSettingListeners(): void {
     const dynamicSettings = this.#activeEditor ?
-        this.#activeEditor.state.facet<readonly DynamicSetting<unknown>[]>(dynamicSetting) :
+        this.#activeEditor.state.facet<ReadonlyArray<DynamicSetting<unknown>>>(dynamicSetting) :
         DynamicSetting.none;
     if (dynamicSettings === this.#dynamicSettings) {
       return;
@@ -189,7 +189,7 @@ export class TextEditor extends HTMLElement {
     }
 
     const line = view.state.doc.lineAt(selection.main.head);
-    const effects: CodeMirror.StateEffect<unknown>[] = [];
+    const effects: Array<CodeMirror.StateEffect<unknown>> = [];
     if (highlight) {
       // Lazily register the highlight line state.
       if (!view.state.field(highlightedLineState, false)) {

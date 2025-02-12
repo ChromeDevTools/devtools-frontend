@@ -24,7 +24,7 @@ export class Segment<T> {
 }
 
 export class SegmentedRange<T> {
-  #segmentsInternal: Segment<T>[];
+  #segmentsInternal: Array<Segment<T>>;
   readonly #mergeCallback: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)|undefined;
 
   constructor(mergeCallback?: ((arg0: Segment<T>, arg1: Segment<T>) => Segment<T>| null)) {
@@ -76,7 +76,7 @@ export class SegmentedRange<T> {
     that.segments().forEach(segment => this.append(segment));
   }
 
-  segments(): Segment<T>[] {
+  segments(): Array<Segment<T>> {
     return this.#segmentsInternal;
   }
 

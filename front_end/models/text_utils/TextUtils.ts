@@ -52,18 +52,18 @@ export const Utils = {
     return line.substr(0, indentation);
   },
 
-  splitStringByRegexes(text: string, regexes: RegExp[]): {
+  splitStringByRegexes(text: string, regexes: RegExp[]): Array<{
     value: string,
     position: number,
     regexIndex: number,
     captureGroups: Array<string|undefined>,
-  }[] {
-    const matches: {
+  }> {
+    const matches: Array<{
       value: string,
       position: number,
       regexIndex: number,
-      captureGroups: (string|undefined)[],
-    }[] = [];
+      captureGroups: Array<string|undefined>,
+    }> = [];
     const globalRegexes: RegExp[] = [];
     for (let i = 0; i < regexes.length; i++) {
       const regex = regexes[i];
@@ -264,7 +264,7 @@ export class BalancedJSONTokenizer {
  * @see https://heathermoor.medium.com/detecting-code-indentation-eff3ed0fb56b
  */
 export const detectIndentation = function(lines: Iterable<string>): string|null {
-  const frequencies: Array<number> = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const frequencies: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
   let tabs = 0, previous = 0;
 
   for (const line of lines) {
@@ -380,7 +380,7 @@ export const performSearchInContent = function(
  *                CDP search result type.
  */
 export const performSearchInSearchMatches = function(
-    matches: {lineNumber: number, lineContent: string}[], query: string, caseSensitive: boolean,
+    matches: Array<{lineNumber: number, lineContent: string}>, query: string, caseSensitive: boolean,
     isRegex: boolean): SearchMatch[] {
   const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
   const result = [];

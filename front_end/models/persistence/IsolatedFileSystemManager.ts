@@ -50,7 +50,7 @@ let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
-  private readonly callbacks: Map<number, (arg0: Array<Platform.DevToolsPath.RawPathString>) => void>;
+  private readonly callbacks: Map<number, (arg0: Platform.DevToolsPath.RawPathString[]) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
   private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
@@ -149,7 +149,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       void Promise.all(promises).then(onFileSystemsAdded);
     }
 
-    function onFileSystemsAdded(fileSystems: (IsolatedFileSystem|null)[]): void {
+    function onFileSystemsAdded(fileSystems: Array<IsolatedFileSystem|null>): void {
       resolve(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
     }
   }
@@ -281,7 +281,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.workspaceFolderExcludePatternSettingInternal;
   }
 
-  registerCallback(callback: (arg0: Array<Platform.DevToolsPath.RawPathString>) => void): number {
+  registerCallback(callback: (arg0: Platform.DevToolsPath.RawPathString[]) => void): number {
     const requestId = ++lastRequestId;
     this.callbacks.set(requestId, callback);
     return requestId;

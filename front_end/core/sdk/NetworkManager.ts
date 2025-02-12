@@ -1634,7 +1634,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
-    const promises = ([] as Promise<unknown>[]);
+    const promises = ([] as Array<Promise<unknown>>);
     for (const agent of this.#fetchAgents) {
       promises.push(agent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()}));
     }
@@ -1900,8 +1900,8 @@ export class InterceptedRequest {
  */
 class ExtraInfoBuilder {
   readonly #requests: NetworkRequest[];
-  #requestExtraInfos: (ExtraRequestInfo|null)[];
-  #responseExtraInfos: (ExtraResponseInfo|null)[];
+  #requestExtraInfos: Array<ExtraRequestInfo|null>;
+  #responseExtraInfos: Array<ExtraResponseInfo|null>;
   #responseEarlyHintsHeaders: NameValue[];
   #finishedInternal: boolean;
   #webBundleInfo: WebBundleInfo|null;

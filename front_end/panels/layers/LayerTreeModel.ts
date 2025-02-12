@@ -365,7 +365,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
     return this.drawsContent() ? this.width() * this.height() * bytesPerPixel : 0;
   }
 
-  snapshots(): Promise<SDK.PaintProfiler.SnapshotWithRect|null>[] {
+  snapshots(): Array<Promise<SDK.PaintProfiler.SnapshotWithRect|null>> {
     const promise = this.layerTreeModel.paintProfilerModel.makeSnapshot(this.id()).then(snapshot => {
       if (!snapshot) {
         return null;

@@ -125,10 +125,10 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.animationTimingUI?.draw();
   }
 
-  private createCategory(presetGroup: {
+  private createCategory(presetGroup: Array<{
     name: string,
     value: string,
-  }[]): PresetCategory|null {
+  }>): PresetCategory|null {
     const pivot = AnimationTimingModel.parse(presetGroup[0].value);
     if (!pivot) {
       return null;
@@ -280,10 +280,10 @@ export const Presets = [
   ],
 ];
 export interface PresetCategory {
-  presets: {
+  presets: Array<{
     name: string,
     value: string,
-  }[];
+  }>;
   icon: Element;
   presetIndex: number;
 }

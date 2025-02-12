@@ -309,7 +309,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
     return this.gpuMemoryUsageInternal;
   }
 
-  snapshots(): Promise<SDK.PaintProfiler.SnapshotWithRect|null>[] {
+  snapshots(): Array<Promise<SDK.PaintProfiler.SnapshotWithRect|null>> {
     return this.paints.map(async paint => {
       if (!this.paintProfilerModel) {
         return null;
@@ -329,10 +329,10 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
 
   async pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
     return Promise.all(this.paints.map(paint => paint.picture())).then(pictures => {
-      const filteredPictures = (pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)) as {
-        rect: Array<number>,
-        serializedPicture: string,
-      }[]);
+      const filteredPictures = (pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)) as Array<{
+                                  rect: number[],
+                                  serializedPicture: string,
+                                }>);
 
       const fragments = filteredPictures.map(
           picture => ({x: picture.rect[0], y: picture.rect[1], picture: picture.serializedPicture}));

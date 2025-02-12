@@ -39,7 +39,7 @@ export type ConnectionType = 'offline'|'slow-2G'|'2G'|'3G'|'4G';
 export interface CrUXRequest {
   effectiveConnectionType?: ConnectionType;
   formFactor?: FormFactor;
-  metrics?: Array<MetricNames>;
+  metrics?: MetricNames[];
   origin?: string;
   url?: string;
 }
@@ -195,7 +195,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
     try {
       const normalizedUrl = this.#normalizeUrl(pageUrl);
-      const promises: Promise<void>[] = [];
+      const promises: Array<Promise<void>> = [];
 
       for (const pageScope of pageScopeList) {
         for (const deviceScope of DEVICE_SCOPE_LIST) {

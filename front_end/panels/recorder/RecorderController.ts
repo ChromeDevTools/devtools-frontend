@@ -222,7 +222,7 @@ export class RecorderController extends LitElement {
 
   #stepBreakpointIndexes: Set<number> = new Set();
 
-  #builtInConverters: Readonly<Converters.Converter.Converter[]>;
+  #builtInConverters: readonly Converters.Converter.Converter[];
   @state() declare private extensionConverters: Converters.Converter.Converter[];
   @state() declare private replayExtensions: Extensions.ExtensionManager.Extension[];
 
@@ -338,7 +338,7 @@ export class RecorderController extends LitElement {
     this.#setCurrentRecording(recording);
   }
 
-  getSectionsForTesting(): Array<Models.Section.Section>|undefined {
+  getSectionsForTesting(): Models.Section.Section[]|undefined {
     return this.sections;
   }
 

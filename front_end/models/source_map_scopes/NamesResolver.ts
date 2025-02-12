@@ -32,9 +32,9 @@ export async function getTextFor(contentProvider: TextUtils.ContentProvider.Cont
 
 export class IdentifierPositions {
   name: string;
-  positions: {lineNumber: number, columnNumber: number}[];
+  positions: Array<{lineNumber: number, columnNumber: number}>;
 
-  constructor(name: string, positions: {lineNumber: number, columnNumber: number}[] = []) {
+  constructor(name: string, positions: Array<{lineNumber: number, columnNumber: number}> = []) {
     this.name = name;
     this.positions = positions;
   }
@@ -231,7 +231,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
               }
               // Extract as much as possible from SourceMap and resolve
               // missing identifier names from SourceMap ranges.
-              const promises: Promise<void>[] = [];
+              const promises: Array<Promise<void>> = [];
 
               const resolveEntry = (id: IdentifierPositions, handler: (sourceName: string) => void): void => {
                 // First see if we have a source map entry with a name for the identifier.

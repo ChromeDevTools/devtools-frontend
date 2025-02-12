@@ -304,7 +304,7 @@ export interface ViewInput extends StepViewData {
   extensionConverters: Converters.Converter.Converter[];
   isSelected: boolean;
   recorderSettings?: Models.RecorderSettings.RecorderSettings;
-  actions: Array<Action>;
+  actions: Action[];
 
   stepEdited: (event: StepEditedEvent) => void;
   onBreakpointClick: () => void;
@@ -714,7 +714,7 @@ export class StepView extends HTMLElement {
     this.#render();
   }
 
-  #getActions = (): Array<Action> => {
+  #getActions = (): Action[] => {
     const actions = [];
 
     if (!this.#viewInput.isPlaying) {

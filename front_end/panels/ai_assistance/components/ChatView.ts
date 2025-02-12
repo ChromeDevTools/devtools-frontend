@@ -1513,11 +1513,11 @@ function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
 
 function renderNoAgentState(): Lit.TemplateResult {
   const config = Root.Runtime.hostConfig;
-  const featureCards: {
+  const featureCards: Array<{
     icon: string,
     heading: string,
     content: Lit.TemplateResult,
-  }[] =
+  }> =
       [
         ...(config.devToolsFreestyler?.enabled ? [{
           icon: 'brush-2',

@@ -8,11 +8,10 @@ import type {Suggestion} from './SuggestBox.js';
 
 export class FilterSuggestionBuilder {
   private readonly keys: string[];
-  private readonly valueSorter: ((arg0: string, arg1: Array<string>) => void)|
-      ((key: string, result: string[]) => string[]);
+  private readonly valueSorter: ((arg0: string, arg1: string[]) => void)|((key: string, result: string[]) => string[]);
   private readonly valuesMap: Map<string, Set<string>>;
 
-  constructor(keys: string[], valueSorter?: ((arg0: string, arg1: Array<string>) => void)) {
+  constructor(keys: string[], valueSorter?: ((arg0: string, arg1: string[]) => void)) {
     this.keys = keys;
     this.valueSorter = valueSorter || ((key: string, result: string[]) => result.sort());
     this.valuesMap = new Map();

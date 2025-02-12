@@ -38,7 +38,7 @@ export class ObjectEventListenersSidebarPane extends UI.ThrottledWidget.Throttle
       this.#lastRequestedContext = undefined;
     }
 
-    const windowObjects: Array<SDK.RemoteObject.RemoteObject> = [];
+    const windowObjects: SDK.RemoteObject.RemoteObject[] = [];
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
     if (executionContext) {
       this.#lastRequestedContext = executionContext;

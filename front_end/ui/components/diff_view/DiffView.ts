@@ -237,7 +237,7 @@ class DiffRenderer {
     const content: Lit.TemplateResult[] = [];
     let pos = startPos;
     for (const token of row.tokens) {
-      const tokenContent: (Lit.TemplateResult|string)[] = [];
+      const tokenContent: Array<Lit.TemplateResult|string> = [];
       doc.highlightRange(pos, pos + token.text.length, (text, style) => {
         tokenContent.push(style ? html`<span class=${style}>${text}</span>` : text);
       });

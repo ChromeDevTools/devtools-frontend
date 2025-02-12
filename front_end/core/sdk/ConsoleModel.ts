@@ -579,7 +579,7 @@ export interface ConsoleMessageDetails {
   url?: Platform.DevToolsPath.UrlString;
   line?: number;
   column?: number;
-  parameters?: (string|RemoteObject|Protocol.Runtime.RemoteObject)[];
+  parameters?: Array<string|RemoteObject|Protocol.Runtime.RemoteObject>;
   stackTrace?: Protocol.Runtime.StackTrace;
   timestamp?: number;
   executionContextId?: number;
@@ -600,7 +600,7 @@ export class ConsoleMessage {
   url: Platform.DevToolsPath.UrlString|undefined;
   line: number;
   column: number;
-  parameters: (string|RemoteObject|Protocol.Runtime.RemoteObject)[]|undefined;
+  parameters: Array<string|RemoteObject|Protocol.Runtime.RemoteObject>|undefined;
   stackTrace: Protocol.Runtime.StackTrace|undefined;
   timestamp: number;
   #executionContextId: number;

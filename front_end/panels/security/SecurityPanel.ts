@@ -870,7 +870,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   private readonly securityExplanationsExtra: HTMLElement;
   private readonly lockSpectrum: Map<Protocol.Security.SecurityState, HTMLElement>;
   private summaryText: HTMLElement;
-  private explanations: (Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation)[]|null;
+  private explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
   private securityState: Protocol.Security.SecurityState|null;
   constructor(element?: HTMLElement) {
     super(undefined, undefined, element);
@@ -1007,7 +1007,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   }
 
   private getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
-      {summary: (string|undefined), explanations: Array<SecurityStyleExplanation>} {
+      {summary: (string|undefined), explanations: SecurityStyleExplanation[]} {
     const {securityState, securityStateIssueIds} = visibleSecurityState;
     let summary;
     const explanations: SecurityStyleExplanation[] = [];

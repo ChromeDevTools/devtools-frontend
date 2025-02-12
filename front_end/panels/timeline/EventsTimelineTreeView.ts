@@ -148,7 +148,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly categoryFilter: Category;
   private readonly durationFilter: IsLong;
-  private readonly filtersInternal: (IsLong|Category)[];
+  private readonly filtersInternal: Array<IsLong|Category>;
   constructor() {
     super();
     this.categoryFilter = new Category();

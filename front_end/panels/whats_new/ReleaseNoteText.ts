@@ -14,8 +14,8 @@ let registeredLinks = false;
 export interface ReleaseNote {
   version: number;
   header: string;
-  markdownLinks: {key: string, link: string}[];
-  videoLinks: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}[];
+  markdownLinks: Array<{key: string, link: string}>;
+  videoLinks: Array<{description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}>;
   link: string;
 }
 

@@ -1039,7 +1039,7 @@ export class RemoteArray {
       throw new Error('Out of range');
     }
     const result =
-        await this.#objectInternal.callFunction<unknown, Array<unknown>>(at, [RemoteObject.toCallArgument(index)]);
+        await this.#objectInternal.callFunction<unknown, unknown[]>(at, [RemoteObject.toCallArgument(index)]);
     if (result.wasThrown || !result.object) {
       throw new Error('Exception in callFunction or result value is empty');
     }

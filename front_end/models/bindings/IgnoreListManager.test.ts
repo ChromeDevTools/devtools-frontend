@@ -179,8 +179,8 @@ describeWithMockConnection('IgnoreListManager', () => {
 
   // Wrapper around getIgnoreListURLContextMenuItems to make its result more convenient for testing
   function getContextMenu(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      {items: Array<string>, callbacks: Map<string, () => void>} {
-    const items: Array<string> = [];
+      {items: string[], callbacks: Map<string, () => void>} {
+    const items: string[] = [];
     const callbacks: Map<string, () => void> = new Map();
 
     for (const {text, callback} of ignoreListManager.getIgnoreListURLContextMenuItems(uiSourceCode)) {
@@ -192,8 +192,8 @@ describeWithMockConnection('IgnoreListManager', () => {
 
   // Wrapper around getIgnoreListFolderContextMenuItems to make its result more convenient for testing
   function getFolderContextMenu(url: Platform.DevToolsPath.UrlString):
-      {items: Array<string>, callbacks: Map<string, () => void>} {
-    const items: Array<string> = [];
+      {items: string[], callbacks: Map<string, () => void>} {
+    const items: string[] = [];
     const callbacks: Map<string, () => void> = new Map();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const options: Bindings.IgnoreListManager.IgnoreListGeneralRules = {

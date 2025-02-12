@@ -929,7 +929,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
   }
 
-  private onGetPageResources(_message: unknown, port: MessagePort): {url: string, type: string}[] {
+  private onGetPageResources(_message: unknown, port: MessagePort): Array<{url: string, type: string}> {
     const resources = new Map<unknown, {
       url: string,
       type: string,

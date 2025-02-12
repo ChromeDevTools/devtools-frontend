@@ -621,9 +621,9 @@ export class ContextMenu extends SubMenu {
     }
   }
 
-  private buildMenuDescriptors(): (SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[] {
-    return super.buildDescriptor().subItems as (
-               SoftContextMenuDescriptor | Host.InspectorFrontendHostAPI.ContextMenuDescriptor)[];
+  private buildMenuDescriptors(): Array<SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor> {
+    return super.buildDescriptor().subItems as
+        Array<SoftContextMenuDescriptor|Host.InspectorFrontendHostAPI.ContextMenuDescriptor>;
   }
 
   private onItemSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
@@ -701,7 +701,7 @@ export interface Provider<T> {
   appendApplicableItems(event: Event, contextMenu: ContextMenu, target: T): void;
 }
 
-const registeredProviders: ProviderRegistration<unknown>[] = [];
+const registeredProviders: Array<ProviderRegistration<unknown>> = [];
 
 export function registerProvider<T>(registration: ProviderRegistration<T>): void {
   registeredProviders.push(registration);

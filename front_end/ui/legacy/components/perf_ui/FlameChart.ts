@@ -2988,10 +2988,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    const groupStack: {
+    const groupStack: Array<{
       nestingLevel: number,
       visible: boolean,
-    }[] = [{nestingLevel: -1, visible: true}];
+    }> = [{nestingLevel: -1, visible: true}];
     for (let i = 0; i < groups.length; ++i) {
       const groupTop = groupOffsets[i];
       const group = groups[i];

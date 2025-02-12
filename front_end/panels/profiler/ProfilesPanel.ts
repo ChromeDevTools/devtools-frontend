@@ -91,10 +91,10 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   profileGroups: {};
   launcherView: ProfileLauncherView;
   visibleView!: UI.Widget.Widget|undefined;
-  readonly profileToView: {
+  readonly profileToView: Array<{
     profile: ProfileHeader,
     view: UI.Widget.Widget,
-  }[];
+  }>;
   typeIdToSidebarSection: {
     [x: string]: ProfileTypeSidebarSection,
   };

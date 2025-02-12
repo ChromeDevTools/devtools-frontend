@@ -32,9 +32,9 @@ export interface TraceEvent {
     data?: {
       frame?: string,
       readyState?: number,
-      stackTrace?: {
-        url: string,
-      }[],
+      stackTrace?: Array<{
+                  url: string,
+                }>,
       url?: string,
     },
   };

@@ -53,7 +53,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   #anonymousConsoleProfileIdToTitle: Map<string, string>;
   readonly #profilerAgent: ProtocolProxyApi.ProfilerApi;
   #preciseCoverageDeltaUpdateCallback:
-      ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => Promise<void>)|null;
+      ((arg0: number, arg1: string, arg2: Protocol.Profiler.ScriptCoverage[]) => Promise<void>)|null;
   readonly #debuggerModelInternal: DebuggerModel;
   readonly registeredConsoleProfileMessages: ProfileFinishedData[] = [];
 
@@ -129,7 +129,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   startPreciseCoverage(
       jsCoveragePerBlock: boolean,
       preciseCoverageDeltaUpdateCallback:
-          ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => Promise<void>)|
+          ((arg0: number, arg1: string, arg2: Protocol.Profiler.ScriptCoverage[]) => Promise<void>)|
       null): Promise<unknown> {
     const callCount = false;
     this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
@@ -140,7 +140,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
 
   async takePreciseCoverage(): Promise<{
     timestamp: number,
-    coverage: Array<Protocol.Profiler.ScriptCoverage>,
+    coverage: Protocol.Profiler.ScriptCoverage[],
   }> {
     const r = await this.#profilerAgent.invoke_takePreciseCoverage();
     const timestamp = (r && r.timestamp) || 0;

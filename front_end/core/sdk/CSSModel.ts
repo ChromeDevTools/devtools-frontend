@@ -298,7 +298,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 
   async takeCoverageDelta(): Promise<{
     timestamp: number,
-    coverage: Array<Protocol.CSS.RuleUsage>,
+    coverage: Protocol.CSS.RuleUsage[],
   }> {
     const r = await this.agent.invoke_takeCoverageDelta();
     const timestamp = (r && r.timestamp) || 0;
@@ -1096,7 +1096,7 @@ export const enum CSSPropertyTrackerEvents {
 }
 
 export interface CSSPropertyTrackerEventTypes {
-  [CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED]: (DOMNode|null)[];
+  [CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED]: Array<DOMNode|null>;
 }
 
 SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});

@@ -213,7 +213,7 @@ export const $$ =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$(`${handler}/${selector}`) as puppeteer.ElementHandle<ElementType>[];
+  const elements = await rootElement.$$(`${handler}/${selector}`) as Array<puppeteer.ElementHandle<ElementType>>;
   return elements;
 };
 
@@ -794,12 +794,12 @@ export function matchTable<A, E>(
   return matchArray(actual, expected, (actual, expected) => matchArray<A, E>(actual, expected, comparator));
 }
 
-export const matchStringArray = (actual: string[], expected: (string|RegExp)[]) =>
+export const matchStringArray = (actual: string[], expected: Array<string|RegExp>) =>
     matchArray(actual, expected, matchString);
 
 export const assertMatchArray = assertOk(matchStringArray);
 
-export const matchStringTable = (actual: string[][], expected: (string|RegExp)[][]) =>
+export const matchStringTable = (actual: string[][], expected: Array<Array<string|RegExp>>) =>
     matchTable(actual, expected, matchString);
 
 export async function renderCoordinatorQueueEmpty(): Promise<void> {

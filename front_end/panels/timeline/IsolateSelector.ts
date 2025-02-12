@@ -23,7 +23,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.IsolateManager.Observer {
   menu: Menus.SelectMenu.SelectMenu;
-  options?: {index: number, isolate: SDK.IsolateManager.Isolate}[];
+  options?: Array<{index: number, isolate: SDK.IsolateManager.Isolate}>;
   items?: Menus.Menu.MenuItem[];
   readonly itemByIsolate: Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem> = new Map();
 

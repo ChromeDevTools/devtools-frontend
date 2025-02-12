@@ -223,10 +223,10 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.linkifierInternal = new Components.Linkifier.Linkifier(maxLinkLength);
   }
 
-  static buildPopoverTable(popoverInfo: {
+  static buildPopoverTable(popoverInfo: Array<{
     title: string,
     value: string,
-  }[]): Element {
+  }>): Element {
     const table = document.createElement('table');
     for (const entry of popoverInfo) {
       const row = table.createChild('tr');

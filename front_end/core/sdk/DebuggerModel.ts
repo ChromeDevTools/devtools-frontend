@@ -180,7 +180,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                      start: Location,
                                      end: Location,
                                    }>>)|null;
-  #expandCallFramesCallback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null;
+  #expandCallFramesCallback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null;
   evaluateOnCallFrameCallback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null;
   #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null;
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
@@ -657,7 +657,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#beforePausedCallback = callback;
   }
 
-  setExpandCallFramesCallback(callback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null): void {
+  setExpandCallFramesCallback(callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null): void {
     this.#expandCallFramesCallback = callback;
   }
 

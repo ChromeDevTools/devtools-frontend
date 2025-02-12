@@ -275,11 +275,11 @@ export class TimelineFrameModel {
   }
 
   #addTraceEvents(
-      events: readonly Types.Events.Event[], threadData: {
+      events: readonly Types.Events.Event[], threadData: Array<{
         pid: Types.Events.ProcessID,
         tid: Types.Events.ThreadID,
         startTime: Types.Timing.Micro,
-      }[],
+      }>,
       mainFrameId: string): void {
     let j = 0;
     this.#activeThreadId = threadData.length && threadData[0].tid || null;

@@ -17,7 +17,7 @@ export interface AuditResultJSON {
   description: string;
   explanation?: string;
   errorMessage?: string;
-  displayValue?: string|(string|number)[];
+  displayValue?: string|Array<string|number>;
   scoreDisplayMode: string;
   error: boolean;
   score: number|null;
@@ -51,7 +51,7 @@ export interface ReportJSON {
   finalDisplayedUrl: string;
   finalUrl?: string;
   runWarnings?: string[];
-  artifacts: {traces: {defaultPass: {traceEvents: Array<unknown>}}};
+  artifacts: {traces: {defaultPass: {traceEvents: unknown[]}}};
   audits: {[x: string]: AuditResultJSON};
   categories: {[x: string]: CategoryJSON};
   categoryGroups: {[x: string]: GroupJSON};

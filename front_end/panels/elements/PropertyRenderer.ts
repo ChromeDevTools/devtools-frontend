@@ -166,7 +166,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   // unmatched text and around rendered matching results.
   static renderValueElement(
       name: string, value: string, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
-      renderers: MatchRenderer<SDK.CSSPropertyParser.Match>[]): HTMLElement {
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>): HTMLElement {
     const valueElement = document.createElement('span');
     valueElement.setAttribute(
         'jslog', `${VisualLogging.value().track({

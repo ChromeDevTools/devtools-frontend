@@ -389,7 +389,7 @@ export class HeapSnapshotSortableDataGrid extends
   }
 
   allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>):
-      DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>[] {
+      Array<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>> {
     return parent.children;
   }
 

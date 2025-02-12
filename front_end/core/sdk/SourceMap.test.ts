@@ -81,7 +81,7 @@ describeWithEnvironment('SourceMap', () => {
     });
 
     it('peeks the next VLQ number without moving the iterator', () => {
-      const cases: [string, number|null][] = [
+      const cases: Array<[string, number | null]> = [
         ['', null],
         ['0C', 42],
         ['0C0C', 42],

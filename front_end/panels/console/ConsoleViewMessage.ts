@@ -284,10 +284,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   private repeatCountInternal: number;
   private closeGroupDecorationCount: number;
   private consoleGroupInternal: ConsoleGroupViewMessage|null;
-  private selectableChildren: {
+  private selectableChildren: Array<{
     element: HTMLElement,
     forceSelect: () => void,
-  }[];
+  }>;
   private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
   // The wrapper that contains consoleRowWrapper and other elements in a column.
   protected elementInternal: HTMLElement|null;
@@ -721,7 +721,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return {stackTraceElement, contentElement, messageElement, clickableElement, toggleElement};
   }
 
-  private format(rawParameters: (string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined)[]):
+  private format(rawParameters: Array<string|SDK.RemoteObject.RemoteObject|Protocol.Runtime.RemoteObject|undefined>):
       HTMLElement {
     // This node is used like a Builder. Values are continually appended onto it.
     const formattedResult = document.createElement('span');
@@ -923,9 +923,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   protected renderPropertyPreviewOrAccessor(
-      object: SDK.RemoteObject.RemoteObject|null, property: Protocol.Runtime.PropertyPreview, propertyPath: {
-        name: (string|symbol),
-      }[]): HTMLElement {
+      object: SDK.RemoteObject.RemoteObject|null, property: Protocol.Runtime.PropertyPreview, propertyPath: Array<{
+        name: (string | symbol),
+      }>): HTMLElement {
     if (property.type === 'accessor') {
       return this.formatAsAccessorProperty(object, propertyPath.map(property => property.name.toString()), false);
     }
@@ -1896,9 +1896,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     });
   }
 
-  private static tokenizeMessageText(string: string): {
+  private static tokenizeMessageText(string: string): Array<{
     type?: string, text: string,
-  }[] {
+  }> {
     const {tokenizerRegexes, tokenizerTypes} = getOrCreateTokenizers();
     if (string.length > getMaxTokenizableStringLength()) {
       return [{text: string, type: undefined}];
@@ -1939,8 +1939,8 @@ let tokenizerRegexes: RegExp[]|null = null;
 let tokenizerTypes: string[]|null = null;
 
 function getOrCreateTokenizers(): {
-  tokenizerRegexes: Array<RegExp>,
-  tokenizerTypes: Array<string>,
+  tokenizerRegexes: RegExp[],
+  tokenizerTypes: string[],
 } {
   if (!tokenizerRegexes || !tokenizerTypes) {
     const controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
@@ -2183,7 +2183,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     }
 
     const rawValueColumnSymbol = Symbol('rawValueColumn');
-    const columnNames: (string|symbol)[] = [];
+    const columnNames: Array<string|symbol> = [];
     const preview = actualTable.preview;
     const rows = [];
     for (let i = 0; i < preview.properties.length; ++i) {

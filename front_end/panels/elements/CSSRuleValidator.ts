@@ -135,7 +135,7 @@ export abstract class CSSRuleValidator {
 
   abstract getHint(
       propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
-      nodeName?: string, fontFaces?: Array<SDK.CSSFontFace.CSSFontFace>): Hint|undefined;
+      nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined;
 }
 
 export class AlignContentValidator extends CSSRuleValidator {
@@ -655,7 +655,7 @@ export class FontVariationSettingsValidator extends CSSRuleValidator {
 
   getHint(
       propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
-      nodeName?: string, fontFaces?: Array<SDK.CSSFontFace.CSSFontFace>): Hint|undefined {
+      nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined {
     if (!computedStyles) {
       return;
     }

@@ -45,11 +45,11 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
   private inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
   private highlightMode: string;
-  private boxElements: {
+  private boxElements: Array<{
     element: HTMLElement,
     name: string,
     backgroundColor: string,
-  }[];
+  }>;
   private isEditingMetrics?: boolean;
 
   constructor(computedStyleModel: ComputedStyleModel) {

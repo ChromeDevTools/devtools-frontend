@@ -352,7 +352,7 @@ function drawFlexAlignmentForLine(
   // second      |        first
   // point       V        point
   //   o--------------------o
-  const linesToDraw: [Position, Position][] = [];
+  const linesToDraw: Array<[Position, Position]> = [];
 
   switch (alignItemsStyle) {
     case 'flex-start':

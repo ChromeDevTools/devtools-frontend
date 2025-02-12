@@ -291,7 +291,7 @@ export interface CandyStripedTimeRange {
  */
 export interface TimespanBreakdown {
   type: 'TIMESPAN_BREAKDOWN';
-  sections: Array<Components.TimespanBreakdownOverlay.EntryBreakdown>;
+  sections: Components.TimespanBreakdownOverlay.EntryBreakdown[];
   entry?: Trace.Types.Events.Event;
   renderLocation?: 'BOTTOM_OF_TIMELINE'|'BELOW_EVENT'|'ABOVE_EVENT';
 }
@@ -656,7 +656,7 @@ export class Overlays extends EventTarget {
   /**
    * @returns all overlays that match the provided type.
    */
-  overlaysOfType<T extends TimelineOverlay>(type: T['type']): NoInfer<T>[] {
+  overlaysOfType<T extends TimelineOverlay>(type: T['type']): Array<NoInfer<T>> {
     const matches: T[] = [];
 
     function overlayIsOfType(overlay: TimelineOverlay): overlay is T {

@@ -74,14 +74,14 @@ describeWithEnvironment('SamplesHandler', function() {
     const tid = Trace.Types.Events.ThreadID(1);
 
     function makeProfileChunkEvent(
-        nodes: {
+        nodes: Array<{
           id: number,
           children: number[],
           codeType?: string,
           url?: string,
           functionName?: string,
           scriptId?: number,
-        }[],
+        }>,
         samples: number[],
         timeDeltas: number[],
         ts: number,

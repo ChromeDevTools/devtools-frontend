@@ -30,8 +30,8 @@ class SharedStorageItemsListener {
   #cleared: boolean = false;
   #filteredCleared: boolean = false;
   #refreshed: boolean = false;
-  #deletedKeys: Array<String> = [];
-  #editedEvents: Array<View.SharedStorageItemsDispatcher.ItemEditedEvent> = [];
+  #deletedKeys: String[] = [];
+  #editedEvents: View.SharedStorageItemsDispatcher.ItemEditedEvent[] = [];
 
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.SharedStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;
@@ -56,11 +56,11 @@ class SharedStorageItemsListener {
     this.#dispatcher.removeEventListener(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemEdited, this);
   }
 
-  get deletedKeys(): Array<String> {
+  get deletedKeys(): String[] {
     return this.#deletedKeys;
   }
 
-  get editedEvents(): Array<View.SharedStorageItemsDispatcher.ItemEditedEvent> {
+  get editedEvents(): View.SharedStorageItemsDispatcher.ItemEditedEvent[] {
     return this.#editedEvents;
   }
 

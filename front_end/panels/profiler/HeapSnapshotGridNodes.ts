@@ -162,10 +162,10 @@ export class HeapSnapshotGridNode extends
   dataGridInternal: HeapSnapshotSortableDataGrid;
   instanceCount: number;
   readonly savedChildren: Map<number, HeapSnapshotGridNode>;
-  retrievedChildrenRanges: {
+  retrievedChildrenRanges: Array<{
     from: number,
     to: number,
-  }[];
+  }>;
   providerObject: ChildrenProvider|null;
   reachableFromWindow: boolean;
   populated?: boolean;

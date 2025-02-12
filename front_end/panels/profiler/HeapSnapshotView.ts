@@ -309,8 +309,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   readonly retainmentDataGrid: HeapSnapshotRetainmentDataGrid;
   readonly retainmentWidget: DataGrid.DataGrid.DataGridWidget<HeapSnapshotGridNode>;
   readonly objectDetailsView: UI.Widget.VBox;
-  readonly perspectives: (SummaryPerspective|ComparisonPerspective|ContainmentPerspective|AllocationPerspective|
-                          StatisticsPerspective)[];
+  readonly perspectives: Array<SummaryPerspective|ComparisonPerspective|ContainmentPerspective|AllocationPerspective|
+                               StatisticsPerspective>;
   readonly comparisonPerspective: ComparisonPerspective;
   readonly perspectiveSelect: UI.Toolbar.ToolbarComboBox;
   baseSelect: UI.Toolbar.ToolbarComboBox;
@@ -774,7 +774,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     {uiName: i18nString(UIStrings.duplicatedStrings), filterName: 'duplicatedStrings'},
     {uiName: i18nString(UIStrings.objectsRetainedByDetachedDomNodes), filterName: 'objectsRetainedByDetachedDomNodes'},
     {uiName: i18nString(UIStrings.objectsRetainedByConsole), filterName: 'objectsRetainedByConsole'},
-  ] as readonly{uiName: string, filterName: string}[];
+  ] as ReadonlyArray<{uiName: string, filterName: string}>;
 
   changeFilter(): void {
     let selectedIndex = this.filterSelect.selectedIndex();

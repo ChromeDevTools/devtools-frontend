@@ -1162,7 +1162,7 @@ export class StylePropertiesSection {
   }
 
   static renderSelectors(
-      selectors: {text: string, specificity: Protocol.CSS.Specificity|undefined}[], matchingSelectors: boolean[],
+      selectors: Array<{text: string, specificity: Protocol.CSS.Specificity|undefined}>, matchingSelectors: boolean[],
       elementToSelectorIndex: WeakMap<Element, number>): DocumentFragment {
     const fragment = document.createDocumentFragment();
     for (const [i, selector] of selectors.entries()) {

@@ -97,10 +97,10 @@ export function buildStackTraceRows(
     target: SDK.Target.Target|null,
     linkifier: Linkifier,
     tabStops: boolean|undefined,
-    updateCallback?: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
+    updateCallback?: (arg0: Array<StackTraceRegularRow|StackTraceAsyncRow>) => void,
     showColumnNumber?: boolean,
-    ): (StackTraceRegularRow|StackTraceAsyncRow)[] {
-  const stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[] = [];
+    ): Array<StackTraceRegularRow|StackTraceAsyncRow> {
+  const stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow> = [];
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
@@ -179,7 +179,8 @@ export function buildStackTracePreviewContents(
 }
 
 function renderStackTraceTable(
-    container: Element, parent: Element, stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[]): HTMLElement[] {
+    container: Element, parent: Element,
+    stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow>): HTMLElement[] {
   container.removeChildren();
   const links: HTMLElement[] = [];
 

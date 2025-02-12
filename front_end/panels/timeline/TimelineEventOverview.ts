@@ -668,10 +668,10 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
 export class Quantizer {
   private lastTime: number;
   private quantDuration: number;
-  private readonly callback: (arg0: Array<number>) => void;
+  private readonly callback: (arg0: number[]) => void;
   private counters: number[];
   private remainder: number;
-  constructor(startTime: number, quantDuration: number, callback: (arg0: Array<number>) => void) {
+  constructor(startTime: number, quantDuration: number, callback: (arg0: number[]) => void) {
     this.lastTime = startTime;
     this.quantDuration = quantDuration;
     this.callback = callback;

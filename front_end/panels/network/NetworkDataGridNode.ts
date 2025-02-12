@@ -1057,7 +1057,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  private arrayLength(array: Array<unknown>|null): string {
+  private arrayLength(array: unknown[]|null): string {
     return array ? String(array.length) : '';
   }
 

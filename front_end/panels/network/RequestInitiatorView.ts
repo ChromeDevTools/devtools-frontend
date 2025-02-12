@@ -49,7 +49,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   static createStackTracePreview(
       request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): {
     element: Element,
-    links: Array<Element>,
+    links: Element[],
   }|null {
     const initiator = request.initiator();
     if (!initiator || !initiator.stack) {

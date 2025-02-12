@@ -259,7 +259,7 @@ export class SessionRouter {
     callbacks: Map<number, CallbackWithDebugInfo>,
     proxyConnection: ((Connection | undefined)|null),
   }>;
-  #pendingScripts: (() => void)[];
+  #pendingScripts: Array<() => void>;
 
   constructor(connection: Connection) {
     this.#connectionInternal = connection;
@@ -1072,7 +1072,7 @@ class AgentPrototype {
  */
 class DispatcherManager<Domain extends ProtocolDomainName> {
   #eventArgs: ReadonlyEventParameterNames;
-  #dispatchers: ProtocolProxyApi.ProtocolDispatchers[Domain][] = [];
+  #dispatchers: Array<ProtocolProxyApi.ProtocolDispatchers[Domain]> = [];
 
   constructor(eventArgs: ReadonlyEventParameterNames) {
     this.#eventArgs = eventArgs;

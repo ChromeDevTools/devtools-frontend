@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
  * See UserTimings.md in this directory for some handy documentation on
  * UserTimings and the trace events we parse currently.
  **/
-let syntheticEvents: Types.Events.SyntheticEventPair<Types.Events.PairableAsync>[] = [];
+let syntheticEvents: Array<Types.Events.SyntheticEventPair<Types.Events.PairableAsync>> = [];
 
 // There are two events dispatched for performance.measure calls: one to
 // represent the measured timing in the tracing clock (which we type as
@@ -26,7 +26,7 @@ const measureTraceByTraceId: Map<number, Types.Events.UserTimingMeasure> = new M
 const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
 const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
-const consoleTimings: (Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd)[] = [];
+const consoleTimings: Array<Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd> = [];
 
 const timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
 

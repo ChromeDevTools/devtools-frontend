@@ -910,7 +910,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.updateWidths();
   }
 
-  private enumerateChildren(rootNode: DataGridNode<T>, result: DataGridNode<T>[], maxLevel: number): DataGridNode<T>[] {
+  private enumerateChildren(rootNode: DataGridNode<T>, result: Array<DataGridNode<T>>, maxLevel: number):
+      Array<DataGridNode<T>> {
     if (!rootNode.isRoot) {
       result.push(rootNode);
     }
@@ -1705,7 +1706,7 @@ export class DataGridNode<T> {
   private shouldRefreshChildrenInternal: boolean;
   private dataInternal: DataGridData;
   private hasChildrenInternal: boolean;
-  children: DataGridNode<T>[];
+  children: Array<DataGridNode<T>>;
   dataGrid: DataGridImpl<T>|null;
   parent: DataGridNode<T>|null;
   previousSibling: DataGridNode<T>|null;

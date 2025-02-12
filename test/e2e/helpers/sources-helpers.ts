@@ -704,7 +704,7 @@ export async function getWatchExpressionsValues() {
   if (!watchExpressionValue) {
     return null;
   }
-  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as puppeteer.ElementHandle<HTMLElement>[];
+  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as Array<puppeteer.ElementHandle<HTMLElement>>;
   return await Promise.all(values.map(value => value.evaluate(element => element.innerText)));
 }
 
@@ -861,7 +861,7 @@ export class WasmLocationLabels {
   }
 }
 
-export async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
+export async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
   const editor = await waitFor('[aria-label="Code editor"]');
   return await editor.evaluate(
       node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);

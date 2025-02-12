@@ -120,7 +120,7 @@ describe('TextUtils', () => {
         const filterParser = new TextUtils.TextUtils.FilterParser(['key1', 'key2']);
 
         const parse = (text: string) => {
-          return filterParser.parse(text) as {key?: string, text?: string, regex?: RegExp, negative: boolean}[];
+          return filterParser.parse(text) as Array<{key?: string, text?: string, regex?: RegExp, negative: boolean}>;
         };
 
         let result = parse('text');

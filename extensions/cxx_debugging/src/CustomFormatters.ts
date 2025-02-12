@@ -325,7 +325,7 @@ export class CXXValue implements Value, LazyObject {
         this.typeMap, data);
   }
 
-  async getProperties(): Promise<{name: string, property: LazyObject}[]> {
+  async getProperties(): Promise<Array<{name: string, property: LazyObject}>> {
     const properties = [];
     if (this.type.arraySize > 0) {
       for (let index = 0; index < this.type.arraySize; ++index) {
@@ -461,7 +461,7 @@ export class CXXValue implements Value, LazyObject {
 }
 
 export interface LazyObject {
-  getProperties(): Promise<{name: string, property: LazyObject}[]>;
+  getProperties(): Promise<Array<{name: string, property: LazyObject}>>;
   asRemoteObject(): Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject>;
 }
 
@@ -543,7 +543,7 @@ export class PrimitiveLazyObject<T> implements LazyObject {
     this.linearMemorySize = linearMemorySize;
   }
 
-  async getProperties(): Promise<{name: string, property: LazyObject}[]> {
+  async getProperties(): Promise<Array<{name: string, property: LazyObject}>> {
     return [];
   }
 
@@ -568,7 +568,7 @@ export class LocalLazyObject implements LazyObject {
     this.linearMemoryAddress = linearMemoryAddress;
   }
 
-  async getProperties(): Promise<{name: string, property: LazyObject}[]> {
+  async getProperties(): Promise<Array<{name: string, property: LazyObject}>> {
     return Object.entries(this.value).map(([name, value]) => {
       const property = lazyObjectFromAny(value, this.objectStore);
       return {name, property};
@@ -592,8 +592,8 @@ export class LocalLazyObject implements LazyObject {
 export type FormatterResult = number|string|boolean|bigint|undefined|CXXValue|object|(() => LazyObject);
 export type FormatterCallback = (wasm: WasmInterface, value: Value) => FormatterResult;
 export interface Formatter {
-  types: Array<string>|((t: TypeInfo) => boolean);
-  imports?: Array<FormatterCallback>;
+  types: string[]|((t: TypeInfo) => boolean);
+  imports?: FormatterCallback[];
   format: FormatterCallback;
 }
 

@@ -77,8 +77,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let eventListenersWidgetInstance: EventListenersWidget;
 
 export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget implements UI.Toolbar.ItemsProvider {
-  private readonly toolbarItemsInternal: (UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarSettingCheckbox|
-                                          UI.Toolbar.ToolbarComboBox)[];
+  private readonly toolbarItemsInternal:
+      Array<UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarSettingCheckbox|UI.Toolbar.ToolbarComboBox>;
   private showForAncestorsSetting: Common.Settings.Setting<boolean>;
   private readonly dispatchFilterBySetting: Common.Settings.Setting<string>;
   private readonly showFrameworkListenersSetting: Common.Settings.Setting<boolean>;

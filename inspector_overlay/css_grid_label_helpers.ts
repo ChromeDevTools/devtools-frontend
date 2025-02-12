@@ -125,8 +125,8 @@ export interface GridHighlightConfig {
   negativeRowLineNumberPositions?: Position[];
   positiveColumnLineNumberPositions?: Position[];
   negativeColumnLineNumberPositions?: Position[];
-  rowLineNameOffsets?: {name: string, x: number, y: number}[];
-  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  rowLineNameOffsets?: Array<{name: string, x: number, y: number}>;
+  columnLineNameOffsets?: Array<{name: string, x: number, y: number}>;
   gridHighlightConfig?: GridHighlightOptions;
 }
 
@@ -247,8 +247,8 @@ const first = <T>(array: T[]) => array[0];
 /**
  * Massage the list of line name positions given by the backend for easier consumption.
  */
-function normalizeNameData(namePositions: {name: string, x: number, y: number}[]):
-    {positions: {x: number, y: number}[], names: string[][]} {
+function normalizeNameData(namePositions: Array<{name: string, x: number, y: number}>):
+    {positions: Array<{x: number, y: number}>, names: string[][]} {
   const positions = [];
   const names = [];
 
@@ -275,8 +275,8 @@ export interface NormalizePositionDataConfig {
   negativeRowLineNumberPositions?: Position[];
   positiveColumnLineNumberPositions?: Position[];
   negativeColumnLineNumberPositions?: Position[];
-  rowLineNameOffsets?: {name: string, x: number, y: number}[];
-  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  rowLineNameOffsets?: Array<{name: string, x: number, y: number}>;
+  columnLineNameOffsets?: Array<{name: string, x: number, y: number}>;
   gridHighlightConfig?: {showLineNames: boolean};
 }
 
@@ -421,7 +421,7 @@ export function drawGridLineNumbers(
  * Places the grid track size labels on the overlay.
  */
 export function drawGridTrackSizes(
-    container: HTMLElement, trackSizes: Array<TrackSize>, direction: 'row'|'column', canvasSize: CanvasSize,
+    container: HTMLElement, trackSizes: TrackSize[], direction: 'row'|'column', canvasSize: CanvasSize,
     emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
     writingMode: string|undefined = 'horizontal-tb') {
   const {main, cross} = getAxes(writingMode);

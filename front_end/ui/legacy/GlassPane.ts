@@ -61,7 +61,7 @@ export class GlassPane {
     return this.widgetInternal.isShowing();
   }
 
-  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+  registerRequiredCSS(...cssFiles: Array<{cssContent: string}>): void {
     this.widgetInternal.registerRequiredCSS(...cssFiles);
   }
 

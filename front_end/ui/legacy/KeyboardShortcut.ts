@@ -84,7 +84,7 @@ export class KeyboardShortcut {
 
   static createShortcutFromSettingObject(settingObject: {
     action: string,
-    descriptors: Array<Descriptor>,
+    descriptors: Descriptor[],
     type: Type,
   }): KeyboardShortcut {
     return new KeyboardShortcut(settingObject.descriptors, settingObject.action, settingObject.type);

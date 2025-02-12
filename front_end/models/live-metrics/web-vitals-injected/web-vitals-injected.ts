@@ -77,7 +77,7 @@ function sendEventToDevTools(event: Spec.WebVitalsEvent): void {
   window[Spec.EVENT_BINDING_NAME](payload);
 }
 
-const nodeList: WeakRef<Node>[] = [];
+const nodeList: Array<WeakRef<Node>> = [];
 
 function establishNodeIndex(node: Node): number {
   const index = nodeList.length;

@@ -151,9 +151,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   // 'EntryTo' selection still needs to be updated.
   #linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation|null = null;
 
-  #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
+  #currentInsightOverlays: Overlays.Overlays.TimelineOverlay[] = [];
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
-  #markers: Array<Overlays.Overlays.TimingsMarker> = [];
+  #markers: Overlays.Overlays.TimingsMarker[] = [];
 
   #tooltipElement = document.createElement('div');
 

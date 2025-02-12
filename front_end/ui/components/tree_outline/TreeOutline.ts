@@ -31,7 +31,7 @@ export interface TreeOutlineData<TreeNodeDataType> {
    * node is expanded or not), and providing the same object multiple times will
    * cause issues in the TreeOutline.
    */
-  tree: readonly TreeNode<TreeNodeDataType>[];
+  tree: ReadonlyArray<TreeNode<TreeNodeDataType>>;
   filter?: (node: TreeNodeDataType) => FilterOption;
   compact?: boolean;
 }
@@ -91,7 +91,7 @@ export const enum FilterOption {
 
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #treeData: readonly TreeNode<TreeNodeDataType>[] = [];
+  #treeData: ReadonlyArray<TreeNode<TreeNodeDataType>> = [];
   #nodeExpandedMap: Map<string, boolean> = new Map();
   #domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
   #hasRenderedAtLeastOnce = false;
@@ -148,7 +148,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
   get data(): TreeOutlineData<TreeNodeDataType> {
     return {
-      tree: this.#treeData as TreeNode<TreeNodeDataType>[],
+      tree: this.#treeData as Array<TreeNode<TreeNodeDataType>>,
       defaultRenderer: this.#defaultRenderer,
     };
   }
@@ -255,7 +255,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   async #flattenSubtree(node: TreeNodeWithChildren<TreeNodeDataType>, filter: (node: TreeNodeDataType) => FilterOption):
-      Promise<TreeNode<TreeNodeDataType>[]> {
+      Promise<Array<TreeNode<TreeNodeDataType>>> {
     const children = await getNodeChildren(node);
     const filteredChildren = [];
     for (const child of children) {
@@ -274,7 +274,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     return filteredChildren;
   }
 
-  async #fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
+  async #fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<Array<TreeNode<TreeNodeDataType>>> {
     const children = await getNodeChildren(node);
     const filter = this.#nodeFilter;
     if (!filter) {

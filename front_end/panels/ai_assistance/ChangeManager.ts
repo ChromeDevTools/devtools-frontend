@@ -114,7 +114,7 @@ ${formatStyles(change.styles)}
 }`)).join('\n\n');
   }
 
-  buildChanges(changes: Array<Change>): string {
+  buildChanges(changes: Change[]): string {
     return changes
         .map(change => {
           return `.${change.className} {

@@ -109,13 +109,13 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   loadCacheData(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): void {
     void this.requestEntries(cache, skipCount, pageSize, pathFilter, callback);
   }
 
   loadAllCacheData(
       cache: Cache, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): void {
     void this.requestAllEntries(cache, pathFilter, callback);
   }
 
@@ -224,7 +224,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   private async requestEntries(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): Promise<void> {
     const response =
         await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
     if (response.getError()) {
@@ -236,7 +236,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   private async requestAllEntries(
       cache: Cache, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): Promise<void> {
     const response = await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
     if (response.getError()) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response.getError());

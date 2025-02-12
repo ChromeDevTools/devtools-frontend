@@ -72,7 +72,7 @@ function aggregateForcedReflow(
       return;
     }
     // Compute call stack fully
-    const bottomUpData: (Types.Events.CallFrame|Protocol.Runtime.CallFrame)[] = [];
+    const bottomUpData: Array<Types.Events.CallFrame|Protocol.Runtime.CallFrame> = [];
     let currentNode = traceNode;
     let previousNode;
     const childStack: Protocol.Runtime.CallFrame[] = [];

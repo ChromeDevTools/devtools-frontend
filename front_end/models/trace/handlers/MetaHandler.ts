@@ -109,8 +109,8 @@ function updateRendererProcessByFrame(event: Types.Events.Event, frame: Types.Ev
 
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
-      () =>
-          new Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}[]>());
+      () => new Map<
+          Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>());
   const rendererProcessInfo = Platform.MapUtilities.getWithDefault(rendererProcessInFrame, frame.processId, () => {
     return [];
   });
@@ -436,7 +436,8 @@ export interface MetaHandlerData {
 // https://developer.chrome.com/articles/renderingng-architecture/#threads
 // and https://web.dev/same-site-same-origin/
 export type FrameProcessData =
-    Map<string, Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}[]>>;
+    Map<string,
+        Map<Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>>;
 
 export function data(): MetaHandlerData {
   return {

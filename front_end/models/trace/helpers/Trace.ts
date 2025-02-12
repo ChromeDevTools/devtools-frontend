@@ -138,7 +138,7 @@ export function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
  * Sorts all the events in place, in order, by their start time. If they have
  * the same start time, orders them by longest first.
  */
-export function sortTraceEventsInPlace(events: {ts: Types.Timing.Micro, dur?: Types.Timing.Micro}[]): void {
+export function sortTraceEventsInPlace(events: Array<{ts: Types.Timing.Micro, dur?: Types.Timing.Micro}>): void {
   events.sort(eventTimeComparator);
 }
 
@@ -147,7 +147,7 @@ export function sortTraceEventsInPlace(events: {ts: Types.Timing.Micro, dur?: Ty
  * ordered input arrays.
  */
 export function mergeEventsInOrder<T1 extends Types.Events.Event, T2 extends Types.Events.Event>(
-    eventsArray1: readonly T1[], eventsArray2: readonly T2[]): (T1|T2)[] {
+    eventsArray1: readonly T1[], eventsArray2: readonly T2[]): Array<T1|T2> {
   const result = [];
   let i = 0;
   let j = 0;
@@ -202,9 +202,9 @@ export function extractId(event: Types.Events.PairableAsync|
 
 export function activeURLForFrameAtTime(
     frameId: string, time: Types.Timing.Micro,
-    rendererProcessesByFrame:
-        Map<string,
-            Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}[]>>):
+    rendererProcessesByFrame: Map<
+        string,
+        Map<Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>>):
     string|null {
   const processData = rendererProcessesByFrame.get(frameId);
   if (!processData) {
@@ -305,8 +305,8 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
       instant?: Types.Events.PairableAsyncInstant[],
     }>,
     syntheticEventCallback?: (syntheticEvent: Types.Events.SyntheticEventPair<T>) => void,
-    ): Types.Events.SyntheticEventPair<T>[] {
-  const syntheticEvents: Types.Events.SyntheticEventPair<T>[] = [];
+    ): Array<Types.Events.SyntheticEventPair<T>> {
+  const syntheticEvents: Array<Types.Events.SyntheticEventPair<T>> = [];
   for (const [id, eventsTriplet] of matchedPairs.entries()) {
     const beginEvent = eventsTriplet.begin;
     const endEvent = eventsTriplet.end;
@@ -369,7 +369,7 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
 
 export function createMatchedSortedSyntheticEvents<T extends Types.Events.PairableAsync>(
     unpairedAsyncEvents: T[], syntheticEventCallback?: (syntheticEvent: Types.Events.SyntheticEventPair<T>) => void):
-    Types.Events.SyntheticEventPair<T>[] {
+    Array<Types.Events.SyntheticEventPair<T>> {
   const matchedPairs = matchEvents(unpairedAsyncEvents);
   const syntheticEvents = createSortedSyntheticEvents<T>(matchedPairs, syntheticEventCallback);
   return syntheticEvents;

@@ -391,7 +391,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       {node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>, frameCount: number, issueCount: number} {
     let frameCount = 1;
     let issueCount = 0;
-    const children: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>[] = [];
+    const children: Array<TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>> = [];
 
     let nodeUrlText = '';
     if (explanationTree.url.length) {

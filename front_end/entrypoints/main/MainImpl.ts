@@ -667,7 +667,7 @@ export class MainImpl {
   async #lateInitialization(): Promise<void> {
     MainImpl.time('Main._lateInitialization');
     Extensions.ExtensionServer.ExtensionServer.instance().initializeExtensions();
-    const promises: Promise<void>[] =
+    const promises: Array<Promise<void>> =
         Common.Runnable.lateInitializationRunnables().map(async lateInitializationLoader => {
           const runnable = await lateInitializationLoader();
           return runnable.run();

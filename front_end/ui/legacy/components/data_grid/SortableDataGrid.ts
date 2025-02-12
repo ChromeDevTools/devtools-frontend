@@ -134,7 +134,7 @@ export class SortableDataGridNode<T> extends ViewportDataGridNode<SortableDataGr
       this.insertChild(
           node,
           Platform.ArrayUtilities.upperBound(
-              (this.children as SortableDataGridNode<T>[]), node, dataGrid.sortingFunction));
+              (this.children as Array<SortableDataGridNode<T>>), node, dataGrid.sortingFunction));
     }
   }
 
@@ -143,7 +143,7 @@ export class SortableDataGridNode<T> extends ViewportDataGridNode<SortableDataGr
     if (!dataGrid) {
       return;
     }
-    (this.children as SortableDataGridNode<T>[]).sort(dataGrid.sortingFunction);
+    (this.children as Array<SortableDataGridNode<T>>).sort(dataGrid.sortingFunction);
     for (let i = 0; i < this.children.length; ++i) {
       const child = (this.children[i] as SortableDataGridNode<T>);
       child.recalculateSiblings(i);

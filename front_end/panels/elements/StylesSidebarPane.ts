@@ -604,10 +604,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
     const headers = cssModel.styleSheetHeaders().filter(styleSheetResourceHeader);
 
-    const contextMenuDescriptors: {
+    const contextMenuDescriptors: Array<{
       text: string,
       handler: () => Promise<void>,
-    }[] = [];
+    }> = [];
     for (let i = 0; i < headers.length; ++i) {
       const header = headers[i];
       const handler = this.createNewRuleInStyleSheet.bind(this, header);
@@ -1230,11 +1230,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       }
     }
 
-    const customHighlightPseudoRulesets: {
-      highlightName: string|null,
+    const customHighlightPseudoRulesets: Array<{
+      highlightName: string | null,
       pseudoType: Protocol.DOM.PseudoType,
       pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
-    }[] = Array.from(matchedStyles.customHighlightPseudoNames()).map(highlightName => {
+    }> = Array.from(matchedStyles.customHighlightPseudoNames()).map(highlightName => {
       return {
         highlightName,
         pseudoType: Protocol.DOM.PseudoType.Highlight,
@@ -1242,11 +1242,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       };
     });
 
-    const otherPseudoRulesets: {
-      highlightName: string|null,
+    const otherPseudoRulesets: Array<{
+      highlightName: string | null,
       pseudoType: Protocol.DOM.PseudoType,
       pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
-    }[] = [...matchedStyles.pseudoTypes()].map(pseudoType => {
+    }> = [...matchedStyles.pseudoTypes()].map(pseudoType => {
       return {highlightName: null, pseudoType, pseudoStyles: matchedStyles.pseudoStyles(pseudoType)};
     });
 
@@ -1910,8 +1910,8 @@ export class SectionBlock {
 
 export class IdleCallbackManager {
   private discarded: boolean;
-  private readonly promises: Promise<void>[];
-  private readonly queue: {fn: () => void, resolve: () => void, reject: (err: unknown) => void}[];
+  private readonly promises: Array<Promise<void>>;
+  private readonly queue: Array<{fn: () => void, resolve: () => void, reject: (err: unknown) => void}>;
   constructor() {
     this.discarded = false;
     this.promises = [];
@@ -2119,8 +2119,8 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       return Promise.resolve([]);
     }
 
-    const prefixResults: Array<CompletionResult> = [];
-    const anywhereResults: Array<CompletionResult> = [];
+    const prefixResults: CompletionResult[] = [];
+    const anywhereResults: CompletionResult[] = [];
     if (!editingVariable) {
       this.cssCompletions.forEach(completion => filterCompletions.call(this, completion, false /* variable */));
       // When and only when editing property names, we also include aliases for autocomplete.

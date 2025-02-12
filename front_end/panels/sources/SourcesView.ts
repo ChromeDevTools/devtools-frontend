@@ -651,7 +651,7 @@ export interface EditorAction {
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
 }
 
-const registeredEditorActions: (() => EditorAction)[] = [];
+const registeredEditorActions: Array<() => EditorAction> = [];
 
 export function registerEditorAction(editorAction: () => EditorAction): void {
   registeredEditorActions.push(editorAction);

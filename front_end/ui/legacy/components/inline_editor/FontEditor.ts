@@ -124,7 +124,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private readonly propertyMap: Map<string, string>;
   private readonly fontSelectorSection: HTMLElement;
   private fontSelectors: FontEditor.FontSelectorObject[];
-  private fontsList: Map<string, string[]>[]|null;
+  private fontsList: Array<Map<string, string[]>>|null;
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
@@ -199,7 +199,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.resizePopout();
   }
 
-  private async createFontsList(): Promise<Map<string, string[]>[]> {
+  private async createFontsList(): Promise<Array<Map<string, string[]>>> {
     const computedFontArray = await FontEditorUtils.generateComputedFontArray();
     const computedMap = new Map<string, string[]>();
     const splicedArray = this.splitComputedFontArray(computedFontArray);
@@ -332,7 +332,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private createSelector(
-      field: Element, label: string, options: Map<string, string[]>[], currentValue: string,
+      field: Element, label: string, options: Array<Map<string, string[]>>, currentValue: string,
       jslogContext: string): void {
     const index = this.fontSelectors.length;
     const selectInput = (UI.UIUtils.createSelect(label, options) as HTMLSelectElement);

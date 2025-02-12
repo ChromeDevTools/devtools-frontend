@@ -1442,7 +1442,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       return {ranges};
     }
 
-    async function callback(result: {ranges: Array<Array<number>>}|undefined): Promise<void> {
+    async function callback(result: {ranges: number[][]}|undefined): Promise<void> {
       if (!result) {
         return;
       }

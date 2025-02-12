@@ -1020,7 +1020,7 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
       shadow: CodeMirror.SyntaxNode[], shadowType: SDK.CSSPropertyParserMatchers.ShadowType,
       context: RenderingContext): null|ShadowModel {
     const properties: Array<ShadowProperty|ShadowLengthProperty> = [];
-    const missingLengths: ShadowLengthProperty['propertyType'][] =
+    const missingLengths: Array<ShadowLengthProperty['propertyType']> =
         [ShadowPropertyType.SPREAD, ShadowPropertyType.BLUR, ShadowPropertyType.Y, ShadowPropertyType.X];
     let stillAcceptsLengths = true;
 
@@ -1028,12 +1028,12 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
     // var() functions by re-parsing the variable values on the fly. For properties coming from a var() we're keeping
     // track of their origin to allow for adhoc expansion when one of those properties is edited.
 
-    const queue: {
+    const queue: Array<{
       value: CodeMirror.SyntaxNode,
       source: CodeMirror.SyntaxNode,
-      match: SDK.CSSPropertyParser.Match|undefined,
-      expansionContext: RenderingContext|null,
-    }[] =
+      match: SDK.CSSPropertyParser.Match | undefined,
+      expansionContext: RenderingContext | null,
+    }> =
         shadow.map(
             value => ({value, source: value, match: context.matchedResult.getMatch(value), expansionContext: null}));
     for (let item = queue.shift(); item; item = queue.shift()) {
@@ -1865,7 +1865,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
     }
 
-    const renderers: MatchRenderer<SDK.CSSPropertyParser.Match>[] = this.property.parsedOk ?
+    const renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>> = this.property.parsedOk ?
         [
           new VariableRenderer(this, this.style),
           new ColorRenderer(this),

@@ -65,7 +65,7 @@ export class ConsoleViewport {
   private stickToBottomInternal: boolean;
   private selectionIsBackward: boolean;
   private lastSelectedElement?: HTMLElement|null;
-  private cachedProviderElements?: (ConsoleViewportElement|null)[];
+  private cachedProviderElements?: Array<ConsoleViewportElement|null>;
 
   constructor(provider: ConsoleViewportProvider) {
     this.element = document.createElement('div');

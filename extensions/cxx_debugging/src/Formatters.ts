@@ -269,7 +269,7 @@ CustomFormatters.addFormatter({types: ['__int128'], format: formatInt128});
 
 export function formatExternRef(wasm: WasmInterface, value: Value): () => LazyObject {
   const obj = {
-    async getProperties(): Promise<{name: string, property: LazyObject}[]> {
+    async getProperties(): Promise<Array<{name: string, property: LazyObject}>> {
       return [];
     },
     async asRemoteObject(): Promise<ForeignObject> {

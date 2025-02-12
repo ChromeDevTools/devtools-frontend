@@ -383,7 +383,7 @@ const enum OpCodes {
   PONG_FRAME = 10,
 }
 
-export const opCodeDescriptions: (() => string)[] = (function(): (() => Common.UIString.LocalizedString)[] {
+export const opCodeDescriptions: Array<() => string> = (function(): Array<() => Common.UIString.LocalizedString> {
   const map = [];
   map[OpCodes.CONTINUATION_FRAME] = i18nLazyString(UIStrings.continuationFrame);
   map[OpCodes.TEXT_FRAME] = i18nLazyString(UIStrings.textMessage);

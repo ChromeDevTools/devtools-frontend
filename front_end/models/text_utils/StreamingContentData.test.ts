@@ -7,7 +7,7 @@ import * as TextUtils from './text_utils.js';
 describe('StreamingContentData', () => {
   it('notifies listeners when new chunks are added', () => {
     const streamingContentData = TextUtils.StreamingContentData.StreamingContentData.create('text/plain', 'utf-8');
-    const events: {content: TextUtils.StreamingContentData.StreamingContentData, chunk: string}[] = [];
+    const events: Array<{content: TextUtils.StreamingContentData.StreamingContentData, chunk: string}> = [];
     streamingContentData.addEventListener(
         TextUtils.StreamingContentData.Events.CHUNK_ADDED, ({data}) => events.push(data));
 

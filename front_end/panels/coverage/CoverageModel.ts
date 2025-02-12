@@ -40,7 +40,7 @@ const COVERAGE_POLLING_PERIOD_MS: number = 200;
 const RESOLVE_SOURCEMAP_TIMEOUT = 500;
 
 interface BacklogItem<T> {
-  rawCoverageData: Array<T>;
+  rawCoverageData: T[];
   stamp: number;
 }
 
@@ -55,8 +55,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private pollTimer: number|null;
   private currentPollPromise: Promise<void>|null;
   private shouldResumePollingOnResume: boolean|null;
-  private jsBacklog: BacklogItem<Protocol.Profiler.ScriptCoverage>[];
-  private cssBacklog: BacklogItem<Protocol.CSS.RuleUsage>[];
+  private jsBacklog: Array<BacklogItem<Protocol.Profiler.ScriptCoverage>>;
+  private cssBacklog: Array<BacklogItem<Protocol.CSS.RuleUsage>>;
   private performanceTraceRecording: boolean|null;
   private sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.Script.Script>|null;
   private willResolveSourceMaps: boolean;
@@ -646,7 +646,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   async exportReport(fos: Bindings.FileUtils.FileOutputStream): Promise<void> {
-    const result: {url: string, ranges: {start: number, end: number}[], text: string|null}[] = [];
+    const result: Array<{url: string, ranges: Array<{start: number, end: number}>, text: string | null}> = [];
     const coverageByUrlKeys = Array.from(this.coverageByURL.keys()).sort();
     for (const urlInfoKey of coverageByUrlKeys) {
       const urlInfo = this.coverageByURL.get(urlInfoKey);
@@ -668,7 +668,7 @@ SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.Target.Capabili
 
 export interface EntryForExport {
   url: Platform.DevToolsPath.UrlString;
-  ranges: {start: number, end: number}[];
+  ranges: Array<{start: number, end: number}>;
   text: string|null;
 }
 
@@ -1082,7 +1082,7 @@ export class CoverageInfo {
     }
   }
 
-  rangesForExport(offset: number = 0): {start: number, end: number}[] {
+  rangesForExport(offset: number = 0): Array<{start: number, end: number}> {
     const ranges = [];
     let start = 0;
     for (const segment of this.segments) {

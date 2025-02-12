@@ -19,11 +19,11 @@ declare global {
 
     skip: (title: string, fn: Mocha.AsyncFunc) => void,
 
-    skipOnPlatforms: (platforms: Array<Platform>, title: string, fn: Mocha.AsyncFunc) => void,
+    skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void,
   };
   namespace Mocha {
     export interface TestFunction {
-      skipOnPlatforms: (platforms: Array<Platform>, title: string, fn: Mocha.AsyncFunc) => void;
+      skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;
     }
   }
 }

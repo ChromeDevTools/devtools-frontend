@@ -429,7 +429,7 @@ describeWithEnvironment('Trace helpers', function() {
         const animationEvents =
             events.filter(event => Trace.Types.Events.isAnimation(event)) as Trace.Types.Events.Animation[];
         const animationSynthEvents = Trace.Helpers.Trace.createMatchedSortedSyntheticEvents(animationEvents);
-        const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: Array<string>}>([
+        const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: string[]}>([
           [
             'blink.animations,devtools.timeline,benchmark,rail:0x11d00230380:Animation',
             {compositeFailed: 8224, unsupportedProperties: ['width']},

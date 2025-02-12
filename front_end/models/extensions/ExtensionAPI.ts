@@ -1412,7 +1412,7 @@ self.injectedExtensionAPI = function(
     return inspectedTabId;
   }
 
-  let keyboardEventRequestQueue: KeyboardEventInit&{eventType: string}[] = [];
+  let keyboardEventRequestQueue: KeyboardEventInit&Array<{eventType: string}> = [];
   let forwardTimer: number|null = null;
   function forwardKeyboardEvent(event: KeyboardEvent): void {
     // Check if the event should be forwarded.

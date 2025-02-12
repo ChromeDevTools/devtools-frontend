@@ -64,7 +64,7 @@ function getClearLogButton(view: Element): HTMLElementTagNameMap['devtools-butto
 function selectDeviceOption(view: Element, deviceOption: string): void {
   const deviceScopeSelector = view.shadowRoot!.querySelector('devtools-select-menu#device-scope-select') as HTMLElement;
   const deviceScopeOptions = Array.from(deviceScopeSelector.querySelectorAll('devtools-menu-item')) as
-      HTMLElementTagNameMap['devtools-menu-item'][];
+      Array<HTMLElementTagNameMap['devtools-menu-item']>;
 
   deviceScopeSelector.click();
   deviceScopeOptions.find(o => o.value === deviceOption)!.click();
@@ -75,7 +75,7 @@ function selectPageScope(view: Element, pageScope: string): void {
   pageScopeSelector.click();
 
   const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('devtools-menu-item')) as
-      HTMLElementTagNameMap['devtools-menu-item'][];
+      Array<HTMLElementTagNameMap['devtools-menu-item']>;
   const originOption = pageScopeOptions.find(o => o.value === pageScope);
   originOption!.click();
 }

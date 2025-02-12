@@ -186,8 +186,8 @@ const notCoveredMarker = new (class extends CodeMirror.GutterMarker {
   override elementClass = 'cm-coverageUnused';
 })();
 
-function markersFromCoverageData(
-    usageByLine: (boolean|undefined)[], state: CodeMirror.EditorState): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
+function markersFromCoverageData(usageByLine: Array<boolean|undefined>, state: CodeMirror.EditorState):
+    CodeMirror.RangeSet<CodeMirror.GutterMarker> {
   const builder = new CodeMirror.RangeSetBuilder<CodeMirror.GutterMarker>();
   for (let line = 0; line < usageByLine.length; line++) {
     const usage = usageByLine[line];
@@ -199,7 +199,7 @@ function markersFromCoverageData(
   return builder.finish();
 }
 
-const setCoverageState = CodeMirror.StateEffect.define<(boolean | undefined)[]>();
+const setCoverageState = CodeMirror.StateEffect.define<Array<boolean|undefined>>();
 
 const coverageState = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirror.GutterMarker>>({
   create(): CodeMirror.RangeSet<CodeMirror.GutterMarker> {

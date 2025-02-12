@@ -321,10 +321,10 @@ export class EmulationModel extends SDKModel<void> {
     await this.#emulationAgent.invoke_clearIdleOverride();
   }
 
-  private async emulateCSSMedia(type: string, features: {
-    name: string,
-    value: string,
-  }[]): Promise<void> {
+  private async emulateCSSMedia(type: string, features: Array<{
+                                  name: string,
+                                  value: string,
+                                }>): Promise<void> {
     await this.#emulationAgent.invoke_setEmulatedMedia({media: type, features});
     if (this.#cssModel) {
       this.#cssModel.mediaQueryResultChanged();

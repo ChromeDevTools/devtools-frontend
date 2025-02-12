@@ -118,10 +118,10 @@ function findFontSizeValue(computedObject: {
   }>,
   getError: () => void,
 }): string {
-  const computedArray: {
+  const computedArray: Array<{
     name: string,
     value: string,
-  }[] = computedObject.computedStyle;
+  }> = computedObject.computedStyle;
   let index = computedArrayFontSizeIndex;
   if (computedArray[index].name && computedArray[index].name !== 'font-size') {
     for (let i = 0; i < computedArray.length; i++) {

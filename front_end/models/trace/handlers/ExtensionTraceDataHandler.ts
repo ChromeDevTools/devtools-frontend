@@ -167,7 +167,7 @@ export function extractConsoleAPIExtensionEntries(): void {
  *                `UserTimingsHandler`.
  */
 export function extractPerformanceAPIExtensionEntries(
-    timings: (Types.Events.SyntheticUserTimingPair|Types.Events.PerformanceMark)[]): void {
+    timings: Array<Types.Events.SyntheticUserTimingPair|Types.Events.PerformanceMark>): void {
   for (const timing of timings) {
     const extensionPayload = extensionDataInPerformanceTiming(timing);
     if (!extensionPayload) {

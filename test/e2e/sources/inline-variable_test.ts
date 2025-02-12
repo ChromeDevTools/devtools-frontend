@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import {click, getBrowserAndPages, waitFor} from '../../shared/helper.js';
 import {addBreakpointForLine, openSourceCodeEditorForFile, RESUME_BUTTON} from '../helpers/sources-helpers.js';
 
-async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
+async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
   const editor = await waitFor('[aria-label="Code editor"]');
   return editor.evaluate(node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);
 }

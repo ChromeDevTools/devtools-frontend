@@ -238,7 +238,7 @@ class Binding {
     }
   }
 
-  getReferringSourceMaps(): Array<SDK.SourceMap.SourceMap> {
+  getReferringSourceMaps(): SDK.SourceMap.SourceMap[] {
     return this.referringSourceMaps;
   }
 

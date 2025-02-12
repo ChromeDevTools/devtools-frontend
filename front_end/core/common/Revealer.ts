@@ -78,7 +78,7 @@ let revealerRegistry: RevealerRegistry|undefined;
  * @see Revealer
  */
 export class RevealerRegistry {
-  private readonly registeredRevealers: RevealerRegistration<unknown>[] = [];
+  private readonly registeredRevealers: Array<RevealerRegistration<unknown>> = [];
 
   /**
    * Yields the singleton instance, creating it on-demand when necessary.
@@ -126,7 +126,7 @@ export class RevealerRegistry {
     return await revealers[0].reveal(revealable, omitFocus);
   }
 
-  getApplicableRegisteredRevealers(revealable: unknown): RevealerRegistration<unknown>[] {
+  getApplicableRegisteredRevealers(revealable: unknown): Array<RevealerRegistration<unknown>> {
     return this.registeredRevealers.filter(registration => {
       for (const contextType of registration.contextTypes()) {
         if (revealable instanceof contextType) {

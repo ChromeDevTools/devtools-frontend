@@ -12,7 +12,7 @@ import {type DataGridData, DataGridImpl, DataGridNode, type Parameters} from './
 export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTypes, typeof DataGridImpl>(
     DataGridImpl)<ViewportDataGridNode<T>> {
   private readonly onScrollBound: (event: Event|null) => void;
-  private visibleNodes: ViewportDataGridNode<T>[];
+  private visibleNodes: Array<ViewportDataGridNode<T>>;
   /** A datagrid preference to express that the grid represents an updating log of rows (eg Network panel request log, websocket messages).
    * If `true`, the datagrid will mostly keep the scroll at the bottom, so new items are visible.
    * If the data is sorted descending (eg Performance Call Tree, heap snapshot), keep the default of `false`.
@@ -326,7 +326,7 @@ export interface EventTypes {
 
 export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T>> {
   private stale: boolean;
-  private flatNodes: ViewportDataGridNode<T>[]|null;
+  private flatNodes: Array<ViewportDataGridNode<T>>|null;
   private isStripedInternal: boolean;
 
   constructor(data?: DataGridData|null, hasChildren?: boolean) {
@@ -370,12 +370,12 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     }
   }
 
-  flatChildren(): ViewportDataGridNode<T>[] {
+  flatChildren(): Array<ViewportDataGridNode<T>> {
     if (this.flatNodes) {
       return this.flatNodes;
     }
-    const flatNodes: ViewportDataGridNode<T>[] = [];
-    const children = ([this.children] as ViewportDataGridNode<T>[][]);
+    const flatNodes: Array<ViewportDataGridNode<T>> = [];
+    const children = ([this.children] as Array<Array<ViewportDataGridNode<T>>>);
     const counters: number[] = [0];
     let depth = 0;
     while (depth >= 0) {
@@ -387,7 +387,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
       flatNodes.push(node);
       if (node.expanded && node.children.length) {
         depth++;
-        children[depth] = (node.children as ViewportDataGridNode<T>[]);
+        children[depth] = (node.children as Array<ViewportDataGridNode<T>>);
         counters[depth] = 0;
       }
     }
@@ -457,7 +457,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     for (let i = 0; i < this.children.length; ++i) {
       (this.children[i] as ViewportDataGridNode<T>).unlink();
     }
-    this.children = ([] as ViewportDataGridNode<T>[]);
+    this.children = ([] as Array<ViewportDataGridNode<T>>);
 
     if (this.expanded && this.dataGrid) {
       (this.dataGrid as ViewportDataGrid<T>).scheduleUpdateStructure();

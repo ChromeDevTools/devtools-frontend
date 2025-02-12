@@ -386,11 +386,11 @@ function getUserAgentMetadata(userAgent: string): Protocol.Emulation.UserAgentMe
 
 interface UserAgentGroup {
   title: string;
-  values: {
+  values: Array<{
     title: string,
     value: string,
     metadata: Protocol.Emulation.UserAgentMetadata|null,
-  }[];
+  }>;
 }
 
 export const userAgentGroups: UserAgentGroup[] = [

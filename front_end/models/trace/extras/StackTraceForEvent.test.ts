@@ -8,8 +8,8 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 function shapeStackTraceAsArray(stackTrace: Protocol.Runtime.StackTrace):
-    {callFrames: Protocol.Runtime.CallFrame[], description?: string}[] {
-  const stackTraceAsArray: {callFrames: Protocol.Runtime.CallFrame[], description?: string}[] = [];
+    Array<{callFrames: Protocol.Runtime.CallFrame[], description?: string}> {
+  const stackTraceAsArray: Array<{callFrames: Protocol.Runtime.CallFrame[], description?: string}> = [];
   let currentStackTrace: Protocol.Runtime.StackTrace|undefined = stackTrace;
   while (currentStackTrace) {
     // @ts-ignore `codeType` is not included in the protocol types but

@@ -22,10 +22,10 @@ export class StylesheetLoadingIssue extends Issue {
     this.#issueDetails = issueDetails;
   }
 
-  override sources(): Array<Protocol.Audits.SourceCodeLocation> {
+  override sources(): Protocol.Audits.SourceCodeLocation[] {
     return [this.#issueDetails.sourceCodeLocation];
   }
-  override requests(): Array<Protocol.Audits.AffectedRequest> {
+  override requests(): Protocol.Audits.AffectedRequest[] {
     if (!this.#issueDetails.failedRequestInfo) {
       return [];
     }

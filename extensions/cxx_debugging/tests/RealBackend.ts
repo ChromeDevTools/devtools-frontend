@@ -60,7 +60,7 @@ export class Debugger {
   private readonly scripts: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
   private readonly scriptsById: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
   private nextStopId = 0n;
-  private waitForPauseQueue: {resolve: (pauseLocation: PauseLocation) => void}[] = [];
+  private waitForPauseQueue: Array<{resolve: (pauseLocation: PauseLocation) => void}> = [];
   private pauseLocation?: PauseLocation;
   private readonly callFrameToStopId = new Map<string, bigint>();
   private readonly stopIdToCallFrame = new Map<bigint, string>();
@@ -347,7 +347,7 @@ export class Debugger {
 
   async setBreakpointsOnSourceLines(
       sourceLines: Array<string|RegExp>, sourceFileURL: URL, plugin: Chrome.DevTools.LanguageExtensionPlugin,
-      rawModuleId: string): Promise<Array<BreakLocation>> {
+      rawModuleId: string): Promise<BreakLocation[]> {
     if (sourceFileURL.protocol !== 'file:') {
       throw new Error('Not a file URL');
     }

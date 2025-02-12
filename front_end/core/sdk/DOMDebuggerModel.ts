@@ -21,12 +21,12 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
   readonly #runtimeModelInternal: RuntimeModel;
   #domModel: DOMModel;
   #domBreakpointsInternal: DOMBreakpoint[];
-  readonly #domBreakpointsSetting: Common.Settings.Setting<{
+  readonly #domBreakpointsSetting: Common.Settings.Setting<Array<{
     url: Platform.DevToolsPath.UrlString,
     path: string,
     type: Protocol.DOMDebugger.DOMBreakpointType,
     enabled: boolean,
-  }[]>;
+  }>>;
   suspended = false;
 
   constructor(target: Target) {
@@ -518,7 +518,7 @@ export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
 let domDebuggerManagerInstance: DOMDebuggerManager;
 
 export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
-  readonly #xhrBreakpointsSetting: Common.Settings.Setting<{url: string, enabled: boolean}[]>;
+  readonly #xhrBreakpointsSetting: Common.Settings.Setting<Array<{url: string, enabled: boolean}>>;
   readonly #xhrBreakpointsInternal: Map<string, boolean>;
   readonly #cspViolationsToBreakOn: CSPViolationBreakpoint[];
   readonly #eventListenerBreakpointsInternal: DOMEventListenerBreakpoint[];

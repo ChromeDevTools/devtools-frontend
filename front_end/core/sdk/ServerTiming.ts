@@ -66,11 +66,11 @@ export class ServerTiming extends Platform.ServerTiming.ServerTiming {
    * TODO(crbug.com/1011811): Instead of using !Object<string, *> we should have a proper type
    *                          with #name, desc and dur properties.
    */
-  static override createFromHeaderValue(valueString: string): {
+  static override createFromHeaderValue(valueString: string): Array<{
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [x: string]: any,
-  }[] {
+  }> {
     return Platform.ServerTiming.ServerTiming.createFromHeaderValue(valueString, warningMessage);
   }
 

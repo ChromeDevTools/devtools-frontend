@@ -210,7 +210,7 @@ export class PresentationSourceFrameMessageHelper {
     const script = event.data;
     const messages = this.#presentationMessages.get(script.sourceURL);
 
-    const promises: Promise<void>[] = [];
+    const promises: Array<Promise<void>> = [];
     for (const {presentation, source} of messages ?? []) {
       const rawLocation = this.#rawLocation(source);
       if (rawLocation && script.scriptId === rawLocation.scriptId) {
@@ -228,7 +228,7 @@ export class PresentationSourceFrameMessageHelper {
     const uiSourceCode = event.data;
     const messages = this.#presentationMessages.get(uiSourceCode.url());
 
-    const promises: Promise<void>[] = [];
+    const promises: Array<Promise<void>> = [];
     for (const {presentation, source} of messages ?? []) {
       promises.push(presentation.updateLocationSource(
           new Workspace.UISourceCode.UILocation(uiSourceCode, source.line, source.column)));
@@ -244,7 +244,7 @@ export class PresentationSourceFrameMessageHelper {
     const header = event.data;
     const messages = this.#presentationMessages.get(header.sourceURL);
 
-    const promises: Promise<void>[] = [];
+    const promises: Array<Promise<void>> = [];
     for (const {source, presentation} of messages ?? []) {
       if (header.containsLocation(source.line, source.column)) {
         promises.push(

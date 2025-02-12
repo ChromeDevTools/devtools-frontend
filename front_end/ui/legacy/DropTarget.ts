@@ -7,20 +7,20 @@ import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class DropTarget {
   private element: Element;
-  private readonly transferTypes: {
+  private readonly transferTypes: Array<{
     kind: string,
     type: RegExp,
-  }[];
+  }>;
   private messageText: string;
   private readonly handleDrop: (arg0: DataTransfer) => void;
   private enabled: boolean;
   private dragMaskElement: Element|null;
 
   constructor(
-      element: Element, transferTypes: {
+      element: Element, transferTypes: Array<{
         kind: string,
         type: RegExp,
-      }[],
+      }>,
       messageText: string, handleDrop: (arg0: DataTransfer) => void) {
     element.addEventListener('dragenter', this.onDragEnter.bind(this), true);
     element.addEventListener('dragover', this.onDragOver.bind(this), true);

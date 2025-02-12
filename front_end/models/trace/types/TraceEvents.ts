@@ -3070,7 +3070,7 @@ export interface LegacyLayerPaintEvent {
 }
 
 export interface LegacyLayerPaintEventPicture {
-  rect: Array<number>;
+  rect: number[];
   serializedPicture: string;
 }
 

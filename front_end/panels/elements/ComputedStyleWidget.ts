@@ -380,7 +380,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     const propertyTraces = this.computePropertyTraces(matchedStyles);
     const nonInheritedProperties = this.computeNonInheritedProperties(matchedStyles);
     const showInherited = this.showInheritedComputedStylePropertiesSetting.get();
-    const tree: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>[] = [];
+    const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
     for (const propertyName of uniqueProperties) {
       const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
@@ -423,7 +423,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const propertiesByCategory = new Map<Category, string[]>();
 
-    const tree: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>[] = [];
+    const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
     for (const [propertyName, propertyValue] of nodeStyle.computedStyle) {
       const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
       const isInherited = !nonInheritedProperties.has(canonicalName);
@@ -450,7 +450,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     for (const category of DefaultCategoryOrder) {
       const properties = propertiesByCategory.get(category);
       if (properties && properties.length > 0) {
-        const propertyNodes: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>[] = [];
+        const propertyNodes: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
         for (const propertyName of properties) {
           const propertyValue = nodeStyle.computedStyle.get(propertyName) || '';
           const canonicalName = SDK.CSSMetadata.cssMetadata().canonicalPropertyName(propertyName);
@@ -635,7 +635,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     if (!this.#treeData) {
       return;
     }
-    const tree: TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>[] = [];
+    const tree: Array<TreeOutline.TreeOutlineUtils.TreeNode<ComputedStyleData>> = [];
     for (const group of this.#treeData.tree) {
       const data = group.treeNodeData;
       if (data.tag !== 'category' || !group.children) {

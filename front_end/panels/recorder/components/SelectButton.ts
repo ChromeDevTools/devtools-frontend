@@ -56,7 +56,7 @@ interface SelectButtonProps {
   /**
    * Groups for the select menu of the button.
    */
-  groups: Array<SelectMenuGroup>;
+  groups: SelectMenuGroup[];
   /**
    * Similar to the button variant
    */
@@ -140,7 +140,7 @@ export class SelectButton extends HTMLElement {
     this.#props.buttonLabel = buttonLabel;
   }
 
-  set groups(groups: Array<SelectMenuGroup>) {
+  set groups(groups: SelectMenuGroup[]) {
     this.#props.groups = groups;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }

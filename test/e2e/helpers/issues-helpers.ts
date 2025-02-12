@@ -242,7 +242,8 @@ export async function waitForTableFromResourceSection(
 }
 
 export function waitForTableFromResourceSectionContents(
-    resourceContentElement: puppeteer.ElementHandle<Element>, expected: (string|RegExp)[][]): Promise<string[][]> {
+    resourceContentElement: puppeteer.ElementHandle<Element>,
+    expected: Array<Array<string|RegExp>>): Promise<string[][]> {
   return waitForTableFromResourceSection(
       resourceContentElement, table => matchStringTable(table, expected) === true ? true : undefined);
 }

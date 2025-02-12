@@ -22,11 +22,11 @@ function assertArrayHasNoNulls<T>(inputArray: Array<T|null>): asserts inputArray
   });
 }
 
-function createMockStyle(cssProperties: {name: string, value: string}[]): Protocol.CSS.CSSStyle {
+function createMockStyle(cssProperties: Array<{name: string, value: string}>): Protocol.CSS.CSSStyle {
   return {cssProperties, shorthandEntries: []};
 }
 
-function createMockMatchedRules(cssProperties: {name: string, value: string}[]): Protocol.CSS.RuleMatch[] {
+function createMockMatchedRules(cssProperties: Array<{name: string, value: string}>): Protocol.CSS.RuleMatch[] {
   return [{
     rule: {
       style: createMockStyle(cssProperties),
@@ -154,7 +154,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
 
       // Map from fake BackendNodeId to fake Protocol.DOM.Node used by the handler to
       // resolve the nodeIds in the traces.
-      const domNodeByBackendIdMapEntries: [Protocol.DOM.BackendNodeId, Protocol.DOM.Node|null][] = [];
+      const domNodeByBackendIdMapEntries: Array<[Protocol.DOM.BackendNodeId, Protocol.DOM.Node | null]> = [];
       const domNodeByIdMap = new Map<Protocol.DOM.NodeId, Protocol.DOM.Node>();
       for (let i = 0 as Protocol.DOM.BackendNodeId; i < layoutInvalidationEvents.length; i++) {
         const backendNodeId = layoutInvalidationEvents[i].args.data.nodeId;

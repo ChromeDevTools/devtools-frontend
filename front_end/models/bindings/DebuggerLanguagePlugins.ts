@@ -425,9 +425,9 @@ export class DebuggerLanguagePluginManager implements
   readonly #rawModuleHandles: Map<string, {
     rawModuleId: string,
     plugin: DebuggerLanguagePlugin,
-    scripts: Array<SDK.Script.Script>,
+    scripts: SDK.Script.Script[],
     addRawModulePromise:
-        Promise<Array<Platform.DevToolsPath.UrlString>|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}>,
+        Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}>,
   }>;
   private readonly callFrameByStopId: Map<StopId, SDK.DebuggerModel.CallFrame> = new Map();
   private readonly stopIdByCallFrame: Map<SDK.DebuggerModel.CallFrame, StopId> = new Map();
@@ -683,14 +683,14 @@ export class DebuggerLanguagePluginManager implements
 
   uiLocationToRawLocationRanges(
       uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
-      columnNumber: number|undefined = -1): Promise<{
+      columnNumber: number|undefined = -1): Promise<Array<{
     start: SDK.DebuggerModel.Location,
     end: SDK.DebuggerModel.Location,
-  }[]|null> {
-    const locationPromises: Promise<{
+  }>|null> {
+    const locationPromises: Array<Promise<Array<{
       start: SDK.DebuggerModel.Location,
       end: SDK.DebuggerModel.Location,
-    }[]>[] = [];
+    }>>> = [];
     this.scriptsForUISourceCode(uiSourceCode).forEach(script => {
       const rawModuleId = rawModuleIdForScript(script);
       const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
@@ -711,10 +711,10 @@ export class DebuggerLanguagePluginManager implements
     });
 
     async function getLocations(
-        rawModuleId: string, plugin: DebuggerLanguagePlugin, script: SDK.Script.Script): Promise<{
+        rawModuleId: string, plugin: DebuggerLanguagePlugin, script: SDK.Script.Script): Promise<Array<{
       start: SDK.DebuggerModel.Location,
       end: SDK.DebuggerModel.Location,
-    }[]> {
+    }>> {
       const pluginLocation = {rawModuleId, sourceFileURL: uiSourceCode.url(), lineNumber, columnNumber};
 
       const rawLocations = await plugin.sourceLocationToRawLocation(pluginLocation);
@@ -888,8 +888,7 @@ export class DebuggerLanguagePluginManager implements
   }
 
   getSourcesForScript(script: SDK.Script.Script):
-      Promise<Array<Platform.DevToolsPath.UrlString>|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
-              undefined> {
+      Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|undefined> {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
     if (rawModuleHandle) {
@@ -938,8 +937,8 @@ export class DebuggerLanguagePluginManager implements
   }
 
   async getFunctionInfo(script: SDK.Script.Script, location: SDK.DebuggerModel.Location):
-      Promise<{frames: Array<Chrome.DevTools.FunctionInfo>, missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
-              {frames: Array<Chrome.DevTools.FunctionInfo>}|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
+      Promise<{frames: Chrome.DevTools.FunctionInfo[], missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
+              {frames: Chrome.DevTools.FunctionInfo[]}|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}|
               null> {
     const {rawModuleId, plugin} = await this.rawModuleIdAndPluginForScript(script);
     if (!plugin) {
@@ -969,10 +968,10 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  async getInlinedFunctionRanges(rawLocation: SDK.DebuggerModel.Location): Promise<{
+  async getInlinedFunctionRanges(rawLocation: SDK.DebuggerModel.Location): Promise<Array<{
     start: SDK.DebuggerModel.Location,
     end: SDK.DebuggerModel.Location,
-  }[]> {
+  }>> {
     const script = rawLocation.script();
     if (!script) {
       return [];
@@ -1006,10 +1005,10 @@ export class DebuggerLanguagePluginManager implements
     }
   }
 
-  async getInlinedCalleesRanges(rawLocation: SDK.DebuggerModel.Location): Promise<{
+  async getInlinedCalleesRanges(rawLocation: SDK.DebuggerModel.Location): Promise<Array<{
     start: SDK.DebuggerModel.Location,
     end: SDK.DebuggerModel.Location,
-  }[]> {
+  }>> {
     const script = rawLocation.script();
     if (!script) {
       return [];

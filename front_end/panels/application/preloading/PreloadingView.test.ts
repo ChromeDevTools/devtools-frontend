@@ -973,7 +973,7 @@ describeWithMockConnection('PreloadingSummaryView', () => {
 
 async function testWarnings(
     event: Protocol.Preload.PreloadEnabledStateUpdatedEvent, headerExpected: string|null,
-    sectionsExpected: [string, string][]): Promise<void> {
+    sectionsExpected: Array<[string, string]>): Promise<void> {
   const target = createTarget();
 
   const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {

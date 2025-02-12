@@ -113,7 +113,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private lastSelection: {[x: string]: Selection|null};
   private layerTree: SDK.LayerTreeBase.LayerTreeBase|null;
   private readonly textureManager: LayerTextureManager;
-  private chromeTextures: (WebGLTexture|undefined)[];
+  private chromeTextures: Array<WebGLTexture|undefined>;
   private rects: Rectangle[];
   private snapshotLayers: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
   private shaderProgram!: WebGLProgram|null;

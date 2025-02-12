@@ -38,7 +38,7 @@ export class TempFile {
     this.#lastBlob = null;
   }
 
-  write(pieces: (string|Blob)[]): void {
+  write(pieces: Array<string|Blob>): void {
     if (this.#lastBlob) {
       pieces.unshift(this.#lastBlob);
     }

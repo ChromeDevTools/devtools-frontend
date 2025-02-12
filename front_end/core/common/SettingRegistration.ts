@@ -81,7 +81,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-let registeredSettings: Array<SettingRegistration> = [];
+let registeredSettings: SettingRegistration[] = [];
 const settingNameSet = new Set<string>();
 
 export function registerSettingExtension(registration: SettingRegistration): void {
@@ -93,11 +93,11 @@ export function registerSettingExtension(registration: SettingRegistration): voi
   registeredSettings.push(registration);
 }
 
-export function getRegisteredSettings(): Array<SettingRegistration> {
+export function getRegisteredSettings(): SettingRegistration[] {
   return registeredSettings.filter(setting => Root.Runtime.Runtime.isDescriptorEnabled(setting));
 }
 
-export function registerSettingsForTest(settings: Array<SettingRegistration>, forceReset: boolean = false): void {
+export function registerSettingsForTest(settings: SettingRegistration[], forceReset: boolean = false): void {
   if (registeredSettings.length === 0 || forceReset) {
     registeredSettings = settings;
     settingNameSet.clear();
@@ -252,7 +252,7 @@ export interface SettingRegistration {
   /**
    * The possible values the setting can have, each with a description composed of a title and an optional text.
    */
-  options?: Array<SettingExtensionOption>;
+  options?: SettingExtensionOption[];
   /**
    * Whether DevTools must be reloaded for a change in the setting to take effect.
    */

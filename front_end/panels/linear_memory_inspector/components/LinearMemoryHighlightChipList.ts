@@ -34,7 +34,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
 
 export interface LinearMemoryHighlightChipListData {
-  highlightInfos: Array<HighlightInfo>;
+  highlightInfos: HighlightInfo[];
   focusedMemoryHighlight?: HighlightInfo;
 }
 

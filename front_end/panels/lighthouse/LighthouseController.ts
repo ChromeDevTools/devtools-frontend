@@ -795,11 +795,11 @@ export interface RuntimeSetting {
   setting: Common.Settings.Setting<string|boolean>;
   description: () => Common.UIString.LocalizedString;
   setFlags: (flags: Flags, value: string|boolean) => void;
-  options?: {
+  options?: Array<{
     label: () => Common.UIString.LocalizedString,
     value: string,
     tooltip?: () => Common.UIString.LocalizedString,
-  }[];
+  }>;
   title?: () => Common.UIString.LocalizedString;
   learnMore?: Platform.DevToolsPath.UrlString;
 }

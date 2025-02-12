@@ -322,7 +322,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     }
   }
 
-  getEntriesForTesting(): Array<Protocol.Storage.SharedStorageEntry> {
+  getEntriesForTesting(): Protocol.Storage.SharedStorageEntry[] {
     return this.dataGrid.rootNode()
         .children.filter(node => node.data.key)
         .map(node => (node.data as Protocol.Storage.SharedStorageEntry));

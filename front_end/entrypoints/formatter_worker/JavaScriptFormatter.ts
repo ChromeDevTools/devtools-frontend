@@ -50,7 +50,7 @@ export class JavaScriptFormatter {
     this.#toOffset = toOffset;
     this.#content = text.substring(this.#fromOffset, this.#toOffset);
     this.#lastLineNumber = 0;
-    const tokens: (Acorn.Token|Acorn.Comment)[] = [];
+    const tokens: Array<Acorn.Token|Acorn.Comment> = [];
     const ast = Acorn.parse(this.#content, {
       ranges: false,
       preserveParens: true,

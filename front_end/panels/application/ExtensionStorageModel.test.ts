@@ -15,7 +15,7 @@ const {urlString} = Platform.DevToolsPath;
 
 class ExtensionStorageListener {
   #model: Resources.ExtensionStorageModel.ExtensionStorageModel;
-  #storagesWatched: Array<Resources.ExtensionStorageModel.ExtensionStorage>;
+  #storagesWatched: Resources.ExtensionStorageModel.ExtensionStorage[];
 
   constructor(model: Resources.ExtensionStorageModel.ExtensionStorageModel) {
     this.#model = model;

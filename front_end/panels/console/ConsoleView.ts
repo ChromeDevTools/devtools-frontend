@@ -1184,7 +1184,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private async copyConsole(): Promise<void> {
-    const messageContents: Array<string> = [];
+    const messageContents: string[] = [];
     for (let i = 0; i < this.itemCount(); i++) {
       const message = (this.itemElement(i) as ConsoleViewMessage);
       messageContents.push(message.toExportString());

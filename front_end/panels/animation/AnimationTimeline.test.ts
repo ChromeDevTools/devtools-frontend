@@ -676,3 +676,55 @@ describeWithMockConnection('AnimationTimeline', () => {
     });
   });
 });
+
+describeWithMockConnection('AnimationTimeline', () => {
+  it('shows placeholder showing that the panel is waiting for animations', () => {
+    const view = Animation.AnimationTimeline.AnimationTimeline.instance();
+    const placeholder = view.contentElement.querySelector('.animation-timeline-buffer-hint');
+    assert.exists(placeholder);
+
+    // Render into document in order to see the computed styles.
+    view.markAsRoot();
+    view.show(document.body);
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'flex');
+
+    assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'Currently waiting for animations');
+    assert.deepEqual(
+        placeholder.querySelector('.empty-state-description span')?.textContent,
+        'On this page you can inspect and modify animations.');
+
+    view.detach();
+  });
+
+  it('shows placeholder if no animation has been selected', async () => {
+    const target = createTarget();
+    const model = target.model(SDK.AnimationModel.AnimationModel);
+    assert.exists(model);
+
+    const dummyGroups = new Map<string, SDK.AnimationModel.AnimationGroup>();
+    sinon.stub(model!, 'animationGroups').value(dummyGroups);
+    dummyGroups.set('dummy', new SDK.AnimationModel.AnimationGroup(model, 'dummy', []));
+
+    // Render into document in order to update the shown empty state.
+    const view = Animation.AnimationTimeline.AnimationTimeline.instance();
+    view.markAsRoot();
+    view.show(document.body);
+
+    const previewUpdatePromise = new ManualPromise();
+    sinon.stub(view, 'previewsCreatedForTest').callsFake(() => {
+      previewUpdatePromise.resolve();
+    });
+
+    await previewUpdatePromise.wait();
+    const placeholder = view.contentElement.querySelector('.animation-timeline-rows-hint');
+    assert.exists(placeholder);
+
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'flex');
+    assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'No animation effect selected');
+    assert.deepEqual(
+        placeholder.querySelector('.empty-state-description span')?.textContent,
+        'Select an effect above to inspect and modify');
+
+    view.detach();
+  });
+});

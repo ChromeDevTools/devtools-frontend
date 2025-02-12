@@ -27,7 +27,7 @@ async function processTrace(events: readonly Trace.Types.Events.Event[]): Promis
   }
   for (const handlerName of handlersInOrder) {
     const handler = Trace.Handlers.ModelHandlers[handlerName];
-    await handler.finalize();
+    await handler.finalize({});
   }
 }
 

@@ -258,3 +258,7 @@ Trace containing a cross-origin navigation where DOM size events from the pre-na
 ### lcp-fetchpriority-high
 
 A page that loads an image as the LCP resource with fetchpriority=high set.
+
+### enhanced-traces
+
+(faked) script contents and source map urls, from the new "enhanced traces" feature. See http://crbug.com/337909145

@@ -1101,6 +1101,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/handlers/RendererHandler.js",
   "front_end/models/trace/handlers/SamplesHandler.js",
   "front_end/models/trace/handlers/ScreenshotsHandler.js",
+  "front_end/models/trace/handlers/ScriptsHandler.js",
   "front_end/models/trace/handlers/SelectorStatsHandler.js",
   "front_end/models/trace/handlers/ServerTimingsHandler.js",
   "front_end/models/trace/handlers/Threads.js",

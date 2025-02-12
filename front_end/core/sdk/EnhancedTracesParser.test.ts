@@ -73,7 +73,7 @@ describe('EnhancedTracesParser', () => {
     isModule: false,
     url: 'http://localhost:8080/index.html',
     hasSourceUrl: false,
-    sourceMapUrl: 'http://localhost:8080/source',
+    sourceMapUrl: 'http://localhost:8080/source.map.json',
     length: 13,
     sourceText: 'source text 1',
     auxData: {

@@ -3073,3 +3073,43 @@ export interface LegacyLayerPaintEventPicture {
   rect: Array<number>;
   serializedPicture: string;
 }
+
+export interface ScriptRundownEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown';
+  args: Args&{
+    data: {
+      isolate: string,
+      executionContextId: Protocol.Runtime.ExecutionContextId,
+      scriptId: Protocol.Runtime.ScriptId,
+      startLine: number,
+      startColumn: number,
+      endLine: number,
+      endColumn: number,
+      url: string,
+      hash: string,
+      isModule: boolean,
+      hasSourceUrl: boolean,
+      sourceMapUrl?: string,
+    },
+  };
+}
+
+export function isScriptRundownEvent(event: Event): event is ScriptRundownEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown';
+}
+
+export interface ScriptSourceRundownEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  args: Args&{
+    data: {
+      isolate: string,
+      scriptId: Protocol.Runtime.ScriptId,
+      length?: number,
+      sourceText?: string,
+    },
+  };
+}
+
+export function isScriptSourceRundownEvent(event: Event): event is ScriptSourceRundownEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
+}

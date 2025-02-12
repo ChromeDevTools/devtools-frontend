@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../../core/sdk/sdk.js';
+
 import type * as File from './File.js';
 
 export interface Configuration {
@@ -64,4 +66,5 @@ export interface ParseOptions {
    */
   isCPUProfile?: boolean;
   metadata?: File.MetaData;
+  resolveSourceMap?: (url: string) => Promise<SDK.SourceMap.SourceMapV3>;
 }

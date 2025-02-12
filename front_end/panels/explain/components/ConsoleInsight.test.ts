@@ -191,7 +191,11 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   const reportsRating = (positive: boolean) => async () => {
-    Object.assign(Root.Runtime.hostConfig, {});
+    Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
+    });
     const actionTaken = sinon.stub(Host.userMetrics, 'actionTaken');
     const aidaClient = getTestAidaClient();
     component = new Explain.ConsoleInsight(

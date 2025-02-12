@@ -501,65 +501,9 @@ export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[]
   });
 }
 
-/**
- * The default host configuration used for unit tests.
- */
-export const HOST_CONFIG: Readonly<Root.Runtime.HostConfig> = Object.freeze({
-  aidaAvailability: {
-    disallowLogging: false,
-    enterprisePolicyValue: 0,
-  },
-  devToolsConsoleInsights: {
-    enabled: false,
-    modelId: '',
-    temperature: -1,
-  },
-  devToolsFreestyler: {
-    modelId: '',
-    temperature: -1,
-    enabled: false,
-  },
-  devToolsAiAssistanceNetworkAgent: {
-    modelId: '',
-    temperature: -1,
-    enabled: false,
-  },
-  devToolsAiAssistanceFileAgent: {
-    modelId: '',
-    temperature: -1,
-    enabled: false,
-  },
-  devToolsAiAssistancePerformanceAgent: {
-    modelId: '',
-    temperature: -1,
-    enabled: false,
-    insightsEnabled: false,
-  },
-  devToolsImprovedWorkspaces: {
-    enabled: false,
-  },
-  devToolsVeLogging: {
-    enabled: true,
-    testing: false,
-  },
-  devToolsWellKnown: {
-    enabled: false,
-  },
-  devToolsPrivacyUI: {
-    enabled: false,
-  },
-  devToolsEnableOriginBoundCookies: {
-    portBindingEnabled: false,
-    schemeBindingEnabled: false,
-  },
-  devToolsAnimationStylesInStylesTab: {
-    enabled: false,
-  },
-  isOffTheRecord: false,
-  thirdPartyCookieControls: {
-    thirdPartyCookieRestrictionEnabled: false,
-    thirdPartyCookieMetadataEnabled: true,
-    thirdPartyCookieHeuristicsEnabled: true,
-    managedBlockThirdPartyCookies: 'Unset',
-  },
-});
+export function resetHostConfig() {
+  for (const key of Object.keys(Root.Runtime.hostConfig)) {
+    // @ts-expect-error
+    delete Root.Runtime.hostConfig[key];
+  }
+}

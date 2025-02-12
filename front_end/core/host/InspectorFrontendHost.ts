@@ -403,7 +403,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     });
   }
 
-  getHostConfig(callback: (arg0: Root.Runtime.HostConfig) => void): void {
+  getHostConfig(callback: (hostConfig: Root.Runtime.HostConfig) => void): void {
     const result: Root.Runtime.HostConfig = {
       aidaAvailability: {
         enabled: true,

@@ -15,7 +15,7 @@ import * as Timeline from '../panels/timeline/timeline.js';
 import * as ThemeSupport from '../ui/legacy/theme_support/theme_support.js';
 
 import {cleanTestDOM, setupTestDOM} from './DOMHelpers.js';
-import {createFakeSetting, HOST_CONFIG} from './EnvironmentHelpers.js';
+import {createFakeSetting, resetHostConfig} from './EnvironmentHelpers.js';
 import {
   checkForPendingActivity,
   startTrackingAsyncActivity,
@@ -23,7 +23,7 @@ import {
 } from './TrackAsyncOperations.js';
 
 beforeEach(async () => {
-  Object.assign(Root.Runtime.hostConfig, HOST_CONFIG);
+  resetHostConfig();
   await setupTestDOM();
   // Ensure that no trace data leaks between tests when testing the trace engine.
   for (const handler of Object.values(Trace.Handlers.ModelHandlers)) {
@@ -51,6 +51,7 @@ afterEach(async () => {
   }
   await cleanTestDOM();
   await checkForPendingActivity();
+  resetHostConfig();
   sinon.restore();
   stopTrackingAsyncActivity();
   // Clear out any Sinon stubs or spies between individual tests.

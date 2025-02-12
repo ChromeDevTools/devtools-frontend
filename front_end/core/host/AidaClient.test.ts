@@ -11,7 +11,11 @@ const TEST_MODEL_ID = 'testModelId';
 
 describeWithEnvironment('AidaClient', () => {
   it('adds no model temperature if console insights is not enabled', () => {
-    Object.assign(Root.Runtime.hostConfig, {});
+    Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
+    });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
@@ -23,6 +27,9 @@ describeWithEnvironment('AidaClient', () => {
 
   it('adds a model temperature', () => {
     Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
       devToolsConsoleInsights: {
         enabled: true,
         temperature: 0.5,
@@ -42,6 +49,9 @@ describeWithEnvironment('AidaClient', () => {
 
   it('adds a model temperature of 0', () => {
     Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
       devToolsConsoleInsights: {
         enabled: true,
         temperature: 0,
@@ -61,6 +71,9 @@ describeWithEnvironment('AidaClient', () => {
 
   it('ignores a negative model temperature', () => {
     Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
       devToolsConsoleInsights: {
         enabled: true,
         temperature: -1,
@@ -77,6 +90,9 @@ describeWithEnvironment('AidaClient', () => {
 
   it('adds a model id and temperature', () => {
     Object.assign(Root.Runtime.hostConfig, {
+      aidaAvailability: {
+        disallowLogging: false,
+      },
       devToolsConsoleInsights: {
         enabled: true,
         modelId: TEST_MODEL_ID,

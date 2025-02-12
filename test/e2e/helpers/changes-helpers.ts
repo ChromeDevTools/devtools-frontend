@@ -2,7 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, getBrowserAndPages, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $$,
+  drainFrontendTaskQueue,
+  getBrowserAndPages,
+  goToResource,
+  waitFor,
+  waitForFunction
+} from '../../shared/helper.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 import {
@@ -21,7 +28,11 @@ export async function openChangesPanelAndNavigateTo(testName: string) {
 
   await openCommandMenu();
   await frontend.keyboard.type('changes');
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await frontend.keyboard.press('Enter');
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
 
   await waitFor(COPY_CHANGES_SELECTOR);
   await expectVeEvents([

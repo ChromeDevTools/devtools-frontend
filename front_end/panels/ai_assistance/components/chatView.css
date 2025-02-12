@@ -78,10 +78,6 @@
       animation-timeline: --scroll-timeline;
     }
   }
-
-  &:has(.change-summary) .input-form-shadow-container {
-    display: none;
-  }
 }
 
 .chat-readonly-container {
@@ -218,7 +214,7 @@
   word-break: break-word;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
-  &:last-child {
+  &:last-of-type {
     border-bottom: 0;
   }
 
@@ -472,10 +468,6 @@
   gap: var(--sys-size-8);
   position: relative;
 
-  &:has(.change-summary) {
-    min-height: var(--sys-size-13);
-  }
-
   & .feedback-icon {
     width: var(--sys-size-8);
     height: var(--sys-size-8);
@@ -677,21 +669,18 @@ main {
 }
 
 .change-summary {
-  width: fit-content;
   background-color: var(--sys-color-surface3);
-  border-radius: var(--sys-size-6);
+  border-radius: var(--sys-shape-corner-medium-small);
   position: relative;
-  max-height: 80cqh;
-  overflow: auto;
-  scrollbar-width: none;
+  margin: 0 var(--sys-size-5);
+  padding: 0 var(--sys-size-5);
 
   summary {
-    padding-left: var(--sys-size-6);
-    padding-right: var(--sys-size-4);
     display: flex;
     align-items: center;
     gap: var(--sys-size-3);
-    height: var(--sys-size-13);
+    height: var(--sys-size-14);
+    padding-left: var(--sys-size-3);
 
     & .difference-icon {
       color: var(--sys-color-on-tonal-container);
@@ -700,8 +689,8 @@ main {
     }
 
     & .header-text {
-      font: var(--sys-typescale-body5-bold);
-      color: var(--sys-color-on-surface-subtle);
+      font: var(--sys-typescale-body4);
+      color: var(--sys-color-on-surface);
     }
 
     & .arrow {
@@ -726,12 +715,6 @@ main {
   }
 
   &[open] {
-    flex: 1;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-
     &::details-content {
       height: fit-content;
       padding: var(--sys-size-2) 0;
@@ -744,9 +727,9 @@ main {
   }
 
   devtools-code-block {
-    margin-top: calc(-1 * var(--sys-size-5));
+    margin-bottom: var(--sys-size-5);
 
-    --code-block-background-color: inherit;
+    --code-block-background-color: var(--sys-color-surface1);
   }
 
   .workspace {

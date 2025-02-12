@@ -651,7 +651,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
               this.#handleCrossOriginChatCancellation.bind(this) :
               undefined,
-          onStageToWorkspace: this.#onStageToWorkspace.bind(this)
+          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this)
         },
         this.#viewOutput, this.#contentContainer);
   }
@@ -909,7 +909,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
-  async #onStageToWorkspace(): Promise<void> {
+  async #onApplyToWorkspace(): Promise<void> {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }

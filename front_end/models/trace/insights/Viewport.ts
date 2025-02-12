@@ -52,8 +52,22 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
 
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ViewportInsightModel {
+  const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {
+    if (event.args.data.frame !== context.frameId) {
+      return false;
+    }
+
+    return Helpers.Timing.eventIsInBounds(event, context.bounds);
+  });
+
   const compositorEvents = parsedTrace.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
+      return false;
+    }
+
+    // Commit compositor frame events can be emitted before the viewport tag is parsed.
+    // We shouldn't count these since the browser hasn't had time to make the viewport mobile optimized.
+    if (viewportEvent && event.ts < viewportEvent.ts) {
       return false;
     }
 
@@ -67,14 +81,6 @@ export function generateInsight(
       warnings: [InsightWarning.NO_LAYOUT],
     });
   }
-
-  const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {
-    if (event.args.data.frame !== context.frameId) {
-      return false;
-    }
-
-    return Helpers.Timing.eventIsInBounds(event, context.bounds);
-  });
 
   // Returns true only if all events are mobile optimized.
   for (const event of compositorEvents) {

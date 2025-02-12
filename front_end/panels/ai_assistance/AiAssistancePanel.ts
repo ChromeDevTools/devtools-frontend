@@ -478,14 +478,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectDefaultAgentIfNeeded();
     void this.#handleAidaAvailabilityChange();
     this.#selectedElement =
-        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
+        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)));
     this.#selectedRequest =
-        createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
+        createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedCallTree =
-        createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
+        createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree));
     this.#selectedInsight =
         createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.InsightAIContext));
-    this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
+    this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
+    this.#selectedContext = this.#getConversationContext();
     void this.doUpdate();
 
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.doUpdate, this);

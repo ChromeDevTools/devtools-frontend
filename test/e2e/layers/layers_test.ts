@@ -50,21 +50,24 @@ describe('The Layers Panel', () => {
     await waitFor('[aria-label="layers"]:not([test-current-url=""])');
     assert.strictEqual(await getCurrentUrl(), `${getResourcesPath()}/${targetUrl}`);
 
-    const session = await target.target().createCDPSession();
-    await session.send('Network.emulateNetworkConditions', {
-      offline: true,
-      latency: 0,
-      downloadThroughput: 0,
-      uploadThroughput: 0,
-    });
-    await target.reload({waitUntil: 'networkidle0'});
-    await target.bringToFront();
-    await raf(target);
-    await frontend.bringToFront();
-    await waitFor(`[aria-label="layers"]:not([test-current-url="${targetUrl}"])`);
-    await waitForFunction(async () => {
-      return (await getCurrentUrl()) === 'chrome-error://chromewebdata/';
-    });
-    await session.detach();
+    const session = await target.createCDPSession();
+    try {
+      await session.send('Network.emulateNetworkConditions', {
+        offline: true,
+        latency: 0,
+        downloadThroughput: 0,
+        uploadThroughput: 0,
+      });
+      await target.reload({waitUntil: 'networkidle0'});
+      await target.bringToFront();
+      await raf(target);
+      await frontend.bringToFront();
+      await waitFor(`[aria-label="layers"]:not([test-current-url="${targetUrl}"])`);
+      await waitForFunction(async () => {
+        return (await getCurrentUrl()) === 'chrome-error://chromewebdata/';
+      });
+    } finally {
+      await session.detach();
+    }
   });
 });

@@ -211,10 +211,11 @@ async function throttleCPUIfRequired(page: puppeteer.Page): Promise<void> {
     return;
   }
   console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
-  const client = await page.target().createCDPSession();
+  const client = await page.createCDPSession();
   await client.send('Emulation.setCPUThrottlingRate', {
     rate: envThrottleRate,
   });
+  await client.detach();
 }
 
 export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {

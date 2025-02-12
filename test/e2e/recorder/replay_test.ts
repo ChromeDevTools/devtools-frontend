@@ -656,6 +656,7 @@ describe('Recorder', function() {
   });
 
   it('should be able to navigate to a prerendered page', async () => {
+    const {target} = getBrowserAndPages();
     await setupRecorderWithScriptAndReplay({
       title: 'Test Recording',
       steps: [
@@ -674,12 +675,14 @@ describe('Recorder', function() {
               url: `${getResourcesPath()}/recorder/prerendered.html`,
             },
           ],
-        },
-        {
-          type: 'waitForExpression' as StepType.WaitForExpression,
-          expression: 'document.querySelector("div").innerText === "true"',
-        },
+        }
       ],
+
     });
+    const isPrerendered = await target.evaluate(() => {
+      return document.querySelector('div')!.innerText === 'true';
+    });
+
+    assert.isTrue(isPrerendered);
   });
 });

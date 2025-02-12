@@ -29,7 +29,7 @@ export class TargetTab {
 
   async reset(): Promise<void> {
     await loadEmptyPageAndWaitForContent(this.page);
-    const client = await this.page.target().createCDPSession();
+    const client = await this.page.createCDPSession();
     await client.send('ServiceWorker.enable');
     await client.send('ServiceWorker.stopAllWorkers');
     await client.detach();

@@ -36,6 +36,7 @@ import {
   NetworkAgent,
   RequestContext,
 } from './agents/NetworkAgent.js';
+import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {InsightContext, PerformanceInsightsAgent} from './agents/PerformanceInsightsAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
@@ -249,6 +250,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     accountImage?: string,
     accountFullName?: string,
   };
+  #project?: Workspace.Workspace.Project;
+  #patchSuggestion?: string;
+  #patchSuggestionLoading?: boolean;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -271,6 +275,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     };
 
     this.#conversations = AiHistoryStorage.instance().getHistory().map(item => Conversation.fromSerialized(item));
+
+    if (isAiAssistancePatchingEnabled()) {
+      // TODO: this is temporary code that should be replaced with workflow selection flow.
+      // For now it picks the first Workspace project that is not Snippets.
+      const projects =
+          Workspace.Workspace.WorkspaceImpl.instance().projectsForType(Workspace.Workspace.projectTypes.FileSystem);
+      this.#project = undefined;
+      for (const project of projects) {
+        if (project.displayName().trim() === '') {
+          continue;
+        }
+        this.#project = project;
+        break;
+      }
+    }
   }
 
   #createToolbar(): void {
@@ -594,6 +613,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateAgentState(this.#currentAgent);
       };
 
+  #getChangeSummary(): string|undefined {
+    return (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) ?
+        this.#changeManager.formatChanges(this.#currentAgent.id) :
+        undefined;
+  }
+
   async doUpdate(): Promise<void> {
     this.#updateToolbarState();
     this.view(
@@ -606,10 +631,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           selectedContext: this.#selectedContext,
           agentType: this.#currentAgent?.type,
           isReadOnly: this.#currentConversation?.isReadOnly ?? false,
-          changeSummary:
-              (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) ?
-              this.#changeManager.formatChanges(this.#currentAgent.id) :
-              undefined,
+          changeSummary: this.#getChangeSummary(),
+          patchSuggestion: this.#patchSuggestion,
+          patchSuggestionLoading: this.#patchSuggestionLoading,
           stripLinks: this.#currentAgent?.type === AgentType.PERFORMANCE,
           inspectElementToggled: this.#toggleSearchElementAction.toggled(),
           userInfo: this.#userInfo,
@@ -626,6 +650,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
               this.#handleCrossOriginChatCancellation.bind(this) :
               undefined,
+          onStageToWorkspace: this.#onStageToWorkspace.bind(this)
         },
         this.#viewOutput, this.#contentContainer);
   }
@@ -881,6 +906,37 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
+  }
+
+  async #onStageToWorkspace(): Promise<void> {
+    if (!this.#project) {
+      throw new Error('Project does not exist');
+    }
+    const agent = new PatchAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    });
+    this.#patchSuggestionLoading = true;
+    void this.doUpdate();
+    const prompt =
+        `I have applied the following CSS changes to my page in Chrome DevTools, what are the files in my source code that I need to change to apply the same change?
+
+\`\`\`css
+${this.#getChangeSummary()}
+\`\`\`
+
+Try searching using the selectors and if nothing matches, try to find a semantically appropriate place to change.
+Output one filename per line and nothing else!
+`;
+
+    let response;
+    for await (response of agent.run(prompt, {
+      selected: new ProjectContext(this.#project),
+    })) {
+    }
+    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not find files';
+    this.#patchSuggestionLoading = false;
+    void this.doUpdate();
   }
 
   async *

@@ -334,6 +334,10 @@ export interface Props {
   blockedByCrossOrigin: boolean;
   stripLinks: boolean;
   changeSummary?: string;
+  patchSuggestion?: string;
+  patchSuggestionLoading?: boolean;
+  projectName?: string;
+  onStageToWorkspace?: () => void;
 }
 
 export class ChatView extends HTMLElement {
@@ -759,7 +763,19 @@ export class ChatView extends HTMLElement {
   }
 }
 
-function renderChangeSummary(changeSummary?: string): Lit.LitTemplate {
+function renderChangeSummary({
+  changeSummary,
+  patchSuggestion,
+  patchSuggestionLoading,
+  projectName,
+  onStageToWorkspace,
+}: {
+  changeSummary?: string,
+  patchSuggestion?: string,
+  patchSuggestionLoading?: boolean,
+  projectName?: string,
+  onStageToWorkspace?: () => void,
+}): Lit.LitTemplate {
   if (!changeSummary) {
     return Lit.nothing;
   }
@@ -781,6 +797,17 @@ function renderChangeSummary(changeSummary?: string): Lit.LitTemplate {
         .codeLang=${'css'}
         .displayNotice=${false}
       ></devtools-code-block>
+      <div class="patch-tmp-message">
+          ${(patchSuggestion ? '\nI suggest changing these files\n' + patchSuggestion : '')}
+        </div>
+        <div class="workspace">
+          <devtools-button
+            @click=${onStageToWorkspace}
+            .jslogContext=${'stage-to-workspace'}
+            .variant=${Buttons.Button.Variant.PRIMARY}>${
+  !patchSuggestionLoading ? 'Stage to workspace' : 'Loading...'}</devtools-button>
+          <div>Selected folder: ${projectName}</div>
+        </div>
     </details>`;
 }
 
@@ -1378,6 +1405,9 @@ function renderChatInput({
   inspectElementToggled,
   agentType,
   changeSummary,
+  patchSuggestion,
+  patchSuggestionLoading,
+  projectName,
   onContextClick,
   onInspectElementClick,
   onSubmit,
@@ -1385,6 +1415,7 @@ function renderChatInput({
   onCancel,
   onNewConversation,
   onCancelCrossOriginChat,
+  onStageToWorkspace,
 }: {
   isLoading: boolean,
   blockedByCrossOrigin: boolean,
@@ -1395,6 +1426,9 @@ function renderChatInput({
   inspectElementToggled: boolean,
   agentType?: AgentType,
   changeSummary?: string,
+  patchSuggestion?: string,
+  patchSuggestionLoading?: boolean,
+  projectName?: string,
   onContextClick: () => void | Promise<void>,
   onInspectElementClick: () => void,
   onSubmit: (ev: SubmitEvent) => void,
@@ -1402,6 +1436,7 @@ function renderChatInput({
   onCancel: (ev: SubmitEvent) => void,
   onNewConversation: () => void,
   onCancelCrossOriginChat?: () => void,
+  onStageToWorkspace?: () => void,
 }): Lit.LitTemplate {
   if (!agentType) {
     return Lit.nothing;
@@ -1429,7 +1464,13 @@ function renderChatInput({
             onInspectElementClick,
           })}
         </div>
-        ${renderChangeSummary(changeSummary)}
+        ${renderChangeSummary({
+          changeSummary,
+          patchSuggestion,
+          patchSuggestionLoading,
+          projectName,
+          onStageToWorkspace,
+        })}
       </div>
     ` : Lit.nothing}
     <div class="chat-input-container">

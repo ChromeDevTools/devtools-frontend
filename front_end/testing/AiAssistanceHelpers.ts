@@ -24,7 +24,7 @@ function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.
   };
 }
 
-type MockAidaResponse =
+export type MockAidaResponse =
     Omit<Host.AidaClient.AidaResponse, 'completed'|'metadata'>&{metadata?: Host.AidaClient.AidaResponseMetadata};
 
 /**
@@ -49,6 +49,11 @@ export function mockAidaClient(data: Array<[MockAidaResponse, ...MockAidaRespons
       const metadata = chunk.metadata ?? {};
       if (metadata?.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK) {
         throw new Host.AidaClient.AidaBlockError();
+      }
+      if (chunk.functionCalls?.length) {
+        callId++;
+        yield {...chunk, metadata, completed: true};
+        break;
       }
       yield {
         ...chunk,

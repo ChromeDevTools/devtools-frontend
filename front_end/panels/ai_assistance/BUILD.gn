@@ -98,6 +98,7 @@ ts_library("unittests") {
     "agents/AiAgent.test.ts",
     "agents/FileAgent.test.ts",
     "agents/NetworkAgent.test.ts",
+    "agents/PatchAgent.test.ts",
     "agents/PerformanceAgent.test.ts",
     "agents/StylingAgent.test.ts",
     "components/ChatView.test.ts",

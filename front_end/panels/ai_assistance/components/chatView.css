@@ -748,6 +748,17 @@ main {
 
     --code-block-background-color: inherit;
   }
+
+  .workspace {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: var(--sys-size-4);
+  }
+
+  .patch-tmp-message {
+    padding: var(--sys-size-4);
+  }
 }
 
 @keyframes reveal {

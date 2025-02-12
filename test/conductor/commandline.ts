@@ -81,6 +81,11 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Argv<T>) {
         desc: 'Execute tests in random order',
         default: false,
       })
+      .option('retries', {
+        type: 'number',
+        desc: 'How many retries to attempt on test failure',
+        default: 0,
+      })
       .option('grep', {type: 'string', conflicts: 'fgrep', desc: 'Filter tests by name using grep'})
       .option('fgrep', {type: 'string', conflicts: 'grep', desc: 'Filter tests by name using fgrep'})
       .option('invert-grep', {type: 'boolean', desc: 'Invert the grep/fgrep result'});

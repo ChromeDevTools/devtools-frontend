@@ -31,6 +31,7 @@ interface Config {
   shuffle: boolean;
   mochaGrep: {invert?: boolean, grep?: string}|{invert?: boolean, fgrep?: string};
   copyScreenshotGoldens: boolean;
+  retries: number;
   configureChrome: (executablePath: string) => void;
 }
 
@@ -114,6 +115,7 @@ export const TestConfig: Config = {
   shuffle: options['shuffle'],
   mochaGrep: mochaGrep(),
   copyScreenshotGoldens: false,
+  retries: options['retries'],
   configureChrome,
 };
 

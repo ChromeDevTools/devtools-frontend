@@ -13,8 +13,7 @@ module.exports = {
   require : [path.join(path.dirname(__dirname), 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],
   spec : loadTests(__dirname),
   timeout : TestConfig.debug ? 0 : 10_000,
-  // Retry only on CI.
-  retries : Boolean(process.env.LUCI_CONTEXT) ? 4 : 0,
+  retries : TestConfig.retries,
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
   suiteName : 'interactions',
   slow : 1000, ...TestConfig.mochaGrep,

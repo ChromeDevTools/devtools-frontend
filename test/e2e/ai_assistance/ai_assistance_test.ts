@@ -492,11 +492,10 @@ STOP`,
       });
     });
     await frontend.keyboard.press('Enter');
-    await await frontend.locator('aria/Continue').click();
+    await frontend.locator('aria/Continue').click();
     await done;
 
     await target.bringToFront();
-    await new Promise(resolve => setTimeout(resolve, 10000));
     await target.waitForFunction(() => {
       // @ts-ignore page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';

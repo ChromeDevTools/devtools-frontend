@@ -109,7 +109,7 @@ describe('The Performance panel', function() {
     this.timeout(20000);
   }
 
-  beforeEach(async () => {
+  async function setupPerformancePanel() {
     await step('navigate to the Performance tab and upload performance profile', async () => {
       await navigateToPerformanceTab('wasm/profiling');
 
@@ -122,9 +122,11 @@ describe('The Performance panel', function() {
     await step('search for "mainWasm"', async () => {
       await searchForWasmCall();
     });
-  });
+  }
 
   it('is able to display the execution time for a wasm function', async () => {
+    await setupPerformancePanel();
+
     await step('check that the Summary tab shows more than zero total time for "mainWasm"', async () => {
       const totalTime = await getTotalTimeFromPie();
       assert.isAbove(totalTime, 0, 'mainWasm function execution time is displayed incorrectly');
@@ -135,6 +137,8 @@ describe('The Performance panel', function() {
   it.skipOnPlatforms(
       ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up',
       async () => {
+        await setupPerformancePanel();
+
         const {frontend} = getBrowserAndPages();
         const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
 
@@ -157,6 +161,8 @@ describe('The Performance panel', function() {
   // Flaky test
   it.skip(
       '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the call tree', async () => {
+        await setupPerformancePanel();
+
         const {frontend} = getBrowserAndPages();
         const expectedActivities = [
           'Run microtasks',

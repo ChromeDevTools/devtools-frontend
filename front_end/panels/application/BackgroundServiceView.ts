@@ -499,7 +499,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
       const button = UI.UIUtils.createTextButton(
           i18nString(UIStrings.startRecordingEvents), () => this.toggleRecording(),
-          {jslogContext: 'start-recording', variant: Buttons.Button.Variant.PRIMARY});
+          {jslogContext: 'start-recording', variant: Buttons.Button.Variant.TONAL});
       emptyWidget.contentElement.appendChild(button);
     }
 

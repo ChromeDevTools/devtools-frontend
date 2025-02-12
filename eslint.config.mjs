@@ -568,6 +568,12 @@ export default [
       'rulesdir/jslog-context-list': 'error',
       'rulesdir/es-modules-import': 'error',
       'rulesdir/html-tagged-template': 'error',
+      'rulesdir/enforce-custom-element-definitions-location': [
+        'error',
+        {
+          rootFrontendDirectory: join(import.meta.dirname, 'front_end'),
+        },
+      ],
     },
   },
   {
@@ -620,6 +626,7 @@ export default [
       'rulesdir/prefer-assert-length-of': 'error',
       'rulesdir/prefer-url-string': 'error',
       'rulesdir/trace-engine-test-timeouts': 'error',
+      'rulesdir/enforce-custom-element-definitions-location': 'off',
     },
 
     settings: {

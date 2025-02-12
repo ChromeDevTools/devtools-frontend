@@ -108,7 +108,6 @@ const colorPallettes: ColorPalette[] = [
   },
 ];
 
-/* rulesdir/no-underscored-properties, rulesdir/no-a-tags-in-lit */
 export class BrickBreaker extends HTMLElement {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;

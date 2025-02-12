@@ -79,7 +79,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
 
     // Check createPreview function was called.
     await createPreviewPromise;
-    assert.include(keyValueStorageItemsView.previewPanelForTesting.element.innerText, `${key}:${value}`);
+    assert.include(viewFunction.lastCall.firstArg.preview.element.innerText, `${key}:${value}`);
   });
 
   it('shows empty preview when no row is selected', async () => {
@@ -88,8 +88,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: null}));
     // Check preview was updated.
     assert.include(
-        keyValueStorageItemsView.previewPanelForTesting.element.innerText,
-        'No value selectedSelect a value to preview');
+        viewFunction.lastCall.firstArg.preview.element.innerText, 'No value selectedSelect a value to preview');
   });
 
   it('preview changed when value changes', async () => {
@@ -117,6 +116,6 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
 
     // Check preview was updated.
     await raf();
-    assert.include(keyValueStorageItemsView.previewPanelForTesting.element.innerText, `${key}:newValue`);
+    assert.include(viewFunction.lastCall.firstArg.preview.element.innerText, `${key}:newValue`);
   });
 });

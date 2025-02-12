@@ -109,6 +109,41 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {
     Widget.getOrCreateWidget(this).show(
         this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   }
+
+  override appendChild<T extends Node>(child: T): T {
+    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
+      Widget.getOrCreateWidget(child).show(this);
+      return child;
+    }
+    return super.appendChild(child);
+  }
+
+  override insertBefore<T extends Node>(child: T, referenceChild: Node): T {
+    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
+      Widget.getOrCreateWidget(child).show(this, referenceChild);
+      return child;
+    }
+    return super.insertBefore(child, referenceChild);
+  }
+
+  override removeChild<T extends Node>(child: T): T {
+    const childWidget = Widget.get(child as unknown as HTMLElement);
+    if (childWidget) {
+      childWidget.detach();
+      return child;
+    }
+    return super.removeChild(child);
+  }
+
+  override removeChildren(): void {
+    for (const child of this.children) {
+      const childWidget = Widget.get(child as unknown as HTMLElement);
+      if (childWidget) {
+        childWidget.detach();
+      }
+    }
+    super.removeChildren();
+  }
 }
 
 customElements.define('devtools-widget', WidgetElement);

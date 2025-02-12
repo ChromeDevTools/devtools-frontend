@@ -37,13 +37,11 @@ import {StorageItemsView} from './StorageItemsView.js';
 
 const {ARIAUtils} = UI;
 const {EmptyWidget} = UI.EmptyWidget;
-const {SplitWidget} = UI.SplitWidget;
-const {Widget, widgetRef, VBox, widgetConfig} = UI.Widget;
+const {VBox, widgetConfig} = UI.Widget;
 const {Size} = UI.Geometry;
-const {ref, repeat} = LitDirectives;
+const {repeat} = LitDirectives;
 
 type Widget = UI.Widget.Widget;
-type SplitWidget = UI.SplitWidget.SplitWidget;
 type VBox = UI.Widget.VBox;
 
 const UIStrings = {
@@ -76,6 +74,7 @@ export interface ViewInput {
   items: Array<{key: string, value: string}>;
   selectedKey: string|null;
   editable: boolean;
+  preview: Widget;
   onSelect: (event: CustomEvent<HTMLElement|null>) => void;
   onSort: (event: CustomEvent<{columnId: string, ascending: boolean}>) => void;
   onCreate: (event: CustomEvent<{key: string, value: string}>) => void;
@@ -85,11 +84,7 @@ export interface ViewInput {
   onDelete: (event: CustomEvent<HTMLElement>) => void;
 }
 
-export interface ViewOutput {
-  splitWidget: UI.SplitWidget.SplitWidget;
-  preview: VBox;
-  resizer?: Element;
-}
+export interface ViewOutput {}
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 /**
@@ -97,15 +92,12 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
  * between a DataGrid displaying key-value pairs and a preview Widget.
  */
 export abstract class KeyValueStorageItemsView extends StorageItemsView {
-  #splitWidget!: SplitWidget;
-  #previewPanel!: VBox;
-  #preview: Widget|null;
+  #preview: Widget;
   #previewValue: string|null;
 
   #items: Array<{key: string, value: string}> = [];
   #selectedKey: string|null = null;
   #view: View;
-  #resizer!: HTMLElement;
   #isSortOrderAscending = true;
   #editable: boolean;
 
@@ -115,8 +107,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
         // clang-format off
         render(html `
             <devtools-split-widget
-                .options=${{vertical: false, secondaryIsSidebar: true, settingName: `${id}-split-view-state`}}
-                ${widgetRef(SplitWidget, e => {output.splitWidget = e;})}>
+                .options=${{vertical: false, secondIsSidebar: true, settingName: `${id}-split-view-state`}}>
                <devtools-widget
                   slot="main"
                   .widgetConfig=${widgetConfig(VBox, {minimumSize: new Size(0, 50)})}>
@@ -153,9 +144,8 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
               <devtools-widget
                   slot="sidebar"
                   .widgetConfig=${widgetConfig(VBox, {minimumSize: new Size(0, 50)})}
-                  jslog=${VisualLogging.pane('preview').track({resize: true})}
-                  ${widgetRef(VBox, e => {output.preview = e;})}>
-                <div class="preview-panel-resizer" ${ref(e => {output.resizer = e;})}></div>
+                  jslog=${VisualLogging.pane('preview').track({resize: true})}>
+               ${input.preview?.element}
               </devtools-widget>
             </devtools-split-widget>`,
             // clang-format on
@@ -167,10 +157,8 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
     this.#view = view;
     this.performUpdate();
 
-    this.#splitWidget.installResizer(this.#resizer);
-    this.#splitWidget.setSecondIsSidebar(true);
-
-    this.#preview = null;
+    this.#preview =
+        new EmptyWidget(i18nString(UIStrings.noPreviewSelected), i18nString(UIStrings.selectAValueToPreview));
     this.#previewValue = null;
 
     this.showPreview(null, null);
@@ -181,6 +169,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
       items: this.#items,
       selectedKey: this.#selectedKey,
       editable: this.#editable,
+      preview: this.#preview,
       onSelect: (event: CustomEvent<HTMLElement|null>) => {
         this.setCanDeleteSelected(Boolean(event.detail));
         if (!event.detail) {
@@ -207,16 +196,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
         this.refreshItems();
       },
     };
-    const viewOutput = Object.defineProperties({} as ViewOutput, {
-      splitWidget: {set: (v: SplitWidget) => this.#splitWidget = v},
-      preview: {set: (v: VBox) => this.#previewPanel = v},
-      resizer: {set: (v: HTMLElement) => this.#resizer = v},
-    });
-    this.#view(viewInput, viewOutput, this.contentElement);
-  }
-
-  get previewPanelForTesting(): VBox {
-    return this.#previewPanel;
+    this.#view(viewInput, {}, this.contentElement);
   }
 
   itemsCleared(): void {
@@ -327,7 +307,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
     }
     this.#previewValue = value;
     this.#preview = preview;
-    preview.show(this.#previewPanel.contentElement);
+    this.performUpdate();
   }
 
   async #previewEntry(entry: {key: string, value: string}|null): Promise<void> {

@@ -8,6 +8,7 @@ import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {
   $,
   click,
+  drainFrontendTaskQueue,
   goToResource,
   summonSearchBox,
   waitFor,
@@ -86,9 +87,15 @@ export async function openCaptureSettings(sectionClassName: string) {
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
   await waitFor('devtools-performance-timeline-summary');
   await summonSearchBox();
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await waitFor('.search-bar');
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await frontend.keyboard.type(searchEntry);
   await frontend.keyboard.press('Tab');
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await expectVeEvents([
     veKeyDown(''),
     veImpressionsUnder('Panel: timeline', [veImpression(

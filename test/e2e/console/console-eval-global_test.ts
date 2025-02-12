@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
+import {click, drainFrontendTaskQueue, getBrowserAndPages, pasteText, step} from '../../shared/helper.js';
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
@@ -24,7 +24,6 @@ describe('The Console Tab', () => {
         };
       `);
       await frontend.keyboard.press('Enter');
-
       // Wait for the console to be usable again.
       await frontend.waitForFunction(() => {
         return document.querySelectorAll('.console-user-command-result').length === 1;
@@ -32,6 +31,9 @@ describe('The Console Tab', () => {
     });
 
     await step('enter code that references the created bindings', async () => {
+      // TODO: it should actually wait for rendering to finish.
+      await drainFrontendTaskQueue();
+
       await pasteText('foo;');
       await frontend.keyboard.press('Enter');
 
@@ -40,11 +42,16 @@ describe('The Console Tab', () => {
         return document.querySelectorAll('.console-user-command-result').length === 1;
       });
 
+      // TODO: it should actually wait for rendering to finish.
+      await drainFrontendTaskQueue();
+
       await pasteText('bar;');
       await frontend.keyboard.press('Enter');
     });
 
     await step('check that the expected output is logged', async () => {
+      // TODO: it should actually wait for rendering to finish.
+      await drainFrontendTaskQueue();
       const messages = await getCurrentConsoleMessages();
       assert.deepEqual(messages, [
         'undefined',

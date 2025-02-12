@@ -11,6 +11,7 @@ import {
   click,
   clickElement,
   clickMoreTabsButton,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   getTextContent,
   goToResource,
@@ -755,6 +756,8 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
 // Edit a media or container query rule text for the given styles section
 export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHandle<Element>, newQueryText: string) {
   await click(STYLE_QUERY_RULE_TEXT_SELECTOR, {root: queryStylesSections});
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await waitForFunction(async () => {
     // Wait until the value element has been marked as a text-prompt.
     const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
@@ -768,6 +771,9 @@ export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHa
   });
   await typeText(newQueryText);
   await pressKey('Enter');
+
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
 
   await waitForFunction(async () => {
     // Wait until the value element is not a text-prompt anymore.

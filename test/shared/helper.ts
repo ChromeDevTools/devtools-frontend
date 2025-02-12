@@ -84,12 +84,24 @@ async function performActionOnSelector(
     const element = await waitFor(selector, options?.root, undefined, queryHandler);
     try {
       await action(element);
+      await drainFrontendTaskQueue();
       return element;
     } catch {
       // A bit of delay to not retry too often.
       await new Promise(resolve => setTimeout(resolve, 50));
     }
     return undefined;
+  });
+}
+
+/**
+ * Schedules a task in the frontend page that ensures that previously
+ * handled tasks have been handled.
+ */
+export async function drainFrontendTaskQueue(): Promise<void> {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0));
   });
 }
 
@@ -101,6 +113,7 @@ export async function clickElement(element: puppeteer.ElementHandle, options?: C
   await waitForFunction(async () => {
     try {
       await element.click(options?.clickOptions);
+      await drainFrontendTaskQueue();
       return true;
     } catch {
       return false;
@@ -116,6 +129,7 @@ export async function hoverElement(element: puppeteer.ElementHandle): Promise<vo
   await waitForFunction(async () => {
     try {
       await element.hover();
+      await drainFrontendTaskQueue();
       return true;
     } catch {
       return false;
@@ -139,6 +153,7 @@ export const doubleClick =
 export const typeText = async (text: string) => {
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.type(text);
+  await drainFrontendTaskQueue();
 };
 
 export const pressKey =

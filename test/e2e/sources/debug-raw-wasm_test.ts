@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   $,
   click,
+  drainFrontendTaskQueue,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -502,6 +503,8 @@ describe('Sources Tab', function() {
       await waitFor(PAUSE_BUTTON);
     });
 
+    // TODO: it should actually wait for rendering to finish.
+    await drainFrontendTaskQueue();
     await checkBreakpointDidNotActivate();
   });
 });

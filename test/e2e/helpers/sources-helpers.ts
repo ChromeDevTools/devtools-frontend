@@ -15,6 +15,7 @@ import {
   click,
   clickElement,
   clickMoreTabsButton,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   getPendingEvents,
   getTestServerPort,
@@ -723,6 +724,12 @@ export async function evaluateSelectedTextInConsole() {
   await frontend.keyboard.press('E');
   await frontend.keyboard.up(modifierKey);
   await frontend.keyboard.up('Shift');
+  // TODO: it should actually wait for rendering to finish. Note: it is
+  // drained three times because rendering currently takes 3 dependent
+  // tasks to finish.
+  await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
 }
 
 export async function addSelectedTextToWatches() {

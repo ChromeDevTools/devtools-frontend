@@ -507,3 +507,12 @@ export function resetHostConfig() {
     delete Root.Runtime.hostConfig[key];
   }
 }
+
+/**
+ * Update `Root.Runtime.hostConfig` for testing.
+ * `Root.Runtime.hostConfig` is automatically cleaned-up between unit
+ * tests.
+ */
+export function updateHostConfig(config: Root.Runtime.HostConfig) {
+  Object.assign(Root.Runtime.hostConfig, config);
+}

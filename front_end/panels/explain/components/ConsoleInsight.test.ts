@@ -4,13 +4,12 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import * as Root from '../../../core/root/root.js';
 import {
   dispatchClickEvent,
   getCleanTextContentFromElements,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as Explain from '../explain.js';
 
 describeWithEnvironment('ConsoleInsight', () => {
@@ -72,7 +71,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   it('shows opt-in teaser when blocked by age', async () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         blockedByAge: true,
       },
@@ -191,7 +190,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   });
 
   const reportsRating = (positive: boolean) => async () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -229,7 +228,7 @@ describeWithEnvironment('ConsoleInsight', () => {
   it('reports negative rating', reportsRating(false));
 
   it('has no thumbs up/down buttons if logging is disabled', async () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: true,
       },

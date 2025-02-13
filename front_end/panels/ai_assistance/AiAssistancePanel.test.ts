@@ -5,13 +5,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {createAiAssistancePanel, detachPanels, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsPanel from '../elements/elements.js';
@@ -79,7 +78,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     it('should render the consent view when blocked by age', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         aidaAvailability: {
           blockedByAge: true,
         },
@@ -127,7 +126,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should allow logging if configured', () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         aidaAvailability: {
           disallowLogging: false,
         },
@@ -140,7 +139,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         aidaAvailability: {
           enabled: true,
           disallowLogging: true,
@@ -163,7 +162,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should send NEGATIVE rating to aida client when the user clicks on negative rating', () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         aidaAvailability: {
           enabled: true,
           disallowLogging: true,
@@ -185,7 +184,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should send feedback text with data', () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         aidaAvailability: {
           enabled: true,
           disallowLogging: true,
@@ -466,7 +465,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should select default agent after new chat', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
         },
@@ -503,7 +502,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should select the performance insights agent if it is enabled', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: true,
@@ -540,7 +539,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: false,
@@ -577,7 +576,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should switch agents and restore history', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
           multimodal: true,
@@ -678,7 +677,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   it('should select default agent based on open panel after clearing the chat', async () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       devToolsFreestyler: {
         enabled: true,
       },
@@ -814,7 +813,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should be able to continue same-origin requests', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
         },
@@ -887,7 +886,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
   describe('auto agent selection for panels', () => {
     describe('Elements panel', () => {
       it('should select FREESTYLER agent when the Elements panel is open in initial render', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsFreestyler: {
             enabled: true,
           },
@@ -906,7 +905,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       it('should update to no agent state when the Elements panel is closed and no other panels are open', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsFreestyler: {
             enabled: true,
           },
@@ -925,7 +924,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       it('should render no agent state when Elements panel is open but Freestyler is not enabled', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsFreestyler: {
             enabled: false,
           },
@@ -941,7 +940,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     describe('Network panel', () => {
       it('should select DRJONES_NETWORK agent when the Network panel is open in initial render', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistanceNetworkAgent: {
             enabled: true,
           },
@@ -956,7 +955,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       it('should update to no agent state when the Network panel is closed and no other panels are open', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistanceNetworkAgent: {
             enabled: true,
           },
@@ -975,7 +974,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       it('should render no agent state when Network panel is open but devToolsAiAssistanceNetworkAgent is not enabled',
          () => {
-           Object.assign(Root.Runtime.hostConfig, {
+           updateHostConfig({
              devToolsAiAssistanceNetworkAgent: {
                enabled: false,
              },
@@ -991,7 +990,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     describe('Sources panel', () => {
       it('should select DRJONES_FILE agent when the Sources panel is open in initial render', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistanceFileAgent: {
             enabled: true,
           },
@@ -1006,7 +1005,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       it('should update to no agent state when the Sources panel is closed and no other panels are open', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistanceFileAgent: {
             enabled: true,
           },
@@ -1024,7 +1023,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       it('should render no agent state when Sources panel is open but devToolsAiAssistanceFileAgent is not enabled',
          () => {
-           Object.assign(Root.Runtime.hostConfig, {
+           updateHostConfig({
              devToolsAiAssistanceFileAgent: {
                enabled: false,
              },
@@ -1040,7 +1039,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     describe('Performance panel', () => {
       it('should select DRJONES_PERFORMANCE agent when the Performance panel is open in initial render', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistancePerformanceAgent: {
             enabled: true,
           },
@@ -1056,7 +1055,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       it('should update to no agent state when the Performance panel is closed and no other panels are open', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAiAssistancePerformanceAgent: {
             enabled: true,
           },
@@ -1075,7 +1074,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       it('should render no agent state when Performance panel is open but devToolsAiAssistancePerformanceAgent is not enabled',
          () => {
-           Object.assign(Root.Runtime.hostConfig, {
+           updateHostConfig({
              devToolsAiAssistancePerformanceAgent: {
                enabled: false,
              },
@@ -1129,7 +1128,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     }
 
     it('multimodal related functions unavailable when multimodal is disabled', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
           multimodal: false,
@@ -1150,7 +1149,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     it('adds an image input and then removes it', async () => {
       const {captureScreenshotStub} = mockScreenshotModel();
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
           multimodal: true,
@@ -1176,7 +1175,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('sends image as input', async () => {
-      Object.assign(Root.Runtime.hostConfig, {
+      updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
           multimodal: true,

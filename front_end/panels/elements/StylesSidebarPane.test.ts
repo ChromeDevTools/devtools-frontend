@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -11,6 +10,7 @@ import {
   createTarget,
   describeWithEnvironment,
   describeWithLocale,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -127,7 +127,7 @@ describe('StylesSidebarPane', () => {
 
       beforeEach(() => {
         sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(document.createTextNode('link')));
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsAnimationStylesInStylesTab: {
             enabled: true,
           },

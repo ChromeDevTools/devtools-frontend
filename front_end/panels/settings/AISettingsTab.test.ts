@@ -4,9 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import * as Switch from '../../ui/components/switch/switch.js';
 
 import * as Settings from './settings.js';
@@ -24,7 +23,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   function mockHostConfigWithExplainThisResourceEnabled() {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       devToolsAiAssistanceNetworkAgent: {
         enabled: true,
         modelId: 'test',
@@ -92,7 +91,7 @@ describeWithEnvironment('AISettingsTab', () => {
   it('renders different dislaimers for managed users which have logging disabled', async () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
     Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         enabled: true,
         blockedByAge: false,
@@ -170,7 +169,7 @@ describeWithEnvironment('AISettingsTab', () => {
     const underAgeExplainer = 'This feature is only available to users who are 18 years of age or older.';
     const aidaAccessStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
     aidaAccessStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         blockedByAge: true,
       },

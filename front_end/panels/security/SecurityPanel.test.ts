@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
 
@@ -17,21 +16,21 @@ const {urlString} = Platform.DevToolsPath;
 describeWithMockConnection('SecurityAndPrivacyPanel', () => {
   describe('viewMemory', () => {
     it('initially shows control view if privacy UI is enabled', () => {
-      Object.assign(Root.Runtime.hostConfig, {devToolsPrivacyUI: {enabled: true}});
+      updateHostConfig({devToolsPrivacyUI: {enabled: true}});
       const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 
       assert.instanceOf(securityPanel.visibleView, Security.CookieControlsView.CookieControlsView);
     });
 
     it('initially shows security main view if privacy UI is not enabled', () => {
-      Object.assign(Root.Runtime.hostConfig, {devToolsPrivacyUI: {enabled: false}});
+      updateHostConfig({devToolsPrivacyUI: {enabled: false}});
       const securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 
       assert.instanceOf(securityPanel.visibleView, Security.SecurityPanel.SecurityMainView);
     });
 
     it('remembers last selected view when new panel is made', () => {
-      Object.assign(Root.Runtime.hostConfig, {devToolsPrivacyUI: {enabled: true}});
+      updateHostConfig({devToolsPrivacyUI: {enabled: true}});
       let securityPanel = Security.SecurityPanel.SecurityPanel.instance({forceNew: true});
 
       // Should initially be the controls view

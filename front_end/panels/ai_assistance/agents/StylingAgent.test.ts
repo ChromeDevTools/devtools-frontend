@@ -8,6 +8,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
+  updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
@@ -17,7 +18,7 @@ describeWithEnvironment('StylingAgent', () => {
   function mockHostConfig(
       modelId?: string, temperature?: number, userTier?: string,
       executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode) {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       devToolsFreestyler: {
         modelId,
         temperature,

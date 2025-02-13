@@ -7,7 +7,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
 import * as Common from '../common/common.js';
@@ -46,7 +46,7 @@ describeWithMockConnection('NetworkManager', () => {
   });
 
   it('setCookieControls gets invoked with expected values when network agent auto attach', () => {
-    Object.assign(Root.Runtime.hostConfig, {devToolsPrivacyUI: {enabled: true}});
+    updateHostConfig({devToolsPrivacyUI: {enabled: true}});
 
     const enableThirdPartyCookieRestrictionSetting =
         Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);

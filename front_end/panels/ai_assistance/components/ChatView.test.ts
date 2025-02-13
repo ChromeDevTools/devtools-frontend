@@ -3,9 +3,8 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as Root from '../../../core/root/root.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
@@ -96,7 +95,7 @@ describeWithEnvironment('ChatView', () => {
 
     describe('no agent empty state', () => {
       it('should show feature cards for enabled features', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsFreestyler: {
             enabled: true,
           },
@@ -125,7 +124,7 @@ describeWithEnvironment('ChatView', () => {
       });
 
       it('should not show any feature cards if none of the entrypoints are available', () => {
-        Object.assign(Root.Runtime.hostConfig, {
+        updateHostConfig({
           devToolsFreestyler: {
             enabled: false,
           },

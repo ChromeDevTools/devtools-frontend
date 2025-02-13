@@ -134,6 +134,6 @@ out/Default/chrome --enable-features="DevToolsNewFeature:string_param/foo/double
 * Update the type definition in [`Runtime.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/root/Runtime.ts).
 * Update the dummy value returned by `getHostConfig` in [`InspectorFrontendHost.ts`](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/core/host/InspectorFrontendHost.ts).
 * Access the host config via `Root.Runtime.hostConfig`.
-* In unit tests, make sure to assign the expected configuration using `Object.assign(Root.Runtime.hostConfig, { foo: bar })`.
+* In unit tests, make sure to assign the expected configuration using `updateHostConfig({ foo: bar })`.
 
 Please refer to this [example CL](https://crrev.com/c/5626314).

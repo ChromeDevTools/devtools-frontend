@@ -5,10 +5,10 @@
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
-import * as Root from '../root/root.js';
 
 import * as Common from './common.js';
 
@@ -108,7 +108,7 @@ describe('SettingRegistration', () => {
 
   it('can handle settings with condition which depends on host config', () => {
     const configSettingName = 'mock-setting-with-host-config';
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       devToolsConsoleInsights: {
         modelId: 'mockModel',
         temperature: -1,

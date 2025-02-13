@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import * as Root from '../root/root.js';
+import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as Host from './host.js';
 
@@ -11,7 +10,7 @@ const TEST_MODEL_ID = 'testModelId';
 
 describeWithEnvironment('AidaClient', () => {
   it('adds no model temperature if console insights is not enabled', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -26,7 +25,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('adds a model temperature', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -48,7 +47,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('adds a model temperature of 0', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -70,7 +69,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('ignores a negative model temperature', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -89,7 +88,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('adds a model id and temperature', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: false,
       },
@@ -113,7 +112,7 @@ describeWithEnvironment('AidaClient', () => {
   });
 
   it('adds metadata to disallow logging', () => {
-    Object.assign(Root.Runtime.hostConfig, {
+    updateHostConfig({
       aidaAvailability: {
         disallowLogging: true,
       },

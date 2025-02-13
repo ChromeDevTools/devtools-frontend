@@ -5,9 +5,9 @@
 
 const rule = require('../lib/trace-engine-test-timeouts.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('trace-engine-test-timeouts', rule, {
+new RuleTester().run('trace-engine-test-timeouts', rule, {
   valid: [
     {
       code: `it('does something', async function() {

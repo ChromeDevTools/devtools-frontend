@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/no-bound-component-methods.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-bound-component-methods', rule, {
+new RuleTester().run('no-bound-component-methods', rule, {
   valid: [
     {
       code: `export class FeedbackButton extends SomeOtherNonElementThing {

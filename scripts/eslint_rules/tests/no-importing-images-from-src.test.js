@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/no-importing-images-from-src.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-importing-images-from-src', rule, {
+new RuleTester().run('no-importing-images-from-src', rule, {
   valid: [
     {
       code: 'const someIcon = new URL(\'../../../Images/test_icon.svg\', import.meta.url).toString()',

@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/static-custom-event-names.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('static-custom-event-names', rule, {
+new RuleTester().run('static-custom-event-names', rule, {
   valid: [
     {
       code: `class FooEvent extends Event {

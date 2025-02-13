@@ -5,7 +5,7 @@
 'use strict';
 const rule = require('../lib/l10n-no-unused-message.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const exampleWithJSDoc = `
 const UIStrings = {
@@ -57,7 +57,7 @@ const UIStrings = {
   foo3: 'foo3',
 }; const someVar = [UIStrings.foo1, UIStrings.foo3];`;
 
-ruleTester.run('l10n-no-unused-message', rule, {
+new RuleTester().run('l10n-no-unused-message', rule, {
   valid: [
     {
       code: 'export const UIStrings = { foo: \'bar\' };',

@@ -5,9 +5,9 @@
 
 const rule = require('../lib/enforce-custom-event-names.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('enforce-custom-event-names', rule, {
+new RuleTester().run('enforce-custom-event-names', rule, {
   valid: [
     {
       code: `export class NodeSelectedEvent extends Event {

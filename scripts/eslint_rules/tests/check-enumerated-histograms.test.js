@@ -5,9 +5,9 @@
 
 const rule = require('../lib/check-enumerated-histograms.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('check-enumerated-histograms', rule, {
+new RuleTester().run('check-enumerated-histograms', rule, {
   valid: [
     {
       code: 'InspectorFrontendHostInstance.recordEnumeratedHistogram(\'someparam\', 1, foo.MAX_VALUE);',

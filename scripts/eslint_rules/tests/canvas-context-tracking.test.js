@@ -4,9 +4,9 @@
 
 const rule = require('../lib/canvas-context-tracking.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('canvas-context-tracking-test', rule, {
+new RuleTester().run('canvas-context-tracking-test', rule, {
   valid: [
     {
       code: `function renderCanvas() {

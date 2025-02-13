@@ -7,9 +7,9 @@ const path = require('path');
 
 const rule = require('../lib/enforce-custom-element-definitions-location.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('enforce-custom-element-definitions-location', rule, {
+new RuleTester().run('enforce-custom-element-definitions-location', rule, {
   valid: [
     {
       code: 'class Foo extends HTMLElement {}',

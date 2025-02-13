@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/inject-checkbox-styles.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('inject-checkbox-styles', rule, {
+new RuleTester().run('inject-checkbox-styles', rule, {
   valid: [
     {
       code: `import * as Input from '../input/input.js';

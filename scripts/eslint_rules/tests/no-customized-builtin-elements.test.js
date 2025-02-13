@@ -5,9 +5,9 @@
 
 const rule = require('../lib/no-customized-builtin-elements.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-customized-builtin-elements', rule, {
+new RuleTester().run('no-customized-builtin-elements', rule, {
   valid: [
     {
       code: 'class Foo {}',

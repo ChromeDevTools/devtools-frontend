@@ -6,9 +6,9 @@ const path = require('path');
 
 const rule = require('../lib/no-imports-in-directory.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-imports-in-directory', rule, {
+new RuleTester().run('no-imports-in-directory', rule, {
   valid: [
     {
       code: 'import * as SDK from \'../../../core/sdk/sdk.js\';',

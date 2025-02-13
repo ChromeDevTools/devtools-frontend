@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/set-data-type-reference.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('set-data-type-reference', rule, {
+new RuleTester().run('set-data-type-reference', rule, {
   valid: [
     {
       code: `class Foo extends HTMLElement {

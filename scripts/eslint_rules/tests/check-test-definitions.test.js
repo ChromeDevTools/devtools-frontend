@@ -5,9 +5,9 @@
 
 const rule = require('../lib/check-test-definitions.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('check-test-definitions', rule, {
+new RuleTester().run('check-test-definitions', rule, {
   valid: [
     {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';

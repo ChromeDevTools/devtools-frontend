@@ -5,9 +5,9 @@
 
 const rule = require('../lib/check-css-import.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('check-css-import', rule, {
+new RuleTester().run('check-css-import', rule, {
   valid: [
     {
       code: 'import styles from \'./check_css_import_test_file.css.js\';',

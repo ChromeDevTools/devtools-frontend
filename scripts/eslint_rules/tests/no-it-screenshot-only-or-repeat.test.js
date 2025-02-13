@@ -5,9 +5,9 @@
 'use strict';
 const rule = require('../lib/no-it-screenshot-only-or-repeat.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-it-screenshot-only-or-repeat', rule, {
+new RuleTester().run('no-it-screenshot-only-or-repeat', rule, {
   valid: [
     {
       code: `itScreenshot('does a thing', () => {

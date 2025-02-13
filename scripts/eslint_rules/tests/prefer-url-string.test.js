@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/prefer-url-string.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('prefer-url-string', rule, {
+new RuleTester().run('prefer-url-string', rule, {
   valid: [
     {
       code: 'assert.isOk(foo as Platform.DevTools.RawPathString);',

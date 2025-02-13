@@ -5,9 +5,9 @@
 'use strict';
 const rule = require('../lib/l10n-no-locked-or-placeholder-only-phrase.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('l10n-no-locked-or-placeholder-only-phrase', rule, {
+new RuleTester().run('l10n-no-locked-or-placeholder-only-phrase', rule, {
   valid: [
     {
       code: 'const UIStrings = { foo: \'No locked part\' };',

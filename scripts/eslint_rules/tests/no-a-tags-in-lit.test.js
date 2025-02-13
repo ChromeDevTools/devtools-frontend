@@ -4,11 +4,11 @@
 'use strict';
 const rule = require('../lib/no-a-tags-in-lit.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'Adding links to a component should be done using `front_end/ui/legacy/XLink.ts`';
 
-ruleTester.run('no-a-tags-in-lit', rule, {
+new RuleTester().run('no-a-tags-in-lit', rule, {
   valid: [
     {
       code: 'Lit.html`<p></p>`',

@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/es-modules-import.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('es-modules-import', rule, {
+new RuleTester().run('es-modules-import', rule, {
   valid: [
     {
       code: 'import { Exporting } from \'./Exporting.js\';',

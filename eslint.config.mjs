@@ -7,18 +7,19 @@
 import stylisticPlugin from '@stylistic/eslint-plugin';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import mochaPlugin from 'eslint-plugin-mocha';
 import rulesdirPlugin from 'eslint-plugin-rulesdir';
 import globals from 'globals';
-import {join} from 'path';
+import { join } from 'path';
 
 rulesdirPlugin.RULES_DIR = join(
-    import.meta.dirname,
-    'scripts',
-    'eslint_rules',
-    'lib',
+  import.meta.dirname,
+  'scripts',
+  'eslint_rules',
+  'lib',
 );
 
 /**
@@ -76,6 +77,7 @@ export default [
     plugins: {
       '@typescript-eslint': typescriptPlugin,
       '@stylistic': stylisticPlugin,
+      '@eslint-plugin': eslintPlugin,
       mocha: mochaPlugin,
       rulesdir: rulesdirPlugin,
       import: importPlugin,
@@ -302,11 +304,11 @@ export default [
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
-            import.meta.dirname,
-            'config',
-            'typescript',
-            'tsconfig.eslint.json',
-            ),
+          import.meta.dirname,
+          'config',
+          'typescript',
+          'tsconfig.eslint.json',
+        ),
       },
     },
 
@@ -500,12 +502,12 @@ export default [
         {
           // Enforce that any import of models/trace/trace.js names the import Trace.
           modulePath: join(
-              import.meta.dirname,
-              'front_end',
-              'models',
-              'trace',
-              'trace.js',
-              ),
+            import.meta.dirname,
+            'front_end',
+            'models',
+            'trace',
+            'trace.js',
+          ),
           importName: 'Trace',
         },
       ],
@@ -696,9 +698,9 @@ export default [
   },
   {
     name: 'EsLint rules test',
-    files: ['scripts/eslint_rules/test/**/*.js'],
+    files: ['scripts/eslint_rules/tests/**/*.js'],
     rules: {
-      'rulesdir/no-only-eslint-tests': 'error',
+      '@eslint-plugin/no-only-tests': 'error',
     },
   },
   {

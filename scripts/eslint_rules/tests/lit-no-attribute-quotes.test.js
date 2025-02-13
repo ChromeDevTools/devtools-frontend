@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/lit-no-attribute-quotes.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('lit-no-attribute-quotes', rule, {
+new RuleTester().run('lit-no-attribute-quotes', rule, {
   valid: [
     {
       code: 'Lit.html`<p class=${foo}>foo</p>`',

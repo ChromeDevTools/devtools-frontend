@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/no-underscored-properties.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-underscored-properties', rule, {
+new RuleTester().run('no-underscored-properties', rule, {
   valid: [
     {
       filename: 'foo.ts',

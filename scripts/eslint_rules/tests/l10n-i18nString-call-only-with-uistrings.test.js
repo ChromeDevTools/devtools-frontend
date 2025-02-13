@@ -5,7 +5,7 @@
 'use strict';
 const rule = require('../lib/l10n-i18nString-call-only-with-uistrings.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const expectedErrors = [
   {
@@ -13,7 +13,7 @@ const expectedErrors = [
   },
 ];
 
-ruleTester.run('l10n-i18nString-call-only-with-uistrings', rule, {
+new RuleTester().run('l10n-i18nString-call-only-with-uistrings', rule, {
   valid: [
     {
       code: 'const UIStrings = { foo: "foo" }; i18nString(UIStrings.foo);',

@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/inline-type-imports.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('inline-type-imports', rule, {
+new RuleTester().run('inline-type-imports', rule, {
   valid: [
     {
       code: 'import \'./foo.js\'',

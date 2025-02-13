@@ -5,9 +5,9 @@
 
 const rule = require('../lib/no-assert-strict-equal-for-arrays-and-objects.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-assert-strict-equal-for-arrays-and-objects', rule, {
+new RuleTester().run('no-assert-strict-equal-for-arrays-and-objects', rule, {
   valid: [
     {
       code: 'assert.deepEqual(someResult, [2])',

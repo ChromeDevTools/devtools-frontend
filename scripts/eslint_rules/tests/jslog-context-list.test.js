@@ -5,9 +5,9 @@
 process.env.ESLINT_FAIL_ON_UNKNOWN_JSLOG_CONTEXT_VALUE = 1;
 const rule = require('../lib/jslog-context-list.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('jslog-context-list', rule, {
+new RuleTester().run('jslog-context-list', rule, {
   invalid: [
     {
       code: `

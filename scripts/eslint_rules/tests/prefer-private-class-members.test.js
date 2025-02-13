@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/prefer-private-class-members.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('prefer-private-class-members', rule, {
+new RuleTester().run('prefer-private-class-members', rule, {
   valid: [
     {
       code: `class Foo {

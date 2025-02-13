@@ -5,7 +5,7 @@
 'use strict';
 const rule = require('../lib/l10n-no-i18nString-calls-module-instantiation.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const expectedErrors = [
   {
@@ -13,7 +13,7 @@ const expectedErrors = [
   },
 ];
 
-ruleTester.run('l10n-no-i18nString-calls-module-instantiation', rule, {
+new RuleTester().run('l10n-no-i18nString-calls-module-instantiation', rule, {
   valid: [
     {
       code: 'function foo() { i18nString("test"); }',

@@ -7,9 +7,9 @@ const path = require('path');
 
 const rule = require('../lib/l10n-filename-matches.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('l10n-filename-matches', rule, {
+new RuleTester().run('l10n-filename-matches', rule, {
   valid: [
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',

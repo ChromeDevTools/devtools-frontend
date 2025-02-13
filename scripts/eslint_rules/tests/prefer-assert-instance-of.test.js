@@ -5,9 +5,9 @@
 
 const rule = require('../lib/prefer-assert-instance-of.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('prefer-assert-instance-of', rule, {
+new RuleTester().run('prefer-assert-instance-of', rule, {
   valid: [
     {
       code: 'assert(a);',

@@ -5,9 +5,9 @@
 
 const rule = require('../lib/enforce-bound-render-for-schedule-render.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('enforce-bound-render-for-schedule-render', rule, {
+new RuleTester().run('enforce-bound-render-for-schedule-render', rule, {
   valid: [
     {
       code: `

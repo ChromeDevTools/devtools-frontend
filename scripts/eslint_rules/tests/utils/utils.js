@@ -5,14 +5,28 @@
 const tsParser = require('@typescript-eslint/parser');
 const eslint = require('eslint');
 
-const ruleTester = new eslint.RuleTester({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+/**
+ * The eslint-plugin-eslint-plugin expects a newly created class
+ * with this name, emulate it so the rules run correctly
+ * Also provides the default values that are expected
+ */
+class RuleTester extends eslint.RuleTester {
+  /**
+   * @param {import(eslint).Linter.Config} config
+   */
+  constructor(config = {}) {
+    super({
+      ...config,
+      languageOptions: {
+        ...config.languageOptions,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        parser: tsParser,
+      },
+    });
+  }
+}
 
 module.exports = {
-  ruleTester,
+  RuleTester,
 };

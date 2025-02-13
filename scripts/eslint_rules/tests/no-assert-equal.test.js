@@ -5,9 +5,9 @@
 
 const rule = require('../lib/no-assert-equal.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-assert-equal', rule, {
+new RuleTester().run('no-assert-equal', rule, {
   valid: [
     {
       code: `import {assert} from 'chai';

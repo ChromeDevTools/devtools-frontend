@@ -5,9 +5,9 @@
 'use strict';
 const rule = require('../lib/l10n-no-uistrings-export.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('l10n-no-uistrings-export', rule, {
+new RuleTester().run('l10n-no-uistrings-export', rule, {
   valid: [
     {
       code: 'const UIStrings = {};',

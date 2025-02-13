@@ -5,8 +5,8 @@
 
 const rule = require('../lib/enforce-optional-properties-last.js');
 
-const {ruleTester} = require('./utils/utils.js');
-ruleTester.run('optional-properties-last', rule, {
+const {RuleTester} = require('./utils/utils.js');
+new RuleTester().run('optional-properties-last', rule, {
   valid: [
     {
       code: `

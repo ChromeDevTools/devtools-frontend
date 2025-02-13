@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/lit-template-result-or-nothing.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('lit-template-result-or-nothing', rule, {
+new RuleTester().run('lit-template-result-or-nothing', rule, {
   valid: [
     {
       code: 'function foo(): Lit.LitTemplate {}',

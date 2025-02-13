@@ -4,11 +4,11 @@
 'use strict';
 const rule = require('../lib/no-self-closing-custom-element-tagnames.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'Custom elements should not be self closing.';
 
-ruleTester.run('no-self-closing-custom-element-tagnames', rule, {
+new RuleTester().run('no-self-closing-custom-element-tagnames', rule, {
   valid: [
     {
       code: 'Lit.html`<p></p>`',

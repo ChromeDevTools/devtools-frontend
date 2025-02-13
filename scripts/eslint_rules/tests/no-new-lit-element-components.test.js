@@ -4,11 +4,11 @@
 'use strict';
 const rule = require('../lib/no-new-lit-element-components.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'New LitElement components are banned.';
 
-ruleTester.run('no-new-lit-element-components', rule, {
+new RuleTester().run('no-new-lit-element-components', rule, {
   valid: [
     {
       code: 'class A extends B {}',

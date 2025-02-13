@@ -5,9 +5,9 @@
 'use strict';
 const rule = require('../lib/screenshot-assertion-in-it-screenshot.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('screenshot-assertion-in-it-screenshot', rule, {
+new RuleTester().run('screenshot-assertion-in-it-screenshot', rule, {
   valid: [
     {
       code: `itScreenshot('does a thing', () => {

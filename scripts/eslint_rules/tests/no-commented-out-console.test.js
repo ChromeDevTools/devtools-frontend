@@ -4,9 +4,9 @@
 'use strict';
 const rule = require('../lib/no-commented-out-console.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('no-commented-out-console', rule, {
+new RuleTester().run('no-commented-out-console', rule, {
   valid: [
     {
       code: 'console.log("foo")',

@@ -5,9 +5,9 @@
 
 const rule = require('../lib/prefer-assert-length-of.js');
 
-const {ruleTester} = require('./utils/utils.js');
+const {RuleTester} = require('./utils/utils.js');
 
-ruleTester.run('prefer-assert-length-of', rule, {
+new RuleTester().run('prefer-assert-length-of', rule, {
   valid: [
     {
       code: 'assert.strictEqual(a.length + b.length, 4);',

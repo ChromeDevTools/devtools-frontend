@@ -164,11 +164,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'INP by phase',
       'LCP request discovery',
       'Render blocking requests',
+      'Long critical network tree',
       'Document request latency',
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
-      'Long critical network tree',
       'Forced reflow',
     ]);
 
@@ -179,11 +179,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'INP by phase',
       'LCP request discovery',
       'Render blocking requests',
+      'Long critical network tree',
       'Document request latency',
       'Optimize viewport for mobile',
       'Optimize DOM size',
       'CSS Selector costs',
-      'Long critical network tree',
       'Forced reflow',
     ]);
   });

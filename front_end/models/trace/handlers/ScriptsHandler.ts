@@ -10,15 +10,17 @@ import * as Types from '../types/types.js';
 
 export interface ScriptsData {
   /** Note: this is only populated when the "Enhanced Traces" feature is enabled. */
-  scripts: Map<Protocol.Runtime.ScriptId, {}>;
+  scripts: Map<Protocol.Runtime.ScriptId, Script>;
 }
 
-interface Script {
+export interface Script {
   scriptId: Protocol.Runtime.ScriptId;
+  frame: string;
+  ts: Types.Timing.Micro;
   url?: string;
   content?: string;
   sourceMapUrl?: string;
-  sourceMap?: SDK.SourceMap.SourceMapV3;
+  sourceMap?: SDK.SourceMap.SourceMap;
 }
 
 const scriptById = new Map<Protocol.Runtime.ScriptId, Script>();
@@ -28,9 +30,21 @@ export function reset(): void {
 }
 
 export function handleEvent(event: Types.Events.Event): void {
+  const getOrMakeScript = (scriptId: Protocol.Runtime.ScriptId): Script =>
+      Platform.MapUtilities.getWithDefault(scriptById, scriptId, () => ({scriptId, frame: '', ts: 0} as Script));
+
+  if (Types.Events.isTargetRundownEvent(event)) {
+    const {scriptId, frame} = event.args.data;
+    const script = getOrMakeScript(scriptId);
+    script.frame = frame;
+    script.ts = event.ts;
+
+    return;
+  }
+
   if (Types.Events.isScriptRundownEvent(event)) {
     const {scriptId, url, sourceMapUrl} = event.args.data;
-    const script = Platform.MapUtilities.getWithDefault(scriptById, scriptId, () => ({scriptId} as Script));
+    const script = getOrMakeScript(scriptId);
     script.url = url;
     // Ignore nonsense values, which is what this was when initially implemented.
     // TODO(cjamcl): https://g-issues.chromium.org/issues/337909145#comment15
@@ -42,7 +56,7 @@ export function handleEvent(event: Types.Events.Event): void {
 
   if (Types.Events.isScriptSourceRundownEvent(event)) {
     const {scriptId, sourceText} = event.args.data;
-    const script = Platform.MapUtilities.getWithDefault(scriptById, scriptId, () => ({scriptId} as Script));
+    const script = getOrMakeScript(scriptId);
     script.content = sourceText;
     return;
   }

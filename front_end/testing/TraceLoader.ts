@@ -290,3 +290,20 @@ function codec(buffer: ArrayBuffer, codecStream: CompressionStream|Decompression
 function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
   return codec(buffer, new DecompressionStream('gzip'));
 }
+
+export async function fetchFixture(url: URL): Promise<string> {
+  const response = await fetch(url);
+  if (response.status !== 200) {
+    throw new Error(`Unable to load ${url}`);
+  }
+
+  const contentType = response.headers.get('content-type');
+  const isGzipEncoded = contentType !== null && contentType.includes('gzip');
+  let buffer = await response.arrayBuffer();
+  if (isGzipEncoded) {
+    buffer = await decodeGzipBuffer(buffer);
+  }
+  const decoder = new TextDecoder('utf-8');
+  const contents = decoder.decode(buffer);
+  return contents;
+}

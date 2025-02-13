@@ -15,7 +15,7 @@ describe('ScriptsHandler', () => {
       Trace.Handlers.ModelHandlers.Scripts.handleEvent(event);
     }
     await Trace.Handlers.ModelHandlers.Scripts.finalize({
-      async resolveSourceMap(url: string): Promise<SDK.SourceMap.SourceMapV3> {
+      async resolveSourceMap(url: string): Promise<SDK.SourceMap.SourceMap> {
         // Don't need to actually make a source map.
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return {test: url} as any;
@@ -32,12 +32,20 @@ describe('ScriptsHandler', () => {
     assert.deepEqual([...data.scripts.values()], [
       {
         scriptId: '1',
+        frame: '3E1717BE677B75D0536E292E00D6A34A',
+        ts: 50442438976,
         url: 'http://localhost:8080/index.html',
         content: ' text ',
         sourceMapUrl: 'http://localhost:8080/source.map.json',
         sourceMap: {test: 'http://localhost:8080/source.map.json'}
       },
-      {scriptId: '2', url: 'http://localhost:8080/index.html', content: 'source text 2'},
+      {
+        scriptId: '2',
+        frame: '21D58E83A5C17916277166140F6A464B',
+        ts: 50442438976,
+        url: 'http://localhost:8080/index.html',
+        content: 'source text 2'
+      },
     ]);
   });
 });

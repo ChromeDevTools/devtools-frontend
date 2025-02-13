@@ -12,6 +12,7 @@ devtools_module("insights") {
     "Common.ts",
     "DOMSize.ts",
     "DocumentLatency.ts",
+    "DuplicateJavaScript.ts",
     "FontDisplay.ts",
     "ForcedReflow.ts",
     "ImageDelivery.ts",

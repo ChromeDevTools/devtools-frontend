@@ -1343,4 +1343,26 @@ describeWithEnvironment('SourceMap', () => {
     assert.strictEqual(sourceMap.findOriginalFunctionName({line: 0, column: 10}), 'foo');
     assert.strictEqual(sourceMap.findOriginalFunctionName({line: 1, column: 110}), 'bar');
   });
+
+  it('handles source maps with empty sources list (https://crbug.com/395822775)', () => {
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, {
+      version: 3,
+      mappings: 'A',
+      sources: [],
+      names: [],
+    });
+
+    assert.doesNotThrow(() => sourceMap.mappings());
+  });
+
+  it('handles source maps with illegal source indices (https://crbug.com/395822775)', () => {
+    const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, {
+      version: 3,
+      mappings: 'ACAA',  // [0, 1, 0, 0]
+      sources: [],
+      names: [],
+    });
+
+    assert.doesNotThrow(() => sourceMap.mappings());
+  });
 });

@@ -1800,8 +1800,4 @@ declare global {
   }
 }
 
-export const FOR_TEST = {
-  MarkdownRendererWithCodeBlock,
-};
-
 customElements.define('devtools-ai-chat-view', ChatView);

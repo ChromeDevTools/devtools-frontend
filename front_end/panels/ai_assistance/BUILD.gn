@@ -102,6 +102,7 @@ ts_library("unittests") {
     "agents/PerformanceAgent.test.ts",
     "agents/StylingAgent.test.ts",
     "components/ChatView.test.ts",
+    "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/UserActionRow.test.ts",
     "data_formatters/FileFormatter.test.ts",
     "data_formatters/NetworkRequestFormatter.test.ts",

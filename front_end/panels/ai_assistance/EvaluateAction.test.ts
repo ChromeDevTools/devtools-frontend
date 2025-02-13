@@ -6,7 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {describeWithRealConnection, getExecutionContext} from '../../testing/RealConnection.js';
 
-import * as Freestyler from './EvaluateAction.js';
+import * as EvaluateAction from './EvaluateAction.js';
 
 describe('FreestylerEvaluateAction', () => {
   describe('error handling', () => {
@@ -21,7 +21,7 @@ describe('FreestylerEvaluateAction', () => {
       }
       executionContextStub.callFunctionOn.resolves(mockResult);
       executionContextStub.runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
-      return Freestyler.EvaluateAction.execute('', [], executionContextStub, {throwOnSideEffect: false});
+      return EvaluateAction.EvaluateAction.execute('', [], executionContextStub, {throwOnSideEffect: false});
     }
 
     function mockRemoteObject(overrides: Partial<SDK.RemoteObject.RemoteObject> = {}): SDK.RemoteObject.RemoteObject {
@@ -77,7 +77,7 @@ describe('FreestylerEvaluateAction', () => {
            });
            assert.fail('not reachable');
          } catch (err) {
-           assert.instanceOf(err, Freestyler.SideEffectError);
+           assert.instanceOf(err, EvaluateAction.SideEffectError);
            assert.strictEqual(err.message, 'EvalError: Possible side-effect in debug-evaluate');
          }
        });
@@ -101,7 +101,7 @@ describe('FreestylerEvaluateAction', () => {
     return error;
   }
 }`;
-      return Freestyler.EvaluateAction.execute(
+      return EvaluateAction.EvaluateAction.execute(
           functionDeclaration, [], await executionContextForTest(), {throwOnSideEffect});
     }
 

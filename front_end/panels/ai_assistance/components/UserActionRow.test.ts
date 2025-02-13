@@ -6,13 +6,14 @@ import * as Host from '../../../core/host/host.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
-import * as Freestyler from '../ai_assistance.js';
+import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('UserActionRow', () => {
-  function createComponent(props: Freestyler.UserActionRowWidgetParams):
-      [sinon.SinonStub<[Freestyler.ViewInput, Freestyler.ViewOutput, HTMLElement], void>, Freestyler.UserActionRow] {
-    const view = sinon.stub<[Freestyler.ViewInput, Freestyler.ViewOutput, HTMLElement]>();
-    const component = new Freestyler.UserActionRow(undefined, view);
+  function createComponent(props: AiAssistance.UserActionRowWidgetParams): [
+    sinon.SinonStub<[AiAssistance.ViewInput, AiAssistance.ViewOutput, HTMLElement], void>, AiAssistance.UserActionRow
+  ] {
+    const view = sinon.stub<[AiAssistance.ViewInput, AiAssistance.ViewOutput, HTMLElement]>();
+    const component = new AiAssistance.UserActionRow(undefined, view);
     Object.assign(component, props);
     component.wasShown();
     return [view, component];

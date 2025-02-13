@@ -6,101 +6,13 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as Marked from '../../../third_party/marked/marked.js';
-import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
-import * as Freestyler from '../ai_assistance.js';
-
-const {MarkdownRendererWithCodeBlock} = Freestyler.FOR_TEST;
+import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
-  describe('MarkdownRendererWithCodeBlock', () => {
-    it('should transform code token for multiline code blocks with `css` language written in the first line', () => {
-      const renderer = new MarkdownRendererWithCodeBlock();
-      const templateForTokenStub =
-          sinon.stub(MarkdownView.MarkdownView.MarkdownInsightRenderer.prototype, 'templateForToken');
-      const codeBlock = `\`\`\`
-css
-* {
-  color: red;
-}
-\`\`\``;
-      const codeToken = Marked.Marked.lexer(codeBlock)[0] as Marked.Marked.Tokens.Code;
-      assert.isEmpty(codeToken.lang);
-      renderer.renderToken(codeToken);
-
-      sinon.assert.calledWith(templateForTokenStub, sinon.match({
-        lang: 'css',
-        text: `* {
-  color: red;
-}`,
-      }));
-    });
-
-    describe('link/image stripping', () => {
-      const linkCases = [
-        '[link text](https://z.com)',
-        'A response with [link text](https://z.com).',
-        '[*link text*](https://z.com)',
-        '[**text** `with code`](https://z.com).',
-        'plain link https://z.com .',
-        'link in quotes \'https://z.com\' .',
-      ];
-
-      const renderToElem = (string: string, renderer: MarkdownView.MarkdownView.MarkdownLitRenderer): Element => {
-        const component = new MarkdownView.MarkdownView.MarkdownView();
-        renderElementIntoDOM(component, {allowMultipleChildren: true});
-        component.data = {tokens: Marked.Marked.lexer(string), renderer};
-        assert.exists(component.shadowRoot?.firstElementChild);
-        return component.shadowRoot.firstElementChild;
-      };
-
-      it('strips links if stripLinks true', () => {
-        const linklessRenderer = new MarkdownRendererWithCodeBlock({stripLinks: true});
-        for (const linkCase of linkCases) {
-          const elem = renderToElem(linkCase, linklessRenderer);
-          assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 0);
-          assert.isFalse(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
-          assert.isOk(elem.textContent?.includes('( https://z.com )'), linkCase);
-        }
-      });
-
-      it('leaves links intact by default', () => {
-        const linkfulRenderer = new MarkdownRendererWithCodeBlock();
-        for (const linkCase of linkCases) {
-          const elem = renderToElem(linkCase, linkfulRenderer);
-          assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 1);
-          assert.isTrue(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
-          assert.isFalse(elem.textContent?.includes('( https://z.com )'));
-        }
-      });
-
-      const imageCases = [
-        '![image alt](https://z.com/i.png)',
-        'A response with ![image alt](https://z.com/i.png).',
-        '![*image alt*](https://z.com/i.png)',
-        '![**text** `with code`](https://z.com/i.png).',
-        'plain image href https://z.com/i.png .',
-        'link in quotes \'https://z.com/i.png\' .',
-      ];
-
-      it('strips images if stripLinks true', () => {
-        const linklessRenderer = new MarkdownRendererWithCodeBlock({stripLinks: true});
-        for (const imageCase of imageCases) {
-          const elem = renderToElem(imageCase, linklessRenderer);
-          assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link, img, devtools-markdown-image'), 0);
-          assert.isFalse(['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
-              tagName => elem.outerHTML.includes(tagName)));
-
-          assert.isOk(elem.textContent?.includes('( https://z.com/i.png )'), imageCase);
-        }
-      });
-    });
-  });
-
-  function getProp(options: Partial<Freestyler.Props>): Freestyler.Props {
+  function getProp(options: Partial<AiAssistance.Props>): AiAssistance.Props {
     const noop = () => {};
-    const messages: Freestyler.ChatMessage[] = options.messages ?? [];
-    const selectedContext = sinon.createStubInstance(Freestyler.NodeContext);
+    const messages: AiAssistance.ChatMessage[] = options.messages ?? [];
+    const selectedContext = sinon.createStubInstance(AiAssistance.NodeContext);
     selectedContext.getTitle.returns('');
     return {
       onTextSubmit: noop,
@@ -110,8 +22,8 @@ css
       onContextClick: noop,
       onNewConversation: noop,
       inspectElementToggled: false,
-      state: Freestyler.State.CHAT_VIEW,
-      agentType: Freestyler.AgentType.STYLING,
+      state: AiAssistance.State.CHAT_VIEW,
+      agentType: AiAssistance.AgentType.STYLING,
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       messages,
       selectedContext,
@@ -130,7 +42,7 @@ css
       const props = getProp({
         messages: [
           {
-            entity: Freestyler.ChatMessageEntity.MODEL,
+            entity: AiAssistance.ChatMessageEntity.MODEL,
             steps: [
               {
                 isLoading: false,
@@ -145,7 +57,7 @@ css
           },
         ],
       });
-      const chat = new Freestyler.ChatView(props);
+      const chat = new AiAssistance.ChatView(props);
       renderElementIntoDOM(chat);
 
       const sideEffect = chat.shadowRoot!.querySelector('.side-effect-confirmation');
@@ -154,9 +66,9 @@ css
 
     it('shows the disabled view when the state is CONSENT_VIEW', async () => {
       const props = getProp({
-        state: Freestyler.State.CONSENT_VIEW,
+        state: AiAssistance.State.CONSENT_VIEW,
       });
-      const chat = new Freestyler.ChatView(props);
+      const chat = new AiAssistance.ChatView(props);
       renderElementIntoDOM(chat);
 
       const optIn = chat.shadowRoot?.querySelector('.disabled-view');
@@ -169,10 +81,10 @@ css
 
     it('shows the disabled view when the AIDA is not available', async () => {
       const props = getProp({
-        state: Freestyler.State.CHAT_VIEW,
+        state: AiAssistance.State.CHAT_VIEW,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET,
       });
-      const chat = new Freestyler.ChatView(props);
+      const chat = new AiAssistance.ChatView(props);
       renderElementIntoDOM(chat);
 
       const optIn = chat.shadowRoot?.querySelector('.disabled-view');
@@ -201,7 +113,7 @@ css
         const props = getProp({
           agentType: undefined,
         });
-        const chat = new Freestyler.ChatView(props);
+        const chat = new AiAssistance.ChatView(props);
         renderElementIntoDOM(chat);
         const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
         assert.isDefined(featureCards);
@@ -230,7 +142,7 @@ css
         const props = getProp({
           agentType: undefined,
         });
-        const chat = new Freestyler.ChatView(props);
+        const chat = new AiAssistance.ChatView(props);
         renderElementIntoDOM(chat);
         const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
         assert.isDefined(featureCards);

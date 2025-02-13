@@ -63,7 +63,7 @@
     "chai": "4.3.4",
     "cssnano": "7.0.6",
     "cssnano-preset-lite": "4.0.3",
-    "esbuild": "0.24.0",
+    "esbuild": "0.25.0",
     "eslint": "9.17.0",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsdoc": "50.6.1",

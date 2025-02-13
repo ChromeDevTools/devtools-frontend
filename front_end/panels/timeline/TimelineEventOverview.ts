@@ -29,7 +29,6 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -79,12 +78,6 @@ export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.
   }
 }
 
-const HIGH_NETWORK_PRIORITIES = new Set<Protocol.Network.ResourcePriority>([
-  Protocol.Network.ResourcePriority.VeryHigh,
-  Protocol.Network.ResourcePriority.High,
-  Protocol.Network.ResourcePriority.Medium,
-]);
-
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
@@ -125,7 +118,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     const lowPath = new Path2D();
 
     for (const request of this.#parsedTrace.NetworkRequests.byTime) {
-      const path = HIGH_NETWORK_PRIORITIES.has(request.args.data.priority) ? highPath : lowPath;
+      const path = Trace.Helpers.Network.isSyntheticNetworkRequestHighPriority(request) ? highPath : lowPath;
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       const rectStart = Math.max(Math.floor((startTime - traceBoundsMilli.min) * scale), 0);
       const rectEnd = Math.min(Math.ceil((endTime - traceBoundsMilli.min) * scale + 1), canvasWidth);

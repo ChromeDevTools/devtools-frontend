@@ -1,7 +1,7 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
+import * as Protocol from '../../../generated/protocol.js';
 import type {RenderBlocking, SyntheticNetworkRequest} from '../types/TraceEvents.js';
 
 // Important: we purposefully treat `potentially_blocking` as
@@ -24,4 +24,14 @@ const NON_RENDER_BLOCKING_VALUES = new Set<RenderBlocking>([
 
 export function isSyntheticNetworkRequestEventRenderBlocking(event: SyntheticNetworkRequest): boolean {
   return !NON_RENDER_BLOCKING_VALUES.has(event.args.data.renderBlocking);
+}
+
+const HIGH_NETWORK_PRIORITIES = new Set<Protocol.Network.ResourcePriority>([
+  Protocol.Network.ResourcePriority.VeryHigh,
+  Protocol.Network.ResourcePriority.High,
+  Protocol.Network.ResourcePriority.Medium,
+]);
+
+export function isSyntheticNetworkRequestHighPriority(event: SyntheticNetworkRequest): boolean {
+  return HIGH_NETWORK_PRIORITIES.has(event.args.data.priority);
 }

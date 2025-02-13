@@ -774,6 +774,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,
@@ -883,6 +884,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,
@@ -930,6 +932,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,
@@ -976,6 +979,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,
@@ -1039,6 +1043,7 @@ STOP
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,
@@ -1090,6 +1095,7 @@ STOP
         {
           type: AiAssistance.ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
         },
         {
           type: AiAssistance.ResponseType.CONTEXT,

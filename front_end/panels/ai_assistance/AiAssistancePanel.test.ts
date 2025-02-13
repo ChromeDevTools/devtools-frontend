@@ -449,6 +449,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -484,6 +485,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -520,6 +522,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -556,6 +559,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -573,15 +577,23 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
 
     it('should switch agents and restore history', async () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+        },
+      });
       const {view, panel} =
           createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
       panel.handleAction('freestyler.elements-floating-button');
-      view.lastCall.args[0].onTextSubmit('User question to Freestyler?');
+      const imageInput = {inlineData: {data: 'imageinputbytes', mimeType: 'image/jpeg'}};
+      view.lastCall.args[0].onTextSubmit('User question to Freestyler?', imageInput);
       await drainMicroTasks();
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
+          imageInput,
         },
         {
           answer: 'test',
@@ -599,6 +611,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to DrJones?',
+          imageInput: undefined,
         },
         {
           answer: 'test2',
@@ -619,10 +632,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
       contextMenu.invokeHandler(freestylerEntry.id());
 
       await drainMicroTasks();
+      // Currently history should not store image input
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -645,6 +660,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
+        imageInput: undefined,
       },
       {
         answer: 'test',
@@ -678,6 +694,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
+        imageInput: undefined,
       },
       {
         answer: 'test',
@@ -704,6 +721,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'User question to Freestyler?',
+        imageInput: undefined,
       },
       {
         answer: 'test',
@@ -721,6 +739,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'User question to DrJones?',
+        imageInput: undefined,
       },
       {
         answer: 'test2',
@@ -816,6 +835,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -839,6 +859,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
+          imageInput: undefined,
         },
         {
           answer: 'test',
@@ -850,6 +871,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test2',
+          imageInput: undefined,
         },
         {
           answer: 'test2',
@@ -1083,6 +1105,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
+        imageInput: undefined,
       },
       {
         answer: undefined,
@@ -1150,6 +1173,41 @@ describeWithMockConnection('AI Assistance Panel', () => {
       await view.lastCall.args[0].onRemoveImageInput?.();
 
       assert.isEmpty(view.lastCall.args[0].imageInput);
+    });
+
+    it('sends image as input', async () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+      const {
+        view,
+      } = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+
+      assert.isTrue(view.lastCall.args[0].multimodalInputEnabled);
+
+      view.lastCall.args[0].onTextSubmit('test', {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}});
+      await drainMicroTasks();
+
+      assert.deepEqual(view.lastCall.args[0].messages, [
+        {
+          entity: AiAssistance.ChatMessageEntity.USER,
+          text: 'test',
+          imageInput: {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}}
+        },
+        {
+          answer: 'test',
+          entity: AiAssistance.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
     });
   });
 });

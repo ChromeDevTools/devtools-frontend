@@ -141,6 +141,7 @@ describeWithMockConnection('FileAgent', () => {
           {
             type: ResponseType.USER_QUERY,
             query: 'test',
+            imageInput: undefined,
           },
           {
             type: ResponseType.CONTEXT,

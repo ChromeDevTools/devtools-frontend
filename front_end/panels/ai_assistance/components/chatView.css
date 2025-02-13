@@ -283,6 +283,14 @@
   .aborted {
     color: var(--sys-color-on-surface-subtle);
   }
+
+  img {
+    margin: var(--sys-size-4) 0;
+    max-height: var(--sys-size-20);
+    border-radius: var(--sys-shape-corner-small);
+    border: 1px solid var(--sys-color-neutral-outline);
+    width: fit-content;
+  }
 }
 
 .select-element {

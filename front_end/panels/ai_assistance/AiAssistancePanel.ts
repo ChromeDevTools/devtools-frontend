@@ -645,9 +645,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           multimodalInputEnabled:
               isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
           imageInput: this.#imageInput,
-          onTextSubmit: (text: string) => {
+          onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => {
             this.#imageInput = '';
-            void this.#startConversation(text);
+            void this.#startConversation(text, imageInput);
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
           },
           onInspectElementClick: this.#handleSelectElementClick.bind(this),
@@ -920,7 +920,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     return context;
   }
 
-  async #startConversation(text: string): Promise<void> {
+  async #startConversation(text: string, imageInput?: Host.AidaClient.Part): Promise<void> {
     if (!this.#currentAgent) {
       return;
     }
@@ -935,10 +935,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // invariants do not hold anymore.
       throw new Error('cross-origin context data should not be included');
     }
-    const runner = this.#currentAgent.run(text, {
-      signal,
-      selected: context,
-    });
+
+    const runner = this.#currentAgent.run(
+        text, {
+          signal,
+          selected: context,
+        },
+        isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined);
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
@@ -1011,6 +1014,7 @@ Output one filename per line and nothing else!
             this.#messages.push({
               entity: ChatMessageEntity.USER,
               text: data.query,
+              imageInput: data.imageInput,
             });
             systemMessage = {
               entity: ChatMessageEntity.MODEL,

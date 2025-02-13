@@ -276,6 +276,14 @@ const UIStringsNotTranslate = {
    *@description Title for the remove image input button.
    */
   removeImageInputButtonTitle: 'Remove image input',
+  /**
+   *@description Alt text for the image input (displayed in the chat messages) that has been sent to the model.
+   */
+  imageInputSentToTheModel: 'Image input sent to the model',
+  /**
+   *@description Alt text for the account avatar.
+   */
+  accountAvatar: 'Account avatar',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -307,6 +315,7 @@ export const enum ChatMessageEntity {
 export interface UserChatMessage {
   entity: ChatMessageEntity.USER;
   text: string;
+  imageInput?: Host.AidaClient.Part;
 }
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
@@ -325,7 +334,7 @@ export const enum State {
 }
 
 export interface Props {
-  onTextSubmit: (text: string) => void;
+  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => void;
   onInspectElementClick: () => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
@@ -515,7 +524,9 @@ export class ChatView extends HTMLElement {
     if (!textArea || !textArea.value) {
       return;
     }
-    this.#props.onTextSubmit(textArea.value);
+    const imageInput =
+        this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
+    this.#props.onTextSubmit(textArea.value, imageInput);
     textArea.value = '';
   };
 
@@ -530,7 +541,9 @@ export class ChatView extends HTMLElement {
       if (!ev.target || !ev.target.value) {
         return;
       }
-      this.#props.onTextSubmit(ev.target.value);
+      const imageInput =
+          this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
+      this.#props.onTextSubmit(ev.target.value, imageInput);
       ev.target.value = '';
     }
   };
@@ -1096,10 +1109,15 @@ function renderChatMessage({
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
     const image = userInfo.accountImage ?
-        html`<img src="data:image/png;base64, ${userInfo.accountImage}" alt="Account avatar" />` :
+        html`<img src="data:image/png;base64, ${userInfo.accountImage}" alt=${UIStringsNotTranslate.accountAvatar} />` :
         html`<devtools-icon
           .name=${'profile'}
         ></devtools-icon>`;
+    let imageInput = html``;
+    if (message.imageInput && 'inlineData' in message.imageInput) {
+      const imageUrl = `data:image/jpeg;base64,${message.imageInput.inlineData.data}`;
+      imageInput = html`<img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />`;
+    }
     // clang-format off
     return html`<section
       class="chat-message query"
@@ -1111,6 +1129,7 @@ function renderChatMessage({
           <h2>${name}</h2>
         </div>
       </div>
+      ${imageInput}
       <div class="message-content">${renderTextAsMarkdown(message.text, markdownRenderer)}</div>
     </section>`;
     // clang-format on

@@ -52,7 +52,12 @@ export class Conversation {
   }
 
   addHistoryItem(item: ResponseData): void {
-    this.history.push(item);
+    if (item.type === ResponseType.USER_QUERY) {
+      const historyItem = {...item, imageInput: undefined};
+      this.history.push(historyItem);
+    } else {
+      this.history.push(item);
+    }
     void AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
   }
 

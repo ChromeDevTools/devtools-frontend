@@ -82,11 +82,13 @@ export interface ActionResponse {
 export interface QueryResponse {
   type: ResponseType.QUERYING;
   query?: string;
+  imageInput?: Host.AidaClient.Part;
 }
 
 export interface UserQuery {
   type: ResponseType.USER_QUERY;
   query: string;
+  imageInput?: Host.AidaClient.Part;
 }
 
 export type ResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|SideEffectResponse|
@@ -247,10 +249,12 @@ export abstract class AiAgent<T> {
     return query;
   }
 
-  buildRequest(part: Host.AidaClient.Part, role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED):
-      Host.AidaClient.AidaRequest {
+  buildRequest(
+      part: Host.AidaClient.Part|Host.AidaClient.Part[],
+      role: Host.AidaClient.Role.USER|Host.AidaClient.Role.ROLE_UNSPECIFIED): Host.AidaClient.AidaRequest {
+    const parts = Array.isArray(part) ? part : [part];
     const currentMessage: Host.AidaClient.Content = {
-      parts: [part],
+      parts,
       role,
     };
     const history = [...this.#history];
@@ -342,9 +346,11 @@ export abstract class AiAgent<T> {
     throw new Error('Unexpected action found');
   }
 
-  async * run(initialQuery: string, options: {
-    signal?: AbortSignal, selected: ConversationContext<T>|null,
-  }): AsyncGenerator<ResponseData, void, void> {
+  async *
+      run(initialQuery: string, options: {
+        signal?: AbortSignal, selected: ConversationContext<T>|null,
+      },
+          imageInput?: Host.AidaClient.Part): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
 
     // First context set on the agent determines its origin from now on.
@@ -360,13 +366,15 @@ export abstract class AiAgent<T> {
 
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
 
-    let query: Host.AidaClient.Part = {text: enhancedQuery};
+    let query: Host.AidaClient.Part|Host.AidaClient.Part[];
+    query = imageInput ? [{text: enhancedQuery}, imageInput] : [{text: enhancedQuery}];
     // Request is built here to capture history up to this point.
     let request = this.buildRequest(query, Host.AidaClient.Role.USER);
 
     yield {
       type: ResponseType.USER_QUERY,
       query: initialQuery,
+      imageInput,
     };
 
     yield* this.handleContextDetails(options.selected);

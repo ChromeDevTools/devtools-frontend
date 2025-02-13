@@ -93,6 +93,7 @@ export async function searchForComponent(frontend: puppeteer.Page, searchEntry: 
   // TODO: it should actually wait for rendering to finish.
   await drainFrontendTaskQueue();
   await frontend.keyboard.type(searchEntry);
+  await drainFrontendTaskQueue();
   await frontend.keyboard.press('Tab');
   // TODO: it should actually wait for rendering to finish.
   await drainFrontendTaskQueue();

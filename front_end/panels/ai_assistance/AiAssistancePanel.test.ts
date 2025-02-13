@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
+import {createAiAssistancePanel, detachPanels, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
@@ -23,92 +23,56 @@ import * as AiAssistance from './ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-function getTestSyncInfo(): Host.InspectorFrontendHostAPI.SyncInformation {
-  return {isSyncActive: true};
-}
-
 async function drainMicroTasks() {
   await new Promise(resolve => setTimeout(resolve, 0));
 }
 
-describeWithEnvironment('FreestylerPanel', () => {
-  let mockView: sinon.SinonStub<[AiAssistance.Props, unknown, HTMLElement]>;
-  let panel: AiAssistance.AiAssistancePanel;
-
+describeWithEnvironment('AI Assistance Panel', () => {
   beforeEach(() => {
-    mockView = sinon.stub();
     registerNoopActions(['elements.toggle-element-search']);
     UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
     UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
     UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
     UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
+    UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
+    UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
+    UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
+    UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
   });
 
   afterEach(() => {
-    panel.detach();
+    detachPanels();
   });
 
   describe('consent view', () => {
     it('should render consent view when the consent is not given before', async () => {
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-
-      sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      const {view} = createAiAssistancePanel();
+      await drainMicroTasks();
+      sinon.assert.calledWith(view, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
     });
 
     it('should switch from consent view to chat view when enabling setting', async () => {
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
-
-      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
+      const {view} = createAiAssistancePanel();
       await drainMicroTasks();
+      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      await drainMicroTasks();
+      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
     });
 
     it('should render chat view when the consent is given before', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-
-      sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
+      const {view} = createAiAssistancePanel();
+      await drainMicroTasks();
+      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
     });
 
     it('should render the consent view when the setting is disabled', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
-      const chatUiStates: AiAssistance.State[] = [];
-      const viewStub = sinon.stub().callsFake(props => {
-        chatUiStates.push(props.state);
-      });
-
-      panel = new AiAssistance.AiAssistancePanel(viewStub, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
+      const {view} = createAiAssistancePanel();
       await drainMicroTasks();
-
-      sinon.assert.calledWith(viewStub, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
-      assert.isFalse(chatUiStates.includes(AiAssistance.State.CHAT_VIEW));
+      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
     });
 
@@ -123,56 +87,38 @@ describeWithEnvironment('FreestylerPanel', () => {
         },
       });
 
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-
-      sinon.assert.calledWith(mockView, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      const {view} = createAiAssistancePanel();
+      await drainMicroTasks();
+      view.lastCall.calledWith(sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
     });
 
     it('updates when the user logs in', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
+      const {view} =
+          createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
       await drainMicroTasks();
-      sinon.assert.calledWith(mockView, sinon.match({
+      sinon.assert.calledWith(view.lastCall, sinon.match({
         state: AiAssistance.State.CHAT_VIEW,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
       }));
-      mockView.reset();
 
-      const stub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-                       .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
+      sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
+          .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
       Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
           Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
       await drainMicroTasks();
-      sinon.assert.calledWith(mockView, sinon.match({
+      sinon.assert.calledWith(view.lastCall, sinon.match({
         state: AiAssistance.State.CHAT_VIEW,
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       }));
-      stub.restore();
     });
   });
 
   describe('on rate click', () => {
     it('renders a button linking to settings', () => {
       const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
-
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {panel} = createAiAssistancePanel();
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Settings\']');
       assert.instanceOf(button, HTMLElement);
       button.click();
@@ -185,19 +131,8 @@ describeWithEnvironment('FreestylerPanel', () => {
           disallowLogging: false,
         },
       });
-
-      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      const callArgs = mockView.getCall(0)?.args[0];
-      mockView.reset();
-      callArgs.onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
-
+      const {view, aidaClient} = createAiAssistancePanel();
+      view.lastCall.args[0].onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
       sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         disable_user_content_logging: false,
       }));
@@ -210,19 +145,10 @@ describeWithEnvironment('FreestylerPanel', () => {
           disallowLogging: true,
         }
       });
-      const RPC_ID = 0;
+      const RPC_ID = 999;
 
-      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      const callArgs = mockView.getCall(0).args[0];
-      mockView.reset();
-      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
+      const {view, aidaClient} = createAiAssistancePanel();
+      view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
 
       sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
@@ -235,7 +161,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       }));
     });
 
-    it('should send NEGATIVE rating to aida client when the user clicks on positive rating', () => {
+    it('should send NEGATIVE rating to aida client when the user clicks on negative rating', () => {
       Object.assign(Root.Runtime.hostConfig, {
         aidaAvailability: {
           enabled: true,
@@ -243,17 +169,8 @@ describeWithEnvironment('FreestylerPanel', () => {
         }
       });
       const RPC_ID = 0;
-      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      const callArgs = mockView.getCall(0).args[0];
-      mockView.reset();
-      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
+      const {view, aidaClient} = createAiAssistancePanel();
+      view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
 
       sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
@@ -273,19 +190,11 @@ describeWithEnvironment('FreestylerPanel', () => {
           disallowLogging: true,
         }
       });
-      const RPC_ID = 0;
+
       const feedback = 'This helped me a ton.';
-      const aidaClient = mockAidaClient([[{explanation: 'test'}]]);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      const callArgs = mockView.getCall(0).args[0];
-      mockView.reset();
-      callArgs.onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
+      const RPC_ID = 0;
+      const {view, aidaClient} = createAiAssistancePanel();
+      view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
 
       sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
         corresponding_aida_rpc_global_id: RPC_ID,
@@ -305,37 +214,23 @@ describeWithEnvironment('FreestylerPanel', () => {
   describe('flavor change listeners', () => {
     describe('SDK.DOMModel.DOMNode flavor changes for selected element', () => {
       it('should set the selected element when the widget is shown', () => {
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view, panel} = createAiAssistancePanel();
 
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
           nodeType: Node.ELEMENT_NODE,
         });
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-        panel.markAsRoot();
-        panel.show(document.body);
         panel.handleAction('freestyler.elements-floating-button');
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.NodeContext(node),
         }));
       });
 
       it('should update the selected element when the changed DOMNode flavor is an ELEMENT_NODE', () => {
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
         panel.handleAction('freestyler.elements-floating-button');
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
 
@@ -344,22 +239,15 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.NodeContext(node),
         }));
       });
 
       it('should set selected element to null when the change DOMNode flavor is not an ELEMENT_NODE', () => {
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
         panel.handleAction('freestyler.elements-floating-button');
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
 
@@ -368,196 +256,142 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
       });
 
       it('should not handle DOMNode flavor changes if the widget is not shown', () => {
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-
+        const {view, panel} = createAiAssistancePanel();
+        sinon.assert.calledWith(view.lastCall, sinon.match({
+          selectedContext: null,
+        }));
+        const callCount = view.callCount;
+        panel.hideWidget();
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
           nodeType: Node.ELEMENT_NODE,
         });
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-
-        sinon.assert.notCalled(mockView);
+        assert.strictEqual(view.callCount, callCount);
       });
     });
 
     describe('SDK.NetworkRequest.NetworkRequest flavor changes for selected network request', () => {
       it('should set the selected network request when the widget is shown', () => {
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-
         const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
         panel.handleAction('drjones.network-floating-button');
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.RequestContext(networkRequest),
         }));
       });
 
       it('should set selected network request when the NetworkRequest flavor changes', () => {
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
         panel.handleAction('drjones.network-floating-button');
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
 
         const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.RequestContext(networkRequest),
         }));
       });
 
       it('should not handle NetworkRequest flavor changes if the widget is not shown', () => {
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-
+        const {view, panel} = createAiAssistancePanel();
+        sinon.assert.calledWith(view.lastCall, sinon.match({
+          selectedContext: null,
+        }));
+        const callCount = view.callCount;
+        panel.hideWidget();
         const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-
-        sinon.assert.notCalled(mockView);
+        assert.strictEqual(view.callCount, callCount);
       });
     });
 
     describe('TimelineUtils.AICallTree.AICallTree flavor changes for selected call tree', () => {
       it('should set the selected call tree when the widget is shown', () => {
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view, panel} = createAiAssistancePanel();
 
         const selectedAiCallTree = {};
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
-        panel.markAsRoot();
-        panel.show(document.body);
         panel.handleAction('drjones.performance-panel-context');
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
       it('should set selected call tree when the AICallTree flavor changes', () => {
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
+
         panel.handleAction('drjones.performance-panel-context');
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           selectedContext: null,
         }));
 
         const selectedAiCallTree = {};
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
       it('should not handle AICallTree flavor changes if the widget is not shown', () => {
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view, panel} = createAiAssistancePanel();
+        const callCount = view.callCount;
+        panel.hideWidget();
 
         const selectedAiCallTree = {};
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
-        sinon.assert.notCalled(mockView);
+        assert.strictEqual(view.callCount, callCount);
       });
     });
 
-    describe('Workspace.UISourceCode.UISourceCode flavor changes for selected network request', () => {
+    describe('Workspace.UISourceCode.UISourceCode flavor changes for selected file', () => {
       it('should set selected file when the widget is shown', () => {
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view, panel} = createAiAssistancePanel();
+        panel.handleAction('drjones.sources-panel-context');
 
         const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-        panel.markAsRoot();
-        panel.show(document.body);
-        panel.handleAction('drjones.sources-panel-context');
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.FileContext(uiSourceCode),
         }));
       });
 
       it('should set selected file when the UISourceCode flavor changes', () => {
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-        panel.markAsRoot();
-        panel.show(document.body);
+        const {view, panel} = createAiAssistancePanel();
         panel.handleAction('drjones.sources-panel-context');
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           selectedContext: null,
         }));
 
         const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: new AiAssistance.FileContext(uiSourceCode),
         }));
       });
 
-      it('should not handle NetworkRequest flavor changes if the widget is not shown', () => {
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, null);
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+      it('should not handle UISourceCode flavor changes if the widget is not shown', () => {
+        const {view, panel} = createAiAssistancePanel();
+        const callCount = view.callCount;
+        panel.hideWidget();
 
         const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
-        sinon.assert.notCalled(mockView);
+        assert.strictEqual(view.callCount, callCount);
       });
     });
   });
@@ -570,69 +404,47 @@ describeWithEnvironment('FreestylerPanel', () => {
       toggleSearchElementAction.setToggled(false);
     });
 
-    it('should set inspectElementToggled when the widget is shown', () => {
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-
+    it('should set inspectElementToggled when the widget is shown', async () => {
+      const {view} = createAiAssistancePanel();
       toggleSearchElementAction.setToggled(true);
-      panel.markAsRoot();
-      panel.show(document.body);
-
-      sinon.assert.calledWith(mockView, sinon.match({
-        inspectElementToggled: true,
-      }));
+      sinon.assert.calledWith(view.lastCall, sinon.match({inspectElementToggled: true}));
     });
 
-    it('should update inspectElementToggled when the action is toggled', () => {
+    it('should update inspectElementToggled when the action is toggled', async () => {
+      const {view} = createAiAssistancePanel();
       toggleSearchElementAction.setToggled(false);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
-      panel.markAsRoot();
-      panel.show(document.body);
-      sinon.assert.calledWith(mockView, sinon.match({
-        inspectElementToggled: false,
-      }));
+
+      sinon.assert.calledWith(view.lastCall, sinon.match({inspectElementToggled: false}));
+
+      toggleSearchElementAction.setToggled(true);
+      sinon.assert.calledWith(view.lastCall, sinon.match({inspectElementToggled: true}));
+    });
+
+    it('should not update toggleSearchElementAction when the widget is not shown', async () => {
+      toggleSearchElementAction.setToggled(false);
+
+      const {view, panel} = createAiAssistancePanel();
+      const callCount = view.callCount;
+      panel.hideWidget();
 
       toggleSearchElementAction.setToggled(true);
 
-      sinon.assert.calledWith(mockView, sinon.match({
-        inspectElementToggled: true,
-      }));
+      const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+      UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
+
+      assert.strictEqual(view.callCount, callCount);
     });
-
-    it('should not update toggleSearchElementAction even after the action is toggled when the widget is not shown',
-       () => {
-         toggleSearchElementAction.setToggled(false);
-         panel = new AiAssistance.AiAssistancePanel(mockView, {
-           aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-           syncInfo: getTestSyncInfo(),
-         });
-
-         toggleSearchElementAction.setToggled(true);
-
-         sinon.assert.notCalled(mockView);
-       });
   });
 
   describe('history interactions', () => {
     it('should have empty messages after new chat', async () => {
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
 
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -648,7 +460,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
-      assert.deepEqual(mockView.lastCall.args[0].messages, []);
+      assert.deepEqual(view.lastCall.args[0].messages, []);
     });
 
     it('should select default agent after new chat', async () => {
@@ -657,19 +469,17 @@ describeWithEnvironment('FreestylerPanel', () => {
           enabled: true,
         },
       });
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
+
       UI.Context.Context.instance().setFlavor(
           ElementsPanel.ElementsPanel.ElementsPanel,
           sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
 
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -685,8 +495,8 @@ describeWithEnvironment('FreestylerPanel', () => {
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
-      assert.deepEqual(mockView.lastCall.args[0].messages, []);
-      assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
+      assert.deepEqual(view.lastCall.args[0].messages, []);
+      assert.deepEqual(view.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
     });
 
     it('should select the performance insights agent if it is enabled', async () => {
@@ -696,19 +506,16 @@ describeWithEnvironment('FreestylerPanel', () => {
           insightsEnabled: true,
         },
       });
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
       UI.Context.Context.instance().setFlavor(
           TimelinePanel.TimelinePanel.TimelinePanel,
           sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
 
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -724,8 +531,8 @@ describeWithEnvironment('FreestylerPanel', () => {
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
-      assert.deepEqual(mockView.lastCall.args[0].messages, []);
-      assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
+      assert.deepEqual(view.lastCall.args[0].messages, []);
+      assert.deepEqual(view.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
     });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
@@ -735,19 +542,16 @@ describeWithEnvironment('FreestylerPanel', () => {
           insightsEnabled: false,
         },
       });
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
       UI.Context.Context.instance().setFlavor(
           TimelinePanel.TimelinePanel.TimelinePanel,
           sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
 
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -763,20 +567,17 @@ describeWithEnvironment('FreestylerPanel', () => {
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
-      assert.deepEqual(mockView.lastCall.args[0].messages, []);
-      assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE);
+      assert.deepEqual(view.lastCall.args[0].messages, []);
+      assert.deepEqual(view.lastCall.args[0].agentType, AiAssistance.AgentType.PERFORMANCE);
     });
 
     it('should switch agents and restore history', async () => {
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
-      });
+      const {view, panel} =
+          createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('User question to Freestyler?');
+      view.lastCall.args[0].onTextSubmit('User question to Freestyler?');
       await drainMicroTasks();
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
@@ -791,9 +592,9 @@ describeWithEnvironment('FreestylerPanel', () => {
       ]);
 
       panel.handleAction('drjones.network-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('User question to DrJones?');
+      view.lastCall.args[0].onTextSubmit('User question to DrJones?');
       await drainMicroTasks();
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to DrJones?',
@@ -817,7 +618,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       contextMenu.invokeHandler(freestylerEntry.id());
 
       await drainMicroTasks();
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
@@ -834,16 +635,12 @@ describeWithEnvironment('FreestylerPanel', () => {
   });
 
   it('should have empty state after clear chat', async () => {
-    panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-      syncInfo: getTestSyncInfo(),
-    });
+    const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
     panel.handleAction('freestyler.elements-floating-button');
-    mockView.lastCall.args[0].onTextSubmit('test');
+    view.lastCall.args[0].onTextSubmit('test');
     await drainMicroTasks();
 
-    assert.deepEqual(mockView.lastCall.args[0].messages, [
+    assert.deepEqual(view.lastCall.args[0].messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
@@ -859,8 +656,8 @@ describeWithEnvironment('FreestylerPanel', () => {
     const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
-    assert.deepEqual(mockView.lastCall.args[0].messages, []);
-    assert.isUndefined(mockView.lastCall.args[0].agentType);
+    assert.deepEqual(view.lastCall.args[0].messages, []);
+    assert.isUndefined(view.lastCall.args[0].agentType);
   });
 
   it('should select default agent based on open panel after clearing the chat', async () => {
@@ -869,18 +666,14 @@ describeWithEnvironment('FreestylerPanel', () => {
         enabled: true,
       },
     });
-    panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-      syncInfo: getTestSyncInfo(),
-    });
+    const {view, panel} = createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
     panel.handleAction('freestyler.elements-floating-button');
-    mockView.lastCall.args[0].onTextSubmit('test');
+    view.lastCall.args[0].onTextSubmit('test');
     await drainMicroTasks();
 
     UI.Context.Context.instance().setFlavor(
         ElementsPanel.ElementsPanel.ElementsPanel, sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
-    assert.deepEqual(mockView.lastCall.args[0].messages, [
+    assert.deepEqual(view.lastCall.args[0].messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
@@ -896,20 +689,17 @@ describeWithEnvironment('FreestylerPanel', () => {
     const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
-    assert.deepEqual(mockView.lastCall.args[0].messages, []);
-    assert.deepEqual(mockView.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
+    assert.deepEqual(view.lastCall.args[0].messages, []);
+    assert.deepEqual(view.lastCall.args[0].agentType, AiAssistance.AgentType.STYLING);
   });
 
   it('should have empty state after clear chat history', async () => {
-    panel = new AiAssistance.AiAssistancePanel(mockView, {
-      aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
-      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-      syncInfo: getTestSyncInfo(),
-    });
+    const {view, panel} =
+        createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
     panel.handleAction('freestyler.elements-floating-button');
-    mockView.lastCall.args[0].onTextSubmit('User question to Freestyler?');
+    view.lastCall.args[0].onTextSubmit('User question to Freestyler?');
     await drainMicroTasks();
-    assert.deepEqual(mockView.lastCall.args[0].messages, [
+    assert.deepEqual(view.lastCall.args[0].messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'User question to Freestyler?',
@@ -924,9 +714,9 @@ describeWithEnvironment('FreestylerPanel', () => {
     ]);
 
     panel.handleAction('drjones.network-floating-button');
-    mockView.lastCall.args[0].onTextSubmit('User question to DrJones?');
+    view.lastCall.args[0].onTextSubmit('User question to DrJones?');
     await drainMicroTasks();
-    assert.deepEqual(mockView.lastCall.args[0].messages, [
+    assert.deepEqual(view.lastCall.args[0].messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'User question to DrJones?',
@@ -949,8 +739,8 @@ describeWithEnvironment('FreestylerPanel', () => {
     assert.isDefined(clearAll);
     contextMenu.invokeHandler(clearAll.id());
     await drainMicroTasks();
-    assert.deepEqual(mockView.lastCall.args[0].messages, []);
-    assert.isUndefined(mockView.lastCall.args[0].agentType);
+    assert.deepEqual(view.lastCall.args[0].messages, []);
+    assert.isUndefined(view.lastCall.args[0].agentType);
 
     await drainMicroTasks();
     contextMenu.discard();
@@ -971,23 +761,22 @@ describeWithEnvironment('FreestylerPanel', () => {
         url: urlString`https://a.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
-        aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
+
+      const {view, panel} = createAiAssistancePanel({
+        aidaClient: mockAidaClient([
+          [{explanation: 'test'}],
+        ])
       });
-      panel.markAsRoot();
-      panel.show(document.body);
       panel.handleAction('drjones.network-floating-button');
 
-      sinon.assert.calledWith(mockView, sinon.match({
+      sinon.assert.calledWith(view, sinon.match({
         selectedContext: new AiAssistance.RequestContext(networkRequest),
         blockedByCrossOrigin: false,
       }));
 
       // Send a query for https://a.test.
       panel.handleAction('drjones.network-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
 
       // Change context to https://b.test.
@@ -998,7 +787,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       panel.handleAction('drjones.network-floating-button');
       await drainMicroTasks();
 
-      sinon.assert.calledWith(mockView, sinon.match({
+      sinon.assert.calledWith(view, sinon.match({
         selectedContext: new AiAssistance.RequestContext(networkRequest2),
         blockedByCrossOrigin: true,
       }));
@@ -1010,20 +799,19 @@ describeWithEnvironment('FreestylerPanel', () => {
           enabled: true,
         },
       });
-      panel = new AiAssistance.AiAssistancePanel(mockView, {
+
+      const {view, panel} = createAiAssistancePanel({
         aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-        syncInfo: getTestSyncInfo(),
       });
       UI.Context.Context.instance().setFlavor(
           ElementsPanel.ElementsPanel.ElementsPanel,
           sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
 
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test');
+      view.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
 
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -1042,11 +830,11 @@ describeWithEnvironment('FreestylerPanel', () => {
           sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
 
       panel.handleAction('freestyler.elements-floating-button');
-      mockView.lastCall.args[0].onTextSubmit('test2');
+      view.lastCall.args[0].onTextSubmit('test2');
       await drainMicroTasks();
 
-      assert.isFalse(mockView.lastCall.args[0].isReadOnly);
-      assert.deepEqual(mockView.lastCall.args[0].messages, [
+      assert.isFalse(view.lastCall.args[0].isReadOnly);
+      assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -1084,16 +872,12 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
+
+        const {view} = createAiAssistancePanel({
           aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
         });
 
-        panel.markAsRoot();
-        panel.show(document.body);
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.STYLING,
         }));
       });
@@ -1107,20 +891,14 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.STYLING,
         }));
 
         UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
-        assert.isUndefined(mockView.lastCall.args[0].agentType);
+        assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
       it('should render no agent state when Elements panel is open but Freestyler is not enabled', () => {
@@ -1132,16 +910,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             ElementsPanel.ElementsPanel.ElementsPanel,
             sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-
-        assert.isUndefined(mockView.lastCall.args[0].agentType);
+        assert.isUndefined(view.lastCall.args[0].agentType);
       });
     });
 
@@ -1154,16 +925,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(
             NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.NETWORK,
         }));
       });
@@ -1176,20 +940,14 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(
             NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.NETWORK,
         }));
 
         UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
-        assert.isUndefined(mockView.lastCall.args[0].agentType);
+        assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
       it('should render no agent state when Network panel is open but devToolsAiAssistanceNetworkAgent is not enabled',
@@ -1202,16 +960,9 @@ describeWithEnvironment('FreestylerPanel', () => {
            UI.Context.Context.instance().setFlavor(
                NetworkPanel.NetworkPanel.NetworkPanel,
                sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
-           panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-             aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-             syncInfo: getTestSyncInfo(),
-           });
+           const {view} = createAiAssistancePanel();
 
-           panel.markAsRoot();
-           panel.show(document.body);
-
-           assert.isUndefined(mockView.lastCall.args[0].agentType);
+           assert.isUndefined(view.lastCall.args[0].agentType);
          });
     });
 
@@ -1224,16 +975,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(
             SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.FILE,
         }));
       });
@@ -1246,20 +990,13 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         UI.Context.Context.instance().setFlavor(
             SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-
-        panel.markAsRoot();
-        panel.show(document.body);
-        sinon.assert.calledWith(mockView, sinon.match({
+        const {view} = createAiAssistancePanel();
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.FILE,
         }));
 
         UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
-        assert.isUndefined(mockView.lastCall.args[0].agentType);
+        assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
       it('should render no agent state when Sources panel is open but devToolsAiAssistanceFileAgent is not enabled',
@@ -1272,16 +1009,9 @@ describeWithEnvironment('FreestylerPanel', () => {
            UI.Context.Context.instance().setFlavor(
                SourcesPanel.SourcesPanel.SourcesPanel,
                sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
-           panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-             aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-             syncInfo: getTestSyncInfo(),
-           });
+           const {view} = createAiAssistancePanel();
 
-           panel.markAsRoot();
-           panel.show(document.body);
-
-           assert.isUndefined(mockView.lastCall.args[0].agentType);
+           assert.isUndefined(view.lastCall.args[0].agentType);
          });
     });
 
@@ -1295,16 +1025,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             TimelinePanel.TimelinePanel.TimelinePanel,
             sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
+        const {view} = createAiAssistancePanel();
 
-        panel.markAsRoot();
-        panel.show(document.body);
-
-        sinon.assert.calledWith(mockView, sinon.match({
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.PERFORMANCE,
         }));
       });
@@ -1318,20 +1041,13 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(
             TimelinePanel.TimelinePanel.TimelinePanel,
             sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
-        panel = new AiAssistance.AiAssistancePanel(mockView, {
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-          aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-          syncInfo: getTestSyncInfo(),
-        });
-
-        panel.markAsRoot();
-        panel.show(document.body);
-        sinon.assert.calledWith(mockView, sinon.match({
+        const {view} = createAiAssistancePanel();
+        sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.PERFORMANCE,
         }));
 
         UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
-        assert.isUndefined(mockView.lastCall.args[0].agentType);
+        assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
       it('should render no agent state when Performance panel is open but devToolsAiAssistancePerformanceAgent is not enabled',
@@ -1344,52 +1060,36 @@ describeWithEnvironment('FreestylerPanel', () => {
            UI.Context.Context.instance().setFlavor(
                TimelinePanel.TimelinePanel.TimelinePanel,
                sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
-           panel = new AiAssistance.AiAssistancePanel(mockView, {
-             aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-             aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-             syncInfo: getTestSyncInfo(),
-           });
+           const {view} = createAiAssistancePanel();
 
-           panel.markAsRoot();
-           panel.show(document.body);
-
-           assert.isUndefined(mockView.lastCall.args[0].agentType);
+           assert.isUndefined(view.lastCall.args[0].agentType);
          });
     });
   });
 
   it('erases previous partial response on blocked error', async () => {
-    async function* generateAnswerAndError() {
-      yield {
-        explanation: 'ANSWER: This is the first part of the answer.',
-        metadata: {},
-        completed: false,
-      };
-      throw new Host.AidaClient.AidaBlockError();
-    }
-
-    const mockAidaClient = {
-      fetch: generateAnswerAndError,
-      registerClientEvent: sinon.spy(),
-    };
-
-    const messages: AiAssistance.ModelChatMessage[] = [];
-    const viewMock = sinon.stub().callsFake((props: AiAssistance.Props) => {
-      messages.push(JSON.parse(JSON.stringify(props.messages[1])));
-    });
-
-    panel = new AiAssistance.AiAssistancePanel(viewMock, {
-      aidaClient: mockAidaClient,
-      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-      syncInfo: getTestSyncInfo(),
+    const {view, panel} = createAiAssistancePanel({
+      aidaClient: mockAidaClient([[{
+        explanation: 'This is the first part of the answer.',
+        metadata: {attributionMetadata: {attributionAction: Host.AidaClient.RecitationAction.BLOCK, citations: []}}
+      }]]),
     });
     panel.handleAction('freestyler.elements-floating-button');
-    viewMock.lastCall.args[0].onTextSubmit('test');
+    view.lastCall.args[0].onTextSubmit('test');
     await drainMicroTasks();
 
-    assert.strictEqual(messages[2].answer, 'This is the first part of the answer.');
-    assert.isUndefined(messages[2].error);
-    assert.isUndefined(messages[3].answer);
-    assert.strictEqual(messages[3].error, 'block');
+    assert.deepEqual(view.lastCall.args[0].messages, [
+      {
+        entity: AiAssistance.ChatMessageEntity.USER,
+        text: 'test',
+      },
+      {
+        answer: undefined,
+        entity: AiAssistance.ChatMessageEntity.MODEL,
+        rpcId: undefined,
+        error: AiAssistance.ErrorType.BLOCK,
+        steps: [],
+      },
+    ]);
   });
 });

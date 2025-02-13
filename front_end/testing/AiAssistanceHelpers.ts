@@ -9,6 +9,7 @@ import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Logs from '../models/logs/logs.js';
 import type * as Workspace from '../models/workspace/workspace.js';
+import * as AiAssistance from '../panels/ai_assistance/ai_assistance.js';
 
 import {
   createTarget,
@@ -144,4 +145,34 @@ export function createNetworkRequest(): SDK.NetworkRequest.NetworkRequest {
         ]),
       });
   return networkRequest;
+}
+
+let panels: AiAssistance.AiAssistancePanel[] = [];
+export function createAiAssistancePanel(options?: {
+  aidaClient?: Host.AidaClient.AidaClient,
+  aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
+  syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
+}) {
+  const view: sinon.SinonStub<[AiAssistance.Props, unknown, HTMLElement]> = sinon.stub();
+  const aidaClient = options?.aidaClient ?? mockAidaClient();
+  const panel = new AiAssistance.AiAssistancePanel(view, {
+    aidaClient,
+    aidaAvailability: options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+    syncInfo: options?.syncInfo ?? {isSyncActive: true},
+  });
+  panel.markAsRoot();
+  panel.show(document.body);
+  panels.push(panel);
+  return {
+    panel,
+    view,
+    aidaClient,
+  };
+}
+
+export function detachPanels() {
+  for (const panel of panels) {
+    panel.detach();
+  }
+  panels = [];
 }

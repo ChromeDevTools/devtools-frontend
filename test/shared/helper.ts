@@ -197,6 +197,7 @@ export const pressKey =
 export const pasteText = async (text: string) => {
   const {frontend} = getBrowserAndPages();
   await frontend.keyboard.sendCharacter(text);
+  await drainFrontendTaskQueue();
 };
 
 // Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.

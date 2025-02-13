@@ -41,9 +41,11 @@ export class StorageItemsView extends UI.Widget.VBox {
   readonly filterItem: UI.Toolbar.ToolbarInput;
   readonly deleteAllButton: UI.Toolbar.ToolbarButton;
   readonly deleteSelectedButton: UI.Toolbar.ToolbarButton;
-  readonly metadataView = new ApplicationComponents.StorageMetadataView.StorageMetadataView();
+  readonly metadataView: ApplicationComponents.StorageMetadataView.StorageMetadataView;
 
-  constructor(_title: string, _filterName: string) {
+  constructor(
+      _title: string, _filterName: string,
+      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView) {
     super(false);
     this.filterRegex = null;
 
@@ -74,6 +76,7 @@ export class StorageItemsView extends UI.Widget.VBox {
     for (const item of toolbarItems) {
       this.mainToolbar.appendToolbarItem(item);
     }
+    this.metadataView = metadataView ?? new ApplicationComponents.StorageMetadataView.StorageMetadataView();
     this.contentElement.appendChild(this.metadataView);
   }
 

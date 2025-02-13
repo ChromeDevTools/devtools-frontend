@@ -33,6 +33,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Directives as LitDirectives, html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import type * as ApplicationComponents from './components/components.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
 const {ARIAUtils} = UI;
@@ -101,7 +102,9 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
   #isSortOrderAscending = true;
   #editable: boolean;
 
-  constructor(title: string, id: string, editable: boolean, view?: View) {
+  constructor(
+      title: string, id: string, editable: boolean, view?: View,
+      metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView) {
     if (!view) {
       view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
         // clang-format off
@@ -152,7 +155,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
             target, {host: input});
       };
     }
-    super(title, id);
+    super(title, id, metadataView);
     this.#editable = editable;
     this.#view = view;
     this.performUpdate();
@@ -267,9 +270,17 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
   #createCallback(key: string, value: string): void {
     this.setItem(key, value);
     this.#removeDupes(key, value);
+    void this.#previewEntry({key, value});
+  }
+
+  protected isEditAllowed(_columnIdentifier: string, _oldText: string, _newText: string): boolean {
+    return true;
   }
 
   #editingCallback(editingNode: HTMLElement, columnIdentifier: string, oldText: string, newText: string): void {
+    if (!this.isEditAllowed(columnIdentifier, oldText, newText)) {
+      return;
+    }
     if (columnIdentifier === 'key') {
       if (typeof oldText === 'string') {
         this.removeItem(oldText);
@@ -277,8 +288,10 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
       this.setItem(newText, editingNode.dataset.value || '');
       this.#removeDupes(newText, editingNode.dataset.value || '');
       editingNode.dataset.key = newText;
+      void this.#previewEntry({key: newText, value: editingNode.dataset.value || ''});
     } else {
       this.setItem(editingNode.dataset.key || '', newText);
+      void this.#previewEntry({key: editingNode.dataset.key || '', value: newText});
     }
   }
 
@@ -328,6 +341,10 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
   set editable(editable: boolean) {
     this.#editable = editable;
     this.performUpdate();
+  }
+
+  protected keys(): string[] {
+    return this.#items.map(item => item.key);
   }
 
   protected abstract setItem(key: string, value: string): void;

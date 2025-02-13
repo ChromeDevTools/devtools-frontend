@@ -7,7 +7,6 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {
   dispatchClickEvent,
-  dispatchKeyDownEvent,
   getCleanTextContentFromElements,
   raf,
 } from '../../testing/DOMHelpers.js';
@@ -15,13 +14,10 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
-import {getCellElementFromNodeAndColumnId, selectNodeByKey} from '../../testing/StorageItemsViewHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
-import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Resources from './application.js';
-import type * as ApplicationComponents from './components/components.js';
 
 import View = Resources.SharedStorageItemsView;
 
@@ -31,7 +27,7 @@ class SharedStorageItemsListener {
   #filteredCleared: boolean = false;
   #refreshed: boolean = false;
   #deletedKeys: String[] = [];
-  #editedEvents: View.SharedStorageItemsDispatcher.ItemEditedEvent[] = [];
+  #numEditedEvents = 0;
 
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.SharedStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;
@@ -60,8 +56,8 @@ class SharedStorageItemsListener {
     return this.#deletedKeys;
   }
 
-  get editedEvents(): View.SharedStorageItemsDispatcher.ItemEditedEvent[] {
-    return this.#editedEvents;
+  get numEditedEvents(): number {
+    return this.#numEditedEvents;
   }
 
   resetRefreshed(): void {
@@ -84,8 +80,8 @@ class SharedStorageItemsListener {
     this.#deletedKeys.push(event.data.key);
   }
 
-  #itemEdited(event: Common.EventTarget.EventTargetEvent<View.SharedStorageItemsDispatcher.ItemEditedEvent>): void {
-    this.#editedEvents.push(event.data);
+  #itemEdited(): void {
+    ++this.#numEditedEvents;
   }
 
   async waitForItemsCleared(): Promise<void> {
@@ -116,7 +112,7 @@ class SharedStorageItemsListener {
   }
 
   async waitForItemsEditedTotal(total: number): Promise<void> {
-    while (this.#editedEvents.length < total) {
+    while (this.#numEditedEvents < total) {
       await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED);
     }
   }
@@ -192,12 +188,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
   const ENTRIES_KEY_EDITED_1 = [
     {
-      key: 'key1',
-      value: 'a',
-    } as Protocol.Storage.SharedStorageEntry,
-    {
       key: 'key0',
       value: 'b',
+    } as Protocol.Storage.SharedStorageEntry,
+    {
+      key: 'key1',
+      value: 'a',
     } as Protocol.Storage.SharedStorageEntry,
     {
       key: 'key3',
@@ -246,7 +242,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     } as Protocol.Storage.SharedStorageEntry,
     {
       key: 'key4',
-      value: '',
+      value: 'e',
     } as Protocol.Storage.SharedStorageEntry,
   ];
 
@@ -257,6 +253,15 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     sharedStorage = new Resources.SharedStorageModel.SharedStorageForOrigin(sharedStorageModel, TEST_ORIGIN);
     assert.strictEqual(sharedStorage.securityOrigin, TEST_ORIGIN);
   });
+
+  async function createView(): Promise<
+      {view: View.SharedStorageItemsView, itemsListener: SharedStorageItemsListener, viewFunction: sinon.SinonStub}> {
+    const viewFunction = sinon.stub();
+    const view = await View.SharedStorageItemsView.createView(sharedStorage, viewFunction);
+    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
+    await RenderCoordinator.done({waitForWork: true});
+    return {view, itemsListener, viewFunction};
+  }
 
   it('displays metadata and entries', async () => {
     assert.exists(sharedStorageModel);
@@ -273,23 +278,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
           getError: () => undefined,
         });
 
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    const {view, viewFunction} = await createView();
 
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
-
-    const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
-        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;
-    assert.exists(metadataView);
-
+    const metadataView = view.metadataView;
     assert.isNotNull(metadataView.shadowRoot);
-    await RenderCoordinator.done();
 
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -308,8 +302,6 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       '30',
       '2.5',
     ]);
-
-    view.detach();
   });
 
   it('displays metadata with placeholder message if origin is not using API', async () => {
@@ -322,23 +314,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
           getError: () => undefined,
         });
 
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    const {view, viewFunction} = await createView();
 
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
+    assert.lengthOf(viewFunction.lastCall.firstArg.items, 0);
 
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.lengthOf(view.getEntriesForTesting(), 0);
-
-    const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
-        ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;
-    assert.exists(metadataView);
-
+    const metadataView = view.metadataView;
     assert.isNotNull(metadataView.shadowRoot);
-    await RenderCoordinator.done();
 
     const keys = getCleanTextContentFromElements(metadataView.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -357,8 +338,6 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       '0',
       '0',
     ]);
-
-    view.detach();
   });
 
   it('has placeholder sidebar when there are no entries', async () => {
@@ -376,19 +355,9 @@ describeWithMockConnection('SharedStorageItemsView', function() {
           getError: () => undefined,
         });
 
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
+    const {viewFunction} = await createView();
 
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.notInstanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-    assert.exists(view.contentElement.querySelector('.empty-state'));
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.EmptyWidget.EmptyWidget);
   });
 
   it('updates sidebarWidget upon receiving SelectedNode Event', async () => {
@@ -406,22 +375,13 @@ describeWithMockConnection('SharedStorageItemsView', function() {
           getError: () => undefined,
         });
 
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
+    const {viewFunction} = await createView();
 
     // Select the second row.
-    assert.exists(selectNodeByKey(view.dataGrid, 'key2'));
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
     await raf();
 
-    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
   });
 
   it('refreshes when "Refresh" is clicked', async () => {
@@ -435,40 +395,24 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {view, itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise1 = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise1;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
     // Clicking "Refresh" will cause `getMetadata()` and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
     dispatchClickEvent(view.refreshButton.element);
-    await raf();
     await refreshedPromise2;
 
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
-
-    view.detach();
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
   });
 
   it('clears entries when "Delete All" is clicked', async () => {
@@ -499,40 +443,24 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {view, itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
     // Clicking "Delete All" will cause `clear()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForItemsCleared();
     dispatchClickEvent(view.deleteAllButton.element);
-    await raf();
     await clearedPromise;
 
     assert.isTrue(clearSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), []);
-
-    view.detach();
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
   });
 
   it('clears filtered entries when "Delete All" is clicked with a filter set', async () => {
@@ -579,70 +507,52 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {view, itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise1 = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise1;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
     // Adding a filter to the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
     view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, 'b');
-    await raf();
     await refreshedPromise2;
 
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     // Only the filtered entries are displayed.
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_1);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_1);
 
     // Clicking "Delete All" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForFilteredItemsCleared();
     dispatchClickEvent(view.deleteAllButton.element);
-    await raf();
     await clearedPromise;
 
     assert.isTrue(deleteEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key2'}));
-    assert.strictEqual(getMetadataSpy.callCount, 4);
+    assert.strictEqual(getMetadataSpy.callCount, 3);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledThrice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     // The filtered entries are cleared.
-    assert.deepEqual(view.getEntriesForTesting(), []);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
 
     // Changing the filter in the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
     const refreshedPromise3 = itemsListener.waitForItemsRefreshed();
     view.filterItem.dispatchEventToListeners(UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED, '');
-    await raf();
     await refreshedPromise3;
 
-    assert.strictEqual(getMetadataSpy.callCount, 5);
+    assert.strictEqual(getMetadataSpy.callCount, 4);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.strictEqual(getEntriesSpy.callCount, 4);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_2);
-
-    view.detach();
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_2);
   });
 
   it('deletes selected entry when "Delete Selected" is clicked', async () => {
@@ -673,45 +583,28 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {view, itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
     // Select the second row.
-    assert.exists(selectNodeByKey(view.dataGrid, 'key2'));
-    await raf();
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
 
     // Clicking "Delete Selected" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const deletedPromise = itemsListener.waitForItemsDeletedTotal(1);
     dispatchClickEvent(view.deleteSelectedButton.element);
-    await raf();
     await deletedPromise;
 
     assert.isTrue(deleteEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key2'}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), []);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
     assert.deepEqual(itemsListener.deletedKeys, ['key2']);
-
-    view.detach();
   });
 
   it('edits key of selected entry to a non-preexisting key', async () => {
@@ -735,6 +628,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
     getEntriesSpy.onCall(1).resolves({
+      entries: ENTRIES_2,
+      getError: () => undefined,
+    });
+    getEntriesSpy.onCall(2).resolves({
       entries: ENTRIES_KEY_EDITED_1,
       getError: () => undefined,
     });
@@ -745,57 +642,33 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    // Select the second row.
-    const node = selectNodeByKey(view.dataGrid, 'key2');
-    assert.exists(node);
-    await raf();
-
-    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
-    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'key', true);
-
-    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
-    assert.exists(cellElement);
+    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+      detail: {
+        node: {dataset: {key: 'key2', value: 'b'}},
+        columnId: 'key',
+        valueBeforeEditing: 'key2',
+        newText: 'key0',
+      },
+    }));
 
     //  Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
-    const editedPromise = itemsListener.waitForItemsEditedTotal(1);
-    cellElement.textContent = 'key0';
-    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
-    await raf();
-    await editedPromise;
+    await itemsListener.waitForItemsEditedTotal(1);
 
     assert.isTrue(deleteEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key2'}));
     assert.isTrue(
         setEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key0', value: 'b', ignoreIfPresent: false}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
-    assert.isTrue(getEntriesSpy.calledTwice);
+    assert.isTrue(getEntriesSpy.calledThrice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_KEY_EDITED_1);
-    assert.deepEqual(itemsListener.editedEvents, [
-      {columnIdentifier: 'key', oldText: 'key2', newText: 'key0'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
-    ]);
-
-    view.detach();
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_KEY_EDITED_1);
   });
 
   it('edits key of selected entry to a preexisting key', async () => {
@@ -819,6 +692,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
     getEntriesSpy.onCall(1).resolves({
+      entries: ENTRIES_2,
+      getError: () => undefined,
+    });
+    getEntriesSpy.onCall(2).resolves({
       entries: ENTRIES_KEY_EDITED_2,
       getError: () => undefined,
     });
@@ -829,60 +706,34 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    // Select the second row.
-    const node = selectNodeByKey(view.dataGrid, 'key2');
-    assert.exists(node);
-    await raf();
-
-    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
-    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'key', true);
-
-    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
-    assert.exists(cellElement);
-
-    // Editing a key will cause `deleteEntry()`, `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
-    const editedPromise = itemsListener.waitForItemsEditedTotal(1);
-    cellElement.textContent = 'key1';
-    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
-    await raf();
-    await editedPromise;
+    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+      detail: {
+        node: {dataset: {key: 'key2', value: 'b'}},
+        columnId: 'key',
+        valueBeforeEditing: 'key2',
+        newText: 'key1',
+      },
+    }));
+    await itemsListener.waitForItemsEditedTotal(1);
 
     assert.isTrue(deleteEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key2'}));
     assert.isTrue(
         setEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key1', value: 'b', ignoreIfPresent: false}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
-    assert.isTrue(getEntriesSpy.calledTwice);
+    assert.isTrue(getEntriesSpy.calledThrice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_KEY_EDITED_2);
-    assert.deepEqual(itemsListener.editedEvents, [
-      {columnIdentifier: 'key', oldText: 'key2', newText: 'key1'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
-    ]);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_KEY_EDITED_2);
 
     // Verify that the preview loads.
-    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
   });
 
   it('edits value of selected entry to a new value', async () => {
@@ -916,60 +767,34 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    // Select the second row.
-    const node = selectNodeByKey(view.dataGrid, 'key2');
-    assert.exists(node);
-    await raf();
-
-    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
-    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'value', true);
-
-    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'value');
-    assert.exists(cellElement);
-
-    // Editing a value will cause `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
-    const editedPromise = itemsListener.waitForItemsEditedTotal(1);
-    cellElement.textContent = 'd';
-    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
-    await raf();
-    await editedPromise;
+    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+      detail: {
+        node: {dataset: {key: 'key2', value: 'b'}},
+        columnId: 'value',
+        valueBeforeEditing: 'b',
+        newText: 'd',
+      },
+    }));
+    await itemsListener.waitForItemsEditedTotal(1);
 
     assert.isTrue(deleteEntrySpy.notCalled);
     assert.isTrue(
         setEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key2', value: 'd', ignoreIfPresent: false}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_VALUE_EDITED);
-    assert.deepEqual(itemsListener.editedEvents, [
-      {columnIdentifier: 'value', oldText: 'b', newText: 'd'} as View.SharedStorageItemsDispatcher.ItemEditedEvent,
-    ]);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_VALUE_EDITED);
 
     // Verify that the preview loads.
-    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
   });
 
   it('adds an entry when the key cell of the empty data row is edited', async () => {
@@ -1003,60 +828,32 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    // Select the empty (null) row.
-    const node = selectNodeByKey(view.dataGrid, null);
-    assert.exists(node);
-    await raf();
-
-    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
-    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'key', true);
-
-    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
-    assert.exists(cellElement);
-
-    // Editing a key will cause `setEntry()`, `getMetadata()`, and `getEntries()` to be called.
-    const editedPromise = itemsListener.waitForItemsEditedTotal(1);
-    cellElement.textContent = 'key4';
-    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
-    await raf();
-    await editedPromise;
+    viewFunction.lastCall.firstArg.onCreate(new CustomEvent('edit', {
+      detail: {
+        key: 'key4',
+        value: 'e',
+      },
+    }));
+    await itemsListener.waitForItemsEditedTotal(1);
 
     assert.isTrue(deleteEntrySpy.notCalled);
     assert.isTrue(
-        setEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key4', value: '', ignoreIfPresent: false}));
-    assert.isTrue(getMetadataSpy.calledThrice);
+        setEntrySpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN, key: 'key4', value: 'e', ignoreIfPresent: false}));
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES_NEW_KEY);
-    assert.deepEqual(itemsListener.editedEvents, [
-      {columnIdentifier: 'key', oldText: null, newText: 'key4'},
-    ]);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_NEW_KEY);
 
     // Verify that the preview loads.
-    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
   });
 
   it('attempting to edit key of selected entry to an empty key cancels the edit', async () => {
@@ -1076,56 +873,33 @@ describeWithMockConnection('SharedStorageItemsView', function() {
       getError: () => undefined,
     });
 
-    // Creating will cause `getMetadata()` to be called.
-    const view = await View.SharedStorageItemsView.createView(sharedStorage);
-    await RenderCoordinator.done({waitForWork: true});
+    const {itemsListener, viewFunction} = await createView();
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
-
-    const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
-    const refreshedPromise1 = itemsListener.waitForItemsRefreshed();
-
-    // Showing will cause `getMetadata()` and `getEntries()` to be called.
-    view.markAsRoot();
-    view.show(document.body);
-    await refreshedPromise1;
-
-    assert.isTrue(getMetadataSpy.calledTwice);
-    assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
-    // Select the second row.
-    const node = selectNodeByKey(view.dataGrid, 'key2');
-    assert.exists(node);
-    await raf();
-
-    const selectedNode = node as DataGrid.DataGrid.DataGridNode<Protocol.Storage.SharedStorageEntry>;
-    view.dataGrid.startEditingNextEditableColumnOfDataGridNode(selectedNode, 'key', true);
-
-    const cellElement = getCellElementFromNodeAndColumnId(view.dataGrid, selectedNode, 'key');
-    assert.exists(cellElement);
-
-    // Editing a key with the edit canceled will cause `getMetadata()` and `getEntries()` to be called.
-    itemsListener.resetRefreshed();
-    const refreshedPromise2 = itemsListener.waitForItemsRefreshed();
-    cellElement.textContent = '';
-    dispatchKeyDownEvent(cellElement, {key: 'Enter'});
-    await raf();
-    await refreshedPromise2;
+    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
+    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+      detail: {
+        node: {dataset: {key: 'key2', value: 'b'}},
+        columnId: 'key',
+        valueBeforeEditing: 'key2',
+        newText: '',
+      },
+    }));
+    await itemsListener.waitForItemsRefreshed();
 
     assert.isTrue(deleteEntrySpy.notCalled);
     assert.isTrue(setEntrySpy.notCalled);
-    assert.isTrue(getMetadataSpy.calledThrice);
+    assert.isTrue(getMetadataSpy.calledTwice);
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(view.getEntriesForTesting(), ENTRIES);
+    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
 
     // Verify that the preview loads.
-    assert.instanceOf(view.outerSplitWidget.sidebarWidget(), UI.SearchableView.SearchableView);
-
-    view.detach();
+    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
   });
 });

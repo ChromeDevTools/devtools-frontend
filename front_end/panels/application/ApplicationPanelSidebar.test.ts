@@ -291,6 +291,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     addEventListener: () => {},
     securityOrigin: 'https://example.com',
     databaseId: new Application.IndexedDBModel.DatabaseId({storageKey: ''}, ''),
+    getEntries: () => Promise.resolve([]),
   };
 
   const testUiUpdate = <Events, T extends keyof Events>(

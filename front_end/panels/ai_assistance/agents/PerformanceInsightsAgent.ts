@@ -89,7 +89,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
 
   override readonly type = AgentType.PERFORMANCE_INSIGHT;
   readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_INSIGHTS_AGENT;
 
   get userTier(): string|undefined {
     return 'TESTERS';

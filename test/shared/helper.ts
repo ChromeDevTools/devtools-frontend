@@ -87,10 +87,8 @@ async function performActionOnSelector(
       await drainFrontendTaskQueue();
       return element;
     } catch {
-      // A bit of delay to not retry too often.
-      await new Promise(resolve => setTimeout(resolve, 50));
+      return undefined;
     }
-    return undefined;
   });
 }
 

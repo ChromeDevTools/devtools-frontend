@@ -7,6 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
+  click,
   getBrowserAndPages,
   getResourcesPath,
   goTo,
@@ -442,11 +443,9 @@ describe('The Performance panel landing page', () => {
       await frontend.bringToFront();
 
       const interaction = await waitFor(INTERACTION_SELECTOR);
-      const interactionSummary = await interaction.$('summary');
-      await interactionSummary!.click();
+      await click('summary', {root: interaction});
 
-      const logToConsole = await interaction.$('.log-extra-details-button');
-      await logToConsole!.click();
+      await click('.log-extra-details-button', {root: interaction});
 
       await tabExistsInDrawer('#tab-console-view');
       const messages = await getCurrentConsoleMessages();

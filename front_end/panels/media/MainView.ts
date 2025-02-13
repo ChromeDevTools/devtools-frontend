@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -10,6 +12,34 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {Events, MediaModel, type PlayerEvent} from './MediaModel.js';
 import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
+
+const UIStrings = {
+  /**
+   *@description Text to show if no media player has been selected
+   * A media player can be an audio and video source of a page.
+   */
+  noPlayerDetailsSelected: 'No media player selected',
+  /**
+   *@description Text to instruct the user on how to view media player details
+   * A media player can be an audio and video source of a page.
+   */
+  selectToViewDetails: 'Select a media player to inspect its details.',
+  /**
+   *@description Text to show if no player can be shown
+   * A media player can be an audio and video source of a page.
+   */
+  noMediaPlayer: 'No media player',
+  /**
+   *@description Text to explain this panel
+   * A media player can be an audio and video source of a page.
+   */
+  mediaPlayerDescription: 'On this page you can view and export media player details.',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/media/MainView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const MEDIA_PLAYER_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/media-panel#hide-show' as Platform.DevToolsPath.UrlString;
 
 export interface TriggerHandler {
   onProperty(property: Protocol.Media.PlayerProperty): void;
@@ -135,6 +165,8 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
   private readonly downloadStore: PlayerDataDownloadManager;
   private readonly sidebar: PlayerListView;
 
+  #placeholder: UI.EmptyWidget.EmptyWidget;
+
   constructor(downloadStore: PlayerDataDownloadManager = new PlayerDataDownloadManager()) {
     super('media');
     this.detailPanels = new Map();
@@ -145,6 +177,11 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
 
     this.sidebar = new PlayerListView(this);
     this.sidebar.show(this.panelSidebarElement());
+
+    this.#placeholder =
+        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMediaPlayer), UIStrings.mediaPlayerDescription);
+    this.#placeholder.show(this.mainElement());
+    this.#placeholder.appendLink(MEDIA_PLAYER_EXPLANATION_URL);
 
     SDK.TargetManager.TargetManager.instance().observeModels(MediaModel, this, {scoped: true});
   }
@@ -204,6 +241,11 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.sidebar.addMediaElementItem(playerID);
     this.detailPanels.set(playerID, new PlayerDetailView());
     this.downloadStore.addPlayer(playerID);
+
+    if (this.detailPanels.size === 1) {
+      this.#placeholder.header = i18nString(UIStrings.noPlayerDetailsSelected);
+      this.#placeholder.text = i18nString(UIStrings.selectToViewDetails);
+    }
   }
 
   private propertiesChanged(event: Common.EventTarget.EventTargetEvent<Protocol.Media.PlayerPropertiesChangedEvent>):
@@ -286,6 +328,10 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
     this.detailPanels.delete(playerID);
     this.sidebar.deletePlayer(playerID);
     this.downloadStore.deletePlayer(playerID);
+    if (this.detailPanels.size === 0) {
+      this.#placeholder.header = i18nString(UIStrings.noMediaPlayer);
+      this.#placeholder.text = i18nString(UIStrings.mediaPlayerDescription);
+    }
   }
 
   markOtherPlayersForDeletion(playerID: string): void {

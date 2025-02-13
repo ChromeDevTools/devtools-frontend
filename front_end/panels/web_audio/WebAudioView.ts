@@ -6,6 +6,7 @@ import '../../ui/legacy/legacy.js';
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -19,12 +20,20 @@ import {Events as ModelEvents, WebAudioModel} from './WebAudioModel.js';
 
 const UIStrings = {
   /**
+   *@description Text in Web Audio View if there is nothing to show.
+   * Web Audio API is an API for controlling audio on the web.
+   */
+  noWebAudio: 'No web audio API usage detected',
+  /**
    *@description Text in Web Audio View
    */
-  openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
+  openAPageThatUsesWebAudioApiTo: 'Open a page that uses web audio API to start monitoring.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const WEBAUDIO_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/webaudio' as Platform.DevToolsPath.UrlString;
 
 export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     SDK.TargetManager.SDKModelObserver<WebAudioModel> {
@@ -32,7 +41,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
   private readonly contentContainer: HTMLElement;
   private readonly detailViewContainer: HTMLElement;
   private graphManager: GraphVisualizer.GraphManager.GraphManager;
-  private readonly landingPage: UI.Widget.VBox;
+  private readonly landingPage: UI.EmptyWidget.EmptyWidget;
   private readonly summaryBarContainer: HTMLElement;
   constructor() {
     super(true, 1000);
@@ -60,13 +69,9 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.graphManager = new GraphVisualizer.GraphManager.GraphManager();
 
     // Creates the landing page.
-    this.landingPage = new UI.Widget.VBox();
-    this.landingPage.contentElement.classList.add('web-audio-landing-page', 'fill');
-    this.landingPage.contentElement.appendChild(UI.Fragment.html`
-  <div>
-  <p>${i18nString(UIStrings.openAPageThatUsesWebAudioApiTo)}</p>
-  </div>
-  `);
+    this.landingPage = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noWebAudio), i18nString(UIStrings.openAPageThatUsesWebAudioApiTo));
+    this.landingPage.appendLink(WEBAUDIO_EXPLANATION_URL);
     this.landingPage.show(this.detailViewContainer);
 
     // Creates the summary bar.

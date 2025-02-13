@@ -507,7 +507,7 @@ export class SourceMap {
     let nameIndex = 0;
     const names = map.names ?? [];
     const tokenIter = new TokenIterator(map.mappings);
-    let sourceURL: Platform.DevToolsPath.UrlString = this.#sourceInfos[sourceIndex].sourceURL;
+    let sourceURL: Platform.DevToolsPath.UrlString|undefined = this.#sourceInfos[sourceIndex]?.sourceURL;
 
     while (true) {
       if (tokenIter.peek() === ',') {
@@ -532,7 +532,7 @@ export class SourceMap {
       const sourceIndexDelta = tokenIter.nextVLQ();
       if (sourceIndexDelta) {
         sourceIndex += sourceIndexDelta;
-        sourceURL = this.#sourceInfos[sourceIndex].sourceURL;
+        sourceURL = this.#sourceInfos[sourceIndex]?.sourceURL;
       }
       sourceLineNumber += tokenIter.nextVLQ();
       sourceColumnNumber += tokenIter.nextVLQ();

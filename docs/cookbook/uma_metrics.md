@@ -104,9 +104,11 @@ to be logged to generic `DevTools.ActionTaken` histogram)
         the places you want to the event.
     3.  Create the CL.
 2.  Update enums in the Chromium side in
-    <code>[tools/metrics/histograms/enums.xml](https://source.chromium.org/chromium/chromium/src/+/main:tools/metrics/histograms/enums.xml;l=26267?q=tools%2Fmetrics%2Fhistograms%2Fenums.xml)</code>.
+    <code>[tools/metrics/histograms/metadata/dev/enums.xml](https://source.chromium.org/chromium/chromium/src/+/main:tools/metrics/histograms/metadata/dev/enums.xml)</code>.
     1.  Add the new action to the <code>DevToolsAction</code> enum.
     2.  Create the CL.
+    3. (Note: this is an optional step and does not have to be done in sync with the frontend CL). If you do not update `enums.xml` then the ID of the action will appear in dashboards rather than a readable string.
+
 
 ### Metrics Dashboard
 

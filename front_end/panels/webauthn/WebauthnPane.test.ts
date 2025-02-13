@@ -362,4 +362,13 @@ describeWithMockConnection('WebAuthn pane', () => {
 
   describe('in scope', () => tests(true));
   describe('out of scope', () => tests(false));
+
+  it('shows the placeholder', () => {
+    const panel = new Webauthn.WebauthnPane.WebauthnPaneImpl();
+    assert.exists(panel.contentElement.querySelector('.empty-state'));
+    assert.deepEqual(panel.contentElement.querySelector('.empty-state-header')?.textContent, 'No authenticator set up');
+    assert.deepEqual(
+        panel.contentElement.querySelector('.empty-state-description > span')?.textContent,
+        'Use WebAuthn for phishing-resistant authentication.');
+  });
 });

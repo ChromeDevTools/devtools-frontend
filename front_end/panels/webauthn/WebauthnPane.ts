@@ -7,6 +7,7 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -64,13 +65,13 @@ const UIStrings = {
    */
   credentials: 'Credentials',
   /**
-   *@description Label for the learn more link that is shown before the virtual environment is enabled.
+   *@description Text that shows before the virtual environment is enabled.
    */
-  useWebauthnForPhishingresistant: 'Use WebAuthn for phishing-resistant authentication',
+  noAuthenticator: 'No authenticator set up',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   *@description That that shows before virtual environment is enabled explaining the panel.
    */
-  learnMore: 'Learn more',
+  useWebauthnForPhishingresistant: 'Use WebAuthn for phishing-resistant authentication.',
   /**
    *@description Title for section of interface that allows user to add a new virtual authenticator.
    */
@@ -150,6 +151,9 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/webauthn/WebauthnPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const WEB_AUTHN_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/webauthn' as Platform.DevToolsPath.UrlString;
 
 const enum Events {
   EXPORT_CREDENTIAL = 'ExportCredential',
@@ -249,7 +253,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #authenticatorsView: HTMLElement;
   #topToolbarContainer: HTMLElement|undefined;
   #topToolbar: UI.Toolbar.Toolbar|undefined;
-  #learnMoreView: HTMLElement|undefined;
+  #learnMoreView: UI.EmptyWidget.EmptyWidget|undefined;
   #newAuthenticatorSection: HTMLElement|undefined;
   #newAuthenticatorForm: HTMLElement|undefined;
   #protocolSelect: HTMLSelectElement|undefined;
@@ -561,16 +565,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   #createNewAuthenticatorSection(): void {
-    const learnMoreLink = UI.XLink.XLink.create(
-        'https://developers.google.com/web/updates/2018/05/webauthn', i18nString(UIStrings.learnMore), undefined,
-        undefined, 'learn-more');
-    this.#learnMoreView = this.contentElement.createChild('div', 'learn-more');
-    this.#learnMoreView.appendChild(UI.Fragment.html`
-  <div>
-  ${i18nString(UIStrings.useWebauthnForPhishingresistant)}<br /><br />
-  ${learnMoreLink}
-  </div>
-  `);
+    this.#learnMoreView = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noAuthenticator), i18nString(UIStrings.useWebauthnForPhishingresistant));
+    this.#learnMoreView.element.classList.add('learn-more');
+    this.#learnMoreView.appendLink(WEB_AUTHN_EXPLANATION_URL);
+    this.#learnMoreView.show(this.contentElement);
 
     this.#newAuthenticatorSection = this.contentElement.createChild('div', 'new-authenticator-container');
     const newAuthenticatorTitle =

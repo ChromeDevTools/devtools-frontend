@@ -284,6 +284,10 @@ const UIStringsNotTranslate = {
    *@description Alt text for the account avatar.
    */
   accountAvatar: 'Account avatar',
+  /**
+   *@description Title for the x-link which wraps the image input rendered in chat messages.
+   */
+  openImageInNewTab: 'Open image in a new tab',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -1116,7 +1120,14 @@ function renderChatMessage({
     let imageInput = html``;
     if (message.imageInput && 'inlineData' in message.imageInput) {
       const imageUrl = `data:image/jpeg;base64,${message.imageInput.inlineData.data}`;
-      imageInput = html`<img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />`;
+      // clang-format off
+      imageInput = html`<x-link
+        class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
+        href=${imageUrl}
+      >
+        <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
+      </x-link>`;
+      // clang-format on
     }
     // clang-format off
     return html`<section

@@ -291,6 +291,10 @@
     border: 1px solid var(--sys-color-neutral-outline);
     width: fit-content;
   }
+
+  .image-link {
+    width: fit-content;
+  }
 }
 
 .select-element {

@@ -879,6 +879,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   /**
    * The range of |minPercent| and |maxPercent| is [0, 100].
+   *
+   * FYI: Only used in test: chromium/src/third_party/blink/web_tests/http/tests/devtools/components/datagrid.js
    */
   autoSizeColumns(minPercent: number, maxPercent?: number, maxDescentLevel?: number): void {
     let widths: number[] = [];
@@ -1883,10 +1885,6 @@ export class DataGridNode<T> {
     } else {
       this.elementInternal.classList.remove('dirty');
     }
-  }
-
-  isInactive(): boolean {
-    return this.inactive;
   }
 
   setInactive(inactive: boolean): void {

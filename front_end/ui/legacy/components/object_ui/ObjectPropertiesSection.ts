@@ -208,15 +208,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     return objectPropertiesSection;
   }
 
-  static getPropertyValuesByNames(properties: SDK.RemoteObject.RemoteObjectProperty[]):
-      Map<string, SDK.RemoteObject.RemoteObject|undefined> {
-    const map = new Map();
-    for (const property of properties) {
-      map.set(property.name, property.value);
-    }
-    return map;
-  }
-
   static compareProperties(
       propertyA: SDK.RemoteObject.RemoteObjectProperty, propertyB: SDK.RemoteObject.RemoteObjectProperty): number {
     if (!propertyA.synthetic && propertyB.synthetic) {
@@ -592,14 +583,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 /** @const */
 const ARRAY_LOAD_THRESHOLD = 100;
 
-let maxRenderableStringLength = 10000;
-
-export function setMaxRenderableStringLength(value: number): void {
-  maxRenderableStringLength = value;
-}
-export function getMaxRenderableStringLength(): number {
-  return maxRenderableStringLength;
-}
+const maxRenderableStringLength = 10000;
 
 export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
   private readonly editable: boolean;

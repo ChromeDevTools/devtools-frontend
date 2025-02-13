@@ -654,15 +654,6 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
     this.element.classList.add('dark-text');
   }
 
-  turnIntoSelect(shrinkable: boolean|undefined = false): void {
-    this.element.classList.add('toolbar-has-dropdown');
-    if (shrinkable) {
-      this.element.classList.add('toolbar-has-dropdown-shrinkable');
-    }
-    const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
-    this.element.appendChild(dropdownArrowIcon);
-  }
-
   clicked(event: Event): void {
     if (!this.enabled) {
       return;
@@ -941,15 +932,6 @@ export class ToolbarToggle extends ToolbarButton {
 
   setChecked(checked: boolean): void {
     this.checked(checked);
-  }
-
-  setDefaultWithRedColor(withRedColor: boolean): void {
-    if (withRedColor) {
-      this.setToggleType(Buttons.Button.ToggleType.RED);
-      this.setGlyph(this.toggledGlyph || '');
-      this.setToggledIcon(this.untoggledGlyph || '');
-      this.toggled(true);
-    }
   }
 
   enableToggleWithRedColor(): void {

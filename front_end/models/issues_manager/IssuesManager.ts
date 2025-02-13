@@ -190,7 +190,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #filteredIssues = new Map<string, Issue>();
   #issueCounts = new Map<IssueKind, number>();
   #hiddenIssueCount = new Map<IssueKind, number>();
-  #hasSeenPrimaryPageChanged = false;
   #issuesById: Map<string, Issue> = new Map();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
   #thirdPartyCookiePhaseoutIssueMessageSent: boolean = false;
@@ -243,16 +242,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     issuesManagerInstance = null;
   }
 
-  /**
-   * Once we have seen at least one `PrimaryPageChanged` event, we can be reasonably sure
-   * that we also collected issues that were reported during the navigation to the current
-   * page. If we haven't seen a main frame navigated, we might have missed issues that arose
-   * during navigation.
-   */
-  reloadForAccurateInformationRequired(): boolean {
-    return !this.#hasSeenPrimaryPageChanged;
-  }
-
   #onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<
           {frame: SDK.ResourceTreeModel.ResourceTreeFrame, type: SDK.ResourceTreeModel.PrimaryPageChangeType}>): void {
@@ -278,7 +267,6 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
       }
     }
     this.#allIssues = keptIssues;
-    this.#hasSeenPrimaryPageChanged = true;
     this.#updateFilteredIssues();
   }
 

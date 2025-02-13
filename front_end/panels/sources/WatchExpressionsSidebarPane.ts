@@ -159,10 +159,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     }
   }
 
-  hasExpressions(): boolean {
-    return Boolean(this.watchExpressionsSetting.get().length);
-  }
-
   private saveExpressions(): void {
     const toSave = [];
     for (let i = 0; i < this.watchExpressions.length; i++) {

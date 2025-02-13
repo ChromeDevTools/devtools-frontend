@@ -48,7 +48,6 @@ const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUProfilerModel.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolProxyApi.ProfilerDispatcher {
-  #isRecording: boolean;
   #nextAnonymousConsoleProfileNumber: number;
   #anonymousConsoleProfileIdToTitle: Map<string, string>;
   readonly #profilerAgent: ProtocolProxyApi.ProfilerApi;
@@ -59,7 +58,6 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
 
   constructor(target: Target) {
     super(target);
-    this.#isRecording = false;
     this.#nextAnonymousConsoleProfileNumber = 1;
     this.#anonymousConsoleProfileIdToTitle = new Map();
     this.#profilerAgent = target.profilerAgent();
@@ -110,19 +108,13 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
     };
   }
 
-  isRecordingProfile(): boolean {
-    return this.#isRecording;
-  }
-
   startRecording(): Promise<unknown> {
-    this.#isRecording = true;
     const intervalUs = 100;
     void this.#profilerAgent.invoke_setSamplingInterval({interval: intervalUs});
     return this.#profilerAgent.invoke_start();
   }
 
   stopRecording(): Promise<Protocol.Profiler.Profile|null> {
-    this.#isRecording = false;
     return this.#profilerAgent.invoke_stop().then(response => response.profile || null);
   }
 

@@ -336,10 +336,6 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
     this.#frameIdToAXNode.set(frameId, axNode);
   }
 
-  axNodeForFrameId(frameId: Protocol.Page.FrameId): AccessibilityNode|null {
-    return this.#frameIdToAXNode.get(frameId) ?? null;
-  }
-
   setAXNodeForAXId(axId: string, axNode: AccessibilityNode): void {
     this.#axIdToAXNode.set(axId, axNode);
   }

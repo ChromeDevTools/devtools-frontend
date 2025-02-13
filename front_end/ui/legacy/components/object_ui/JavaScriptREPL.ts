@@ -113,12 +113,4 @@ export class JavaScriptREPL {
   }
 }
 
-let maxLengthForEvaluation: number = 2000;
-
-export function setMaxLengthForEvaluation(value: number): void {
-  maxLengthForEvaluation = value;
-}
-
-export function getMaxLengthForEvaluation(): number {
-  return maxLengthForEvaluation;
-}
+const maxLengthForEvaluation: number = 2000;

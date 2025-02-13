@@ -300,14 +300,6 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     }
   }
 
-  sidebarSide(): string|null {
-    if (this.showModeInternal !== ShowMode.BOTH) {
-      return null;
-    }
-    return this.isVerticalInternal ? (this.secondIsSidebar ? 'right' : 'left') :
-                                     (this.secondIsSidebar ? 'bottom' : 'top');
-  }
-
   resizerElement(): Element {
     return this.resizerElementInternal;
   }
@@ -435,6 +427,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.resizerWidget.setEnabled(resizable);
   }
 
+  // Currently unused
   forceSetSidebarWidth(width: number): void {
     this.defaultSidebarWidth = width;
     this.savedSidebarSizeDIP = width;
@@ -764,11 +757,6 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   uninstallResizer(resizerElement: Element): void {
     this.resizerWidget.removeElement((resizerElement as HTMLElement));
-  }
-
-  hasCustomResizer(): boolean {
-    const elements = this.resizerWidget.elements();
-    return elements.length > 1 || (elements.length === 1 && elements[0] !== this.resizerElementInternal);
   }
 
   toggleResizer(resizer: Element, on: boolean): void {

@@ -120,7 +120,6 @@ const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MainImpl {
-  #lateInitDonePromise!: Promise<void>;
   #readyForTestPromise: Promise<void>;
   #resolveReadyForTestPromise!: () => void;
 
@@ -696,12 +695,7 @@ export class MainImpl {
       consoleInsightsSetting.addChangeListener(this.#onConsoleInsightsEnabledSettingChanged, this);
     }
 
-    this.#lateInitDonePromise = Promise.all(promises).then(() => undefined);
     MainImpl.timeEnd('Main._lateInitialization');
-  }
-
-  lateInitDonePromiseForTest(): Promise<void>|null {
-    return this.#lateInitDonePromise;
   }
 
   readyForTest(): Promise<void> {
@@ -1057,6 +1051,7 @@ export class PauseListener {
   }
 }
 
+// Unused but mentioned at https://chromedevtools.github.io/devtools-protocol/#:~:text=use%20Main.MainImpl.-,sendOverProtocol,-()%20in%20the
 export function sendOverProtocol(
     method: ProtocolClient.InspectorBackend.QualifiedName, params: Object|null): Promise<unknown[]|null> {
   return new Promise((resolve, reject) => {

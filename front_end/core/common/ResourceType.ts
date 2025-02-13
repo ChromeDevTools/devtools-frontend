@@ -364,11 +364,6 @@ export class ResourceCategory {
     this.title = title;
     this.shortTitle = shortTitle;
   }
-
-  static categoryByTitle(title: string): ResourceCategory|null {
-    const allCategories = Object.values(resourceCategories);
-    return allCategories.find(category => category.title() === title) || null;
-  }
 }
 
 export const resourceCategories = {

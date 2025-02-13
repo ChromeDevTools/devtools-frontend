@@ -617,6 +617,7 @@ export class Widget {
     }
   }
 
+  // Unused, but useful for debugging.
   printWidgetHierarchy(): void {
     const lines: string[] = [];
     this.collectWidgetHierarchy('', lines);

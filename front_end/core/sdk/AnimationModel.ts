@@ -563,10 +563,6 @@ export class AnimationImpl {
     return this.#playStateInternal || this.#payloadInternal.playState;
   }
 
-  setPlayState(playState: string): void {
-    this.#playStateInternal = playState;
-  }
-
   playbackRate(): number {
     return this.#payloadInternal.playbackRate;
   }

@@ -537,10 +537,6 @@ export class ParsedURL {
     return this.scheme === 'data';
   }
 
-  isHttpOrHttps(): boolean {
-    return this.scheme === 'http' || this.scheme === 'https';
-  }
-
   isBlobURL(): boolean {
     return this.url.startsWith('blob:');
   }

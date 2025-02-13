@@ -35,10 +35,6 @@ class ExtensionStorageItemsListener {
         View.ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed, this);
   }
 
-  resetEdited(): void {
-    this.#edited = false;
-  }
-
   #itemsEdited(): void {
     this.#edited = true;
   }

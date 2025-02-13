@@ -118,15 +118,6 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     this.updateFilterBar();
   }
 
-  forceShowFilterBar(): void {
-    this.alwaysShowFilters = true;
-    this.updateFilterBar();
-  }
-
-  showOnce(): void {
-    this.stateSetting.set(true);
-  }
-
   private filterChanged(): void {
     this.updateFilterButton();
     this.dispatchEventToListeners(FilterBarEvents.CHANGED);

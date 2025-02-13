@@ -227,13 +227,6 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     return new TextUtils.ContentData.ContentData(response.content, response.base64Encoded, this.mimeType);
   }
 
-  hasTextContent(): boolean {
-    if (this.#contentData?.isTextContent) {
-      return true;
-    }
-    return this.#type.isTextType() || Platform.MimeType.isTextType(this.mimeType);
-  }
-
   frame(): ResourceTreeFrame|null {
     return this.#frameIdInternal ? this.#resourceTreeModel.frameForId(this.#frameIdInternal) : null;
   }

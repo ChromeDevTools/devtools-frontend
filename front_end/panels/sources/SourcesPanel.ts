@@ -647,10 +647,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
         contextMenu.viewSection(), Root.Runtime.ExperimentName.JUST_MY_CODE, i18nString(UIStrings.hideIgnoreListed));
   }
 
-  setIgnoreExecutionLineEvents(ignoreExecutionLineEvents: boolean): void {
-    this.ignoreExecutionLineEvents = ignoreExecutionLineEvents;
-  }
-
   updateLastModificationTime(): void {
     this.lastModificationTime = window.performance.now();
   }
@@ -667,14 +663,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     this.sourcesViewInternal.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
-  }
-
-  private lastModificationTimeoutPassedForTest(): void {
-    lastModificationTimeout = Number.MIN_VALUE;
-  }
-
-  private updateLastModificationTimeForTest(): void {
-    lastModificationTimeout = Number.MAX_VALUE;
   }
 
   private async callFrameChanged(): Promise<void> {
@@ -1280,7 +1268,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 }
 
-export let lastModificationTimeout = 200;
+export const lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 
 export class UILocationRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UILocation> {

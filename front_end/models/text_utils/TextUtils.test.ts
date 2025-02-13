@@ -690,15 +690,6 @@ export class ApiProxy {
             },
         });
     }
-    async setRealTarget(target) {
-        this.target = target;
-        for (const item of this.onQueue) {
-            this.target.on[item.method](...item.args);
-        }
-        for (const item of this.targetQueue) {
-            item.resolve(await this.target[item.method](...item.args));
-        }
-    }
 }`.split('\n')),
           '    ');
     });

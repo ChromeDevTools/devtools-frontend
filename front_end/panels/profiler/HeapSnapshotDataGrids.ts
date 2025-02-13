@@ -627,14 +627,6 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
     this.removeAllChildren((this.rootNode() as HeapSnapshotGridNode));
   }
 
-  isScrolledIntoView(element: HTMLElement): boolean {
-    const viewportTop = this.scrollContainer.scrollTop;
-    const viewportBottom = viewportTop + this.scrollContainer.clientHeight;
-    const elemTop = element.offsetTop;
-    const elemBottom = elemTop + element.offsetHeight;
-    return elemBottom <= viewportBottom && elemTop >= viewportTop;
-  }
-
   override onResize(): void {
     super.onResize();
     this.updateVisibleNodes(false);

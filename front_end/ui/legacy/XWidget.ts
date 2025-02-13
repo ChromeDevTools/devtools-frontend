@@ -52,18 +52,6 @@ export class XWidget extends XElement {
     return this.visible;
   }
 
-  setOnShown(callback: (() => void)|null): void {
-    this.onShownCallback = callback;
-  }
-
-  setOnHidden(callback: (() => void)|null): void {
-    this.onHiddenCallback = callback;
-  }
-
-  setOnResized(callback: (() => void)|null): void {
-    this.onResizedCallback = callback;
-  }
-
   setElementsToRestoreScrollPositionsFor(elements: Element[]): void {
     for (const element of this.elementsToRestoreScrollPositionsFor) {
       element.removeEventListener('scroll', XWidget.storeScrollPosition, {capture: false});

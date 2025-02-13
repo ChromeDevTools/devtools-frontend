@@ -406,13 +406,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
     return UI.ViewManager.ViewManager.instance().showView('network');
   }
 
-  static async selectAndShowRequest(
-      request: SDK.NetworkRequest.NetworkRequest, tab: NetworkForward.UIRequestLocation.UIRequestTabs,
-      options?: NetworkForward.UIRequestLocation.FilterOptions): Promise<void> {
-    const panel = NetworkPanel.instance();
-    await panel.selectAndActivateRequest(request, tab, options);
-  }
-
   throttlingSelectForTest(): UI.Toolbar.ToolbarComboBox {
     return this.throttlingSelect;
   }
@@ -687,9 +680,6 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.hideRequestPanel();
   }
 
-  private onRowSizeChanged(): void {
-    this.updateUI();
-  }
   private onRequestSelected(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest|null>): void {
     const request = event.data;
     this.currentRequest = request;

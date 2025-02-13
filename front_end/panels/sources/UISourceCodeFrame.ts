@@ -712,10 +712,6 @@ class MessageWidget extends CodeMirror.WidgetType {
     }
     return wrap;
   }
-
-  ignoreEvents(): boolean {
-    return true;
-  }
 }
 
 class RowMessageDecorations {

@@ -288,36 +288,6 @@ export class NestedPropertyRenderer extends PropertyRenderer {
   }
 }
 
-export class DimensionPropertyRenderer extends PropertyRenderer {
-  private width: number;
-  private height: number;
-
-  constructor(title: Platform.UIString.LocalizedString) {
-    super(title);
-    this.width = 0;
-    this.height = 0;
-  }
-
-  override updateDataInternal(propname: string, propvalue: string|null): void {
-    let needsUpdate = false;
-    if (propname === 'width' && Number(propvalue) !== this.width) {
-      this.width = Number(propvalue);
-      needsUpdate = true;
-    }
-    if (propname === 'height' && Number(propvalue) !== this.height) {
-      this.height = Number(propvalue);
-      needsUpdate = true;
-    }
-    // If both properties arent set, don't bother updating, since
-    // temporarily showing ie: 1920x0 is meaningless.
-    if (this.width === 0 || this.height === 0) {
-      this.changeContents(null);
-    } else if (needsUpdate) {
-      this.changeContents(`${this.width}×${this.height}`);
-    }
-  }
-}
-
 export class AttributesView extends UI.Widget.VBox {
   private readonly contentHash: number;
 

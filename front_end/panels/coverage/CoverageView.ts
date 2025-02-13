@@ -356,15 +356,6 @@ export class CoverageView extends UI.Widget.VBox {
     this.coverageTypeComboBoxSetting.set(this.coverageTypeComboBox.selectedIndex());
   }
 
-  async ensureRecordingStarted(): Promise<void> {
-    const enabled = this.toggleRecordAction.toggled();
-
-    if (enabled) {
-      await this.stopRecording();
-    }
-    await this.startRecording({reload: false, jsCoveragePerBlock: false});
-  }
-
   async startRecording(options: {reload: (boolean|undefined), jsCoveragePerBlock: (boolean|undefined)}|
                        null): Promise<void> {
     let hadFocus, reloadButtonFocused;
@@ -468,10 +459,6 @@ export class CoverageView extends UI.Widget.VBox {
       this.toggleRecordButton.setVisible(false);
     }
     this.clearAction.setEnabled(true);
-  }
-
-  processBacklog(): void {
-    this.model && void this.model.processJSBacklog();
   }
 
   private async onPrimaryPageChanged(

@@ -413,10 +413,6 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     this.#scopeChangeListeners.add(listener);
   }
 
-  removeScopeChangeListener(listener: () => void): void {
-    this.#scopeChangeListeners.delete(listener);
-  }
-
   scopeTarget(): Target|null {
     return this.#scopeTarget;
   }

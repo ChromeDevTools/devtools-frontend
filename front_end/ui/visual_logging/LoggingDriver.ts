@@ -100,23 +100,6 @@ export async function stopLogging(): Promise<void> {
   pendingChange.clear();
 }
 
-export function pendingWorkComplete(): Promise<void> {
-  return Promise
-      .all([
-        processingThrottler,
-        keyboardLogThrottler,
-        hoverLogThrottler,
-        dragLogThrottler,
-        clickLogThrottler,
-        resizeLogThrottler,
-      ].map(async throttler => {
-        for (let i = 0; throttler.process && i < 3; ++i) {
-          await throttler.processCompleted;
-        }
-      }))
-      .then(() => {});
-}
-
 async function yieldToResize(): Promise<void> {
   while (resizeLogThrottler.process) {
     await resizeLogThrottler.processCompleted;

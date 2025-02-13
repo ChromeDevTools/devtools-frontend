@@ -224,11 +224,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.contentElementInternal;
   }
 
-  isTabCloseable(id: string): boolean {
-    const tab = this.tabsById.get(id);
-    return tab ? tab.isCloseable() : false;
-  }
-
   setTabDelegate(delegate: TabbedPaneTabDelegate): void {
     const tabs = this.tabs.slice();
     for (let i = 0; i < tabs.length; ++i) {
@@ -468,13 +463,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const tab = this.tabsById.get(id);
     const disabled = tab?.tabElement.classList.contains('disabled') ?? false;
     return !disabled;
-  }
-
-  toggleTabClass(id: string, className: string, force?: boolean): void {
-    const tab = this.tabsById.get(id);
-    if (tab && tab.toggleClass(className, force)) {
-      this.updateTabElements();
-    }
   }
 
   private zoomChanged(): void {

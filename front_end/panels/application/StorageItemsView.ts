@@ -129,10 +129,6 @@ export class StorageItemsView extends UI.Widget.VBox {
     this.deleteSelectedButton.setEnabled(enabled);
   }
 
-  setCanRefresh(enabled: boolean): void {
-    this.refreshButton.setEnabled(enabled);
-  }
-
   setCanFilter(enabled: boolean): void {
     this.filterItem.setEnabled(enabled);
   }

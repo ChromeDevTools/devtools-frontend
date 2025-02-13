@@ -769,15 +769,6 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
     return this.#uiLocations.size !== 0;
   }
 
-  hasBoundScript(): boolean {
-    for (const uiSourceCode of this.uiSourceCodes) {
-      if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   setEnabled(enabled: boolean): void {
     this.updateState({...this.#storageState, enabled});
   }

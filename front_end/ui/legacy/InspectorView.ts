@@ -411,10 +411,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return this.drawerSplitWidget.isSidebarMinimized();
   }
 
-  closeDrawerTab(id: string, userGesture?: boolean): void {
-    this.drawerTabbedPane.closeTab(id, userGesture);
-  }
-
   private keyDown(event: Event): void {
     const keyboardEvent = (event as KeyboardEvent);
     if (!KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) || keyboardEvent.altKey || keyboardEvent.shiftKey) {

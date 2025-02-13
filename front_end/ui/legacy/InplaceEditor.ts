@@ -212,10 +212,6 @@ export class Config<T> {
     this.blurHandler = blurHandler;
   }
 
-  setPasteHandler(pasteHandler: EventHandler): void {
-    this.pasteHandler = pasteHandler;
-  }
-
   setPostKeydownFinishHandler(postKeydownFinishHandler: EventHandler): void {
     this.postKeydownFinishHandler = postKeydownFinishHandler;
   }

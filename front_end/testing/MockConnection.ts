@@ -41,10 +41,6 @@ export function setMockConnectionResponseHandler<C extends ProtocolCommand>(
   responseMap.set(command, handler);
 }
 
-export function getMockConnectionResponseHandler(method: ProtocolCommand) {
-  return responseMap.get(method);
-}
-
 export function clearMockConnectionResponseHandler(method: ProtocolCommand) {
   responseMap.delete(method);
 }

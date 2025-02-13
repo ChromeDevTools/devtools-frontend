@@ -50,13 +50,6 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
   }
 
-  unobserveIsolates(observer: Observer): void {
-    this.#observers.delete(observer);
-    if (!this.#observers.size) {
-      ++this.#pollId;
-    }  // Stops the current polling loop.
-  }
-
   modelAdded(model: RuntimeModel): void {
     void this.modelAddedInternal(model);
   }

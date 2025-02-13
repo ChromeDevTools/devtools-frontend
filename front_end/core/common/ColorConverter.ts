@@ -214,12 +214,6 @@ const XYZD50_TO_XYZD65_MATRIX = new Matrix3x3([
   [0.012308773293784308, -0.02050053471777469, 1.3301947294775631],
 ]);
 
-const XYZD65_TO_SRGB_MATRIX = new Matrix3x3([
-  [3.2408089365140573, -1.5375788839307314, -0.4985609572551541],
-  [-0.9692732213205414, 1.876110235238969, 0.041560501141251774],
-  [0.05567030990267439, -0.2040007921971802, 1.0571046720577026],
-]);
-
 export class ColorConverter {
   static labToXyzd50(l: number, a: number, b: number): [number, number, number] {
     let y = (l + 16.0) / 116.0;
@@ -364,12 +358,6 @@ export class ColorConverter {
     const xyzInput = new Vector3([x, y, z]);
     const xyzOutput = XYZD65_TO_XYZD50_MATRIX.multiply(xyzInput);
     return xyzOutput.values;
-  }
-
-  static xyzd65TosRGBLinear(x: number, y: number, z: number): [number, number, number] {
-    const xyzInput = new Vector3([x, y, z]);
-    const rgbResult = XYZD65_TO_SRGB_MATRIX.multiply(xyzInput);
-    return rgbResult.values;
   }
 
   static xyzd50TosRGBLinear(x: number, y: number, z: number): [number, number, number] {

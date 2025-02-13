@@ -1048,13 +1048,6 @@ export abstract class HeapSnapshot {
     return this.rootNode().retainedSize() + (this.profile.snapshot.extra_native_bytes ?? 0);
   }
 
-  private getDominatedIndex(nodeIndex: number): number {
-    if (nodeIndex % this.nodeFieldCount) {
-      throw new Error('Invalid nodeIndex: ' + nodeIndex);
-    }
-    return this.firstDominatedNodeIndex[nodeIndex / this.nodeFieldCount];
-  }
-
   private createFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
       ((arg0: HeapSnapshotNode) => boolean)|undefined {
     const {minNodeId, maxNodeId, allocationNodeId, filterName} = nodeFilter;

@@ -449,14 +449,6 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     return this.#violationsInternal;
   }
 
-  static allViolations(): number {
-    let violations = 0;
-    for (const target of TargetManager.instance().targets()) {
-      violations += target.model(ConsoleModel)?.violations() || 0;
-    }
-    return violations;
-  }
-
   async saveToTempVariable(currentExecutionContext: ExecutionContext|null, remoteObject: RemoteObject|null):
       Promise<void> {
     if (!remoteObject || !currentExecutionContext) {

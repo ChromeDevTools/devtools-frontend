@@ -191,10 +191,6 @@ export class HeapSnapshotGridNode extends
     return undefined;
   }
 
-  heapSnapshotDataGrid(): HeapSnapshotSortableDataGrid {
-    return this.dataGridInternal;
-  }
-
   createProvider(): ChildrenProvider {
     throw new Error('Not implemented.');
   }

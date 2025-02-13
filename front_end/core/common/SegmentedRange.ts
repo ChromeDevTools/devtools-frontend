@@ -72,10 +72,6 @@ export class SegmentedRange<T> {
     this.#segmentsInternal.splice(startIndex, endIndex - startIndex, newSegment);
   }
 
-  appendRange(that: SegmentedRange<T>): void {
-    that.segments().forEach(segment => this.append(segment));
-  }
-
   segments(): Array<Segment<T>> {
     return this.#segmentsInternal;
   }

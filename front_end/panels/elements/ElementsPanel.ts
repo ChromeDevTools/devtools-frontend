@@ -730,12 +730,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  switchToAndFocus(node: SDK.DOMModel.DOMNode): void {
-    // Reset search restore.
-    this.searchableViewInternal.cancelSearch();
-    void UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
-  }
-
   private jumpToSearchResult(index: number): void {
     if (!this.searchResults) {
       return;

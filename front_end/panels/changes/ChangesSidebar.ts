@@ -49,14 +49,6 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
         WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeMofiedStatusChanged, this);
   }
 
-  selectUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, omitFocus?: boolean|undefined): void {
-    const treeElement = this.treeElements.get(uiSourceCode);
-    if (!treeElement) {
-      return;
-    }
-    treeElement.select(omitFocus);
-  }
-
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
     // @ts-ignore uiSourceCode seems to be dynamically attached.
     return this.treeoutline.selectedTreeElement ? this.treeoutline.selectedTreeElement.uiSourceCode : null;

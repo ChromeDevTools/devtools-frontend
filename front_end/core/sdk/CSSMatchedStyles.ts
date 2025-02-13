@@ -193,10 +193,6 @@ export class CSSRegisteredProperty {
     this.#registration = registration;
   }
 
-  isAtProperty(): boolean {
-    return this.#registration instanceof CSSPropertyRule;
-  }
-
   propertyName(): string {
     return this.#registration instanceof CSSPropertyRule ? this.#registration.propertyName().text :
                                                            this.#registration.propertyName;

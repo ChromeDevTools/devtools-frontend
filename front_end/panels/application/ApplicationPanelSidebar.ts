@@ -1007,10 +1007,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.resourcesSection.revealAndSelectFrame(frame);
   }
 
-  showFileSystem(view: UI.Widget.Widget): void {
-    this.innerShowView(view);
-  }
-
   private innerShowView(view: UI.Widget.Widget): void {
     this.panel.showView(view);
   }

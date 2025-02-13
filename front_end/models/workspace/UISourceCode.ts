@@ -612,10 +612,6 @@ export class UILocation {
     return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber;
   }
 
-  toUIString(): string {
-    return this.uiSourceCode.url() + ':' + (this.lineNumber + 1);
-  }
-
   static comparator(location1: UILocation, location2: UILocation): number {
     return location1.compareTo(location2);
   }
@@ -708,30 +704,6 @@ export namespace Message {
     ERROR = 'Error',
     ISSUE = 'Issue',
     WARNING = 'Warning',
-  }
-}
-
-export class LineMarker {
-  private readonly rangeInternal: TextUtils.TextRange.TextRange;
-  private readonly typeInternal: string;
-  private readonly dataInternal: any;
-
-  constructor(range: TextUtils.TextRange.TextRange, type: string, data: any) {
-    this.rangeInternal = range;
-    this.typeInternal = type;
-    this.dataInternal = data;
-  }
-
-  range(): TextUtils.TextRange.TextRange {
-    return this.rangeInternal;
-  }
-
-  type(): string {
-    return this.typeInternal;
-  }
-
-  data(): any {
-    return this.dataInternal;
   }
 }
 

@@ -51,10 +51,6 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     return Array.from(this.#modified);
   }
 
-  isUISourceCodeModified(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.#modified.has(uiSourceCode) || this.loadingUISourceCodes.has(uiSourceCode);
-  }
-
   private uiSourceCodeDiff(uiSourceCode: Workspace.UISourceCode.UISourceCode): UISourceCodeDiff {
     let diff = this.#diffs.get(uiSourceCode);
     if (!diff) {

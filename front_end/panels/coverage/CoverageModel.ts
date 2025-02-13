@@ -323,10 +323,6 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     return this.backlogOrProcessJSCoverage(coverage, timestamp);
   }
 
-  getCoverageUpdateTimes(): Set<number> {
-    return this.coverageUpdateTimes;
-  }
-
   private async backlogOrProcessJSCoverage(
       freshRawCoverageData: Protocol.Profiler.ScriptCoverage[], freshTimestamp: number): Promise<CoverageInfo[]> {
     if (freshRawCoverageData.length > 0) {
@@ -983,10 +979,6 @@ export class CoverageInfo {
       this.updateSourceCoverage();
     }
     return this.usedSize - oldUsedSize;
-  }
-
-  usedByTimestamp(): Map<number, number> {
-    return this.statsByTimestamp;
   }
 
   getSize(): number {

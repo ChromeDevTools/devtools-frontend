@@ -140,10 +140,6 @@ export class ThemeSupport extends EventTarget {
     return themeValue;
   }
 
-  hasTheme(): boolean {
-    return this.themeNameInternal !== 'default';
-  }
-
   themeName(): string {
     return this.themeNameInternal;
   }

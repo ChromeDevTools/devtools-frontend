@@ -128,10 +128,6 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.agent = target.domstorageAgent();
   }
 
-  get storageKeyManagerForTest(): SDK.StorageKeyManager.StorageKeyManager|null {
-    return this.storageKeyManagerInternal;
-  }
-
   enable(): void {
     if (this.enabled) {
       return;

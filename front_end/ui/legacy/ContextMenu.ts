@@ -596,10 +596,6 @@ export class ContextMenu extends SubMenu {
     }
   }
 
-  setContextMenuLabel(label: string): void {
-    this.contextMenuLabel = label;
-  }
-
   setX(x: number): void {
     this.x = x;
   }

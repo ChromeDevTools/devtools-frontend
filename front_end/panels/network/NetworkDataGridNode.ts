@@ -1066,20 +1066,6 @@ export class NetworkRequestNode extends NetworkNode {
     this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
   }
 
-  highlightMatchedSubstring(regexp: RegExp|null): Object[] {
-    if (!regexp || !this.nameCell || this.nameCell.textContent === null) {
-      return [];
-    }
-    // Ensure element is created.
-    this.element();
-    const domChanges: UI.UIUtils.HighlightChange[] = [];
-    const matchInfo = this.nameCell.textContent.match(regexp);
-    if (matchInfo) {
-      UI.UIUtils.highlightSearchResult(this.nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
-    }
-    return domChanges;
-  }
-
   private openInNewTab(): void {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }

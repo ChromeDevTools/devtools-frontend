@@ -343,17 +343,6 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     return [];
   }
 
-  uiLocationToRawLocationsForUnformattedJavaScript(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, lineNumber: number,
-      columnNumber: number): SDK.DebuggerModel.Location[] {
-    console.assert(uiSourceCode.contentType().isScript());
-    const locations = [];
-    for (const modelData of this.#debuggerModelToData.values()) {
-      locations.push(...modelData.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
-    }
-    return locations;
-  }
-
   async normalizeUILocation(uiLocation: Workspace.UISourceCode.UILocation): Promise<Workspace.UISourceCode.UILocation> {
     const rawLocations =
         await this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);

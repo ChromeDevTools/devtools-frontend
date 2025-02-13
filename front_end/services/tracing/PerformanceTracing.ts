@@ -57,10 +57,6 @@ export class PerformanceTracing implements Trace.TracingManager.TracingManagerCl
   }
 
   // Start of implementation of SDK.TracingManager.TracingManagerClient
-  getTraceEvents(): Object[] {
-    return this.#traceEvents;
-  }
-
   traceEventsCollected(events: Object[]): void {
     this.#traceEvents.push(...events);
   }

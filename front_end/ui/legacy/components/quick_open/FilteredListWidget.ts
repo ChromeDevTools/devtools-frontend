@@ -159,13 +159,6 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.hintElement.textContent = hint;
   }
 
-  /**
-   * Sets the text prompt's accessible title. By default, it is "Quick open prompt".
-   */
-  setPromptTitle(title: string): void {
-    UI.ARIAUtils.setLabel(this.inputBoxElement, title);
-  }
-
   showAsDialog(dialogTitle?: string): void {
     if (!dialogTitle) {
       dialogTitle = i18nString(UIStrings.quickOpen);

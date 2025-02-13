@@ -301,10 +301,6 @@ export class DOMNode {
     this.childNodeCountInternal = childNodeCount;
   }
 
-  hasShadowRoots(): boolean {
-    return Boolean(this.shadowRootsInternal.length);
-  }
-
   shadowRoots(): DOMNode[] {
     return this.shadowRootsInternal.slice();
   }

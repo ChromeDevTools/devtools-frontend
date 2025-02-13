@@ -75,13 +75,6 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
-export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean {
-  if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
-    return obj.linearMemoryAddress !== undefined;
-  }
-  return false;
-}
-
 interface SerializableSettings {
   valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[];
   valueTypeModes: Array<[

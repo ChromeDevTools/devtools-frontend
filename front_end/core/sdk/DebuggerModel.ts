@@ -988,10 +988,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
 
   private static shouldResyncDebuggerId = false;
 
-  getContinueToLocationCallback(): ((arg0: DebuggerPausedDetails) => boolean)|null {
-    return this.continueToLocationCallback;
-  }
-
   getEvaluateOnCallFrameCallback():
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null {
     return this.evaluateOnCallFrameCallback;

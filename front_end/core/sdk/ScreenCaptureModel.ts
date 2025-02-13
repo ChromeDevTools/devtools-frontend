@@ -71,26 +71,6 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
     return result.data;
   }
 
-  async fetchLayoutMetrics(): Promise<{
-    viewportX: number,
-    viewportY: number,
-    viewportScale: number,
-    contentWidth: number,
-    contentHeight: number,
-  }|null> {
-    const response = await this.#agent.invoke_getLayoutMetrics();
-    if (response.getError()) {
-      return null;
-    }
-    return {
-      viewportX: response.cssVisualViewport.pageX,
-      viewportY: response.cssVisualViewport.pageY,
-      viewportScale: response.cssVisualViewport.scale,
-      contentWidth: response.cssContentSize.width,
-      contentHeight: response.cssContentSize.height,
-    };
-  }
-
   screencastFrame({data, metadata, sessionId}: Protocol.Page.ScreencastFrameEvent): void {
     void this.#agent.invoke_screencastFrameAck({sessionId});
     if (this.#onScreencastFrame) {

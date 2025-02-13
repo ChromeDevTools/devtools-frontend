@@ -119,13 +119,6 @@ export class ShortcutRegistry {
     return keys;
   }
 
-  keysForActions(actionIds: string[]): number[] {
-    const keys = actionIds.flatMap(
-        action => [...this.actionToShortcut.get(action)].flatMap(
-            shortcut => shortcut.descriptors.map(descriptor => descriptor.key)));
-    return [...(new Set(keys))];
-  }
-
   shortcutTitleForAction(actionId: string): string|undefined {
     for (const shortcut of this.actionToShortcut.get(actionId)) {
       return shortcut.title();

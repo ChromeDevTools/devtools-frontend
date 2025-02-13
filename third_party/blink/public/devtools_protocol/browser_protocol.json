@@ -1888,6 +1888,30 @@
                     ]
                 },
                 {
+                    "id": "PartitioningBlobURLInfo",
+                    "type": "string",
+                    "enum": [
+                        "BlockedCrossPartitionFetching",
+                        "EnforceNoopenerForNavigation"
+                    ]
+                },
+                {
+                    "id": "PartitioningBlobURLIssueDetails",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "url",
+                            "description": "The BlobURL that failed to load.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "partitioningBlobURLInfo",
+                            "description": "Additional information about the Partitioning Blob URL issue.",
+                            "$ref": "PartitioningBlobURLInfo"
+                        }
+                    ]
+                },
+                {
                     "id": "SelectElementAccessibilityIssueReason",
                     "type": "string",
                     "enum": [
@@ -1996,6 +2020,7 @@
                         "CorsIssue",
                         "AttributionReportingIssue",
                         "QuirksModeIssue",
+                        "PartitioningBlobURLIssue",
                         "NavigatorUserAgentIssue",
                         "GenericIssue",
                         "DeprecationIssue",
@@ -2064,6 +2089,11 @@
                             "name": "quirksModeIssueDetails",
                             "optional": true,
                             "$ref": "QuirksModeIssueDetails"
+                        },
+                        {
+                            "name": "partitioningBlobURLIssueDetails",
+                            "optional": true,
+                            "$ref": "PartitioningBlobURLIssueDetails"
                         },
                         {
                             "name": "navigatorUserAgentIssueDetails",
@@ -26673,7 +26703,8 @@
                         "SlowNetwork",
                         "OtherPrerenderedPageActivated",
                         "V8OptimizerDisabled",
-                        "PrerenderFailedDuringPrefetch"
+                        "PrerenderFailedDuringPrefetch",
+                        "BrowsingDataRemoved"
                     ]
                 },
                 {

@@ -695,9 +695,8 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown
       // PrerenderFinalStatus at runtime.
-      return i18n.i18n.lockedString(`Unknown failure reason: ${
-          attempt.prerenderStatus as
-          'See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'}`);
+      // See https://docs.google.com/document/d/1PnrfowsZMt62PX1EvvTp2Nqs3ji1zrklrAEe1JYbkTk'
+      return i18n.i18n.lockedString(`Unknown failure reason: ${attempt.prerenderStatus as string}`);
   }
 }
 

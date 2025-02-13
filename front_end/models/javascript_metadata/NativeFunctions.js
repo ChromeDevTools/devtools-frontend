@@ -8543,11 +8543,11 @@ export const NativeFunctions = [
     signatures: [["context"]]
   },
   {
-    name: "onDeviceWebSpeechAvailable",
+    name: "availableOnDevice",
     signatures: [["lang"]]
   },
   {
-    name: "installOnDeviceSpeechRecognition",
+    name: "installOnDevice",
     signatures: [["lang"]]
   },
   {

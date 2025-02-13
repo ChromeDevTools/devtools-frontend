@@ -1287,6 +1287,22 @@ export namespace Audits {
     requestId?: Network.RequestId;
   }
 
+  export const enum PartitioningBlobURLInfo {
+    BlockedCrossPartitionFetching = 'BlockedCrossPartitionFetching',
+    EnforceNoopenerForNavigation = 'EnforceNoopenerForNavigation',
+  }
+
+  export interface PartitioningBlobURLIssueDetails {
+    /**
+     * The BlobURL that failed to load.
+     */
+    url: string;
+    /**
+     * Additional information about the Partitioning Blob URL issue.
+     */
+    partitioningBlobURLInfo: PartitioningBlobURLInfo;
+  }
+
   export const enum SelectElementAccessibilityIssueReason {
     DisallowedSelectChild = 'DisallowedSelectChild',
     DisallowedOptGroupChild = 'DisallowedOptGroupChild',
@@ -1369,6 +1385,7 @@ export namespace Audits {
     CorsIssue = 'CorsIssue',
     AttributionReportingIssue = 'AttributionReportingIssue',
     QuirksModeIssue = 'QuirksModeIssue',
+    PartitioningBlobURLIssue = 'PartitioningBlobURLIssue',
     NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
     GenericIssue = 'GenericIssue',
     DeprecationIssue = 'DeprecationIssue',
@@ -1399,6 +1416,7 @@ export namespace Audits {
     corsIssueDetails?: CorsIssueDetails;
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     quirksModeIssueDetails?: QuirksModeIssueDetails;
+    partitioningBlobURLIssueDetails?: PartitioningBlobURLIssueDetails;
     navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
     genericIssueDetails?: GenericIssueDetails;
     deprecationIssueDetails?: DeprecationIssueDetails;
@@ -17633,6 +17651,7 @@ export namespace Preload {
     OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
     V8OptimizerDisabled = 'V8OptimizerDisabled',
     PrerenderFailedDuringPrefetch = 'PrerenderFailedDuringPrefetch',
+    BrowsingDataRemoved = 'BrowsingDataRemoved',
   }
 
   /**

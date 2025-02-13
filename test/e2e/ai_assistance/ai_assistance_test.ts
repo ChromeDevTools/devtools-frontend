@@ -202,7 +202,11 @@ describe('AI Assistance', function() {
 
     await setupMocks(
         {
-          aidaAvailability: {},
+          aidaAvailability: {
+            enabled: true,
+            disallowLogging: true,
+            enterprisePolicyValue: 0,
+          },
           devToolsFreestyler: {
             enabled: true,
           },

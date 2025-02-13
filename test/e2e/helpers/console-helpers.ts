@@ -10,6 +10,7 @@ import {
   $,
   $$,
   click,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   goToResource,
   pasteText,
@@ -77,6 +78,7 @@ export async function filterConsoleMessages(frontend: puppeteer.Page, filter: st
     prompt!.focus();
   }, main);
   await pasteText(filter);
+  await drainFrontendTaskQueue();
   await frontend.keyboard.press('Tab');
   if (filter.length) {
     await expectVeEvents([veChange('Toolbar > TextField: filter')], await veRoot());

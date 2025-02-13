@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   timeout,
   waitFor,
@@ -73,6 +74,7 @@ describe('Shortcuts Settings tab', () => {
 
     // make sure the command menu reflects the new shortcuts
     await frontend.keyboard.type('Show Shortcuts');
+    await drainFrontendTaskQueue();
     const shortcutsItemText = await getSelectedItemText();
 
     assert.strictEqual(shortcutsItemText, VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT);

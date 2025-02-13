@@ -13,6 +13,7 @@
 .header {
   display: flex;
   margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+  padding-top: var(--sys-size-3);
   font: var(--sys-typescale-body2-medium);
 }
 

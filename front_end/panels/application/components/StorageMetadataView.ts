@@ -103,6 +103,10 @@ const UIStrings = {
    *@example {bucket} PH1
    */
   confirmBucketDeletion: 'Delete the "{PH1}" bucket?',
+  /**
+   *@description Explanation text shown in the confirmation dialogue that displays before deleting the bucket.
+   */
+  bucketWillBeRemoved: 'The selected storage bucket and contained data will be removed.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StorageMetadataView.ts', UIStrings);
@@ -252,7 +256,8 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       throw new Error('Should not call #deleteBucket if #storageBucketsModel or #storageBucket is null.');
     }
     const ok = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.confirmBucketDeletion, {PH1: this.#storageBucket.bucket.name || ''}), undefined, this,
+        i18nString(UIStrings.bucketWillBeRemoved),
+        i18nString(UIStrings.confirmBucketDeletion, {PH1: this.#storageBucket.bucket.name || ''}), this,
         {jslogContext: 'delete-bucket-confirmation'});
     if (ok) {
       this.#storageBucketsModel.deleteBucket(this.#storageBucket.bucket);

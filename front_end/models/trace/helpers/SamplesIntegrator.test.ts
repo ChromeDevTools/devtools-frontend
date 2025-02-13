@@ -106,7 +106,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
         throw new Error('Trace events were unexpectedly not found.');
       }
       const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
-      assert.lengthOf(constructedCalls, 5131);
+      assert.lengthOf(constructedCalls, 5300);
     });
 
     it('creates JS profile calls with a top-level V8 invocation', () => {

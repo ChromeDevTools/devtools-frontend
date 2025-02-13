@@ -107,7 +107,7 @@ export interface TimeSpan {
   ts: Types.Timing.Micro;
   dur?: Types.Timing.Micro;
 }
-export function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
+export function eventTimeComparator(a: Types.Events.Event, b: Types.Events.Event): -1|0|1 {
   const aBeginTime = a.ts;
   const bBeginTime = b.ts;
   if (aBeginTime < bBeginTime) {
@@ -126,13 +126,23 @@ export function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
   if (aEndTime < bEndTime) {
     return 1;
   }
+  // If times are equal, prioritize profile calls over trace events,
+  // since an exactly equal timestamp with a trace event is likely
+  // indicates that the SamplesIntegrator meant to parent the trace
+  // event with the profile call.
+  if (Types.Events.isProfileCall(a)) {
+    return -1;
+  }
+  if (Types.Events.isProfileCall(b)) {
+    return 1;
+  }
   return 0;
 }
 /**
  * Sorts all the events in place, in order, by their start time. If they have
  * the same start time, orders them by longest first.
  */
-export function sortTraceEventsInPlace(events: Array<{ts: Types.Timing.Micro, dur?: Types.Timing.Micro}>): void {
+export function sortTraceEventsInPlace(events: Types.Events.Event[]): void {
   events.sort(eventTimeComparator);
 }
 

@@ -144,13 +144,13 @@ Children:
   * 4 – _ds.q.ns
 
 Node: 4 – _ds.q.ns
-Selected: true
 dur: 0.2
 URL #: 0
 Children:
   * 5 – clearTimeout
 
 Node: 5 – clearTimeout
+Selected: true
 dur: 0.2
 self: 0
 Children:

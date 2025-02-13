@@ -1026,7 +1026,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   override onResize(): void {
-    this.#cachedTimelineWidth = Math.max(0, this.#animationsContainer.offsetWidth - this.#timelineControlsWidth) || 0;
+    this.#cachedTimelineWidth = Math.max(0, this.contentElement.offsetWidth - this.#timelineControlsWidth) || 0;
     this.scheduleRedraw();
     if (this.#scrubberPlayer) {
       this.syncScrubber();

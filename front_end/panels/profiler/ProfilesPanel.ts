@@ -63,9 +63,13 @@ const UIStrings = {
   cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
   /**
    *@description Text in Profiles Panel of a profiler tool
+   */
+  profileLoadingFailed: 'Profile loading failed',
+  /**
+   *@description Text in Profiles Panel of a profiler tool
    *@example {cannot open file} PH1
    */
-  profileLoadingFailedS: 'Profile loading failed: {PH1}.',
+  failReason: 'Reason: {PH1}.',
   /**
    *@description Text in Profiles Panel of a profiler tool
    *@example {2} PH1
@@ -230,7 +234,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     const error = await profileType.loadFromFile(file);
     if (error && 'message' in error) {
       void UI.UIUtils.MessageDialog.show(
-          i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}), undefined, 'profile-loading-failed');
+          i18nString(UIStrings.profileLoadingFailed), i18nString(UIStrings.failReason, {PH1: error.message}), undefined,
+          'profile-loading-failed');
     }
   }
 

@@ -1619,7 +1619,7 @@ export function createFileSelectorElement(callback: (arg0: File) => void, accept
 export const MaxLengthForDisplayedURLs = 150;
 
 export class MessageDialog {
-  static async show(message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
+  static async show(header: string, message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
     const dialog = new Dialog(jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
@@ -1628,6 +1628,7 @@ export class MessageDialog {
     await new Promise(resolve => {
       const okButton = createTextButton(
           i18nString(UIStrings.ok), resolve, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
+      content.createChild('span', 'header').textContent = header;
       content.createChild('div', 'message').createChild('span').textContent = message;
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {

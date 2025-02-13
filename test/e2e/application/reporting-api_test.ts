@@ -6,7 +6,6 @@ import {assert} from 'chai';
 
 import {
   click,
-  getBrowserAndPages,
   getTestServerPort,
   goToResource,
   waitFor,
@@ -18,14 +17,12 @@ const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
 describe('The Reporting API Page', () => {
   beforeEach(async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'empty');
+    await navigateToApplicationTab('empty');
   });
 
   // Flaky on mac
   it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'reporting-api');
+    await navigateToApplicationTab('reporting-api');
     await click(REPORTING_API_SELECTOR);
     const dataGrid = await getDataGrid();
     const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, false);

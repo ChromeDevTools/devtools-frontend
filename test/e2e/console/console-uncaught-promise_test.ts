@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, getTestServerPort, goToResource} from '../../shared/helper.js';
+import {getTestServerPort, goToResource} from '../../shared/helper.js';
 import {
   checkCommandStacktrace,
   getCurrentConsoleMessages,
@@ -92,7 +92,7 @@ describe('The Console Tab', () => {
         2,
     );
 
-    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await promiseTest9();', 3);
+    await typeIntoConsoleAndWaitForResult('await promiseTest9();', 3);
     const lastMessages = (await getCurrentConsoleMessages()).slice(-2);
     assert.include(
         lastMessages,

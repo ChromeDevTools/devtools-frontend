@@ -38,7 +38,6 @@ function getExpectedMessages(unfilteredMessages: string[], filter: MessageCheck)
 }
 
 async function testMessageFilter(filter: string, expectedMessageFilter: MessageCheck) {
-  const {frontend} = getBrowserAndPages();
   let unfilteredMessages: string[];
   const showMessagesWithAnchor = true;
 
@@ -47,7 +46,7 @@ async function testMessageFilter(filter: string, expectedMessageFilter: MessageC
   });
 
   await step(`filter to only show messages containing '${filter}'`, async () => {
-    await filterConsoleMessages(frontend, filter);
+    await filterConsoleMessages(filter);
   });
 
   await step('check that messages are correctly filtered', async () => {
@@ -160,7 +159,7 @@ describe('The Console Tab', () => {
       await testMessageFilter(filter, expectedMessageFilter);
 
       await step(`remove filter '${filter}'`, async () => {
-        await deleteConsoleMessagesFilter(frontend);
+        await deleteConsoleMessagesFilter();
       });
     }
   });
@@ -199,7 +198,7 @@ describe('The Console Tab', () => {
       await testMessageFilter(filter, expectedMessageFilter);
 
       await step(`remove filter '${filter}'`, async () => {
-        await deleteConsoleMessagesFilter(frontend);
+        await deleteConsoleMessagesFilter();
       });
     }
   });
@@ -312,7 +311,6 @@ describe('The Console Tab', () => {
   });
 
   it('can reset filter', async () => {
-    const {frontend} = getBrowserAndPages();
     let unfilteredMessages: string[];
 
     await step('get unfiltered messages', async () => {
@@ -320,11 +318,11 @@ describe('The Console Tab', () => {
     });
 
     await step('apply message filter', async () => {
-      await filterConsoleMessages(frontend, 'outer');
+      await filterConsoleMessages('outer');
     });
 
     await step('delete message filter', async () => {
-      void deleteConsoleMessagesFilter(frontend);
+      void deleteConsoleMessagesFilter();
     });
 
     await step('check if messages are unfiltered', async () => {

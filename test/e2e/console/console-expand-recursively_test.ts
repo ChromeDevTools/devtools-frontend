@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
+import {click, step, waitFor} from '../../shared/helper.js';
 import {
   clickOnContextMenu,
   CONSOLE_TAB_SELECTOR,
@@ -12,14 +12,12 @@ import {
 
 describe('The Console Tab', () => {
   it('recursively expands objects', async () => {
-    const {frontend} = getBrowserAndPages();
-
     await step('open the console tab and focus the prompt', async () => {
       await click(CONSOLE_TAB_SELECTOR);
       await focusConsolePrompt();
     });
 
-    await typeIntoConsole(frontend, '({a: {x: 21}, b: {y: 42}})');
+    await typeIntoConsole('({a: {x: 21}, b: {y: 42}})');
 
     // Expand the object node recursively
     await clickOnContextMenu('.console-view-object-properties-section', 'expand-recursively');

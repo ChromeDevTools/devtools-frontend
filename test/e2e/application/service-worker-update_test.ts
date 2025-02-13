@@ -4,7 +4,7 @@
 import {assert} from 'chai';
 
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
-import {getBrowserAndPages, step, waitFor} from '../../shared/helper.js';
+import {step, waitFor} from '../../shared/helper.js';
 import {
   navigateToApplicationTab,
   navigateToServiceWorkers,
@@ -16,8 +16,7 @@ const SERVICE_WORKER_UPDATE_TIMELINE_SELECTOR = '.service-worker-update-timing-t
 
 describe('The Application Tab', function() {
   beforeEach(async function() {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, TEST_HTML_FILE);
+    await navigateToApplicationTab(TEST_HTML_FILE);
     await navigateToServiceWorkers();
   });
 

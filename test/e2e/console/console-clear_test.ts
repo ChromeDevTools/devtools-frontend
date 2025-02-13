@@ -22,13 +22,13 @@ describe('The Console Tab', function() {
     await target.evaluate(() => console.log('target'));
 
     await step('enter 1 in console', async () => {
-      await typeIntoConsoleAndWaitForResult(frontend, '1;');
+      await typeIntoConsoleAndWaitForResult('1;');
     });
     await step('enter 2 in console', async () => {
-      await typeIntoConsoleAndWaitForResult(frontend, '2;');
+      await typeIntoConsoleAndWaitForResult('2;');
     });
     await step('enter 3 in console', async () => {
-      await typeIntoConsoleAndWaitForResult(frontend, '3;');
+      await typeIntoConsoleAndWaitForResult('3;');
     });
     await step('Check the evaluation results from console', async () => {
       const evaluateResults = await frontend.evaluate(() => {
@@ -37,7 +37,7 @@ describe('The Console Tab', function() {
       assert.deepEqual(evaluateResults, ['1', '2', '3'], 'did not find expected output in the console');
     });
     await step('enter console.clear() in console', async () => {
-      await typeIntoConsole(frontend, 'console.clear();');
+      await typeIntoConsole('console.clear();');
     });
 
     await step('wait for the console to be cleared', async () => {

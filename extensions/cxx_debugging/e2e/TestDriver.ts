@@ -136,7 +136,7 @@ describe('CXX Debugging Extension Test Suite', function() {
             await focusConsolePrompt();
 
             for (const {expression, value} of evaluations) {
-              await typeIntoConsoleAndWaitForResult(frontend, expression);
+              await typeIntoConsoleAndWaitForResult(expression);
               const evaluateResults = await frontend.evaluate(() => {
                 return Array.from(document.querySelectorAll('.console-user-command-result'))
                     .map(node => node.textContent);

@@ -19,7 +19,7 @@ import {
 import {getDataGridRows} from './datagrid-helpers.js';
 import {expectVeEvents, veChange, veClick, veImpression, veImpressionsUnder} from './visual-logging-helpers.js';
 
-export async function navigateToApplicationTab(_target: puppeteer.Page, testName: string) {
+export async function navigateToApplicationTab(testName: string) {
   const {target, frontend} = getBrowserAndPages();
   await target.bringToFront();
   await goToResource(`application/${testName}.html`);
@@ -51,8 +51,7 @@ export async function navigateToFrame(name: string) {
 
 export async function navigateToManifestInApplicationTab(testName: string) {
   const MANIFEST_SELECTOR = '[aria-label="Manifest"]';
-  const {target} = getBrowserAndPages();
-  await navigateToApplicationTab(target, testName);
+  await navigateToApplicationTab(testName);
   await click(MANIFEST_SELECTOR);
 }
 

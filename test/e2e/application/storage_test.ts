@@ -21,8 +21,7 @@ describe('The Application Tab', () => {
     // The tests in this suite are particularly slow, as they perform a lot of actions
     this.timeout(20000);
     beforeEach(async () => {
-      const {target} = getBrowserAndPages();
-      await navigateToApplicationTab(target, 'storage-quota');
+      await navigateToApplicationTab('storage-quota');
       await navigateToStorage();
     });
 

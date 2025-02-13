@@ -37,9 +37,8 @@ describe('The Application Tab', () => {
   it.skip(
       '[crbug.com/1443434]: shows cookies even when navigating to an unreachable page (crbug.com/1047348)',
       async () => {
-        const {target} = getBrowserAndPages();
         // This sets a new cookie foo=bar
-        await navigateToApplicationTab(target, 'cookies');
+        await navigateToApplicationTab('cookies');
 
         await goToResource('network/unreachable.rawresponse');
 
@@ -50,9 +49,8 @@ describe('The Application Tab', () => {
       });
 
   it('shows a preview of the cookie value (crbug.com/462370)', async () => {
-    const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cookies');
+    await navigateToApplicationTab('cookies');
 
     await navigateToCookiesForTopDomain();
 
@@ -69,9 +67,8 @@ describe('The Application Tab', () => {
   // reflect the change from the partitionKey column to the partition key site and
   // cross-site columns.
   it.skip('[crbug.com/345285378]shows cookie partition key site and has cross site ancestor', async () => {
-    const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cookies');
+    await navigateToApplicationTab('cookies');
 
     await navigateToCookiesForTopDomain();
 
@@ -109,9 +106,8 @@ describe('The Application Tab', () => {
   });
 
   it('can also show the urldecoded value (crbug.com/997625)', async () => {
-    const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cookies');
+    await navigateToApplicationTab('cookies');
 
     await navigateToCookiesForTopDomain();
 
@@ -135,9 +131,8 @@ describe('The Application Tab', () => {
   });
 
   it('clears the preview value when clearing cookies (crbug.com/1086462)', async () => {
-    const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cookies');
+    await navigateToApplicationTab('cookies');
 
     await navigateToCookiesForTopDomain();
 
@@ -163,9 +158,8 @@ describe('The Application Tab', () => {
 
   it('only clear currently visible cookies (crbug.com/978059)', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    const {target} = getBrowserAndPages();
     // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cookies');
+    await navigateToApplicationTab('cookies');
 
     await navigateToCookiesForTopDomain();
 

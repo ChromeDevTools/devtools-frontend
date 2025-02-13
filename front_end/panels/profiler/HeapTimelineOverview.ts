@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
@@ -122,7 +123,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     if (this.running) {
       context.beginPath();
       context.lineWidth = 2;
-      context.strokeStyle = 'rgba(192, 192, 192, 0.6)';
+      context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-outline');
       const currentX = (Date.now() - startTime) * scaleFactor;
       context.moveTo(currentX, height - 1);
       context.lineTo(currentX, 0);
@@ -146,7 +147,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
       gridY = Math.round(height - gridValue * yScaleFactor - 0.5) + 0.5;
       context.beginPath();
       context.lineWidth = 1;
-      context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+      context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface-subtle');
       context.moveTo(0, gridY);
       context.lineTo(width, gridY);
       context.stroke();
@@ -160,14 +161,14 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
 
     context.beginPath();
     context.lineWidth = 2;
-    context.strokeStyle = 'rgba(192, 192, 192, 0.6)';
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-outline');
     aggregateAndCall(topSizes, drawBarCallback);
     context.stroke();
     context.closePath();
 
     context.beginPath();
     context.lineWidth = 2;
-    context.strokeStyle = 'rgba(0, 0, 192, 0.8)';
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-primary-bright');
     aggregateAndCall(sizes, drawBarCallback);
     context.stroke();
     context.closePath();
@@ -181,9 +182,10 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
       context.beginPath();
       context.textBaseline = 'bottom';
       context.font = '10px ' + window.getComputedStyle(this.element, null).getPropertyValue('font-family');
-      context.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      // Background behind text for better contrast. Some opacity so canvas can still bleed through
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-80');
       context.fillRect(labelX, labelY - gridLabelHeight, labelWidth, gridLabelHeight);
-      context.fillStyle = 'rgb(64, 64, 64)';
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface-subtle');
       context.fillText(label, labelX + labelPadding, labelY);
       context.fill();
       context.closePath();

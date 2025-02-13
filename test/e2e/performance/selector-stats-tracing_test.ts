@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {click, getBrowserAndPages, step, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, scrollElementIntoView, step, waitForFunction} from '../../shared/helper.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
@@ -75,6 +75,7 @@ describe('The Performance panel', function() {
     });
 
     await step('Validate source file is open via available link in selector stats table', async () => {
+      await scrollElementIntoView('devtools-linkifier');
       await click('devtools-linkifier');
       // Look at source tabs
       await validateSourceTabs();

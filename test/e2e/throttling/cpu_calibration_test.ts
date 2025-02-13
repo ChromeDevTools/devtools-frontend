@@ -25,8 +25,9 @@ describe('CPU Calibration', () => {
     await click('.calibrate-button');
     await waitForElementWithTextContent('Recalibrate');
 
+    // Verify that at least the low-tier device was able to be calibrated (CI may be to slow for mid-tier calibration).
     const results = await getAllTextContents('.cpu-preset-result');
     assert.include(results[0], 'slowdown');
-    assert.include(results[1], 'slowdown');
+    assert.match(results[1] ?? '', /slowdown|not powerful enough/);
   });
 });

@@ -13,7 +13,7 @@ import * as SDK from '../../core/sdk/sdk.js';
  * @see https://goo.gle/devtools-json-design
  */
 export interface ProjectSettings {
-  readonly workspace?: {readonly root?: string};
+  readonly workspace?: {readonly root: string, readonly uuid: string};
 }
 
 const EMPTY_PROJECT_SETTINGS: ProjectSettings = Object.freeze({});
@@ -140,8 +140,11 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
       if (typeof workspace !== 'object' || workspace === null) {
         throw new Error('Invalid "workspace" field');
       }
-      if (!['string', 'undefined'].includes(typeof workspace.root)) {
-        throw new Error('Invalid "workspace.root" field');
+      if (typeof workspace.root !== 'string') {
+        throw new Error('Invalid or missing "workspace.root" field');
+      }
+      if (typeof workspace.uuid !== 'string') {
+        throw new Error('Invalid or missing "workspace.uuid" field');
       }
     }
     return Object.freeze(devtoolsJSON);

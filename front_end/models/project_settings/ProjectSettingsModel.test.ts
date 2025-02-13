@@ -93,7 +93,7 @@ describe('ProjectSettingsModel', () => {
     sinon.stub(frame, 'id').get(() => frameId);
 
     pageResourceLoader.loadResource.withArgs(url, sinon.match({target, frameId, initiatorUrl}))
-        .returns(Promise.resolve({content: '{"workspace":{"root":"/home/foo"}}'}));
+        .returns(Promise.resolve({content: '{"workspace":{"root":"/home/foo","uuid":"foo"}}'}));
 
     const projectSettingsModel = ProjectSettingsModel.instance({
       forceNew: true,
@@ -103,7 +103,7 @@ describe('ProjectSettingsModel', () => {
     });
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
-    assert.deepEqual(projectSettings, {workspace: {root: '/home/foo'}});
+    assert.deepEqual(projectSettings, {workspace: {root: '/home/foo', uuid: 'foo'}});
   });
 
   it('listens for navigations', () => {

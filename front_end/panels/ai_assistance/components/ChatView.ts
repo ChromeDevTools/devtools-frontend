@@ -268,6 +268,14 @@ const UIStringsNotTranslate = {
    *@description Button text for staging changes to workspace.
    */
   applyToWorkspace: 'Apply to workspace',
+  /**
+   *@description Title for the take screenshot button.
+   */
+  takeScreenshotButtonTitle: 'Take screenshot',
+  /**
+   *@description Title for the remove image input button.
+   */
+  removeImageInputButtonTitle: 'Remove image input',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -324,6 +332,8 @@ export interface Props {
   onContextClick: () => void | Promise<void>;
   onNewConversation: () => void;
   onCancelCrossOriginChat?: () => void;
+  onTakeScreenshot?: () => Promise<void>;
+  onRemoveImageInput?: () => void;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -340,6 +350,8 @@ export interface Props {
   patchSuggestion?: string;
   patchSuggestionLoading?: boolean;
   projectName?: string;
+  multimodalInputEnabled?: boolean;
+  imageInput?: string;
   onApplyToWorkspace?: () => void;
 }
 
@@ -738,7 +750,9 @@ export class ChatView extends HTMLElement {
                 state: this.#props.state,
                 selectedContext: this.#props.selectedContext,
                 inspectElementToggled: this.#props.inspectElementToggled,
+                multimodalInputEnabled: this.#props.multimodalInputEnabled,
                 agentType: this.#props.agentType,
+                imageInput: this.#props.imageInput,
                 onContextClick: this.#props.onContextClick,
                 onInspectElementClick: this.#props.onInspectElementClick,
                 onSubmit: this.#handleSubmit,
@@ -746,6 +760,8 @@ export class ChatView extends HTMLElement {
                 onCancel: this.#handleCancel,
                 onNewConversation: this.#props.onNewConversation,
                 onCancelCrossOriginChat: this.#props.onCancelCrossOriginChat,
+                onTakeScreenshot: this.#props.onTakeScreenshot,
+                onRemoveImageInput: this.#props.onRemoveImageInput,
               })
           }
         </main>
@@ -1420,6 +1436,65 @@ function renderChatInputButtons(
   ></devtools-button>`;
 }
 
+function renderTakeScreenshotButton({
+  multimodalInputEnabled,
+  isTextInputDisabled,
+  onTakeScreenshot,
+}: {
+  isTextInputDisabled: boolean,
+  multimodalInputEnabled?: boolean,
+  onTakeScreenshot?: () => Promise<void>,
+}): Lit.LitTemplate {
+    if (!multimodalInputEnabled) {
+      return Lit.nothing;
+    }
+    return html`<devtools-button
+      class="chat-input-button"
+      aria-label=${lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle)}
+      @click=${onTakeScreenshot}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.ICON,
+          size: Buttons.Button.Size.REGULAR,
+          disabled: isTextInputDisabled,
+          iconName: 'photo-camera',
+          title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
+          jslogContext: 'take-screenshot',
+        } as Buttons.Button.ButtonData
+      }
+    ></devtools-button>`;
+  }
+
+function renderImageInput({
+  multimodalInputEnabled,
+  imageInput,
+  onRemoveImageInput,
+}: {
+  multimodalInputEnabled?: boolean,
+  imageInput?: string,
+  onRemoveImageInput?: () => void,
+}): Lit.LitTemplate {
+    if (!multimodalInputEnabled || !imageInput || imageInput==='') {
+      return Lit.nothing;
+    }
+    return  html`
+    <div class="image-input-container">
+      <devtools-button
+      aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
+      @click=${onRemoveImageInput}
+      .data=${
+        {
+          variant: Buttons.Button.Variant.ICON,
+          size: Buttons.Button.Size.MICRO,
+          iconName: 'cross',
+          title: lockedString(UIStringsNotTranslate.removeImageInputButtonTitle),
+        } as Buttons.Button.ButtonData
+      }
+    ></devtools-button>
+      <img src="data:image/jpeg;base64, ${imageInput}" alt="Screenshot input" />
+    </div>`;
+  }
+
 function renderChatInput({
   isLoading,
   blockedByCrossOrigin,
@@ -1428,7 +1503,9 @@ function renderChatInput({
   state,
   selectedContext,
   inspectElementToggled,
+  multimodalInputEnabled,
   agentType,
+  imageInput,
   onContextClick,
   onInspectElementClick,
   onSubmit,
@@ -1436,6 +1513,8 @@ function renderChatInput({
   onCancel,
   onNewConversation,
   onCancelCrossOriginChat,
+  onTakeScreenshot,
+  onRemoveImageInput,
 }: {
   isLoading: boolean,
   blockedByCrossOrigin: boolean,
@@ -1444,7 +1523,9 @@ function renderChatInput({
   state: State,
   selectedContext: ConversationContext<unknown> | null,
   inspectElementToggled: boolean,
+  multimodalInputEnabled?: boolean,
   agentType?: AgentType,
+  imageInput?: string,
   onContextClick: () => void | Promise<void>,
   onInspectElementClick: () => void,
   onSubmit: (ev: SubmitEvent) => void,
@@ -1452,15 +1533,22 @@ function renderChatInput({
   onCancel: (ev: SubmitEvent) => void,
   onNewConversation: () => void,
   onCancelCrossOriginChat?: () => void,
+  onTakeScreenshot?: () => Promise<void>,
+  onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
   if (!agentType) {
     return Lit.nothing;
   }
 
-  const cls = Lit.Directives.classMap({
+  const chatInputCls = Lit.Directives.classMap({
     'chat-input': true,
     'two-big-buttons': blockedByCrossOrigin,
   });
+
+    const chatInputContainerCls = Lit.Directives.classMap({
+      'chat-input-container': true,
+      disabled: isTextInputDisabled,
+    });
 
   // clang-format off
   return html`
@@ -1481,8 +1569,11 @@ function renderChatInput({
         </div>
       </div>
     ` : Lit.nothing}
-    <div class="chat-input-container">
-      <textarea class=${cls}
+    <div class=${chatInputContainerCls}>
+      ${renderImageInput(
+        {multimodalInputEnabled, imageInput, onRemoveImageInput}
+      )}
+      <textarea class=${chatInputCls}
         .disabled=${isTextInputDisabled}
         wrap="hard"
         maxlength="10000"
@@ -1491,6 +1582,9 @@ function renderChatInput({
         jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
       ></textarea>
       <div class="chat-input-buttons">
+        ${renderTakeScreenshotButton({
+          multimodalInputEnabled, isTextInputDisabled, onTakeScreenshot
+        })}
         ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat })}
       </div>
     </div>

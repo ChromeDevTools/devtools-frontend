@@ -3364,6 +3364,7 @@ export const knownContextValues = new Set([
   'tab-size',
   'table-layout',
   'tag-name',
+  'take-screenshot',
   'target',
   'target-crashed',
   'target-selector',

@@ -10,6 +10,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
@@ -58,6 +59,7 @@ const {html} = Lit;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
+const SCREENSHOT_QUALITY = 100;
 
 const UIStrings = {
   /**
@@ -254,6 +256,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #project?: Workspace.Workspace.Project;
   #patchSuggestion?: string;
   #patchSuggestionLoading?: boolean;
+  #imageInput: string = '';
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -639,7 +642,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           inspectElementToggled: this.#toggleSearchElementAction.toggled(),
           userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
+          multimodalInputEnabled:
+              isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
+          imageInput: this.#imageInput,
           onTextSubmit: (text: string) => {
+            this.#imageInput = '';
             void this.#startConversation(text);
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
           },
@@ -651,6 +658,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
               this.#handleCrossOriginChatCancellation.bind(this) :
               undefined,
+          onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
+          onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
+                                                                       undefined,
           onApplyToWorkspace: this.#onApplyToWorkspace.bind(this)
         },
         this.#viewOutput, this.#contentContainer);
@@ -832,6 +842,31 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#onContextSelectionChanged(this.#previousSameOriginContext);
       void this.doUpdate();
     }
+  }
+
+  async #handleTakeScreenshot(): Promise<void> {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      throw new Error('Could not find main target');
+    }
+    const model = mainTarget.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    if (!model) {
+      throw new Error('Could not find model');
+    }
+    const bytes = await model.captureScreenshot(
+        Protocol.Page.CaptureScreenshotRequestFormat.Jpeg,
+        SCREENSHOT_QUALITY,
+        SDK.ScreenCaptureModel.ScreenshotMode.FROM_VIEWPORT,
+    );
+    if (bytes) {
+      this.#imageInput = bytes;
+      void this.doUpdate();
+    }
+  }
+
+  #handleRemoveImageInput(): void {
+    this.#imageInput = '';
+    void this.doUpdate();
   }
 
   #runAbortController = new AbortController();
@@ -1120,6 +1155,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
     return false;
   }
+}
+
+function isAiAssistanceMultimodalInputEnabled(): boolean {
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.multimodal);
 }
 
 function isAiAssistancePatchingEnabled(): boolean {

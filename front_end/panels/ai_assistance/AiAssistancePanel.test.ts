@@ -11,7 +11,8 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {createAiAssistancePanel, detachPanels, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ElementsPanel from '../elements/elements.js';
 import * as NetworkPanel from '../network/network.js';
@@ -27,7 +28,7 @@ async function drainMicroTasks() {
   await new Promise(resolve => setTimeout(resolve, 0));
 }
 
-describeWithEnvironment('AI Assistance Panel', () => {
+describeWithMockConnection('AI Assistance Panel', () => {
   beforeEach(() => {
     registerNoopActions(['elements.toggle-element-search']);
     UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
@@ -1091,5 +1092,64 @@ describeWithEnvironment('AI Assistance Panel', () => {
         steps: [],
       },
     ]);
+  });
+
+  describe('multimodal input', () => {
+    function mockScreenshotModel() {
+      const target = createTarget();
+      const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+      assert.exists(screenCaptureModel);
+      return {
+        captureScreenshotStub:
+            sinon.stub(screenCaptureModel, 'captureScreenshot').returns(Promise.resolve('imageInput')),
+      };
+    }
+
+    it('multimodal related functions unavailable when multimodal is disabled', async () => {
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: false,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+      const {
+        view,
+      } = createAiAssistancePanel();
+
+      assert.isFalse(view.lastCall.args[0].multimodalInputEnabled);
+      assert.notExists(view.lastCall.args[0].onTakeScreenshot);
+      assert.notExists(view.lastCall.args[0].onRemoveImageInput);
+      assert.isEmpty(view.lastCall.args[0].imageInput);
+    });
+
+    it('adds an image input and then removes it', async () => {
+      const {captureScreenshotStub} = mockScreenshotModel();
+      Object.assign(Root.Runtime.hostConfig, {
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+      const {
+        view,
+      } = createAiAssistancePanel();
+
+      assert.isTrue(view.lastCall.args[0].multimodalInputEnabled);
+
+      await view.lastCall.args[0].onTakeScreenshot?.();
+
+      expect(captureScreenshotStub.calledOnce);
+      assert.deepEqual(view.lastCall.args[0].imageInput, 'imageInput');
+
+      await view.lastCall.args[0].onRemoveImageInput?.();
+
+      assert.isEmpty(view.lastCall.args[0].imageInput);
+    });
   });
 });

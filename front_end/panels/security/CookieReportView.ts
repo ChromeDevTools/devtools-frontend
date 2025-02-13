@@ -352,7 +352,7 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.blocked,
         label: () => i18nString(UIStrings.blocked),
         title: UIStrings.blocked,
-        jslogContext: UIStrings.blocked,
+        jslogContext: 'blocked',
       });
     }
     if (this.#cookieRows.values().some(n => n.status === IssuesManager.CookieIssue.CookieStatus.ALLOWED)) {
@@ -360,7 +360,7 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.allowed,
         label: () => i18nString(UIStrings.allowed),
         title: UIStrings.allowed,
-        jslogContext: UIStrings.allowed,
+        jslogContext: 'allowed',
       });
     }
     if (this.#cookieRows.values().some(
@@ -370,7 +370,7 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.allowedByException,
         label: () => i18nString(UIStrings.allowedByException),
         title: UIStrings.allowedByException,
-        jslogContext: UIStrings.allowedByException,
+        jslogContext: 'allowed-by-exception',
       });
     }
 

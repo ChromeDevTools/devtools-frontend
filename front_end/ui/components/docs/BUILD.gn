@@ -12,7 +12,6 @@ group("docs") {
     ":component_doc_styles",
     "../../../Images",
     "../../../panels/timeline/fixtures/traces",
-    "./ai_assistance",
     "./breadcrumbs_perf",
     "./button",
     "./color_swatch",

@@ -15,7 +15,6 @@ group("interactions") {
 node_ts_library("tests") {
   deps = [
     "helpers",
-    "panels/ai_assistance",
     "panels/explain",
     "panels/performance/timeline",
     "panels/recorder/injected",

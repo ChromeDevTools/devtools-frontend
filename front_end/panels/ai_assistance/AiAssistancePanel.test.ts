@@ -201,188 +201,108 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
-  describe('flavor change listeners', () => {
-    describe('SDK.DOMModel.DOMNode flavor changes for selected element', () => {
-      it('should set the selected element when the widget is shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
+  describe('Contexts', () => {
+    const tests = [
+      {
+        flavor: SDK.DOMModel.DOMNode,
+        createContext: () => {
+          const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+            nodeType: Node.ELEMENT_NODE,
+          });
+          return new AiAssistance.NodeContext(node);
+        },
+        action: 'freestyler.elements-floating-button',
+      },
+      {
+        flavor: SDK.NetworkRequest.NetworkRequest,
+        createContext: () => {
+          return new AiAssistance.RequestContext(sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest));
+        },
+        action: 'drjones.network-floating-button'
+      },
+      {
+        flavor: TimelineUtils.AICallTree.AICallTree,
+        createContext: () => {
+          return new AiAssistance.CallTreeContext(sinon.createStubInstance(TimelineUtils.AICallTree.AICallTree));
+        },
+        action: 'drjones.performance-panel-context'
+      },
+      {
+        flavor: Workspace.UISourceCode.UISourceCode,
+        createContext: () => {
+          return new AiAssistance.FileContext(sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
+        },
+        action: 'drjones.sources-panel-context',
+      }
+    ];
 
-        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
-          nodeType: Node.ELEMENT_NODE,
-        });
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-        panel.handleAction('freestyler.elements-floating-button');
-
+    for (const test of tests) {
+      it(`should use the selected ${test.flavor.name} context after the widget is shown`, async () => {
+        const {view, panel, waitForRendering} = await createAiAssistancePanel();
+        const context = test.createContext();
+        const contextItem = context.getItem();
+        if (!contextItem) {
+          throw new Error('Context is not available');
+        }
+        UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
+        panel.handleAction(test.action);
+        await waitForRendering();
         sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.NodeContext(node),
+          selectedContext: context,
         }));
       });
 
-      it('should update the selected element when the changed DOMNode flavor is an ELEMENT_NODE', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('freestyler.elements-floating-button');
+      it(`should update the selected ${test.flavor.name} context whenever flavor changes`, async () => {
+        const {view, panel, waitForRendering} = await createAiAssistancePanel();
+        panel.handleAction(test.action);
         sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
-
-        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
-          nodeType: Node.ELEMENT_NODE,
-        });
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-
+        const context = test.createContext();
+        const contextItem = context.getItem();
+        if (!contextItem) {
+          throw new Error('Context is not available');
+        }
+        UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
+        await waitForRendering();
         sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.NodeContext(node),
+          selectedContext: context,
         }));
       });
 
-      it('should set selected element to null when the change DOMNode flavor is not an ELEMENT_NODE', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('freestyler.elements-floating-button');
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: null,
-        }));
-
-        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
-          nodeType: Node.COMMENT_NODE,
-        });
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: null,
-        }));
-      });
-
-      it('should not handle DOMNode flavor changes if the widget is not shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: null,
-        }));
-        const callCount = view.callCount;
-        panel.hideWidget();
-        const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
-          nodeType: Node.ELEMENT_NODE,
-        });
-        UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-        assert.strictEqual(view.callCount, callCount);
-      });
-    });
-
-    describe('SDK.NetworkRequest.NetworkRequest flavor changes for selected network request', () => {
-      it('should set the selected network request when the widget is shown', async () => {
-        const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('drjones.network-floating-button');
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.RequestContext(networkRequest),
-        }));
-      });
-
-      it('should set selected network request when the NetworkRequest flavor changes', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('drjones.network-floating-button');
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: null,
-        }));
-
-        const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.RequestContext(networkRequest),
-        }));
-      });
-
-      it('should not handle NetworkRequest flavor changes if the widget is not shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
+      it(`should ignore ${test.flavor.name} flavor change after the panel was hidden`, async () => {
+        const {view, panel, waitForRendering} = await createAiAssistancePanel();
         sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
         }));
         const callCount = view.callCount;
         panel.hideWidget();
-        const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+        const context = test.createContext();
+        const contextItem = context.getItem();
+        if (!contextItem) {
+          throw new Error('Context is not available');
+        }
+        UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
+        await waitForRendering();
         assert.strictEqual(view.callCount, callCount);
       });
-    });
+    }
 
-    describe('TimelineUtils.AICallTree.AICallTree flavor changes for selected call tree', () => {
-      it('should set the selected call tree when the widget is shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
+    it('should set selected context to null when the change DOMNode flavor is not an ELEMENT_NODE', async () => {
+      const {view, panel} = await createAiAssistancePanel();
+      panel.handleAction('freestyler.elements-floating-button');
+      sinon.assert.calledWith(view.lastCall, sinon.match({
+        selectedContext: null,
+      }));
 
-        const selectedAiCallTree = {};
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
-        panel.handleAction('drjones.performance-panel-context');
-
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
-        }));
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
+        nodeType: Node.COMMENT_NODE,
       });
+      UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
-      it('should set selected call tree when the AICallTree flavor changes', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-
-        panel.handleAction('drjones.performance-panel-context');
-        sinon.assert.calledWith(view, sinon.match({
-          selectedContext: null,
-        }));
-
-        const selectedAiCallTree = {};
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
-
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
-        }));
-      });
-
-      it('should not handle AICallTree flavor changes if the widget is not shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        const callCount = view.callCount;
-        panel.hideWidget();
-
-        const selectedAiCallTree = {};
-        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
-
-        assert.strictEqual(view.callCount, callCount);
-      });
-    });
-
-    describe('Workspace.UISourceCode.UISourceCode flavor changes for selected file', () => {
-      it('should set selected file when the widget is shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('drjones.sources-panel-context');
-
-        const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.FileContext(uiSourceCode),
-        }));
-      });
-
-      it('should set selected file when the UISourceCode flavor changes', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        panel.handleAction('drjones.sources-panel-context');
-        sinon.assert.calledWith(view, sinon.match({
-          selectedContext: null,
-        }));
-
-        const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-
-        sinon.assert.calledWith(view.lastCall, sinon.match({
-          selectedContext: new AiAssistance.FileContext(uiSourceCode),
-        }));
-      });
-
-      it('should not handle UISourceCode flavor changes if the widget is not shown', async () => {
-        const {view, panel} = await createAiAssistancePanel();
-        const callCount = view.callCount;
-        panel.hideWidget();
-
-        const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
-        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-
-        assert.strictEqual(view.callCount, callCount);
-      });
+      sinon.assert.calledWith(view.lastCall, sinon.match({
+        selectedContext: null,
+      }));
     });
   });
 

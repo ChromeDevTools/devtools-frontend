@@ -374,6 +374,13 @@ export interface HostConfigAiAssistanceFileAgent {
   userTier: string;
 }
 
+/**
+ * @see http://go/chrome-devtools:automatic-workspace-folders-design
+ */
+export interface HostConfigAutomaticFileSystems {
+  enabled: boolean;
+}
+
 export interface HostConfigImprovedWorkspaces {
   enabled: boolean;
 }
@@ -383,6 +390,9 @@ export interface HostConfigVeLogging {
   testing: boolean;
 }
 
+/**
+ * @see https://goo.gle/devtools-json-design
+ */
 export interface HostConfigWellKnown {
   enabled: boolean;
 }
@@ -427,6 +437,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent,
   devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
+  devToolsAutomaticFileSystems: HostConfigAutomaticFileSystems,
   devToolsImprovedWorkspaces: HostConfigImprovedWorkspaces,
   devToolsVeLogging: HostConfigVeLogging,
   devToolsWellKnown: HostConfigWellKnown,

@@ -26,19 +26,22 @@ describe('Select element accessibility issues test', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display issue when there is a disallowed child of an optgroup element', async () => {
-    await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
-    await navigateToIssuesTab();
-    const issueElement = await getAndExpandSpecificIssueByTitle('Invalid element or text node within <optgroup>');
-    assertNotNullOrUndefined(issueElement);
+  // crbug.com/396633671 failing with latest Cft roll
+  it.skip(
+      '[crbug.com/396633671] should display issue when there is a disallowed child of an optgroup element',
+      async () => {
+        await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
+        await navigateToIssuesTab();
+        const issueElement = await getAndExpandSpecificIssueByTitle('Invalid element or text node within <optgroup>');
+        assertNotNullOrUndefined(issueElement);
 
-    const section = await getResourcesElement('1 element', issueElement);
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      ['Disallowed descendant'],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+        const section = await getResourcesElement('1 element', issueElement);
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          ['Disallowed descendant'],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display issue when there is a non-phrasing child element of an option element', async () => {
     await goToResource('issues/select-element-accessibility-issue-NonPhrasingContentOptionChild.html');

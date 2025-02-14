@@ -261,7 +261,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         }
         this.#setupAttachmentListeners(session);
         if (isExistingTarget) {
-            session._setTarget(target);
+            session.setTarget(target);
             this.#attachedTargetsBySessionId.set(session.id(), this.#attachedTargetsByTargetId.get(targetInfo.targetId));
         }
         else {
@@ -270,7 +270,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
             this.#attachedTargetsBySessionId.set(session.id(), target);
         }
         const parentTarget = parentSession instanceof CDPSession_js_1.CDPSession
-            ? parentSession._target()
+            ? parentSession.target()
             : null;
         parentTarget?._addChildTarget(target);
         parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
@@ -306,7 +306,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         if (parentSession instanceof CDPSession_js_1.CDPSession) {
-            parentSession._target()._removeChildTarget(target);
+            parentSession.target()._removeChildTarget(target);
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);

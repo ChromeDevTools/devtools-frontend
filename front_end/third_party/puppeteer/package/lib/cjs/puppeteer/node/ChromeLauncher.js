@@ -11,9 +11,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChromeLauncher = void 0;
 exports.getFeatures = getFeatures;
 exports.removeMatchingFlags = removeMatchingFlags;
-const promises_1 = require("fs/promises");
-const os_1 = __importDefault(require("os"));
-const path_1 = __importDefault(require("path"));
+const promises_1 = require("node:fs/promises");
+const node_os_1 = __importDefault(require("node:os"));
+const node_path_1 = __importDefault(require("node:path"));
 const browsers_1 = require("@puppeteer/browsers");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
@@ -30,7 +30,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         if (this.puppeteer.configuration.logLevel === 'warn' &&
             process.platform === 'darwin' &&
             process.arch === 'x64') {
-            const cpus = os_1.default.cpus();
+            const cpus = node_os_1.default.cpus();
             if (cpus[0]?.model.includes('Apple')) {
                 console.warn([
                     '\x1B[1m\x1B[43m\x1B[30m',
@@ -186,7 +186,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         });
         const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
         if (userDataDir) {
-            chromeArguments.push(`--user-data-dir=${path_1.default.resolve(userDataDir)}`);
+            chromeArguments.push(`--user-data-dir=${node_path_1.default.resolve(userDataDir)}`);
         }
         if (devtools) {
             chromeArguments.push('--auto-open-devtools-for-tabs');

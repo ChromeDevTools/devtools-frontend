@@ -1,24 +1,28 @@
+"use strict";
 /**
  * @license
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import { CDPSession, CDPSessionEvent, } from '../api/CDPSession.js';
-import { CallbackRegistry } from '../common/CallbackRegistry.js';
-import { TargetCloseError } from '../common/Errors.js';
-import { assert } from '../util/assert.js';
-import { createProtocolErrorMessage } from '../util/ErrorLike.js';
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CdpCDPSession = void 0;
+const CDPSession_js_1 = require("../api/CDPSession.js");
+const CallbackRegistry_js_1 = require("../common/CallbackRegistry.js");
+const Errors_js_1 = require("../common/Errors.js");
+const assert_js_1 = require("../util/assert.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 /**
  * @internal
  */
-export class CdpCDPSession extends CDPSession {
+class CdpCDPSession extends CDPSession_js_1.CDPSession {
     #sessionId;
     #targetType;
-    #callbacks = new CallbackRegistry();
+    #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
     #connection;
     #parentSessionId;
     #target;
     #rawErrors = false;
+    #detached = false;
     /**
      * @internal
      */
@@ -35,7 +39,7 @@ export class CdpCDPSession extends CDPSession {
      *
      * @internal
      */
-    _setTarget(target) {
+    setTarget(target) {
         this.#target = target;
     }
     /**
@@ -43,12 +47,15 @@ export class CdpCDPSession extends CDPSession {
      *
      * @internal
      */
-    _target() {
-        assert(this.#target, 'Target must exist');
+    target() {
+        (0, assert_js_1.assert)(this.#target, 'Target must exist');
         return this.#target;
     }
     connection() {
         return this.#connection;
+    }
+    get #closed() {
+        return this.#connection._closed || this.#detached;
     }
     parentSession() {
         if (!this.#parentSessionId) {
@@ -60,22 +67,22 @@ export class CdpCDPSession extends CDPSession {
         return parent ?? undefined;
     }
     send(method, params, options) {
-        if (!this.#connection) {
-            return Promise.reject(new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
+        if (this.#closed) {
+            return Promise.reject(new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
         }
         return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId, options);
     }
     /**
      * @internal
      */
-    _onMessage(object) {
+    onMessage(object) {
         if (object.id) {
             if (object.error) {
                 if (this.#rawErrors) {
                     this.#callbacks.rejectRaw(object.id, object.error);
                 }
                 else {
-                    this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                    this.#callbacks.reject(object.id, (0, ErrorLike_js_1.createProtocolErrorMessage)(object), object.error.message);
                 }
             }
             else {
@@ -83,7 +90,7 @@ export class CdpCDPSession extends CDPSession {
             }
         }
         else {
-            assert(!object.id);
+            (0, assert_js_1.assert)(!object.id);
             this.emit(object.method, object.params);
         }
     }
@@ -92,20 +99,21 @@ export class CdpCDPSession extends CDPSession {
      * won't emit any events and can't be used to send messages.
      */
     async detach() {
-        if (!this.#connection) {
+        if (this.#closed) {
             throw new Error(`Session already detached. Most likely the ${this.#targetType} has been closed.`);
         }
         await this.#connection.send('Target.detachFromTarget', {
             sessionId: this.#sessionId,
         });
+        this.#detached = true;
     }
     /**
      * @internal
      */
-    _onClosed() {
+    onClosed() {
         this.#callbacks.clear();
-        this.#connection = undefined;
-        this.emit(CDPSessionEvent.Disconnected, undefined);
+        this.#detached = true;
+        this.emit(CDPSession_js_1.CDPSessionEvent.Disconnected, undefined);
     }
     /**
      * Returns the session's id.
@@ -120,4 +128,5 @@ export class CdpCDPSession extends CDPSession {
         return this.#callbacks.getPendingProtocolErrors();
     }
 }
-//# sourceMappingURL=CDPSession.js.map
+exports.CdpCDPSession = CdpCDPSession;
+//# sourceMappingURL=CdpSession.js.map

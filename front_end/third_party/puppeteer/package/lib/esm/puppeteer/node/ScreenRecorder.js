@@ -41,8 +41,8 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
-import { spawn, spawnSync } from 'child_process';
-import { PassThrough } from 'stream';
+import { spawn, spawnSync } from 'node:child_process';
+import { PassThrough } from 'node:stream';
 import debug from 'debug';
 import { bufferCount, concatMap, filter, from, fromEvent, lastValueFrom, map, takeUntil, tap, } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';

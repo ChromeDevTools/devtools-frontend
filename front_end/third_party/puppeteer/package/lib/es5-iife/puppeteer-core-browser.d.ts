@@ -1,8 +1,8 @@
 /// <reference types="node" />
 
-import type { ChildProcess } from 'child_process';
+import type { ChildProcess } from 'node:child_process';
 type ParseSelector<T extends string> = any;
-import { PassThrough } from 'stream';
+import { PassThrough } from 'node:stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 type Session = any;
@@ -339,7 +339,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * Shortcut for
      * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
      */
-    setCookie(...cookies: Cookie[]): Promise<void>;
+    setCookie(...cookies: CookieData[]): Promise<void>;
     /**
      * Removes cookies from the default {@link BrowserContext}.
      *
@@ -1113,7 +1113,7 @@ export declare function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKe
  *
  * @public
  */
-export declare interface Cookie {
+export declare interface Cookie extends CookieData {
     /**
      * Cookie name.
      */
@@ -5232,7 +5232,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import puppeteer from 'puppeteer';
-     * import fs from 'fs';
+     * import fs from 'node:fs';
      *
      * (async () => {
      *   const browser = await puppeteer.launch();

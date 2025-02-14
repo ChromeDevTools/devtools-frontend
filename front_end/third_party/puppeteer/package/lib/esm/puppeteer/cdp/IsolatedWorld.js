@@ -76,7 +76,7 @@ export class IsolatedWorld extends Realm {
     }
     async evaluateHandle(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-        // This code needs to schedule evaluateHandle call synchroniously (at
+        // This code needs to schedule evaluateHandle call synchronously (at
         // least when the context is there) so we cannot unconditionally
         // await.
         let context = this.#executionContext();
@@ -87,7 +87,7 @@ export class IsolatedWorld extends Realm {
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        // This code needs to schedule evaluate call synchroniously (at
+        // This code needs to schedule evaluate call synchronously (at
         // least when the context is there) so we cannot unconditionally
         // await.
         let context = this.#executionContext();

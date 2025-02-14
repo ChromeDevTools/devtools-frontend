@@ -8,7 +8,7 @@ import type { NewDocumentScriptEvaluation } from '../api/Page.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Binding } from './Binding.js';
-import { CdpCDPSession } from './CDPSession.js';
+import { CdpCDPSession } from './CdpSession.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { CdpFrame } from './Frame.js';
 import type { FrameManagerEvents } from './FrameManagerEvents.js';

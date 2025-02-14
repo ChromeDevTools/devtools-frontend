@@ -21,20 +21,20 @@ export declare class CdpCDPSession extends CDPSession {
      *
      * @internal
      */
-    _setTarget(target: CdpTarget): void;
+    setTarget(target: CdpTarget): void;
     /**
      * Gets the {@link CdpTarget} associated with the session instance.
      *
      * @internal
      */
-    _target(): CdpTarget;
+    target(): CdpTarget;
     connection(): Connection | undefined;
     parentSession(): CDPSession | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal
      */
-    _onMessage(object: {
+    onMessage(object: {
         id?: number;
         method: keyof CDPEvents;
         params: CDPEvents[keyof CDPEvents];
@@ -53,7 +53,7 @@ export declare class CdpCDPSession extends CDPSession {
     /**
      * @internal
      */
-    _onClosed(): void;
+    onClosed(): void;
     /**
      * Returns the session's id.
      */
@@ -63,4 +63,4 @@ export declare class CdpCDPSession extends CDPSession {
      */
     getPendingProtocolErrors(): Error[];
 }
-//# sourceMappingURL=CDPSession.d.ts.map
+//# sourceMappingURL=CdpSession.d.ts.map

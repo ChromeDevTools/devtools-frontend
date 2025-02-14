@@ -47,8 +47,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ScreenRecorder = void 0;
-const child_process_1 = require("child_process");
-const stream_1 = require("stream");
+const node_child_process_1 = require("node:child_process");
+const node_stream_1 = require("node:stream");
 const debug_1 = __importDefault(require("debug"));
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
@@ -62,7 +62,7 @@ const debugFfmpeg = (0, debug_1.default)('puppeteer:ffmpeg');
  * @public
  */
 let ScreenRecorder = (() => {
-    let _classSuper = stream_1.PassThrough;
+    let _classSuper = node_stream_1.PassThrough;
     let _instanceExtraInitializers = [];
     let _private_writeFrame_decorators;
     let _private_writeFrame_descriptor;
@@ -92,11 +92,11 @@ let ScreenRecorder = (() => {
             super({ allowHalfOpen: false });
             path ??= 'ffmpeg';
             // Tests if `ffmpeg` exists.
-            const { error } = (0, child_process_1.spawnSync)(path);
+            const { error } = (0, node_child_process_1.spawnSync)(path);
             if (error) {
                 throw error;
             }
-            this.#process = (0, child_process_1.spawn)(path, 
+            this.#process = (0, node_child_process_1.spawn)(path, 
             // See https://trac.ffmpeg.org/wiki/Encode/VP9 for more information on flags.
             [
                 ['-loglevel', 'error'],

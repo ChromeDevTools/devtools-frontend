@@ -1204,7 +1204,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * import puppeteer from 'puppeteer';
-     * import fs from 'fs';
+     * import fs from 'node:fs';
      *
      * (async () => {
      *   const browser = await puppeteer.launch();

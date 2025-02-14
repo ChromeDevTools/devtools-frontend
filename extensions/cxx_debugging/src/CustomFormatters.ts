@@ -33,7 +33,7 @@ export interface TypeInfo {
 }
 
 export interface WasmInterface {
-  readMemory(offset: number, length: number): Uint8Array;
+  readMemory(offset: number, length: number): Uint8Array<ArrayBuffer>;
   getOp(op: number): WasmValue;
   getLocal(local: number): WasmValue;
   getGlobal(global: number): WasmValue;
@@ -607,7 +607,7 @@ export class HostWasmInterface {
     this.stopId = stopId;
     this.view = new WasmMemoryView(this);
   }
-  readMemory(offset: number, length: number): Uint8Array {
+  readMemory(offset: number, length: number): Uint8Array<ArrayBuffer> {
     return new Uint8Array(this.hostInterface.getWasmLinearMemory(offset, length, this.stopId));
   }
   getOp(op: number): WasmValue {

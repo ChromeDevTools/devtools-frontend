@@ -96,11 +96,13 @@ function formatLibCXXString<T extends CharArrayConstructor>(
 
     const copyLen = Math.min(stringSize * charSize, Constants.MAX_STRING_LEN);
     const bytes = wasm.readMemory(data, copyLen);
+    // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
     const text = new charType(bytes.buffer, bytes.byteOffset, stringSize) as InstanceType<T>;
     return {size: stringSize, string: decode(text)};
   }
 
   const bytes = shortString.$('__data_').asDataView(0, size * charSize);
+  // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
   const text = new charType(bytes.buffer, bytes.byteOffset, size) as InstanceType<T>;
   return {size, string: decode(text)};
 }
@@ -147,7 +149,8 @@ CustomFormatters.addFormatter({
   format: formatLibCXX32String,
 });
 
-type CharArrayConstructor = typeof Uint8Array|typeof Uint16Array|typeof Uint32Array;
+type CharArrayConstructor = Uint8ArrayConstructor|Uint16ArrayConstructor|Uint32ArrayConstructor;
+
 function formatRawString<T extends CharArrayConstructor>(
     wasm: WasmInterface, value: Value, charType: T, decode: (chars: InstanceType<T>) => string): string|{
   [key: string]: Value|null,
@@ -164,6 +167,7 @@ function formatRawString<T extends CharArrayConstructor>(
     // Copy PAGE_SIZE bytes
     const buffer = deref.asDataView(bufferSize, Constants.PAGE_SIZE);
     // Convert to charType
+    // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
     const substr = new charType(buffer.buffer, buffer.byteOffset, buffer.byteLength / charSize);
     const strlen = substr.indexOf(0);
     if (strlen >= 0) {
@@ -171,6 +175,7 @@ function formatRawString<T extends CharArrayConstructor>(
       const str = new charType(bufferSize / charSize + strlen) as InstanceType<T>;
       for (let i = 0; i < slices.length; ++i) {
         str.set(
+            // @ts-expect-error TypeScript can't find the deduce the intersection type correctly
             new charType(slices[i].buffer, slices[i].byteOffset, slices[i].byteLength / charSize),
             i * Constants.PAGE_SIZE / charSize);
       }
@@ -185,12 +190,16 @@ function formatRawString<T extends CharArrayConstructor>(
 export function formatCString(wasm: WasmInterface, value: Value): string|{
   [key: string]: Value|null,
 }
-{ return formatRawString(wasm, value, Uint8Array, str => new TextDecoder().decode(str)); }
+{
+  return formatRawString(wasm, value, Uint8Array, str => new TextDecoder().decode(str));
+}
 
 export function formatU16CString(wasm: WasmInterface, value: Value): string|{
   [key: string]: Value|null,
 }
-{ return formatRawString(wasm, value, Uint16Array, str => new TextDecoder('utf-16le').decode(str)); }
+{
+  return formatRawString(wasm, value, Uint16Array, str => new TextDecoder('utf-16le').decode(str));
+}
 
 export function formatCWString(wasm: WasmInterface, value: Value): string|{
   [key: string]: Value|null,

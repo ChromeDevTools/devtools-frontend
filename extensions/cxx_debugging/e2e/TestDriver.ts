@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type {ElementHandle, JSHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 import {TestConfig} from 'test/conductor/test_config.js';
 import {
   CONSOLE_TAB_SELECTOR,
@@ -90,7 +90,7 @@ describe('CXX Debugging Extension Test Suite', function() {
           const stopped = await waitFor(PAUSE_INDICATOR_SELECTOR);
           const stoppedText = await waitForFunction(async () => stopped.evaluate(node => node.textContent));
 
-          assert.equal(stoppedText, pausedReasonText(reason));
+          assert.strictEqual(stoppedText, pausedReasonText(reason));
 
           const pausedLocation = await retrieveTopCallFrameWithoutResuming();
           if (pausedLocation?.includes('…')) {
@@ -121,9 +121,9 @@ describe('CXX Debugging Extension Test Suite', function() {
                 }
               } else {
                 if (variableType) {
-                  assert.equal(scopeVariable, `${variableName}: ${variableType}`);
+                  assert.strictEqual(scopeVariable, `${variableName}: ${variableType}`);
                 } else if (value) {
-                  assert.equal(scopeVariable, `${variableName}: ${value}`);
+                  assert.strictEqual(scopeVariable, `${variableName}: ${value}`);
                 }
               }
             }
@@ -142,7 +142,7 @@ describe('CXX Debugging Extension Test Suite', function() {
                     .map(node => node.textContent);
               });
               const result = evaluateResults[evaluateResults.length - 1];
-              assert.equal(result, value.toString());
+              assert.strictEqual(result, value.toString());
             }
 
             await openSourcesPanel();
@@ -174,12 +174,12 @@ async function readScopeView(scope: string, variable: string[]) {
     throw new Error(`Scope entry for ${scope} not found`);
   }
 
-  let parentNode = await scopeElement.evaluateHandle(n => n.nextElementSibling);
+  let parentNode = await scopeElement.evaluateHandle(n => n.nextElementSibling!);
   assert(parentNode, 'Scope element has no siblings');
 
   const result = [];
   for (const node of variable) {
-    const elementHandle: ElementHandle<Element> = await getMember(node, parentNode);
+    const elementHandle = await getMember(node, parentNode);
     const isExpanded = await elementHandle.evaluate((node: Element) => {
       node.scrollIntoView();
       return node.getAttribute('aria-expanded');
@@ -202,12 +202,12 @@ async function readScopeView(scope: string, variable: string[]) {
       result.push(await name.evaluate(node => node.textContent));
     }
 
-    parentNode = await elementHandle.evaluateHandle(n => n.nextElementSibling);
+    parentNode = await elementHandle.evaluateHandle(n => n.nextElementSibling!);
     assert(parentNode, 'Element has no siblings');
   }
   return result;
 
-  async function getMember(name: string, parentNode: ElementHandle|JSHandle<null>): Promise<ElementHandle<Element>> {
+  async function getMember(name: string, parentNode: ElementHandle): Promise<ElementHandle<Element>> {
     if (name.startsWith('$')) {
       const index = parseInt(name.slice(1), 10);
       if (!isNaN(index)) {

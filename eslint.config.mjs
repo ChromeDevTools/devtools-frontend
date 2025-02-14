@@ -601,6 +601,7 @@ export default [
       'test/**/*.ts',
       '**/testing/*.ts',
       'scripts/eslint_rules/test/**/*.js',
+      'extensions/cxx_debugging/e2e/**',
     ],
 
     rules: {

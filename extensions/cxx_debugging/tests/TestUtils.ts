@@ -70,8 +70,8 @@ export function nonNull<T>(value: T|null|undefined): T {
   return value as T;
 }
 
-export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|
-                             null): Chrome.DevTools.RemoteObject {
+export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null):
+    Chrome.DevTools.RemoteObject {
   assert.exists(value);
   assert(value.type !== 'reftype');
   return value;
@@ -83,7 +83,7 @@ export class TestWasmInterface implements WasmInterface {
   globals = new Map<number, WasmValue>();
   stack = new Map<number, WasmValue>();
 
-  readMemory(offset: number, length: number): Uint8Array {
+  readMemory(offset: number, length: number): Uint8Array<ArrayBuffer> {
     return new Uint8Array(this.memory, offset, length);
   }
   getOp(op: number): WasmValue {

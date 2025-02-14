@@ -6,6 +6,7 @@ var typeOf = require("@sinonjs/commons").typeOf;
 
 var deepEqualFactory = require("../deep-equal").use;
 
+var identical = require("../identical");
 var isMatcher = require("./is-matcher");
 
 var keys = Object.keys;
@@ -41,6 +42,9 @@ function matchObject(actual, expectation, matcher) {
                 return false;
             }
         } else if (typeOf(exp) === "object") {
+            if (identical(exp, act)) {
+                return true;
+            }
             if (!matchObject(act, exp, matcher)) {
                 return false;
             }

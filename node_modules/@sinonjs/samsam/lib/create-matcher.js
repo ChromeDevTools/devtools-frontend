@@ -44,7 +44,7 @@ function createMatcher(expectation, message) {
 
     if (arguments.length > 2) {
         throw new TypeError(
-            `Expected 1 or 2 arguments, received ${arguments.length}`
+            `Expected 1 or 2 arguments, received ${arguments.length}`,
         );
     }
 
@@ -89,9 +89,12 @@ createMatcher.falsy = createMatcher(function (actual) {
 }, "falsy");
 
 createMatcher.same = function (expectation) {
-    return createMatcher(function (actual) {
-        return expectation === actual;
-    }, `same(${valueToString(expectation)})`);
+    return createMatcher(
+        function (actual) {
+            return expectation === actual;
+        },
+        `same(${valueToString(expectation)})`,
+    );
 };
 
 createMatcher.in = function (arrayOfExpectations) {
@@ -99,11 +102,14 @@ createMatcher.in = function (arrayOfExpectations) {
         throw new TypeError("array expected");
     }
 
-    return createMatcher(function (actual) {
-        return some(arrayOfExpectations, function (expectation) {
-            return expectation === actual;
-        });
-    }, `in(${valueToString(arrayOfExpectations)})`);
+    return createMatcher(
+        function (actual) {
+            return some(arrayOfExpectations, function (expectation) {
+                return expectation === actual;
+            });
+        },
+        `in(${valueToString(arrayOfExpectations)})`,
+    );
 };
 
 createMatcher.typeOf = function (type) {
@@ -125,12 +131,15 @@ createMatcher.instanceOf = function (type) {
             type,
             Symbol.hasInstance,
             "type",
-            "[Symbol.hasInstance]"
+            "[Symbol.hasInstance]",
         );
     }
-    return createMatcher(function (actual) {
-        return actual instanceof type;
-    }, `instanceOf(${functionName(type) || objectToString(type)})`);
+    return createMatcher(
+        function (actual) {
+            return actual instanceof type;
+        },
+        `instanceOf(${functionName(type) || objectToString(type)})`,
+    );
 };
 
 /**
@@ -259,111 +268,137 @@ createMatcher.some = function (predicate) {
 createMatcher.array = createMatcher.typeOf("array");
 
 createMatcher.array.deepEquals = function (expectation) {
-    return createMatcher(function (actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.length === expectation.length;
-        return (
-            typeOf(actual) === "array" &&
-            sameLength &&
-            every(actual, function (element, index) {
-                var expected = expectation[index];
-                return typeOf(expected) === "array" &&
-                    typeOf(element) === "array"
-                    ? createMatcher.array.deepEquals(expected).test(element)
-                    : deepEqual(expected, element);
-            })
-        );
-    }, `deepEquals([${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            // Comparing lengths is the fastest way to spot a difference before iterating through every item
+            var sameLength = actual.length === expectation.length;
+            return (
+                typeOf(actual) === "array" &&
+                sameLength &&
+                every(actual, function (element, index) {
+                    var expected = expectation[index];
+                    return typeOf(expected) === "array" &&
+                        typeOf(element) === "array"
+                        ? createMatcher.array.deepEquals(expected).test(element)
+                        : deepEqual(expected, element);
+                })
+            );
+        },
+        `deepEquals([${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.array.startsWith = function (expectation) {
-    return createMatcher(function (actual) {
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function (expectedElement, index) {
-                return actual[index] === expectedElement;
-            })
-        );
-    }, `startsWith([${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            return (
+                typeOf(actual) === "array" &&
+                every(expectation, function (expectedElement, index) {
+                    return actual[index] === expectedElement;
+                })
+            );
+        },
+        `startsWith([${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.array.endsWith = function (expectation) {
-    return createMatcher(function (actual) {
-        // This indicates the index in which we should start matching
-        var offset = actual.length - expectation.length;
+    return createMatcher(
+        function (actual) {
+            // This indicates the index in which we should start matching
+            var offset = actual.length - expectation.length;
 
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function (expectedElement, index) {
-                return actual[offset + index] === expectedElement;
-            })
-        );
-    }, `endsWith([${iterableToString(expectation)}])`);
+            return (
+                typeOf(actual) === "array" &&
+                every(expectation, function (expectedElement, index) {
+                    return actual[offset + index] === expectedElement;
+                })
+            );
+        },
+        `endsWith([${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.array.contains = function (expectation) {
-    return createMatcher(function (actual) {
-        return (
-            typeOf(actual) === "array" &&
-            every(expectation, function (expectedElement) {
-                return arrayIndexOf(actual, expectedElement) !== -1;
-            })
-        );
-    }, `contains([${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            return (
+                typeOf(actual) === "array" &&
+                every(expectation, function (expectedElement) {
+                    return arrayIndexOf(actual, expectedElement) !== -1;
+                })
+            );
+        },
+        `contains([${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.map = createMatcher.typeOf("map");
 
 createMatcher.map.deepEquals = function mapDeepEquals(expectation) {
-    return createMatcher(function (actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.size === expectation.size;
-        return (
-            typeOf(actual) === "map" &&
-            sameLength &&
-            every(actual, function (element, key) {
-                return expectation.has(key) && expectation.get(key) === element;
-            })
-        );
-    }, `deepEquals(Map[${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            // Comparing lengths is the fastest way to spot a difference before iterating through every item
+            var sameLength = actual.size === expectation.size;
+            return (
+                typeOf(actual) === "map" &&
+                sameLength &&
+                every(actual, function (element, key) {
+                    return (
+                        expectation.has(key) && expectation.get(key) === element
+                    );
+                })
+            );
+        },
+        `deepEquals(Map[${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.map.contains = function mapContains(expectation) {
-    return createMatcher(function (actual) {
-        return (
-            typeOf(actual) === "map" &&
-            every(expectation, function (element, key) {
-                return actual.has(key) && actual.get(key) === element;
-            })
-        );
-    }, `contains(Map[${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            return (
+                typeOf(actual) === "map" &&
+                every(expectation, function (element, key) {
+                    return actual.has(key) && actual.get(key) === element;
+                })
+            );
+        },
+        `contains(Map[${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.set = createMatcher.typeOf("set");
 
 createMatcher.set.deepEquals = function setDeepEquals(expectation) {
-    return createMatcher(function (actual) {
-        // Comparing lengths is the fastest way to spot a difference before iterating through every item
-        var sameLength = actual.size === expectation.size;
-        return (
-            typeOf(actual) === "set" &&
-            sameLength &&
-            every(actual, function (element) {
-                return expectation.has(element);
-            })
-        );
-    }, `deepEquals(Set[${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            // Comparing lengths is the fastest way to spot a difference before iterating through every item
+            var sameLength = actual.size === expectation.size;
+            return (
+                typeOf(actual) === "set" &&
+                sameLength &&
+                every(actual, function (element) {
+                    return expectation.has(element);
+                })
+            );
+        },
+        `deepEquals(Set[${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.set.contains = function setContains(expectation) {
-    return createMatcher(function (actual) {
-        return (
-            typeOf(actual) === "set" &&
-            every(expectation, function (element) {
-                return actual.has(element);
-            })
-        );
-    }, `contains(Set[${iterableToString(expectation)}])`);
+    return createMatcher(
+        function (actual) {
+            return (
+                typeOf(actual) === "set" &&
+                every(expectation, function (element) {
+                    return actual.has(element);
+                })
+            );
+        },
+        `contains(Set[${iterableToString(expectation)}])`,
+    );
 };
 
 createMatcher.bool = createMatcher.typeOf("boolean");

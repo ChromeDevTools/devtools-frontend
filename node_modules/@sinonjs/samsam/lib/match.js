@@ -70,7 +70,7 @@ function match(object, matcherOrValue) {
                 notNull &&
                 indexOf(
                     valueToString(object).toLowerCase(),
-                    matcherOrValue.toLowerCase()
+                    matcherOrValue.toLowerCase(),
                 ) >= 0
             );
         case "null":
@@ -102,7 +102,7 @@ function match(object, matcherOrValue) {
             /* istanbul ignore next: this is covered by a test, that is only run in IE, but we collect coverage information in node*/
             if (!engineCanCompareMaps) {
                 throw new Error(
-                    "The JavaScript engine does not support Array.from and cannot reliably do value comparison of Map instances"
+                    "The JavaScript engine does not support Array.from and cannot reliably do value comparison of Map instances",
                 );
             }
 
@@ -111,7 +111,7 @@ function match(object, matcherOrValue) {
                 arrayContains(
                     Array.from(object),
                     Array.from(matcherOrValue),
-                    match
+                    match,
                 )
             );
         default:

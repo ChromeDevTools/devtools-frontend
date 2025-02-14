@@ -16,7 +16,7 @@ function assertType(value, type, name) {
     var actual = typeOf(value);
     if (actual !== type) {
         throw new TypeError(
-            `Expected type of ${name} to be ${type}, but was ${actual}`
+            `Expected type of ${name} to be ${type}, but was ${actual}`,
         );
     }
 }

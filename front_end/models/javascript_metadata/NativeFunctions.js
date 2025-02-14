@@ -6018,6 +6018,10 @@ export const NativeFunctions = [
     receivers: ["Navigation"]
   },
   {
+    name: "AnimationTrigger",
+    signatures: [["?options"]]
+  },
+  {
     name: "Animation",
     signatures: [["?effect","?timeline"]]
   },

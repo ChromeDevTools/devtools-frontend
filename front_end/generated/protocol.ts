@@ -960,6 +960,7 @@ export namespace Audits {
     KInlineViolation = 'kInlineViolation',
     KEvalViolation = 'kEvalViolation',
     KURLViolation = 'kURLViolation',
+    KSRIViolation = 'kSRIViolation',
     KTrustedTypesSinkViolation = 'kTrustedTypesSinkViolation',
     KTrustedTypesPolicyViolation = 'kTrustedTypesPolicyViolation',
     KWasmEvalViolation = 'kWasmEvalViolation',
@@ -4777,6 +4778,7 @@ export namespace DOM {
 
   export const enum GetElementByRelationRequestRelation {
     PopoverTarget = 'PopoverTarget',
+    InterestTarget = 'InterestTarget',
   }
 
   export interface GetElementByRelationRequest {

@@ -17,13 +17,14 @@ const {StylingAgent, ErrorType} = AiAssistance;
 describeWithEnvironment('StylingAgent', () => {
   function mockHostConfig(
       modelId?: string, temperature?: number, userTier?: string,
-      executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode) {
+      executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode, multimodal?: boolean) {
     updateHostConfig({
       devToolsFreestyler: {
         modelId,
         temperature,
         userTier,
         executionMode,
+        multimodal,
       },
     });
   }
@@ -1222,6 +1223,67 @@ STOP
           agent.run('test', {selected: new AiAssistance.NodeContext(element), signal: controller.signal}));
 
       assert.isUndefined(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts);
+    });
+  });
+
+  describe('enhanceQuery', () => {
+    const agent = new StylingAgent({
+      aidaClient: mockAidaClient(),
+    });
+
+    beforeEach(() => {
+      element.simpleSelector.returns('div#myElement');
+      element.getChildNodesPromise.resolves(null);
+    });
+
+    it('does not add multimodal input evaluation prompt when multimodal is disabled', async () => {
+      mockHostConfig('test model');
+      const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), true);
+
+      assert.strictEqual(
+          enhancedQuery,
+          '# Inspected element\n\n* Its selector is `div#myElement`\n\n# User request\n\nQUERY: test query',
+      );
+    });
+
+    it('does not add multimodal input evaluation prompt when multimodal is enabled but hasImageInput is false',
+       async () => {
+         mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
+         const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), false);
+
+         assert.strictEqual(
+             enhancedQuery,
+             '# Inspected element\n\n* Its selector is `div#myElement`\n\n# User request\n\nQUERY: test query',
+         );
+       });
+
+    it('adds multimodal input evaluation prompt when multimodal is enabled and hasImageInput is true', async () => {
+      mockHostConfig('test model', 1, 'PUBLIC', Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS, true);
+      const enhancedQuery = await agent.enhanceQuery('test query', new AiAssistance.NodeContext(element), true);
+
+      assert.strictEqual(
+          enhancedQuery,
+          `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Try to connect the screenshot to actual DOM elements in the page.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+# Inspected element
+
+* Its selector is \`div#myElement\`
+
+# User request
+
+QUERY: test query`,
+      );
     });
   });
 

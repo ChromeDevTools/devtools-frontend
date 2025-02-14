@@ -244,7 +244,7 @@ export abstract class AiAgent<T> {
     this.confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
   }
 
-  async enhanceQuery(query: string, selected: ConversationContext<T>|null): Promise<string>;
+  async enhanceQuery(query: string, selected: ConversationContext<T>|null, hasImageInput?: boolean): Promise<string>;
   async enhanceQuery(query: string): Promise<string> {
     return query;
   }
@@ -362,8 +362,7 @@ export abstract class AiAgent<T> {
       this.#context = options.selected;
     }
 
-    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected);
-
+    const enhancedQuery = await this.enhanceQuery(initialQuery, options.selected, Boolean(imageInput));
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
 
     let query: Host.AidaClient.Part|Host.AidaClient.Part[];

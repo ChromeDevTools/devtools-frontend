@@ -141,6 +141,21 @@ OBSERVATION: {"elementStyles":{"display":"block","visibility":"visible","positio
 ANSWER: Even though the popup itself has a z-index of 3, its parent container has position: relative and z-index: 1. This creates a new stacking context for the popup. Because the "background" div has a z-index of 2, which is higher than the stacking context of the popup, it is rendered on top, obscuring the popup.
 SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking order?"]
 `;
+
+const promptForMultimodalInputEvaluation = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Try to connect the screenshot to actual DOM elements in the page.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+`;
 /* clang-format on */
 
 async function executeJsCode(
@@ -263,6 +278,11 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       temperature,
       modelId,
     };
+  }
+
+  get multimodalInputEnabled(): boolean {
+    const {hostConfig} = Root.Runtime;
+    return Boolean(hostConfig.devToolsFreestyler?.multimodal);
   }
 
   override parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
@@ -727,13 +747,16 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     };
   }
 
-  override async enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null):
-      Promise<string> {
-    const elementEnchantmentQuery = selectedElement ?
+  override async enhanceQuery(
+      query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null,
+      hasImageInput?: boolean): Promise<string> {
+    const elementEnchancementQuery = selectedElement ?
         `# Inspected element\n\n${
             await StylingAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :
         '';
-    return `${elementEnchantmentQuery}QUERY: ${query}`;
+    const multimodalInputEnhancementQuery =
+        this.multimodalInputEnabled && hasImageInput ? promptForMultimodalInputEvaluation : '';
+    return `${multimodalInputEnhancementQuery}${elementEnchancementQuery}QUERY: ${query}`;
   }
 
   override formatParsedAnswer({answer}: ParsedAnswer): string {

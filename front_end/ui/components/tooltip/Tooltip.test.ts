@@ -52,4 +52,20 @@ describe('Tooltip', () => {
     await checkForPendingActivity();
     assert.isFalse(container.querySelector('devtools-tooltip')?.hidden);
   });
+
+  const eventsNotToPropagate = ['click', 'mouseup'];
+
+  eventsNotToPropagate.forEach(eventName => {
+    it('shoould stop propagation of click events', () => {
+      const container = renderTooltip();
+      const callback = sinon.spy();
+      container.addEventListener(eventName, callback);
+
+      const tooltip = container.querySelector('devtools-tooltip');
+      tooltip?.dispatchEvent(new Event(eventName, {bubbles: true}));
+
+      assert.isFalse(callback.called);
+      container.removeEventListener(eventName, callback);
+    });
+  });
 });

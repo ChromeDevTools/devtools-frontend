@@ -49,11 +49,8 @@ export class Tooltip extends HTMLElement {
 
   connectedCallback(): void {
     this.#attachToAnchor();
-
-    if (!this.hasAttribute('role')) {
-      this.setAttribute('role', 'tooltip');
-    }
-    this.setAttribute('popover', 'manual');
+    this.#registerEventListeners();
+    this.#setAttributes();
 
     // clang-format off
     Lit.render(html`
@@ -92,8 +89,32 @@ export class Tooltip extends HTMLElement {
     }, this.hoverDelay);
   };
 
+  #setAttributes(): void {
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'tooltip');
+    }
+    this.setAttribute('popover', 'manual');
+  }
+
   #preventDefault(event: Event): void {
     event.preventDefault();
+  }
+
+  #stopPropagation(event: Event): void {
+    event.stopPropagation();
+  }
+
+  #registerEventListeners(): void {
+    if (this.#anchor) {
+      this.#anchor.addEventListener('mouseenter', this.showTooltip);
+      this.#anchor.addEventListener('mouseleave', this.hideTooltip);
+      // By default the anchor with a popovertarget would toggle the popover on click.
+      this.#anchor.addEventListener('click', this.#preventDefault);
+    }
+    this.addEventListener('mouseleave', this.hideTooltip);
+    // Prevent interaction with the parent element.
+    this.addEventListener('click', this.#stopPropagation);
+    this.addEventListener('mouseup', this.#stopPropagation);
   }
 
   #removeEventListeners(): void {
@@ -101,8 +122,10 @@ export class Tooltip extends HTMLElement {
       this.#anchor.removeEventListener('mouseenter', this.showTooltip);
       this.#anchor.removeEventListener('mouseleave', this.hideTooltip);
       this.#anchor.removeEventListener('click', this.#preventDefault);
-      this.removeEventListener('mouseleave', this.hideTooltip);
     }
+    this.removeEventListener('mouseleave', this.hideTooltip);
+    this.removeEventListener('click', this.#stopPropagation);
+    this.removeEventListener('mouseup', this.#stopPropagation);
   }
 
   #attachToAnchor(): void {
@@ -123,12 +146,6 @@ export class Tooltip extends HTMLElement {
     anchor.setAttribute('popovertarget', id);
     this.style.positionAnchor = anchorName;
     this.#anchor = anchor;
-
-    this.#anchor.addEventListener('mouseenter', this.showTooltip);
-    this.#anchor.addEventListener('mouseleave', this.hideTooltip);
-    // By default the anchor with a popovertarget would toggle the popover on click.
-    this.#anchor.addEventListener('click', this.#preventDefault);
-    this.addEventListener('mouseleave', this.hideTooltip);
   }
 }
 

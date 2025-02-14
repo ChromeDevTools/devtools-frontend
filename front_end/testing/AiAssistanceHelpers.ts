@@ -148,7 +148,7 @@ export function createNetworkRequest(): SDK.NetworkRequest.NetworkRequest {
 }
 
 let panels: AiAssistance.AiAssistancePanel[] = [];
-export function createAiAssistancePanel(options?: {
+export async function createAiAssistancePanel(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
@@ -163,11 +163,18 @@ export function createAiAssistancePanel(options?: {
   panel.markAsRoot();
   panel.show(document.body);
   panels.push(panel);
-  return {
+  const result = {
     panel,
     view,
     aidaClient,
+    waitForRendering(): Promise<void> {
+      // Currently we render within one task.
+      // Eventually, might want to have a more specific condition.
+      return new Promise(resolve => setTimeout(resolve, 0));
+    }
   };
+  await result.waitForRendering();
+  return result;
 }
 
 export function detachPanels() {

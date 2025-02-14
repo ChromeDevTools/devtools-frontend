@@ -174,6 +174,7 @@ content
           {
             type: ResponseType.ANSWER,
             text: 'This is the answer',
+            complete: true,
             suggestions: undefined,
             rpcId: 123,
           },

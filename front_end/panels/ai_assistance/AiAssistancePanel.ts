@@ -1004,7 +1004,10 @@ Output one filename per line and nothing else!
       #saveResponsesToCurrentConversation(items: AsyncIterable<ResponseData, void, void>):
           AsyncGenerator<ResponseData, void, void> {
     for await (const data of items) {
-      this.#currentConversation?.addHistoryItem(data);
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        this.#currentConversation?.addHistoryItem(data);
+      }
       yield data;
     }
   }

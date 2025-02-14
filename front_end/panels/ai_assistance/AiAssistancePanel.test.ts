@@ -557,6 +557,29 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
     });
+
+    it('should not save partial responses to conversation history', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      const addHistoryItemStub = sinon.stub(AiAssistance.Conversation.prototype, 'addHistoryItem');
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+      const {view} = await createAiAssistancePanel({
+        aidaClient: mockAidaClient([[
+          {explanation: 'ANSWER: partially started'}, {explanation: 'ANSWER: partially started and now it\'s finished'}
+        ]])
+      });
+      // Trigger running the conversation (observe that there are two answers: one partial, one complete)
+      await view.lastCall.args[0].onTextSubmit('User question to Freestyler?');
+
+      sinon.assert.calledWith(
+          addHistoryItemStub, sinon.match({type: 'answer', text: 'partially started and now it\'s finished'}));
+      sinon.assert.neverCalledWith(addHistoryItemStub, sinon.match({type: 'answer', text: 'partially started'}));
+    });
   });
 
   it('should have empty state after clear chat', async () => {

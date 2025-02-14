@@ -794,6 +794,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.ANSWER,
           text: 'this is the answer',
+          complete: true,
           suggestions: undefined,
           rpcId: undefined,
         },
@@ -904,6 +905,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.ANSWER,
           text: 'this is the answer',
+          complete: true,
           suggestions: undefined,
           rpcId: 123,
         },
@@ -914,10 +916,10 @@ STOP`,
       const agent = new StylingAgent({
         aidaClient: mockAidaClient([[
           {
-            explanation: 'ANSWER: this is the answer',
+            explanation: 'ANSWER: this is the partial answer',
           },
           {
-            explanation: 'ANSWER: this is another answer',
+            explanation: 'ANSWER: this is the partial answer and now it\'s complete',
             metadata: {
               attributionMetadata: {
                 attributionAction: Host.AidaClient.RecitationAction.BLOCK,
@@ -950,8 +952,9 @@ STOP`,
           type: AiAssistance.ResponseType.QUERYING,
         },
         {
-          text: 'this is the answer',
+          text: 'this is the partial answer',
           type: AiAssistance.ResponseType.ANSWER,
+          complete: false,
         },
         {
           type: AiAssistance.ResponseType.ERROR,
@@ -999,6 +1002,7 @@ STOP`,
         {
           type: AiAssistance.ResponseType.ANSWER,
           text: 'this is the answer',
+          complete: true,
           suggestions: undefined,
           rpcId: 123,
         },
@@ -1129,6 +1133,7 @@ STOP
         {
           type: AiAssistance.ResponseType.ANSWER,
           text: 'this is the actual answer',
+          complete: true,
           suggestions: undefined,
           rpcId: undefined,
         },

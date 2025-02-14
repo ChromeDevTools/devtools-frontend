@@ -231,11 +231,13 @@ describeWithEnvironment('AiAgent', () => {
           },
           {
             type: ResponseType.ANSWER,
+            complete: false,
             text: 'Partial ans',
           },
           {
             type: ResponseType.ANSWER,
             text: 'Partial answer is now completed',
+            complete: true,
             rpcId: undefined,
             suggestions: undefined,
           },

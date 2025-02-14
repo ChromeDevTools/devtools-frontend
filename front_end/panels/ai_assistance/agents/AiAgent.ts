@@ -29,6 +29,8 @@ export const enum ErrorType {
 export interface AnswerResponse {
   type: ResponseType.ANSWER;
   text: string;
+  // Whether this is the complete answer or only a part of it (for streaming reasons)
+  complete: boolean;
   rpcId?: Host.AidaClient.RpcGlobalId;
   suggestions?: [string, ...string[]];
 }
@@ -398,6 +400,7 @@ export abstract class AiAgent<T> {
             yield {
               type: ResponseType.ANSWER,
               text: parsedResponse.answer,
+              complete: false,
             };
           }
         }
@@ -429,6 +432,7 @@ export abstract class AiAgent<T> {
           type: ResponseType.ANSWER,
           text: parsedResponse.answer,
           suggestions: parsedResponse.suggestions,
+          complete: true,
           rpcId,
         };
         break;

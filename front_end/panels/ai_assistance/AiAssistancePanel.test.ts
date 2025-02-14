@@ -7,16 +7,22 @@ import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createAiAssistancePanel, detachPanels, mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
+import {
+  createAiAssistancePanel,
+  createNetworkRequest,
+  detachPanels,
+  mockAidaClient
+} from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ElementsPanel from '../elements/elements.js';
-import * as NetworkPanel from '../network/network.js';
-import * as SourcesPanel from '../sources/sources.js';
-import * as TimelinePanel from '../timeline/timeline.js';
+import * as Elements from '../elements/elements.js';
+import * as Network from '../network/network.js';
+import * as Sources from '../sources/sources.js';
+import * as Timeline from '../timeline/timeline.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import * as AiAssistance from './ai_assistance.js';
@@ -26,10 +32,10 @@ const {urlString} = Platform.DevToolsPath;
 describeWithMockConnection('AI Assistance Panel', () => {
   beforeEach(() => {
     registerNoopActions(['elements.toggle-element-search']);
-    UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
-    UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
-    UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
-    UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
+    UI.Context.Context.instance().setFlavor(Elements.ElementsPanel.ElementsPanel, null);
+    UI.Context.Context.instance().setFlavor(Network.NetworkPanel.NetworkPanel, null);
+    UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
+    UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
     UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, null);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
     UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
@@ -390,8 +396,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       await view.lastCall.args[0].onTextSubmit('test');
 
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
@@ -426,8 +431,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       panel.handleAction('freestyler.elements-floating-button');
       await view.lastCall.args[0].onTextSubmit('test');
       UI.Context.Context.instance().setFlavor(
-          TimelinePanel.TimelinePanel.TimelinePanel,
-          sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+          Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
 
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
@@ -462,8 +466,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       panel.handleAction('freestyler.elements-floating-button');
       await view.lastCall.args[0].onTextSubmit('test');
       UI.Context.Context.instance().setFlavor(
-          TimelinePanel.TimelinePanel.TimelinePanel,
-          sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+          Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
 
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
@@ -566,8 +569,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
       const addHistoryItemStub = sinon.stub(AiAssistance.Conversation.prototype, 'addHistoryItem');
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
       const {view} = await createAiAssistancePanel({
         aidaClient: mockAidaClient([[
           {explanation: 'ANSWER: partially started'}, {explanation: 'ANSWER: partially started and now it\'s finished'}
@@ -619,7 +621,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     await view.lastCall.args[0].onTextSubmit('test');
 
     UI.Context.Context.instance().setFlavor(
-        ElementsPanel.ElementsPanel.ElementsPanel, sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+        Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
     assert.deepEqual(view.lastCall.args[0].messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
@@ -702,10 +704,17 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   describe('cross-origin', () => {
+    beforeEach(async () => {
+      createTarget();
+      await createNetworkPanelForMockConnection();
+    });
+
+    afterEach(async () => {
+      Network.NetworkPanel.NetworkPanel.instance().detach();
+    });
+
     it('blocks input on cross origin requests', async () => {
-      // TODO: the stub for network requests fails if headers are
-      // retrieved.
-      const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
+      const networkRequest = createNetworkRequest({
         url: urlString`https://a.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
@@ -723,12 +732,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       // Send a query for https://a.test.
       panel.handleAction('drjones.network-floating-button');
-      // TODO: properly await onTextSubmit.
-      void view.lastCall.args[0].onTextSubmit('test');
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await view.lastCall.args[0].onTextSubmit('test');
 
       // Change context to https://b.test.
-      const networkRequest2 = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
+      const networkRequest2 = createNetworkRequest({
         url: urlString`https://b.test`,
       });
       UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
@@ -751,8 +758,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]]),
       });
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
       panel.handleAction('freestyler.elements-floating-button');
       await view.lastCall.args[0].onTextSubmit('test');
@@ -773,8 +779,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       ]);
 
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
       panel.handleAction('freestyler.elements-floating-button');
       await view.lastCall.args[0].onTextSubmit('test2');
@@ -818,8 +823,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            ElementsPanel.ElementsPanel.ElementsPanel,
-            sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
         const {view} = await createAiAssistancePanel({
           aidaClient: mockAidaClient([[{explanation: 'test'}]]),
@@ -837,15 +841,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            ElementsPanel.ElementsPanel.ElementsPanel,
-            sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
         const {view} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.STYLING,
         }));
 
-        UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
+        UI.Context.Context.instance().setFlavor(Elements.ElementsPanel.ElementsPanel, null);
         assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
@@ -856,8 +859,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            ElementsPanel.ElementsPanel.ElementsPanel,
-            sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
         const {view} = await createAiAssistancePanel();
 
         assert.isUndefined(view.lastCall.args[0].agentType);
@@ -872,7 +874,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
+            Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
         const {view} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
@@ -887,14 +889,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            NetworkPanel.NetworkPanel.NetworkPanel, sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
+            Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
         const {view} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.NETWORK,
         }));
 
-        UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
+        UI.Context.Context.instance().setFlavor(Network.NetworkPanel.NetworkPanel, null);
         assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
@@ -906,8 +908,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
              },
            });
            UI.Context.Context.instance().setFlavor(
-               NetworkPanel.NetworkPanel.NetworkPanel,
-               sinon.createStubInstance(NetworkPanel.NetworkPanel.NetworkPanel));
+               Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
            const {view} = await createAiAssistancePanel();
 
            assert.isUndefined(view.lastCall.args[0].agentType);
@@ -922,7 +923,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
+            Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
         const {view} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
@@ -937,13 +938,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            SourcesPanel.SourcesPanel.SourcesPanel, sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
+            Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
         const {view} = await createAiAssistancePanel();
         sinon.assert.calledWith(view, sinon.match({
           agentType: AiAssistance.AgentType.FILE,
         }));
 
-        UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
+        UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
         assert.isUndefined(view.lastCall.args[0].agentType);
       });
 
@@ -955,8 +956,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
              },
            });
            UI.Context.Context.instance().setFlavor(
-               SourcesPanel.SourcesPanel.SourcesPanel,
-               sinon.createStubInstance(SourcesPanel.SourcesPanel.SourcesPanel));
+               Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
            const {view} = await createAiAssistancePanel();
 
            assert.isUndefined(view.lastCall.args[0].agentType);
@@ -973,8 +973,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
              },
            });
            UI.Context.Context.instance().setFlavor(
-               TimelinePanel.TimelinePanel.TimelinePanel,
-               sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
            const {view} = await createAiAssistancePanel();
            sinon.assert.calledWith(view, sinon.match({
              agentType: AiAssistance.AgentType.PERFORMANCE_INSIGHT,
@@ -990,8 +989,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
           },
         });
         UI.Context.Context.instance().setFlavor(
-            TimelinePanel.TimelinePanel.TimelinePanel,
-            sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+            Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
         const {view} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
@@ -1007,14 +1005,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
              },
            });
            UI.Context.Context.instance().setFlavor(
-               TimelinePanel.TimelinePanel.TimelinePanel,
-               sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
            const {view} = await createAiAssistancePanel();
            sinon.assert.calledWith(view, sinon.match({
              agentType: AiAssistance.AgentType.PERFORMANCE,
            }));
 
-           UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
            assert.isUndefined(view.lastCall.args[0].agentType);
          });
 
@@ -1026,8 +1023,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
              },
            });
            UI.Context.Context.instance().setFlavor(
-               TimelinePanel.TimelinePanel.TimelinePanel,
-               sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
            const {view} = await createAiAssistancePanel();
 
            assert.isUndefined(view.lastCall.args[0].agentType);
@@ -1080,8 +1076,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
       const {
         view,
       } = await createAiAssistancePanel();
@@ -1101,8 +1096,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
       const {
         view,
       } = await createAiAssistancePanel();
@@ -1127,8 +1121,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       });
       UI.Context.Context.instance().setFlavor(
-          ElementsPanel.ElementsPanel.ElementsPanel,
-          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
       const {
         view,
       } = await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});

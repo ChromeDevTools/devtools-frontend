@@ -62,7 +62,7 @@ lorem ipsum
     });
 
     it('formats file with associated request initiator chain', async () => {
-      const networkRequest = createNetworkRequest();
+      const networkRequest = createNetworkRequest({includeInitiators: true});
       const uiSourceCode = await createUISourceCode({
         content: 'lorem ipsum',
         requestContentData: true,

@@ -102,48 +102,55 @@ export async function createUISourceCode(options?: {
   return uiSourceCode;
 }
 
-export function createNetworkRequest(): SDK.NetworkRequest.NetworkRequest {
+export function createNetworkRequest(opts?: {
+  url?: Platform.DevToolsPath.UrlString,
+  includeInitiators?: boolean,
+}): SDK.NetworkRequest.NetworkRequest {
   const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
+      'requestId' as Protocol.Network.RequestId,
+      opts?.url ?? Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
       Platform.DevToolsPath.urlString``, null, null, null);
   networkRequest.statusCode = 200;
   networkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
   networkRequest.responseHeaders = [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}];
 
-  const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.initiator.com`,
-      Platform.DevToolsPath.urlString``, null, null, null);
-  const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/1`,
-      Platform.DevToolsPath.urlString``, null, null, null);
-  const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/2`,
-      Platform.DevToolsPath.urlString``, null, null, null);
+  if (opts?.includeInitiators) {
+    const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.initiator.com`,
+        Platform.DevToolsPath.urlString``, null, null, null);
+    const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/1`,
+        Platform.DevToolsPath.urlString``, null, null, null);
+    const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/2`,
+        Platform.DevToolsPath.urlString``, null, null, null);
 
-  sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')
-      .withArgs(networkRequest)
-      .returns({
-        initiators: new Set([networkRequest, initiatorNetworkRequest]),
-        initiated: new Map([
-          [networkRequest, initiatorNetworkRequest],
-          [initiatedNetworkRequest1, networkRequest],
-          [initiatedNetworkRequest2, networkRequest],
-        ]),
-      })
-      .withArgs(initiatedNetworkRequest1)
-      .returns({
-        initiators: new Set([]),
-        initiated: new Map([
-          [initiatedNetworkRequest1, networkRequest],
-        ]),
-      })
-      .withArgs(initiatedNetworkRequest2)
-      .returns({
-        initiators: new Set([]),
-        initiated: new Map([
-          [initiatedNetworkRequest2, networkRequest],
-        ]),
-      });
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')
+        .withArgs(networkRequest)
+        .returns({
+          initiators: new Set([networkRequest, initiatorNetworkRequest]),
+          initiated: new Map([
+            [networkRequest, initiatorNetworkRequest],
+            [initiatedNetworkRequest1, networkRequest],
+            [initiatedNetworkRequest2, networkRequest],
+          ]),
+        })
+        .withArgs(initiatedNetworkRequest1)
+        .returns({
+          initiators: new Set([]),
+          initiated: new Map([
+            [initiatedNetworkRequest1, networkRequest],
+          ]),
+        })
+        .withArgs(initiatedNetworkRequest2)
+        .returns({
+          initiators: new Set([]),
+          initiated: new Map([
+            [initiatedNetworkRequest2, networkRequest],
+          ]),
+        });
+  }
+
   return networkRequest;
 }
 

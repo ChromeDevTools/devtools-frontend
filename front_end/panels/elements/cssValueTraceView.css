@@ -1,0 +1,70 @@
+/*
+ * Copyright 2025 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.css-value-trace {
+  --cell-width: 2em;
+
+  display: grid;
+  grid-template-columns: var(--cell-width) 1fr;
+  margin: var(--sys-size-3);
+
+  & .trace-line-icon {
+    grid-column-start: 1;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    font-size: var(--sys-size-9);
+    text-align: center;
+    color: var(--icon-default);
+    padding-top: var(--sys-size-4);
+  }
+
+  details {
+    height: min-content;
+    grid-column: 1 / 4;
+
+    summary {
+      display: grid;
+      grid-template-columns: var(--cell-width) var(--cell-width) 1fr;
+
+      &::marker {
+        display: none;
+        content: "";
+      }
+    }
+
+    div {
+      devtools-icon, .trace-line-icon {
+        grid-column-start: 2;
+      }
+
+      display: grid;
+      grid-template-columns: var(--cell-width) var(--cell-width) 1fr;
+    }
+
+    .trace-line {
+      grid-column: 3 / 4;
+    }
+
+    .marker {
+      grid-column-start: 2;
+
+      --icon-url: var(--image-file-triangle-right);
+
+      padding-top: var(--sys-size-3);
+    }
+
+    &[open] .marker {
+      --icon-url: var(--image-file-triangle-down);
+    }
+  }
+
+  & .trace-line {
+    place-self: center start;
+    margin-top: var(--sys-size-2);
+    padding: var(--sys-size-3);
+    grid-column: 2 / 3;
+  }
+}

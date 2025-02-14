@@ -13,6 +13,7 @@ generate_css("css_files") {
     "accessibilityTreeView.css",
     "classesPaneWidget.css",
     "computedStyleSidebarPane.css",
+    "cssValueTraceView.css",
     "domLinkifier.css",
     "elementStatePaneWidget.css",
     "elementsPanel.css",
@@ -33,6 +34,7 @@ devtools_module("elements") {
     "AccessibilityTreeView.ts",
     "CSSRuleValidator.ts",
     "CSSRuleValidatorHelper.ts",
+    "CSSValueTraceView.ts",
     "ClassesPaneWidget.ts",
     "ColorSwatchPopoverIcon.ts",
     "ComputedStyleModel.ts",
@@ -153,6 +155,7 @@ ts_library("unittests") {
   sources = [
     "AccessibilityTreeView.test.ts",
     "CSSRuleValidator.test.ts",
+    "CSSValueTraceView.test.ts",
     "ClassesPaneWidget.test.ts",
     "ColorSwatchPopoverIcon.test.ts",
     "ComputedStyleModel.test.ts",

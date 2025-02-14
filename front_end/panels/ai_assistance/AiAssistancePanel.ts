@@ -645,10 +645,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           multimodalInputEnabled:
               isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
           imageInput: this.#imageInput,
-          onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => {
+          onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
             this.#imageInput = '';
-            void this.#startConversation(text, imageInput);
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+            await this.#startConversation(text, imageInput);
           },
           onInspectElementClick: this.#handleSelectElementClick.bind(this),
           onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
@@ -670,7 +670,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
-  #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string): void {
+  async #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string):
+      Promise<void> {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,

@@ -338,9 +338,10 @@ export const enum State {
 }
 
 export interface Props {
-  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => void;
+  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => Promise<void>| void;
   onInspectElementClick: () => void;
-  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
+  onFeedbackSubmit:
+      (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => Promise<void>| void;
   onCancelClick: () => void;
   onContextClick: () => void | Promise<void>;
   onNewConversation: () => void;
@@ -530,7 +531,7 @@ export class ChatView extends HTMLElement {
     }
     const imageInput =
         this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
-    this.#props.onTextSubmit(textArea.value, imageInput);
+    void this.#props.onTextSubmit(textArea.value, imageInput);
     textArea.value = '';
   };
 
@@ -547,7 +548,7 @@ export class ChatView extends HTMLElement {
       }
       const imageInput =
           this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
-      this.#props.onTextSubmit(ev.target.value, imageInput);
+      void this.#props.onTextSubmit(ev.target.value, imageInput);
       ev.target.value = '';
     }
   };

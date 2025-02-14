@@ -177,7 +177,7 @@ function createCallTreeContext(callTree: TimelineUtils.AICallTree.AICallTree|nul
   }
   return new CallTreeContext(callTree);
 }
-function createPerfInsightContext(insight: TimelineUtils.InsightAIContext.InsightAIContext|null): InsightContext|null {
+function createPerfInsightContext(insight: TimelineUtils.InsightAIContext.ActiveInsight|null): InsightContext|null {
   if (!insight) {
     return null;
   }
@@ -229,7 +229,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
-  #selectedInsight: InsightContext|null = null;
+  #selectedPerformanceInsight: InsightContext|null = null;
   #selectedRequest: RequestContext|null = null;
 
   // Messages displayed in the `ChatView` component.
@@ -486,8 +486,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedCallTree =
         createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree));
-    this.#selectedInsight =
-        createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.InsightAIContext));
+    this.#selectedPerformanceInsight =
+        createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.ActiveInsight));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
     this.#selectedContext = this.#getConversationContext();
     void this.doUpdate();
@@ -496,6 +496,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.doUpdate, this);
+
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -503,6 +504,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        TimelineUtils.InsightAIContext.ActiveInsight, this.#handlePerfInsightFlavorChange);
+
     UI.Context.Context.instance().addFlavorChangeListener(
         ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -528,6 +532,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        TimelineUtils.InsightAIContext.ActiveInsight, this.#handlePerfInsightFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
@@ -601,6 +607,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
 
         this.#selectedCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
+        this.#updateAgentState(this.#currentAgent);
+      };
+
+  #handlePerfInsightFlavorChange =
+      (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.InsightAIContext.ActiveInsight>): void => {
+        if (this.#selectedPerformanceInsight?.getItem() === ev.data) {
+          return;
+        }
+
+        this.#selectedPerformanceInsight = Boolean(ev.data) ? new InsightContext(ev.data) : null;
         this.#updateAgentState(this.#currentAgent);
       };
 
@@ -736,6 +752,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case 'drjones.performance-panel-context': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformancePanel);
         targetAgentType = AgentType.PERFORMANCE;
+        break;
+      }
+      case 'drjones.performance-insight-context': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceInsight);
+        targetAgentType = AgentType.PERFORMANCE_INSIGHT;
         break;
       }
       case 'drjones.sources-floating-button': {
@@ -913,7 +934,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         context = this.#selectedCallTree;
         break;
       case AgentType.PERFORMANCE_INSIGHT:
-        context = this.#selectedInsight;
+        context = this.#selectedPerformanceInsight;
         break;
       case AgentType.PATCH:
         throw new Error('AI Assistance does not support direct usage of the patch agent');
@@ -1139,6 +1160,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-context':
+      case 'drjones.performance-insight-context':
       case 'drjones.sources-floating-button':
       case 'drjones.sources-panel-context': {
         void (async () => {

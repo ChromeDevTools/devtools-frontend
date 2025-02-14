@@ -88,6 +88,10 @@ function isNetworkAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boole
 function isPerformanceAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistancePerformanceAgent?.enabled)) === true;
 }
+function isPerformanceInsightsAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return (config?.aidaAvailability?.enabled && config?.devToolsAiAssistancePerformanceAgent?.enabled &&
+          config?.devToolsAiAssistancePerformanceAgent.insightsEnabled) === true;
+}
 
 function isFileAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistanceFileAgent?.enabled)) === true;
@@ -219,6 +223,22 @@ UI.ActionRegistration.registerActionExtension({
     return new AiAssistance.ActionDelegate();
   },
   condition: config => isPerformanceAgentFeatureAvailable(config) && !isPolicyRestricted(config),
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'drjones.performance-insight-context',
+  contextTypes(): [] {
+    return [];
+  },
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nLazyString(UIStrings.askAi),
+  async loadActionDelegate() {
+    const AiAssistance = await loadAiAssistanceModule();
+    return new AiAssistance.ActionDelegate();
+  },
+  condition: config => {
+    return isPerformanceInsightsAgentFeatureAvailable(config) && !isPolicyRestricted(config);
+  }
 });
 
 UI.ActionRegistration.registerActionExtension({

@@ -535,7 +535,8 @@ export enum Action {
   AiAssistanceSideEffectConfirmed = 179,
   AiAssistanceSideEffectRejected = 180,
   AiAssistanceError = 181,
-  MAX_VALUE = 182,
+  AiAssistanceOpenedFromPerformanceInsight = 182,
+  MAX_VALUE = 183,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

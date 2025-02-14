@@ -228,6 +228,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
         action: 'drjones.performance-panel-context'
       },
       {
+        flavor: TimelineUtils.InsightAIContext.ActiveInsight,
+        createContext: () => {
+          return new AiAssistance.InsightContext(
+              sinon.createStubInstance(TimelineUtils.InsightAIContext.ActiveInsight));
+        },
+        action: 'drjones.performance-insight-context'
+      },
+      {
         flavor: Workspace.UISourceCode.UISourceCode,
         createContext: () => {
           return new AiAssistance.FileContext(sinon.createStubInstance(Workspace.UISourceCode.UISourceCode));
@@ -929,6 +937,25 @@ describeWithMockConnection('AI Assistance Panel', () => {
            const {view} = await createAiAssistancePanel();
 
            assert.isUndefined(view.lastCall.args[0].agentType);
+         });
+    });
+
+    describe('Performance Insight agent', () => {
+      it('should select the PERFORMANCE_INSIGHT agent when the performance panel is open and insights are enabled',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+               insightsEnabled: true,
+             },
+           });
+           UI.Context.Context.instance().setFlavor(
+               TimelinePanel.TimelinePanel.TimelinePanel,
+               sinon.createStubInstance(TimelinePanel.TimelinePanel.TimelinePanel));
+           const {view} = await createAiAssistancePanel();
+           sinon.assert.calledWith(view, sinon.match({
+             agentType: AiAssistance.AgentType.PERFORMANCE_INSIGHT,
+           }));
          });
     });
 

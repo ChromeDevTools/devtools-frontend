@@ -42,10 +42,10 @@ You have a number of functions to get information about the page and its perform
 `;
 /* clang-format on */
 
-export class InsightContext extends ConversationContext<TimelineUtils.InsightAIContext.InsightAIContext> {
-  readonly #insight: TimelineUtils.InsightAIContext.InsightAIContext;
+export class InsightContext extends ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight> {
+  readonly #insight: TimelineUtils.InsightAIContext.ActiveInsight;
 
-  constructor(insight: TimelineUtils.InsightAIContext.InsightAIContext) {
+  constructor(insight: TimelineUtils.InsightAIContext.ActiveInsight) {
     super();
     this.#insight = insight;
   }
@@ -56,7 +56,7 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
     return '';
   }
 
-  getItem(): TimelineUtils.InsightAIContext.InsightAIContext {
+  getItem(): TimelineUtils.InsightAIContext.ActiveInsight {
     return this.#insight;
   }
 
@@ -71,19 +71,17 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
   }
 
   override getTitle(): string|ReturnType<typeof Lit.Directives.until> {
-    // TODO: calculate the actual Insight's title and put it in the context.
-    return 'Insight';
+    return this.#insight.title();
   }
 }
 
-export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAIContext.InsightAIContext> {
+export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAIContext.ActiveInsight> {
   // TODO: make use of the Insight.
   // eslint-disable-next-line no-unused-private-class-members
-  #insight: ConversationContext<TimelineUtils.InsightAIContext.InsightAIContext>|undefined;
+  #insight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
-  override handleContextDetails(
-      _activeContext: ConversationContext<TimelineUtils.InsightAIContext.InsightAIContext>|
-      null): AsyncGenerator<ContextResponse, void, void> {
+  override handleContextDetails(_activeContext: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null):
+      AsyncGenerator<ContextResponse, void, void> {
     throw new Error('not implemented');
   }
 
@@ -108,7 +106,7 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
   }
 
   override async * run(initialQuery: string, options: {
-    signal?: AbortSignal, selected: ConversationContext<TimelineUtils.InsightAIContext.InsightAIContext>|null,
+    signal?: AbortSignal, selected: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null,
   }): AsyncGenerator<ResponseData, void, void> {
     this.#insight = options.selected ?? undefined;
 

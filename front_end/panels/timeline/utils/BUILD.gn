@@ -64,6 +64,7 @@ ts_library("unittests") {
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",
+    "InsightAIContext.test.ts",
     "SourceMapsResolver.test.ts",
   ]
 

@@ -6,15 +6,18 @@ import '../../../../ui/components/markdown_view/markdown_view.js';
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Root from '../../../../core/root/root.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type {InsightModel} from '../../../../models/trace/insights/types.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
 import {md} from '../../utils/Helpers.js';
+import * as Utils from '../../utils/utils.js';
 
 import baseInsightComponentStylesRaw from './baseInsightComponent.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
@@ -67,6 +70,8 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
   #model: T|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
 
+  #insightsAskAiEnabled = false;
+
   get model(): T|null {
     return this.#model;
   }
@@ -92,6 +97,10 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
+
+    const {devToolsAiAssistancePerformanceAgent} = Root.Runtime.hostConfig;
+    this.#insightsAskAiEnabled =
+        Boolean(devToolsAiAssistancePerformanceAgent?.enabled && devToolsAiAssistancePerformanceAgent?.insightsEnabled);
   }
 
   set selected(selected: boolean) {
@@ -134,6 +143,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
   #dispatchInsightToggle(): void {
     if (this.#selected) {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
+      UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, null);
       return;
     }
 
@@ -278,6 +288,25 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
     return html`${Lit.Directives.until(domNodePromise, fallback)}`;
   }
 
+  #askAIButtonClick(): void {
+    if (!this.#model || !this.#parsedTrace) {
+      return;
+    }
+
+    // matches the one in ai_assistance-meta.ts
+    const actionId = 'drjones.performance-insight-context';
+    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(actionId)) {
+      return;
+    }
+
+    const context = new Utils.InsightAIContext.ActiveInsight(this.#model, this.#parsedTrace);
+    UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, context);
+
+    // Trigger the AI Assistance panel to open.
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
+    void action.execute();
+  }
+
   #renderWithContent(content: Lit.LitTemplate): void {
     if (!this.#model) {
       Lit.render(Lit.nothing, this.#shadowRoot, {host: this});
@@ -315,6 +344,9 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
           <div class="insight-body">
             <div class="insight-description">${md(this.#model.description)}</div>
             <div class="insight-content">${content}</div>
+            ${this.#insightsAskAiEnabled ? html`
+               <devtools-button data-ask-ai @click=${this.#askAIButtonClick}>Ask AI (placeholder UX)</devtools-button>
+             ` : Lit.nothing}
           </div>`
           : Lit.nothing
         }

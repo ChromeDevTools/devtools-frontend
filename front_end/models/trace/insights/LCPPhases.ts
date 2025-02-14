@@ -48,9 +48,9 @@ export const UIStrings = {
    */
   phase: 'Phase',
   /**
-   *@description Label used for the percentage a single phase/component/stage/section takes up of a larger duration.
+   * @description Label used for the duration a single phase/component/stage/section takes up of a larger duration.
    */
-  percentLCP: '% of LCP',
+  duration: 'Duration',
   /**
    * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
    */

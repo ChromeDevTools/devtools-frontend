@@ -7071,7 +7071,7 @@ export const NativeFunctions = [
   },
   {
     name: "setValueAndClosePopup",
-    signatures: [["numberValue","stringValue"]]
+    signatures: [["numberValue","stringValue","?is_keyboard_event"]]
   },
   {
     name: "setValue",

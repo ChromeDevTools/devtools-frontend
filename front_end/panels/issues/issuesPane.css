@@ -8,16 +8,6 @@
   overflow: hidden;
 }
 
-.issues-pane-no-issues {
-  align-items: center;
-  background-color: var(--sys-color-cdt-base-container);
-  display: flex;
-  flex: 1 1 auto;
-  font-size: 14px;
-  justify-content: center;
-  padding: 30px;
-}
-
 .issues-toolbar-container {
   display: flex;
   flex: none;

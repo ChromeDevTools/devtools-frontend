@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 import * as Insights from './insights/insights.js';
@@ -430,18 +431,6 @@ export class TraceProcessor extends EventTarget {
       insights: Insights.Types.TraceInsightSets, parsedTrace: Handlers.Types.ParsedTrace,
       insightRunners: Partial<typeof Insights.Models>, context: Insights.Types.InsightSetContext,
       options: Types.Configuration.ParseOptions): void {
-    const model = {} as Insights.Types.InsightSet['model'];
-
-    for (const [name, insight] of Object.entries(insightRunners)) {
-      let insightResult;
-      try {
-        insightResult = insight.generateInsight(parsedTrace, context);
-      } catch (err) {
-        insightResult = err;
-      }
-      Object.assign(model, {[name]: insightResult});
-    }
-
     let id, urlString, navigation;
     if (context.navigation) {
       id = context.navigationId;
@@ -450,6 +439,22 @@ export class TraceProcessor extends EventTarget {
     } else {
       id = Types.Events.NO_NAVIGATION;
       urlString = parsedTrace.Meta.mainFrameURL;
+    }
+
+    const model = {} as Insights.Types.InsightSet['model'];
+
+    for (const [name, insight] of Object.entries(insightRunners)) {
+      let insightResult;
+      try {
+        insightResult = insight.generateInsight(parsedTrace, context);
+        const navId = context.navigation?.args.data?.navigationId;
+        if (navId) {
+          insightResult.navigationId = navId;
+        }
+      } catch (err) {
+        insightResult = err;
+      }
+      Object.assign(model, {[name]: insightResult});
     }
 
     let url;

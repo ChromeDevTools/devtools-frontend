@@ -91,9 +91,14 @@ export type InsightModel<UIStrings extends Record<string, string>, R extends Rec
   relatedEvents?: RelatedEventsMap | Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
+  /**
+   * If this insight is attached to a navigation, this stores its ID.
+   */
+  navigationId?: string,
 };
 
-export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'>;
+export type PartialInsightModel<T> =
+    Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

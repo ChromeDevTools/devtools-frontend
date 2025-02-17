@@ -589,6 +589,12 @@ button.link:focus-visible {
   border-radius: var(--sys-shape-corner-full);
 }
 
+.data-grid-data-grid-node button.link:focus-visible {
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: 0;
+  margin-top: 3px;
+}
+
 @media (forced-colors: active) {
   .dimmed,
   select:disabled {

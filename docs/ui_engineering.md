@@ -79,3 +79,36 @@ class StylesPane extends UI.Widget {
 [https://source.chromium.org/chromium/chromium/src/+/main:third\_party/devtools-frontend/src/front\_end/panels/developer\_resources/DeveloperResourcesListView.ts;l=86](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/panels/developer_resources/DeveloperResourcesListView.ts;l=86)
 
 [https://source.chromium.org/chromium/chromium/src/+/main:third\_party/devtools-frontend/src/front\_end/panels/timeline/TimelineSelectorStatsView.ts;l=113](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/panels/timeline/TimelineSelectorStatsView.ts;l=113)
+
+
+### Unit tests
+
+When testing presenter behavior await a view update or a model call:
+
+```ts
+// ✅ recommended: stub the view function.
+const view = sinon.stub();
+const presenter = new Presenter(view);
+
+// ✅ recommended: expect a view stub call in response to presenter behavior.
+const viewCall = expectCall(view);
+present.show();
+const [{onEvent}] = await viewCall;
+
+// ✅ recommended: expect a view stub call in response to an event from the view.
+const viewCall2 = expectCall(view);
+onEvent();
+const [{data}] = await viewCall2;
+assert.deepStrictEqual(data, {});
+
+// ❌ not recommended: Widget.updateComplete only reports a current view update
+// operation status and might create flakiness depending on doSomething() implementation.
+presenter.doSomething();
+await presenter.updateComplete;
+assert.deepStrictEqual(view.lastCall.args[0], {});
+
+// ❌ not recommended: awaiting for the present logic to finish might
+// not account for async or throttled view updates.
+await presenter.doSomething();
+assert.deepStrictEqual(view.lastCall.args[0], {});
+```

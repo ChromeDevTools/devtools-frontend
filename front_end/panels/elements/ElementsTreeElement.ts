@@ -209,6 +209,10 @@ const UIStrings = {
    */
   showPopoverTarget: 'Show popover target',
   /**
+   *@description Text of a tooltip to redirect to another element in the Elements panel
+   */
+  showInterestTarget: 'Show interest target',
+  /**
    *@description Text of the tooltip for scroll adorner.
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
@@ -1684,11 +1688,21 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       setValueWithEntities.call(this, attrValueElement, value);
     }
 
-    if (name === 'popovertarget') {
-      const linkedPart = value ? attrValueElement : attrNameElement;
-      void this.linkifyElementByRelation(
-          linkedPart, Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget,
-          i18nString(UIStrings.showPopoverTarget));
+    switch (name) {
+      case 'popovertarget': {
+        const linkedPart = value ? attrValueElement : attrNameElement;
+        void this.linkifyElementByRelation(
+            linkedPart, Protocol.DOM.GetElementByRelationRequestRelation.PopoverTarget,
+            i18nString(UIStrings.showPopoverTarget));
+        break;
+      }
+      case 'interesttarget': {
+        const linkedPart = value ? attrValueElement : attrNameElement;
+        void this.linkifyElementByRelation(
+            linkedPart, Protocol.DOM.GetElementByRelationRequestRelation.InterestTarget,
+            i18nString(UIStrings.showInterestTarget));
+        break;
+      }
     }
 
     if (hasText) {

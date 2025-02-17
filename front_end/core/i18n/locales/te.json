@@ -105,7 +105,7 @@
     "message": "నెట్‌వర్క్ ప్యానెల్"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "సెక్యూరిటీ ప్యానెల్"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "మూలాల ప్యానెల్"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "క్లియర్ చేయండి"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "రికార్డింగ్‌ను ప్రారంభించడానికి రికార్డ్ బటన్ {PH1}ను క్లిక్ చేయండి లేదా {PH2}ను నొక్కండి."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools మూసి ఉన్నప్పుడు కూడా మొత్తం {PH1} యాక్టివిటీని 3 రోజుల వరకు రికార్డ్ చేస్తుంది."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "సందర్భ ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "మరింత తెలుసుకోండి"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ఈ ఈవెంట్‌కు మెటాడేటా ఏదీ లేదు"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ఆబ్జెక్ట్ స్టోర్‌లు"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "దయచేసి \"{PH1}\" డేటా‌బేస్ తొలగింపు నిర్ధారించండి."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "ప్రధానమైన కీ"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "ఈవెంట్ పారామీటర్‌లను ప్రదర్శించడానికి షేర్ చేయబడిన స్టోరేజ్ ఈవెంట్ దేనిని అయిన క్లిక్ చేయండి."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "కీ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "ప్రివ్యూ చేయడానికి ఏదైనా విలువను ఎంచుకోండి"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "షేర్ చేసిన స్టోరేజ్"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "స్టోరేజ్ ఐటెమ్ ఎడిట్ చేయబడింది."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "షేర్ చేయబడిన స్టోరేజ్ ఐటెమ్‌లు"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "షేర్ చేయబడిన స్టోరేజ్ ఐటెమ్‌లు క్లియర్ చేయబడ్డాయి"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "టేబుల్‌లో చూపబడిన ఎంట్రీల సంఖ్య: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "విలువ"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "షేర్ చేసిన స్టోరేజ్"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "జారీ చేసిన వారు"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "ప్రస్తుతం ఎటువంటి ప్రైవేట్ స్టేట్ టోకెన్‌లు స్టోర్ చేసి లేవు."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "స్టోర్ చేసిన టోకెన్‌ల సంఖ్య"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM బ్రేక్‌పాయింట్‌ల లిస్ట్"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "DOM బ్రేక్‌పాయింట్‌లు ఏవీ సెట్ చేసి లేవు"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "నోడ్ తీసివేయబడింది"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (సోర్స్ మ్యాప్ నుండి)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "బైనరీ డేటాకు చేసిన మార్పులు, మార్పుల ట్యాబ్‌లో కనిపించవు"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "ఈ పేజీలో మీరు DevToolsలో చేసిన కోడ్ మార్పులను ట్రాక్ చేయవచ్చు."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "కాపీ చేయండి"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "ఇంకా మార్పులేవీ చేయలేదు"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "టెక్స్ట్‌లో ఎటువంటి మార్పూ లేదు"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# తొలగింపు (-)}other{# తొలగింపులు (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "గోప్యత, సెక్యూరిటీ ప్యానెల్‌ను తెరవడానికి, థర్డ్-పార్టీ కుక్కీ రిపోర్ట్‌ను చూడటానికి క్లిక్ చేయండి"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "అసర్షన్ విఫలమైంది: "
@@ -6747,7 +6720,7 @@
     "message": "స్టాక్‌ట్రేస్"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "సమాధానాన్ని జెనరేట్ చేయడానికి చాలా సమయం పట్టింది. దయచేసి మళ్లీ ట్రై చేయండి."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "కన్సోల్ హెచ్చరికలు, ఎర్రర్‌లను అర్థం చేసుకోవడం అలాగే పరిష్కరించడం కోసం AI సహాయాన్ని స్వీకరించడానికి {PH1}‌ను ఆన్ చేయండి."
@@ -7911,7 +7884,7 @@
     "message": "{PH1}‌ను జోడించండి"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "కాలిబ్రేట్ చేయండి…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU త్రోట్లింగ్"
@@ -7935,7 +7908,7 @@
     "message": "ఆఫ్‌లైన్"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "రీకాలిబ్రేట్ చేయండి…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – సిఫార్సు చేయబడినవి"
@@ -8895,7 +8868,7 @@
     "message": "ఈ రిక్వెస్ట్ కుక్కీలను కలిగి లేదు."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ఇనిషియేటర్ డేటా అందుబాటులో లేదు"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "కాల్ స్ట్యాక్‌ను రిక్వెస్ట్ చేయండి"
@@ -8961,10 +8934,10 @@
     "message": "ప్రతిస్పందన డేటాను లోడ్ చేయడంలో విఫలమైంది"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "ప్రివ్యూ ఏదీ లేదు"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "ఈ రిక్వెస్ట్‌కు సమాధాన డేటా ఏదీ అందుబాటులో లేదు"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "కాష్ స్టోరేజ్ కాష్ పేరు: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ఒక ప్రొఫైల్‌ను రికార్డ్ చేస్తూ ఉండగా మరొక ప్రొఫైల్‌ను లోడ్ చేయడం సాధ్యపడదు."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "ప్రొఫైల్ లోడింగ్ విఫలమైంది: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "ప్రొఫైళ్లు"
   },
@@ -10251,7 +10221,7 @@
     "message": "సేవ్ చేయండి"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "మెసేజ్ వివరాలను చూడడానికి ఏదైనా ఒక మెసేజ్‌ను ఎంచుకోండి"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "టార్గెట్‌ను ఎంచుకోండి"
@@ -10290,7 +10260,7 @@
     "message": "రికార్డింగ్‌ను లేదా ఎంపిక చేసిన దశను కాపీ చేయండి"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "రికార్డింగ్‌ను క్రియేట్ చేయండి"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "రికార్డింగ్‌ను తొలగించండి"
@@ -10308,13 +10278,13 @@
     "message": "ఎక్స్‌టెన్షన్‌లను పొందండి…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "ఇంకా దేనినీ రికార్డ్ చేయలేదు"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "రికార్డింగ్‌ను దిగుమతి చేయండి"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "మరింత తెలుసుకోండి"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "రికార్డింగ్‌లేవీ లేవు"
@@ -10323,7 +10293,7 @@
     "message": "రికార్డింగ్(లు)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "ఆటోమేటెడ్ ఎండ్-టు-ఎండ్ టెస్ట్‌లు లేదా పనితీరు ట్రేస్‌లను క్రియేట్ చేయడానికి రికార్డింగ్‌లను ఉపయోగించండి."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "రికార్డింగ్‌ను రీప్లే చేయండి"
@@ -11496,7 +11466,7 @@
     "message": "వివరణలను జెనరేట్ చేయడానికి కన్సోల్ మెసేజ్, అనుబంధిత స్టాక్ ట్రేస్, సంబంధిత సోర్స్ కోడ్, అనుబంధిత నెట్‌వర్క్ హెడర్‌లు Googleకు పంపబడతాయి. ఈ ఫీచర్‌ను మెరుగుపరచడంలో సహాయపడటానికి రివ్యూవర్‌లు ఈ డేటాను రివ్యూ చేయవచ్చు."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "వివరణలను జెనరేట్ చేయడానికి కన్సోల్ మెసేజ్, అనుబంధిత స్టాక్ ట్రేస్, సంబంధిత సోర్స్ కోడ్, అనుబంధిత నెట్‌వర్క్ హెడర్‌లను Googleకు పంపడం జరుగుతుంది. ఈ డేటాను Googleకు చెందిన AI టెక్నాలజీల మోడల్స్‌ను మెరుగుపరచడానికి ఉపయోగించరు."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "మీ ప్రాంతాన్ని బట్టి, Google, డేటాను కలెక్ట్ చేయకపోవచ్చు"
@@ -11532,7 +11502,7 @@
     "message": "వెబ్ APIలు, నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైల్స్, పనితీరు ట్రేస్‌ల ద్వారా చెక్ చేయబడిన పేజీ యాక్సెస్ చేయగల డేటా ఏదైనా, వివరణలను జెనరేట్ చేయడానికి Googleకు పంపబడుతుంది. ఈ ఫీచర్‌ను మెరుగుపరచడంలో సహాయపడటానికి రివ్యూవర్‌లు ఈ డేటాను రివ్యూ చేయవచ్చు. వ్యక్తిగత లేదా గోప్యమైన సమాచారం ఉన్న పేజీలలో ఉపయోగించవద్దు."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ఇన్‌స్పెక్ట్ చేసిన పేజీ వెబ్ APIలు, నెట్‌వర్క్ రిక్వెస్ట్‌లు, ఫైల్స్, పనితీరు ట్రేస్‌ల ద్వారా డేటాను యాక్సెస్ చేస్తే, ఆ డేటా గురించి వివరణలను జెనరేట్ చేయడానికి దానిని Googleకు పంపడం జరుగుతుంది. ఈ డేటాను Googleకు చెందిన AI టెక్నాలజీల మోడల్స్‌ను మెరుగుపరచడానికి ఉపయోగించరు."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "కన్సోల్ హెచ్చరికలను, ఎర్రర్‌లను అర్థం చేసుకోవడానికి, పరిష్కరించడంలో మీకు సహాయపడుతుంది"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ఈ చర్యను రద్దు చేయలేరు."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "మీరు ఈ ఫోల్డర్‌ను, ఇంకా దానిలోని కంటెంట్‌లను ఖచ్చితంగా తొలగించాలనుకుంటున్నారా?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "మీరు ఈ ఫైల్‌ను ఖచ్చితంగా తొలగించాలనుకుంటున్నారా?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "మీరు ఈ ఫోల్డర్‌ను ఖచ్చితంగా మినహాయించాలనుకుంటున్నారా?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Workspace నుండి '‘{PH1}’ను తీసివేయాలా?"
@@ -13041,7 +13002,7 @@
     "message": "ఈ ట్రాక్, సర్వర్-టైమింగ్ నెట్‌వర్క్ ప్రతిస్పందన హెడర్‌ల నుండి తీసుకోబడిన టైమింగ్‌లను కలిగి ఉంది. వాటి ప్రారంభ సమయాలు మాత్రమే అంచనా వేయబడ్డాయి, ఖచ్చితమైనవి కాకపోవచ్చు."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "ఫస్ట్ / థర్డ్-పార్టీ"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "ఒకే యాక్టివిటీకి కేటాయించిన సమయం"
@@ -13254,7 +13215,7 @@
     "message": "వివరణ"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "థర్డ్-పార్టీలను డిమ్ చేయండి"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript నమూనాలను డిజేబుల్ చేయండి"
@@ -13374,7 +13335,7 @@
     "message": "టైమ్‌లైన్‌ను ఆపివేస్తోంది…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "థర్డ్-పార్టీ-వెబ్ క్లాసిఫై చేసిన థర్డ్-పార్టీలు"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "సమయం"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "థర్డ్-పార్టీ"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(ఎంట్రీ దాచబడింది)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "ఎంపిక సాధన గణాంకాలు"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "ఒకే యాక్టివిటీకి కేటాయించిన సమయం"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "సైజ్"
   },
@@ -13833,7 +13791,7 @@
     "message": "స్టయిల్‌షీట్ URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "ఫస్ట్ / థర్డ్-పార్టీ టేబుల్"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "రెండరింగ్‌లో గడిపిన సమయం"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "టైమ్ స్టాంప్"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "మొత్తం సమయం"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "ఈవెంట్ ట్రేస్ చేయండి"
@@ -13920,7 +13875,7 @@
     "message": "చైల్డ్ పేజీ పొజిషన్‌లను తీసివేయండి"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "కాలిబ్రేట్ చేయండి…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "క్యాలిబ్రేటెడ్ ప్రీసెట్‌లు"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "రీకాలిబ్రేట్ చేయండి…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – సిఫార్సు చేయబడినవి"
@@ -14424,7 +14379,7 @@
     "message": "ఎన్‌కోడ్ చేయబడిన డేటా"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "థర్డ్-పార్టీ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "కాష్ నుండి"
@@ -14568,16 +14523,16 @@
     "message": "గణాంకాలు ఒక ప్రయోగాత్మక ఫీచర్. మీ ఫీడ్‌బ్యాక్ మెరుగుపరచడంలో మాకు సహాయపడుతుంది."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "విస్మరించండి"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "లోకల్, ఫీల్డ్ కొలమానాలు [మ్యాచ్ కాకపోవడానికి](https://web.dev/articles/lab-and-field-data-differences) అనేక కారణాలు ఉంటాయి. యూజర్‌కు ఎదురయ్యే సగటు ఎక్స్‌పీరియన్స్ ఆధారంగా ట్రేస్‌లను విశ్లేషించడానికి [త్రోట్లింగ్ సెట్టింగ్‌లను, పరికర అనుకరణను](https://developer.chrome.com/docs/devtools/device-mode) సర్దుబాటు చేయండి."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "ఫీల్డ్ & లోకల్ కొలమానాలు మ్యాచ్ కాలేదు"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "ఫీల్డ్ ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} స్కోర్"
@@ -15885,7 +15840,7 @@
     "message": "దీని ఆధారంగా క్రమపద్ధతిలో అమర్చు"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "క్రమపద్ధతిలో అమర్చదగిన నిలువు వరుస. Enterను నొక్కి, క్రమపద్ధతిలో అమర్చే ఫిల్టర్‌ను వర్తింపజేయండి"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "మొత్తం {PH1}ను చూపించు"
@@ -16221,10 +16176,10 @@
     "message": "కనుగొనండి"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "డేటాను లోడ్ చేయడం విఫలమైంది"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "ప్రివ్యూ ఏదీ లేదు"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "కనుగొనండి"

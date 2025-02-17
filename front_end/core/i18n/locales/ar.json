@@ -105,7 +105,7 @@
     "message": "لوحة الشبكة"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "لوحة الأمان"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "لوحة المصادر"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "محو"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "انقر على زر التسجيل {PH1} أو اضغط على {PH2} لبدء التسجيل."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "ستسجّل أدوات مطوري البرامج جميع أنشطة {PH1} لمدة 3 أيام كحدٍّ أقصى، حتى عند إغلاق الأدوات."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "رقم التعريف المناسب"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "مزيد من المعلومات"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ما مِن بيانات وصفية لهذا الحدث."
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "العناصر المخزّنة"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "يُرجى تأكيد حذف قاعدة بيانات \"{PH1}\"."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "المفتاح الأساسي"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "انقر على أي حدث في مساحة تخزين مشتركة لعرض مَعلَمات الحدث."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "المفتاح"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "اختَر قيمة لمعاينتها."
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "مساحة التخزين المشتركة"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "تم تعديل عنصر التخزين."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "عناصر مساحة التخزين المشتركة"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "تم محو عناصر مساحة التخزين المشتركة."
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "عدد الإدخالات المعروضة في الجدول: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "القيمة"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "مساحة التخزين المشتركة"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "جهة الإصدار"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "ما من رموز مميّزة للحالة الخاصة مخزّنة حاليًا."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "عدد الرموز المميَّزة المُخزَّنة"
   },
@@ -4950,7 +4923,7 @@
     "message": "قائمة نقاط DOM الفاصلة"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "ما مِن نقاط إيقاف DOM تم ضبطها"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "تمت إزالة العقدة"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (من خريطة المصادر)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "لا تعرض علامة التبويب \"التغييرات\" أي تعديلات تتم على البيانات الثنائية"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "في هذه الصفحة، يمكنك تتبُّع التغييرات التي تم إجراؤها على الرموز البرمجية من خلال \"أدوات مطوّري البرامج في Chrome\"."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "نسخ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "ما مِن تغييرات حتى الآن"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "ما مِن اختلافات نصية"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{حذف سطر واحد (-)}zero{حذف # سطر (-)}two{حذف سطرَين (-)}few{حذف # أسطر (-)}many{حذف # سطرًا (-)}other{حذف # سطر (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "يمكنك النقر لفتح لوحة الخصوصية والأمان وإظهار تقرير ملفات تعريف الارتباط الخارجية"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "تعذَّر التأكيد: "
@@ -6747,7 +6720,7 @@
     "message": "تتبُّع تسلسل استدعاء الدوال البرمجية"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "استغرق الرد وقتًا طويلاً جدًا. يُرجى إعادة المحاولة."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "يمكنك تفعيل ميزة \"{PH1}\" للحصول على مساعدة من الذكاء الاصطناعي في فهم التحذيرات والأخطاء في وحدة التحكّم ومعالجتها."
@@ -7911,7 +7884,7 @@
     "message": "إضافة الخيار \"{PH1}\""
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "معايرة…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "تقييد سرعة وحدة المعالجة المركزية (CPU)"
@@ -7935,7 +7908,7 @@
     "message": "بلا إنترنت"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "إعادة المعايرة…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "‫{PH1} (يُنصح به)"
@@ -8895,7 +8868,7 @@
     "message": "لا يتضمّن هذا الطلب ملفات تعريف الارتباط."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ما مِن بيانات عن البادئ"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "طلب حزمة اتصال"
@@ -8961,10 +8934,10 @@
     "message": "تعذّر تحميل بيانات الاستجابة."
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "ما مِن نتائج لمعاينتها"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "لا تتوفّر بيانات الردود لهذا الطلب"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "اسم مساحة تخزين ذاكرة التخزين المؤقت: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "يتعذّر تحميل الملف الشخصي أثناء تسجيل ملف شخصي آخر."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "تعذَّر تحميل الملف التعريفي: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "الملفات التعريفية"
   },
@@ -10251,7 +10221,7 @@
     "message": "حفظ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "اختَر رسالة للاطّلاع على تفاصيلها"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "اختيار هدف"
@@ -10290,7 +10260,7 @@
     "message": "نسخ التسجيل أو الخطوة المحدَّدة"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "إنشاء تسجيل"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "حذف التسجيل"
@@ -10308,13 +10278,13 @@
     "message": "الحصول على إضافات…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "ما مِن تسجيلات حتى الآن"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "استيراد التسجيل"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "مزيد من المعلومات"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "ما مِن تسجيلات"
@@ -10323,7 +10293,7 @@
     "message": "تسجيل"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "يمكنك استخدام التسجيلات لإنشاء اختبارات تلقائية شاملة أو لتتبُّع الأداء."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "إعادة تشغيل التسجيل"
@@ -11496,7 +11466,7 @@
     "message": "للحصول على تفسيرات، نرسل إلى Google كل من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "للحصول على تفسيرات، نرسل إلى Google كل من رسالة وحدة التحكّم وما يرتبط بها من عمليات تتبُّع تسلسل استدعاء الدوال البرمجية ورمز المصدر المرتبط بها ورؤوس الشبكة المرتبطة بها. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "قد تمتنع Google عن جمع البيانات استنادًا إلى المنطقة التي تقيم فيها"
@@ -11532,7 +11502,7 @@
     "message": "للحصول على تفسيرات، تُرسَل إلى Google أي بيانات يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. قد يطّلع على هذه البيانات فريق من المراجعين لتحسين هذه الميزة. يُرجى عدم استخدام الميزة في الصفحات التي تحتوي على معلومات شخصية أو حسّاسة."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "للحصول على تفسيرات، تُرسَل إلى Google أي بيانات يمكن للصفحة التي تم فحصها الوصول إليها من خلال واجهات برمجة تطبيقات الويب وطلبات الشبكة والملفات وعمليات تتبُّع الأداء. ولن يتم استخدام هذه البيانات لتحسين نماذج ذكاء Google الاصطناعي."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "تساعدك هذه الميزة في فهم ومعالجة التحذيرات والأخطاء في وحدة التحكّم"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ولا يمكن التراجع عن هذا الإجراء."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "هل تريد فعلاً حذف هذا المجلّد ومحتواه؟"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "هل تريد فعلاً حذف هذا الملف؟"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "هل تريد فعلاً استبعاد هذا المجلّد؟"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "إزالة \"{PH1}\" من مساحة العمل"
@@ -13041,7 +13002,7 @@
     "message": "يعرض هذا القسم توقيتات أنشطة الخادم التي تم الحصول عليها من عناوين الاستجابة الخاصة بالشبكة. جدير بالذكر أنّ أوقات البدء المُدرَجة هي تقديرية فقط وقد لا تكون دقيقة."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "الطرف الأول أو الثالث"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "وقت النشاط الفردي"
@@ -13254,7 +13215,7 @@
     "message": "الوصف"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "تعتيم المحتوى التابع لجهات خارجية"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "إيقاف عينات JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "جارٍ إيقاف المخطط الزمني…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "جهات خارجية مُصنّفة من قِبل third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "الوقت"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "الجهة الخارجية"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(الإدخال مخفي)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "إحصاءات أداة الاختيار"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "وقت النشاط الفردي"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "الحجم"
   },
@@ -13833,7 +13791,7 @@
     "message": "عنوان URL لورقة الأنماط"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "جدول الطرف الأول أو الجهة الخارجية"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "الوقت المستغرق في العرض"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "طابع زمني"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "الوقت الإجمالي"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "تتبُّع الحدث"
@@ -13920,7 +13875,7 @@
     "message": "إزالة أشرطة التنقّل الثانوية"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "معايرة…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "وحدة المعالجة المركزية (CPU):‏ {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "الإعدادات المسبقة للمعايرة"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "إعادة المعايرة…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "‫{PH1} (يُنصح به)"
@@ -14424,7 +14379,7 @@
     "message": "البيانات المُشفّرة"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "الجهة الخارجية"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "من ذاكرة التخزين المؤقت"
@@ -14568,16 +14523,16 @@
     "message": "‫Insights هي ميزة تجريبية. وستساعدنا ملاحظاتك في تحسينها."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "إغلاق"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "هناك العديد من الأسباب التي قد تؤدي إلى [عدم تطابق](https://web.dev/articles/lab-and-field-data-differences) المقاييس على نظامك المحلي مع مقاييس تجارب المستخدمِين الحقيقين. يُرجى ضبط [إعدادات التقييد ومحاكاة الأجهزة](https://developer.chrome.com/docs/devtools/device-mode) لتحليل عمليات تتبُّع أقرب إلى بيئة المستخدم العادي."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "عدم تطابق المقاييس على نظامك المحلي مع مقاييس تجارب المستخدمِين الحقيقيين"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "مقاييس تجارب المستخدمِين الحقيقيين ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "‫{PH1}: {PH2}، النتيجة {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "الترتيب حسب"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "عمود قابل للترتيب: يمكنك الضغط على مفتاح Enter لتطبيق فلتر الترتيب"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "عرض كل العناصر البالغ عددها {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "بحث"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "تعذَّر تحميل البيانات"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "ما مِن نتائج لمعاينتها"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "بحث"

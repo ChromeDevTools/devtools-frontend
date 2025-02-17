@@ -105,7 +105,7 @@
     "message": "Panou de rețea"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Panoul Securitate"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Panoul Surse"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Șterge"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Dă clic pe butonul de înregistrare {PH1} sau apasă {PH2} pentru a începe înregistrarea."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools va înregistra toată activitatea {PH1} timp de maximum trei zile, chiar și când este închisă."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Codul apariției"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Află mai multe"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Nu există metadate pentru acest eveniment"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Depozite de obiecte"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Confirmă ștergerea bazei de date {PH1}."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Cheie principală"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Dă clic pe orice eveniment din spațiul de stocare comun pentru a afișa parametrii evenimentului."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Cheie"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Selectează o valoare de previzualizat"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Spațiu de stocare comun"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Elementul de stocare a fost editat."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Elemente de stocare în comun"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Elementele din spațiul de stocare comun au fost șterse"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Numărul de intrări afișate în tabel: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Valoare"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Spațiu de stocare comun"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Emitent"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Momentan, nu există indicative private de stare stocate."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Numărul de indicative stocate"
   },
@@ -4950,7 +4923,7 @@
     "message": "Lista punctelor de întrerupere DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Nu au fost setate puncte de întrerupere DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Nod eliminat"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (din harta sursă)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Fila Modificări nu afișează modificările datelor binare"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Pe această pagină poți urmări modificările de cod aduse în DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Copiază"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Încă nu există modificări"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Nu este disponibilă nicio diferență de text"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ștergere (-)}few{# ștergeri (-)}other{# de ștergeri (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Dă clic pentru a deschide panoul de confidențialitate și securitate și a afișa raportul privind cookie-urile terță parte"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Afirmația nu a reușit: "
@@ -6747,7 +6720,7 @@
     "message": "Urmărirea stivei"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Generarea unui răspuns a durat prea mult. Încearcă din nou."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Activează {PH1} pentru a primi asistență AI spre a înțelege și a remedia avertismentele și erorile de pe consolă."
@@ -7911,7 +7884,7 @@
     "message": "Adaugă {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Calibrează…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Limitarea CPU"
@@ -7935,7 +7908,7 @@
     "message": "Offline"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Recalibrează…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – recomandată"
@@ -8895,7 +8868,7 @@
     "message": "Această solicitare nu conține cookie-uri."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Nu există date despre inițiator"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Stivă de apel pentru solicitări"
@@ -8961,10 +8934,10 @@
     "message": "Datele de răspuns nu s-au încărcat"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Nimic de previzualizat"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Această solicitare nu are date de răspuns disponibile"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Nume memorie cache din stocarea în memoria cache: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nu se poate încărca profilul în timp ce un alt profil este înregistrat."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Profilurile nu s-au încărcat: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profiluri"
   },
@@ -10251,7 +10221,7 @@
     "message": "Salvează"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Selectează un mesaj pentru a-i vedea detaliile"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Selectează un obiectiv"
@@ -10290,7 +10260,7 @@
     "message": "Copiază înregistrarea sau pasul selectat"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Creează o înregistrare"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Șterge înregistrarea"
@@ -10308,13 +10278,13 @@
     "message": "Descarcă extensii…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Încă nu s-a înregistrat nimic"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Importă înregistrarea"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Află mai multe"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Nicio înregistrare"
@@ -10323,7 +10293,7 @@
     "message": "înregistrare / înregistrări"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Folosește înregistrările pentru a crea teste complete automate sau monitorizări ale performanței."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Redă din nou înregistrarea"
@@ -11496,7 +11466,7 @@
     "message": "Mesajul de pe consolă, urmărirea stivei asociată, codul sursă asociat și anteturile de rețea asociate sunt trimise la Google pentru a genera explicații. Aceste date pot fi examinate de evaluatori umani pentru a îmbunătăți funcția."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Mesajul de pe consolă, urmărirea stivei asociată, codul sursă asociat și anteturile de rețea asociate sunt trimise la Google pentru a genera explicații. Aceste date nu vor fi folosite pentru a îmbunătăți modelele Google AI."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "În funcție de regiune, Google poate să nu colecteze date"
@@ -11532,7 +11502,7 @@
     "message": "Orice date pe care pagina inspectată le poate accesa prin API-urile web, solicitările de rețea, fișierele și monitorizările performanței se trimit la Google pentru a genera explicații. Aceste date pot fi examinate de evaluatori umani pentru a îmbunătăți funcția. A nu se folosi pe pagini cu informații cu caracter personal sau sensibile."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Orice date pe care pagina inspectată le poate accesa prin API-urile web, solicitările de rețea, fișierele și monitorizările performanței se trimit la Google pentru a genera explicații. Aceste date nu vor fi folosite pentru a îmbunătăți modelele Google AI."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Te ajută să înțelegi și să remediezi avertismentele și erorile de pe consolă"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Această acțiune nu se poate anula."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Sigur vrei să ștergi acest dosar și conținutul său?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Sigur vrei să ștergi acest fișier?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Sigur vrei să excluzi acest dosar?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Elimini {PH1} din Workspace?"
@@ -13041,7 +13002,7 @@
     "message": "Acest canal conține durate preluate din anteturile de răspuns ale rețelei Server-Timing. Orele de începere respective sunt doar estimări și este posibil să nu fie corecte."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Primă / terță parte"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Durata individuală"
@@ -13254,7 +13215,7 @@
     "message": "Descriere"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Redu conținutul de la terți"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Dezactivează eșantioanele JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Se oprește cronologia…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Terți clasificați după paginile web ale terților"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Oră"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Terță parte"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(intrarea este ascunsă)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Statistici pentru selector"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Durata individuală"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Dimensiune"
   },
@@ -13833,7 +13791,7 @@
     "message": "Adresa URL a foii de stil"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Tabel primar / terț"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Durata de redare"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Marcaj temporal"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Timp total"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Eveniment de urmărire"
@@ -13920,7 +13875,7 @@
     "message": "Elimină căile de navigare de nivel inferior"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Calibrează…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Presetări calibrate"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Recalibrează…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – recomandată"
@@ -14424,7 +14379,7 @@
     "message": "Date codificate"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Terță parte"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Din memoria cache"
@@ -14568,16 +14523,16 @@
     "message": "Insights este o funcție experimentală. Feedbackul tău ne va ajuta să o îmbunătățim."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Închide"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Există multe motive pentru care valorile locale și de pe teren [pot să nu corespundă](https://web.dev/articles/lab-and-field-data-differences). Ajustează [setările de limitare și simularea dispozitivului](https://developer.chrome.com/docs/devtools/device-mode) pentru a analiza urme mai asemănătoare mediului utilizatorului obișnuit."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Valorile locale și de pe teren nu corespund"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Teren ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "Scor {PH1}: {PH2} {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "Sortează după"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Coloană care poate fi sortată. Apasă pe Enter pentru a aplica filtrul de sortare."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Afișează-le pe toate {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Caută"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Datele nu au fost încărcate"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Nimic de previzualizat"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Caută"

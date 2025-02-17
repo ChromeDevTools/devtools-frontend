@@ -105,7 +105,7 @@
     "message": "پانل شبکه"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "پانل امنیت"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "پانل منابع"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "پاک کردن"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "برای شروع ضبط، روی دکمه ضبط {PH1} کلیک کنید یا {PH2} را فشار دهید."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools همه فعالیت‌های {PH1} را برای حداکثر ۳ روز ضبط خواهد کرد، حتی اگر بسته باشد."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "شناسه نمونه"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "بیشتر بدانید"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "هیچ فراداده‌ای برای این رویداد وجود ندارد"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "مخازن اشیاء"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "لطفا حذف پایگاه داده «{PH1}» را تأیید کنید."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "کلید اصلی"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "برای نمایش پارامترهای رویداد، روی هرکدام از رویدادهای فضای ذخیره‌سازی مشترک کلیک کنید."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "کلید"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "مقداری را برای پیش‌دید کردن انتخاب کنید"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "فضای ذخیره‌سازی مشترک"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "مورد فضای ذخیره‌سازی ویرایش شد."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "موارد فضای ذخیره‌سازی مشترک"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "موارد فضای ذخیره‌سازی مشترک پاک شد"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "تعداد ورودی‌های نشان‌داده‌شده در جدول: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "ارزش"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "فضای ذخیره‌سازی مشترک"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "صادرکننده"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "درحال‌حاضر هیچ «کد حالت خصوصی» ذخیره نشده است."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "تعداد کدهای ذخیره‌شده"
   },
@@ -4950,7 +4923,7 @@
     "message": "فهرست نقطه‌های توقف DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "هیچ نقطه گسستی برای DOM تنظیم نشده است"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "گره برداشته شد"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (از نقشه منبع)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "تغییرات اعمال‌شده بر داده‌های دودویی در برگه تغییرات نمایش داده نمی‌شود"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "در این صفحه می‌توانید تغییراتی را که در DevTools بر کد اعمال شده است ردیابی کنید."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "کپی"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "هنوز تغییری ایجاد نشده است"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "تفاوتی در نوشتار وجود ندارد"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# مورد حذف‌شده (-)}one{# مورد حذف‌شده (-)}other{# مورد حذف‌شده (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>‎"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "برای باز کردن پانل حریم خصوصی و امنیت و نمایش دادن گزارش کوکی طرف سوم، کلیک کنید"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "اثبات ناموفق بود: "
@@ -6747,7 +6720,7 @@
     "message": "ردیاب پشته‌ای"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "تولید پاسخ بیش‌ازحد طول کشید. لطفاً دوباره امتحان کنید."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "برای دریافت کردن کمک از هوش مصنوعی برای درک کردن و رسیدگی کردن به هشدارها و خطاهای کنسول، {PH1} را روشن کنید."
@@ -7911,7 +7884,7 @@
     "message": "افزودن {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "واسنجی…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "محدود کردن CPU"
@@ -7935,7 +7908,7 @@
     "message": "آفلاین"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "واسنجی مجدد…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "‫{PH1} – توصیه‌شده"
@@ -8895,7 +8868,7 @@
     "message": "این درخواست فاقد کوکی است."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "داده‌ای برای آغازگر وجود ندارد"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "پشته فراخوانی درخواست"
@@ -8961,10 +8934,10 @@
     "message": "داده‌های پاسخ بار نشد"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "موردی برای پیش‌دید کردن وجود ندارد"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "هیچ داده پاسخی برای این درخواست دردسترس نیست"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "نام حافظه پنهان فضای ذخیره‌سازی حافظه پنهان: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "وقتی نمایه‌ای درحال ضبط شدن است نمی‌توان نمایه دیگری را بار کرد."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "نمایه بار نشد: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "نمایه‌ها"
   },
@@ -10251,7 +10221,7 @@
     "message": "ذخیره"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "برای دیدن جزئیات پیام، آن را انتخاب کنید"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "انتخاب هدف"
@@ -10290,7 +10260,7 @@
     "message": "کپی کردن قطعه ضبط‌شده یا مرحله انتخاب‌شده"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "ایجاد ضبط"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "حذف قطعه ضبط‌شده"
@@ -10308,13 +10278,13 @@
     "message": "دریافت افزونه‌ها…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "هنوز چیزی ضبط نشده است"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "وارد کردن قطعه ضبط‌شده"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "بیشتر بدانید"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "قطعه ضبط‌شده‌ای وجود ندارد"
@@ -10323,7 +10293,7 @@
     "message": "قطعه(های) ضبط‌شده"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "برای ایجاد ردپاهای عملکرد یا آزمایش‌های سرتاسر خودکار، از ضبط‌ها استفاده کنید."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "بازپخش قطعه ضبط‌شده"
@@ -11496,7 +11466,7 @@
     "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. ممکن است افراد بازبین این داده‌ها را ببینند تا این ویژگی را بهبود دهند."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "پیام کنسول، ردیابی پشته‌ای منسوب، کد منبع مربوطه، و سرصفحه‌های شبکه منسوب برای تولید توضیحات به Google ارسال می‌شوند. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "بسته به منطقه شما، ممکن است Google داده‌ای جمع‌آوری نکند"
@@ -11532,7 +11502,7 @@
     "message": "هر داده‌ای که صفحه‌ بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به آن دسترسی داشته باشد، برای تولید توضیحات به Google ارسال می‌شود. ممکن است افراد بازبین این داده‌ها را برای بهبود دادن این ویژگی ببینند. در صفحه‌های دارای اطلاعات حساس یا شخصی استفاده نشود."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "هر داده‌ای که صفحه‌ بازرسی‌شده بتواند ازطریق «میاناهای برنامه‌سازی کاربردی وب»، درخواست‌های شبکه، فایل‌ها، و ردپاهای عملکرد به آن دسترسی داشته باشد، برای تولید توضیحات به Google ارسال می‌شود. از این داده‌ها برای بهبود مدل‌های هوش مصنوعی Google استفاده نخواهد شد."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "به شما کمک می‌کند هشدارها و خطاهای کنسول را متوجه شوید و آن‌ها را برطرف کنید"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "این کنش واگردشدنی نیست."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "مطمئنید می‌خواهید این پوشه و محتوای آن را حذف کنید؟"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "مطمئنید می‌خواهید این فایل را حذف کنید؟"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "مطمئنید می‌خواهید این پوشه را مستثنی کنید؟"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "«{PH1}»‌ از Workspace برداشته شود؟"
@@ -13041,7 +13002,7 @@
     "message": "این دسته هدف زمان‌بندی‌هایی دارد که از سرصفحه‌های پاسخ شبکه «زمان‌بندی سرور» گرفته شده است. زمان‌های شروع آن‌ها صرفاً تخمینی است و شاید صحیح نباشد."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "طرف اول / سوم"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "زمان انجام فعالیت"
@@ -13254,7 +13215,7 @@
     "message": "شرح"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "محدود کردن طرف‌های سوم"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "غیرفعال کردن نمونه‌های جاوا اسکریپت"
@@ -13374,7 +13335,7 @@
     "message": "درحال متوقف کردن خط زمان…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "طرف‌های سوم براساس وب طرف سوم طبقه‌بندی می‌شوند"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "زمان"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "طرف سوم"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(ورودی پنهان است)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "آمار گزینشگر"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "زمان انجام فعالیت"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "اندازه"
   },
@@ -13833,7 +13791,7 @@
     "message": "نشانی وب برگه سبک نگارش"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "جدول طرف اول / سوم"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "زمان صرف‌شده برای پرداز زدن"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "مُهر زمان"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "کل زمان"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "رویداد ردیابی"
@@ -13920,7 +13875,7 @@
     "message": "برداشتن نشانگرهای صفحات فرزند"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "واسنجی…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "واحد پردازش مرکزی: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "پیش‌تنظیمات واسنجی‌شده"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "واسنجی مجدد…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "‫{PH1} – توصیه‌شده"
@@ -14424,7 +14379,7 @@
     "message": "داده‌های کدبندی‌شده"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "طرف سوم"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "از حافظه نهان"
@@ -14568,16 +14523,16 @@
     "message": "اطلاعات آماری یک ویژگی آزمایشی است. بازخورد شما به ما کمک می‌کند آن را بهبود ببخشیم."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "بستن"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "دلایل زیادی برای [عدم مطابقت](https://web.dev/articles/lab-and-field-data-differences) سنجه‌های محلی و فیلد وجود دارد. برای تحلیل کردن ردپاهایی که به میانگین محیط کاربر شباهت بیشتری دارد، [تنظیمات محدود کردن شبکه و شبیه‌سازی دستگاه](https://developer.chrome.com/docs/devtools/device-mode) را تغییر دهید."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "سنجه‌های فیلد و محلی مطابقت ندارند"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "فیلد ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "‫{PH1}: ‏{PH2} {PH3} امتیاز"
@@ -15885,7 +15840,7 @@
     "message": "ترتیب براساس"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "ستون مرتب‌شدنی. برای اعمال فیلتر مرتب‌سازی، کلید Enter را فشار دهید"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "نمایش همه {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "یافتن"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "داده بار نشد"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "موردی برای پیش‌دید کردن وجود ندارد"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "یافتن"

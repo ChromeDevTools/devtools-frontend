@@ -105,7 +105,7 @@
     "message": "Paneli i rrjetit"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Paneli i sigurisë"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Paneli i burimeve"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Pastro"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Kliko butonin e regjistrimit {PH1} ose përdor {PH2} për të filluar regjistrimin."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools do të regjistrojë të gjithë aktivitetin e {PH1} për deri në 3 ditë, edhe kur është e mbyllur."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "ID-ja e shembullit"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Mëso më shumë"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Nuk ka metadata për këtë ngjarje"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Dyqane objektesh"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Konfirmo fshirjen e databazës së \"{PH1}\"."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Çelësi parësor"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Kliko në çdo ngjarje të hapësirës ruajtëse të ndarë për të shfaqur parametrat e ngjarjes."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Çelësi"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Zgjidh një vlerë për të shikuar paraprakisht"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Hapësira ruajtëse e ndarë"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Artikulli i hapësirës ruajtëse u modifikua."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Artikujt e hapësirës ruajtëse të ndarë"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Artikujt e hapësirës ruajtëse të ndarë u pastruan"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Numri i regjistrimeve të shfaqura në tabelë: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Vlera"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Hapësira ruajtëse e ndarë"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Lëshuesi"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Aktualisht nuk është ruajtur asnjë kod i gjendjes private."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Numri i simboleve të ruajtura"
   },
@@ -4950,7 +4923,7 @@
     "message": "Lista e \"Pikave të ndërprerjes të DOM-it\""
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Nuk është caktuar asnjë pikë ndërprerje e DOM-it"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Nyja u hoq"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (nga harta e burimit)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Skeda e ndryshimeve nuk shfaq ndryshimet e të dhënave binare"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Në këtë faqe mund të gjurmosh ndryshimet e kodit që janë bërë brenda DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Kopjo"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Nuk ka ende asnjë ndryshim"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Nuk ka diferenca në tekst"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# fshirje (-)}other{# fshirje (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Kliko për të hapur panelin e privatësisë dhe të sigurisë dhe për të shfaqur raportin e kukive të palëve të treta"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Vlerësimi dështoi: "
@@ -6747,7 +6720,7 @@
     "message": "Gjurmimi i stivës"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Gjenerimi i përgjigjes zgjati shumë. Provo përsëri."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Aktivizo {PH1} për të marrë ndihmën e IA-së për të kuptuar dhe menaxhuar paralajmërimet dhe gabimet e panelit."
@@ -7911,7 +7884,7 @@
     "message": "Shto {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibro…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Përshpejtimi i CPU-së"
@@ -7935,7 +7908,7 @@
     "message": "Offline"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Rikalibro…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} - rekomandohet"
@@ -8895,7 +8868,7 @@
     "message": "Kjo kërkesë nuk ka kuki."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Nuk ka të dhëna të iniciuesit"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Kërko stivën e thirrjeve"
@@ -8961,10 +8934,10 @@
     "message": "Të dhënat e përgjigjes nuk u ngarkuan"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Asgjë për t'u shfaqur paraprakisht"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Kjo kërkesë nuk ka të dhëna përgjigjeje në dispozicion"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Emri i hapësirës ruajtëse të memories specifike: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nuk mund të ngarkohet profili ndërkohë që një profil tjetër po regjistrohet."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Profili nuk u ngarkua: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profilet"
   },
@@ -10251,7 +10221,7 @@
     "message": "Ruaj"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Zgjidh një mesazh për të parë detajet e tij"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Zgjidh një objektiv"
@@ -10290,7 +10260,7 @@
     "message": "Kopjo regjistrimin ose hapin e zgjedhur"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Krijo një regjistrim"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Fshi regjistrimin"
@@ -10308,13 +10278,13 @@
     "message": "Merr shtesat…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Nuk është regjistruar ende asgjë"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Importo regjistrimin"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Mëso më shumë"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Asnjë regjistrim"
@@ -10323,7 +10293,7 @@
     "message": "regjistrim(e)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Përdor regjistrimet për të krijuar testime nga skaji në skaj ose gjurmime të automatizuara të performanclës."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Riluaj regjistrimin"
@@ -11496,7 +11466,7 @@
     "message": "Mesazhi i konsolës, gjurmimi i lidhur i stivës, kodi përkatës i burimit dhe titujt e lidhur të rrjetit dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna mund të shikohen nga shqyrtues njerëzorë për të përmirësuar këtë veçori."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Mesazhi i konsolës, gjurmimi i lidhur i stivës, kodi përkatës i burimit dhe titujt e lidhur të rrjetit dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna nuk do të përdoren për të përmirësuar modelet e IA-së të Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Në varësi të rajonit tënd, Google mund të mos mbledhë të dhëna"
@@ -11532,7 +11502,7 @@
     "message": "Të dhënat në të cilat mund të qaset faqja e inspektuar nëpërmjet API-ve të uebit, kërkesave të rrjetit, skedarëve dhe gjurmimeve të performancës mund të dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna mund të shikohen nga shqyrtues njerëzorë për të përmirësuar këtë veçori. Mos e përdor në faqe me informacione personale ose delikate."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Të dhënat në të cilat mund të qaset faqja e inspektuar nëpërmjet API-ve të uebit, kërkesave të rrjetit, skedarëve dhe gjurmimeve të performancës mund të dërgohen te Google për të gjeneruar shpjegimet. Këto të dhëna nuk do të përdoren për të përmirësuar modelet e IA-së të Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Të ndihmon të kuptosh dhe të rregullosh paralajmërimet dhe gabimet e konsolës"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Ky veprim nuk mund të zhbëhet."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "E konfirmon që dëshiron ta fshish këtë dosje dhe përmbajtjet e saj?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "E konfirmon që dëshiron ta fshish këtë skedar?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "E konfirmon që dëshiron ta përjashtosh këtë dosje?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Të hiqet \"{PH1}\" nga \"Vendi i punës\"?"
@@ -13041,7 +13002,7 @@
     "message": "Ky kanal përfshin kohë të marra nga kokat e përgjigjeve të rrjetit të kohëve të serverit. Kohët përkatëse të fillimit janë vetëm përllogaritje dhe mund të mos jenë të sakta."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Pala e parë / e tretë"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Koha vetjake"
@@ -13254,7 +13215,7 @@
     "message": "Përshkrimi"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Errëso palët e treta"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Çaktivizo shembujt e JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Po ndalohet kronologjia…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Palët e treta të klasifikuara nga third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Koha"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Palë e tretë"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(hyrja është e fshehur)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Statistikat e përzgjedhësit"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Koha vetjake"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Madhësia"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL-ja e fletës së stilit"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Tabela e palës së parë / të tretë"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Koha e shpenzuar në paraqitje"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Vula kohore"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Koha totale"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Ngjarja e gjurmimit"
@@ -13920,7 +13875,7 @@
     "message": "Hiq shtigjet dytësore të navigimit"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibro…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Paravendosjet e kalibruara"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Rikalibro…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} - rekomandohet"
@@ -14424,7 +14379,7 @@
     "message": "Të dhënat e enkoduara"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Palë e tretë"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Nga memoria specifike"
@@ -14568,16 +14523,16 @@
     "message": "Insights është një veçori eksperimentale. Komentet e tua do të na ndihmojnë ta përmirësojmë atë."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Hiq"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Ka shumë arsye se pse metrika lokale dhe e fushës [mund të mos përputhet](https://web.dev/articles/lab-and-field-data-differences). Rregullo [cilësimet e kufizimit dhe imitimin e pajisjes](https://developer.chrome.com/docs/devtools/device-mode) për të analizuar gjurmime më të ngjashme me mjedisin e përdoruesit mesatar."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Mospërputhje e metrikës lokale dhe të fushës"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Fusha ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} - rezultat {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "Rendit sipas"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Kolonë që mund të renditet. Shtyp \"Enter\" për të zbatuar filtrin e renditjes"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Shfaqi të gjitha: {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Gjej"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Ngarkimi i të dhënave dështoi"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Asgjë për t'u shfaqur paraprakisht"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Gjej"

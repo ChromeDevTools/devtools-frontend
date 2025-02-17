@@ -105,7 +105,7 @@
     "message": "Hálózat panel"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Biztonsági panel"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Források panel"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Törlés"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Kattintson a Rögzítés {PH1} gombra, vagy nyomja le a(z) {PH2} billentyűt a felvétel elindításához."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "A DevTools minden {PH1}-tevékenységet rögzít legfeljebb három napig, még bezárt állapotban is."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Példányazonosító"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "További információ"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Nincsenek metaadatok ehhez az eseményhez"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektumtárhelyek"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Kérjük, erősítse meg a(z) „{PH1}” adatbázis törlését."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Elsődleges kulcs"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Az eseményparaméterek megjelenítéséhez kattintson a megosztott tárhely bármely eseményére."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Kulcs"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Válassza ki a kívánt értéket az előnézethez"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Megosztott tárhely"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Tárolóelem szerkesztve."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Megosztott tárhelyelemek"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Megosztott tárhelyelemek törölve"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "A táblázatban megjelenített bejegyzések száma: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Érték"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Megosztott tárhely"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Kiállító"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Jelenleg nincs tárolt privát állapottoken."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Tárolt tokenek száma"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM-töréspontok listája"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Nincs beállítva DOM-töréspont"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Csomópont eltávolítva"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (forrás-hozzárendelésből)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "A Módosítások lapon nem jelennek meg a bináris adatok módosításai"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Ezen az oldalon nyomon követheti a DevToolsban végzett kódmódosításokat."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Másolás"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Még nincsenek módosítások"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Nem áll rendelkezésre szöveges különbség"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# törlés (-)}other{# törlés (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Kattintson az adatvédelmi és biztonsági panel megnyitásához, és a harmadik féltől származó cookie-jelentés megjelenítéséhez."
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "A helyességi feltétel sikertelen: "
@@ -6747,7 +6720,7 @@
     "message": "Veremkivonat"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "A válasz generálása túl sokáig tartott. Próbálkozzon újra."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "A következő bekapcsolásával a mesterséges intelligencia támogatást nyújt a konzol figyelmeztetéseinek és hibáinak megértéséhez és megoldásához: {PH1}."
@@ -7911,7 +7884,7 @@
     "message": "{PH1} hozzáadása"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrálás…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-korlátozás"
@@ -7935,7 +7908,7 @@
     "message": "Offline"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Újrakalibrálás…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – ajánlott"
@@ -8895,7 +8868,7 @@
     "message": "A kéréshez nem tartoznak cookie-k"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Nincsenek kezdeményező adatok"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Kérelemhez tartozó hívási verem"
@@ -8961,10 +8934,10 @@
     "message": "Nem sikerült betölteni a válaszadatokat"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Nincs megjeleníthető előnézet"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Ehhez a kérelemhez nem tartozik rendelkezésre álló válaszadat."
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Tárhely gyorsítótárának a neve: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Nem lehetséges a profil betöltése, miközben folyamatban van egy másik profil rögzítése."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Profil betöltése sikertelen: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profilok"
   },
@@ -10251,7 +10221,7 @@
     "message": "Mentés"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Válassza ki a kívánt üzenetet a részleteinek megtekintéséhez"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Válasszon célt"
@@ -10290,7 +10260,7 @@
     "message": "Felvétel vagy a kiválasztott lépés másolása"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Felvétel létrehozása"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Felvétel törlése"
@@ -10308,13 +10278,13 @@
     "message": "Bővítmények lekérése…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Még nem rögzített semmit"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Felvétel importálása"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "További információ"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Nincs felvétel"
@@ -10323,7 +10293,7 @@
     "message": "felvételek"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "A felvételek segítségével automatikusan létrehozhat végpontok közötti teszteket vagy teljesítménynyomokat."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Felvétel újrajátszása"
@@ -11496,7 +11466,7 @@
     "message": "A konzolüzenetet, a kapcsolódó veremkivonatot, a kapcsolódó forráskódot és a kapcsolódó hálózati fejléceket a rendszer elküldi a Google-nak magyarázatok létrehozása céljából. A funkció továbbfejlesztése érdekében előfordulhat, hogy felülvizsgálatot végző emberek is átnézik ezeket az adatokat."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "A konzolüzenetet, a kapcsolódó veremkivonatot, a kapcsolódó forráskódot és a kapcsolódó hálózati fejléceket a rendszer elküldi a Google-nak magyarázatok létrehozása céljából. Ezeket az adatokat nem használjuk fel a Google AI-modelljeinek továbbfejlesztésére."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "A régiótól függően a Google eltekinthet az adatgyűjtéstől."
@@ -11532,7 +11502,7 @@
     "message": "A rendszer a vizsgált oldalon található összes olyan adatot elküld a Google-nak magyarázatok létrehozása céljából, amelyhez a webes API-k, a hálózati kérelmek, a fájlok és a teljesítménynyomok révén hozzáfér. A funkció továbbfejlesztése érdekében előfordulhat, hogy felülvizsgálatot végző emberek is átnézik ezeket az adatokat. Ne használja személyes vagy bizalmas információkat tartalmazó oldalakon."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "A rendszer a vizsgált oldalon található összes olyan adatot elküldi a Google-nak magyarázatok létrehozása céljából, amelyhez a webes API-k, a hálózati kérelmek, a fájlok és a teljesítménynyomok révén hozzáfér. Ezeket az adatokat nem használjuk fel a Google AI-modelljeinek továbbfejlesztésére."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Segít megérteni és kijavítani a konzollal kapcsolatos figyelmeztetéseket és hibákat"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "A művelet nem vonható vissza."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Biztosan törli ezt a mappát a tartalmával együtt?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Biztosan törli ezt a fájlt?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Biztosan kizárja ezt a mappát?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Eltávolítja a következőt a munkaterületről: „{PH1}”?"
@@ -13041,7 +13002,7 @@
     "message": "Ez a sáv a Server-Timing hálózati válaszfejlécekből származó időzítéseket tartalmazza. A hozzájuk tartozó kezdési időpontok csak becsült értékek, és nem feltétlenül pontosak."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Belső/harmadik fél"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Saját idő"
@@ -13254,7 +13215,7 @@
     "message": "Leírás"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Harmadik felek jelölőnégyzetének elhalványítása"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript-minták letiltása"
@@ -13374,7 +13335,7 @@
     "message": "Idővonal leállítása…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Harmadik fél webhelyek szerint csoportosított harmadik felek"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Idő"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Harmadik fél"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(a bejegyzés el van rejtve)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Választóstatisztikák"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Saját idő"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Méret"
   },
@@ -13833,7 +13791,7 @@
     "message": "Stíluslap URL-je"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Belső/harmadik fél táblázata"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Rendereléssel töltött idő"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Időbélyeg"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Teljes idő"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Kivonatesemény"
@@ -13920,7 +13875,7 @@
     "message": "Alárendelt navigációs útvonalak eltávolítása"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrálás…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Kalibrált beállításkészletek"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Újrakalibrálás…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – ajánlott"
@@ -14424,7 +14379,7 @@
     "message": "Kódolt adat"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Harmadik fél"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "A gyorsítótárból"
@@ -14568,16 +14523,16 @@
     "message": "Az Insights egy kísérleti funkció. Visszajelzésével segít nekünk a fejlesztésben."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Elvetés"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Számos oka lehet annak, hogy a helyi és a mezőmutatók [nem egyeznek](https://web.dev/articles/lab-and-field-data-differences). A [korlátozási beállítások és az eszközemuláció](https://developer.chrome.com/docs/devtools/device-mode) módosításával az átlagos felhasználói környezetre jobban hasonlító nyomokat elemezhet."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "A mező- és a helyi mutatók nem egyeznek"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Mező ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} eredmény"
@@ -15885,7 +15840,7 @@
     "message": "Rendezés:"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Rendezhető oszlop. A rendezési szűrő alkalmazásához nyomja le az Enter billentyűt."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Az összes ({PH1}) megjelenítése"
@@ -16221,10 +16176,10 @@
     "message": "Keresés"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Nem sikerült betölteni az adatokat"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Nincs megjeleníthető előnézet"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Keresés"

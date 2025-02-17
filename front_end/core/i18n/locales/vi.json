@@ -105,7 +105,7 @@
     "message": "Bảng điều khiển mạng"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Bảng bảo mật"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Bảng điều khiển nguồn"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Xóa"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Nhấp vào nút ghi {PH1} hoặc nhấn {PH2} để bắt đầu ghi."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "Công cụ cho nhà phát triển sẽ ghi lại mọi hoạt động của {PH1} trong tối đa 3 ngày, ngay cả khi công cụ bị đóng."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Mã phiên bản"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Tìm hiểu thêm"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Không có siêu dữ liệu cho sự kiện này"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Kho lưu trữ đối tượng"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Vui lòng xác nhận thao tác xóa cơ sở dữ liệu \"{PH1}\"."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Khóa chính"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Nhấp vào một sự kiện bộ nhớ dùng chung bất kỳ để hiển thị các thông số về sự kiện."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Khoá"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Chọn một giá trị để xem trước"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Bộ nhớ dùng chung"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Đã chỉnh sửa mục trong bộ nhớ."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Các mục trong bộ nhớ dùng chung"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Đã xoá các mục trong bộ nhớ dùng chung"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Số mục nhập hiển thị trong bảng: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Giá trị"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Bộ nhớ dùng chung"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Nhà cung cấp"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Hiện chưa lưu trữ mã thông báo trạng thái riêng tư nào."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Số lượng mã thông báo đã lưu trữ"
   },
@@ -4950,7 +4923,7 @@
     "message": "Danh sách điểm ngắt DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Chưa đặt điểm ngắt DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Nút đã bị xóa"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (từ bản đồ nguồn)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Thẻ thay đổi không hiển thị các thay đổi đối với dữ liệu nhị phân"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Trên trang này, bạn có thể theo dõi các thay đổi về mã được thực hiện trong Công cụ cho nhà phát triển."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Sao chép"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Chưa có thay đổi nào"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Không có sự khác biệt về văn bản"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# dòng đã xóa (-)}other{# dòng đã xóa (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Nhấp để mở bảng quyền riêng tư và bảo mật và hiển thị báo cáo về cookie của bên thứ ba"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Không xác nhận được: "
@@ -6747,7 +6720,7 @@
     "message": "Dấu vết ngăn xếp"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Quá trình tạo câu trả lời mất quá nhiều thời gian. Vui lòng thử lại."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Bật {PH1} để nhận sự trợ giúp từ AI nhằm hiểu rõ và giải quyết các cảnh báo cũng như lỗi trên bảng điều khiển."
@@ -7911,7 +7884,7 @@
     "message": "Thêm {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Hiệu chỉnh…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Điều tiết CPU"
@@ -7935,7 +7908,7 @@
     "message": "Không có mạng"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Điều chỉnh lại…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – nên chọn"
@@ -8895,7 +8868,7 @@
     "message": "Yêu cầu này không có cookie nào."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Không có dữ liệu của trình khởi tạo"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Yêu cầu ngăn xếp lệnh gọi"
@@ -8961,10 +8934,10 @@
     "message": "Không tải được dữ liệu phản hồi"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Không có thông tin nào để xem trước"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Yêu cầu này không có dữ liệu phản hồi nào"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Tên bộ nhớ đệm lưu trữ: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Không thể tải hồ sơ trong khi đang ghi lại một hồ sơ khác."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Không tải được cấu hình: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Hồ sơ"
   },
@@ -10251,7 +10221,7 @@
     "message": "Lưu"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Chọn một tin nhắn để xem thông tin chi tiết về tin nhắn đó"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Chọn mục tiêu"
@@ -10290,7 +10260,7 @@
     "message": "Sao chép bản ghi hoặc bước đã chọn"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Tạo bản ghi"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Xoá bản ghi"
@@ -10308,13 +10278,13 @@
     "message": "Tải tiện ích…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Chưa ghi lại nội dung nào"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Nhập bản ghi"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Tìm hiểu thêm"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Không có bản ghi nào"
@@ -10323,7 +10293,7 @@
     "message": "bản ghi"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Sử dụng bản ghi để tạo các thử nghiệm đầu cuối tự động hoặc dấu vết hiệu suất."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Phát lại bản ghi"
@@ -11496,7 +11466,7 @@
     "message": "Thông báo trên bảng điều khiển, dấu vết ngăn xếp liên quan, mã nguồn liên quan và tiêu đề mạng liên quan sẽ được gửi đến Google để đưa ra nội dung giải thích. Nhân viên đánh giá có thể xem xét dữ liệu này để cải thiện tính năng."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Thông báo trên bảng điều khiển, dấu vết ngăn xếp liên quan, mã nguồn liên quan và tiêu đề mạng liên quan sẽ được gửi đến Google để đưa ra nội dung giải thích. Dữ liệu này sẽ không được dùng để cải thiện các mô hình AI của Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Tuỳ vào khu vực của bạn, Google có thể không thu thập dữ liệu"
@@ -11532,7 +11502,7 @@
     "message": "Hệ thống có thể gửi cho Google mọi dữ liệu mà trang được kiểm tra có thể truy cập thông qua API web, yêu cầu về mạng, tệp và dấu vết hiệu suất để tạo nội dung giải thích. Nhân viên đánh giá có thể xem xét dữ liệu này để cải thiện tính năng. Vui lòng không sử dụng trên các trang có thông tin cá nhân hoặc thông tin nhạy cảm."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Hệ thống có thể gửi cho Google mọi dữ liệu mà trang được kiểm tra có thể truy cập thông qua API web, yêu cầu về mạng, tệp và dấu vết hiệu suất để tạo nội dung giải thích. Dữ liệu này sẽ không được dùng để cải thiện các mô hình AI của Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Giúp bạn hiểu rõ và khắc phục các cảnh báo cũng như lỗi trên bảng điều khiển"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Bạn không thể huỷ thao tác này sau khi thực hiện."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Bạn có chắc chắn muốn xoá thư mục này và nội dung trong đó không?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Bạn có chắc chắn muốn xóa tệp này không?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Bạn có chắc chắn muốn loại trừ thư mục này không?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Xoá \"{PH1}\" khỏi Không gian làm việc?"
@@ -13041,7 +13002,7 @@
     "message": "Kênh này chứa thông tin về thời gian được lấy từ các tiêu đề phản hồi của mạng Server-Timing. Thời gian bắt đầu tương ứng chỉ là ước tính và có thể không chính xác."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Bên thứ nhất/bên thứ ba"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Thời gian riêng"
@@ -13254,7 +13215,7 @@
     "message": "Nội dung mô tả"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Giảm độ sáng của bên thứ ba"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Tắt mẫu JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Đang dừng dòng thời gian…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Bên thứ ba được phân loại theo third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Thời gian"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Bên thứ ba"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(mục nhập bị ẩn)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Số liệu thống kê về bộ chọn"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Thời gian riêng"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Kích thước"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL của biểu định kiểu"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Bảng của bên thứ nhất/bên thứ ba"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Thời gian sử dụng trong kết xuất hình ảnh"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Dấu thời gian"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Tổng thời gian"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Sự kiện theo dõi"
@@ -13920,7 +13875,7 @@
     "message": "Xoá breadcrumb (tập hợp liên kết phân cấp) con"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Hiệu chỉnh…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Chế độ đặt sẵn đã hiệu chỉnh"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Điều chỉnh lại…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – nên chọn"
@@ -14424,7 +14379,7 @@
     "message": "Dữ liệu đã mã hoá"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Bên thứ ba"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Trong bộ nhớ đệm"
@@ -14568,16 +14523,16 @@
     "message": "Insights là một tính năng thử nghiệm. Ý kiến phản hồi của bạn sẽ giúp chúng tôi cải thiện tính năng này."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Đóng"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Có nhiều lý do khiến các chỉ số cục bộ và chỉ số thực địa [có thể không khớp](https://web.dev/articles/lab-and-field-data-differences). Điều chỉnh [chế độ cài đặt điều tiết và mô phỏng thiết bị](https://developer.chrome.com/docs/devtools/device-mode) để phân tích các dấu vết tương tự hơn với môi trường của người dùng thông thường."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Chỉ số thực địa và chỉ số cục bộ không khớp"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Thực địa ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} điểm"
@@ -15885,7 +15840,7 @@
     "message": "Sắp xếp theo"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Cột có thể sắp xếp. Nhấn phím Enter để áp dụng bộ lọc sắp xếp"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Hiển thị tất cả {PH1} mục"
@@ -16221,10 +16176,10 @@
     "message": "Tìm"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Không tải được dữ liệu"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Không có thông tin nào để xem trước"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Tìm"

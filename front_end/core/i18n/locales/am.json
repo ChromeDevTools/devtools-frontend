@@ -105,7 +105,7 @@
     "message": "የአውታረ መረብ ፓነል"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "የደህንነት ፓነል"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "የምንጮች ፓነል"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "አጽዳ"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "ቀረጻውን ለመጀመር {PH1} የመዝገብ አዝራርን ጠቅ ያድርጉ ወይም {PH2}ን ይምቱ።"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools ሁሉንም የ{PH1} እንቅስቃሴ እስከ 3 ቀናት ድረስ ይመዘግባል፣ ተዝጎም ቢሆንም እንኳ።"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "የአብነት መታወቂያ"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "የበለጠ ለመረዳት"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ለዚህ ክስተት ምንም ዲበ ውሂብ የለም"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "የነገር መደብሮች"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "እባክዎ የ«{PH1}» የውሂብ ጎታ መሰረዝን ያረጋግጡ።"
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "ዋና ቁልፍ"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "የክስተት መለኪያዎቹን ለማሳየት ማንኛውም የተጋራ ማከማቻ ክስተት ላይ ጠቅ ያድርጉ።"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "ቁልፍ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "ቅድሚያ የሚመለከቱትን ዋጋ ይምረጡ"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "የተጋራ ማከማቻ"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "የማከማቻ ንጥል አርትዕ ተደርጓል።"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "የተጋሩ የማከማቻ ንጥሎች"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "የተጋሩ የማከማቻ ንጥሎች ጸድተዋል"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "በሠንጠረዥ ውስጥ የሚታዩ የግቤቶች ብዛት፦ {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "ዋጋ"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "የተጋራ ማከማቻ"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ሰጪው"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "በአሁኑ ጊዜ ምንም የግል ሁኔታ ማስመሰያዎች አልተከማቹም።"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "የተከማቸ የማስመሰያ ብዛት"
   },
@@ -4950,7 +4923,7 @@
     "message": "የ DOM የመቀየሪያ ነጥቦችን ዝርዝር"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "ምንም የDOM መግቻ ቦታዎች አልተቀናበሩም"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "አንጓ ተወግዷል"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (ከምንጭ ካርታ)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "የለውጦች ትሩ የሁለትዮሽ ውሂብ ለውጦችን አያሳይም"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "DevTools ውስጥ የተደረጉ የኮድ ለውጦችን በዚህ ገፅ ላይ መከታተል ይችላሉ።"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "ቅዳ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "እስካሁም ምንም ለውጦች የሉም"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "ምንም የጽሑፍ ልዩነት አይገኝም"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ስረዛ (-)}one{# ስረዛዎች (-)}other{# ስረዛዎች (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "የግላዊነት እና ደህንነት ፓነልን ለመክፈት እና የሦስተኛ ወገን ኩኪ ሪፖርትን ለማሳየት ጠቅ ያድርጉ"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "ማረጋገጫ አልተሳካም፦ "
@@ -6747,7 +6720,7 @@
     "message": "ስታክትሬስ"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "ምላሽ ማመንጨት በጣም ረጅም ጊዜ ወስዷል። እባክዎ እንደገና ይሞክሩ።"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "የኮንሶል ማስጠንቀቂያዎችን እና ስህተቶችን ለመረዳት እና ለመፍታት የሰው ሠራሽ አስተውሎት እርዳታን ለማግኘት {PH1}ን ያብሩ።"
@@ -7911,7 +7884,7 @@
     "message": "{PH1} አክል"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "አስተካክል…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "የሲፒዩ ፍጥነት መቀነስ"
@@ -7935,7 +7908,7 @@
     "message": "ከመስመር ውጭ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "እንደገና ያስተካክሉ…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – የሚመከር"
@@ -8895,7 +8868,7 @@
     "message": "ይህ ጥያቄ ምንም ኩኪዎች የለውም።"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ምንም አስጀማሪ ውሂብ የለም"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "የጥሪ ቁልልን ይጠይቁ"
@@ -8961,10 +8934,10 @@
     "message": "የምላሽ ውሂብ መጫን አልተሳካም"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "በቅድመ-ዕይታ የሚታይ ምንም ነገር የለም"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "ይህ ጥያቄ ምንም የምላሽ ውሂብ የለውም"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "የመሸጎጭኣ ማከማቻ መሸጎጫ ስም፦ {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ሌላ መገለጫ እየተመዘገበ ሳለ መገለጫን መጫን አይቻልም።"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "መገለጫ መጫን አልተሳካም፦ {PH1}።"
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "መገለጫዎች"
   },
@@ -10251,7 +10221,7 @@
     "message": "አስቀምጥ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "ዝርዝሮቹን ለማየት አንድን መልዕክት ይምረጡ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "ዒላማ ይምረጡ"
@@ -10290,7 +10260,7 @@
     "message": "ቀረጻን ወይም የተመረጠ እርምጃን ይቅዱ"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "ቅጂ ፍጠር"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "ቅጂ ሰርዝ"
@@ -10308,13 +10278,13 @@
     "message": "ቅጥያዎችን ያግኙ…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "እስካሁን ምንም ቅጂ የለም"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "ቅጂን አምጣ"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "የበለጠ ለመረዳት"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "(ምንም ቀረጻዎች የሉም)"
@@ -10323,7 +10293,7 @@
     "message": "ቀረጻ(ዎች)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "ራስ-ሰር የተደረጉ ከመጨረሻ እስከ መጨረሻ ፍተሻዎችን እና የአፈጻጸም መከታተያዎችን ለመፍጠር ቅጂዎችን ይጠቀሙ።"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "ቅጂውን እንደገና ያጫውቱ"
@@ -11496,7 +11466,7 @@
     "message": "የኮንሶል መልዕክት፣ ተጓዳኝ የመከታተያ ቁልል፣ ተዛማጅ የምንጭ ኮድ እና ተጓዳኙ የአውታረ መረብ ርዕሶች ማብራሪያዎችን ለማመንጨት ወደ Google ይላካሉ። ይህ ውሂብ ይህን ባህሪ ለማሻሻል በሰው ገምጋሚዎች ሊታይ ይችላል።"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "የኮንሶል መልዕክት፣ ተጓዳኝ የመከታተያ ቁልል፣ ተዛማጅ የምንጭ ኮድ እና ተጓዳኙ የአውታረ መረብ ርዕሶች ማብራሪያዎችን ለማመንጨት ወደ Google ይላካሉ። ይህ ውሂብ የGoogle ሰው ሠራሽ አስተውሎት ሞዴሎችን ለማሻሻል ጥቅም ላይ አይውልም።"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "በእርስዎ ክልል ላይ በመመሥረት Google ከውሂብ መሰብሰብ ሊቆጠብ ይችላል"
@@ -11532,7 +11502,7 @@
     "message": "የተፈተሸው ገፅ በድር ኤፒአይዎች፣ የአውታረ መረብ ጥያቄዎች፣ ፋይሎች እና የአፈጻጸም መከታተያዎች በኩል ሊደርሰው የሚችል ማንኛውም ውሂብ ማብራሪያዎችን ለማመንጨት ወደ Google ይላካል። ይህ ውሂብ ይህን ባህሪ ለማሻሻል በሰው ገምጋሚዎች ሊታይ ይችላል። የግል ወይም ልዩ ጥንቃቄ የሚያስፈልገው መረጃ ባላቸው ገፆች ላይ አይጠቀሙ።"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "የተፈተሸው ገፅ በድር ኤፒአይዎች፣ የአውታረ መረብ ጥያቄዎች፣ ፋይሎች እና የአፈጻጸም መከታተያዎች በኩል ሊደርሰው የሚችል ማንኛውም ውሂብ ማብራሪያዎችን ለማመንጨት ወደ Google ይላካል። ይህ ውሂብ የGoogle ሰው ሠራሽ አስተውሎት ሞዴሎችን ለማሻሻል ጥቅም ላይ አይውልም።"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "የኮንሶል ማስጠንቀቂያዎች እና ስህተቶችን እንዲረዱ እና እንዲጠግኑ ያግዝዎታል"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ይህ እርምጃ ሊቀለበስ አይችልም።"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "ይህን አቃፊ እና የእሱን ይዘቶች መሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "እርግጠኛ ነዎት ይህን ፋይል መሰረዝ ይፈልጋሉ?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "እርግጠኛ ነዎት ይህን አቃፊ ማግለል ይፈልጋሉ?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "«{PH1}» ከመሥሪያ ቦታ ይወገድ?"
@@ -13041,7 +13002,7 @@
     "message": "ይህ ትራክ ከአገልጋይ ጊዜ የአውታረ መረብ ምላሽ ርዕሶች የተወሰዱ ጊዜዎችን ይይዛል። የእነሱ ተከታታይ መነሻ ሰዓቶች የግምት ብቻ ናቸው እና ትክክል ላይሆኑ ይችላሉ።"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "1ኛ / 3ኛ ወገን"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "የራስ ጊዜ"
@@ -13254,7 +13215,7 @@
     "message": "መግለጫ"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "3ኛ ወገኖችን ደብዛዛ አድርግ"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "የጃቫስክሪፕት ናሙናዎችን አሰናክል"
@@ -13374,7 +13335,7 @@
     "message": "የማቆሚያ ጊዜ መስመር…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "በሦስተኛ ወገን ድር የተመደቡ 3ኛ ወገኖች"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "ሰዓት"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "ሦስተኛ ወገን"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(መግቢያ ተደብቋል)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "የመራጭ ስታቲስቲክስ"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "የራስ ጊዜ"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "መጠን"
   },
@@ -13833,7 +13791,7 @@
     "message": "የቅጥ ሉህ ዩአርኤል"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "1ኛ / 3ኛ ወገን ሰንጠረዥ"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ምስልን በመስራት ላይ የጠፋው ጊዜ"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "የጊዜ ማኅተም"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "ጠቅላላ ጊዜ"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "የክስተት መከታተያ"
@@ -13920,7 +13875,7 @@
     "message": "የልጅ breadcrumb አስወግድ"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "አስተካክል…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "ሲፒዩ፦ {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "የተስተካከሉ ቅድመ-ቅምጦች"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "እንደገና ያስተካክሉ…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – የሚመከር"
@@ -14424,7 +14379,7 @@
     "message": "በኮድ የተቀመጠ ውሂብ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "ሦስተኛ ወገን"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "ከመሸጎጫ"
@@ -14568,16 +14523,16 @@
     "message": "ግንዛቤዎች የሙከራ ባህሪ ነው። የእርስዎ ግብረመልስ እንድንሻሻለው ያግዘናል።"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "አሰናብት"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "የአካባቢ እና የመስክ መለኪያዎች [ላይመሳሰሉ የሚችሉባቸው](https://web.dev/articles/lab-and-field-data-differences) ብዙ ምክንያቶች አሉ። ከአማካይ ተጠቃሚ አካባቢ ጋር ይበልጥ ተመሳሳይ የሆኑ መከታተያዎችን ለመተንተን [የማፈን ቅንብሮች እና የመሣሪያ ማስመሰልን](https://developer.chrome.com/docs/devtools/device-mode) ያስተካክሉ።"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "የመስክ እና የአካባቢ መለኪያዎች አለመመሳሰል"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "መስክ ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}:- {PH2} {PH3} ውጤት"
@@ -15885,7 +15840,7 @@
     "message": "ደርድር በ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "ሊደረደር የሚችል ዓምድ። የመደርደሪያ ማጣሪያን ለመተግበር አስገባ የሚለውን ይጫኑ"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "ሁሉንም {PH1} አሳይ"
@@ -16221,10 +16176,10 @@
     "message": "አግኝ"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "ውሂብ መጫን አልተሳካም"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "በቅድመ-ዕይታ የሚታይ ምንም ነገር የለም"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "አግኝ"

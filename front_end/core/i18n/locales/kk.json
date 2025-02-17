@@ -105,7 +105,7 @@
     "message": "Желі панелі"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Қауіпсіздік панелі"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "\"Дереккөздер\" панелі"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Тазалау"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "\"Жазу\" түймесін {PH1} басыңыз немесе {PH2} түймесін басып, жазуды бастаңыз."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools жабық болса да, барлық {PH1} әрекетті 3 күнге дейін жазады."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Инстанция идентификаторы"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Толығырақ"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Бұл іс-шара үшін метадерек жоқ"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Нысан қоймалары"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "\"{PH1}\" дерекқорын жою керек екенін растаңыз."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Негізгі кілт"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Оқиға параметрлерін көрсету үшін кез келген ортақ жад оқиғасын басыңыз."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Кілт"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Алдын ала көру үшін мәнді таңдаңыз"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Ортақ жад"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Жад элементі өңделді."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Ортақ жад элементтері"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Ортақ жад элементтері өшірілді"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Кестеде көрсетілетін жазбалар саны: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Мән"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Ортақ жад"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Эмитент"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Қазіргі уақытта сақталған жеке күй токендері жоқ."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Сақталған токен саны"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM үзілу нүктелерінің тізімі"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "DOM тоқтату нүктелерінің жинағы жоқ"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Түйін өшірілді"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (бастапқы картадан)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "\"Өзгерістер\" қойындысында екілік деректердің өзгерістері көрсетілмейді"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Бұл бетте әзірлеуші құралдарымен жасалған код өзгерістерін бақылауға болады."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Көшіру"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Әзірге өзгеріс енгізілмеді"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Мәтіндік айырмашылық жоқ"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# жою (-)}other{# жою (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "\"Құпиялық және қауіпсіздік\" панелін ашу және үшінші тарап cookie файлының есебін көрсету үшін басыңыз."
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Бекіту мүмкін емес: "
@@ -6747,7 +6720,7 @@
     "message": "Стекті бақылау"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Жауап құрастыруға ұзақ уақыт кетті. Қайталап көріңіз."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "{PH1} функциясын қосып, консольдегі ескертулер мен қателерді түсіну және шешу үшін жасанды интеллектіден көмек алыңыз."
@@ -7911,7 +7884,7 @@
     "message": "{PH1} қосу"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибрлеңіз…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Орталық процессорды реттеу"
@@ -7935,7 +7908,7 @@
     "message": "Офлайн"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Қайта калибрлеңіз…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – ұсынылған"
@@ -8895,7 +8868,7 @@
     "message": "Бұл сұраудың cookie файлдары жоқ."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Бастаушы деректері жоқ"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Қоңырау шалу стегін сұрау"
@@ -8961,10 +8934,10 @@
     "message": "Жауап дерегі жүктелмеді."
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Алдын ала көретін ештеңе жоқ"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Бұл сұрауда жауап деректері жоқ"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Кэш жадының кэш атауы: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Басқа профиль жазылып жатқанда, профильді жүктеу мүмкін емес."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Профильді жүктеу мүмкін емес: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профильдер"
   },
@@ -10251,7 +10221,7 @@
     "message": "Сақтау"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Мәліметтерін көру үшін хабар таңдаңыз."
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Мақсатты таңдау"
@@ -10290,7 +10260,7 @@
     "message": "Жазбаны немесе таңдалған қадамды көшіру"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Жазба жасау"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Жазбаны жою"
@@ -10308,13 +10278,13 @@
     "message": "Кеңейтімдер алу…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Әзірге ештеңе жазылмады"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Жазбаны импорттау"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Толық ақпарат"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Жазбалар жоқ"
@@ -10323,7 +10293,7 @@
     "message": "жазба"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Автоматты кешенді сынақтарды немесе өнімділік трассаларын жасау үшін жазбаларды пайдаланыңыз."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Жазбаны қайта ойнату"
@@ -11496,7 +11466,7 @@
     "message": "Консоль хабары, байланысы бар стэкті трассалау, қатысы бар бастапқы код және байланысы бар желінің жоғарғы деректемелері түсіндірмелер жасау үшін Google-ға жіберіледі. Бұл функцияны жақсарту үшін оларды тексерушілер қарауы мүмкін."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Консоль хабары, байланысы бар стэкті трассалау, қатысы бар бастапқы код және байланысы бар желінің жоғарғы деректемелері түсіндірмелер жасау үшін Google-ға жіберіледі. Бұл деректер Google-дың жасанды интеллект модельдерін жақсарту үшін қолданылмайды."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Аймаққа байланысты Google деректерді жинамауы мүмкін."
@@ -11532,7 +11502,7 @@
     "message": "Тексерілетін бет Web API интерфейстері, желі сұраулары, файлдар және өнімділік трассалары арқылы пайдалана алатын барлық дерек түсіндірмелер құрастыру үшін Google-ға жіберіледі. Бұл функцияны жақсарту үшін оларды тексерушілер қарауы мүмкін. Жеке немесе құпия ақпараты бар беттерде пайдаланбаңыз."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Тексерілетін бет Web API интерфейстері, желі сұраулары, файлдар және өнімділік трассалары арқылы пайдалана алатын барлық дерек түсіндірмелер құрастыру үшін Google-ға жіберіледі. Бұл деректер Google-дың жасанды интеллект модельдерін жақсарту үшін қолданылмайды."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Консоль ескертулері мен қателерін түсінуге және түзетуге көмектеседі"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Бұл әрекетті кері қайтару мүмкін емес."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Осы қалтаны және оның мазмұнын шынымен жойғыңыз келе ме?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Бұл файлды шынымен жойғыңыз келе ме?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Бұл қалтаны шынымен шығарғыңыз келе ме?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Жұмыс орнынан \"{PH1}\" қалтасын өшіру қажет пе?"
@@ -13041,7 +13002,7 @@
     "message": "Бұл жолда сервердің уақыт белгісінің желі жауабының жоғарғы деректемелерінен алынған уақыт белгілері бар. Олардың тиісті басталу уақыттары шамамен берілген және дәл болмауы мүмкін."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Бірінші/үшінші тарап"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Жалғыз операция уақыты"
@@ -13254,7 +13215,7 @@
     "message": "Сипаттама"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Үшінші тараптарды күңгірттеу"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript үлгілерін өшіру"
@@ -13374,7 +13335,7 @@
     "message": "Хронология тоқтатылуда…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Үшінші тараптар үшінші тараптың веб-қолданбасы арқылы жіктелген."
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Уақыт"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Үшінші тарап"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(жазба жасырылған)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Таңдау құралының статистикасы"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Жалғыз операция уақыты"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Өлшем"
   },
@@ -13833,7 +13791,7 @@
     "message": "Стильдер кестесінің URL мекенжайы"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Бірінші/үшінші тарап кестесі"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Рендерингіге жұмсалған уақыт"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Уақыт белгісі"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Жалпы уақыт"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Трасса оқиғасы"
@@ -13920,7 +13875,7 @@
     "message": "Туынды элементтің навигация жолдарын өшіру"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибрлеңіз…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "Орталық процессор: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Калибрленген параметрлер жинақтары"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Қайта калибрлеңіз…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – ұсынылған"
@@ -14424,7 +14379,7 @@
     "message": "Кодталған дерек"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Үшінші тарап"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Кэштен"
@@ -14568,16 +14523,16 @@
     "message": "Статистика – эксперименттік функция. Сіздің пікіріңіз функцияны жақсартуға көмектеседі."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Жабу"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Жергілікті және өрістік көрсеткіштердің [сәйкес келмеуінің](https://web.dev/articles/lab-and-field-data-differences) көптеген себептері бар. Трассаларды орташа пайдаланушы ортасына ұқсас талдау үшін [реттеу параметрлері мен құрылғы эмуляциясын](https://developer.chrome.com/docs/devtools/device-mode) реттеңіз."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Өрістік және жергілікті көрсеткіштер сәйкес келмейді"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Өріс ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} ұпайы"
@@ -15885,7 +15840,7 @@
     "message": "Сұрыптау шарты"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Сұрыпталатын баған. Сұрыптау сүзгісін қолдану үшін Enter пернесін басыңыз."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Барлық {PH1} ұсынысты көрсету"
@@ -16221,10 +16176,10 @@
     "message": "Табу"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Деректер жүктелмеді"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Алдын ала көретін ештеңе жоқ"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Табу"

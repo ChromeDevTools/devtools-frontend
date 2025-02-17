@@ -105,7 +105,7 @@
     "message": "Nätverkspanel"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Säkerhetspanel"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Panelen Källor"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Ta bort"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klicka på inspelningsknappen {PH1} eller på {PH2} för att börja spela in."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "Verktyget för programmerare spelar in all {PH1} aktivitet i upp till tre dagar, även när det inte är öppet."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Instans-id"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Läs mer"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Ingen metadata för denna händelse"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objektlager"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Bekräfta borttagningen av databasen {PH1}."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Primär nyckel"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Klicka på en händelse i det delade lagringsutrymmet för att visa händelseparametrarna."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Nyckel"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Välj ett värde för att förhandsgranska"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Shared Storage"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Objektet i lagringsutrymmet redigerades."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Objekt i det delade lagringsutrymmet"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Objekt i det delade lagringsutrymmet rensades"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Antal poster som visas i tabellen: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Värde"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared Storage"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Utfärdare"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Inga förtroendetoken finns lagrade just nu."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Antal lagrade token"
   },
@@ -4950,7 +4923,7 @@
     "message": "Lista över DOM-brytpunkter"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Inga DOM-brytpunkter har ställts in"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Noden har tagits bort"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (från källkarta)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Ändringsfliken visar inte ändringar av binär data"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "På den här sidan kan du spåra kodändringar som görs i Verktyg för programmerare."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Kopiera"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Inga ändringar ännu"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Ingen textuell skillnad är tillgänglig"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# borttagning (–)}other{# borttagningar (–)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Klicka för att öppna panelen för integritet och säkerhet och visa rapporten om tredjepartscookies"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Kontrollen misslyckades: "
@@ -6747,7 +6720,7 @@
     "message": "Stackspårning"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Det tog för lång tid att generera ett svar. Försök igen."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Aktivera {PH1} för att få AI-hjälp med att förstå och åtgärda varningar och fel i konsolen."
@@ -7911,7 +7884,7 @@
     "message": "Lägg till {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrera …"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-begränsning"
@@ -7935,7 +7908,7 @@
     "message": "Offline"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Omkalibrera …"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – rekommenderas"
@@ -8895,7 +8868,7 @@
     "message": "Begäran har inga cookies."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Ingen data om initiering"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Begär anropsstack"
@@ -8961,10 +8934,10 @@
     "message": "Det gick inte att läsa in svarsdata"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Det finns inget att förhandsgranska"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Det finns ingen svarsdata för den här begäran"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Cachelagringens cachenamn: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Det går inte att läsa in profilen medan inspelning pågår av en annan profil."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Det gick inte att läsa in profil: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profiler"
   },
@@ -10251,7 +10221,7 @@
     "message": "Spara"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Välj ett meddelande för att visa information om det"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Välj ett mål"
@@ -10290,7 +10260,7 @@
     "message": "Kopiera inspelning eller valt steg"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Skapa inspelning"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Radera inspelning"
@@ -10308,13 +10278,13 @@
     "message": "Hämta tillägg …"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Inget har spelats in ännu"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Importera inspelning"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Läs mer"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Inga inspelningar"
@@ -10323,7 +10293,7 @@
     "message": "inspelning(ar)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Använd inspelningar för att skapa automatiska end-to-end-tester eller resultatspårning."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Spela upp inspelning igen"
@@ -11496,7 +11466,7 @@
     "message": "Konsolmeddelandet, tillhörande stackspårning, relaterad källkod och tillhörande nätverksrubriker skickas till Google för att generera förklaringar. Denna data kan ses av mänskliga granskare för att förbättra den här funktionen."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Konsolmeddelandet, tillhörande stackspårning, relaterad källkod och tillhörande nätverksrubriker skickas till Google för att generera förklaringar. Denna data används inte för att förbättra Googles AI-modeller."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Beroende på din region kan Google avstå från datainsamling"
@@ -11532,7 +11502,7 @@
     "message": "All data som den granskade sidan kan komma åt via webb-API:er, nätverksbegäranden, filer och prestandainformation skickas till Google för att generera förklaringar. Denna data kan ses av mänskliga granskare för att förbättra den här funktionen. Använd inte funktionen för sidor med personliga eller känsliga uppgifter."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "All data som den granskade sidan kan komma åt via webb-API:er, nätverksbegäranden, filer och prestandainformation skickas till Google för att generera förklaringar. Denna data används inte för att förbättra Googles AI-modeller."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Gör det enklare att förstå och åtgärda varningar och fel i konsolen"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Det går inte att ångra åtgärden."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Vill du radera den här mappen och dess innehåll?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Vill du radera den här filen?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Vill du utesluta den här mappen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Vill du ta bort {PH1} från arbetsytan?"
@@ -13041,7 +13002,7 @@
     "message": "Kanalen innehåller tider som hämtas från svarshuvuden för servertidsnätverket. De respektive starttiderna är endast uppskattade och kanske inte korrekta."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Första/tredje part"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Tid för aktiviteten"
@@ -13254,7 +13215,7 @@
     "message": "Beskrivning"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Tona ned tredje part"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Inaktivera JavaScript-exempel"
@@ -13374,7 +13335,7 @@
     "message": "Tidslinje avslutas …"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Tredje part klassificerad av tredjepartswebb"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tid"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Tredje part"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(posten är dold)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Väljarstatistik"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Tid för aktiviteten"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Storlek"
   },
@@ -13833,7 +13791,7 @@
     "message": "Webbadress till formatmall"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Första/tredje parts tabell"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Tidsåtgång för rendering"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Tidsstämpel"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Total tid"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Spårningshändelse"
@@ -13920,7 +13875,7 @@
     "message": "Ta bort underordnade sökvägar"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrera …"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Kalibrerade förinställningar"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Omkalibrera …"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – rekommenderas"
@@ -14424,7 +14379,7 @@
     "message": "Kodad data"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Tredje part"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Från cacheminnet"
@@ -14568,16 +14523,16 @@
     "message": "Insights är en experimentell funktion. Din feedback hjälper oss att förbättra den."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Stäng"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Det finns många anledningar till att lokala mätvärden och fältmätvärden [matchar kanske inte](https://web.dev/articles/lab-and-field-data-differences). Justera [inställningar för begränsning och enhetsemulering](https://developer.chrome.com/docs/devtools/device-mode) för att analysera spår som liknar den genomsnittliga användarens miljö."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Felmatchning mellan fältmätvärden och lokala mätvärden"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Fält ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} resultat"
@@ -15885,7 +15840,7 @@
     "message": "Sortera efter"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Sorterbar kolumn. Tryck på Retur för att använda sorteringsfilter"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Visa alla {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Sök"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Det gick inte att läsa in data"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Det finns inget att förhandsgranska"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Sök"

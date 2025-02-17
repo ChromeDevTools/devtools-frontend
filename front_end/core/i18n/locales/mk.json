@@ -105,7 +105,7 @@
     "message": "Мрежна табла"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Безбедносна табла"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Табла со извори"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Избриши"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Кликнете на копчето за снимање {PH1} или {PH2} за да започне снимањето."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools ќе ја снимаат целата активност на {PH1} до 3 дена, дури и кога се затворени."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "ID на примерок"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Дознајте повеќе"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Нема метаподатоци за настанов"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Капацитети за објекти"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Потврдете го бришењето на базата податоци на „{PH1}“."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Примарен клуч"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Кликнете на кој било настан за споделен простор за да се прикажат параметрите на настанот."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Клуч"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Изберете вредност за преглед"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Споделен простор"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Ставката од капацитетот е изменета."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Ставки на споделен простор"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Ставките од споделен простор се исчистени"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Број на записи што се прикажуваат во табелата: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Вредност"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Споделен простор"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Издавач"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Во моментов нема складирани токени за автентичност."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Број на складирани токени"
   },
@@ -4950,7 +4923,7 @@
     "message": "Список со точки на прекин на DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Не се поставени точки на прекин на DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Јазолот е отстранет"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (од изворната карта)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Картичката „Промени“ не прикажува промени во бинарните податоци"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "На страницава може да ги следите промените во кодот што се вршат во DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Копирај"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Сѐ уште нема промени"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Не е достапна текстуална разлика"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# бришење (-)}one{# бришење (-)}other{# бришења (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Кликнете за да се отвори таблата за приватност и безбедност и да се прикаже извештај за колачиња од трети страни"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Тврдењето не успеа: "
@@ -6747,7 +6720,7 @@
     "message": "Stacktrace"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Генерирањето одговор траеше премногу долго. Обидете се повторно."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Вклучете {PH1} за да добиете помош од AI за да ги разберете и да се справите со предупредувањата и грешките во конзолата."
@@ -7911,7 +7884,7 @@
     "message": "Додајте {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибрирајте…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-регулирање"
@@ -7935,7 +7908,7 @@
     "message": "Офлајн"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Рекалибрирајте…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – препорачано"
@@ -8895,7 +8868,7 @@
     "message": "Барањево нема колачиња."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Нема податоци за иницијаторот"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Купче со барања за повик"
@@ -8961,10 +8934,10 @@
     "message": "Неуспешно вчитување на податоците за одговорот"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Нема ништо за преглед"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Барањево нема достапни податоци за одговор"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Име на кеш од капацитет на кеш: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Не може да се вчита профилот додека се снима друг профил."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Вчитувањето на профилот не успеа: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профили"
   },
@@ -10251,7 +10221,7 @@
     "message": "Зачувај"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Изберете порака за да ги видите нејзините детали"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Изберете цел"
@@ -10290,7 +10260,7 @@
     "message": "Копирајте ја снимката или избраниот чекор"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Создајте снимка"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Избриши ја снимката"
@@ -10308,13 +10278,13 @@
     "message": "Најдете екстензии…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Сѐ уште нема ништо снимено"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Увези снимка"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Дознајте повеќе"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Нема снимки"
@@ -10323,7 +10293,7 @@
     "message": "снимки"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Користете ги снимките за да создавате автоматизирани обострани тестови или траги на изведба."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Пуштете ја снимката повторно"
@@ -11496,7 +11466,7 @@
     "message": "Пораката во конзолата, поврзаната stack trace, поврзаниот изворен код и поврзаните заглавија на мрежата се испраќаат до Google за да се генерираат објаснувања. За да се подобри функцијава, овие податоци може да ги гледаат и прегледувачи."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Пораката во конзолата, поврзаната stack trace, поврзаниот изворен код и поврзаните заглавија на мрежата се испраќаат до Google за да се генерираат објаснувања. Податоциве нема да се користат за да се подобруваат AI-моделите на Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Зависно од вашиот регион, Google може да се воздржи од прибирање податоци"
@@ -11532,7 +11502,7 @@
     "message": "Сите податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите за изведба се испраќаат до Google за да се генерираат објаснувања. За да се подобри функцијава, овие податоци може да ги гледаат и прегледувачи. Не користете на страници со лични или чувствителни податоци."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Сите податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите на изведба се испраќаат до Google за да се генерираат објаснувања. Податоциве нема да се користат за да се подобруваат AI-моделите на Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Ви помага да ги разберете и да ги решите предупредувањата и грешките во конзолата"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Дејствово не може да се врати."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Дали сигурно сакате да ја избришете папкава и нејзините содржини?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Дали сигурно сакате да ја избришете датотекава?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Дали сигурно сакате да ја исклучите папкава?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Да се отстрани „{PH1}“ од работниот простор?"
@@ -13041,7 +13002,7 @@
     "message": "Патекава содржи информации за време преземени од заглавјата на одговорите на мрежата во информациите за време на серверот. Нивните соодветни времиња на започнување се само проценети и може да не се точни."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Прва/Трета страна"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Време на една активност"
@@ -13254,7 +13215,7 @@
     "message": "Опис"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Затемнувај ги третите страни"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Оневозможи примероци на JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Времепловот се запира…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Трети страни класифицирани од third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Време"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Трета страна"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(записот е скриен)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Статистички податоци за избирач"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Време на една активност"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Големина"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL-адреса на стилизаторот"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Табела на први/трети страни"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Време поминато во обработка"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Временски печат"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Вкупно време"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Настан на следење"
@@ -13920,7 +13875,7 @@
     "message": "Отстрани ги подредените breadcrumbs"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибрирајте…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Калибрирани зададени вредности"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Рекалибрирајте…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – препорачано"
@@ -14424,7 +14379,7 @@
     "message": "Кодирани податоци"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Трета страна"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Од кешот"
@@ -14568,16 +14523,16 @@
     "message": "Insights е експериментална функција. Вашите повратни информации ќе ни помогнат да ја подобриме."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Отфрли"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Има многу причини зошто локалната метрика и метриката од вистински корисници на терен [може да не се совпаѓаат](https://web.dev/articles/lab-and-field-data-differences). Приспособете ги [поставките за регулирање и емулацијата на уредите](https://developer.chrome.com/docs/devtools/device-mode) за да анализирате траги што се послични на средината на некој просечен корисник."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Несовпаѓање меѓу метриката од вистински корисници на терен и локалната метрика"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Податоци од вистински корисници на терен ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} резултат"
@@ -15885,7 +15840,7 @@
     "message": "Подреди според"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Колона што може да се подредува. Притиснете Enter за да се примени филтерот за подредување"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Покажи ги сите {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Најди"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Податоците не можеше да се вчитаат"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Нема ништо за преглед"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Најди"

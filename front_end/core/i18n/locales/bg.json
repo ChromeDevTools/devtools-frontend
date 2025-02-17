@@ -105,7 +105,7 @@
     "message": "Панел за мрежата"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Панел за сигурност"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Панел „Източници“"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Изчистване"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Кликнете върху бутона {PH1} или натиснете {PH2}, за да стартирате записването."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "Инструментите за програмисти ще запишат цялата активност „{PH1}“ за период до 3 дни дори ако бъдат затворени."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Идент. № на екземпляра"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Научете повече"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Няма метаданни за това събитие"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Хранилища за обекти"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Моля, потвърдете изтриването на базата от данни {PH1}."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Основен ключ"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Кликнете върху събитие за споделено хранилище, за да се покажат параметрите за него."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Ключ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Изберете стойност за визуализиране"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Споделено хранилище"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Елементът в хранилището бе редактиран."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Елементи в споделеното хранилище"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Елементите в споделеното хранилище бяха изчистени"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Брой записи, показани в таблицата: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Стойност"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Споделено хранилище"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Издател"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Понастоящем няма съхранени токени за частно състояние."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Брой съхранени означения"
   },
@@ -4950,7 +4923,7 @@
     "message": "Списък с точките на прекъсване в DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Не са зададени точки на прекъсване в DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Възелът е премахнат"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (от картата на изходния код)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "В раздела „Промени“ не се показват промените в двоичните данни"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "На тази страница можете да проследявате промените в кода, направени в DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Копиране"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Още няма промени"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Няма разлики в текста"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# изтриване (-)}other{# изтривания (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Кликнете, за да отворите панела за поверителност и сигурност и да видите отчета за „бисквитките“ на трети страни"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Потвърждението не бе успешно: "
@@ -6747,7 +6720,7 @@
     "message": "Трасиране на стека"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Генерирането на отговор отне твърде много време. Моля, опитайте отново."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Включете {PH1}, за да получавате помощ от AI за разбиране и отстраняване на предупрежденията и грешките в конзолата."
@@ -7911,7 +7884,7 @@
     "message": "Добавяне на {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибриране…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Ограничаване на процесора"
@@ -7935,7 +7908,7 @@
     "message": "Офлайн"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Повторно калибриране…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} (препоръчано)"
@@ -8895,7 +8868,7 @@
     "message": "В тази заявка няма „бисквитки“."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Няма данни за инициатора"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Стек за извиквания за заявката"
@@ -8961,10 +8934,10 @@
     "message": "Зареждането на данните за отговора не бе успешно"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Няма нищо за визуализация"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Няма данни за отговора на тази заявка"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Име на хранилището за кеш: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Профилът не може да бъде зареден, докато се записва друг профил."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Зареждането на профила не бе успешно: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профили"
   },
@@ -10251,7 +10221,7 @@
     "message": "Запазване"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Изберете съобщение, за да видите подробностите за него"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Изберете цел"
@@ -10290,7 +10260,7 @@
     "message": "Копиране на записа или избраната стъпка"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Създаване на запис"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Изтриване на записа"
@@ -10308,13 +10278,13 @@
     "message": "Изтегляне на разширения…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Все още нищо не е записано"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Импортиране на запис"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Научете повече"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Няма записи"
@@ -10323,7 +10293,7 @@
     "message": "запис(а)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Използвайте записи, за да създавате автоматизирани цялостни тестове или трасирания на ефективността."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Повторно пускане на записа"
@@ -11496,7 +11466,7 @@
     "message": "Съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки се изпращат до Google с цел генериране на обяснения. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Съобщението в конзолата, свързаното трасиране на стека, съответният изходен код и асоциираните мрежови заглавки се изпращат до Google с цел генериране на обяснения. Тези данни няма да се използват за подобряване на моделите на AI на Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "В зависимост от региона ви е възможно Google да не събира данни"
@@ -11532,7 +11502,7 @@
     "message": "Всички данни, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността се изпращат до Google с цел генериране на обяснения. Тези данни може да бъдат видени от проверяващи лица с цел подобряване на функцията. Не използвайте на страници с лична или поверителна информация."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Всички данни, до които проверяваната страница има достъп чрез уеб API, заявките в мрежата, файловете и трасиранията на ефективността се изпращат до Google с цел генериране на обяснения. Тези данни няма да се използват за подобряване на моделите на AI на Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Помага да разбирате и отстранявате предупрежденията и грешките в конзолата"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Това действие не може да бъде отменено."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Наистина ли искате да изтриете тази папка и съдържанието в нея?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Наистина ли искате да изтриете този файл?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Наистина ли искате да изключите тази папка?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Да се премахне ли {PH1} от работното пространство?"
@@ -13041,7 +13002,7 @@
     "message": "Този запис съдържа времена, получени от заглавките Server-Timing за отговор в мрежата. Съответните начални часове са само приблизителни и може да не са точни."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Собствено/на трета страна"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Собствено време"
@@ -13254,7 +13215,7 @@
     "message": "Описание"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Затъмняване на съдържанието на трети страни"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Деактивиране на семплирането на JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Хронологията се спира…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Трети страни, класифицирани по third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Час"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Трета страна"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(записът е скрит)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Статистика за селектора"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Собствено време"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Размер"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL адрес на стиловия лист"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Таблица с данни от първа/трети страни"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Време за рендериране"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Дата и час"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Общо време"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Събитие за трасиране"
@@ -13920,7 +13875,7 @@
     "message": "Премахване на дъщерните навигационни пътища"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Калибриране…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "Процесор: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Предварително зададени настройки за калибриране"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Повторно калибриране…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} (препоръчано)"
@@ -14424,7 +14379,7 @@
     "message": "Кодирани данни"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Трета страна"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "От кеша"
@@ -14568,16 +14523,16 @@
     "message": "Insights е експериментална функция. Отзивите ви ще ни помогнат за подобряването ѝ."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Отхвърляне"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Има много причини, поради които локалните и реалните показатели [може да се различават](https://web.dev/articles/lab-and-field-data-differences). Коригирайте [настройките за ограничаване на потока от данни и емулирането на устройства](https://developer.chrome.com/docs/devtools/device-mode), за да анализирате трасирания, които са по-близки до средата на средностатистическия потребител."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Несъответствие между реалните и локалните показатели"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Поле ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2}, резултат: {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "Сортиране по"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Колона с възможност за сортиране. Натиснете Enter за прилагане на филтъра за сортиране"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Показване на всички {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Търсене"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Зареждането на данните не бе успешно"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Няма нищо за визуализация"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Търсене"

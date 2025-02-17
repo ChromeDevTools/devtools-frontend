@@ -105,7 +105,7 @@
     "message": "網路面板"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "安全性面板"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "來源面板"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "清除"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "按一下記錄按鈕「{PH1}」或點擊 {PH2}以開始記錄。"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "開發人員工具會記錄所有 {PH1} 活動最多 3 天，即使處於關閉狀態也仍會持續記錄。"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "執行個體 ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "瞭解詳情"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "此事件沒有中繼資料"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "物件存放區"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "請確認你要刪除「{PH1}」資料庫。"
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "主鍵"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "點選任一共用儲存空間事件即可顯示事件參數。"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "鍵"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "選取要預覽的值"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "共用儲存空間"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "已編輯儲存空間項目。"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "共用儲存空間項目"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "已清除共用儲存空間項目"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "表格顯示的項目數：{PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "值"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "共用儲存空間"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "發行者"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "目前未儲存私密狀態權杖。"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "儲存的權杖數"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM 中斷點清單"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "未設定 DOM 中斷點"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "已移除節點"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (來自來源對應)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "「變更」分頁未顯示二進位檔資料變更"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "在這個頁面中，你可以追蹤在開發人員工具中所做的程式碼變更。"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "複製"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "目前沒有任何變更"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "沒有文字差異比較"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# 行已刪除的程式碼 (-)}other{# 行已刪除的程式碼 (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "按一下即可開啟「隱私權和安全性」面板，並顯示第三方 Cookie 報告"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "斷言失敗： "
@@ -6747,7 +6720,7 @@
     "message": "堆疊追蹤"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "生成回覆的時間過長。請再試一次。"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "啟用「{PH1}」即可取得 AI 輔助功能，以便瞭解及解決控制台警告和錯誤。"
@@ -7911,7 +7884,7 @@
     "message": "新增「{PH1}」"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "校準…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU 節流"
@@ -7935,7 +7908,7 @@
     "message": "離線"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "重新校準…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – 推薦"
@@ -8895,7 +8868,7 @@
     "message": "這項要求沒有任何 Cookie。"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "沒有啟動器資料"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "要求呼叫堆疊"
@@ -8961,10 +8934,10 @@
     "message": "無法載入回應資料"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "沒有可預覽的內容"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "這項要求沒有任何回應資料"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "快取儲存空間快取名稱：{PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "系統記錄設定檔時，無法載入其他設定檔。"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "設定檔載入失敗：{PH1}。"
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "設定檔"
   },
@@ -10251,7 +10221,7 @@
     "message": "儲存"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "選取訊息即可查看詳細資訊"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "選取目標"
@@ -10290,7 +10260,7 @@
     "message": "複製錄製內容或已選取的步驟"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "建立錄製內容"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "刪除錄製內容"
@@ -10308,13 +10278,13 @@
     "message": "取得擴充功能…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "目前未錄製任何內容"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "匯入錄製內容"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "瞭解詳情"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "(沒有任何錄製內容)"
@@ -10323,7 +10293,7 @@
     "message": "筆記錄"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "使用錄製內容建立自動端對端測試或效能追蹤記錄。"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "重播錄製內容"
@@ -11496,7 +11466,7 @@
     "message": "系統會將控制台訊息、相關的堆疊追蹤、原始碼和網路標頭傳送給 Google，用於產生說明。這些資料也可能由人工審查員查看，以改善這項功能。"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "控制台訊息、相關的堆疊追蹤、原始碼和網路標頭會傳送到 Google，用於生成說明。這些資料不會用於提升 Google AI 模型的品質。"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google 可能會停止收集資料，具體情況視所在區域而定"
@@ -11532,7 +11502,7 @@
     "message": "凡是要檢查的網頁可透過網路 API、網路要求、檔案和效能追蹤記錄存取的資料，系統都會傳送給 Google，用於產生說明。這些資料也可能由人工審查員查看，以改善這項功能。請勿在含有個人或私密資訊的頁面上使用。"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "凡是已檢查頁面可透過 Web API、網路要求、檔案和效能追蹤記錄存取的資料，都會傳送到 Google，用於生成說明。這些資料不會用於提升 Google AI 模型的品質。"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "協助您瞭解及修正控制台警告和錯誤"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "這個動作無法復原。"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "確定要刪除這個資料夾和當中的內容嗎？"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "確定要刪除這個檔案嗎？"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "確定要排除這個資料夾嗎？"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "要將「{PH1}」從工作區移除嗎？"
@@ -13041,7 +13002,7 @@
     "message": "這個追蹤項目含有從 Server-Timing 網路回應標頭取得的時間資料。其各自的開始時間僅為預估值，可能不準確。"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "第一方/第三方"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "本身時間"
@@ -13254,7 +13215,7 @@
     "message": "說明"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "調暗第三方元素"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "停用 JavaScript 樣本"
@@ -13374,7 +13335,7 @@
     "message": "正在停止時間軸…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "依 third-party-web 分類的第三方"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "時間"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "第三方"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(已隱藏項目)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "選取器統計資料"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "本身時間"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "大小"
   },
@@ -13833,7 +13791,7 @@
     "message": "樣式表網址"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "第一方/第三方資料表"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "算繪所費時間"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "時間戳記"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "總時間"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "追蹤記錄事件"
@@ -13920,7 +13875,7 @@
     "message": "移除子項導覽標記"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "校準…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU：{PH1}"
@@ -13932,7 +13887,7 @@
     "message": "已校準的預設選項"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "重新校準…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – 推薦"
@@ -14424,7 +14379,7 @@
     "message": "已編碼的資料"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "第三方"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "來自快取"
@@ -14568,16 +14523,16 @@
     "message": "Insights 功能仍在實驗階段，歡迎提供意見，協助我們改進這項功能。"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "關閉"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "本機和實際環境指標[不一致](https://web.dev/articles/lab-and-field-data-differences)的可能原因有很多。如要分析更貼近一般使用者環境的追蹤記錄，請調整[節流設定和裝置模擬](https://developer.chrome.com/docs/devtools/device-mode)。"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "實際環境和本機指標不符"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "實際環境 ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}：{PH2} (分數等級：{PH3})"
@@ -15885,7 +15840,7 @@
     "message": "排序依據"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "可排序的資料欄。按下 Enter 鍵即可套用排序篩選條件"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "顯示全部 ({PH1})"
@@ -16221,10 +16176,10 @@
     "message": "尋找"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "無法載入資料"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "沒有可預覽的內容"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "尋找"

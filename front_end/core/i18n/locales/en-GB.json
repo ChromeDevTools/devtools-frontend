@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Clear"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Click the record button {PH1} or hit {PH2} to start recording."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools will record all {PH1} activity for up to three days, even when closed."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Instance ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Learn more"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "No metadata for this event"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Object stores"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Please confirm deletion of '{PH1}' database."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Primary key"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Click on any shared storage event to display the event parameters."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Key"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Select a value to preview"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Shared storage"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "The storage item was edited."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Shared storage items"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Shared storage items cleared"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Number of entries shown in table: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Value"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared storage"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Issuer"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "No private state tokens are currently stored."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Stored token count"
   },
@@ -5070,7 +5043,7 @@
     "message": "The changes tab doesn't show binary data changes"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "On this page, you can track code changes made within DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Copy"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Can’t load profile while another profile is being recorded."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Profile loading failed: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profiles"
   },
@@ -11496,7 +11466,7 @@
     "message": "The console message, associated stack trace, related source code and the associated network headers are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "The console message, associated stack trace, related source code and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google's AI models."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Depending on your region, Google may refrain from data collection"
@@ -11532,7 +11502,7 @@
     "message": "Any data that the inspected page can access via Web APIs, network requests, files and performance traces are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Don't use on pages with personal or sensitive information."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Any data that the inspected page can access via Web APIs, network requests, files and performance traces are sent to Google to generate explanations. This data will not be used to improve Google's AI models."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Helps you understand and fix console warnings and errors"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "This action cannot be undone."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Are you sure you want to delete this folder and its contents?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Are you sure that you want to delete this file?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Are you sure that you want to exclude this folder?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Remove ‘{PH1}’ from Workspace?"
@@ -13041,7 +13002,7 @@
     "message": "This track contains timings taken from Server-Timing network response headers. Their respective start times are only estimated and may not be accurate."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "First/Third party"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Self time"
@@ -13254,7 +13215,7 @@
     "message": "Description"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Dim third parties"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Disable JavaScript samples"
@@ -13374,7 +13335,7 @@
     "message": "Stopping timeline…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Third parties classified by third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Time"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Selector stats"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Self time"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Size"
   },
@@ -13833,7 +13791,7 @@
     "message": "Stylesheet URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "First/Third-party table"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Time spent in rendering"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Timestamp"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Total time"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Trace event"
@@ -14571,10 +14526,10 @@
     "message": "Dismiss"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyse traces more similar to the average user's environment."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Field and local metrics mismatch"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
     "message": "Field ({PH1})"

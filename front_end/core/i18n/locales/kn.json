@@ -105,7 +105,7 @@
     "message": "ನೆಟ್‌ವರ್ಕ್ ಪ್ಯಾನೆಲ್"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "ಭದ್ರತೆ ಪ್ಯಾನೆಲ್"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "ಮೂಲಗಳ ಪ್ಯಾನೆಲ್"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "ತೆರವುಗೊಳಿಸಿ"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಪ್ರಾರಂಭಿಸಲು, ರೆಕಾರ್ಡ್ ಬಟನ್ {PH1} ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ {PH2} ಅನ್ನು ಹಿಟ್ ಮಾಡಿ."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools ಮುಚ್ಚಿದರೂ ಸಹ 3 ದಿನಗಳವರೆಗೆ ಎಲ್ಲಾ {PH1} ಚಟುವಟಿಕೆಯನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡುತ್ತದೆ."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "ನಿದರ್ಶನ ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ಈ ಈವೆಂಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಯಾವುದೇ ಮೆಟಾಡೇಟಾ ಇಲ್ಲ"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ಆಬ್ಜೆಕ್ಟ್ ಸ್ಟೋರ್‌ಗಳು"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "\"{PH1}\" ಡೇಟಾಬೇಸ್‌ನ ಅಳಿಸುವಿಕೆಯನ್ನು ಖಚಿತಪಡಿಸಿ."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "ಪ್ರಾಥಮಿಕ ಕೀಲಿ"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "ಈವೆಂಟ್ ಪ್ಯಾರಾಮೀಟರ್‌ಗಳನ್ನು ಪ್ರದರ್ಶಿಸಲು ಯಾವುದೇ ಹಂಚಿದ ಸಂಗ್ರಹಣಾ ಈವೆಂಟ್ ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "ಕೀ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "ಪೂರ್ವವೀಕ್ಷಣೆ ಮಾಡಲು ಮೌಲ್ಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "ಹಂಚಿಕೊಂಡ ಸಂಗ್ರಹಣೆ"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "ಸಂಗ್ರಹಣೆ ಐಟಂ ಅನ್ನು ಎಡಿಟ್ ಮಾಡಲಾಗಿದೆ."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "ಹಂಚಿಕೊಂಡ ಸಂಗ್ರಹಣೆ ಐಟಂಗಳು"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "ಹಂಚಿಕೊಂಡ ಸಂಗ್ರಹಣೆ ಐಟಂಗಳನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "ಟೇಬಲ್‌ನಲ್ಲಿ ತೋರಿಸಲಾದ ನಮೂದುಗಳ ಸಂಖ್ಯೆ: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "ಮೌಲ್ಯ"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "ಹಂಚಿಕೊಂಡ ಸಂಗ್ರಹಣೆ"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ಒದಗಿಸಿದವರು"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "ಯಾವುದೇ ಖಾಸಗಿ ಸ್ಥಿತಿಯ ಟೋಕನ್‌ಗಳನ್ನು ಪ್ರಸ್ತುತ ಸಂಗ್ರಹಿಸಲಾಗಿಲ್ಲ."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "ಸಂಗ್ರಹಿಸಿದ ಟೋಕನ್ ಕೌಂಟ್"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳ ಪಟ್ಟಿ"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "ಯಾವುದೇ DOM ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್‌ಗಳನ್ನು ಹೊಂದಿಸಲಾಗಿಲ್ಲ"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "ನೋಡ್ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (ಸೋರ್ಸ್-ಮ್ಯಾಪ್‌ನಿಂದ)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "ಬದಲಾವಣೆಗಳ ಟ್ಯಾಬ್ ಬೈನರಿ ಡೇಟಾ ಬದಲಾವಣೆಗಳನ್ನು ತೋರಿಸುವುದಿಲ್ಲ"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "ಈ ಪುಟದಲ್ಲಿ ನೀವು DevTools ನಲ್ಲಿ ಮಾಡಿದ ಕೋಡ್ ಬದಲಾವಣೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಬಹುದು."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "ಕಾಪಿ ಮಾಡಿ"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "ಇನ್ನೂ ಯಾವುದೇ ಬದಲಾವಣೆಗಳಿಲ್ಲ"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "ಯಾವುದೇ ಪಠ್ಯ ವ್ಯತ್ಯಾಸ ಲಭ್ಯವಿಲ್ಲ"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ಅಳಿಸುವಿಕೆ (-)}one{# ಅಳಿಸುವಿಕೆಗಳು (-)}other{# ಅಳಿಸುವಿಕೆಗಳು (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "ಗೌಪ್ಯತೆ ಮತ್ತು ಭದ್ರತಾ ಪ್ಯಾನೆಲ್ ಅನ್ನು ತೆರೆಯಲು ಮತ್ತು ಥರ್ಡ್-ಪಾರ್ಟಿ ಕುಕಿ ವರದಿಯನ್ನು ತೋರಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "ಸಮರ್ಥನೆ ವಿಫಲವಾಗಿದೆ: "
@@ -6747,7 +6720,7 @@
     "message": "ಸ್ಟ್ಯಾಕ್‌ಟ್ರೇಸ್"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ರಚಿಸುವುದು ತುಂಬಾ ಸಮಯ ತೆಗೆದುಕೊಂಡಿತು. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "ಕನ್ಸೋಲ್ ಎಚ್ಚರಿಕೆಗಳು ಹಾಗೂ ದೋಷಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಮತ್ತು ಬಗೆಹರಿಸಲು AI ಸಹಾಯವನ್ನು ಸ್ವೀಕರಿಸುವುದಕ್ಕಾಗಿ {PH1} ಅನ್ನು ಆನ್ ಮಾಡಿ."
@@ -7911,7 +7884,7 @@
     "message": "{PH1} ಅನ್ನು ಸೇರಿಸಿ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "ಕ್ಯಾಲಿಬ್ರೇಟ್‌…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU ನಿಯಂತ್ರಿಸುವಿಕೆ"
@@ -7935,7 +7908,7 @@
     "message": "ಆಫ್‌ಲೈನ್"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "ಮರುಕ್ಯಾಲಿಬ್ರೇಟ್‌…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} - ಶಿಫಾರಸು ಮಾಡಿರುವುದು"
@@ -8895,7 +8868,7 @@
     "message": "ಈ ವಿನಂತಿಯಲ್ಲಿ ಕುಕೀಗಳಿಲ್ಲ."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ಇನಿಷಿಯೇಟರ್ ಡೇಟಾ ಇಲ್ಲ"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "ಕರೆ ಸ್ಟ್ಯಾಕ್ ಅನ್ನು ವಿನಂತಿಸಿ"
@@ -8961,10 +8934,10 @@
     "message": "ಪ್ರತಿಕ್ರಿಯೆ ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "ಪೂರ್ವವೀಕ್ಷಿಸಲು ಏನೂ ಇಲ್ಲ"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "ಈ ವಿನಂತಿಯಲ್ಲಿ ಯಾವುದೇ ಪ್ರತಿಕ್ರಿಯೆ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "ಕ್ಯಾಷ್ ಸಂಗ್ರಹಣೆ ಕ್ಯಾಷ್ ಹೆಸರು: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ಬೇರೊಂದು ಪ್ರೊಫೈಲ್ ರೆಕಾರ್ಡ್ ಆಗುತ್ತಿರುವಾಗ ಪ್ರೊಫೈಲ್ ಅನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "ಪ್ರೊಫೈಲ್ ಲೋಡ್ ಮಾಡುವಿಕೆ ವಿಫಲವಾಗಿದೆ: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "ಪ್ರೊಫೈಲ್‌ಗಳು"
   },
@@ -10251,7 +10221,7 @@
     "message": "ಸೇವ್ ಮಾಡಿ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "ಲೇಯರ್‌ನ ವಿವರಗಳನ್ನು ನೋಡಲು ಅದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "ಟಾರ್ಗೆಟ್ ಆಯ್ಕೆಮಾಡಿ"
@@ -10290,7 +10260,7 @@
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅಥವಾ ಆಯ್ಕೆಮಾಡಿದ ಹಂತವನ್ನು ನಕಲಿಸಿ"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ರಚಿಸಿ"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಅಳಿಸಿ"
@@ -10308,13 +10278,13 @@
     "message": "ವಿಸ್ತರಣೆಗಳನ್ನು ಪಡೆಯಿರಿ…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "ಇನ್ನೂ ಏನನ್ನೂ ದಾಖಲಿಸಿಲ್ಲ"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಅನ್ನು ಆಮದು ಮಾಡಿ"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "ಯಾವುದೇ ರೆಕಾರ್ಡಿಂಗ್‌ಗಳಿಲ್ಲ"
@@ -10323,7 +10293,7 @@
     "message": "ರೆಕಾರ್ಡಿಂಗ್‌(ಗಳು)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "ಸ್ವಯಂಚಾಲಿತ ಎಂಡ್-ಟು-ಎಂಡ್ ಪರೀಕ್ಷೆಗಳು ಅಥವಾ ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಜಾಡುಗಳನ್ನು ರಚಿಸಲು ರೆಕಾರ್ಡಿಂಗ್‌ಗಳನ್ನು ಬಳಸಿ."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "ರೆಕಾರ್ಡಿಂಗ್ ಮರುಪ್ಲೇ ಮಾಡಿ"
@@ -11496,7 +11466,7 @@
     "message": "ವಿವರಣೆಗಳನ್ನು ರಚಿಸಲು ಕನ್ಸೋಲ್ ಸಂದೇಶ, ಸಂಬಂಧಿತ ಸ್ಟಾಕ್ ಟ್ರೇಸ್, ಸಂಬಂಧಿತ ಮೂಲ ಕೋಡ್ ಮತ್ತು ಸಂಬಂಧಿತ ನೆಟ್‌ವರ್ಕ್ ಹೆಡರ್‌ಗಳನ್ನು Google ಗೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. ಈ ಫೀಚರ್‌ ಅನ್ನು ಸುಧಾರಿಸಲು ಮಾನವ ರಿವ್ಯೂವರ್‌‌ಗಳು ಈ ಡೇಟಾವನ್ನು ನೋಡಬಹುದು."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ವಿವರಣೆಗಳನ್ನು ರಚಿಸಲು ಕನ್ಸೋಲ್ ಸಂದೇಶ, ಸಂಬಂಧಿತ ಸ್ಟಾಕ್ ಟ್ರೇಸ್, ಸಂಬಂಧಿತ ಸೋರ್ಸ್ ಕೋಡ್ ಮತ್ತು ಸಂಬಂಧಿತ ನೆಟ್‌ವರ್ಕ್ ಹೆಡರ್‌ಗಳನ್ನು Google ಗೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. Google ನ AI ಮಾಡಲ್‌ಗಳನ್ನು ಸುಧಾರಿಸಲು ಈ ಡೇಟಾವನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "ನಿಮ್ಮ ಪ್ರದೇಶವನ್ನು ಆಧರಿಸಿ, Google ಡೇಟಾ ಸಂಗ್ರಹಣೆಯಿಂದ ದೂರ ಉಳಿಯಬಹುದು"
@@ -11532,7 +11502,7 @@
     "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಪುಟವು ವೆಬ್ API ಗಳು, ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳು, ಫೈಲ್‌ಗಳು ಮತ್ತು ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಜಾಡುಗಳ ಮೂಲಕ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದಾದ ಯಾವುದೇ ಡೇಟಾವನ್ನು, ವಿವರಣೆಗಳನ್ನು ಜನರೇಟ್ ಮಾಡುವುದಕ್ಕಾಗಿ Google ಗೆ ಕಳುಹಿಸಬಹುದು. ಈ ಫೀಚರ್‌ ಅನ್ನು ಸುಧಾರಿಸಲು ಮಾನವ ರಿವ್ಯೂವರ್‌‌ಗಳು ಈ ಡೇಟಾವನ್ನು ನೋಡಬಹುದು. ವೈಯಕ್ತಿಕ ಅಥವಾ ಸೂಕ್ಷ್ಮವಾದ ಮಾಹಿತಿಯನ್ನು ಹೊಂದಿರುವ ಪುಟಗಳಲ್ಲಿ ಬಳಸಬೇಡಿ."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ತಪಾಸಣೆ ಮಾಡಲಾದ ಪುಟವು ವೆಬ್ API ಗಳು, ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಗಳು, ಫೈಲ್‌ಗಳು ಮತ್ತು ಪರ್ಫಾರ್ಮೆನ್ಸ್ ಜಾಡುಗಳ ಮೂಲಕ ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಬಹುದಾದ ಯಾವುದೇ ಡೇಟಾವನ್ನು, ವಿವರಣೆಗಳನ್ನು ಜನರೇಟ್ ಮಾಡುವುದಕ್ಕಾಗಿ Google ಗೆ ಕಳುಹಿಸಬಹುದು. Google ನ AI ಮಾಡಲ್‌ಗಳನ್ನು ಸುಧಾರಿಸಲು ಈ ಡೇಟಾವನ್ನು ಬಳಸಲಾಗುವುದಿಲ್ಲ."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "ಕನ್ಸೋಲ್ ಎಚ್ಚರಿಕೆಗಳು ಮತ್ತು ದೋಷಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಮತ್ತು ಸರಿಪಡಿಸಲು ನಿಮಗೆ ಸಹಾಯ ಮಾಡುತ್ತದೆ"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಮಾಡಲಾಗುವುದಿಲ್ಲ."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "ಈ ಫೋಲ್ಡರ್ ಮತ್ತು ಅದರ ಕಂಟೆಂಟ್‌ಗಳನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುತ್ತೀರಾ?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "ನೀವು ಖಚಿತವಾಗಿಯೂ ಈ ಫೈಲ್ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "ಈ ಫೋಲ್ಡರ್ ಅನ್ನು ಖಚಿತವಾಗಿಯೂ ಹೊರಗಿರಿಸಲು ಬಯಸುವಿರಾ?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Workspace ನಿಂದ '{PH1}' ಅನ್ನು ತೆಗೆದುಹಾಕಬೇಕೆ?"
@@ -13041,7 +13002,7 @@
     "message": "ಈ ಟ್ರ್ಯಾಕ್ ಸರ್ವರ್-ಟೈಮಿಂಗ್ ನೆಟ್‌ವರ್ಕ್ ಪ್ರತಿಕ್ರಿಯೆ ಹೆಡರ್‌ಗಳಿಂದ ತೆಗೆದುಕೊಳ್ಳಲಾದ ಸಮಯಗಳನ್ನು ಒಳಗೊಂಡಿದೆ. ಅವುಗಳ ಪ್ರಾರಂಭದ ಸಮಯವನ್ನು ಮಾತ್ರ ಅಂದಾಜಿಸಲಾಗಿದೆ ಮತ್ತು ಅದು ನಿಖರವಾಗಿಲ್ಲದಿರಬಹುದು."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "1st / 3rd ಪಾರ್ಟಿ"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "ಸೆಲ್ಫ್ ಟೈಮ್"
@@ -13254,7 +13215,7 @@
     "message": "ವಿವರಣೆ"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "ಅಸ್ಪಷ್ಟ ಥರ್ಡ್‌-ಪಾರ್ಟಿಗಳು"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript ಮಾದರಿಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ"
@@ -13374,7 +13335,7 @@
     "message": "ಟೈಮ್‌ಲೈನ್ ಅನ್ನು ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "3 ನೇ ವ್ಯಕ್ತಿಗಳನ್ನು ಥರ್ಡ್ ಪಾರ್ಟಿ ವೆಬ್‌ನಿಂದ ವರ್ಗೀಕರಿಸಲಾಗಿದೆ"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "ಸಮಯ"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "ಥರ್ಡ್ ಪಾರ್ಟಿ"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(ನಮೂದನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "ಸೆಲೆಕ್ಟರ್ ಅಂಕಿಅಂಶಗಳು"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "ಸೆಲ್ಫ್ ಟೈಮ್"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "ಗಾತ್ರ"
   },
@@ -13833,7 +13791,7 @@
     "message": "ಸ್ಟೈಲ್‌ಶೀಟ್ URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "ಫರ್ಸ್ಟ್ / ಥರ್ಡ್-ಪಾರ್ಟಿ ಟೇಬಲ್"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "ರೆಂಡರ್ ಮಾಡಲು ವ್ಯಯಿಸಿದ ಸಮಯ"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "ಟೈಮ್‌ಸ್ಟ್ಯಾಂಪ್"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "ಒಟ್ಟು ಸಮಯ"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "ಟ್ರೇಸ್ ಈವೆಂಟ್"
@@ -13920,7 +13875,7 @@
     "message": "ಚೈಲ್ಡ್ ಬ್ರೆಡ್‌ಕ್ರಂಬ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "ಕ್ಯಾಲಿಬ್ರೇಟ್‌…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "ಕ್ಯಾಲಿಬರೇಶನ್ ಪ್ರಿಸೆಟ್‌ಗಳು"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "ಮರುಕ್ಯಾಲಿಬ್ರೇಟ್‌…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} - ಶಿಫಾರಸು ಮಾಡಿರುವುದು"
@@ -14424,7 +14379,7 @@
     "message": "ಎನ್‌ಕೋಡ್ ಮಾಡಲಾಗಿರುವ ಡೇಟಾ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "ಥರ್ಡ್ ಪಾರ್ಟಿ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "ಕ್ಯಾಷ್‌ನಿಂದ"
@@ -14568,16 +14523,16 @@
     "message": "ಒಳನೋಟಗಳು ಎಂಬುದು ಪ್ರಾಯೋಗಿಕ ಫೀಚರ್ ಆಗಿದೆ. ನಿಮ್ಮ ಫೀಡ್‌ಬ್ಯಾಕ್ ನಮಗೆ ಸುಧಾರಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "ವಜಾಗೊಳಿಸಿ"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "ಸ್ಥಳೀಯ ಮತ್ತು ಫೀಲ್ಡ್ ಮೆಟ್ರಿಕ್‌ಗಳು [ ](https://web.dev/articles/lab-and-field-data-differences) ಗೆ ಹೊಂದಿಕೆಯಾಗದಿರಲು ಹಲವು ಕಾರಣಗಳಿವೆ. ಸರಾಸರಿ ಬಳಕೆದಾರರ ಪರಿಸರಕ್ಕೆ ಹೆಚ್ಚು ಹೋಲುವ ಜಾಡುಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಲು [ಥ್ರಾಟಲಿಂಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಮತ್ತು ಸಾಧನ ಅನುಕರಣೆ ](https://developer.chrome.com/docs/devtools/device-mode)ಅನ್ನು ಅಡ್ಜಸ್ಟ್ ಮಾಡಿ."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "ಕ್ಷೇತ್ರ ಮತ್ತು ಸ್ಥಳೀಯ ಮೆಟ್ರಿಕ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "ಫೀಲ್ಡ್ ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} ಸ್ಕೋರ್"
@@ -15885,7 +15840,7 @@
     "message": "ಈ ಪ್ರಕಾರ ವಿಂಗಡಿಸಿ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "ವಿಂಗಡಿಸಬಹುದಾದ ಕಾಲಮ್. ವಿಂಗಡಣೆಯ ಫಿಲ್ಟರ್ ಅನ್ನು ಅನ್ವಯಿಸಲು Enter ಕೀ ಒತ್ತಿರಿ"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "ಎಲ್ಲಾ {PH1} ತೋರಿಸಿ"
@@ -16221,10 +16176,10 @@
     "message": "ಹುಡುಕಿ"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "ಡೇಟಾವನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "ಪೂರ್ವವೀಕ್ಷಿಸಲು ಏನೂ ಇಲ್ಲ"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "ಹುಡುಕಿ"

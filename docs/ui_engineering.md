@@ -83,7 +83,9 @@ class StylesPane extends UI.Widget {
 
 ### Unit tests
 
-When testing presenter behavior await a view update or a model call:
+When testing presenters, rely on observable effects such as view updates or model calls.
+
+#### View stubbing
 
 ```ts
 // ✅ recommended: stub the view function.
@@ -99,6 +101,7 @@ const [{onEvent}] = await viewCall;
 const viewCall2 = expectCall(view);
 onEvent();
 const [{data}] = await viewCall2;
+// ✅ recommended: check view input data from the expected call.
 assert.deepStrictEqual(data, {});
 
 // ❌ not recommended: Widget.updateComplete only reports a current view update
@@ -110,5 +113,43 @@ assert.deepStrictEqual(view.lastCall.args[0], {});
 // ❌ not recommended: awaiting for the present logic to finish might
 // not account for async or throttled view updates.
 await presenter.doSomething();
-assert.deepStrictEqual(view.lastCall.args[0], {});
+// ❌ not recommended: it is easy for such assertions to
+// rely on the data not caused by the action being tested.
+sinon.assert.calledWith(view, sinon.match({ data: 'smth' }));
+```
+
+#### Model stubbing
+
+```ts
+// ✅ recommended: stub models that the presenter relies on.
+// Note there are many good ways to stub/mock models with sinon
+// depending on the use case and existing model code structure.
+const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
+
+const presenter = new Presenter();
+// ✅ recommended: expect model calls as the result of invoking
+// present's logic.
+const modelCall = expectCall(cssModel.headersForSourceURL, {
+  fakeFn: () => {
+    return false,
+  },
+});
+// ✅ recommended: expect view calls to result in output based
+// on the mocked model.
+const viewCall = expectCall(view);
+
+presenter.doSomething();
+
+// ✅ recommended: assert arguments provided to model calls.
+const [url] = await modelCall;
+assert.strictEqual(url, '...');
+
+const [{headersForSourceURL}] = await viewCall;
+assert.deepStrictEqual(headersForSourceURL, [{...}]);
+
+// ❌ not recommended: mocking CDP responses to make the models behave in a certain way
+// is fragile.
+setMockConnectionResponseHandler('CSS.getHeaders', () => ({}));
+const presenter = new Presenter();
+presenter.doSomething();
 ```

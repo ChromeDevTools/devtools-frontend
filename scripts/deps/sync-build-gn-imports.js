@@ -334,7 +334,7 @@ function validateDirectory(dirPath) {
   const sourceFiles = directoryChildren.filter(child => {
     const isFile = fs.lstatSync(path.join(dirPath, child)).isFile();
     // TODO: longer term we may want to support .css files here too.
-    return (isFile && path.extname(child) === '.ts');
+    return (isFile && path.extname(child) === '.ts') && !child.endsWith('.test.ts');
   });
 
   /** @type {ValidateDirectoryResult} */
@@ -380,6 +380,7 @@ module.exports = {
   validateDirectory
 };
 
+// If invoked as CLI
 if (require.main === module) {
   const yargs = require('yargs')
                     .option('directory', {type: 'string', desc: 'The directory to validate', demandOption: true})

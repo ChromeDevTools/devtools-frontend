@@ -68,7 +68,6 @@ ts_library("testing") {
     "../models/extensions:bundle",
     "../models/issues_manager:bundle",
     "../models/text_utils:bundle",
-    "../models/timeline_model:bundle",
     "../models/trace:bundle",
     "../models/workspace:bundle",
     "../panels/elements:meta",

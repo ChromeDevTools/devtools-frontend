@@ -95,6 +95,7 @@ devtools_module("timeline") {
     "TimelineTreeView.ts",
     "TimelineUIUtils.ts",
     "TimingsTrackAppender.ts",
+    "TracingLayerTree.ts",
     "UIDevtoolsController.ts",
     "UIDevtoolsUtils.ts",
   ]
@@ -107,7 +108,6 @@ devtools_module("timeline") {
     "../../models/cpu_profile:bundle",
     "../../models/extensions:bundle",
     "../../models/source_map_scopes:bundle",
-    "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/coverage:bundle",
@@ -213,7 +213,6 @@ ts_library("unittests") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../models/bindings:bundle",
-    "../../models/timeline_model:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../testing",

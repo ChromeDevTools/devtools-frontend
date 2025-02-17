@@ -18,6 +18,7 @@ devtools_module("trace") {
   deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
+    "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../cpu_profile:bundle",
@@ -51,7 +52,6 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/docs/*",
     "../../ui/legacy/components/utils/*",
-    "../timeline_model/*",
     "./*",
   ]
 

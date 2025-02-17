@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -29,6 +28,7 @@ import {
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {TracingFrameLayerTree} from './TracingLayerTree.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -365,7 +365,7 @@ export class TimelineDetailsPane extends
         TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));
     const target = SDK.TargetManager.TargetManager.instance().rootTarget();
     if (frame.layerTree && target) {
-      const layerTreeForFrame = new TimelineModel.TracingLayerTree.TracingFrameLayerTree(target, frame.layerTree);
+      const layerTreeForFrame = new TracingFrameLayerTree(target, frame.layerTree);
       const layersView = this.layersView();
       layersView.showLayerTree(layerTreeForFrame);
       if (!this.tabbedPane.hasTab(Tab.LayerViewer)) {

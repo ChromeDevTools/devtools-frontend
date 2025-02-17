@@ -105,7 +105,7 @@
     "message": "חלונית רשת"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "חלונית \"אבטחה\""
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "חלונית מקורות"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "ניקוי"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "יש ללחוץ על כפתור ההקלטה {PH1} או על המקשים {PH2} כדי להתחיל בהקלטה."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "כלי הפיתוח יקליטו את כל הפעילות מסוג {PH1} במשך שלושה ימים לכל היותר, אפילו כשיהיו כבויים."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "מזהה מופע"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "מידע נוסף"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "אין מטא-נתונים לאירוע הזה"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "מאגרי אובייקטים"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "יש לאשר את המחיקה של מסד הנתונים \"{PH1}\"."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "מפתח ראשי"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "לוחצים על אירוע כלשהו של נפח אחסון משותף כדי להציג את הפרמטרים של האירוע."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "מפתח"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "בחירה של ערך לצפייה בתצוגה מקדימה"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Shared Storage"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "הפריט המאוחסן נערך."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "פריטים בנפח אחסון משותף"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "הפריטים בנפח האחסון המשותף נוקו"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "מספר הרשומות שמוצגות בטבלה: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "ערך"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared Storage"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "מנפיק"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "אין כרגע טוקנים של מצב פרטי שמורים."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "ספירת הטוקנים המאוחסנים"
   },
@@ -4950,7 +4923,7 @@
     "message": "רשימה של נקודות עצירה ב-DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "לא הוגדרו נקודות עצירה ב-DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "הצומת הוסר"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (ממפת המקור)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "בכרטיסיית השינויים לא מוצגים שינויים בנתונים הבינאריים"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "בדף הזה אפשר לעקוב אחרי שינויים בקוד שבוצעו בכלי הפיתוח."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "העתקה"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "אין עדיין שינויים"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "אין הבדלים זמינים בטקסט"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{פעולת מחיקה אחת (-)}one{# פעולות מחיקה (-)}two{# פעולות מחיקה (-)}other{# פעולות מחיקה (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>‎"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "אפשר ללחוץ כדי לפתוח את לוח הפרטיות והאבטחה ולהציג את דוח קובצי ה-Cookie של הצד השלישי"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "טענת הנכוֹנוּת (assertion) נכשלה: "
@@ -6747,7 +6720,7 @@
     "message": "דוח קריסות"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "המערכת לא הצליחה ליצור תשובה. אפשר לנסות שוב."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "כדי לקבל סיוע מבוסס-AI להבנת אזהרות ושגיאות במסוף ולטיפול בהן, צריך להפעיל את {PH1}."
@@ -7911,7 +7884,7 @@
     "message": "הוספה של {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "צריך לכייל…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "ויסות נתונים (throttle) של יחידת עיבוד מרכזית (CPU)"
@@ -7935,7 +7908,7 @@
     "message": "אופליין"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "כיול מחדש…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "‫{PH1} – מומלץ"
@@ -8895,7 +8868,7 @@
     "message": "לבקשה זו אין קובצי cookie."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "אין נתונים על מי שיזם את הבקשה"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "שליחת בקשה ב-call stack"
@@ -8961,10 +8934,10 @@
     "message": "הטעינה של נתוני התגובה נכשלה"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "אין מה להציג בתצוגה מקדימה"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "לא קיימים נתוני תגובה זמינים לבקשה הזאת"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "שם המטמון באחסון המטמון: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "לא ניתן לטעון פרופיל כשפרופיל אחר מוקלט במקביל."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "טעינת הפרופיל נכשלה: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "פרופילים"
   },
@@ -10251,7 +10221,7 @@
     "message": "שמירה"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "אפשר לבחור שכבה כדי להציג את הפרטים שלה"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "יש לבחור יעד"
@@ -10290,7 +10260,7 @@
     "message": "העתקת ההקלטה או השלב שנבחר"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "יצירת הקלטה"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "מחיקת ההקלטה"
@@ -10308,13 +10278,13 @@
     "message": "הצגת התוספים…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "אין עדיין הקלטות"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "ייבוא ההקלטה"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "מידע נוסף"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "אין הקלטות"
@@ -10323,7 +10293,7 @@
     "message": "הקלטות"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "אפשר להשתמש בהקלטות כדי ליצור בדיקות אוטומטיות מקצה לקצה או מעקב ביצועים."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "הפעלת ההקלטה מחדש"
@@ -11496,7 +11466,7 @@
     "message": "ההודעה במסוף, דוח הקריסות המשויך, קוד המקור הרלוונטי והכותרות המשויכות של הרשת נשלחים אל Google כדי ליצור הסברים. יכול להיות שבודקים אנושיים יראו את הנתונים האלה כדי לשפר את התכונה הזו."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ההודעה במסוף, דוח הקריסות המשויך, קוד המקור הרלוונטי והכותרות המשויכות של הרשת נשלחים אל Google כדי ליצור הסברים. הנתונים האלה לא ישמשו לשיפור מודלים של AI מבית Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "‫Google עשויה להימנע מאיסוף נתונים בהתאם לאזור שלך"
@@ -11532,7 +11502,7 @@
     "message": "כל הנתונים שהדף שנבדק יכול לגשת אליהם באמצעות Web API, בקשות רשת, קבצים ודוחות של קריסות נשלחים אל Google כדי ליצור הסברים. יכול להיות שבודקים אנושיים יראו את הנתונים האלה כדי לשפר את התכונה הזו. אין להשתמש באפשרות הזו בדפים שמכילים מידע אישי או מידע רגיש."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "כל הנתונים שהדף שנבדק יכול לגשת אליהם (דרך Web API, בקשות רשת, קבצים או מעקב ביצועים) נשלחים אל Google כדי ליצור הסברים. הנתונים האלה לא ישמשו לשיפור מודלים של AI מבית Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "התכונה עוזרת להבין אזהרות ושגיאות במסוף ולתקן אותן"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "לא ניתן לבטל את הפעולה הזו."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "בחרת למחוק את התיקייה הזו ואת התוכן שלה. להמשיך?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "בחרת למחוק את הקובץ הזה. האם להמשיך ולבצע את המחיקה?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "בחרת להחריג את התיקייה הזו. להמשיך?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "להסיר את '{PH1}' מסביבת העבודה?"
@@ -13041,7 +13002,7 @@
     "message": "הטראק הזה מכיל תזמונים שנלקחו מכותרות תגובת רשת מסוג Server-Timing. שעות ההתחלה הן משוערות ועשויות להיות לא מדויקות."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "צד ראשון וצד שלישי"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "זמן פעולה יחידה"
@@ -13254,7 +13215,7 @@
     "message": "תיאור"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "עמעום של צדדים שלישיים"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "השבתה של דגימות JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "מתבצעת עצירה של ציר הזמן…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "צדדים שלישיים מסווגים לפי third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "שעה"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "צד שלישי"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(הרשומה מוסתרת)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "נתונים סטטיסטיים של הבורר"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "זמן פעולה יחידה"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "גודל"
   },
@@ -13833,7 +13791,7 @@
     "message": "כתובת URL של גיליון סגנונות"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "טבלה של צד ראשון או צד שלישי"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "משך זמן הרינדור"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "חותמת זמן"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "זמן כולל"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "אירוע מעקב"
@@ -13920,7 +13875,7 @@
     "message": "הסרת נתיבי הניווט של הצאצא"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "צריך לכייל…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "‫CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "הגדרות מכוילות קבועות מראש"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "כיול מחדש…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "‫{PH1} – מומלץ"
@@ -14424,7 +14379,7 @@
     "message": "נתונים מקודדים"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "צד שלישי"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "מהמטמון"
@@ -14568,16 +14523,16 @@
     "message": "התובנות הן תכונה ניסיונית. המשוב שלך יעזור לנו להשתפר."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "סגירה"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "יכולות להיות הרבה סיבות ל[חוסר התאמה](https://web.dev/articles/lab-and-field-data-differences) בין המדדים המקומיים למדדים בשטח. אפשר לערוך את [הגדרות ויסות הנתונים (throttle) ואת האמולציה של המכשיר](https://developer.chrome.com/docs/devtools/device-mode) כדי לנתח עקבות שדומים יותר לסביבה של המשתמש הממוצע."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "חוסר התאמה בין המדדים בשטח למדדים המקומיים"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "שדה ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "ניקוד {PH1}: {PH2} {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "מיון לפי"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "עמודה שניתנת למיון. צריך להקיש על Enter כדי להחיל את מסנן המיון."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "הצגת כל {PH1} הפריטים"
@@ -16221,10 +16176,10 @@
     "message": "חיפוש"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "לא הצלחנו לטעון את הנתונים"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "אין מה להציג בתצוגה מקדימה"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "חיפוש"

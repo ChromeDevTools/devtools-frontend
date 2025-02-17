@@ -105,7 +105,7 @@
     "message": "“网络”面板"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "“安全”面板"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "“来源”面板"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "清除"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "点击录制按钮 {PH1} 或按 {PH2} 即可开始录制。"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "对于所有{PH1}活动，DevTools 会记录最多 3 天，即使处于关闭状态也不例外。"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "实例 ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "了解详情"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "此事件无任何元数据"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "对象存储区"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "请确认您要删除“{PH1}”数据库。"
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "主键"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "点击任一共享存储空间事件即可显示事件参数。"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "键"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "选择一个值以预览"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "共享存储空间"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "此存储空间项已被修改。"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "共享存储空间项"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "已清除共享存储空间项"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "表格中所显示条目的数量：{PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "值"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "共享存储空间"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "颁发者"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "尚未存储任何私密状态令牌。"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "已存储的令牌数"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM 断点列表"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "未设置任何 DOM 断点"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "节点已移除"
@@ -5067,19 +5040,19 @@
     "message": "{PH1}（来自来源映射）"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "“更改”标签页不显示二进制数据更改"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "在此页面上，您可以跟踪开发者工具中所做的代码更改。"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "复制"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "尚无任何更改"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "没有文本差异"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# 行删除代码 (-)}other{# 行删除代码 (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "点击即可打开“隐私与安全”面板并显示第三方 Cookie 报告"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "断言失败： "
@@ -6747,7 +6720,7 @@
     "message": "堆栈轨迹"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "生成回答用时过长，请重试。"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "开启{PH1}即可获得 AI 协助，以便了解和解决控制台警告和错误。"
@@ -7911,7 +7884,7 @@
     "message": "添加{PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "校准…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU 节流"
@@ -7935,7 +7908,7 @@
     "message": "离线"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "重新校准…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} - 推荐"
@@ -8895,7 +8868,7 @@
     "message": "此请求不含任何 Cookie。"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "无启动器数据"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "请求调用堆栈"
@@ -8961,10 +8934,10 @@
     "message": "无法加载响应数据"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "没有可预览的内容"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "此请求没有可用的响应数据"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "缓存空间缓存名称：{PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "无法加载这项分析，因为系统正在记录另一项分析"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "性能分析报告加载失败：{PH1}。"
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "性能分析"
   },
@@ -10251,7 +10221,7 @@
     "message": "保存"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "选择某个消息即可查看其详情"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "选择一个目标"
@@ -10290,7 +10260,7 @@
     "message": "复制录制内容或所选步骤"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "创建录制内容"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "删除录制内容"
@@ -10308,13 +10278,13 @@
     "message": "获取扩展程序…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "尚未记录任何数据"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "导入录制内容"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "了解详情"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "无录制内容"
@@ -10323,7 +10293,7 @@
     "message": "项录制内容"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "使用录制内容创建自动端到端测试或性能跟踪记录。"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "重放录制的内容"
@@ -11496,7 +11466,7 @@
     "message": "系统会将控制台消息、关联的堆栈轨迹、相关源代码和关联的网络标头发送给 Google，以生成说明。人工审核员可能会查看这些数据，以改进此功能。"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "系统会将控制台消息、关联的堆栈轨迹、相关源代码和关联的网络标头发送给 Google，以生成说明。这些数据不会用于改进 Google AI 模型。"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google 可能会根据您所在的区域停止收集数据"
@@ -11532,7 +11502,7 @@
     "message": "系统会将所检查网页可通过 Web API、网络请求、文件和性能跟踪记录访问的任何数据发送给 Google，以生成说明。人工审核员可能会查看这些数据，以改进此功能。请勿在包含个人信息或敏感信息的网页上使用此功能。"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "系统会将所检查网页可通过 Web API、网络请求、文件和性能跟踪记录访问的任何数据发送给 Google，以生成说明。这些数据不会用于改进 Google AI 模型。"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "帮助您理解和解决控制台警告和错误"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "此操作无法撤消。"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "确定要删除此文件夹及其内容吗？"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "确定要删除此文件吗？"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "确定要排除此文件夹吗？"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "从工作区中移除“{PH1}”？"
@@ -13041,7 +13002,7 @@
     "message": "此轨道包含从 Server-Timing 网络响应标头中提取的时间信息。它们各自的开始时间只是估算值，可能不准确。"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "第一方/第三方"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "自身耗时"
@@ -13254,7 +13215,7 @@
     "message": "说明"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "淡化第三方元素"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "停用 JavaScript 示例"
@@ -13374,7 +13335,7 @@
     "message": "正在停止时间轴…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "按 third-party-web 分类的第三方"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "时间"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "第三方"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "（条目已隐藏）"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "选择器统计信息"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "自身耗时"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "大小"
   },
@@ -13833,7 +13791,7 @@
     "message": "样式表网址"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "第一方/第三方表格"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "渲染耗时"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "时间戳"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "总时间"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "跟踪事件"
@@ -13920,7 +13875,7 @@
     "message": "移除子级面包屑导航"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "校准…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU：{PH1}"
@@ -13932,7 +13887,7 @@
     "message": "校准后的预设"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "重新校准…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} - 推荐"
@@ -14424,7 +14379,7 @@
     "message": "已编码的数据"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "第三方"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "来自缓存"
@@ -14568,16 +14523,16 @@
     "message": "Insights 是一项实验性功能。您的反馈将有助于我们做出改进。"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "关闭"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "导致本地和现场指标[不一致](https://web.dev/articles/lab-and-field-data-differences)的原因有很多。调整[节流设置和设备模拟](https://developer.chrome.com/docs/devtools/device-mode)，即可分析更接近普通用户环境的跟踪记录。"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "现场和本地指标不一致"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "现场（{PH1}）"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1} 得分：{PH2} {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "排序依据"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "可排序的列。按 Enter 键即可应用排序过滤条件"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "显示全部 {PH1} 项"
@@ -16221,10 +16176,10 @@
     "message": "查找"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "未能加载数据"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "没有可预览的内容"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "查找"

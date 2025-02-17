@@ -105,7 +105,7 @@
     "message": "Панель \"Мережа\""
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Панель безпеки"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Панель \"Джерела\""
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Очистити"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Натисніть кнопку \"{PH1}\" або клавіші {PH2}, щоб почати запис."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "{PH1} записуватиме всі дії за 3 дні, навіть якщо ви закриєте Інструменти розробника."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Ідентифікатор екземпляра"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Докладніше"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Для цієї події немає метаданих"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Сховища об'єктів"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Підтвердьте видалення бази даних \"{PH1}\"."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Ключовий атрибут"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Щоб відкрити параметри події, натисніть будь-яку подію спільного сховища."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Ключ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Виберіть значення для перегляду"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Спільне сховище"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Об’єкт у сховищі змінено."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Об’єкти в спільному сховищі"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Усі об’єкти спільного сховища видалено"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Кількість записів, показаних у таблиці: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Значення"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Спільне сховище"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Видавець"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "У вас немає збережених приватних маркерів стану."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Кількість збережених токенів"
   },
@@ -4950,7 +4923,7 @@
     "message": "Список точок зупинки для DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Точки зупину DOM не вказано"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Вузол видалено"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (з карти джерела)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "На вкладці \"Зміни\" не відображаються зміни, внесені у двійкові дані"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "На цій сторінці можна відстежувати зміни коду, внесені в Інструментах розробника."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Копіювати"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Немає змін"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Немає текстових відмінностей"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# видалення (-)}one{# видалення (-)}few{# видалення (-)}many{# видалень (-)}other{# видалення (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Натисніть, щоб відкрити панель \"Конфіденційність і безпека\" й переглянути звіт про сторонні файли cookie"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Помилка твердження: "
@@ -6747,7 +6720,7 @@
     "message": "Трасування стека"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Створення відповіді тривало задовго. Повторіть спробу."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Увімкніть {PH1}, щоб отримувати від ШІ допомогу з аналізом і усуненням попереджень та помилок у консолі."
@@ -7911,7 +7884,7 @@
     "message": "Додати ({PH1})"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Відкалібрувати…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Обмеження пропускної спроможності ЦП"
@@ -7935,7 +7908,7 @@
     "message": "Не в мережі"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Відкалібрувати…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} (рекомендовано)"
@@ -8895,7 +8868,7 @@
     "message": "Цей запит не містить файлів cookie."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Немає даних про ініціатора"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Стек викликів запиту"
@@ -8961,10 +8934,10 @@
     "message": "Не вдалося завантажити дані відповіді"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Немає даних для попереднього перегляду"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Немає даних про відповідь на цей запит"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Назва сховища кешу: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Не можна завантажити профіль, доки записується інший."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Не вдалося завантажити профіль: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профілі"
   },
@@ -10251,7 +10221,7 @@
     "message": "Зберегти"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Щоб переглянути деталі повідомлення, виберіть його"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Виберіть ціль"
@@ -10290,7 +10260,7 @@
     "message": "Копіювати запис або вибраний крок"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Створити запис"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Видалити запис"
@@ -10308,13 +10278,13 @@
     "message": "Установити розширення…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Немає записів"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Імпортувати запис"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Докладніше"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Немає записів"
@@ -10323,7 +10293,7 @@
     "message": "(кількість записів)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Створюйте автоматичні наскрізні тестування або трасування показників ефективності за допомогою записів."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Повторно відтворити запис"
@@ -11496,7 +11466,7 @@
     "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, вихідний код і заголовки мережі. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Щоб створити пояснення, у Google надсилаються повідомлення в консолі, а також пов’язані трасування стека, початковий код і заголовки мережі. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google може не збирати дані для деяких регіонів"
@@ -11532,7 +11502,7 @@
     "message": "Будь-які дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється, можуть надсилатися в Google для створення пояснень. Наші спеціалісти можуть переглядати дані, щоб покращувати цю функцію. Не використовуйте її на сторінках з особистою або чутливою інформацією."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Будь-які дані, до яких можна отримати доступ через API вебсервісів, запити мережі, файли й трасування показників ефективності на сторінці, що перевіряється, надсилаються в Google для створення пояснень. Ці дані не використовуватимуться для покращення моделей ШІ від Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Допомагає проаналізувати й усунути попередження та помилки в консолі"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Цю дію не можна буде відмінити."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Видалити цю папку і її вміст?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Видалити цей файл?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Виключити цю папку?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Вилучити папку \"{PH1}\" з робочої області?"
@@ -13041,7 +13002,7 @@
     "message": "Цей шлях містить часові мітки, взяті із заголовків відповідей мережі Server-Timing. Час початку цих подій є приблизним і може бути неточним."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Власні або сторонні об’єкти"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Час однієї дії"
@@ -13254,7 +13215,7 @@
     "message": "Опис"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Зменшувати яскравість сторонніх об’єктів"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Вимкнути вибірку JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "Зупинення часової шкали…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Сторонні об’єкти, класифіковані за сторонніми вебсторінками"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Час"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Сторонній об’єкт"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(запис приховано)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Статистика селектора"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Час однієї дії"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Розмір"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL-адреса таблиці стилів"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Таблиця \"Власні або сторонні об’єкти\""
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Час відрисовки"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Позначка часу"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Загальний час"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Подія трасування"
@@ -13920,7 +13875,7 @@
     "message": "Вилучити дочірні ланцюжки навігації"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Відкалібрувати…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "ЦП: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Набори налаштувань із калібруванням"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Відкалібрувати…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} (рекомендовано)"
@@ -14424,7 +14379,7 @@
     "message": "Закодовані дані"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Сторонній об’єкт"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "З кешу"
@@ -14568,16 +14523,16 @@
     "message": "Insights – це експериментальна функція. Ваш відгук допоможе нам покращити її."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Закрити"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Локальні показники й дані від користувачів [можуть не збігатися](https://web.dev/articles/lab-and-field-data-differences) з різних причин. Налаштуйте [обмеження пропускної спроможності й емуляцію пристрою](https://developer.chrome.com/docs/devtools/device-mode), щоб аналізувати дані, які найкраще відповідають умовам взаємодії пересічного користувача."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Невідповідність локальних показників і даних від користувачів"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Дані від користувачів ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "Показник {PH1}: {PH2} ({PH3})"
@@ -15885,7 +15840,7 @@
     "message": "Порядок сортування"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Стовпець із можливістю сортування. Щоб застосувати фільтр сортування, натисніть клавішу Enter."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Показати всі {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Пошук"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Не вдалося завантажити дані"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Немає даних для попереднього перегляду"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Пошук"

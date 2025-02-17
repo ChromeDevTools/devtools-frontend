@@ -105,7 +105,7 @@
     "message": "«Ցանց» վահանակ"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Անվտանգության վահանակ"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "«Աղբյուրներ» վահանակ"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Մաքրել"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Սեղմեք «{PH1}» կոճակը կամ {PH2} ստեղները՝ գրանցումը սկսելու համար։"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "Մշակողի գործիքները կգրանցեն վերջին 3 օրվա բոլոր {PH1} activity օբյեկտները, նույնիսկ եթե փակված են։"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Նմուշի ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Իմանալ ավելին"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Այս իրադարձության համար մետատվյալներ չկան"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Օբյեկտների պահոցներ"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Հաստատեք {PH1} տվյալների շտեմարանի ջնջումը։"
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Առաջնային բանալի"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Իրադարձության պարամետրերը դիտելու համար սեղմեք ընդհանուր պահոցի որևէ իրադարձության վրա։"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Բանալի"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Ընտրեք արժեք՝ դիտելու համար"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Shared Storage"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Հիշողության տարրը փոփոխվեց։"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Ընդհանուր պահոցի տարրեր"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Ընդհանուր պահոցի տարրերը հեռացվեցին"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Աղյուսակում ցուցադրվող գրառումների թիվը՝ {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Արժեքը"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared Storage"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Թողարկող"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Վիճակի անձնական թոքեններ չեն պահվել։"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Պահված թոքենների թիվը"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM-ի կանգի կետերի ցանկ"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "DOM-ի կանգի կետեր սահմանված չեն"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Հանգույցը հեռացվել է"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (աղբյուրի քարտեզից)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "«Փոփոխություններ» ներդիրում չեն ցուցադրվում բինար տվյալների փոփոխությունները"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Այս էջում դուք կարող եք հետևել կոդի փոփոխություններին, որոնք կատարվել են ծրագրավորողի գործիքների միջոցով։"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Պատճենել"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Դեռևս փոփոխություններ չկան"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Տեքստային տարբերություններ չկան"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ջնջում (-)}one{# ջնջում (-)}other{# ջնջում (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Սեղմեք՝ անվտանգության և գաղտնիության վահանակը բացելու և երրորդ կողմի քուքիների մասին հաշվետվությունը դիտելու համար"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Չհաջողվեց հաստատել՝ "
@@ -6747,7 +6720,7 @@
     "message": "Սթեքի ժամանակագրություն"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Պատասխանի գեներացումը չափազանց երկար տևեց։ Նորից փորձեք։"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Միացրեք {PH1}, որպեսզի ԱԲ օգնություն ստանաք վահանակի զգուշացումների և սխալների վերլուծության և լուծման ժամանակ։"
@@ -7911,7 +7884,7 @@
     "message": "Ավելացնել {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Չափաբերել…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-ի սահմանափակում"
@@ -7935,7 +7908,7 @@
     "message": "Կապ չկա"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Վերաչափաբերում…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – Խորհուրդ է տրվում"
@@ -8895,7 +8868,7 @@
     "message": "Այս հարցումը քուքիներ չունի։"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Նախաձեռնողի մասին տվյալներ չկան"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Ուղարկել կանչերի ցուցակի հարցում"
@@ -8961,10 +8934,10 @@
     "message": "Չհաջողվեց բեռնել պատասխանի տվյալները"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Նախադիտման համար օբյեկտներ չկան"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Այս հարցումը չունի պատասխանի մասին տվյալներ"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Քեշի պահոցի անվանումը՝ {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Չհաջողվեց բեռնել պրոֆիլը, քանի որ այլ պրոֆիլի տվյալներ են գրանցվում։"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Չհաջողվեց բեռնել պրոֆիլը՝ {PH1}։"
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Պրոֆիլներ"
   },
@@ -10251,7 +10221,7 @@
     "message": "Պահել"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Ընտրեք հաղորդագրություն՝ դրա մանրամասները դիտելու համար"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Ընտրեք թիրախ"
@@ -10290,7 +10260,7 @@
     "message": "Պատճենել ձայնագրությունը կամ ընտրված քայլը"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Ստեղծել ձայնագրություն"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Ջնջել գրառումը"
@@ -10308,13 +10278,13 @@
     "message": "Տեղադրել ընդլայնումներ…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Դեռևս ձայնագրություններ չկան"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Ներմուծել գրառում"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Իմանալ ավելին"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Գրանցումներ չկան"
@@ -10323,7 +10293,7 @@
     "message": "գրանցում"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Ձայնագրությունների օգնությամբ դուք կարող եք ծայրից ծայր ավտոմատացված թեստեր կամ արտադրողականության հետագծումներ ստեղծել։"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Նորից լսել ձայնագրությունը"
@@ -11496,7 +11466,7 @@
     "message": "Վահանակի հաղորդագրությունը, կապված սթեքի ժամանակագրությունը, համապատասխան սկզբնական կոդը և կապված ցանցի վերնագրերը ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Վահանակի հաղորդագրությունը, կապված սթեքի ժամանակագրությունը, համապատասխան սկզբնական կոդը և կապված ցանցի վերնագրերը ուղարկվում են Google-ին՝ բացատրություններ գեներացնելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Կախված ձեր տարածաշրջանից՝ Google-ը կարող է ձեռնպահ մնալ տվյալների հավաքումից"
@@ -11532,7 +11502,7 @@
     "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ ստեղծելու համար։ Այս տվյալները կարող են դիտվել մասնագետների կողմից՝ գործառույթը բարելավելու համար։ Մի օգտագործեք անձնական կամ զգայուն տեղեկություններով էջերում։"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Տվյալները, որոնք ստուգվող էջը կարող է բացել վեբ API-ների, ցանցի հարցումների, ֆայլերի և արտադրողականության հետագծումների միջոցով, ուղարկվում են Google-ին՝ բացատրություններ ստեղծելու համար։ Այս տվյալները չեն օգտագործվի Google-ի արհեստական բանականության մոդելները բարելավելու համար։"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Օգնում է հասկանալ և շտկել վահանակի նախազգուշացումներն ու սխալները"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Գործողությունը հնարավոր չէ հետարկել։"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Իսկապե՞ս ուզում եք ջնջել այս պանակը և դրա բովանդակությունը։"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Իսկապե՞ս ուզում եք ջնջել այս ֆայլը։"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Իսկապե՞ս ուզում եք բացառել այս պանակը։"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Հեռացնե՞լ «{PH1}» պանակը աշխատանքային տարածքից։"
@@ -13041,7 +13002,7 @@
     "message": "Տարբերակի այս տեսակը պարունակում է ժամանակային տվյալներ, որոնք վերցված են Սերվերի ժամանակային տվյալների ցանցի արձագանքման վերնագրերից։ Դրա մեկնարկի համապատասխան ժամանակները մոտավոր են և կարող են ճշգրիտ չլինել։"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Սեփական կամ երրորդ կողմի օբյեկտներ"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Մեկ գործողության ժամանակը"
@@ -13254,7 +13215,7 @@
     "message": "Նկարագրություն"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Խամրեցնել երրորդ կողմի բովանդակությունը"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Անջատել JavaScript-ի նմուշները"
@@ -13374,7 +13335,7 @@
     "message": "Ժամանակագրությունը դադարեցվում է…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Երրորդ կողմի բովանդակությունը դասակարգվում է երրորդ կողմի կայքերի կողմից"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Ժամանակ"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Երրորդ կողմ"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(գրառումը թաքցված է)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Ընտրիչի վիճակագրություն"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Մեկ գործողության ժամանակը"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Չափս"
   },
@@ -13833,7 +13791,7 @@
     "message": "Ոճերի աղյուսակի URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Սեփական կամ երրորդ կողմի աղյուսակ"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Արտապատկերման վրա ծախսած ժամանակը"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Ժամադրոշմ"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Ընդհանուր ժամանակը"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Ժամանակագրության իրադարձություն"
@@ -13920,7 +13875,7 @@
     "message": "Հեռացնել նավիգացիայի ենթատարրերի տողերը"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Չափաբերել…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "Պրոցեսոր՝ {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Կարգավորումների չափաբերված հավաքածուներ"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Վերաչափաբերում…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – Խորհուրդ է տրվում"
@@ -14424,7 +14379,7 @@
     "message": "Կոդավորված տվյալներ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Երրորդ կողմ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Քեշից"
@@ -14568,16 +14523,16 @@
     "message": "Insights-ը փորձնական գործառույթ է։ Ձեր կարծիքը կօգնի մեզ բարելավել գործառույթը։"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Փակել"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Լոկալ և իրական ցուցանիշները [կարող են չհամընկնել](https://web.dev/articles/lab-and-field-data-differences) տարբեր պատճառներով։ Որպեսզի հետագծումները, որոնք դուք վերլուծում եք, մոտեցնեք միջին վիճակագրական միջավայրի ցուցանիշներին, ճշգրտեք [սահմանափակումների կարգավորումները և սարքի էմուլյացիան](https://developer.chrome.com/docs/devtools/device-mode)։"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Իրական և լոկալ ցուցանիշները չեն համընկնում"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Դաշտ ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}․ {PH2}, գնահատական՝ {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "Տեսակավորել ըստ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Տեսակավորվող սյունակ։ Սեղմեք Enter՝ տեսակավորման զտիչ կիրառելու համար։"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Ցուցադրել բոլոր {PH1}-ը"
@@ -16221,10 +16176,10 @@
     "message": "Գտնել"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Չհաջողվեց բեռնել տվյալները"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Նախադիտման համար օբյեկտներ չկան"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Գտնել"

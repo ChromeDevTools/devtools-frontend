@@ -105,7 +105,7 @@
     "message": "नेटवर्क प्यानल"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "सुरक्षा प्यानल"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "सोर्स प्यानल"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "मेटाउनुहोस्"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "रेकर्ड गर्न थाल्न रेकर्ड गर्नुहोस् नामक बटन {PH1} थिच्नुहोस् वा {PH2} थिच्नुहोस्।"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools ले {PH1} सँग सम्बन्धित सबै गतिविधिको ३ दिनसम्म रेकर्ड राख्ने छ। यो सुविधा बन्द भएका बेला पनि ती गतिविधिको रेकर्ड राखिने छ।"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "इन्स्टन्स ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "थप जान्नुहोस्"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "यो इभेन्टको कुनै पनि मेटाडेटा उपलब्ध छैन"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "अब्जेक्ट स्टोरहरू"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "\"{PH1}\" डेटाबेस मेटाउने कि नमेटाउने भन्ने कुराको पुष्टि गर्नुहोस्।"
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "प्राथमिक साँचो"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "तपाईं साझा भण्डारणसम्बन्धी जुन कार्यक्रमका प्यारामिटरहरू देखाउन चाहनुहुन्छ सोही कार्यक्रममा क्लिक गर्नुहोस्।"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "की"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "प्रिभ्यू हेर्न कुनै मान चयन गर्नुहोस्"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "साझा भण्डारण"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "भण्डारणमा भएको वस्तु परिवर्तन गरिएको छ।"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "साझा भण्डारणमा भएका वस्तुहरू"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "साझा भण्डारणमा भएका वस्तुहरू मेटाइएका छन्"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "तालिकामा भएका प्रविष्टिहरूको सङ्ख्या: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "मान"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "साझा भण्डारण"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "जारीकर्ता"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "हाल कुनै पनि प्राइभेट स्टेट टोकन भण्डारण गरिएको छैन।"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "भण्डारण गरिएको टोकनको सङ्ख्या"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM ब्रेकपोइन्टहरूको सूची"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "कुनै पनि DOM ब्रेकपोइन्ट सेट गरिएको छैन"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "नोड हटाइयो"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (सोर्स म्यापबाट)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "\"परिवर्तनहरू\" ट्याबमा बाइनरी डेटामा भएका परिवर्तनहरू देखाइँदैन"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "तपाईं यो पेजमा विकासकर्ताका टुलहरूको कोडमा गरिएका परिवर्तनहरू ट्र्याक गर्न सक्नुहुन्छ।"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "कपी गर्नुहोस्"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "अहिलेसम्म कुनै पनि परिवर्तन गरिएको छैन"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "टेक्स्टका बिचमा कुनै पनि अन्तर छैन"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# कोड लाइन मेटाइयो (-)}other{# वटा कोड लाइन मेटाइए (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "गोपनीयता तथा सुरक्षा प्यानल खोल्न र तेस्रो पक्षीय कुकीको रिपोर्ट देखाउन क्लिक गर्नुहोस्"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "दाबी गर्न सकिएन: "
@@ -6747,7 +6720,7 @@
     "message": "स्ट्याकट्रेस"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "जवाफ जेनेरेट गर्न धेरै समय लाग्यो। कृपया फेरि प्रयास गर्नुहोस्।"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "कन्सोलसम्बन्धी चेतावनी तथा त्रुटिहरू बुझ्ने तथा सम्बोधन गर्ने प्रयोजनका लागि AI सहायता प्राप्त गर्न {PH1} अन गर्नुहोस्।"
@@ -7911,7 +7884,7 @@
     "message": "{PH1} हाल्नुहोस्"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "क्यालिब्रेट गर्नुहोस्…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU थ्रोटलिङ"
@@ -7935,7 +7908,7 @@
     "message": "अफलाइन"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "फेरि क्यालिब्रेट गर्नुहोस्…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – सिफारिस गरिएको"
@@ -8895,7 +8868,7 @@
     "message": "यो अनुरोधमा कुनै पनि कुकी छैन।"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "कुनै पनि इनिसिएटर डेटा छैन"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "कल स्ट्याकका लागि अनुरोध गर्नुहोस्"
@@ -8961,10 +8934,10 @@
     "message": "रिस्पन्स डेटा लोड गर्न सकिएन"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "प्रिभ्यू हेर्नका लागि केही पनि छैन"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "यो अनुरोधको कुनै पनि रिस्पन्स डेटा छैन"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "जुन क्यास भण्डारणबाट रिस्पन्स प्राप्त गरिएको हो उक्त क्यास भण्डारणको नाम: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "कुनै प्रोफाइल रेकर्ड भइरहेका बेला अर्को प्रोफाइल लोड गर्न मिल्दैन।"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "प्रोफाइल लोड गर्न सकिएन: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "प्रोफाइलहरू"
   },
@@ -10251,7 +10221,7 @@
     "message": "सेभ गर्नुहोस्"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "कुनै म्यासेजका विवरणहरू हेर्न उक्त म्यासेज चयन गर्नुहोस्"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "कुनै लक्ष्य चयन गर्नुहोस्"
@@ -10290,7 +10260,7 @@
     "message": "रेकर्डिङ वा चयन गरिएको चरण कपी गर्नुहोस्"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "रेकर्डिङ सिर्जना गर्नुहोस्"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "रेकर्डिङ मेटाउनुहोस्"
@@ -10308,13 +10278,13 @@
     "message": "एक्स्टेन्सनहरू डाउनलोड गर्नुहोस्…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "अहिलेसम्म केही पनि रेकर्ड गरिएको छैन"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "रेकर्डिङ इम्पोर्ट गर्नुहोस्"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "थप जान्नुहोस्"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "कुनै पनि रेकर्डिङ छैन"
@@ -10323,7 +10293,7 @@
     "message": "रेकर्डिङ(हरू)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "स्वचालित इन्ड-टु-इन्ड परीक्षण वा पर्फर्मेन्स ट्रेसहरू सिर्जना गर्न रेकर्डिङहरू प्रयोग गर्नुहोस्।"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "रेकर्डिङ फेरि प्ले गर्नुहोस्"
@@ -11496,7 +11466,7 @@
     "message": "कन्सोल म्यासेज, सम्बद्ध स्ट्याक ट्रेस, सम्बन्धित सोर्स कोड र सम्बद्ध नेटवर्क हेडरहरू स्पष्टीकरण जेनेरेट गर्ने प्रयोजनका लागि Google मा पठाइन्छन्। समीक्षकहरू यो सुविधाको गुणस्तर सुधार गर्ने प्रयोजनका लागि यो डेटा हेर्न सक्छन्।"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "कन्सोल म्यासेज, सम्बद्ध स्ट्याक ट्रेस, सम्बन्धित सोर्स कोड र सम्बद्ध नेटवर्क हेडरहरू जानकारी जेनेरेट गर्ने प्रयोजनका लागि Google मा पठाइन्छन्। यो डेटा Google का AI मोडेलहरूको गुणस्तर सुधार गर्ने प्रयोजनका लागि प्रयोग गरिने छैन।"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google ले तपाईंको क्षेत्रका आधारमा जानकारी सङ्कलन नगर्न सक्छ"
@@ -11532,7 +11502,7 @@
     "message": "इन्स्पेक्ट गरिएको पेजले वेब API, नेटवर्कसम्बन्धी अनुरोध, फाइल तथा पर्फर्मेन्सका ट्रेसमार्फत एक्सेस गर्न सक्ने सबै डेटा व्याख्या गर्ने प्रयोजनका लागि Google मा पठाइन सक्छ। समीक्षकहरू यो सुविधाको गुणस्तर सुधार गर्ने प्रयोजनका लागि यो जानकारी हेर्न सक्छन्। व्यक्तिगत वा संवेदनशील जानकारी भएको पेजमा यो सुविधा प्रयोग नगर्नुहोस्।"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "जाँच गरिएको पेजले वेब API, नेटवर्कसम्बन्धी अनुरोध, फाइल तथा पर्फर्मेन्सका ट्रेसमार्फत एक्सेस गर्न सक्ने सबै डेटा जानकारी जेनेरेट गर्ने प्रयोजनका लागि Google मा पठाइन सक्छ। यो डेटा Google का AI मोडेलहरूको गुणस्तर सुधार गर्ने प्रयोजनका लागि प्रयोग गरिने छैन।"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "तपाईंलाई कन्सोलसम्बन्धी चेतावनी तथा त्रुटिहरू सच्याउन मद्दत गर्छ"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "यो कार्य अन्डू गर्न सकिँदैन।"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "तपाईंले यो फोल्डर र यसमा भएका सामग्री मेटाउन खोज्नुभएकै हो?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "तपाईंले यो फाइल मेटाउन खोज्नुभएकै हो?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "तपाईंले यो फोल्डर समावेश नगर्न खोज्नुभएकै हो?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "वर्कस्पेसबाट ‘{PH1}’ हटाउने हो?"
@@ -13041,7 +13002,7 @@
     "message": "यो ट्र्याकमा सर्भर टाइमिङ नेटवर्क रिस्पन्स हेडरहरूबाट प्राप्त गरिएका टाइमिङ समावेश गरिएका छन्। प्रत्येक टाइमिङको सुरु हुने समय अनुमान गरिएको हो र सो समय सटीक नहुन सक्छ।"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "पहिलो / तेस्रो पक्ष"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "एउटा गतिविधि गर्न लागेको समय"
@@ -13254,7 +13215,7 @@
     "message": "विवरण"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "तेस्रो पक्षका कुकीहरू घटाउनुहोस्"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript का नमुनाहरू असक्षम पारियोस्"
@@ -13374,7 +13335,7 @@
     "message": "किनमेलसम्बन्धी टाइमलाइन…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "तेस्रो पक्षीय वेबका आधारमा वर्गीकरण गरिएका तेस्रो पक्षहरू"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "समय"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "तेस्रो पक्ष"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(इन्ट्री लुकाइएको छ)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "सेलेक्टरको तथ्याङ्क"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "एउटा गतिविधि गर्न लागेको समय"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "आकार"
   },
@@ -13833,7 +13791,7 @@
     "message": "स्टायलसिट URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "पहिलो / तेस्रो पक्षको तालिका"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "रेन्डर गर्न लागेको समय"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "टाइमस्ट्याम्प"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "कुल समय"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "ट्रेस इभेन्ट"
@@ -13920,7 +13875,7 @@
     "message": "चाइल्ड breadcrumb हटाउनुहोस्"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "क्यालिब्रेट गर्नुहोस्…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "क्यालिब्रेट गरिएका प्रिसेटहरू"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "फेरि क्यालिब्रेट गर्नुहोस्…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – सिफारिस गरिएको"
@@ -14424,7 +14379,7 @@
     "message": "इन्कोड गरिएको डेटा"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "तेस्रो पक्ष"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "क्यासबाट"
@@ -14568,16 +14523,16 @@
     "message": "Insights परीक्षणका क्रममा रहेको सुविधा हो। तपाईंको प्रतिक्रियाले हामीलाई यो सुविधाको गुणस्तर सुधार गर्न मद्दत गर्छ।"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "बन्द गर्नुहोस्"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "लोकल र फिल्ड मेट्रिकहरू एक अर्कासँग [नमिल्न सक्ने](https://web.dev/articles/lab-and-field-data-differences) धेरै कारण छन्। औसत प्रयोगकर्ताको वातावरणसँग बढी मिल्ने ट्रेसहरूको विश्लेषण गर्न [थ्रोटलिङसम्बन्धी सेटिङ र डिभाइसको अनुकरण](https://developer.chrome.com/docs/devtools/device-mode) समायोजन गर्नुहोस्।"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "लोकल र फिल्ड मेट्रिकहरू एक अर्कासँग मिलेनन्"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "फिल्ड ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} स्कोर"
@@ -15885,7 +15840,7 @@
     "message": "यसअनुसार क्रमबद्ध गर्नुहोस्"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "क्रमबद्ध गर्न मिल्ने कोलम। क्रमबद्ध गर्ने फिल्टर लागू गर्न इन्टर की थिच्नुहोस्"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "सबै {PH1} वटा वस्तु देखाउनुहोस्"
@@ -16221,10 +16176,10 @@
     "message": "खोज्नुहोस्"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "डेटा लोड गर्न सकिएन"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "प्रिभ्यू हेर्नका लागि केही पनि छैन"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "खोज्नुहोस्"

@@ -105,7 +105,7 @@
     "message": "แผงเครือข่าย"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "แผงความปลอดภัย"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "แผงแหล่งที่มา"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "ล้าง"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "กดปุ่มบันทึก {PH1} หรือแป้น {PH2} เพื่อเริ่มบันทึก"
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "เครื่องมือสำหรับนักพัฒนาเว็บจะบันทึกกิจกรรม {PH1} ทั้งหมดสูงสุด 3 วัน แม้ว่าจะปิดอยู่"
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "รหัสอินสแตนซ์"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ไม่มีข้อมูลเมตาสำหรับเหตุการณ์นี้"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "การเก็บออบเจ็กต์"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "โปรดยืนยันการลบฐานข้อมูล \"{PH1}\""
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "คีย์หลัก"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "คลิกเหตุการณ์พื้นที่เก็บข้อมูลที่ใช้ร่วมกันเพื่อแสดงพารามิเตอร์ของเหตุการณ์"
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "คีย์"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "เลือกค่าเพื่อพรีวิว"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "มีการแก้ไขรายการพื้นที่เก็บข้อมูล"
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "รายการพื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "ล้างรายการพื้นที่เก็บข้อมูลที่ใช้ร่วมกันแล้ว"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "จำนวนรายการที่แสดงในตาราง: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "ค่า"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "พื้นที่เก็บข้อมูลที่ใช้ร่วมกัน"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ผู้ออก"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "ไม่มีโทเค็นสถานะส่วนตัวที่จัดเก็บอยู่ในปัจจุบัน"
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "จำนวนโทเค็นที่จัดเก็บไว้"
   },
@@ -4950,7 +4923,7 @@
     "message": "รายการเบรกพอยท์ DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "ไม่ได้ตั้งค่าเบรกพอยท์ DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "นำโหนดออกแล้ว"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (จากการแมปแหล่งที่มา)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "แท็บการเปลี่ยนแปลงไม่แสดงการเปลี่ยนแปลงข้อมูลไบนารี"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "ในหน้านี้ คุณสามารถติดตามการเปลี่ยนแปลงโค้ดที่ทำในเครื่องมือสำหรับนักพัฒนาเว็บได้"
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "คัดลอก"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "ยังไม่มีการเปลี่ยนแปลง"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "ไม่มีความแตกต่างของข้อความ"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{การลบ # รายการ (-)}other{การลบ # รายการ (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "คลิกเพื่อเปิดแผงความเป็นส่วนตัวและความปลอดภัย และแสดงรายงานคุกกี้ของบุคคลที่สาม"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "ยืนยันไม่สำเร็จ: "
@@ -6747,7 +6720,7 @@
     "message": "สแต็กเทรซ"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "ใช้เวลาในการสร้างการตอบกลับนานเกินไป โปรดลองอีกครั้ง"
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "เปิด{PH1}เพื่อใช้ AI ในการทำความเข้าใจและแก้ไขคำเตือนและข้อผิดพลาดของคอนโซล"
@@ -7911,7 +7884,7 @@
     "message": "เพิ่ม {PH1}"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "ปรับเทียบ…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "การควบคุม CPU"
@@ -7935,7 +7908,7 @@
     "message": "ออฟไลน์"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "ปรับเทียบใหม่…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – แนะนำ"
@@ -8895,7 +8868,7 @@
     "message": "คำขอนี้ไม่มีคุกกี้"
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ไม่มีข้อมูลผู้เริ่ม"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "ส่งคำขอสแต็กการเรียกใช้"
@@ -8961,10 +8934,10 @@
     "message": "โหลดข้อมูลการตอบสนองไม่สำเร็จ"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "ไม่มีตัวอย่าง"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "คำขอนี้ไม่มีข้อมูลการตอบกลับ"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "ชื่อแคชในพื้นที่เก็บข้อมูลแคช: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "โหลดโปรไฟล์ขณะที่กำลังบันทึกอีกโปรไฟล์หนึ่งไม่ได้"
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "โหลดโปรไฟล์ไม่สำเร็จ: {PH1}"
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "โปรไฟล์"
   },
@@ -10251,7 +10221,7 @@
     "message": "บันทึก"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "เลือกข้อความเพื่อดูรายละเอียด"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "เลือกเป้าหมาย"
@@ -10290,7 +10260,7 @@
     "message": "คัดลอกไฟล์บันทึกเสียงหรือขั้นตอนที่เลือก"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "สร้างไฟล์บันทึก"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "ลบการบันทึก"
@@ -10308,13 +10278,13 @@
     "message": "ดาวน์โหลดส่วนขยาย…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "ยังไม่มีการบันทึกรายการใด"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "นำเข้าการบันทึก"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "ไม่มีการบันทึก"
@@ -10323,7 +10293,7 @@
     "message": "การบันทึก"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "ใช้ไฟล์บันทึกเพื่อสร้างการทดสอบจากต้นทางถึงปลายทางหรือการติดตามประสิทธิภาพที่ทำงานโดยอัตโนมัติ"
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "เล่นไฟล์บันทึกเสียงอีกครั้ง"
@@ -11496,7 +11466,7 @@
     "message": "ระบบจะส่งข้อความในคอนโซล สแต็กเทรซที่เกี่ยวข้อง ซอร์สโค้ดที่เกี่ยวข้อง และส่วนหัวของเครือข่ายที่เกี่ยวข้องไปยัง Google เพื่อสร้างคำอธิบาย เจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลนี้เพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ระบบจะส่งข้อความในคอนโซล สแต็กเทรซที่เกี่ยวข้อง ซอร์สโค้ดที่เกี่ยวข้อง และส่วนหัวของเครือข่ายที่เกี่ยวข้องไปยัง Google เพื่อสร้างคำอธิบาย ข้อมูลนี้จะไม่นำไปใช้ในการปรับปรุงโมเดล AI ของ Google"
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Google อาจไม่เก็บรวบรวมข้อมูล ทั้งนี้ขึ้นอยู่กับภูมิภาคของคุณ"
@@ -11532,7 +11502,7 @@
     "message": "ระบบจะส่งข้อมูลใดๆ ซึ่งหน้าเว็บที่ตรวจสอบเข้าถึงได้ผ่าน Web API, คำขอเครือข่าย, ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย เจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลนี้เพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้ อย่าใช้กับหน้าที่มีข้อมูลส่วนบุคคลหรือข้อมูลที่ละเอียดอ่อน"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "ระบบจะส่งข้อมูลใดๆ ซึ่งหน้าเว็บที่ตรวจสอบเข้าถึงได้ผ่าน Web API, คำขอเครือข่าย, ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย ข้อมูลนี้จะไม่นำไปใช้ในการปรับปรุงโมเดล AI ของ Google"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "ช่วยให้คุณเข้าใจและแก้ไขคำเตือนและข้อผิดพลาดของคอนโซล"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "การดำเนินการนี้ไม่สามารถยกเลิกได้"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "คุณแน่ใจไหมว่าต้องการลบโฟลเดอร์นี้และเนื้อหาในโฟลเดอร์"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "คุณแน่ใจไหมว่าต้องการลบไฟล์นี้"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "คุณแน่ใจไหมว่าต้องการยกเว้นโฟลเดอร์นี้"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "นำ \"{PH1}\" ออกจากพื้นที่ทำงานไหม"
@@ -13041,7 +13002,7 @@
     "message": "แทร็กนี้มีการจับเวลาซึ่งมาจากส่วนหัวการตอบกลับของเครือข่าย \"เวลาของเซิร์ฟเวอร์\" เวลาเริ่มต้นเป็นเพียงค่าประมาณและอาจไม่ถูกต้อง"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "บุคคลที่หนึ่ง/บุคคลที่สาม"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "เวลาของกิจกรรมเดียว"
@@ -13254,7 +13215,7 @@
     "message": "คำอธิบาย"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "ลดความโดดเด่นของบุคคลที่สาม"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "ปิดใช้ตัวอย่าง JavaScript"
@@ -13374,7 +13335,7 @@
     "message": "กำลังหยุดไทม์ไลน์…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "บุคคลที่สามที่แยกประเภทตาม third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "เวลา"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "บุคคลที่สาม"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(รายการถูกซ่อนไว้)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "สถิติตัวเลือก"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "เวลาของกิจกรรมเดียว"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "ขนาด"
   },
@@ -13833,7 +13791,7 @@
     "message": "URL ของสไตล์ชีต"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "ตารางบุคคลที่หนึ่ง/บุคคลที่สาม"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "เวลาที่ใช้ในการแสดงภาพ"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "การประทับเวลา"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "เวลารวม"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "เหตุการณ์การติดตาม"
@@ -13920,7 +13875,7 @@
     "message": "นำเบรดครัมบ์ย่อยออก"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "ปรับเทียบ…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "ค่าที่กำหนดล่วงหน้าซึ่งปรับเทียบแล้ว"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "ปรับเทียบใหม่…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – แนะนำ"
@@ -14424,7 +14379,7 @@
     "message": "ข้อมูลที่เข้ารหัส"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "บุคคลที่สาม"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "จากแคช"
@@ -14568,16 +14523,16 @@
     "message": "ฟีเจอร์ Insights อยู่ในขั้นทดลอง ความคิดเห็นของคุณจะช่วยให้เราปรับปรุงฟีเจอร์นี้ได้"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "ปิด"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "มีสาเหตุหลายประการที่ทำให้เมตริกในเครื่องและจากข้อมูลภาคสนาม[อาจไม่ตรงกัน](https://web.dev/articles/lab-and-field-data-differences) ปรับ[การตั้งค่าการควบคุมและการจำลองอุปกรณ์](https://developer.chrome.com/docs/devtools/device-mode)เพื่อวิเคราะห์การติดตามที่คล้ายกับสภาพแวดล้อมของผู้ใช้โดยเฉลี่ยมากขึ้น"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "เมตริกจากข้อมูลภาคสนามและเมตริกในเครื่องไม่ตรงกัน"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "จากข้อมูลภาคสนาม ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} คะแนน"
@@ -15885,7 +15840,7 @@
     "message": "จัดเรียงตาม"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "คอลัมน์ที่จัดเรียงได้ กด Enter เพื่อใช้ตัวกรองการจัดเรียง"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "แสดงทั้ง {PH1} รายการ"
@@ -16221,10 +16176,10 @@
     "message": "ค้นหา"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "โหลดข้อมูลไม่สำเร็จ"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "ไม่มีตัวอย่าง"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "ค้นหา"

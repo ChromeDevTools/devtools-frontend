@@ -105,7 +105,7 @@
     "message": "നെറ്റ്‌വർക്ക് പാനൽ"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "സുരക്ഷാ പാനൽ"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "ഉറവിടങ്ങളുടെ പാനൽ"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "മായ്ക്കുക"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "റെക്കോർഡ് ചെയ്യുന്നത് ആരംഭിക്കാൻ റെക്കോർഡ് ബട്ടൺ {PH1} ക്ലിക്ക് ചെയ്യുക അല്ലെങ്കിൽ {PH2} അമർത്തുക."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "അടച്ചിരിക്കുകയാണെങ്കിലും DevTools 3 ദിവസം വരെ എല്ലാ {PH1} ആക്റ്റിവിറ്റികളും റെക്കോർഡ് ചെയ്യും."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "ഇൻസ്റ്റൻസ് ഐഡി"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "കൂടുതലറിയുക"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "ഈ ഇവന്റിനുള്ള മെറ്റാഡാറ്റയൊന്നുമില്ല"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "ഒബ്‌ജക്‌റ്റ് സ്‌റ്റോറുകൾ"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "\"{PH1}\" ഡാറ്റബേസ് ഇല്ലാതാക്കൽ സ്ഥിരീകരിക്കുക."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "പ്രാഥമിക കീ"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "ഇവന്റ് പാരാമീറ്ററുകൾ പ്രദർശിപ്പിക്കാൻ ഏതെങ്കിലുമൊരു പങ്കിട്ട സ്റ്റോറേജ് ഇവന്റിൽ ക്ലിക്ക് ചെയ്യുക."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "കീ"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "പ്രിവ്യൂ ചെയ്യാൻ ഒരു മൂല്യം തിരഞ്ഞെടുക്കുക"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "പങ്കിട്ട സ്റ്റോറേജ്"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "സ്‌റ്റോറേജ് ഇനം എഡിറ്റ് ചെയ്‌തു."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "പങ്കിട്ട സ്റ്റോറേജ് ഇനങ്ങൾ"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "പങ്കിട്ട സ്റ്റോറേജ് ഇനങ്ങൾ മായ്‌ച്ചു"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "പട്ടികയിൽ കാണിച്ചിരിക്കുന്ന എൻട്രികളുടെ എണ്ണം: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "മൂല്യം"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "പങ്കിട്ട സ്റ്റോറേജ്"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ഇഷ്യൂ ചെയ്‌തത്"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "പ്രൈവെറ്റ് സ്റ്റേറ്റ് ടോക്കണുകൾ ഒന്നും ഇപ്പോൾ സംഭരിച്ചിട്ടില്ല."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "സ്റ്റോർ ചെയ്ത ടോക്കണിന്റെ എണ്ണം"
   },
@@ -4950,7 +4923,7 @@
     "message": "DOM ബ്രേക്ക്‌പോയിന്റ് ലിസ്‌റ്റ്"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "DOM ബ്രേക്ക്പോയിന്റുകളൊന്നും സജ്ജീകരിച്ചിട്ടില്ല"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "നോഡ് നീക്കം ചെയ്തു"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (സോഴ്‌സ് മാപ്പിൽ നിന്ന്)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "'മാറ്റങ്ങൾ' ടാബ്, ബൈനറി ഡാറ്റാ മാറ്റങ്ങൾ കാണിക്കുന്നില്ല"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "ഈ പേജിൽ, DevTools-ന് ഉള്ളിൽ വരുത്തിയ കോഡ് മാറ്റങ്ങൾ നിങ്ങൾക്ക് ട്രാക്ക് ചെയ്യാം."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "പകർത്തുക"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "ഇതുവരെ മാറ്റങ്ങളൊന്നുമില്ല"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "ടെക്സ്റ്റ് സംബന്ധമായ വ്യത്യാസമൊന്നുമില്ല"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# ഇല്ലാതാക്കൽ (-)}other{# ഇല്ലാതാക്കലുകൾ (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "സ്വകാര്യതാ, സുരക്ഷാ പാനൽ തുറന്ന് മൂന്നാം കക്ഷി കുക്കി റിപ്പോർട്ട് കാണിക്കാൻ ക്ലിക്ക് ചെയ്യുക."
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "അസർഷൻ പരാജയപ്പെട്ടു: "
@@ -6747,7 +6720,7 @@
     "message": "സ്റ്റാക്ക്ട്രെയ്സ്"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "ഒരു പ്രതികരണം സൃഷ്ടിക്കാൻ കൂടുതൽ സമയമെടുത്തു. വീണ്ടും ശ്രമിക്കുക."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "കൺസോൾ മുന്നറിയിപ്പുകളും പിശകുകളും മനസ്സിലാക്കുന്നതിനും പരിഹരിക്കുന്നതിനും AI പിന്തുണ നേടാൻ {PH1} ഓണാക്കുക."
@@ -7911,7 +7884,7 @@
     "message": "{PH1} ചേർക്കുക"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "കാലിബ്രേറ്റ് ചെയ്യുക…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU ത്രോട്ടിലിംഗ്"
@@ -7935,7 +7908,7 @@
     "message": "ഓഫ്‌ലൈൻ"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "വീണ്ടും കാലിബ്രേറ്റ് ചെയ്യുക…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} - നിർദ്ദേശിക്കുന്നത്"
@@ -8895,7 +8868,7 @@
     "message": "ഈ അഭ്യർത്ഥനയ്‌ക്ക് കുക്കികൾ ഇല്ല."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "ഇനിഷ്യേറ്റർ ഡാറ്റയില്ല"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "കോൾ സ്റ്റാക്ക് അഭ്യർത്ഥിക്കുക"
@@ -8961,10 +8934,10 @@
     "message": "പ്രതികരണ ഡാറ്റ ലോഡ് ചെയ്യാനായില്ല"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "പ്രിവ്യൂ ചെയ്യാൻ ഒന്നുമില്ല"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "ഈ അഭ്യർത്ഥനയ്ക്ക് പ്രതികരണ ഡാറ്റയൊന്നും ലഭ്യമല്ല"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "കാഷെ സ്റ്റോറേജ് കാഷെ പേര്: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "ഒരു പ്രൊഫൈൽ റെക്കോർഡ് ചെയ്യുമ്പോൾ മറ്റൊരു പ്രൊഫൈൽ ലോഡ് ചെയ്യാനാകില്ല."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "പ്രൊഫൈൽ ലോഡ് ചെയ്യാനായില്ല: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "പ്രൊഫൈലുകൾ"
   },
@@ -10251,7 +10221,7 @@
     "message": "സംരക്ഷിക്കുക"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "വിശദാംശങ്ങൾ കാണാൻ ഒരു സന്ദേശം തിരഞ്ഞെടുക്കുക"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "ഒരു ടാർഗറ്റ് തിരഞ്ഞെടുക്കുക"
@@ -10290,7 +10260,7 @@
     "message": "റെക്കോർഡിംഗോ തിരഞ്ഞെടുത്ത ഘട്ടമോ പകർത്തുക"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "റെക്കോർഡിംഗ് സൃഷ്ടിക്കുക"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "റെക്കോർഡിംഗ് ഇല്ലാതാക്കുക"
@@ -10308,13 +10278,13 @@
     "message": "വിപുലീകരണങ്ങൾ നേടൂ…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "ഇതുവരെ ഒന്നും റെക്കോർഡ് ചെയ്തിട്ടില്ല"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "റെക്കോർഡിംഗ് ഇമ്പോർട്ട് ചെയ്യുക"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "കൂടുതലറിയുക"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "റെക്കോർഡിംഗുകൾ ഒന്നുമില്ല"
@@ -10323,7 +10293,7 @@
     "message": "റെക്കോർഡിംഗ്(കൾ)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "സ്വയമേവയുള്ള എൻഡ്-ടു-എൻഡ് ടെസ്റ്റുകളോ പ്രകടന ട്രെയ്സുകളോ സൃഷ്ടിക്കാൻ റെക്കോർഡിംഗുകൾ ഉപയോഗിക്കുക."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "റെക്കോർഡിംഗ് വീണ്ടും പ്ലേ ചെയ്യുക"
@@ -11496,7 +11466,7 @@
     "message": "വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യാൻ, കൺസോൾ സന്ദേശവും അനുബന്ധ സ്റ്റാക്ക് ട്രെയ്സും ബന്ധപ്പെട്ട സോഴ്‌സ് കോഡും അനുബന്ധ നെറ്റ്‌വർക്ക് ഹെഡ്ഡറുകളും Google-ലേക്ക് അയയ്ക്കുന്നു. ഈ ഫീച്ചർ മെച്ചപ്പെടുത്താൻ അവലോകകർ ഈ ഡാറ്റ കാണുകയും ചെയ്തേക്കാം."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യാൻ, കൺസോൾ സന്ദേശവും അനുബന്ധ സ്റ്റാക്ക് ട്രെയ്സും ബന്ധപ്പെട്ട സോഴ്‌സ് കോഡും അനുബന്ധ നെറ്റ്‌വർക്ക് ഹെഡ്ഡറുകളും Google-ലേക്ക് അയയ്ക്കുന്നു. Google-ന്റെ AI മോഡലുകൾ മെച്ചപ്പെടുത്താൻ ഈ ഡാറ്റ ഉപയോഗിക്കില്ല."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "നിങ്ങളുടെ പ്രദേശത്തെ ആശ്രയിച്ച് Google ഡാറ്റാ ശേഖരണത്തിൽ നിന്ന് വിട്ടുനിന്നേക്കാം"
@@ -11532,7 +11502,7 @@
     "message": "പരിശോധിച്ച പേജിന് വെബ് API-കൾ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ, ഫയലുകൾ, പ്രകടന ട്രെയ്‌സുകൾ എന്നിവ വഴി ആക്‌സസ് ചെയ്യാനാകുന്ന ഏത് ഡാറ്റയും വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യുന്നതിന് Google-ലേക്ക് അയയ്‌ക്കും. ഈ ഫീച്ചർ മെച്ചപ്പെടുത്താൻ അവലോകകർ ഈ ഡാറ്റ കാണുകയും ചെയ്തേക്കാം. വ്യക്തിപരമോ സൂക്ഷ്‌മമായി കൈകാര്യം ചെയ്യേണ്ടതോ ആയ വിവരങ്ങളുള്ള പേജുകളിൽ ഉപയോഗിക്കരുത്."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "പരിശോധിച്ച പേജിന് വെബ് API-കൾ, നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനകൾ, ഫയലുകൾ, പ്രകടന ട്രെയ്‌സുകൾ എന്നിവ വഴി ആക്‌സസ് ചെയ്യാനാകുന്ന ഏത് ഡാറ്റയും വിശദീകരണങ്ങൾ ജനറേറ്റ് ചെയ്യുന്നതിന് Google-ലേക്ക് അയയ്‌ക്കും. Google-ന്റെ AI മോഡലുകൾ മെച്ചപ്പെടുത്താൻ ഈ ഡാറ്റ ഉപയോഗിക്കില്ല."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "കൺസോൾ മുന്നറിയിപ്പുകളും പിശകുകളും മനസ്സിലാക്കാനും പരിഹരിക്കാനും നിങ്ങളെ സഹായിക്കുന്നു"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ഈ പ്രവർത്തനം പഴയപടിയാക്കാനാകില്ല."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "ഈ ഫോൾഡറും അതിലെ ഉള്ളടക്കങ്ങളും ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "ഈ ഫയൽ ഇല്ലാതാക്കണമെന്ന് തീർച്ചയാണോ?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "ഈ ഫോൾഡർ ഒഴിവാക്കണമെന്ന് തീർച്ചയാണോ?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Workspace-ൽ നിന്ന് ‘{PH1}’ നീക്കം ചെയ്യണോ?"
@@ -13041,7 +13002,7 @@
     "message": "ഈ ട്രാക്കിൽ, സെർവർ ടൈമിംഗ് നെറ്റ്‌വർക്ക് പ്രതികരണ ഹെഡ്ഡറുകളിൽ നിന്ന് എടുത്ത ടൈമിംഗുകൾ അടങ്ങിയിരിക്കുന്നു. അവയുടെ യഥാക്രമമുള്ള 'ആരംഭിക്കുന്ന സമയം' ഏകദേശ കണക്കാണ്, അത് കൃത്യമാകണമെന്നില്ല."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "ഒന്നാമത്തെ / മൂന്നാമത്തെ കക്ഷി"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "സെൽഫ് ടൈം"
@@ -13254,7 +13215,7 @@
     "message": "വിവരണം"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "മൂന്നാം കക്ഷികളെ മങ്ങിക്കുക"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript സാമ്പിളുകൾ പ്രവർത്തനരഹിതമാക്കുക"
@@ -13374,7 +13335,7 @@
     "message": "ടെെംലെെൻ നിർത്തുന്നു…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "മൂന്നാം കക്ഷി വെബ് പ്രകാരം തരംതിരിച്ച മൂന്നാം കക്ഷികൾ"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "സമയം"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "മൂന്നാം കക്ഷി"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(എൻട്രി മറച്ചിരിക്കുന്നു)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "സെലക്‌ടർ സ്ഥിതിവിവരക്കണക്കുകൾ"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "സെൽഫ് ടൈം"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "വലുപ്പം"
   },
@@ -13833,7 +13791,7 @@
     "message": "സ്റ്റൈൽ ഷീറ്റ് URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "ഒന്നാം കക്ഷി / മൂന്നാം കക്ഷി പട്ടിക"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "റെൻഡർ ചെയ്യാൻ ചെലവഴിച്ച സമയം"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "ടൈംസ്റ്റാമ്പ്"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "ആകെ സമയം"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "ട്രെയ്‌സ് ഇവന്റ്"
@@ -13920,7 +13875,7 @@
     "message": "ചൈൽഡ് ബ്രെഡ്‌ക്രമ്പ്‌സ് നീക്കം ചെയ്യുക"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "കാലിബ്രേറ്റ് ചെയ്യുക…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "കാലിബ്രേറ്റ് ചെയ്ത പ്രീസെറ്റുകൾ"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "വീണ്ടും കാലിബ്രേറ്റ് ചെയ്യുക…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} - നിർദ്ദേശിക്കുന്നത്"
@@ -14424,7 +14379,7 @@
     "message": "എൻകോഡ് ചെയ്ത ഡാറ്റ"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "മൂന്നാം കക്ഷി"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "കാഷെയിൽ നിന്ന്"
@@ -14568,16 +14523,16 @@
     "message": "ഉൾക്കാഴ്‌ചകൾ ഒരു പരീക്ഷണാത്മക ഫീച്ചറാണ്. നിങ്ങളുടെ ഫീഡ്ബാക്ക് ഇത് മെച്ചപ്പെടാൻ ഞങ്ങളെ സഹായിക്കും."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "ഡിസ്‌മിസ് ചെയ്യുക"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "ലോക്കൽ, ഫീൽഡ് മെട്രിക്കുകൾ [പൊരുത്തപ്പെടാത്തതിന്](https://web.dev/articles/lab-and-field-data-differences) പല കാരണങ്ങളുണ്ടാകാം. ശരാശരി ഉപയോക്താവിന്റെ ചുറ്റുപാടിനോട് കൂടുതൽ സമാനമായ ട്രെയ്സുകൾ വിശകലനം ചെയ്യാൻ [ത്രോട്ടിലിംഗ് ക്രമീകരണവും ഉപകരണ എമുലേഷനും](https://developer.chrome.com/docs/devtools/device-mode) അഡ്ജസ്റ്റ് ചെയ്യുക."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "ഫീൽഡ്, ലോക്കൽ മെട്രിക്സ് പൊരുത്തക്കേട്"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "ഫീൽഡ് ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} സ്‌കോർ"
@@ -15885,7 +15840,7 @@
     "message": "ഇപ്രകാരം അടുക്കുക"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "അടുക്കാവുന്ന കോളം. അടുക്കൽ ഫിൽട്ടർ ബാധകമാക്കാൻ Enter അമർത്തുക"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "എല്ലാ {PH1} എണ്ണവും കാണിക്കുക"
@@ -16221,10 +16176,10 @@
     "message": "കണ്ടെത്തുക"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "ഡാറ്റ ലോഡ് ചെയ്യാനായില്ല"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "പ്രിവ്യൂ ചെയ്യാൻ ഒന്നുമില്ല"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "കണ്ടെത്തുക"

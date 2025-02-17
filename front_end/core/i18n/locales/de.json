@@ -105,7 +105,7 @@
     "message": "Netzwerkbereich"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Bereich „Sicherheit“"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Quellenbereich"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Löschen"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Klicke auf die Schaltfläche zum Aufzeichnen {PH1} oder drücke {PH2}, um mit der Aufzeichnung zu beginnen."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools zeichnet für bis zu 3 Tage alle {PH1}-Aktivitäten auf, auch wenn es geschlossen ist."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Instanz-ID"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Weitere Informationen"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Keine Metadaten für dieses Ereignis"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Objekthändler"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Bestätige das Löschen der „{PH1}“-Datenbank."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Primärschlüssel"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Klicke auf ein „Freigegebener Speicher“-Ereignis, um die Ereignisparameter aufzurufen."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Schlüssel"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Wähle einen Wert aus, um eine Vorschau zu öffnen"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Shared storage"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Das Speicherelement wurde bearbeitet."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Elemente im freigegebenen Speicher"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Elemente im freigegebenen Speicher gelöscht"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Anzahl der in der Tabelle angezeigten Einträge: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Wert"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared storage"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Aussteller"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Derzeit sind keine Private State Tokens gespeichert."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Anzahl gespeicherter Token"
   },
@@ -4950,7 +4923,7 @@
     "message": "Liste der DOM Haltepunkte"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Keine DOM-Haltepunkte festgelegt"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Knoten entfernt"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (aus Quellzuordnung)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Auf dem Tab „Änderungen“ werden keine Änderungen an binären Daten angezeigt"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Auf dieser Seite kannst du Codeänderungen verfolgen, die in den Entwicklertools vorgenommen wurden."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Kopieren"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Noch keine Änderungen"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Keine Text-Unterschiede verfügbar"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# Löschung (-)}other{# Löschungen (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Klicke hier, um den Bereich „Datenschutz und Sicherheit“ zu öffnen und den Bericht zu Drittanbieter-Cookies anzusehen"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Assertion fehlgeschlagen: "
@@ -6747,7 +6720,7 @@
     "message": "Stacktrace"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Das Erstellen einer Antwort hat zu lange gedauert. Bitte versuche es noch einmal."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Aktiviere {PH1}, um KI‑Unterstützung beim Verstehen und Beheben von Konsolenwarnungen und ‑fehlern zu erhalten."
@@ -7911,7 +7884,7 @@
     "message": "{PH1} hinzufügen"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrieren…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "CPU-Drosselung"
@@ -7935,7 +7908,7 @@
     "message": "Offline"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Neu kalibrieren…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – empfohlen"
@@ -8895,7 +8868,7 @@
     "message": "Für diese Anfrage gibt es keine Cookies."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Keine Initiator-Daten"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Aufrufstack anfordern"
@@ -8961,10 +8934,10 @@
     "message": "Antwortdaten konnten nicht geladen werden"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Keine Daten für die Vorschau vorhanden"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Für diese Anfrage sind keine Antwortdaten verfügbar"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Name des Cache-Speichers: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Profil kann nicht geladen werden, während ein anderes Profil aufgezeichnet wird."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Profil konnte nicht geladen werden: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profile"
   },
@@ -10251,7 +10221,7 @@
     "message": "Speichern"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Wähle eine Nachricht aus, um die Details anzusehen"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Ziel auswählen"
@@ -10290,7 +10260,7 @@
     "message": "Aufzeichnung oder ausgewählten Schritt kopieren"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Aufzeichnung erstellen"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Aufzeichnung löschen"
@@ -10308,13 +10278,13 @@
     "message": "Erweiterungen ansehen"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Noch keine Aufzeichnung"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Aufzeichnung importieren"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Weitere Informationen"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Keine Aufnahmen"
@@ -10323,7 +10293,7 @@
     "message": "Aufzeichnung(en)"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Mit Aufzeichnungen kannst du automatisierte End‑to‑End-Tests oder Leistungstraces erstellen."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Aufzeichnung noch einmal abspielen"
@@ -11496,7 +11466,7 @@
     "message": "Die Konsolennachricht, der zugehörige Stacktrace, der zugehörige Quellcode und die zugehörigen Netzwerkheader werden an Google gesendet, um Erläuterungen zu generieren. Diese Daten können zur Verbesserung dieser Funktion von Prüfern angesehen werden."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Die Konsolennachricht, der zugehörige Stacktrace, der zugehörige Quellcode und die zugehörigen Netzwerkheader werden an Google gesendet, um Erläuterungen zu generieren. Diese Daten werden nicht verwendet, um KI‑Modelle von Google zu verbessern."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Je nach Region kann Google auf eine Datenerhebung verzichten"
@@ -11532,7 +11502,7 @@
     "message": "Alle Daten, auf die die geprüfte Seite über Web‑APIs zugreifen kann, sowie Netzwerkanfragen, Dateien und Leistungstraces werden an Google gesendet, um Erläuterungen zu generieren. Zur Verbesserung dieser Funktion können diese Daten von Prüfern angesehen werden. Verwende sie nicht auf Seiten mit personenbezogenen oder vertraulichen Informationen."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Alle Daten, auf die die geprüfte Seite über Web‑APIs zugreifen kann, sowie Netzwerkanfragen, Dateien und Leistungstraces werden an Google gesendet, um Erläuterungen zu generieren. Diese Daten werden nicht verwendet, um KI‑Modelle von Google zu verbessern."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Hilft beim Interpretieren und Beheben von Konsolenwarnungen und ‑fehlern"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Diese Aktion kann nicht rückgängig gemacht werden."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Möchtest du diesen Ordner und seinen Inhalt wirklich löschen?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Möchtest du diese Datei wirklich löschen?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Möchtest du diesen Ordner wirklich ausschließen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "„{PH1}“ aus Arbeitsbereich entfernen?"
@@ -13041,7 +13002,7 @@
     "message": "Dieser Track enthält Zeitangaben aus Antwortheadern des Server-Timing-Netzwerks. Die einzelnen Startzeiten sind nur geschätzt und möglicherweise nicht korrekt."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Eigene und von Drittanbietern"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Zeit für Einzelaktivität"
@@ -13254,7 +13215,7 @@
     "message": "Beschreibung"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Drittanbieter dimmen"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "JavaScript-Samples deaktivieren"
@@ -13374,7 +13335,7 @@
     "message": "Zeitachse wird gestoppt…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Drittanbieter, klassifiziert nach Drittanbieter-Web"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Zeit"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Drittanbieter"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(Eintrag ist ausgeblendet)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Selektorstatistiken"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Zeit für Einzelaktivität"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Größe"
   },
@@ -13833,7 +13791,7 @@
     "message": "Stylesheet-URL"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Tabelle „Eigene und von Drittanbietern“"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Rendering-Zeit"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Zeitstempel"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Gesamtzeit"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Trace-Ereignis"
@@ -13920,7 +13875,7 @@
     "message": "Untergeordnete Navigationspfade entfernen"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kalibrieren…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Kalibrierte Voreinstellungen"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Neu kalibrieren…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – empfohlen"
@@ -14424,7 +14379,7 @@
     "message": "Codierte Daten"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Drittanbieter"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Aus dem Cache"
@@ -14568,16 +14523,16 @@
     "message": "Die Funktion „Insights“ ist experimentell. Dein Feedback hilft uns, die Funktion weiter zu verbessern."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Schließen"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Es gibt viele Gründe, warum Feld- und lokale Messwerte [möglicherweise nicht übereinstimmen](https://web.dev/articles/lab-and-field-data-differences). Passe die [Drosselungseinstellungen und die Geräteemulation](https://developer.chrome.com/docs/devtools/device-mode) an, um Traces zu analysieren, die der Umgebung des durchschnittlichen Nutzers ähnlicher sind."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Feld- und lokale Messwerte stimmen nicht überein"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Feld ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2}, Bewertung: {PH3}"
@@ -15885,7 +15840,7 @@
     "message": "Sortieren nach"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Sortierbare Spalte. Eingabetaste drücken, um den Sortierfilter anzuwenden."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Alle {PH1} anzeigen"
@@ -16221,10 +16176,10 @@
     "message": "Suchen"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Fehler beim Laden der Daten"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Keine Daten für die Vorschau vorhanden"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Suchen"

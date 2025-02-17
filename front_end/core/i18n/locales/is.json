@@ -105,7 +105,7 @@
     "message": "Netgluggi"
   },
   "core/common/Revealer.ts | securityPanel": {
-    "message": "Security panel"
+    "message": "Öryggisgluggi"
   },
   "core/common/Revealer.ts | sourcesPanel": {
     "message": "Tilfangagluggi"
@@ -2798,9 +2798,6 @@
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Hreinsa"
   },
-  "panels/application/BackgroundServiceView.ts | clickTheRecordButtonSOrHitSTo": {
-    "message": "Smelltu á upptökuhnappinn {PH1} eða ýttu á {PH2} til að hefja upptöku."
-  },
   "panels/application/BackgroundServiceView.ts | devtoolsWillRecordAllSActivity": {
     "message": "DevTools skráir alla virkni {PH1} í allt að 3 daga, jafnvel þótt tólinu sé lokað."
   },
@@ -2812,9 +2809,6 @@
   },
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Auðkenni tilviks"
-  },
-  "panels/application/BackgroundServiceView.ts | learnMore": {
-    "message": "Frekari upplýsingar"
   },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Engin lýsigögn fyrir þennan viðburð"
@@ -2947,9 +2941,6 @@
   },
   "panels/application/IndexedDBViews.ts | objectStores": {
     "message": "Hlutageymslur"
-  },
-  "panels/application/IndexedDBViews.ts | pleaseConfirmDeleteOfSDatabase": {
-    "message": "Staðfestu eyðingu gagnagrunnsins „{PH1}“."
   },
   "panels/application/IndexedDBViews.ts | primaryKey": {
     "message": "Aðallykill"
@@ -3236,12 +3227,6 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Smelltu á hvaða tilvik í samnýttu geymslurými sem er til að birta færibreytur viðkomandi tilviks."
   },
-  "panels/application/SharedStorageItemsView.ts | key": {
-    "message": "Lykill"
-  },
-  "panels/application/SharedStorageItemsView.ts | selectAValueToPreview": {
-    "message": "Veldu gildi til að forskoða"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Samnýtt geymslurými"
   },
@@ -3257,17 +3242,8 @@
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemEdited": {
     "message": "Geymsluatriðinu var breytt."
   },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageItems": {
-    "message": "Atriði í samnýttu geymslurými"
-  },
   "panels/application/SharedStorageItemsView.ts | sharedStorageItemsCleared": {
     "message": "Atriði í samnýttu geymslurými voru hreinsuð"
-  },
-  "panels/application/SharedStorageItemsView.ts | sharedStorageNumberEntries": {
-    "message": "Fjöldi færslna sem birtast í töflu: {PH1}"
-  },
-  "panels/application/SharedStorageItemsView.ts | value": {
-    "message": "Gildi"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Samnýtt geymslurými"
@@ -4262,9 +4238,6 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Útgefandi"
   },
-  "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Engir vistaðir traustslyklar eins og stendur."
-  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Fjöldi vistaðra lykla"
   },
@@ -4950,7 +4923,7 @@
     "message": "Listi yfir DOM-stopppunkta"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "No DOM breakpoints set"
+    "message": "Engir DOM-stopppunktar stilltir"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Nóða fjarlægð"
@@ -5067,19 +5040,19 @@
     "message": "{PH1} (úr kóðavörpun)"
   },
   "panels/changes/ChangesView.ts | binaryDataDescription": {
-    "message": "The changes tab doesn't show binary data changes"
+    "message": "Breytingaflipinn sýnir ekki gagnabreytingar keyrsluskrár"
   },
   "panels/changes/ChangesView.ts | changesViewDescription": {
-    "message": "On this page you can track code changes made within DevTools."
+    "message": "Á þessari síðu geturðu rakið kóðabreytingar sem eru gerðar með DevTools."
   },
   "panels/changes/ChangesView.ts | copy": {
     "message": "Afrita"
   },
   "panels/changes/ChangesView.ts | noChanges": {
-    "message": "No changes yet"
+    "message": "Engar breytingar enn"
   },
   "panels/changes/ChangesView.ts | noTextualDiff": {
-    "message": "No textual diff available"
+    "message": "Enginn textamunur tiltækur"
   },
   "panels/changes/ChangesView.ts | sDeletions": {
     "message": "{n,plural, =1{# eyðing (-)}one{# eyðing (-)}other{# eyðingar (-)}}"
@@ -5298,7 +5271,7 @@
     "message": " M<XX>"
   },
   "panels/console/ConsoleViewMessage.ts | SeeIssueInCookieReport": {
-    "message": "Click to open privacy and security panel and show third-party cookie report"
+    "message": "Smelltu til að opna persónuverndar- og öryggisglugga og sýna skýrslu fyrir fótspor þriðja aðila"
   },
   "panels/console/ConsoleViewMessage.ts | assertionFailed": {
     "message": "Yrðing stóðst ekki: "
@@ -6747,7 +6720,7 @@
     "message": "Staflaröð"
   },
   "panels/explain/components/ConsoleInsight.ts | timedOut": {
-    "message": "Generating a response took too long. Please try again."
+    "message": "Of langan tíma tók að búa til svar. Reyndu aftur."
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Kveiktu á {PH1} til að fá aðstoð gervigreindar við að öðlast skilning á og bregðast við viðvörunum og villum á stjórnborði."
@@ -7911,7 +7884,7 @@
     "message": "Bæta {PH1} við"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kvarða…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | cpuThrottling": {
     "message": "Örgjörvatakmörkun"
@@ -7935,7 +7908,7 @@
     "message": "Án nettengingar"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Kvarða aftur…"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | recommendedThrottling": {
     "message": "{PH1} – ráðlagt"
@@ -8895,7 +8868,7 @@
     "message": "Þessi beiðni inniheldur engin fótspor."
   },
   "panels/network/RequestInitiatorView.ts | noInitiator": {
-    "message": "No initiator data"
+    "message": "Engin gögn hefjanda"
   },
   "panels/network/RequestInitiatorView.ts | requestCallStack": {
     "message": "Biðja um kallastafla"
@@ -8961,10 +8934,10 @@
     "message": "Mistókst að hlaða svargögn"
   },
   "panels/network/RequestResponseView.ts | noPreview": {
-    "message": "Nothing to preview"
+    "message": "Ekkert til að forskoða"
   },
   "panels/network/RequestResponseView.ts | thisRequestHasNoResponseData": {
-    "message": "This request has no response data available"
+    "message": "Engin svargögn eru í boði fyrir þessa beiðni"
   },
   "panels/network/RequestTimingView.ts | cacheStorageCacheNameS": {
     "message": "Heiti skyndiminnisgeymslu: {PH1}"
@@ -10139,9 +10112,6 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Ekki er hægt að hlaða vöktun á meðan önnur vöktun er tekin upp."
   },
-  "panels/profiler/ProfilesPanel.ts | profileLoadingFailedS": {
-    "message": "Mistókst að hlaða snið: {PH1}."
-  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Vöktunarsnið"
   },
@@ -10251,7 +10221,7 @@
     "message": "Vista"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectAMessageToView": {
-    "message": "Select a message to see its details"
+    "message": "Veldu skilaboð til að sjá upplýsingar um þau"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | selectTarget": {
     "message": "Veldu miðun"
@@ -10290,7 +10260,7 @@
     "message": "Afrita upptöku eða valið skref"
   },
   "panels/recorder/RecorderController.ts | createRecording": {
-    "message": "Create recording"
+    "message": "Búa til upptöku"
   },
   "panels/recorder/RecorderController.ts | deleteRecording": {
     "message": "Eyða upptöku"
@@ -10308,13 +10278,13 @@
     "message": "Fá viðbætur…"
   },
   "panels/recorder/RecorderController.ts | header": {
-    "message": "Nothing recorded yet"
+    "message": "Ekkert tekið upp enn"
   },
   "panels/recorder/RecorderController.ts | importRecording": {
     "message": "Flytja inn upptöku"
   },
   "panels/recorder/RecorderController.ts | learnMore": {
-    "message": "Learn more"
+    "message": "Frekari upplýsingar"
   },
   "panels/recorder/RecorderController.ts | noRecordings": {
     "message": "Engar upptökur"
@@ -10323,7 +10293,7 @@
     "message": "upptaka/upptökur"
   },
   "panels/recorder/RecorderController.ts | recordingDescription": {
-    "message": "Use recordings to create automated end-to-end tests or performance traces."
+    "message": "Notaðu upptökur til að búa til sjálfvirk próf endanna á milli eða afkastaspor."
   },
   "panels/recorder/RecorderController.ts | replayRecording": {
     "message": "Spila upptöku aftur"
@@ -11496,7 +11466,7 @@
     "message": "Skilaboðin á stjórnborði, tengd staflaröð, tengdur upprunakóði og tengdir netkerfishausar eru sendir til Google til að búa til útskýringar. Mannlegir yfirlesarar geta séð þessi gögn til að bæta þennan eiginleika."
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsDataNoLogging": {
-    "message": "The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Skilaboðin á stjórnborði, tengd staflaröð, tengdur upprunakóði og tengdir netkerfishausar eru sendir til Google til að búa til útskýringar. Þessi gögn verða ekki notuð til að bæta gervigreindarlíkön Google."
   },
   "panels/settings/AISettingsTab.ts | dataCollection": {
     "message": "Það veltur á svæðinu þínu hvort Google safni gögnum eða ekki"
@@ -11532,7 +11502,7 @@
     "message": "Öll gögn sem síða í athugun hefur aðgang að í gegnum vefforritaskil; netbeiðnir, skrár og afkastaspor, eru send til Google í því skyni að búa til útskýringar. Mannlegir yfirlesarar geta séð þessi gögn til að bæta þennan eiginleika. Skal ekki nota á síðum með persónulegum eða viðkvæmum upplýsingum."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models."
+    "message": "Öll gögn sem síða í athugun hefur aðgang að í gegnum vefforritaskil; netbeiðnir, skrár og afkastaspor, eru send til Google í því skyni að búa til útskýringar. Þessi gögn verða ekki notuð til að bæta gervigreindarlíkön Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Hjálpar þér að skilja og laga stjórnborðsviðvaranir og -villur"
@@ -12259,15 +12229,6 @@
   },
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Ekki er hægt að afturkalla þessa aðgerð."
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
-    "message": "Viltu örugglega eyða þessari möppu og innihaldi hennar?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
-    "message": "Ertu viss um að þú viljir eyða þessari skrá?"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToExcludeThis": {
-    "message": "Á örugglega að útiloka þessa möppu?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
     "message": "Fjarlægja „{PH1}“ af Workspace?"
@@ -13041,7 +13002,7 @@
     "message": "Þessi hljóðrás inniheldur tímasetningar teknar úr svarhausum netkerfis Server-Timing. Viðkomandi upphafstímar eru aðeins áætlaðir og mögulega ónákvæmnir."
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
-    "message": "1st / 3rd party"
+    "message": "Fyrsti / þriðji aðili"
   },
   "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
     "message": "Eigin tími"
@@ -13254,7 +13215,7 @@
     "message": "Lýsing"
   },
   "panels/timeline/TimelinePanel.ts | dimThirdParties": {
-    "message": "Dim 3rd parties"
+    "message": "Stærð þriðju aðila"
   },
   "panels/timeline/TimelinePanel.ts | disableJavascriptSamples": {
     "message": "Gera JavaScript-sýnishorn óvirk"
@@ -13374,7 +13335,7 @@
     "message": "Stöðvar tímalínu…"
   },
   "panels/timeline/TimelinePanel.ts | thirdPartiesByThirdPartyWeb": {
-    "message": "3rd parties classified by third-party-web"
+    "message": "Þriðju aðilar flokkaðir af vef þriðja aðila"
   },
   "panels/timeline/TimelinePanel.ts | time": {
     "message": "Tími"
@@ -13653,7 +13614,7 @@
     "message": "{PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Third party"
+    "message": "Þriðji aðili"
   },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(færsla falin)"
@@ -13817,9 +13778,6 @@
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
     "message": "Tölfræði vals"
   },
-  "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "Eigin tími"
-  },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Stærð"
   },
@@ -13833,7 +13791,7 @@
     "message": "Vefslóð stílsniðs"
   },
   "panels/timeline/TimelineUIUtils.ts | thirdPartyTable": {
-    "message": "1st / 3rd party table"
+    "message": "Tafla fyrsta / þriðja aðila"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "Tími sem fór í teiknun"
@@ -13849,9 +13807,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "Tímastimpill"
-  },
-  "panels/timeline/TimelineUIUtils.ts | totalTime": {
-    "message": "Heildartími"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Sporatilvik"
@@ -13920,7 +13875,7 @@
     "message": "Fjarlægja slóð barns"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | calibrate": {
-    "message": "Calibrate…"
+    "message": "Kvarða…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "Örgjörvi: {PH1}"
@@ -13932,7 +13887,7 @@
     "message": "Kvarðaðar forstillingar"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recalibrate": {
-    "message": "Recalibrate…"
+    "message": "Kvarða aftur…"
   },
   "panels/timeline/components/CPUThrottlingSelector.ts | recommendedThrottling": {
     "message": "{PH1} – ráðlagt"
@@ -14424,7 +14379,7 @@
     "message": "Kóðuð gögn"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | entity": {
-    "message": "Third party"
+    "message": "Þriðji aðili"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Úr skyndiminni"
@@ -14568,16 +14523,16 @@
     "message": "Innsýn er eiginleiki á tilraunastigi. Ábendingar frá þér hjálpa okkur að gera hann betri."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | dismissTitle": {
-    "message": "Dismiss"
+    "message": "Loka"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchNotice": {
-    "message": "There are many reasons why local and field metrics [may not match](https://web.dev/articles/lab-and-field-data-differences). Adjust [throttling settings and device emulation](https://developer.chrome.com/docs/devtools/device-mode) to analyze traces more similar to the average user's environment."
+    "message": "Það eru margar ástæður fyrir því að staðbundin mæligildi og mæligildi fyrir reit [passa hugsanlega ekki saman](https://web.dev/articles/lab-and-field-data-differences). Stilltu [stillingar bandvíddartakmörkunar og hermun tækis](https://developer.chrome.com/docs/devtools/device-mode) til að greina spor með meiri samsvörun við umhverfi venjulegs notanda."
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldMismatchTitle": {
-    "message": "Field & local metrics mismatch"
+    "message": "Misræmi á milli staðbundinna mæligilda og mæligilda fyrir reit"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | fieldScoreLabel": {
-    "message": "Field ({PH1})"
+    "message": "Reitur ({PH1})"
   },
   "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
     "message": "{PH1}: {PH2} {PH3} stig"
@@ -15885,7 +15840,7 @@
     "message": "Raða eftir"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Sortable column. Press enter to apply sorting filter"
+    "message": "Dálkur sem hægt er að raða. Ýttu á „Enter“ til að nota flokkunarsíu"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "Sýna allt {PH1}"
@@ -16221,10 +16176,10 @@
     "message": "Finna"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | failedToLoadData": {
-    "message": "Failed to load data"
+    "message": "Ekki tókst að hlaða gögn"
   },
   "ui/legacy/components/source_frame/PreviewFactory.ts | nothingToPreview": {
-    "message": "Nothing to preview"
+    "message": "Ekkert til að forskoða"
   },
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Finna"

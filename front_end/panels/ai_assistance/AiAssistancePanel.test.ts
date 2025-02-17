@@ -917,159 +917,88 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   describe('auto agent selection for panels', () => {
-    describe('Elements panel', () => {
-      it('should select FREESTYLER agent when the Elements panel is open in initial render', async () => {
+    const tests: Array<{
+      panel: {new (...args: any[]): UI.Panel.Panel},
+      expectedAgentType: AiAssistance.AgentType,
+      featureFlagName: string,
+    }> =
+        [
+          {
+            panel: Elements.ElementsPanel.ElementsPanel,
+            expectedAgentType: AiAssistance.AgentType.STYLING,
+            featureFlagName: 'devToolsFreestyler',
+          },
+          {
+            panel: Network.NetworkPanel.NetworkPanel,
+            expectedAgentType: AiAssistance.AgentType.NETWORK,
+            featureFlagName: 'devToolsAiAssistanceNetworkAgent',
+          },
+          {
+            panel: Sources.SourcesPanel.SourcesPanel,
+            expectedAgentType: AiAssistance.AgentType.FILE,
+            featureFlagName: 'devToolsAiAssistanceFileAgent',
+          },
+          {
+            panel: Timeline.TimelinePanel.TimelinePanel,
+            expectedAgentType: AiAssistance.AgentType.PERFORMANCE,
+            featureFlagName: 'devToolsAiAssistancePerformanceAgent',
+          }
+        ];
+
+    for (const test of tests) {
+      it(`should select ${test.expectedAgentType} conversation when the panel ${test.panel.name} is opened`,
+          async () => {
+            updateHostConfig({
+              [test.featureFlagName]: {
+                enabled: true,
+              },
+            });
+            UI.Context.Context.instance().setFlavor(test.panel, sinon.createStubInstance(test.panel));
+
+            const {view} = await createAiAssistancePanel({
+              aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+            });
+
+            sinon.assert.calledWith(view.lastCall, sinon.match({
+              agentType: test.expectedAgentType,
+            }));
+          });
+
+      it(`should reset the conversation when ${test.panel.name} is closed and no other panels are open`, async () => {
         updateHostConfig({
-          devToolsFreestyler: {
+          [test.featureFlagName]: {
             enabled: true,
           },
         });
-        UI.Context.Context.instance().setFlavor(
-            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
-        const {view} = await createAiAssistancePanel({
-          aidaClient: mockAidaClient([[{explanation: 'test'}]]),
-        });
+        UI.Context.Context.instance().setFlavor(test.panel, sinon.createStubInstance(test.panel));
 
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.STYLING,
-        }));
-      });
-
-      it('should update to no agent state when the Elements panel is closed and no other panels are open', async () => {
-        updateHostConfig({
-          devToolsFreestyler: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
         const {view, expectViewUpdate} = await createAiAssistancePanel();
 
         sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.STYLING,
+          agentType: test.expectedAgentType,
         }));
 
-        await expectViewUpdate(() => {
-          UI.Context.Context.instance().setFlavor(Elements.ElementsPanel.ElementsPanel, null);
+        const [{agentType}] = await expectViewUpdate(() => {
+          UI.Context.Context.instance().setFlavor(test.panel, null);
         });
-        assert.isUndefined(view.lastCall.args[0].agentType);
+        assert.isUndefined(agentType);
       });
 
-      it('should render no agent state when Elements panel is open but Freestyler is not enabled', async () => {
-        updateHostConfig({
-          devToolsFreestyler: {
-            enabled: false,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
-        const {view} = await createAiAssistancePanel();
+      it(`should render no conversation state if the ${
+             test.panel.name} panel is changed and the feature is not enabled`,
+          async () => {
+            updateHostConfig({
+              [test.featureFlagName]: {
+                enabled: false,
+              },
+            });
+            UI.Context.Context.instance().setFlavor(test.panel, sinon.createStubInstance(test.panel));
+            const {view} = await createAiAssistancePanel();
 
-        assert.isUndefined(view.lastCall.args[0].agentType);
-      });
-    });
-
-    describe('Network panel', () => {
-      it('should select DRJONES_NETWORK agent when the Network panel is open in initial render', async () => {
-        updateHostConfig({
-          devToolsAiAssistanceNetworkAgent: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
-        const {view} = await createAiAssistancePanel();
-
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.NETWORK,
-        }));
-      });
-
-      it('should update to no agent state when the Network panel is closed and no other panels are open', async () => {
-        updateHostConfig({
-          devToolsAiAssistanceNetworkAgent: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
-        const {view, expectViewUpdate} = await createAiAssistancePanel();
-
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.NETWORK,
-        }));
-
-        await expectViewUpdate(() => {
-          UI.Context.Context.instance().setFlavor(Network.NetworkPanel.NetworkPanel, null);
-        });
-        assert.isUndefined(view.lastCall.args[0].agentType);
-      });
-
-      it('should render no agent state when Network panel is open but devToolsAiAssistanceNetworkAgent is not enabled',
-         async () => {
-           updateHostConfig({
-             devToolsAiAssistanceNetworkAgent: {
-               enabled: false,
-             },
-           });
-           UI.Context.Context.instance().setFlavor(
-               Network.NetworkPanel.NetworkPanel, sinon.createStubInstance(Network.NetworkPanel.NetworkPanel));
-           const {view} = await createAiAssistancePanel();
-
-           assert.isUndefined(view.lastCall.args[0].agentType);
-         });
-    });
-
-    describe('Sources panel', () => {
-      it('should select DRJONES_FILE agent when the Sources panel is open in initial render', async () => {
-        updateHostConfig({
-          devToolsAiAssistanceFileAgent: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
-        const {view} = await createAiAssistancePanel();
-
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.FILE,
-        }));
-      });
-
-      it('should update to no agent state when the Sources panel is closed and no other panels are open', async () => {
-        updateHostConfig({
-          devToolsAiAssistanceFileAgent: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
-        const {view, expectViewUpdate} = await createAiAssistancePanel();
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.FILE,
-        }));
-
-        await expectViewUpdate(() => {
-          UI.Context.Context.instance().setFlavor(Sources.SourcesPanel.SourcesPanel, null);
-        });
-        assert.isUndefined(view.lastCall.args[0].agentType);
-      });
-
-      it('should render no agent state when Sources panel is open but devToolsAiAssistanceFileAgent is not enabled',
-         async () => {
-           updateHostConfig({
-             devToolsAiAssistanceFileAgent: {
-               enabled: false,
-             },
-           });
-           UI.Context.Context.instance().setFlavor(
-               Sources.SourcesPanel.SourcesPanel, sinon.createStubInstance(Sources.SourcesPanel.SourcesPanel));
-           const {view} = await createAiAssistancePanel();
-
-           assert.isUndefined(view.lastCall.args[0].agentType);
-         });
-    });
+            assert.isUndefined(view.lastCall.args[0].agentType);
+          });
+    }
 
     describe('Performance Insight agent', () => {
       it('should select the PERFORMANCE_INSIGHT agent when the performance panel is open and insights are enabled',
@@ -1086,57 +1015,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
            sinon.assert.calledWith(view, sinon.match({
              agentType: AiAssistance.AgentType.PERFORMANCE_INSIGHT,
            }));
-         });
-    });
-
-    describe('Performance panel', () => {
-      it('should select DRJONES_PERFORMANCE agent when the Performance panel is open in initial render', async () => {
-        updateHostConfig({
-          devToolsAiAssistancePerformanceAgent: {
-            enabled: true,
-          },
-        });
-        UI.Context.Context.instance().setFlavor(
-            Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
-        const {view} = await createAiAssistancePanel();
-
-        sinon.assert.calledWith(view, sinon.match({
-          agentType: AiAssistance.AgentType.PERFORMANCE,
-        }));
-      });
-
-      it('should update to no agent state when the Performance panel is closed and no other panels are open',
-         async () => {
-           updateHostConfig({
-             devToolsAiAssistancePerformanceAgent: {
-               enabled: true,
-             },
-           });
-           UI.Context.Context.instance().setFlavor(
-               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
-           const {view, expectViewUpdate} = await createAiAssistancePanel();
-           sinon.assert.calledWith(view, sinon.match({
-             agentType: AiAssistance.AgentType.PERFORMANCE,
-           }));
-
-           await expectViewUpdate(() => {
-             UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.TimelinePanel, null);
-           });
-           assert.isUndefined(view.lastCall.args[0].agentType);
-         });
-
-      it('should render no agent state when Performance panel is open but devToolsAiAssistancePerformanceAgent is not enabled',
-         async () => {
-           updateHostConfig({
-             devToolsAiAssistancePerformanceAgent: {
-               enabled: false,
-             },
-           });
-           UI.Context.Context.instance().setFlavor(
-               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
-           const {view} = await createAiAssistancePanel();
-
-           assert.isUndefined(view.lastCall.args[0].agentType);
          });
     });
   });

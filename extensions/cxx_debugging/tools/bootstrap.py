@@ -79,9 +79,10 @@ def stage1(sysroot_dir, source_dir, OPTIONS):
 
     maybe_cmake(binary_dir, cmake_args, OPTIONS.verbose)
 
-    autoninja = shutil.which('autoninja')
+    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
+                         'ninja')
     call([
-        autoninja, 'lldb-tblgen', 'clang-tblgen', 'llvm-tblgen', 'llvm-dwp',
+        ninja, 'lldb-tblgen', 'clang-tblgen', 'llvm-tblgen', 'llvm-dwp',
         'llvm-mc'
     ],
          verbose=OPTIONS.verbose,
@@ -186,13 +187,15 @@ def stage2(source_dir, stage1_dir, OPTIONS):
     num_cores = os.cpu_count()
     env = os.environ.copy()
 
+    ninja = os.path.join(devtools_dir(source_dir), 'third_party', 'ninja',
+                         'ninja')
     if not OPTIONS.no_check:
-        call(['ninja', '-j%d' % num_cores, 'all', 'check-extension'],
+        call([ninja, '-j%d' % num_cores, 'all', 'check-extension'],
              verbose=OPTIONS.verbose,
              cwd=binary_dir,
              env=env)
     else:
-        call(['ninja', '-j%d' % num_cores, 'all'],
+        call([ninja, '-j%d' % num_cores, 'all'],
              verbose=OPTIONS.verbose,
              cwd=binary_dir,
              env=env)

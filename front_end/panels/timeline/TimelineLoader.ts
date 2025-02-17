@@ -88,7 +88,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     loader.#traceIsCPUProfile = true;
 
     try {
-      const contents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+      const contents = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
@@ -261,7 +261,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
-    const traceFile = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const traceFile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
         parsedTrace, Trace.Types.Events.ThreadID(1));
 
     this.#collectEvents(traceFile.traceEvents);

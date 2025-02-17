@@ -34,7 +34,7 @@ describeWithEnvironment('AICallTree', () => {
     // it takes the CDP Profile and wraps it in fake trace events, before then
     // passing that through to the new engine.
     const rawEvents = await TraceLoader.rawCPUProfile(this, 'basic.cpuprofile.gz');
-    const events = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const events = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
         rawEvents,
         Trace.Types.Events.ThreadID(1),
     );

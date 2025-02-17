@@ -458,12 +458,12 @@ export class SamplesIntegrator {
     return runtimeCallStatsEnabled && Boolean(SamplesIntegrator.nativeGroup(name));
   }
 
-  static nativeGroup(nativeName: string): 'Parse'|'Compile'|null {
+  static nativeGroup(nativeName: string): SamplesIntegrator.NativeGroups|null {
     if (nativeName.startsWith('Parse')) {
-      return 'Parse';
+      return SamplesIntegrator.NativeGroups.PARSE;
     }
     if (nativeName.startsWith('Compile') || nativeName.startsWith('Recompile')) {
-      return 'Compile';
+      return SamplesIntegrator.NativeGroups.COMPILE;
     }
     return null;
   }
@@ -495,5 +495,60 @@ export class SamplesIntegrator {
       stack[j++] = stack[i];
     }
     stack.length = j;
+  }
+
+  static createFakeTraceFromCpuProfile(profile: Protocol.Profiler.Profile, tid: Types.Events.ThreadID):
+      Types.File.TraceFile {
+    const events: Types.Events.Event[] = [];
+
+    const threadName = `Thread ${tid}`;
+    appendEvent('TracingStartedInPage', {data: {sessionId: '1'}}, 0, 0, Types.Events.Phase.METADATA);
+    appendEvent(Types.Events.Name.THREAD_NAME, {name: threadName}, 0, 0, Types.Events.Phase.METADATA, '__metadata');
+    if (!profile) {
+      return {traceEvents: events, metadata: {}};
+    }
+
+    // Append a root to show the start time of the profile (which is earlier than first sample), so the Performance
+    // panel won't truncate this time period.
+    // 'JSRoot' doesn't exist in the new engine and is not the name of an actual trace event, but changing it might break other trace processing tools that rely on this, so we stick with this name.
+    // TODO(crbug.com/341234884): consider removing this or clarify why it's required.
+    appendEvent(
+        'JSRoot', {}, profile.startTime, profile.endTime - profile.startTime, Types.Events.Phase.COMPLETE, 'toplevel');
+
+    // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
+    appendEvent('CpuProfile', {data: {cpuProfile: profile}}, profile.endTime, 0, Types.Events.Phase.COMPLETE);
+    return {
+      traceEvents: events,
+      metadata: {
+        dataOrigin: Types.File.DataOrigin.CPU_PROFILE,
+      }
+    };
+
+    function appendEvent(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        name: string, args: any, ts: number, dur?: number, ph?: Types.Events.Phase, cat?: string): Types.Events.Event {
+      const event: Types.Events.Event = {
+        cat: cat || 'disabled-by-default-devtools.timeline',
+        name,
+        ph: ph || Types.Events.Phase.COMPLETE,
+        pid: Types.Events.ProcessID(1),
+        tid,
+        ts: Types.Timing.Micro(ts),
+        args,
+      };
+
+      if (dur) {
+        event.dur = Types.Timing.Micro(dur);
+      }
+      events.push(event);
+      return event;
+    }
+  }
+}
+
+export namespace SamplesIntegrator {
+  export const enum NativeGroups {
+    COMPILE = 'Compile',
+    PARSE = 'Parse',
   }
 }

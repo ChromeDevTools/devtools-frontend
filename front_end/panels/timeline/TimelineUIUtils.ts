@@ -534,18 +534,20 @@ interface TimeRangeCategoryStats {
   [categoryName: string]: number;
 }
 
+const {SamplesIntegrator} = Trace.Helpers.SamplesIntegrator;
+
 export class TimelineUIUtils {
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
     const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
     const functionName = maybeResolvedData?.name || frame.functionName;
-    if (!Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
+    if (!SamplesIntegrator.isNativeRuntimeFrame(frame)) {
       return UI.UIUtils.beautifyFunctionName(functionName);
     }
-    const nativeGroup = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.nativeGroup(functionName);
+    const nativeGroup = SamplesIntegrator.nativeGroup(functionName);
     switch (nativeGroup) {
-      case Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.COMPILE:
+      case SamplesIntegrator.NativeGroups.COMPILE:
         return i18nString(UIStrings.compile);
-      case Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.PARSE:
+      case SamplesIntegrator.NativeGroups.PARSE:
         return i18nString(UIStrings.parse);
     }
     return functionName;

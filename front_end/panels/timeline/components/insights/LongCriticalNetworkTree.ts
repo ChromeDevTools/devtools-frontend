@@ -24,11 +24,8 @@ export class LongCriticalNetworkTree extends BaseInsightComponent<LongCriticalNe
       return [];
     }
 
-    return this.model.longChains.flat().map(entry => ({
-                                              type: 'ENTRY_OUTLINE',
-                                              entry,
-                                              outlineReason: 'ERROR',
-                                            }));
+    // TODO(b/372897712): Calculate and return the overlays for all critical requests.
+    return [];
   }
 
   override renderContent(): Lit.LitTemplate {
@@ -36,7 +33,7 @@ export class LongCriticalNetworkTree extends BaseInsightComponent<LongCriticalNe
       return Lit.nothing;
     }
 
-    if (!this.model.longChains.length) {
+    if (!this.model.rootNodes.length) {
       return html`<div class="insight-section">${i18nString(UIStrings.noLongCriticalNetworkTree)}</div>`;
     }
 

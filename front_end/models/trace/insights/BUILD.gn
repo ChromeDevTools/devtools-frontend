@@ -62,6 +62,7 @@ ts_library("unittests") {
     "InteractionToNextPaint.test.ts",
     "LCPDiscovery.test.ts",
     "LCPPhases.test.ts",
+    "LongCriticalNetworkTree.test.ts",
     "RenderBlocking.test.ts",
     "SlowCSSSelector.test.ts",
     "Statistics.test.ts",

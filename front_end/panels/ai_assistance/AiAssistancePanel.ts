@@ -463,6 +463,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       this.#messages = [];
       this.#isLoading = false;
       this.#currentAgent = agent;
+      this.#currentConversation?.archiveConversation();
       if (this.#currentAgent?.type) {
         this.#currentConversation =
             new Conversation(agentTypeToConversationType(this.#currentAgent.type), [], agent?.id, false);

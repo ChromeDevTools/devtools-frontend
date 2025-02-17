@@ -29,13 +29,17 @@ export class Conversation {
   readonly id: string;
   readonly history: ResponseData[];
   readonly type: ConversationType;
-  readonly isReadOnly: boolean;
+  #isReadOnly: boolean;
 
   constructor(type: ConversationType, data: ResponseData[] = [], id: string = crypto.randomUUID(), isReadOnly = true) {
     this.type = type;
     this.history = data;
     this.id = id;
-    this.isReadOnly = isReadOnly;
+    this.#isReadOnly = isReadOnly;
+  }
+
+  get isReadOnly(): boolean {
+    return this.#isReadOnly;
   }
 
   get title(): string|undefined {
@@ -49,6 +53,10 @@ export class Conversation {
 
   get isEmpty(): boolean {
     return this.history.length === 0;
+  }
+
+  archiveConversation(): void {
+    this.#isReadOnly = true;
   }
 
   addHistoryItem(item: ResponseData): void {

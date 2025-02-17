@@ -604,6 +604,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       await expectViewUpdate(() => {
         contextMenu.invokeHandler(freestylerEntry.id());
       });
+      assert.isTrue(view.lastCall.args[0].isReadOnly);
       // Currently history should not store image input
       assert.deepEqual(view.lastCall.args[0].messages, [
         {

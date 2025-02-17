@@ -393,7 +393,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       },
       onSelect: (e: CustomEvent<HTMLElement|null>) => {
         const index = parseInt(e.detail?.dataset?.index ?? '', 10);
-        this.#selectedMessage = index ? this.#messages[index] : undefined;
+        this.#selectedMessage = !isNaN(index) ? this.#messages[index] : undefined;
         this.requestUpdate();
       },
       onContextMenu: (e: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => {

@@ -47,6 +47,8 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     this.xScale = new SmoothScale();
 
     this.profileSamples = new Samples();
+
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => this.update());
   }
 
   start(): void {

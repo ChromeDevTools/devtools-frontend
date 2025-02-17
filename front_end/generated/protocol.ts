@@ -1078,6 +1078,29 @@ export namespace Audits {
     WriteErrorUnsupportedType = 'WriteErrorUnsupportedType',
   }
 
+  export const enum SRIMessageSignatureError {
+    MissingSignatureHeader = 'MissingSignatureHeader',
+    MissingSignatureInputHeader = 'MissingSignatureInputHeader',
+    InvalidSignatureHeader = 'InvalidSignatureHeader',
+    InvalidSignatureInputHeader = 'InvalidSignatureInputHeader',
+    SignatureHeaderValueIsNotByteSequence = 'SignatureHeaderValueIsNotByteSequence',
+    SignatureHeaderValueIsParameterized = 'SignatureHeaderValueIsParameterized',
+    SignatureHeaderValueIsIncorrectLength = 'SignatureHeaderValueIsIncorrectLength',
+    SignatureInputHeaderMissingLabel = 'SignatureInputHeaderMissingLabel',
+    SignatureInputHeaderValueNotInnerList = 'SignatureInputHeaderValueNotInnerList',
+    SignatureInputHeaderValueMissingComponents = 'SignatureInputHeaderValueMissingComponents',
+    SignatureInputHeaderInvalidComponentType = 'SignatureInputHeaderInvalidComponentType',
+    SignatureInputHeaderInvalidComponentName = 'SignatureInputHeaderInvalidComponentName',
+    SignatureInputHeaderInvalidHeaderComponentParameter = 'SignatureInputHeaderInvalidHeaderComponentParameter',
+    SignatureInputHeaderInvalidDerivedComponentParameter = 'SignatureInputHeaderInvalidDerivedComponentParameter',
+    SignatureInputHeaderKeyIdLength = 'SignatureInputHeaderKeyIdLength',
+    SignatureInputHeaderInvalidParameter = 'SignatureInputHeaderInvalidParameter',
+    SignatureInputHeaderMissingRequiredParameters = 'SignatureInputHeaderMissingRequiredParameters',
+    ValidationFailedSignatureExpired = 'ValidationFailedSignatureExpired',
+    ValidationFailedInvalidLength = 'ValidationFailedInvalidLength',
+    ValidationFailedSignatureMismatch = 'ValidationFailedSignatureMismatch',
+  }
+
   /**
    * Details for issues around "Attribution Reporting API" usage.
    * Explainer: https://github.com/WICG/attribution-reporting-api
@@ -1112,6 +1135,11 @@ export namespace Audits {
 
   export interface SharedDictionaryIssueDetails {
     sharedDictionaryError: SharedDictionaryError;
+    request: AffectedRequest;
+  }
+
+  export interface SRIMessageSignatureIssueDetails {
+    error: SRIMessageSignatureError;
     request: AffectedRequest;
   }
 
@@ -1399,6 +1427,7 @@ export namespace Audits {
     PropertyRuleIssue = 'PropertyRuleIssue',
     SharedDictionaryIssue = 'SharedDictionaryIssue',
     SelectElementAccessibilityIssue = 'SelectElementAccessibilityIssue',
+    SRIMessageSignatureIssue = 'SRIMessageSignatureIssue',
   }
 
   /**
@@ -1430,6 +1459,7 @@ export namespace Audits {
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
     selectElementAccessibilityIssueDetails?: SelectElementAccessibilityIssueDetails;
+    sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
   }
 
   /**

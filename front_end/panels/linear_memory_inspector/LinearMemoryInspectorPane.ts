@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -16,10 +17,22 @@ const UIStrings = {
    *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
    */
   noOpenInspections: 'No open inspections',
+  /**
+   *@description Label in the Linear Memory inspector tool that serves as a placeholder if no inspections are open (i.e. nothing to see here).
+   *             Inspection hereby refers to viewing, navigating and understanding the memory through this tool.
+   */
+  memoryInspectorExplanation: 'On this page you can inspect binary data.',
+  /**
+   *@description Label in the Linear Memory inspector tool for a link.
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorInstance: LinearMemoryInspectorPane;
+
+const MEMORY_INSPECTOR_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/memory-inspector' as Platform.DevToolsPath.UrlString;
 
 export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
     UI.Widget.VBox) {
@@ -28,17 +41,29 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
   constructor() {
     super(false);
     this.element.setAttribute('jslog', `${VisualLogging.panel('linear-memory-inspector').track({resize: true})}`);
-    const placeholder = document.createElement('div');
-    placeholder.textContent = i18nString(UIStrings.noOpenInspections);
-    placeholder.style.display = 'flex';
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
-    this.#tabbedPane.setPlaceholderElement(placeholder);
+    this.#tabbedPane.setPlaceholderElement(this.createPlaceholder());
     this.#tabbedPane.setCloseableTabs(true);
     this.#tabbedPane.setAllowTabReorder(true, true);
     this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, this.#tabClosed, this);
     this.#tabbedPane.show(this.contentElement);
     this.#tabbedPane.headerElement().setAttribute(
         'jslog', `${VisualLogging.toolbar().track({keydown: 'ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space'})}`);
+  }
+
+  createPlaceholder(): HTMLElement {
+    const placeholder = document.createElement('div');
+    placeholder.classList.add('empty-state');
+
+    placeholder.createChild('span', 'empty-state-header').textContent = i18nString(UIStrings.noOpenInspections);
+
+    const description = placeholder.createChild('div', 'empty-state-description');
+    description.createChild('span').textContent = i18nString(UIStrings.memoryInspectorExplanation);
+    const link = UI.XLink.XLink.create(
+        MEMORY_INSPECTOR_EXPLANATION_URL, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
+    description.appendChild(link);
+
+    return placeholder;
   }
 
   static instance(): LinearMemoryInspectorPane {

@@ -35,6 +35,7 @@ devtools_module("ai_assistance") {
     "components/UserActionRow.ts",
     "data_formatters/FileFormatter.ts",
     "data_formatters/NetworkRequestFormatter.ts",
+    "data_formatters/PerformanceInsightFormatter.ts",
     "debug.ts",
   ]
 
@@ -100,12 +101,14 @@ ts_library("unittests") {
     "agents/NetworkAgent.test.ts",
     "agents/PatchAgent.test.ts",
     "agents/PerformanceAgent.test.ts",
+    "agents/PerformanceInsightsAgent.test.ts",
     "agents/StylingAgent.test.ts",
     "components/ChatView.test.ts",
     "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/UserActionRow.test.ts",
     "data_formatters/FileFormatter.test.ts",
     "data_formatters/NetworkRequestFormatter.test.ts",
+    "data_formatters/PerformanceInsightFormatter.test.ts",
   ]
 
   deps = [

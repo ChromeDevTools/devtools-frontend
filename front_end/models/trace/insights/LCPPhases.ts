@@ -85,6 +85,9 @@ interface LCPPhases {
   renderDelay: Types.Timing.Milli;
 }
 
+export function isLCPPhases(model: InsightModel<{}, {}>): model is LCPPhasesInsightModel {
+  return model.insightKey === 'LCPPhases';
+}
 export type LCPPhasesInsightModel = InsightModel<typeof UIStrings, {
   lcpMs?: Types.Timing.Milli,
   lcpTs?: Types.Timing.Milli,
@@ -93,9 +96,6 @@ export type LCPPhasesInsightModel = InsightModel<typeof UIStrings, {
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
   phases?: LCPPhases,
 }>;
-export function isLCPPhases(model: InsightModel<{}, {}>): model is LCPPhasesInsightModel {
-  return model.title === UIStrings.title;
-}
 
 function anyValuesNaN(...values: number[]): boolean {
   return values.some(v => Number.isNaN(v));

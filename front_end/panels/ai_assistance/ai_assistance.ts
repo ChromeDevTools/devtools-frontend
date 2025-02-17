@@ -20,3 +20,4 @@ export * from './EvaluateAction.js';
 export * from './ExtensionScope.js';
 export * from './data_formatters/FileFormatter.js';
 export * from './data_formatters/NetworkRequestFormatter.js';
+export * from './data_formatters/PerformanceInsightFormatter.js';

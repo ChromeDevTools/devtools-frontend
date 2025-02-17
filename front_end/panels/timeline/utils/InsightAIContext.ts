@@ -21,6 +21,10 @@ export class ActiveInsight {
     this.#parsedTrace = parsedTrace;
   }
 
+  get insight(): Readonly<Trace.Insights.Types.InsightModel<{}, {}>> {
+    return this.#insight;
+  }
+
   title(): string {
     return this.#insight.title;
   }

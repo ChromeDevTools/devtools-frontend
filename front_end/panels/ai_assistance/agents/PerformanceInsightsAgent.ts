@@ -6,15 +6,18 @@ import * as Host from '../../../core/host/host.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
+import {PerformanceInsightFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
   AgentType,
   AiAgent,
+  type ContextDetail,
   type ContextResponse,
   ConversationContext,
   type RequestOptions,
   type ResponseData,
+  ResponseType,
 } from './AiAgent.js';
 
 /* clang-format off */
@@ -27,7 +30,7 @@ You will be told the following information about the Insight:
 - The 'Insight description' which helps you understand what the insight is for and what the user is hoping to understand.
 - 'Insight details' which will be additional context and information to help you understand what the insight is showing the user. Use this information to suggest opportunities to improve the performance.
 
-You have a number of functions to get information about the page and its performance. Use these functions to help you gather information to perform the user's query. For every query it is important to understand the network activity and also the main thread activity.
+You will also be provided with external resources. Use these to ensure you give correct, accurate and up to date answers.
 
 ## Step-by-step instructions
 
@@ -80,9 +83,17 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
   // eslint-disable-next-line no-unused-private-class-members
   #insight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
-  override handleContextDetails(_activeContext: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null):
-      AsyncGenerator<ContextResponse, void, void> {
-    throw new Error('not implemented');
+  override async *
+      handleContextDetails(activeContext: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null):
+          AsyncGenerator<ContextResponse, void, void> {
+    if (!activeContext) {
+      return;
+    }
+
+    const title = activeContext.getItem().title();
+    // TODO: Provide proper text with useful context details.
+    const titleDetail: ContextDetail = {title, text: title};
+    yield {type: ResponseType.CONTEXT, title, details: [titleDetail]};
   }
 
   override readonly type = AgentType.PERFORMANCE_INSIGHT;
@@ -103,6 +114,19 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
   constructor(opts: BaseAgentOptions) {
     super(opts);
     // TODO: define the set of functions for the LLM.
+  }
+
+  override async enhanceQuery(
+      query: string,
+      selectedInsight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|null): Promise<string> {
+    if (!selectedInsight) {
+      return query;
+    }
+    const formatter = new PerformanceInsightFormatter(selectedInsight.getItem().insight);
+    const extraQuery = `${formatter.formatInsight()}\n\n# User request:\n`;
+
+    const finalQuery = `${extraQuery}${query}`;
+    return finalQuery;
   }
 
   override async * run(initialQuery: string, options: {

@@ -14,6 +14,7 @@ import * as AiAssistance from '../panels/ai_assistance/ai_assistance.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
+import {expectCall} from './ExpectStubCall.js';
 import {createContentProviderUISourceCodes} from './UISourceCodeHelpers.js';
 
 function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.AidaClient.AidaClient {
@@ -171,11 +172,18 @@ export async function createAiAssistancePanel(options?: {
   panel.show(document.body);
   panels.push(panel);
   await panel.updateComplete;
-  return {
-    panel,
-    view,
-    aidaClient,
-  };
+
+  /**
+   * Triggers the action and returns args of the next view function
+   * call.
+   */
+  async function expectViewUpdate(action: () => void) {
+    const result = expectCall(view);
+    action();
+    return await result;
+  }
+
+  return {panel, view, aidaClient, expectViewUpdate};
 }
 
 export function detachPanels() {

@@ -471,7 +471,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     this.#onContextSelectionChanged();
-    void this.doUpdate();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -490,12 +490,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.ActiveInsight));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
     this.#selectedContext = this.#getConversationContext();
-    void this.doUpdate();
+    this.requestUpdate();
 
-    this.#aiAssistanceEnabledSetting?.addChangeListener(this.doUpdate, this);
+    this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.doUpdate, this);
+    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -523,10 +523,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   override willHide(): void {
-    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.doUpdate, this);
+    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.removeEventListener(UI.ActionRegistration.Events.TOGGLED, this.doUpdate, this);
+    this.#toggleSearchElementAction.removeEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -568,7 +568,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       };
-      void this.doUpdate();
+      this.requestUpdate();
     }
   };
 
@@ -585,7 +585,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       (ev: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void => {
         if (this.#selectedElement?.getItem() === ev.data.node) {
           if (ev.data.name === 'class' || ev.data.name === 'id') {
-            void this.doUpdate();
+            this.requestUpdate();
           }
         }
       };
@@ -639,7 +639,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         undefined;
   }
 
-  async doUpdate(): Promise<void> {
+  override async performUpdate(): Promise<void> {
     this.#updateToolbarState();
     this.view(
         {
@@ -862,7 +862,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleCrossOriginChatCancellation(): void {
     if (this.#previousSameOriginContext) {
       this.#onContextSelectionChanged(this.#previousSameOriginContext);
-      void this.doUpdate();
+      this.requestUpdate();
     }
   }
 
@@ -882,20 +882,20 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
     if (bytes) {
       this.#imageInput = bytes;
-      void this.doUpdate();
+      this.requestUpdate();
     }
   }
 
   #handleRemoveImageInput(): void {
     this.#imageInput = '';
-    void this.doUpdate();
+    this.requestUpdate();
   }
 
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
     this.#isLoading = false;
-    void this.doUpdate();
+    this.requestUpdate();
   }
 
   #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
@@ -978,7 +978,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
     });
     this.#patchSuggestionLoading = true;
-    void this.doUpdate();
+    this.requestUpdate();
     const prompt =
         `I have applied the following CSS changes to my page in Chrome DevTools, what are the files in my source code that I need to change to apply the same change?
 
@@ -997,7 +997,7 @@ Output one filename per line and nothing else!
     }
     this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not find files';
     this.#patchSuggestionLoading = false;
-    void this.doUpdate();
+    this.requestUpdate();
   }
 
   async *
@@ -1085,7 +1085,7 @@ Output one filename per line and nothing else!
               onAnswer: (result: boolean) => {
                 data.confirm(result);
                 step.sideEffect = undefined;
-                void this.doUpdate();
+                this.requestUpdate();
               },
             };
             commitStep();
@@ -1132,7 +1132,7 @@ Output one filename per line and nothing else!
         // Commit update intermediated step when not
         // in read only mode.
         if (!this.#currentConversation?.isReadOnly) {
-          void this.doUpdate();
+          this.requestUpdate();
 
           // This handles scrolling to the bottom for live conversations when:
           // * User submits the query & the context step is shown.
@@ -1145,7 +1145,7 @@ Output one filename per line and nothing else!
 
       this.#isLoading = false;
       this.#viewOutput.chatView?.finishTextAnimations();
-      void this.doUpdate();
+      this.requestUpdate();
     } finally {
       release();
     }

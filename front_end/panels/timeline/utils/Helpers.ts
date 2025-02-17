@@ -110,7 +110,7 @@ export function createUrlLabels(urls: URL[]): string[] {
  * If the last path component is larger than maxChars characters, the middle is elided.
  */
 export function shortenUrl(url: URL, maxChars = 20): string {
-  const parts = url.pathname.split('/');
+  const parts = url.pathname === '/' ? [url.host] : url.pathname.split('/');
   let shortenedUrl = parts.at(-1) ?? '';
 
   if (shortenedUrl.length > maxChars) {

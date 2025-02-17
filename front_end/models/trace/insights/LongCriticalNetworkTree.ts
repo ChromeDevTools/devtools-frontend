@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Lantern from '../lantern/lantern.js';
-import type * as Types from '../types/types.js';
+import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
@@ -31,6 +31,11 @@ export const UIStrings = {
    * @description Text status indicating that there isn't long chaining critical network requests.
    */
   noLongCriticalNetworkTree: 'No rendering tasks impacted by long critical network tree',
+  /**
+   * @description Text for the maximum critical path latency. This refers to the longest chain of network requests that
+   * the browser must download before it can render the page.
+   */
+  maxCriticalPathLatency: 'Max critical path latency:'
 };
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LongCriticalNetworkTree.ts', UIStrings);
@@ -47,11 +52,13 @@ const nonCriticalResourceTypes: Set<Protocol.Network.ResourceType> = new Set([
 
 export interface CriticalRequestNode {
   request: Types.Events.SyntheticNetworkRequest;
+  timeFromInitialRequest: Types.Timing.Micro;
   children: CriticalRequestNode[];
 }
 
 export type LongCriticalNetworkTreeInsightModel = InsightModel<typeof UIStrings, {
   rootNodes: CriticalRequestNode[],
+  maxTime: Types.Timing.Micro,
 }>;
 
 export function deps(): ['NetworkRequests'] {
@@ -110,19 +117,32 @@ export function generateInsight(
   if (!context.navigation) {
     return finalize({
       rootNodes: [],
+      maxTime: Types.Timing.Micro(0),
     });
   }
 
   const rootNodes: CriticalRequestNode[] = [];
+  let maxTime = Types.Timing.Micro(0);
 
   function addChain(path: Types.Events.SyntheticNetworkRequest[]): void {
+    if (path.length === 0) {
+      return;
+    }
+    const initialRequest = path[0];
     let currentNodes = rootNodes;
 
     for (const networkRequest of path) {
       // find the request
       let found = currentNodes.find(node => node.request === networkRequest);
+
       if (!found) {
-        found = {request: networkRequest, children: []};
+        const timeFromInitialRequest = Types.Timing.Micro(networkRequest.ts + networkRequest.dur - initialRequest.ts);
+        maxTime = Types.Timing.Micro(Math.max(maxTime, timeFromInitialRequest));
+        found = {
+          request: networkRequest,
+          timeFromInitialRequest,
+          children: [],
+        };
         currentNodes.push(found);
       }
       currentNodes = found.children;
@@ -167,5 +187,6 @@ export function generateInsight(
 
   return finalize({
     rootNodes,
+    maxTime,
   });
 }

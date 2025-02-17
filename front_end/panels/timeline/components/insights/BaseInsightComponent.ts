@@ -64,7 +64,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
   // about litTagName. Every child should overrwrite this.
   static readonly litTagName = Lit.StaticHtml.literal``;
 
-  readonly #shadowRoot = this.attachShadow({mode: 'open'});
+  protected readonly shadow = this.attachShadow({mode: 'open'});
 
   #selected = false;
   #model: T|null = null;
@@ -93,7 +93,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
   }
 
   connectedCallback(): void {
-    this.#shadowRoot.adoptedStyleSheets.push(baseInsightComponentStyles);
+    this.shadow.adoptedStyleSheets.push(baseInsightComponentStyles);
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
@@ -309,7 +309,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
 
   #renderWithContent(content: Lit.LitTemplate): void {
     if (!this.#model) {
-      Lit.render(Lit.nothing, this.#shadowRoot, {host: this});
+      Lit.render(Lit.nothing, this.shadow, {host: this});
       return;
     }
 
@@ -354,7 +354,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
     `;
     // clang-format on
 
-    Lit.render(output, this.#shadowRoot, {host: this});
+    Lit.render(output, this.shadow, {host: this});
 
     if (this.#selected) {
       requestAnimationFrame(() => requestAnimationFrame(() => this.scrollIntoViewIfNeeded()));

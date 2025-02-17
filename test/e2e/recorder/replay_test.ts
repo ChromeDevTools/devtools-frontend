@@ -655,7 +655,8 @@ describe('Recorder', function() {
     );
   });
 
-  it('should be able to navigate to a prerendered page', async () => {
+  // Flaky test.
+  it.skip('[crbug.com/397159600]: should be able to navigate to a prerendered page', async () => {
     const {target} = getBrowserAndPages();
     await setupRecorderWithScriptAndReplay({
       title: 'Test Recording',

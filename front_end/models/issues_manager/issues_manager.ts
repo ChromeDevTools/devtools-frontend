@@ -28,6 +28,7 @@ import * as SelectElementAccessibilityIssue from './SelectElementAccessibilityIs
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
+import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 
 export {
@@ -57,5 +58,6 @@ export {
   SharedArrayBufferIssue,
   SharedDictionaryIssue,
   SourceFrameIssuesManager,
+  SRIMessageSignatureIssue,
   StylesheetLoadingIssue,
 };

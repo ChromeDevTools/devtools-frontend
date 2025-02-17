@@ -91,7 +91,7 @@ class DataGridElement extends HTMLElement {
                 }
                 this.#dataGrid.setColumnsVisibility(
                     new Set(this.#columnsOrder.filter(column => !this.#hiddenColumns.has(column))));
-              });
+              }, {checked: !this.#hiddenColumns.has(columnId)});
         }
       }
     });

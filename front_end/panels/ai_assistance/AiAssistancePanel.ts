@@ -714,7 +714,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof CallTreeContext) {
-      const trace = new SDK.TraceObject.RevealableEvent(context.getItem().selectedNode.event);
+      const item = context.getItem();
+      const event = item.selectedNode?.event ?? item.rootNode.event;
+      const trace = new SDK.TraceObject.RevealableEvent(event);
       return Common.Revealer.reveal(trace);
     }
     // Node picker is using linkifier.

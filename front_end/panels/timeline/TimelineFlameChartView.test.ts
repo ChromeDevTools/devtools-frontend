@@ -790,7 +790,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       // Find some task in the main thread that we can build an AI Call Tree from
       const task = parsedTrace.Renderer.allTraceEntries.find(event => {
         return Trace.Types.Events.isRunTask(event) && event.dur > 5_000 &&
-            Utils.AICallTree.AICallTree.from(event, parsedTrace) !== null;
+            Utils.AICallTree.AICallTree.fromEvent(event, parsedTrace) !== null;
       });
 
       assert.isOk(task);

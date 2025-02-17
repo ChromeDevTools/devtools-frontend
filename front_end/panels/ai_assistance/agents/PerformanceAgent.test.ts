@@ -27,7 +27,7 @@ describeWithEnvironment('PerformanceAgent', () => {
       const evalScriptEvent = parsedTrace.Renderer.allTraceEntries.find(
           event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);
       assert.exists(evalScriptEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.from(evalScriptEvent, parsedTrace);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(evalScriptEvent, parsedTrace);
       assert.isOk(aiCallTree);
       const callTreeContext = new CallTreeContext(aiCallTree);
       assert.strictEqual(callTreeContext.getOrigin(), 'https://www.googletagmanager.com');
@@ -39,7 +39,7 @@ describeWithEnvironment('PerformanceAgent', () => {
       const layoutEvent = parsedTrace.Renderer.allTraceEntries.find(
           event => event.name === Trace.Types.Events.Name.LAYOUT && event.ts === 122411130078);
       assert.exists(layoutEvent);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.from(layoutEvent, parsedTrace);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvent, parsedTrace);
       assert.isOk(aiCallTree);
       const callTreeContext = new CallTreeContext(aiCallTree);
       assert.strictEqual(callTreeContext.getOrigin(), 'Layout_90829_259_122411130078');
@@ -125,7 +125,7 @@ describeWithEnvironment('PerformanceAgent', () => {
       // A basic Layout.
       const layoutEvt = parsedTrace.Renderer.allTraceEntries.find(event => event.ts === 465457096322);
       assert.exists(layoutEvt);
-      const aiCallTree = TimelineUtils.AICallTree.AICallTree.from(layoutEvt, parsedTrace);
+      const aiCallTree = TimelineUtils.AICallTree.AICallTree.fromEvent(layoutEvt, parsedTrace);
       assert.exists(aiCallTree);
 
       const agent = new PerformanceAgent({

@@ -1409,7 +1409,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     // an invalid event - we don't want to reset it back as it may be they are
     // clicking around in order to understand something.
     if (selectionIsEvent(selection) && this.#parsedTrace) {
-      const aiCallTree = Utils.AICallTree.AICallTree.from(selection.event, this.#parsedTrace);
+      const aiCallTree = Utils.AICallTree.AICallTree.fromEvent(selection.event, this.#parsedTrace);
       if (aiCallTree) {
         UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
       }

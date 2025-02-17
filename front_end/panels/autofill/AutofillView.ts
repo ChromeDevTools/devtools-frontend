@@ -14,6 +14,9 @@ import * as AutofillManager from '../../models/autofill_manager/autofill_manager
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+// inspectorCommonStyles is imported for the empty state styling that is used for the start view
+// eslint-disable-next-line rulesdir/es-modules-import
+import inspectorCommonStylesRaw from '../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -23,10 +26,18 @@ import autofillViewStylesRaw from './autofillView.css.js';
 const autofillViewStyles = new CSSStyleSheet();
 autofillViewStyles.replaceSync(autofillViewStylesRaw.cssContent);
 
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const inspectorCommonStyles = new CSSStyleSheet();
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+
 const {html, render, Directives: {styleMap}} = Lit;
 const {FillingStrategy} = Protocol.Autofill;
 
 const UIStrings = {
+  /**
+   * @description Text shown when there is no data on autofill available.
+   */
+  noAutofill: 'No autofill detected',
   /**
    * @description Explanation for how to populate the autofill panel with data. Shown when there is
    * no data available.
@@ -123,7 +134,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles];
+    this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, autofillViewStyles, inspectorCommonStyles];
     const autofillManager = AutofillManager.AutofillManager.AutofillManager.instance();
     const formFilledEvent = autofillManager.getLastFilledAddressForm();
     if (formFilledEvent) {
@@ -192,9 +203,12 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
             <x-link href=${AUTOFILL_FEEDBACK_URL} class="feedback link" jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.sendFeedback)}</x-link>
           </div>
           <div class="placeholder-container" jslog=${VisualLogging.pane('autofill-empty')}>
-            <div class="placeholder">
-              <div>${i18nString(UIStrings.toStartDebugging)}</div>
-              <x-link href=${AUTOFILL_INFO_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+            <div class="empty-state">
+              <span class="empty-state-header">${i18nString(UIStrings.noAutofill)}</span>
+              <div class="empty-state-description">
+                <span>${i18nString(UIStrings.toStartDebugging)}</span>
+                <x-link href=${AUTOFILL_INFO_URL} class="link" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMore)}</x-link>
+              </div>
             </div>
           </div>
         </main>

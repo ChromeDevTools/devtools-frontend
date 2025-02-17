@@ -75,6 +75,7 @@ export function deps(): ['Renderer', 'AuctionWorklets', 'DOMStats'] {
 function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSizeInsightModel {
   const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
   return {
+    insightKey: 'DOMSize',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

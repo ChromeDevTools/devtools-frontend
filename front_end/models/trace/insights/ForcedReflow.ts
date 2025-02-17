@@ -190,6 +190,7 @@ function aggregateForcedReflow(
 
 function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): ForcedReflowInsightModel {
   return {
+    insightKey: 'ForcedReflow',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

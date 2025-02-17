@@ -171,6 +171,7 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
   }
 
   return {
+    insightKey: 'DocumentLatency',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

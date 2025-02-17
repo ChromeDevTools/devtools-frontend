@@ -101,6 +101,7 @@ function aggregateSelectorStats(
 
 function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>): SlowCSSSelectorInsightModel {
   return {
+    insightKey: 'SlowCSSSelector',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

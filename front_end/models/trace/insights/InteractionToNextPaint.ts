@@ -66,6 +66,7 @@ export type INPInsightModel = InsightModel<typeof UIStrings, {
 
 function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
   return {
+    insightKey: 'InteractionToNextPaint',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

@@ -79,6 +79,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
       [partialModel.lcpEvent, partialModel.lcpRequest] :
       [];
   return {
+    insightKey: 'LCPDiscovery',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

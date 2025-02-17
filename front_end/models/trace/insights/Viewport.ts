@@ -39,6 +39,7 @@ export type ViewportInsightModel = InsightModel<typeof UIStrings, {
 
 function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): ViewportInsightModel {
   return {
+    insightKey: 'Viewport',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

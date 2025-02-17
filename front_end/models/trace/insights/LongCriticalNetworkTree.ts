@@ -43,6 +43,7 @@ export function deps(): ['NetworkRequests'] {
 function finalize(partialModel: PartialInsightModel<LongCriticalNetworkTreeInsightModel>):
     LongCriticalNetworkTreeInsightModel {
   return {
+    insightKey: 'LongCriticalNetworkTree',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

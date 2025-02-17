@@ -70,6 +70,7 @@ function getRelatedEvents(
 
 function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): ThirdPartiesInsightModel {
   return {
+    insightKey: 'ThirdParties',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

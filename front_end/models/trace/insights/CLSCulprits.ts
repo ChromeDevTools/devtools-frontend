@@ -523,6 +523,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
       partialModel.worstCluster ? partialModel.topCulpritsByCluster.get(partialModel.worstCluster) ?? [] : [];
 
   return {
+    insightKey: 'CLSCulprits',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

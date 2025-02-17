@@ -165,6 +165,7 @@ function computeSavings(
 
 function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>): RenderBlockingInsightModel {
   return {
+    insightKey: 'RenderBlocking',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

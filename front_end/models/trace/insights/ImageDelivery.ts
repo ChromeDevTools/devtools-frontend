@@ -158,6 +158,7 @@ export function getOptimizationMessageWithBytes(optimization: ImageOptimization)
 
 function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>): ImageDeliveryInsightModel {
   return {
+    insightKey: 'ImageDelivery',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

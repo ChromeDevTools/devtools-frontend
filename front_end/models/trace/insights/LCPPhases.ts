@@ -93,6 +93,9 @@ export type LCPPhasesInsightModel = InsightModel<typeof UIStrings, {
   lcpRequest?: Types.Events.SyntheticNetworkRequest,
   phases?: LCPPhases,
 }>;
+export function isLCPPhases(model: InsightModel<{}, {}>): model is LCPPhasesInsightModel {
+  return model.title === UIStrings.title;
+}
 
 function anyValuesNaN(...values: number[]): boolean {
   return values.some(v => Number.isNaN(v));
@@ -154,6 +157,7 @@ function finalize(partialModel: PartialInsightModel<LCPPhasesInsightModel>): LCP
     relatedEvents.push(partialModel.lcpRequest);
   }
   return {
+    insightKey: 'LCPPhases',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

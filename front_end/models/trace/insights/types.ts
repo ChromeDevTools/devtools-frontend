@@ -80,6 +80,8 @@ export type RelatedEventsMap = Map<Types.Events.Event, string[]>;
 export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIString.LocalizedString, value: boolean}>;
 
 export type InsightModel<UIStrings extends Record<string, string>, R extends Record<string, unknown>> = R&{
+  /** Used internally to identify the type of a model, not shown visibly to users **/
+  insightKey: keyof InsightModelsType,
   /** Not used within DevTools - this is for external consumers (like Lighthouse). */
   strings: UIStrings,
   title: Common.UIString.LocalizedString,
@@ -91,7 +93,7 @@ export type InsightModel<UIStrings extends Record<string, string>, R extends Rec
   metricSavings?: MetricSavings,
 };
 
-export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'state'>;
+export type PartialInsightModel<T> = Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

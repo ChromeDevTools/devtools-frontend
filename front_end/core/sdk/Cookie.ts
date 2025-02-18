@@ -237,6 +237,14 @@ export class Cookie {
     }
   }
 
+  hasAttribute(key: Attribute): boolean {
+    return this.#attributes.has(key);
+  }
+
+  getAttribute(key: Attribute): string|number|boolean|undefined {
+    return this.#attributes.get(key);
+  }
+
   setCookieLine(cookieLine: string): void {
     this.#cookieLine = cookieLine;
   }

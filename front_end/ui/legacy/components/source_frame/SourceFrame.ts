@@ -1066,15 +1066,18 @@ export class SelfXssWarningDialog {
     const content = shadowRoot.createChild('div', 'widget');
 
     const result = await new Promise<boolean>(resolve => {
-      const closeButton = content.createChild('dt-close-button', 'dialog-close-button');
+      const header = content.createChild('div', 'header');
+      header.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
+
+      const closeButton = header.createChild('dt-close-button', 'dialog-close-button');
       closeButton.setTabbable(true);
       self.onInvokeElement(closeButton, event => {
         dialog.hide();
         event.consume(true);
         resolve(false);
       });
+      closeButton.setSize(Buttons.Button.Size.SMALL);
 
-      content.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
       content.createChild('div', 'message').textContent =
           i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)});
 

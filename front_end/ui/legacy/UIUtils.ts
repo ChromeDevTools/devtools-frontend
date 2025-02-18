@@ -1416,6 +1416,10 @@ export class DevToolsCloseButton extends HTMLElement {
     ARIAUtils.setLabel(this.#button, name);
   }
 
+  setSize(size: Buttons.Button.Size): void {
+    this.#button.size = size;
+  }
+
   setTabbable(tabbable: boolean): void {
     if (tabbable) {
       this.#button.tabIndex = 0;

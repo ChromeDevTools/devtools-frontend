@@ -43,7 +43,7 @@ const UIStrings = {
   /**
    *@description Header text to indicate there are no breakpoints
    */
-  noBreakpoints: 'No DOM breakpoints set',
+  noBreakpoints: 'No DOM breakpoints',
   /**
    *@description DOM breakpoints description that shows if no DOM breakpoints are set
    */
@@ -135,7 +135,7 @@ let domBreakpointsSidebarPaneInstance: DOMBreakpointsSidebarPane;
 export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     UI.ContextFlavorListener.ContextFlavorListener, UI.ListControl.ListDelegate<SDK.DOMDebuggerModel.DOMBreakpoint> {
   elementToCheckboxes: WeakMap<Element, HTMLInputElement>;
-  readonly #emptyElement: UI.EmptyWidget.EmptyWidget;
+  readonly #emptyElement: HTMLElement;
   readonly #breakpoints: UI.ListModel.ListModel<SDK.DOMDebuggerModel.DOMBreakpoint>;
   #list: UI.ListControl.ListControl<SDK.DOMDebuggerModel.DOMBreakpoint>;
   #highlightedBreakpoint: SDK.DOMDebuggerModel.DOMBreakpoint|null;
@@ -149,10 +149,12 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     this.contentElement.setAttribute(
         'jslog', `${VisualLogging.section('sources.dom-breakpoints').track({resize: true})}`);
     this.contentElement.classList.add('dom-breakpoints-container');
-    this.#emptyElement =
+    this.#emptyElement = this.contentElement.createChild('div', 'placeholder');
+    this.#emptyElement.createChild('div', 'gray-info-message').textContent = i18nString(UIStrings.noBreakpoints);
+    const emptyWidget =
         new UI.EmptyWidget.EmptyWidget(UIStrings.noBreakpoints, i18nString(UIStrings.domBreakpointsDescription));
-    this.#emptyElement.appendLink(DOM_BREAKPOINT_DOCUMENTATION_URL);
-    this.#emptyElement.show(this.contentElement);
+    emptyWidget.appendLink(DOM_BREAKPOINT_DOCUMENTATION_URL);
+    emptyWidget.show(this.#emptyElement);
 
     this.#breakpoints = new UI.ListModel.ListModel();
     this.#list = new UI.ListControl.ListControl(this.#breakpoints, this, UI.ListControl.ListMode.NonViewport);
@@ -250,7 +252,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
       UI.ARIAUtils.setDescription(element, checkedStateText);
     }
 
-    this.#emptyElement.hideWidget();
+    this.#emptyElement.classList.add('hidden');
     this.#list.element.classList.remove('hidden');
 
     return element;
@@ -309,8 +311,8 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
       }
     }
     if (this.#breakpoints.length === 0) {
-      this.#emptyElement.showWidget();
-      this.setDefaultFocusedElement(this.#emptyElement.element);
+      this.#emptyElement.classList.remove('hidden');
+      this.setDefaultFocusedElement(this.#emptyElement);
       this.#list.element.classList.add('hidden');
     } else if (lastIndex >= 0) {
       const breakpointToSelect = this.#breakpoints.at(lastIndex);

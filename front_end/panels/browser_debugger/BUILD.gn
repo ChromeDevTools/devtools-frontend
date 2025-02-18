@@ -70,7 +70,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "browser_debugger.test.ts" ]
+  sources = [
+    "DOMBreakpointsSidebarPane.test.ts",
+    "browser_debugger.test.ts",
+  ]
 
   deps = [
     ":bundle",

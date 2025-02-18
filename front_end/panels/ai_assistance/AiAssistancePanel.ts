@@ -12,6 +12,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -123,11 +124,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-interface ViewOutput {
-  chatView?: ChatView;
-}
-type View = (input: ChatViewProps, output: ViewOutput, target: HTMLElement) => void;
-
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
     return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
@@ -136,16 +132,93 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-function defaultView(input: ChatViewProps, output: ViewOutput, target: HTMLElement): void {
+interface ToolbarViewInput {
+  onNewChatClick: () => void;
+  onHistoryClick: (event: MouseEvent) => void;
+  onDeleteClick: () => void;
+  onHelpClick: () => void;
+  onSettingsClick: () => void;
+  isDeleteHistoryButtonVisible: boolean;
+}
+
+export type ViewInput = ChatViewProps&ToolbarViewInput;
+interface ViewOutput {
+  chatView?: ChatView;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
+  // clang-format off
+  return html`
+    <div class="toolbar-container" role="toolbar" .jslogContext=${VisualLogging.toolbar()}>
+      <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
+        <devtools-button
+          title=${i18nString(UIStrings.newChat)}
+          aria-label=${i18nString(UIStrings.newChat)}
+          .iconName=${'plus'}
+          .jslogContext=${'freestyler.new-chat'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onNewChatClick}></devtools-button>
+        <div class="toolbar-divider"></div>
+        <devtools-button
+          title=${i18nString(UIStrings.history)}
+          aria-label=${i18nString(UIStrings.history)}
+          .iconName=${'history'}
+          .jslogContext=${'freestyler.history'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onHistoryClick}></devtools-button>
+        ${input.isDeleteHistoryButtonVisible
+          ? html`<devtools-button
+              title=${i18nString(UIStrings.deleteChat)}
+              aria-label=${i18nString(UIStrings.deleteChat)}
+              .iconName=${'bin'}
+              .jslogContext=${'freestyler.delete'}
+              .variant=${Buttons.Button.Variant.TOOLBAR}
+              @click=${input.onDeleteClick}></devtools-button>`
+          : Lit.nothing}
+      </devtools-toolbar>
+      <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
+        <x-link
+          class="toolbar-feedback-link devtools-link"
+          title=${UIStrings.sendFeedback}
+          href=${AI_ASSISTANCE_SEND_FEEDBACK}
+          jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('freestyler.send-feedback')}
+        >${UIStrings.sendFeedback}</x-link>
+        <div class="toolbar-divider"></div>
+        <devtools-button
+          title=${i18nString(UIStrings.help)}
+          aria-label=${i18nString(UIStrings.help)}
+          .iconName=${'help'}
+          .jslogContext=${'freestyler.help'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onHelpClick}></devtools-button>
+        <devtools-button
+          title=${i18nString(UIStrings.settings)}
+          aria-label=${i18nString(UIStrings.settings)}
+          .iconName=${'gear'}
+          .jslogContext=${'freestyler.settings'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onSettingsClick}></devtools-button>
+      </devtools-toolbar>
+    </div>
+  `;
+  // clang-format on
+}
+
+function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   Lit.render(html`
-    <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
-      if (!el || !(el instanceof ChatView)) {
-        return;
-      }
+    ${toolbarView(input)}
+    <div class="chat-container">
+      <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
+        if (!el || !(el instanceof ChatView)) {
+          return;
+        }
 
-      output.chatView = el;
-    })}></devtools-ai-chat-view>
+        output.chatView = el;
+      })}></devtools-ai-chat-view>
+    </div>
   `, target, {host: input});
   // clang-format on
 }
@@ -206,20 +279,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
-  #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #viewOutput: ViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
   #mutex = new Common.Mutex.Mutex();
-
-  #newChatButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newChat), 'plus', undefined, 'freestyler.new-chat');
-  #historyEntriesButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.history), 'history', undefined, 'freestyler.history');
-  #deleteHistoryEntryButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteChat), 'bin', undefined, 'freestyler.delete');
 
   #currentAgent?: AiAgent<unknown>;
   #currentConversation?: Conversation;
@@ -267,11 +332,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.registerRequiredCSS(aiAssistancePanelStyles);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
-    this.#createToolbar();
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
-    this.#contentContainer = this.contentElement.createChild('div', 'chat-container');
     this.#aidaAvailability = aidaAvailability;
     this.#userInfo = {
       accountImage: syncInfo.accountImage,
@@ -296,52 +359,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         break;
       }
     }
-  }
-
-  #createToolbar(): void {
-    const toolbarContainer = this.contentElement.createChild('div', 'toolbar-container');
-    toolbarContainer.setAttribute('jslog', VisualLogging.toolbar().toString());
-    toolbarContainer.role = 'toolbar';
-    const leftToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-left-toolbar');
-    leftToolbar.role = 'presentation';
-    const rightToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-right-toolbar');
-    rightToolbar.role = 'presentation';
-
-    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#handleNewChatRequest.bind(this));
-    leftToolbar.appendToolbarItem(this.#newChatButton);
-    leftToolbar.appendSeparator();
-
-    this.#historyEntriesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, event => {
-      this.#onHistoryClicked(event.data);
-    });
-    leftToolbar.appendToolbarItem(this.#historyEntriesButton);
-    this.#deleteHistoryEntryButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK, this.#onDeleteClicked.bind(this));
-    leftToolbar.appendToolbarItem(this.#deleteHistoryEntryButton);
-
-    const link = UI.XLink.XLink.create(
-        AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
-        'freestyler.send-feedback');
-    link.style.setProperty('display', null);
-    link.style.setProperty('color', 'var(--sys-color-primary)');
-    link.style.setProperty('margin', '0 var(--sys-size-3)');
-    link.style.setProperty('height', 'calc(100% - 6px)');
-    const linkItem = new UI.Toolbar.ToolbarItem(link);
-    rightToolbar.appendToolbarItem(linkItem);
-
-    rightToolbar.appendSeparator();
-    const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.help), 'help', undefined, 'freestyler.help');
-    helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
-    });
-    rightToolbar.appendToolbarItem(helpButton);
-
-    const settingsButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.settings), 'gear', undefined, 'freestyler.settings');
-    settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-    });
-    rightToolbar.appendToolbarItem(settingsButton);
   }
 
   #getChatUiState(): ChatViewState {
@@ -400,10 +417,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
     }
     return agent;
-  }
-
-  #updateToolbarState(): void {
-    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentConversation && !this.#currentConversation.isEmpty));
   }
 
   static async instance(opts: {
@@ -643,7 +656,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   override async performUpdate(): Promise<void> {
-    this.#updateToolbarState();
     this.view(
         {
           state: this.#getChatUiState(),
@@ -665,6 +677,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
               isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
           imageInput: this.#imageInput,
           projectName: this.#project?.displayName() ?? '',
+          isDeleteHistoryButtonVisible: Boolean(this.#currentConversation && !this.#currentConversation.isEmpty),
+          onNewChatClick: this.#handleNewChatRequest.bind(this),
+          onHistoryClick: this.#onHistoryClicked.bind(this),
+          onDeleteClick: this.#onDeleteClicked.bind(this),
+          onHelpClick: () => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
+          },
+          onSettingsClick: () => {
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          },
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
             this.#imageInput = '';
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
@@ -683,7 +705,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                                                                        undefined,
           onApplyToWorkspace: this.#onApplyToWorkspace.bind(this)
         },
-        this.#viewOutput, this.#contentContainer);
+        this.#viewOutput, this.contentElement);
   }
 
   #handleSelectElementClick(): void {
@@ -791,11 +813,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #onHistoryClicked(event: Event): void {
-    const boundingRect = this.#historyEntriesButton.element.getBoundingClientRect();
+    const target = event.target as Element | undefined;
+    const clientRect = target?.getBoundingClientRect();
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
-      x: boundingRect.left,
-      y: boundingRect.bottom,
       useSoftMenu: true,
+      x: clientRect?.left,
+      y: clientRect?.bottom,
     });
 
     for (const conversation of [...this.#conversations].reverse()) {

@@ -14,7 +14,6 @@ import {
   mockAidaClient
 } from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
-import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -113,15 +112,6 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   describe('rating', () => {
-    it('renders a button linking to settings', async () => {
-      const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
-      const {panel} = await createAiAssistancePanel();
-      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Settings\']');
-      assert.instanceOf(button, HTMLElement);
-      button.click();
-      assert.isTrue(stub.calledWith('chrome-ai'));
-    });
-
     it('should allow logging if configured', async () => {
       updateHostConfig({
         aidaAvailability: {
@@ -378,6 +368,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
     });
   });
 
+  describe('toolbar actions', () => {
+    it('should show chrome-ai view on settings click', async () => {
+      const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
+      const {initialViewInput} = await createAiAssistancePanel();
+      initialViewInput.onSettingsClick();
+      assert.isTrue(stub.calledWith('chrome-ai'));
+    });
+  });
+
   describe('history interactions', () => {
     it('should have empty messages after new chat', async () => {
       const {panel, expectViewUpdate} =
@@ -407,10 +406,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       ]);
 
       const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
-        // TODO: remove DOM access
-        const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
-        assert.instanceOf(button, HTMLElement);
-        dispatchClickEvent(button);
+        updatedViewInputAfterMessage.onNewChatClick();
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
@@ -451,10 +447,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
       const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
-        // TODO: remove DOM access
-        const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
-        assert.instanceOf(button, HTMLElement);
-        dispatchClickEvent(button);
+        updatedViewInputAfterMessage.onNewChatClick();
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
@@ -497,10 +490,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
       const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
-        // TODO: remove DOM access
-        const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
-        assert.instanceOf(button, HTMLElement);
-        dispatchClickEvent(button);
+        updatedViewInputAfterMessage.onNewChatClick();
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
@@ -543,10 +533,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
       const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
-        // TODO: remove DOM access
-        const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
-        assert.instanceOf(button, HTMLElement);
-        dispatchClickEvent(button);
+        updatedViewInputAfterMessage.onNewChatClick();
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
@@ -582,7 +569,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
 
-      await expectViewUpdate(() => {
+      const updatedViewInputAfterSwitchToNetwork = await expectViewUpdate(() => {
         panel.handleAction('drjones.network-floating-button');
       });
       await view.lastCall.args[0].onTextSubmit('User question to DrJones?');
@@ -601,11 +588,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
 
-      // TODO: this should not look into DOM.
-      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
-      assert.instanceOf(button, HTMLElement);
       const contextMenu = getMenu(() => {
-        dispatchClickEvent(button);
+        updatedViewInputAfterSwitchToNetwork.onHistoryClick(new MouseEvent('click'));
       });
       const freestylerEntry = findMenuItemWithLabel(contextMenu.defaultSection(), 'User question to Freestyler?')!;
       assert.isDefined(freestylerEntry);
@@ -679,10 +663,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     ]);
 
     const updatedViewInputAfterDelete = await expectViewUpdate(() => {
-      // TODO: remove DOM lookup.
-      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
-      assert.instanceOf(button, HTMLElement);
-      dispatchClickEvent(button);
+      updatedViewInputAfterMessage.onDeleteClick();
     });
     assert.deepEqual(updatedViewInputAfterDelete.messages, []);
     assert.isUndefined(updatedViewInputAfterDelete.agentType);
@@ -719,10 +700,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
     ]);
     const updatedViewInputAfterDelete = await expectViewUpdate(() => {
-      // TODO: remove DOM lookup.
-      const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
-      assert.instanceOf(button, HTMLElement);
-      dispatchClickEvent(button);
+      updatedViewInputAfterMessage.onDeleteClick();
     });
     assert.deepEqual(updatedViewInputAfterDelete.messages, []);
     assert.deepEqual(updatedViewInputAfterDelete.agentType, AiAssistance.AgentType.STYLING);
@@ -774,26 +752,20 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
     ]);
 
-    // TODO: remove poking into DOM.
-    let button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
-    assert.instanceOf(button, HTMLElement);
     let contextMenu = getMenu(() => {
-      dispatchClickEvent(button!);
+      updatedViewInputAfterMessageToNetwork.onHistoryClick(new MouseEvent('click'));
     });
     const clearAll = findMenuItemWithLabel(contextMenu.footerSection(), 'Clear local chats')!;
     assert.isDefined(clearAll);
-    await expectViewUpdate(() => {
+    const updatedViewInputAfterClearAll = await expectViewUpdate(() => {
       contextMenu.invokeHandler(clearAll.id());
     });
     assert.deepEqual(view.lastCall.args[0].messages, []);
     assert.isUndefined(view.lastCall.args[0].agentType);
-
     contextMenu.discard();
 
-    button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
-    assert.instanceOf(button, HTMLElement);
     contextMenu = getMenu(() => {
-      dispatchClickEvent(button);
+      updatedViewInputAfterClearAll.onHistoryClick(new MouseEvent('click'));
     });
     const menuItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'No past conversations');
     assert(menuItem);

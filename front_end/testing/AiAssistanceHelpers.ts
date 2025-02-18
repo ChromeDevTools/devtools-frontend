@@ -165,7 +165,7 @@ export async function createAiAssistancePanel(options?: {
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
 }) {
-  const view = sinon.stub<[AiAssistance.Props, unknown, HTMLElement]>();
+  const view = sinon.stub<[AiAssistance.ViewInput, unknown, HTMLElement]>();
   const aidaClient = options?.aidaClient ?? mockAidaClient();
   const panel = new AiAssistance.AiAssistancePanel(view, {
     aidaClient,

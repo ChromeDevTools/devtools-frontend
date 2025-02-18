@@ -10,9 +10,10 @@ import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('UserActionRow', () => {
   function createComponent(props: AiAssistance.UserActionRowWidgetParams): [
-    sinon.SinonStub<[AiAssistance.ViewInput, AiAssistance.ViewOutput, HTMLElement], void>, AiAssistance.UserActionRow
+    sinon.SinonStub<[AiAssistance.UserActionRowViewInput, AiAssistance.ViewOutput, HTMLElement], void>,
+    AiAssistance.UserActionRow
   ] {
-    const view = sinon.stub<[AiAssistance.ViewInput, AiAssistance.ViewOutput, HTMLElement]>();
+    const view = sinon.stub<[AiAssistance.UserActionRowViewInput, AiAssistance.ViewOutput, HTMLElement]>();
     const component = new AiAssistance.UserActionRow(undefined, view);
     Object.assign(component, props);
     component.wasShown();

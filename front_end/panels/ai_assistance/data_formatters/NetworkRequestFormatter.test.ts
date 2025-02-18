@@ -7,13 +7,13 @@ import {NetworkRequestFormatter} from '../ai_assistance.js';
 describe('NetworkRequestFormatter', () => {
   describe('allowHeader', () => {
     it('allows a header from the list', () => {
-      assert.isTrue(NetworkRequestFormatter.allowHeader({name: 'content-type', value: 'foo'}));
+      assert.isTrue(NetworkRequestFormatter.allowHeader('content-type'));
     });
 
     it('disallows headers not on the list', () => {
-      assert.isFalse(NetworkRequestFormatter.allowHeader({name: 'cookie', value: 'foo'}));
-      assert.isFalse(NetworkRequestFormatter.allowHeader({name: 'set-cookie', value: 'foo'}));
-      assert.isFalse(NetworkRequestFormatter.allowHeader({name: 'authorization', value: 'foo'}));
+      assert.isFalse(NetworkRequestFormatter.allowHeader('cookie'));
+      assert.isFalse(NetworkRequestFormatter.allowHeader('set-cookie'));
+      assert.isFalse(NetworkRequestFormatter.allowHeader('authorization'));
     });
   });
 

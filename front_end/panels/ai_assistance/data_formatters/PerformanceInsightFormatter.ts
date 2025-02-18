@@ -4,11 +4,22 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 
+import {
+  NetworkRequestFormatter,
+} from './NetworkRequestFormatter.js';
+
 function formatMilli(x: number|undefined): string {
   if (x === undefined) {
     return '';
   }
   return i18n.TimeUtilities.preciseMillisToString(x, 2);
+}
+
+function formatMicro(x: number|undefined): string {
+  if (x === undefined) {
+    return '';
+  }
+  return formatMilli(Trace.Helpers.Timing.microToMilli(x as Trace.Types.Timing.Micro));
 }
 
 export class PerformanceInsightFormatter {
@@ -119,5 +130,61 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
       case 'Viewport':
         return '';
     }
+  }
+}
+
+export class TraceEventFormatter {
+  /**
+   * This is the data passed to a network request when the Performance Insights
+   * agent is asking for information. It is a slimmed down version of the
+   * request's data to avoid using up too much of the context window.
+   * IMPORTANT: these set of fields have been reviewed by Chrome Privacy &
+   * Security; be careful about adding new data here. If you are in doubt please
+   * talk to jacktfranklin@.
+   */
+  static networkRequest(
+      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
+    const {url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData} =
+        request.args.data;
+
+    // Note: unlike other agents, we do have the ability to include
+    // cross-origins, hence why we do not sanitize the URLs here.
+    const navigationForEvent = Trace.Helpers.Trace.getNavigationForTraceEvent(
+        request,
+        request.args.data.frame,
+        parsedTrace.Meta.navigationsByFrameId,
+    );
+    const baseTime = navigationForEvent?.ts ?? parsedTrace.Meta.traceBounds.min;
+
+    // Gets all the timings for this request, relative to the base time.
+    // Note that this is the start time, not total time. E.g. "queueing: X"
+    // means that the request was queued at Xms, not that it queued for Xms.
+    const startTimesForLifecycle = {
+      start: request.ts - baseTime,
+      queueing: syntheticData.downloadStart - baseTime,
+      requestSent: syntheticData.sendStartTime - baseTime,
+      downloadComplete: syntheticData.finishTime - baseTime,
+      processingComplete: request.ts + request.dur - baseTime,
+
+    } as const;
+
+    const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
+
+    return `## Network request: ${url}
+Timings:
+- Start time: ${formatMicro(startTimesForLifecycle.start)}
+- Queued at: ${formatMicro(startTimesForLifecycle.queueing)}
+- Request sent at: ${formatMicro(startTimesForLifecycle.requestSent)}
+- Download complete at: ${formatMicro(startTimesForLifecycle.downloadComplete)}
+- Fully completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
+- Total request duration: ${formatMicro(request.dur)}
+Status code: ${statusCode}
+MIME Type: ${mimeType}
+Priority:
+- Initial: ${initialPriority}
+- Final: ${priority}
+Render blocking?: ${renderBlocking ? 'Yes' : 'No'}
+From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}
+${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders, true)}`;
   }
 }

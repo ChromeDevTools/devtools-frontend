@@ -9,24 +9,29 @@ import * as Network from '../../network/network.js';
 
 const MAX_HEADERS_SIZE = 1000;
 
+/**
+ * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
+ */
+function sanitizeHeaders(headers: Array<{name: string, value: string}>): Array<{name: string, value: string}> {
+  return headers.map(header => {
+    if (NetworkRequestFormatter.allowHeader(header.name)) {
+      return header;
+    }
+    return {name: header.name, value: '<redacted>'};
+  });
+}
+
 export class NetworkRequestFormatter {
-  static allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
-    return allowedHeaders.has(header.name.toLowerCase().trim());
+  static allowHeader(headerName: string): boolean {
+    return allowedHeaders.has(headerName.toLowerCase().trim());
   }
-  static formatHeaders(title: string, headers: SDK.NetworkRequest.NameValue[]): string {
+  static formatHeaders(title: string, headers: Array<{name: string, value: string}>, addListPrefixToEachLine?: boolean):
+      string {
     return formatLines(
-        title,
-        headers
-            .map(header => {
-              if (NetworkRequestFormatter.allowHeader(header)) {
-                return header;
-              }
-              return {
-                name: header.name,
-                value: '<redacted>',
-              };
-            })
-            .map(header => header.name + ': ' + header.value + '\n'),
+        title, sanitizeHeaders(headers).map(header => {
+          const prefix = addListPrefixToEachLine ? '- ' : '';
+          return prefix + header.name + ': ' + header.value + '\n';
+        }),
         MAX_HEADERS_SIZE);
   }
 

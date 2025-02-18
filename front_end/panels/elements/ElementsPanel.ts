@@ -617,7 +617,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
         return;
       }
-      let node: (SDK.DOMModel.DOMNode|null) = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
+      let node = domModel.nodeForId(restoredNodeId);
       if (!node) {
         const inspectedDocument = domModel.existingDocument();
         node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;

@@ -368,7 +368,7 @@ export class CSSModel extends SDKModel<EventTypes> {
 
     const payload = {
       cssModel: this,
-      node: (node as DOMNode),
+      node,
       inlinePayload: matchedStylesResponse.inlineStyle || null,
       attributesPayload: matchedStylesResponse.attributesStyle || null,
       matchedPayload: matchedStylesResponse.matchedCSSRules || [],

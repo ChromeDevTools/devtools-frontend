@@ -1268,7 +1268,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   async pushNodeToFrontend(objectId: Protocol.Runtime.RemoteObjectId): Promise<DOMNode|null> {
     await this.requestDocument();
     const {nodeId} = await this.agent.invoke_requestNode({objectId});
-    return nodeId ? this.nodeForId(nodeId) : null;
+    return this.nodeForId(nodeId);
   }
 
   pushNodeByPathToFrontend(path: string): Promise<Protocol.DOM.NodeId|null> {

@@ -38,7 +38,7 @@ import {
   NetworkAgent,
   RequestContext,
 } from './agents/NetworkAgent.js';
-import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
+import {PatchAgent} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {InsightContext, PerformanceInsightsAgent} from './agents/PerformanceInsightsAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
@@ -664,6 +664,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           multimodalInputEnabled:
               isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
           imageInput: this.#imageInput,
+          projectName: this.#project?.displayName() ?? '',
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
             this.#imageInput = '';
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
@@ -977,32 +978,23 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #onApplyToWorkspace(): Promise<void> {
+    const changeSummary = this.#getChangeSummary();
+    if (!changeSummary) {
+      throw new Error('Change summary does not exist');
+    }
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
     const agent = new PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+      project: this.#project,
     });
     this.#patchSuggestionLoading = true;
     this.requestUpdate();
-    const prompt =
-        `I have applied the following CSS changes to my page in Chrome DevTools, what are the files in my source code that I need to change to apply the same change?
-
-\`\`\`css
-${this.#getChangeSummary()}
-\`\`\`
-
-Try searching using the selectors and if nothing matches, try to find a semantically appropriate place to change.
-Output one filename per line and nothing else!
-`;
-
-    let response;
-    for await (response of agent.run(prompt, {
-      selected: new ProjectContext(this.#project),
-    })) {
-    }
-    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not find files';
+    const responses = await Array.fromAsync(agent.applyChanges(changeSummary));
+    const response = responses.at(-1);
+    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
     this.#patchSuggestionLoading = false;
     this.requestUpdate();
   }

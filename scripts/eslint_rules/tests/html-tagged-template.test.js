@@ -14,6 +14,16 @@ const error = {
 new RuleTester().run('html-tagged-template', rule, {
   valid: [
     {
+      code: `import {html, render} from '../../ui/lit/lit.js';
+
+      function render() {
+        render(
+            html\`<div></div>\`,
+            this.shadow, {host: this});
+      }
+      `,
+    },
+    {
       code: `import * as Lit from '../../../../ui/lit/lit.js';
 
       const {html} = Lit;

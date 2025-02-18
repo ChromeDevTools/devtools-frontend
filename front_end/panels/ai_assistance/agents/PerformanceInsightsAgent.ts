@@ -4,9 +4,9 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as Lit from '../../../ui/lit/lit.js';
-import type * as TimelineUtils from '../../timeline/utils/utils.js';
+import * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
-import {PerformanceInsightFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
+import {PerformanceInsightFormatter, TraceEventFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 
 import {
   type AgentOptions as BaseAgentOptions,
@@ -79,8 +79,6 @@ export class InsightContext extends ConversationContext<TimelineUtils.InsightAIC
 }
 
 export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAIContext.ActiveInsight> {
-  // TODO: make use of the Insight.
-  // eslint-disable-next-line no-unused-private-class-members
   #insight: ConversationContext<TimelineUtils.InsightAIContext.ActiveInsight>|undefined;
 
   override async *
@@ -113,7 +111,30 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
 
   constructor(opts: BaseAgentOptions) {
     super(opts);
-    // TODO: define the set of functions for the LLM.
+
+    this.declareFunction<Record<never, unknown>, {
+      requests: string[],
+    }>('getNetworkActivity', {
+      description: 'Returns relevant network requests for the selected insight',
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: true,
+        properties: {},
+      },
+      handler: async () => {
+        if (!this.#insight) {
+          return {error: 'No insight available'};
+        }
+        const activeInsight = this.#insight.getItem();
+        const requests = TimelineUtils.InsightAIContext.AIQueries.networkRequests(
+            activeInsight.insight,
+            activeInsight.parsedTrace,
+        );
+        const formatted = requests.map(r => TraceEventFormatter.networkRequest(r, activeInsight.parsedTrace));
+        return {result: {requests: formatted}};
+      },
+    });
   }
 
   override async enhanceQuery(

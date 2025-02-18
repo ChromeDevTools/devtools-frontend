@@ -13,7 +13,6 @@ import * as Trace from '../../../models/trace/trace.js';
  */
 export class ActiveInsight {
   #insight: Trace.Insights.Types.InsightModel<{}, {}>;
-  // eslint-disable-next-line no-unused-private-class-members
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
 
   constructor(insight: Trace.Insights.Types.InsightModel<{}, {}>, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
@@ -23,6 +22,9 @@ export class ActiveInsight {
 
   get insight(): Readonly<Trace.Insights.Types.InsightModel<{}, {}>> {
     return this.#insight;
+  }
+  get parsedTrace(): Trace.Handlers.Types.ParsedTrace {
+    return this.#parsedTrace;
   }
 
   title(): string {

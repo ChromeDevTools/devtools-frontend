@@ -527,11 +527,18 @@ export class MainImpl {
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
 
-    ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.instance({
+    const projectSettingsModel = ProjectSettings.ProjectSettingsModel.ProjectSettingsModel.instance({
       forceNew: true,
       hostConfig: Root.Runtime.hostConfig,
       pageResourceLoader: SDK.PageResourceLoader.PageResourceLoader.instance(),
       targetManager,
+    });
+
+    Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance({
+      forceNew: true,
+      hostConfig: Root.Runtime.hostConfig,
+      inspectorFrontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+      projectSettingsModel,
     });
 
     AutofillManager.AutofillManager.AutofillManager.instance();

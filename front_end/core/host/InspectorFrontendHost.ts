@@ -271,6 +271,18 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   recordUserMetricsAction(umaName: string): void {
   }
 
+  connectAutomaticFileSystem(
+      _fileSystemPath: Platform.DevToolsPath.RawPathString,
+      _fileSystemUUID: string,
+      _addIfMissing: boolean,
+      callback: (result: {success: boolean}) => void,
+      ): void {
+    queueMicrotask(() => callback({success: false}));
+  }
+
+  disconnectAutomaticFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void {
+  }
+
   requestFileSystems(): void {
     this.events.dispatchEventToListeners(Events.FileSystemsLoaded, []);
   }

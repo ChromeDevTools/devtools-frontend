@@ -805,6 +805,28 @@ const InspectorFrontendHostImpl = class {
   /**
    * @override
    */
+  connectAutomaticFileSystem(fileSystemPath, fileSystemUUID, addIfMissing, callback) {
+    DevToolsAPI.sendMessageToEmbedder(
+        'connectAutomaticFileSystem',
+        [fileSystemPath, fileSystemUUID, addIfMissing],
+        callback,
+    );
+  }
+
+  /**
+   * @override
+   */
+  disconnectAutomaticFileSystem(fileSystemPath) {
+    DevToolsAPI.sendMessageToEmbedder(
+        'disconnectAutomaticFileSystem',
+        [fileSystemPath],
+        null,
+    );
+  }
+
+  /**
+   * @override
+   */
   requestFileSystems() {
     DevToolsAPI.sendMessageToEmbedder('requestFileSystems', [], null);
   }

@@ -26,6 +26,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main",
+    "../persistence",
   ]
 
   visibility += devtools_models_visibility

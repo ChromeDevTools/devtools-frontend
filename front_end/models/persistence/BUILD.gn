@@ -18,6 +18,7 @@ generate_css("css_files") {
 devtools_module("persistence") {
   sources = [
     "Automapping.ts",
+    "AutomaticFileSystemManager.ts",
     "EditFileSystemView.ts",
     "FileSystemWorkspaceBinding.ts",
     "IsolatedFileSystem.ts",
@@ -39,6 +40,7 @@ devtools_module("persistence") {
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/breakpoints:bundle",
+    "../../models/project_settings:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../ui/components/cards:bundle",
@@ -92,6 +94,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AutomaticFileSystemManager.test.ts",
     "NetworkPersistenceManager.test.ts",
     "PersistenceAction.test.ts",
     "PersistenceImpl.test.ts",

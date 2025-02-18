@@ -13,7 +13,7 @@ import * as SDK from '../../core/sdk/sdk.js';
  * @see https://goo.gle/devtools-json-design
  */
 export interface ProjectSettings {
-  readonly workspace?: {readonly root: string, readonly uuid: string};
+  readonly workspace?: {readonly root: Platform.DevToolsPath.RawPathString, readonly uuid: string};
 }
 
 const EMPTY_PROJECT_SETTINGS: ProjectSettings = Object.freeze({});

@@ -103,7 +103,12 @@ describe('ProjectSettingsModel', () => {
     });
 
     const projectSettings = await projectSettingsModel.projectSettingsPromise;
-    assert.deepEqual(projectSettings, {workspace: {root: '/home/foo', uuid: 'foo'}});
+    assert.deepEqual(projectSettings, {
+      workspace: {
+        root: '/home/foo' as Platform.DevToolsPath.RawPathString,
+        uuid: 'foo',
+      }
+    });
   });
 
   it('listens for navigations', () => {

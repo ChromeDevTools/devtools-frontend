@@ -61,6 +61,6 @@ describeWithEnvironment('CodeBlock', () => {
     renderElementIntoDOM(component);
     const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
     assert.exists(notice);
-    assert.strictEqual(notice!.innerText, 'Use code snippets with caution');
+    assert.strictEqual(notice.innerText, 'Use code snippets with caution');
   });
 });

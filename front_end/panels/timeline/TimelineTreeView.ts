@@ -579,9 +579,8 @@ export class TimelineTreeView extends
   }
 
   private onMouseMove(event: Event): void {
-    const gridNode = event.target && (event.target instanceof Node) ?
-        (this.dataGrid.dataGridNodeFromNode((event.target as Node))) :
-        null;
+    const gridNode =
+        event.target && (event.target instanceof Node) ? (this.dataGrid.dataGridNodeFromNode((event.target))) : null;
     const profileNode = (gridNode as TreeGridNode)?.profileNode;
     if (profileNode === this.lastHoveredProfileNode) {
       return;

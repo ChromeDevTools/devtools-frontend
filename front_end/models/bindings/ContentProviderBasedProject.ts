@@ -182,8 +182,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
           break;
         }
         matches = Platform.ArrayUtilities.mergeOrdered(
-            matches, searchMatches as TextUtils.ContentProvider.SearchMatch[],
-            TextUtils.ContentProvider.SearchMatch.comparator);
+            matches, searchMatches, TextUtils.ContentProvider.SearchMatch.comparator);
       }
       if (allMatchesFound) {
         result.set(uiSourceCode, matches);

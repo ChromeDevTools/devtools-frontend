@@ -95,7 +95,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   private static parseJSON(text: string|null): Promise<ParsedJSON|null> {
     let returnObj: (ParsedJSON|null)|null = null;
     if (text) {
-      returnObj = JSONView.extractJSON((text as string));
+      returnObj = JSONView.extractJSON((text));
     }
     if (!returnObj) {
       return Promise.resolve(null);

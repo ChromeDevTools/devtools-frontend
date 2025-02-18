@@ -223,11 +223,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (!dirEntry) {
       return null;
     }
-    const fileEntry =
-        await this.serializedFileOperation(
-            path, createFileCandidate.bind(this, name || 'NewFile' as Platform.DevToolsPath.RawPathString)) as
-            FileEntry |
-        null;
+    const fileEntry = await this.serializedFileOperation(
+        path, createFileCandidate.bind(this, name || 'NewFile' as Platform.DevToolsPath.RawPathString));
     if (!fileEntry) {
       return null;
     }

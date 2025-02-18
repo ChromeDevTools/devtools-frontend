@@ -222,9 +222,9 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const rootNode = this.dataGrid.rootNode();
     const exisitingNodes = new Set<GridNode>();
     for (const pair of dataByUrl) {
-      const url = (pair[0] as string);
-      const size = (pair[1].size as number);
-      const isolateCount = (pair[1].isolates.size as number);
+      const url = (pair[0]);
+      const size = (pair[1].size);
+      const isolateCount = (pair[1].isolates.size);
       if (!url) {
         console.info(`Node with empty URL: ${size} bytes`);  // eslint-disable-line no-console
         continue;
@@ -338,8 +338,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!mainTarget) {
       return;
     }
-    const resourceTreeModel =
-        (mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null);
+    const resourceTreeModel = (mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel));
     if (resourceTreeModel) {
       resourceTreeModel.reloadPage();
     }

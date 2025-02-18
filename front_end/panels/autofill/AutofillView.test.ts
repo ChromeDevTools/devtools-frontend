@@ -231,7 +231,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
     const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
-    const firstGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]')!;
+    const firstGridRow = grid.shadowRoot.querySelector('tbody tr[jslog]')!;
     let styles = firstGridRow.getAttribute('style') || '';
     assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
 
@@ -277,7 +277,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
     const grid = view.shadowRoot!.querySelector('devtools-data-grid')!;
     assert.isNotNull(grid.shadowRoot);
-    const fourthGridRow = grid.shadowRoot!.querySelector('tbody tr[jslog]:nth-child(5)')!;
+    const fourthGridRow = grid.shadowRoot.querySelector('tbody tr[jslog]:nth-child(5)')!;
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
     await RenderCoordinator.done({waitForWork: true});
     assert.isTrue(zipCodeSpan.classList.contains('highlighted'));

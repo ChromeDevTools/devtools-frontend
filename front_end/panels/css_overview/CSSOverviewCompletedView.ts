@@ -740,8 +740,8 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       }
     }
 
-    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA) as string);
-    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA) as string);
+    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
+    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
 
     const showAPCA = Root.Runtime.experiments.isEnabled('apca');
 

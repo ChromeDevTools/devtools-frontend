@@ -121,7 +121,7 @@ export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
     const provider = TextUtils.StaticContentProvider.StaticContentProvider.fromString(
         url,
         Common.ResourceType.resourceTypes.XHR,
-        value as string,
+        value,
     );
     return SourceFrame.PreviewFactory.PreviewFactory.createPreview(
         provider,

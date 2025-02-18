@@ -84,7 +84,7 @@ export class ExtensionTrackAppender implements TrackAppender {
     for (const [trackName, entries] of Object.entries(this.#extensionTopLevelTrack.entriesByTrack)) {
       if (this.#extensionTopLevelTrack.isTrackGroup) {
         // Second level header is used for only sub-tracks.
-        this.#appendSecondLevelHeader(currentStartLevel, trackName as string);
+        this.#appendSecondLevelHeader(currentStartLevel, trackName);
       }
       currentStartLevel = this.#compatibilityBuilder.appendEventsAtLevel(entries, currentStartLevel, this);
     }

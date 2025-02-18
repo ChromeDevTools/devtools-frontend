@@ -2706,8 +2706,7 @@ export class MoreFiltersDropDownUI extends
       useSoftMenu: true,
       keepOpen: true,
       x: this.dropDownButton.element.getBoundingClientRect().left,
-      y: this.dropDownButton.element.getBoundingClientRect().top +
-          (this.dropDownButton.element as HTMLElement).offsetHeight,
+      y: this.dropDownButton.element.getBoundingClientRect().top + (this.dropDownButton.element).offsetHeight,
     });
 
     this.contextMenu.defaultSection().appendCheckboxItem(

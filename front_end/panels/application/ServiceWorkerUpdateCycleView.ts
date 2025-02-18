@@ -181,7 +181,7 @@ export class ServiceWorkerUpdateCycleView {
                         click: true,
                         keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
                       })}`);
-      this.rows.push(tr as HTMLTableRowElement);
+      this.rows.push(tr);
       const timingBarVersionElement = tr.createChild('td');
       UI.UIUtils.createTextChild(timingBarVersionElement, '#' + range.id);
       timingBarVersionElement.classList.add('service-worker-update-timing-bar-clickable');

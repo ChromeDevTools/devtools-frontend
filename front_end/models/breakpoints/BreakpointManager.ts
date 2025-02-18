@@ -1117,7 +1117,7 @@ export class ModelBreakpoint {
         return this.#debuggerModel.setBreakpointByURL(pos.url, pos.lineNumber, pos.columnNumber, pos.condition);
       }
       return this.#debuggerModel.setBreakpointInAnonymousScript(
-          pos.scriptHash as string, pos.lineNumber, pos.columnNumber, pos.condition);
+          pos.scriptHash, pos.lineNumber, pos.columnNumber, pos.condition);
     }));
     const breakpointIds: Protocol.Debugger.BreakpointId[] = [];
     let locations: SDK.DebuggerModel.Location[] = [];

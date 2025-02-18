@@ -296,7 +296,7 @@ export class HeapSnapshotSortableDataGrid extends
   deselectFilteredNodes(): void {
     let currentNode: (HeapSnapshotGridNode|null) = this.selectedNode;
     while (currentNode) {
-      if (this.selectedNode && this.isFilteredOut((currentNode as HeapSnapshotGridNode))) {
+      if (this.selectedNode && this.isFilteredOut((currentNode))) {
         this.selectedNode.deselect();
         this.selectedNode = null;
         return;
@@ -552,7 +552,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
 
   revealTreeNode(pathToReveal: HeapSnapshotGridNode[]): Promise<HeapSnapshotGridNode> {
     const height = this.calculateOffset(pathToReveal);
-    const node = (pathToReveal[pathToReveal.length - 1] as HeapSnapshotGridNode);
+    const node = (pathToReveal[pathToReveal.length - 1]);
     const scrollTop = this.scrollContainer.scrollTop;
     const scrollBottom = scrollTop + this.scrollContainer.offsetHeight;
     if (height >= scrollTop && height < scrollBottom) {
@@ -594,7 +594,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
       }
       parentNode = node;
     }
-    return height - (pathToReveal[pathToReveal.length - 1] as HeapSnapshotGridNode).nodeSelfHeight();
+    return height - (pathToReveal[pathToReveal.length - 1]).nodeSelfHeight();
   }
 
   override allChildren(parent: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): HeapSnapshotGridNode[] {
@@ -610,7 +610,7 @@ export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   }
 
   override insertChild(parent: HeapSnapshotGridNode, node: HeapSnapshotGridNode, index: number): void {
-    this.allChildren(parent).splice(index, 0, (node as HeapSnapshotGridNode));
+    this.allChildren(parent).splice(index, 0, (node));
   }
 
   override removeChildByIndex(parent: HeapSnapshotGridNode, index: number): void {

@@ -184,8 +184,7 @@ function unignoreRegex(regexValue: string): void {
   const regexPatterns =
       (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
           .getAsArray();
-  const result =
-      regexPatterns.filter(regexPattern => regexPattern.pattern !== regexValue) as Common.Settings.RegExpSettingItem[];
+  const result = regexPatterns.filter(regexPattern => regexPattern.pattern !== regexValue);
 
   (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
       .setAsArray(result);

@@ -794,8 +794,8 @@ export class WasmLocationLabels {
       if (entry.length === 0) {
         mappings.set(m.source, entry);
       }
-      const labelLine = m.originalLine as number;
-      const labelColumn = m.originalColumn as number;
+      const labelLine = m.originalLine;
+      const labelColumn = m.originalColumn;
       const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
       assertNotNullOrUndefined(sourceLine);
       entry.push({
@@ -832,6 +832,7 @@ export class WasmLocationLabels {
     const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
     const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
     await Promise.all(this.#mappings.get(label)!.map(
+
         ({moduleOffset}) => addBreakpointForLine(frontend, lineNumberLabels.get(moduleOffset)!)));
   }
 

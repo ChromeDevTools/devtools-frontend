@@ -152,7 +152,7 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
       }
     }
 
-    treeOutline.findTreeElement(node as SDK.DOMModel.DOMNode)?.listItemNode.setAttribute('title', 'Detached Tree Node');
+    treeOutline.findTreeElement(node)?.listItemNode.setAttribute('title', 'Detached Tree Node');
 
     return treeOutline.element;
   }

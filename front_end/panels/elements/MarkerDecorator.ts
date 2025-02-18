@@ -41,7 +41,7 @@ export class GenericDecorator implements MarkerDecorator {
       throw new Error(`Generic decorator requires a color and a title: ${extension.marker}`);
     }
     this.title = extension.title();
-    this.color = (extension.color as string);
+    this.color = (extension.color);
   }
 
   decorate(_node: SDK.DOMModel.DOMNode): {

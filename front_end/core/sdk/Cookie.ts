@@ -117,7 +117,7 @@ export class Cookie {
     if (!this.#partitionKey) {
       return '';
     }
-    return this.#partitionKey?.topLevelSite as string;
+    return this.#partitionKey?.topLevelSite;
   }
 
   setTopLevelSite(topLevelSite: string, hasCrossSiteAncestor: boolean): void {
@@ -128,7 +128,7 @@ export class Cookie {
     if (!this.#partitionKey) {
       return false;
     }
-    return this.#partitionKey?.hasCrossSiteAncestor as boolean;
+    return this.#partitionKey?.hasCrossSiteAncestor;
   }
 
   setHasCrossSiteAncestor(hasCrossSiteAncestor: boolean): void {

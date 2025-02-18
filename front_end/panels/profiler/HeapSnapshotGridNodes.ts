@@ -781,8 +781,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
 
     if (heapProfilerModel) {
       contextMenu.revealSection().appendItem(i18nString(UIStrings.storeAsGlobalVariable), async () => {
-        const remoteObject =
-            await this.tryQueryObjectContent((heapProfilerModel as SDK.HeapProfilerModel.HeapProfilerModel), '');
+        const remoteObject = await this.tryQueryObjectContent((heapProfilerModel), '');
         if (!remoteObject) {
           Common.Console.Console.instance().error(i18nString(UIStrings.previewIsNotAvailable));
         } else {
@@ -1142,7 +1141,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 
   override createProvider(): HeapSnapshotProviderProxy {
     return (this.dataGridInternal.snapshot as HeapSnapshotProxy)
-               .createNodesProviderForClass(this.classKey, this.nodeFilter) as HeapSnapshotProviderProxy;
+        .createNodesProviderForClass(this.classKey, this.nodeFilter);
   }
 
   async populateNodeBySnapshotObjectId(snapshotObjectId: number): Promise<HeapSnapshotGridNode[]> {
@@ -1157,7 +1156,7 @@ export class HeapSnapshotConstructorNode extends HeapSnapshotGridNode {
 
     await this.populateChildren(nodePosition, null);
 
-    const node = (this.childForPosition(nodePosition) as HeapSnapshotGridNode | null);
+    const node = (this.childForPosition(nodePosition));
     return node ? [this, node] : [];
   }
 

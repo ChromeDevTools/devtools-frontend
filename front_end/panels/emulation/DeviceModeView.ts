@@ -486,7 +486,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         await this.paintImage(ctx, this.model.screenImage(), screenRect.relativeTo(outlineRect));
       }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-      this.saveScreenshot((canvas as HTMLCanvasElement));
+      this.saveScreenshot((canvas));
     };
   }
 
@@ -521,7 +521,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       }
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(pageImage, 0, 0);
-      this.saveScreenshot((canvas as HTMLCanvasElement));
+      this.saveScreenshot((canvas));
     };
   }
 
@@ -577,8 +577,7 @@ export class Ruler extends UI.Widget.VBox {
     this.element.classList.add('device-mode-ruler');
     this.element.setAttribute('jslog', `${VisualLogging.deviceModeRuler().track({click: true})}`);
     this.contentElementInternal =
-        this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner') as
-        HTMLDivElement;
+        this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
     this.horizontal = horizontal;
     this.scale = 1;
     this.count = 0;

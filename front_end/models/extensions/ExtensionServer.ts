@@ -1018,8 +1018,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const scriptFiles = debuggerBindingsInstance.scriptsForUISourceCode(contentProvider);
     if (scriptFiles.length > 0) {
       for (const script of scriptFiles) {
-        const resourceFile = debuggerBindingsInstance.scriptFile(
-            contentProvider as Workspace.UISourceCode.UISourceCode, script.debuggerModel);
+        const resourceFile = debuggerBindingsInstance.scriptFile(contentProvider, script.debuggerModel);
         resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString);
       }
     }
@@ -1213,7 +1212,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     try {
-      const startPageURL = new URL((startPage as string));
+      const startPageURL = new URL((startPage));
       const extensionOrigin = startPageURL.origin;
       const name = extensionInfo.name || `Extension ${extensionOrigin}`;
       const extensionRegistration = new RegisteredExtension(name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));

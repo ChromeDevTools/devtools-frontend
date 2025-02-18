@@ -219,7 +219,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to
     // be non empty and Protocol.Network.LoaderId because it is filled
     // by ResourceTreeFrame.navigate.
-    const currentLoaderId = frame.loaderId as Protocol.Network.LoaderId;
+    const currentLoaderId = frame.loaderId;
 
     // Holds histories for two pages at most.
     this.loaderIds.push(currentLoaderId);

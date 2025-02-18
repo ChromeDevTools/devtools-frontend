@@ -543,7 +543,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     const completionRequestId = ++this.completionRequestId;
     const completions =
         await this.loadCompletions.call(null, expressionRange.toString(), wordQueryRange.toString(), Boolean(force));
-    this.completionsReady(completionRequestId, (selection as Selection), wordQueryRange, Boolean(force), completions);
+    this.completionsReady(completionRequestId, (selection), wordQueryRange, Boolean(force), completions);
   }
 
   disableDefaultSuggestionForEmptyInput(): void {

@@ -427,7 +427,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   }
 
   updateBackgroundColor(): void {
-    const element = (this.existingElement() as HTMLElement | null);
+    const element = (this.existingElement());
     if (!element) {
       return;
     }
@@ -651,8 +651,8 @@ export class NetworkRequestNode extends NetworkNode {
       return !aHasInitiatorCell ? -1 : 1;
     }
     // `a` and `b` are guaranteed NetworkRequestNodes with present initiatorCell elements.
-    const networkRequestNodeA = (a as NetworkRequestNode);
-    const networkRequestNodeB = (b as NetworkRequestNode);
+    const networkRequestNodeA = (a);
+    const networkRequestNodeB = (b);
 
     const aText = networkRequestNodeA.linkifiedInitiatorAnchor ?
         networkRequestNodeA.linkifiedInitiatorAnchor.textContent || '' :

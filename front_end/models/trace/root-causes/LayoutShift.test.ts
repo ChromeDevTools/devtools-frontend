@@ -173,8 +173,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
         domNodeByIdMap.set(nodeId, fakeNode);
       }
 
-      domNodeByBackendIdMap =
-          new Map(domNodeByBackendIdMapEntries) as unknown as Map<Protocol.DOM.BackendNodeId, Protocol.DOM.Node|null>;
+      domNodeByBackendIdMap = new Map(domNodeByBackendIdMapEntries);
 
       model = getBaseTraceParseModelData();
       modelMut = model as unknown as ParsedTraceMutable;

@@ -171,7 +171,7 @@ export class SearchView extends UI.Widget.VBox {
 
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {
-      this.onKeyDownOnPanel((event as KeyboardEvent));
+      this.onKeyDownOnPanel((event));
     });
 
     this.searchPanelElement = this.contentElement.createChild('div', 'search-drawer-header');
@@ -187,7 +187,7 @@ export class SearchView extends UI.Widget.VBox {
 
     this.search = UI.UIUtils.createHistoryInput('search', 'search-toolbar-input');
     this.search.addEventListener('keydown', event => {
-      this.onKeyDown((event as KeyboardEvent));
+      this.onKeyDown((event));
     });
     this.search.setAttribute(
         'jslog', `${VisualLogging.textField().track({change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}`);

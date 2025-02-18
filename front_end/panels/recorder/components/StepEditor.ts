@@ -419,7 +419,7 @@ export class EditorState {
         return [...selector];
       });
     }
-    return deepFreeze(state as EditorState);
+    return deepFreeze(state);
   }
 
   static toStep(state: DeepImmutable<EditorState>): Models.Schema.Step {

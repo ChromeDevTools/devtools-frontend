@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -827,8 +826,7 @@ export class NetworkLogViewColumns {
         this.popupLinkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
         });
-        const content = RequestInitiatorView.createStackTracePreview(
-            (request as SDK.NetworkRequest.NetworkRequest), this.popupLinkifier, false);
+        const content = RequestInitiatorView.createStackTracePreview((request), this.popupLinkifier, false);
         if (!content) {
           return false;
         }

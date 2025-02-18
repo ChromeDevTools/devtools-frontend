@@ -51,8 +51,7 @@ describe('SettingRegistration', () => {
 
   it('retrieves a registered setting', () => {
     try {
-      const preRegisteredSetting =
-          Common.Settings.Settings.instance().moduleSetting(settingName) as Common.Settings.Setting<boolean>;
+      const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
       assert.strictEqual(preRegisteredSetting.title(), settingTitle, 'Setting title is not returned correctly');
       assert.strictEqual(
           preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');

@@ -758,7 +758,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const elementPath = [element as UI.TreeOutline.TreeElement | ApplicationPanelTreeElement];
     for (let parent = element.parent as UI.TreeOutline.TreeElement | ApplicationPanelTreeElement | null;
          parent && 'itemURL' in parent && parent.itemURL; parent = parent.parent) {
-      elementPath.push(parent as ApplicationPanelTreeElement);
+      elementPath.push(parent);
     }
 
     let i = selection.length - 1;
@@ -816,7 +816,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private domStorageAdded(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
-    const domStorage = (event.data as DOMStorage);
+    const domStorage = (event.data);
     this.addDOMStorage(domStorage);
   }
 
@@ -840,7 +840,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private domStorageRemoved(event: Common.EventTarget.EventTargetEvent<DOMStorage>): void {
-    const domStorage = (event.data as DOMStorage);
+    const domStorage = (event.data);
     this.removeDOMStorage(domStorage);
   }
 
@@ -1629,8 +1629,8 @@ export class IDBObjectStoreTreeElement extends ApplicationPanelTreeElement {
     }
     for (const [indexName, treeElement] of this.idbIndexTreeElements.entries()) {
       if (!indexNames.has(indexName)) {
-        this.removeChild((treeElement as IDBIndexTreeElement));
-        this.idbIndexTreeElements.delete((indexName as string));
+        this.removeChild((treeElement));
+        this.idbIndexTreeElements.delete((indexName));
       }
     }
 

@@ -414,7 +414,7 @@ export class CompatibilityTracksAppender {
     const events = [];
     for (let i = 0; i < entryLevels.length; i++) {
       if (trackStartLevel <= entryLevels[i] && entryLevels[i] <= trackEndLevel) {
-        events.push(this.#entryData[i] as Trace.Types.Events.Event);
+        events.push(this.#entryData[i]);
       }
     }
     events.sort((a, b) => a.ts - b.ts);  // TODO(paulirish): Remove as I'm 90% it's already sorted.

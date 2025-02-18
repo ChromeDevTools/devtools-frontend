@@ -472,7 +472,7 @@ export class FontEditorSectionManager {
   private createPropertyValueMap(): Map<string, string> {
     const propertyMap = new Map<string, string>();
     for (const fontProperty of this.treeElementMap) {
-      const propertyName = (fontProperty[0] as string);
+      const propertyName = (fontProperty[0]);
       const treeElement = fontProperty[1];
       if (treeElement.property.value.length) {
         propertyMap.set(propertyName, treeElement.property.value);

@@ -644,7 +644,7 @@ describeWithEnvironment('Overlays', () => {
       // Create an entry label overlay
       Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
-        entry: event as Trace.Types.Events.Event,
+        entry: event,
         label: '',
       });
       await overlays.update();
@@ -685,7 +685,7 @@ describeWithEnvironment('Overlays', () => {
       // Create an entry label overlay
       Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
-        entry: event as Trace.Types.Events.Event,
+        entry: event,
         label: '',
       });
       await overlays.update();
@@ -887,7 +887,7 @@ describeWithEnvironment('Overlays', () => {
       Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
         label: '',
-        entry: event as Trace.Types.Events.Event,
+        entry: event,
       });
 
       await overlays.update();
@@ -914,7 +914,7 @@ describeWithEnvironment('Overlays', () => {
       Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
         label: '',
-        entry: event as Trace.Types.Events.Event,
+        entry: event,
       });
 
       await overlays.update();

@@ -559,7 +559,7 @@ describeWithMockConnection('AnimationTimeline', () => {
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 
-      const playbackRateButtons = [...view.element.shadowRoot!.querySelectorAll('.animation-playback-rate-button')!];
+      const playbackRateButtons = [...view.element.shadowRoot!.querySelectorAll('.animation-playback-rate-button')];
       assert.isTrue(
           playbackRateButtons.every(button => button.getAttribute('disabled')),
           'All the playback rate buttons are disabled');
@@ -587,7 +587,7 @@ describeWithMockConnection('AnimationTimeline', () => {
       preview.click();
       await waitForAnimationGroupSelectedPromise.wait();
 
-      const labelElements = [...view.element.shadowRoot!.querySelectorAll('.animation-timeline-grid-label')!];
+      const labelElements = [...view.element.shadowRoot!.querySelectorAll('.animation-timeline-grid-label')];
       assert.isTrue(
           labelElements.every(el => el.textContent?.includes('px')),
           'Label is expected to be a pixel value but it is not');
@@ -702,7 +702,7 @@ describeWithMockConnection('AnimationTimeline', () => {
     assert.exists(model);
 
     const dummyGroups = new Map<string, SDK.AnimationModel.AnimationGroup>();
-    sinon.stub(model!, 'animationGroups').value(dummyGroups);
+    sinon.stub(model, 'animationGroups').value(dummyGroups);
     dummyGroups.set('dummy', new SDK.AnimationModel.AnimationGroup(model, 'dummy', []));
 
     // Render into document in order to update the shown empty state.

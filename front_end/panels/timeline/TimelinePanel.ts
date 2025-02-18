@@ -1398,7 +1398,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           // This will be solved when the CPUProfileHandler is done. Then we can directly get it
           // from the new traceEngine
           const profile = (profileEventData as {cpuProfile: Protocol.Profiler.Profile}).cpuProfile;
-          traceAsString = cpuprofileJsonGenerator(profile as Protocol.Profiler.Profile);
+          traceAsString = cpuprofileJsonGenerator(profile);
         }
       } else {
         const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);

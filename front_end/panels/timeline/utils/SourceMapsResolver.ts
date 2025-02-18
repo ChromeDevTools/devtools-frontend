@@ -72,7 +72,7 @@ export class SourceMapsResolver extends EventTarget {
    * TODO(andoli): This can return incorrect scripts if the target page has been reloaded since the trace.
    */
   static resolvedCodeLocationForCallFrame(callFrame: Protocol.Runtime.CallFrame): ResolvedCodeLocationData|null {
-    const codeLocationKey = this.keyForCodeLocation(callFrame as Protocol.Runtime.CallFrame);
+    const codeLocationKey = this.keyForCodeLocation(callFrame);
     return resolvedCodeLocationDataNames.get(codeLocationKey) ?? null;
   }
 

@@ -217,8 +217,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     this.imageElement = this.imageContainer.createChild('img');
     this.maskElement = this.imageContainer.createChild('div');
     this.imageElement.addEventListener('load', this.updateImagePosition.bind(this), false);
-    this.transformController =
-        new LayerViewer.TransformController.TransformController((this.contentElement as HTMLElement), true);
+    this.transformController = new LayerViewer.TransformController.TransformController((this.contentElement), true);
     this.transformController.addEventListener(
         LayerViewer.TransformController.Events.TRANSFORM_CHANGED, this.updateImagePosition, this);
   }

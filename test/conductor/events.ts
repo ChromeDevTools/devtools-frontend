@@ -101,7 +101,7 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
   });
 
   page.on('console', async msg => {
-    const logLevel = logLevels[msg.type() as keyof typeof logLevels] as string;
+    const logLevel = logLevels[msg.type() as keyof typeof logLevels];
     if (logLevel) {
       if (logLevel === 'E') {
         let message = `${logLevel}> `;

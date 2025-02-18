@@ -324,7 +324,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       return;
     }
 
-    const position = this.convertIntoScreenSpace(event as MouseEvent);
+    const position = this.convertIntoScreenSpace(event);
     const node = await this.domModel.nodeForLocation(
         Math.floor(position.x / this.pageScaleFactor + this.scrollOffsetX),
         Math.floor(position.y / this.pageScaleFactor + this.scrollOffsetY),
@@ -361,7 +361,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       return;
     }
 
-    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event as KeyboardEvent);
+    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event);
     const handler = this.shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();
@@ -654,7 +654,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   private createCheckerboardPattern(context: CanvasRenderingContext2D): CanvasPattern|null {
-    const pattern = document.createElement('canvas') as HTMLCanvasElement;
+    const pattern = document.createElement('canvas');
     const size = 32;
     pattern.width = size * 2;
     pattern.height = size * 2;

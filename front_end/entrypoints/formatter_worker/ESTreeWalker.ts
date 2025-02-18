@@ -32,7 +32,7 @@ export class ESTreeWalker {
     }
 
     if (node.type === 'TemplateLiteral') {
-      const templateLiteral = (node as Acorn.ESTree.TemplateLiteral);
+      const templateLiteral = (node);
       const expressionsLength = templateLiteral.expressions.length;
       for (let i = 0; i < expressionsLength; ++i) {
         this.#innerWalk(templateLiteral.quasis[i], templateLiteral);

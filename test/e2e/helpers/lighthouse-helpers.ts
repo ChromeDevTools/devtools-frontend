@@ -189,7 +189,7 @@ export async function endTimespan() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const auditResults = Object.values(lhr.audits) as any[];
+  const auditResults = Object.values<any>(lhr.audits);
   const irrelevantDisplayModes = new Set(['notApplicable', 'manual']);
   const applicableAudits = auditResults.filter(
       audit => !irrelevantDisplayModes.has(audit.scoreDisplayMode),

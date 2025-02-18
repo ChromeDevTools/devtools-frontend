@@ -239,7 +239,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       parentNode = targetNode;
 
       idToUseForRemovedNode.set(sourceNode.id, parentNode.id);
-      parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map(() => parentNode as CPUProfileNode));
+      parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map(() => parentNode));
       sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map(id => protocolNodeById.get(id)));
       this.#idToParsedNode.set(sourceNode.id, targetNode);
     }

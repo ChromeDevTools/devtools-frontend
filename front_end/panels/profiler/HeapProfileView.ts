@@ -169,7 +169,7 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
   }
 
   setSelectionRange(minId: number, maxId: number): void {
-    const profileData = convertToSamplingHeapProfile((this.profileHeader as SamplingHeapProfileHeader));
+    const profileData = convertToSamplingHeapProfile((this.profileHeader));
     const profile = new SamplingHeapProfileModel(profileData, minId, maxId);
     this.adjustedTotal = profile.total;
     this.setProfile(profile);

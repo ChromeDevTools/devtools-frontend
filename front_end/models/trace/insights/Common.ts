@@ -29,7 +29,7 @@ export function getInsight<InsightName extends keyof InsightModels>(
   }
 
   // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight as InsightModels[InsightName];
+  return insight;
 }
 
 export function getLCP(insights: TraceInsightSets|null, key: string|null):

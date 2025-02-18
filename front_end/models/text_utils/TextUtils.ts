@@ -367,7 +367,7 @@ export const performSearchInContent = function(
     const lineContent = text.lineAt(i);
     const matches = lineContent.matchAll(regex);
     for (const match of matches) {
-      result.push(new SearchMatch(i, lineContent, match.index as number, match[0].length));
+      result.push(new SearchMatch(i, lineContent, match.index, match[0].length));
     }
   }
   return result;
@@ -388,7 +388,7 @@ export const performSearchInSearchMatches = function(
   for (const {lineNumber, lineContent} of matches) {
     const matches = lineContent.matchAll(regex);
     for (const match of matches) {
-      result.push(new SearchMatch(lineNumber, lineContent, match.index as number, match[0].length));
+      result.push(new SearchMatch(lineNumber, lineContent, match.index, match[0].length));
     }
   }
   return result;

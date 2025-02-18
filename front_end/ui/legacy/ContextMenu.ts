@@ -573,13 +573,13 @@ export class ContextMenu extends SubMenu {
       const isMouseEvent =
           (this.event as PointerEvent).pointerType === 'mouse' && (this.event as PointerEvent).button >= 0;
       this.softMenu.setFocusOnTheFirstItem(!isMouseEvent);
-      this.softMenu.show((ownerDocument as Document), new AnchorBox(this.x, this.y, 0, 0));
+      this.softMenu.show((ownerDocument), new AnchorBox(this.x, this.y, 0, 0));
       if (this.contextMenuLabel) {
         this.softMenu.setContextMenuElementLabel(this.contextMenuLabel);
       }
     } else {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
-          this.x, this.y, menuObject, (ownerDocument as Document));
+          this.x, this.y, menuObject, (ownerDocument));
 
       function listenToEvents(this: ContextMenu): void {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

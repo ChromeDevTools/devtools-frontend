@@ -40,12 +40,12 @@ function getEnvironmentRecs(view: Element): HTMLElement[] {
 
 function getInteractions(view: Element): HTMLElement[] {
   const interactionsListEl = view.shadowRoot!.querySelector('.log[slot="interactions-log-content"]');
-  return Array.from(interactionsListEl?.querySelectorAll('.interaction') || []) as HTMLElement[];
+  return Array.from(interactionsListEl?.querySelectorAll('.interaction') || []);
 }
 
 function getLayoutShifts(view: Element): HTMLElement[] {
   const interactionsListEl = view.shadowRoot!.querySelector('.log[slot="layout-shifts-log-content"]');
-  return Array.from(interactionsListEl?.querySelectorAll('.layout-shift') || []) as HTMLElement[];
+  return Array.from(interactionsListEl?.querySelectorAll('.layout-shift') || []);
 }
 
 function selectVisibleLog(view: Element, logId: string): void {
@@ -63,8 +63,7 @@ function getClearLogButton(view: Element): HTMLElementTagNameMap['devtools-butto
 
 function selectDeviceOption(view: Element, deviceOption: string): void {
   const deviceScopeSelector = view.shadowRoot!.querySelector('devtools-select-menu#device-scope-select') as HTMLElement;
-  const deviceScopeOptions = Array.from(deviceScopeSelector.querySelectorAll('devtools-menu-item')) as
-      Array<HTMLElementTagNameMap['devtools-menu-item']>;
+  const deviceScopeOptions = Array.from(deviceScopeSelector.querySelectorAll('devtools-menu-item'));
 
   deviceScopeSelector.click();
   deviceScopeOptions.find(o => o.value === deviceOption)!.click();
@@ -74,8 +73,7 @@ function selectPageScope(view: Element, pageScope: string): void {
   const pageScopeSelector = view.shadowRoot!.querySelector('devtools-select-menu#page-scope-select') as HTMLElement;
   pageScopeSelector.click();
 
-  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('devtools-menu-item')) as
-      Array<HTMLElementTagNameMap['devtools-menu-item']>;
+  const pageScopeOptions = Array.from(pageScopeSelector.querySelectorAll('devtools-menu-item'));
   const originOption = pageScopeOptions.find(o => o.value === pageScope);
   originOption!.click();
 }
@@ -593,7 +591,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     assert.lengthOf(getLayoutShifts(view), 1);
 
     const clearLogButton = getClearLogButton(view);
-    clearLogButton!.click();
+    clearLogButton.click();
 
     await RenderCoordinator.done();
 
@@ -654,7 +652,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     await RenderCoordinator.done();
 
     const clearLogButton = getClearLogButton(view);
-    clearLogButton!.click();
+    clearLogButton.click();
 
     await RenderCoordinator.done();
 

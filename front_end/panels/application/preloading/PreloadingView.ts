@@ -421,8 +421,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       this.preloadingDetails.data = null;
     } else {
       const pipeline = this.model.getPipeline(preloadingAttempt);
-      const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null) as
-          Protocol.Preload.RuleSet[];
+      const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null);
       this.preloadingDetails.data = {
         pipeline,
         ruleSets,

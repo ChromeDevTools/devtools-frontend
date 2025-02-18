@@ -150,7 +150,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     this.layerViewHost = layerViewHost;
     this.layerViewHost.registerView(this);
-    this.transformController = new TransformController(this.contentElement as HTMLElement);
+    this.transformController = new TransformController(this.contentElement);
     this.transformController.addEventListener(TransformControllerEvents.TRANSFORM_CHANGED, this.update, this);
 
     this.initToolbar();
@@ -694,12 +694,10 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     const borderAdjustment = ViewportBorderWidth / 2;
     const viewportWidth = viewportSize.width + 2 * borderAdjustment;
     if (this.chromeTextures[0] && this.chromeTextures[2]) {
-      const chromeTextureImage =
-          imageForTexture.get(this.chromeTextures[0] as WebGLTexture) || {naturalHeight: 0, naturalWidth: 0};
+      const chromeTextureImage = imageForTexture.get(this.chromeTextures[0]) || {naturalHeight: 0, naturalWidth: 0};
       const chromeHeight = chromeTextureImage.naturalHeight;
 
-      const middleTextureImage =
-          imageForTexture.get(this.chromeTextures[2] as WebGLTexture) || {naturalHeight: 0, naturalWidth: 0};
+      const middleTextureImage = imageForTexture.get(this.chromeTextures[2]) || {naturalHeight: 0, naturalWidth: 0};
       const middleFragmentWidth = viewportWidth - chromeTextureImage.naturalWidth - middleTextureImage.naturalWidth;
       let x = -borderAdjustment;
       const y = -chromeHeight;
@@ -1130,9 +1128,7 @@ export class LayerTextureManager {
 
   private updateLayer(layer: SDK.LayerTreeBase.Layer): Promise<void> {
     return Promise.all(layer.snapshots())
-        .then(
-            snapshots => this.setSnapshotsForLayer(
-                layer, snapshots.filter(snapshot => snapshot !== null) as SDK.PaintProfiler.SnapshotWithRect[]));
+        .then(snapshots => this.setSnapshotsForLayer(layer, snapshots.filter(snapshot => snapshot !== null)));
   }
 
   private updateTextures(): void {

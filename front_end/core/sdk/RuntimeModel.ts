@@ -165,7 +165,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     let unserializableValue: string|undefined = undefined;
     const unserializableDescription = RemoteObject.unserializableDescription(value);
     if (unserializableDescription !== null) {
-      unserializableValue = (unserializableDescription as string);
+      unserializableValue = (unserializableDescription);
     }
     if (typeof unserializableValue !== 'undefined') {
       value = undefined;

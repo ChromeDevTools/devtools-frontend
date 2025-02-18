@@ -355,7 +355,7 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
     }
 
     let completions: string[] = await this.classNamesPromise;
-    const classesMap = this.nodeClasses((selectedNode as SDK.DOMModel.DOMNode));
+    const classesMap = this.nodeClasses((selectedNode));
     completions = completions.filter(value => !classesMap.get(value));
 
     if (prefix[0] === '.') {

@@ -215,7 +215,7 @@ class DragHandler {
       return;
     }
 
-    if (elementDragStart && !elementDragStart((event as MouseEvent))) {
+    if (elementDragStart && !elementDragStart((event))) {
       return;
     }
 

@@ -115,10 +115,10 @@ export class CSSModel extends SDKModel<EventTypes> {
     this.#stylePollingThrottler = new Common.Throttler.Throttler(StylePollingInterval);
 
     this.#sourceMapManager.setEnabled(
-        Common.Settings.Settings.instance().moduleSetting('css-source-maps-enabled').get());
+        Common.Settings.Settings.instance().moduleSetting<boolean>('css-source-maps-enabled').get());
     Common.Settings.Settings.instance()
-        .moduleSetting('css-source-maps-enabled')
-        .addChangeListener(event => this.#sourceMapManager.setEnabled((event.data as boolean)));
+        .moduleSetting<boolean>('css-source-maps-enabled')
+        .addChangeListener(event => this.#sourceMapManager.setEnabled(event.data));
   }
 
   async colorScheme(): Promise<ColorScheme|undefined> {

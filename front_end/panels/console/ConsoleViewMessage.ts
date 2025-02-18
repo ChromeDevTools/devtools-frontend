@@ -511,8 +511,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const fragment = this.linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
         const linkElement = url === request.url() ?
             Components.Linkifier.Linkifier.linkifyRevealable(
-                (request as SDK.NetworkRequest.NetworkRequest), url, request.url(), undefined, undefined,
-                'network-request') :
+                (request), url, request.url(), undefined, undefined, 'network-request') :
             Components.Linkifier.Linkifier.linkifyURL(
                 url, ({text, lineNumber, columnNumber} as Components.Linkifier.LinkifyURLOptions));
         linkElement.tabIndex = -1;
@@ -738,8 +737,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     let parameters = rawParameters.map(parameterToRemoteObject(this.message.runtimeModel()));
 
     // There can be string log and string eval result. We distinguish between them based on message type.
-    const shouldFormatMessage =
-        SDK.RemoteObject.RemoteObject.type((parameters as SDK.RemoteObject.RemoteObject[])[0]) === 'string' &&
+    const shouldFormatMessage = SDK.RemoteObject.RemoteObject.type((parameters)[0]) === 'string' &&
         (this.message.type !== SDK.ConsoleModel.FrontendMessageType.Result ||
          this.message.level === Protocol.Log.LogEntryLevel.Error);
 

@@ -384,7 +384,7 @@ function createAlertElement(container: HTMLElement): HTMLDivElement {
   hideFromLayout(element);
   element.setAttribute('role', 'alert');
   element.setAttribute('aria-atomic', 'true');
-  return element as HTMLDivElement;
+  return element;
 }
 
 export function getOrCreateAlertElements(container: HTMLElement = document.body): AlertState {

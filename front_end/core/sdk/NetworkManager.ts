@@ -1438,11 +1438,11 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   modelRemoved(networkManager: NetworkManager): void {
     for (const entry of this.inflightMainResourceRequests) {
-      const manager = NetworkManager.forRequest((entry[1] as NetworkRequest));
+      const manager = NetworkManager.forRequest((entry[1]));
       if (manager !== networkManager) {
         continue;
       }
-      this.inflightMainResourceRequests.delete((entry[0] as string));
+      this.inflightMainResourceRequests.delete((entry[0]));
     }
     this.#networkAgents.delete(networkManager.target().networkAgent());
     this.#fetchAgents.delete(networkManager.target().fetchAgent());

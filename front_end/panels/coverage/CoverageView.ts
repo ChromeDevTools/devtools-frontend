@@ -391,8 +391,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.selectCoverageType(Boolean(jsCoveragePerBlock));
     this.model.addEventListener(Events.CoverageUpdated, this.onCoverageDataReceived, this);
     this.model.addEventListener(Events.SourceMapResolved, this.updateListView, this);
-    const resourceTreeModel =
-        mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null;
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);

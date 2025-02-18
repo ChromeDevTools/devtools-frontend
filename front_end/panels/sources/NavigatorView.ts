@@ -498,9 +498,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
     let path;
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
-      path =
-          Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1) as
-          Platform.DevToolsPath.EncodedPathString[];
+      path = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
     } else {
       path = Common.ParsedURL.ParsedURL.extractPath(uiSourceCode.url()).split('/').slice(1, -1) as
           Platform.DevToolsPath.EncodedPathString[];
@@ -1600,19 +1598,19 @@ export class NavigatorTreeNode {
   wasPopulated(): void {
     const children = this.children();
     for (let i = 0; i < children.length; ++i) {
-      this.navigatorView.appendChild(this.treeNode(), (children[i].treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.appendChild(this.treeNode(), (children[i].treeNode()));
     }
   }
 
   didAddChild(node: NavigatorTreeNode): void {
     if (this.isPopulated()) {
-      this.navigatorView.appendChild(this.treeNode(), (node.treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.appendChild(this.treeNode(), (node.treeNode()));
     }
   }
 
   willRemoveChild(node: NavigatorTreeNode): void {
     if (this.isPopulated()) {
-      this.navigatorView.removeChild(this.treeNode(), (node.treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.removeChild(this.treeNode(), (node.treeNode()));
     }
   }
 

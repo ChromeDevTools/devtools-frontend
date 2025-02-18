@@ -271,7 +271,7 @@ export class CSSOverviewModel extends SDK.SDKModel.SDKModel<void> {
             null;
         if (textColor && blendedBackgroundColor) {
           const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo({
-            backgroundColors: [blendedBackgroundColor.asString(Common.Color.Format.HEXA) as string],
+            backgroundColors: [blendedBackgroundColor.asString(Common.Color.Format.HEXA)],
             computedFontSize: fontSizeIdx !== -1 ? strings[fontSizeIdx] : '',
             computedFontWeight: fontWeightIdx !== -1 ? strings[fontWeightIdx] : '',
           });

@@ -161,7 +161,7 @@ class ScriptsMochaTests extends Tests {
 
   override run(tests: PathPair[]) {
     return super.run(
-        tests.map(test => ScriptPathPair.getFromPair(test)!),
+        tests.map(test => ScriptPathPair.getFromPair(test)),
         [
           path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
         ],

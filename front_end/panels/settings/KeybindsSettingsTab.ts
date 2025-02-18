@@ -198,8 +198,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
       }
       if (newDescriptors) {
         UI.ShortcutRegistry.ShortcutRegistry.instance().registerUserShortcut(
-            originalShortcut.changeKeys(newDescriptors as UI.KeyboardShortcut.Descriptor[])
-                .changeType(UI.KeyboardShortcut.Type.USER_SHORTCUT));
+            originalShortcut.changeKeys(newDescriptors).changeType(UI.KeyboardShortcut.Type.USER_SHORTCUT));
         if (originalShortcut.type === UI.KeyboardShortcut.Type.UNSET_SHORTCUT) {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.UserShortcutAdded);
         } else {
@@ -539,7 +538,7 @@ export class ShortcutListItem {
   }
 
   private descriptorForEvent(event: KeyboardEvent): UI.KeyboardShortcut.Descriptor {
-    const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event as KeyboardEvent);
+    const userKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event);
     const codeAndModifiers = UI.KeyboardShortcut.KeyboardShortcut.keyCodeAndModifiersFromKey(userKey);
     let key: UI.KeyboardShortcut.Key|string =
         UI.KeyboardShortcut.Keys[event.key] || UI.KeyboardShortcut.KeyBindings[event.key];
@@ -590,9 +589,7 @@ export class ShortcutListItem {
     const activeElement = Platform.DOMUtilities.deepActiveElement(document);
     for (const [shortcut, shortcutInput] of this.shortcutInputs.entries()) {
       if (activeElement === shortcutInput) {
-        this.onShortcutInputKeyDown(
-            shortcut as UI.KeyboardShortcut.KeyboardShortcut, shortcutInput as HTMLInputElement,
-            event as KeyboardEvent);
+        this.onShortcutInputKeyDown(shortcut, shortcutInput as HTMLInputElement, event as KeyboardEvent);
       }
     }
   }

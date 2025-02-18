@@ -148,10 +148,10 @@ export class ListWidget<T> extends VBox {
     const nextIsSeparator = next && next.classList.contains('list-separator');
 
     if (previousIsSeparator && (nextIsSeparator || !next)) {
-      (previous as Element).remove();
+      (previous).remove();
     }
     if (nextIsSeparator && !previous) {
-      (next as Element).remove();
+      (next).remove();
     }
     element.remove();
 
@@ -381,7 +381,7 @@ export class Editor<T> {
   createInput(
       name: string, type: string, title: string,
       validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): HTMLInputElement {
-    const input = (createInput('', type) as HTMLInputElement);
+    const input = (createInput('', type));
     input.placeholder = title;
     input.addEventListener('input', this.validateControls.bind(this, false), false);
     input.setAttribute('jslog', `${VisualLogging.textField().track({change: true, keydown: 'Enter'}).context(name)}`);

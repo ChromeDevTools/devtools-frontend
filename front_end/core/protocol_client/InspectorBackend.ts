@@ -545,7 +545,7 @@ export class TargetBase {
     router.registerSession(this, this.sessionId);
 
     for (const [domain, agentPrototype] of inspectorBackend.agentPrototypes) {
-      const agent = Object.create((agentPrototype as AgentPrototype));
+      const agent = Object.create((agentPrototype));
       agent.target = this;
       this.#agents.set(domain, agent);
     }

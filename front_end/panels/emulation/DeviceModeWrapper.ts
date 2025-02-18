@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -60,7 +59,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   inspectedUrlChanged(event: {data: SDK.Target.Target}): void {
     const url = event.data.inspectedURL();
     // Only allow device mode for non chrome:// pages.
-    const canEnable = url !== null && !Common.ParsedURL.schemeIs(url as Platform.DevToolsPath.UrlString, 'chrome:');
+    const canEnable = url !== null && !Common.ParsedURL.schemeIs(url, 'chrome:');
     this.toggleDeviceModeAction.setEnabled(canEnable);
     if (!canEnable && this.isDeviceModeOn()) {
       // Device mode is enabled, but we navigated to a chrome:// page.

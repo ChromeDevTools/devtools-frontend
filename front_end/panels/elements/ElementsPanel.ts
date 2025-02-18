@@ -355,7 +355,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     return this.sidebarPaneView.showView(this.stylesViewToReveal).then(() => {
-      this.stylesWidget.revealProperty((cssProperty as SDK.CSSProperty.CSSProperty));
+      this.stylesWidget.revealProperty((cssProperty));
     });
   }
 
@@ -1313,9 +1313,9 @@ export class DOMNodeRevealer implements
     function revealPromise(
         resolve: () => void, reject: (arg0: Platform.UserVisibleError.UserVisibleError) => void): void {
       if (node instanceof SDK.DOMModel.DOMNode) {
-        onNodeResolved((node as SDK.DOMModel.DOMNode));
+        onNodeResolved((node));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
-        (node as SDK.DOMModel.DeferredDOMNode).resolve(checkDeferredDOMNodeThenReveal);
+        (node).resolve(checkDeferredDOMNodeThenReveal);
       } else {
         const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {

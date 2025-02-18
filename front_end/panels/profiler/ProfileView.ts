@@ -425,8 +425,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     if (!script) {
       return;
     }
-    const location =
-        (debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber) as SDK.DebuggerModel.Location);
+    const location = (debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber));
     const uiLocation =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
     void Common.Revealer.reveal(uiLocation);
@@ -632,7 +631,7 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     let error: null = null;
     try {
       this.profile = (JSON.parse(this.jsonifiedProfile) as Protocol.Profiler.Profile);
-      this.setProfile((this.profile as Protocol.Profiler.Profile));
+      this.setProfile((this.profile));
       this.updateStatus(i18nString(UIStrings.loaded), false);
     } catch (e) {
       error = e;

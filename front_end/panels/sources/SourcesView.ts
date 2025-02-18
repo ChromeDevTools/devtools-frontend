@@ -257,7 +257,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!(view instanceof UISourceCodeFrame)) {
       return null;
     }
-    return (view as UISourceCodeFrame);
+    return (view);
   }
 
   currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
@@ -460,7 +460,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
     this.sourceViewByUISourceCode.delete(uiSourceCode);
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
-      (sourceView as UISourceCodeFrame).dispose();
+      (sourceView).dispose();
     }
     uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
@@ -623,7 +623,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!(sourceFrame instanceof UISourceCodeFrame)) {
       return;
     }
-    const uiSourceCodeFrame = (sourceFrame as UISourceCodeFrame);
+    const uiSourceCodeFrame = (sourceFrame);
     uiSourceCodeFrame.commitEditing();
   }
 

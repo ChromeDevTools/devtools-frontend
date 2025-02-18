@@ -346,7 +346,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   modifyTree(action: PerfUI.FlameChart.FilterAction, entryIndex: number): void {
-    const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
+    const entry = this.entryData[entryIndex];
 
     ModificationsManager.activeManager()?.getEntriesFilter().applyFilterAction({type: action, entry});
     this.timelineData(true);
@@ -355,7 +355,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   findPossibleContextMenuActions(entryIndex: number): PerfUI.FlameChart.PossibleFilterActions|void {
-    const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
+    const entry = this.entryData[entryIndex];
     return ModificationsManager.activeManager()?.getEntriesFilter().findPossibleActions(entry);
   }
 
@@ -482,7 +482,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === EntryType.TRACK_APPENDER) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
-      const event = (this.entryData[entryIndex] as Trace.Types.Events.Event);
+      const event = (this.entryData[entryIndex]);
       return this.compatibilityTracksAppender?.titleForEvent(event, eventLevel) || null;
     }
     let title: Common.UIString.LocalizedString|string = this.entryIndexToTitle[entryIndex];
@@ -786,7 +786,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (!this.compatibilityTracksAppender) {
         return null;
       }
-      const event = (this.entryData[entryIndex] as Trace.Types.Events.Event);
+      const event = (this.entryData[entryIndex]);
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const popoverInfo = this.compatibilityTracksAppender.popoverInfo(event, eventLevel);
@@ -835,7 +835,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const element = document.createElement('div');
     const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: timelineFlamechartPopoverStyles});
 
-    const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
+    const entry = this.entryData[entryIndex];
     const hiddenEntriesAmount =
         ModificationsManager.activeManager()?.getEntriesFilter().findHiddenDescendantsAmount(entry);
 
@@ -856,7 +856,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
     const eventLevel = timelineData.entryLevels[entryIndex];
-    const event = (this.entryData[entryIndex] as Trace.Types.Events.Event);
+    const event = (this.entryData[entryIndex]);
     return this.compatibilityTracksAppender?.getDrawOverride(event, eventLevel);
   }
 
@@ -886,7 +886,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === EntryType.TRACK_APPENDER) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
-      const event = (this.entryData[entryIndex] as Trace.Types.Events.Event);
+      const event = (this.entryData[entryIndex]);
       return this.compatibilityTracksAppender?.colorForEvent(event, eventLevel) || '';
     }
     return '';
@@ -1005,7 +1005,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     if (entryType === EntryType.TRACK_APPENDER) {
-      const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
+      const entry = this.entryData[entryIndex];
       if (Trace.Types.Events.isSyntheticInteraction(entry)) {
         this.#drawInteractionEventWithWhiskers(
             context, entryIndex, text, entry, barX, barY, unclippedBarX, barWidth, barHeight, timeToPixelRatio);
@@ -1125,7 +1125,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === EntryType.SCREENSHOT) {
       return true;
     }
-    const event = (this.entryData[entryIndex] as Trace.Types.Events.Event);
+    const event = (this.entryData[entryIndex]);
 
     if (Trace.Types.Events.isSyntheticInteraction(event)) {
       // We draw interactions with whiskers, which are done via the
@@ -1279,7 +1279,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType !== EntryType.TRACK_APPENDER) {
       return false;
     }
-    const event = this.entryData[entryIndex] as Trace.Types.Events.Event;
+    const event = this.entryData[entryIndex];
     // Reset to clear any previous arrows from the last event.
     this.timelineDataInternal.resetFlowData();
     this.lastInitiatorEntry = entryIndex;
@@ -1322,7 +1322,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const entryType = this.#entryTypeForIndex(entryIndex);
     if (entryType === EntryType.TRACK_APPENDER) {
-      return this.entryData[entryIndex] as Trace.Types.Events.Event;
+      return this.entryData[entryIndex];
     }
     if (entryType === EntryType.FRAME) {
       return this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame;

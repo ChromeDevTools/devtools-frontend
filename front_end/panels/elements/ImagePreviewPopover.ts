@@ -41,17 +41,16 @@ export class ImagePreviewPopover {
       box: link.boxInWindow(),
       hide: undefined,
       show: async (popover: UI.GlassPane.GlassPane) => {
-        const node = this.getDOMNode((link as Element));
+        const node = this.getDOMNode((link));
         if (!node) {
           return false;
         }
         const precomputedFeatures = await Components.ImagePreview.ImagePreview.loadDimensionsForNode(node);
-        const preview = await Components.ImagePreview.ImagePreview.build(
-            node.domModel().target(), href as Platform.DevToolsPath.UrlString, true, {
-              imageAltText: undefined,
-              precomputedFeatures,
-              align: Components.ImagePreview.Align.CENTER,
-            });
+        const preview = await Components.ImagePreview.ImagePreview.build(node.domModel().target(), href, true, {
+          imageAltText: undefined,
+          precomputedFeatures,
+          align: Components.ImagePreview.Align.CENTER,
+        });
         if (preview) {
           popover.contentElement.appendChild(preview);
         }

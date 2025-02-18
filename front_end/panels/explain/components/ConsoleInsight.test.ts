@@ -150,15 +150,15 @@ describeWithEnvironment('ConsoleInsight', () => {
     renderElementIntoDOM(component);
     await drainMicroTasks();
     assert.isNotNull(component.shadowRoot);
-    assert.strictEqual(component.shadowRoot!.querySelector('h2')?.innerText, 'Understand console messages with AI');
+    assert.strictEqual(component.shadowRoot.querySelector('h2')?.innerText, 'Understand console messages with AI');
 
-    dispatchClickEvent(component.shadowRoot!.querySelector('.continue-button')!, {
+    dispatchClickEvent(component.shadowRoot.querySelector('.continue-button')!, {
       bubbles: true,
       composed: true,
     });
     await drainMicroTasks();
     // Rating buttons are shown.
-    assert(component.shadowRoot!.querySelector('.rating'));
+    assert(component.shadowRoot.querySelector('.rating'));
   });
 
   it('shows an error message on timeout', async () => {

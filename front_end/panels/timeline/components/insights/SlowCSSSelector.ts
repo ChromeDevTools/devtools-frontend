@@ -56,7 +56,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
 
     const locations = ranges.map((range, itemIndex) => {
       return {
-        url: styleSheetHeader.resourceURL() as Platform.DevToolsPath.UrlString,
+        url: styleSheetHeader.resourceURL(),
         lineNumber: range.startLine,
         columnNumber: range.startColumn,
         linkText: `[${itemIndex + 1}]`,
@@ -85,8 +85,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     const links = html`
     ${locations.map((location, itemIndex) => {
       const divider = itemIndex !== locations.length - 1 ? ', ' : '';
-      return html`<devtools-linkifier .data=${location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>${
-          divider}`;
+      return html`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
     })}`;
 
     return links;

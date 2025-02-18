@@ -426,7 +426,7 @@ export class ListControl<T> {
     const newElement = this.selectedIndexInternal !== -1 ? this.elementAtIndex(index) : null;
     this.delegate.selectedItemChanged(
         oldItem, newItem, (oldElement as HTMLElement | null), (newElement as HTMLElement | null));
-    if (!this.delegate.updateSelectedItemARIA((oldElement as Element | null), newElement)) {
+    if (!this.delegate.updateSelectedItemARIA((oldElement), newElement)) {
       if (oldElement) {
         ARIAUtils.setSelected(oldElement, false);
       }

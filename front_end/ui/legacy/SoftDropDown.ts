@@ -113,7 +113,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
       return;
     }
     this.glassPane.setContentAnchorBox(this.element.boxInWindow());
-    this.glassPane.show((this.element.ownerDocument as Document));
+    this.glassPane.show((this.element.ownerDocument));
     this.list.element.focus();
     ARIAUtils.setExpanded(this.element, true);
     this.updateGlasspaneSize();

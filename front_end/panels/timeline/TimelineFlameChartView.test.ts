@@ -173,7 +173,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
     // Find the first node that has children to collapse and is visible in the timeline
     const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
     const firstNodeWithChildren = nodeOfGroup?.find(node => {
-      const childrenAmount = parsedTrace.Renderer.entryToNode.get(node as Trace.Types.Events.Event)?.children.length;
+      const childrenAmount = parsedTrace.Renderer.entryToNode.get(node)?.children.length;
       if (!childrenAmount) {
         return false;
       }
@@ -214,7 +214,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        // Find the first node that has children to collapse and is visible in the timeline
        const groupTreeEvents = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
        const firstEventWithChildren = groupTreeEvents?.find(node => {
-         const childrenAmount = parsedTrace.Renderer.entryToNode.get(node as Trace.Types.Events.Event)?.children.length;
+         const childrenAmount = parsedTrace.Renderer.entryToNode.get(node)?.children.length;
          if (!childrenAmount) {
            return false;
          }
@@ -259,7 +259,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        // Find the first node that has children to collapse and is visible in the timeline
        const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
        const firstNodeWithChildren = nodeOfGroup?.find(node => {
-         const childrenAmount = parsedTrace.Renderer.entryToNode.get(node as Trace.Types.Events.Event)?.children.length;
+         const childrenAmount = parsedTrace.Renderer.entryToNode.get(node)?.children.length;
          if (!childrenAmount) {
            return false;
          }
@@ -637,8 +637,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
            const mainThread = getMainThread(parsedTrace.Renderer);
            const entry = findFirstEntry(mainThread.entries, entry => {
-             const childrenAmount =
-                 parsedTrace.Renderer.entryToNode.get(entry as Trace.Types.Events.Event)?.children.length;
+             const childrenAmount = parsedTrace.Renderer.entryToNode.get(entry)?.children.length;
              if (!childrenAmount) {
                return false;
              }

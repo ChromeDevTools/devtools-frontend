@@ -83,7 +83,7 @@ function collectMainThreadActivity(
             continue;
           }
 
-          const url = Handlers.Helpers.getNonResolvedURL(event, parsedTrace as Handlers.Types.ParsedTrace);
+          const url = Handlers.Helpers.getNonResolvedURL(event, parsedTrace);
           if (!url) {
             continue;
           }

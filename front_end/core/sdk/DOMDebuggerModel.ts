@@ -388,14 +388,14 @@ export class EventListener {
       }
 
       return this.#eventTarget
-                 .callFunction(
-                     removeListener,
-                     [
-                       RemoteObject.toCallArgument(this.#typeInternal),
-                       RemoteObject.toCallArgument(this.#originalHandlerInternal),
-                       RemoteObject.toCallArgument(this.#useCaptureInternal),
-                     ])
-                 .then(() => undefined) as Promise<undefined>;
+          .callFunction(
+              removeListener,
+              [
+                RemoteObject.toCallArgument(this.#typeInternal),
+                RemoteObject.toCallArgument(this.#originalHandlerInternal),
+                RemoteObject.toCallArgument(this.#useCaptureInternal),
+              ])
+          .then(() => undefined);
     }
 
     if (this.#customRemoveFunction) {

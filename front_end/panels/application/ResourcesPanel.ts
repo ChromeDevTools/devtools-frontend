@@ -196,7 +196,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 
   clearCookies(target: SDK.Target.Target, cookieDomain: string): void {
-    const model = (target.model(SDK.CookieModel.CookieModel) as SDK.CookieModel.CookieModel | null);
+    const model = (target.model(SDK.CookieModel.CookieModel));
     if (!model) {
       return;
     }

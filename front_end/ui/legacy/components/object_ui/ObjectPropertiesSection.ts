@@ -489,7 +489,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function createNodeElement(): Element {
       const valueElement = document.createElement('span');
       valueElement.classList.add('object-value-node');
-      createSpansForNodeTitle(valueElement, (description as string));
+      createSpansForNodeTitle(valueElement, (description));
       valueElement.addEventListener('click', event => {
         void Common.Revealer.reveal(value);
         event.consume(true);
@@ -1430,7 +1430,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       if (!result) {
         return;
       }
-      const ranges = (result.ranges as number[][]);
+      const ranges = (result.ranges);
       if (ranges.length === 1) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
         // @ts-ignore

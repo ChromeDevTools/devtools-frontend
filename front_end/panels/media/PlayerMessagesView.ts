@@ -183,7 +183,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
     this.hiddenLevels = [];
     for (const [key, item] of this.itemMap) {
       if (!item.overwrite) {
-        const elementForItem = this.elementsForItems.get(item as SelectableLevel);
+        const elementForItem = this.elementsForItems.get(item);
         if (elementForItem && elementForItem.firstChild) {
           elementForItem.firstChild.remove();
         }

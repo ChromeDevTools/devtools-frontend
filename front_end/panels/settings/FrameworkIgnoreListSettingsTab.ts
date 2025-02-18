@@ -108,8 +108,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const ignoreListingDescription = document.createElement('span');
     ignoreListingDescription.textContent = i18nString(UIStrings.ignoreListingDescription);
-    const enabledSetting =
-        Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing') as Common.Settings.Setting<boolean>;
+    const enabledSetting = Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
     const enableIgnoreListing = this.contentElement.createChild('div', 'enable-ignore-listing');
     enableIgnoreListing.appendChild(
         UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting));

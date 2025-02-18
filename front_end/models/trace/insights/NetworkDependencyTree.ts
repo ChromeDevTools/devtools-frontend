@@ -162,15 +162,12 @@ export function generateInsight(
     if (node.type !== 'network') {
       return;
     }
-    const networkNode = node as Lantern.Graph.NetworkNode<Types.Events.SyntheticNetworkRequest>;
+    const networkNode = node;
     if (!isCritical(networkNode.rawRequest, context)) {
       return;
     }
 
-    const networkPath =
-        traversalPath.filter(node => node.type === 'network')
-            .reverse()
-            .map(node => (node as Lantern.Graph.NetworkNode<Types.Events.SyntheticNetworkRequest>).rawRequest);
+    const networkPath = traversalPath.filter(node => node.type === 'network').reverse().map(node => (node).rawRequest);
 
     // Ignore if some ancestor is not a critical request.
     if (networkPath.some(request => (!isCritical(request, context)))) {

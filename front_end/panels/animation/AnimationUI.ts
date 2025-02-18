@@ -198,7 +198,7 @@ export class AnimationUI {
     if (keyframeIndex <= 0) {
       circle.style.fill = this.#color;
     }
-    this.#cachedElements[iteration].keyframePoints[keyframeIndex] = (circle as HTMLElement);
+    this.#cachedElements[iteration].keyframePoints[keyframeIndex] = (circle);
 
     if (!attachEvents) {
       return;

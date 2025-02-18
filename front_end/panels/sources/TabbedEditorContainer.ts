@@ -549,9 +549,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   private restoreEditorProperties(
       editorView: UI.Widget.Widget, selection?: TextUtils.TextRange.TextRange, firstLineNumber?: number): void {
-    const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ?
-        editorView as SourceFrame.SourceFrame.SourceFrameImpl :
-        null;
+    const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
     }

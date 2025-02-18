@@ -391,8 +391,8 @@ export class ConsoleViewport {
     let firstSelected: SelectionModel|null = null;
     let lastSelected: SelectionModel|null = null;
     if (hasVisibleSelection) {
-      firstSelected = this.createSelectionModel(firstSelectedIndex, (range.startContainer as Node), range.startOffset);
-      lastSelected = this.createSelectionModel(lastSelectedIndex, (range.endContainer as Node), range.endOffset);
+      firstSelected = this.createSelectionModel(firstSelectedIndex, (range.startContainer), range.startOffset);
+      lastSelected = this.createSelectionModel(lastSelectedIndex, (range.endContainer), range.endOffset);
     }
     if (topOverlap && bottomOverlap && hasVisibleSelection) {
       firstSelected = (firstSelected && firstSelected.item < startSelection.item) ? firstSelected : startSelection;

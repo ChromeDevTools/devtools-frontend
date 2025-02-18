@@ -92,16 +92,14 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
       return Promise.resolve([]);
     }
     return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule}) as
-        Promise<string[]>;
+        PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule});
   }
 
   /**
    * Notifies the plugin that a script is removed.
    */
   removeRawModule(rawModuleId: string): Promise<void> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule, {rawModuleId}) as
-        Promise<void>;
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule, {rawModuleId});
   }
 
   /** Find locations in raw modules from a location in a source file
@@ -109,28 +107,24 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   sourceLocationToRawLocation(sourceLocation: Chrome.DevTools.SourceLocation):
       Promise<Chrome.DevTools.RawLocationRange[]> {
     return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation, {sourceLocation}) as
-        Promise<Chrome.DevTools.RawLocationRange[]>;
+        PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation, {sourceLocation});
   }
 
   /** Find locations in source files from a location in a raw module
    */
   rawLocationToSourceLocation(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.SourceLocation[]> {
     return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation}) as
-        Promise<Chrome.DevTools.SourceLocation[]>;
+        PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation, {rawLocation});
   }
 
   getScopeInfo(type: string): Promise<Chrome.DevTools.ScopeInfo> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type}) as
-        Promise<Chrome.DevTools.ScopeInfo>;
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, {type});
   }
 
   /** List all variables in lexical scope at a given location in a raw module
    */
   listVariablesInScope(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.Variable[]> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation}) as
-        Promise<Chrome.DevTools.Variable[]>;
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, {rawLocation});
   }
 
   /** List all function names (including inlined frames) at location
@@ -138,10 +132,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   getFunctionInfo(rawLocation: Chrome.DevTools.RawLocation): Promise<{
     frames: Chrome.DevTools.FunctionInfo[],
   }> {
-    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation}) as
-        Promise<{
-             frames: Chrome.DevTools.FunctionInfo[],
-           }>;
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, {rawLocation});
   }
 
   /** Find locations in raw modules corresponding to the inline function
@@ -149,17 +140,14 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
    */
   getInlinedFunctionRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
     return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation}) as
-        Promise<Chrome.DevTools.RawLocationRange[]>;
+        PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges, {rawLocation});
   }
 
   /** Find locations in raw modules corresponding to inline functions
    *  called by the function or inline frame that rawLocation is in.
    */
   getInlinedCalleesRanges(rawLocation: Chrome.DevTools.RawLocation): Promise<Chrome.DevTools.RawLocationRange[]> {
-    return this.endpoint.sendRequest(
-               PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation}) as
-        Promise<Chrome.DevTools.RawLocationRange[]>;
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, {rawLocation});
   }
 
   async getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined> {

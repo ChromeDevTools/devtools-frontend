@@ -30,7 +30,7 @@ function getFocusedElement(): HTMLElement {
 
 function sendKeydown(element: HTMLElement, key: string): void {
   element.focus();
-  getFocusedElement()!.dispatchEvent(
+  getFocusedElement().dispatchEvent(
       new KeyboardEvent('keydown', {
         key,
         bubbles: true,
@@ -222,7 +222,7 @@ describeWithEnvironment('DataGrid', () => {
         </devtools-data-grid>`);
     sendKeydown(element, 'ArrowDown');
     sendKeydown(element, 'Enter');
-    getFocusedElement()!.textContent = 'New Value';
+    getFocusedElement().textContent = 'New Value';
     sendKeydown(element, 'Enter');
     assert.isTrue(editCallback.calledOnce);
     assert.isTrue(editCallback.firstCall.args[0].detail.node.textContent.includes('Value 1'));
@@ -255,11 +255,11 @@ describeWithEnvironment('DataGrid', () => {
     sendKeydown(element, 'ArrowDown');
     sendKeydown(element, 'ArrowDown');
     sendKeydown(element, 'Enter');
-    getFocusedElement()!.textContent = 'New Value 1';
+    getFocusedElement().textContent = 'New Value 1';
     sendKeydown(element, 'Tab');
     assert.isFalse(editCallback.called);
     assert.isFalse(createCallback.called);
-    getFocusedElement()!.textContent = 'New Value 2';
+    getFocusedElement().textContent = 'New Value 2';
     sendKeydown(element, 'Tab');
     assert.isFalse(editCallback.called);
     assert.isTrue(createCallback.calledOnce);

@@ -74,7 +74,7 @@ export class ScreenshotError extends Error {
       target: {filePath: this.saveArtifact(targetScreenshot)},
       frontend: {filePath: this.saveArtifact(frontendScreenshot)},
     };
-    return new ScreenshotError(screenshots, undefined, error as Error);
+    return new ScreenshotError(screenshots, undefined, error);
   }
 
   /**

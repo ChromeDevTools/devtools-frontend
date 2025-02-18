@@ -107,9 +107,7 @@ export class ImageView extends UI.View.SimpleView {
     this.parsedURL = new Common.ParsedURL.ParsedURL(this.url);
     this.mimeType = mimeType;
     this.contentProvider = contentProvider;
-    this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ?
-        contentProvider as Workspace.UISourceCode.UISourceCode :
-        null;
+    this.uiSourceCode = contentProvider instanceof Workspace.UISourceCode.UISourceCode ? contentProvider : null;
     if (this.uiSourceCode) {
       this.uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);

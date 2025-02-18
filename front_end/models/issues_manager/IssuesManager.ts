@@ -265,8 +265,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
           issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue ||
           issue.code() === Protocol.Audits.InspectorIssueCode.CookieIssue) {
         const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
-        if (networkManager?.requestForLoaderId(frame.loaderId as Protocol.Network.LoaderId)?.hasUserGesture() ===
-            false) {
+        if (networkManager?.requestForLoaderId(frame.loaderId)?.hasUserGesture() === false) {
           keptIssues.set(key, issue);
         }
       }

@@ -46,7 +46,7 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       promises.push(promise);
     }
     const resultsWithNull = await Promise.all(promises);
-    const results = (resultsWithNull.filter(result => result !== null) as NetworkSearchResult[]);
+    const results = (resultsWithNull.filter(result => result !== null));
     if (progress.isCanceled()) {
       searchFinishedCallback(false);
       return;

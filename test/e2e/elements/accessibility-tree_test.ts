@@ -36,7 +36,7 @@ describe('Accessibility Tree in the Elements Tab', function() {
             getResourcesPath()}/elements/accessibility-simple-page.html`);
     const arrowIconContainer =
         (await iframeDoc.evaluateHandle(
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
             node => (node as any).parentElementOrShadowHost().parentElement.parentElement)) as puppeteer.ElementHandle;
     assertNotNullOrUndefined(arrowIconContainer);
     await click('.arrow-icon', {root: arrowIconContainer});

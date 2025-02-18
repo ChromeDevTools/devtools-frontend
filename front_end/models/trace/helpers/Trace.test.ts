@@ -426,8 +426,7 @@ describeWithEnvironment('Trace helpers', function() {
     describe('createSortedSyntheticEvents()', () => {
       it('correctly creates synthetic events when instant animation events are present', async function() {
         const events = await TraceLoader.rawEvents(this, 'instant-animation-events.json.gz');
-        const animationEvents =
-            events.filter(event => Trace.Types.Events.isAnimation(event)) as Trace.Types.Events.Animation[];
+        const animationEvents = events.filter(event => Trace.Types.Events.isAnimation(event));
         const animationSynthEvents = Trace.Helpers.Trace.createMatchedSortedSyntheticEvents(animationEvents);
         const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: string[]}>([
           [
@@ -748,7 +747,7 @@ describeWithEnvironment('Trace helpers', function() {
         assert.isNotNull(nextScreenshot);
         assert.isNotNull(prevScreenshot);
         // Make sure the screenshot came after the shift.
-        assert.isAbove(nextScreenshot!.ts, shift.ts);
+        assert.isAbove(nextScreenshot.ts, shift.ts);
         // Make sure the previous screenshot came before the shift
         assert.isBelow(prevScreenshot.ts, shift.ts);
 

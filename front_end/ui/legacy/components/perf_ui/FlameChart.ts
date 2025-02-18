@@ -1774,7 +1774,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return start1 < end2 && start2 < end1;
     }
 
-    const keyboardEvent = (event as KeyboardEvent);
+    const keyboardEvent = (event);
     const keys = UI.KeyboardShortcut.Keys;
     if (keyboardEvent.keyCode === keys.Left.code || keyboardEvent.keyCode === keys.Right.code) {
       const level = timelineData.entryLevels[this.selectedEntryIndex];
@@ -1872,7 +1872,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         continue;
       }
       if (pos.x <= x && x < pos.x + pos.width) {
-        return index as number;
+        return index;
       }
     }
 
@@ -1882,7 +1882,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         continue;
       }
       if (pos.x <= x && x < pos.x + pos.width) {
-        return index as number;
+        return index;
       }
     }
 
@@ -2733,7 +2733,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         const labelBackgroundWidth = this.labelWidthForGroup(context, group);
         const parsedColor = Common.Color.parse(group.style.backgroundColor);
         if (parsedColor) {
-          context.fillStyle = (parsedColor.setAlpha(0.8).asString() as string);
+          context.fillStyle = (parsedColor.setAlpha(0.8).asString());
         }
         context.fillRect(
             iconsWidth + HEADER_LEFT_PADDING, offset + HEADER_LABEL_Y_PADDING, labelBackgroundWidth,

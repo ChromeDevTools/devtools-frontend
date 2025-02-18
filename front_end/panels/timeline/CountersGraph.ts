@@ -438,7 +438,7 @@ export class CounterUI {
     const parsedColor = Common.Color.parse(graphColor);
     if (parsedColor) {
       const colorWithAlpha = parsedColor.setAlpha(0.5).asString(Common.Color.Format.RGBA);
-      const htmlElement = (this.filter.element as HTMLElement);
+      const htmlElement = (this.filter.element);
       if (colorWithAlpha) {
         htmlElement.style.backgroundColor = colorWithAlpha;
       }

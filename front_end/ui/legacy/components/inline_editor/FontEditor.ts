@@ -230,7 +230,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         array.push(fontFamilyValue.replace(/"/g, ''));
       }
     }
-    return array as string[];
+    return array;
   }
 
   private async createFontSelector(value: string, isPrimary?: boolean): Promise<void> {
@@ -335,7 +335,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       field: Element, label: string, options: Array<Map<string, string[]>>, currentValue: string,
       jslogContext: string): void {
     const index = this.fontSelectors.length;
-    const selectInput = (UI.UIUtils.createSelect(label, options) as HTMLSelectElement);
+    const selectInput = (UI.UIUtils.createSelect(label, options));
     selectInput.value = currentValue;
     selectInput.setAttribute('jslog', `${VisualLogging.dropDown(jslogContext).track({click: true, change: true})}`);
     const selectLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label', selectInput);

@@ -498,6 +498,10 @@ export default [
       'no-throw-literal': 'off',
       '@typescript-eslint/only-throw-error': 'error',
 
+      // Disabled this rule while investigating why it creates
+      // certain TypeScript compilation errors after fixes
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 

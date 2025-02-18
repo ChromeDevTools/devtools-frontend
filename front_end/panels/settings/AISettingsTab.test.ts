@@ -50,7 +50,7 @@ describeWithEnvironment('AISettingsTab', () => {
     await view.render();
     assert.isNotNull(view.shadowRoot);
 
-    const switches = Array.from(view.shadowRoot.querySelectorAll('devtools-switch')) as Switch.Switch.Switch[];
+    const switches = Array.from(view.shadowRoot.querySelectorAll('devtools-switch'));
     assert.lengthOf(switches, 2);
     const details = Array.from(view.shadowRoot.querySelectorAll('.whole-row'));
     assert.lengthOf(details, 2);

@@ -325,7 +325,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
             this.#permissionsPolicySectionData.policies = policies || [];
             return html`
               <devtools-resources-permissions-policy-section
-                .data=${this.#permissionsPolicySectionData as PermissionsPolicySectionData}
+                .data=${this.#permissionsPolicySectionData}
               >
               </devtools-resources-permissions-policy-section>
             `;

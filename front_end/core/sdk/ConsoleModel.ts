@@ -295,8 +295,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       executionContextId: call.executionContextId,
       context: call.context,
     };
-    const consoleMessage = new ConsoleMessage(
-        runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, level, (message as string), details);
+    const consoleMessage =
+        new ConsoleMessage(runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, level, (message), details);
     for (const msg of this.#messagesByTimestamp.get(consoleMessage.timestamp).values()) {
       if (consoleMessage.isEqual(msg)) {
         return;
@@ -455,7 +455,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       failedToSave(null);
       return;
     }
-    const executionContext = (currentExecutionContext as ExecutionContext);
+    const executionContext = (currentExecutionContext);
 
     const result = await executionContext.globalObject(/* objectGroup */ '', /* generatePreview */ false);
     if ('error' in result || Boolean(result.exceptionDetails) || !result.object) {
@@ -621,7 +621,7 @@ export class ConsoleMessage {
       messageText: string, details?: ConsoleMessageDetails) {
     this.#runtimeModelInternal = runtimeModel;
     this.source = source;
-    this.level = (level as Protocol.Log.LogEntryLevel | null);
+    this.level = (level);
     this.messageText = messageText;
     this.type = details?.type || Protocol.Runtime.ConsoleAPICalledEventType.Log;
     this.url = details?.url;

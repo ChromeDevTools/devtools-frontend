@@ -97,7 +97,7 @@ export class TopDownNode extends Node {
     // Tracks the ancestor path of this node, includes the current node.
     const path: TopDownNode[] = [];
     for (let node: TopDownNode = (this as TopDownNode); node.parent && !node.isGroupNode(); node = node.parent) {
-      path.push((node as TopDownNode));
+      path.push((node));
     }
     path.reverse();
     const children: ChildrenCache = new Map();
@@ -347,7 +347,7 @@ export class BottomUpRootNode extends Node {
     for (const [id, child] of children) {
       // to provide better context to user only filter first (top) level.
       if (child.event && child.depth <= 1 && !this.textFilter.accept(child.event)) {
-        children.delete((id as string | symbol));
+        children.delete((id));
       }
     }
     return children;
@@ -417,7 +417,7 @@ export class BottomUpRootNode extends Node {
     this.selfTime = selfTimeStack.pop() || 0;
     for (const pair of nodeById) {
       if (pair[1].selfTime <= 0) {
-        nodeById.delete((pair[0] as string));
+        nodeById.delete((pair[0]));
       }
     }
     return nodeById;

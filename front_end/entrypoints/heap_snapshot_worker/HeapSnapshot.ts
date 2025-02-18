@@ -1728,7 +1728,7 @@ export abstract class HeapSnapshot {
         v = ancestor[v];
       }
       while (stackPointer > 0) {
-        const w = compressionStack[stackPointer--] as number;
+        const w = compressionStack[stackPointer--];
         if (semi[label[ancestor[w]]] < semi[label[w]]) {
           label[w] = label[ancestor[w]];
         }

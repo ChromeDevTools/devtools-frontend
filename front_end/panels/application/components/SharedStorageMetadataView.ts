@@ -113,7 +113,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
     if (!this.#creationTime) {
       return html`${i18nString(UIStrings.notYetCreated)}`;
     }
-    const date = new Date(1e3 * (this.#creationTime as number));
+    const date = new Date(1e3 * (this.#creationTime));
     return html`${date.toLocaleString()}`;
   }
 

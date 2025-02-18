@@ -381,8 +381,7 @@ describe('The Styles pane', () => {
     assert.strictEqual(nodeLabelNameContent, 'body', 'container link name does not match');
     containerLink.hover();
     const queriedSizeDetails = await waitFor('.queried-size-details');
-    const queriedSizeDetailsContent =
-        await queriedSizeDetails.evaluate(node => (node as HTMLElement).innerText as string);
+    const queriedSizeDetailsContent = await queriedSizeDetails.evaluate(node => (node as HTMLElement).innerText);
     assert.strictEqual(
         queriedSizeDetailsContent, '(size) width: 200px height: 0px', 'container queried details does not match');
   });
@@ -396,7 +395,7 @@ describe('The Styles pane', () => {
 
     const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
     const supportsQuery = await waitFor('.query.editable', rule1PropertiesSection);
-    const supportsQueryText = await supportsQuery.evaluate(node => (node as HTMLElement).innerText as string);
+    const supportsQueryText = await supportsQuery.evaluate(node => (node as HTMLElement).innerText);
     assert.deepEqual(supportsQueryText, '@supports (width: 10px) {', 'incorrectly displayed @supports rule');
   });
 
@@ -1232,7 +1231,7 @@ describe('The Styles pane', () => {
 
     const rule1PropertiesSection = await getStyleRule(RULE1_SELECTOR);
     const scopeQuery = await waitFor('.query.editable', rule1PropertiesSection);
-    const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText as string);
+    const scopeQueryText = await scopeQuery.evaluate(node => (node as HTMLElement).innerText);
     assert.deepEqual(scopeQueryText, '@scope (body) {', 'incorrectly displayed @supports rule');
   });
 

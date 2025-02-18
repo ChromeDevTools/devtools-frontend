@@ -73,7 +73,7 @@ export interface EventTimingsData<ValueType extends Types.Timing.Micro|Types.Tim
 
 export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Micro> {
   return {
-    startTime: event.ts as Types.Timing.Micro,
+    startTime: event.ts,
     endTime: (event.ts + (event.dur ?? 0)) as Types.Timing.Micro,
     duration: (event.dur || 0) as Types.Timing.Micro,
   };

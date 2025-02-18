@@ -172,7 +172,7 @@ export class SharedStorageItemsView extends KeyValueStorageItemsView {
   }
 
   protected async createPreview(key: string, value: string): Promise<UI.Widget.Widget|null> {
-    const wrappedEntry = key && {key: key as string, value: value as string || ''} as WrappedEntry;
+    const wrappedEntry = key && {key, value: value || ''} as WrappedEntry;
     return SourceFrame.JSONView.JSONView.createViewSync(wrappedEntry);
   }
 }

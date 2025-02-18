@@ -523,7 +523,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       });
       const popoverContents = addElementPopoverHook.args[0][1].contents();
       assert.instanceOf(popoverContents, ElementsComponents.CSSVariableValueView.CSSVariableValueView);
-      const {details} = popoverContents as ElementsComponents.CSSVariableValueView.CSSVariableValueView;
+      const {details} = popoverContents;
       assert.exists(details);
 
       const jumpToSectionSpy = sinon.spy(stylesSidebarPane, 'jumpToSection');
@@ -991,7 +991,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         swatches[0].iconElement().click();
         assert.isTrue(showPopoverStub.calledOnce);
         assert.instanceOf(showPopoverStub.args[0][0], InlineEditor.CSSShadowEditor.CSSShadowEditor);
-        const editor = showPopoverStub.args[0][0] as InlineEditor.CSSShadowEditor.CSSShadowEditor;
+        const editor = showPopoverStub.args[0][0];
         const text = editorProperties(editor);
         assert.deepEqual(text, ['Outset', '10px', '10px', '0', '0']);
       }
@@ -1000,7 +1000,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         swatches[1].iconElement().click();
         assert.isTrue(showPopoverStub.calledTwice);
         assert.instanceOf(showPopoverStub.args[1][0], InlineEditor.CSSShadowEditor.CSSShadowEditor);
-        const editor = showPopoverStub.args[1][0] as InlineEditor.CSSShadowEditor.CSSShadowEditor;
+        const editor = showPopoverStub.args[1][0];
         const text = editorProperties(editor);
         assert.deepEqual(text, ['Inset', '8px', '9px', '10px', '11px']);
       }
@@ -1264,8 +1264,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await waitForDecorationPromise;
       const anchorFunctionLinkSwatch =
-          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')! as
-          ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch;
+          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')!;
 
       assert.strictEqual(anchorFunctionLinkSwatch.dataForTest().identifier, '--identifier');
     });
@@ -1278,8 +1277,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await waitForDecorationPromise;
       const anchorFunctionLinkSwatch =
-          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')! as
-          ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch;
+          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')!;
       anchorFunctionLinkSwatch.dataForTest().onMouseEnter();
 
       assert.isTrue(highlightMock.calledOnce);
@@ -1293,8 +1291,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await waitForDecorationPromise;
       const anchorFunctionLinkSwatch =
-          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')! as
-          ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch;
+          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')!;
       anchorFunctionLinkSwatch.dataForTest().onMouseLeave();
 
       assert.isTrue(hideDOMNodeHighlightStub.calledOnce);
@@ -1308,8 +1305,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       await waitForDecorationPromise;
       const anchorFunctionLinkSwatch =
-          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')! as
-          ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch;
+          stylePropertyTreeElement.valueElement!.querySelector('devtools-anchor-function-link-swatch')!;
       anchorFunctionLinkSwatch.dataForTest().onLinkActivate();
 
       assert.isTrue(revealStub.calledOnce);
@@ -1561,9 +1557,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       sinon.stub(matchedStyles, 'positionTryRules').returns([]);
       const stylePropertyTreeElement = getTreeElement('position-try-fallbacks', '--top, --left, --bottom');
       stylePropertyTreeElement.updateTitle();
-      const values =
-          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLElement>|
-          undefined;
+      const values = stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span');
       assert.exists(values);
       assert.strictEqual(values?.length, 3);
       assert.isTrue(values[0].classList.contains('inactive-value'));
@@ -1577,9 +1571,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement =
           getTreeElement('position-try', '/* comment */ most-height --top, --left, --bottom');
       stylePropertyTreeElement.updateTitle();
-      const values =
-          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLElement>|
-          undefined;
+      const values = stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span');
       assert.exists(values);
       assert.strictEqual(values?.length, 3);
       assert.isTrue(values[0].classList.contains('inactive-value'));

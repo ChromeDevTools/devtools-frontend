@@ -23,7 +23,7 @@ describeWithMockConnection('PreloadingModel', () => {
 
     assert.deepEqual(model.getAllRuleSets(), []);
 
-    const loaderId = getMainFrame(target).loaderId as Protocol.Network.LoaderId;
+    const loaderId = getMainFrame(target).loaderId;
 
     dispatchEvent(target, 'Preload.ruleSetUpdated', {
       ruleSet: {
@@ -306,7 +306,7 @@ describeWithMockConnection('PreloadingModel', () => {
 
     assert.deepEqual(model.getAllRuleSets(), []);
 
-    const loaderId = getMainFrame(target).loaderId as Protocol.Network.LoaderId;
+    const loaderId = getMainFrame(target).loaderId;
     dispatchEvent(target, 'Preload.ruleSetUpdated', {
       ruleSet: {
         id: 'ruleSetId:1',
@@ -368,7 +368,7 @@ describeWithMockConnection('PreloadingModel', () => {
     assert.deepEqual(model.getAllRuleSets(), []);
     assert.deepEqual(model.getRepresentativePreloadingAttempts(null), []);
 
-    let loaderId = getMainFrame(target).loaderId as Protocol.Network.LoaderId;
+    let loaderId = getMainFrame(target).loaderId;
 
     dispatchEvent(target, 'Preload.ruleSetUpdated', {
       ruleSet: {
@@ -502,7 +502,7 @@ describeWithMockConnection('PreloadingModel', () => {
     assert.deepEqual(model.getAllRuleSets(), []);
     assert.deepEqual(model.getRepresentativePreloadingAttempts(null), []);
 
-    const loaderId = getMainFrame(target).loaderId as Protocol.Network.LoaderId;
+    const loaderId = getMainFrame(target).loaderId;
 
     dispatchEvent(target, 'Preload.ruleSetUpdated', {
       ruleSet: {
@@ -685,7 +685,7 @@ describeWithMockConnection('PreloadingModel', () => {
     assert.deepEqual(model.getAllRuleSets(), []);
     assert.deepEqual(model.getRepresentativePreloadingAttempts(null), []);
 
-    const loaderId = getMainFrame(target).loaderId as Protocol.Network.LoaderId;
+    const loaderId = getMainFrame(target).loaderId;
 
     dispatchEvent(target, 'Preload.ruleSetUpdated', {
       ruleSet: {

@@ -839,7 +839,7 @@ export class ElementsTreeOutline extends
     if (!(treeElement instanceof ElementsTreeElement)) {
       return null;
     }
-    const elementsTreeElement = (treeElement as ElementsTreeElement);
+    const elementsTreeElement = (treeElement);
 
     const node = elementsTreeElement.node();
     if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
@@ -1268,9 +1268,9 @@ export class ElementsTreeOutline extends
     } else {
       for (const [node, record] of this.updateRecords) {
         if (record.hasChangedChildren()) {
-          this.updateModifiedParentNode((node as SDK.DOMModel.DOMNode));
+          this.updateModifiedParentNode((node));
         } else {
-          this.updateModifiedNode((node as SDK.DOMModel.DOMNode));
+          this.updateModifiedNode((node));
         }
       }
     }
@@ -1534,7 +1534,7 @@ export class ElementsTreeOutline extends
         treeElement.removeChildAtIndex(i);
         continue;
       }
-      const elementsTreeElement = (existingTreeElement as ElementsTreeElement);
+      const elementsTreeElement = (existingTreeElement);
       const existingNode = elementsTreeElement.node();
 
       if (visibleChildrenSet.has(existingNode)) {
@@ -1678,7 +1678,7 @@ export class UpdateRecord {
       this.removedAttributes.delete(attrName);
     }
     if (!this.modifiedAttributes) {
-      this.modifiedAttributes = (new Set() as Set<string>);
+      this.modifiedAttributes = (new Set());
     }
     this.modifiedAttributes.add(attrName);
   }
@@ -1688,7 +1688,7 @@ export class UpdateRecord {
       this.modifiedAttributes.delete(attrName);
     }
     if (!this.removedAttributes) {
-      this.removedAttributes = (new Set() as Set<string>);
+      this.removedAttributes = (new Set());
     }
     this.removedAttributes.add(attrName);
   }
@@ -1753,9 +1753,9 @@ export class Renderer implements UI.UIUtils.Renderer {
     let node: SDK.DOMModel.DOMNode|(SDK.DOMModel.DOMNode | null)|null = null;
 
     if (object instanceof SDK.DOMModel.DOMNode) {
-      node = (object as SDK.DOMModel.DOMNode);
+      node = (object);
     } else if (object instanceof SDK.DOMModel.DeferredDOMNode) {
-      node = await (object as SDK.DOMModel.DeferredDOMNode).resolvePromise();
+      node = await (object).resolvePromise();
     }
 
     if (!node) {

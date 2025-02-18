@@ -314,10 +314,10 @@ export class ModificationsManager extends EventTarget {
   toJSON(): Trace.Types.File.Modifications {
     const hiddenEntries = this.#entriesFilter.invisibleEntries()
                               .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                              .filter(entry => entry !== null) as Trace.Types.File.SerializableKey[];
+                              .filter(entry => entry !== null);
     const expandableEntries = this.#entriesFilter.expandableEntries()
                                   .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                                  .filter(entry => entry !== null) as Trace.Types.File.SerializableKey[];
+                                  .filter(entry => entry !== null);
     this.#modifications = {
       entriesModifications: {
         hiddenEntries,

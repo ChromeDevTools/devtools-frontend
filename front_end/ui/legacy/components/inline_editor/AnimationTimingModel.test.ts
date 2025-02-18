@@ -8,7 +8,7 @@ describe('AnimationTimingModel', () => {
   it('should parse `linear` as linear easing function', () => {
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse('linear');
     assert.instanceOf(model, InlineEditor.CSSLinearEasingModel.CSSLinearEasingModel);
-    assert.strictEqual(model!.asCSSText(), 'linear');
+    assert.strictEqual(model.asCSSText(), 'linear');
   });
 
   it('should parse a valid cubic bezier curve', () => {

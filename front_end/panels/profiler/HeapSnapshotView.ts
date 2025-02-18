@@ -1037,7 +1037,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     // Create a dividing line using em dashes.
     const dividerIndex = this.filterSelect.size();
     const divider = this.filterSelect.createOption('\u2014'.repeat(18));
-    (divider as HTMLOptionElement).disabled = true;
+    (divider).disabled = true;
 
     for (const filter of HeapSnapshotView.ALWAYS_AVAILABLE_FILTERS) {
       this.filterSelect.createOption(filter.uiName);
@@ -1337,7 +1337,7 @@ export class HeapSnapshotProfileType extends
         Root.Runtime.experiments.isEnabled('show-option-tp-expose-internals-in-heap-snapshot');
     const exposeInternalsInHeapSnapshotCheckbox =
         UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.exposeInternals), this.exposeInternals);
-    this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox as UI.UIUtils.CheckboxLabel;
+    this.customContentInternal = exposeInternalsInHeapSnapshotCheckbox;
     return showOptionToExposeInternalsInHeapSnapshot ? exposeInternalsInHeapSnapshotCheckbox : null;
   }
 
@@ -1533,7 +1533,7 @@ export class TrackingHeapSnapshotProfileType extends
   override customContent(): Element|null {
     const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.recordAllocationStacksExtra), this.recordAllocationStacksSettingInternal);
-    this.customContentInternal = (checkboxSetting as UI.UIUtils.CheckboxLabel);
+    this.customContentInternal = (checkboxSetting);
     return checkboxSetting;
   }
 
@@ -1798,7 +1798,7 @@ export class HeapProfileHeader extends ProfileHeader {
     if (this.snapshotProxy && this.fulfillLoad) {
       this.fulfillLoad(this.snapshotProxy);
     }
-    (this.profileType() as HeapSnapshotProfileType).snapshotReceived(this);
+    (this.profileType()).snapshotReceived(this);
   }
 
   override canSaveToFile(): boolean {
@@ -1941,7 +1941,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     }
 
     let navDown;
-    const keyboardEvent = (event as KeyboardEvent);
+    const keyboardEvent = (event);
     if (keyboardEvent.key === 'ArrowUp') {
       navDown = false;
     } else if (keyboardEvent.key === 'ArrowDown') {

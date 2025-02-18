@@ -54,7 +54,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.strictEqual(gotBadgeName, 'Extension');
 
       // Node with first party
-      const secondNode = topNodesIterator[1] as Trace.Extras.TraceTree.Node;
+      const secondNode = topNodesIterator[1];
       assert.strictEqual(secondNode.id.toString(), 'localhost');
 
       const firstPartyNode = new Timeline.TimelineTreeView.TreeGridNode(

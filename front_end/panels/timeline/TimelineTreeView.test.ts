@@ -168,8 +168,8 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       assert.isTrue(node.isGroupNode());
       const children = node.children().values();
-      assert.strictEqual(children.next().value!.event!.name, 'first console time');
-      assert.strictEqual(children.next().value!.event!.name, 'third console time');
+      assert.strictEqual(children.next().value!.event.name, 'first console time');
+      assert.strictEqual(children.next().value!.event.name, 'third console time');
     });
     it('groups events by category in the Bottom up Tree view', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
@@ -190,9 +190,9 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       assert.isTrue(node.isGroupNode());
       const children = node.children().values();
-      assert.strictEqual(children.next().value!.event!.name, 'second console time');
-      assert.strictEqual(children.next().value!.event!.name, 'first console time');
-      assert.strictEqual(children.next().value!.event!.name, 'third console time');
+      assert.strictEqual(children.next().value!.event.name, 'second console time');
+      assert.strictEqual(children.next().value!.event.name, 'first console time');
+      assert.strictEqual(children.next().value!.event.name, 'third console time');
     });
 
     it('can group entries by domain', async function() {

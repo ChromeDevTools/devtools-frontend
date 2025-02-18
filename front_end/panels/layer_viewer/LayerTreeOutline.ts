@@ -225,7 +225,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
       if (this.layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.showPaintProfiler),
-            () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection as Selection),
+            () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection),
             {jslogContext: 'layers.paint-profiler'});
       }
     }

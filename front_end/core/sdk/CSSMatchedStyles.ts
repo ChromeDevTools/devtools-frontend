@@ -69,8 +69,8 @@ function cleanUserAgentPayload(payload: Protocol.CSS.RuleMatch[]): Protocol.CSS.
   return cleanMatchedPayload;
 
   function mergeRule(from: Protocol.CSS.RuleMatch, to: Protocol.CSS.RuleMatch): void {
-    const shorthands = (new Map() as Map<string, string>);
-    const properties = (new Map() as Map<string, string>);
+    const shorthands = new Map<string, string>();
+    const properties = new Map<string, string>();
     for (const entry of to.rule.style.shorthandEntries) {
       shorthands.set(entry.name, entry.value);
     }
@@ -241,14 +241,14 @@ export class CSSRegisteredProperty {
 export class CSSMatchedStyles {
   #cssModelInternal: CSSModel;
   #nodeInternal: DOMNode;
-  #addedStyles: Map<CSSStyleDeclaration, DOMNode>;
-  #matchingSelectors: Map<number, Map<string, boolean>>;
-  #keyframesInternal: CSSKeyframesRule[];
+  #addedStyles = new Map<CSSStyleDeclaration, DOMNode>();
+  #matchingSelectors = new Map<number, Map<string, boolean>>();
+  #keyframesInternal: CSSKeyframesRule[] = [];
   #registeredProperties: CSSRegisteredProperty[];
   #registeredPropertyMap = new Map<string, CSSRegisteredProperty>();
-  #nodeForStyleInternal: Map<CSSStyleDeclaration, DOMNode|null>;
-  #inheritedStyles: Set<CSSStyleDeclaration>;
-  #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
+  #nodeForStyleInternal = new Map<CSSStyleDeclaration, DOMNode|null>();
+  #inheritedStyles = new Set<CSSStyleDeclaration>();
+  #styleToDOMCascade = new Map<CSSStyleDeclaration, DOMInheritanceCascade>();
   #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
   #positionTryRules: CSSPositionTryRule[];
   #activePositionFallbackIndex: number;
@@ -276,13 +276,10 @@ export class CSSMatchedStyles {
   }: CSSMatchedStylesPayload) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
-    this.#addedStyles = new Map();
-    this.#matchingSelectors = new Map();
     this.#registeredProperties = [
       ...propertyRules.map(rule => new CSSPropertyRule(cssModel, rule)),
       ...cssPropertyRegistrations,
     ].map(r => new CSSRegisteredProperty(cssModel, r));
-    this.#keyframesInternal = [];
     if (animationsPayload) {
       this.#keyframesInternal = animationsPayload.map(rule => new CSSKeyframesRule(cssModel, rule));
     }
@@ -291,10 +288,6 @@ export class CSSMatchedStyles {
     this.#fontPaletteValuesRule =
         fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
 
-    this.#nodeForStyleInternal = new Map();
-    this.#inheritedStyles = new Set();
-    this.#styleToDOMCascade = new Map();
-    this.#registeredPropertyMap = new Map();
     this.#activePositionFallbackIndex = activePositionFallbackIndex;
   }
 
@@ -818,8 +811,8 @@ class NodeCascade {
   readonly styles: CSSStyleDeclaration[];
   readonly #isInherited: boolean;
   readonly #isHighlightPseudoCascade: boolean;
-  readonly propertiesState: Map<CSSProperty, PropertyState>;
-  readonly activeProperties: Map<string, CSSProperty>;
+  readonly propertiesState = new Map<CSSProperty, PropertyState>();
+  readonly activeProperties = new Map<string, CSSProperty>();
   constructor(
       matchedStyles: CSSMatchedStyles, styles: CSSStyleDeclaration[], isInherited: boolean,
       isHighlightPseudoCascade: boolean = false) {
@@ -827,8 +820,6 @@ class NodeCascade {
     this.styles = styles;
     this.#isInherited = isInherited;
     this.#isHighlightPseudoCascade = isHighlightPseudoCascade;
-    this.propertiesState = new Map();
-    this.activeProperties = new Map();
   }
 
   computeActiveProperties(): void {
@@ -1301,8 +1292,8 @@ class DOMInheritanceCascade {
       const nodeCascade = this.#nodeCascades[i];
       const variableNames = [];
       for (const entry of nodeCascade.activeProperties.entries()) {
-        const propertyName = (entry[0] as string);
-        const property = (entry[1] as CSSProperty);
+        const propertyName = entry[0];
+        const property = entry[1];
         if (propertyName.startsWith('--')) {
           accumulatedCSSVariables.set(propertyName, {value: property.value, declaration: new CSSValueSource(property)});
           variableNames.push(propertyName);

@@ -111,7 +111,7 @@ describeWithEnvironment('SourcesView', () => {
       const contentLoadedPromise = new Promise(res => window.addEventListener('source-file-loaded', res));
       const widget = sourcesView.viewForFile(uiSourceCode);
       assert.instanceOf(widget, Sources.UISourceCodeFrame.UISourceCodeFrame);
-      const uiSourceCodeFrame = widget as Sources.UISourceCodeFrame.UISourceCodeFrame;
+      const uiSourceCodeFrame = widget;
 
       // Skip creating the DebuggerPlugin, which times out and simulate DOM attach/showing.
       sinon.stub(uiSourceCodeFrame, 'loadPlugins' as keyof typeof uiSourceCodeFrame).callsFake(() => {});

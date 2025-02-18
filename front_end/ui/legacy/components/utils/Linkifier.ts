@@ -455,7 +455,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const uiLocation = await liveLocation.uiLocation();
     if (!uiLocation) {
       if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
-        const header = (liveLocation as Bindings.CSSWorkspaceBinding.LiveLocation).header();
+        const header = (liveLocation).header();
         if (header && header.ownerNode) {
           anchor.addEventListener('click', event => {
             event.consume(true);

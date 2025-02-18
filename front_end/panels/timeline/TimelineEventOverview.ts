@@ -271,7 +271,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
             context.stroke(paths[i]);
           }
         };
-    const backgroundContext = (this.backgroundCanvas.getContext('2d') as CanvasRenderingContext2D | null);
+    const backgroundContext = (this.backgroundCanvas.getContext('2d'));
     if (!backgroundContext) {
       throw new Error('Could not find 2d canvas');
     }

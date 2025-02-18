@@ -168,7 +168,7 @@ export class ParsedURL {
     // Based on net::FilePathToFileURL. Ideally we would handle
     // '\\' as well on non-Windows file systems.
     for (const specialChar of ['%', ';', '#', '?', ' ']) {
-      (path as string) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
+      (path) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
     }
     return path;
   }

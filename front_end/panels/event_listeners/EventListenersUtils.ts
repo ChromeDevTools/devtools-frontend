@@ -438,7 +438,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       if (!this || !(this instanceof Node)) {
         return;
       }
-      const node = this as Node;
+      const node = this;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const jQuery = (window as any)['jQuery'];
       if (!jQuery || !jQuery.fn) {

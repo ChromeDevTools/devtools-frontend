@@ -60,8 +60,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
   it('renders protocols not detected status message', async () => {
     const protocols: ApplicationComponents.ProtocolHandlersView.ProtocolHandler[] = [];
     const manifestURL = urlString`https://www.example.com/index.html/manifest-protocol.json`;
-    const component = await renderProtocolHandlersComponent(
-        manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
+    const component = await renderProtocolHandlersComponent(manifestURL, protocols);
 
     const noStatusElement = component.shadowRoot!.querySelector('.protocol-handlers-row.status');
     assert.instanceOf(noStatusElement, HTMLElement);

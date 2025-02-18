@@ -99,7 +99,7 @@ export function createEmbindPool(): {
 
     manage<T extends SymbolsBackend.EmbindObject|undefined>(object: T): T {
       if (typeof object !== 'undefined') {
-        this.objectPool.push(object as SymbolsBackend.EmbindObject);
+        this.objectPool.push(object);
       }
       return object;
     }

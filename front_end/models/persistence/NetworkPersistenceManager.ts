@@ -437,7 +437,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (!this.#isUISourceCodeAlreadyOverridden(uiSourceCode)) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSaveNewFile);
       uiSourceCode.commitWorkingCopy();
-      await this.saveUISourceCodeForOverrides(uiSourceCode as Workspace.UISourceCode.UISourceCode);
+      await this.saveUISourceCodeForOverrides(uiSourceCode);
     } else {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuOpenExistingFile);
     }

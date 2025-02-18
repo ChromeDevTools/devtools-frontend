@@ -14,7 +14,7 @@ export class SortableDataGrid<T> extends ViewportDataGrid<SortableDataGridNode<T
   constructor(dataGridParameters: Parameters) {
     super(dataGridParameters);
     this.sortingFunction = SortableDataGrid.TrivialComparator;
-    this.setRootNode((new SortableDataGridNode() as SortableDataGridNode<T>));
+    this.setRootNode((new SortableDataGridNode()));
   }
 
   static TrivialComparator<T>(_a: SortableDataGridNode<T>, _b: SortableDataGridNode<T>): number {

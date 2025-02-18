@@ -219,20 +219,20 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
           Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_ADDED, fakeModelSession);
 
       if (useTreeView) {
-        assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 1);
-        assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].title, TEST_EXTENSION_NAME);
+        assert.strictEqual(sidebar.extensionStorageListTreeElement.childCount(), 1);
+        assert.strictEqual(sidebar.extensionStorageListTreeElement.children()[0].title, TEST_EXTENSION_NAME);
         assert.deepEqual(
-            sidebar.extensionStorageListTreeElement!.children()[0].children().map(e => e.title), ['Session', 'Local']);
+            sidebar.extensionStorageListTreeElement.children()[0].children().map(e => e.title), ['Session', 'Local']);
       } else {
-        assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 2);
-        assert.deepEqual(sidebar.extensionStorageListTreeElement!.children().map(e => e.title), ['Session', 'Local']);
+        assert.strictEqual(sidebar.extensionStorageListTreeElement.childCount(), 2);
+        assert.deepEqual(sidebar.extensionStorageListTreeElement.children().map(e => e.title), ['Session', 'Local']);
       }
 
       extensionStorageModel.dispatchEventToListeners(
           Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_REMOVED, fakeModelLocal);
       extensionStorageModel.dispatchEventToListeners(
           Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_REMOVED, fakeModelSession);
-      assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 0);
+      assert.strictEqual(sidebar.extensionStorageListTreeElement.childCount(), 0);
     }
   });
 
@@ -262,18 +262,18 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
     // Add a fake extension storage to the main target. The UI should be updated.
     addFakeExtensionStorage(target);
-    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+    assert.strictEqual(sidebar.extensionStorageListTreeElement.children()[0].childCount(), 1);
 
     // Add a fake extension storage using a non-main target (e.g, an iframe).
     // Make sure we don't add a second entry to the UI.
     const removeFrameStorage =
         addFakeExtensionStorage(createTarget({type: SDK.Target.Type.FRAME, parentTarget: target}));
-    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+    assert.strictEqual(sidebar.extensionStorageListTreeElement.children()[0].childCount(), 1);
 
     // Removing the frame also shouldn't do anything, since the main frame
     // still exists.
     removeFrameStorage();
-    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+    assert.strictEqual(sidebar.extensionStorageListTreeElement.children()[0].childCount(), 1);
   });
 
   async function getExpectedCall(expectedCall: string): Promise<sinon.SinonSpy> {

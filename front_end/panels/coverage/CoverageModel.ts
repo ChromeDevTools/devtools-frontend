@@ -371,7 +371,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         }
       }
       const subentry = await this.addCoverage(
-          script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type as CoverageType, stamp);
+          script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type, stamp);
       if (subentry) {
         updatedEntries.push(...subentry);
       }
@@ -430,8 +430,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       ranges.push({startOffset: rule.startOffset, endOffset: rule.endOffset, count: Number(rule.used)});
     }
     for (const entry of rulesByStyleSheet) {
-      const styleSheetHeader = entry[0] as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
-      const ranges = entry[1] as RangeUseCount[];
+      const styleSheetHeader = entry[0];
+      const ranges = entry[1];
       const subentry = await this.addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
           ranges, CoverageType.CSS, stamp);
@@ -630,8 +630,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private addCoverageForSource(
       url: Platform.DevToolsPath.UrlString, size: number, type: CoverageType,
       generatedUrlCoverage: URLCoverageInfo): CoverageInfo|null {
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     const contentProvider = uiSourceCode as TextUtils.ContentProvider.ContentProvider;
     const urlCoverage = new SourceURLCoverageInfo(url, generatedUrlCoverage);
     const coverageInfo = urlCoverage.ensureEntry(contentProvider, size, 0, 0, type);
@@ -774,7 +773,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider).isContentScript();
     }
     this.typeInternal |= type;
 
@@ -785,7 +784,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider).isContentScript();
     }
 
     entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type, this);

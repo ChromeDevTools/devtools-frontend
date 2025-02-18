@@ -63,7 +63,7 @@ export class ContextMenuProvider implements
       contentProvider: TextUtils.ContentProvider.ContentProvider): void {
     async function saveAs(): Promise<void> {
       if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
-        (contentProvider as Workspace.UISourceCode.UISourceCode).commitWorkingCopy();
+        (contentProvider).commitWorkingCopy();
       }
       const url = contentProvider.contentURL();
       let content: TextUtils.ContentProvider.DeferredContent;

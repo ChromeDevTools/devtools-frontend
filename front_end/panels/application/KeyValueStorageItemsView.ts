@@ -327,7 +327,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
     const value = entry && entry.value;
     if (value) {
       this.#selectedKey = entry.key;
-      const preview = await this.createPreview(entry.key, value as string);
+      const preview = await this.createPreview(entry.key, value);
       // Selection could've changed while the preview was loaded
       if (this.#selectedKey === entry.key) {
         this.showPreview(preview, value);

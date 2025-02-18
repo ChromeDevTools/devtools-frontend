@@ -269,7 +269,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
 
     for (let i = 0; i < visibleNodes.length; ++i) {
       const node = visibleNodes[i];
-      const element = (node.element() as HTMLElement);
+      const element = (node.element());
       node.setStriped((offset + i) % 2 === 0);
       if (element !== previousElement.nextSibling) {
         tBody.insertBefore(element, previousElement.nextSibling);

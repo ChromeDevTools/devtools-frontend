@@ -432,7 +432,7 @@ export class Toolbar extends HTMLElement {
       if (!loadItem) {
         throw new Error('Could not load a toolbar item registration with no loadItem function');
       }
-      return loadItem().then(p => (p as Provider).item());
+      return loadItem().then(p => (p).item());
     }));
 
     for (const item of items) {

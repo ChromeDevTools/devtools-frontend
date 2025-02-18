@@ -181,8 +181,9 @@ describeWithLocale('LinkSwatch', () => {
       jslogContext: 'test',
     };
 
-    const element = renderElementIntoDOM(component)!.shadowRoot!.querySelector('devtools-base-link-swatch')!.shadowRoot!
-                        .querySelector('.link-swatch-link') as HTMLButtonElement;
+    const element = renderElementIntoDOM(component)
+                        .shadowRoot!.querySelector('devtools-base-link-swatch')!.shadowRoot!.querySelector(
+                            '.link-swatch-link') as HTMLButtonElement;
     element.click();
 
     assert.isTrue(callbackCalled);

@@ -594,7 +594,7 @@ export class StylePropertiesSection {
 
     const treeElement = this.propertiesTreeOutline.treeElementFromEvent(event);
     if (treeElement instanceof StylePropertyTreeElement) {
-      this.parentPane.setActiveProperty((treeElement as StylePropertyTreeElement));
+      this.parentPane.setActiveProperty((treeElement));
     } else {
       this.parentPane.setActiveProperty(null);
     }

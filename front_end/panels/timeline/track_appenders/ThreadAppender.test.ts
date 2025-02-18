@@ -518,7 +518,7 @@ describeWithEnvironment('ThreadAppender', function() {
       // appended to the timeline data.
       const initialTimelineData = await renderThreadAppendersFromTrace(this, fileName);
       let unknownEventIndex = initialTimelineData.entryData.findIndex(entry => {
-        const event = entry as Trace.Types.Events.Event;
+        const event = entry;
         return event.name === bizarreName;
       });
       assert.strictEqual(unknownEventIndex, -1);
@@ -528,7 +528,7 @@ describeWithEnvironment('ThreadAppender', function() {
       const finalTimelineData = await renderThreadAppendersFromTrace(this, fileName);
       const finalFlamechartData = finalTimelineData.flameChartData;
       unknownEventIndex = finalTimelineData.entryData.findIndex(entry => {
-        const event = entry as Trace.Types.Events.Event;
+        const event = entry;
         return event.name === bizarreName;
       });
       assert.isAbove(unknownEventIndex, -1);

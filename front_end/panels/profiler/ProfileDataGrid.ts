@@ -161,7 +161,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
       const existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
       if (existingChild) {
-        existingChild.merge((orphanedChild as ProfileDataGridNode), false);
+        existingChild.merge((orphanedChild), false);
       } else {
         container.appendChild(orphanedChild);
       }
@@ -251,7 +251,7 @@ export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown>
   override insertChild(child: DataGrid.DataGrid.DataGridNode<unknown>, index: number): void {
     const profileDataGridNode = (child as ProfileDataGridNode);
     super.insertChild(profileDataGridNode, index);
-    this.childrenByCallUID.set(profileDataGridNode.callUID, (profileDataGridNode as ProfileDataGridNode));
+    this.childrenByCallUID.set(profileDataGridNode.callUID, (profileDataGridNode));
   }
 
   override removeChild(profileDataGridNode: DataGrid.DataGrid.DataGridNode<unknown>): void {
@@ -447,7 +447,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 
   insertChild(child: ProfileDataGridNode, index: number): void {
-    const childToInsert = (child as ProfileDataGridNode);
+    const childToInsert = (child);
     this.children.splice(index, 0, childToInsert);
     this.childrenByCallUID.set(childToInsert.callUID, child);
   }
@@ -497,7 +497,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
     const count = children.length;
 
     for (let index = 0; index < count; ++index) {
-      (children[index] as ProfileDataGridNode).restore();
+      (children[index]).restore();
     }
 
     this.savedChildren = null;

@@ -404,7 +404,7 @@ export class ThrottlingManager {
     const numericInput =
         new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency'));
     numericInput.setTitle(i18nString(UIStrings.hardwareConcurrencySettingLabel));
-    const inputElement = numericInput.element as HTMLInputElement;
+    const inputElement = numericInput.element;
     inputElement.min = '1';
     numericInput.setEnabled(false);
 

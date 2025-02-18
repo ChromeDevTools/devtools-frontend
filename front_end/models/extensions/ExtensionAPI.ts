@@ -32,7 +32,7 @@ import type * as PublicAPI from '../../../extension-api/ExtensionAPI'; // eslint
 import type * as Platform from '../../core/platform/platform.js';
 import type * as HAR from '../har/har.js';
 
-/* eslint-disable @typescript-eslint/naming-convention,@typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/naming-convention */
 export namespace PrivateAPI {
   export namespace Panels {
     export const enum SearchAction {
@@ -1579,16 +1579,16 @@ self.injectedExtensionAPI = function(
 
   // Only expose tabId on chrome.devtools.inspectedWindow, not webInspector.inspectedWindow.
   // @ts-expect-error
-  chrome.devtools!.inspectedWindow = {};
-  Object.defineProperty(chrome.devtools!.inspectedWindow, 'tabId', {get: getTabId});
+  chrome.devtools.inspectedWindow = {};
+  Object.defineProperty(chrome.devtools.inspectedWindow, 'tabId', {get: getTabId});
   // @ts-expect-error
-  chrome.devtools!.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
-  chrome.devtools!.network = coreAPI.network;
-  chrome.devtools!.panels = coreAPI.panels;
-  chrome.devtools!.panels.themeName = themeName;
-  chrome.devtools!.languageServices = coreAPI.languageServices;
-  chrome.devtools!.recorder = coreAPI.recorder;
-  chrome.devtools!.performance = coreAPI.performance;
+  chrome.devtools.inspectedWindow.__proto__ = coreAPI.inspectedWindow;
+  chrome.devtools.network = coreAPI.network;
+  chrome.devtools.panels = coreAPI.panels;
+  chrome.devtools.panels.themeName = themeName;
+  chrome.devtools.languageServices = coreAPI.languageServices;
+  chrome.devtools.recorder = coreAPI.recorder;
+  chrome.devtools.performance = coreAPI.performance;
 
   // default to expose experimental APIs for now.
   if (extensionInfo.exposeExperimentalAPIs !== false) {

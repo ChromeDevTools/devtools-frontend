@@ -121,7 +121,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     }
 
     document.addEventListener('keydown', event => {
-      stopEventPropagation.call(this, (event as KeyboardEvent));
+      stopEventPropagation.call(this, (event));
     }, true);
   }
 

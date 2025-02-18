@@ -130,7 +130,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     const x = this.cursorPosition;
     const elements = await Promise.all(this.overviewControls.map(control => control.overviewInfoPromise(x)));
     const fragment = document.createDocumentFragment();
-    const nonNullElements = (elements.filter(element => element !== null) as Element[]);
+    const nonNullElements = (elements.filter(element => element !== null));
     fragment.append(...nonNullElements);
     return fragment;
   }
@@ -482,7 +482,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
     if (!this.contextInternal) {
       throw new Error('Unable to retrieve canvas context');
     }
-    return this.contextInternal as CanvasRenderingContext2D;
+    return this.contextInternal;
   }
 
   calculator(): TimelineOverviewCalculator|null {
@@ -552,7 +552,7 @@ export class OverviewInfo {
     this.element.appendChild(content);
     this.glassPane.setContentAnchorBox(this.anchorElement.boxInWindow());
     if (!this.glassPane.isShowing()) {
-      this.glassPane.show((this.anchorElement.ownerDocument as Document));
+      this.glassPane.show((this.anchorElement.ownerDocument));
     }
   }
 

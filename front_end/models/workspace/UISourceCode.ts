@@ -294,7 +294,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     if (!this.isDirty() || this.workingCopyInternal === updatedContent.content) {
-      this.contentCommitted(updatedContent.content as string, false);
+      this.contentCommitted(updatedContent.content, false);
       return;
     }
 
@@ -305,7 +305,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
     const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
     if (shouldUpdate) {
-      this.contentCommitted(updatedContent.content as string, false);
+      this.contentCommitted(updatedContent.content, false);
     } else {
       this.lastAcceptedContent = updatedContent.content;
     }

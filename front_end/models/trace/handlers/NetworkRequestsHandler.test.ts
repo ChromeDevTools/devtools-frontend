@@ -460,8 +460,8 @@ function assertDataArgsStats<D extends keyof DataArgs>(
 
   for (const [name, value] of stats.entries()) {
     if (typeof request.args.data[name] === 'number') {
-      const expectedValue = value as DataArgs[D];
-      const actualValueRounded = Number((request.args.data[name] as number).toPrecision(5)) as DataArgs[D];
+      const expectedValue = value;
+      const actualValueRounded = Number((request.args.data[name]).toPrecision(5)) as DataArgs[D];
       assert.strictEqual(actualValueRounded, expectedValue, url);
     } else {
       assert.strictEqual(request.args.data[name], value, url);
@@ -480,7 +480,7 @@ function assertDataArgsProcessedDataStats<D extends keyof DataArgsProcessedData>
 
   for (const [name, value] of stats.entries()) {
     if (typeof request.args.data.syntheticData[name] === 'number') {
-      const expectedValue = value as DataArgsProcessedData[D];
+      const expectedValue = value;
       const actualValueRounded =
           Number((request.args.data.syntheticData[name] as number).toPrecision(5)) as DataArgsProcessedData[D];
       assert.strictEqual(actualValueRounded, expectedValue, url);

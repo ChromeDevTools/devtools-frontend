@@ -164,7 +164,7 @@ export class GlassPane {
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = (containers.get((this.element.ownerDocument as Document))) as HTMLElement;
+    const container = (containers.get((this.element.ownerDocument))) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -340,7 +340,7 @@ export class GlassPane {
   }
 
   static setContainer(element: Element): void {
-    containers.set((element.ownerDocument as Document), element);
+    containers.set((element.ownerDocument), element);
     GlassPane.containerMoved(element);
   }
 

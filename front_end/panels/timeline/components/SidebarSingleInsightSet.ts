@@ -91,7 +91,7 @@ export interface SidebarSingleInsightSetData {
  * users. */
 const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
   'FontDisplay',
-  'LongCriticalNetworkTree',
+  'NetworkDependencyTree',
 ]);
 
 type InsightNameToComponentMapping = Record<
@@ -111,7 +111,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
   LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
   LCPPhases: Insights.LCPPhases.LCPPhases,
-  LongCriticalNetworkTree: Insights.LongCriticalNetworkTree.LongCriticalNetworkTree,
+  NetworkDependencyTree: Insights.NetworkDependencyTree.NetworkDependencyTree,
   RenderBlocking: Insights.RenderBlocking.RenderBlocking,
   SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
   ThirdParties: Insights.ThirdParties.ThirdParties,

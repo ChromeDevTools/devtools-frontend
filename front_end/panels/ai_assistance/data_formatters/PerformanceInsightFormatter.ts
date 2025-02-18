@@ -85,7 +85,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
       case 'LCPPhases':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
-      case 'LongCriticalNetworkTree':
+      case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':
         return '';
@@ -119,7 +119,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
         return '';
       case 'LCPPhases':
         return 'This insight is used to analyse the loading of the LCP resource and identify which of the 4 phases are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
-      case 'LongCriticalNetworkTree':
+      case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':
         return '';

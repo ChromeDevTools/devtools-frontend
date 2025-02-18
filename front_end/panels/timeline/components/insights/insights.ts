@@ -15,7 +15,7 @@ import * as ImageDelivery from './ImageDelivery.js';
 import * as InteractionToNextPaint from './InteractionToNextPaint.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LCPPhases from './LCPPhases.js';
-import * as LongCriticalNetworkTree from './LongCriticalNetworkTree.js';
+import * as NetworkDependencyTree from './NetworkDependencyTree.js';
 import * as NodeLink from './NodeLink.js';
 import * as RenderBlocking from './RenderBlocking.js';
 import * as SidebarInsight from './SidebarInsight.js';
@@ -39,7 +39,7 @@ export {
   InteractionToNextPaint,
   LCPDiscovery,
   LCPPhases,
-  LongCriticalNetworkTree,
+  NetworkDependencyTree,
   NodeLink,
   RenderBlocking,
   SidebarInsight,

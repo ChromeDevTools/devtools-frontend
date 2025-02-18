@@ -6,31 +6,31 @@ import '../../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type {
-  CriticalRequestNode, LongCriticalNetworkTreeInsightModel} from
-  '../../../../models/trace/insights/LongCriticalNetworkTree.js';
+  CriticalRequestNode, NetworkDependencyTreeInsightModel} from
+  '../../../../models/trace/insights/NetworkDependencyTree.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 import * as Utils from '../../utils/utils.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import longCriticalNetworkTreeInsightRaw from './longCriticalNetworkTreeInsight.css.js';
+import networkDependencyTreeInsightRaw from './networkDependencyTreeInsight.css.js';
 
-const {UIStrings, i18nString} = Trace.Insights.Models.LongCriticalNetworkTree;
+const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
 
 const {html} = Lit;
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const longCriticalNetworkTreeInsightComponentStyles = new CSSStyleSheet();
-longCriticalNetworkTreeInsightComponentStyles.replaceSync(longCriticalNetworkTreeInsightRaw.cssContent);
+const networkDependencyTreeInsightComponentStyles = new CSSStyleSheet();
+networkDependencyTreeInsightComponentStyles.replaceSync(networkDependencyTreeInsightRaw.cssContent);
 
-export class LongCriticalNetworkTree extends BaseInsightComponent<LongCriticalNetworkTreeInsightModel> {
+export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
   override internalName: string = 'long-critical-network-tree';
 
   override connectedCallback(): void {
     super.connectedCallback();
-    this.shadow.adoptedStyleSheets.push(longCriticalNetworkTreeInsightComponentStyles);
+    this.shadow.adoptedStyleSheets.push(networkDependencyTreeInsightComponentStyles);
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -80,7 +80,7 @@ export class LongCriticalNetworkTree extends BaseInsightComponent<LongCriticalNe
     }
 
     if (!this.model.rootNodes.length) {
-      return html`<div class="insight-section">${i18nString(UIStrings.noLongCriticalNetworkTree)}</div>`;
+      return html`<div class="insight-section">${i18nString(UIStrings.noNetworkDependencyTree)}</div>`;
     }
 
     // clang-format off
@@ -113,8 +113,8 @@ function getAllOverlays(nodes: CriticalRequestNode[], overlays: Overlays.Overlay
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-long-critical-network-tree': LongCriticalNetworkTree;
+    'devtools-performance-long-critical-network-tree': NetworkDependencyTree;
   }
 }
 
-customElements.define('devtools-performance-long-critical-network-tree', LongCriticalNetworkTree);
+customElements.define('devtools-performance-long-critical-network-tree', NetworkDependencyTree);

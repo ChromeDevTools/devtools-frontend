@@ -158,7 +158,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'Layout shift culprits',
-      'Long critical network tree',
+      'Network dependency tree',
       'Improve image delivery',
       'Font display',
       '3rd parties',

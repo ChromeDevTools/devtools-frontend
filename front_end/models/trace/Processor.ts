@@ -345,7 +345,7 @@ export class TraceProcessor extends EventTarget {
       LCPDiscovery: null,
       CLSCulprits: null,
       RenderBlocking: null,
-      LongCriticalNetworkTree: null,
+      NetworkDependencyTree: null,
       ImageDelivery: null,
       DocumentLatency: null,
       FontDisplay: null,

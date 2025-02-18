@@ -21,7 +21,7 @@ export const UIStrings = {
   /**
    * @description Title of an insight that recommends avoiding chaining critical requests.
    */
-  title: 'Long critical network tree',
+  title: 'Network dependency tree',
   /**
    * @description Description of an insight that recommends avoiding chaining critical requests.
    */
@@ -30,7 +30,7 @@ export const UIStrings = {
   /**
    * @description Text status indicating that there isn't long chaining critical network requests.
    */
-  noLongCriticalNetworkTree: 'No rendering tasks impacted by long critical network tree',
+  noNetworkDependencyTree: 'No rendering tasks impacted by network dependencies',
   /**
    * @description Text for the maximum critical path latency. This refers to the longest chain of network requests that
    * the browser must download before it can render the page.
@@ -38,7 +38,7 @@ export const UIStrings = {
   maxCriticalPathLatency: 'Max critical path latency:'
 };
 
-const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LongCriticalNetworkTree.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/NetworkDependencyTree.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // XHRs are fetched at High priority, but we exclude them, as they are unlikely to be critical
@@ -56,7 +56,7 @@ export interface CriticalRequestNode {
   children: CriticalRequestNode[];
 }
 
-export type LongCriticalNetworkTreeInsightModel = InsightModel<typeof UIStrings, {
+export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
   rootNodes: CriticalRequestNode[],
   maxTime: Types.Timing.Micro,
 }>;
@@ -65,10 +65,10 @@ export function deps(): ['NetworkRequests'] {
   return ['NetworkRequests'];
 }
 
-function finalize(partialModel: PartialInsightModel<LongCriticalNetworkTreeInsightModel>):
-    LongCriticalNetworkTreeInsightModel {
+function finalize(partialModel: PartialInsightModel<NetworkDependencyTreeInsightModel>):
+    NetworkDependencyTreeInsightModel {
   return {
-    insightKey: 'LongCriticalNetworkTree',
+    insightKey: 'NetworkDependencyTree',
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
@@ -113,7 +113,7 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
 }
 
 export function generateInsight(
-    _parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LongCriticalNetworkTreeInsightModel {
+    _parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): NetworkDependencyTreeInsightModel {
   if (!context.navigation) {
     return finalize({
       rootNodes: [],

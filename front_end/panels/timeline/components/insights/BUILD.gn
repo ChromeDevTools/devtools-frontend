@@ -11,7 +11,7 @@ generate_css("css_files") {
   sources = [
     "baseInsightComponent.css",
     "checklist.css",
-    "longCriticalNetworkTreeInsight.css",
+    "networkDependencyTreeInsight.css",
     "table.css",
   ]
 }
@@ -31,7 +31,7 @@ devtools_module("insights") {
     "InteractionToNextPaint.ts",
     "LCPDiscovery.ts",
     "LCPPhases.ts",
-    "LongCriticalNetworkTree.ts",
+    "NetworkDependencyTree.ts",
     "NodeLink.ts",
     "RenderBlocking.ts",
     "SidebarInsight.ts",

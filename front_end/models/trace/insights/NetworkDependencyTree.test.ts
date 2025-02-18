@@ -6,11 +6,11 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('LongCriticalNetworkTree', function() {
+describeWithEnvironment('NetworkDependencyTree', function() {
   it('calculates network dependency tree', async () => {
     const {data, insights} = await processTrace(this, 'lcp-multiple-frames.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LongCriticalNetworkTree', insights, firstNav);
+    const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
 
     // The network dependency tree in this trace is
     // | .../index.html (ts:566777570990, dur:5005590)

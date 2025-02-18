@@ -42,7 +42,7 @@ export class LiveLocationWithPool implements LiveLocation {
   }
 
   async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   dispose(): void {
@@ -55,7 +55,7 @@ export class LiveLocationWithPool implements LiveLocation {
   }
 
   async isIgnoreListed(): Promise<boolean> {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 }
 

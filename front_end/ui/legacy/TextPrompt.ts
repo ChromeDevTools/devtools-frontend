@@ -129,7 +129,7 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
 
   private attachInternal(element: Element): Element {
     if (this.proxyElement) {
-      throw 'Cannot attach an attached TextPrompt';
+      throw new Error('Cannot attach an attached TextPrompt');
     }
     this.elementInternal = element;
 

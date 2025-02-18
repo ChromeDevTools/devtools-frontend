@@ -92,7 +92,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   async start(jsCoveragePerBlock: boolean): Promise<boolean> {
     if (this.suspensionState !== SuspensionState.ACTIVE) {
-      throw Error('Cannot start CoverageModel while it is not active.');
+      throw new Error('Cannot start CoverageModel while it is not active.');
     }
     const promises = [];
     if (this.cssModel) {

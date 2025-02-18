@@ -734,7 +734,7 @@ function serializeInteger(input: Integer): SerializationResult|Error {
 
 // 4.1.5.  Serializing a Decimal
 function serializeDecimal(_input: Decimal): SerializationResult|Error {
-  throw 'Unimplemented';
+  throw new Error('Unimplemented');
 }
 
 // 4.1.6.  Serializing a String
@@ -781,7 +781,7 @@ function serializeToken(input: Token): SerializationResult|Error {
 
 // 4.1.8.  Serializing a Byte Sequence
 function serializeByteSequence(_input: Binary): SerializationResult|Error {
-  throw 'Unimplemented';
+  throw new Error('Unimplemented');
 }
 
 // 4.1.9.  Serializing a Boolean

@@ -158,11 +158,11 @@ export class CSSStyleRule extends CSSRule {
   setSelectorText(newSelector: string): Promise<boolean> {
     const styleSheetId = this.styleSheetId;
     if (!styleSheetId) {
-      throw 'No rule stylesheet id';
+      throw new Error('No rule stylesheet id');
     }
     const range = this.selectorRange();
     if (!range) {
-      throw 'Rule selector is not editable';
+      throw new Error('Rule selector is not editable');
     }
     return this.cssModelInternal.setSelectorText(styleSheetId, range, newSelector);
   }
@@ -324,11 +324,11 @@ export class CSSKeyframeRule extends CSSRule {
   setKeyText(newKeyText: string): Promise<boolean> {
     const styleSheetId = this.styleSheetId;
     if (!styleSheetId) {
-      throw 'No rule stylesheet id';
+      throw new Error('No rule stylesheet id');
     }
     const range = this.#keyText.range;
     if (!range) {
-      throw 'Keyframe key is not editable';
+      throw new Error('Keyframe key is not editable');
     }
     return this.cssModelInternal.setKeyframeKey(styleSheetId, range, newKeyText);
   }

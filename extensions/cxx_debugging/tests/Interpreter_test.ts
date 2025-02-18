@@ -60,7 +60,7 @@ class LLDBEvalDebugger implements LLDBEvalTests.Debugger {
   async evaluate(expr: string): Promise<LLDBEvalTests.EvalResult> {
     const {callFrame, rawLocation} = await this.#debugger.waitForPause();
     if (!this.#plugin.evaluate) {
-      throw Error('not implemented');
+      throw new Error('Not implemented');
     }
     try {
       const resultObject = await this.#plugin.evaluate(expr, rawLocation, this.#debugger.stopIdForCallFrame(callFrame));

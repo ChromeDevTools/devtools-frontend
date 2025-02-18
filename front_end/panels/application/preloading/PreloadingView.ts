@@ -150,7 +150,7 @@ class PreloadingUIUtils {
       return ruleSet.url;
     }
 
-    throw Error('unreachable');
+    throw new Error('unreachable');
   }
 
   static processLocalId(id: Protocol.Preload.RuleSetId): string {

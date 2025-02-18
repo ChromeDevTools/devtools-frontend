@@ -172,8 +172,8 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.#metadataByCommand;
   }
 
-  set metadataByCommand(metadataByCommand:
-                            Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>) {
+  set metadataByCommand(
+      metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>) {
     this.#metadataByCommand = metadataByCommand;
     this.requestUpdate();
   }
@@ -394,17 +394,17 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #convertObjectParameter(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]): Parameter {
     const description = schema?.description ?? '';
     if (typeof value !== 'object' || value === null) {
-      throw Error('The value is not an object');
+      throw new Error('The value is not an object');
     }
     const typeRef = schema?.typeRef;
     if (!typeRef) {
-      throw Error('Every object parameters should have a type ref');
+      throw new Error('Every object parameters should have a type ref');
     }
 
     const nestedType = typeRef === DUMMY_DATA ? initialSchema : this.typesByName.get(typeRef);
 
     if (!nestedType) {
-      throw Error('No nested type for keys were found');
+      throw new Error('No nested type for keys were found');
     }
     const objectValues = [];
     for (const objectKey of Object.keys(value)) {
@@ -428,11 +428,11 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const optional = schema?.optional ?? true;
     const typeRef = schema?.typeRef;
     if (!typeRef) {
-      throw Error('Every array parameters should have a type ref');
+      throw new Error('Every array parameters should have a type ref');
     }
 
     if (!Array.isArray(value)) {
-      throw Error('The value is not an array');
+      throw new Error('The value is not an array');
     }
     const nestedType = this.#isTypePrimitive(typeRef) ? undefined : {
       optional: true,
@@ -751,7 +751,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
       case ParameterType.ARRAY: {
         const typeRef = parameter.typeRef;
         if (!typeRef) {
-          throw Error('Every array parameter must have a typeRef');
+          throw new Error('Every array parameter must have a typeRef');
         }
 
         const nestedType = this.typesByName.get(typeRef) ?? [];
@@ -954,8 +954,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #renderWarningIcon(): Lit.TemplateResult|undefined {
     return html`<devtools-icon
     .data=${{
-    iconName:
-      'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px',
+      iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px',
     }
     }
     class=${classMap({

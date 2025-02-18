@@ -319,7 +319,7 @@ export class RecorderController extends LitElement {
         /* chunkSize */ 10000000);
     const success = await reader.read(outputStream);
     if (!success) {
-      throw reader.error();
+      throw reader.error() ?? new Error('Unknown');
     }
 
     let flow: Models.Schema.UserFlow|undefined;

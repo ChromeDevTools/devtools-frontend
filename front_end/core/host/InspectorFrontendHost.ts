@@ -499,7 +499,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   showContextMenuAtPoint(x: number, y: number, items: ContextMenuDescriptor[], document: Document): void {
-    throw 'Soft context menu should be used';
+    throw new Error('Soft context menu should be used');
   }
 
   isHostedMode(): boolean {

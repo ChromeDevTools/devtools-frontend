@@ -2085,7 +2085,7 @@ export class DataGridNode<T> {
 
   insertChild(child: DataGridNode<T>, index: number): void {
     if (!child) {
-      throw 'insertChild: Node can\'t be undefined or null.';
+      throw new Error('insertChild: Node can\'t be undefined or null.');
     }
     if (child.parent === this) {
       const currentIndex = this.children.indexOf(child);
@@ -2136,10 +2136,10 @@ export class DataGridNode<T> {
 
   removeChild(child: DataGridNode<T>): void {
     if (!child) {
-      throw 'removeChild: Node can\'t be undefined or null.';
+      throw new Error('removeChild: Node can\'t be undefined or null.');
     }
     if (child.parent !== this) {
-      throw 'removeChild: Node is not a child of this node.';
+      throw new Error('removeChild: Node is not a child of this node.');
     }
 
     if (this.dataGrid) {
@@ -2457,7 +2457,7 @@ export class DataGridNode<T> {
     }
 
     if (!this.parent) {
-      throw 'savePosition: Node must have a parent.';
+      throw new Error('savePosition: Node must have a parent.');
     }
     this.savedPosition = {parent: this.parent, index: this.parent.children.indexOf(this)};
   }

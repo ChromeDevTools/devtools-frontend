@@ -66,11 +66,11 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   minimumBoundary(): number {
-    throw 'Not implemented.';
+    throw new Error('Not implemented');
   }
 
   totalTime(): number {
-    throw 'Not implemented.';
+    throw new Error('Not implemented');
   }
 
   formatValue(value: number, precision?: number): string {
@@ -90,11 +90,11 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   calculateTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
-    throw 'Not implemented.';
+    throw new Error('Not implemented');
   }
 
   preparePopoverElement(_entryIndex: number): Element|null {
-    throw 'Not implemented.';
+    throw new Error('Not implemented');
   }
 
   canJumpToEntry(entryIndex: number): boolean {
@@ -112,7 +112,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 
   entryHasDeoptReason(_entryIndex: number): boolean {
-    throw 'Not implemented.';
+    throw new Error('Not implemented');
   }
 
   entryColor(entryIndex: number): string {

@@ -1573,7 +1573,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     const response =
         await this.agent.invoke_getNodesForSubtreeByStyle({nodeId: this.#document.id, computedStyles, pierce});
     if (response.getError()) {
-      throw response.getError();
+      throw new Error(response.getError());
     }
     return response.nodeIds;
   }

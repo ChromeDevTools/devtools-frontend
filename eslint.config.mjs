@@ -494,6 +494,10 @@ export default [
 
       '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
 
+      // Disable eslint base rule
+      'no-throw-literal': 'off',
+      '@typescript-eslint/only-throw-error': 'error',
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 
@@ -617,6 +621,20 @@ export default [
 
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
+
+      '@typescript-eslint/only-throw-error': [
+        'error',
+        {
+          allow: [
+            {
+              // Chai AssertionError does not extend Error
+              from: 'package',
+              package: 'chai',
+              name: ['AssertionError'],
+            },
+          ],
+        },
+      ],
 
       'rulesdir/check-test-definitions': 'error',
       'rulesdir/no-assert-strict-equal-for-arrays-and-objects': 'error',

@@ -340,7 +340,7 @@ export class ListControl<T> {
 
   private indexAtOffset(offset: number): number {
     if (this.mode === ListMode.NonViewport) {
-      throw 'There should be no offset conversions in non-viewport mode';
+      throw new Error('There should be no offset conversions in non-viewport mode');
     }
     if (!this.model.length || offset < 0) {
       return 0;

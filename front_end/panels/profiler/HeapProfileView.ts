@@ -325,11 +325,11 @@ export class SamplingHeapProfileTypeBase extends
   }
 
   startSampling(): void {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile> {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 }
 

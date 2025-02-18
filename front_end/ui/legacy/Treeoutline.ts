@@ -600,7 +600,7 @@ export class TreeElement {
     }
 
     if (!child) {
-      throw 'child can\'t be undefined or null';
+      throw new Error('child can\'t be undefined or null');
     }
 
     console.assert(
@@ -652,7 +652,7 @@ export class TreeElement {
 
   removeChildAtIndex(childIndex: number): void {
     if (!this.childrenInternal || childIndex < 0 || childIndex >= this.childrenInternal.length) {
-      throw 'childIndex out of range';
+      throw new Error('childIndex out of range');
     }
 
     const child = this.childrenInternal[childIndex];
@@ -694,7 +694,7 @@ export class TreeElement {
 
   removeChild(child: TreeElement): void {
     if (!child) {
-      throw 'child can\'t be undefined or null';
+      throw new Error('child can\'t be undefined or null');
     }
     if (child.parent !== this) {
       return;
@@ -702,7 +702,7 @@ export class TreeElement {
 
     const childIndex = this.childrenInternal ? this.childrenInternal.indexOf(child) : -1;
     if (childIndex === -1) {
-      throw 'child not found in this node\'s children';
+      throw new Error('child not found in this node\'s children');
     }
 
     this.removeChildAtIndex(childIndex);

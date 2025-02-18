@@ -552,7 +552,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     try {
       headerOverrides = JSON.parse(content) as HeaderOverride[];
       if (!headerOverrides.every(isHeaderOverride)) {
-        throw 'Type mismatch after parsing';
+        throw new Error('Type mismatch after parsing');
       }
     } catch {
       console.error('Failed to parse', uiSourceCode.url(), 'for locally overriding headers.');

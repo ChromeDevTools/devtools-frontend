@@ -12,7 +12,7 @@ class HARBase {
   readonly custom: Map<string, any>;
   constructor(data: any) {
     if (!data || typeof data !== 'object') {
-      throw 'First parameter is expected to be an object';
+      throw new Error('First parameter is expected to be an object');
     }
     this.custom = new Map();
   }
@@ -22,7 +22,7 @@ class HARBase {
     if (!Number.isNaN(date.getTime())) {
       return date;
     }
-    throw 'Invalid date format';
+    throw new Error('Invalid date format');
   }
 
   static safeNumber(data: any): number {
@@ -30,7 +30,7 @@ class HARBase {
     if (!Number.isNaN(result)) {
       return result;
     }
-    throw 'Casting to number results in NaN';
+    throw new Error('Casting to number results in NaN');
   }
 
   static optionalNumber(data: any): number|undefined {
@@ -96,7 +96,7 @@ export class HARLog extends HARBase {
     this.browser = data['browser'] ? new HARCreator(data['browser']) : undefined;
     this.pages = Array.isArray(data['pages']) ? data['pages'].map(page => new HARPage(page)) : [];
     if (!Array.isArray(data['entries'])) {
-      throw 'log.entries is expected to be an array';
+      throw new Error('log.entries is expected to be an array');
     }
     this.entries = data['entries'].map(entry => new HAREntry(entry));
     this.comment = HARBase.optionalString(data['comment']);

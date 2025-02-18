@@ -554,7 +554,7 @@ self.injectedExtensionAPI = function(
     addListener: function<ListenerT extends APIImpl.Callable>(this: APIImpl.EventSink<ListenerT>, callback: ListenerT):
         void {
           if (typeof callback !== 'function') {
-            throw 'addListener: callback is not a function';
+            throw new Error('addListener: callback is not a function');
           }
           if (this._listeners.length === 0) {
             extensionServer.sendRequest({command: PrivateAPI.Commands.Subscribe, type: this._type});

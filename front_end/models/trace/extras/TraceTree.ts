@@ -41,18 +41,18 @@ export class Node {
   }
 
   hasChildren(): boolean {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   setHasChildren(_value: boolean): void {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
   /**
    * Returns the direct descendants of this node.
    * @returns a map with ordered <nodeId, Node> tuples.
    */
   children(): ChildrenCache {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   searchTree(matchFunction: (arg0: Types.Events.Event) => boolean, results?: Node[]): Node[] {

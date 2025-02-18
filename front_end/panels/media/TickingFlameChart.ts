@@ -417,7 +417,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
   startEvent(properties: EventProperties): Event {
     properties['level'] = properties['level'] || 0;
     if (properties['level'] > this.maxLevel) {
-      throw `level ${properties['level']} is above the maximum allowed of ${this.maxLevel}`;
+      throw new Error(`level ${properties['level']} is above the maximum allowed of ${this.maxLevel}`);
     }
 
     const event = new Event(

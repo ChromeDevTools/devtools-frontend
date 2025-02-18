@@ -435,7 +435,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
       child.nextSibling.previousSibling = child.previousSibling;
     }
     if (child.parent !== this) {
-      throw 'removeChild: Node is not a child of this node.';
+      throw new Error('removeChild: Node is not a child of this node.');
     }
 
     Platform.ArrayUtilities.removeElement(this.children, child, true);

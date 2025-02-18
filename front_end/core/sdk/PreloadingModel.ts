@@ -634,7 +634,7 @@ class PreloadingAttemptRegistry {
     const pipeline = this.pipelines.get(attempt.pipelineId);
     assertNotNullOrUndefined(pipeline);
     if (pipeline.size === 0) {
-      throw Error('unreachable');
+      throw new Error('unreachable');
     }
     return [...pipeline.keys()].every(action => getSortKey(action) <= getSortKey(attempt.action));
   }

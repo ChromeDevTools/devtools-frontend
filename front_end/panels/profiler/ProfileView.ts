@@ -281,7 +281,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   columnHeader(_columnId: string): Common.UIString.LocalizedString {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   selectRange(timeLeft: number, timeRight: number): void {
@@ -397,7 +397,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   createFlameChartDataProvider(): ProfileFlameChartDataProvider {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   ensureFlameChartCreated(): void {

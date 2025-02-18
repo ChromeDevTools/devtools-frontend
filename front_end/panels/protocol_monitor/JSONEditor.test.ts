@@ -333,7 +333,7 @@ describeWithEnvironment('JSONEditor', () => {
     // inputs[0] corresponds to the devtools-suggestion-input of the command
     const input = jsonEditor.contentElement.querySelectorAll('devtools-suggestion-input')[1];
     if (!input) {
-      throw Error('No editable content displayed');
+      throw new Error('No editable content displayed');
     }
     input.value = 'Not an accepted value';
     await jsonEditor.updateComplete;
@@ -342,7 +342,7 @@ describeWithEnvironment('JSONEditor', () => {
     await jsonEditor.updateComplete;
     const warningIcon = jsonEditor.contentElement.querySelector('devtools-icon');
     if (!warningIcon) {
-      throw Error('No icon displayed');
+      throw new Error('No icon displayed');
     }
     return warningIcon;
   };
@@ -1099,7 +1099,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          const toolbar = jsonEditor.contentElement.querySelector('devtools-toolbar');
          if (!toolbar) {
-           throw Error('No toolbar found !');
+           throw new Error('No toolbar found !');
          }
 
          const promise = jsonEditor.once(ProtocolMonitor.JSONEditor.Events.SUBMIT_EDITOR);
@@ -1188,7 +1188,7 @@ describeWithEnvironment('JSONEditor', () => {
         ));
     const toolbar = jsonEditor.contentElement.querySelector('devtools-toolbar');
     if (!toolbar) {
-      throw Error('No toolbar found !');
+      throw new Error('No toolbar found !');
     }
     dispatchClickEvent(toolbar.querySelector('devtools-button[title="Copy command"]')!);
     const [text] = await copyText;

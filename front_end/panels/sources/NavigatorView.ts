@@ -1548,7 +1548,7 @@ export class NavigatorTreeNode {
   }
 
   treeNode(): UI.TreeOutline.TreeElement {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   dispose(): void {
@@ -1583,7 +1583,7 @@ export class NavigatorTreeNode {
   }
 
   setTitle(_title: string): void {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   populate(): void {

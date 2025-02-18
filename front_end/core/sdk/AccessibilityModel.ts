@@ -286,7 +286,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
       Promise<AccessibilityNode[]> {
     const parent = this.#axIdToAXNode.get(nodeId);
     if (!parent) {
-      throw Error('Cannot request children before parent');
+      throw new Error('Cannot request children before parent');
     }
     if (!parent.hasUnloadedChildren()) {
       return parent.children();

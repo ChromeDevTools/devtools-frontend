@@ -88,7 +88,7 @@ export class HeadersView extends UI.View.SimpleView {
     try {
       headerOverrides = JSON.parse(content) as Persistence.NetworkPersistenceManager.HeaderOverride[];
       if (!headerOverrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
-        throw 'Type mismatch after parsing';
+        throw new Error('Type mismatch after parsing');
       }
     } catch {
       console.error('Failed to parse', this.#uiSourceCode.url(), 'for locally overriding headers.');

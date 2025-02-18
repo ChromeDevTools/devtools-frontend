@@ -283,7 +283,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
       this.#overrides =
           JSON.parse(deferredContent.content || '[]') as Persistence.NetworkPersistenceManager.HeaderOverride[];
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
-        throw 'Type mismatch after parsing';
+        throw new Error('Type mismatch after parsing');
       }
       if (Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() &&
           this.#isEditingAllowed === EditingAllowedStatus.DISABLED) {

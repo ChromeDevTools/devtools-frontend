@@ -143,7 +143,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         break;
 
       default:
-        throw `_onPlaybackEvent cant handle ${event.event}`;
+        throw new Error(`_onPlaybackEvent cant handle ${event.event}`);
     }
   }
 
@@ -199,7 +199,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         break;
 
       default:
-        throw `_onPlaybackEvent cant handle ${event.event}`;
+        throw new Error(`_onPlaybackEvent cant handle ${event.event}`);
     }
   }
 

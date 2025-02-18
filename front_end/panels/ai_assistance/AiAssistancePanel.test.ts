@@ -613,12 +613,11 @@ describeWithMockConnection('AI Assistance Panel', () => {
         contextMenu.invokeHandler(freestylerEntry.id());
       });
       assert.isTrue(view.lastCall.args[0].isReadOnly);
-      // Currently history should not store image input
       assert.deepEqual(view.lastCall.args[0].messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
-          imageInput: undefined,
+          imageInput,
         },
         {
           answer: 'test',

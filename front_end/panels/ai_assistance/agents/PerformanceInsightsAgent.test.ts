@@ -49,6 +49,7 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
           type: ResponseType.USER_QUERY,
           query: 'test',
           imageInput: undefined,
+          imageId: undefined,
         },
         {
           type: ResponseType.CONTEXT,

@@ -278,7 +278,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       accountFullName: syncInfo.accountFullName,
     };
 
-    this.#conversations = AiHistoryStorage.instance().getHistory().map(item => Conversation.fromSerialized(item));
+    this.#conversations = AiHistoryStorage.instance().getHistory().map(item => {
+      return new Conversation(item.type, item.history, item.id, true);
+    });
 
     if (isAiAssistancePatchingEnabled()) {
       // TODO: this is temporary code that should be replaced with workflow selection flow.
@@ -961,12 +963,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       throw new Error('cross-origin context data should not be included');
     }
 
+    const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
+    const imageId = image ? crypto.randomUUID() : undefined;
     const runner = this.#currentAgent.run(
         text, {
           signal,
           selected: context,
         },
-        isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined);
+        image, imageId);
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));

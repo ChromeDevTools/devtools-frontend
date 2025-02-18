@@ -85,12 +85,14 @@ export interface QueryResponse {
   type: ResponseType.QUERYING;
   query?: string;
   imageInput?: Host.AidaClient.Part;
+  imageId?: string;
 }
 
 export interface UserQuery {
   type: ResponseType.USER_QUERY;
   query: string;
   imageInput?: Host.AidaClient.Part;
+  imageId?: string;
 }
 
 export type ResponseData = AnswerResponse|SuggestionsResponse|ErrorResponse|ActionResponse|SideEffectResponse|
@@ -352,7 +354,7 @@ export abstract class AiAgent<T> {
       run(initialQuery: string, options: {
         signal?: AbortSignal, selected: ConversationContext<T>|null,
       },
-          imageInput?: Host.AidaClient.Part): AsyncGenerator<ResponseData, void, void> {
+          imageInput?: Host.AidaClient.Part, imageId?: string): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
 
     // First context set on the agent determines its origin from now on.
@@ -376,6 +378,7 @@ export abstract class AiAgent<T> {
       type: ResponseType.USER_QUERY,
       query: initialQuery,
       imageInput,
+      imageId,
     };
 
     yield* this.handleContextDetails(options.selected);

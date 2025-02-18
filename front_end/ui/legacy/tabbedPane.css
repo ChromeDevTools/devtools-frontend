@@ -197,8 +197,8 @@
   line-height: 15px;
   border-radius: var(--sys-shape-corner-full);
   margin-left: var(--sys-size-2);
-  background-color: var(--sys-color-error);
-  color: var(--sys-color-on-error);
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-on-primary);
   font-size: var(--sys-typescale-body5-size);
   font-weight: var(--ref-typeface-weight-bold);
 
@@ -214,7 +214,7 @@
   height: var(--sys-size-4);
   width: var(--sys-size-4);
   border-radius: var(--sys-shape-corner-full);
-  background-color: var(--sys-color-error);
+  background-color: var(--sys-color-purple-bright);
   margin-left: var(--sys-size-1);
   justify-self: center;
   position: relative;

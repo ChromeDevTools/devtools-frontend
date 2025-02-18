@@ -156,6 +156,10 @@ export function createNetworkRequest(opts?: {
 }
 
 let panels: AiAssistance.AiAssistancePanel[] = [];
+/**
+ * Creates and shows an AiAssistancePanel instance returning the view
+ * stubs and the initial view input caused by Widget.show().
+ */
 export async function createAiAssistancePanel(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
@@ -168,10 +172,7 @@ export async function createAiAssistancePanel(options?: {
     aidaAvailability: options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
     syncInfo: options?.syncInfo ?? {isSyncActive: true},
   });
-  panel.markAsRoot();
-  panel.show(document.body);
   panels.push(panel);
-  await panel.updateComplete;
 
   /**
    * Triggers the action and returns args of the next view function
@@ -183,7 +184,12 @@ export async function createAiAssistancePanel(options?: {
     return await result;
   }
 
-  return {panel, view, aidaClient, expectViewUpdate};
+  const args = await expectViewUpdate(() => {
+    panel.markAsRoot();
+    panel.show(document.body);
+  });
+
+  return {initialViewInput: args[0], panel, view, aidaClient, expectViewUpdate};
 }
 
 export function detachPanels() {

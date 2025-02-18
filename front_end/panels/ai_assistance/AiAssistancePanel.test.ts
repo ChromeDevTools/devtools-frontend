@@ -16,6 +16,7 @@ import {
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -48,30 +49,30 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('consent view', () => {
     it('should render consent view when the consent is not given before', async () => {
-      const {view} = await createAiAssistancePanel();
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      const {initialViewInput: {state}} = await createAiAssistancePanel();
+      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
     });
 
     it('should switch from consent view to chat view when enabling setting', async () => {
-      const {view, expectViewUpdate} = await createAiAssistancePanel();
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
-      await expectViewUpdate(() => {
+      const {initialViewInput: {state}, expectViewUpdate} = await createAiAssistancePanel();
+      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
+      const [{state: stateAfterUpdate}] = await expectViewUpdate(() => {
         Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       });
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
+      assert.strictEqual(stateAfterUpdate, AiAssistance.State.CHAT_VIEW);
     });
 
     it('should render chat view when the consent is given before', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      const {view} = await createAiAssistancePanel();
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CHAT_VIEW}));
+      const {initialViewInput: {state}} = await createAiAssistancePanel();
+      assert.strictEqual(state, AiAssistance.State.CHAT_VIEW);
     });
 
     it('should render the consent view when the setting is disabled', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
-      const {view} = await createAiAssistancePanel();
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      const {initialViewInput: {state}} = await createAiAssistancePanel();
+      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
     });
 
@@ -85,35 +86,29 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
-
-      const {view} = await createAiAssistancePanel();
-      sinon.assert.calledWith(view.lastCall, sinon.match({state: AiAssistance.State.CONSENT_VIEW}));
+      const {initialViewInput: {state}} = await createAiAssistancePanel();
+      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
     });
 
     it('updates when the user logs in', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
-      const {view, expectViewUpdate} =
+      const {initialViewInput: {state, aidaAvailability}, expectViewUpdate} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
-      sinon.assert.calledWith(view.lastCall, sinon.match({
-        state: AiAssistance.State.CHAT_VIEW,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
-      }));
+
+      assert.strictEqual(state, AiAssistance.State.CHAT_VIEW);
+      assert.strictEqual(aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
 
       sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
           .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
 
-      await expectViewUpdate(() => {
+      const [{state: stateAfterUpdate, aidaAvailability: aidaAvailabilityAfterUpdate}] = await expectViewUpdate(() => {
         Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
             Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
       });
 
-      // TODO: how do we wait for setting update to propagate?
-      await new Promise(resolve => setTimeout(resolve, 0));
-      sinon.assert.calledWith(view.lastCall, sinon.match({
-        state: AiAssistance.State.CHAT_VIEW,
-        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-      }));
+      assert.strictEqual(stateAfterUpdate, AiAssistance.State.CHAT_VIEW);
+      assert.strictEqual(aidaAvailabilityAfterUpdate, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     });
   });
 
@@ -133,11 +128,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
           disallowLogging: false,
         },
       });
-      const {view, aidaClient} = await createAiAssistancePanel();
-      await view.lastCall.args[0].onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
-      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
-        disable_user_content_logging: false,
-      }));
+      const {aidaClient, initialViewInput: {onFeedbackSubmit}} = await createAiAssistancePanel();
+
+      const aidaClientCall = expectCall(aidaClient.registerClientEvent as sinon.SinonStub);
+      onFeedbackSubmit(0, Host.AidaClient.Rating.POSITIVE);
+
+      const [aidaClientEvent] = await aidaClientCall;
+      assert.isFalse(aidaClientEvent.disable_user_content_logging);
     });
 
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', async () => {
@@ -148,19 +145,24 @@ describeWithMockConnection('AI Assistance Panel', () => {
         }
       });
       const RPC_ID = 999;
+      const {aidaClient, initialViewInput: {onFeedbackSubmit}} = await createAiAssistancePanel();
 
-      const {view, aidaClient} = await createAiAssistancePanel();
-      await view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
+      const aidaClientCall = expectCall(aidaClient.registerClientEvent as sinon.SinonStub);
+      onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE);
+      const [aidaClientEvent] = await aidaClientCall;
 
-      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
+      assert.deepEqual(aidaClientEvent, {
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
             sentiment: 'POSITIVE',
+            user_input: {
+              comment: undefined,
+            }
           },
         },
         disable_user_content_logging: true,
-      }));
+      });
     });
 
     it('should send NEGATIVE rating to aida client when the user clicks on negative rating', async () => {
@@ -170,19 +172,25 @@ describeWithMockConnection('AI Assistance Panel', () => {
           disallowLogging: true,
         }
       });
-      const RPC_ID = 0;
-      const {view, aidaClient} = await createAiAssistancePanel();
-      await view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
+      const RPC_ID = 999;
+      const {aidaClient, initialViewInput: {onFeedbackSubmit}} = await createAiAssistancePanel();
 
-      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
+      const aidaClientCall = expectCall(aidaClient.registerClientEvent as sinon.SinonStub);
+      onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.NEGATIVE);
+      const [aidaClientEvent] = await aidaClientCall;
+
+      assert.deepEqual(aidaClientEvent, {
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
             sentiment: 'NEGATIVE',
+            user_input: {
+              comment: undefined,
+            }
           },
         },
         disable_user_content_logging: true,
-      }));
+      });
     });
 
     it('should send feedback text with data', async () => {
@@ -192,24 +200,24 @@ describeWithMockConnection('AI Assistance Panel', () => {
           disallowLogging: true,
         }
       });
-
       const feedback = 'This helped me a ton.';
-      const RPC_ID = 0;
-      const {view, aidaClient} = await createAiAssistancePanel();
-      await view.lastCall.args[0].onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
-
-      sinon.assert.match((aidaClient.registerClientEvent as sinon.SinonStub).firstCall.firstArg, sinon.match({
+      const RPC_ID = 999;
+      const {aidaClient, initialViewInput: {onFeedbackSubmit}} = await createAiAssistancePanel();
+      const aidaClientCall = expectCall(aidaClient.registerClientEvent as sinon.SinonStub);
+      onFeedbackSubmit(RPC_ID, Host.AidaClient.Rating.POSITIVE, feedback);
+      const [aidaClientEvent] = await aidaClientCall;
+      assert.deepEqual(aidaClientEvent, {
         corresponding_aida_rpc_global_id: RPC_ID,
         do_conversation_client_event: {
           user_feedback: {
             sentiment: 'POSITIVE',
             user_input: {
               comment: feedback,
-            },
+            }
           },
         },
         disable_user_content_logging: true,
-      }));
+      });
     });
   });
 

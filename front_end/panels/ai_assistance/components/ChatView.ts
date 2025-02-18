@@ -340,8 +340,7 @@ export const enum State {
 export interface Props {
   onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => Promise<void>| void;
   onInspectElementClick: () => void;
-  onFeedbackSubmit:
-      (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => Promise<void>| void;
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
   onContextClick: () => void | Promise<void>;
   onNewConversation: () => void;

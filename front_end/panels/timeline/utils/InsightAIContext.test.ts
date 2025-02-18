@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
@@ -64,5 +65,20 @@ describeWithEnvironment('AIQueries', () => {
     assert.isTrue(requests1.every(req => req.ts < secondNav.ts));
     // For the second Insight requests, they all happen after second navigation
     assert.isTrue(requests2.every(req => req.ts > secondNav.ts));
+  });
+
+  it('can query for main thread activity for an insight', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+    assert.isOk(insights);
+    const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('LCPPhases', insights, firstNav);
+    const activity = Utils.InsightAIContext.AIQueries.mainThreadActivity(insight, parsedTrace);
+    assert.instanceOf(activity, Utils.AICallTree.AICallTree);
+    // There are a few smaller tasks but for this test we want to make sure we
+    // found the long task of ~999ms.
+    const rootNode = activity.rootNode;
+    const children = Array.from(rootNode.children().values()).map(n => n.event);
+    const longTaskDuration = Trace.Types.Timing.Micro(999544);
+    assert.isTrue(children.some(event => event.dur === longTaskDuration));
   });
 });

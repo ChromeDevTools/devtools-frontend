@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 import * as Trace from '../../../models/trace/trace.js';
 
+import {AICallTree} from './AICallTree.js';
+
 /**
  * This class holds the Insight that is active when the user has entered the
  * Ask AI flow from the Insights sidebar.
@@ -61,6 +63,17 @@ export class AIQueries {
     }
 
     return matchedRequests;
+  }
+
+  /**
+   * Returns an AI Call Tree representing the activity on the main thread for
+   * the relevant time range of the given insight.
+   */
+  static mainThreadActivity(
+      insight: Trace.Insights.Types.InsightModel<{}, {}>, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree
+      |null {
+    const bounds = insightBounds(insight, parsedTrace);
+    return AICallTree.fromTime(bounds.min, bounds.max, parsedTrace);
   }
 }
 

@@ -262,3 +262,7 @@ A page that loads an image as the LCP resource with fetchpriority=high set.
 ### enhanced-traces
 
 (faked) script contents and source map urls, from the new "enhanced traces" feature. See http://crbug.com/337909145
+
+### lcp-discovery-delay
+
+A page that has an LCP image but is delayed by main thread blocking JS. Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-discovery-delay.

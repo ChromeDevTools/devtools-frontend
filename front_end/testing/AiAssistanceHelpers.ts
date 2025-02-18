@@ -165,7 +165,7 @@ export async function createAiAssistancePanel(options?: {
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
 }) {
-  const view: sinon.SinonStub<[AiAssistance.Props, unknown, HTMLElement]> = sinon.stub();
+  const view = sinon.stub<[AiAssistance.Props, unknown, HTMLElement]>();
   const aidaClient = options?.aidaClient ?? mockAidaClient();
   const panel = new AiAssistance.AiAssistancePanel(view, {
     aidaClient,
@@ -181,15 +181,16 @@ export async function createAiAssistancePanel(options?: {
   async function expectViewUpdate(action: () => void) {
     const result = expectCall(view);
     action();
-    return await result;
+    const viewArgs = await result;
+    return viewArgs[0];
   }
 
-  const args = await expectViewUpdate(() => {
+  const initialViewInput = await expectViewUpdate(() => {
     panel.markAsRoot();
     panel.show(document.body);
   });
 
-  return {initialViewInput: args[0], panel, view, aidaClient, expectViewUpdate};
+  return {initialViewInput, panel, view, aidaClient, expectViewUpdate};
 }
 
 export function detachPanels() {

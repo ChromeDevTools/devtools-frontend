@@ -49,30 +49,30 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('consent view', () => {
     it('should render consent view when the consent is not given before', async () => {
-      const {initialViewInput: {state}} = await createAiAssistancePanel();
-      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
+      const {initialViewInput} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CONSENT_VIEW);
     });
 
     it('should switch from consent view to chat view when enabling setting', async () => {
-      const {initialViewInput: {state}, expectViewUpdate} = await createAiAssistancePanel();
-      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
-      const [{state: stateAfterUpdate}] = await expectViewUpdate(() => {
+      const {initialViewInput, expectViewUpdate} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CONSENT_VIEW);
+      const updatedViewInput = await expectViewUpdate(() => {
         Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       });
-      assert.strictEqual(stateAfterUpdate, AiAssistance.State.CHAT_VIEW);
+      assert.strictEqual(updatedViewInput.state, AiAssistance.State.CHAT_VIEW);
     });
 
     it('should render chat view when the consent is given before', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
-      const {initialViewInput: {state}} = await createAiAssistancePanel();
-      assert.strictEqual(state, AiAssistance.State.CHAT_VIEW);
+      const {initialViewInput} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CHAT_VIEW);
     });
 
     it('should render the consent view when the setting is disabled', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
-      const {initialViewInput: {state}} = await createAiAssistancePanel();
-      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
+      const {initialViewInput} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CONSENT_VIEW);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
     });
 
@@ -86,29 +86,29 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
-      const {initialViewInput: {state}} = await createAiAssistancePanel();
-      assert.strictEqual(state, AiAssistance.State.CONSENT_VIEW);
+      const {initialViewInput} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CONSENT_VIEW);
     });
 
     it('updates when the user logs in', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
-      const {initialViewInput: {state, aidaAvailability}, expectViewUpdate} =
+      const {initialViewInput, expectViewUpdate} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
 
-      assert.strictEqual(state, AiAssistance.State.CHAT_VIEW);
-      assert.strictEqual(aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
+      assert.strictEqual(initialViewInput.state, AiAssistance.State.CHAT_VIEW);
+      assert.strictEqual(initialViewInput.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
 
       sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
           .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
 
-      const [{state: stateAfterUpdate, aidaAvailability: aidaAvailabilityAfterUpdate}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
             Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
       });
 
-      assert.strictEqual(stateAfterUpdate, AiAssistance.State.CHAT_VIEW);
-      assert.strictEqual(aidaAvailabilityAfterUpdate, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      assert.strictEqual(updatedViewInput.state, AiAssistance.State.CHAT_VIEW);
+      assert.strictEqual(updatedViewInput.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     });
   });
 
@@ -272,19 +272,19 @@ describeWithMockConnection('AI Assistance Panel', () => {
         if (!contextItem) {
           throw new Error('Context is not available');
         }
-        const [{selectedContext}] = await expectViewUpdate(() => {
+        const updatedViewInputAfterFlavorChange = await expectViewUpdate(() => {
           UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
           panel.handleAction(test.action);
         });
-        expect(selectedContext?.getItem()).equals(contextItem);
+        expect(updatedViewInputAfterFlavorChange.selectedContext?.getItem()).equals(contextItem);
       });
 
       it(`should update the selected ${test.flavor.name} context whenever flavor changes`, async () => {
         const {view, panel, expectViewUpdate} = await createAiAssistancePanel();
-        const [{selectedContext: selectedContextWithoutFlavor}] = await expectViewUpdate(() => {
+        const updatedViewInput = await expectViewUpdate(() => {
           panel.handleAction(test.action);
         });
-        expect(selectedContextWithoutFlavor?.getItem()).equals(undefined);
+        expect(updatedViewInput.selectedContext?.getItem()).equals(undefined);
 
         sinon.assert.calledWith(view.lastCall, sinon.match({
           selectedContext: null,
@@ -295,10 +295,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
           throw new Error('Context is not available');
         }
         UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
-        const [{selectedContext}] = await expectViewUpdate(() => {
+        const updatedViewInputAfterFlavorChange = await expectViewUpdate(() => {
           UI.Context.Context.instance().setFlavor(test.flavor, contextItem);
         });
-        expect(selectedContext?.getItem()).equals(contextItem);
+        expect(updatedViewInputAfterFlavorChange.selectedContext?.getItem()).equals(contextItem);
       });
 
       it(`should ignore ${test.flavor.name} flavor change after the panel was hidden`, async () => {
@@ -346,20 +346,20 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
     it('should set inspectElementToggled when the widget is shown', async () => {
       const {expectViewUpdate} = await createAiAssistancePanel();
-      const [{inspectElementToggled}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         toggleSearchElementAction.setToggled(true);
       });
-      assert.isTrue(inspectElementToggled);
+      assert.isTrue(updatedViewInput.inspectElementToggled);
     });
 
     it('should update inspectElementToggled when the action is toggled', async () => {
       const {view, expectViewUpdate} = await createAiAssistancePanel();
       assert.isFalse(view.lastCall.args[0]?.inspectElementToggled);
 
-      const [{inspectElementToggled}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         toggleSearchElementAction.setToggled(true);
       });
-      assert.isTrue(inspectElementToggled);
+      assert.isTrue(updatedViewInput.inspectElementToggled);
     });
 
     it('should not update toggleSearchElementAction when the widget is not shown', async () => {
@@ -383,15 +383,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, expectViewUpdate} =
           await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-      const [{onTextSubmit}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         panel.handleAction('freestyler.elements-floating-button');
       });
 
-      const [{messages}] = await expectViewUpdate(() => {
-        void onTextSubmit('test');
+      const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+        void updatedViewInput.onTextSubmit('test');
       });
 
-      assert.deepEqual(messages, [
+      assert.deepEqual(updatedViewInputAfterMessage.messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -406,14 +406,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
 
-      const [{messages: messagesAfterNewChat}] = await expectViewUpdate(() => {
+      const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
         // TODO: remove DOM access
         const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
         assert.instanceOf(button, HTMLElement);
         dispatchClickEvent(button);
       });
 
-      assert.deepEqual(messagesAfterNewChat, []);
+      assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
     });
 
     it('should select default agent after new chat', async () => {
@@ -425,18 +425,18 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, expectViewUpdate} =
           await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-      const [{onTextSubmit}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         panel.handleAction('freestyler.elements-floating-button');
       });
 
       UI.Context.Context.instance().setFlavor(
           Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
 
-      const [{messages}] = await expectViewUpdate(() => {
-        void onTextSubmit('test');
+      const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+        void updatedViewInput.onTextSubmit('test');
       });
 
-      assert.deepEqual(messages, [
+      assert.deepEqual(updatedViewInputAfterMessage.messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -450,15 +450,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
           steps: [],
         },
       ]);
-      const [{messages: messagesAfterNewChat, agentType}] = await expectViewUpdate(() => {
+      const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
         // TODO: remove DOM access
         const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
         assert.instanceOf(button, HTMLElement);
         dispatchClickEvent(button);
       });
 
-      assert.deepEqual(messagesAfterNewChat, []);
-      assert.deepEqual(agentType, AiAssistance.AgentType.STYLING);
+      assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
+      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.STYLING);
     });
 
     it('should select the performance insights agent if it is enabled', async () => {
@@ -471,18 +471,18 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, expectViewUpdate} =
           await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-      const [{onTextSubmit}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         panel.handleAction('freestyler.elements-floating-button');
       });
 
-      const [{messages}] = await expectViewUpdate(() => {
-        void onTextSubmit('test');
+      const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+        void updatedViewInput.onTextSubmit('test');
       });
 
       UI.Context.Context.instance().setFlavor(
           Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
 
-      assert.deepEqual(messages, [
+      assert.deepEqual(updatedViewInputAfterMessage.messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -496,15 +496,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
           steps: [],
         },
       ]);
-      const [{messages: messagesAfterNewChat, agentType}] = await expectViewUpdate(() => {
+      const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
         // TODO: remove DOM access
         const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
         assert.instanceOf(button, HTMLElement);
         dispatchClickEvent(button);
       });
 
-      assert.deepEqual(messagesAfterNewChat, []);
-      assert.deepEqual(agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
+      assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
+      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
     });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
@@ -517,18 +517,18 @@ describeWithMockConnection('AI Assistance Panel', () => {
       const {panel, expectViewUpdate} =
           await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-      const [{onTextSubmit}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         panel.handleAction('freestyler.elements-floating-button');
       });
 
-      const [{messages}] = await expectViewUpdate(() => {
-        void onTextSubmit('test');
+      const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+        void updatedViewInput.onTextSubmit('test');
       });
 
       UI.Context.Context.instance().setFlavor(
           Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
 
-      assert.deepEqual(messages, [
+      assert.deepEqual(updatedViewInputAfterMessage.messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',
@@ -542,15 +542,15 @@ describeWithMockConnection('AI Assistance Panel', () => {
           steps: [],
         },
       ]);
-      const [{messages: messagesAfterNewChat, agentType}] = await expectViewUpdate(() => {
+      const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
         // TODO: remove DOM access
         const button = panel.contentElement.querySelector('devtools-button[aria-label=\'New chat\']');
         assert.instanceOf(button, HTMLElement);
         dispatchClickEvent(button);
       });
 
-      assert.deepEqual(messagesAfterNewChat, []);
-      assert.deepEqual(agentType, AiAssistance.AgentType.PERFORMANCE);
+      assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
+      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.PERFORMANCE);
     });
 
     it('should switch agents and restore history', async () => {
@@ -657,14 +657,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
     const {panel, expectViewUpdate} =
         await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-    const [{onTextSubmit}] = await expectViewUpdate(() => {
+    const updatedViewInput = await expectViewUpdate(() => {
       panel.handleAction('freestyler.elements-floating-button');
     });
 
-    const [{messages: messagesBeforeClear}] = await expectViewUpdate(() => {
-      void onTextSubmit('test');
+    const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+      void updatedViewInput.onTextSubmit('test');
     });
-    assert.deepEqual(messagesBeforeClear, [
+    assert.deepEqual(updatedViewInputAfterMessage.messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
@@ -679,14 +679,14 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
     ]);
 
-    const [{messages: messagesAfterClear, agentType}] = await expectViewUpdate(() => {
+    const updatedViewInputAfterDelete = await expectViewUpdate(() => {
       // TODO: remove DOM lookup.
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
     });
-    assert.deepEqual(messagesAfterClear, []);
-    assert.isUndefined(agentType);
+    assert.deepEqual(updatedViewInputAfterDelete.messages, []);
+    assert.isUndefined(updatedViewInputAfterDelete.agentType);
   });
 
   it('should select default agent based on open panel after clearing the chat', async () => {
@@ -699,13 +699,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
         Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
     const {panel, expectViewUpdate} =
         await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
-    const [{onTextSubmit}] = await expectViewUpdate(() => {
+    const updatedViewInput = await expectViewUpdate(() => {
       panel.handleAction('freestyler.elements-floating-button');
     });
-    const [{messages: messagesBeforeClear}] = await expectViewUpdate(() => {
-      void onTextSubmit('test');
+    const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+      void updatedViewInput.onTextSubmit('test');
     });
-    assert.deepEqual(messagesBeforeClear, [
+    assert.deepEqual(updatedViewInputAfterMessage.messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'test',
@@ -719,27 +719,27 @@ describeWithMockConnection('AI Assistance Panel', () => {
         steps: [],
       },
     ]);
-    const [{messages: messagesAfterClear, agentType}] = await expectViewUpdate(() => {
+    const updatedViewInputAfterDelete = await expectViewUpdate(() => {
       // TODO: remove DOM lookup.
       const button = panel.contentElement.querySelector('devtools-button[aria-label=\'Delete local chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
     });
-    assert.deepEqual(messagesAfterClear, []);
-    assert.deepEqual(agentType, AiAssistance.AgentType.STYLING);
+    assert.deepEqual(updatedViewInputAfterDelete.messages, []);
+    assert.deepEqual(updatedViewInputAfterDelete.agentType, AiAssistance.AgentType.STYLING);
   });
 
   it('should have empty state after clear chat history', async () => {
     const {view, panel, expectViewUpdate} = await createAiAssistancePanel(
         {aidaClient: mockAidaClient([[{explanation: 'test'}], [{explanation: 'test2'}]])});
 
-    const [{onTextSubmit}] = await expectViewUpdate(() => {
+    const updatedViewInput = await expectViewUpdate(() => {
       panel.handleAction('freestyler.elements-floating-button');
     });
-    const [{messages: messagesToStyling}] = await expectViewUpdate(() => {
-      void onTextSubmit('User question to Freestyler?');
+    const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+      void updatedViewInput.onTextSubmit('User question to Freestyler?');
     });
-    assert.deepEqual(messagesToStyling, [
+    assert.deepEqual(updatedViewInputAfterMessage.messages, [
       {
         entity: AiAssistance.ChatMessageEntity.USER,
         text: 'User question to Freestyler?',
@@ -754,28 +754,26 @@ describeWithMockConnection('AI Assistance Panel', () => {
       },
     ]);
 
-    {
-      const [{onTextSubmit}] = await expectViewUpdate(() => {
-        panel.handleAction('drjones.network-floating-button');
-      });
-      const [{messages: messagesToNetwork}] = await expectViewUpdate(() => {
-        void onTextSubmit('User question to DrJones?');
-      });
-      assert.deepEqual(messagesToNetwork, [
-        {
-          entity: AiAssistance.ChatMessageEntity.USER,
-          text: 'User question to DrJones?',
-          imageInput: undefined,
-        },
-        {
-          answer: 'test2',
-          entity: AiAssistance.ChatMessageEntity.MODEL,
-          rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
-        },
-      ]);
-    }
+    const updatedViewInputAfterSwitchToNetwork = await expectViewUpdate(() => {
+      panel.handleAction('drjones.network-floating-button');
+    });
+    const updatedViewInputAfterMessageToNetwork = await expectViewUpdate(() => {
+      void updatedViewInputAfterSwitchToNetwork.onTextSubmit('User question to DrJones?');
+    });
+    assert.deepEqual(updatedViewInputAfterMessageToNetwork.messages, [
+      {
+        entity: AiAssistance.ChatMessageEntity.USER,
+        text: 'User question to DrJones?',
+        imageInput: undefined,
+      },
+      {
+        answer: 'test2',
+        entity: AiAssistance.ChatMessageEntity.MODEL,
+        rpcId: undefined,
+        suggestions: undefined,
+        steps: [],
+      },
+    ]);
 
     // TODO: remove poking into DOM.
     let button = panel.contentElement.querySelector('devtools-button[aria-label=\'History\']');
@@ -988,10 +986,10 @@ describeWithMockConnection('AI Assistance Panel', () => {
           agentType: test.expectedAgentType,
         }));
 
-        const [{agentType}] = await expectViewUpdate(() => {
+        const updatedViewInput = await expectViewUpdate(() => {
           UI.Context.Context.instance().setFlavor(test.panel, null);
         });
-        assert.isUndefined(agentType);
+        assert.isUndefined(updatedViewInput.agentType);
       });
 
       it(`should render no conversation state if the ${
@@ -1100,19 +1098,17 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert.isTrue(view.lastCall.args[0].multimodalInputEnabled);
 
-      const [{imageInput, onRemoveImageInput}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         void view.lastCall.args[0].onTakeScreenshot?.();
       });
 
       expect(captureScreenshotStub.calledOnce);
-      assert.deepEqual(imageInput, 'imageInput');
+      assert.deepEqual(updatedViewInput.imageInput, 'imageInput');
 
-      {
-        const [{imageInput}] = await expectViewUpdate(() => {
-          onRemoveImageInput?.();
-        });
-        assert.isEmpty(imageInput);
-      }
+      const updatedViewInputAfterImageRemoval = await expectViewUpdate(() => {
+        updatedViewInput.onRemoveImageInput?.();
+      });
+      assert.isEmpty(updatedViewInputAfterImageRemoval.imageInput);
     });
 
     it('sends image as input', async () => {
@@ -1129,11 +1125,11 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
       assert.isTrue(view.lastCall.args[0].multimodalInputEnabled);
 
-      const [{messages}] = await expectViewUpdate(() => {
+      const updatedViewInput = await expectViewUpdate(() => {
         void view.lastCall.args[0].onTextSubmit('test', {inlineData: {data: 'imageInput', mimeType: 'image/jpeg'}});
       });
 
-      assert.deepEqual(messages, [
+      assert.deepEqual(updatedViewInput.messages, [
         {
           entity: AiAssistance.ChatMessageEntity.USER,
           text: 'test',

@@ -269,16 +269,20 @@ class DataGridElement extends HTMLElement {
     }
   }
 
-  #updateNode(node: Node, selectionOnly: boolean): void {
+  #updateNode(node: Node, attributeName: string|null): void {
     const dataRow = node instanceof HTMLElement ? node.closest('tr') : null;
     const dataGridNode = dataRow ? DataGridElementNode.get(dataRow) : null;
-    if (dataGridNode) {
-      if (selectionOnly) {
-        if (dataRow && hasBooleanAttribute(dataRow, 'selected')) {
+    if (dataGridNode && dataRow) {
+      if (attributeName === 'selected') {
+        if (hasBooleanAttribute(dataRow, 'selected')) {
           dataGridNode.select();
         } else {
           dataGridNode.deselect();
         }
+      } else if (attributeName === 'dirty') {
+        dataGridNode.setDirty(hasBooleanAttribute(dataRow, 'dirty'));
+      } else if (attributeName === 'inactive') {
+        dataGridNode.setDirty(hasBooleanAttribute(dataRow, 'inactive'));
       } else {
         dataGridNode.refresh();
       }
@@ -312,7 +316,7 @@ class DataGridElement extends HTMLElement {
     for (const mutation of mutationList) {
       this.#removeNodes(mutation.removedNodes);
       this.#addNodes(mutation.addedNodes);
-      this.#updateNode(mutation.target, mutation.attributeName === 'selected');
+      this.#updateNode(mutation.target, mutation.attributeName);
     }
   }
 
@@ -361,6 +365,7 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   static #elementToNode = new WeakMap<Element, DataGridElementNode>();
   #configElement: Element;
   #dataGridElement: DataGridElement;
+  #addedClasses = new Set<string>();
   constructor(configElement: Element, dataGridElement: DataGridElement) {
     super();
     this.#configElement = configElement;
@@ -402,8 +407,17 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     this.#updateData();
     super.refresh();
     const existingElement = this.existingElement();
-    if (existingElement && this.#configElement.hasAttribute('style')) {
+    if (!existingElement) {
+      return;
+    }
+    if (this.#configElement.hasAttribute('style')) {
       existingElement.setAttribute('style', this.#configElement.getAttribute('style') || '');
+    }
+    for (const addedClass of this.#addedClasses) {
+      existingElement.classList.remove(addedClass);
+    }
+    for (const classToAdd of this.#configElement.classList) {
+      existingElement.classList.add(classToAdd);
     }
   }
 

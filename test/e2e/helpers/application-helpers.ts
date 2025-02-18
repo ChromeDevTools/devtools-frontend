@@ -191,7 +191,7 @@ export async function getDataGridData(selector: string, columns: string[]) {
     const data: {[key: string]: string|null} = {};
     for (const column of columns) {
       const columnElement = row.querySelector(`.${column}-column`);
-      data[column] = columnElement ? columnElement.textContent : '';
+      data[column] = (columnElement && columnElement.textContent?.trim()) || '';
     }
     return data;
   }, columns)));
@@ -268,17 +268,21 @@ export async function deleteSelectedStorageItem() {
 }
 
 export async function selectCookieByName(name: string) {
-  const {frontend} = getBrowserAndPages();
-  await waitFor('.cookies-table');
+  const dataGrid = await waitFor('.cookies-table devtools-data-grid');
   const cell = await waitForFunction(async () => {
-    const tmp = await frontend.evaluateHandle(name => {
-      const result = [...document.querySelectorAll('.cookies-table .name-column')]
-                         .map(c => ({cell: c, textContent: c.textContent || ''}))
-                         .find(({textContent}) => textContent.trim() === name);
-      return result ? result.cell : undefined;
-    }, name);
-
-    return tmp.asElement() as puppeteer.ElementHandle<HTMLElement>|| undefined;
+    const rows = await getDataGridRows(
+        /* expectedNumberOfRows=*/ 1, dataGrid, /* matchExactNumberOfRows=*/ false);
+    for (const row of rows) {
+      for (const cell of row) {
+        const cellContent = await cell.evaluate(x => {
+          return (x.classList.contains('name-column') && x.textContent?.trim()) ?? '';
+        });
+        if (cellContent === name) {
+          return cell;
+        }
+      }
+    }
+    return undefined;
   });
   await expectVeEvents([veImpressionsUnder('Panel: resources', [veImpression('Pane', 'cookies-data')])]);
   await cell.click();

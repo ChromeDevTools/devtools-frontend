@@ -111,7 +111,7 @@ describe('The Application Tab', () => {
 
     await navigateToCookiesForTopDomain();
 
-    await click('.cookies-table .data-grid-data-grid-node');
+    await click('.cookies-table devtools-data-grid');
 
     await selectCookieByName('urlencoded');
 

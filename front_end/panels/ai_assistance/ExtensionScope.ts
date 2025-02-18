@@ -9,7 +9,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {AI_ASSISTANCE_CSS_CLASS_NAME, type ChangeManager} from './ChangeManager.js';
 
-export const FREESTYLER_WORLD_NAME = 'devtools_freestyler';
+export const FREESTYLER_WORLD_NAME = 'DevTools AI Assistance';
 export const FREESTYLER_BINDING_NAME = '__freestyler';
 
 /**

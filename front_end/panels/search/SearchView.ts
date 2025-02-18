@@ -80,7 +80,15 @@ const UIStrings = {
   /**
    *@description Search results message element text content in Search View of the Search tab
    */
-  noMatchesFound: 'No matches found.',
+  noMatchesFoundStatusbar: 'No matches found.',
+  /**
+   *@description Search results message element text content in Search View of the Search tab
+   */
+  noMatchesFound: 'No matches found',
+  /**
+   *@description Search results message element text content in Search View of the Search tab
+   */
+  nothingMatchedTheQuery: 'Nothing matched your search query',
   /**
    *@description Text in Search View of the Search tab
    */
@@ -439,10 +447,11 @@ export class SearchView extends UI.Widget.VBox {
 
   private nothingFound(): void {
     if (!this.notFoundView) {
-      this.notFoundView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMatchesFound), '');
+      this.notFoundView = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noMatchesFound), i18nString(UIStrings.nothingMatchedTheQuery));
     }
     this.showPane(this.notFoundView);
-    this.searchResultsMessageElement.textContent = i18nString(UIStrings.noMatchesFound);
+    this.searchResultsMessageElement.textContent = i18nString(UIStrings.noMatchesFoundStatusbar);
   }
 
   private addSearchResult(searchResult: SearchResult): void {

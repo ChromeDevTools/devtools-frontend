@@ -166,6 +166,7 @@ ts_library("unittests") {
     "RemoteObject.test.ts",
     "ResourceTreeModel.test.ts",
     "RuntimeModel.test.ts",
+    "ScreenCaptureModel.test.ts",
     "Script.test.ts",
     "ServerSentEventsProtocol.test.ts",
     "ServerTiming.test.ts",

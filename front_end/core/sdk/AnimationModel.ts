@@ -415,7 +415,8 @@ export class AnimationModel extends SDKModel<EventTypes> {
     if (!matchedGroup) {
       this.animationGroups.set(incomingGroup.id(), incomingGroup);
       if (this.#screenshotCapture) {
-        this.#screenshotCapture.captureScreenshots(incomingGroup.finiteDuration(), incomingGroup.screenshotsInternal);
+        void this.#screenshotCapture.captureScreenshots(
+            incomingGroup.finiteDuration(), incomingGroup.screenshotsInternal);
       }
       this.dispatchEventToListeners(Events.AnimationGroupStarted, incomingGroup);
     } else {
@@ -1063,9 +1064,12 @@ export class ScreenshotCapture {
   #requests: Request[];
   readonly #screenCaptureModel: ScreenCaptureModel;
   readonly #animationModel: AnimationModel;
+  // This prevents multiple synchronous calls to captureScreenshots to result in one startScreencast call in model.
+  #isCapturing: boolean = false;
+  // Holds the id for capturing & cancelling the screencast operation.
+  #screencastOperationId: number|undefined;
   #stopTimer?: number;
   #endTime?: number;
-  #capturing?: boolean;
   constructor(animationModel: AnimationModel, screenCaptureModel: ScreenCaptureModel) {
     this.#requests = [];
     this.#screenCaptureModel = screenCaptureModel;
@@ -1073,7 +1077,7 @@ export class ScreenshotCapture {
     this.#animationModel.addEventListener(Events.ModelReset, this.stopScreencast, this);
   }
 
-  captureScreenshots(duration: number, screenshots: string[]): void {
+  async captureScreenshots(duration: number, screenshots: string[]): Promise<void> {
     const screencastDuration = Math.min(duration / this.#animationModel.playbackRate, 3000);
     const endTime = screencastDuration + window.performance.now();
     this.#requests.push({endTime, screenshots});
@@ -1084,11 +1088,12 @@ export class ScreenshotCapture {
       this.#endTime = endTime;
     }
 
-    if (this.#capturing) {
+    if (this.#isCapturing) {
       return;
     }
-    this.#capturing = true;
-    this.#screenCaptureModel.startScreencast(
+
+    this.#isCapturing = true;
+    this.#screencastOperationId = await this.#screenCaptureModel.startScreencast(
         Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, undefined, 300, 2, this.screencastFrame.bind(this),
         _visible => {});
   }
@@ -1098,7 +1103,7 @@ export class ScreenshotCapture {
       return request.endTime >= now;
     }
 
-    if (!this.#capturing) {
+    if (!this.#isCapturing) {
       return;
     }
 
@@ -1110,15 +1115,16 @@ export class ScreenshotCapture {
   }
 
   private stopScreencast(): void {
-    if (!this.#capturing) {
+    if (!this.#screencastOperationId) {
       return;
     }
 
+    this.#screenCaptureModel.stopScreencast(this.#screencastOperationId);
     this.#stopTimer = undefined;
     this.#endTime = undefined;
     this.#requests = [];
-    this.#capturing = false;
-    this.#screenCaptureModel.stopScreencast();
+    this.#isCapturing = false;
+    this.#screencastOperationId = undefined;
   }
 }
 

@@ -116,7 +116,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private navigationBack!: HTMLButtonElement;
   private navigationForward!: HTMLButtonElement;
   private canvasContainerElement?: HTMLElement;
-  private isCasting?: boolean;
   private checkerboardPattern?: CanvasPattern|null;
   private targetInactive?: boolean;
   private deferredCasting?: number;
@@ -133,6 +132,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private mouseInputToggleIcon?: IconButton.Icon.Icon;
   private historyIndex?: number;
   private historyEntries?: Protocol.Page.NavigationEntry[];
+  private isCasting: boolean = false;
+  private screencastOperationId?: number;
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
     super();
     this.registerRequiredCSS(screencastViewStyles);
@@ -188,7 +189,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.titleElement.style.left = '0';
 
     this.imageElement = new Image();
-    this.isCasting = false;
     this.context = this.canvasElement.getContext('2d') as CanvasRenderingContext2D;
     this.checkerboardPattern = this.createCheckerboardPattern(this.context);
 
@@ -204,10 +204,11 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.stopCasting();
   }
 
-  private startCasting(): void {
+  private async startCasting(): Promise<void> {
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
+
     if (this.isCasting) {
       return;
     }
@@ -222,7 +223,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     dimensions.width *= window.devicePixelRatio;
     dimensions.height *= window.devicePixelRatio;
     // Note: startScreencast width and height are expected to be integers so must be floored.
-    this.screenCaptureModel.startScreencast(
+    this.screencastOperationId = await this.screenCaptureModel.startScreencast(
         Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this.screencastFrame.bind(this),
         this.screencastVisibilityChanged.bind(this));
@@ -232,11 +233,12 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   private stopCasting(): void {
-    if (!this.isCasting) {
+    if (!this.screencastOperationId) {
       return;
     }
+    this.screenCaptureModel.stopScreencast(this.screencastOperationId);
+    this.screencastOperationId = undefined;
     this.isCasting = false;
-    this.screenCaptureModel.stopScreencast();
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       void emulationModel.overrideEmulateTouch(false);
     }
@@ -286,7 +288,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       this.stopCasting();
     } else {
-      this.startCasting();
+      void this.startCasting();
     }
     this.updateGlasspane();
   }

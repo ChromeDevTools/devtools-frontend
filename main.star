@@ -172,7 +172,11 @@ luci.notifier(
         "taskkill",
     ] + EXCLUDED_STEPS,
     notify_blamelist = True,
-    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
+    notify_emails = [
+        "liviurau@google.org",
+        "devtools-waterfall-sheriff-onduty@rotations.google.com",
+        "devtools-waterfall-sheriff-onduty-amer@rotations.google.com",
+    ],
 )
 
 luci.notifier(
@@ -188,7 +192,11 @@ luci.notifier(
         "taskkill",
     ] + EXCLUDED_STEPS,
     notify_blamelist = False,
-    notify_emails = ["liviurau@chromium.org", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
+    notify_emails = [
+        "liviurau@google.org",
+        "devtools-waterfall-sheriff-onduty@rotations.google.com",
+        "devtools-waterfall-sheriff-onduty-amer@rotations.google.com",
+    ],
 )
 
 luci.tree_closer(
@@ -203,7 +211,11 @@ luci.notifier(
     failed_step_regexp = [
         ".*Previous roll failed",
     ],
-    notify_emails = ["liviurau@google.com", "devtools-waterfall-sheriff-onduty@rotations.google.com"],
+    notify_emails = [
+        "liviurau@google.com",
+        "devtools-waterfall-sheriff-onduty@rotations.google.com",
+        "devtools-waterfall-sheriff-onduty-amer@rotations.google.com",
+    ],
     template = luci.notifier_template(
         name = "sheriff_email",
         body = """Stuck auto-roller: {{.Build.Builder.Builder}} found a stale CL.

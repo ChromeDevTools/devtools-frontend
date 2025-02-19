@@ -67,6 +67,29 @@
   }
 }
 
+.placeholder:not(.hidden) + .event-listener-tree {
+  display: none;
+}
+
+.placeholder {
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.sources.panel .empty-view-scroller {
+  display: none;
+}
+
+.elements.panel .placeholder {
+  display: block;
+
+  .gray-info-message {
+    display: none;
+  }
+}
+
 .tree-outline-disclosure li:hover .event-listener-button {
   display: inline;
 }

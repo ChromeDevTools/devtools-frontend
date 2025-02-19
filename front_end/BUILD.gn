@@ -164,6 +164,7 @@ group("unittests") {
     "panels/developer_resources:unittests",
     "panels/elements:unittests",
     "panels/emulation:unittests",
+    "panels/event_listeners:unittests",
     "panels/explain:unittests",
     "panels/issues:unittests",
     "panels/layer_viewer:unittests",

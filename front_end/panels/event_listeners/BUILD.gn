@@ -46,3 +46,14 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_panels_visibility
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "EventListenersView.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../testing",
+  ]
+}

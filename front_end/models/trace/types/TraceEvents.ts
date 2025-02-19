@@ -3094,7 +3094,7 @@ export function isTargetRundownEvent(event: Event): event is TargetRundownEvent 
   return event.cat === 'disabled-by-default-devtools.target-rundown' && event.name === 'ScriptCompiled';
 }
 
-export interface ScriptRundownEvent extends Event {
+export interface V8SourceRundownEvent extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown';
   name: 'ScriptCatchup';
   args: Args&{
@@ -3116,23 +3116,43 @@ export interface ScriptRundownEvent extends Event {
   };
 }
 
-export function isScriptRundownEvent(event: Event): event is ScriptRundownEvent {
+export function isV8SourceRundownEvent(event: Event): event is V8SourceRundownEvent {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown' && event.name === 'ScriptCatchup';
 }
 
-export interface ScriptSourceRundownEvent extends Event {
+export interface V8SourceRundownSourcesScriptCatchupEvent extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
   name: 'ScriptCatchup';
   args: Args&{
     data: {
       isolate: string,
       scriptId: Protocol.Runtime.ScriptId,
-      length?: number,
-      sourceText?: string,
+      length: number,
+      sourceText: string,
     },
   };
 }
 
-export function isScriptSourceRundownEvent(event: Event): event is ScriptSourceRundownEvent {
+export function isV8SourceRundownSourcesScriptCatchupEvent(event: Event):
+    event is V8SourceRundownSourcesScriptCatchupEvent {
   return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'ScriptCatchup';
+}
+
+export interface V8SourceRundownSourcesLargeScriptCatchupEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'LargeScriptCatchup';
+  args: Args&{
+    data: {
+      isolate: string,
+      scriptId: Protocol.Runtime.ScriptId,
+      splitIndex: number,
+      splitCount: number,
+      sourceText: string,
+    },
+  };
+}
+
+export function isV8SourceRundownSourcesLargeScriptCatchupEvent(event: Event):
+    event is V8SourceRundownSourcesLargeScriptCatchupEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'LargeScriptCatchup';
 }

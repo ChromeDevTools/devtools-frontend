@@ -42,7 +42,7 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
 
-  if (Types.Events.isScriptRundownEvent(event)) {
+  if (Types.Events.isV8SourceRundownEvent(event)) {
     const {scriptId, url, sourceMapUrl} = event.args.data;
     const script = getOrMakeScript(scriptId);
     script.url = url;
@@ -52,11 +52,17 @@ export function handleEvent(event: Types.Events.Event): void {
     return;
   }
 
-  // TODO(cjamcl): handle `LargeScriptCatchup` variant.
-  if (Types.Events.isScriptSourceRundownEvent(event)) {
+  if (Types.Events.isV8SourceRundownSourcesScriptCatchupEvent(event)) {
     const {scriptId, sourceText} = event.args.data;
     const script = getOrMakeScript(scriptId);
     script.content = sourceText;
+    return;
+  }
+
+  if (Types.Events.isV8SourceRundownSourcesLargeScriptCatchupEvent(event)) {
+    const {scriptId, sourceText} = event.args.data;
+    const script = getOrMakeScript(scriptId);
+    script.content = (script.content ?? '') + sourceText;
     return;
   }
 }

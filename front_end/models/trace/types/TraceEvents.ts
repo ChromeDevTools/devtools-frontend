@@ -3073,9 +3073,10 @@ export interface LegacyLayerPaintEventPicture {
 }
 
 export interface TargetRundownEvent extends Event {
-  cat: 'disabled-by-default-devtools.v8-source-rundown';
+  cat: 'disabled-by-default-devtools.target-rundown';
+  name: 'ScriptCompiled';
   args: Args&{
-    data: {
+    data?: {
       frame: Protocol.Page.FrameId,
       frameType: string,
       url: string,
@@ -3090,11 +3091,12 @@ export interface TargetRundownEvent extends Event {
 }
 
 export function isTargetRundownEvent(event: Event): event is TargetRundownEvent {
-  return event.cat === 'disabled-by-default-devtools.target-rundown';
+  return event.cat === 'disabled-by-default-devtools.target-rundown' && event.name === 'ScriptCompiled';
 }
 
 export interface ScriptRundownEvent extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown';
+  name: 'ScriptCatchup';
   args: Args&{
     data: {
       isolate: string,
@@ -3104,21 +3106,23 @@ export interface ScriptRundownEvent extends Event {
       startColumn: number,
       endLine: number,
       endColumn: number,
-      url: string,
       hash: string,
       isModule: boolean,
       hasSourceUrl: boolean,
+      url?: string,
+      sourceUrl?: string,
       sourceMapUrl?: string,
     },
   };
 }
 
 export function isScriptRundownEvent(event: Event): event is ScriptRundownEvent {
-  return event.cat === 'disabled-by-default-devtools.v8-source-rundown';
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown' && event.name === 'ScriptCatchup';
 }
 
 export interface ScriptSourceRundownEvent extends Event {
   cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'ScriptCatchup';
   args: Args&{
     data: {
       isolate: string,
@@ -3130,5 +3134,5 @@ export interface ScriptSourceRundownEvent extends Event {
 }
 
 export function isScriptSourceRundownEvent(event: Event): event is ScriptSourceRundownEvent {
-  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources';
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'ScriptCatchup';
 }

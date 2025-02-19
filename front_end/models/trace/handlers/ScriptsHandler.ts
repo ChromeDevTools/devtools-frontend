@@ -33,7 +33,7 @@ export function handleEvent(event: Types.Events.Event): void {
   const getOrMakeScript = (scriptId: Protocol.Runtime.ScriptId): Script =>
       Platform.MapUtilities.getWithDefault(scriptById, scriptId, () => ({scriptId, frame: '', ts: 0} as Script));
 
-  if (Types.Events.isTargetRundownEvent(event)) {
+  if (Types.Events.isTargetRundownEvent(event) && event.args.data) {
     const {scriptId, frame} = event.args.data;
     const script = getOrMakeScript(scriptId);
     script.frame = frame;
@@ -46,14 +46,13 @@ export function handleEvent(event: Types.Events.Event): void {
     const {scriptId, url, sourceMapUrl} = event.args.data;
     const script = getOrMakeScript(scriptId);
     script.url = url;
-    // Ignore nonsense values, which is what this was when initially implemented.
-    // TODO(cjamcl): https://g-issues.chromium.org/issues/337909145#comment15
-    if (sourceMapUrl && sourceMapUrl !== url && sourceMapUrl.endsWith('.json')) {
+    if (sourceMapUrl) {
       script.sourceMapUrl = sourceMapUrl;
     }
     return;
   }
 
+  // TODO(cjamcl): handle `LargeScriptCatchup` variant.
   if (Types.Events.isScriptSourceRundownEvent(event)) {
     const {scriptId, sourceText} = event.args.data;
     const script = getOrMakeScript(scriptId);

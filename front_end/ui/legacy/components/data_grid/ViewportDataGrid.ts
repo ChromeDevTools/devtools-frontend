@@ -9,6 +9,8 @@ import * as RenderCoordinator from '../../../components/render_coordinator/rende
 
 import {type DataGridData, DataGridImpl, DataGridNode, type Parameters} from './DataGrid.js';
 
+let nextId = 0;
+
 export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTypes, typeof DataGridImpl>(
     DataGridImpl)<ViewportDataGridNode<T>> {
   private readonly onScrollBound: (event: Event|null) => void;
@@ -27,6 +29,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   private firstVisibleIsStriped: boolean;
   private isStriped: boolean;
   private filters: readonly TextUtils.TextUtils.ParsedFilter[] = [];
+  private id = nextId++;
 
   constructor(dataGridParameters: Parameters) {
     super(dataGridParameters);
@@ -98,7 +101,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
 
   scheduleUpdate(isFromUser?: boolean): void {
     this.updateIsFromUser = this.updateIsFromUser || Boolean(isFromUser);
-    void RenderCoordinator.write('ViewportDataGrid.render', this.update.bind(this));
+    void RenderCoordinator.write(`ViewportDataGrid.render ${this.id}`, this.update.bind(this));
   }
 
   // TODO(allada) This should be fixed to never be needed. It is needed right now for network because removing

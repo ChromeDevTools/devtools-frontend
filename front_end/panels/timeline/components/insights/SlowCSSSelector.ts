@@ -24,7 +24,7 @@ const {html} = Lit;
 
 export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;
-  override internalName: string = 'slow-css-selector';
+  override internalName = 'slow-css-selector';
   #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

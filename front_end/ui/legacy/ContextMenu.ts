@@ -410,7 +410,7 @@ export class SubMenu extends Item {
     }
   }
 
-  private static uniqueSectionName: number = 0;
+  private static uniqueSectionName = 0;
 }
 
 export interface ContextMenuOptions {

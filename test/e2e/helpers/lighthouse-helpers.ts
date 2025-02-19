@@ -45,7 +45,7 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
     await frontend.bringToFront();
   }
 
-  return waitFor('.lighthouse-start-view');
+  return await waitFor('.lighthouse-start-view');
 }
 
 // Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer

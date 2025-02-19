@@ -215,7 +215,7 @@ export class DOMNode {
   private async requestChildDocument(frameId: Protocol.Page.FrameId, notInTarget: Target): Promise<DOMDocument|null> {
     const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
     const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
-    return childModel?.requestDocument() || null;
+    return await (childModel?.requestDocument() || null);
   }
 
   isAdFrameNode(): boolean {
@@ -1565,7 +1565,7 @@ export class DOMModel extends SDKModel<EventTypes> {
         name: string,
         value: string,
       }>,
-      pierce: boolean = false): Promise<Protocol.DOM.NodeId[]> {
+      pierce = false): Promise<Protocol.DOM.NodeId[]> {
     await this.requestDocument();
     if (!this.#document) {
       throw new Error('DOMModel.getNodesByStyle expects to have a document.');
@@ -1836,7 +1836,7 @@ export class DOMModelUndoStack {
 
   async undo(): Promise<void> {
     if (this.#index === 0) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     --this.#index;
     this.#lastModelWithMinorChange = null;
@@ -1845,7 +1845,7 @@ export class DOMModelUndoStack {
 
   async redo(): Promise<void> {
     if (this.#index >= this.#stack.length) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     ++this.#index;
     this.#lastModelWithMinorChange = null;

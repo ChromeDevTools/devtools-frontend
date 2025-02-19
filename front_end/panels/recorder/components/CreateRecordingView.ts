@@ -146,7 +146,7 @@ export interface CreateRecordingViewData {
 
 export class CreateRecordingView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #defaultRecordingName: string = '';
+  #defaultRecordingName = '';
   #error?: Error;
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
 

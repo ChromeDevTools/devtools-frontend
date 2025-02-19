@@ -20,7 +20,7 @@ const {html} = Lit;
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-font-display`;
-  override internalName: string = 'font-display';
+  override internalName = 'font-display';
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
 

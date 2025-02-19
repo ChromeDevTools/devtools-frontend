@@ -255,7 +255,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     const text = new TextUtils.Text.Text(this.ownerStyle.cssText || '');
     const newStyleText = text.replaceRange(range, Platform.StringUtilities.sprintf(';%s;', propertyText));
     const styleText = await CSSProperty.formatStyle(newStyleText, indentation, endIndentation);
-    return this.ownerStyle.setText(styleText, majorChange);
+    return await this.ownerStyle.setText(styleText, majorChange);
   }
 
   static async formatStyle(styleText: string, indentation: string, endIndentation: string): Promise<string> {
@@ -383,7 +383,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     } else {
       text = appendSemicolonIfMissing(this.text.substring(2, propertyText.length - 2).trim());
     }
-    return this.setText(text, true, true);
+    return await this.setText(text, true, true);
   }
 
   /**

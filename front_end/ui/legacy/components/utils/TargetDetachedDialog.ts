@@ -52,10 +52,6 @@ export class TargetDetachedDialog extends SDK.SDKModel.SDKModel<void> implements
         })
         .show(dialog.contentElement);
 
-    // UI.Dialog extends GlassPane and overrides the `show` method with a wider
-    // accepted type. However, TypeScript uses the supertype declaration to
-    // determine the full type, which requires a `!Document`.
-    // @ts-ignore
     dialog.show();
   }
 

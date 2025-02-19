@@ -326,7 +326,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   readonly searchThrottler: Common.Throttler.Throttler;
   baseProfile!: HeapProfileHeader|null;
   trackingOverviewGrid?: HeapTimelineOverview;
-  currentSearchResultIndex: number = -1;
+  currentSearchResultIndex = -1;
   currentQuery?: HeapSnapshotModel.HeapSnapshotModel.SearchConfig;
   constructor(dataDisplayDelegate: DataDisplayDelegate, profile: HeapProfileHeader) {
     super(i18nString(UIStrings.heapSnapshot));
@@ -1681,7 +1681,7 @@ export class HeapProfileHeader extends ProfileHeader {
     if (!this.snapshotProxy) {
       return null;
     }
-    return this.snapshotProxy.getLocation(nodeIndex);
+    return await this.snapshotProxy.getLocation(nodeIndex);
   }
 
   override createSidebarTreeElement(dataDisplayDelegate: DataDisplayDelegate): ProfileSidebarTreeElement {

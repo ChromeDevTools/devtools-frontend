@@ -151,13 +151,13 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   }
 
   async getMappedLines(rawModuleId: string, sourceFileURL: string): Promise<number[]|undefined> {
-    return this.endpoint.sendRequest(
+    return await this.endpoint.sendRequest(
         PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines, {rawModuleId, sourceFileURL});
   }
 
   async evaluate(expression: string, context: Chrome.DevTools.RawLocation, stopId: number):
       Promise<Chrome.DevTools.RemoteObject> {
-    return this.endpoint.sendRequest(
+    return await this.endpoint.sendRequest(
         PrivateAPI.LanguageExtensionPluginCommands.FormatValue, {expression, context, stopId});
   }
 

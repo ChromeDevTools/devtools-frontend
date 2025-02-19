@@ -23,9 +23,9 @@ export interface EventTypes {
 
 export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, typeof HTMLElement>(HTMLElement) {
   private readonly shadow = this.attachShadow({mode: 'open'});
-  private colorMixText: string = '';     // color-mix(in srgb, hotpink, white)
-  private firstColorText: string = '';   // hotpink
-  private secondColorText: string = '';  // white
+  private colorMixText = '';     // color-mix(in srgb, hotpink, white)
+  private firstColorText = '';   // hotpink
+  private secondColorText = '';  // white
   #registerPopoverCallback: undefined|((swatch: ColorMixSwatch) => void);
 
   constructor() {

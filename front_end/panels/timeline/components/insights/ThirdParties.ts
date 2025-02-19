@@ -19,7 +19,7 @@ const {html} = Lit;
 
 export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-third-parties`;
-  override internalName: string = 'third-parties';
+  override internalName = 'third-parties';
 
   #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();
 

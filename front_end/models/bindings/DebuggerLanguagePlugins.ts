@@ -990,7 +990,7 @@ export class DebuggerLanguagePluginManager implements
 
     try {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // @ts-ignore
+      // @ts-expect-error
       const locations = await plugin.getInlinedFunctionRanges(pluginLocation);
       return locations.map(
           m => ({
@@ -1027,7 +1027,7 @@ export class DebuggerLanguagePluginManager implements
 
     try {
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-      // @ts-ignore
+      // @ts-expect-error
       const locations = await plugin.getInlinedCalleesRanges(pluginLocation);
       return locations.map(
           m => ({

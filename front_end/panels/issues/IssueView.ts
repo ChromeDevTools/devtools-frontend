@@ -224,7 +224,7 @@ export class IssueView extends UI.TreeOutline.TreeElement {
   #throttle: Common.Throttler.Throttler;
   #needsUpdateOnExpand = true;
   #hiddenIssuesMenu?: Components.HideIssuesMenu.HideIssuesMenu;
-  #contentCreated: boolean = false;
+  #contentCreated = false;
 
   constructor(issue: AggregatedIssue, description: IssuesManager.MarkdownIssueDescription.IssueDescription) {
     super();

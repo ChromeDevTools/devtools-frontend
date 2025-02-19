@@ -152,7 +152,7 @@ export class ProtocolService {
       mode = 'endTimespan';
     }
 
-    return this.sendWithResponse(mode, {
+    return await this.sendWithResponse(mode, {
       url: inspectedURL,
       categoryIDs,
       flags,
@@ -283,6 +283,6 @@ export class ProtocolService {
     });
     worker.postMessage({id: messageId, action, args: {...args, id: messageId}});
 
-    return messageResult;
+    return await messageResult;
   }
 }

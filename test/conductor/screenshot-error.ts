@@ -28,13 +28,13 @@ export class ScreenshotError extends Error {
 
     // To show Diffs mocha Spec reporter expects some properties.
     // See node_modules/mocha/lib/reporters/base.js.
-    // @ts-ignore forwarding error properties for Mocha.
+    // @ts-expect-error forwarding error properties for Mocha.
     this.showDiff = cause?.showDiff;
-    // @ts-ignore forwarding error properties for Mocha.
+    // @ts-expect-error forwarding error properties for Mocha.
     this.actual = cause?.actual;
-    // @ts-ignore forwarding error properties for Mocha.
+    // @ts-expect-error forwarding error properties for Mocha.
     this.expected = cause?.expected;
-    // @ts-ignore forwarding error properties for Mocha.
+    // @ts-expect-error forwarding error properties for Mocha.
     this.operator = cause?.operator;
   }
 

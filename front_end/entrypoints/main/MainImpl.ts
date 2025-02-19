@@ -184,17 +184,17 @@ export class MainImpl {
   }
 
   #initializeGlobalsForLayoutTests(): void {
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.Extensions ||= {};
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.Host ||= {};
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.Host.userMetrics ||= Host.userMetrics;
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.Host.UserMetrics ||= Host.UserMetrics;
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.ProtocolClient ||= {};
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.ProtocolClient.test ||= ProtocolClient.InspectorBackend.test;
   }
 
@@ -504,7 +504,7 @@ export class MainImpl {
       targetManager,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
-    // @ts-ignore e2e test global
+    // @ts-expect-error e2e test global
     self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
@@ -676,7 +676,7 @@ export class MainImpl {
     const promises: Array<Promise<void>> =
         Common.Runnable.lateInitializationRunnables().map(async lateInitializationLoader => {
           const runnable = await lateInitializationLoader();
-          return runnable.run();
+          return await runnable.run();
         });
     if (Root.Runtime.experiments.isEnabled('live-heap-profile')) {
       const PerfUI = await import('../../ui/legacy/components/perf_ui/perf_ui.js');
@@ -749,7 +749,7 @@ export class MainImpl {
 
   #redispatchClipboardEvent(event: Event): void {
     const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true});
-    // @ts-ignore Used in ElementsTreeOutline
+    // @ts-expect-error Used in ElementsTreeOutline
     eventCopy['original'] = event;
     const document = event.target && (event.target as HTMLElement).ownerDocument;
     const target = document ? Platform.DOMUtilities.deepActiveElement(document) : null;
@@ -784,9 +784,9 @@ export class MainImpl {
   static instanceForTest: MainImpl|null = null;
 }
 
-// @ts-ignore Exported for Tests.js
+// @ts-expect-error Exported for Tests.js
 globalThis.Main = globalThis.Main || {};
-// @ts-ignore Exported for Tests.js
+// @ts-expect-error Exported for Tests.js
 globalThis.Main.Main = MainImpl;
 
 export class ZoomActionDelegate implements UI.ActionRegistration.ActionDelegate {

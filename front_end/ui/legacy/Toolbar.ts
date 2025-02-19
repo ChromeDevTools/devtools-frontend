@@ -85,7 +85,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Toolbar extends HTMLElement {
   #shadowRoot = this.attachShadow({mode: 'open'});
   private items: ToolbarItem[] = [];
-  enabled: boolean = true;
+  enabled = true;
   private compactLayout = false;
 
   constructor() {
@@ -492,7 +492,7 @@ export class ToolbarItem<T = any, E extends HTMLElement = HTMLElement> extends C
   }
 
   applyEnabledState(enabled: boolean): void {
-    // @ts-ignore: Ignoring in favor of an `instanceof` check for all the different
+    // @ts-expect-error: Ignoring in favor of an `instanceof` check for all the different
     //             kind of HTMLElement classes that have a disabled attribute.
     this.element.disabled = !enabled;
   }
@@ -531,7 +531,7 @@ export class ToolbarItemWithCompactLayout extends ToolbarItem<ToolbarItemWithCom
 }
 
 export class ToolbarText extends ToolbarItem<void, HTMLElement> {
-  constructor(text: string = '') {
+  constructor(text = '') {
     const element = document.createElement('div');
     element.classList.add('toolbar-text');
     super(element);
@@ -943,7 +943,7 @@ export class ToolbarMenuButton extends ToolbarCombobox {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
   private triggerTimeoutId?: number;
-  #triggerDelay: number = 200;
+  #triggerDelay = 200;
 
   constructor(
       contextMenuHandler: (arg0: ContextMenu) => void, isIconDropdown?: boolean, useSoftMenu?: boolean,

@@ -21,7 +21,7 @@ import {
   waitForElementsComputedSection,
 } from '../helpers/elements-helpers.js';
 
-async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
+async function goToTestPageAndSelectTestElement(path = 'inline_editor/default.html') {
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
   await clickNthChildOfSelectedElementNode(1);

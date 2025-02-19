@@ -436,7 +436,7 @@ export class ScopeVariableAnalysis {
 
   #addVariable(
       name: string, offset: number, definitionKind: DefinitionKind = DefinitionKind.NONE,
-      isShorthandAssignmentProperty: boolean = false): void {
+      isShorthandAssignmentProperty = false): void {
     this.#allNames.add(name);
     this.#currentScope.addVariable(name, offset, definitionKind, isShorthandAssignmentProperty);
   }

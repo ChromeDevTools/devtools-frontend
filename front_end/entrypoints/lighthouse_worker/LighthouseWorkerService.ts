@@ -224,7 +224,6 @@ async function onFrontendMessage(event: MessageEvent): Promise<void> {
 self.onmessage = onFrontendMessage;
 
 // Make lighthouse and traceviewer happy.
-// @ts-ignore https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global = self;
 // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
 globalThis.global.isVinn = true;

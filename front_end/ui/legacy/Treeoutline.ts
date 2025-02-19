@@ -457,7 +457,7 @@ export class TreeElement {
   expanded: boolean;
   selected: boolean;
   private expandable!: boolean;
-  #expandRecursively: boolean = true;
+  #expandRecursively = true;
   private collapsible: boolean;
   toggleOnClick: boolean;
   button: Buttons.Button.Button|null;

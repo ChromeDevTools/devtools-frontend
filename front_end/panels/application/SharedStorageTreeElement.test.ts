@@ -19,7 +19,7 @@ import * as Application from './application.js';
 class SharedStorageItemsListener {
   #dispatcher:
       Common.ObjectWrapper.ObjectWrapper<Application.SharedStorageItemsView.SharedStorageItemsDispatcher.EventTypes>;
-  #refreshed: boolean = false;
+  #refreshed = false;
 
   constructor(dispatcher: Common.ObjectWrapper
                   .ObjectWrapper<Application.SharedStorageItemsView.SharedStorageItemsDispatcher.EventTypes>) {

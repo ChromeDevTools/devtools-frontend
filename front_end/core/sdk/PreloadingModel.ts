@@ -31,7 +31,7 @@ export interface WithId<I, V> {
 export class PreloadingModel extends SDKModel<EventTypes> {
   private agent: ProtocolProxyApi.PreloadApi;
   private loaderIds: Protocol.Network.LoaderId[] = [];
-  private targetJustAttached: boolean = true;
+  private targetJustAttached = true;
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();

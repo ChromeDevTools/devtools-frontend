@@ -94,13 +94,13 @@ export class HeapSnapshotWorkerDispatcher {
         case 'evaluateForTest': {
           try {
             // Make 'HeapSnapshotWorker' and 'HeapSnapshotModel' available to web tests. 'eval' can't use 'import'.
-            // @ts-ignore
+            // @ts-expect-error
             globalThis.HeapSnapshotWorker = {
               AllocationProfile,
               HeapSnapshot,
               HeapSnapshotLoader,
             };
-            // @ts-ignore
+            // @ts-expect-error
             globalThis.HeapSnapshotModel = HeapSnapshotModel;
             response.result = self.eval(data.source);
           } catch (error) {

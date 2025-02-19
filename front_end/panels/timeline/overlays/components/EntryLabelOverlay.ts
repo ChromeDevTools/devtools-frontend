@@ -66,11 +66,11 @@ export class EntryLabelOverlay extends HTMLElement {
   // can fire, and that triggers a second removal. So we set this flag after
   // the first removal to avoid a duplicate event firing which is a no-op but
   // causes errors when we try to delete an already deleted annotation.
-  #isPendingRemoval: boolean = false;
+  #isPendingRemoval = false;
 
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
   // element, the label is set to not editable until it double clicked.s
-  #isLabelEditable: boolean = true;
+  #isLabelEditable = true;
   #entryLabelVisibleHeight: number|null = null;
 
   #labelPartsWrapper: HTMLElement|null = null;
@@ -99,7 +99,7 @@ export class EntryLabelOverlay extends HTMLElement {
    * Otherwise, the entry label overlay object only gets repositioned.
    */
 
-  constructor(label: string, shouldDrawBelowEntry: boolean = false) {
+  constructor(label: string, shouldDrawBelowEntry = false) {
     super();
     this.#render();
     this.#shouldDrawBelowEntry = shouldDrawBelowEntry;

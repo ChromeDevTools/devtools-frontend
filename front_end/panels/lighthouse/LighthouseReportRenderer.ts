@@ -88,9 +88,9 @@ export class LighthouseReportRenderer {
         ThemeSupport.ThemeChangeEvent.eventName, updateDarkModeIfNecessary);
     updateDarkModeIfNecessary();
 
-    // @ts-ignore Expose LHR on DOM for e2e tests
+    // @ts-expect-error Expose LHR on DOM for e2e tests
     reportEl._lighthouseResultForTesting = lhr;
-    // @ts-ignore Expose Artifacts on DOM for e2e tests
+    // @ts-expect-error Expose Artifacts on DOM for e2e tests
     reportEl._lighthouseArtifactsForTesting = artifacts;
 
     // This should block the report rendering as we need visual logging ready

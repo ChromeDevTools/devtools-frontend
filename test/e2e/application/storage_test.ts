@@ -33,11 +33,11 @@ describe('The Application Tab', () => {
         for (let i = 0; i < 20000; i++) {
           array.push(i % 10);
         }
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => createDatabase(resolve, 'Database1'));
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => createObjectStore(resolve, 'Database1', 'Store1', 'id', true));
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => addIDBValue(resolve, 'Database1', 'Store1', {key: 1, value: array}, ''));
       });
 
@@ -62,11 +62,11 @@ describe('The Application Tab', () => {
         for (let i = 0; i < 20000; i++) {
           array.push(i % 10);
         }
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => createDatabase(resolve, 'Database1'));
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => createObjectStore(resolve, 'Database1', 'Store1', 'id', true));
-        // @ts-ignore
+        // @ts-expect-error
         await new Promise(resolve => addIDBValue(resolve, 'Database1', 'Store1', {key: 1, value: array}, ''));
       });
 

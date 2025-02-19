@@ -32,7 +32,7 @@ describe('Heavy Ad issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
       const issue2 = {
         code: 'HeavyAdIssue',
@@ -44,7 +44,7 @@ describe('Heavy Ad issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue2);
     });
     await expandIssue();

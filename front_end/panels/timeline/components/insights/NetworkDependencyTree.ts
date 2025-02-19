@@ -26,7 +26,7 @@ networkDependencyTreeInsightComponentStyles.replaceSync(networkDependencyTreeIns
 
 export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
-  override internalName: string = 'long-critical-network-tree';
+  override internalName = 'long-critical-network-tree';
 
   override connectedCallback(): void {
     super.connectedCallback();

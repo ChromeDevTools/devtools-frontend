@@ -798,7 +798,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     if (!this.layerTree) {
       return null;
     }
-    let closestIntersectionPoint: number = Infinity;
+    let closestIntersectionPoint = Infinity;
     let closestObject: Selection|null = null;
     const projectionMatrix =
         new WebKitCSSMatrix().scale(1, -1, -1).translate(-1, -1, 0).multiply(this.projectionMatrix);

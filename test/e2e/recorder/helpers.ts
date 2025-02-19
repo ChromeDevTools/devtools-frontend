@@ -239,7 +239,7 @@ export async function clickSelectButtonItem(itemLabel: string, root: string) {
 
 export async function setupRecorderWithScript(
     script: UserFlow,
-    path: string = 'recorder/recorder.html',
+    path = 'recorder/recorder.html',
     ): Promise<void> {
   await enableAndOpenRecorderPanel(path);
   await createAndStartRecording(script.title);
@@ -249,7 +249,7 @@ export async function setupRecorderWithScript(
 
 export async function setupRecorderWithScriptAndReplay(
     script: UserFlow,
-    path: string = 'recorder/recorder.html',
+    path = 'recorder/recorder.html',
     ): Promise<void> {
   await setupRecorderWithScript(script, path);
   const onceFinished = onReplayFinished();

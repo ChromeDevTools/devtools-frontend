@@ -111,7 +111,7 @@ export class EvaluateAction {
         return formatError(exceptionDescription ?? 'JS exception');
       }
 
-      return stringifyRemoteObject(response.object);
+      return await stringifyRemoteObject(response.object);
     } finally {
       executionContext.runtimeModel.releaseEvaluationResult(response);
     }

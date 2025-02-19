@@ -241,7 +241,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().originalContentForUISourceCode(
             this.uiSourceCode);
     if (originalNetworkContent) {
-      return originalNetworkContent;
+      return await originalNetworkContent;
     }
 
     const content = await this.uiSourceCode.project().requestFileContent(this.uiSourceCode);

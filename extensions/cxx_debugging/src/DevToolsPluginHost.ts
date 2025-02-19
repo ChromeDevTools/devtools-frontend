@@ -35,7 +35,7 @@ export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, As
 
   static async create(
       moduleConfigurations: ModuleConfigurations = DEFAULT_MODULE_CONFIGURATIONS,
-      logPluginApiCalls: boolean = false): Promise<WorkerPlugin> {
+      logPluginApiCalls = false): Promise<WorkerPlugin> {
     const plugin = new WorkerPlugin();
     await plugin.rpc.sendMessage('hello', moduleConfigurations, logPluginApiCalls);
     return plugin;

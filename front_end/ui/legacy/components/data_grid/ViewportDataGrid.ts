@@ -19,11 +19,11 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
    * If `true`, the datagrid will mostly keep the scroll at the bottom, so new items are visible.
    * If the data is sorted descending (eg Performance Call Tree, heap snapshot), keep the default of `false`.
    */
-  enableAutoScrollToBottom: boolean = false;
+  enableAutoScrollToBottom = false;
   /** When true, the datagrid will manipulate the scrollTop to focus on the bottom, mostly so new additions are visible.
    * Some actions will unset this, like revealing or expanding a particular node.
    * Only matters if enableAutoScrollToBottom is true. */
-  keepScrollingToBottom: boolean = false;
+  keepScrollingToBottom = false;
   private updateIsFromUser: boolean;
   private lastScrollTop: number;
   private firstVisibleIsStriped: boolean;

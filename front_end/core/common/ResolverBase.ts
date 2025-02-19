@@ -28,7 +28,7 @@ export abstract class ResolverBase<Id, T> {
   async waitFor(id: Id): Promise<T> {
     const obj = this.getForId(id);
     if (!obj) {
-      return this.getOrCreatePromise(id);
+      return await this.getOrCreatePromise(id);
     }
     return obj;
   }

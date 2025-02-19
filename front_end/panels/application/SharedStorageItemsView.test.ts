@@ -23,9 +23,9 @@ import View = Resources.SharedStorageItemsView;
 
 class SharedStorageItemsListener {
   #dispatcher: Common.ObjectWrapper.ObjectWrapper<View.SharedStorageItemsDispatcher.EventTypes>;
-  #cleared: boolean = false;
-  #filteredCleared: boolean = false;
-  #refreshed: boolean = false;
+  #cleared = false;
+  #filteredCleared = false;
+  #refreshed = false;
   #deletedKeys: String[] = [];
   #numEditedEvents = 0;
 

@@ -36,7 +36,7 @@ export interface EventTypes {
   [Events.SourceMapResolved]: void;
 }
 
-const COVERAGE_POLLING_PERIOD_MS: number = 200;
+const COVERAGE_POLLING_PERIOD_MS = 200;
 const RESOLVE_SOURCEMAP_TIMEOUT = 500;
 
 interface BacklogItem<T> {
@@ -320,7 +320,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     const {coverage, timestamp} = await this.cpuProfilerModel.takePreciseCoverage();
     this.coverageUpdateTimes.add(timestamp);
-    return this.backlogOrProcessJSCoverage(coverage, timestamp);
+    return await this.backlogOrProcessJSCoverage(coverage, timestamp);
   }
 
   private async backlogOrProcessJSCoverage(
@@ -391,7 +391,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     const {coverage, timestamp} = await this.cssModel.takeCoverageDelta();
     this.coverageUpdateTimes.add(timestamp);
-    return this.backlogOrProcessCSSCoverage(coverage, timestamp);
+    return await this.backlogOrProcessCSSCoverage(coverage, timestamp);
   }
 
   private async backlogOrProcessCSSCoverage(freshRawCoverageData: Protocol.CSS.RuleUsage[], freshTimestamp: number):
@@ -859,7 +859,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     }
 
     // Fall back to the per-script operation.
-    return this.entriesForExportBasedOnContent();
+    return await this.entriesForExportBasedOnContent();
   }
 }
 
@@ -1073,7 +1073,7 @@ export class CoverageInfo {
     }
   }
 
-  rangesForExport(offset: number = 0): Array<{start: number, end: number}> {
+  rangesForExport(offset = 0): Array<{start: number, end: number}> {
     const ranges = [];
     let start = 0;
     for (const segment of this.segments) {

@@ -98,7 +98,7 @@ export class ElementsTreeOutline extends
   private visibleWidthInternal?: number;
   private clipboardNodeData?: ClipboardData;
   private isXMLMimeTypeInternal?: boolean|null;
-  suppressRevealAndSelect: boolean = false;
+  suppressRevealAndSelect = false;
   private previousHoveredElement?: UI.TreeOutline.TreeElement;
   private treeElementBeingDragged?: ElementsTreeElement;
   private dragOverTreeElement?: ElementsTreeElement;
@@ -377,7 +377,7 @@ export class ElementsTreeOutline extends
 
   private onCopyOrCut(isCut: boolean, event: Event): void {
     this.setClipboardData(null);
-    // @ts-ignore this bound in the main entry point
+    // @ts-expect-error this bound in the main entry point
     const originalEvent = event['original'];
 
     if (!originalEvent || !originalEvent.target) {
@@ -1771,7 +1771,7 @@ export class Renderer implements UI.UIUtils.Renderer {
       treeOutline.element.classList.add('single-node');
     }
     treeOutline.setVisible(true);
-    // @ts-ignore used in console_test_runner
+    // @ts-expect-error used in console_test_runner
     treeOutline.element.treeElementForTest = firstChild;
     treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
     return {node: treeOutline.element, tree: treeOutline};

@@ -59,7 +59,7 @@ export interface ReportData {
 }
 export class Report extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #reportTitle: string = '';
+  #reportTitle = '';
 
   set data({reportTitle}: ReportData) {
     this.#reportTitle = reportTitle;

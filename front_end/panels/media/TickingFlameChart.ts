@@ -318,7 +318,7 @@ export class TickingFlameChart extends UI.Widget.VBox {
     this.ticking = true;
   }
 
-  private stop(permanently: boolean = false): void {
+  private stop(permanently = false): void {
     window.clearInterval(this.intervalTimer);
     this.intervalTimer = 0;
     if (permanently) {

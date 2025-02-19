@@ -98,7 +98,7 @@ export const shortcutsForAction = async (shortcutText: string) => {
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
   const shortcutElementsTextContent =
       await Promise.all(shortcutElements.map(element => element.getProperty('textContent')));
-  return Promise.all(
+  return await Promise.all(
       shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue() : []));
 };
 
@@ -108,7 +108,7 @@ export const shortcutInputValues = async () => {
     assert.fail('shortcut input not found');
   }
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => input.getProperty('value')));
-  return Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
+  return await Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
 
 export const clickAddShortcutLink = async () => {

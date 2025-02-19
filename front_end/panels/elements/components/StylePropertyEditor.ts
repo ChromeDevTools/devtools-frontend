@@ -126,7 +126,7 @@ export class StylePropertyEditor extends HTMLElement {
     </div>`;
   }
 
-  #renderButton(propertyValue: string, propertyName: string, selected: boolean = false): Lit.TemplateResult {
+  #renderButton(propertyValue: string, propertyName: string, selected = false): Lit.TemplateResult {
     const query = `${propertyName}: ${propertyValue}`;
     const iconInfo = this.findIcon(query, this.#computedProperties);
     if (!iconInfo) {

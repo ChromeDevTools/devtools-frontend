@@ -66,7 +66,7 @@ class TransferFunction {
   e: number;
   f: number;
 
-  constructor(g: number, a: number, b: number = 0, c: number = 0, d: number = 0, e: number = 0, f: number = 0) {
+  constructor(g: number, a: number, b = 0, c = 0, d = 0, e = 0, f = 0) {
     this.g = g;
     this.a = a;
     this.b = b;

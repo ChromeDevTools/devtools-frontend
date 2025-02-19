@@ -314,7 +314,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   protected repeatCountElement: UI.UIUtils.DevToolsSmallBubble|null;
   private requestResolver: Logs.RequestResolver.RequestResolver;
   private issueResolver: IssuesManager.IssueResolver.IssueResolver;
-  #adjacentUserCommandResult: boolean = false;
+  #adjacentUserCommandResult = false;
 
   /** Formatting Error#stack is asynchronous. Allow tests to wait for the result */
   #formatErrorStackPromiseForTest = Promise.resolve();
@@ -673,7 +673,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.expandTrace(true);
     }
 
-    // @ts-ignore
+    // @ts-expect-error
     toggleElement._expandStackTraceForTest = this.expandTrace.bind(this, true);
     return toggleElement;
   }
@@ -2263,12 +2263,12 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
  * The maximum length before strings are considered too long for syntax highlighting.
  * @const
  */
-const MaxLengthToIgnoreHighlighter: number = 10000;
+const MaxLengthToIgnoreHighlighter = 10000;
 
 /**
  * @const
  */
-export const MaxLengthForLinks: number = 40;
+export const MaxLengthForLinks = 40;
 
 let maxTokenizableStringLength = 10000;
 let longStringVisibleLength = 5000;

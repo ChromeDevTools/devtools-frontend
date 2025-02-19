@@ -577,13 +577,13 @@ export class UILocation {
     this.columnNumber = columnNumber;
   }
 
-  linkText(skipTrim: boolean = false, showColumnNumber: boolean = false): string {
+  linkText(skipTrim = false, showColumnNumber = false): string {
     const displayName = this.uiSourceCode.displayName(skipTrim);
     const lineAndColumnText = this.lineAndColumnText(showColumnNumber);
     return lineAndColumnText ? displayName + ':' + lineAndColumnText : displayName;
   }
 
-  lineAndColumnText(showColumnNumber: boolean = false): string|undefined {
+  lineAndColumnText(showColumnNumber = false): string|undefined {
     let lineAndColumnText;
     if (this.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in

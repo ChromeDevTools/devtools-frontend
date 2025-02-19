@@ -134,7 +134,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
       return kMaxWidth;
     }
     let maxItem;
-    let maxLength: number = -Infinity;
+    let maxLength = -Infinity;
     for (let i = 0; i < items.length; i++) {
       const length = (items[i].title || items[i].text).length + (items[i].subtitle || '').length;
       if (length > maxLength) {

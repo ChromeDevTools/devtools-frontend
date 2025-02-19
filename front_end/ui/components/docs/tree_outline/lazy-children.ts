@@ -33,7 +33,7 @@ async function loadInSomeNodes(): Promise<Array<TreeOutline.TreeOutlineUtils.Tre
     },
   ];
 
-  return new Promise(resolve => {
+  return await new Promise(resolve => {
     setTimeout(() => resolve(europeanOffices), 250);
   });
 }

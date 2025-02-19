@@ -502,9 +502,28 @@ export default [
       // certain TypeScript compilation errors after fixes
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
 
+      '@typescript-eslint/no-inferrable-types': 'error',
+
       '@typescript-eslint/consistent-generic-constructors': [
         'error',
         'constructor',
+      ],
+
+      // This is more performant
+      // And should provide better stack trace when debugging
+      // see https://v8.dev/blog/fast-async.
+      '@typescript-eslint/return-await': ['error', 'always'],
+
+      '@typescript-eslint/ban-ts-comment': [
+        'error',
+        {
+          // Change after we add some placeholder for old errors
+          minimumDescriptionLength: 0,
+          'ts-check': false,
+          'ts-expect-error': 'allow-with-description',
+          'ts-ignore': true,
+          'ts-nocheck': true,
+        },
       ],
 
       'rulesdir/no-underscored-properties': 'error',

@@ -267,7 +267,7 @@ export class PersistenceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         breakpointLocation => breakpointLocation.breakpoint);
     await Promise.all(breakpoints.map(async breakpoint => {
       await breakpoint.remove(false /* keepInStorage */);
-      return this.breakpointManager.setBreakpoint(
+      return await this.breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled(),
           breakpoint.isLogpoint(), BreakpointManager.BreakpointManager.BreakpointOrigin.OTHER);
     }));

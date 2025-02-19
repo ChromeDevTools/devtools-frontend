@@ -151,7 +151,7 @@ export class ProfileFlameChart extends
   entrySelected: boolean;
   readonly dataProvider: ProfileFlameChartDataProvider;
   searchResults: number[];
-  searchResultIndex: number = -1;
+  searchResultIndex = -1;
 
   constructor(searchableView: UI.SearchableView.SearchableView, dataProvider: ProfileFlameChartDataProvider) {
     super();

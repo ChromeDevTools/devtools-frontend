@@ -302,9 +302,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
   // This happens when the conversation's context has a different
   // origin than the selected context.
-  #blockedByCrossOrigin: boolean = false;
+  #blockedByCrossOrigin = false;
   // Whether the UI should show loading or not.
-  #isLoading: boolean = false;
+  #isLoading = false;
   // Selected conversation context. The reason we keep this as a
   // state field rather than using `#getConversationContext` is that,
   // there is a case where the context differs from the selectedElement (or other selected context type).
@@ -321,7 +321,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #project?: Workspace.Workspace.Project;
   #patchSuggestion?: string;
   #patchSuggestionLoading?: boolean;
-  #imageInput: string = '';
+  #imageInput = '';
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {

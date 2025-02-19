@@ -164,7 +164,7 @@ export function registerRevealer<T>(registration: RevealerRegistration<T>): void
  * @param revealable the object to reveal.
  * @param omitFocus whether to omit focusing on the presentation of `revealable` afterwards.
  */
-export async function reveal(revealable: unknown, omitFocus: boolean = false): Promise<void> {
+export async function reveal(revealable: unknown, omitFocus = false): Promise<void> {
   await RevealerRegistry.instance().reveal(revealable, omitFocus);
 }
 

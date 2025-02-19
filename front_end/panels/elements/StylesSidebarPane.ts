@@ -491,7 +491,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
 
     const allDeclarationText: string = lines.join('\n');
-    const ruleText: string = `${selectorText} {\n${allDeclarationText}\n}`;
+    const ruleText = `${selectorText} {\n${allDeclarationText}\n}`;
 
     return {
       allDeclarationText,
@@ -1179,7 +1179,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     let lastParentNode: SDK.DOMModel.DOMNode|null = null;
 
     let lastLayers: SDK.CSSLayer.CSSLayer[]|null = null;
-    let sawLayers: boolean = false;
+    let sawLayers = false;
 
     const addLayerSeparator = (style: SDK.CSSStyleDeclaration.CSSStyleDeclaration): void => {
       const parentRule = style.parentRule;
@@ -2116,7 +2116,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
     const lowerQuery = query.toLowerCase();
     const editingVariable = !this.isEditingName && expression.trim().endsWith('var(');
     if (!query && !force && !editingVariable && (this.isEditingName || expression)) {
-      return Promise.resolve([]);
+      return await Promise.resolve([]);
     }
 
     const prefixResults: CompletionResult[] = [];
@@ -2243,7 +2243,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         return a.isCSSVariableColor ? -1 : 1;
       });
     }
-    return Promise.resolve(results);
+    return await Promise.resolve(results);
 
     function filterCompletions(
         this: CSSPropertyPrompt, completion: string, variable: boolean, nameValue?: boolean): void {

@@ -155,9 +155,9 @@ const adjacencyMap = new WeakMap<DataGrid.DataGrid.DataGridNode<HeapSnapshotGrid
 
 class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {}
 
-export class HeapSnapshotSortableDataGrid extends
-    Common.ObjectWrapper.eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
-        HeapSnapshotSortableDataGridBase) {
+export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
+                                                      .eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
+                                                          HeapSnapshotSortableDataGridBase) {
   snapshot: HeapSnapshotProxy|null;
   override selectedNode: HeapSnapshotGridNode|null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;
@@ -322,9 +322,9 @@ export class HeapSnapshotSortableDataGrid extends
     function sortByTwoFields(
         nodeA: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>,
         nodeB: DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>): number {
-      // @ts-ignore
+      // @ts-expect-error
       let field1 = nodeA[sortFields.fieldName1];
-      // @ts-ignore
+      // @ts-expect-error
       let field2 = nodeB[sortFields.fieldName1];
       let result: number|(0 | 1 | -1) = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
       if (!sortFields.ascending1) {
@@ -333,9 +333,9 @@ export class HeapSnapshotSortableDataGrid extends
       if (result !== 0) {
         return result;
       }
-      // @ts-ignore
+      // @ts-expect-error
       field1 = nodeA[sortFields.fieldName2];
-      // @ts-ignore
+      // @ts-expect-error
       field2 = nodeB[sortFields.fieldName2];
       result = field1 < field2 ? -1 : (field1 > field2 ? 1 : 0);
       if (!sortFields.ascending2) {
@@ -835,7 +835,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
 
     const nodes = await parent.populateNodeBySnapshotObjectId(parseInt(id, 10));
-    return nodes.length ? this.revealTreeNode(nodes) : null;
+    return nodes.length ? await this.revealTreeNode(nodes) : null;
   }
 
   clear(): void {
@@ -1071,11 +1071,11 @@ export class AllocationDataGrid extends HeapSnapshotViewportDataGrid {
     const fieldName = this.sortColumnId();
     const compareResult = (this.sortOrder() === DataGrid.DataGrid.Order.Ascending) ? +1 : -1;
     function compare(a: Object, b: Object): number {
-      // @ts-ignore
+      // @ts-expect-error
       if (a[fieldName] > b[fieldName]) {
         return compareResult;
       }
-      // @ts-ignore
+      // @ts-expect-error
       if (a[fieldName] < b[fieldName]) {
         return -compareResult;
       }

@@ -56,7 +56,7 @@ export class MockProtocolBackend {
   }
 
   dispatchDebuggerPause(
-      script: SDK.Script.Script, reason: Protocol.Debugger.PausedEventReason, functionName: string = '',
+      script: SDK.Script.Script, reason: Protocol.Debugger.PausedEventReason, functionName = '',
       scopeChain: Protocol.Debugger.Scope[] = []): void {
     const target = script.debuggerModel.target();
     if (reason === Protocol.Debugger.PausedEventReason.Instrumentation) {

@@ -201,17 +201,17 @@ export async function getDataGridData(selector: string, columns: string[]) {
 
 export async function getTrimmedTextContent(selector: string) {
   const elements = await $$(selector);
-  return Promise.all(elements.map(element => element.evaluate(e => {
+  return await Promise.all(elements.map(element => element.evaluate(e => {
     return (e.textContent || '').trim().replace(/[ \n]{2,}/gm, '');  // remove multiple consecutive whitespaces
   })));
 }
 
 export async function getFrameTreeTitles() {
   const treeTitles = await $$('[aria-label="Resources Section"] ~ ol .tree-element-title');
-  return Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
+  return await Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
-export async function getStorageItemsData(columns: string[], leastExpected: number = 1) {
+export async function getStorageItemsData(columns: string[], leastExpected = 1) {
   const gridData = await waitForFunction(async () => {
     const values = await getDataGridData('.storage-view table', columns);
     if (values.length >= leastExpected) {

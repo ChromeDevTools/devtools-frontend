@@ -80,7 +80,7 @@ async function performActionOnSelector(
       break;
     }
   }
-  return waitForFunction(async () => {
+  return await waitForFunction(async () => {
     const element = await waitFor(selector, options?.root, undefined, queryHandler);
     try {
       await action(element);
@@ -142,7 +142,7 @@ export const doubleClick =
     ...passedClickOptions,
     clickCount: 2,
   };
-  return click(selector, {
+  return await click(selector, {
     ...options,
     clickOptions: clickOptionsWithDoubleClick,
   });
@@ -223,7 +223,7 @@ export const $$ =
  * @param root The root of the search.
  */
 export const $textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
-  return $(textContent, root, 'pierceShadowText');
+  return await $(textContent, root, 'pierceShadowText');
 };
 
 /**
@@ -233,7 +233,7 @@ export const $textContent = async (textContent: string, root?: puppeteer.Element
  * @param root The root of the search.
  */
 export const $$textContent = async (textContent: string, root?: puppeteer.ElementHandle) => {
-  return $$(textContent, root, 'pierceShadowText');
+  return await $$(textContent, root, 'pierceShadowText');
 };
 
 export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
@@ -247,7 +247,7 @@ export const getTextContent =
 export const getAllTextContents =
     async(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'): Promise<Array<string|null>> => {
   const allElements = await $$(selector, root, handler);
-  return Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
+  return await Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
 };
 
 /**
@@ -466,7 +466,7 @@ export const goToResourceWithCustomHost = async (host: string, path: string) => 
   await goTo(`${getResourcesPath(host)}/${path}`);
 };
 
-export const getResourcesPath = (host: string = 'localhost') => {
+export const getResourcesPath = (host = 'localhost') => {
   return `https://${host}:${getTestServerPort()}/test/e2e/resources`;
 };
 
@@ -579,7 +579,7 @@ export const selectTextFromNodeToNode = async (
 
     document.execCommand('copy');
 
-    return navigator.clipboard.readText();
+    return await navigator.clipboard.readText();
   }, await from, await to, direction);
 };
 
@@ -736,7 +736,7 @@ export const hasClass = async (element: puppeteer.ElementHandle<Element>, classn
 
 export const waitForClass = async (element: puppeteer.ElementHandle<Element>, classname: string) => {
   await waitForFunction(async () => {
-    return hasClass(element, classname);
+    return await hasClass(element, classname);
   });
 };
 
@@ -843,7 +843,7 @@ export async function raf(page: puppeteer.Page): Promise<void> {
 export async function readClipboard() {
   const {frontend, browser} = getBrowserAndPages();
   await browser.defaultBrowserContext().overridePermissions(frontend.url(), ['clipboard-read']);
-  const clipboard = await frontend.evaluate(async () => navigator.clipboard.readText());
+  const clipboard = await frontend.evaluate(async () => await navigator.clipboard.readText());
   await browser.defaultBrowserContext().clearPermissionOverrides();
   return clipboard;
 }

@@ -182,7 +182,7 @@ export class TextEditor extends HTMLElement {
     }
   }
 
-  revealPosition(selection: CodeMirror.EditorSelection, highlight: boolean = true): void {
+  revealPosition(selection: CodeMirror.EditorSelection, highlight = true): void {
     const view = this.#activeEditor;
     if (!view) {
       return;

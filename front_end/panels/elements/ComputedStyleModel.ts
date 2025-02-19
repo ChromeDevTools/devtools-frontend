@@ -178,7 +178,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
       this.computedStylePromise = cssModel.getComputedStyle(nodeId).then(verifyOutdated.bind(this, elementNode));
     }
 
-    return this.computedStylePromise;
+    return await this.computedStylePromise;
 
     function verifyOutdated(
         this: ComputedStyleModel, elementNode: SDK.DOMModel.DOMNode, style: Map<string, string>|null): ComputedStyle|

@@ -673,7 +673,7 @@ export class RootElement extends UI.TreeOutline.TreeElement {
   override async onpopulate(): Promise<void> {
     const treeOutline = (this.treeOutline as ObjectPropertiesSection | null);
     const skipProto = treeOutline ? Boolean(treeOutline.skipProtoInternal) : false;
-    return ObjectPropertyTreeElement.populate(
+    return await ObjectPropertyTreeElement.populate(
         this, this.object, skipProto, false, this.linkifier, this.emptyPlaceholder, this.propertiesMode,
         this.extraProperties, this.targetObject);
   }
@@ -848,9 +848,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     function onInvokeGetterClick(event: Event): void {
       event.consume();
       if (object) {
-        // The definition of callFunction expects an unknown, and setting to `any` causes Closure to fail.
-        // However, leaving this as unknown also causes TypeScript to fail, so for now we leave this as unchecked.
-        // @ts-ignore  TODO(crbug.com/1011811): Fix after Closure is removed.
         void object.callFunction(invokeGetter, [{value: JSON.stringify(propertyPath)}]).then(callback);
       }
     }
@@ -859,7 +856,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       let result: Object = this;
       const properties = JSON.parse(arrayStr);
       for (let i = 0, n = properties.length; i < n; ++i) {
-        // @ts-ignore callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
+        // @ts-expect-error callFunction expects this to be a generic Object, so while this works we can't be more specific on types.
         result = result[properties[i]];
       }
       return result;
@@ -1047,7 +1044,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
           function invokeGetter(getter) {
             return Reflect.apply(getter, this, []);
           }`;
-        // @ts-ignore No way to teach TypeScript to preserve the Function-ness of `getter`.
+        // @ts-expect-error No way to teach TypeScript to preserve the Function-ness of `getter`.
         // Also passing a string instead of a Function to avoid coverage implementation messing with it.
         void object.callFunction(invokeGetter, [SDK.RemoteObject.RemoteObject.toCallArgument(getter)])
             .then(this.onInvokeGetterClick.bind(this));
@@ -1433,7 +1430,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       const ranges = (result.ranges);
       if (ranges.length === 1) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-ignore
+        // @ts-expect-error
         await ArrayGroupingTreeElement.populateAsFragment(treeNode, object, ranges[0][0], ranges[0][1], linkifier);
       } else {
         for (let i = 0; i < ranges.length; ++i) {
@@ -1442,7 +1439,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
           const count = ranges[i][2];
           if (fromIndex === toIndex) {
             // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-            // @ts-ignore
+            // @ts-expect-error
             await ArrayGroupingTreeElement.populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier);
           } else {
             treeNode.appendChild(new ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
@@ -1451,7 +1448,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       }
       if (topLevel) {
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-        // @ts-ignore
+        // @ts-expect-error
         await ArrayGroupingTreeElement.populateNonIndexProperties(treeNode, object, linkifier);
       }
     }
@@ -1532,7 +1529,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-ignore
+    // @ts-expect-error
     await ArrayGroupingTreeElement.populateAsFragment(this, this.object, this.fromIndex, this.toIndex, this.linkifier);
   }
 

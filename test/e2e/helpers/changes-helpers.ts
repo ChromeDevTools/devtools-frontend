@@ -45,7 +45,7 @@ export async function getChangesList() {
   const root = await waitFor(PANEL_ROOT_SELECTOR);
   const items = await $$('.tree-element-title', root);
 
-  return Promise.all(items.map(node => {
+  return await Promise.all(items.map(node => {
     return node.evaluate(node => node.textContent as string);
   }));
 }
@@ -53,7 +53,7 @@ export async function getChangesList() {
 export async function waitForNewChanges(initialChanges: string[]) {
   let newChanges = [];
 
-  return waitForFunction(async () => {
+  return await waitForFunction(async () => {
     newChanges = await getChangesList();
     return newChanges.length !== initialChanges.length;
   });

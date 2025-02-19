@@ -19,7 +19,7 @@ const {html} = Lit;
 
 export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-inp`;
-  override internalName: string = 'inp';
+  override internalName = 'inp';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

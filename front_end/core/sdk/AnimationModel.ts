@@ -57,7 +57,7 @@ export class AnimationDOMNode {
   #scrollListenersById: Map<number, ScrollListener>;
   #scrollBindingListener?: BindingListener;
 
-  static lastAddedListenerId: number = 0;
+  static lastAddedListenerId = 0;
 
   constructor(domNode: DOMNode) {
     this.#domNode = domNode;
@@ -138,14 +138,14 @@ export class AnimationDOMNode {
       }
 
       const scrollingElement = ('scrollingElement' in this ? this.scrollingElement : this) as HTMLElement;
-      // @ts-ignore We're setting a custom field on `Element` or `Document` for retaining the function on the page.
+      // @ts-expect-error We're setting a custom field on `Element` or `Document` for retaining the function on the page.
       this[scrollListenerNameInPage] = () => {
-        // @ts-ignore `reportScrollPosition` binding is injected to the page before calling the function.
+        // @ts-expect-error `reportScrollPosition` binding is injected to the page before calling the function.
         globalThis[reportScrollPositionBindingName](
             JSON.stringify({scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id}));
       };
 
-      // @ts-ignore We've already defined the function used below.
+      // @ts-expect-error We've already defined the function used below.
       this.addEventListener('scroll', this[scrollListenerNameInPage], true);
     }
   }
@@ -168,15 +168,15 @@ export class AnimationDOMNode {
     }
 
     function removeScrollListenerInPage(this: HTMLElement|Document, scrollListenerNameInPage: string): void {
-      // @ts-ignore We've already set this custom field while adding scroll listener.
+      // @ts-expect-error We've already set this custom field while adding scroll listener.
       this.removeEventListener('scroll', this[scrollListenerNameInPage]);
-      // @ts-ignore We've already set this custom field while adding scroll listener.
+      // @ts-expect-error We've already set this custom field while adding scroll listener.
       delete this[scrollListenerNameInPage];
     }
   }
 
   async scrollTop(): Promise<number|null> {
-    return this.#domNode.callFunction(scrollTopInPage).then(res => res?.value ?? null);
+    return await this.#domNode.callFunction(scrollTopInPage).then(res => res?.value ?? null);
 
     function scrollTopInPage(this: Element|Document): number {
       if ('scrollingElement' in this) {
@@ -191,7 +191,7 @@ export class AnimationDOMNode {
   }
 
   async scrollLeft(): Promise<number|null> {
-    return this.#domNode.callFunction(scrollLeftInPage).then(res => res?.value ?? null);
+    return await this.#domNode.callFunction(scrollLeftInPage).then(res => res?.value ?? null);
 
     function scrollLeftInPage(this: Element|Document): number {
       if ('scrollingElement' in this) {
@@ -238,7 +238,7 @@ export class AnimationDOMNode {
   }
 
   async verticalScrollRange(): Promise<number|null> {
-    return this.#domNode.callFunction(verticalScrollRangeInPage).then(res => res?.value ?? null);
+    return await this.#domNode.callFunction(verticalScrollRangeInPage).then(res => res?.value ?? null);
 
     function verticalScrollRangeInPage(this: Element|Document): number {
       if ('scrollingElement' in this) {
@@ -254,7 +254,7 @@ export class AnimationDOMNode {
   }
 
   async horizontalScrollRange(): Promise<number|null> {
-    return this.#domNode.callFunction(horizontalScrollRangeInPage).then(res => res?.value ?? null);
+    return await this.#domNode.callFunction(horizontalScrollRangeInPage).then(res => res?.value ?? null);
 
     function horizontalScrollRangeInPage(this: Element|Document): number {
       if ('scrollingElement' in this) {
@@ -1065,7 +1065,7 @@ export class ScreenshotCapture {
   readonly #screenCaptureModel: ScreenCaptureModel;
   readonly #animationModel: AnimationModel;
   // This prevents multiple synchronous calls to captureScreenshots to result in one startScreencast call in model.
-  #isCapturing: boolean = false;
+  #isCapturing = false;
   // Holds the id for capturing & cancelling the screencast operation.
   #screencastOperationId: number|undefined;
   #stopTimer?: number;

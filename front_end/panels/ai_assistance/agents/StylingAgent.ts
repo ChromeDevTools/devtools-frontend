@@ -836,7 +836,7 @@ Please run ACTION again if the information you received is not enough to answer 
           params,
           options,
           ) => {
-        return this.executeAction(params.action, options);
+        return await this.executeAction(params.action, options);
       },
     });
 

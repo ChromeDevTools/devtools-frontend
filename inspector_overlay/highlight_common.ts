@@ -60,7 +60,7 @@ export const enum LinePattern {
 }
 
 export function drawPathWithLineStyle(
-    context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle, lineWidth: number = 1) {
+    context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle, lineWidth = 1) {
   if (lineStyle && lineStyle.color) {
     context.save();
     context.translate(0.5, 0.5);
@@ -171,7 +171,7 @@ export function applyMatrixToPoint(point: {x: number, y: number}, matrix: DOMMat
 const HATCH_LINE_LENGTH = 5;
 const HATCH_LINE_GAP = 3;
 let hatchLinePattern: CanvasPattern;
-let hatchLineColor: string = '';
+let hatchLineColor = '';
 
 /**
  * Draw line hatching at a 45 degree angle for a given

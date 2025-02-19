@@ -58,7 +58,7 @@ export interface IssueDescription {
 export async function getFileContent(url: URL): Promise<string> {
   try {
     const response = await fetch(url.toString());
-    return response.text();
+    return await response.text();
   } catch {
     throw new Error(
         `Markdown file ${url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
@@ -66,7 +66,7 @@ export async function getFileContent(url: URL): Promise<string> {
 }
 
 export async function getMarkdownFileContent(filename: string): Promise<string> {
-  return getFileContent(new URL(`descriptions/${filename}`, import.meta.url));
+  return await getFileContent(new URL(`descriptions/${filename}`, import.meta.url));
 }
 
 export async function createIssueDescriptionFromMarkdown(description: MarkdownIssueDescription):

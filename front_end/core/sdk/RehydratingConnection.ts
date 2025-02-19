@@ -246,7 +246,7 @@ export class RehydratingSession extends RehydratingSessionBase {
     this.sessionAttachToTarget();
   }
 
-  override sendMessageToFrontend(payload: ServerMessage, attachSessionId: boolean = true): void {
+  override sendMessageToFrontend(payload: ServerMessage, attachSessionId = true): void {
     // Attach the session's Id to the message.
     if (this.sessionId !== 0 && attachSessionId) {
       payload.sessionId = this.sessionId;

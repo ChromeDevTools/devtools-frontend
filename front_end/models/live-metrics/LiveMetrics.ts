@@ -389,7 +389,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
 
     const frameManager = SDK.FrameManager.FrameManager.instance();
-    return frameManager.getOrWaitForFrame(frameId);
+    return await frameManager.getOrWaitForFrame(frameId);
   }
 
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {

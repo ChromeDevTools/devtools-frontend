@@ -454,7 +454,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       imagePromise = UI.UIUtils.loadImage(uri);
       this.frameToImagePromise.set(frame, (imagePromise as Promise<HTMLImageElement>));
     }
-    return imagePromise;
+    return await imagePromise;
   }
 
   private drawFrames(

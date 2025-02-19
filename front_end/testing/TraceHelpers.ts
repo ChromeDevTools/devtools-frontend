@@ -200,8 +200,7 @@ export function prettyPrint(
     tree: Trace.Helpers.TreeHelpers.TraceEntryTree,
     predicate: (node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) => boolean = () =>
         true,
-    indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
-    out: string = ''): string {
+    indentation = 2, delimiter = ' ', prefix = '-', newline = '\n', out = ''): string {
   let skipped = false;
   return printNodes(tree.roots);
   function printNodes(nodes: Set<Trace.Helpers.TreeHelpers.TraceEntryNode>|
@@ -231,8 +230,7 @@ export function prettyPrint(
  * Builds a mock Complete.
  */
 export function makeCompleteEvent(
-    name: string, ts: number, dur: number, cat: string = '*', pid: number = 0,
-    tid: number = 0): Trace.Types.Events.Complete {
+    name: string, ts: number, dur: number, cat = '*', pid = 0, tid = 0): Trace.Types.Events.Complete {
   return {
     args: {},
     cat,
@@ -248,8 +246,8 @@ export function makeCompleteEvent(
 export function makeAsyncStartEvent(
     name: string,
     ts: number,
-    pid: number = 0,
-    tid: number = 0,
+    pid = 0,
+    tid = 0,
     ): Trace.Types.Events.Async {
   return {
     args: {},
@@ -264,8 +262,8 @@ export function makeAsyncStartEvent(
 export function makeAsyncEndEvent(
     name: string,
     ts: number,
-    pid: number = 0,
-    tid: number = 0,
+    pid = 0,
+    tid = 0,
     ): Trace.Types.Events.Async {
   return {
     args: {},
@@ -282,9 +280,9 @@ export function makeAsyncEndEvent(
  * Builds a mock flow phase event.
  */
 export function makeFlowPhaseEvent(
-    name: string, ts: number, cat: string = '*',
+    name: string, ts: number, cat = '*',
     ph: Trace.Types.Events.Phase.FLOW_START|Trace.Types.Events.Phase.FLOW_END|Trace.Types.Events.Phase.FLOW_STEP,
-    id: number = 0, pid: number = 0, tid: number = 0): Trace.Types.Events.FlowEvent {
+    id = 0, pid = 0, tid = 0): Trace.Types.Events.FlowEvent {
   return {
     args: {},
     cat,
@@ -302,7 +300,7 @@ export function makeFlowPhaseEvent(
  * Builds flow phase events for a list of events belonging to the same
  * flow. `events` must be ordered.
  */
-export function makeFlowEvents(events: Trace.Types.Events.Event[], flowId: number = 0): Trace.Types.Events.FlowEvent[] {
+export function makeFlowEvents(events: Trace.Types.Events.Event[], flowId = 0): Trace.Types.Events.FlowEvent[] {
   const lastEvent = events.at(-1);
   const firstEvent = events.at(0);
   if (!lastEvent || !firstEvent) {
@@ -328,7 +326,7 @@ export function makeFlowEvents(events: Trace.Types.Events.Event[], flowId: numbe
  * Builds a mock Instant.
  */
 export function makeInstantEvent(
-    name: string, tsMicroseconds: number, cat: string = '', pid: number = 0, tid: number = 0,
+    name: string, tsMicroseconds: number, cat = '', pid = 0, tid = 0,
     s: Trace.Types.Events.Scope = Trace.Types.Events.Scope.THREAD): Trace.Types.Events.Instant {
   return {
     args: {},
@@ -345,8 +343,7 @@ export function makeInstantEvent(
 /**
  * Builds a mock Begin.
  */
-export function makeBeginEvent(
-    name: string, ts: number, cat: string = '*', pid: number = 0, tid: number = 0): Trace.Types.Events.Begin {
+export function makeBeginEvent(name: string, ts: number, cat = '*', pid = 0, tid = 0): Trace.Types.Events.Begin {
   return {
     args: {},
     cat,
@@ -361,8 +358,7 @@ export function makeBeginEvent(
 /**
  * Builds a mock End.
  */
-export function makeEndEvent(
-    name: string, ts: number, cat: string = '*', pid: number = 0, tid: number = 0): Trace.Types.Events.End {
+export function makeEndEvent(name: string, ts: number, cat = '*', pid = 0, tid = 0): Trace.Types.Events.End {
   return {
     args: {},
     cat,
@@ -375,8 +371,8 @@ export function makeEndEvent(
 }
 
 export function makeProfileCall(
-    functionName: string, tsUs: number, durUs: number, pid: number = 0, tid: number = 0, nodeId: number = 0,
-    url: string = ''): Trace.Types.Events.SyntheticProfileCall {
+    functionName: string, tsUs: number, durUs: number, pid = 0, tid = 0, nodeId = 0,
+    url = ''): Trace.Types.Events.SyntheticProfileCall {
   return {
     cat: '',
     name: 'ProfileCall',
@@ -404,8 +400,8 @@ export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
  * Mocks an object compatible with the return type of the
  * RendererHandler using only an array of ordered entries.
  */
-export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[], pid: number = 1, tid: number = 1):
-    Trace.Handlers.ModelHandlers.Renderer.RendererHandlerData {
+export function makeMockRendererHandlerData(
+    entries: Trace.Types.Events.Event[], pid = 1, tid = 1): Trace.Handlers.ModelHandlers.Renderer.RendererHandlerData {
   const {tree, entryToNode} = Trace.Helpers.TreeHelpers.treify(entries, {filter: {has: () => true}});
   const mockThread: Trace.Handlers.ModelHandlers.Renderer.RendererThread = {
     tree,

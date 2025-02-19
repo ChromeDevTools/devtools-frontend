@@ -156,9 +156,8 @@ export abstract class RemoteObject {
     return {value: objectAsProtocolRemoteObject.value};
   }
 
-  static async loadFromObjectPerProto(
-      object: RemoteObject, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+  static async loadFromObjectPerProto(object: RemoteObject, generatePreview: boolean, nonIndexedPropertiesOnly = false):
+      Promise<GetPropertiesResult> {
     const result = await Promise.all([
       object.getAllProperties(true /* accessorPropertiesOnly */, generatePreview, nonIndexedPropertiesOnly),
       object.getOwnProperties(generatePreview, nonIndexedPropertiesOnly),
@@ -391,14 +390,13 @@ export class RemoteObjectImpl extends RemoteObject {
     return this.#classNameInternal;
   }
 
-  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false):
-      Promise<GetPropertiesResult> {
+  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     return this.doGetProperties(true, false, nonIndexedPropertiesOnly, generatePreview);
   }
 
   override getAllProperties(
       accessorPropertiesOnly: boolean, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+      nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     return this.doGetProperties(false, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview);
   }
 
@@ -496,7 +494,7 @@ export class RemoteObjectImpl extends RemoteObject {
       void this.#runtimeAgent.invoke_releaseObject({objectId: response.result.objectId});
     }
 
-    return resultPromise;
+    return await resultPromise;
   }
 
   async doSetObjectPropertyValue(result: Protocol.Runtime.RemoteObject, name: Protocol.Runtime.CallArgument):
@@ -876,7 +874,7 @@ export class LocalJSONObject extends RemoteObject {
     return Boolean(Object.keys((this.valueInternal as Object)).length);
   }
 
-  override async getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false):
+  override async getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly = false):
       Promise<GetPropertiesResult> {
     function isArrayIndex(name: string): boolean {
       const index = Number(name) >>> 0;
@@ -892,7 +890,7 @@ export class LocalJSONObject extends RemoteObject {
 
   override async getAllProperties(
       accessorPropertiesOnly: boolean, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+      nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: null};
     }

@@ -132,7 +132,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private mouseInputToggleIcon?: IconButton.Icon.Icon;
   private historyIndex?: number;
   private historyEntries?: Protocol.Page.NavigationEntry[];
-  private isCasting: boolean = false;
+  private isCasting = false;
   private screencastOperationId?: number;
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
     super();

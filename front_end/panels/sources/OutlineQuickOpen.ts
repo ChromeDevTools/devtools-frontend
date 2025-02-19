@@ -268,7 +268,7 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
 
 export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
   private items: OutlineItem[] = [];
-  private active: boolean = false;
+  private active = false;
 
   constructor() {
     super('source-symbol');

@@ -485,7 +485,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
         ++index;
       }
       const name = prefix + index;
-      // @ts-ignore Assignment to global object
+      // @ts-expect-error Assignment to global object
       this[name] = value;
       return name;
     }
@@ -604,7 +604,7 @@ export class ConsoleMessage {
   #exceptionId?: number = undefined;
   #affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
-  isCookieReportIssue: boolean = false;
+  isCookieReportIssue = false;
 
   /**
    * The parent frame of the `console.log` call of logpoints or conditional breakpoints

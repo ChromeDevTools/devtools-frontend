@@ -539,13 +539,13 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #pauseOnUncaughtExceptions: boolean = false;
-  #pauseOnCaughtExceptions: boolean = false;
+  #pauseOnUncaughtExceptions = false;
+  #pauseOnCaughtExceptions = false;
 
   // TODO(crbug.com/1382762): Remove special casing with dependent toggles as soon as Node LTS caught up on independent pause of exception toggles.
-  #independentPauseToggles: boolean = false;
+  #independentPauseToggles = false;
 
-  #breakpointsActive: boolean = true;
+  #breakpointsActive = true;
   #breakpointGroups: BreakpointGroup[] = [];
   #urlToDifferentiatingPath = new Map<Platform.DevToolsPath.UrlString, string>();
 
@@ -633,11 +633,11 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     if (event.key === 'Home' || event.key === 'End') {
       event.consume(true);
-      return this.#handleHomeOrEndKey(event.key);
+      return await this.#handleHomeOrEndKey(event.key);
     }
     if (Platform.KeyboardUtilities.keyIsArrowKey(event.key)) {
       event.consume(true);
-      return this.#handleArrowKey(event.key, event.target);
+      return await this.#handleArrowKey(event.key, event.target);
     }
     if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       const currentTarget = event.currentTarget as HTMLElement;
@@ -675,19 +675,19 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       });
     };
     const nextNode = await findNextNodeForKeyboardNavigation(target, key, setGroupExpandedState);
-    return this.#setSelected(nextNode);
+    return await this.#setSelected(nextNode);
   }
 
   async #handleHomeOrEndKey(key: 'Home'|'End'): Promise<void> {
     if (key === 'Home') {
       const pauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-first-pause]');
-      return this.#setSelected(pauseOnExceptionsNode);
+      return await this.#setSelected(pauseOnExceptionsNode);
     }
     if (key === 'End') {
       const numGroups = this.#breakpointGroups.length;
       if (numGroups === 0) {
         const lastPauseOnExceptionsNode = this.#shadow.querySelector<HTMLElement>('[data-last-pause]');
-        return this.#setSelected(lastPauseOnExceptionsNode);
+        return await this.#setSelected(lastPauseOnExceptionsNode);
       }
       const lastGroupIndex = numGroups - 1;
       const lastGroup = this.#breakpointGroups[lastGroupIndex];
@@ -695,10 +695,10 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       if (lastGroup.expanded) {
         const lastBreakpointItem =
             this.#shadow.querySelector<HTMLElement>('[data-last-group] > [data-last-breakpoint]');
-        return this.#setSelected(lastBreakpointItem);
+        return await this.#setSelected(lastBreakpointItem);
       }
       const lastGroupSummaryElement = this.#shadow.querySelector<HTMLElement>('[data-last-group] > summary');
-      return this.#setSelected(lastGroupSummaryElement);
+      return await this.#setSelected(lastGroupSummaryElement);
     }
     return;
   }

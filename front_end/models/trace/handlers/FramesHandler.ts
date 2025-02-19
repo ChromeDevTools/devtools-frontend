@@ -391,7 +391,7 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
   pid = Types.Events.ProcessID(-1);
   tid = Types.Events.ThreadID(-1);
 
-  index: number = -1;
+  index = -1;
   startTime: Types.Timing.Micro;
   startTimeOffset: Types.Timing.Micro;
   endTime: Types.Timing.Micro;

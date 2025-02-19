@@ -18,8 +18,8 @@ import View = Resources.ExtensionStorageItemsView;
 
 class ExtensionStorageItemsListener {
   #dispatcher: Common.ObjectWrapper.ObjectWrapper<View.ExtensionStorageItemsDispatcher.EventTypes>;
-  #edited: boolean = false;
-  #refreshed: boolean = false;
+  #edited = false;
+  #refreshed = false;
 
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.ExtensionStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;

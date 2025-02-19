@@ -60,7 +60,7 @@ export class Table extends HTMLElement {
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];
-  #interactive: boolean = false;
+  #interactive = false;
   #currentHoverIndex: number|null = null;
 
   set data(data: TableData) {

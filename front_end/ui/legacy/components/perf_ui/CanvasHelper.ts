@@ -36,7 +36,7 @@ export function drawExpansionArrow(context: CanvasRenderingContext2D, x: number,
 
 export function drawIcon(
     context: CanvasRenderingContext2D, x: number, y: number, width: number, pathData: string,
-    iconColor: string = '--sys-color-on-surface'): void {
+    iconColor = '--sys-color-on-surface'): void {
   const p = new Path2D(pathData);
 
   context.save();

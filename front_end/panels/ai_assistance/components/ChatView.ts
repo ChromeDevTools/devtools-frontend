@@ -973,7 +973,7 @@ function renderStepBadge({step, isLoading, isLast}: {
     return html`<devtools-spinner></devtools-spinner>`;
   }
 
-  let iconName: string = 'checkmark';
+  let iconName = 'checkmark';
   let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
   let role: 'button'|undefined = 'button';
   if (isLast && step.sideEffect) {

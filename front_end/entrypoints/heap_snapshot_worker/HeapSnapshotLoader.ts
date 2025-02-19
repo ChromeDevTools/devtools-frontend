@@ -44,7 +44,7 @@ export class HeapSnapshotLoader {
   #snapshot?: {[x: string]: any};
   #array!: Platform.TypedArrayUtilities.BigUint32Array|null;
   #arrayIndex!: number;
-  #json: string = '';
+  #json = '';
   constructor(dispatcher: HeapSnapshotWorkerDispatcher) {
     this.#reset();
     this.#progress = new HeapSnapshotProgress(dispatcher);

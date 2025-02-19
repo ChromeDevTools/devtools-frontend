@@ -281,7 +281,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     const components = expectedCall.split('.');
     assert.lengthOf(components, 2);
-    // @ts-ignore
+    // @ts-expect-error
     const object = sidebar[components[0]];
     assert.exists(object);
     return sinon.spy(object, components[1]);

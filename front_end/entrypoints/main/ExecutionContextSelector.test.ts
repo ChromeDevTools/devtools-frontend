@@ -30,7 +30,7 @@ describeWithMockConnection('ExecutionContextSelector', () => {
 
     const contextSetFlavor = sinon.spy(UI.Context.Context.instance(), 'setFlavor');
 
-    const sentExecutionContextCreated = (target: SDK.Target.Target, includeFrameId: boolean = true) => {
+    const sentExecutionContextCreated = (target: SDK.Target.Target, includeFrameId = true) => {
       const frameId = includeFrameId ? getMainFrame(target).id : undefined;
 
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);

@@ -398,7 +398,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (!this.isEnabled()) {
       await this.enable();
     }
-    return this.#styleLoader.computedStylePromise(nodeId);
+    return await this.#styleLoader.computedStylePromise(nodeId);
   }
 
   async getBackgroundColors(nodeId: Protocol.DOM.NodeId): Promise<ContrastInfo|null> {
@@ -828,7 +828,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   override async resumeModel(): Promise<void> {
-    return this.enable();
+    return await this.enable();
   }
 
   setEffectivePropertyValueForNode(nodeId: Protocol.DOM.NodeId, propertyName: string, value: string): void {

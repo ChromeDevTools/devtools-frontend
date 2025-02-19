@@ -110,7 +110,7 @@ export class UISourceCodeFrame extends
     if (this.uiSourceCodeInternal.isDirty()) {
       return this.uiSourceCodeInternal.workingCopyContentData();
     }
-    return this.uiSourceCodeInternal.requestContentData();
+    return await this.uiSourceCodeInternal.requestContentData();
   }
 
   protected override editorConfiguration(doc: string): CodeMirror.Extension {

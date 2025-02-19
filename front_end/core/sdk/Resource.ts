@@ -173,7 +173,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
       return this.#contentData;
     }
     if (this.#pendingContentData) {
-      return this.#pendingContentData;
+      return await this.#pendingContentData;
     }
     this.#pendingContentData = this.innerRequestContent().then(contentData => {
       // If an error happended we don't set `this.#contentData` so future `requestContentData` will
@@ -184,7 +184,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
       this.#pendingContentData = null;
       return contentData;
     });
-    return this.#pendingContentData;
+    return await this.#pendingContentData;
   }
 
   canonicalMimeType(): string {
@@ -197,7 +197,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
       return [];
     }
     if (this.request) {
-      return this.request.searchInContent(query, caseSensitive, isRegex);
+      return await this.request.searchInContent(query, caseSensitive, isRegex);
     }
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
         {frameId: this.frameId, url: this.url, query, caseSensitive, isRegex});
@@ -215,7 +215,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
   private async innerRequestContent(): Promise<TextUtils.ContentData.ContentDataOrError> {
     if (this.request) {
       // The `contentData` promise only resolves once the request is done.
-      return this.request.requestContentData();
+      return await this.request.requestContentData();
     }
 
     const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(

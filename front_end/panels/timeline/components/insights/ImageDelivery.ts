@@ -22,7 +22,7 @@ const MAX_REQUESTS = 10;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-image-delivery`;
-  override internalName: string = 'image-delivery';
+  override internalName = 'image-delivery';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

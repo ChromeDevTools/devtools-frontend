@@ -120,7 +120,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   readonly #renderBound = this.#render.bind(this);
   #autoOpenViewSetting: Common.Settings.Setting<boolean>;
   #showTestAddressesInAutofillMenuSetting: Common.Settings.Setting<boolean>;
-  #address: string = '';
+  #address = '';
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: AutofillManager.AutofillManager.Match[] = [];
   #highlightedMatches: AutofillManager.AutofillManager.Match[] = [];

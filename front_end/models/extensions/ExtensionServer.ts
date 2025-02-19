@@ -919,7 +919,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnURL(r.url(), port));
     const harLog = await HAR.Log.Log.build(requests, {sanitize: false});
     for (let i = 0; i < harLog.entries.length; ++i) {
-      // @ts-ignore
+      // @ts-expect-error
       harLog.entries[i]._requestId = this.requestId(requests[i]);
     }
     return harLog;
@@ -1092,7 +1092,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         metaKey: entry.metaKey,
       });
 
-      // @ts-ignore
+      // @ts-expect-error
       event.__keyCode = keyCodeForEntry(entry);
       document.dispatchEvent(event);
     }

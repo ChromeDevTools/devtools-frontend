@@ -1114,10 +1114,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       getChildren(): CodeMirror.SyntaxNode[] {
         throw new Error('Method not implemented.');
       }
-      from: number = 0;
-      to: number = 0;
+      from = 0;
+      to = 0;
       type = new CodeMirror.NodeType();
-      name: string = '';
+      name = '';
       tree: CodeMirror.Tree|null = null;
       node: CodeMirror.SyntaxNode = this;
       matchContext(): boolean {

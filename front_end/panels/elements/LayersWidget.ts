@@ -113,7 +113,7 @@ export class LayersWidget extends UI.Widget.Widget {
       ElementsPanel.instance().showToolbarPane(this, ButtonProvider.instance().item());
     }
     await this.update();
-    return this.layerTreeComponent.expandToAndSelectTreeNodeId('implicit outer layer.' + layerName);
+    return await this.layerTreeComponent.expandToAndSelectTreeNodeId('implicit outer layer.' + layerName);
   }
 
   static instance(opts: {

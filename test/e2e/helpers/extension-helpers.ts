@@ -43,7 +43,7 @@ export async function loadExtension(name: string, startPage?: string, allowFileA
   // Because the injected script is shared across calls for the target, we cannot run multiple instances concurrently.
   const load = loadExtensionPromise.then(() => doLoad(frontend, extensionInfo));
   loadExtensionPromise = load.catch(() => {});
-  return load;
+  return await load;
 
   async function doLoad(frontend: puppeteer.Page, extensionInfo: {startPage: string, name: string}) {
     const session = (frontend as unknown as CdpPage)._client();

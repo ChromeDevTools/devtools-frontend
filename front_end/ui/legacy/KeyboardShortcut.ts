@@ -118,7 +118,7 @@ export class KeyboardShortcut {
     }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
-    // @ts-ignore ExtensionServer.js installs '__keyCode' on some events.
+    // @ts-expect-error ExtensionServer.js installs '__keyCode' on some events.
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }

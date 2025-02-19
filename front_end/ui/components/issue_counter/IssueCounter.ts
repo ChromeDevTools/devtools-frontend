@@ -81,7 +81,7 @@ const listFormatter = (function defineFormatter() {
 })();
 
 export function getIssueCountsEnumeration(
-    issuesManager: IssuesManager.IssuesManager.IssuesManager, omitEmpty: boolean = true): string {
+    issuesManager: IssuesManager.IssuesManager.IssuesManager, omitEmpty = true): string {
   const counts: [number, number, number] = [
     issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PAGE_ERROR),
     issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BREAKING_CHANGE),
@@ -99,7 +99,7 @@ export class IssueCounter extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #tooltipCallback: undefined|(() => void) = undefined;
-  #leadingText: string = '';
+  #leadingText = '';
   #throttler: undefined|Common.Throttler.Throttler;
   #counts: [number, number, number] = [0, 0, 0];
   #displayMode: DisplayMode = DisplayMode.OMIT_EMPTY;

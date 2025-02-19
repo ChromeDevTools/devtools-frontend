@@ -460,7 +460,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * (status pane, landing page, trace view) into distinct components /
    * widgets, to avoid this complexity.
    */
-  #restoreSidebarVisibilityOnTraceLoad: boolean = false;
+  #restoreSidebarVisibilityOnTraceLoad = false;
 
   /**
    * Used to track an aria announcement that we need to alert for
@@ -1349,7 +1349,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void contextMenu.show();
   }
 
-  async saveToFile(isEnhancedTraces: boolean = false, addModifications: boolean = false): Promise<void> {
+  async saveToFile(isEnhancedTraces = false, addModifications = false): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
@@ -2420,7 +2420,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
-    return this.#traceEngineModel.parse(
+    return await this.#traceEngineModel.parse(
         collectedEvents,
         {
           metadata: metadata ?? undefined,

@@ -202,7 +202,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
    */
   async write(chunk: string, endOfFile: boolean): Promise<void> {
     if (!this.client) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     this.buffer += chunk;
     if (this.firstRawChunk) {
@@ -224,11 +224,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       try {
         trace = JSON.parse(this.buffer) as ParsedJSONFile;
         this.#processParsedFile(trace);
-        return Promise.resolve();
       } catch (e) {
         this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: e.toString()}));
-        return;
       }
+      return;
     }
   }
 

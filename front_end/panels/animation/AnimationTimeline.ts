@@ -282,7 +282,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
 
     this.#showPanelInDrawer();
-    return this.selectAnimationGroup(animationGroup);
+    return await this.selectAnimationGroup(animationGroup);
   }
 
   modelAdded(animationModel: SDK.AnimationModel.AnimationModel): void {
@@ -1122,9 +1122,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
 
     if (this.#selectedGroup?.scrollOrientation() === Protocol.DOM.ScrollOrientation.Vertical) {
-      return node.setScrollTop(offset);
+      return await node.setScrollTop(offset);
     }
-    return node.setScrollLeft(offset);
+    return await node.setScrollLeft(offset);
   }
 
   private setTimelineScrubberPosition(time: number): void {

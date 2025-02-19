@@ -116,7 +116,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     const url = new URL('./resources/WNDT.md', import.meta.url);
     try {
       const response = await fetch(url.toString());
-      return response.text();
+      return await response.text();
     } catch {
       throw new Error(`Markdown file ${
           url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);

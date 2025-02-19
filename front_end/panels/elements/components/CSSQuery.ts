@@ -30,9 +30,9 @@ export interface CSSQueryData {
 export class CSSQuery extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #queryPrefix: string = '';
+  #queryPrefix = '';
   #queryName?: string;
-  #queryText: string = '';
+  #queryText = '';
   #onQueryTextClick?: (event: Event) => void;
   #jslogContext?: string;
 

@@ -95,7 +95,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
-    return fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
+    return await fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
       return null;
     });
@@ -381,7 +381,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     function errorHandler(this: IsolatedFileSystem, error: DOMError|ProgressEvent<EventTarget>): void {
-      // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
+      // @ts-expect-error TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
       resolve(undefined);

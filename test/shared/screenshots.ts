@@ -79,7 +79,8 @@ export const assertElementScreenshotUnchanged = async (
   if (platform !== 'linux') {
     return;
   }
-  return assertScreenshotUnchangedWithRetries(element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
+  return await assertScreenshotUnchangedWithRetries(
+      element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
 };
 
 const assertScreenshotUnchangedWithRetries = async (
@@ -230,7 +231,7 @@ interface ImageDiff {
 }
 
 async function imageDiff(golden: string, generated: string) {
-  return new Promise<ImageDiff>(async (resolve, reject) => {
+  return await new Promise<ImageDiff>(async (resolve, reject) => {
     try {
       const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
       const diffText = await execImageDiffCommand(`${IMAGE_DIFF_BINARY} --histogram ${golden} ${generated}`);
@@ -256,7 +257,7 @@ async function imageDiff(golden: string, generated: string) {
 }
 
 async function execImageDiffCommand(cmd: string) {
-  return new Promise<string>((resolve, reject) => {
+  return await new Promise<string>((resolve, reject) => {
     let commandOutput = '';
     try {
       commandOutput = childProcess.execSync(cmd, {encoding: 'utf8'});

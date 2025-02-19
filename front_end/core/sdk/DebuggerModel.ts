@@ -332,7 +332,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this.agent.invoke_enable({maxScriptsCacheSize});
     void enablePromise.then(this.registerDebugger.bind(this));
-    return enablePromise;
+    return await enablePromise;
   }
 
   private onFrameNavigated(): void {
@@ -895,7 +895,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (!callFrame) {
       throw new Error('No call frame selected');
     }
-    return callFrame.evaluate(options);
+    return await callFrame.evaluate(options);
   }
 
   functionDetailsPromise(remoteObject: RemoteObject): Promise<FunctionDetails|null> {

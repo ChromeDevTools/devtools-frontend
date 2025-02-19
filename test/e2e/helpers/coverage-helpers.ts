@@ -37,9 +37,9 @@ export async function clearCoverageContent() {
 
 export async function getCoverageData(expectedCount: number) {
   const rows = await waitForMany('.data-grid-data-grid-node', expectedCount, await waitFor('.coverage-results'));
-  return Promise.all(rows.map(r => r.evaluate((r: Element) => ({
-                                                url: r.querySelector('.url-column')?.textContent,
-                                                total: r.querySelector('.size-column')?.textContent,
-                                                unused: r.querySelector('.unused-size-column span')?.textContent,
-                                              }))));
+  return await Promise.all(rows.map(r => r.evaluate((r: Element) => ({
+                                                      url: r.querySelector('.url-column')?.textContent,
+                                                      total: r.querySelector('.size-column')?.textContent,
+                                                      unused: r.querySelector('.unused-size-column span')?.textContent,
+                                                    }))));
 }

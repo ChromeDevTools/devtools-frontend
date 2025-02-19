@@ -49,7 +49,7 @@ export class PreviewToggle extends HTMLElement {
   #helperText: string|null = null;
   #feedbackURL: string|null = null;
   #learnMoreURL: string|undefined;
-  #experiment: string = '';
+  #experiment = '';
   #onChangeCallback?: (checked: boolean) => void;
 
   connectedCallback(): void {

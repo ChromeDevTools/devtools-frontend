@@ -13,7 +13,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
   }
 
   const listenersResult = {internalHandlers: null, eventListeners: []} as FrameworkEventListenersObject;
-  return object.callFunction(frameworkEventListenersImpl, undefined)
+  return await object.callFunction(frameworkEventListenersImpl, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
       .then(createEventListeners)
@@ -218,9 +218,9 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
     let internalHandlers: Array<() => void> = [];
     let fetchers = [jQueryFetcher];
     try {
-      // @ts-ignore Here because of layout tests.
+      // @ts-expect-error Here because of layout tests.
       if (self.devtoolsFrameworkEventListeners && isArrayLike(self.devtoolsFrameworkEventListeners)) {
-        // @ts-ignore Here because of layout tests.
+        // @ts-expect-error Here because of layout tests.
         fetchers = fetchers.concat(self.devtoolsFrameworkEventListeners);
       }
     } catch (e) {
@@ -298,8 +298,8 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       return false;
     }
 
-    function checkEventListener(eventListener: PossibleEventListenerObjectInInspectedPage|
-                                null): EventListenerObjectInInspectedPage|null {
+    function checkEventListener(eventListener: PossibleEventListenerObjectInInspectedPage|null):
+        EventListenerObjectInInspectedPage|null {
       try {
         let errorString = '';
         if (!eventListener) {
@@ -445,8 +445,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {
-        off:
-          Function,
+        off: Function,
       };
       jQueryFunction(node).off(type, selector, handler);
     }

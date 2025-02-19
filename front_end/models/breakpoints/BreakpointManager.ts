@@ -612,7 +612,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
       const modelBreakpoints = Array.from(this.#modelBreakpoints.values());
       await Promise.all(modelBreakpoints.map(async modelBreakpoint => {
         await modelBreakpoint.resetBreakpoint();
-        return this.#updateModel(modelBreakpoint);
+        return await this.#updateModel(modelBreakpoint);
       }));
     }
   }
@@ -847,7 +847,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
         this.addAllUnboundLocations();
       }
     }
-    return this.#updateModels();
+    return await this.#updateModels();
   }
 
   async remove(keepInStorage: boolean): Promise<void> {

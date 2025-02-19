@@ -294,7 +294,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
     let failureReason: string|null = null;
     if (this.#loadOverride) {
-      return this.#loadOverride(url);
+      return await this.#loadOverride(url);
     }
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== 'file' &&

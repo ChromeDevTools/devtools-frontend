@@ -361,7 +361,8 @@ export class CXXValue implements Value, LazyObject {
 
       try {
         const formattedValue = await formatter.format(this.wasm, value);
-        return lazyObjectFromAny(formattedValue, this.objectStore, this.type, this.displayValue, this.memoryAddress)
+        return await lazyObjectFromAny(
+                   formattedValue, this.objectStore, this.type, this.displayValue, this.memoryAddress)
             .asRemoteObject();
       } catch {
         // Fallthrough
@@ -505,7 +506,7 @@ function lazyObjectFromAny(
 }
 
 export class LazyObjectStore {
-  private nextObjectId: number = 0;
+  private nextObjectId = 0;
   private objects = new Map<string, LazyObject>();
 
   store(lazyObject: LazyObject): string {

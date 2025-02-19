@@ -25,10 +25,10 @@ import {
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  #minimumBoundary: number = 0;
-  #timeSpan: number = 0;
+  #minimumBoundary = 0;
+  #timeSpan = 0;
   #events: NetworkTrackEvent[] = [];
-  #maxLevel: number = 0;
+  #maxLevel = 0;
   #networkTrackAppender: NetworkTrackAppender|null = null;
 
   #timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
@@ -36,7 +36,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #eventIndexByEvent = new Map<NetworkTrackEvent, number|null>();
   // -1 means no entry is selected.
-  #lastInitiatorEntry: number = -1;
+  #lastInitiatorEntry = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
 

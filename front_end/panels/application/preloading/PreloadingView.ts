@@ -84,7 +84,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/Preloadi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // Used for selector, indicating no filter is specified.
-const AllRuleSetRootId: symbol = Symbol('AllRuleSetRootId');
+const AllRuleSetRootId = Symbol('AllRuleSetRootId');
 
 class PreloadingUIUtils {
   static status(status: SDK.PreloadingModel.PreloadingStatus): string {
@@ -581,7 +581,7 @@ class PreloadingRuleSetSelector implements
 
   private onModelUpdated(): void {
     const ids = this.model.getAllRuleSets().map(({id}) => id);
-    const items = [AllRuleSetRootId, ...ids];
+    const items = [AllRuleSetRootId, ...ids] as [typeof AllRuleSetRootId, ...Protocol.Preload.RuleSetId[]];
     const selected = this.dropDown.getSelectedItem();
     this.listModel.replaceAll(items);
     if (selected === null) {

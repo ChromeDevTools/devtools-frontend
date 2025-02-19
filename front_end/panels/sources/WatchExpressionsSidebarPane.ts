@@ -351,7 +351,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
     }
 
-    return executionContext.evaluate(
+    return await executionContext.evaluate(
         {
           expression,
           objectGroup: WatchExpression.watchObjectGroupId,

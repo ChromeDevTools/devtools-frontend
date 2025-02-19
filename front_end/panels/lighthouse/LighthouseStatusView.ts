@@ -244,7 +244,6 @@ export class StatusView {
     const statusHeader =
         pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
     this.renderStatusHeader(statusHeader);
-    // @ts-ignore TS expects Document, but gets Element (show takes Element|Document)
     this.dialog.show(dialogRenderElement);
   }
 
@@ -260,7 +259,7 @@ export class StatusView {
     }
   }
 
-  setInspectedURL(url: string = ''): void {
+  setInspectedURL(url = ''): void {
     this.inspectedURL = url;
   }
 
@@ -288,7 +287,6 @@ export class StatusView {
 
       if (this.progressBar) {
         this.progressBar.classList.add(nextPhase.progressBarClass);
-        // @ts-ignore indexOf null is valid.
         const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
         UI.ARIAUtils.setProgressBarValue(this.progressBar, nextPhaseIndex, text);
       }
@@ -398,7 +396,7 @@ export class StatusView {
 
   private renderBugReportBody(err: Error, auditURL: string): void {
     const chromeVersion = navigator.userAgent.match(/Chrome\/(\S+)/) || ['', 'Unknown'];
-    // @ts-ignore Lighthouse sets `friendlyMessage` on certain
+    // @ts-expect-error Lighthouse sets `friendlyMessage` on certain
     // important errors such as PROTOCOL_TIMEOUT.
     const errorMessage = err.friendlyMessage || err.message;
     const issueBody = `

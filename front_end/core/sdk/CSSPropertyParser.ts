@@ -293,7 +293,7 @@ class ComputedTextChunk {
 export class ComputedText {
   readonly #chunks: ComputedTextChunk[] = [];
   readonly text: string;
-  #sorted: boolean = true;
+  #sorted = true;
   constructor(text: string) {
     this.text = text;
   }

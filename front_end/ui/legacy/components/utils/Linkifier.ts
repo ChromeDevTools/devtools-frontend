@@ -595,7 +595,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       UI.Tooltip.Tooltip.install(link, title);
     }
     if (href) {
-      // @ts-ignore
+      // @ts-expect-error
       link.href = href;
     }
     link.setAttribute('jslog', `${VisualLogging.link(jslogContext).track({click: true})}`);

@@ -22,7 +22,7 @@ const {html} = Lit;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
-  override internalName: string = 'forced-reflow';
+  override internalName = 'forced-reflow';
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame): Lit.LitTemplate {
     const linkifier = new LegacyComponents.Linkifier.Linkifier();

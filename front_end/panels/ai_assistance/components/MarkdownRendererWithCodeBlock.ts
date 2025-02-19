@@ -17,7 +17,7 @@ import type * as Lit from '../../../ui/lit/lit.js';
 // }
 // ```
 export class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-  #stripLinks: boolean = false;
+  #stripLinks = false;
   constructor(opts: {stripLinks?: boolean} = {}) {
     super();
     this.#stripLinks = Boolean(opts.stripLinks);

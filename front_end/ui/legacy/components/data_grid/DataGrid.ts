@@ -534,7 +534,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dataTableColumnGroup.createChild('col', 'corner');
   }
 
-  protected setVerticalPadding(top: number, bottom: number, isConstructorTime: boolean = false): void {
+  protected setVerticalPadding(top: number, bottom: number, isConstructorTime = false): void {
     const topPx = top + 'px';
     const bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
     if (this.topFillerRow.style.height === topPx && this.bottomFillerRow.style.height === bottomPx) {
@@ -1722,7 +1722,7 @@ export class DataGridNode<T> {
   parent: DataGridNode<T>|null;
   previousSibling: DataGridNode<T>|null;
   nextSibling: DataGridNode<T>|null;
-  #disclosureToggleHitBoxWidth: number = 20;
+  #disclosureToggleHitBoxWidth = 20;
   selectable: boolean;
   isRoot: boolean;
   nodeAccessibleText: string;

@@ -462,7 +462,7 @@ export class RecorderController extends LitElement {
       this.viewDescriptor = undefined;
     }
     if (event.data.extension) {
-      return this.#onPlayViaExtension(event.data.extension);
+      return await this.#onPlayViaExtension(event.data.extension);
     }
     Host.userMetrics.recordingReplayStarted(
         event.data.targetPanel !== Components.RecordingView.TargetPanel.DEFAULT ?

@@ -176,7 +176,6 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     void this.dialog.once(UI.Dialog.Events.HIDDEN).then(() => {
       this.dispatchEventToListeners(Events.HIDDEN);
     });
-    // @ts-ignore
     this.dialog.show();
   }
 

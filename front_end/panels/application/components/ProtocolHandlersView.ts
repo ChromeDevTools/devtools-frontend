@@ -96,8 +96,8 @@ export class ProtocolHandlersView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #protocolHandlers: ProtocolHandler[] = [];
   #manifestLink: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
-  #selectedProtocolState: string = '';
-  #queryInputState: string = '';
+  #selectedProtocolState = '';
+  #queryInputState = '';
 
   set data(data: ProtocolHandlersData) {
     const isNewManifest = this.#manifestLink !== data.manifestLink;

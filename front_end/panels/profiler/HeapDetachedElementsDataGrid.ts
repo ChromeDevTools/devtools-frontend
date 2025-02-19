@@ -86,7 +86,7 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
   }
 
   #getNodeSize(detachedElementInfo: Protocol.DOM.DetachedElementInfo): number {
-    let count: number = 1;
+    let count = 1;
     const queue: Protocol.DOM.Node[] = [];
     let node: Protocol.DOM.Node|undefined;
     queue.push(detachedElementInfo.treeNode);
@@ -117,7 +117,7 @@ export class HeapDetachedElementsDataGridNode extends DataGrid.DataGrid.DataGrid
       treeOutline.element.classList.add('single-node');
     }
     treeOutline.setVisible(true);
-    // @ts-ignore used in console_test_runner
+    // @ts-expect-error used in console_test_runner
     treeOutline.element.treeElementForTest = firstChild;
     treeOutline.setShowSelectionOnKeyboardFocus(/* show: */ true, /* preventTabOrder: */ true);
 

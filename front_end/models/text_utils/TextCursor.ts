@@ -7,9 +7,9 @@ import * as Platform from '../../core/platform/platform.js';
 export class TextCursor {
   readonly #lineEndings: number[];
 
-  #offset: number = 0;
-  #lineNumber: number = 0;
-  #columnNumber: number = 0;
+  #offset = 0;
+  #lineNumber = 0;
+  #columnNumber = 0;
 
   constructor(lineEndings: number[]) {
     this.#lineEndings = lineEndings;

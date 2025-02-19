@@ -10,7 +10,7 @@ export class TimelineOverviewCalculator implements Calculator {
   #minimumBoundary: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
   #maximumBoundary: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(100);
 
-  #displayWidth: number = 0;
+  #displayWidth = 0;
   private navStartTimes?: readonly Trace.Types.Events.NavigationStart[];
 
   /**

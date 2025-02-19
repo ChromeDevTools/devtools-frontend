@@ -463,7 +463,7 @@ export class CSSPlugin extends Plugin implements SDK.TargetManager.SDKModelObser
       override:
           [async(cx: CodeMirror.CompletionContext):
                Promise<CodeMirror.CompletionResult|null> => {
-                 return (await specificCssCompletion(cx, uiSourceCode, cssModel)) || cssCompletionSource(cx);
+                 return await ((await specificCssCompletion(cx, uiSourceCode, cssModel)) || cssCompletionSource(cx));
                }],
     });
   }

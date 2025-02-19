@@ -189,7 +189,7 @@ export async function openSourceCodeEditorForFile(sourceFile: string, testInput:
 export async function getSelectedSource(): Promise<string> {
   const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
   const sourceTabs = await waitFor('.tabbed-pane-header-tab.selected', sourceTabPane);
-  return sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>;
+  return await (sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>);
 }
 
 export async function getBreakpointHitLocation() {
@@ -231,7 +231,7 @@ export async function getToolbarText() {
     return [];
   }
   const textNodes = await $$('.toolbar-text', toolbar);
-  return Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
+  return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
@@ -297,7 +297,7 @@ export async function enableInlineBreakpointForLine(line: number, index: number)
  * @param expectNoBreakpoint If we should wait for the line to not have any inline breakpoints after
  *                           the click instead of a disabled one.
  */
-export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint: boolean = false) {
+export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint = false) {
   const {frontend} = getBrowserAndPages();
   const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
   await click(decorationSelector);

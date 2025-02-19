@@ -134,7 +134,7 @@ async function disable() {
     throw new Error('MockConnection still has pending listeners. All promises should be awaited.');
   }
   await deinitializeGlobalVars();
-  // @ts-ignore Setting back to undefined as a hard reset.
+  // @ts-expect-error Setting back to undefined as a hard reset.
   ProtocolClient.InspectorBackend.Connection.setFactory(undefined);
 }
 

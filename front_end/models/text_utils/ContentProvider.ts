@@ -57,7 +57,7 @@ export class SearchMatch {
 
 export const contentAsDataURL = function(
     content: string|null, mimeType: string, contentEncoded: boolean, charset?: string|null,
-    limitSize: boolean = true): string|null {
+    limitSize = true): string|null {
   const maxDataUrlSize = 1024 * 1024;
   if (content === undefined || content === null || (limitSize && content.length > maxDataUrlSize)) {
     return null;

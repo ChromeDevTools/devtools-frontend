@@ -262,7 +262,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     this.updateListVisibility();
 
     const drawerChangeHandler = (event: Event): void => {
-      // @ts-ignore: No support for custom event listener
+      // @ts-expect-error: No support for custom event listener
       const isDrawerOpen = event.detail && event.detail.isDrawerOpen;
       if (this.manager && !isDrawerOpen) {
         const {serviceWorkerNetworkRequestsPanelStatus: {isOpen, openedAt}} = this.manager;

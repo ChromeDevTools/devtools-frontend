@@ -18,7 +18,7 @@ export function completion(): CodeMirror.Extension {
 }
 
 export async function completeInContext(
-    textBefore: string, query: string, force: boolean = false): Promise<UI.SuggestBox.Suggestions> {
+    textBefore: string, query: string, force = false): Promise<UI.SuggestBox.Suggestions> {
   const state = CodeMirror.EditorState.create({
     doc: textBefore + query,
     selection: {anchor: textBefore.length},
@@ -330,13 +330,13 @@ async function maybeCompleteKeysFromMap(objectVariable: string): Promise<Complet
 async function completeProperties(
     expression: string,
     quoted?: string,
-    hasBracket: boolean = false,
+    hasBracket = false,
     ): Promise<CompletionSet> {
   const cache = PropertyCache.instance();
   if (!quoted) {
     const cached = cache.get(expression);
     if (cached) {
-      return cached;
+      return await cached;
     }
   }
   const context = getExecutionContext();
@@ -347,14 +347,14 @@ async function completeProperties(
   if (!quoted) {
     cache.set(expression, result);
   }
-  return result;
+  return await result;
 }
 
 async function completePropertiesInner(
     expression: string,
     context: SDK.RuntimeModel.ExecutionContext,
     quoted?: string,
-    hasBracket: boolean = false,
+    hasBracket = false,
     ): Promise<CompletionSet> {
   const result = new CompletionSet();
   if (!context) {
@@ -425,7 +425,7 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
   const cache = PropertyCache.instance();
   const cached = cache.get('');
   if (cached) {
-    return cached;
+    return await cached;
   }
 
   const context = getExecutionContext();
@@ -446,7 +446,7 @@ async function completeExpressionGlobal(): Promise<CompletionSet> {
     });
   });
   cache.set('', fetchNames);
-  return fetchNames;
+  return await fetchNames;
 }
 
 export async function isExpressionComplete(expression: string): Promise<boolean> {
@@ -528,9 +528,9 @@ async function getArgumentsForExpression(
     if (!first || callee.name !== 'MemberExpression') {
       return null;
     }
-    return evaluateExpression(context, doc.sliceString(first.from, first.to), 'argumentsHint');
+    return await evaluateExpression(context, doc.sliceString(first.from, first.to), 'argumentsHint');
   };
-  return getArgumentsForFunctionValue(result, objGetter, expression)
+  return await getArgumentsForFunctionValue(result, objGetter, expression)
       .finally(() => context.runtimeModel.releaseObjectGroup('argumentsHint'));
 }
 

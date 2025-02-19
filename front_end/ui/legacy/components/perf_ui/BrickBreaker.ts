@@ -115,7 +115,7 @@ export class BrickBreaker extends HTMLElement {
   #helperCanvas: HTMLCanvasElement;
   #helperCanvasCtx: CanvasRenderingContext2D;
   #scorePanel: HTMLElement;
-  #trackTimelineOffset: number = 0;
+  #trackTimelineOffset = 0;
   #visibleEntries = new Set<number>();
   #brokenBricks = new Map<number, Brick>();
   #keyDownHandlerBound = this.#keyDownHandler.bind(this);
@@ -125,7 +125,7 @@ export class BrickBreaker extends HTMLElement {
   #mouseMoveHandlerBound = this.#mouseMoveHandler.bind(this);
   #boundingElement = WindowBounds.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
   // Value by which we moved the game up relative to the viewport
-  #gameViewportOffset: number = 0;
+  #gameViewportOffset = 0;
   #running = false;
   #initialDPR = devicePixelRatio;
   #ballX = 0;

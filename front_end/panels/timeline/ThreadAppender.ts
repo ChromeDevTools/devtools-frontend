@@ -152,11 +152,11 @@ export class ThreadAppender implements TrackAppender {
   #threadId: Trace.Types.Events.ThreadID;
   #threadDefaultName: string;
   #expanded = false;
-  #headerAppended: boolean = false;
+  #headerAppended = false;
   readonly threadType: Trace.Handlers.Threads.ThreadType = Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
-  #url: string = '';
+  #url = '';
   #headerNestingLevel: number|null = null;
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace,
@@ -212,7 +212,7 @@ export class ThreadAppender implements TrackAppender {
    * @returns the first available level to append more data after having
    * appended the track's events.
    */
-  appendTrackAtLevel(trackStartLevel: number, expanded: boolean = false): number {
+  appendTrackAtLevel(trackStartLevel: number, expanded = false): number {
     if (this.#entries.length === 0) {
       return trackStartLevel;
     }
@@ -460,7 +460,7 @@ export class ThreadAppender implements TrackAppender {
    */
   #appendNodesAtLevel(
       nodes: Iterable<Trace.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
-      parentIsIgnoredListed: boolean = false): number {
+      parentIsIgnoredListed = false): number {
     const invisibleEntries =
         ModificationsManager.ModificationsManager.activeManager()?.getEntriesFilter().invisibleEntries() ?? [];
     let maxDepthInTree = startingLevel;

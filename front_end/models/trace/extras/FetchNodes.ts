@@ -112,7 +112,7 @@ export async function extractRelatedDOMNodesFromEvent(modelData: Handlers.Types.
     Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
   const nodeIds = nodeIdsForEvent(modelData, event);
   if (nodeIds.size) {
-    return domNodesForMultipleBackendNodeIds(modelData, Array.from(nodeIds));
+    return await domNodesForMultipleBackendNodeIds(modelData, Array.from(nodeIds));
   }
   return null;
 }

@@ -162,9 +162,9 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         // We only want the buffering for audio and video to be displayed.
         // One event may have changes for a single type, or for both audio/video
         // simultaneously.
-        // @ts-ignore
+        // @ts-expect-error
         audioState = event.value['audio_buffering_state'];
-        // @ts-ignore
+        // @ts-expect-error
         videoState = event.value['video_buffering_state'];
 
         if (audioState) {

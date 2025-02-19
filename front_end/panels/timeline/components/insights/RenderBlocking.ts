@@ -20,7 +20,7 @@ const {html} = Lit;
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-render-blocking-requests`;
-  override internalName: string = 'render-blocking-requests';
+  override internalName = 'render-blocking-requests';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

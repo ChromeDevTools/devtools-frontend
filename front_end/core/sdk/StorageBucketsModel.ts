@@ -37,7 +37,7 @@ import {Events as StorageKeyManagerEvents, StorageKeyManager} from './StorageKey
 import {Capability, type Target} from './Target.js';
 
 export class StorageBucketsModel extends SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
-  private enabled: boolean = false;
+  private enabled = false;
   readonly storageAgent: ProtocolProxyApi.StorageApi;
   private readonly storageKeyManager: StorageKeyManager|null;
   private bucketsById = new Map<string, Protocol.Storage.StorageBucketInfo>();

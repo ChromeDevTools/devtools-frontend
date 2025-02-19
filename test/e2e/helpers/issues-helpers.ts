@@ -103,7 +103,7 @@ export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.E
   const issueMessageElement = await waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
-  return getIssueByTitleElement(issueMessageElement);
+  return await getIssueByTitleElement(issueMessageElement);
 }
 
 // Works also if there are multiple issues.
@@ -121,7 +121,7 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
   });
   await clickElement(issueMessageElement);
   await waitFor('.message');
-  return getIssueByTitleElement(issueMessageElement);
+  return await getIssueByTitleElement(issueMessageElement);
 }
 
 export async function getIssueHeaderByTitle(issueMessage: string):

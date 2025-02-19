@@ -94,7 +94,7 @@ export class CountersGraph extends UI.Widget.VBox {
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
 
   #noEventsFoundMessage = document.createElement('div');
-  #showNoEventsMessage: boolean = false;
+  #showNoEventsMessage = false;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -254,7 +254,7 @@ export class CountersGraph extends UI.Widget.VBox {
 
   private onClick(event: Event): void {
     const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
-    let minDistance: number = Infinity;
+    let minDistance = Infinity;
     let bestTime;
     for (const counterUI of this.counterUI) {
       if (!counterUI.counter.times.length) {

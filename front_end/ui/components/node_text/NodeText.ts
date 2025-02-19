@@ -21,7 +21,7 @@ export interface NodeTextData {
 export class NodeText extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #nodeTitle: string = '';
+  #nodeTitle = '';
   #nodeId?: string = '';
   #nodeClasses?: string[] = [];
 

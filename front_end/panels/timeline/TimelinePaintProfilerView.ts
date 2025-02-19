@@ -134,7 +134,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         frame.layerTree,
     );
     const tracingLayerTree = await layerTree.layerTreePromise();
-    return tracingLayerTree ? tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
+    return tracingLayerTree ? await tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
   }
 
   update(): void {

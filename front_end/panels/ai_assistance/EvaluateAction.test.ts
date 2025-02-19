@@ -88,7 +88,7 @@ describe('FreestylerEvaluateAction', () => {
       const targetManager = SDK.TargetManager.TargetManager.instance();
       const target = targetManager.rootTarget();
       const runtimeModel = target!.model(SDK.RuntimeModel.RuntimeModel);
-      return getExecutionContext(runtimeModel!);
+      return await getExecutionContext(runtimeModel!);
     }
 
     async function executeForTest(action: string, throwOnSideEffect = false) {
@@ -101,7 +101,7 @@ describe('FreestylerEvaluateAction', () => {
     return error;
   }
 }`;
-      return EvaluateAction.EvaluateAction.execute(
+      return await EvaluateAction.EvaluateAction.execute(
           functionDeclaration, [], await executionContextForTest(), {throwOnSideEffect});
     }
 

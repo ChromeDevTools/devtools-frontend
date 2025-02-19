@@ -27,8 +27,8 @@ export interface MarkdownLinkData {
 export class MarkdownLink extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #linkText: string = '';
-  #linkUrl: string = '';
+  #linkText = '';
+  #linkUrl = '';
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [markdownLinkStyles];

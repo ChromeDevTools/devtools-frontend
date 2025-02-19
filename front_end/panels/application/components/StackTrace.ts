@@ -108,7 +108,7 @@ export class StackTraceLinkButton extends HTMLElement {
 
   #onShowAllClick: () => void = () => {};
   #hiddenCallFramesCount: number|null = null;
-  #expandedView: boolean = false;
+  #expandedView = false;
 
   set data(data: StackTraceLinkButtonData) {
     this.#onShowAllClick = data.onShowAllClick;

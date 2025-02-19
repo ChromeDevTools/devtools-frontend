@@ -1422,7 +1422,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
     if (!this.#contentDataProvider) {
-      return NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+      return await NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
 
     const contentData = await this.requestContentData();

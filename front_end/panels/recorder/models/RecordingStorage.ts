@@ -14,7 +14,6 @@ interface IdGenerator {
 
 class UUIDGenerator implements IdGenerator {
   next(): string {
-    // @ts-ignore
     return crypto.randomUUID();
   }
 }

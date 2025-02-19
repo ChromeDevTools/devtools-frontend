@@ -240,7 +240,7 @@ export const withNoMutations = async<T extends Node>(element: T, fn: (shadowRoot
 };
 
 export const someMutations = async<T extends Node>(element: T) => {
-  return new Promise<void>(resolve => {
+  return await new Promise<void>(resolve => {
     const observer = new MutationObserver(() => {
       resolve();
       observer.disconnect();

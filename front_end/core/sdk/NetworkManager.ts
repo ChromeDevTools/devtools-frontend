@@ -368,8 +368,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return result.status;
   }
 
-  async enableReportingApi(enable: boolean = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
-    return this.#networkAgent.invoke_enableReportingApi({enable});
+  async enableReportingApi(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+    return await this.#networkAgent.invoke_enableReportingApi({enable});
   }
 
   async loadNetworkResource(
@@ -1701,7 +1701,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     const allowRemoteFilePaths =
         Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
 
-    return new Promise(
+    return await new Promise(
         resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
           resolve({success, content, errorDescription});
         }, allowRemoteFilePaths));

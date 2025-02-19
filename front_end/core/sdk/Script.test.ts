@@ -51,7 +51,7 @@ console.log("foo");
   });
 
   describe('editSource', () => {
-    function setupEditTest(scriptId: string, scriptSource: string = '') {
+    function setupEditTest(scriptId: string, scriptSource = '') {
       const target = createTarget();
       const model = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
       dispatchEvent(target, 'Debugger.scriptParsed', {

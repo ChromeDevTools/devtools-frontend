@@ -380,9 +380,9 @@ export class EventListener {
           },
           type: string, listener: () => void, useCapture: boolean): void {
         this.removeEventListener(type, listener, useCapture);
-        // @ts-ignore:
+        // @ts-expect-error:
         if (this['on' + type]) {
-          // @ts-ignore:
+          // @ts-expect-error:
           this['on' + type] = undefined;
         }
       }

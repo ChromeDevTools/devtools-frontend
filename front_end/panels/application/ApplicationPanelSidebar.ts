@@ -568,8 +568,6 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.sharedStorageTreeElementDispatcher =
         new Common.ObjectWrapper.ObjectWrapper<SharedStorageTreeElementDispatcher.EventTypes>();
 
-    // Work-around for crbug.com/1152713: Something is wrong with custom scrollbars and size containment.
-    // @ts-ignore
     this.contentElement.style.contain = 'layout style';
   }
 

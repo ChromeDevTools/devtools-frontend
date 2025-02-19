@@ -470,7 +470,7 @@ export class CookiesTable extends UI.Widget.VBox {
 
   private createCookieData(cookie: SDK.Cookie.Cookie): CookieData {
     // See https://tc39.es/ecma262/#sec-time-values-and-time-range
-    const maxTime: number = 8640000000000000;
+    const maxTime = 8640000000000000;
     const isRequest = cookie.type() === SDK.Cookie.Type.REQUEST;
     const data: CookieData = {name: cookie.name(), value: cookie.value()};
     for (const attribute

@@ -619,9 +619,9 @@ export class ExecutionContext {
   async evaluate(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean): Promise<EvaluationResult> {
     // FIXME: It will be moved to separate ExecutionContext.
     if (this.debuggerModel.selectedCallFrame()) {
-      return this.debuggerModel.evaluateOnSelectedCallFrame(options);
+      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
     }
-    return this.evaluateGlobal(options, userGesture, awaitPromise);
+    return await this.evaluateGlobal(options, userGesture, awaitPromise);
   }
 
   globalObject(objectGroup: string, generatePreview: boolean): Promise<EvaluationResult> {

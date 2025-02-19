@@ -17,7 +17,7 @@ const {html} = Lit;
 
 export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-cls-culprits`;
-  override internalName: string = 'cls-culprits';
+  override internalName = 'cls-culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const clustersByScore =

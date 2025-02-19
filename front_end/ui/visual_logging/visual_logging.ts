@@ -17,7 +17,7 @@ export const logClick = (loggable: Loggable, event: Event, options: {doubleClick
 
 export const logResize = (l: Loggable, s: DOMRect): void => LoggingEvents.logResize(l, s);
 export const logKeyDown = async(l: Loggable|null, e: Event, context?: string): Promise<void> =>
-    LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(l, e, context);
+    await LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(l, e, context);
 export {registerParentProvider, setMappedParent} from './LoggingState.js';
 
 export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {

@@ -35,7 +35,7 @@ describe('Deprecation Issues', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
 

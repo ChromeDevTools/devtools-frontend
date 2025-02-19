@@ -768,7 +768,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       return;
     }
 
-    // @ts-ignore dataGrid node type is indeterminate.
+    // @ts-expect-error dataGrid node type is indeterminate.
     dataGrid.rootNode()
         .children.find((n: DataGrid.DataGrid.DataGridNode<DataGridNode>) => n.data.credentialId === credentialId)
         .remove();

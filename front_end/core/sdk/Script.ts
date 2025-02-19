@@ -311,7 +311,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   async getWasmBytecode(): Promise<ArrayBuffer> {
     const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({scriptId: this.scriptId});
     const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
-    return response.arrayBuffer();
+    return await response.arrayBuffer();
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {

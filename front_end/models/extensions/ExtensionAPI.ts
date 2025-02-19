@@ -829,10 +829,10 @@ self.injectedExtensionAPI = function(
     async function dispatchMethodCall(request: PrivateAPI.RecorderExtensionRequests): Promise<unknown> {
       switch (request.method) {
         case PrivateAPI.RecorderExtensionPluginCommands.Stringify:
-          return (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
+          return await (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
               .stringify(request.parameters.recording);
         case PrivateAPI.RecorderExtensionPluginCommands.StringifyStep:
-          return (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
+          return await (plugin as PublicAPI.Chrome.DevTools.RecorderExtensionExportPlugin)
               .stringifyStep(request.parameters.step);
         case PrivateAPI.RecorderExtensionPluginCommands.Replay:
           try {
@@ -1006,18 +1006,18 @@ self.injectedExtensionAPI = function(
     },
     getWasmLocal: async function(
         this: APIImpl.LanguageExtensions, local: number, stopId: number): Promise<PublicAPI.Chrome.DevTools.WasmValue> {
-      return new Promise(
+      return await new Promise(
           resolve => extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmLocal, local, stopId}, resolve));
     },
     getWasmGlobal: async function(this: APIImpl.LanguageExtensions, global: number, stopId: number):
         Promise<PublicAPI.Chrome.DevTools.WasmValue> {
-          return new Promise(
+          return await new Promise(
               resolve =>
                   extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmGlobal, global, stopId}, resolve));
         },
     getWasmOp: async function(this: APIImpl.LanguageExtensions, op: number, stopId: number):
         Promise<PublicAPI.Chrome.DevTools.WasmValue> {
-          return new Promise(
+          return await new Promise(
               resolve => extensionServer.sendRequest({command: PrivateAPI.Commands.GetWasmOp, op, stopId}, resolve));
         },
 

@@ -30,7 +30,7 @@ describe('Expect-CT Issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
 

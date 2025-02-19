@@ -12,7 +12,7 @@ function shapeStackTraceAsArray(stackTrace: Protocol.Runtime.StackTrace):
   const stackTraceAsArray: Array<{callFrames: Protocol.Runtime.CallFrame[], description?: string}> = [];
   let currentStackTrace: Protocol.Runtime.StackTrace|undefined = stackTrace;
   while (currentStackTrace) {
-    // @ts-ignore `codeType` is not included in the protocol types but
+    // @ts-expect-error `codeType` is not included in the protocol types but
     // occasionally present
     currentStackTrace.callFrames.forEach(callFrame => delete callFrame.codeType);
     stackTraceAsArray.push({callFrames: currentStackTrace.callFrames, description: currentStackTrace.description});

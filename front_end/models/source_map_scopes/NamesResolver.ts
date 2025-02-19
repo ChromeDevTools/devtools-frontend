@@ -208,7 +208,7 @@ const resolveDebuggerScope = async(scope: SDK.DebuggerModel.ScopeChainEntry):
       }
       const script = scope.callFrame().script;
       const scopeChain = await findScopeChainForDebuggerScope(scope);
-      return resolveScope(script, scopeChain);
+      return await resolveScope(script, scopeChain);
     };
 
 const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.FormatterWorkerPool.ScopeTreeNode[]):
@@ -727,11 +727,11 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         break;
       }
     }
-    return this.object.setPropertyValue(actualName, value);
+    return await this.object.setPropertyValue(actualName, value);
   }
 
   override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
-    return this.object.deleteProperty(name);
+    return await this.object.deleteProperty(name);
   }
 
   override callFunction<T, U>(

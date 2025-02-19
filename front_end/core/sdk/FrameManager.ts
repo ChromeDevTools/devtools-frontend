@@ -207,7 +207,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
       return frame;
     }
-    return new Promise<ResourceTreeFrame>(resolve => {
+    return await new Promise<ResourceTreeFrame>(resolve => {
       const waiting = this.#awaitedFrames.get(frameId);
       if (waiting) {
         waiting.push({notInTarget, resolve});

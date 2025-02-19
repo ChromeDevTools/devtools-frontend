@@ -28,7 +28,7 @@ const zip2 = <T, S>(xs: T[], ys: S[]) => {
 
 // Holds targets and ids, and emits events.
 class NavigationEmulator {
-  private seq: number = 0;
+  private seq = 0;
   private tabTarget: SDK.Target.Target;
   primaryTarget: SDK.Target.Target;
   private frameId: Protocol.Page.FrameId;

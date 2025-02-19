@@ -31,7 +31,7 @@ export type RuleSetDetailsViewData = RuleSet|null;
 export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetDetailsViewData = null;
-  #shouldPrettyPrint: boolean = true;
+  #shouldPrettyPrint = true;
   #editorState?: CodeMirror.EditorState;
 
   connectedCallback(): void {

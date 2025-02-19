@@ -444,9 +444,9 @@ export class HARStack extends HARBase {
 export class HARCallFrame extends HARBase {
   functionName: string;
   scriptId: Protocol.Runtime.ScriptId;
-  url: string = '';
-  lineNumber: number = -1;
-  columnNumber: number = -1;
+  url = '';
+  lineNumber = -1;
+  columnNumber = -1;
   /**
    * Based on Protocol.Runtime.CallFrame defined in browser_protocol.pdl
    */

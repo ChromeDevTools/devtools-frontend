@@ -66,7 +66,7 @@ export async function takeAllocationTimelineProfile({recordStacks}: {recordStack
   await waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot(name: string = 'Snapshot 1') {
+export async function takeHeapSnapshot(name = 'Snapshot 1') {
   await click(NEW_HEAP_SNAPSHOT_BUTTON);
   await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await waitForFunction(async () => {
@@ -154,7 +154,7 @@ export async function waitForSearchResultNumber(results: number) {
   return await waitForFunction(findMatch);
 }
 
-export async function findSearchResult(searchResult: string, pollIntrerval: number = 500) {
+export async function findSearchResult(searchResult: string, pollIntrerval = 500) {
   const {frontend} = getBrowserAndPages();
   const match = await waitFor('#profile-views table.data');
   const matches = await waitFor(' .search-results-matches');
@@ -182,7 +182,7 @@ export async function findSearchResult(searchResult: string, pollIntrerval: numb
           setTimeout(resolve, pollIntrerval, false);
         }),
       ]);
-      return result;
+      return await result;
     });
   }
 }
@@ -344,7 +344,7 @@ export async function getSizesFromSelectedRow() {
   return await getSizesFromRow(row);
 }
 
-export async function getCategoryRow(text: string, wait: boolean = true) {
+export async function getCategoryRow(text: string, wait = true) {
   const selector = `//td[text()="${text}"]/ancestor::tr`;
   return await (wait ? waitFor(selector, undefined, undefined, 'xpath') : $(selector, undefined, 'xpath'));
 }

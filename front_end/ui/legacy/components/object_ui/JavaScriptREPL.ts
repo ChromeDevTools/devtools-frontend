@@ -47,7 +47,7 @@ export class JavaScriptREPL {
 
   static async evaluateAndBuildPreview(
       text: string, throwOnSideEffect: boolean, replMode: boolean, timeout?: number, allowErrors?: boolean,
-      objectGroup?: string, awaitPromise: boolean = false, silent: boolean = false): Promise<{
+      objectGroup?: string, awaitPromise = false, silent = false): Promise<{
     preview: DocumentFragment,
     result: SDK.RuntimeModel.EvaluationResult|null,
   }> {
@@ -113,4 +113,4 @@ export class JavaScriptREPL {
   }
 }
 
-const maxLengthForEvaluation: number = 2000;
+const maxLengthForEvaluation = 2000;

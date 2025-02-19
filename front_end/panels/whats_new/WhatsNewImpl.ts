@@ -11,7 +11,7 @@ import {getReleaseNote} from './ReleaseNoteText.js';
 
 export const releaseVersionSeen = 'releaseNoteVersionSeen';
 
-export const releaseNoteViewId: string = 'release-note';
+export const releaseNoteViewId = 'release-note';
 
 let releaseNoteVersionSetting: Common.Settings.Setting<number>;
 

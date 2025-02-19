@@ -700,7 +700,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   async #innerUpdateInterceptionPatterns(): Promise<void> {
     this.#headerOverridesMap.clear();
     if (!this.activeInternal || !this.projectInternal) {
-      return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
+      return await SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
           [], this.interceptionHandlerBound);
     }
     let patterns = new Set<string>();
@@ -730,7 +730,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       }
     }
 
-    return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
+    return await SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
         Array.from(patterns).map(
             pattern => ({urlPattern: pattern, requestStage: Protocol.Fetch.RequestStage.Response})),
         this.interceptionHandlerBound);

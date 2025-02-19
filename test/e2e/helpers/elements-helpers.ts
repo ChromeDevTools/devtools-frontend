@@ -239,10 +239,10 @@ export const waitForChildrenOfSelectedElementNode = async () => {
 };
 
 export const waitForAndClickTreeElementWithPartialText = async (text: string) =>
-    waitForFunction(async () => clickTreeElementWithPartialText(text));
+    await waitForFunction(async () => await clickTreeElementWithPartialText(text));
 
 export const waitForElementWithPartialText = async (text: string) => {
-  return waitForFunction(async () => elementWithPartialText(text));
+  return await waitForFunction(async () => await elementWithPartialText(text));
 };
 
 const elementWithPartialText = async (text: string) => {
@@ -471,12 +471,12 @@ export const getComputedStylesForDomNode =
 
 export const waitForNumberOfComputedProperties = async (numberToWaitFor: number) => {
   const computedPane = await getComputedPanel();
-  return waitForFunction(
+  return await waitForFunction(
       async () => numberToWaitFor ===
           await computedPane.$$eval('pierce/' + COMPUTED_PROPERTY_SELECTOR, properties => properties.length));
 };
 
-export const getComputedPanel = async () => waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
+export const getComputedPanel = async () => await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
 
 export const filterComputedProperties = async (filterString: string) => {
   const initialContent = await getContentOfComputedPane();
@@ -554,7 +554,7 @@ export const getComputedStyleProperties = async () => {
 
 export const getDisplayedCSSDeclarations = async () => {
   const cssDeclarations = await $$(CSS_DECLARATION_SELECTOR);
-  return Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
+  return await Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
 };
 
 export const getDisplayedStyleRulesCompact = async () => {
@@ -682,7 +682,7 @@ export const getHiddenFontEditorButtons = async () => {
 
 export const getStyleSectionSubtitles = async () => {
   const subtitles = await $$(SECTION_SUBTITLE_SELECTOR);
-  return Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
+  return await Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
 };
 
 export const getCSSPropertyInRule =

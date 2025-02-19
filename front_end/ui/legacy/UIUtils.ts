@@ -1707,7 +1707,7 @@ export abstract class Renderer {
       return null;
     }
     const renderer = await extension.loadRenderer();
-    return renderer.render(object, options);
+    return await renderer.render(object, options);
   }
 }
 

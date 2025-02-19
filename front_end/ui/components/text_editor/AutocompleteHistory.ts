@@ -17,8 +17,8 @@ export class AutocompleteHistory {
   #data: string[] = [];
 
   /** 1-based entry in the history stack. */
-  #historyOffset: number = 1;
-  #uncommittedIsTop: boolean = false;
+  #historyOffset = 1;
+  #uncommittedIsTop = false;
 
   /**
    * Creates a new settings-backed history. The class assumes it has sole

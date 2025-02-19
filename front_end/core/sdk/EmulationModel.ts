@@ -446,7 +446,7 @@ export class EmulationModel extends SDKModel<void> {
         value: this.#mediaConfiguration.get('prefers-reduced-transparency') ?? '',
       },
     ];
-    return this.emulateCSSMedia(type, features);
+    return await this.emulateCSSMedia(type, features);
   }
 }
 

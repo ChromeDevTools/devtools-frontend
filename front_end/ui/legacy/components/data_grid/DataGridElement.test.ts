@@ -56,11 +56,11 @@ describeWithEnvironment('DataGrid', () => {
   }
 
   async function renderDataGridContent(template: Lit.TemplateResult): Promise<HTMLElement> {
-    return renderDataGrid(html`<devtools-data-grid striped name="Display Name">${template}</devtools-data-grid>`);
+    return await renderDataGrid(html`<devtools-data-grid striped name="Display Name">${template}</devtools-data-grid>`);
   }
 
   async function renderDataGridWithData(columns: Lit.TemplateResult, rows: Lit.TemplateResult): Promise<HTMLElement> {
-    return renderDataGridContent(html`<table>${columns}${rows}</table>`);
+    return await renderDataGridContent(html`<table>${columns}${rows}</table>`);
   }
 
   it('can be configured from template', async () => {

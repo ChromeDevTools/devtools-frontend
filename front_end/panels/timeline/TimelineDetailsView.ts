@@ -316,7 +316,7 @@ export class TimelineDetailsPane extends
    * debounced. The forceImmediateUpdate param configures the debouncing
    * behaviour.
    */
-  private scheduleUpdateContentsFromWindow(forceImmediateUpdate: boolean = false): void {
+  private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
       this.setSummaryContent(UI.Fragment.html`<div/>`);
       return;

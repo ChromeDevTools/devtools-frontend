@@ -1313,7 +1313,7 @@ export class DebuggerPausedDetailsRevealer implements
     Common.Revealer.Revealer<SDK.DebuggerModel.DebuggerPausedDetails> {
   async reveal(_object: SDK.DebuggerModel.DebuggerPausedDetails): Promise<void> {
     if (Common.Settings.Settings.instance().moduleSetting('auto-focus-on-debugger-paused-enabled').get()) {
-      return SourcesPanel.instance().setAsCurrentPanel();
+      return await SourcesPanel.instance().setAsCurrentPanel();
     }
   }
 }

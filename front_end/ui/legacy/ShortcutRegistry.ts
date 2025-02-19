@@ -431,7 +431,7 @@ export class ShortcutTreeNode {
   private chordsInternal: Map<number, ShortcutTreeNode>;
   private readonly depth: number;
 
-  constructor(key: number, depth: number = 0) {
+  constructor(key: number, depth = 0) {
     this.keyInternal = key;
     this.actionsInternal = [];
     this.chordsInternal = new Map();

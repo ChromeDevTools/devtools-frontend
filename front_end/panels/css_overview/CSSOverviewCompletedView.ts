@@ -686,7 +686,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
 
   #groupToFragment(
       items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
-      path: string = ''): UI.Fragment.Fragment {
+      path = ''): UI.Fragment.Fragment {
     // Sort by number of items descending.
     const values = Array.from(items.entries()).sort((d1, d2) => {
       const v1Nodes = d1[1];

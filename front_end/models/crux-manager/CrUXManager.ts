@@ -233,7 +233,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   async getFieldDataForCurrentPageForTesting(): Promise<PageResult> {
-    return this.#getFieldDataForCurrentPage();
+    return await this.#getFieldDataForCurrentPage();
   }
 
   /**

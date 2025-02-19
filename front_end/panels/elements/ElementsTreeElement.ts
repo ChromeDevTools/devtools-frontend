@@ -578,7 +578,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   override async onpopulate(): Promise<void> {
     if (this.treeOutline) {
-      return this.treeOutline.populateTreeElement(this);
+      return await this.treeOutline.populateTreeElement(this);
     }
   }
 

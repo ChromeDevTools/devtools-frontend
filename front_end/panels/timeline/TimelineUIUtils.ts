@@ -1060,7 +1060,7 @@ export class TimelineUIUtils {
     );
 
     if (maybeTarget) {
-      // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
         const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace);
@@ -1073,7 +1073,7 @@ export class TimelineUIUtils {
         } else if (Trace.Types.Events.isPaint(event)) {
           previewElement = await TimelineUIUtils.buildPicturePreviewContent(parsedTrace, event, maybeTarget);
         }
-        // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+        // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
         event[previewElementSymbol] = previewElement;
       }
     }
@@ -1274,7 +1274,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      // @ts-ignore Fall-through intended.
+      // @ts-expect-error Fall-through intended.
       case Trace.Types.Events.Name.PAINT: {
         const clip = unsafeEventData['clip'];
         contentHelper.appendTextRow(
@@ -1484,7 +1484,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      // @ts-ignore Fall-through intended.
+      // @ts-expect-error Fall-through intended.
       case Trace.Types.Events.Name.FIRE_IDLE_CALLBACK: {
         contentHelper.appendTextRow(
             i18nString(UIStrings.allottedTime),
@@ -1503,7 +1503,7 @@ export class TimelineUIUtils {
         break;
       }
 
-      // @ts-ignore Fall-through intended.
+      // @ts-expect-error Fall-through intended.
       case Trace.Types.Events.Name.MARK_LCP_CANDIDATE: {
         contentHelper.appendTextRow(i18nString(UIStrings.type), String(unsafeEventData['type']));
         contentHelper.appendTextRow(i18nString(UIStrings.size), String(unsafeEventData['size']));
@@ -1564,10 +1564,10 @@ export class TimelineUIUtils {
       }
     }
 
-    // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+    // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
     if (event[previewElementSymbol]) {
       contentHelper.addSection(i18nString(UIStrings.preview));
-      // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
       contentHelper.appendElementRow('', event[previewElementSymbol]);
     }
 
@@ -1615,7 +1615,7 @@ export class TimelineUIUtils {
 
     function aggregatedStatsAtTime(time: number): TimeRangeCategoryStats {
       const stats: TimeRangeCategoryStats = {};
-      // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
       const cache = events[categoryBreakdownCacheSymbol];
       for (const category in cache) {
         const categoryCache = cache[category];
@@ -1647,7 +1647,7 @@ export class TimelineUIUtils {
     }
 
     function buildRangeStatsCacheIfNeeded(events: Trace.Types.Events.Event[]): void {
-      // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
       if (events[categoryBreakdownCacheSymbol]) {
         return;
       }
@@ -1715,7 +1715,7 @@ export class TimelineUIUtils {
       }
 
       const obj = (events as Object);
-      // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
+      // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
       obj[categoryBreakdownCacheSymbol] = aggregatedStats;
     }
   }
@@ -2357,7 +2357,7 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  static displayNameForFrame(frame: Trace.Types.Events.TraceFrame, trimAt: number = 80): string {
+  static displayNameForFrame(frame: Trace.Types.Events.TraceFrame, trimAt = 80): string {
     const url = frame.url as Platform.DevToolsPath.UrlString;
     return Common.ParsedURL.schemeIs(url, 'about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
                                                       frame.url.slice(0, trimAt);

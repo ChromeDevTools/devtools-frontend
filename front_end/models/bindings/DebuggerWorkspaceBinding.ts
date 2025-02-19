@@ -186,7 +186,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     }
     const liveLocationPromise = modelData.createLiveLocation(rawLocation, updateDelegate, locationPool);
     this.recordLiveLocationChange(liveLocationPromise);
-    return liveLocationPromise;
+    return await liveLocationPromise;
   }
 
   async createStackTraceTopFrameLiveLocation(
@@ -196,7 +196,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     const locationPromise =
         StackTraceTopFrameLocation.createStackTraceTopFrameLocation(rawLocations, this, updateDelegate, locationPool);
     this.recordLiveLocationChange(locationPromise);
-    return locationPromise;
+    return await locationPromise;
   }
 
   async createCallFrameLiveLocation(
@@ -247,14 +247,14 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
       debuggerModel: SDK.DebuggerModel.DebuggerModel, url: Platform.DevToolsPath.UrlString,
       isContentScript: boolean): Promise<Workspace.UISourceCode.UISourceCode> {
     const uiSourceCode = this.uiSourceCodeForSourceMapSourceURL(debuggerModel, url, isContentScript);
-    return uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target());
+    return await (uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target()));
   }
 
   async uiSourceCodeForDebuggerLanguagePluginSourceURLPromise(
       debuggerModel: SDK.DebuggerModel.DebuggerModel,
       url: Platform.DevToolsPath.UrlString): Promise<Workspace.UISourceCode.UISourceCode|null> {
     const uiSourceCode = this.pluginManager.uiSourceCodeForURL(debuggerModel, url);
-    return uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target());
+    return await (uiSourceCode || this.waitForUISourceCodeAdded(url, debuggerModel.target()));
   }
 
   uiSourceCodeForScript(script: SDK.Script.Script): Workspace.UISourceCode.UISourceCode|null {
@@ -593,7 +593,7 @@ export class Location extends LiveLocationWithPool {
 
   override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     const debuggerModelLocation = this.rawLocation;
-    return this.#binding.rawLocationToUILocation(debuggerModelLocation);
+    return await this.#binding.rawLocationToUILocation(debuggerModelLocation);
   }
 
   override dispose(): void {
@@ -634,11 +634,11 @@ class StackTraceTopFrameLocation extends LiveLocationWithPool {
   }
 
   override async uiLocation(): Promise<Workspace.UISourceCode.UILocation|null> {
-    return this.#current ? this.#current.uiLocation() : null;
+    return this.#current ? await this.#current.uiLocation() : null;
   }
 
   override async isIgnoreListed(): Promise<boolean> {
-    return this.#current ? this.#current.isIgnoreListed() : false;
+    return this.#current ? await this.#current.isIgnoreListed() : false;
   }
 
   override dispose(): void {

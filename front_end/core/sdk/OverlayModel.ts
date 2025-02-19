@@ -183,11 +183,11 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   static async muteHighlight(): Promise<void[]> {
-    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.suspendModel()));
+    return await Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.suspendModel()));
   }
 
   static async unmuteHighlight(): Promise<void[]> {
-    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
+    return await Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
   }
 
   static highlightRect(rect: HighlightRect): void {
@@ -787,7 +787,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   async hasStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
-    return this.#windowControls.initializeStyleSheetText(url);
+    return await this.#windowControls.initializeStyleSheetText(url);
   }
 }
 

@@ -256,7 +256,7 @@ export const NOOP_STORAGE: SettingsBackingStore = {
 export class SettingsStorage {
   constructor(
       private object: Record<string, string>, private readonly backingStore: SettingsBackingStore = NOOP_STORAGE,
-      private readonly storagePrefix: string = '') {
+      private readonly storagePrefix = '') {
   }
 
   register(name: string): void {
@@ -690,11 +690,11 @@ export class VersionController {
         Math.min(this.#globalVersionSetting.get(), this.#syncedVersionSetting.get(), this.#localVersionSetting.get());
     const methodsToRun = this.methodsToRunToUpdateVersion(minimumVersion, currentVersion);
     console.assert(
-        // @ts-ignore
+        // @ts-expect-error
         this[`updateVersionFrom${currentVersion}To${currentVersion + 1}`] === undefined,
         'Unexpected migration method found. Increment CURRENT_VERSION or remove the method.');
     for (const method of methodsToRun) {
-      // @ts-ignore Special version method matching
+      // @ts-expect-error Special version method matching
       this[method].call(this);
     }
     this.resetToCurrent();

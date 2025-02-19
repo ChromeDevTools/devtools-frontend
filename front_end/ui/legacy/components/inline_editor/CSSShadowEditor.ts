@@ -36,10 +36,10 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/CSSShadowEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const maxRange: number = 20;
-const defaultUnit: string = 'px';
-const sliderThumbRadius: number = 6;
-const canvasSize: number = 88;
+const maxRange = 20;
+const defaultUnit = 'px';
+const sliderThumbRadius = 6;
+const canvasSize = 88;
 
 export interface CSSShadowModel {
   setInset(inset: boolean): void;

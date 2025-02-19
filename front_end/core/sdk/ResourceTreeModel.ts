@@ -93,7 +93,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async #buildResourceTree(): Promise<void> {
-    return this.agent.invoke_getResourceTree().then(event => {
+    return await this.agent.invoke_getResourceTree().then(event => {
       this.processCachedResources(event.getError() ? null : event.frameTree);
       if (this.mainFrame) {
         this.processPendingEvents(this.mainFrame);
@@ -475,7 +475,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getAppId(): Promise<Protocol.Page.GetAppIdResponse> {
-    return this.agent.invoke_getAppId();
+    return await this.agent.invoke_getAppId();
   }
 
   private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
@@ -580,7 +580,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getMainStorageKey(): Promise<string|null> {
-    return this.mainFrame ? this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
+    return this.mainFrame ? await this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
   }
 
   getMainSecurityOrigin(): string|null {
@@ -998,16 +998,16 @@ export class ResourceTreeFrame {
     if (!parentFrame) {
       return null;
     }
-    return parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this.#idInternal);
+    return await parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this.#idInternal);
   }
 
   async getOwnerDOMNodeOrDocument(): Promise<DOMNode|null> {
     const deferredNode = await this.getOwnerDeferredDOMNode();
     if (deferredNode) {
-      return deferredNode.resolvePromise();
+      return await deferredNode.resolvePromise();
     }
     if (this.isOutermostFrame()) {
-      return this.resourceTreeModel().domModel().requestDocument();
+      return await this.resourceTreeModel().domModel().requestDocument();
     }
     return null;
   }
@@ -1023,14 +1023,14 @@ export class ResourceTreeFrame {
     };
 
     if (parentFrame) {
-      return highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
+      return await highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
     }
 
     // Fenced frames.
     if (parentTarget?.type() === Type.FRAME) {
       const domModel = parentTarget.model(DOMModel);
       if (domModel) {
-        return highlightFrameOwner(domModel);
+        return await highlightFrameOwner(domModel);
       }
     }
 

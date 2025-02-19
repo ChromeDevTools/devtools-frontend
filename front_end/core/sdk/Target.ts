@@ -32,7 +32,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    * the page crashes, but a reload fixes it and the targets get restored (see
    * crbug.com/387258086).
    */
-  #hasCrashed: boolean = false;
+  #hasCrashed = false;
   #targetInfoInternal: Protocol.Target.TargetInfo|undefined;
   #creatingModels?: boolean;
 

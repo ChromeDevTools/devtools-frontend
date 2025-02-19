@@ -34,7 +34,7 @@ export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string
   }
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
 
 export function processForDebugging(loggable: Loggable): void {
@@ -686,7 +686,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
     }
   }, EVENT_EXPECTATION_TIMEOUT);
 
-  return promise.finally(() => {
+  return await promise.finally(() => {
     clearTimeout(timeout);
   });
 }
@@ -724,17 +724,17 @@ function getUnmatchedVeEvents(): string {
       .join('\n');
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
-// @ts-ignore
+// @ts-expect-error
 globalThis.getUnmatchedVeEvents = getUnmatchedVeEvents;
-// @ts-ignore
+// @ts-expect-error
 globalThis.veDebugEventsLog = veDebugEventsLog;
-// @ts-ignore
+// @ts-expect-error
 globalThis.findVeDebugImpression = findVeDebugImpression;
-// @ts-ignore
+// @ts-expect-error
 globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
-// @ts-ignore
+// @ts-expect-error
 globalThis.buildStateFlow = buildStateFlow;
-// @ts-ignore
+// @ts-expect-error
 globalThis.expectVeEvents = expectVeEvents;

@@ -498,7 +498,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     const sessionId = selectedTarget ? selectedTarget.sessionId : '';
     // TS thinks that properties are read-only because
     // in TS test is defined as a namespace.
-    // @ts-ignore
+    // @ts-expect-error
     test.sendRawMessage(command, parameters, () => {}, sessionId);
   }
 
@@ -515,16 +515,11 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   private setRecording(recording: boolean): void {
     const test = ProtocolClient.InspectorBackend.test;
     if (recording) {
-      // TODO: TS thinks that properties are read-only because
-      // in TS test is defined as a namespace.
-      // @ts-ignore
       test.onMessageSent = this.messageSent.bind(this);
-      // @ts-ignore
+      // @ts-expect-error
       test.onMessageReceived = this.messageReceived.bind(this);
     } else {
-      // @ts-ignore
       test.onMessageSent = null;
-      // @ts-ignore
       test.onMessageReceived = null;
     }
   }

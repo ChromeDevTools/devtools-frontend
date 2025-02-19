@@ -89,7 +89,7 @@ export class SelectMenu extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #button: SelectMenuButton|null = null;
-  #open: boolean = false;
+  #open = false;
   #props: SelectMenuData = {
     buttonTitle: '',
     position: Dialogs.Dialog.DialogVerticalPosition.BOTTOM,

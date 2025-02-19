@@ -348,7 +348,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }>;
   savedTotal?: number;
   savedChildren?: ProfileDataGridNode[]|null;
-  searchResultIndex: number = -1;
+  searchResultIndex = -1;
 
   constructor(formatter: Formatter, searchableView: UI.SearchableView.SearchableView, total: number) {
     this.tree = this;

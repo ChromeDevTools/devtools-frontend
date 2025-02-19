@@ -197,7 +197,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #hiddenIssueCount = new Map<IssueKind, number>();
   #issuesById = new Map<string, Issue>();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
-  #thirdPartyCookiePhaseoutIssueMessageSent: boolean = false;
+  #thirdPartyCookiePhaseoutIssueMessageSent = false;
 
   constructor(
       private readonly showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>,
@@ -464,7 +464,7 @@ export interface EventTypes {
   [Events.ISSUE_ADDED]: IssueAddedEvent;
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue) => {
   const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const issuesModel = mainTarget?.model(SDK.IssuesModel.IssuesModel);

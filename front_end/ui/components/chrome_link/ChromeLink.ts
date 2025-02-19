@@ -23,7 +23,7 @@ declare global {
 export class ChromeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #href: string = '';
+  #href = '';
 
   connectedCallback(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

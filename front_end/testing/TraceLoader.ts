@@ -212,7 +212,7 @@ export class TraceLoader {
   }> {
     const events = 'traceEvents' in contents ? contents.traceEvents : contents;
     const metadata = 'metadata' in contents ? contents.metadata : {};
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const model = Trace.TraceModel.Model.createWithAllHandlers(traceEngineConfig);
       model.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
         const {data} = event as Trace.TraceModel.ModelUpdateEvent;

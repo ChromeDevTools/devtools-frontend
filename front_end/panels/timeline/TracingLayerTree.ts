@@ -328,7 +328,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
   }
 
   async pictureForRect(targetRect: number[]): Promise<SDK.PaintProfiler.SnapshotWithRect|null> {
-    return Promise.all(this.paints.map(paint => paint.picture())).then(pictures => {
+    return await Promise.all(this.paints.map(paint => paint.picture())).then(pictures => {
       const filteredPictures = (pictures.filter(picture => picture && rectsOverlap(picture.rect, targetRect)) as Array<{
                                   rect: number[],
                                   serializedPicture: string,

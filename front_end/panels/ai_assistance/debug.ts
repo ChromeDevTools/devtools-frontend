@@ -26,5 +26,5 @@ function setDebugAiAssistanceEnabled(enabled: boolean): void {
     localStorage.removeItem('debugAiAssistancePanelEnabled');
   }
 }
-// @ts-ignore
+// @ts-expect-error
 globalThis.setDebugAiAssistanceEnabled = setDebugAiAssistanceEnabled;

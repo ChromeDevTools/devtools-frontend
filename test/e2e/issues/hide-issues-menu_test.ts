@@ -39,7 +39,7 @@ describe('Hide issues menu', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
     frontend.evaluate(() => {
@@ -56,7 +56,7 @@ describe('Hide issues menu', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
 

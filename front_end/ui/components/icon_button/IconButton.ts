@@ -32,9 +32,9 @@ export class IconButton extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #groups: IconWithTextData[] = [];
-  #compact: boolean = false;
-  #leadingText: string = '';
-  #trailingText: string = '';
+  #compact = false;
+  #leadingText = '';
+  #trailingText = '';
   #accessibleName: string|undefined;
 
   set data(data: IconButtonData) {

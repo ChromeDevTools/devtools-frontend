@@ -18,7 +18,7 @@ class InjectedScript {
                                   ))
                                  .text();
     }
-    return this.#injectedScript;
+    return await this.#injectedScript;
   }
 }
 

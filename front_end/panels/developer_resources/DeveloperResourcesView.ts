@@ -62,7 +62,7 @@ export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.
       await UI.ViewManager.ViewManager.instance().showView('developer-resources');
       const developerResourcesView =
           await UI.ViewManager.ViewManager.instance().view('developer-resources').widget() as DeveloperResourcesView;
-      return developerResourcesView.select(resource);
+      return await developerResourcesView.select(resource);
     }
   }
 }

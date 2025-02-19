@@ -11,7 +11,7 @@ import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 async function waitForChangedConcurrency(lastConcurrency: number|undefined) {
   const {target} = getBrowserAndPages();
-  return waitForFunction(async () => {
+  return await waitForFunction(async () => {
     const newConcurrency = await target.evaluate('navigator.hardwareConcurrency') as number;
     if (newConcurrency !== lastConcurrency) {
       return newConcurrency;

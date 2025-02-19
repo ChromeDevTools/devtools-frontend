@@ -72,13 +72,13 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   #stackChildrenDuration?: number[];
   constructor(profile: ExtendedProfile) {
     super();
-    // @ts-ignore Legacy types
+    // @ts-expect-error Legacy types
     const isLegacyFormat = Boolean(profile['head']);
     if (isLegacyFormat) {
       // Legacy format contains raw timestamps and start/stop times are in seconds.
       this.profileStartTime = profile.startTime * 1000;
       this.profileEndTime = profile.endTime * 1000;
-      // @ts-ignore Legacy types
+      // @ts-expect-error Legacy types
       this.timestamps = profile.timestamps;
       this.compatibilityConversionHeadToNodes(profile);
     } else {
@@ -110,19 +110,19 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   }
 
   private compatibilityConversionHeadToNodes(profile: Protocol.Profiler.Profile): void {
-    // @ts-ignore Legacy types
+    // @ts-expect-error Legacy types
     if (!profile.head || profile.nodes) {
       return;
     }
     const nodes: Protocol.Profiler.ProfileNode[] = [];
-    // @ts-ignore Legacy types
+    // @ts-expect-error Legacy types
     convertNodesTree(profile.head);
     profile.nodes = nodes;
-    // @ts-ignore Legacy types
+    // @ts-expect-error Legacy types
     delete profile.head;
     function convertNodesTree(node: Protocol.Profiler.ProfileNode): number {
       nodes.push(node);
-      // @ts-ignore Legacy types
+      // @ts-expect-error Legacy types
       node.children = (node.children as Protocol.Profiler.ProfileNode[]).map(convertNodesTree);
       return node.id;
     }
@@ -163,7 +163,7 @@ export class CPUProfileDataModel extends ProfileTreeModel {
       nodes[0].children = [];
       for (let i = 1; i < nodes.length; ++i) {
         const node = nodes[i];
-        // @ts-ignore Legacy types
+        // @ts-expect-error Legacy types
         const parentNode = protocolNodeById.get(node.parent);
         if (!parentNode) {
           continue;

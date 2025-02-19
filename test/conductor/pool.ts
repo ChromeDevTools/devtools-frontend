@@ -72,7 +72,7 @@ export class FrontendTargetPool {
     // used to resolve the `pair` promise of the `takeTabPair` call.
     void this.addTabPairToPool();
 
-    return pair;
+    return await pair;
   }
 }
 

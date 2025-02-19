@@ -342,7 +342,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
 
     if (selectedProfileNode) {
       // TODO(crbug.com/1011811): Cleanup the added `selected` property to this SDK class.
-      // @ts-ignore
+      // @ts-expect-error
       selectedProfileNode.selected = true;
     }
   }
@@ -627,7 +627,7 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     }
 
     this.updateStatus(i18nString(UIStrings.parsing), true);
-    let error: null = null;
+    let error = null;
     try {
       this.profile = (JSON.parse(this.jsonifiedProfile) as Protocol.Profiler.Profile);
       this.setProfile((this.profile));

@@ -63,9 +63,9 @@ interface SharedStorageMetadataGetter {
 export class SharedStorageMetadataView extends StorageMetadataView {
   #sharedStorageMetadataGetter: SharedStorageMetadataGetter;
   #creationTime: Protocol.Network.TimeSinceEpoch|null = null;
-  #length: number = 0;
-  #bytesUsed: number = 0;
-  #remainingBudget: number = 0;
+  #length = 0;
+  #bytesUsed = 0;
+  #remainingBudget = 0;
 
   constructor(sharedStorageMetadataGetter: SharedStorageMetadataGetter, owner: string) {
     super();

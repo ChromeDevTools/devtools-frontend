@@ -1057,15 +1057,15 @@ export abstract class HeapSnapshot {
       if (!filter) {
         throw new Error('Unable to create filter');
       }
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'AllocationNodeId: ' + allocationNodeId;
     } else if (typeof minNodeId === 'number' && typeof maxNodeId === 'number') {
       filter = this.createNodeIdFilter(minNodeId, maxNodeId);
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'NodeIdRange: ' + minNodeId + '..' + maxNodeId;
     } else if (filterName !== undefined) {
       filter = this.createNamedFilter(filterName);
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'NamedFilter: ' + filterName;
     }
     return filter;
@@ -1138,7 +1138,7 @@ export abstract class HeapSnapshot {
   aggregatesWithFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
       {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate} {
     const filter = this.createFilter(nodeFilter);
-    // @ts-ignore key is added in createFilter
+    // @ts-expect-error key is added in createFilter
     const key = filter ? filter.key : 'allObjects';
     return this.getAggregatesByClassKey(false, key, filter);
   }
@@ -2860,7 +2860,7 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
     function compareEdgeField(fieldName: string, ascending: boolean, indexA: number, indexB: number): number {
       edgeA.edgeIndex = indexA;
       edgeB.edgeIndex = indexB;
-      let result: number = 0;
+      let result = 0;
       if (fieldName === '!edgeName') {
         if (edgeB.name() === '__proto__') {
           return -1;
@@ -3685,7 +3685,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     if (!this.isShortcut()) {
       return this.hasStringNameInternal();
     }
-    // @ts-ignore parseInt is successful against numbers.
+    // @ts-expect-error parseInt is successful against numbers.
     return isNaN(parseInt(this.nameInternal(), 10));
   }
 
@@ -3718,7 +3718,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     if (!this.isShortcut()) {
       return String(name);
     }
-    // @ts-ignore parseInt is successful against numbers.
+    // @ts-expect-error parseInt is successful against numbers.
     const numName = parseInt(name, 10);
     return String(isNaN(numName) ? name : numName);
   }

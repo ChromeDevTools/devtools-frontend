@@ -146,7 +146,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #enumsByName: Map<string, Record<string, string>>;
   #parameters: Parameter[] = [];
   #targets: SDK.Target.Target[] = [];
-  #command: string = '';
+  #command = '';
   #targetId?: string;
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
 

@@ -133,7 +133,7 @@ export class ModificationsManager extends EventTarget {
     }
   }
 
-  createAnnotation(newAnnotation: Trace.Types.File.Annotation, loadedFromFile: boolean = false): void {
+  createAnnotation(newAnnotation: Trace.Types.File.Annotation, loadedFromFile = false): void {
     // If a label already exists on an entry and a user is trying to create a new one, start editing an existing label instead.
     if (newAnnotation.type === 'ENTRY_LABEL') {
       const overlay = this.#findLabelOverlayForEntry(newAnnotation.entry);

@@ -34,7 +34,7 @@ describe('Privacy Sandbox Extensions API', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
 

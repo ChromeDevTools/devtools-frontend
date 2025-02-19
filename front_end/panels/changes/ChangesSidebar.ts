@@ -50,7 +50,7 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
-    // @ts-ignore uiSourceCode seems to be dynamically attached.
+    // @ts-expect-error uiSourceCode seems to be dynamically attached.
     return this.treeoutline.selectedTreeElement ? this.treeoutline.selectedTreeElement.uiSourceCode : null;
   }
 

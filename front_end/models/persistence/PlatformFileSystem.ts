@@ -50,7 +50,7 @@ export class PlatformFileSystem {
 
   async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
       Promise<Platform.DevToolsPath.EncodedPathString|null> {
-    return Promise.resolve(null);
+    return await Promise.resolve(null);
   }
 
   deleteFile(_path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {

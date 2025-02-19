@@ -68,12 +68,12 @@ declare global {
 }
 
 function retrieveRecordedHistogramEvents(frontend: puppeteer.Page): Promise<EnumHistogramEvent[]> {
-  // @ts-ignore
+  // @ts-expect-error
   return frontend.evaluate(() => window.InspectorFrontendHost.recordedEnumeratedHistograms);
 }
 
 function retrieveRecordedPerformanceHistogramEvents(frontend: puppeteer.Page): Promise<PerformanceHistogramEvent[]> {
-  // @ts-ignore
+  // @ts-expect-error
   return frontend.evaluate(() => window.InspectorFrontendHost.recordedPerformanceHistograms);
 }
 

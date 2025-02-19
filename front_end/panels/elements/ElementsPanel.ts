@@ -1231,9 +1231,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private static firstInspectElementNodeNameForTest = '';
 }
 
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Elements = globalThis.Elements || {};
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Elements.ElementsPanel = ElementsPanel;
 
 const enum SplitMode {

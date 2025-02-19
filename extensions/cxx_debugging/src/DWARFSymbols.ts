@@ -201,7 +201,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
           // Ensure directory exists
           if (parentDirectory.length > 1) {
             // TypeScript doesn't know about createPath
-            // @ts-ignore
+            // @ts-expect-error
             backend.FS.createPath('/', parentDirectory.substring(1), true, true);
           }
 
@@ -216,7 +216,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
               void this.hostInterface.reportResourceLoad(dwoURL, {success: false, errorMessage: (e as Error).message});
               // Rethrow any error fetching the content as errno 44 (EEXIST)
               // TypeScript doesn't know about the ErrnoError constructor
-              // @ts-ignore
+              // @ts-expect-error
               throw new backend.FS.ErrnoError(44);
             }
           };
@@ -557,7 +557,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
         description: '<optimized out>',
       };
     }
-    return cxxObject.asRemoteObject();
+    return await cxxObject.asRemoteObject();
   }
 
   async getProperties(objectId: Chrome.DevTools.RemoteObjectId): Promise<Chrome.DevTools.PropertyDescriptor[]> {
@@ -582,7 +582,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
 export async function createPlugin(
     hostInterface: HostInterface, resourceLoader: ResourceLoader,
     moduleConfigurations: ModuleConfigurations = DEFAULT_MODULE_CONFIGURATIONS,
-    logPluginApiCalls: boolean = false): Promise<DWARFLanguageExtensionPlugin> {
+    logPluginApiCalls = false): Promise<DWARFLanguageExtensionPlugin> {
   const plugin = new DWARFLanguageExtensionPlugin(moduleConfigurations, resourceLoader, hostInterface);
   if (logPluginApiCalls) {
     const pluginLoggingProxy = {

@@ -95,7 +95,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
     // AbortSignal for the current test function.
     AsyncScope.abortSignal = abortController.signal;
     // Promisify the function in case it is sync.
-    const promise = (async () => fn.call(this))();
+    const promise = (async () => await fn.call(this))();
     const actualTimeout = this.timeout();
     // Disable test timeout.
     this.timeout(0);
@@ -131,6 +131,6 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
           clearTimeout(t);
           this.timeout(actualTimeout);
         });
-    return testPromise;
+    return await testPromise;
   };
 }

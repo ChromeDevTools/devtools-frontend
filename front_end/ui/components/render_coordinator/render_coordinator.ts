@@ -116,10 +116,10 @@ export async function read<T>(
     if (!callback) {
       throw new Error('Read called with label but no callback');
     }
-    return enqueueHandler(ACTION.READ, labelOrCallback, callback);
+    return await enqueueHandler(ACTION.READ, labelOrCallback, callback);
   }
 
-  return enqueueHandler(ACTION.READ, UNNAMED_READ, labelOrCallback);
+  return await enqueueHandler(ACTION.READ, UNNAMED_READ, labelOrCallback);
 }
 
 /**
@@ -136,10 +136,10 @@ export async function write<T>(
     if (!callback) {
       throw new Error('Write called with label but no callback');
     }
-    return enqueueHandler(ACTION.WRITE, labelOrCallback, callback);
+    return await enqueueHandler(ACTION.WRITE, labelOrCallback, callback);
   }
 
-  return enqueueHandler(ACTION.WRITE, UNNAMED_WRITE, labelOrCallback);
+  return await enqueueHandler(ACTION.WRITE, UNNAMED_WRITE, labelOrCallback);
 }
 
 export function takeLoggingRecords(): LoggingRecord[] {
@@ -164,10 +164,10 @@ export async function scroll<T>(
     if (!callback) {
       throw new Error('Scroll called with label but no callback');
     }
-    return enqueueHandler(ACTION.READ, labelOrCallback, callback);
+    return await enqueueHandler(ACTION.READ, labelOrCallback, callback);
   }
 
-  return enqueueHandler(ACTION.READ, UNNAMED_SCROLL, labelOrCallback);
+  return await enqueueHandler(ACTION.READ, UNNAMED_SCROLL, labelOrCallback);
 }
 
 function enqueueHandler<T>(action: ACTION, label: string, callback: CoordinatorCallback<T>): Promise<T> {

@@ -313,7 +313,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     if (!view) {
       throw new Error(`Expected view for panel '${panelName}'`);
     }
-    return view.widget() as Promise<Panel>;
+    return await (view.widget() as Promise<Panel>);
   }
 
   onSuspendStateChanged(allTargetsSuspended: boolean): void {

@@ -78,10 +78,10 @@ export class ServiceWorkerUpdateCycleView {
 
     function rangesForVersion(version: SDK.ServiceWorkerManager.ServiceWorkerVersion): ServiceWorkerUpdateRange[] {
       let state: SDK.ServiceWorkerManager.ServiceWorkerVersionState|null = version.currentState;
-      let endActivateTime: number = 0;
-      let beginActivateTime: number = 0;
-      let endInstallTime: number = 0;
-      let beginInstallTime: number = 0;
+      let endActivateTime = 0;
+      let beginActivateTime = 0;
+      let endInstallTime = 0;
+      let beginInstallTime = 0;
       const currentStatus = state.status;
       if (currentStatus === Protocol.ServiceWorker.ServiceWorkerVersionStatus.New) {
         return [];

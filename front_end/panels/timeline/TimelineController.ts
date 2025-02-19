@@ -194,7 +194,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     }
 
     const urls = [...new Set(this.#navigationUrls)];
-    return Promise.all(urls.map(url => cruxManager.getFieldDataForPage(url)));
+    return await Promise.all(urls.map(url => cruxManager.getFieldDataForPage(url)));
   }
 
   private async createMetadata(): Promise<Trace.Types.File.MetaData> {
@@ -205,7 +205,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
       emulatedDeviceTitle = 'Responsive';
     }
-    return Trace.Extras.Metadata.forNewRecording(
+    return await Trace.Extras.Metadata.forNewRecording(
         false, this.#recordingStartTime ?? undefined, emulatedDeviceTitle, this.#fieldData ?? undefined);
   }
 

@@ -314,8 +314,8 @@ export class RecordingView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #replayState: ReplayState = {isPlaying: false, isPausedOnBreakpoint: false};
   #userFlow: Models.Schema.UserFlow|null = null;
-  #isRecording: boolean = false;
-  #recordingTogglingInProgress: boolean = false;
+  #isRecording = false;
+  #recordingTogglingInProgress = false;
   #isTitleInvalid = false;
   #currentStep?: Models.Schema.Step;
   #steps: Models.Schema.Step[] = [];
@@ -333,8 +333,8 @@ export class RecordingView extends HTMLElement {
   #extensionConverters: Converters.Converter.Converter[] = [];
   #replayExtensions?: Extensions.ExtensionManager.Extension[];
   #showCodeView = false;
-  #code: string = '';
-  #converterId: string = '';
+  #code = '';
+  #converterId = '';
   #editorState?: CodeMirror.EditorState;
   #sourceMap: PuppeteerReplay.SourceMap|undefined;
   #extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;

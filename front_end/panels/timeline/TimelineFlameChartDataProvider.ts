@@ -114,8 +114,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private compatibilityTracksAppender: CompatibilityTracksAppender|null = null;
   private parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
 
-  #minimumBoundary: number = 0;
-  private timeSpan: number = 0;
+  #minimumBoundary = 0;
+  private timeSpan = 0;
   private readonly framesGroupStyle: PerfUI.FlameChart.GroupStyle;
   private readonly screenshotsGroupStyle: PerfUI.FlameChart.GroupStyle;
 
@@ -132,7 +132,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private entryTypeByLevel: EntryType[] = [];
   private entryIndexToTitle: string[] = [];
-  private lastInitiatorEntry: number = -1;
+  private lastInitiatorEntry = -1;
   private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
 
   private lastSelection: Selection|null = null;
@@ -553,7 +553,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * Builds the flame chart data using the tracks appender (which use
    * the new trace engine). The result built data is cached and returned.
    */
-  timelineData(rebuild: boolean = false): PerfUI.FlameChart.FlameChartTimelineData {
+  timelineData(rebuild = false): PerfUI.FlameChart.FlameChartTimelineData {
     if (!rebuild && this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0) {
       // If the flame chart data is built already and we don't want to rebuild, we can return the cached data.
       // |entryLevels.length| is used to check if the cached data is not empty (correctly built),

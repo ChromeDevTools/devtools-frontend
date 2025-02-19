@@ -319,13 +319,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   /** When true, all undimmed entries are outlined. When an array, only those indices are outlined (if not dimmed). */
   private dimShouldOutlineUndimmedEntries: boolean|Uint8Array = false;
 
-  #tooltipPopoverYAdjustment: number = 0;
+  #tooltipPopoverYAdjustment = 0;
 
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number|null = null;
-  #inTrackConfigEditMode: boolean = false;
-  #linkSelectionAnnotationIsInProgress: boolean = false;
+  #inTrackConfigEditMode = false;
+  #linkSelectionAnnotationIsInProgress = false;
 
   // Stored because we cache this value to save extra lookups and layoffs.
   #canvasBoundingClientRect: DOMRect|null = null;
@@ -2210,7 +2210,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel &&
           barWidth > 10;
     };
-    let wideEntryExists: boolean = false;
+    let wideEntryExists = false;
     for (const [{color, outline}, {indexes}] of drawBatches) {
       if (!wideEntryExists) {
         wideEntryExists = indexes.some(entryIndexIsInTrack);
@@ -2832,7 +2832,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.save();
     context.beginPath();
     let lastMarkerLevel = -1;
-    let lastMarkerX: number = -Infinity;
+    let lastMarkerX = -Infinity;
     // Markers are sorted top to bottom, right to left.
     for (let m = markerIndices.length - 1; m >= 0; --m) {
       const entryIndex = markerIndices[m];
@@ -3098,7 +3098,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           Platform.ArrayUtilities.lowerBound(
               levelIndexes, timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) -
           1;
-      let lastDrawOffset: number = Infinity;
+      let lastDrawOffset = Infinity;
 
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
         const entryIndex = levelIndexes[entryIndexOnLevel];

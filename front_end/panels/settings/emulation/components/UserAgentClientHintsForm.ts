@@ -210,12 +210,12 @@ const DEFAULT_METADATA = {
 export class UserAgentClientHintsForm extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #isFormOpened: boolean = false;
-  #isFormDisabled: boolean = false;
+  #isFormOpened = false;
+  #isFormDisabled = false;
   #metaData: Protocol.Emulation.UserAgentMetadata = DEFAULT_METADATA;
-  #showMobileCheckbox: boolean = false;
-  #showSubmitButton: boolean = false;
-  #useragentModifiedAriaMessage: string = '';
+  #showMobileCheckbox = false;
+  #showSubmitButton = false;
+  #useragentModifiedAriaMessage = '';
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, userAgentClientHintsFormStyles];

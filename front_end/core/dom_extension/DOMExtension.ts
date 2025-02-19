@@ -34,6 +34,7 @@
  * http://ejohn.org/files/jsdiff.js (released under the MIT license).
  */
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck This file is not checked by TypeScript Compiler as it has a lot of legacy code.
 
 import * as Platform from '../platform/platform.js';
@@ -290,7 +291,7 @@ Node.prototype.isSelfOrDescendant = function(node: Node|null): boolean {
   return Boolean(node) && (node === this || this.isDescendant(node));
 };
 
-Node.prototype.traverseNextNode = function(stayWithin?: Node, skipShadowRoot: boolean = false): Node|null {
+Node.prototype.traverseNextNode = function(stayWithin?: Node, skipShadowRoot = false): Node|null {
   if (!skipShadowRoot && this.shadowRoot) {
     return this.shadowRoot;
   }

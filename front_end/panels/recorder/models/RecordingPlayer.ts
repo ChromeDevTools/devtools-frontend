@@ -47,7 +47,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   speed: PlayRecordingSpeed;
   timeout: number;
   breakpointIndexes: Set<number>;
-  steppingOver: boolean = false;
+  steppingOver = false;
   aborted = false;
   abortPromise: Promise<void>;
   #abortResolveFn?: Function;

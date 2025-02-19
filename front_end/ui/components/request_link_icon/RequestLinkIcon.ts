@@ -70,7 +70,7 @@ export class RequestLinkIcon extends HTMLElement {
   #request?: SDK.NetworkRequest.NetworkRequest|null;
   #highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   #requestResolver?: Logs.RequestResolver.RequestResolver;
-  #displayURL: boolean = false;
+  #displayURL = false;
   #urlToDisplay?: string;
   #networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   #affectedRequest?: {requestId?: Protocol.Network.RequestId, url?: string};
@@ -180,7 +180,7 @@ export class RequestLinkIcon extends HTMLElement {
   }
 
   async #render(): Promise<void> {
-    return RenderCoordinator.write(() => {
+    return await RenderCoordinator.write(() => {
       // By default we render just the URL for the request link. If we also know
       // the concrete network request, or at least its request ID, we surround
       // the URL with a button, that opens the request in the Network panel.

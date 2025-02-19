@@ -178,8 +178,8 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private resizeEnabled?: boolean;
   private clickHandler?: ((arg0: Event) => boolean)|null;
   private resizerParentOffsetLeft?: number;
-  #breadcrumbsEnabled: boolean = false;
-  #mouseOverGridOverview: boolean = false;
+  #breadcrumbsEnabled = false;
+  #mouseOverGridOverview = false;
   constructor(parentElement: HTMLElement, dividersLabelBarElement?: Element, calculator?: Calculator) {
     super();
     this.parentElement = parentElement;

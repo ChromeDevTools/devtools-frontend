@@ -89,7 +89,7 @@ async function getChildren(node: SDK.AccessibilityModel.AccessibilityNode):
     const localRoot = await getRootNode(frameId);
     return [localRoot];
   }
-  return node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || undefined);
+  return await node.accessibilityModel().requestAXChildren(node.id(), node.getFrameId() || undefined);
 }
 
 export async function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.AccessibilityNode): Promise<AXTreeNode[]> {

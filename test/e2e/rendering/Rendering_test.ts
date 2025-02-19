@@ -55,7 +55,6 @@ describe('Rendering pane', () => {
     });
 
     if (!hasSupport) {
-      // @ts-ignore
       this.skip();
     }
 

@@ -323,7 +323,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   private issueToolbarThrottle: Common.Throttler.Throttler;
   private requestResolver = new Logs.RequestResolver.RequestResolver();
   private issueResolver = new IssuesManager.IssueResolver.IssueResolver();
-  #isDetached: boolean = false;
+  #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
 
   constructor(viewportThrottlerTimeout: number) {
@@ -1609,9 +1609,9 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 }
 
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Console = globalThis.Console || {};
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Console.ConsoleView = ConsoleView;
 
 export class ConsoleViewFilter {

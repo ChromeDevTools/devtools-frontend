@@ -126,7 +126,7 @@ export class EventListenersView extends UI.Widget.VBox {
       if (!frameworkEventListenersObject.internalHandlers) {
         return;
       }
-      return frameworkEventListenersObject.internalHandlers.object()
+      return await frameworkEventListenersObject.internalHandlers.object()
           .callFunctionJSON(isInternalEventListener as (this: Object) => boolean[], eventListeners.map(handlerArgument))
           .then(setIsInternal);
 

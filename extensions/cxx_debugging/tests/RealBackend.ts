@@ -36,7 +36,7 @@ async function waitFor<ReturnT>(
       reject(e);
     }
   };
-  return new Promise<ReturnT>((resolve, reject) => callback(resolve, reject));
+  return await new Promise<ReturnT>((resolve, reject) => callback(resolve, reject));
 }
 
 export interface BreakLocation {
@@ -218,7 +218,7 @@ export class Debugger {
   }
 
   async waitForScript(url: string, timeout = 0): Promise<string> {
-    return waitFor(() => this.scripts.get(url)?.scriptId, timeout);
+    return await waitFor(() => this.scripts.get(url)?.scriptId, timeout);
   }
 
   async waitForPause(timeout = 0): Promise<PauseLocation> {
@@ -227,10 +227,10 @@ export class Debugger {
     }
     const waitPromise = new Promise<PauseLocation>(resolve => this.waitForPauseQueue.push({resolve}));
     if (timeout === 0) {
-      return waitPromise;
+      return await waitPromise;
     }
     const timeoutPromise = new Promise<PauseLocation>((_, r) => setTimeout(() => r(new Error('Timeout')), timeout));
-    return Promise.race([waitPromise, timeoutPromise]);
+    return await Promise.race([waitPromise, timeoutPromise]);
   }
 
   async evaluateFunction<T>(expression: string): Promise<T> {
@@ -285,7 +285,7 @@ export class Debugger {
   async evaluateOnCallFrame<T>(
       expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => T, expression: string,
       {callFrameId}: Protocol.Debugger.CallFrame): Promise<T> {
-    return this.evaluateOnCallFrameId(expectValue, convert, expression, callFrameId);
+    return await this.evaluateOnCallFrameId(expectValue, convert, expression, callFrameId);
   }
 
   async evaluateOnCallFrameId<T>(
@@ -301,7 +301,7 @@ export class Debugger {
   }
 
   async waitForFunction<T>(expression: string, timeout = 0): Promise<T> {
-    return waitFor(() => this.evaluateFunction<T>(expression), timeout);
+    return await waitFor(() => this.evaluateFunction<T>(expression), timeout);
   }
 
   page(script: string): WasmBackendPage {
@@ -465,7 +465,7 @@ class WasmBackendPage {
 
   async go(timeout = 0): Promise<number> {
     await this.debug.waitForFunction('window.isReady && window.isReady()', timeout);
-    return this.debug.evaluateFunction<number>('window.go()');
+    return await this.debug.evaluateFunction<number>('window.go()');
   }
 }
 

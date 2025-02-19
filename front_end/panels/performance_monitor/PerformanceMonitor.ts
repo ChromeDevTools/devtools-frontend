@@ -75,7 +75,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private startTimestamp?: number;
   private pollTimer?: number;
 
-  constructor(pollIntervalMs: number = 500) {
+  constructor(pollIntervalMs = 500) {
     super(true);
     this.registerRequiredCSS(performanceMonitorStyles);
 
@@ -289,7 +289,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
     const width = this.width;
     const startTime = performance.now() - this.pollIntervalMs - width / this.pixelsPerMs;
-    let max: number = -Infinity;
+    let max = -Infinity;
     for (const metricInfo of chartInfo.metrics) {
       for (let i = this.metricsBuffer.length - 1; i >= 0; --i) {
         const metrics = this.metricsBuffer[i];

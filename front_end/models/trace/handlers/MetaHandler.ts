@@ -11,8 +11,8 @@ const rendererProcessesByFrameId: FrameProcessData = new Map();
 
 // We will often want to key data by Frame IDs, and commonly we'll care most
 // about the main frame's ID, so we store and expose that.
-let mainFrameId: string = '';
-let mainFrameURL: string = '';
+let mainFrameId = '';
+let mainFrameURL = '';
 
 const framesByProcessId = new Map<Types.Events.ProcessID, Map<string, Types.Events.TraceFrame>>();
 

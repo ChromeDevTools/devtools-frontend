@@ -356,7 +356,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       return null;
     }
 
-    return cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
+    return await cssModel.cachedMatchedCascadeForNode(node).then(validateStyles.bind(this));
 
     function validateStyles(this: ComputedStyleWidget, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null):
         SDK.CSSMatchedStyles.CSSMatchedStyles|null {
@@ -466,7 +466,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
       compact: true,
       defaultRenderer,
     };
-    return this.filterGroupLists();
+    return await this.filterGroupLists();
   }
 
   private buildTraceNode(property: SDK.CSSProperty.CSSProperty):
@@ -603,7 +603,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   async filterComputedStyles(regex: RegExp|null): Promise<void> {
     this.filterRegex = regex;
     if (this.groupComputedStylesSetting.get()) {
-      return this.filterGroupLists();
+      return await this.filterGroupLists();
     }
     return this.filterAlphabeticalList();
   }

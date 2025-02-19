@@ -48,7 +48,7 @@ export class ColorSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private color: Common.Color.Color|null = null;
-  private readonly: boolean = false;
+  private readonly = false;
 
   constructor(tooltip?: string) {
     super();

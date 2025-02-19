@@ -67,7 +67,7 @@ export class NodeLink extends HTMLElement {
 
     // TODO: it'd be nice if we could specify what attributes to render,
     // ex for the Viewport insight: <meta content="..."> (instead of just <meta>)
-    return Common.Linkifier.Linkifier.linkify(node, this.#options);
+    return await Common.Linkifier.Linkifier.linkify(node, this.#options);
   }
 
   async #render(): Promise<void> {

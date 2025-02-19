@@ -9,7 +9,7 @@ import {$$, waitFor, waitForFunction} from '../../shared/helper.js';
 
 export async function getDataGridRows(
     expectedNumberOfRows: number, root?: ElementHandle<Node>,
-    matchExactNumberOfRows: boolean = true): Promise<Array<Array<ElementHandle<HTMLTableCellElement>>>> {
+    matchExactNumberOfRows = true): Promise<Array<Array<ElementHandle<HTMLTableCellElement>>>> {
   const dataGrid = !root ? await waitFor('devtools-data-grid') : root;
   const handlers = await (async () => {
     if (matchExactNumberOfRows) {
@@ -24,7 +24,7 @@ export async function getDataGridRows(
     });
   })();
 
-  return Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[jslog]:not(.hidden)', handler)));
+  return await Promise.all(handlers.map(handler => $$<HTMLTableCellElement>('td[jslog]:not(.hidden)', handler)));
 }
 
 export async function getDataGrid(root?: ElementHandle) {
@@ -42,7 +42,7 @@ export async function getDataGrid(root?: ElementHandle) {
 
 export async function getInnerTextOfDataGridCells(
     dataGridElement: ElementHandle<Element>, expectedNumberOfRows: number,
-    matchExactNumberOfRows: boolean = true): Promise<string[][]> {
+    matchExactNumberOfRows = true): Promise<string[][]> {
   const gridRows = await getDataGridRows(expectedNumberOfRows, dataGridElement, matchExactNumberOfRows);
   const table: string[][] = [];
   for (const row of gridRows) {

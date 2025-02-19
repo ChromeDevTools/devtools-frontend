@@ -360,12 +360,12 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     returnCount: number,
   }|undefined> {
     if (!force && this.loadingPromise) {
-      return this.loadingPromise;
+      return await this.loadingPromise;
     }
     this.refreshButton.setEnabled(false);
 
     if (this.loadingPromise) {
-      return this.loadingPromise;
+      return await this.loadingPromise;
     }
 
     this.loadingPromise = new Promise(resolve => {

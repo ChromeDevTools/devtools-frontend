@@ -116,7 +116,7 @@ export async function getConsoleMessages(testName: string, withAnchor = false, c
   // Have the target load the page.
   await goToResource(`console/${testName}.html`);
 
-  return getCurrentConsoleMessages(withAnchor, Level.All, callback);
+  return await getCurrentConsoleMessages(withAnchor, Level.All, callback);
 }
 
 export async function getCurrentConsoleMessages(withAnchor = false, level = Level.All, callback?: () => Promise<void>) {
@@ -154,7 +154,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, level = Leve
   }, selector);
 }
 
-export async function getLastConsoleMessages(offset: number = 0) {
+export async function getLastConsoleMessages(offset = 0) {
   return (await getCurrentConsoleMessages()).at(-1 - offset);
 }
 
@@ -392,19 +392,18 @@ export async function clickOnContextMenu(selectorForNode: string, jslogContext: 
  * Creates a function that runs a command and checks the nth output from the
  * bottom (checks last message by default)
  */
-export function checkCommandResultFunction(offset: number = 0) {
+export function checkCommandResultFunction(offset = 0) {
   return async function(command: string, expected: string, message?: string) {
     await typeIntoConsoleAndWaitForResult(command);
     assert.strictEqual(await getLastConsoleMessages(offset), expected, message);
   };
 }
 
-export async function getLastConsoleStacktrace(offset: number = 0) {
+export async function getLastConsoleStacktrace(offset = 0) {
   return (await getStructuredConsoleMessages()).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(
-    command: string, expected: string, leastMessages: number = 1, offset: number = 0) {
+export async function checkCommandStacktrace(command: string, expected: string, leastMessages = 1, offset = 0) {
   await typeIntoConsoleAndWaitForResult(command, leastMessages);
   await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
 }

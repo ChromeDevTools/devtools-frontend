@@ -23,7 +23,7 @@ export class GlassPane {
   private anchorBehavior: AnchorBehavior;
   private sizeBehavior: SizeBehavior;
   private marginBehavior: MarginBehavior;
-  #ignoreLeftMargin: boolean = false;
+  #ignoreLeftMargin = false;
 
   constructor(jslog?: string) {
     this.widgetInternal = new Widget(true);

@@ -16,7 +16,7 @@ type Message = MessageEvent<Response|Event>;
 
 export class ExtensionEndpoint {
   private readonly port: MessagePort;
-  private nextRequestId: number = 0;
+  private nextRequestId = 0;
   private pendingRequests: Map<number, {
     resolve: (arg: unknown) => void,
     reject: (error: Error) => void,

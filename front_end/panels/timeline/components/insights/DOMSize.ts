@@ -21,7 +21,7 @@ const {html} = Lit;
 
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-dom-size`;
-  override internalName: string = 'dom-size';
+  override internalName = 'dom-size';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {

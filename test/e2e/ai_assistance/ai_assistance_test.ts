@@ -67,7 +67,7 @@ describe('AI Assistance', function() {
     await frontend.bringToFront();
     await frontend.evaluate(messages => {
       let call = 0;
-      // @ts-ignore devtools context.
+      // @ts-expect-error devtools context.
       globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
         const response = JSON.stringify([
           {
@@ -81,7 +81,7 @@ describe('AI Assistance', function() {
         let first = true;
         for (const chunk of response.split(',{')) {
           await new Promise(resolve => setTimeout(resolve, 0));
-          // @ts-ignore devtools context.
+          // @ts-expect-error devtools context.
           globalThis.InspectorFrontendAPI.streamWrite(streamId, first ? chunk : ',{' + chunk);
           first = false;
         }
@@ -128,7 +128,7 @@ describe('AI Assistance', function() {
       return 'setDebugAiAssistanceEnabled' in window;
     });
     await frontend.evaluate(() => {
-      // @ts-ignore
+      // @ts-expect-error
       setDebugAiAssistanceEnabled(true);
     });
   }
@@ -331,9 +331,9 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 0, 255)' &&
-          // @ts-ignore page context.
+          // @ts-expect-error page context.
           window.getComputedStyle(document.querySelector('body')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
@@ -355,7 +355,7 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 0, 255)';
     });
 
@@ -374,7 +374,7 @@ STOP`,
 
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('button')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
@@ -398,7 +398,7 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'))
                  .backgroundColor === 'rgb(0, 0, 255)';
     });
@@ -420,7 +420,7 @@ STOP`,
     await target.bringToFront();
     await target.waitForFunction(() => {
       const buttonStyles =
-          // @ts-ignore page context.
+          // @ts-expect-error page context.
           window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'));
       return buttonStyles.backgroundColor === 'rgb(0, 0, 255)' && buttonStyles.color === 'rgb(0, 128, 0)';
     });
@@ -472,7 +472,7 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgba(0, 0, 0, 0)';
     });
 
@@ -501,7 +501,7 @@ STOP`,
 
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });

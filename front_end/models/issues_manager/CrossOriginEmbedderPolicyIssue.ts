@@ -79,7 +79,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<string, LazyMarkdownIssueDescription>([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
     {

@@ -5,8 +5,7 @@
 import * as Trace from '../../models/trace/trace.js';
 
 export class EventsSerializer {
-  #modifiedProfileCallByKey: Map<Trace.Types.File.ProfileCallKeyValues, Trace.Types.Events.SyntheticProfileCall> =
-      new Map();
+  #modifiedProfileCallByKey = new Map<Trace.Types.File.ProfileCallKeyValues, Trace.Types.Events.SyntheticProfileCall>();
 
   keyForEvent(event: Trace.Types.Events.Event): Trace.Types.File.SerializableKey|null {
     if (Trace.Types.Events.isProfileCall(event)) {

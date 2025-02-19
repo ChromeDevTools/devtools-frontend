@@ -441,7 +441,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   private readonly enabledCharts: Set<string>;
 
   private chartsInfo: ChartInfo[] = [];
-  private indicators: Map<string, MetricIndicator> = new Map();
+  private indicators = new Map<string, MetricIndicator>();
 
   constructor(parent: Element) {
     super();

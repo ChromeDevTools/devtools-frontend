@@ -208,7 +208,7 @@ export function formatRelatedCode(
   let relatedCodeSize = 0;
   let currentLineNumber = lineNumber;
   let currentWhitespace = lineWhitespace(lines[lineNumber]);
-  const startByPrefix: Map<string, number> = new Map();
+  const startByPrefix = new Map<string, number>();
   while (lines[currentLineNumber] !== undefined &&
          (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize / 2)) {
     const whitespace = lineWhitespace(lines[currentLineNumber]);

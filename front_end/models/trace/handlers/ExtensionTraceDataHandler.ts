@@ -11,8 +11,8 @@ import {data as userTimingsData} from './UserTimingsHandler.js';
 const extensionTrackEntries: Types.Extensions.SyntheticExtensionTrackEntry[] = [];
 const extensionTrackData: Types.Extensions.ExtensionTrackData[] = [];
 const extensionMarkers: Types.Extensions.SyntheticExtensionMarker[] = [];
-const entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode> = new Map();
-const timeStampByName: Map<string, Types.Events.ConsoleTimeStamp> = new Map();
+const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
+const timeStampByName = new Map<string, Types.Events.ConsoleTimeStamp>();
 
 const syntheticConsoleEntriesForTimingsTrack: Types.Events.SyntheticConsoleTimeStamp[] = [];
 

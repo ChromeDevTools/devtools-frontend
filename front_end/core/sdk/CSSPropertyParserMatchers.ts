@@ -452,7 +452,7 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
     return names.includes(propertyName);
   }
 
-  static readonly identifierAnimationLonghandMap: Map<string, AnimationLonghandPart> = new Map(
+  static readonly identifierAnimationLonghandMap = new Map<string, AnimationLonghandPart>(
       Object.entries({
         normal: AnimationLonghandPart.DIRECTION,
         alternate: AnimationLonghandPart.DIRECTION,

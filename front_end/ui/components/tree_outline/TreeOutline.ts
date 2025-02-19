@@ -92,8 +92,8 @@ export const enum FilterOption {
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #treeData: ReadonlyArray<TreeNode<TreeNodeDataType>> = [];
-  #nodeExpandedMap: Map<string, boolean> = new Map();
-  #domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
+  #nodeExpandedMap = new Map<string, boolean>();
+  #domNodeToTreeNodeMap = new WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>>();
   #hasRenderedAtLeastOnce = false;
   /**
    * If we have expanded to a certain node, we want to focus it once we've

@@ -29,7 +29,7 @@ export class SourceMappingsUpdated extends Event {
 }
 
 // The code location key is created as a concatenation of its fields.
-export const resolvedCodeLocationDataNames: Map<string, ResolvedCodeLocationData|null> = new Map();
+export const resolvedCodeLocationDataNames = new Map<string, ResolvedCodeLocationData|null>();
 
 export class SourceMapsResolver extends EventTarget {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;

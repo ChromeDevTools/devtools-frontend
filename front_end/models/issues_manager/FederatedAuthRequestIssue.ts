@@ -74,7 +74,7 @@ export class FederatedAuthRequestIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<Protocol.Audits.FederatedAuthRequestIssueReason, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<Protocol.Audits.FederatedAuthRequestIssueReason, LazyMarkdownIssueDescription>([
   [
     Protocol.Audits.FederatedAuthRequestIssueReason.TooManyRequests,
     {

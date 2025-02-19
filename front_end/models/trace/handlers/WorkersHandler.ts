@@ -11,8 +11,8 @@ export interface WorkersData {
 }
 
 const sessionIdEvents: Types.Events.TracingSessionIdForWorker[] = [];
-const workerIdByThread: Map<Types.Events.ThreadID, Types.Events.WorkerId> = new Map();
-const workerURLById: Map<Types.Events.WorkerId, string> = new Map();
+const workerIdByThread = new Map<Types.Events.ThreadID, Types.Events.WorkerId>();
+const workerURLById = new Map<Types.Events.WorkerId, string>();
 
 export function reset(): void {
   sessionIdEvents.length = 0;

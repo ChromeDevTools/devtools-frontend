@@ -220,7 +220,7 @@ export class RecorderController extends LitElement {
   @state() declare private exportMenuExpanded: boolean;
   #exportMenuButton: Buttons.Button.Button|undefined;
 
-  #stepBreakpointIndexes: Set<number> = new Set();
+  #stepBreakpointIndexes = new Set<number>();
 
   #builtInConverters: readonly Converters.Converter.Converter[];
   @state() declare private extensionConverters: Converters.Converter.Converter[];

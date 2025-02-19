@@ -192,7 +192,7 @@ export class CompatibilityTracksAppender {
   #entryData: Trace.Types.Events.Event[];
   #colorGenerator: Common.Color.Generator;
   #allTrackAppenders: TrackAppender[] = [];
-  #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
+  #visibleTrackNames = new Set<TrackAppenderName>([...TrackNames]);
 
   #legacyEntryTypeByLevel: EntryType[];
   #timingsTrackAppender: TimingsTrackAppender;

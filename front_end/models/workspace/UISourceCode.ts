@@ -59,7 +59,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private nameInternal: string;
   private contentTypeInternal: Common.ResourceType.ResourceType;
   private requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
-  private decorations: Map<string, any> = new Map();
+  private decorations = new Map<string, any>();
   private hasCommitsInternal: boolean;
   private messagesInternal: Set<Message>|null;
   private contentInternal: TextUtils.ContentData.ContentDataOrError|null;

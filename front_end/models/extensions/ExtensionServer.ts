@@ -55,7 +55,7 @@ import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {RecorderPluginManager} from './RecorderPluginManager.js';
 
-const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
+const extensionOrigins = new WeakMap<MessagePort, Platform.DevToolsPath.UrlString>();
 const kPermittedSchemes = ['http:', 'https:', 'file:', 'data:', 'chrome-extension:', 'about:'];
 
 declare global {
@@ -161,7 +161,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private extensionsEnabled: boolean;
   private inspectedTabId?: string;
   private readonly extensionAPITestHook?: (server: unknown, api: unknown) => unknown;
-  private themeChangeHandlers: Map<string, MessagePort> = new Map();
+  private themeChangeHandlers = new Map<string, MessagePort>();
   readonly #pendingExtensions: Host.InspectorFrontendHostAPI.ExtensionDescriptor[] = [];
 
   private constructor() {

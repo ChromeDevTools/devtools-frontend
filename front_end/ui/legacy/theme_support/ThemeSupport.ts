@@ -45,7 +45,7 @@ export class ThemeSupport extends EventTarget {
   private themeNameInternal = 'default';
   private computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
-  readonly #documentsToTheme: Set<Document> = new Set([document]);
+  readonly #documentsToTheme = new Set<Document>([document]);
 
   readonly #darkThemeMediaQuery: MediaQueryList;
   readonly #highContrastMediaQuery: MediaQueryList;

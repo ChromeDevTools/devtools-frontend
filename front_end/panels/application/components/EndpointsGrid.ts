@@ -46,7 +46,7 @@ export interface EndpointsGridData {
 export class EndpointsGrid extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]> = new Map();
+  #endpoints = new Map<string, Protocol.Network.ReportingApiEndpoint[]>();
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [reportingApiGridStyles, inspectorCommonStyles];

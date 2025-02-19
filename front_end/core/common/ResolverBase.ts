@@ -16,7 +16,7 @@ interface PromiseInfo<T> {
  * promises by using the `clear` method on this class.
  */
 export abstract class ResolverBase<Id, T> {
-  #unresolvedIds: Map<Id, PromiseInfo<T>> = new Map();
+  #unresolvedIds = new Map<Id, PromiseInfo<T>>();
 
   protected abstract getForId(id: Id): T|null;
   protected abstract startListening(): void;

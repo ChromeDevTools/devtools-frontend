@@ -50,7 +50,7 @@ interface MockRequestResolverEntry {
 }
 
 class MockRequestResolver {
-  #promiseMap: Map<string, MockRequestResolverEntry> = new Map();
+  #promiseMap = new Map<string, MockRequestResolverEntry>();
 
   waitFor(requestId?: string) {
     if (!requestId) {

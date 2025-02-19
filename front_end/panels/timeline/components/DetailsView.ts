@@ -173,7 +173,7 @@ export function generateInvalidationsList(
 } {
   const groupedByReason: Record<string, Trace.Types.Events.InvalidationTrackingEvent[]> = {};
 
-  const backendNodeIds: Set<Protocol.DOM.BackendNodeId> = new Set();
+  const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
   for (const invalidation of invalidations) {
     backendNodeIds.add(invalidation.args.data.nodeId);
 

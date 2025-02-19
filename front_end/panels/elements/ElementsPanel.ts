@@ -198,7 +198,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   stylesWidget: StylesSidebarPane;
   private readonly computedStyleWidget: ComputedStyleWidget;
   private readonly metricsWidget: MetricsSidebarPane;
-  private treeOutlines: Set<ElementsTreeOutline> = new Set();
+  private treeOutlines = new Set<ElementsTreeOutline>();
   private searchResults!: Array<{
     domModel: SDK.DOMModel.DOMModel,
     index: number,

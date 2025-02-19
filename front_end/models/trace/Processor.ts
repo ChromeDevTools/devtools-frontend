@@ -115,7 +115,7 @@ export class TraceProcessor extends EventTarget {
     if (Object.keys(providedHandlers).length === Object.keys(Handlers.ModelHandlers).length) {
       return;
     }
-    const requiredHandlerKeys: Set<Handlers.Types.HandlerName> = new Set();
+    const requiredHandlerKeys = new Set<Handlers.Types.HandlerName>();
     for (const [handlerName, handler] of Object.entries(providedHandlers)) {
       requiredHandlerKeys.add(handlerName as Handlers.Types.HandlerName);
       const deps = 'deps' in handler ? handler.deps() : [];

@@ -1134,7 +1134,7 @@ export class DOMDocument extends DOMNode {
 
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
-  idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode> = new Map();
+  idToDOMNode = new Map<Protocol.DOM.NodeId, DOMNode>();
   #document: DOMDocument|null;
   readonly #attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
   readonly runtimeModelInternal: RuntimeModel;

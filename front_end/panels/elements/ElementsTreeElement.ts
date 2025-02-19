@@ -262,8 +262,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private hintElement?: HTMLElement;
   private aiButtonContainer?: HTMLElement;
   private contentElement: HTMLElement;
-  #elementIssues: Map<string, IssuesManager.GenericIssue.GenericIssue> = new Map();
-  #nodeElementToIssue: Map<Element, IssuesManager.GenericIssue.GenericIssue> = new Map();
+  #elementIssues = new Map<string, IssuesManager.GenericIssue.GenericIssue>();
+  #nodeElementToIssue = new Map<Element, IssuesManager.GenericIssue.GenericIssue>();
   #highlights: Range[] = [];
 
   readonly tagTypeContext: TagTypeContext;

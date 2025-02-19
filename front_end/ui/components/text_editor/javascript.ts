@@ -270,7 +270,7 @@ let cacheInstance: PropertyCache|null = null;
 // Store recent collections of property completions. The empty string
 // is used to store the set of global bindings.
 class PropertyCache {
-  readonly #cache: Map<string, Promise<CompletionSet>> = new Map();
+  readonly #cache = new Map<string, Promise<CompletionSet>>();
 
   constructor() {
     const clear = (): void => this.#cache.clear();

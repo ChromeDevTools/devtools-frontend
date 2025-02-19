@@ -192,7 +192,7 @@ export class TimelineTreeView extends
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   #lastHighlightedEvent: HTMLElement|null = null;
-  eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
+  eventToTreeNode = new WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node>();
 
   /**
    * Determines if the first child in the data grid will be selected

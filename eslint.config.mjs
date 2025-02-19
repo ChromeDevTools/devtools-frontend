@@ -502,6 +502,11 @@ export default [
       // certain TypeScript compilation errors after fixes
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
 
+      '@typescript-eslint/consistent-generic-constructors': [
+        'error',
+        'constructor',
+      ],
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 

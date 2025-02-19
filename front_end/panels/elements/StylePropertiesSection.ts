@@ -155,7 +155,7 @@ export class StylePropertiesSection {
   private sectionIdx = 0;
 
   // Used to keep track of Specificity Information
-  static #nodeElementToSpecificity: WeakMap<Element, Protocol.CSS.Specificity> = new WeakMap();
+  static #nodeElementToSpecificity = new WeakMap<Element, Protocol.CSS.Specificity>();
   #customHeaderText: string|undefined;
 
   constructor(

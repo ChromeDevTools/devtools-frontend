@@ -70,41 +70,40 @@ export class SelectElementAccessibilityIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<Protocol.Audits.SelectElementAccessibilityIssueReason, LazyMarkdownIssueDescription> =
-    new Map([
-      [
-        Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild,
-        {
-          file: 'selectElementAccessibilityDisallowedSelectChild.md',
-          links: [],
-        },
-      ],
-      [
-        Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedOptGroupChild,
-        {
-          file: 'selectElementAccessibilityDisallowedOptGroupChild.md',
-          links: [],
-        },
-      ],
-      [
-        Protocol.Audits.SelectElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
-        {
-          file: 'selectElementAccessibilityNonPhrasingContentOptionChild.md',
-          links: [],
-        },
-      ],
-      [
-        Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild,
-        {
-          file: 'selectElementAccessibilityInteractiveContentOptionChild.md',
-          links: [],
-        },
-      ],
-      [
-        Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentLegendChild,
-        {
-          file: 'selectElementAccessibilityInteractiveContentLegendChild.md',
-          links: [],
-        },
-      ],
-    ]);
+const issueDescriptions = new Map<Protocol.Audits.SelectElementAccessibilityIssueReason, LazyMarkdownIssueDescription>([
+  [
+    Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedSelectChild,
+    {
+      file: 'selectElementAccessibilityDisallowedSelectChild.md',
+      links: [],
+    },
+  ],
+  [
+    Protocol.Audits.SelectElementAccessibilityIssueReason.DisallowedOptGroupChild,
+    {
+      file: 'selectElementAccessibilityDisallowedOptGroupChild.md',
+      links: [],
+    },
+  ],
+  [
+    Protocol.Audits.SelectElementAccessibilityIssueReason.NonPhrasingContentOptionChild,
+    {
+      file: 'selectElementAccessibilityNonPhrasingContentOptionChild.md',
+      links: [],
+    },
+  ],
+  [
+    Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild,
+    {
+      file: 'selectElementAccessibilityInteractiveContentOptionChild.md',
+      links: [],
+    },
+  ],
+  [
+    Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentLegendChild,
+    {
+      file: 'selectElementAccessibilityInteractiveContentLegendChild.md',
+      links: [],
+    },
+  ],
+]);

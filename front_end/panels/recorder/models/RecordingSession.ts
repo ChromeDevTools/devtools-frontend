@@ -134,7 +134,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
   readonly #mutex = new Common.Mutex.Mutex();
 
   #userFlow: UserFlow;
-  #stepsPendingNavigationByTargetId: Map<string, Step> = new Map();
+  #stepsPendingNavigationByTargetId = new Map<string, Step>();
   #started = false;
   #selectorTypesToRecord: SelectorType[] = [];
 

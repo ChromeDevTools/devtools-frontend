@@ -22,7 +22,7 @@ let syntheticEvents: Array<Types.Events.SyntheticEventPair<Types.Events.Pairable
 // overridden timestamp and duration. To prevent breaking potential deps
 // created since then, a second event was added instead of changing the
 // params of the first.
-const measureTraceByTraceId: Map<number, Types.Events.UserTimingMeasure> = new Map();
+const measureTraceByTraceId = new Map<number, Types.Events.UserTimingMeasure>();
 const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
 const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 

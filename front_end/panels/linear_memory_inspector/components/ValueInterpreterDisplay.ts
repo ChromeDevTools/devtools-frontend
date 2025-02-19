@@ -100,7 +100,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
-  #valueTypes: Set<ValueType> = new Set();
+  #valueTypes = new Set<ValueType>();
   #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
   #memoryLength = 0;
 

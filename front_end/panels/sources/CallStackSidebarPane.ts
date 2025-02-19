@@ -226,7 +226,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.notPausedMessageElement.classList.add('hidden');
 
     const itemPromises = [];
-    const uniqueWarnings: Set<string> = new Set();
+    const uniqueWarnings = new Set<string>();
     for (const frame of details.callFrames) {
       const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this));
       itemPromises.push(itemPromise);

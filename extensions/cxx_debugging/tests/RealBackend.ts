@@ -49,16 +49,16 @@ export class Debugger {
   private readonly targetId: string;
   private connected: boolean;
   private readonly queue: string[];
-  private readonly callbacks: Map<number, {
+  private readonly callbacks = new Map<number, {
     method: string,
     resolve: (r: ProtocolMapping.Commands[keyof ProtocolMapping.Commands]['returnType']) => unknown,
     reject: (r: unknown) => unknown,
-  }> = new Map();
+  }>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly eventHandlers: Map<string, Set<Handler<any>>> = new Map();
+  private readonly eventHandlers = new Map<string, Set<Handler<any>>>();
   private nextMessageId = 0;
-  private readonly scripts: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
-  private readonly scriptsById: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
+  private readonly scripts = new Map<string, Protocol.Debugger.ScriptParsedEvent>();
+  private readonly scriptsById = new Map<string, Protocol.Debugger.ScriptParsedEvent>();
   private nextStopId = 0n;
   private waitForPauseQueue: Array<{resolve: (pauseLocation: PauseLocation) => void}> = [];
   private pauseLocation?: PauseLocation;

@@ -34,7 +34,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   #timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
   #lastSelection: Selection|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
-  #eventIndexByEvent: Map<NetworkTrackEvent, number|null> = new Map();
+  #eventIndexByEvent = new Map<NetworkTrackEvent, number|null>();
   // -1 means no entry is selected.
   #lastInitiatorEntry: number = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];

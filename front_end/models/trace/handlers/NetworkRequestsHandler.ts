@@ -46,7 +46,7 @@ export interface WebSocketTraceDataForWorker {
 }
 export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataForWorker;
 
-const webSocketData: Map<number, WebSocketTraceData> = new Map();
+const webSocketData = new Map<number, WebSocketTraceData>();
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
   byOrigin: Map<string, {

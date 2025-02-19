@@ -518,7 +518,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     const circumstantial = explanations.filter(
         explanation => explanation.type === Protocol.Page.BackForwardCacheNotRestoredReasonType.Circumstantial);
 
-    const reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]> = new Map();
+    const reasonToFramesMap = new Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>();
     if (explanationTree) {
       this.#buildReasonToFramesMap(explanationTree, {blankCount: 1}, reasonToFramesMap);
     }

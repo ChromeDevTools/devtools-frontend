@@ -164,7 +164,7 @@ const specLinks = [{
   linkTitle: i18nLazyString(UIStrings.compressionDictionaryTransport),
 }];
 
-const issueDescriptions: Map<Protocol.Audits.SharedDictionaryError, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMarkdownIssueDescription>([
 
   [
     Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest,

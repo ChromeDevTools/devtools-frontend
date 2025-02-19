@@ -523,7 +523,7 @@ export class StepEditor extends LitElement {
   @property({type: Boolean}) declare isTypeEditable: boolean;
   @property({type: Boolean}) declare disabled: boolean;
 
-  #renderedAttributes: Set<Attribute> = new Set();
+  #renderedAttributes = new Set<Attribute>();
 
   constructor() {
     super();

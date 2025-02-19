@@ -4,9 +4,8 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 
-const imageCache:
-    WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null> =
-        new WeakMap();
+const imageCache =
+    new WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null>();
 export const emitter = new EventTarget();
 
 /**

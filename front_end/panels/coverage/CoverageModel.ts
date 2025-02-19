@@ -681,7 +681,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   private usedSizeInternal: number;
   private typeInternal!: CoverageType;
   private isContentScriptInternal: boolean;
-  sourcesURLCoverageInfo: Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo> = new Map();
+  sourcesURLCoverageInfo = new Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo>();
   sourceSegments: SourceSegment[]|undefined;
 
   constructor(url: Platform.DevToolsPath.UrlString) {
@@ -928,8 +928,8 @@ export class CoverageInfo {
   private coverageType: CoverageType;
   private segments: CoverageSegment[];
   private generatedUrlCoverageInfo: URLCoverageInfo;
-  sourceUsedSizeMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
-  sourceDeltaMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
+  sourceUsedSizeMap = new Map<Platform.DevToolsPath.UrlString, number>();
+  sourceDeltaMap = new Map<Platform.DevToolsPath.UrlString, number>();
   sourceUsedRangeMap = new Map<Platform.DevToolsPath.UrlString, RangeOffset[]>();
 
   constructor(

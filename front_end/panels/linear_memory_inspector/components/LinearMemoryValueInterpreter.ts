@@ -68,8 +68,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
-  #valueTypes: Set<ValueType> = new Set();
-  #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = new Map();
+  #valueTypes = new Set<ValueType>();
+  #valueTypeModeConfig = new Map<ValueType, ValueTypeMode>();
   #memoryLength = 0;
   #showSettings = false;
 

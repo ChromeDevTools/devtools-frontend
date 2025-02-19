@@ -976,7 +976,7 @@ async function testWarnings(
     sectionsExpected: Array<[string, string]>): Promise<void> {
   const target = createTarget();
 
-  const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
+  const warningsUpdatedPromise = new Promise<void>(resolve => {
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
     model.addEventListener(SDK.PreloadingModel.Events.WARNINGS_UPDATED, _ => resolve());

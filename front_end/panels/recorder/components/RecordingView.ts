@@ -324,7 +324,7 @@ export class RecordingView extends HTMLElement {
   #settings?: Models.RecordingSettings.RecordingSettings;
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
   #lastReplayResult?: Models.RecordingPlayer.ReplayResult;
-  #breakpointIndexes: Set<number> = new Set();
+  #breakpointIndexes = new Set<number>();
   #selectedStep?: Models.Schema.Step|null;
 
   #replaySettingsExpanded = false;

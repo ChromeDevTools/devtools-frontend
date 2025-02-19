@@ -8,9 +8,9 @@ import * as Types from '../types/types.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
-const schedulerToRunEntryPoints: Map<Types.Events.Event, Types.Events.Event[]> = new Map();
-const asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}> =
-    new Map();
+const schedulerToRunEntryPoints = new Map<Types.Events.Event, Types.Events.Event[]>();
+const asyncCallToScheduler =
+    new Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}>();
 
 export function reset(): void {
   schedulerToRunEntryPoints.clear();

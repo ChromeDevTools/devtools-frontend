@@ -40,7 +40,7 @@ const compositorTileWorkers = Array<{
   pid: Types.Events.ProcessID,
   tid: Types.Events.ThreadID,
 }>();
-const entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode> = new Map();
+const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
 let allTraceEntries: Types.Events.Event[] = [];
 
 const completeEventStack: (Types.Events.SyntheticComplete)[] = [];

@@ -210,7 +210,7 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export class CookieReportView extends UI.Widget.VBox {
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
-  #cookieRows: Map<string, IssuesManager.CookieIssue.CookieReportInfo> = new Map();
+  #cookieRows = new Map<string, IssuesManager.CookieIssue.CookieReportInfo>();
   #view: View;
   filterItems: UI.FilterBar.Item[] = [];
 

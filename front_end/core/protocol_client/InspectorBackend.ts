@@ -100,7 +100,7 @@ interface CallbackWithDebugInfo {
 }
 
 export class InspectorBackend {
-  readonly agentPrototypes: Map<ProtocolDomainName, AgentPrototype> = new Map();
+  readonly agentPrototypes = new Map<ProtocolDomainName, AgentPrototype>();
   #initialized: boolean = false;
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
   readonly typeMap = new Map<QualifiedName, CommandParameter[]>();

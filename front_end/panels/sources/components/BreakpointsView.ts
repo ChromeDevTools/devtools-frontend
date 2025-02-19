@@ -547,7 +547,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #breakpointsActive: boolean = true;
   #breakpointGroups: BreakpointGroup[] = [];
-  #urlToDifferentiatingPath: Map<Platform.DevToolsPath.UrlString, string> = new Map();
+  #urlToDifferentiatingPath = new Map<Platform.DevToolsPath.UrlString, string>();
 
   set data(data: BreakpointsViewData) {
     this.#pauseOnUncaughtExceptions = data.pauseOnUncaughtExceptions;

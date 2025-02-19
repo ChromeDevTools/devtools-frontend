@@ -127,7 +127,7 @@ describe('The Console Tab', () => {
   it('can exclude messages from a source url', async () => {
     const {frontend} = getBrowserAndPages();
     let sourceUrls: string[];
-    let uniqueUrls: Set<string> = new Set();
+    let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
       await getConsoleMessages('console-filter');
@@ -167,7 +167,7 @@ describe('The Console Tab', () => {
   it('can include messages from a given source url', async () => {
     const {frontend} = getBrowserAndPages();
     let sourceUrls: string[];
-    let uniqueUrls: Set<string> = new Set();
+    let uniqueUrls = new Set<string>();
 
     await step('navigate to console-filter.html and wait for console messages', async () => {
       await getConsoleMessages('console-filter');

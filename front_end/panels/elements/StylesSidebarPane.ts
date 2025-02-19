@@ -228,7 +228,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #elementPopoverHooks = new WeakMap<Node, {contents: () => HTMLElement | undefined, jslogContext?: string}>();
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
-  #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
+  #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
   #copyChangesButton?: UI.Toolbar.ToolbarButton;
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;

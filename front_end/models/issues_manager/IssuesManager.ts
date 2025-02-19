@@ -195,7 +195,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   #filteredIssues = new Map<string, Issue>();
   #issueCounts = new Map<IssueKind, number>();
   #hiddenIssueCount = new Map<IssueKind, number>();
-  #issuesById: Map<string, Issue> = new Map();
+  #issuesById = new Map<string, Issue>();
   #issuesByOutermostTarget: WeakMap<SDK.Target.Target, Set<Issue>> = new Map();
   #thirdPartyCookiePhaseoutIssueMessageSent: boolean = false;
 

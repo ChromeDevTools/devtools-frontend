@@ -43,7 +43,7 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // XHRs are fetched at High priority, but we exclude them, as they are unlikely to be critical
 // Images are also non-critical.
-const nonCriticalResourceTypes: Set<Protocol.Network.ResourceType> = new Set([
+const nonCriticalResourceTypes = new Set<Protocol.Network.ResourceType>([
   Protocol.Network.ResourceType.Image,
   Protocol.Network.ResourceType.XHR,
   Protocol.Network.ResourceType.Fetch,

@@ -73,8 +73,8 @@ export class PropertyDeselectedEvent extends Event {
 
 export class StylePropertyEditor extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #authoredProperties: Map<string, string> = new Map();
-  #computedProperties: Map<string, string> = new Map();
+  #authoredProperties = new Map<string, string>();
+  #computedProperties = new Map<string, string>();
   protected readonly editableProperties: EditableProperty[] = [];
 
   constructor() {

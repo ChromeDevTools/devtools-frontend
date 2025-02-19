@@ -137,7 +137,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private lastSelection: Selection|null = null;
   readonly #font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
-  #eventIndexByEvent: WeakMap<Trace.Types.Events.Event, number|null> = new WeakMap();
+  #eventIndexByEvent = new WeakMap<Trace.Types.Events.Event, number|null>();
   #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
 
   constructor() {

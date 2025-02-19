@@ -104,10 +104,10 @@ export class ElementsTreeOutline extends
   private dragOverTreeElement?: ElementsTreeElement;
   private updateModifiedNodesTimeout?: number;
   #genericIssues: IssuesManager.GenericIssue.GenericIssue[] = [];
-  #topLayerContainerByParent: Map<UI.TreeOutline.TreeElement, TopLayerContainer> = new Map();
+  #topLayerContainerByParent = new Map<UI.TreeOutline.TreeElement, TopLayerContainer>();
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   #popupHelper?: UI.PopoverHelper.PopoverHelper;
-  #nodeElementToIssue: Map<Element, IssuesManager.GenericIssue.GenericIssue> = new Map();
+  #nodeElementToIssue = new Map<Element, IssuesManager.GenericIssue.GenericIssue>();
 
   constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean) {
     super();

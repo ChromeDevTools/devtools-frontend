@@ -25,7 +25,7 @@ let gpuThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
 let devicePixelRatio: number|null = null;
 
-const processNames: Map<Types.Events.ProcessID, Types.Events.ProcessName> = new Map();
+const processNames = new Map<Types.Events.ProcessID, Types.Events.ProcessName>();
 
 const topLevelRendererIds = new Set<Types.Events.ProcessID>();
 const traceBounds: Types.Timing.TraceWindowMicro = {

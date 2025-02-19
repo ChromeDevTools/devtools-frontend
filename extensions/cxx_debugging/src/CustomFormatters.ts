@@ -506,7 +506,7 @@ function lazyObjectFromAny(
 
 export class LazyObjectStore {
   private nextObjectId: number = 0;
-  private objects: Map<string, LazyObject> = new Map();
+  private objects = new Map<string, LazyObject>();
 
   store(lazyObject: LazyObject): string {
     const objectId = `${this.nextObjectId++}`;
@@ -646,7 +646,7 @@ export class DebuggerProxy {
 }
 
 export class CustomFormatters {
-  private static formatters: Map<string, Formatter> = new Map();
+  private static formatters = new Map<string, Formatter>();
   private static genericFormatters: Formatter[] = [];
 
   static addFormatter(formatter: Formatter): void {

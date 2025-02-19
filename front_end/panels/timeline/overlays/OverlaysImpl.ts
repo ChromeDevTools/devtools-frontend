@@ -452,7 +452,7 @@ export class Overlays extends EventTarget {
    * subsequent renders we do not destroy and recreate it, instead we update it
    * based on the new position of the timeline.
    */
-  #overlaysToElements: Map<TimelineOverlay, HTMLElement|null> = new Map();
+  #overlaysToElements = new Map<TimelineOverlay, HTMLElement|null>();
 
   // When the Entries Link Annotation is created, the arrow needs to follow the mouse.
   // Update the mouse coordinates while it is being created.
@@ -781,7 +781,7 @@ export class Overlays extends EventTarget {
     // This isn't bi-directional: if we find that O2 overlaps O1, we will
     // store O1 => [O2]. We will not then also store O2 => [O1], because we
     // only need to deal with the overlap once.
-    const overlapsByOverlay: Map<TimeRangeLabel, TimeRangeLabel[]> = new Map();
+    const overlapsByOverlay = new Map<TimeRangeLabel, TimeRangeLabel[]>();
 
     for (let i = 0; i < overlaysSorted.length; i++) {
       const current = overlaysSorted[i];

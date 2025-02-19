@@ -429,8 +429,8 @@ export class DebuggerLanguagePluginManager implements
     addRawModulePromise:
         Promise<Platform.DevToolsPath.UrlString[]|{missingSymbolFiles: SDK.DebuggerModel.MissingDebugFiles[]}>,
   }>;
-  private readonly callFrameByStopId: Map<StopId, SDK.DebuggerModel.CallFrame> = new Map();
-  private readonly stopIdByCallFrame: Map<SDK.DebuggerModel.CallFrame, StopId> = new Map();
+  private readonly callFrameByStopId = new Map<StopId, SDK.DebuggerModel.CallFrame>();
+  private readonly stopIdByCallFrame = new Map<SDK.DebuggerModel.CallFrame, StopId>();
   private nextStopId: StopId = 0n;
 
   constructor(

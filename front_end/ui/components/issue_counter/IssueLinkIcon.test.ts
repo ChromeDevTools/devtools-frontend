@@ -43,7 +43,7 @@ interface MockIssueResolverEntry {
 }
 
 class MockIssueResolver {
-  #promiseMap: Map<string, MockIssueResolverEntry> = new Map();
+  #promiseMap = new Map<string, MockIssueResolverEntry>();
 
   waitFor(issueId?: string) {
     if (!issueId) {

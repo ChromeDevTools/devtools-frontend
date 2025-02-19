@@ -67,7 +67,7 @@ export class TypeToggleEvent extends Event {
 export class ValueInterpreterSettings extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #valueTypes: Set<ValueType> = new Set();
+  #valueTypes = new Set<ValueType>();
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, valueInterpreterSettingsStyles];

@@ -256,7 +256,7 @@ function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<stri
 }
 
 function linkInitiators(lanternRequests: NetworkRequest[]): void {
-  const requestsByURL: Map<string, NetworkRequest[]> = new Map();
+  const requestsByURL = new Map<string, NetworkRequest[]>();
   for (const request of lanternRequests) {
     const requests = requestsByURL.get(request.url) || [];
     requests.push(request);

@@ -88,9 +88,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable>,
                UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
   #paneInstance = LinearMemoryInspectorPane.instance();
-  #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
-  #bufferIdToHighlightInfo: Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo> =
-      new Map();
+  #bufferIdToRemoteObject = new Map<string, SDK.RemoteObject.RemoteObject>();
+  #bufferIdToHighlightInfo = new Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo>();
   #settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {

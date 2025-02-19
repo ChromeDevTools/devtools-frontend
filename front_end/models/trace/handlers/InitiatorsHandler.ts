@@ -30,8 +30,8 @@ const eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
 // multiple events, hence why the value for this map is an array.
 const initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
 
-const webSocketCreateEventsById: Map<number, Types.Events.WebSocketCreate> = new Map();
-const schedulePostTaskCallbackEventsById: Map<number, Types.Events.SchedulePostTaskCallback> = new Map();
+const webSocketCreateEventsById = new Map<number, Types.Events.WebSocketCreate>();
+const schedulePostTaskCallbackEventsById = new Map<number, Types.Events.SchedulePostTaskCallback>();
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();

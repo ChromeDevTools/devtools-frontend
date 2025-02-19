@@ -116,10 +116,10 @@ export class PresentationConsoleMessageManager {
 export class PresentationSourceFrameMessageHelper {
   #debuggerModel?: SDK.DebuggerModel.DebuggerModel;
   #cssModel?: SDK.CSSModel.CSSModel;
-  #presentationMessages: Map<Platform.DevToolsPath.UrlString, Array<{
-                               source: MessageSource,
-                               presentation: PresentationSourceFrameMessage,
-                             }>> = new Map();
+  #presentationMessages = new Map<Platform.DevToolsPath.UrlString, Array<{
+                                    source: MessageSource,
+                                    presentation: PresentationSourceFrameMessage,
+                                  }>>();
   readonly #locationPool: LiveLocationPool;
 
   constructor() {

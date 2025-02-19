@@ -46,7 +46,7 @@ export function uiLabelToNetworkPriority(priorityLabel: string): Protocol.Networ
   throw new Error('Priority not found');
 }
 
-const priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string> = new Map();
+const priorityUILabelMapInstance = new Map<Protocol.Network.ResourcePriority, string>();
 
 export function priorityUILabelMap(): Map<Protocol.Network.ResourcePriority, string> {
   if (priorityUILabelMapInstance.size === 0) {

@@ -254,7 +254,7 @@ export function makeProfileCall(
  */
 export function matchEvents(unpairedEvents: Types.Events.PairableAsync[]): Map<string, MatchingPairableAsyncEvents> {
   // map to store begin and end of the event
-  const matchedPairs: Map<string, MatchingPairableAsyncEvents> = new Map();
+  const matchedPairs = new Map<string, MatchingPairableAsyncEvents>();
 
   // looking for start and end
   for (const event of unpairedEvents) {

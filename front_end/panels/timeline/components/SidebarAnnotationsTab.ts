@@ -101,7 +101,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #annotations: Trace.Types.File.Annotation[] = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
-  #annotationEntryToColorMap: Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string> = new Map();
+  #annotationEntryToColorMap = new Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>();
 
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
 

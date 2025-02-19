@@ -67,7 +67,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   onDisconnect: ((arg0: string) => void)|null = null;
   onMessage: ((arg0: Object) => void)|null = null;
   traceEvents: unknown[] = [];
-  sessions: Map<number, RehydratingSessionBase> = new Map();
+  sessions = new Map<number, RehydratingSessionBase>();
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow: Window&typeof globalThis;
   #onReceiveHostWindowPayloadBound = this.#onReceiveHostWindowPayload.bind(this);

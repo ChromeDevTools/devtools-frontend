@@ -134,8 +134,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
     Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> => {
-      const metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}> =
-          new Map();
+      const metadataByCommand = new Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>();
       for (const domain of domains) {
         for (const command of Object.keys(domain.metadata)) {
           metadataByCommand.set(command, domain.metadata[command]);

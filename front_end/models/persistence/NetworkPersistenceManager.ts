@@ -38,7 +38,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private activeInternal: boolean;
   private enabled: boolean;
   private eventDescriptors: Common.EventTarget.EventDescriptor[];
-  #headerOverridesMap: Map<Platform.DevToolsPath.EncodedPathString, HeaderOverrideWithRegex[]> = new Map();
+  #headerOverridesMap = new Map<Platform.DevToolsPath.EncodedPathString, HeaderOverrideWithRegex[]>();
   readonly #sourceCodeToBindProcessMutex = new WeakMap<Workspace.UISourceCode.UISourceCode, Common.Mutex.Mutex>();
   readonly #eventDispatchThrottler: Common.Throttler.Throttler;
   #headerOverridesForEventDispatch: Set<Workspace.UISourceCode.UISourceCode>;

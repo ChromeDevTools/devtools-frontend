@@ -16,7 +16,7 @@ export class EntityMapper {
    * as different cpu profile nodes. To avoid duplicate work on the
    * same CallFrame, we can keep track of them.
    */
-  #resolvedCallFrames: Set<Protocol.Runtime.CallFrame> = new Set();
+  #resolvedCallFrames = new Set<Protocol.Runtime.CallFrame>();
 
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#parsedTrace = parsedTrace;

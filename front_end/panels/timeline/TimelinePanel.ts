@@ -392,7 +392,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * we store the filters by the trace index, so if the user then navigates back
    * to a previous trace we can reinstate the filters from this map.
    */
-  #exclusiveFilterPerTrace: Map<number, Trace.Extras.TraceFilter.TraceFilter> = new Map();
+  #exclusiveFilterPerTrace = new Map<number, Trace.Extras.TraceFilter.TraceFilter>();
   /**
    * This widget holds the timeline sidebar which shows Insights & Annotations,
    * and the main UI which shows the timeline

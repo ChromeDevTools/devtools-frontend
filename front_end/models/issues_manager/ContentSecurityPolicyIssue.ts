@@ -162,11 +162,10 @@ export const trustedTypesPolicyViolationCode = [
   Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation,
 ].join('::');
 
-const issueDescriptions: Map<Protocol.Audits.ContentSecurityPolicyViolationType, LazyMarkdownIssueDescription> =
-    new Map([
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
-    ]);
+const issueDescriptions = new Map<Protocol.Audits.ContentSecurityPolicyViolationType, LazyMarkdownIssueDescription>([
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
+]);

@@ -74,7 +74,7 @@ export class ClientHintIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<Protocol.Audits.ClientHintIssueReason, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<Protocol.Audits.ClientHintIssueReason, LazyMarkdownIssueDescription>([
   [
     Protocol.Audits.ClientHintIssueReason.MetaTagAllowListInvalidOrigin,
     {

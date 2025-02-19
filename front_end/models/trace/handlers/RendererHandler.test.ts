@@ -691,8 +691,7 @@ describeWithEnvironment('RendererHandler', function() {
 
   it('can assign origins to processes', async () => {
     const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const processes: Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess> =
-        new Map();
+    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
 
     Trace.Handlers.ModelHandlers.Renderer.assignOrigin(processes, metadata.rendererProcessesByFrame);
 
@@ -706,8 +705,7 @@ describeWithEnvironment('RendererHandler', function() {
 
   it('can assign main frame flags to processes', async () => {
     const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const processes: Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess> =
-        new Map();
+    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
 
     Trace.Handlers.ModelHandlers.Renderer.assignIsMainFrame(
         processes, metadata.mainFrameId, metadata.rendererProcessesByFrame);
@@ -723,8 +721,7 @@ describeWithEnvironment('RendererHandler', function() {
   it('can assign thread names to threads in processes', async () => {
     const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metadata;
-    const processes: Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess> =
-        new Map();
+    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
 
     Trace.Handlers.ModelHandlers.Renderer.assignMeta(
         processes, mainFrameId, rendererProcessesByFrame, threadsInProcess);

@@ -82,14 +82,14 @@ export class PersistentOverlay extends Overlay {
   private gridLabelState = {gridLayerCounter: 0};
 
   private gridLabels!: HTMLElement;
-  private draggableBorders: Map<number, {
+  private draggableBorders = new Map<number, {
     widthPath: Path2D,
     heightPath: Path2D,
     bidirectionPath: Path2D,
     highlightIndex: number,
     initialWidth: number,
     initialHeight: number,
-  }> = new Map();
+  }>();
   private dragHandler?: DragResizeHandler;
 
   override reset(data: ResetData) {

@@ -40,8 +40,8 @@ export class StorageBucketsModel extends SDKModel<EventTypes> implements Protoco
   private enabled: boolean = false;
   readonly storageAgent: ProtocolProxyApi.StorageApi;
   private readonly storageKeyManager: StorageKeyManager|null;
-  private bucketsById: Map<string, Protocol.Storage.StorageBucketInfo> = new Map();
-  private trackedStorageKeys: Set<string> = new Set();
+  private bucketsById = new Map<string, Protocol.Storage.StorageBucketInfo>();
+  private trackedStorageKeys = new Set<string>();
 
   constructor(target: Target) {
     super(target);

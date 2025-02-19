@@ -166,7 +166,7 @@ export class SRIMessageSignatureIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<Protocol.Audits.SRIMessageSignatureError, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<Protocol.Audits.SRIMessageSignatureError, LazyMarkdownIssueDescription>([
   [
     Protocol.Audits.SRIMessageSignatureError.MissingSignatureHeader,
     {

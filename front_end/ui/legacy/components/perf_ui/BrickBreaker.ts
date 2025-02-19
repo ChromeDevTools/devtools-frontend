@@ -116,8 +116,8 @@ export class BrickBreaker extends HTMLElement {
   #helperCanvasCtx: CanvasRenderingContext2D;
   #scorePanel: HTMLElement;
   #trackTimelineOffset: number = 0;
-  #visibleEntries: Set<number> = new Set();
-  #brokenBricks: Map<number, Brick> = new Map();
+  #visibleEntries = new Set<number>();
+  #brokenBricks = new Map<number, Brick>();
   #keyDownHandlerBound = this.#keyDownHandler.bind(this);
   #keyUpHandlerBound = this.#keyUpHandler.bind(this);
   #keyPressHandlerBound = this.#keyPressHandler.bind(this);

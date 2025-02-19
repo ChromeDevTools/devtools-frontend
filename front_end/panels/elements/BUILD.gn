@@ -163,6 +163,7 @@ ts_library("unittests") {
     "DOMLinkifier.test.ts",
     "ElementStatePaneWidget.test.ts",
     "ElementsPanel.test.ts",
+    "ElementsTreeElement.test.ts",
     "ElementsTreeElementHighlighter.test.ts",
     "ElementsTreeOutline.test.ts",
     "InspectElementModeController.test.ts",
@@ -180,6 +181,7 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../models/text_utils:bundle",
     "../../testing",
     "./components:unittests",
   ]

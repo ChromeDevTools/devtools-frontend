@@ -283,12 +283,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.gutterContainer = this.contentElement.createChild('div', 'gutter-container');
     this.gutterContainer.addEventListener('click', this.showContextMenu.bind(this));
     const gutterMenuIcon = new IconButton.Icon.Icon();
-    gutterMenuIcon.data = {
-      color: 'var(--icon-default)',
-      iconName: 'dots-horizontal',
-      height: '16px',
-      width: '16px',
-    };
+    gutterMenuIcon.name = 'dots-horizontal';
     this.gutterContainer.append(gutterMenuIcon);
     this.decorationsElement = this.gutterContainer.createChild('div', 'hidden');
 
@@ -1138,7 +1133,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const initialValue = this.convertWhitespaceToEntities(maybeInitialValue).text;
+    const initialValue = convertUnicodeCharsToHTMLEntities(maybeInitialValue).text;
     this.htmlEditElement = document.createElement('div');
     this.htmlEditElement.className = 'source-code elements-tree-editor';
 
@@ -1613,7 +1608,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     let additionalHighlightOffset = 0;
 
     function setValueWithEntities(this: ElementsTreeElement, element: Element, value: string): void {
-      const result = this.convertWhitespaceToEntities(value);
+      const result = convertUnicodeCharsToHTMLEntities(value);
       highlightCount = result.entityRanges.length;
       value = result.text.replace(closingPunctuationRegex, (match, replaceOffset) => {
         while (highlightIndex < highlightCount && result.entityRanges[highlightIndex].offset < replaceOffset) {
@@ -1827,30 +1822,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  private convertWhitespaceToEntities(text: string): {
-    text: string,
-    entityRanges: TextUtils.TextRange.SourceRange[],
-  } {
-    let result = '';
-    let lastIndexAfterEntity = 0;
-    const entityRanges = [];
-    const charToEntity = MappedCharToEntity;
-    for (let i = 0, size = text.length; i < size; ++i) {
-      const char = text.charAt(i);
-      if (charToEntity.has(char)) {
-        result += text.substring(lastIndexAfterEntity, i);
-        const entityValue = '&' + charToEntity.get(char) + ';';
-        entityRanges.push(new TextUtils.TextRange.SourceRange(result.length, entityValue.length));
-        result += entityValue;
-        lastIndexAfterEntity = i + 1;
-      }
-    }
-    if (result) {
-      result += text.substring(lastIndexAfterEntity);
-    }
-    return {text: result || text, entityRanges};
-  }
-
   private nodeTitleInfo(updateRecord: UpdateRecord|null): DocumentFragment {
     const node = this.nodeInternal;
     const titleDOM = document.createDocumentFragment();
@@ -1912,7 +1883,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           if (!firstChild) {
             throw new Error('ElementsTreeElement._nodeTitleInfo expects node.firstChild to be defined.');
           }
-          const result = this.convertWhitespaceToEntities(firstChild.nodeValue());
+          const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
           textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '\u200B');
@@ -1952,7 +1923,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           const textNodeElement = titleDOM.createChild('span', 'webkit-html-text-node');
           textNodeElement.setAttribute(
               'jslog', `${VisualLogging.value('text-node').track({change: true, dblclick: true})}`);
-          const result = this.convertWhitespaceToEntities(node.nodeValue());
+          const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
           textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '"');
@@ -2555,6 +2526,31 @@ export function adornerComparator(adornerA: Adorners.Adorner.Adorner, adornerB: 
   }
   return compareCategories;
 }
+
+export function convertUnicodeCharsToHTMLEntities(text: string): {
+  text: string,
+  entityRanges: TextUtils.TextRange.SourceRange[],
+} {
+  let result = '';
+  let lastIndexAfterEntity = 0;
+  const entityRanges = [];
+  const charToEntity = MappedCharToEntity;
+  for (let i = 0, size = text.length; i < size; ++i) {
+    const char = text.charAt(i);
+    if (charToEntity.has(char)) {
+      result += text.substring(lastIndexAfterEntity, i);
+      const entityValue = '&' + charToEntity.get(char) + ';';
+      entityRanges.push(new TextUtils.TextRange.SourceRange(result.length, entityValue.length));
+      result += entityValue;
+      lastIndexAfterEntity = i + 1;
+    }
+  }
+  if (result) {
+    result += text.substring(lastIndexAfterEntity);
+  }
+  return {text: result || text, entityRanges};
+}
+
 export interface EditorHandles {
   commit: () => void;
   cancel: () => void;

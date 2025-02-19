@@ -984,8 +984,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       const error = SDK.RemoteObject.RemoteError.objectAsError(errorObj);
       const [details, cause] = await Promise.all([error.exceptionDetails(), error.cause()]);
       const errorElementType = includeCausedByPrefix ? 'div' : 'span';
-      const errorElement = this.tryFormatAsError(error.errorStack, details, errorElementType) ??
-          this.linkifyStringAsFragment(error.errorStack);
+      let errorElement = this.tryFormatAsError(error.errorStack, details, errorElementType);
+      if (!errorElement) {
+        errorElement = document.createElement(errorElementType);
+        errorElement.append(this.linkifyStringAsFragment(error.errorStack));
+      }
       if (includeCausedByPrefix) {
         errorElement.prepend('Caused by: ');
       }

@@ -227,8 +227,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
       return;
     }
 
-    const output = this.renderContent();
-    this.#renderWithContent(output);
+    this.#renderWithContent();
   }
 
   getEstimatedSavingsTime(): Trace.Types.Timing.Milli|null {
@@ -307,7 +306,26 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
     void action.execute();
   }
 
-  #renderWithContent(content: Lit.LitTemplate): void {
+  #renderInsightContent(insightModel: T): Lit.LitTemplate {
+    if (!this.#selected) {
+      return Lit.nothing;
+    }
+    // Only render the insight body content if it is selected.
+    // To avoid re-rendering triggered from elsewhere.
+    const content = this.renderContent();
+    // clang-format off
+    return html`
+      <div class="insight-body">
+        <div class="insight-description">${md(insightModel.description)}</div>
+        <div class="insight-content">${content}</div>
+        ${this.#insightsAskAiEnabled ? html`
+          <devtools-button data-ask-ai @click=${this.#askAIButtonClick}>Ask AI (placeholder UX)</devtools-button>
+        `: Lit.nothing}
+      </div>`;
+    // clang-format on
+  }
+
+  #renderWithContent(): void {
     if (!this.#model) {
       Lit.render(Lit.nothing, this.shadow, {host: this});
       return;
@@ -340,16 +358,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
           </div>`
           : Lit.nothing}
         </header>
-        ${this.#selected ? html`
-          <div class="insight-body">
-            <div class="insight-description">${md(this.#model.description)}</div>
-            <div class="insight-content">${content}</div>
-            ${this.#insightsAskAiEnabled ? html`
-               <devtools-button data-ask-ai @click=${this.#askAIButtonClick}>Ask AI (placeholder UX)</devtools-button>
-             ` : Lit.nothing}
-          </div>`
-          : Lit.nothing
-        }
+        ${this.#renderInsightContent(this.#model)}
       </div>
     `;
     // clang-format on

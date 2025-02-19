@@ -12,6 +12,7 @@ import {
   type BottomUpCallStack,
   type ForcedReflowAggregatedData,
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type PartialInsightModel,
   type RequiredData,
@@ -190,7 +191,7 @@ function aggregateForcedReflow(
 
 function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): ForcedReflowInsightModel {
   return {
-    insightKey: 'ForcedReflow',
+    insightKey: InsightKeys.FORCED_REFLOW,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

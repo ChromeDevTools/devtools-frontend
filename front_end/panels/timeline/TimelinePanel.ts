@@ -68,6 +68,7 @@ import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsMana
 import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {type Client, TimelineController} from './TimelineController.js';
+import {Tab} from './TimelineDetailsView.js';
 import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {Events as TimelineFlameChartViewEvents, TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
@@ -639,6 +640,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
       const {model, insightSetKey} = event;
       this.#setActiveInsight({model, insightSetKey});
+
+      // Open the summary panel for the 3p insight.
+      if (model.insightKey === Trace.Insights.Types.InsightKeys.THIRD_PARTIES) {
+        this.#openSummaryTab();
+      }
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
@@ -2630,6 +2636,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
       void this.loadFromFile(file);
     }
+  }
+
+  #openSummaryTab(): void {
+    // If we have a selection, we should remove it.
+    this.flameChart.setSelectionAndReveal(null);
+    this.flameChart.selectDetailsViewTab(Tab.Details, null);
   }
 }
 

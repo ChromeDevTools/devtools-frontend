@@ -8,6 +8,7 @@ import type * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
@@ -39,7 +40,7 @@ export type ViewportInsightModel = InsightModel<typeof UIStrings, {
 
 function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): ViewportInsightModel {
   return {
-    insightKey: 'Viewport',
+    insightKey: InsightKeys.VIEWPORT,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

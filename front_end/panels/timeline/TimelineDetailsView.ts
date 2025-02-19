@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -26,7 +27,12 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
-import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
+import {
+  AggregatedTimelineTreeView,
+  BottomUpTimelineTreeView,
+  CallTreeTimelineTreeView,
+  TimelineTreeView
+} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {TracingFrameLayerTree} from './TracingLayerTree.js';
 import * as Utils from './utils/utils.js';
@@ -132,8 +138,9 @@ export class TimelineDetailsPane extends
       this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node.data);
     });
 
-    this.#thirdPartyTree.addEventListener(
-        TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => this.#bottomUpClicked(node));
+    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, node => {
+      this.selectTab(Tab.BottomUp, node.data, AggregatedTimelineTreeView.GroupBy.ThirdParties);
+    });
 
     this.#networkRequestDetails =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
@@ -147,35 +154,63 @@ export class TimelineDetailsPane extends
     this.lazySelectorStatsView = null;
   }
 
-  #bottomUpClicked(event: Common.EventTarget.EventTargetEvent<Trace.Extras.TraceTree.Node|null>): void {
-    // Select bottom up tree.
-    this.tabbedPane.selectTab(Tab.BottomUp, true, true);
-    if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
-      return;
-    }
+  /**
+   * This selects a given tabbedPane tab.
+   * Additionally, if provided a node, we open that node and
+   * if a groupBySetting is included, we groupBy.
+   */
+  selectTab(tabName: Tab, node: Trace.Extras.TraceTree.Node|null, groupBySetting?: AggregatedTimelineTreeView.GroupBy):
+      void {
+    this.tabbedPane.selectTab(tabName, true, true);
     /**
      * For a11y, ensure that the header is focused.
      */
     this.tabbedPane.focusSelectedTabHeader();
-    const bottomUp = this.tabbedPane.visibleView;
-    const thirdPartyNodeSelected = event.data;
-    if (!thirdPartyNodeSelected) {
-      return;
-    }
-    // Group by 3P.
-    bottomUp.setGroupBySetting(BottomUpTimelineTreeView.GroupBy.ThirdParties);
-    bottomUp.refreshTree();
 
-    // Look for the matching node in the bottom up tree using selected node event data.
-    const treeNode = bottomUp.eventToTreeNode.get(thirdPartyNodeSelected.event);
-    if (!treeNode) {
-      return;
-    }
-    bottomUp.selectProfileNode(treeNode, true);
-    // Reveal/expand the bottom up tree grid node.
-    const gridNode = bottomUp.dataGridNodeForTreeNode(treeNode);
-    if (gridNode) {
-      gridNode.expand();
+    // We currently only support selecting Details and BottomUp via the 3P insight.
+    switch (tabName) {
+      case Tab.CallTree:
+      case Tab.EventLog:
+      case Tab.PaintProfiler:
+      case Tab.LayerViewer:
+      case Tab.SelectorStats: {
+        break;
+      }
+      case Tab.Details: {
+        this.updateContentsFromWindow();
+        break;
+      }
+      case Tab.BottomUp: {
+        if (!(this.tabbedPane.visibleView instanceof BottomUpTimelineTreeView)) {
+          return;
+        }
+        // Set grouping if necessary.
+        const bottomUp = this.tabbedPane.visibleView;
+        if (groupBySetting) {
+          bottomUp.setGroupBySetting(groupBySetting);
+          bottomUp.refreshTree();
+        }
+
+        if (!node) {
+          return;
+        }
+
+        // Look for the matching node in the bottom up tree using selected node event data.
+        const treeNode = bottomUp.eventToTreeNode.get(node.event);
+        if (!treeNode) {
+          return;
+        }
+        bottomUp.selectProfileNode(treeNode, true);
+        // Reveal/expand the bottom up tree grid node.
+        const gridNode = bottomUp.dataGridNodeForTreeNode(treeNode);
+        if (gridNode) {
+          gridNode.expand();
+        }
+        break;
+      }
+      default: {
+        Platform.assertNever(tabName, `Unknown Tab: ${tabName}. Add new case to switch.`);
+      }
     }
   }
 

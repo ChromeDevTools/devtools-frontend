@@ -10,6 +10,7 @@ import * as Types from '../types/types.js';
 import {
   type Checklist,
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
@@ -79,7 +80,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
       [partialModel.lcpEvent, partialModel.lcpRequest] :
       [];
   return {
-    insightKey: 'LCPDiscovery',
+    insightKey: InsightKeys.LCP_DISCOVERY,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

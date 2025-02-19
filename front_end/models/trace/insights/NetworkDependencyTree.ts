@@ -10,6 +10,7 @@ import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type InsightSetContextWithNavigation,
@@ -68,7 +69,7 @@ export function deps(): ['NetworkRequests'] {
 function finalize(partialModel: PartialInsightModel<NetworkDependencyTreeInsightModel>):
     NetworkDependencyTreeInsightModel {
   return {
-    insightKey: 'NetworkDependencyTree',
+    insightKey: InsightKeys.NETWORK_DEPENDENCY_TREE,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

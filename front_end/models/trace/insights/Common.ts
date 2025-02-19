@@ -8,7 +8,14 @@ import type * as Lantern from '../lantern/lantern.js';
 import * as Types from '../types/types.js';
 
 import {getLogNormalScore} from './Statistics.js';
-import type {InsightModels, InsightSet, InsightSetContext, MetricSavings, TraceInsightSets} from './types.js';
+import {
+  InsightKeys,
+  type InsightModels,
+  type InsightSet,
+  type InsightSetContext,
+  type MetricSavings,
+  type TraceInsightSets
+} from './types.js';
 
 const GRAPH_SAVINGS_PRECISION = 50;
 
@@ -34,7 +41,7 @@ export function getInsight<InsightName extends keyof InsightModels>(
 
 export function getLCP(insights: TraceInsightSets|null, key: string|null):
     {value: Types.Timing.Micro, event: Types.Events.LargestContentfulPaintCandidate}|null {
-  const insight = getInsight('LCPPhases', insights, key);
+  const insight = getInsight(InsightKeys.LCP_PHASES, insights, key);
   if (!insight || !insight.lcpMs || !insight.lcpEvent) {
     return null;
   }
@@ -45,7 +52,7 @@ export function getLCP(insights: TraceInsightSets|null, key: string|null):
 
 export function getINP(insights: TraceInsightSets|null, key: string|null):
     {value: Types.Timing.Micro, event: Types.Events.SyntheticInteractionPair}|null {
-  const insight = getInsight('InteractionToNextPaint', insights, key);
+  const insight = getInsight(InsightKeys.INTERACTION_TO_NEXT_PAINT, insights, key);
   if (!insight?.longestInteractionEvent?.dur) {
     return null;
   }
@@ -56,7 +63,7 @@ export function getINP(insights: TraceInsightSets|null, key: string|null):
 
 export function getCLS(
     insights: TraceInsightSets|null, key: string|null): {value: number, worstClusterEvent: Types.Events.Event|null} {
-  const insight = getInsight('CLSCulprits', insights, key);
+  const insight = getInsight(InsightKeys.CLS_CULPRITS, insights, key);
   if (!insight) {
     // Unlike the other metrics, there is always a value for CLS even with no data.
     return {value: 0, worstClusterEvent: null};

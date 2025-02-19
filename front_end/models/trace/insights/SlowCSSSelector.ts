@@ -9,10 +9,11 @@ import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
+  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -101,7 +102,7 @@ function aggregateSelectorStats(
 
 function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>): SlowCSSSelectorInsightModel {
   return {
-    insightKey: 'SlowCSSSelector',
+    insightKey: InsightKeys.SLOW_CSS_SELECTOR,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

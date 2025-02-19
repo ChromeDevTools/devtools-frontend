@@ -9,6 +9,7 @@ import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -75,7 +76,7 @@ export function deps(): ['Renderer', 'AuctionWorklets', 'DOMStats'] {
 function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSizeInsightModel {
   const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
   return {
-    insightKey: 'DOMSize',
+    insightKey: InsightKeys.DOM_SIZE,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

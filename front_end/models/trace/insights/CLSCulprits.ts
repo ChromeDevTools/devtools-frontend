@@ -10,10 +10,11 @@ import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
+  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -523,7 +524,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
       partialModel.worstCluster ? partialModel.topCulpritsByCluster.get(partialModel.worstCluster) ?? [] : [];
 
   return {
-    insightKey: 'CLSCulprits',
+    insightKey: InsightKeys.CLS_CULPRITS,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

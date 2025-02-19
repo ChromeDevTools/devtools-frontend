@@ -9,6 +9,7 @@ import * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
@@ -157,7 +158,7 @@ function finalize(partialModel: PartialInsightModel<LCPPhasesInsightModel>): LCP
     relatedEvents.push(partialModel.lcpRequest);
   }
   return {
-    insightKey: 'LCPPhases',
+    insightKey: InsightKeys.LCP_PHASES,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

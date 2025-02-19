@@ -9,6 +9,7 @@ import * as Types from '../types/types.js';
 import {
   type Checklist,
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
@@ -171,7 +172,7 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
   }
 
   return {
-    insightKey: 'DocumentLatency',
+    insightKey: InsightKeys.DOCUMENT_LATENCY,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

@@ -23,7 +23,7 @@ import {ModificationsManager} from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
-import {TimelineDetailsPane} from './TimelineDetailsView.js';
+import {type Tab, TimelineDetailsPane} from './TimelineDetailsView.js';
 import {TimelineRegExp} from './TimelineFilters.js';
 import {
   Events as TimelineFlameChartDataProviderEvents,
@@ -1771,6 +1771,10 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   overlays(): Overlays.Overlays.Overlays {
     return this.#overlays;
+  }
+
+  selectDetailsViewTab(tabName: Tab, node: Trace.Extras.TraceTree.Node|null): void {
+    this.detailsView.selectTab(tabName, node);
   }
 }
 

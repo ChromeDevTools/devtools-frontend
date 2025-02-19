@@ -9,6 +9,7 @@ import type * as Types from '../types/types.js';
 import {metricSavingsForWastedBytes} from './Common.js';
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -158,7 +159,7 @@ export function getOptimizationMessageWithBytes(optimization: ImageOptimization)
 
 function finalize(partialModel: PartialInsightModel<ImageDeliveryInsightModel>): ImageDeliveryInsightModel {
   return {
-    insightKey: 'ImageDelivery',
+    insightKey: InsightKeys.IMAGE_DELIVERY,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

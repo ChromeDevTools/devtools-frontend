@@ -11,6 +11,7 @@ import type * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type InsightSetContextWithNavigation,
@@ -165,7 +166,7 @@ function computeSavings(
 
 function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>): RenderBlockingInsightModel {
   return {
-    insightKey: 'RenderBlocking',
+    insightKey: InsightKeys.RENDER_BLOCKING,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

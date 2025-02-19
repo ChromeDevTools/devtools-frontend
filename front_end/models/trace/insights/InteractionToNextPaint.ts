@@ -8,10 +8,11 @@ import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
+  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -66,7 +67,7 @@ export type INPInsightModel = InsightModel<typeof UIStrings, {
 
 function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsightModel {
   return {
-    insightKey: 'InteractionToNextPaint',
+    insightKey: InsightKeys.INTERACTION_TO_NEXT_PAINT,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

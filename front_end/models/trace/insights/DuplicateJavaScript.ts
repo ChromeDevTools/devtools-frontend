@@ -8,6 +8,7 @@ import * as Helpers from '../helpers/helpers.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -39,7 +40,7 @@ export function deps(): ['Scripts', 'NetworkRequests'] {
 
 function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
   return {
-    insightKey: 'DuplicateJavaScript',
+    insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

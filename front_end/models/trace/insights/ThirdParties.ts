@@ -11,6 +11,7 @@ import type * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
@@ -70,7 +71,7 @@ function getRelatedEvents(
 
 function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): ThirdPartiesInsightModel {
   return {
-    insightKey: 'ThirdParties',
+    insightKey: InsightKeys.THIRD_PARTIES,
     strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),

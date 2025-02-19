@@ -136,3 +136,21 @@ export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
  */
 export type RequiredData<D extends() => Array<keyof typeof Handlers.ModelHandlers>> =
     Handlers.Types.EnabledHandlerDataWithMeta<Pick<typeof Handlers.ModelHandlers, ReturnType<D>[number]>>;
+
+export const enum InsightKeys {
+  LCP_PHASES = 'LCPPhases',
+  INTERACTION_TO_NEXT_PAINT = 'InteractionToNextPaint',
+  CLS_CULPRITS = 'CLSCulprits',
+  THIRD_PARTIES = 'ThirdParties',
+  DOCUMENT_LATENCY = 'DocumentLatency',
+  DOM_SIZE = 'DOMSize',
+  DUPLICATE_JAVASCRIPT = 'DuplicateJavaScript',
+  FONT_DISPLAY = 'FontDisplay',
+  FORCED_REFLOW = 'ForcedReflow',
+  IMAGE_DELIVERY = 'ImageDelivery',
+  LCP_DISCOVERY = 'LCPDiscovery',
+  NETWORK_DEPENDENCY_TREE = 'NetworkDependencyTree',
+  RENDER_BLOCKING = 'RenderBlocking',
+  SLOW_CSS_SELECTOR = 'SlowCSSSelector',
+  VIEWPORT = 'Viewport',
+}

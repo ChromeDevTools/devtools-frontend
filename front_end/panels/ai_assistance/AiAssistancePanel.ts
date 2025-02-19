@@ -322,6 +322,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #patchSuggestion?: string;
   #patchSuggestionLoading?: boolean;
   #imageInput: string = '';
+  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -345,6 +346,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return new Conversation(item.type, item.history, item.id, true);
     });
 
+    this.#selectProject();
+  }
+
+  #selectProject(): void {
     if (isAiAssistancePatchingEnabled()) {
       // TODO: this is temporary code that should be replaced with workflow selection flow.
       // For now it picks the first Workspace project that is not Snippets.
@@ -356,9 +361,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           continue;
         }
         this.#project = project;
+        this.requestUpdate();
         break;
       }
     }
+  }
+
+  #onProjectAddedOrRemoved(): void {
+    this.#selectProject();
   }
 
   #getChatUiState(): ChatViewState {
@@ -536,6 +546,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
+
+    if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+    }
   }
 
   override willHide(): void {
@@ -572,6 +587,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#handleDOMNodeAttrChange,
         this,
     );
+
+    if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.removeEventListener(
+          Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+    }
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
@@ -1001,6 +1022,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   async #onApplyToWorkspace(): Promise<void> {
+    if (!isAiAssistancePatchingEnabled()) {
+      return;
+    }
     const changeSummary = this.#getChangeSummary();
     if (!changeSummary) {
       throw new Error('Change summary does not exist');

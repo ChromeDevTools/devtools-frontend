@@ -18,6 +18,7 @@ import {createTarget, registerNoopActions, updateHostConfig} from '../../testing
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Elements from '../elements/elements.js';
 import * as Network from '../network/network.js';
@@ -1114,6 +1115,64 @@ describeWithMockConnection('AI Assistance Panel', () => {
           steps: [],
         },
       ]);
+    });
+  });
+
+  describe('workspace', () => {
+    function createTestFilesystem(fileSystemPath: string) {
+      const {project, uiSourceCode} = createFileSystemUISourceCode({
+        url: Platform.DevToolsPath.urlString`file:///example.html`,
+        mimeType: 'text/html',
+        content: 'content',
+        fileSystemPath,
+      });
+      return {project, uiSourceCode};
+    }
+
+    it('does not report a workspace project if disabled', async () => {
+      createTestFilesystem('file://test');
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          patching: false,
+        },
+      });
+      const {
+        initialViewInput,
+      } = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.projectName, '');
+    });
+
+    it('reports a current workspace project', async () => {
+      createTestFilesystem('file://test');
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          patching: true,
+        },
+      });
+      const {
+        initialViewInput,
+      } = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.projectName, 'test');
+    });
+
+    it('reports an updated project', async () => {
+      const {project} = createTestFilesystem('file://test');
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          patching: true,
+        },
+      });
+      const {initialViewInput, expectViewUpdate} = await createAiAssistancePanel();
+      assert.strictEqual(initialViewInput.projectName, 'test');
+
+      const updatedViewInput = await expectViewUpdate(() => {
+        Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+        createTestFilesystem('file://test2');
+      });
+      assert.strictEqual(updatedViewInput.projectName, 'test2');
     });
   });
 });

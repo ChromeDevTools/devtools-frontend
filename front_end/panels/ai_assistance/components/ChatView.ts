@@ -845,7 +845,7 @@ function renderChangeSummary({
         <div>Selected folder: ${projectName}</div>
       </div>
       ${patchSuggestion ? html`<div class="patch-tmp-message">
-        I suggest changing these files ${patchSuggestion}
+        ${patchSuggestion}
       </div>` : Lit.nothing}
     </details>`;
   // clang-format on

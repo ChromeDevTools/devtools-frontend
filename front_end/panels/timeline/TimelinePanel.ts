@@ -1360,17 +1360,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
-
-    if (metadata && addModifications) {
-      metadata.modifications = ModificationsManager.activeManager()?.toJSON();
-    } else if (metadata) {
-      delete metadata.modifications;
-    }
-    if (metadata && isEnhancedTraces) {
-      metadata.enhancedTraceVersion = SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion;
-    }
     if (!traceEvents) {
       return;
+    }
+
+    if (metadata) {
+      metadata.modifications = addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
+      metadata.enhancedTraceVersion =
+          isEnhancedTraces ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
     }
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());

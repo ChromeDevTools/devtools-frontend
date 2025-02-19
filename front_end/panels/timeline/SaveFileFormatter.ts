@@ -44,6 +44,14 @@ export function*
         traceEvents: readonly Trace.Types.Events.Event[],
         metadata: Readonly<Trace.Types.File.MetaData>|null,
         ): IterableIterator<string> {
+  // Ensure that enhancedTraceVersion is placed at the top of metadata. See `maximumTraceFileLengthToDetermineEnhancedTraces`
+  if (metadata?.enhancedTraceVersion) {
+    metadata = {
+      enhancedTraceVersion: metadata.enhancedTraceVersion,
+      ...metadata,
+    };
+  }
+
   yield `{"metadata": ${JSON.stringify(metadata || {}, null, 2)}`;
   yield ',\n"traceEvents": ';
   yield* arrayOfObjectsJsonGenerator(traceEvents);

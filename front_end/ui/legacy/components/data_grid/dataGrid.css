@@ -288,6 +288,15 @@
   font-style: normal;
 }
 
+.data-grid tr.highlighted:not(.selected) {
+  background-color: var(--sys-color-surface-yellow);
+}
+
+.striped-data-grid .revealed.data-grid-data-grid-node.highlighted:nth-child(odd):not(.dirty, .selected),
+.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node.highlighted:nth-child(even):not(.dirty, .selected) {
+  background-color: var(--sys-color-surface-yellow-high);
+}
+
 .data-grid td.show-more {
   white-space: normal;
   gap: var(--sys-size-3);

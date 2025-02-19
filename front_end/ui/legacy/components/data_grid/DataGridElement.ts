@@ -257,6 +257,15 @@ class DataGridElement extends HTMLElement {
       if (hasBooleanAttribute(element, 'selected')) {
         node.select();
       }
+      if (hasBooleanAttribute(element, 'dirty')) {
+        node.setDirty(true);
+      }
+      if (hasBooleanAttribute(element, 'inactive')) {
+        node.setInactive(true);
+      }
+      if (hasBooleanAttribute(element, 'highlighted')) {
+        node.setHighlighted(true);
+      }
     }
   }
 
@@ -282,7 +291,9 @@ class DataGridElement extends HTMLElement {
       } else if (attributeName === 'dirty') {
         dataGridNode.setDirty(hasBooleanAttribute(dataRow, 'dirty'));
       } else if (attributeName === 'inactive') {
-        dataGridNode.setDirty(hasBooleanAttribute(dataRow, 'inactive'));
+        dataGridNode.setInactive(hasBooleanAttribute(dataRow, 'inactive'));
+      } else if (attributeName === 'highlighted') {
+        dataGridNode.setHighlighted(hasBooleanAttribute(dataRow, 'highlighted'));
       } else {
         dataGridNode.refresh();
       }
@@ -399,6 +410,9 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     element.addEventListener('mouseleave', this.#onRowMouseEvent.bind(this));
     if (this.#configElement.hasAttribute('style')) {
       element.setAttribute('style', this.#configElement.getAttribute('style') || '');
+    }
+    for (const classToAdd of this.#configElement.classList) {
+      element.classList.add(classToAdd);
     }
     return element;
   }

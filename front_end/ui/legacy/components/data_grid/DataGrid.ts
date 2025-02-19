@@ -1698,6 +1698,7 @@ export class DataGridNode<T> {
   private selectedInternal: boolean;
   private dirty: boolean;
   private inactive: boolean;
+  private highlighted: boolean;
   private depthInternal!: number|undefined;
   revealedInternal!: boolean|undefined;
   protected attachedInternal: boolean;
@@ -1726,6 +1727,7 @@ export class DataGridNode<T> {
     this.selectedInternal = false;
     this.dirty = false;
     this.inactive = false;
+    this.highlighted = false;
     this.attachedInternal = false;
     this.savedPosition = null;
     this.shouldRefreshChildrenInternal = true;
@@ -1780,6 +1782,9 @@ export class DataGridNode<T> {
     }
     if (this.inactive) {
       this.elementInternal.classList.add('inactive');
+    }
+    if (this.highlighted) {
+      this.elementInternal.classList.add('highlighted');
     }
     if (this.isCreationNode) {
       this.elementInternal.classList.add('creation-node');
@@ -1899,6 +1904,21 @@ export class DataGridNode<T> {
       this.elementInternal.classList.add('inactive');
     } else {
       this.elementInternal.classList.remove('inactive');
+    }
+  }
+
+  setHighlighted(highlighted: boolean): void {
+    if (this.highlighted === highlighted) {
+      return;
+    }
+    this.highlighted = highlighted;
+    if (!this.elementInternal) {
+      return;
+    }
+    if (highlighted) {
+      this.elementInternal.classList.add('highlighted');
+    } else {
+      this.elementInternal.classList.remove('highlighted');
     }
   }
 

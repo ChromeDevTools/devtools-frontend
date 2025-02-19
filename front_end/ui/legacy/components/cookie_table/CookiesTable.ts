@@ -80,7 +80,7 @@ type CookieData = {
   inactive?: boolean,
 };
 
-const {classMap, repeat, ifDefined} = Directives;
+const {repeat, ifDefined} = Directives;
 
 const UIStrings = {
   /**
@@ -241,7 +241,7 @@ export class CookiesTable extends UI.Widget.VBox {
                     ?selected=${cookie.key === input.selectedKey}
                     ?inactive=${cookie.inactive}
                     ?dirty=${cookie.dirty}
-                    class=${classMap({'flagged-cookie-attribute-row': Boolean(cookie.flagged)})}>
+                    ?highlighted=${cookie.flagged}>
                   <td>
                     ${cookie.icons?.name}
                     ${cookie.name}

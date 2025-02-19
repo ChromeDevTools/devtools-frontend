@@ -338,14 +338,14 @@ export const enum State {
 }
 
 export interface Props {
-  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => Promise<void>| void;
+  onTextSubmit: (text: string, imageInput?: Host.AidaClient.Part) => void;
   onInspectElementClick: () => void;
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
-  onContextClick: () => void | Promise<void>;
+  onContextClick: () => void;
   onNewConversation: () => void;
   onCancelCrossOriginChat?: () => void;
-  onTakeScreenshot?: () => Promise<void>;
+  onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   inspectElementToggled: boolean;
   state: State;
@@ -1473,7 +1473,7 @@ function renderTakeScreenshotButton({
 }: {
   isTextInputDisabled: boolean,
   multimodalInputEnabled?: boolean,
-  onTakeScreenshot?: () => Promise<void>,
+  onTakeScreenshot?: () => void,
 }): Lit.LitTemplate {
     if (!multimodalInputEnabled) {
       return Lit.nothing;
@@ -1556,14 +1556,14 @@ function renderChatInput({
   multimodalInputEnabled?: boolean,
   agentType?: AgentType,
   imageInput?: string,
-  onContextClick: () => void | Promise<void>,
+  onContextClick: () => void ,
   onInspectElementClick: () => void,
   onSubmit: (ev: SubmitEvent) => void,
   onTextAreaKeyDown: (ev: KeyboardEvent) => void,
   onCancel: (ev: SubmitEvent) => void,
   onNewConversation: () => void,
   onCancelCrossOriginChat?: () => void,
-  onTakeScreenshot?: () => Promise<void>,
+  onTakeScreenshot?: () => void,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
   if (!agentType) {
@@ -1620,7 +1620,7 @@ function renderChatInput({
     </div>
   </form>`;
   // clang-format on
-}
+  }
 
 function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
   // clang-format off

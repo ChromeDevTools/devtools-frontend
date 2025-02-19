@@ -181,7 +181,6 @@ export class CoverageListView extends UI.Widget.VBox {
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid<GridNode>({
       displayName: i18nString(UIStrings.codeCoverage),
       columns,
-      editCallback: undefined,
       refreshCallback: undefined,
       deleteCallback: undefined,
     });

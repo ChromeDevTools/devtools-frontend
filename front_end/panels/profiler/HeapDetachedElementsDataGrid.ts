@@ -45,7 +45,6 @@ export class HeapDetachedElementsDataGrid extends DataGrid.DataGrid.DataGridImpl
     super({
       displayName: i18nString(UIStrings.detachedElementsList),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });

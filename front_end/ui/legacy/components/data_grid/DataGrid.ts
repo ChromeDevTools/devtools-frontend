@@ -33,6 +33,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
+import type {DataGridInternalToken} from './DataGridElement.js';
 
 const UIStrings = {
   /**
@@ -131,7 +132,7 @@ const elementToIndexMap = new WeakMap<Element, number>();
 export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   element: HTMLDivElement;
   displayName: string;
-  editCallback:
+  private editCallback:
       ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void)|undefined;
   deleteCallback: ((arg0: any) => void)|undefined;
   refreshCallback: (() => void)|undefined;
@@ -176,7 +177,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   constructor(dataGridParameters: Parameters) {
     super();
-    const {displayName, columns: columnsArray, editCallback, deleteCallback, refreshCallback} = dataGridParameters;
+    const {displayName, columns: columnsArray, deleteCallback, refreshCallback} = dataGridParameters;
     this.element = document.createElement('div');
     this.element.classList.add('data-grid');
     this.element.tabIndex = 0;
@@ -193,7 +194,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     UI.ARIAUtils.markAsApplication(this.element);
     this.displayName = displayName;
 
-    this.editCallback = editCallback;
     this.deleteCallback = deleteCallback;
     this.refreshCallback = refreshCallback;
 
@@ -251,6 +251,14 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.rowContextMenuCallback = null;
 
     this.elementToDataGridNode = new WeakMap();
+  }
+
+  setEditCallback(
+      editCallback:
+          ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void)|
+      undefined,
+      _internalToken: DataGridInternalToken): void {
+    this.editCallback = editCallback;
   }
 
   private firstSelectableNode(): DataGridNode<T>|null|undefined {
@@ -2540,7 +2548,6 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
 export interface Parameters {
   displayName: string;
   columns: ColumnDescriptor[];
-  editCallback?: ((node: any, columnId: string, valueBeforeEditing: any, newText: any, moveDirection?: string) => void);
   deleteCallback?: ((arg0: any) => void);
   refreshCallback?: (() => void);
 }

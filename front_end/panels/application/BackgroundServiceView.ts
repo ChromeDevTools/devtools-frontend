@@ -375,7 +375,6 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     const dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.backgroundServices),
       columns,
-      editCallback: undefined,
       refreshCallback: undefined,
       deleteCallback: undefined,
     });

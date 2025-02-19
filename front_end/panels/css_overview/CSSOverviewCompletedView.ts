@@ -972,7 +972,6 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.#elementGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.cssOverviewElements),
       columns: this.#elementGridColumns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });

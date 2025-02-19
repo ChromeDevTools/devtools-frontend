@@ -153,7 +153,6 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.heapProfile),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });

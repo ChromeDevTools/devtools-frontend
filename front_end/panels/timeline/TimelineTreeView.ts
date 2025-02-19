@@ -263,7 +263,6 @@ export class TimelineTreeView extends
       displayName: i18nString(UIStrings.performance),
       columns,
       refreshCallback: undefined,
-      editCallback: undefined,
       deleteCallback: undefined,
     });
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
@@ -1185,7 +1184,6 @@ export class TimelineStackView extends
       displayName: i18nString(UIStrings.timelineStack),
       columns,
       deleteCallback: undefined,
-      editCallback: undefined,
       refreshCallback: undefined,
     });
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);

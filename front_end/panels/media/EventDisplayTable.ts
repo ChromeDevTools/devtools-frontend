@@ -118,7 +118,6 @@ export class PlayerEventsView extends UI.Widget.VBox {
       displayName: i18nString(UIStrings.eventDisplay),
       columns: gridColumnDescs,
       deleteCallback: undefined,
-      editCallback: undefined,
       refreshCallback: undefined,
     });
     datagrid.asWidget().contentElement.classList.add('no-border-top-datagrid');

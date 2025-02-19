@@ -202,7 +202,7 @@ class DataGridElement extends HTMLElement {
     if (visibleColumns.size) {
       this.#dataGrid.setColumnsVisibility(visibleColumns);
     }
-    this.#dataGrid.editCallback = hasEditableColumn ? this.#editCallback.bind(this) : undefined;
+    this.#dataGrid.setEditCallback(hasEditableColumn ? this.#editCallback.bind(this) : undefined, INTERNAL_TOKEN);
     this.#dataGrid.deleteCallback = hasEditableColumn ? this.#deleteCallback.bind(this) : undefined;
   }
 
@@ -496,3 +496,11 @@ customElements.define('devtools-data-grid', DataGridElement);
 function hasBooleanAttribute(element: Element, name: string): boolean {
   return element.hasAttribute(name) && element.getAttribute(name) !== 'false';
 }
+
+export interface DataGridInternalToken {
+  token: 'DataGridInternalToken';
+}
+
+const INTERNAL_TOKEN: DataGridInternalToken = {
+  token: 'DataGridInternalToken'
+};

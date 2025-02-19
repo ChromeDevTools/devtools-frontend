@@ -193,7 +193,6 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.profiler),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });

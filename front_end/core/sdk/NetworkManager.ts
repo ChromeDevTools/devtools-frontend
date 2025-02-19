@@ -1107,9 +1107,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (loaderId) {
       this.#requestsByLoaderId.set(loaderId, networkRequest);
     }
-    // The following relies on the fact that loaderIds and requestIds are
-    // globally unique and that the main request has them equal.
-    if (networkRequest.loaderId === networkRequest.requestId()) {
+    // The following relies on the fact that loaderIds and requestIds
+    // are globally unique and that the main request has them equal. If
+    // loaderId is an empty string, it indicates a worker request. For the
+    // request to fetch the main worker script, the request ID is the future
+    // worker target ID and, therefore, it is unique.
+    if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === '') {
       MultitargetNetworkManager.instance().inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
 

@@ -144,12 +144,12 @@ const UIStrings = {
    *@description Explainer for which data is being sent by the AI assistance feature
    */
   freestylerSendsData:
-      'Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information.',
+      'Any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information.',
   /**
    *@description Explainer for which data is being sent by the AI assistance feature
    */
   freestylerSendsDataNoLogging:
-      'Any data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models.',
+      'Any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models.',
   /**
    *@description Label for a link to the terms of service
    */

@@ -94,6 +94,31 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     });
   });
 
+  it('handles worker requests originating from the frame target', async () => {
+    const target = createTarget();
+    const workerTarget = createTarget({type: SDK.Target.Type.Worker});
+
+    const multiTargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    const initialNetworkManager = target.model(SDK.NetworkManager.NetworkManager)!;
+
+    assert.strictEqual(multiTargetNetworkManager.inflightMainResourceRequests.size, 0);
+
+    const requestId = 'mockId';
+    const requestPromise = initialNetworkManager.once(SDK.NetworkManager.Events.RequestStarted);
+    initialNetworkManager.dispatcher.requestWillBeSent(
+        {requestId, loaderId: '', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
+
+    const {request} = await requestPromise;
+    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === initialNetworkManager);
+    assert.isOk(multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
+
+    const workerNetworkManager = workerTarget.model(SDK.NetworkManager.NetworkManager)!;
+    workerNetworkManager.dispatcher.loadingFinished({requestId} as Protocol.Network.LoadingFinishedEvent);
+
+    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === workerNetworkManager);
+    assert.isOk(!multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
+  });
+
   it('uses main frame to get certificate', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});

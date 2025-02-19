@@ -550,6 +550,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (isAiAssistancePatchingEnabled()) {
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+
+      // @ts-expect-error temporary global function for local testing.
+      window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
+        return await this.#applyPatch(changeSummary);
+      };
     }
   }
 
@@ -1029,6 +1034,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!changeSummary) {
       throw new Error('Change summary does not exist');
     }
+
+    this.#patchSuggestionLoading = true;
+    this.requestUpdate();
+    const response = await this.#applyPatch(changeSummary);
+    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
+    this.#patchSuggestionLoading = false;
+    this.requestUpdate();
+  }
+
+  async #applyPatch(changeSummary: string): Promise<ResponseData|undefined> {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
@@ -1037,13 +1052,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
       project: this.#project,
     });
-    this.#patchSuggestionLoading = true;
-    this.requestUpdate();
     const responses = await Array.fromAsync(agent.applyChanges(changeSummary));
-    const response = responses.at(-1);
-    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
-    this.#patchSuggestionLoading = false;
-    this.requestUpdate();
+    return responses.at(-1);
   }
 
   async *

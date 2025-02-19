@@ -4,29 +4,24 @@
  * found in the LICENSE file.
  */
 
-.widget {
-  padding: 20px;
+.header {
+  padding-top: var(--sys-size-3);
+  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+  font: var(--sys-typescale-body2-medium);
 }
 
-.message,
-.button {
-  font-size: larger;
-  white-space: pre;
-  margin: 5px;
+.close-button {
+  margin: var(--sys-size-3);
 }
 
-.button {
-  text-align: center;
-  margin-top: 10px;
+.content {
+  margin: 0 var(--sys-size-8);
+}
+
+.button-container {
+  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
 }
 
 .reason {
-  --override-reason-color: #8b0000;
-
-  color: var(--override-reason-color);
-}
-
-.theme-with-dark-background .reason,
-:host-context(.theme-with-dark-background) .reason {
-  --override-reason-color: rgb(255 116 116);
+  color: var(--sys-color-error);
 }

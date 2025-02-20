@@ -534,20 +534,17 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  // crbug.com/396633671 failing with latest Cft roll
-  it.skip(
-      '[crbug.com/396633671] dispatches an event when a SelectElementAccessibility DisallowedOptGroupChild issue is created',
-      async () => {
-        await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
-        await waitFor('.issue');
+  it('dispatches an event when a SelectElementAccessibility DisallowedOptGroupChild issue is created', async () => {
+    await goToResource('issues/select-element-accessibility-issue-DisallowedOptGroupChild.html');
+    await waitFor('.issue');
 
-        await assertHistogramEventsInclude([
-          {
-            actionName: 'DevTools.IssueCreated',
-            actionCode: 87,  // SelectElementAccessibilityIssue::DisallowedOptGroupChild
-          },
-        ]);
-      });
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.IssueCreated',
+        actionCode: 87,  // SelectElementAccessibilityIssue::DisallowedOptGroupChild
+      },
+    ]);
+  });
 
   it('dispatches an event when a SelectElementAccessibility NonPhrasingContentOptionChild issue is created',
      async () => {

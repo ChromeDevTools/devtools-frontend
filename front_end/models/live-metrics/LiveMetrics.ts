@@ -401,20 +401,25 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     // Async tasks can be performed while handling an event (e.g. resolving DOM node)
     // Use a mutex here to ensure the events are handled in the order they are received.
     await this.#mutex.run(async () => {
-      const frame = await this.#getFrameForExecutionContextId(data.executionContextId);
-      if (!frame?.isPrimaryFrame()) {
-        return;
-      }
-
       const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
 
-      // Previously injected scripts shouldn't persist, this is just a defensive measure.
-      // Ensure we only handle events from the same execution context as the most recent "reset" event.
-      // "reset" events are only emitted once when the script is injected or a bfcache restoration.
-      if (webVitalsEvent.name === 'reset') {
+      // This ensures that `#lastResetContextId` will always be an execution context on the
+      // primary frame. If we receive events from this execution context then we automatically
+      // know that they are for the primary frame.
+      if (this.#lastResetContextId !== data.executionContextId) {
+        if (webVitalsEvent.name !== 'reset') {
+          return;
+        }
+
+        // We should avoid calling this function for every event.
+        // If an interaction triggers a pre-rendered navigation then the old primary frame could
+        // be removed before we reach this point, and then it will hang forever.
+        const frame = await this.#getFrameForExecutionContextId(data.executionContextId);
+        if (!frame?.isPrimaryFrame()) {
+          return;
+        }
+
         this.#lastResetContextId = data.executionContextId;
-      } else if (this.#lastResetContextId !== data.executionContextId) {
-        return;
       }
 
       await this.#handleWebVitalsEvent(webVitalsEvent, data.executionContextId);

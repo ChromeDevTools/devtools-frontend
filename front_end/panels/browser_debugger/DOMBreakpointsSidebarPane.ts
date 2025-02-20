@@ -370,7 +370,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
       this.#highlightedBreakpoint = null;
       this.#list.refreshItem(oldHighlightedBreakpoint);
     }
-    if (!details || !details.auxData || details.reason !== Protocol.Debugger.PausedEventReason.DOM) {
+    if (!details?.auxData || details.reason !== Protocol.Debugger.PausedEventReason.DOM) {
       return;
     }
 

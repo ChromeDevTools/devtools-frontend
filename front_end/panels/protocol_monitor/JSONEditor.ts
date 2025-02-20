@@ -832,7 +832,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   #handleClearParameter(parameter: Parameter, isParentArray?: boolean): void {
-    if (!parameter || parameter.value === undefined) {
+    if (parameter?.value === undefined) {
       return;
     }
 

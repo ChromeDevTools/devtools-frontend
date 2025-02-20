@@ -168,7 +168,7 @@ export class Toolbar extends HTMLElement {
     function updateOptions(): void {
       const buttons = action.toggled() ? (toggledOptions || null) : (untoggledOptions || null);
 
-      if (buttons && buttons.length) {
+      if (buttons?.length) {
         if (!longClickController) {
           longClickController = new LongClickController(button.element, showOptions);
           button.setLongClickable(true);

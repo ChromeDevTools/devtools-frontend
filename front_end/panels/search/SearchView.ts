@@ -339,7 +339,7 @@ export class SearchView extends UI.Widget.VBox {
     if (searchId !== this.searchId || !this.progressIndicator) {
       return;
     }
-    if (this.progressIndicator && this.progressIndicator.isCanceled()) {
+    if (this.progressIndicator?.isCanceled()) {
       this.onIndexingFinished();
       return;
     }
@@ -546,7 +546,7 @@ export class SearchView extends UI.Widget.VBox {
 
   private onAction(): void {
     const searchConfig = this.buildSearchConfig();
-    if (!searchConfig.query() || !searchConfig.query().length) {
+    if (!searchConfig.query()?.length) {
       return;
     }
     this.resetSearch();

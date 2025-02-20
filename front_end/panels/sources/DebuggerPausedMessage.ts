@@ -265,8 +265,7 @@ export class DebuggerPausedMessage {
     } else if (details.reason === Protocol.Debugger.PausedEventReason.OOM) {
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedBeforePotentialOutofmemory));
     } else if (
-        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData &&
-        details.auxData['violationType']) {
+        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData?.['violationType']) {
       const text = (details.auxData['violationType'] as string);
       if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {
         messageWrapper =

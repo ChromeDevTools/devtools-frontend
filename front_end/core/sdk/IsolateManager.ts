@@ -169,7 +169,7 @@ export class Isolate {
 
   heapProfilerModel(): HeapProfilerModel|null {
     const runtimeModel = this.runtimeModel();
-    return runtimeModel && runtimeModel.heapProfilerModel();
+    return runtimeModel?.heapProfilerModel() ?? null;
   }
 
   async update(): Promise<void> {

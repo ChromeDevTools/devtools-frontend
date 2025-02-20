@@ -483,7 +483,7 @@ export class SourceMap {
       }
       const url =
           Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || (href as Platform.DevToolsPath.UrlString);
-      const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
+      const source = sourceMap.sourcesContent?.[i];
       const sourceInfo: SourceInfo = {
         sourceURL: url,
         content: source ?? null,

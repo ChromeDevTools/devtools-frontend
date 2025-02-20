@@ -61,7 +61,7 @@ export const enum LinePattern {
 
 export function drawPathWithLineStyle(
     context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle, lineWidth = 1) {
-  if (lineStyle && lineStyle.color) {
+  if (lineStyle?.color) {
     context.save();
     context.translate(0.5, 0.5);
     context.lineWidth = lineWidth;

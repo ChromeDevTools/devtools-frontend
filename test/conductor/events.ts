@@ -176,7 +176,7 @@ export function expectError(msg: string|RegExp) {
 }
 
 function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string {
-  if (!stackFrame || !stackFrame.url) {
+  if (!stackFrame?.url) {
     return '<unknown>';
   }
   const filename = stackFrame.url.replace(/^.*\//, '');

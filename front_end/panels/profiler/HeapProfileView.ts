@@ -288,7 +288,7 @@ export class SamplingHeapProfileTypeBase extends
   async stopRecordingProfile(): Promise<void> {
     this.recording = false;
     const recordedProfile = this.profileBeingRecorded();
-    if (!recordedProfile || !recordedProfile.heapProfilerModel()) {
+    if (!recordedProfile?.heapProfilerModel()) {
       return;
     }
 
@@ -461,7 +461,7 @@ export class SamplingHeapProfileHeader extends WritableProfileHeader {
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: SamplingHeapProfileTypeBase,
       title?: string) {
     super(
-        heapProfilerModel && heapProfilerModel.debuggerModel(), type,
+        heapProfilerModel?.debuggerModel() ?? null, type,
         title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}));
     this.heapProfilerModelInternal = heapProfilerModel;
     this.protocolProfileInternal = {

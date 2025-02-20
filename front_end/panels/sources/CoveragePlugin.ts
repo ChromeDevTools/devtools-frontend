@@ -222,11 +222,11 @@ function coverageGutter(url: Platform.DevToolsPath.UrlString): CodeMirror.Extens
             .showView('coverage')
             .then(() => {
               const view = UI.ViewManager.ViewManager.instance().view('coverage');
-              return view && view.widget();
+              return view?.widget();
             })
             .then(widget => {
               const matchFormattedSuffix = url.match(/(.*):formatted$/);
-              const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
+              const urlWithoutFormattedSuffix = (matchFormattedSuffix?.[1]) || url;
               (widget as Coverage.CoverageView.CoverageView).selectCoverageItemByUrl(urlWithoutFormattedSuffix);
             });
         return true;

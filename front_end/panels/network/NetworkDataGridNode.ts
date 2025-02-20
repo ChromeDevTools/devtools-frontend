@@ -1298,7 +1298,7 @@ export class NetworkRequestNode extends NetworkNode {
     const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
     const timing = request.timing;
-    if (timing && timing.pushStart) {
+    if (timing?.pushStart) {
       cell.appendChild(document.createTextNode(i18nString(UIStrings.push)));
     }
     switch (initiator.type) {

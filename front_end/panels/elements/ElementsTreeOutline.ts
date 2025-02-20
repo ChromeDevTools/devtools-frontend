@@ -196,7 +196,7 @@ export class ElementsTreeOutline extends
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL)) {
       this.#popupHelper = new UI.PopoverHelper.PopoverHelper(this.elementInternal, event => {
         const hoveredNode = event.composedPath()[0] as Element;
-        if (!hoveredNode || !hoveredNode.matches('.violating-element')) {
+        if (!hoveredNode?.matches('.violating-element')) {
           return null;
         }
 
@@ -380,7 +380,7 @@ export class ElementsTreeOutline extends
     // @ts-expect-error this bound in the main entry point
     const originalEvent = event['original'];
 
-    if (!originalEvent || !originalEvent.target) {
+    if (!originalEvent?.target) {
       return;
     }
 
@@ -528,7 +528,7 @@ export class ElementsTreeOutline extends
 
     this.rootDOMNodeInternal = x;
 
-    this.isXMLMimeTypeInternal = x && x.isXMLNode();
+    this.isXMLMimeTypeInternal = x?.isXMLNode();
 
     this.update();
   }
@@ -918,7 +918,7 @@ export class ElementsTreeOutline extends
       return;
     }
     let textNode: Element|null = node.enclosingNodeOrSelfWithClass('webkit-html-text-node');
-    if (textNode && textNode.classList.contains('bogus')) {
+    if (textNode?.classList.contains('bogus')) {
       textNode = null;
     }
     const commentNode = node.enclosingNodeOrSelfWithClass('webkit-html-comment');
@@ -983,7 +983,7 @@ export class ElementsTreeOutline extends
 
   toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void {
     const treeElement = this.treeElementByNode.get(node);
-    if (!treeElement || !treeElement.hasEditableNode()) {
+    if (!treeElement?.hasEditableNode()) {
       return;
     }
 
@@ -1012,7 +1012,7 @@ export class ElementsTreeOutline extends
         return;
       }
 
-      const children = parentNode && parentNode.children();
+      const children = parentNode?.children();
       const newNode = children ? children[index] || parentNode : parentNode;
       if (!newNode) {
         return;
@@ -1262,7 +1262,7 @@ export class ElementsTreeOutline extends
       this.elementInternal.classList.add('hidden');
     }
     const rootNodeUpdateRecords = this.rootDOMNodeInternal && this.updateRecords.get(this.rootDOMNodeInternal);
-    if (rootNodeUpdateRecords && rootNodeUpdateRecords.hasChangedChildren()) {
+    if (rootNodeUpdateRecords?.hasChangedChildren()) {
       // Document's children have changed, perform total update.
       this.update();
     } else {
@@ -1476,7 +1476,7 @@ export class ElementsTreeOutline extends
         return;
       }
       const selectedTreeElement = treeElement.treeOutline.selectedTreeElement;
-      if (selectedTreeElement && selectedTreeElement.hasAncestor(treeElement)) {
+      if (selectedTreeElement?.hasAncestor(treeElement)) {
         treeElement.select(true);
       }
       treeElement.removeChildren();
@@ -1674,7 +1674,7 @@ export class UpdateRecord {
   private charDataModifiedInternal?: boolean;
 
   attributeModified(attrName: string): void {
-    if (this.removedAttributes && this.removedAttributes.has(attrName)) {
+    if (this.removedAttributes?.has(attrName)) {
       this.removedAttributes.delete(attrName);
     }
     if (!this.modifiedAttributes) {
@@ -1684,7 +1684,7 @@ export class UpdateRecord {
   }
 
   attributeRemoved(attrName: string): void {
-    if (this.modifiedAttributes && this.modifiedAttributes.has(attrName)) {
+    if (this.modifiedAttributes?.has(attrName)) {
       this.modifiedAttributes.delete(attrName);
     }
     if (!this.removedAttributes) {
@@ -1711,8 +1711,7 @@ export class UpdateRecord {
   }
 
   isAttributeModified(attributeName: string): boolean {
-    return this.modifiedAttributes !== null && this.modifiedAttributes !== undefined &&
-        this.modifiedAttributes.has(attributeName);
+    return this.modifiedAttributes?.has(attributeName) ?? false;
   }
 
   hasRemovedAttributes(): boolean {

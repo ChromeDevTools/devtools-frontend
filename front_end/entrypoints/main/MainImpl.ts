@@ -416,7 +416,7 @@ export class MainImpl {
 
     if (Host.InspectorFrontendHost.isUnderTest()) {
       const testParam = Root.Runtime.Runtime.queryParam('test');
-      if (testParam && testParam.includes('live-line-level-heap-profile.js')) {
+      if (testParam?.includes('live-line-level-heap-profile.js')) {
         Root.Runtime.experiments.enableForTest('live-heap-profile');
       }
     }
@@ -817,7 +817,7 @@ export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegat
     );
     if (!searchableView) {
       const currentPanel = (UI.InspectorView.InspectorView.instance().currentPanelDeprecated() as UI.Panel.Panel);
-      if (currentPanel && currentPanel.searchableView) {
+      if (currentPanel?.searchableView) {
         searchableView = currentPanel.searchableView();
       }
       if (!searchableView) {

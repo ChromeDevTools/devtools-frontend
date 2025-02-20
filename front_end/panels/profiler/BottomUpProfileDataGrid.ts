@@ -89,7 +89,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
       }
 
       const parent = ancestor.parent;
-      if (parent && parent.parent) {
+      if (parent?.parent) {
         nodeInfo.ancestor = parent;
         if (!child.remainingNodeInfos) {
           child.remainingNodeInfos = [];
@@ -158,7 +158,7 @@ export class BottomUpProfileDataGridNode extends ProfileDataGridNode {
   willHaveChildren(profileNode: CPUProfile.ProfileTreeModel.ProfileNode): boolean {
     // In bottom up mode, our parents are our children since we display an inverted tree.
     // However, we don't want to show the very top parent since it is redundant.
-    return Boolean(profileNode.parent && profileNode.parent.parent);
+    return Boolean(profileNode.parent?.parent);
   }
 }
 

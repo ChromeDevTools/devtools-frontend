@@ -2358,7 +2358,7 @@ export abstract class HeapSnapshot {
 
   private buildSamples(): void {
     const samples = this.#rawSamples;
-    if (!samples || !samples.length) {
+    if (!samples?.length) {
       return;
     }
     const sampleCount = samples.length / 2;

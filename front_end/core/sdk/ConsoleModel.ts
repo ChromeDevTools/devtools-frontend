@@ -283,7 +283,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;
     }
-    const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
+    const callFrame = call.stackTrace?.callFrames.length ? call.stackTrace.callFrames[0] : null;
     const details = {
       type: call.type,
       url: callFrame?.url as Platform.DevToolsPath.UrlString | undefined,

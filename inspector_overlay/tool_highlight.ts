@@ -424,11 +424,11 @@ const gridBackgroundColor = 'rgba(255, 255, 255, 0.8)';
  * @return {String|null} The layout type of the object, or null if none was found
  */
 function getElementLayoutType(elementInfo: ElementInfo): string|null {
-  if (elementInfo.layoutObjectName && elementInfo.layoutObjectName.endsWith('Grid')) {
+  if (elementInfo.layoutObjectName?.endsWith('Grid')) {
     return 'grid';
   }
 
-  if (elementInfo.layoutObjectName && elementInfo.layoutObjectName.endsWith('FlexibleBox')) {
+  if (elementInfo.layoutObjectName?.endsWith('FlexibleBox')) {
     return 'flex';
   }
 

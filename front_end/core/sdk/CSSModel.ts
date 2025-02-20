@@ -301,8 +301,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     coverage: Protocol.CSS.RuleUsage[],
   }> {
     const r = await this.agent.invoke_takeCoverageDelta();
-    const timestamp = (r && r.timestamp) || 0;
-    const coverage = (r && r.coverage) || [];
+    const timestamp = (r?.timestamp) || 0;
+    const coverage = (r?.coverage) || [];
     return {timestamp, coverage};
   }
 
@@ -1044,7 +1044,7 @@ class ComputedStyleLoader {
     }
     promise = this.#cssModel.getAgent().invoke_getComputedStyleForNode({nodeId}).then(({computedStyle}) => {
       this.#nodeIdToPromise.delete(nodeId);
-      if (!computedStyle || !computedStyle.length) {
+      if (!computedStyle?.length) {
         return null;
       }
       const result = new Map<string, string>();

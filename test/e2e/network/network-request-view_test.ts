@@ -156,7 +156,7 @@ describe('The Network Request view', () => {
     await waitForSomeRequestsToAppear(3);
 
     const names = await getAllRequestNames();
-    const name = names.find(v => v && v.startsWith('data:'));
+    const name = names.find(v => v?.startsWith('data:'));
     assertNotNullOrUndefined(name);
     await selectRequestByName(name);
 
@@ -190,7 +190,7 @@ describe('The Network Request view', () => {
     await waitForSomeRequestsToAppear(2);
 
     const names = await getAllRequestNames();
-    const name = names.find(v => v && v.startsWith('data:'));
+    const name = names.find(v => v?.startsWith('data:'));
     assertNotNullOrUndefined(name);
     await selectRequestByName(name);
 

@@ -60,7 +60,7 @@ class NetworkNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
   }
 
   get initiatorType(): string {
-    return this._request.initiator && this._request.initiator.type;
+    return this._request.initiator.type;
   }
 
   get fromDiskCache(): boolean {

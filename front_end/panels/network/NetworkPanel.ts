@@ -570,7 +570,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   private load(): void {
-    if (this.filmStripRecorder && this.filmStripRecorder.isRecording()) {
+    if (this.filmStripRecorder?.isRecording()) {
       if (this.pendingStopTimer) {
         window.clearTimeout(this.pendingStopTimer);
       }
@@ -799,7 +799,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     }
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
       const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(target.url());
-      if (resource && resource.request) {
+      if (resource?.request) {
         appendRevealItem(resource.request);
       } else {
         appendRevealItemMissingData();

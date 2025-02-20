@@ -266,10 +266,10 @@ describe('The Console Tab', () => {
         return messages.length === test.expectedMessages.length ? messages : undefined;
       });
       for (const message of actualMessages) {
-        if (message.source && message.source.includes('pptr:')) {
+        if (message.source?.includes('pptr:')) {
           message.source = replacePuppeteerUrl(message.source);
         }
-        if (message.stackPreview && message.stackPreview.includes('pptr:')) {
+        if (message.stackPreview?.includes('pptr:')) {
           message.stackPreview = replacePuppeteerUrl(message.stackPreview);
         }
       }

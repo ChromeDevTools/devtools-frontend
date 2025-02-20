@@ -509,7 +509,7 @@ export function createReplacementString(
   let number;
   let replacementString: string|null = null;
   let matches = /(.*#)([\da-fA-F]+)(.*)/.exec(wordString);
-  if (matches && matches.length) {
+  if (matches?.length) {
     prefix = matches[1];
     suffix = matches[3];
     number = modifiedHexValue(matches[2], event);
@@ -518,7 +518,7 @@ export function createReplacementString(
     }
   } else {
     matches = /(.*?)(-?(?:\d+(?:\.\d+)?|\.\d+))(.*)/.exec(wordString);
-    if (matches && matches.length) {
+    if (matches?.length) {
       prefix = matches[1];
       suffix = matches[3];
       number = modifiedFloatNumber(parseFloat(matches[2]), event);
@@ -553,7 +553,7 @@ export function handleElementValueModifications(
   void VisualLogging.logKeyDown(event.currentTarget, event, 'element-value-modification');
 
   const selection = element.getComponentSelection();
-  if (!selection || !selection.rangeCount) {
+  if (!selection?.rangeCount) {
     return false;
   }
 
@@ -567,7 +567,7 @@ export function handleElementValueModifications(
       selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 
-  if (suggestionHandler && suggestionHandler(wordString)) {
+  if (suggestionHandler?.(wordString)) {
     return false;
   }
 
@@ -1842,7 +1842,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
   }
 
   let widget = Widget.get(node);
-  while (widget && widget.parentWidget()) {
+  while (widget?.parentWidget()) {
     const parentWidget = widget.parentWidget();
     if (!parentWidget) {
       break;
@@ -1854,7 +1854,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
 }
 
 function updateXWidgetfocusWidgetForNode(node: Node|null): void {
-  node = node && node.parentNodeOrShadowHost();
+  node = node?.parentNodeOrShadowHost() ?? null;
   const XWidgetCtor = customElements.get('x-widget');
   let widget = null;
   while (node) {

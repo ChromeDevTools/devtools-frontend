@@ -372,7 +372,7 @@ export class ParsedURL {
 
     // Return absolute URLs with normalized path and other components as-is.
     const parsedHref = this.fromString(trimmedHref);
-    if (parsedHref && parsedHref.scheme) {
+    if (parsedHref?.scheme) {
       const securityOrigin = parsedHref.securityOrigin();
       const pathText = normalizePath(parsedHref.path);
       const queryText = parsedHref.queryParams && `?${parsedHref.queryParams}`;

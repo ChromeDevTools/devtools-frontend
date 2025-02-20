@@ -366,7 +366,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         // Here, we check whether the last line ends with STOP keyword and if so, remove it
         // from the last line.
         const lastActionLine = actionLines[actionLines.length - 1];
-        if (lastActionLine && lastActionLine.endsWith('STOP')) {
+        if (lastActionLine?.endsWith('STOP')) {
           actionLines[actionLines.length - 1] = lastActionLine.substring(0, lastActionLine.length - 'STOP'.length);
         }
         action = actionLines.join('\n').replaceAll('```', '').replaceAll('``', '').trim();

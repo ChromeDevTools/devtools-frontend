@@ -35,7 +35,7 @@ import {type Formatter, ProfileDataGridNode, ProfileDataGridTree} from './Profil
 export class TopDownProfileDataGridNode extends ProfileDataGridNode {
   remainingChildren: CPUProfile.ProfileTreeModel.ProfileNode[];
   constructor(profileNode: CPUProfile.ProfileTreeModel.ProfileNode, owningTree: TopDownProfileDataGridTree) {
-    const hasChildren = Boolean(profileNode.children && profileNode.children.length);
+    const hasChildren = Boolean(profileNode.children?.length);
 
     super(profileNode, owningTree, hasChildren);
 

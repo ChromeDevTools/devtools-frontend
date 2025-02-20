@@ -278,7 +278,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     wrapperElement.className = 'filtered-list-widget-item-wrapper';
 
     const itemElement = wrapperElement.createChild('div');
-    const renderAsTwoRows = this.provider && this.provider.renderAsTwoRows();
+    const renderAsTwoRows = this.provider?.renderAsTwoRows();
     itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
     const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
     const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');

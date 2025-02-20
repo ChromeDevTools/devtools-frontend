@@ -99,7 +99,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       if (target.targetInfo()?.subtype === 'prerender' && !targetInfo.subtype) {
         const resourceTreeModel = target.model(ResourceTreeModel);
         target.updateTargetInfo(targetInfo);
-        if (resourceTreeModel && resourceTreeModel.mainFrame) {
+        if (resourceTreeModel?.mainFrame) {
           resourceTreeModel.primaryPageChanged(resourceTreeModel.mainFrame, PrimaryPageChangeType.ACTIVATION);
         }
         target.setName(i18nString(UIStrings.main));

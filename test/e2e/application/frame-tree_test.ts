@@ -60,7 +60,7 @@ const getFieldValuesTextContent = async () => {
     // system-specific, so we get rid of it and only look at the (URL) text.
     fieldValues[0] = getTrailingURL(fieldValues[0]);
   }
-  if (fieldValues[10] && fieldValues[10].includes('accelerometer')) {
+  if (fieldValues[10]?.includes('accelerometer')) {
     fieldValues[10] = 'accelerometer';
   }
   // Make sure the length is equivalent to the expected value below

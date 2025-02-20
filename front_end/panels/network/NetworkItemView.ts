@@ -204,7 +204,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
           NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, i18nString(UIStrings.preview), previewView,
           i18nString(UIStrings.responsePreview));
       const signedExchangeInfo = request.signedExchangeInfo();
-      if (signedExchangeInfo && signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
+      if (signedExchangeInfo?.errors?.length) {
         const icon = new IconButton.Icon.Icon();
         icon.data = {iconName: 'cross-circle-filled', color: 'var(--icon-error)', width: '14px', height: '14px'};
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.signedexchangeError));

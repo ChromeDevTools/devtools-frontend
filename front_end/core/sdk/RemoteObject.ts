@@ -82,8 +82,8 @@ export abstract class RemoteObject {
     }
     // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
     // Both formats are checked in case the front end is dealing with an old version of V8.
-    const parenMatches = object.description && object.description.match(descriptionLengthParenRegex);
-    const squareMatches = object.description && object.description.match(descriptionLengthSquareRegex);
+    const parenMatches = object.description?.match(descriptionLengthParenRegex);
+    const squareMatches = object.description?.match(descriptionLengthSquareRegex);
     return parenMatches ? parseInt(parenMatches[1], 10) : (squareMatches ? parseInt(squareMatches[1], 10) : 0);
   }
 
@@ -92,7 +92,7 @@ export abstract class RemoteObject {
     if (object.subtype !== 'arraybuffer') {
       return 0;
     }
-    const matches = object.description && object.description.match(descriptionLengthParenRegex);
+    const matches = object.description?.match(descriptionLengthParenRegex);
     return matches ? parseInt(matches[1], 10) : 0;
   }
 

@@ -71,8 +71,7 @@ export class ThreadsSidebarPane extends UI.Widget.VBox implements
 
     function updateTitle(): void {
       const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
-      title.textContent =
-          executionContext && executionContext.label() ? executionContext.label() : debuggerModel.target().name();
+      title.textContent = executionContext?.label() ? executionContext.label() : debuggerModel.target().name();
     }
 
     function updatePausedState(): void {

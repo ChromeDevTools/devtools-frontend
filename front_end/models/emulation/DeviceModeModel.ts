@@ -809,7 +809,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const orientation = (this.#deviceInternal && this.#modeInternal) ?
         this.#deviceInternal.orientationByName(this.#modeInternal.orientation) :
         null;
-    if (orientation && orientation.hinge) {
+    if (orientation?.hinge) {
       overlayModel.showHingeForDualScreen(orientation.hinge);
       return;
     }
@@ -843,7 +843,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const orientation = this.#deviceInternal.orientationByName(this.#modeInternal.orientation);
-    if (!orientation || !orientation.hinge) {
+    if (!orientation?.hinge) {
       return null;
     }
 

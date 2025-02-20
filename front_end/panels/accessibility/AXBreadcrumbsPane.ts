@@ -309,7 +309,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       return;
     }
     const breadcrumb = elementsToAXBreadcrumb.get(breadcrumbElement);
-    if (!breadcrumb || !breadcrumb.isDOMNode()) {
+    if (!breadcrumb?.isDOMNode()) {
       return;
     }
     this.setHoveredBreadcrumb(breadcrumb);
@@ -486,7 +486,7 @@ export class AXBreadcrumb {
     } else {
       this.appendRoleElement(this.axNodeInternal.role());
       const axNodeName = this.axNodeInternal.name();
-      if (axNodeName && axNodeName.value) {
+      if (axNodeName?.value) {
         this.nodeWrapper.createChild('span', 'separator').textContent = '\xA0';
         this.appendNameElement(axNodeName.value as string);
       }

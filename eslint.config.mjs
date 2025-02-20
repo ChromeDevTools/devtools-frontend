@@ -531,6 +531,8 @@ export default [
         },
       ],
 
+      '@typescript-eslint/prefer-optional-chain': 'error',
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 

@@ -229,7 +229,7 @@ export class XMLViewNode extends UI.TreeOutline.TreeElement {
       node = node.nextSibling;
       const nodeType = currentNode.nodeType;
       // ignore empty TEXT
-      if (nodeType === 3 && currentNode.nodeValue && currentNode.nodeValue.match(/\s+/)) {
+      if (nodeType === 3 && currentNode.nodeValue?.match(/\s+/)) {
         continue;
       }
       // ignore ATTRIBUTE, ENTITY_REFERENCE, ENTITY, DOCUMENT, DOCUMENT_TYPE, DOCUMENT_FRAGMENT, NOTATION

@@ -639,13 +639,13 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames()) {
       this.addCookieDocument(frame);
     }
-    const interestGroupModel = this.target && this.target.model(InterestGroupStorageModel);
+    const interestGroupModel = this.target?.model(InterestGroupStorageModel);
     if (interestGroupModel) {
       interestGroupModel.enable();
     }
 
     this.cacheStorageListTreeElement.initialize();
-    const backgroundServiceModel = this.target && this.target.model(BackgroundServiceModel) || null;
+    const backgroundServiceModel = this.target?.model(BackgroundServiceModel) || null;
     this.backgroundFetchTreeElement && this.backgroundFetchTreeElement.initialize(backgroundServiceModel);
     this.backgroundSyncTreeElement && this.backgroundSyncTreeElement.initialize(backgroundServiceModel);
     this.notificationsTreeElement.initialize(backgroundServiceModel);
@@ -1246,7 +1246,7 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
     }
     const checkBoxElement = this.#sectionFieldElement.querySelector('.mask-checkbox');
     let focusableElement: HTMLElement|null = this.#sectionFieldElement.querySelector('[tabindex="0"]');
-    if (checkBoxElement && checkBoxElement.shadowRoot) {
+    if (checkBoxElement?.shadowRoot) {
       focusableElement = checkBoxElement.shadowRoot.querySelector('input') || null;
     } else if (!focusableElement) {
       // special case for protocol handler section since it is a custom Element and has different structure than the others

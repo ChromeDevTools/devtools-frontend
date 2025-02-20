@@ -202,7 +202,7 @@ export class ProtocolService {
       sessionId?: string,
       method?: string,
     };
-    if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
+    if (protocolMessage.sessionId || (protocolMessage.method?.startsWith('Target'))) {
       void this.send('dispatchProtocolMessage', {message});
     }
   }

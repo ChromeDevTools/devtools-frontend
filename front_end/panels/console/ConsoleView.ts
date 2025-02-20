@@ -998,7 +998,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const currentGroup = viewMessage.consoleGroup();
 
-    if (!currentGroup || !currentGroup.messagesHidden()) {
+    if (!currentGroup?.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
       const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
       viewMessage.setAdjacentUserCommandResult(adjacent);
@@ -1470,7 +1470,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private innerSearch(index: number): void {
     delete this.innerSearchTimeoutId;
-    if (this.searchProgressIndicator && this.searchProgressIndicator.isCanceled()) {
+    if (this.searchProgressIndicator?.isCanceled()) {
       this.cleanupAfterSearch();
       return;
     }

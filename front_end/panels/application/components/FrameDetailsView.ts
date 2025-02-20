@@ -402,7 +402,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #maybeRenderNetworkLinkForURL(): Lit.LitTemplate {
     if (this.#frame) {
       const resource = this.#frame.resourceForURL(this.#frame.url);
-      if (resource && resource.request) {
+      if (resource?.request) {
         const request = resource.request;
         return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
           const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
@@ -510,7 +510,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
   #maybeRenderCreationStacktrace(): Lit.LitTemplate {
     const creationStackTraceData = this.#frame?.getCreationStackTraceData();
-    if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
+    if (creationStackTraceData?.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
@@ -716,7 +716,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-section-header>
         ${i18nString(UIStrings.contentSecurityPolicy)}
       </devtools-report-section-header>
-      ${(cspInfos && cspInfos.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : html`
+      ${(cspInfos?.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : html`
         <devtools-report-key>${
           i18n.i18n.lockedString('Content-Security-Policy')}</devtools-report-key>
         <devtools-report-value>

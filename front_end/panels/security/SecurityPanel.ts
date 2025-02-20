@@ -965,7 +965,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.viewCertificate), explanation.certificate));
     }
 
-    if (explanation.recommendations && explanation.recommendations.length) {
+    if (explanation.recommendations?.length) {
       const recommendationList = text.createChild('ul', 'security-explanation-recommendations');
       for (const recommendation of explanation.recommendations) {
         recommendationList.createChild('li').textContent = recommendation;
@@ -1020,8 +1020,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.toCheckThisPagesStatusVisit)));
     } else if (
         securityStateIssueIds.includes('is-error-page') &&
-        (visibleSecurityState.certificateSecurityState === null ||
-         visibleSecurityState.certificateSecurityState.certificateNetworkError === null)) {
+        (visibleSecurityState.certificateSecurityState?.certificateNetworkError === null)) {
       summary = i18nString(UIStrings.thisIsAnErrorPage);
       // In the case of a non cert error page, we usually don't have a
       // certificate, connection, or content that needs to be explained, e.g. in
@@ -1060,7 +1059,7 @@ export class SecurityMainView extends UI.Widget.VBox {
         summary: i18nString(UIStrings.thisPageIsSuspicious),
         description: formatedDescription,
       });
-    } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo && safetyTipInfo.safeUrl) {
+    } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo?.safeUrl) {
       const hostname = new URL(safetyTipInfo.safeUrl).hostname;
       const hostnamePlaceholder = {PH1: hostname};
       const formatedDescriptionSafety =
@@ -1086,7 +1085,7 @@ export class SecurityMainView extends UI.Widget.VBox {
       visibleSecurityState: PageVisibleSecurityState, explanations: SecurityStyleExplanation[]): void {
     const {certificateSecurityState, securityStateIssueIds} = visibleSecurityState;
     const title = i18nString(UIStrings.certificate);
-    if (certificateSecurityState && certificateSecurityState.certificateHasSha1Signature) {
+    if (certificateSecurityState?.certificateHasSha1Signature) {
       const explanationSummary = i18nString(UIStrings.insecureSha);
       const description = i18nString(UIStrings.theCertificateChainForThisSite);
       if (certificateSecurityState.certificateHasWeakSignature) {
@@ -1125,7 +1124,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.publickeypinningWasBypassedByA)));
     }
 
-    if (certificateSecurityState && certificateSecurityState.isCertificateExpiringSoon()) {
+    if (certificateSecurityState?.isCertificateExpiringSoon()) {
       explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Info, undefined, i18nString(UIStrings.certificateExpiresSoon),
           i18nString(UIStrings.theCertificateForThisSiteExpires)));
@@ -1205,8 +1204,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.thisPageIncludesAFormWithA)));
     }
 
-    if (visibleSecurityState.certificateSecurityState === null ||
-        visibleSecurityState.certificateSecurityState.certificateNetworkError === null) {
+    if (visibleSecurityState.certificateSecurityState?.certificateNetworkError === null) {
       if (securityStateIssueIds.includes('ran-content-with-cert-error')) {
         addSecureExplanation = false;
         explanations.push(new SecurityStyleExplanation(

@@ -9,7 +9,7 @@
  */
 export function deepActiveElement(doc: Document): Element|null {
   let activeElement: Element|null = doc.activeElement;
-  while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement) {
+  while (activeElement?.shadowRoot?.activeElement) {
     activeElement = activeElement.shadowRoot.activeElement;
   }
   return activeElement;

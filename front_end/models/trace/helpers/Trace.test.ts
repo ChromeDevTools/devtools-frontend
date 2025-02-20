@@ -128,7 +128,7 @@ describeWithEnvironment('Trace helpers', function() {
       const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
                       ?.get(firstNavigationId)
                       ?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
-      if (!fcp || !fcp.event) {
+      if (!fcp?.event) {
         assert.fail('FCP not found');
       }
       const navigationForFirstRequest =

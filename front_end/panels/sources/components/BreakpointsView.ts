@@ -443,7 +443,7 @@ export class BreakpointsSidebarController implements UI.ContextFlavorListener.Co
 
   async #getHitUILocation(): Promise<Workspace.UISourceCode.UILocation|null> {
     const details = UI.Context.Context.instance().flavor(SDK.DebuggerModel.DebuggerPausedDetails);
-    if (details && details.callFrames.length) {
+    if (details?.callFrames.length) {
       return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
           details.callFrames[0].location());
     }

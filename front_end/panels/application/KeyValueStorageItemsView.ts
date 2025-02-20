@@ -324,17 +324,16 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
   }
 
   async #previewEntry(entry: {key: string, value: string}|null): Promise<void> {
-    const value = entry && entry.value;
-    if (value) {
+    if (entry?.value) {
       this.#selectedKey = entry.key;
-      const preview = await this.createPreview(entry.key, value);
+      const preview = await this.createPreview(entry.key, entry.value);
       // Selection could've changed while the preview was loaded
       if (this.#selectedKey === entry.key) {
-        this.showPreview(preview, value);
+        this.showPreview(preview, entry.value);
       }
     } else {
       this.#selectedKey = null;
-      this.showPreview(null, value);
+      this.showPreview(null, null);
     }
   }
 

@@ -135,8 +135,8 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
     coverage: Protocol.Profiler.ScriptCoverage[],
   }> {
     const r = await this.#profilerAgent.invoke_takePreciseCoverage();
-    const timestamp = (r && r.timestamp) || 0;
-    const coverage = (r && r.result) || [];
+    const timestamp = (r?.timestamp) || 0;
+    const coverage = (r?.result) || [];
     return {timestamp, coverage};
   }
 

@@ -75,7 +75,7 @@ export class TopDownNode extends Node {
 
   constructor(id: string|symbol, event: Types.Events.Event, parent: TopDownNode|null) {
     super(id, event);
-    this.root = parent && parent.root;
+    this.root = parent?.root ?? null;
     this.hasChildrenInternal = false;
     this.childrenInternal = null;
     this.parent = parent;

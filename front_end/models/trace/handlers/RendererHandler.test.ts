@@ -921,7 +921,7 @@ describeWithEnvironment('RendererHandler', function() {
       const threadId = Trace.Types.Events.ThreadID(259);
       const firstProcessId = Trace.Types.Events.ProcessID(23239);
       const thread = Renderer.processes.get(firstProcessId)?.threads.get(threadId);
-      if (!thread || !thread.tree) {
+      if (!thread?.tree) {
         throw new Error('Tree not found');
       }
       const onlyLongTasksPredicate =

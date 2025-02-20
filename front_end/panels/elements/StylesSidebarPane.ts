@@ -588,7 +588,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     if (!this.noMatchesElement.classList.contains('hidden')) {
       return;
     }
-    if (this.sectionBlocks[0] && this.sectionBlocks[0].sections[0]) {
+    if (this.sectionBlocks[0]?.sections[0]) {
       const firstVisibleSection =
           this.sectionBlocks[0].sections[0].findCurrentOrNextVisible(/* willIterateForward= */ true);
       if (firstVisibleSection) {
@@ -2009,7 +2009,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
       this.disableDefaultSuggestionForEmptyInput();
 
       // If a CSS value is being edited that has a numeric or hex substring, hint that precision modifier shortcuts are available.
-      if (treeElement && treeElement.valueElement) {
+      if (treeElement?.valueElement) {
         const cssValueText = treeElement.valueElement.textContent;
         const cmdOrCtrl = Host.Platform.isMac() ? 'Cmd' : 'Ctrl';
         const optionOrAlt = Host.Platform.isMac() ? 'Option' : 'Alt';

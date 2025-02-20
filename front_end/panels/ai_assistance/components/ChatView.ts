@@ -525,7 +525,7 @@ export class ChatView extends HTMLElement {
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
     const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
-    if (!textArea || !textArea.value) {
+    if (!textArea?.value) {
       return;
     }
     const imageInput =
@@ -542,7 +542,7 @@ export class ChatView extends HTMLElement {
     // Go to a new line only when Shift + Enter is pressed.
     if (ev.key === 'Enter' && !ev.shiftKey) {
       ev.preventDefault();
-      if (!ev.target || !ev.target.value) {
+      if (!ev.target?.value) {
         return;
       }
       const imageInput =

@@ -185,7 +185,7 @@ export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
 
 export function lineWhitespace(line: string): string|null {
   const matches = /^\s*/.exec(line);
-  if (!matches || !matches.length) {
+  if (!matches?.length) {
     // This should not happen
     return null;
   }

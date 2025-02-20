@@ -214,7 +214,7 @@ describe('The Memory Panel', function() {
       const findPromises = await Promise.all(results.map(async e => {
         const textContent = await e.evaluate(el => el.textContent);
         // Can't search for "shared in leaking()" because the different parts are spaced with CSS.
-        return textContent && textContent.startsWith('sharedinleaking()') ? e : null;
+        return textContent?.startsWith('sharedinleaking()') ? e : null;
       }));
       return findPromises.find(result => result !== null);
     });

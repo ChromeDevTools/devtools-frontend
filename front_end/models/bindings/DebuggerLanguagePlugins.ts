@@ -608,7 +608,7 @@ export class DebuggerLanguagePluginManager implements
   hasPluginForScript(script: SDK.Script.Script): boolean {
     const rawModuleId = rawModuleIdForScript(script);
     const rawModuleHandle = this.#rawModuleHandles.get(rawModuleId);
-    return rawModuleHandle !== undefined && rawModuleHandle.scripts.includes(script);
+    return rawModuleHandle?.scripts.includes(script) ?? false;
   }
 
   /**
@@ -809,7 +809,7 @@ export class DebuggerLanguagePluginManager implements
         const sourceFileURLsPromise = (async () => {
           const console = Common.Console.Console.instance();
           const url = script.sourceURL;
-          const symbolsUrl = (script.debugSymbols && script.debugSymbols.externalURL) || '';
+          const symbolsUrl = (script.debugSymbols?.externalURL) || '';
           if (symbolsUrl) {
             console.log(i18nString(UIStrings.loadingDebugSymbolsForVia, {PH1: plugin.name, PH2: url, PH3: symbolsUrl}));
           } else {

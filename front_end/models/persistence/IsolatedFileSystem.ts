@@ -510,7 +510,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       return true;
     }
     const regex = (this.manager.workspaceFolderExcludePatternSetting()).asRegExp();
-    return Boolean(regex && regex.test(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(folderPath)));
+    return Boolean(regex?.test(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(folderPath)));
   }
 
   override excludedFolders(): Set<Platform.DevToolsPath.EncodedPathString> {

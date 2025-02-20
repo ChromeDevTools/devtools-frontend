@@ -243,7 +243,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       return;
     }
     const matches = filter.regex.exec(textContent);
-    if (!matches || !matches.length) {
+    if (!matches?.length) {
       return;
     }
     const range = new TextUtils.TextRange.SourceRange(matches.index, matches[0].length);

@@ -107,7 +107,7 @@ export class PlatformFontsWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     this.fontStatsSection.removeChildren();
 
-    const isEmptySection = !platformFonts || !platformFonts.length;
+    const isEmptySection = !platformFonts?.length;
     this.sectionTitle.classList.toggle('hidden', isEmptySection);
     if (isEmptySection || !platformFonts) {
       return;

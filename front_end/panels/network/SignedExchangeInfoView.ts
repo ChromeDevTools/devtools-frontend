@@ -122,7 +122,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
 
     const errorFieldSetMap = new Map<number|undefined, Set<string>>();
 
-    if (signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
+    if (signedExchangeInfo.errors?.length) {
       const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();

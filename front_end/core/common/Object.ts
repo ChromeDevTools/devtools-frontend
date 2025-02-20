@@ -85,7 +85,7 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
   }
 
   hasEventListeners(eventType: keyof Events): boolean {
-    return Boolean(this.listeners && this.listeners.has(eventType));
+    return Boolean(this.listeners?.has(eventType));
   }
 
   dispatchEventToListeners<T extends keyof Events>(

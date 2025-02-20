@@ -434,7 +434,7 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
   async #addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
     const cssModel = this.treeElement.parentPane().cssModel();
     const node = this.treeElement.node();
-    if (this.treeElement.property.name !== 'color' || !cssModel || !node || typeof node.id === 'undefined') {
+    if (this.treeElement.property.name !== 'color' || !cssModel || typeof node?.id === 'undefined') {
       return;
     }
     const contrastInfo = new ColorPicker.ContrastInfo.ContrastInfo(await cssModel.getBackgroundColors(node.id));
@@ -1962,7 +1962,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.updateFilter();
 
-    if (this.property.parsedOk && this.parent && this.parent.root) {
+    if (this.property.parsedOk && this.parent?.root) {
       const enabledCheckboxElement = document.createElement('input');
       enabledCheckboxElement.classList.add('enabled-button', 'small');
       enabledCheckboxElement.type = 'checkbox';
@@ -2081,7 +2081,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private handleContextMenuEvent(context: Context, event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (this.property.parsedOk && this.parent && this.parent.root) {
+    if (this.property.parsedOk && this.parent?.root) {
       const sectionIndex = this.parentPaneInternal.focusedSectionIndex();
       contextMenu.defaultSection().appendCheckboxItem(
           i18nString(UIStrings.togglePropertyAndContinueEditing), async () => {
@@ -2495,7 +2495,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const editedElement = context.isEditingName ? this.nameElement : this.valueElement;
     // The proxyElement has been deleted, no need to remove listener.
-    if (editedElement && editedElement.parentElement) {
+    if (editedElement?.parentElement) {
       editedElement.parentElement.classList.remove('child-editing');
     }
 
@@ -2526,7 +2526,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const sibling: UI.TreeOutline.TreeElement|null =
           moveDirection === 'forward' ? target.nextSibling : target.previousSibling;
       target = sibling instanceof StylePropertyTreeElement ? sibling : null;
-    } while (target && target.inherited());
+    } while (target?.inherited());
 
     return target;
   }

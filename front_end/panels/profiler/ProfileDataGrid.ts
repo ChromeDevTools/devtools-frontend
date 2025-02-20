@@ -648,7 +648,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 
   jumpToNextSearchResult(): void {
-    if (!this.searchResults || !this.searchResults.length) {
+    if (!this.searchResults?.length) {
       return;
     }
     this.searchResultIndex = (this.searchResultIndex + 1) % this.searchResults.length;
@@ -656,7 +656,7 @@ export class ProfileDataGridTree implements UI.SearchableView.Searchable {
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this.searchResults || !this.searchResults.length) {
+    if (!this.searchResults?.length) {
       return;
     }
     this.searchResultIndex = (this.searchResultIndex - 1 + this.searchResults.length) % this.searchResults.length;

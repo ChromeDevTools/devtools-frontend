@@ -423,7 +423,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const selectedStorageTypes = [];
     for (const type of this.settings.keys()) {
       const setting = this.settings.get(type);
-      if (setting && setting.get()) {
+      if (setting?.get()) {
         selectedStorageTypes.push(type);
       }
     }
@@ -486,7 +486,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
+      const model = target?.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForStorageKey(storageKey);
       }

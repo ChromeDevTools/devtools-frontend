@@ -1309,7 +1309,7 @@ export class HeapSnapshotDiffNode extends HeapSnapshotGridNode {
 
   override createProvider(): HeapSnapshotDiffNodesProvider {
     const tree = this.dataGridInternal as HeapSnapshotDiffDataGrid;
-    if (tree.snapshot === null || tree.baseSnapshot === undefined || tree.baseSnapshot.uid === undefined) {
+    if (tree.snapshot === null || tree.baseSnapshot?.uid === undefined) {
       throw new Error('Data sources have not been set correctly');
     }
     const addedNodesProvider = tree.snapshot.createAddedNodesProvider(tree.baseSnapshot.uid, this.classKey);

@@ -79,7 +79,8 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.Isola
         const model = isolate.runtimeModel();
         UI.Context.Context.instance().setFlavor(
             SDK.CPUProfilerModel.CPUProfilerModel,
-            model && model.target().model(SDK.CPUProfilerModel.CPUProfilerModel));
+            model?.target().model(SDK.CPUProfilerModel.CPUProfilerModel) ?? null,
+        );
       }
     });
   }

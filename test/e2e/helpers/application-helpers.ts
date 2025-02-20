@@ -191,7 +191,7 @@ export async function getDataGridData(selector: string, columns: string[]) {
     const data: {[key: string]: string|null} = {};
     for (const column of columns) {
       const columnElement = row.querySelector(`.${column}-column`);
-      data[column] = (columnElement && columnElement.textContent?.trim()) || '';
+      data[column] = (columnElement?.textContent?.trim()) || '';
     }
     return data;
   }, columns)));

@@ -895,7 +895,7 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
       this.nextRequestedFilter = this.filterInProgress.equals(nodeFilter) ? null : nodeFilter;
       return;
     }
-    if (this.lastFilter && this.lastFilter.equals(nodeFilter)) {
+    if (this.lastFilter?.equals(nodeFilter)) {
       return;
     }
     this.filterInProgress = nodeFilter;
@@ -990,7 +990,7 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
   }
 
   async populateChildren(): Promise<void> {
-    if (this.snapshot === null || this.baseSnapshot === undefined || this.baseSnapshot.uid === undefined) {
+    if (this.snapshot === null || this.baseSnapshot?.uid === undefined) {
       throw new Error('Data sources have not been set correctly');
     }
     // Two snapshots live in different workers isolated from each other. That is why

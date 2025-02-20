@@ -389,7 +389,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       }
       return;
     }
-    const url = details.auxData && details.auxData['breakpointURL'];
+    const url = details.auxData?.['breakpointURL'];
     this.#hitBreakpoint = url;
     if (this.#breakpoints.indexOf(url) < 0) {
       return;

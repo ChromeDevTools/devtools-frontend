@@ -189,7 +189,7 @@ export class CSSStyleRule extends CSSRule {
 
   lineNumberInSource(selectorIndex: number): number {
     const selector = this.selectors[selectorIndex];
-    if (!selector || !selector.range || !this.styleSheetId) {
+    if (!selector?.range || !this.styleSheetId) {
       return 0;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
@@ -198,7 +198,7 @@ export class CSSStyleRule extends CSSRule {
 
   columnNumberInSource(selectorIndex: number): number|undefined {
     const selector = this.selectors[selectorIndex];
-    if (!selector || !selector.range || !this.styleSheetId) {
+    if (!selector?.range || !this.styleSheetId) {
       return undefined;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
@@ -210,7 +210,7 @@ export class CSSStyleRule extends CSSRule {
       return;
     }
     const range = this.selectorRange();
-    if (range && range.equal(edit.oldRange)) {
+    if (range?.equal(edit.oldRange)) {
       this.reinitializeSelectors((edit.payload as Protocol.CSS.SelectorList));
     } else {
       for (let i = 0; i < this.selectors.length; ++i) {

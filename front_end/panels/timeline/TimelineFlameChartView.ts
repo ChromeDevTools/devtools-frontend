@@ -1549,7 +1549,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
     // Find the group that contains this level and log a click for it.
     const group = groupForLevel(data.groups, entryLevel);
-    if (group && group.jslogContext) {
+    if (group?.jslogContext) {
       const loggable = this.#loggableForGroupByLogContext.get(group.jslogContext) ?? null;
       if (loggable) {
         VisualLogging.logClick(loggable, new MouseEvent('click'));
@@ -1629,7 +1629,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   jumpToNextSearchResult(): void {
-    if (!this.searchResults || !this.searchResults.length) {
+    if (!this.searchResults?.length) {
       return;
     }
     const index =
@@ -1638,7 +1638,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   }
 
   jumpToPreviousSearchResult(): void {
-    if (!this.searchResults || !this.searchResults.length) {
+    if (!this.searchResults?.length) {
       return;
     }
     const index =

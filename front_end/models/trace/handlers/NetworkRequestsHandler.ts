@@ -219,7 +219,7 @@ export async function finalize(): Promise<void> {
       // is not guaranteed to be present in the data for every request.
       let ts = sendRequest.ts;
       let dur = Types.Timing.Micro(nextSendRequest.ts - sendRequest.ts);
-      if (request.willSendRequests && request.willSendRequests[i] && request.willSendRequests[i + 1]) {
+      if (request.willSendRequests?.[i] && request.willSendRequests[i + 1]) {
         const willSendRequest = request.willSendRequests[i];
         const nextWillSendRequest = request.willSendRequests[i + 1];
         ts = willSendRequest.ts;
@@ -278,16 +278,15 @@ export async function finalize(): Promise<void> {
     // =======================
     // The time where the request started, which is either the first willSendRequest
     // event if there is one, or, if there is not, the sendRequest.
-    const startTime = (request.willSendRequests && request.willSendRequests.length) ?
-        Types.Timing.Micro(request.willSendRequests[0].ts) :
-        Types.Timing.Micro(firstSendRequest.ts);
+    const startTime = (request.willSendRequests?.length) ? Types.Timing.Micro(request.willSendRequests[0].ts) :
+                                                           Types.Timing.Micro(firstSendRequest.ts);
 
     // End redirect time
     // =======================
     // It's possible that when we start requesting data we will receive redirections.
     // Here we note the time of the *last* willSendRequest / sendRequest event,
     // which is used later on in the calculations for time queueing etc.
-    const endRedirectTime = (request.willSendRequests && request.willSendRequests.length) ?
+    const endRedirectTime = (request.willSendRequests?.length) ?
         Types.Timing.Micro(request.willSendRequests[request.willSendRequests.length - 1].ts) :
         Types.Timing.Micro(finalSendRequest.ts);
 

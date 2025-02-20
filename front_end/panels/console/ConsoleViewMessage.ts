@@ -592,7 +592,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
             runtimeModel.target(), scriptId, url || Platform.DevToolsPath.EmptyUrlString, line,
             {columnNumber: column, inlineFrameIndex: 0, userMetric});
       }
-      if (stackTrace && stackTrace.callFrames.length) {
+      if (stackTrace?.callFrames.length) {
         return this.linkifier.linkifyStackTraceTopFrame(runtimeModel.target(), stackTrace);
       }
       if (url && url !== 'undefined') {
@@ -1636,7 +1636,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   setSearchRegex(regex: RegExp|null): void {
-    if (this.searchHighlightNodeChanges && this.searchHighlightNodeChanges.length) {
+    if (this.searchHighlightNodeChanges?.length) {
       UI.UIUtils.revertDomChanges(this.searchHighlightNodeChanges);
     }
     this.searchRegexInternal = regex;
@@ -2036,7 +2036,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
       return true;
     }
     const parent = this.consoleGroup();
-    return Boolean(parent && parent.messagesHidden());
+    return Boolean(parent?.messagesHidden());
   }
 
   setGroupEnd(viewMessage: ConsoleViewMessage): void {
@@ -2170,12 +2170,12 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
       formattedMessage.appendChild(this.anchorElement);
     }
 
-    const table = this.message.parameters && this.message.parameters.length ? this.message.parameters[0] : null;
+    const table = this.message.parameters?.length ? this.message.parameters[0] : null;
     if (!table) {
       return this.buildMessage();
     }
     const actualTable = parameterToRemoteObject(this.message.runtimeModel())(table);
-    if (!actualTable || !actualTable.preview) {
+    if (!actualTable?.preview) {
       return this.buildMessage();
     }
 
@@ -2186,7 +2186,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
     for (let i = 0; i < preview.properties.length; ++i) {
       const rowProperty = preview.properties[i];
       let rowSubProperties: Protocol.Runtime.PropertyPreview[];
-      if (rowProperty.valuePreview && rowProperty.valuePreview.properties.length) {
+      if (rowProperty.valuePreview?.properties.length) {
         rowSubProperties = rowProperty.valuePreview.properties;
       } else if (rowProperty.value || rowProperty.value === '') {
         rowSubProperties =
@@ -2254,7 +2254,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
   }
 
   override approximateFastHeight(): number {
-    const table = this.message.parameters && this.message.parameters[0];
+    const table = this.message.parameters?.[0];
     if (table && typeof table !== 'string' && table.preview) {
       return defaultConsoleRowHeight * table.preview.properties.length;
     }

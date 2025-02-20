@@ -184,8 +184,8 @@ export async function getResourcesElement(
     const elements = await $$(className ?? RESOURCES_LABEL, issueElement);
     for (const el of elements) {
       const text = await el.evaluate(el => el.textContent);
-      if (text && text.includes(resourceName)) {
-        const content = await el.evaluateHandle(el => el.parentElement && el.parentElement.nextSibling);
+      if (text?.includes(resourceName)) {
+        const content = await el.evaluateHandle(el => el.parentElement?.nextSibling);
         return {label: el, content: content as puppeteer.ElementHandle<Element>};
       }
     }

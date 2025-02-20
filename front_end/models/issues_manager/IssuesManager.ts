@@ -406,7 +406,7 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     // IssueStatus is set in hidden issues menu.
     // In case a user wants to hide a specific issue, the issue code is added to "code" section
     // of our setting and its value is set to IssueStatus.Hidden. Then issue then gets hidden.
-    if (values && values[code]) {
+    if (values?.[code]) {
       if (values[code] === IssueStatus.HIDDEN) {
         issue.setHidden(true);
         return;

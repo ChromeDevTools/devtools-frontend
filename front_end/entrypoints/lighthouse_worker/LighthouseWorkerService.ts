@@ -158,7 +158,7 @@ async function fetchLocaleData(locales: string[]): Promise<string|void> {
   try {
     const remoteBase = Root.Runtime.getRemoteBase();
     let localeUrl: string;
-    if (remoteBase && remoteBase.base) {
+    if (remoteBase?.base) {
       localeUrl = `${remoteBase.base}third_party/lighthouse/locales/${locale}.json`;
     } else {
       localeUrl = new URL(`../../third_party/lighthouse/locales/${locale}.json`, import.meta.url).toString();

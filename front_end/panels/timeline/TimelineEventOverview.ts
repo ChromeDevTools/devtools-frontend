@@ -435,7 +435,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       if (this.drawGeneration !== drawGeneration) {
         return;
       }
-      if (!image || !image.naturalWidth || !image.naturalHeight) {
+      if (!image?.naturalWidth || !image.naturalHeight) {
         return;
       }
       const imageHeight = this.height() - 2 * TimelineFilmStripOverview.Padding;

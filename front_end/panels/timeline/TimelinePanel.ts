@@ -1374,7 +1374,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     let fileName: Platform.DevToolsPath.RawPathString;
     if (metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE) {
       fileName = `CPU-${traceStart}.cpuprofile` as Platform.DevToolsPath.RawPathString;
-    } else if (metadata && metadata.enhancedTraceVersion) {
+    } else if (metadata?.enhancedTraceVersion) {
       fileName = `EnhancedTraces-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
     } else {
       fileName = `Trace-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
@@ -1385,7 +1385,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       let traceAsString;
       if (metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE) {
         const profileEvent = traceEvents.find(e => e.name === 'CpuProfile');
-        if (!profileEvent || !profileEvent.args?.data) {
+        if (!profileEvent?.args?.data) {
           return;
         }
         const profileEventData = profileEvent.args?.data;
@@ -2043,7 +2043,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    if (parsedTrace && parsedTrace.Samples.profilesInProcess.size) {
+    if (parsedTrace?.Samples.profilesInProcess.size) {
       const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       // Gather up all CPU Profiles we found when parsing this trace.
       const cpuProfiles =

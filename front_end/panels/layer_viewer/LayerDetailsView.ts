@@ -304,7 +304,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   update(): void {
-    const layer = this.selection && this.selection.layer();
+    const layer = this.selection?.layer();
     if (!layer) {
       this.tableElement.remove();
       this.paintProfilerLink.remove();
@@ -363,7 +363,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   private updateCompositingReasons(compositingReasons: string[]): void {
-    if (!compositingReasons || !compositingReasons.length) {
+    if (!compositingReasons?.length) {
       this.compositingReasonsCell.textContent = 'n/a';
       return;
     }

@@ -977,7 +977,7 @@ export class ModelBreakpoint {
   private scriptDiverged(): boolean {
     for (const uiSourceCode of this.#breakpoint.getUiSourceCodes()) {
       const scriptFile = this.#debuggerWorkspaceBinding.scriptFile(uiSourceCode, this.#debuggerModel);
-      if (scriptFile && scriptFile.hasDivergedFromVM()) {
+      if (scriptFile?.hasDivergedFromVM()) {
         return true;
       }
     }

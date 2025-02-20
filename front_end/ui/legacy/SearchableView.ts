@@ -523,7 +523,7 @@ export class SearchableView extends VBox {
     let queryCandidate;
     if (!this.searchInputElement.hasFocus()) {
       const selection = InspectorView.instance().element.window().getSelection();
-      if (selection && selection.rangeCount) {
+      if (selection?.rangeCount) {
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
       }
     }

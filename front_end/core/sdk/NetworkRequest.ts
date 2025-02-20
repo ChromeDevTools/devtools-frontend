@@ -619,7 +619,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   set endTime(x: number) {
-    if (this.timing && this.timing.requestTime) {
+    if (this.timing?.requestTime) {
       // Check against accurate responseReceivedTime.
       this.#endTimeInternal = Math.max(x, this.responseReceivedTime);
     } else {

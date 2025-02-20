@@ -216,7 +216,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
       const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
-      if (oldScriptFile && oldScriptFile.script) {
+      if (oldScriptFile?.script) {
         this.removeScripts([oldScriptFile.script]);
       }
     }

@@ -146,7 +146,7 @@ export async function waitForSearchResultNumber(results: number) {
   const findMatch = async () => {
     const currentMatch = await waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
-    if (currentTextContent && currentTextContent.endsWith(` ${results}`)) {
+    if (currentTextContent?.endsWith(` ${results}`)) {
       return currentMatch;
     }
     return undefined;

@@ -1129,7 +1129,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     networkRequest.finished = true;
     if (encodedDataLength >= 0) {
       const redirectSource = networkRequest.redirectSource();
-      if (redirectSource && redirectSource.signedExchangeInfo()) {
+      if (redirectSource?.signedExchangeInfo()) {
         networkRequest.setTransferSize(0);
         redirectSource.setTransferSize(encodedDataLength);
         this.updateNetworkRequest(redirectSource);

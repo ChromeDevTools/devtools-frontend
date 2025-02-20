@@ -570,7 +570,7 @@ export class TimelineUIUtils {
       // legacy model which does not have a reference to the new engine's data.
       // So if we are missing the data, we just fallback to the name from the
       // callFrame.
-      if (!parsedTrace || !parsedTrace.Samples) {
+      if (!parsedTrace?.Samples) {
         tokens.push(traceEvent.callFrame.functionName);
       } else {
         tokens.push(Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.Samples, traceEvent));
@@ -673,7 +673,7 @@ export class TimelineUIUtils {
   }
 
   static isUserFrame(frame: Protocol.Runtime.CallFrame): boolean {
-    return frame.scriptId !== '0' && !(frame.url && frame.url.startsWith('native '));
+    return frame.scriptId !== '0' && !(frame.url?.startsWith('native '));
   }
 
   static async buildDetailsTextForTraceEvent(
@@ -714,7 +714,7 @@ export class TimelineUIUtils {
       }
       case Trace.Types.Events.Name.PARSE_HTML: {
         const startLine = unsafeEventArgs['beginData']['startLine'];
-        const endLine = unsafeEventArgs['endData'] && unsafeEventArgs['endData']['endLine'];
+        const endLine = unsafeEventArgs['endData']?.['endLine'];
         const url = Bindings.ResourceUtils.displayNameForURL(unsafeEventArgs['beginData']['url']);
         if (endLine >= 0) {
           detailsText = i18nString(UIStrings.sSs, {PH1: url, PH2: startLine + 1, PH3: endLine + 1});
@@ -731,7 +731,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.CACHE_SCRIPT:
       case Trace.Types.Events.Name.EVALUATE_SCRIPT: {
         const {lineNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-        const url = unsafeEventData && unsafeEventData['url'];
+        const url = unsafeEventData?.['url'];
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url) + ':' + ((lineNumber || 0) + 1);
         }
@@ -1823,7 +1823,7 @@ export class TimelineUIUtils {
       // that have a stack trace using the StackTraceForEvent helper.
     } else {
       const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
-      if (stackTrace && stackTrace.length) {
+      if (stackTrace?.length) {
         contentHelper.addSection(stackLabel);
         contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
       }
@@ -1887,7 +1887,7 @@ export class TimelineUIUtils {
       contentHelper.appendElementRow(UIStrings.initiatorFor, links);
     }
 
-    if (invalidations && invalidations.length) {
+    if (invalidations?.length) {
       const totalInvalidations = parsedTrace.Invalidations.invalidationCountForEvent.get(event) ??
           0;  // Won't be 0, but saves us dealing with undefined.
       contentHelper.addSection(i18nString(UIStrings.invalidations, {PH1: totalInvalidations}));

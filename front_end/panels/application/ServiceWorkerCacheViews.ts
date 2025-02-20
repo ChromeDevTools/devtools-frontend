@@ -282,7 +282,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   private async deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
     if (!node) {
-      node = this.dataGrid && this.dataGrid.selectedNode;
+      node = this.dataGrid?.selectedNode ?? null;
       if (!node) {
         return;
       }
@@ -320,7 +320,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     if (!this.dataGrid) {
       return;
     }
-    const selected = this.dataGrid.selectedNode && this.dataGrid.selectedNode.data.url();
+    const selected = this.dataGrid.selectedNode?.data.url();
     this.refreshButton.setEnabled(true);
     this.entriesForTest = entries;
     this.returnCount = returnCount;
@@ -403,7 +403,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
 
     // It is possible that table selection changes before the preview opens.
-    if (this.dataGrid && this.dataGrid.selectedNode && request === this.dataGrid.selectedNode.data) {
+    if (this.dataGrid?.selectedNode && request === this.dataGrid.selectedNode.data) {
       this.showPreview(preview);
     }
   }

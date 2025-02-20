@@ -305,7 +305,7 @@ export class SoftDropDown<T> implements ListDelegate<T> {
 
     ARIAUtils.setActiveDescendant(this.list.element, toElement);
     this.delegate.highlightedItemChanged(
-        from, to, fromElement && fromElement.firstElementChild, toElement && toElement.firstElementChild);
+        from, to, fromElement?.firstElementChild ?? null, toElement?.firstElementChild ?? null);
   }
 
   updateSelectedItemARIA(_fromElement: Element|null, _toElement: Element|null): boolean {

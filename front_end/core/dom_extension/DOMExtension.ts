@@ -341,7 +341,7 @@ Node.prototype.traversePreviousNode = function(stayWithin?: Node): Node|null {
     return null;
   }
   let node: ChildNode|(ChildNode | null) = this.previousSibling;
-  while (node && node.lastChild) {
+  while (node?.lastChild) {
     node = node.lastChild;
   }
   if (node) {

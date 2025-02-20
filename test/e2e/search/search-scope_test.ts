@@ -62,7 +62,7 @@ describe('The Search Panel', () => {
       }
       // Wrap the entries with the file details.
       return {
-        fileName: fileNameElement.firstChild && fileNameElement.firstChild.textContent || '',
+        fileName: fileNameElement.firstChild?.textContent || '',
         matchesCount: parseInt(matchesCountElement.textContent || '', 10),
       };
     })));

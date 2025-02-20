@@ -109,7 +109,7 @@ export interface Storage {
 
 export declare const chrome: Chrome.DevTools.Chrome&{storage?: Storage};
 
-if (typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined') {
+if (typeof chrome?.storage !== 'undefined') {
   const {storage} = chrome;
   const {languageServices} = chrome.devtools;
 

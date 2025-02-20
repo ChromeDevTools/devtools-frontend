@@ -532,7 +532,7 @@ export class TargetBase {
     }
 
     let router: SessionRouter;
-    if (sessionId && parentTarget && parentTarget.routerInternal) {
+    if (sessionId && parentTarget?.routerInternal) {
       router = parentTarget.routerInternal;
     } else if (connection) {
       router = new SessionRouter(connection);

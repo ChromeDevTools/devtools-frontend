@@ -107,7 +107,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   update(force?: boolean): void {
     this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
     if (!force) {
-      const showing = this.deviceModeView && this.deviceModeView.isShowing();
+      const showing = this.deviceModeView?.isShowing();
       if (this.showDeviceModeSetting.get() === showing) {
         return;
       }

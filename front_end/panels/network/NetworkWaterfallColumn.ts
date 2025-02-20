@@ -299,7 +299,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
   }
 
   private setSelectedNode(node: NetworkNode|null): boolean {
-    if (node && node.dataGrid) {
+    if (node?.dataGrid) {
       node.select();
       node.dataGrid.element.focus();
       return true;

@@ -47,7 +47,7 @@ function isShowPostMessageEventsEnabled(): boolean {
 
 export function entryIsVisibleInTimeline(
     entry: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.ParsedTrace): boolean {
-  if (parsedTrace && parsedTrace.Meta.traceIsGeneric) {
+  if (parsedTrace?.Meta.traceIsGeneric) {
     return true;
   }
 

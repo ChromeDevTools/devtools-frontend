@@ -378,12 +378,12 @@ export class TimelineTreeView extends
     }
     for (let i = pathToRoot.length - 1; i > 0; --i) {
       const gridNode = this.dataGridNodeForTreeNode(pathToRoot[i]);
-      if (gridNode && gridNode.dataGrid) {
+      if (gridNode?.dataGrid) {
         gridNode.expand();
       }
     }
     const gridNode = this.dataGridNodeForTreeNode(treeNode);
-    if (gridNode && gridNode.dataGrid) {
+    if (gridNode?.dataGrid) {
       gridNode.reveal();
       gridNode.select(suppressSelectedEvent);
     }
@@ -536,10 +536,10 @@ export class TimelineTreeView extends
   }
 
   #filterChanged(): void {
-    const searchQuery = this.textFilterUI && this.textFilterUI.value();
-    const caseSensitive = this.caseSensitiveButton !== undefined && this.caseSensitiveButton.isToggled();
-    const isRegex = this.regexButton !== undefined && this.regexButton.isToggled();
-    const matchWholeWord = this.matchWholeWord !== undefined && this.matchWholeWord.isToggled();
+    const searchQuery = this.textFilterUI?.value();
+    const caseSensitive = this.caseSensitiveButton?.isToggled() ?? false;
+    const isRegex = this.regexButton?.isToggled() ?? false;
+    const matchWholeWord = this.matchWholeWord?.isToggled() ?? false;
 
     this.textFilterInternal.setRegExp(
         searchQuery ? Platform.StringUtilities.createSearchRegex(searchQuery, caseSensitive, isRegex, matchWholeWord) :
@@ -1010,11 +1010,11 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     console.assert(Boolean(treeNode.parent), 'Attempt to build stack for tree root');
     let result: Trace.Extras.TraceTree.Node[] = [];
     // Do not add root to the stack, as it's the tree itself.
-    for (let node: Trace.Extras.TraceTree.Node = treeNode; node && node.parent; node = node.parent) {
+    for (let node: Trace.Extras.TraceTree.Node = treeNode; node?.parent; node = node.parent) {
       result.push(node);
     }
     result = result.reverse();
-    for (let node: Trace.Extras.TraceTree.Node = treeNode; node && node.children() && node.children().size;) {
+    for (let node: Trace.Extras.TraceTree.Node = treeNode; node?.children()?.size;) {
       const children = Array.from(node.children().values());
       node = children.reduce((a, b) => a.totalTime > b.totalTime ? a : b);
       result.push(node);
@@ -1106,7 +1106,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       return parsedURL.host;
     }
     const domainMatch = /([^.]*\.)?[^.]*$/.exec(parsedURL.host);
-    return domainMatch && domainMatch[0] || '';
+    return domainMatch?.[0] || '';
   }
 
   private static isExtensionInternalURL(url: Platform.DevToolsPath.UrlString): boolean {

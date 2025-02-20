@@ -237,8 +237,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   selectPrevious(): boolean {
-    let nextSelectedElement: (TreeElement|null) =
-        this.selectedTreeElement && this.selectedTreeElement.traversePreviousTreeElement(true);
+    let nextSelectedElement = this.selectedTreeElement?.traversePreviousTreeElement(true) ?? null;
     while (nextSelectedElement && !nextSelectedElement.selectable) {
       nextSelectedElement = nextSelectedElement.traversePreviousTreeElement(!this.expandTreeElementsWhenArrowing);
     }
@@ -250,8 +249,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   selectNext(): boolean {
-    let nextSelectedElement: (TreeElement|null) =
-        this.selectedTreeElement && this.selectedTreeElement.traverseNextTreeElement(true);
+    let nextSelectedElement = this.selectedTreeElement?.traverseNextTreeElement(true) ?? null;
     while (nextSelectedElement && !nextSelectedElement.selectable) {
       nextSelectedElement = nextSelectedElement.traverseNextTreeElement(!this.expandTreeElementsWhenArrowing);
     }
@@ -586,7 +584,7 @@ export class TreeElement {
     let insertionIndex;
     if (comparator) {
       insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
-    } else if (this.treeOutline && this.treeOutline.comparator) {
+    } else if (this.treeOutline?.comparator) {
       insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
@@ -659,8 +657,7 @@ export class TreeElement {
     this.childrenInternal.splice(childIndex, 1);
 
     const parent = child.parent;
-    if (this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(child)) {
+    if (this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(child)) {
       if (child.nextSibling) {
         child.nextSibling.select(true);
       } else if (child.previousSibling) {
@@ -709,8 +706,7 @@ export class TreeElement {
   }
 
   removeChildren(): void {
-    if (!this.root && this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
+    if (!this.root && this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(this)) {
       this.select(true);
     }
 
@@ -890,8 +886,7 @@ export class TreeElement {
     this.listItemNode.classList.toggle('hidden', x);
     this.childrenListNode.classList.toggle('hidden', x);
 
-    if (x && this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
+    if (x && this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(this)) {
       const hadFocus = this.treeOutline.selectedTreeElement.listItemElement.hasFocus();
       this.treeOutline.forceSelect(!hadFocus, /* selectedByUser */ false);
     }
@@ -905,7 +900,7 @@ export class TreeElement {
   }
 
   private ensureSelection(): void {
-    if (!this.treeOutline || !this.treeOutline.renderSelection) {
+    if (!this.treeOutline?.renderSelection) {
       return;
     }
     if (!this.selectionElementInternal) {
@@ -999,8 +994,8 @@ export class TreeElement {
       this.treeOutline.dispatchEventToListeners(Events.ElementCollapsed, this);
     }
 
-    const selectedTreeElement = this.treeOutline && this.treeOutline.selectedTreeElement;
-    if (selectedTreeElement && selectedTreeElement.hasAncestor(this)) {
+    const selectedTreeElement = this.treeOutline?.selectedTreeElement;
+    if (selectedTreeElement?.hasAncestor(this)) {
       this.select(/* omitFocus */ true, /* selectedByUser */ true);
     }
   }
@@ -1209,7 +1204,7 @@ export class TreeElement {
 
   setFocusable(focusable: boolean): void {
     if (focusable) {
-      this.listItemNode.setAttribute('tabIndex', (this.treeOutline && this.treeOutline.preventTabOrder) ? '-1' : '0');
+      this.listItemNode.setAttribute('tabIndex', (this.treeOutline?.preventTabOrder) ? '-1' : '0');
       this.listItemNode.addEventListener('focus', this.boundOnFocus, false);
       this.listItemNode.addEventListener('blur', this.boundOnBlur, false);
     } else {

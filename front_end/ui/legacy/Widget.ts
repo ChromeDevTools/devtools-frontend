@@ -300,15 +300,14 @@ export class Widget {
   }
 
   private inNotification(): boolean {
-    return Boolean(this.notificationDepth) ||
-        Boolean(this.parentWidgetInternal && this.parentWidgetInternal.inNotification());
+    return Boolean(this.notificationDepth) || Boolean(this.parentWidgetInternal?.inNotification());
   }
 
   private parentIsShowing(): boolean {
     if (this.isRoot) {
       return true;
     }
-    return this.parentWidgetInternal !== null && this.parentWidgetInternal.isShowing();
+    return this.parentWidgetInternal?.isShowing() ?? false;
   }
 
   protected callOnVisibleChildren(method: (this: Widget) => void): void {
@@ -658,7 +657,7 @@ export class Widget {
       return;
     }
 
-    if (this.defaultFocusedChild && this.defaultFocusedChild.visibleInternal) {
+    if (this.defaultFocusedChild?.visibleInternal) {
       this.defaultFocusedChild.focus();
     } else {
       for (const child of this.childrenInternal) {

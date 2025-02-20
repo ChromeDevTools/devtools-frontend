@@ -282,13 +282,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       return;
     }
     this.secondIsSidebar = secondIsSidebar;
-    if (!this.mainWidgetInternal || !this.mainWidgetInternal.shouldHideOnDetach()) {
+    if (!this.mainWidgetInternal?.shouldHideOnDetach()) {
       if (secondIsSidebar) {
         this.contentElement.insertBefore(this.mainElement, this.sidebarElementInternal);
       } else {
         this.contentElement.insertBefore(this.mainElement, this.resizerElementInternal);
       }
-    } else if (!this.sidebarWidgetInternal || !this.sidebarWidgetInternal.shouldHideOnDetach()) {
+    } else if (!this.sidebarWidgetInternal?.shouldHideOnDetach()) {
       if (secondIsSidebar) {
         this.contentElement.insertBefore(this.sidebarElementInternal, this.resizerElementInternal);
       } else {
@@ -792,8 +792,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private restoreAndApplyShowModeFromSettings(): void {
     const orientationState = this.settingForOrientation();
-    this.savedShowMode =
-        orientationState && orientationState.showMode ? orientationState.showMode : this.showModeInternal;
+    this.savedShowMode = orientationState?.showMode ? orientationState.showMode : this.showModeInternal;
     this.showModeInternal = this.savedShowMode;
 
     switch (this.savedShowMode) {

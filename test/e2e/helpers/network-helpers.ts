@@ -66,7 +66,7 @@ export async function getSelectedRequestName() {
     return null;
   }
   return await request.evaluate(node => {
-    return node && node.childNodes[1].textContent;
+    return node?.childNodes[1].textContent;
   });
 }
 

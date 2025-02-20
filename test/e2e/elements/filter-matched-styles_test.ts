@@ -36,7 +36,7 @@ describe('Filtering in the styles tab', () => {
 
     const matchesText = await Promise.all(matches.map(node => node.evaluate(node => node.textContent)));
     assert.deepEqual(
-        matchesText.map(v => v && v.trim()),
+        matchesText.map(v => v?.trim()),
         ['padding: 1px;', 'padding-top: 1px;', 'padding-right: 1px;', 'padding-bottom: 1px;', 'padding-left: 1px;']);
   });
 
@@ -55,7 +55,7 @@ describe('Filtering in the styles tab', () => {
     assert.deepEqual(matchesParentsExpanded, ['true', 'true', 'true', 'true', 'true', 'true']);
 
     const matchesText = await Promise.all(matches.map(node => node.evaluate(node => node.textContent)));
-    assert.deepEqual(matchesText.map(v => v && v.trim()), [
+    assert.deepEqual(matchesText.map(v => v?.trim()), [
       'margin-top: 1px;',
       'padding-top: 1px;',
       'border-top-width: 1px;',

@@ -2201,7 +2201,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private reveal(request: SDK.NetworkRequest.NetworkRequest): NetworkRequestNode|null {
     this.removeAllNodeHighlights();
     const node = networkRequestToNode.get(request);
-    if (!node || !node.dataGrid) {
+    if (!node?.dataGrid) {
       return null;
     }
     // Viewport datagrid nodes do not reveal if not in the root node

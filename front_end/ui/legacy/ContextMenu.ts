@@ -395,7 +395,7 @@ export class SubMenu extends Item {
 
       const itemLocation = item.location;
       const actionId = item.actionId;
-      if (!itemLocation || !itemLocation.startsWith(location + '/')) {
+      if (!itemLocation?.startsWith(location + '/')) {
         continue;
       }
 
@@ -643,7 +643,7 @@ export class ContextMenu extends SubMenu {
         return null;
       };
       const item = itemWithId(this.openHostedMenu, id);
-      if (item && item.jslogContext) {
+      if (item?.jslogContext) {
         void VisualLogging.logClick(item, new MouseEvent('click'));
       }
     }

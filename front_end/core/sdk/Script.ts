@@ -490,7 +490,7 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
   }
   // This is to overcome compilation cache which doesn't get reset.
   const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
-  if (!resourceTreeModel || !resourceTreeModel.mainFrame) {
+  if (!resourceTreeModel?.mainFrame) {
     return null;
   }
   return resourceTreeModel.mainFrame.id;

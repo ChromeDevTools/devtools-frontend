@@ -392,7 +392,7 @@ function getIframeRootCauses(
         const maxIframe = Types.Timing.Micro(iframeEvent.ts + (iframeEvent.dur ?? 0));
         return e.ts >= iframeEvent.ts && e.ts <= maxIframe;
       });
-      if (domEvent && domEvent.args.frame) {
+      if (domEvent?.args.frame) {
         rootCausesForShift.iframeIds.push(domEvent.args.frame);
       }
     }

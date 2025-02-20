@@ -267,7 +267,7 @@ export class SourceMapScopesInfo {
     } else {
       // No GeneratedRanges. Try to use mappings.
       const entry = this.#sourceMap.findEntry(line, column);
-      if (entry === null || entry.sourceIndex === undefined) {
+      if (entry?.sourceIndex === undefined) {
         return null;
       }
       originalInnerMostScope =

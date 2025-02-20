@@ -795,7 +795,7 @@ export class DebuggerPlugin extends Plugin {
       this.setControlDown(false);
     }
     if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
-      if (this.popoverHelper && this.popoverHelper.isPopoverVisible()) {
+      if (this.popoverHelper?.isPopoverVisible()) {
         this.popoverHelper.hidePopover();
         event.consume();
         return true;
@@ -1172,7 +1172,7 @@ export class DebuggerPlugin extends Plugin {
   }
 
   private clearContinueToLocations(): void {
-    if (this.editor && this.editor.state.field(continueToMarkers.field).size) {
+    if (this.editor?.state.field(continueToMarkers.field).size) {
       this.editor.dispatch({effects: continueToMarkers.update.of(CodeMirror.Decoration.none)});
     }
   }
@@ -1496,7 +1496,7 @@ export class DebuggerPlugin extends Plugin {
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
           this.uiSourceCode, debuggerModel);
-      if (scriptFile && scriptFile.hasSourceMapURL()) {
+      if (scriptFile?.hasSourceMapURL()) {
         return true;
       }
     }
@@ -2030,7 +2030,7 @@ class ValueDecoration extends CodeMirror.WidgetType {
       const nameValuePair = widget.createChild('span');
       UI.UIUtils.createTextChild(nameValuePair, name + ' = ');
       const propertyCount = value.preview ? value.preview.properties.length : 0;
-      const entryCount = value.preview && value.preview.entries ? value.preview.entries.length : 0;
+      const entryCount = value.preview?.entries ? value.preview.entries.length : 0;
       if (value.preview && propertyCount + entryCount < 10) {
         formatter.appendObjectPreview(nameValuePair, value.preview, false /* isEntry */);
       } else {

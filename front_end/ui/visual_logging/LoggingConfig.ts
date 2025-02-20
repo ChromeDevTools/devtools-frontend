@@ -143,7 +143,7 @@ export function parseJsLog(jslog: string): LoggingConfig {
   }
   const config: LoggingConfig = {ve};
   const context = getComponent('context:');
-  if (context && context.trim().length) {
+  if (context?.trim().length) {
     checkContextValue(context);
     config.context = context;
   }

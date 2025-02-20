@@ -1135,7 +1135,7 @@ describe('The Styles pane', () => {
         await expandSelectedNodeRecursively();
         await target.evaluate(async () => {
           const iframe = document.querySelector('iframe');
-          if (!iframe || !iframe.contentDocument) {
+          if (!iframe?.contentDocument) {
             return;
           }
           const style = iframe.contentDocument.createElement('style');

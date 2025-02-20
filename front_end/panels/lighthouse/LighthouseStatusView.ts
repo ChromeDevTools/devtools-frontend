@@ -240,7 +240,7 @@ export class StatusView {
     this.updateStatus(i18nString(UIStrings.loading));
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.inspectedURL);
-    const pageHost = parsedURL && parsedURL.host;
+    const pageHost = parsedURL?.host;
     const statusHeader =
         pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
     this.renderStatusHeader(statusHeader);

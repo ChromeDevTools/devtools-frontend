@@ -167,7 +167,7 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: DetachedElementsProfileType,
       detachedElements: Protocol.DOM.DetachedElementInfo[]|null, title?: string) {
     super(
-        heapProfilerModel && heapProfilerModel.debuggerModel(), type,
+        heapProfilerModel?.debuggerModel() ?? null, type,
         title || i18nString(UIStrings.detachedElementProfile, {PH1: type.nextProfileUid()}));
     this.detachedElements = detachedElements;
     this.heapProfilerModelInternal = heapProfilerModel;

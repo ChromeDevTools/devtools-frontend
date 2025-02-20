@@ -371,8 +371,8 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   announceSelectedGridNode(): void {
     // Only alert if the datagrid has focus
-    if (this.element === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument) && this.selectedNode &&
-        this.selectedNode.existingElement()) {
+    if (this.element === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument) &&
+        this.selectedNode?.existingElement()) {
       // Update the expand/collapse state for the current selected node
       let expandText;
       if (this.selectedNode.hasChildren()) {
@@ -392,7 +392,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // When a grid gets focus
     // 1) If an item is selected - Read the content of the row
     let accessibleText;
-    if (this.selectedNode && this.selectedNode.existingElement()) {
+    if (this.selectedNode?.existingElement()) {
       // TODO(l10n): Don't concatenate strings.
       let expandText = '';
       if (this.selectedNode.hasChildren()) {
@@ -1442,7 +1442,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const isContextMenuKey = (event.button === 0);
     const gridNode = isContextMenuKey ? this.selectedNode : this.dataGridNodeFromNode(target);
-    const selectedNodeElement = this.selectedNode && this.selectedNode.existingElement();
+    const selectedNodeElement = this.selectedNode?.existingElement();
     if (isContextMenuKey && selectedNodeElement) {
       const boundingRowRect = selectedNodeElement.getBoundingClientRect();
       if (boundingRowRect) {
@@ -2409,7 +2409,7 @@ export class DataGridNode<T> {
 
   traversePreviousNode(skipHidden: boolean, dontPopulate?: boolean): DataGridNode<T>|null {
     let node: (DataGridNode<T>|null) = (!skipHidden || this.revealed) ? this.previousSibling : null;
-    if (!dontPopulate && node && node.hasChildrenInternal) {
+    if (!dontPopulate && node?.hasChildrenInternal) {
       node.populate();
     }
 

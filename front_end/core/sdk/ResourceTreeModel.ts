@@ -696,18 +696,18 @@ export class ResourceTreeFrame {
     this.crossTargetParentFrameId = null;
 
     this.#loaderIdInternal = payload?.loaderId ?? '' as Protocol.Network.LoaderId;
-    this.#nameInternal = payload && payload.name;
+    this.#nameInternal = payload?.name;
     this.#urlInternal =
         payload && payload.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
-    this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
-    this.#securityOrigin = payload && payload.securityOrigin;
+    this.#domainAndRegistryInternal = (payload?.domainAndRegistry) || '';
+    this.#securityOrigin = payload?.securityOrigin ?? null;
     this.#securityOriginDetails = payload?.securityOriginDetails;
     this.#unreachableUrlInternal =
         (payload && payload.unreachableUrl as Platform.DevToolsPath.UrlString) || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = payload?.adFrameStatus;
-    this.#secureContextType = payload && payload.secureContextType;
-    this.#crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
-    this.#gatedAPIFeatures = payload && payload.gatedAPIFeatures;
+    this.#secureContextType = payload?.secureContextType ?? null;
+    this.#crossOriginIsolatedContextType = payload?.crossOriginIsolatedContextType ?? null;
+    this.#gatedAPIFeatures = payload?.gatedAPIFeatures ?? null;
 
     this.#creationStackTrace = creationStackTrace;
     this.#creationStackTraceTarget = null;

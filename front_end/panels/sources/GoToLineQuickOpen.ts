@@ -113,7 +113,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       return;
     }
 
-    if (sourceFrame && sourceFrame.wasmDisassembly) {
+    if (sourceFrame?.wasmDisassembly) {
       this.#goToLineStrings.push(i18nString(UIStrings.goToOffsetXs, {PH1: (position.column - 1).toString(16)}));
       return;
     }
@@ -139,9 +139,9 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     column: number,
   }|null {
     const sourceFrame = this.currentSourceFrame();
-    if (sourceFrame && sourceFrame.wasmDisassembly) {
+    if (sourceFrame?.wasmDisassembly) {
       const parts = query.match(/0x([0-9a-fA-F]+)/);
-      if (!parts || !parts[0] || parts[0].length !== query.length) {
+      if (!parts?.[0] || parts[0].length !== query.length) {
         return null;
       }
 
@@ -150,7 +150,7 @@ export class GoToLineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
     }
 
     const parts = query.match(/([0-9]+)(\:[0-9]*)?/);
-    if (!parts || !parts[0] || parts[0].length !== query.length) {
+    if (!parts?.[0] || parts[0].length !== query.length) {
       return null;
     }
     const line = parseInt(parts[1], 10);

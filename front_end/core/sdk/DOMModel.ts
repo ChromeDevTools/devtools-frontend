@@ -648,7 +648,7 @@ export class DOMNode {
   }
 
   isDescendant(descendant: DOMNode): boolean {
-    return descendant !== null && descendant.isAncestor(this);
+    return descendant.isAncestor(this);
   }
 
   frameOwnerFrameId(): Protocol.Page.FrameId|null {
@@ -933,8 +933,8 @@ export class DOMNode {
   }
 
   async setAsInspectedNode(): Promise<void> {
-    let node: (DOMNode|null)|DOMNode = (this as DOMNode | null);
-    if (node && node.pseudoType()) {
+    let node: DOMNode|null = this;
+    if (node?.pseudoType()) {
       node = node.parentNode;
     }
     while (node) {
@@ -1090,7 +1090,7 @@ export class DeferredDOMNode {
   async resolvePromise(): Promise<DOMNode|null> {
     const nodeIds =
         await this.#domModelInternal.pushNodesByBackendIdsToFrontend(new Set([this.#backendNodeIdInternal]));
-    return nodeIds && nodeIds.get(this.#backendNodeIdInternal) || null;
+    return nodeIds?.get(this.#backendNodeIdInternal) || null;
   }
 
   backendNodeId(): Protocol.DOM.BackendNodeId {

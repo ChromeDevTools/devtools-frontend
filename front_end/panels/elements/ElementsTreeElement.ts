@@ -1208,14 +1208,14 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     function commit(this: ElementsTreeElement): void {
-      if (this.editing && this.editing.editor) {
+      if (this.editing?.editor) {
         commitCallback(initialValue, this.editing.editor.state.doc.toString());
       }
       dispose.call(this);
     }
 
     function dispose(this: ElementsTreeElement): void {
-      if (!this.editing || !this.editing.editor) {
+      if (!this.editing?.editor) {
         return;
       }
       this.editing = null;
@@ -1644,7 +1644,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     const attrValueElement = attrSpanElement.createChild('span', 'webkit-html-attribute-value');
 
-    if (updateRecord && updateRecord.isAttributeModified(name)) {
+    if (updateRecord?.isAttributeModified(name)) {
       UI.UIUtils.runCSSAnimationOnce(hasText ? attrValueElement : attrNameElement, 'dom-update-highlight');
     }
 
@@ -1888,16 +1888,16 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '\u200B');
           this.buildTagDOM(titleDOM, tagName, true, false, updateRecord);
-          if (updateRecord && updateRecord.hasChangedChildren()) {
+          if (updateRecord?.hasChangedChildren()) {
             UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');
           }
-          if (updateRecord && updateRecord.isCharDataModified()) {
+          if (updateRecord?.isCharDataModified()) {
             UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');
           }
           break;
         }
 
-        if (this.treeOutline && this.treeOutline.isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
+        if (this.treeOutline?.isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
           this.buildTagDOM(titleDOM, tagName, true, false, updateRecord);
         }
         break;
@@ -1927,7 +1927,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           textNodeElement.textContent = Platform.StringUtilities.collapseWhitespace(result.text);
           UI.UIUtils.highlightRangesWithStyleClass(textNodeElement, result.entityRanges, 'webkit-html-entity-value');
           UI.UIUtils.createTextChild(titleDOM, '"');
-          if (updateRecord && updateRecord.isCharDataModified()) {
+          if (updateRecord?.isCharDataModified()) {
             UI.UIUtils.runCSSAnimationOnce(textNodeElement, 'dom-update-highlight');
           }
         }
@@ -2075,7 +2075,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         if (cascade.isInherited(style) && !SDK.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
           continue;
         }
-        if (style.parentRule && style.parentRule.isUserAgent()) {
+        if (style.parentRule?.isUserAgent()) {
           continue;
         }
         if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.ACTIVE) {

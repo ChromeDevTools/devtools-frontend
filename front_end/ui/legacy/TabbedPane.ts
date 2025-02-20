@@ -334,7 +334,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private viewHasFocus(): boolean {
-    if (this.visibleView && this.visibleView.hasFocus()) {
+    if (this.visibleView?.hasFocus()) {
       return true;
     }
     const root = this.contentElement.getComponentRoot();

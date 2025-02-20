@@ -271,7 +271,7 @@ export class CSSStyleDeclaration {
 
   #insertionRange(index: number): TextUtils.TextRange.TextRange {
     const property = this.propertyAt(index);
-    if (property && property.range) {
+    if (property?.range) {
       return property.range.collapseToStart();
     }
     if (!this.range) {

@@ -87,12 +87,12 @@ export function nodeIdsForEvent(
     // done the work to build the relationship between a DecodeImage event and
     // the corresponding PaintImage event.
     const paintImageEvent = modelData.ImagePainting.paintImageForEvent.get(event);
-    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+    if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
   } else if (Types.Events.isDrawLazyPixelRef(event) && event.args?.LazyPixelRef) {
     const paintImageEvent = modelData.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
-    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+    if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
   } else if (Types.Events.isParseMetaViewport(event) && typeof event.args?.data.node_id !== 'undefined') {

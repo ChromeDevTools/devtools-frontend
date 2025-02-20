@@ -98,7 +98,7 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);
-        if (!match || match.index === undefined) {
+        if (match?.index === undefined) {
           return false;
         }
         pos += match.index + match[0].length;

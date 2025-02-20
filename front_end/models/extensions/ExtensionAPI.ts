@@ -633,12 +633,12 @@ self.injectedExtensionAPI = function(
       function callbackWrapper(response: unknown): void {
         const result =
             response as ({entries: Array<HAR.Log.EntryDTO&{__proto__?: APIImpl.Request, _requestId?: number}>});
-        const entries = (result && result.entries) || [];
+        const entries = (result?.entries) || [];
         for (let i = 0; i < entries.length; ++i) {
           entries[i].__proto__ = new (Constructor(Request))(entries[i]._requestId as number);
           delete entries[i]._requestId;
         }
-        callback && callback(result as Object);
+        callback?.(result as Object);
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetHAR}, callback && callbackWrapper);
     },
@@ -657,7 +657,7 @@ self.injectedExtensionAPI = function(
     getContent: function(this: APIImpl.Request, callback?: (content: string, encoding: string) => unknown): void {
       function callbackWrapper(response: unknown): void {
         const {content, encoding} = response as {content: string, encoding: string};
-        callback && callback(content, encoding);
+        callback?.(content, encoding);
       }
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.GetRequestContent, id: this._id}, callback && callbackWrapper);
@@ -796,7 +796,7 @@ self.injectedExtensionAPI = function(
         callback?: (pane: PublicAPI.Chrome.DevTools.ExtensionSidebarPane) => unknown): void {
       const id = 'extension-sidebar-' + extensionServer.nextObjectId();
       function callbackWrapper(): void {
-        callback && callback(new (Constructor(ExtensionSidebarPane))(id));
+        callback?.(new (Constructor(ExtensionSidebarPane))(id));
       }
       extensionServer.sendRequest(
           {command: PrivateAPI.Commands.CreateSidebarPane, panel: this._hostPanelName, id, title},
@@ -1303,9 +1303,9 @@ self.injectedExtensionAPI = function(
               isException?: boolean, value: unknown,
             };
             if (isError || isException) {
-              callback && callback(undefined, result);
+              callback?.(undefined, result);
             } else {
-              callback && callback(value);
+              callback?.(value);
             }
           }
           extensionServer.sendRequest(
@@ -1323,7 +1323,7 @@ self.injectedExtensionAPI = function(
         return new (Constructor(Resource))(resourceData);
       }
       function callbackWrapper(resources: unknown): void {
-        callback && callback((resources as APIImpl.ResourceData[]).filter(canAccessResource).map(wrapResource));
+        callback?.((resources as APIImpl.ResourceData[]).filter(canAccessResource).map(wrapResource));
       }
       extensionServer.sendRequest({command: PrivateAPI.Commands.GetPageResources}, callback && callbackWrapper);
     },
@@ -1350,7 +1350,7 @@ self.injectedExtensionAPI = function(
     getContent: function(this: APIImpl.Resource, callback?: (content: string, encoding: string) => unknown): void {
       function callbackWrapper(response: unknown): void {
         const {content, encoding} = response as {content: string, encoding: string};
-        callback && callback(content, encoding);
+        callback?.(content, encoding);
       }
 
       extensionServer.sendRequest(

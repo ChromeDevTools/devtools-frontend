@@ -503,7 +503,7 @@ export class NetworkLogViewColumns {
     this.waterfallColumnSortIcon.name = null;
 
     const columnConfig = this.columns.find(columnConfig => columnConfig.id === columnId);
-    if (!columnConfig || !columnConfig.sortingFunction) {
+    if (!columnConfig?.sortingFunction) {
       return;
     }
     const sortingFunction =

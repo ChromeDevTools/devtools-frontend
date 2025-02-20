@@ -44,7 +44,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {
-    return this.cssModelInternal && this.cssModelInternal.isEnabled() ? this.cssModelInternal : null;
+    return this.cssModelInternal?.isEnabled() ? this.cssModelInternal : null;
   }
 
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.

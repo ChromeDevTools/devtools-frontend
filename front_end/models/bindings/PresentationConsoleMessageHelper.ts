@@ -195,7 +195,7 @@ export class PresentationSourceFrameMessageHelper {
     if (source.scriptId) {
       return this.#debuggerModel.createRawLocationByScriptId(source.scriptId, source.line, source.column);
     }
-    const callFrame = source.stackTrace && source.stackTrace.callFrames ? source.stackTrace.callFrames[0] : null;
+    const callFrame = source.stackTrace?.callFrames ? source.stackTrace.callFrames[0] : null;
     if (callFrame) {
       return this.#debuggerModel.createRawLocationByScriptId(
           callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);

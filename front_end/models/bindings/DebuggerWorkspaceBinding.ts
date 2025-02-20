@@ -386,7 +386,7 @@ export class DebuggerWorkspaceBinding implements SDK.TargetManager.SDKModelObser
     this.pluginManager.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));
     for (const modelData of this.#debuggerModelToData.values()) {
       const resourceScriptFile = modelData.getResourceScriptMapping().scriptFile(uiSourceCode);
-      if (resourceScriptFile && resourceScriptFile.script) {
+      if (resourceScriptFile?.script) {
         scripts.add(resourceScriptFile.script);
       }
       modelData.compilerMapping.scriptsForUISourceCode(uiSourceCode).forEach(script => scripts.add(script));

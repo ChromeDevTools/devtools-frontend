@@ -148,7 +148,7 @@ export class InplaceEditor<T> {
       } else if (result === 'cancel') {
         editingCancelled.call(element);
         event.consume(true);
-      } else if (result && result.startsWith('move-')) {
+      } else if (result?.startsWith('move-')) {
         moveDirection = result.substring(5);
         if ((event as KeyboardEvent).key === 'Tab') {
           event.consume(true);

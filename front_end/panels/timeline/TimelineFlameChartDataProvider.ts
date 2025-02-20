@@ -661,7 +661,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         }
       }
     }
-    if (this.timelineDataInternal && this.timelineDataInternal.selectedGroup) {
+    if (this.timelineDataInternal?.selectedGroup) {
       this.timelineDataInternal.selectedGroup.expanded = true;
     }
   }

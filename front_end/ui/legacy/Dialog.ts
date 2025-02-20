@@ -161,7 +161,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     }
 
     const mainWidget = splitWidget.mainWidget();
-    if (!mainWidget || !mainWidget.element) {
+    if (!mainWidget?.element) {
       return elementSet;
     }
 

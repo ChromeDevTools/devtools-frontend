@@ -1241,7 +1241,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private showSrgbOverlay(): void {
-    if ((this.contrastDetails && this.contrastDetails.expanded()) || this.gamut !== SpectrumGamut.DISPLAY_P3) {
+    if ((this.contrastDetails?.expanded()) || this.gamut !== SpectrumGamut.DISPLAY_P3) {
       return;
     }
 

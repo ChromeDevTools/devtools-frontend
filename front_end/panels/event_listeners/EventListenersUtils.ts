@@ -382,7 +382,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const jQuery = (window as any)['jQuery'];
-      if (!jQuery || !jQuery.fn) {
+      if (!jQuery?.fn) {
         return {eventListeners: []};
       }
       const jQueryFunction = jQuery;
@@ -427,7 +427,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
             }
           }
         }
-        if (entry && entry['$handle']) {
+        if (entry?.['$handle']) {
           internalHandlers.push(entry['$handle']);
         }
       }
@@ -441,7 +441,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       const node = this;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const jQuery = (window as any)['jQuery'];
-      if (!jQuery || !jQuery.fn) {
+      if (!jQuery?.fn) {
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {

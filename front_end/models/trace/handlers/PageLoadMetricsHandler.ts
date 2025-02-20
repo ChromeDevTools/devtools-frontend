@@ -352,7 +352,7 @@ function gatherFinalLCPEvents(): Types.Events.PageLoadEvent[] {
   for (let i = 0; i < dataForAllNavigations.length; i++) {
     const navigationData = dataForAllNavigations[i];
     const lcpInNavigation = navigationData.get(MetricName.LCP);
-    if (!lcpInNavigation || !lcpInNavigation.event) {
+    if (!lcpInNavigation?.event) {
       continue;
     }
 

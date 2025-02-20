@@ -838,10 +838,10 @@ export class VersionController {
         continue;
       }
       // Zero out saved percentage sizes, and they will be restored to defaults.
-      if (value.vertical && value.vertical.size && value.vertical.size < 1) {
+      if (value.vertical?.size && value.vertical.size < 1) {
         value.vertical.size = 0;
       }
-      if (value.horizontal && value.horizontal.size && value.horizontal.size < 1) {
+      if (value.horizontal?.size && value.horizontal.size < 1) {
         value.horizontal.size = 0;
       }
       setting.set(value);

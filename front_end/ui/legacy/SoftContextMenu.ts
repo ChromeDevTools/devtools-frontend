@@ -481,7 +481,7 @@ export class SoftContextMenu {
       const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
       this.highlightedMenuItemElement.classList.remove('force-white-icons');
       this.highlightedMenuItemElement.classList.remove('soft-context-menu-item-mouse-over');
-      if (detailsForElement && detailsForElement.subItems && detailsForElement.subMenuTimer) {
+      if (detailsForElement?.subItems && detailsForElement.subMenuTimer) {
         window.clearTimeout(detailsForElement.subMenuTimer);
         delete detailsForElement.subMenuTimer;
       }
@@ -492,13 +492,12 @@ export class SoftContextMenu {
       this.highlightedMenuItemElement.classList.add('force-white-icons');
       this.highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
-      if (detailsForElement && detailsForElement.customElement &&
-          !detailsForElement.customElement.classList.contains('location-menu')) {
+      if (detailsForElement?.customElement && !detailsForElement.customElement.classList.contains('location-menu')) {
         detailsForElement.customElement.focus();
       } else {
         this.highlightedMenuItemElement.focus();
       }
-      if (scheduleSubMenu && detailsForElement && detailsForElement.subItems && !detailsForElement.subMenuTimer) {
+      if (scheduleSubMenu && detailsForElement?.subItems && !detailsForElement.subMenuTimer) {
         detailsForElement.subMenuTimer =
             window.setTimeout(this.showSubMenu.bind(this, this.highlightedMenuItemElement), 150);
       }
@@ -535,7 +534,7 @@ export class SoftContextMenu {
     let menuItemDetails: (ElementMenuDetails|undefined) =
         menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
     while (menuItemElement &&
-           (menuItemDetails && menuItemDetails.isSeparator ||
+           (menuItemDetails?.isSeparator ||
             (menuItemElement as HTMLElement).classList.contains('soft-context-menu-disabled'))) {
       menuItemElement = menuItemElement.nextSibling;
       menuItemDetails = menuItemElement ? this.detailsForElementMap.get((menuItemElement as HTMLElement)) : undefined;
@@ -585,7 +584,7 @@ export class SoftContextMenu {
           break;
         }
         const detailsForElement = this.detailsForElementMap.get(this.highlightedMenuItemElement);
-        if (detailsForElement && detailsForElement.subItems) {
+        if (detailsForElement?.subItems) {
           this.showSubMenu(this.highlightedMenuItemElement);
           if (this.subMenu) {
             this.subMenu.highlightNext();

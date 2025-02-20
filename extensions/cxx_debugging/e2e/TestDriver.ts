@@ -115,9 +115,9 @@ describe('CXX Debugging Extension Test Suite', function() {
 
               if (variableName.startsWith('$')) {
                 if (variableType) {
-                  assert.isTrue(scopeVariable && scopeVariable.endsWith(`: ${variableType}`));
+                  assert.isTrue(scopeVariable?.endsWith(`: ${variableType}`));
                 } else if (value) {
-                  assert.isTrue(scopeVariable && scopeVariable.endsWith(`: ${value}`));
+                  assert.isTrue(scopeVariable?.endsWith(`: ${value}`));
                 }
               } else {
                 if (variableType) {

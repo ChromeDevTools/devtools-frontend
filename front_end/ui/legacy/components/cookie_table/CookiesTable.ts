@@ -497,7 +497,7 @@ export class CookiesTable extends UI.Widget.VBox {
         cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : cookie.topLevelSite();
     data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor() ? 'true' : '';
     data.priorityValue = ['Low', 'Medium', 'High'].indexOf(cookie.priority());
-    const blockedReasons = this.cookieToBlockedReasons && this.cookieToBlockedReasons.get(cookie) || [];
+    const blockedReasons = this.cookieToBlockedReasons?.get(cookie) || [];
     for (const blockedReason of blockedReasons) {
       data.flagged = true;
       const attribute = (blockedReason.attribute || SDK.Cookie.Attribute.NAME) as AttributeWithIcon;
@@ -522,7 +522,7 @@ export class CookiesTable extends UI.Widget.VBox {
         data.icons[attribute].title += '\n' + blockedReason.uiString;
       }
     }
-    const exemptionReason = this.cookieToExemptionReason && this.cookieToExemptionReason.get(cookie)?.uiString;
+    const exemptionReason = this.cookieToExemptionReason?.get(cookie)?.uiString;
     if (exemptionReason) {
       data.icons = data.icons || {};
       data.flagged = true;

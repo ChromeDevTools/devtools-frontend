@@ -661,7 +661,7 @@ export class CSSMatchedStyles {
       // MatchedStyleResult's lifetime.
       if (typeof node.id === 'number') {
         const map = this.#matchingSelectors.get(node.id);
-        if (map && map.has(selectorText)) {
+        if (map?.has(selectorText)) {
           return;
         }
       }

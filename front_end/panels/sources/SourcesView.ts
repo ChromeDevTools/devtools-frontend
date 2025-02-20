@@ -178,7 +178,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       UI.ARIAUtils.markAsListitem(listItemElement);
 
       // Take the first shortcut for display.
-      if (shortcutKeys && shortcutKeys[0]) {
+      if (shortcutKeys?.[0]) {
         const button = listItemElement.createChild('button');
         button.textContent = shortcut.description;
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);

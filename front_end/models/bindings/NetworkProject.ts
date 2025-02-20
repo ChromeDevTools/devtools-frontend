@@ -76,7 +76,7 @@ export class NetworkProject {
   static resolveFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):
       SDK.ResourceTreeModel.ResourceTreeFrame|null {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? resourceTreeModel.frameForId(frameId) : null;
   }
 
@@ -172,7 +172,7 @@ export class NetworkProject {
   static framesForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
       SDK.ResourceTreeModel.ResourceTreeFrame[] {
     const target = NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const attribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
     if (!resourceTreeModel || !attribution) {
       return [];

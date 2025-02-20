@@ -440,9 +440,9 @@ export class HTMLModel {
       const topElement = this.#stack[this.#stack.length - 1];
       if (topElement) {
         const tagSet = AutoClosingTags.get(topElement.name);
-        if (topElement !== this.#documentInternal && topElement.openTag && topElement.openTag.selfClosingTag) {
+        if (topElement !== this.#documentInternal && topElement.openTag?.selfClosingTag) {
           this.#popElement(autocloseTag(topElement, topElement.openTag.endOffset));
-        } else if (tagSet && tagSet.has(tag.name)) {
+        } else if (tagSet?.has(tag.name)) {
           this.#popElement(autocloseTag(topElement, tag.startOffset));
         }
         this.#pushElement(tag);

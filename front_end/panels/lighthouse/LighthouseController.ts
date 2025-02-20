@@ -407,7 +407,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   async getInspectedURL(options?: {force: boolean}): Promise<Platform.DevToolsPath.UrlString> {
-    if (options && options.force || !this.inspectedURL) {
+    if (options?.force || !this.inspectedURL) {
       this.inspectedURL = await this.evaluateInspectedURL();
     }
     return this.inspectedURL;

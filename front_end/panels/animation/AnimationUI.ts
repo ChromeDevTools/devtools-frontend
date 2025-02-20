@@ -301,7 +301,7 @@ export class AnimationUI {
     }
     while (iteration < this.#cachedElements.length) {
       const poppedElement = this.#cachedElements.pop();
-      if (poppedElement && poppedElement.group) {
+      if (poppedElement?.group) {
         poppedElement.group.remove();
       }
     }

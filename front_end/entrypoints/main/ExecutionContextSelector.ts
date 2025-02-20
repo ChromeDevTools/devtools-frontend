@@ -117,7 +117,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
       return false;
     }
     const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    const frame = resourceTreeModel?.frameForId(executionContext.frameId);
     return Boolean(frame?.isOutermostFrame());
   }
 

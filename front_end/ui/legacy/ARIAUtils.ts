@@ -422,6 +422,6 @@ export function alertElementInstance(container = document.body): HTMLElement {
  */
 export function alert(message: string): void {
   const dialog = Dialog.getInstance();
-  const element = alertElementInstance(dialog && dialog.isShowing() ? dialog.contentElement : undefined);
+  const element = alertElementInstance(dialog?.isShowing() ? dialog.contentElement : undefined);
   element.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
 }

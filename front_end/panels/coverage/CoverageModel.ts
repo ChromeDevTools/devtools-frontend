@@ -281,7 +281,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   usageForRange(contentProvider: TextUtils.ContentProvider.ContentProvider, startOffset: number, endOffset: number):
       boolean|undefined {
     const coverageInfo = this.coverageByContentProvider.get(contentProvider);
-    return coverageInfo && coverageInfo.usageForRange(startOffset, endOffset);
+    return coverageInfo?.usageForRange(startOffset, endOffset);
   }
 
   private clearCSS(): void {

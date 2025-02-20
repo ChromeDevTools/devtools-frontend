@@ -590,7 +590,7 @@ export async function readIgnoreListedSources(): Promise<string[]> {
 
 async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
   const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  return Boolean(events && events.length);
+  return Boolean(events?.length);
 }
 
 export async function stepThroughTheCode() {

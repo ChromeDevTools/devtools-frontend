@@ -181,7 +181,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
       return true;
     }
     const suggestion = this.list.selectedItem();
-    if (suggestion && suggestion.text) {
+    if (suggestion?.text) {
       isIntermediateSuggestion ?
           ARIAUtils.alert(i18nString(UIStrings.sSuggestionSOfS, {
             PH1: suggestion.title || suggestion.text,
@@ -283,7 +283,7 @@ export class SuggestBox implements ListDelegate<Suggestion> {
   private canShowBox(
       completions: Suggestion[], highestPriorityItem: Suggestion|null, canShowForSingleItem: boolean,
       userEnteredText: string): boolean {
-    if (!completions || !completions.length) {
+    if (!completions?.length) {
       return false;
     }
 

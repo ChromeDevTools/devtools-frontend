@@ -840,7 +840,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   #isUISourceCodeOrAnyAncestorSelected(node: NavigatorUISourceCodeTreeNode): boolean {
     const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
-    const selectedNode = selectedTreeElement && selectedTreeElement.node;
+    const selectedNode = selectedTreeElement?.node;
     let currentNode: NavigatorTreeNode|null = node;
     while (currentNode) {
       if (currentNode === selectedNode) {
@@ -950,8 +950,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private async renameShortcut(): Promise<boolean> {
     const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
-    const node = selectedTreeElement && selectedTreeElement.node;
-    if (!node || !node.uiSourceCode() || !node.uiSourceCode().canRename()) {
+    const node = selectedTreeElement?.node;
+    if (!node?.uiSourceCode()?.canRename()) {
       return false;
     }
     this.rename(node, false);
@@ -1147,7 +1147,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       }
       if (!committed) {
         uiSourceCode.remove();
-      } else if (node.treeElement && node.treeElement.listItemElement.hasFocus()) {
+      } else if (node.treeElement?.listItemElement.hasFocus()) {
         this.sourceSelected(uiSourceCode, true);
       }
     }
@@ -1947,7 +1947,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     if (children.length === 2) {
       oldNode = children[0] !== node ? children[0] : children[1];
     }
-    if (oldNode && oldNode.isMerged) {
+    if (oldNode?.isMerged) {
       oldNode.isMerged = false;
       const mergedToNodes = [];
       mergedToNodes.push(this);
@@ -1967,7 +1967,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         nodes.push(treeNode);
         children = treeNode.children();
         treeNode = children.length === 1 ? children[0] : null;
-      } while (treeNode && treeNode.isMerged);
+      } while (treeNode?.isMerged);
 
       if (!this.isPopulated()) {
         this.treeElement.title = titleText;

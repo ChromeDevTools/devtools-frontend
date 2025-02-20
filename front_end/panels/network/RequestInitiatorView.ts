@@ -52,7 +52,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     links: Element[],
   }|null {
     const initiator = request.initiator();
-    if (!initiator || !initiator.stack) {
+    if (!initiator?.stack) {
       return null;
     }
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);

@@ -363,7 +363,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
 
     const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event);
     const handler = this.shortcuts[shortcutKey];
-    if (handler && handler(event)) {
+    if (handler?.(event)) {
       event.consume();
       return;
     }

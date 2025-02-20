@@ -21,7 +21,7 @@ export interface Angle {
 
 export const parseText = (text: string): Angle|null => {
   const result = text.match(CSSAngleRegex);
-  if (!result || !result.groups) {
+  if (!result?.groups) {
     return null;
   }
 

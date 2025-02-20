@@ -142,16 +142,16 @@ export class ListWidget<T> extends VBox {
     const element = this.elements[index];
 
     const previous = element.previousElementSibling;
-    const previousIsSeparator = previous && previous.classList.contains('list-separator');
+    const previousIsSeparator = previous?.classList.contains('list-separator');
 
     const next = element.nextElementSibling;
-    const nextIsSeparator = next && next.classList.contains('list-separator');
+    const nextIsSeparator = next?.classList.contains('list-separator');
 
     if (previousIsSeparator && (nextIsSeparator || !next)) {
-      (previous).remove();
+      previous?.remove();
     }
     if (nextIsSeparator && !previous) {
-      (next).remove();
+      next?.remove();
     }
     element.remove();
 
@@ -283,7 +283,7 @@ export class ListWidget<T> extends VBox {
     if (this.editElement) {
       this.editElement.classList.remove('hidden');
     }
-    if (this.editor && this.editor.element.parentElement) {
+    if (this.editor?.element.parentElement) {
       this.editor.element.remove();
     }
 

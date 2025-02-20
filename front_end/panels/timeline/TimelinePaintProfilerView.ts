@@ -75,7 +75,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     }
 
     const frame = this.#parsedTrace.Frames.framesById[data.sourceFrameNumber];
-    if (!frame || !frame.layerTree) {
+    if (!frame?.layerTree) {
       return false;
     }
     return true;
@@ -125,7 +125,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     }
 
     const frame = this.#parsedTrace.Frames.framesById[data.sourceFrameNumber];
-    if (!frame || !frame.layerTree) {
+    if (!frame?.layerTree) {
       return null;
     }
 

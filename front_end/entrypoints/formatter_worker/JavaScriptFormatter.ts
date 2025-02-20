@@ -421,7 +421,7 @@ export class JavaScriptFormatter {
         const parentNode = (node.parent as Acorn.ESTree.CatchClause);
         // @ts-expect-error We are doing a subtype check, without properly checking whether
         // it exists. We can't fix that, unless we use proper typechecking
-        if (parentNode.parent && parentNode.parent.finalizer) {
+        if (parentNode.parent?.finalizer) {
           return 's';
         }
       }

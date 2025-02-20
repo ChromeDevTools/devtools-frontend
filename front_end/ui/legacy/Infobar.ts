@@ -151,7 +151,7 @@ export class Infobar {
   static create(
       type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
       jslogContext?: string): Infobar|null {
-    if (disableSetting && disableSetting.get()) {
+    if (disableSetting?.get()) {
       return null;
     }
     return new Infobar(type, text, actions, disableSetting, jslogContext);

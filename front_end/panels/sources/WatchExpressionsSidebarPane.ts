@@ -342,7 +342,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   async #evaluateExpression(executionContext: SDK.RuntimeModel.ExecutionContext, expression: string):
       Promise<SDK.RuntimeModel.EvaluationResult> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame && callFrame.script.isJavaScript()) {
+    if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       try {
         expression =
@@ -447,7 +447,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.element.removeChildren();
     const oldTreeElement = this.treeElementInternal;
     this.createWatchExpressionTreeElement(result, exceptionDetails);
-    if (oldTreeElement && oldTreeElement.parent) {
+    if (oldTreeElement?.parent) {
       const root = oldTreeElement.parent;
       const index = root.indexOfChild(oldTreeElement);
       root.removeChild(oldTreeElement);
@@ -486,8 +486,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.valueElement.classList.add('value');
       titleElement.classList.add('dimmed');
       this.valueElement.textContent = i18nString(UIStrings.notAvailable);
-      if (exceptionDetails !== undefined && exceptionDetails.exception !== undefined &&
-          exceptionDetails.exception.description !== undefined) {
+      if (exceptionDetails?.exception?.description !== undefined) {
         UI.Tooltip.Tooltip.install(this.valueElement as HTMLElement, exceptionDetails.exception.description);
       }
     } else {

@@ -247,7 +247,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.canvas.width = this.canvasContainer.clientWidth * window.devicePixelRatio;
     this.canvas.height = this.canvasContainer.clientHeight * window.devicePixelRatio;
     this.samplesPerBar = 0;
-    if (!this.profiles || !this.profiles.length || !this.logCategories) {
+    if (!this.profiles?.length || !this.logCategories) {
       return;
     }
 
@@ -260,7 +260,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     const barHeightByCategory = [];
     let heightByCategory: {[category: string]: number} = {};
     for (let i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
-      let categoryName = (this.logCategories[i] && this.logCategories[i].name) || 'misc';
+      let categoryName = (this.logCategories[i]?.name) || 'misc';
       const sampleIndex = this.log[i].commandIndex;
       for (let row = 0; row < this.profiles.length; row++) {
         const sample = this.profiles[row][sampleIndex];
@@ -329,7 +329,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
 
   private calculatePieChart(): {total: number, slices: Array<{value: number, color: string, title: string}>} {
     const window = this.selectionWindow();
-    if (!this.profiles || !this.profiles.length || !window) {
+    if (!this.profiles?.length || !window) {
       return {total: 0, slices: []};
     }
     let totalTime = 0;
@@ -386,7 +386,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     let left;
     let right;
     const window = this.selectionWindow();
-    if (this.profiles && this.profiles.length && window) {
+    if (this.profiles?.length && window) {
       left = this.log[window.left].commandIndex;
       right = this.log[window.right - 1].commandIndex;
     }

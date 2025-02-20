@@ -325,7 +325,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     function nameAndArguments(contents: string): string {
       const startOfArgumentsIndex = contents.indexOf('(');
       const endOfArgumentsMatch = contents.match(/\)\s*{/);
-      if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch && endOfArgumentsMatch.index !== undefined &&
+      if (startOfArgumentsIndex !== -1 && endOfArgumentsMatch?.index !== undefined &&
           endOfArgumentsMatch.index > startOfArgumentsIndex) {
         const name = contents.substring(0, startOfArgumentsIndex).trim() || defaultName;
         const args = contents.substring(startOfArgumentsIndex, endOfArgumentsMatch.index + 1);
@@ -507,7 +507,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
 
     function didGetDetails(response: SDK.DebuggerModel.FunctionDetails|null): void {
-      if (linkify && response && response.location) {
+      if (linkify && response?.location) {
         element.classList.add('linkified');
         element.addEventListener('click', () => {
           void Common.Revealer.reveal(response.location);
@@ -517,7 +517,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
 
       // The includePreview flag is false for formats such as console.dir().
       let defaultName: string|('' | 'anonymous') = includePreview ? '' : 'anonymous';
-      if (response && response.functionName) {
+      if (response?.functionName) {
         defaultName = response.functionName;
       }
       const valueElement =
@@ -529,7 +529,7 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
   static isDisplayableProperty(
       property: SDK.RemoteObject.RemoteObjectProperty,
       parentProperty?: SDK.RemoteObject.RemoteObjectProperty): boolean {
-    if (!parentProperty || !parentProperty.synthetic) {
+    if (!parentProperty?.synthetic) {
       return true;
     }
     const name = property.name;
@@ -590,7 +590,7 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
   constructor(options?: TreeOutlineOptions|null) {
     super();
     this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
-    this.editable = !(options && options.readOnly);
+    this.editable = !(options?.readOnly);
     this.contentElement.classList.add('source-code');
     this.contentElement.classList.add('object-properties-section');
   }
@@ -1129,7 +1129,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             i18nString(UIStrings.copyValue), copyValueHandler, {jslogContext: 'copy-value'});
       }
     }
-    if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
+    if (!this.property.synthetic && this.nameElement?.title) {
       const copyPathHandler = Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
           Host.InspectorFrontendHost.InspectorFrontendHostInstance, this.nameElement.title);
       contextMenu.clipboardSection().appendItem(

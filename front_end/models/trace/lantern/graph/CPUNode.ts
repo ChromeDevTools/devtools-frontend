@@ -63,7 +63,7 @@ class CPUNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
       if (event.name !== 'EvaluateScript') {
         continue;
       }
-      if (!event.args.data || !event.args.data.url) {
+      if (!event.args.data?.url) {
         continue;
       }
       urls.add(event.args.data.url);

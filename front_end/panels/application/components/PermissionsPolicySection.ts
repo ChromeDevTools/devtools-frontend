@@ -147,12 +147,10 @@ export class PermissionsPolicySection extends HTMLElement {
     const featureRows = await Promise.all(disallowed.map(async policy => {
       const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : null;
       const blockReason = policy.locator?.blockReason;
-      const linkTargetDOMNode = await (
-          blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute && frame &&
-          frame.getOwnerDOMNodeOrDocument());
-      const resource = frame && frame.resourceForURL(frame.url);
-      const linkTargetRequest =
-          blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource && resource.request;
+      const linkTargetDOMNode = await (blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute &&
+                                       frame?.getOwnerDOMNodeOrDocument());
+      const resource = frame?.resourceForURL(frame.url);
+      const linkTargetRequest = blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource?.request;
       const blockReasonText = (() => {
         switch (blockReason) {
           case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:

@@ -137,7 +137,7 @@ export async function hoverElement(element: puppeteer.ElementHandle): Promise<vo
 
 export const doubleClick =
     async (selector: string, options?: {root?: puppeteer.ElementHandle, clickOptions?: puppeteer.ClickOptions}) => {
-  const passedClickOptions = (options && options.clickOptions) || {};
+  const passedClickOptions = (options?.clickOptions) || {};
   const clickOptionsWithDoubleClick: puppeteer.ClickOptions = {
     ...passedClickOptions,
     clickCount: 2,
@@ -319,7 +319,7 @@ export const waitForElementsWithTextContent =
     (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
       return asyncScope.exec(() => waitForFunction(async () => {
                                const elems = await $$textContent(textContent, root);
-                               if (elems && elems.length) {
+                               if (elems?.length) {
                                  return elems;
                                }
 
@@ -504,7 +504,7 @@ export const activeElement = async () => {
   return frontend.evaluateHandle(() => {
     let activeElement = document.activeElement;
 
-    while (activeElement && activeElement.shadowRoot) {
+    while (activeElement?.shadowRoot) {
       activeElement = activeElement.shadowRoot.activeElement;
     }
 

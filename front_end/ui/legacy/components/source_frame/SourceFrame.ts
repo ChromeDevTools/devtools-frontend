@@ -836,7 +836,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
     const editor = this.textEditor;
     const currentActiveSearch = editor.state.field(activeSearchState);
-    if (currentActiveSearch && currentActiveSearch.currentRange) {
+    if (currentActiveSearch?.currentRange) {
       editor.dispatch({effects: setActiveSearch.of(new ActiveSearch(currentActiveSearch.regexp, null))});
     }
   }
@@ -1049,7 +1049,7 @@ class SearchMatch {
         return this.match[0];
       }
       if (selector[0] === '<') {
-        return (this.match.groups && this.match.groups[selector.slice(1, selector.length - 1)]) || '';
+        return (this.match.groups?.[selector.slice(1, selector.length - 1)]) || '';
       }
       return this.match[Number.parseInt(selector, 10)] || '';
     });
@@ -1162,7 +1162,7 @@ class ActiveSearch {
 }
 
 const setActiveSearch =
-    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value && value.map(mapping)});
+    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value?.map(mapping)});
 
 const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   create(): null {
@@ -1171,7 +1171,7 @@ const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   update(state, tr): ActiveSearch |
       null {
         return tr.effects.reduce(
-            (state, effect) => effect.is(setActiveSearch) ? effect.value : state, state && state.map(tr.changes));
+            (state, effect) => effect.is(setActiveSearch) ? effect.value : state, state?.map(tr.changes) ?? null);
       },
 });
 
@@ -1179,8 +1179,7 @@ const searchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch'});
 const currentSearchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch cm-searchMatch-selected'});
 
 const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
-decorations:
-  CodeMirror.DecorationSet;
+  decorations: CodeMirror.DecorationSet;
 
   constructor(view: CodeMirror.EditorView) {
     this.decorations = this.computeDecorations(view);

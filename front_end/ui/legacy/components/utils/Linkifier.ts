@@ -154,7 +154,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
   private static unbindUILocation(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
-    if (!info || !info.uiLocation) {
+    if (!info?.uiLocation) {
       return;
     }
 
@@ -188,7 +188,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
    */
   private static unbindBreakpoint(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
-    if (info && info.revealable) {
+    if (info?.revealable) {
       info.revealable = null;
     }
   }
@@ -269,7 +269,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       jslogContext: 'script-location',
     };
     const {link, linkInfo} = Linkifier.createLink(
-        fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
+        fallbackAnchor?.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
     linkInfo.userMetric = options?.userMetric;
@@ -457,7 +457,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     if (!uiLocation) {
       if (liveLocation instanceof Bindings.CSSWorkspaceBinding.LiveLocation) {
         const header = (liveLocation).header();
-        if (header && header.ownerNode) {
+        if (header?.ownerNode) {
           anchor.addEventListener('click', event => {
             event.consume(true);
             void Common.Revealer.reveal(header.ownerNode || null);
@@ -498,13 +498,13 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
   private static updateLinkDecorations(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
-    if (!info || !info.enableDecorator) {
+    if (!info?.enableDecorator) {
       return;
     }
     if (!decorator || !info.uiLocation) {
       return;
     }
-    if (info.icon && info.icon.parentElement) {
+    if (info.icon?.parentElement) {
       anchor.removeChild(info.icon);
     }
     const icon = decorator.linkIcon(info.uiLocation.uiSourceCode);
@@ -830,7 +830,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       });
     }
 
-    if (uiLocation && uiLocation.uiSourceCode) {
+    if (uiLocation?.uiSourceCode) {
       const contentProvider = uiLocation.uiSourceCode;
       result.push({
         section: 'clipboard',

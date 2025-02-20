@@ -997,7 +997,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
   #onMouseOver(evt: Event): void {
     // Traverse the event path on the grid to find the nearest element with a backend node ID attached. Use
     // that for the highlighting.
-    const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset && el.dataset.backendNodeId);
+    const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset?.backendNodeId);
     if (!node) {
       return;
     }

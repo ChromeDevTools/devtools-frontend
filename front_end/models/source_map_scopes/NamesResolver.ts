@@ -237,7 +237,7 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
                 // First see if we have a source map entry with a name for the identifier.
                 for (const position of id.positions) {
                   const entry = sourceMap.findEntry(position.lineNumber, position.columnNumber);
-                  if (entry && entry.name) {
+                  if (entry?.name) {
                     handler(entry.name);
                     return;
                   }

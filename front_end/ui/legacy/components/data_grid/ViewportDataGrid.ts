@@ -523,7 +523,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
 
   attached(): boolean {
     const existingElement = this.existingElement();
-    return Boolean(this.dataGrid && existingElement && existingElement.parentElement);
+    return Boolean(this.dataGrid && existingElement?.parentElement);
   }
 
   override refresh(): void {

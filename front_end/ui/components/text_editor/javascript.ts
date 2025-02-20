@@ -456,7 +456,7 @@ export async function isExpressionComplete(expression: string): Promise<boolean>
   }
   const result =
       await currentExecutionContext.runtimeModel.compileScript(expression, '', false, currentExecutionContext.id);
-  if (!result || !result.exceptionDetails || !result.exceptionDetails.exception) {
+  if (!result?.exceptionDetails?.exception) {
     return true;
   }
   const description = result.exceptionDetails.exception.description;
@@ -638,7 +638,7 @@ async function getArgumentsForFunctionValue(
   const javaScriptMetadata = JavaScriptMetaData.JavaScriptMetadata.JavaScriptMetadataImpl.instance();
 
   const descriptionRegexResult = /^function ([^(]*)\(/.exec(description);
-  const name = descriptionRegexResult && descriptionRegexResult[1] || functionName;
+  const name = descriptionRegexResult?.[1] || functionName;
   if (!name) {
     return null;
   }
@@ -702,7 +702,7 @@ async function prototypesFromObject(object: SDK.RemoteObject.RemoteObject): Prom
   return await object.callFunctionJSON(function(this: Object) {
     const result = [];
     for (let object = this; object; object = Object.getPrototypeOf(object)) {
-      if (typeof object === 'object' && object.constructor && object.constructor.name) {
+      if (typeof object === 'object' && object.constructor?.name) {
         result[result.length] = object.constructor.name;
       }
     }

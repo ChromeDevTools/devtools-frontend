@@ -65,7 +65,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   private onFilterChanged(): void {
     const lastSelectedNode = this.lastSelectedNode();
-    const selectedEvent = lastSelectedNode && lastSelectedNode.event;
+    const selectedEvent = lastSelectedNode?.event;
     this.refreshTree();
     if (selectedEvent) {
       this.selectEvent(selectedEvent, false);
@@ -141,7 +141,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
   }
 
   override onHover(node: Trace.Extras.TraceTree.Node|null): void {
-    this.delegate.highlightEvent(node && node.event);
+    this.delegate.highlightEvent(node?.event ?? null);
   }
 }
 
@@ -196,7 +196,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     function categoriesFilterChanged(this: Filters, name: Utils.EntryStyles.EventCategory): void {
       const categories = Utils.EntryStyles.getCategoryStyles();
       const checkBox = categoryFiltersUI.get(name);
-      categories[name].hidden = !checkBox || !checkBox.checked();
+      categories[name].hidden = !checkBox?.checked();
       this.notifyFiltersChanged();
     }
   }

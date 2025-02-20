@@ -252,7 +252,7 @@ async function loadTraceFileFromURL(url: URL): Promise<Trace.Types.File.Contents
   }
 
   const contentType = response.headers.get('content-type');
-  const isGzipEncoded = contentType !== null && contentType.includes('gzip');
+  const isGzipEncoded = contentType?.includes('gzip');
   let buffer = await response.arrayBuffer();
   if (isGzipEncoded) {
     buffer = await decodeGzipBuffer(buffer);
@@ -298,7 +298,7 @@ export async function fetchFixture(url: URL): Promise<string> {
   }
 
   const contentType = response.headers.get('content-type');
-  const isGzipEncoded = contentType !== null && contentType.includes('gzip');
+  const isGzipEncoded = contentType?.includes('gzip');
   let buffer = await response.arrayBuffer();
   if (isGzipEncoded) {
     buffer = await decodeGzipBuffer(buffer);

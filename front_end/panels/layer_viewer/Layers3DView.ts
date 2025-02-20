@@ -758,7 +758,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   }
 
   private innerUpdate(): void {
-    if (!this.layerTree || !this.layerTree.root()) {
+    if (!this.layerTree?.root()) {
       this.failBanner.show(this.contentElement);
       return;
     }

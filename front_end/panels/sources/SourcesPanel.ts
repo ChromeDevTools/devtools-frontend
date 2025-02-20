@@ -984,7 +984,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (contentType.hasScripts()) {
       const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
-      if (debuggerModel && debuggerModel.isPaused()) {
+      if (debuggerModel?.isPaused()) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.continueToHere), this.continueToLocation.bind(this, uiLocation),
             {jslogContext: 'continue-to-here'});
@@ -1117,7 +1117,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private async didGetFunctionDetails(response: {
     location: SDK.DebuggerModel.Location|null,
   }|null): Promise<void> {
-    if (!response || !response.location) {
+    if (!response?.location) {
       return;
     }
 
@@ -1157,7 +1157,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
 
-    if (this.sidebarPaneView && this.sidebarPaneView.shouldHideOnDetach()) {
+    if (this.sidebarPaneView?.shouldHideOnDetach()) {
       return;
     }  // We can't reparent extension iframes.
 
@@ -1260,7 +1260,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     const entry = items[0].webkitGetAsEntry();
-    if (entry && entry.isDirectory) {
+    if (entry?.isDirectory) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceDropFolder);
       void UI.ViewManager.ViewManager.instance().showView('navigator-files');

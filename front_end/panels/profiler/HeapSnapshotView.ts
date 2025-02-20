@@ -832,7 +832,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   }
 
   setSelectedNodeForDetailsView(nodeItem: HeapSnapshotGridNode|null): void {
-    const dataSource = nodeItem && nodeItem.retainersDataSource();
+    const dataSource = nodeItem?.retainersDataSource();
     if (dataSource) {
       void this.retainmentDataGrid.setDataSource(
           dataSource.snapshot, dataSource.snapshotNodeIndex, dataSource.snapshotNodeId);
@@ -952,8 +952,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     const node = this.dataGrid.dataGridNodeFromNode(row) || this.containmentDataGrid.dataGridNodeFromNode(row) ||
         this.constructorsDataGrid.dataGridNodeFromNode(row) || this.diffDataGrid.dataGridNodeFromNode(row) ||
-        (this.allocationDataGrid && this.allocationDataGrid.dataGridNodeFromNode(row)) ||
-        this.retainmentDataGrid.dataGridNodeFromNode(row);
+        (this.allocationDataGrid?.dataGridNodeFromNode(row)) || this.retainmentDataGrid.dataGridNodeFromNode(row);
     const heapProfilerModel = this.profile.heapProfilerModel();
     if (!node || !span || !heapProfilerModel) {
       return null;

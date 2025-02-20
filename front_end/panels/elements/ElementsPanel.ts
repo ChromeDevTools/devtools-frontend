@@ -532,7 +532,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     let selectedNode = event.data.node;
 
     // If the selectedNode is a pseudoNode, we want to ensure that it has a valid parentNode
-    if (selectedNode && (selectedNode.pseudoType() && !selectedNode.parentNode)) {
+    if (selectedNode?.pseudoType() && !selectedNode.parentNode) {
       selectedNode = null;
     }
     const {focus} = event.data;
@@ -803,7 +803,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private hideSearchHighlights(): void {
-    if (!this.searchResults || !this.searchResults.length || this.currentSearchResultIndex === -1) {
+    if (!this.searchResults?.length || this.currentSearchResultIndex === -1) {
       return;
     }
     const searchResult = this.searchResults[this.currentSearchResultIndex];
@@ -1104,7 +1104,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private updateSidebarPosition(): void {
-    if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach()) {
+    if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }  // We can't reparent extension iframes.
 

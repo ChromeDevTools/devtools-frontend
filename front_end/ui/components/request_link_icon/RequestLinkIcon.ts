@@ -92,7 +92,7 @@ export class RequestLinkIcon extends HTMLElement {
     if (data.revealOverride) {
       this.#reveal = data.revealOverride;
     }
-    if (!this.#request && data.affectedRequest && typeof data.affectedRequest.requestId !== 'undefined') {
+    if (!this.#request && typeof data.affectedRequest?.requestId !== 'undefined') {
       if (!this.#requestResolver) {
         throw new Error('A `RequestResolver` must be provided if an `affectedRequest` is provided.');
       }

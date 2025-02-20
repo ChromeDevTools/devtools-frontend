@@ -73,6 +73,31 @@ describeWithMockConnection('BackgroundServiceView', () => {
     assert.deepEqual(actualData, expectedData);
   });
 
+  it('shows placeholder text to select a value if events have been captured', () => {
+    assert.exists(backgroundServiceModel);
+    assert.exists(manager);
+    backgroundServiceModel.backgroundServiceEventReceived({
+      backgroundServiceEvent: {
+        timestamp: 1556889085,  // 2019-05-03 14:11:25.000.
+        origin: '',
+        storageKey: testKey,
+        serviceWorkerRegistrationId: 42 as unknown as Protocol.ServiceWorker.RegistrationID,  // invalid.
+        service: serviceName,
+        eventName: 'Event1',
+        instanceId: 'Instance1',
+        eventMetadata: [],
+      },
+    });
+    manager.updateStorageKeys(new Set([testKey]));
+    manager.setMainStorageKey(testKey);
+
+    assert.isNotNull(view.contentElement.querySelector('.empty-state'));
+    const header = view.contentElement.querySelector('.empty-state-header')?.textContent;
+    const description = view.contentElement.querySelector('.empty-state-description')?.textContent;
+    assert.deepEqual(header, 'No event selected');
+    assert.deepEqual(description, 'Select an event to view its metadata');
+  });
+
   it('shows placeholder text', () => {
     assert.isNotNull(view.contentElement.querySelector('.empty-state'));
     const header = view.contentElement.querySelector('.empty-state-header')?.textContent;

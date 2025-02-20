@@ -98,9 +98,14 @@ const UIStrings = {
    */
   backgroundServices: 'Background services',
   /**
+   *@description Text in Background Service View of the Application panel.
+   *             An event here refers to a background service event that is an entry in a table.
+   */
+  noEventSelected: 'No event selected',
+  /**
    *@description Text in Background Service View of the Application panel
    */
-  selectAnEntryToViewMetadata: 'Select an entry to view metadata',
+  selectAnEventToViewMetadata: 'Select an event to view its metadata',
   /**
    *@description Text in Background Service View of the Application panel
    *@example {Background Fetch} PH1
@@ -226,6 +231,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
 
     this.splitWidget.setMainWidget(this.dataGrid.asWidget());
     this.splitWidget.setSidebarWidget(this.previewPanel);
+    this.splitWidget.hideMain();
 
     this.showPreview(null);
   }
@@ -288,6 +294,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
   private clearView(): void {
     this.selectedEventNode = null;
     this.dataGrid.rootNode().removeChildren();
+    this.splitWidget.hideMain();
     this.saveButton.setEnabled(false);
     this.showPreview(null);
   }
@@ -355,6 +362,10 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     const data = this.createEventData(serviceEvent);
     const dataNode = new EventDataNode(data, serviceEvent.eventMetadata);
     this.dataGrid.rootNode().appendChild(dataNode);
+
+    if (this.splitWidget.showMode() !== UI.SplitWidget.ShowMode.BOTH) {
+      this.splitWidget.showBoth();
+    }
 
     if (this.dataGrid.rootNode().children.length === 1) {
       this.saveButton.setEnabled(true);
@@ -471,30 +482,23 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       return;
     }
 
-    this.preview = new UI.Widget.VBox();
-    this.preview.contentElement.classList.add('background-service-preview', 'fill');
-    const centered = this.preview.contentElement.createChild('div');
-
+    const emptyWidget = new UI.EmptyWidget.EmptyWidget('', '');
     if (this.dataGrid.rootNode().children.length) {
-      // Inform users that grid entries are clickable.
-      centered.createChild('p').textContent = i18nString(UIStrings.selectAnEntryToViewMetadata);
+      emptyWidget.header = i18nString(UIStrings.noEventSelected);
+      emptyWidget.text = i18nString(UIStrings.selectAnEventToViewMetadata);
     } else if (this.recordButton.isToggled()) {
       // Inform users that we are recording/waiting for events.
       const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
-      const emptyWidget = new UI.EmptyWidget.EmptyWidget(
-          i18nString(UIStrings.recordingSActivity, {PH1: featureName}),
-          i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName}));
-      emptyWidget.show(centered);
+      emptyWidget.header = i18nString(UIStrings.recordingSActivity, {PH1: featureName});
+      emptyWidget.text = i18nString(UIStrings.devtoolsWillRecordAllSActivity, {PH1: featureName});
     } else {
       const recordShortcuts =
           UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('background-service.toggle-recording')[0];
-      const emptyWidget = new UI.EmptyWidget.EmptyWidget(
-          i18nString(UIStrings.noRecording),
-          i18nString(
-              UIStrings.startRecordingToDebug,
-              {PH1: i18nString(UIStrings.startRecordingEvents), PH2: recordShortcuts.title()}));
+      emptyWidget.header = i18nString(UIStrings.noRecording);
+      emptyWidget.text = i18nString(
+          UIStrings.startRecordingToDebug,
+          {PH1: i18nString(UIStrings.startRecordingEvents), PH2: recordShortcuts.title()});
       emptyWidget.appendLink(this.createLearnMoreLink());
-      emptyWidget.show(centered);
 
       const button = UI.UIUtils.createTextButton(
           i18nString(UIStrings.startRecordingEvents), () => this.toggleRecording(),
@@ -502,6 +506,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
       emptyWidget.contentElement.appendChild(button);
     }
 
+    this.preview = emptyWidget;
     this.preview.show(this.previewPanel.contentElement);
   }
 

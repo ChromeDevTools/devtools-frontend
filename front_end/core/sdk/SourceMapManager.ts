@@ -109,10 +109,10 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
           this.#attachingClient = null;
           const initiator = client.createPageResourceLoadInitiator();
           clientData.sourceMapPromise =
-              loadSourceMap(sourceMapURL, initiator)
+              loadSourceMap(sourceURL, sourceMapURL, initiator)
                   .then(
-                      payload => {
-                        const sourceMap = new SourceMap(sourceURL, sourceMapURL, payload);
+                    ({fetchedSourceContent, parsedSourceMap}) => {
+                        const sourceMap = new SourceMap(sourceURL, sourceMapURL, parsedSourceMap, fetchedSourceContent);
                         if (this.#clientData.get(client) === clientData) {
                           clientData.sourceMap = sourceMap;
                           this.#sourceMaps.set(sourceMap, client);
@@ -175,12 +175,25 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
 }
 
 async function loadSourceMap(
-    url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
+  sourceURL: Platform.DevToolsPath.UrlString,
+  sourceMapURL: Platform.DevToolsPath.UrlString,
+  initiator: PageResourceLoadInitiator
+): Promise<{fetchedSourceContent: string, parsedSourceMap: SourceMapV3}> {
   try {
-    const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
-    return parseSourceMap(content);
+    const [
+      {content: sourceContent},
+      {content: sourceMapContent}
+    ] = await Promise.all([
+      PageResourceLoader.instance().loadResource(sourceURL, initiator),
+      PageResourceLoader.instance().loadResource(sourceMapURL, initiator)
+    ]);
+    // TODO: error handling, caching.
+    return {
+      fetchedSourceContent: sourceContent,
+      parsedSourceMap: parseSourceMap(sourceMapContent),
+    };
   } catch (cause) {
-    throw new Error(`Could not load content for ${url}: ${cause.message}`, {cause});
+    throw new Error(`Could not load content for ${sourceMapURL}: ${cause.message}`, {cause});
   }
 }
 

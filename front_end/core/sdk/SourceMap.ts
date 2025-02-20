@@ -165,7 +165,7 @@ export class SourceMap {
    */
   constructor(
       compiledURL: Platform.DevToolsPath.UrlString, sourceMappingURL: Platform.DevToolsPath.UrlString,
-      payload: SourceMapV3) {
+      payload: SourceMapV3, sourceContent: string) {
     this.#json = payload;
     this.#compiledURLInternal = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
@@ -178,7 +178,9 @@ export class SourceMap {
             `SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
       }
     }
-    this.eachSection(this.parseSources.bind(this));
+    this.eachSection((sourceMapObject: SourceMapV3Object) => {
+      this.parseSources(sourceMapObject, sourceContent);
+    });
   }
 
   augmentWithScopes(scriptUrl: Platform.DevToolsPath.UrlString, ranges: NamedFunctionRange[]): void {
@@ -464,7 +466,7 @@ export class SourceMap {
     }
   }
 
-  private parseSources(sourceMap: SourceMapV3Object): void {
+  private parseSources(sourceMap: SourceMapV3Object, sourceContent: string): void {
     const sourceRoot = sourceMap.sourceRoot ?? '';
     const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
@@ -483,7 +485,7 @@ export class SourceMap {
       }
       const url =
           Common.ParsedURL.ParsedURL.completeURL(this.#baseURL, href) || (href as Platform.DevToolsPath.UrlString);
-      const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i];
+      const source = sourceMap.sourcesContent && sourceMap.sourcesContent[i] || sourceContent;
       const sourceInfo: SourceInfo = {
         sourceURL: url,
         content: source ?? null,

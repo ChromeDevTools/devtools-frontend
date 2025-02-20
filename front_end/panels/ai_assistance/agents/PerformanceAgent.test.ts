@@ -5,7 +5,12 @@
 import * as Host from '../../../core/host/host.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+  restoreUserAgentForTesting,
+  setUserAgentForTesting,
+  updateHostConfig
+} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {CallTreeContext, PerformanceAgent, ResponseType} from '../ai_assistance.js';
@@ -83,6 +88,7 @@ describeWithEnvironment('PerformanceAgent', () => {
       sinon.stub(agent, 'preamble').value('preamble');
 
       await Array.fromAsync(agent.run('question', {selected: null}));
+      setUserAgentForTesting();
 
       assert.deepEqual(
           agent.buildRequest(
@@ -108,6 +114,7 @@ describeWithEnvironment('PerformanceAgent', () => {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
               user_tier: 2,
+              client_version: 'unit_test',
             },
             options: {
               model_id: 'test model',
@@ -117,6 +124,7 @@ describeWithEnvironment('PerformanceAgent', () => {
             functionality_type: 1,
           },
       );
+      restoreUserAgentForTesting();
     });
   });
   describe('run', function() {

@@ -501,6 +501,17 @@ export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[]
   });
 }
 
+let originalUserAgent: string;
+
+export function setUserAgentForTesting(): void {
+  originalUserAgent = window.navigator.userAgent;
+  Object.defineProperty(window.navigator, 'userAgent', {value: 'Chrome/unit_test', configurable: true});
+}
+
+export function restoreUserAgentForTesting(): void {
+  Object.defineProperty(window.navigator, 'userAgent', {value: originalUserAgent});
+}
+
 export function resetHostConfig() {
   for (const key of Object.keys(Root.Runtime.hostConfig)) {
     // @ts-expect-error

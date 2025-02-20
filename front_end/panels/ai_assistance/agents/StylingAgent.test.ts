@@ -8,6 +8,8 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
+  restoreUserAgentForTesting,
+  setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -527,6 +529,7 @@ c`;
       sinon.stub(agent, 'preamble').value('preamble');
       await Array.fromAsync(agent.run('question', {selected: null}));
 
+      setUserAgentForTesting();
       assert.deepEqual(
           agent.buildRequest(
               {
@@ -551,6 +554,7 @@ c`;
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
               user_tier: 2,
+              client_version: 'unit_test',
             },
             options: {
               model_id: 'test model',
@@ -560,6 +564,7 @@ c`;
             functionality_type: 1,
           },
       );
+      restoreUserAgentForTesting();
     });
 
     it('builds a request with aborted query in history before a real request', async () => {

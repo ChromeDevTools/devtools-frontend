@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 import {debugLog, isDebugMode} from '../debug.js';
 
@@ -290,6 +291,7 @@ export abstract class AiAgent<T> {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
         string_session_id: this.#sessionId,
         user_tier: Host.AidaClient.convertToUserTierEnum(this.userTier),
+        client_version: Root.Runtime.getChromeVersion(),
       },
 
       functionality_type: declarations.length ? Host.AidaClient.FunctionalityType.AGENTIC_CHAT :

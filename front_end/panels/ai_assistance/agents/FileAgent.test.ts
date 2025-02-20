@@ -7,7 +7,11 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {createUISourceCode, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {
+  restoreUserAgentForTesting,
+  setUserAgentForTesting,
+  updateHostConfig,
+} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {FileAgent, FileContext, ResponseType} from '../ai_assistance.js';
 
@@ -74,6 +78,7 @@ describeWithMockConnection('FileAgent', () => {
       sinon.stub(agent, 'preamble').value('preamble');
       await Array.fromAsync(agent.run('question', {selected: null}));
 
+      setUserAgentForTesting();
       assert.deepEqual(
           agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER),
           {
@@ -94,6 +99,7 @@ describeWithMockConnection('FileAgent', () => {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
               user_tier: 2,
+              client_version: 'unit_test',
             },
             options: {
               model_id: 'test model',
@@ -103,6 +109,7 @@ describeWithMockConnection('FileAgent', () => {
             functionality_type: 1,
           },
       );
+      restoreUserAgentForTesting();
     });
   });
 

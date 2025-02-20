@@ -159,9 +159,11 @@ export interface AidaRequest {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     model_id?: string,
   };
-  metadata?: {
+  metadata: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     disable_user_content_logging: boolean,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_version: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     string_session_id?: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -264,12 +266,6 @@ export class AidaBlockError extends Error {}
 
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
-    const request: AidaRequest = {
-      current_message: {parts: [{text: input}], role: Role.USER},
-      client: CLIENT_NAME,
-      functionality_type: FunctionalityType.EXPLAIN_ERROR,
-      client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
-    };
     const {hostConfig} = Root.Runtime;
     let temperature = -1;
     let modelId = '';
@@ -278,6 +274,20 @@ export class AidaClient {
       modelId = hostConfig.devToolsConsoleInsights.modelId || '';
     }
     const disallowLogging = hostConfig.aidaAvailability?.disallowLogging ?? true;
+    const chromeVersion = Root.Runtime.getChromeVersion();
+    if (!chromeVersion) {
+      throw new Error('Cannot determine Chrome version');
+    }
+    const request: AidaRequest = {
+      current_message: {parts: [{text: input}], role: Role.USER},
+      client: CLIENT_NAME,
+      functionality_type: FunctionalityType.EXPLAIN_ERROR,
+      client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
+      metadata: {
+        disable_user_content_logging: disallowLogging,
+        client_version: chromeVersion,
+      },
+    };
 
     if (temperature >= 0) {
       request.options ??= {};
@@ -286,11 +296,6 @@ export class AidaClient {
     if (modelId) {
       request.options ??= {};
       request.options.model_id = modelId;
-    }
-    if (disallowLogging) {
-      request.metadata = {
-        disable_user_content_logging: true,
-      };
     }
     return request;
   }

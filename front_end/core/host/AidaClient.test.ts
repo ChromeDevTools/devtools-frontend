@@ -2,13 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+  restoreUserAgentForTesting,
+  setUserAgentForTesting,
+  updateHostConfig
+} from '../../testing/EnvironmentHelpers.js';
 
 import * as Host from './host.js';
 
 const TEST_MODEL_ID = 'testModelId';
 
 describeWithEnvironment('AidaClient', () => {
+  beforeEach(() => {
+    setUserAgentForTesting();
+  });
+
+  afterEach(() => {
+    restoreUserAgentForTesting();
+  });
+
   it('adds no model temperature if console insights is not enabled', () => {
     updateHostConfig({
       aidaAvailability: {
@@ -21,6 +34,10 @@ describeWithEnvironment('AidaClient', () => {
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
     });
   });
 
@@ -43,6 +60,10 @@ describeWithEnvironment('AidaClient', () => {
       },
       client_feature: 1,
       functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
     });
   });
 
@@ -65,6 +86,10 @@ describeWithEnvironment('AidaClient', () => {
       },
       client_feature: 1,
       functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
     });
   });
 
@@ -84,6 +109,10 @@ describeWithEnvironment('AidaClient', () => {
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
     });
   });
 
@@ -108,6 +137,10 @@ describeWithEnvironment('AidaClient', () => {
       },
       client_feature: 1,
       functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
     });
   });
 
@@ -127,6 +160,7 @@ describeWithEnvironment('AidaClient', () => {
       client: 'CHROME_DEVTOOLS',
       metadata: {
         disable_user_content_logging: true,
+        client_version: 'unit_test',
       },
       options: {
         temperature: 0.5,

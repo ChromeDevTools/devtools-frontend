@@ -1362,19 +1362,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     multiTargetNetworkManagerInstance = null;
   }
 
-  static getChromeVersion(): string {
-    const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
-    const chromeMatch = navigator.userAgent.match(chromeRegex);
-    if (chromeMatch && chromeMatch.length > 1) {
-      return chromeMatch[1];
-    }
-    return '';
-  }
-
   static patchUserAgentWithChromeVersion(uaString: string): string {
     // Patches Chrome/ChrOS version from user #agent ("1.2.3.4" when user #agent is: "Chrome/1.2.3.4").
     // Otherwise, ignore it. This assumes additional appVersions appear after the Chrome version.
-    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
+    const chromeVersion = Root.Runtime.getChromeVersion();
     if (chromeVersion.length > 0) {
       // "1.2.3.4" becomes "1.0.100.0"
       const additionalAppVersion = chromeVersion.split('.', 1)[0] + '.0.100.0';
@@ -1389,7 +1380,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     if (!userAgentMetadata.brands) {
       return;
     }
-    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
+    const chromeVersion = Root.Runtime.getChromeVersion();
     if (chromeVersion.length === 0) {
       return;
     }

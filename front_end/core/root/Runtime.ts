@@ -38,6 +38,15 @@ export function isNodeEntry(pathname: string): boolean {
   return nodeEntryPoints.some(component => pathname.includes(component));
 }
 
+export const getChromeVersion = (): string => {
+  const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
+  const chromeMatch = navigator.userAgent.match(chromeRegex);
+  if (chromeMatch && chromeMatch.length > 1) {
+    return chromeMatch[1];
+  }
+  return '';
+};
+
 export class Runtime {
   private constructor() {
   }

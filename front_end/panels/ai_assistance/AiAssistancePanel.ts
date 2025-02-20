@@ -11,6 +11,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -351,13 +352,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #selectProject(): void {
     if (isAiAssistancePatchingEnabled()) {
-      // TODO: this is temporary code that should be replaced with workflow selection flow.
-      // For now it picks the first Workspace project that is not Snippets.
-      const projects =
-          Workspace.Workspace.WorkspaceImpl.instance().projectsForType(Workspace.Workspace.projectTypes.FileSystem);
+      // TODO: this is temporary code that should be replaced with
+      // workflow selection flow. For now it picks the first Workspace
+      // project that is not Snippets.
+      const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
       this.#project = undefined;
       for (const project of projects) {
-        if (project.displayName().trim() === '') {
+        // This is for TypeScript to narrow the types. projectsForType()
+        // probably only returns instances of
+        // Persistence.FileSystemWorkspaceBinding.FileSystem.
+        if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
+          continue;
+        }
+        // Workspace projects do not have a type. Only snippets and
+        // overrides do.
+        if (project.fileSystem().type()) {
           continue;
         }
         this.#project = project;

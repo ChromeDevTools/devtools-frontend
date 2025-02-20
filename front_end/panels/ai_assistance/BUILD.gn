@@ -47,6 +47,7 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../models/bindings:bundle",
     "../../models/logs:bundle",
+    "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",

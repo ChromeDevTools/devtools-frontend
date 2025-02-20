@@ -61,6 +61,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../core/sdk:unittests",
     "../../entrypoints/main/*",
+    "../../panels/ai_assistance/*",
     "../../panels/network/*",
     "../../panels/recorder/*",
     "../../panels/snippets/*",

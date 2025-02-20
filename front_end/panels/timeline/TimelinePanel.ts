@@ -530,8 +530,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.traceLoadStart = null;
 
-    this.disableCaptureJSProfileSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false);
+    this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-disable-js-sampling', false, Common.Settings.SettingStorageType.SESSION);
     this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
     this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting(
         'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.SESSION);
@@ -545,12 +545,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
 
-    this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
+    this.showMemorySetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-show-memory', false, Common.Settings.SettingStorageType.SESSION);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
 
-    this.#dimThirdPartiesSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
+    this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-dim-third-parties', false, Common.Settings.SettingStorageType.SESSION);
     this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
     this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
 

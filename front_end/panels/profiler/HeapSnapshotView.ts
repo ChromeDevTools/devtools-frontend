@@ -1364,6 +1364,15 @@ export class HeapSnapshotProfileType extends
     this.addProfile(profile);
     profile.updateStatus(i18nString(UIStrings.snapshotting));
 
+    // Release all the animations before taking a heap snapshot.
+    // The animations are stored for replay in the animations panel and they might cause
+    // detached nodes to appear in snapshots. Because of this, we release
+    // all the animations first before taking a heap snapshot.
+    const animationModel = heapProfilerModel.target().model(SDK.AnimationModel.AnimationModel);
+    if (animationModel) {
+      await animationModel.releaseAllAnimations();
+    }
+
     await heapProfilerModel.takeHeapSnapshot({
       reportProgress: true,
       captureNumericValue: true,

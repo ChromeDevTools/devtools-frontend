@@ -458,6 +458,12 @@ export class AnimationModel extends SDKModel<EventTypes> {
     void this.agent.invoke_setPlaybackRate({playbackRate});
   }
 
+  async releaseAllAnimations(): Promise<void> {
+    const animationIds = [...this.animationGroups.values()].flatMap(
+        animationGroup => animationGroup.animations().map(animation => animation.id()));
+    await this.agent.invoke_releaseAnimations({animations: animationIds});
+  }
+
   releaseAnimations(animations: string[]): void {
     void this.agent.invoke_releaseAnimations({animations});
   }

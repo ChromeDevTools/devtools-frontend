@@ -369,13 +369,16 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
 export class LightDarkColorMatch implements Match {
   constructor(
       readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly light: CodeMirror.SyntaxNode[],
-      readonly dark: CodeMirror.SyntaxNode[]) {
+      readonly dark: CodeMirror.SyntaxNode[], readonly property: CSSProperty) {
   }
 }
 
 // clang-format off
 export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
   // clang-format on
+  constructor(readonly property: CSSProperty) {
+    super();
+  }
   override accepts(propertyName: string): boolean {
     return cssMetadata().isColorAwareProperty(propertyName);
   }
@@ -388,7 +391,7 @@ export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
     if (args.length !== 2 || args[0].length === 0 || args[1].length === 0) {
       return null;
     }
-    return new LightDarkColorMatch(matching.ast.text(node), node, args[0], args[1]);
+    return new LightDarkColorMatch(matching.ast.text(node), node, args[0], args[1], this.property);
   }
 }
 

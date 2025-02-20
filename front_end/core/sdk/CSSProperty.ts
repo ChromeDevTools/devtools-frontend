@@ -128,7 +128,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       new StringMatcher(),
       new ShadowMatcher(),
       new CSSWideKeywordMatcher(this, matchedStyles),
-      new LightDarkColorMatcher(),
+      new LightDarkColorMatcher(this),
       new GridTemplateMatcher(),
       new LinearGradientMatcher(),
       new AnchorFunctionMatcher(),

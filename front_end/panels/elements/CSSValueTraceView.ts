@@ -87,9 +87,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       return undefined;
     }
 
-    const rendererMap = new Map(
-        renderers.map(r => [r.matcher().matchType, r]),
-    );
+    const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
 
     // Compute all trace lines
     // 1st: Apply substitutions for var() functions

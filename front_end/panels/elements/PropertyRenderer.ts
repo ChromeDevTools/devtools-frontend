@@ -41,7 +41,6 @@ function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
   readonly matchType: SDK.CSSPropertyParser.Constructor<MatchT>;
   render(match: MatchT, context: RenderingContext): Node[];
-  matcher(): SDK.CSSPropertyParser.Matcher<MatchT>;
 }
 
 // A mixin to automatically expose the match type on specific renrerers
@@ -49,7 +48,6 @@ export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
 export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
     matchT: SDK.CSSPropertyParser.Constructor<MatchT>) {
   abstract class RendererBase implements MatchRenderer<MatchT> {
-    abstract matcher(): SDK.CSSPropertyParser.Matcher<MatchT>;
     readonly matchType = matchT;
     render(_match: MatchT, _context: RenderingContext): Node[] {
       return [];

@@ -429,15 +429,20 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
 
   it('parses light-dark correctly', () => {
     for (const fail of ['light-dark()', 'light-dark(red)', 'light-dark(var(--foo))']) {
-      const {match, text} = matchSingleValue('color', fail, new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher());
+      const {match, text} = matchSingleValue(
+          'color', fail,
+          new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(
+              sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
       assert.isNull(match, text);
     }
 
     for (const succeed
              of ['light-dark(red, blue)', 'light-dark(var(--foo), red)', 'light-dark(red, var(--foo))',
                  'light-dark(var(--foo), var(--bar))']) {
-      const {ast, match, text} =
-          matchSingleValue('color', succeed, new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher());
+      const {ast, match, text} = matchSingleValue(
+          'color', succeed,
+          new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(
+              sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
       assert.exists(ast, text);
       assert.exists(match, text);
 
@@ -449,8 +454,9 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     }
 
     // light-dark only applies to color properties
-    const {match, text} =
-        matchSingleValue('width', 'light-dark(red, blue)', new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher());
+    const {match, text} = matchSingleValue(
+        'width', 'light-dark(red, blue)',
+        new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
     assert.isNull(match, text);
   });
 

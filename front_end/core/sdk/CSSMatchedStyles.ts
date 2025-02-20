@@ -777,6 +777,10 @@ export class CSSMatchedStyles {
     return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
   }
 
+  resolveProperty(name: string, startingPoint: CSSStyleDeclaration): CSSProperty|null {
+    return this.#styleToDOMCascade.get(startingPoint)?.resolveProperty(name, startingPoint) ?? null;
+  }
+
   resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): CSSValueSource|null {
     const resolved = this.#styleToDOMCascade.get(property.ownerStyle)?.resolveGlobalKeyword(property, keyword);
     return resolved ? new CSSValueSource(resolved) : null;
@@ -975,6 +979,15 @@ function* forEach<T>(array: T[], startAfter?: T): Generator<T> {
   }
 }
 
+function* forEachInclusive<T>(array: T[], startAt?: T): Generator<T> {
+  if (startAt === undefined || array.includes(startAt)) {
+    if (startAt !== undefined) {
+      yield startAt;
+    }
+    yield* forEach(array, startAt);
+  }
+}
+
 class DOMInheritanceCascade {
   readonly #nodeCascades: NodeCascade[];
   readonly #propertiesState: Map<CSSProperty, PropertyState>;
@@ -1028,7 +1041,23 @@ class DOMInheritanceCascade {
     return null;
   }
 
-  #findPropertyInParentCascade(property: CSSProperty): CSSProperty|null {
+  resolveProperty(name: string, startAt: CSSStyleDeclaration): CSSProperty|null {
+    const cascade = this.#styleToNodeCascade.get(startAt);
+    if (!cascade) {
+      return null;
+    }
+
+    for (const style of forEachInclusive(cascade.styles, startAt)) {
+      const candidate = style.allProperties().findLast(candidate => candidate.name === name);
+      if (candidate) {
+        return candidate;
+      }
+    }
+
+    return this.#findPropertyInParentCascadeIfInherited({name, ownerStyle: startAt});
+  }
+
+  #findPropertyInParentCascade(property: {name: string, ownerStyle: CSSStyleDeclaration}): CSSProperty|null {
     const nodeCascade = this.#styleToNodeCascade.get(property.ownerStyle);
     if (!nodeCascade) {
       return null;
@@ -1045,16 +1074,16 @@ class DOMInheritanceCascade {
     return null;
   }
 
-  #findPropertyInParentCascadeIfInherited(property: CSSProperty): CSSProperty|null {
+  #findPropertyInParentCascadeIfInherited(property: {name: string, ownerStyle: CSSStyleDeclaration}): CSSProperty|null {
     if (!cssMetadata().isPropertyInherited(property.name) ||
-        !(this.#findCustomPropertyRegistration(property)?.inherits() ?? true)) {
+        !(this.#findCustomPropertyRegistration(property.name)?.inherits() ?? true)) {
       return null;
     }
     return this.#findPropertyInParentCascade(property);
   }
 
-  #findCustomPropertyRegistration(property: CSSProperty): CSSRegisteredProperty|null {
-    const registration = this.#registeredProperties.find(registration => registration.propertyName() === property.name);
+  #findCustomPropertyRegistration(property: string): CSSRegisteredProperty|null {
+    const registration = this.#registeredProperties.find(registration => registration.propertyName() === property);
     return registration ? registration : null;
   }
 
@@ -1079,9 +1108,9 @@ class DOMInheritanceCascade {
 
     switch (keyword) {
       case CSSWideKeyword.INITIAL:
-        return this.#findCustomPropertyRegistration(property);
+        return this.#findCustomPropertyRegistration(property.name);
       case CSSWideKeyword.INHERIT:
-        return this.#findPropertyInParentCascade(property) ?? this.#findCustomPropertyRegistration(property);
+        return this.#findPropertyInParentCascade(property) ?? this.#findCustomPropertyRegistration(property.name);
       case CSSWideKeyword.REVERT:
         return this.#findPropertyInPreviousStyle(
                    property,
@@ -1093,7 +1122,8 @@ class DOMInheritanceCascade {
         return this.#findPropertyInPreviousStyle(property, isPreviousLayer) ??
             this.resolveGlobalKeyword(property, CSSWideKeyword.REVERT);
       case CSSWideKeyword.UNSET:
-        return this.#findPropertyInParentCascadeIfInherited(property) ?? this.#findCustomPropertyRegistration(property);
+        return this.#findPropertyInParentCascadeIfInherited(property) ??
+            this.#findCustomPropertyRegistration(property.name);
     }
   }
 

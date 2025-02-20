@@ -478,6 +478,7 @@ describe('CSSPropertyParser', () => {
       assert.strictEqual(matching.getComputedText(ast.tree), '--property: 1px  solid');
       assert.strictEqual(matching.getComputedText(width), '1px');
       assert.strictEqual(matching.getComputedText(style), 'solid');
+      assert.strictEqual(matching.getComputedPropertyValueText(), '1px  solid');
     });
 
     it('retains tokenization in the computed text', () => {

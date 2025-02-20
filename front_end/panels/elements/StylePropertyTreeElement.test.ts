@@ -76,9 +76,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   });
 
   function addProperty(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
-    return new SDK.CSSProperty.CSSProperty(
+    const property = new SDK.CSSProperty.CSSProperty(
         matchedStyles.nodeStyles()[0], matchedStyles.nodeStyles()[0].pastLastSourcePropertyIndex(), name, value, true,
         false, true, false, '', undefined, longhandProperties);
+    matchedStyles.nodeStyles()[0].allProperties().push(property);
+    return property;
   }
 
   function getTreeElement(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -711,9 +713,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
             SDK.CSSPropertyParser.tokenizeDeclaration(stylePropertyTreeElement.name, stylePropertyTreeElement.value);
         assert.exists(ast);
         const matching = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(
-            ast, [new Elements.StylePropertyTreeElement
-                      .VariableRenderer(stylePropertyTreeElement, stylePropertyTreeElement.property.ownerStyle)
-                      .matcher()]);
+            ast, [new SDK.CSSPropertyParserMatchers.VariableMatcher(
+                     stylePropertyTreeElement.matchedStyles(), stylePropertyTreeElement.property.ownerStyle)]);
 
         const res = {
           hasUnresolvedVars: matching.hasUnresolvedVars(ast.tree),
@@ -1370,14 +1371,20 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('renders light-dark correctly', async () => {
       const colorSchemeSpy =
           sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      const resolvePropertySpy = sinon.spy(SDK.CSSMatchedStyles.CSSMatchedStyles.prototype, 'resolveProperty');
+      const colorSchemeProperty = addProperty('color-scheme', 'light dark');
 
       async function check(colorScheme: SDK.CSSModel.ColorScheme, lightText: string, darkText: string) {
         const variableName = (text: string) => text.substring('var('.length, text.length - 1);
         const lightDark = `light-dark(${lightText}, ${darkText})`;
+        colorSchemeProperty.setLocalValue(colorScheme);
+        resolvePropertySpy.resetHistory();
         const stylePropertyTreeElement = getTreeElement('color', lightDark);
-        stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', colorScheme]]));
         stylePropertyTreeElement.updateTitle();
         await Promise.all(colorSchemeSpy.returnValues);
+
+        assert.isTrue(
+            resolvePropertySpy.calledOnceWithExactly('color-scheme', stylePropertyTreeElement.property.ownerStyle));
 
         const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
         assert.exists(swatch);
@@ -1407,8 +1414,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
       sinon.stub(stylesSidebarPane, 'cssModel').returns(cssModel);
       cssModel.colorScheme.resolves(undefined);
+      addProperty('color-scheme', 'light dark');
       const stylePropertyTreeElement = getTreeElement('color', lightDark);
-      stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', 'light dark']]));
       const colorSchemeSpy =
           sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
       stylePropertyTreeElement.updateTitle();
@@ -1443,8 +1450,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
     it('renders light-dark with undefined vars correctly', async () => {
       const lightDark = 'light-dark(red, var(--undefined))';
+      addProperty('color-scheme', 'light dark');
       const stylePropertyTreeElement = getTreeElement('color', lightDark);
-      stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', 'light dark']]));
       const colorSchemeSpy =
           sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
       stylePropertyTreeElement.updateTitle();
@@ -1460,10 +1467,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('connects inner and outer swatches', async () => {
       const colorSchemeSpy =
           sinon.spy(Elements.StylePropertyTreeElement.LightDarkColorRenderer.prototype, 'applyColorScheme');
+      const colorSchemeProperty = addProperty('color-scheme', 'light dark');
       for (const colorScheme of [SDK.CSSModel.ColorScheme.LIGHT, SDK.CSSModel.ColorScheme.DARK]) {
         const lightDark = 'light-dark(red, blue)';
+        colorSchemeProperty.setLocalValue(colorScheme);
         const stylePropertyTreeElement = getTreeElement('color', lightDark);
-        stylePropertyTreeElement.setComputedStyles(new Map([['color-scheme', colorScheme]]));
         stylePropertyTreeElement.updateTitle();
         await Promise.all(colorSchemeSpy.returnValues);
 

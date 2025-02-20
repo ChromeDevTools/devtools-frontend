@@ -142,10 +142,6 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     this.#treeElement = treeElement;
   }
 
-  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.FlexGridMatch> {
-    return new SDK.CSSPropertyParserMatchers.FlexGridMatcher();
-  }
-
   override render(match: SDK.CSSPropertyParserMatchers.FlexGridMatch, context: RenderingContext): Node[] {
     const key =
         `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
@@ -174,11 +170,6 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
   constructor(treeElement: StylePropertyTreeElement) {
     super();
     this.#treeElement = treeElement;
-  }
-
-  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch> {
-    return new SDK.CSSPropertyParserMatchers.CSSWideKeywordMatcher(
-        this.#treeElement.property, this.#treeElement.matchedStyles());
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch, context: RenderingContext): Node[] {
@@ -212,15 +203,9 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
 export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch) {
   // clang-format on
   readonly #treeElement: StylePropertyTreeElement;
-  readonly #style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
-  constructor(treeElement: StylePropertyTreeElement, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration) {
+  constructor(treeElement: StylePropertyTreeElement) {
     super();
     this.#treeElement = treeElement;
-    this.#style = style;
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.VariableMatcher {
-    return new SDK.CSSPropertyParserMatchers.VariableMatcher(this.#treeElement.matchedStyles(), this.#style);
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
@@ -299,9 +284,6 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 // clang-format off
 export class LinearGradientRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LinearGradientMatch) {
   // clang-format on
-  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.LinearGradientMatch> {
-    return new SDK.CSSPropertyParserMatchers.LinearGradientMatcher();
-  }
   override render(match: SDK.CSSPropertyParserMatchers.LinearGradientMatch, context: RenderingContext): Node[] {
     const children = ASTUtils.children(match.node);
     const {nodes, cssControls} = Renderer.render(children, context);
@@ -330,11 +312,6 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
   // clang-format on
   constructor(private readonly treeElement: StylePropertyTreeElement) {
     super();
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.ColorMatcher {
-    const getCurrentColorCallback = (): string|null => this.treeElement.getComputedStyle('color');
-    return new SDK.CSSPropertyParserMatchers.ColorMatcher(getCurrentColorCallback);
   }
 
   #getValueChild(match: SDK.CSSPropertyParserMatchers.ColorMatch, context: RenderingContext):
@@ -452,10 +429,6 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
     this.#treeElement = treeElement;
   }
 
-  matcher(): SDK.CSSPropertyParserMatchers.LightDarkColorMatcher {
-    return new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher();
-  }
-
   override render(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch, context: RenderingContext): Node[] {
     const content = document.createElement('span');
     content.appendChild(document.createTextNode('light-dark('));
@@ -513,7 +486,12 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
   // If the element has color-scheme set to both light and dark, we check the prefers-color-scheme media query.
   async #activeColor(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch):
       Promise<CodeMirror.SyntaxNode[]|undefined> {
-    const activeColorSchemes = this.#treeElement.getComputedStyle('color-scheme')?.split(' ') ?? [];
+    const activeColorSchemes = this.#treeElement.matchedStyles()
+                                   .resolveProperty('color-scheme', match.property.ownerStyle)
+                                   ?.parseValue(this.#treeElement.matchedStyles(), new Map())
+                                   ?.getComputedPropertyValueText()
+                                   .split(' ') ??
+        [];
     const hasLight = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.LIGHT);
     const hasDark = activeColorSchemes.includes(SDK.CSSModel.ColorScheme.DARK);
 
@@ -613,10 +591,6 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     context.addControl('color', swatch);
     return [swatch, contentChild];
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.ColorMixMatcher {
-    return new SDK.CSSPropertyParserMatchers.ColorMixMatcher();
-  }
 }
 
 // clang-format off
@@ -674,10 +648,6 @@ export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.An
 
     context.addControl('angle', cssAngle);
     return [cssAngle];
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.AngleMatcher {
-    return new SDK.CSSPropertyParserMatchers.AngleMatcher();
   }
 }
 
@@ -764,10 +734,6 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
 
     return [swatch];
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.LinkableNameMatcher {
-    return new SDK.CSSPropertyParserMatchers.LinkableNameMatcher();
-  }
 }
 
 // clang-format off
@@ -796,10 +762,6 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
     new BezierPopoverIcon({treeElement: this.#treeElement, swatchPopoverHelper, swatch});
     return swatch;
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.BezierMatcher {
-    return new SDK.CSSPropertyParserMatchers.BezierMatcher();
-  }
 }
 
 // clang-format off
@@ -809,10 +771,6 @@ export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
   constructor(treeElement: StylePropertyTreeElement) {
     super();
     this.#treeElement = treeElement;
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.AutoBaseMatcher {
-    return new SDK.CSSPropertyParserMatchers.AutoBaseMatcher();
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.AutoBaseMatch, context: RenderingContext): Node[] {
@@ -1138,10 +1096,6 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
 
     return result;
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.ShadowMatcher {
-    return new SDK.CSSPropertyParserMatchers.ShadowMatcher();
-  }
 }
 
 // clang-format off
@@ -1155,10 +1109,6 @@ export class FontRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Fon
     this.treeElement.section().registerFontProperty(this.treeElement);
     const {nodes} = Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context);
     return nodes;
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.FontMatcher {
-    return new SDK.CSSPropertyParserMatchers.FontMatcher();
   }
 }
 
@@ -1178,10 +1128,6 @@ export class GridTemplateRenderer extends rendererBase(SDK.CSSPropertyParserMatc
       container.append(lineBreak, ...value.nodes);
     }
     return [container];
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.GridTemplateMatcher {
-    return new SDK.CSSPropertyParserMatchers.GridTemplateMatcher();
   }
 }
 
@@ -1241,10 +1187,6 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
       jslogContext: 'length-popover'
     });
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.LengthMatcher {
-    return new SDK.CSSPropertyParserMatchers.LengthMatcher();
-  }
 }
 
 // clang-format off
@@ -1252,9 +1194,6 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
   // clang-format on
   constructor(private readonly treeElement: StylePropertyTreeElement) {
     super();
-  }
-  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.MathFunctionMatch> {
-    return new SDK.CSSPropertyParserMatchers.MathFunctionMatcher();
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.MathFunctionMatch, context: RenderingContext): Node[] {
@@ -1387,10 +1326,6 @@ export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
     }
     return [content];
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.AnchorFunctionMatcher {
-    return new SDK.CSSPropertyParserMatchers.AnchorFunctionMatcher();
-  }
 }
 
 // clang-format off
@@ -1414,10 +1349,6 @@ export class PositionAnchorRenderer extends rendererBase(SDK.CSSPropertyParserMa
       needsSpace: false,
     }).then(() => this.anchorDecoratedForTest());
     return [content];
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.PositionAnchorMatcher {
-    return new SDK.CSSPropertyParserMatchers.PositionAnchorMatcher();
   }
 }
 
@@ -1450,10 +1381,6 @@ export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatch
       content.push(fallbackContent);
     }
     return content;
-  }
-
-  matcher(): SDK.CSSPropertyParserMatchers.PositionTryMatcher {
-    return new SDK.CSSPropertyParserMatchers.PositionTryMatcher();
   }
 }
 
@@ -1885,7 +1812,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   getPropertyRenderers(): Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
     const renderers = this.property.parsedOk ?
         [
-          new VariableRenderer(this, this.style),
+          new VariableRenderer(this),
           new ColorRenderer(this),
           new ColorMixRenderer(this.parentPaneInternal),
           new URLRenderer(this.style.parentRule, this.node()),

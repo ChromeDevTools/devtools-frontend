@@ -260,6 +260,11 @@ export class BottomUpTreeMatching extends TreeWalker {
     return this.getComputedTextRange(node, node, substitutions);
   }
 
+  getComputedPropertyValueText(): string {
+    const [from, to] = ASTUtils.range(ASTUtils.siblings(ASTUtils.declValue(this.ast.tree)));
+    return this.getComputedTextRange(from ?? this.ast.tree, to ?? this.ast.tree);
+  }
+
   getComputedTextRange(from: CodeMirror.SyntaxNode, to: CodeMirror.SyntaxNode, substitutions?: Map<Match, string>):
       string {
     return this.computedText.get(from.from - this.ast.tree.from, to.to - this.ast.tree.from, substitutions);
@@ -452,6 +457,11 @@ export namespace ASTUtils {
 
   export function children(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {
     return siblings(node?.firstChild ?? null);
+  }
+
+  export function range(node: CodeMirror.SyntaxNode[]):
+      [CodeMirror.SyntaxNode, CodeMirror.SyntaxNode]|[undefined, undefined] {
+    return [node[0], node[node.length - 1]];
   }
 
   export function declValue(node: CodeMirror.SyntaxNode): CodeMirror.SyntaxNode|null {

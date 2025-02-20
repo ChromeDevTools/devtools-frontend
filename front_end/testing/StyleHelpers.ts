@@ -37,21 +37,33 @@ export function getMatchedStylesWithBlankRule(
   return getMatchedStylesWithProperties(cssModel, {}, selector, range, origin, styleSheetId, payload);
 }
 
+export function ruleMatch(
+    selector: string, properties: Protocol.CSS.CSSProperty[]|Record<string, string>, range?: Protocol.CSS.SourceRange,
+    origin = Protocol.CSS.StyleSheetOrigin.Regular,
+    styleSheetId = '0' as Protocol.CSS.StyleSheetId): Protocol.CSS.RuleMatch {
+  const cssProperties =
+      Array.isArray(properties) ? properties : Object.keys(properties).map(name => ({name, value: properties[name]}));
+  return {
+    rule: {
+      selectorList: {selectors: [{text: selector}], text: selector},
+      origin,
+      style: {
+        cssProperties,
+        styleSheetId,
+        range,
+        shorthandEntries: [],
+      },
+    },
+    matchingSelectors: [0],
+  };
+}
+
 export function getMatchedStylesWithProperties(
     cssModel: SDK.CSSModel.CSSModel, properties: Protocol.CSS.CSSProperty[]|Record<string, string>, selector = 'div',
     range: Protocol.CSS.SourceRange|undefined = undefined, origin = Protocol.CSS.StyleSheetOrigin.Regular,
     styleSheetId = '0' as Protocol.CSS.StyleSheetId,
     payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload> = {}) {
-  const cssProperties =
-      Array.isArray(properties) ? properties : Object.keys(properties).map(name => ({name, value: properties[name]}));
-  const matchedPayload: Protocol.CSS.RuleMatch[] = [{
-    rule: {
-      selectorList: {selectors: [{text: selector}], text: selector},
-      origin,
-      style: {styleSheetId, range, cssProperties, shorthandEntries: []},
-    },
-    matchingSelectors: [0],
-  }];
+  const matchedPayload = [ruleMatch(selector, properties, range, origin, styleSheetId)];
   return getMatchedStylesWithStylesheet(cssModel, origin, styleSheetId, {}, {matchedPayload, ...payload});
 }
 

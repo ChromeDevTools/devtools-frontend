@@ -17,6 +17,7 @@ import * as Types from './types/types.js';
 export interface ParseConfig {
   metadata?: Types.File.MetaData;
   isFreshRecording?: boolean;
+  resolveSourceMap?: Types.Configuration.ParseOptions['resolveSourceMap'];
 }
 
 /**
@@ -117,6 +118,7 @@ export class Model extends EventTarget {
         isFreshRecording,
         isCPUProfile,
         metadata,
+        resolveSourceMap: config?.resolveSourceMap,
       });
       this.#storeParsedFileData(file, this.#processor.parsedTrace, this.#processor.insights);
       // We only push the file onto this.#traces here once we know it's valid

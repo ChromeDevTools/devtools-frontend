@@ -174,7 +174,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
   }
 }
 
-async function loadSourceMap(
+export async function loadSourceMap(
     url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3> {
   try {
     const {content} = await PageResourceLoader.instance().loadResource(url, initiator);

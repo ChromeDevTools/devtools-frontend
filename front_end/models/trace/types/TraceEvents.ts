@@ -3083,7 +3083,7 @@ export interface TargetRundownEvent extends Event {
       isolate: string,
       v8context: string,
       origin: string,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       isDefault?: boolean,
       contextType?: string,
     },
@@ -3101,7 +3101,7 @@ export interface V8SourceRundownEvent extends Event {
     data: {
       isolate: string,
       executionContextId: Protocol.Runtime.ExecutionContextId,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       startLine: number,
       startColumn: number,
       endLine: number,
@@ -3126,7 +3126,7 @@ export interface V8SourceRundownSourcesScriptCatchupEvent extends Event {
   args: Args&{
     data: {
       isolate: string,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       length: number,
       sourceText: string,
     },
@@ -3144,7 +3144,7 @@ export interface V8SourceRundownSourcesLargeScriptCatchupEvent extends Event {
   args: Args&{
     data: {
       isolate: string,
-      scriptId: Protocol.Runtime.ScriptId,
+      scriptId: number,
       splitIndex: number,
       splitCount: number,
       sourceText: string,

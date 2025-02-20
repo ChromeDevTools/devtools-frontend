@@ -2418,6 +2418,54 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
+  #createSourceMapResolver(isFreshRecording: boolean): Trace.TraceModel.ParseConfig['resolveSourceMap'] {
+    // Currently, only experimental insights need source maps.
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS)) {
+      return;
+    }
+
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
+    const resourceModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
+
+    return async function resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams) {
+      const {scriptId, scriptUrl, sourceMapUrl, frame} = params;
+
+      // For the still-active frame, the source map is likely already fetched.
+      // TODO(cjamcl): hook into in-flight requests for source maps (await on active SourceMapManager resolution, if present).
+      if (isFreshRecording && activeFrameIds.includes(frame)) {
+        const map = debuggerModel?.scriptForId(scriptId)?.sourceMap();
+        if (map && (!scriptUrl || map.compiledURL() === scriptUrl)) {
+          return map;
+        }
+
+        // Even for the still-active frame, it could be that the source map has not been fetched yet.
+        // There is no mechanism for waiting for an in-flight source map, so instead we fallback to
+        // fetching it again here.
+      }
+
+      // Else... fetch it!
+      if (!scriptUrl) {
+        return null;
+      }
+
+      // In all other cases, we must fetch the source map.
+      // For example, since the debugger model is disable during recording, any non-final navigations during
+      // the trace will never have their source maps fetched by the debugger model. That's only ever done here.
+
+      try {
+        const initiator = {target: null, frameId: frame, initiatorUrl: scriptUrl};
+        const payload = await SDK.SourceMapManager.loadSourceMap(sourceMapUrl, initiator);
+        return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, payload);
+      } catch (cause) {
+        console.error(`Could not load content for ${sourceMapUrl}: ${cause.message}`, {cause});
+      }
+
+      return null;
+    };
+  }
+
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
@@ -2426,6 +2474,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         {
           metadata: metadata ?? undefined,
           isFreshRecording,
+          resolveSourceMap: this.#createSourceMapResolver(isFreshRecording),
         },
     );
   }

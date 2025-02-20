@@ -9,17 +9,20 @@ import * as Trace from '../trace.js';
 
 describe('ScriptsHandler', () => {
   beforeEach(async function() {
+    Trace.Handlers.ModelHandlers.Meta.reset();
     Trace.Handlers.ModelHandlers.Scripts.reset();
     const events = await TraceLoader.rawEvents(this, 'enhanced-traces.json.gz');
     for (const event of events) {
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       Trace.Handlers.ModelHandlers.Scripts.handleEvent(event);
     }
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
     await Trace.Handlers.ModelHandlers.Scripts.finalize({
-      async resolveSourceMap(url: string): Promise<SDK.SourceMap.SourceMap> {
-        // Don't need to actually make a source map.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return {test: url} as any;
-      }
+      async resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams):
+          Promise<SDK.SourceMap.SourceMap> {
+            // Don't need to actually make a source map.
+            return {test: params.sourceMapUrl} as unknown as SDK.SourceMap.SourceMap;
+          }
     });
   });
 

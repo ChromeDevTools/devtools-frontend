@@ -26,9 +26,9 @@ describeWithEnvironment('WebAudioView', () => {
     const view = new WebAudioView.WebAudioView();
     assert.exists(view.contentElement.querySelector('.empty-state'));
     assert.deepEqual(
-        view.contentElement.querySelector('.empty-state-header')?.textContent, 'No web audio API usage detected');
+        view.contentElement.querySelector('.empty-state-header')?.textContent, 'No Web Audio API usage detected');
     assert.deepEqual(
         view.contentElement.querySelector('.empty-state-description > span')?.textContent,
-        'Open a page that uses web audio API to start monitoring.');
+        'Open a page that uses Web Audio API to start monitoring.');
   });
 });

@@ -23,11 +23,11 @@ const UIStrings = {
    *@description Text in Web Audio View if there is nothing to show.
    * Web Audio API is an API for controlling audio on the web.
    */
-  noWebAudio: 'No web audio API usage detected',
+  noWebAudio: 'No Web Audio API usage detected',
   /**
    *@description Text in Web Audio View
    */
-  openAPageThatUsesWebAudioApiTo: 'Open a page that uses web audio API to start monitoring.',
+  openAPageThatUsesWebAudioApiTo: 'Open a page that uses Web Audio API to start monitoring.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/WebAudioView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

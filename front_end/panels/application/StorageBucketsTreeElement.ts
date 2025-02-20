@@ -37,7 +37,7 @@ const UIStrings = {
    * deleted independently. https://developer.chrome.com/docs/web-platform/storage-buckets.
    */
   storageBucketsDescription:
-      'On this page you can view and delete storage buckets, and their associated `storage APIs`.'
+      'On this page you can view and delete storage buckets, and their associated `Storage APIs`.'
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageBucketsTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

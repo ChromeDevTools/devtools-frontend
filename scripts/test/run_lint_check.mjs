@@ -6,7 +6,7 @@ import { spawn } from 'child_process';
 import { ESLint } from 'eslint';
 import { readFileSync } from 'fs';
 import { sync } from 'globby';
-import { extname, join } from 'path';
+import { extname, join, resolve, relative } from 'path';
 import stylelint from 'stylelint';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -247,12 +247,37 @@ async function runLitAnalyzer(files) {
   return results.every(r => r.status);
 }
 
+const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
+/**
+ *
+ * @param {string} path
+ * @returns {boolean}
+ */
+function shouldIgnoreFile(path) {
+  const resolvedPath = resolve(path);
+  const relativePath = relative(DEVTOOLS_ROOT_DIR, resolvedPath);
+
+  if (
+    relativePath.includes('third_party') ||
+    relativePath.includes('node_modules')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 async function run() {
   const scripts = [];
   const styles = [];
   for (const path of sync(flags.files, {
     expandDirectories: { extensions: ['css', 'mjs', 'js', 'ts'] },
+    gitignore: true,
   })) {
+    if (shouldIgnoreFile(path)) {
+      continue;
+    }
+
     if (extname(path) === '.css') {
       styles.push(path);
     } else {

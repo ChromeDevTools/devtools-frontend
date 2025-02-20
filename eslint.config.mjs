@@ -33,6 +33,11 @@ export default [
       'build/',
       'buildtools/',
 
+      // Don't include the common build directory
+      'out/',
+      // Don't include third party code
+      'third_party/',
+
       'front_end/diff/diff_match_patch.jD',
       'front_end/models/javascript_metadata/NativeFunctions.js',
       // All of these scripts are auto-generated so don't lint them.

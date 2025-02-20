@@ -47,11 +47,7 @@
 
 .tabbed-pane-placeholder {
   text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
+  align-content: center;
 }
 
 .tabbed-pane-placeholder-row {
@@ -66,7 +62,7 @@
     border: var(--sys-size-2) dashed var(--sys-color-divider);
     padding: var(--sys-size-8);
     border-radius: var(--sys-shape-corner-medium);
-    margin-bottom: var(--sys-size-11);
+    margin: var(--sys-size-8) var(--sys-size-8) var(--sys-size-11);
 
     > .icon-container {
       flex-shrink: 0;
@@ -105,6 +101,7 @@
 
       .keybinds-key {
         display: flex;
+        flex-shrink: 0;
         align-items: center;
         justify-content: center;
         height: var(--sys-size-11);

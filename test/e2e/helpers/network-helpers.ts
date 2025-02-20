@@ -219,7 +219,12 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
         ]),
     veImpression('Timeline', 'network-overview'),
     veImpression('Toggle', 'network-settings'),
-    veImpression('Link', 'learn-more'),
+    veImpression(
+        'Section', 'empty-view',
+        [
+          veImpression('Action', 'inspector-main.reload'),
+          veImpression('Link', 'learn-more'),
+        ]),
     veImpression('TableHeader', 'name'),
     veImpression('TableHeader', 'status'),
     veImpression('TableHeader', 'type'),

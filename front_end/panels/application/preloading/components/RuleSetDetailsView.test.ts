@@ -26,12 +26,17 @@ async function renderRuleSetDetailsView(
 }
 
 describeWithEnvironment('RuleSetDetailsView', () => {
-  it('renders nothing if not selected', async () => {
+  it('renders placeholder if not selected', async () => {
     const data = null;
 
     const component = await renderRuleSetDetailsView(data, false);
     assert.isNotNull(component.shadowRoot);
-    assert.strictEqual(component.shadowRoot.textContent, '');
+    assert.exists(component.shadowRoot.querySelector('.empty-state'));
+
+    const header = component.shadowRoot.querySelector('.empty-state-header')?.textContent;
+    const description = component.shadowRoot.querySelector('.empty-state-description')?.textContent;
+    assert.deepEqual(header, 'No element selected');
+    assert.deepEqual(description, 'Select an element for more details');
   });
 
   it('renders rule set', async () => {

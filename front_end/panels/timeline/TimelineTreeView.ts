@@ -555,17 +555,17 @@ export class TimelineTreeView extends
     this.updateDetailsForSelection();
   }
 
-  private updateDetailsForSelection(): void {
+  protected updateDetailsForSelection(): void {
     const selectedNode = this.dataGrid.selectedNode ? (this.dataGrid.selectedNode as TreeGridNode).profileNode : null;
     if (selectedNode === this.lastSelectedNodeInternal) {
       return;
     }
-    this.lastSelectedNodeInternal = selectedNode;
     if (this.splitWidget.showMode() === UI.SplitWidget.ShowMode.ONLY_MAIN) {
       return;
     }
     this.detailsView.detachChildWidgets();
     this.detailsView.element.removeChildren();
+    this.lastSelectedNodeInternal = selectedNode;
     if (selectedNode && this.showDetailsForNode(selectedNode)) {
       return;
     }
@@ -596,6 +596,7 @@ export class TimelineTreeView extends
   onGridNodeOpened(): void {
     const node = this.dataGrid.selectedNode as TreeGridNode;
     this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.profileNode);
+    this.updateDetailsForSelection();
   }
 
   private onContextMenu(
@@ -887,7 +888,7 @@ const treeNodeToGridNode = new WeakMap<Trace.Extras.TraceTree.Node, TreeGridNode
 
 export class AggregatedTimelineTreeView extends TimelineTreeView {
   protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
-  private readonly stackView: TimelineStackView;
+  readonly stackView: TimelineStackView;
   private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
 
   constructor() {
@@ -911,6 +912,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (rootNode.children.length) {
       rootNode.children[0].select(/* suppressSelectedEvent */ true);
     }
+    this.updateDetailsForSelection();
   }
 
   private updateExtensionResolver(): void {
@@ -1186,8 +1188,15 @@ export class TimelineStackView extends
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
+
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.onSelectionChanged, this);
+
+    // Hover dim behavior within stackview sidebar
+    this.dataGrid.element.addEventListener('mouseenter', this.onMouseMove.bind(this), true);
+    this.dataGrid.element.addEventListener(
+        'mouseleave', () => this.dispatchEventToListeners(TimelineStackView.Events.TREE_ROW_HOVERED, null));
+
     this.dataGrid.asWidget().show(this.element);
   }
 
@@ -1208,6 +1217,14 @@ export class TimelineStackView extends
     }
   }
 
+  onMouseMove(event: Event): void {
+    const gridNode = event.target && (event.target instanceof Node) ?
+        (this.dataGrid.dataGridNodeFromNode((event.target as Node))) :
+        null;
+    const profileNode = (gridNode as TreeGridNode)?.profileNode;
+    this.dispatchEventToListeners(TimelineStackView.Events.TREE_ROW_HOVERED, profileNode);
+  }
+
   selectedTreeNode(): Trace.Extras.TraceTree.Node|null {
     const selectedNode = this.dataGrid.selectedNode;
     return selectedNode && (selectedNode as GridNode).profileNode;
@@ -1221,9 +1238,11 @@ export class TimelineStackView extends
 export namespace TimelineStackView {
   export const enum Events {
     SELECTION_CHANGED = 'SelectionChanged',
+    TREE_ROW_HOVERED = 'TreeRowHovered',
   }
 
   export interface EventTypes {
+    [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
     [Events.SELECTION_CHANGED]: void;
   }
 }

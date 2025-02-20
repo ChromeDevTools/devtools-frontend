@@ -296,3 +296,7 @@ devtools-icon.open-in-animations-panel {
     color: var(--icon-css-hover);
   }
 }
+
+.value :focus {
+  outline: 1px solid var(--sys-color-outline);
+}

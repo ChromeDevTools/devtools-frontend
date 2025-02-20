@@ -17,6 +17,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js';
 import type * as TimelineComponents from './components/components.js';
+import * as TimelineInsights from './components/insights/insights.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
@@ -410,10 +411,17 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       this.updateLinkSelectionAnnotationWithToEntry(this.networkDataProvider, event.data);
     }, this);
 
+    // This listener is used for timings marker, when they are clicked, open the details view for them. They are
+    // rendered in the overlays system, not in flame chart (canvas), so need this extra handling.
     this.#overlays.addEventListener(Overlays.Overlays.EventReferenceClick.eventName, event => {
       const eventRef = (event as Overlays.Overlays.EventReferenceClick);
       const fromTraceEvent = selectionFromEvent(eventRef.event);
       this.openSelectionDetailsView(fromTraceEvent);
+    });
+
+    // This is for the detail view of layout shift.
+    this.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
+      this.setSelectionAndReveal(selectionFromEvent(event.event));
     });
 
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
@@ -1361,10 +1369,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
 
   setSelectionAndReveal(selection: TimelineSelection|null): void {
     this.#currentSelection = selection;
-    const mainIndex = this.mainDataProvider.entryIndexForSelection(selection);
-    const networkIndex = this.networkDataProvider.entryIndexForSelection(selection);
-    this.mainFlameChart.setSelectedEntry(mainIndex);
-    this.networkFlameChart.setSelectedEntry(networkIndex);
 
     // Clear any existing entry selection.
     this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
@@ -1379,10 +1383,17 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       this.#timeRangeSelectionAnnotation = null;
     }
 
-    let index = this.mainDataProvider.entryIndexForSelection(selection);
-    this.mainFlameChart.setSelectedEntry(index);
-    index = this.networkDataProvider.entryIndexForSelection(selection);
-    this.networkFlameChart.setSelectedEntry(index);
+    // Check if this is an entry from main flame chart or network flame chart.
+    // If so build the initiators and select the entry.
+    // Otherwise clear the initiators and the selection.
+    //   - This is done by the same functions, when the index is -1, it will clear everything.
+    const mainIndex = this.mainDataProvider.entryIndexForSelection(selection);
+    this.mainDataProvider.buildFlowForInitiator(mainIndex);
+    this.mainFlameChart.setSelectedEntry(mainIndex);
+    const networkIndex = this.networkDataProvider.entryIndexForSelection(selection);
+    this.networkDataProvider.buildFlowForInitiator(networkIndex);
+    this.networkFlameChart.setSelectedEntry(networkIndex);
+
     if (this.detailsView) {
       // TODO(crbug.com/1459265):  Change to await after migration work.
       void this.detailsView.setSelection(selection);

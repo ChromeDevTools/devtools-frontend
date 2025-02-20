@@ -660,11 +660,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     });
 
-    this.flameChart.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
-      const fromTraceEvent = selectionFromEvent(event.event);
-      this.flameChart.setSelectionAndReveal(fromTraceEvent);
-    });
-
     this.#sideBar.contentElement.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
       this.select(selectionFromEvent(event.event));
     });

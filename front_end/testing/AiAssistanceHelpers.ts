@@ -57,14 +57,16 @@ export function mockAidaClient(data: Array<[MockAidaResponse, ...MockAidaRespons
         yield {...chunk, metadata, completed: true};
         break;
       }
+      const completed = idx === data[callId].length - 1;
+      if (completed) {
+        callId++;
+      }
       yield {
         ...chunk,
         metadata,
-        completed: idx === data[callId].length - 1,
+        completed,
       };
     }
-
-    callId++;
   }
 
   return createMockAidaClient(provideAnswer);

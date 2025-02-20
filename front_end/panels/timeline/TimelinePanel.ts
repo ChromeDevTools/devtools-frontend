@@ -2425,25 +2425,44 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
-    const resourceModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
+    const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      if (!debuggerModel) {
+        continue;
+      }
+
+      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
+      for (const frameId of activeFrameIds) {
+        debuggerModelForFrameId.set(frameId, debuggerModel);
+      }
+    }
+
+    async function getExistingSourceMap(frame: string, scriptId: string, scriptUrl: Platform.DevToolsPath.UrlString):
+        Promise<SDK.SourceMap.SourceMap|undefined> {
+      const debuggerModel = debuggerModelForFrameId.get(frame);
+      if (!debuggerModel) {
+        return;
+      }
+
+      const script = debuggerModel.scriptForId(scriptId);
+      if (!script || (scriptUrl && scriptUrl !== script.sourceURL)) {
+        return;
+      }
+
+      return await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
+    }
 
     return async function resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams) {
       const {scriptId, scriptUrl, sourceMapUrl, frame} = params;
 
-      // For the still-active frame, the source map is likely already fetched.
-      // TODO(cjamcl): hook into in-flight requests for source maps (await on active SourceMapManager resolution, if present).
-      if (isFreshRecording && activeFrameIds.includes(frame)) {
-        const map = debuggerModel?.scriptForId(scriptId)?.sourceMap();
-        if (map && (!scriptUrl || map.compiledURL() === scriptUrl)) {
+      // For still-active frames, the source map is likely already fetched or at least in-flight.
+      if (isFreshRecording) {
+        const map = await getExistingSourceMap(frame, scriptId, scriptUrl);
+        if (map) {
           return map;
         }
-
-        // Even for the still-active frame, it could be that the source map has not been fetched yet.
-        // There is no mechanism for waiting for an in-flight source map, so instead we fallback to
-        // fetching it again here.
       }
 
       // Else... fetch it!

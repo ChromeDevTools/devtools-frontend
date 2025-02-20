@@ -398,6 +398,13 @@ export function getZeroIndexedLineAndColumnForEvent(event: Types.Events.Event): 
         columnNumber: typeof columnNumber === 'number' ? columnNumber - 1 : undefined,
       };
     }
+    case Types.Events.Name.PROFILE_CALL: {
+      const callFrame = (event as Types.Events.SyntheticProfileCall).callFrame;
+      return {
+        lineNumber: typeof lineNumber === 'number' ? callFrame.lineNumber - 1 : undefined,
+        columnNumber: typeof columnNumber === 'number' ? callFrame.columnNumber - 1 : undefined,
+      };
+    }
     default: {
       return numbers;
     }

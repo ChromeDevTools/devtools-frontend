@@ -504,13 +504,17 @@ const UIStrings = {
    */
   priority: 'Priority',
   /**
-   * @description Text to refer to a 3rd Party entity.
-   */
-  entity: '3rd party',
-  /**
    * @description Label for third party table.
    */
   thirdPartyTable: '1st / 3rd party table',
+  /**
+   * @description Label for the a source URL.
+   */
+  source: 'Source',
+  /**
+   * @description Label for a URL origin.
+   */
+  origin: 'Origin',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -527,6 +531,7 @@ interface LinkifyLocationOptions {
   linkifier: LegacyComponents.Linkifier.Linkifier;
   isFreshRecording?: boolean;
   columnNumber?: number;
+  omitOrigin?: boolean;
 }
 
 interface TimeRangeCategoryStats {
@@ -882,6 +887,7 @@ export class TimelineUIUtils {
           target,
           isFreshRecording,
           linkifier,
+          omitOrigin: true,
         });
         if (location) {
           UI.UIUtils.createTextChild(details, ' @ ');
@@ -918,6 +924,7 @@ export class TimelineUIUtils {
             target,
             isFreshRecording,
             linkifier,
+            omitOrigin: true,
           });
         }
         break;
@@ -927,8 +934,16 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.STREAMING_COMPILE_SCRIPT: {
         const url = unsafeEventData['url'];
         if (url) {
-          details = this.linkifyLocation(
-              {scriptId: null, url, lineNumber: 0, columnNumber: 0, target, isFreshRecording, linkifier});
+          details = this.linkifyLocation({
+            scriptId: null,
+            url,
+            lineNumber: 0,
+            columnNumber: 0,
+            target,
+            isFreshRecording,
+            linkifier,
+            omitOrigin: true,
+          });
         }
         break;
       }
@@ -956,7 +971,7 @@ export class TimelineUIUtils {
   }
 
   static linkifyLocation(linkifyOptions: LinkifyLocationOptions): Element|null {
-    const {scriptId, url, lineNumber, columnNumber, isFreshRecording, linkifier, target} = linkifyOptions;
+    const {scriptId, url, lineNumber, columnNumber, isFreshRecording, linkifier, target, omitOrigin} = linkifyOptions;
     const options = {
       lineNumber,
       columnNumber,
@@ -964,6 +979,7 @@ export class TimelineUIUtils {
       inlineFrameIndex: 0,
       className: 'timeline-details',
       tabStop: true,
+      omitOrigin,
     };
     if (isFreshRecording) {
       return linkifier.linkifyScriptLocation(
@@ -1058,6 +1074,7 @@ export class TimelineUIUtils {
         parsedTrace,
         event,
     );
+    let entityAppended = false;
 
     if (maybeTarget) {
       // @ts-expect-error TODO(crbug.com/1011811): Remove symbol usage.
@@ -1141,7 +1158,13 @@ export class TimelineUIUtils {
       url = event.args.data?.url as Platform.DevToolsPath.UrlString;
       if (url) {
         const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-        contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+        contentHelper.appendLocationRow(
+            i18nString(UIStrings.script), url, lineNumber || 0, columnNumber, undefined, true);
+        const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
+        if (originWithEntity) {
+          contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+        }
+        entityAppended = true;
       }
       const isEager = Boolean(event.args.data?.eager);
       if (isEager) {
@@ -1178,12 +1201,34 @@ export class TimelineUIUtils {
         break;
       }
 
-      case Trace.Types.Events.Name.PROFILE_CALL:
+      case Trace.Types.Events.Name.PROFILE_CALL: {
+        const profileCall = event as Trace.Types.Events.SyntheticProfileCall;
+        const resolvedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, profileCall);
+        if (!resolvedURL) {
+          break;
+        }
+        const callFrame = profileCall.callFrame;
+        // Render the URL with its location content.
+        contentHelper.appendLocationRow(
+            i18nString(UIStrings.source), resolvedURL, callFrame.lineNumber || 0, callFrame.columnNumber, undefined,
+            true);
+        const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, profileCall);
+        if (originWithEntity) {
+          contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+        }
+        entityAppended = true;
+        break;
+      }
       case Trace.Types.Events.Name.FUNCTION_CALL: {
         const detailsNode = await TimelineUIUtils.buildDetailsNodeForTraceEvent(
             event, targetForEvent(parsedTrace, event), linkifier, isFreshRecording, parsedTrace);
         if (detailsNode) {
           contentHelper.appendElementRow(i18nString(UIStrings.function), detailsNode);
+          const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
+          if (originWithEntity) {
+            contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+          }
+          entityAppended = true;
         }
         break;
       }
@@ -1235,7 +1280,13 @@ export class TimelineUIUtils {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
           const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-          contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+          contentHelper.appendLocationRow(
+              i18nString(UIStrings.script), url, lineNumber || 0, columnNumber, undefined, true);
+          const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
+          if (originWithEntity) {
+            contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+          }
+          entityAppended = true;
         }
         contentHelper.appendTextRow(
             i18nString(UIStrings.compilationCacheSize),
@@ -1247,7 +1298,13 @@ export class TimelineUIUtils {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         if (url) {
           const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-          contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+          contentHelper.appendLocationRow(
+              i18nString(UIStrings.script), url, lineNumber || 0, columnNumber, undefined, true);
+          const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
+          if (originWithEntity) {
+            contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+          }
+          entityAppended = true;
         }
         break;
       }
@@ -1571,10 +1628,11 @@ export class TimelineUIUtils {
       contentHelper.appendElementRow('', event[previewElementSymbol]);
     }
 
-    // Third party entity
-    const entity = entityMapper?.entityForEvent(event);
-    if (entity) {
-      contentHelper.appendTextRow(i18nString(UIStrings.entity), entity.name);
+    if (!entityAppended) {
+      const originWithEntity = this.getOriginWithEntity(entityMapper, parsedTrace, event);
+      if (originWithEntity) {
+        contentHelper.appendElementRow(i18nString(UIStrings.origin), originWithEntity);
+      }
     }
 
     const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
@@ -2362,6 +2420,27 @@ export class TimelineUIUtils {
     return Common.ParsedURL.schemeIs(url, 'about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
                                                       frame.url.slice(0, trimAt);
   }
+
+  static getOriginWithEntity(
+      entityMapper: Utils.EntityMapper.EntityMapper|null, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      event: Trace.Types.Events.Event): string|null {
+    const resolvedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(parsedTrace, event);
+    if (!resolvedURL) {
+      return null;
+    }
+    const parsedUrl = URL.parse(resolvedURL);
+    if (!parsedUrl) {
+      return null;
+    }
+
+    const entity = entityMapper?.entityForEvent(event) ?? null;
+    if (!entity) {
+      return null;
+    }
+
+    const originWithEntity = Utils.Helpers.formatOriginWithEntity(parsedUrl, entity, true);
+    return originWithEntity;
+  }
 }
 
 export const aggregatedStatsKey = Symbol('aggregatedStats');
@@ -2449,7 +2528,8 @@ export class TimelineDetailsContentHelper {
     }
   }
 
-  appendLocationRow(title: string, url: string, startLine: number, startColumn?: number): void {
+  appendLocationRow(
+      title: string, url: string, startLine: number, startColumn?: number, text?: string, omitOrigin?: boolean): void {
     if (!this.linkifierInternal) {
       return;
     }
@@ -2459,6 +2539,8 @@ export class TimelineDetailsContentHelper {
       columnNumber: startColumn,
       showColumnNumber: true,
       inlineFrameIndex: 0,
+      text,
+      omitOrigin,
     };
     const link = this.linkifierInternal.maybeLinkifyScriptLocation(
         this.target, null, url as Platform.DevToolsPath.UrlString, startLine, options);

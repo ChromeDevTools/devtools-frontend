@@ -122,7 +122,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
          if (!node) {
            throw new Error('Node was unexpectedly null');
          }
-         assert.strictEqual(node.textContent, 'test @ google.com/test.js:1:1');
+         // URL path
+         assert.strictEqual(node.textContent, 'test @ /test.js:1:1');
        });
 
     it('makes the script location of a call frame a script name when the inspected target is the one the call frame was taken from',
@@ -757,8 +758,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
         {title: 'Duration', value: '0.98\xA0ms (self 34\xA0μs)'},
         {
           title: 'Script',
-          // URL plus line/col number
-          value: 'chrome-extension://blijaeebfebmkmekmdnehcmmcjnblkeo/lib/utils.js:1:1',
+          // URL path plus line/col number
+          value: '/lib/utils.js:1:1',
         },
         {
           title: 'Streamed',
@@ -1316,10 +1317,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
         entityMapper,
     );
 
-    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('3rd'));
+    const rowData = getRowDataForDetailsElement(details).find(row => row.title?.startsWith('Origin'));
     assert.deepEqual(rowData, {
-      title: '3rd party',
-      value: 'Google Analytics',
+      title: 'Origin',
+      value: 'www.google-analytics.com (Google Analytics)',
     });
   });
 

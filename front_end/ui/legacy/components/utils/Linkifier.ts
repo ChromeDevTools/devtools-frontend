@@ -239,6 +239,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       inlineFrameIndex: options?.inlineFrameIndex ?? 0,
       userMetric: options?.userMetric,
       jslogContext: options?.jslogContext || 'script-location',
+      omitOrigin: options?.omitOrigin,
     };
     const {columnNumber, className = ''} = linkifyURLOptions;
     if (sourceURL) {
@@ -528,6 +529,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     const preventClick = options.preventClick;
     const maxLength = options.maxLength || UI.UIUtils.MaxLengthForDisplayedURLs;
     const bypassURLTrimming = options.bypassURLTrimming;
+    const omitOrigin = options.omitOrigin;
     if (!url || Common.ParsedURL.schemeIs(url, 'javascript:')) {
       const element = document.createElement('span');
       if (className) {
@@ -539,6 +541,14 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     }
 
     let linkText = text || Bindings.ResourceUtils.displayNameForURL(url);
+
+    if (omitOrigin) {
+      const parsedUrl = URL.parse(url);
+      if (parsedUrl) {
+        linkText = url.replace(parsedUrl.origin, '');
+      }
+    }
+
     if (typeof lineNumber === 'number' && !text) {
       linkText += ':' + (lineNumber + 1);
       if (showColumnNumber && typeof columnNumber === 'number') {
@@ -1018,6 +1028,7 @@ export interface LinkifyURLOptions {
   bypassURLTrimming?: boolean;
   userMetric?: Host.UserMetrics.Action;
   jslogContext?: string;
+  omitOrigin?: boolean;
 }
 
 export interface LinkifyOptions {
@@ -1028,6 +1039,7 @@ export interface LinkifyOptions {
   tabStop?: boolean;
   userMetric?: Host.UserMetrics.Action;
   jslogContext?: string;
+  omitOrigin?: boolean;
 
   /**
    * {@link LinkDisplayOptions.revealBreakpoint}

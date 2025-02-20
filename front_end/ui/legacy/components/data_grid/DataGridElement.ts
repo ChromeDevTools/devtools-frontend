@@ -7,7 +7,7 @@ import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import inspectorCommonStyles from '../../inspectorCommon.css.js';
 
 import dataGridStyles from './dataGrid.css.js';
-import {Align, Events as DataGridEvents} from './DataGrid.js';
+import {Align, type ColumnDescriptor, DataType, Events as DataGridEvents} from './DataGrid.js';
 import {SortableDataGrid, SortableDataGridNode} from './SortableDataGrid.js';
 
 const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least one column.
@@ -37,7 +37,6 @@ const DUMMY_COLUMN_ID = 'dummy';  // SortableDataGrid.create requires at least o
  *
  * @attr striped
  * @attr displayName
- * @prop columnsOrder
  * @prop filters
  */
 class DataGridElement extends HTMLElement {
@@ -51,7 +50,7 @@ class DataGridElement extends HTMLElement {
     }
   });
   #shadowRoot: ShadowRoot;
-  #columnsOrder: string[] = [];
+  #columns: ColumnDescriptor[] = [];
   #hideableColumns = new Set<string>();
   #hiddenColumns = new Set<string>();
   #usedCreationNode: DataGridElementNode|null = null;
@@ -80,18 +79,18 @@ class DataGridElement extends HTMLElement {
           new CustomEvent('contextmenu', {detail: {menu, element: (node as DataGridElementNode).configElement}}));
     });
     this.#dataGrid.setHeaderContextMenuCallback(menu => {
-      for (const columnId of this.#columnsOrder) {
-        if (this.#hideableColumns.has(columnId)) {
+      for (const column of this.#columns) {
+        if (this.#hideableColumns.has(column.id)) {
           menu.defaultSection().appendCheckboxItem(
-              this.#dataGrid.columns[columnId].title as Platform.UIString.LocalizedString, () => {
-                if (this.#hiddenColumns.has(columnId)) {
-                  this.#hiddenColumns.delete(columnId);
+              this.#dataGrid.columns[column.id].title as Platform.UIString.LocalizedString, () => {
+                if (this.#hiddenColumns.has(column.id)) {
+                  this.#hiddenColumns.delete(column.id);
                 } else {
-                  this.#hiddenColumns.add(columnId);
+                  this.#hiddenColumns.add(column.id);
                 }
                 this.#dataGrid.setColumnsVisibility(
-                    new Set(this.#columnsOrder.filter(column => !this.#hiddenColumns.has(column))));
-              }, {checked: !this.#hiddenColumns.has(columnId)});
+                    new Set(this.#columns.map(({id}) => id).filter(column => !this.#hiddenColumns.has(column))));
+              }, {checked: !this.#hiddenColumns.has(column.id)});
         }
       }
     });
@@ -148,8 +147,8 @@ class DataGridElement extends HTMLElement {
     this.#dataGrid.element.setAttribute('aria-rowcount', String(this.#dataGrid.getNumberOfRows()));
   }
 
-  get columnsOrder(): string[] {
-    return this.#columnsOrder;
+  get columns(): ColumnDescriptor[] {
+    return this.#columns;
   }
 
   #updateColumns(): void {
@@ -157,11 +156,10 @@ class DataGridElement extends HTMLElement {
       this.#dataGrid.removeColumn(column);
     }
     this.#hideableColumns.clear();
-    this.#columnsOrder = [];
+    this.#columns = [];
     let hasEditableColumn = false;
     for (const column of this.querySelectorAll('th[id]') || []) {
       const id = column.id as Lowercase<string>;
-      this.#columnsOrder.push(id);
       let title = column.textContent?.trim() || '';
       const titleDOMFragment = column.firstElementChild ? document.createDocumentFragment() : undefined;
       if (titleDOMFragment) {
@@ -178,12 +176,13 @@ class DataGridElement extends HTMLElement {
       if (align !== Align.CENTER && align !== Align.RIGHT) {
         align = undefined;
       }
+      const dataType = column.getAttribute('type') === 'boolean' ? DataType.BOOLEAN : DataType.STRING;
       const weight = parseFloat(column.getAttribute('weight') || '') ?? undefined;
       const editable = column.hasAttribute('editable');
       if (editable) {
         hasEditableColumn = true;
       }
-      this.#dataGrid.addColumn({
+      const columnDescriptor = {
         id,
         title: title as Platform.UIString.LocalizedString,
         titleDOMFragment,
@@ -192,13 +191,16 @@ class DataGridElement extends HTMLElement {
         width,
         align,
         weight,
-        editable
-      });
+        editable,
+        dataType,
+      };
+      this.#dataGrid.addColumn(columnDescriptor);
+      this.#columns.push(columnDescriptor);
       if (hasBooleanAttribute(column, 'hideable')) {
         this.#hideableColumns.add(id);
       }
     }
-    const visibleColumns = new Set(this.#columnsOrder.filter(column => !this.#hiddenColumns.has(column)));
+    const visibleColumns = new Set(this.#columns.map(({id}) => id).filter(id => !this.#hiddenColumns.has(id)));
     if (visibleColumns.size) {
       this.#dataGrid.setColumnsVisibility(visibleColumns);
     }
@@ -337,8 +339,8 @@ class DataGridElement extends HTMLElement {
     if (node.isCreationNode) {
       this.#usedCreationNode = node;
       if (moveDirection === 'forward') {
-        const hasNextEditableColumn = this.columnsOrder.slice(this.columnsOrder.indexOf(columnId) + 1)
-                                          .some(columnId => this.#dataGrid.columns[columnId].editable);
+        const hasNextEditableColumn =
+            this.#columns.slice(this.#columns.findIndex(({id}) => id === columnId) + 1).some(({editable}) => editable);
         if (!hasNextEditableColumn) {
           node.deselect();
         }
@@ -398,8 +400,12 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
     const cells = this.#configElement.querySelectorAll('td');
     for (let i = 0; i < cells.length; ++i) {
       const cell = cells[i];
-      const columnId = this.#dataGridElement.columnsOrder[i];
-      this.data[columnId] = cell.dataset.value ?? cell.textContent ?? '';
+      const column = this.#dataGridElement.columns[i];
+      if (column.dataType === DataType.BOOLEAN) {
+        this.data[column.id] = hasBooleanAttribute(cell, 'data-value');
+      } else {
+        this.data[column.id] = cell.dataset.value ?? cell.textContent ?? '';
+      }
     }
   }
 
@@ -455,11 +461,14 @@ class DataGridElementNode extends SortableDataGridNode<DataGridElementNode> {
   }
 
   override createCell(columnId: string): HTMLElement {
+    const index = this.#dataGridElement.columns.findIndex(({id}) => id === columnId);
+    if (this.#dataGridElement.columns[index].dataType === DataType.BOOLEAN) {
+      return super.createCell(columnId);
+    }
     const cell = this.createTD(columnId);
     if (this.isCreationNode) {
       return cell;
     }
-    const index = this.#dataGridElement.columnsOrder.indexOf(columnId);
     const configCell = this.#configElement.querySelectorAll('td')[index];
     if (!configCell) {
       throw new Error(`Column ${columnId} not found in the data grid`);

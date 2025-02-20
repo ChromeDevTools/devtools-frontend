@@ -259,17 +259,16 @@ export class CookiesTable extends UI.Widget.VBox {
                     ${cookie.expires}
                   </td>
                   <td>${cookie.size}</td>
-                  <td>${cookie['http-only']}</td>
-                  <td>
+                  <td data-value=${Boolean(cookie['http-only'])}></td>
+                  <td data-value=${Boolean(cookie.secure)}>
                     ${cookie.icons?.secure}
-                    ${cookie.secure}
                   </td>
                   <td>
                     ${cookie.icons?.['same-site']}
                     ${cookie['same-site']}
                   </td>
                   <td>${cookie['partition-key-site']}</td>
-                  <td>${cookie['has-cross-site-ancestor']}</td>
+                  <td data-value=${Boolean(cookie['has-cross-site-ancestor'])}></td>
                   <td data-value=${ifDefined(cookie.priorityValue)}>
                     ${cookie.priority}
                   </td>
@@ -478,7 +477,7 @@ export class CookiesTable extends UI.Widget.VBox {
                  SDK.Cookie.Attribute.SAME_SITE, SDK.Cookie.Attribute.SOURCE_SCHEME, SDK.Cookie.Attribute.SOURCE_PORT,
                  SDK.Cookie.Attribute.PRIORITY]) {
       if (cookie.hasAttribute(attribute)) {
-        data[attribute] = String(cookie.getAttribute(attribute));
+        data[attribute] = String(cookie.getAttribute(attribute) ?? true);
       }
     }
     data[SDK.Cookie.Attribute.DOMAIN] = cookie.domain() || (isRequest ? i18nString(UIStrings.na) : '');

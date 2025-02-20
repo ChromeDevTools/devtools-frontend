@@ -79,9 +79,33 @@ const UIStrings = {
    *@description Text to pretty print a file
    */
   prettyPrint: 'Pretty print',
+  /**
+   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  noRulesDetected: 'No rules detected',
+  /**
+   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  rulesDescription: 'On this page you will see the speculation rules used to prefetch and prerender page navigations.',
+  /**
+   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  noPrefetchAttempts: 'No speculation detected',
+  /**
+   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  prefetchDescription: 'On this page you will see details on speculative loads.',
+  /**
+   *@description Text for a learn more link
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+const SPECULATION_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules' as
+    Platform.DevToolsPath.UrlString;
 
 // Used for selector, indicating no filter is specified.
 const AllRuleSetRootId = Symbol('AllRuleSetRootId');
@@ -219,7 +243,6 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.warningsView.show(this.warningsContainer);
 
     this.ruleSetGrid.addEventListener('select', this.onRuleSetsGridCellFocused.bind(this));
-
     const onPrettyPrintToggle = (): void => {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
       this.updateRuleSetDetails();
@@ -228,6 +251,13 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     // clang-format off
     render(
         html`
+        <div class="empty-state">
+          <span class="empty-state-header">${i18nString(UIStrings.noRulesDetected)}</span>
+          <div class="empty-state-description">
+            <span>${i18nString(UIStrings.rulesDescription)}</span>
+            ${UI.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+          </div>
+        </div>
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: max(100vh-200px, 0px)">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.ruleSetGrid}
@@ -298,7 +328,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
       };
     });
     this.ruleSetGrid.update({rows: ruleSetRows, pageURL: pageURL()});
-
+    this.contentElement.classList.toggle('empty', ruleSetRows.length === 0);
     this.updateRuleSetDetails();
   }
 
@@ -377,6 +407,15 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
     render(
         html`
+        <div class="empty-state">
+          <span class="empty-state-header">${i18nString(UIStrings.noPrefetchAttempts)}</span>
+          <div class="empty-state-description">
+            <span>${i18nString(UIStrings.prefetchDescription)}</span>
+            ${
+            UI.XLink.XLink.create(
+                SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+          </div>
+        </div>
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: 0px">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.preloadingGrid}
@@ -447,6 +486,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       };
     });
     this.preloadingGrid.update({rows, pageURL: pageURL()});
+    this.contentElement.classList.toggle('empty', rows.length === 0);
 
     this.updatePreloadingDetails();
   }

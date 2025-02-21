@@ -25,10 +25,10 @@ Lit.render(
       <devtools-tooltip id="simple-tooltip">Simple content</devtools-tooltip>
     </div>
     <div style="position: relative; z-index: 0;">
-      <button aria-details="rich-tooltip" style="position: absolute; left: 16px; top: 116px;">
-        Rich
-      </button>
-      <devtools-tooltip id="rich-tooltip" variant="rich">
+      <span aria-details="rich-tooltip" style="position: absolute; left: 16px; top: 116px; border: 1px solid black;">
+        Non-button click trigger
+      </span>
+      <devtools-tooltip id="rich-tooltip" variant="rich" use-click>
         <p>Rich tooltip</p>
         <button>Action</button>
       </devtools-tooltip>
@@ -47,8 +47,8 @@ programmaticTooltip.append('Text content');
 anchor.appendChild(programmaticTooltip);
 
 // Make the buttons draggable, so that we can experiment with the position of the tooltip.
-container.querySelectorAll('button').forEach(draggable);
-function draggable(element: HTMLElement|null) {
+container.querySelectorAll('button,span').forEach(anchor => draggable(anchor as HTMLElement));
+function draggable(element: HTMLElement|null): void {
   if (!element) {
     return;
   }

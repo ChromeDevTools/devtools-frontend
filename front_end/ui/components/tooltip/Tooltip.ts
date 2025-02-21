@@ -21,9 +21,11 @@ export interface TooltipProperties {
  * @attr hover-delay - Hover length in ms before the tooltip is shown and hidden.
  * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
  *                 `"rich"` for interactive content, background according to theme's surface.
+ * @attr use-click - If present, the tooltip will be shown on click instead of on hover.
  * @prop {String} id - reflects the `"id"` attribute.
  * @prop {Number} hoverDelay - reflects the `"hover-delay"` attribute.
  * @prop {String} variant - reflects the `"variant"` attribute.
+ * @prop {Boolean} useClick - reflects the `"click"` attribute.
  */
 export class Tooltip extends HTMLElement {
   static readonly observedAttributes = ['id', 'variant'];
@@ -31,6 +33,22 @@ export class Tooltip extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #anchor: HTMLElement|null = null;
   #timeout: number|null = null;
+  #closing = false;
+
+  get open(): boolean {
+    return this.matches(':popover-open');
+  }
+
+  get useClick(): boolean {
+    return this.hasAttribute('use-click') ?? false;
+  }
+  set useClick(useClick: boolean) {
+    if (useClick) {
+      this.setAttribute('use-click', '');
+    } else {
+      this.removeAttribute('use-click');
+    }
+  }
 
   get hoverDelay(): number {
     return this.hasAttribute('hover-delay') ? Number(this.getAttribute('hover-delay')) : 200;
@@ -110,42 +128,65 @@ export class Tooltip extends HTMLElement {
     }, this.hoverDelay);
   };
 
+  toggle = (): void => {
+    // We need this check because clicking on the anchor while the tooltip is open will trigger both
+    // the click event on the anchor and the toggle event from the backdrop of the tooltip.
+    if (!this.#closing) {
+      this.togglePopover();
+    }
+  };
+
   #setAttributes(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'tooltip');
     }
-    this.setAttribute('popover', 'manual');
-  }
-
-  #preventDefault(event: Event): void {
-    event.preventDefault();
+    this.setAttribute('popover', this.useClick ? 'auto' : 'manual');
   }
 
   #stopPropagation(event: Event): void {
     event.stopPropagation();
   }
 
+  #setClosing = (event: Event): void => {
+    if ((event as ToggleEvent).newState === 'closed') {
+      this.#closing = true;
+    }
+  };
+
+  #resetClosing = (event: Event): void => {
+    if ((event as ToggleEvent).newState === 'closed') {
+      this.#closing = false;
+    }
+  };
+
   #registerEventListeners(): void {
     if (this.#anchor) {
-      this.#anchor.addEventListener('mouseenter', this.showTooltip);
-      this.#anchor.addEventListener('mouseleave', this.hideTooltip);
-      // By default the anchor with a popovertarget would toggle the popover on click.
-      this.#anchor.addEventListener('click', this.#preventDefault);
+      if (this.useClick) {
+        this.#anchor.addEventListener('click', this.toggle);
+      } else {
+        this.#anchor.addEventListener('mouseenter', this.showTooltip);
+        this.#anchor.addEventListener('mouseleave', this.hideTooltip);
+        this.addEventListener('mouseleave', this.hideTooltip);
+      }
     }
-    this.addEventListener('mouseleave', this.hideTooltip);
     // Prevent interaction with the parent element.
     this.addEventListener('click', this.#stopPropagation);
     this.addEventListener('mouseup', this.#stopPropagation);
+    this.addEventListener('beforetoggle', this.#setClosing);
+    this.addEventListener('toggle', this.#resetClosing);
   }
 
   #removeEventListeners(): void {
     if (this.#anchor) {
+      this.#anchor.removeEventListener('click', this.toggle);
       this.#anchor.removeEventListener('mouseenter', this.showTooltip);
       this.#anchor.removeEventListener('mouseleave', this.hideTooltip);
     }
     this.removeEventListener('mouseleave', this.hideTooltip);
     this.removeEventListener('click', this.#stopPropagation);
     this.removeEventListener('mouseup', this.#stopPropagation);
+    this.removeEventListener('beforetoggle', this.#setClosing);
+    this.removeEventListener('toggle', this.#resetClosing);
   }
 
   #attachToAnchor(): void {

@@ -17,9 +17,17 @@ const {
 const {html, Directives} = Lit;
 const {ref, createRef} = Directives;
 
-function renderTooltip(
-    {variant = 'simple',
-     attribute = 'aria-describedby'}: {variant?: TooltipVariant, attribute?: 'aria-describedby'|'aria-details'} = {}) {
+interface RenderProps {
+  variant?: TooltipVariant;
+  attribute?: 'aria-describedby'|'aria-details';
+  useClick?: boolean;
+}
+
+function renderTooltip({
+  variant = 'simple',
+  attribute = 'aria-describedby',
+  useClick = false,
+}: RenderProps = {}) {
   const container = document.createElement('div');
   // clang-format off
   Lit.render(html`
@@ -27,7 +35,7 @@ function renderTooltip(
       html`<button aria-details="tooltip-id">Button</button>` :
       html`<button aria-describedby="tooltip-id">Button</button>`
     }
-    <devtools-tooltip id="tooltip-id" variant=${variant}>
+    <devtools-tooltip id="tooltip-id" variant=${variant} ?use-click=${useClick}>
       ${variant === 'rich' ? html`<p>Rich content</p>` : 'Simple content'}
     </devtools-tooltip>
   `, container);
@@ -58,7 +66,26 @@ describe('Tooltip', () => {
     button?.dispatchEvent(new MouseEvent('mouseenter'));
 
     await checkForPendingActivity();
-    assert.isFalse(container.querySelector('devtools-tooltip')?.hidden);
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should not open on hover if use-click is set', async () => {
+    const container = renderTooltip({useClick: true});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    await checkForPendingActivity();
+    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should open with click if use-click is set', () => {
+    const container = renderTooltip({useClick: true});
+
+    const button = container.querySelector('button');
+    button?.click();
+
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
   });
 
   const eventsNotToPropagate = ['click', 'mouseup'];

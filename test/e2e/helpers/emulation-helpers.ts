@@ -36,13 +36,20 @@ export const reloadDockableFrontEnd = async () => {
   await reloadDevTools({canDock: true});
 };
 
-export const deviceModeIsEnabled = async () => {
+export const deviceModeIsToggled = async () => {
   const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
   const pressed = await deviceToolbarToggler.evaluate(element => {
     const button = element.shadowRoot?.querySelector('.primary-toggle') as HTMLButtonElement;
     return button.getAttribute('aria-pressed');
   });
   return pressed === 'true';
+};
+
+export const deviceModeIsEnabled = async () => {
+  // Check the userAgent string to see whether emulation is really enabled.
+  const {target} = getBrowserAndPages();
+  const userAgent = await target.evaluate(() => navigator.userAgent);
+  return userAgent.includes('Mobile');
 };
 
 export const clickDeviceModeToggler = async () => {
@@ -56,14 +63,6 @@ export const openDeviceToolbar = async () => {
   }
   await clickDeviceModeToggler();
   await waitFor(DEVICE_TOOLBAR_SELECTOR);
-};
-
-export const deviceModeButtonCanEnable = async () => {
-  const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
-  return await deviceToolbarToggler.evaluate(element => {
-    const button = element.shadowRoot?.querySelector('.primary-toggle') as HTMLButtonElement;
-    return !button.disabled;
-  });
 };
 
 export const showMediaQueryInspector = async () => {

@@ -9,9 +9,8 @@ import {
 } from '../../shared/helper.js';
 import {
   clickDeviceModeToggler,
-  deviceModeButtonCanEnable,
   deviceModeIsEnabled,
-  openDeviceToolbar,
+  deviceModeIsToggled,
   reloadDockableFrontEnd,
 } from '../helpers/emulation-helpers.js';
 
@@ -22,50 +21,25 @@ describe('Disable device mode for chrome:// pages', () => {
   });
 
   it('chrome:// pages disable device mode', async () => {
-    // Button is untoggled and enabled initially.
-    assert.isFalse(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Button is untoggled and enabled for about://blank.
-    await goTo('about://blank');
-    assert.isFalse(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Button is untoggled and enabled for chrome://version.
+    // Button is untoggled and device mode is off for chrome://version.
     await goTo('chrome://version');
+    assert.isFalse(await deviceModeIsToggled());
     assert.isFalse(await deviceModeIsEnabled());
-    assert.isFalse(await deviceModeButtonCanEnable());
-    // Clicking on the button does not enable device mode.
+    // Clicking on the button toggles the button but does not enable device mode.
     await clickDeviceModeToggler();
+    assert.isTrue(await deviceModeIsToggled());
     assert.isFalse(await deviceModeIsEnabled());
-    assert.isFalse(await deviceModeButtonCanEnable());
-    // Button is untoggled and enabled for about://blank.
+    // Button is is toggled and device mode is on for about://blank.
     await goTo('about://blank');
-    assert.isFalse(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Clicking on the button enables device mode.
-    await openDeviceToolbar();
+    assert.isTrue(await deviceModeIsToggled());
     assert.isTrue(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-  });
-
-  it('device mode turns back on automatically', async () => {
-    // Button is untoggled and enabled initially.
-    assert.isFalse(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Button is untoggled and enabled for about://blank.
-    await goTo('about://blank');
-    assert.isFalse(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Clicking on the button enables device mode.
-    await openDeviceToolbar();
-    assert.isTrue(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
-    // Navigating to chrome://version disables device mode.
+    // Navigating back to chrome://version turns device mode off but leaves the button toggled.
     await goTo('chrome://version');
+    assert.isTrue(await deviceModeIsToggled());
     assert.isFalse(await deviceModeIsEnabled());
-    assert.isFalse(await deviceModeButtonCanEnable());
-    // Navigating back to about://blank re-enables device mode.
-    await goTo('about://blank');
-    assert.isTrue(await deviceModeIsEnabled());
-    assert.isTrue(await deviceModeButtonCanEnable());
+    // Clicking on the button untoggles the button and disables device mode.
+    await clickDeviceModeToggler();
+    assert.isFalse(await deviceModeIsToggled());
+    assert.isFalse(await deviceModeIsEnabled());
   });
 });

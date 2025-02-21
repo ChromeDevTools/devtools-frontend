@@ -10,6 +10,12 @@ const {html} = Lit;
 
 export type TooltipVariant = 'simple'|'rich';
 
+export interface TooltipProperties {
+  id?: string;
+  variant?: TooltipVariant;
+  anchor?: HTMLElement;
+}
+
 /**
  * @attr id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
  * @attr hover-delay - Hover length in ms before the tooltip is shown and hidden.
@@ -40,7 +46,22 @@ export class Tooltip extends HTMLElement {
     this.setAttribute('variant', variant);
   }
 
+  constructor({id, variant, anchor}: TooltipProperties = {}) {
+    super();
+    if (id) {
+      this.id = id;
+    }
+    if (variant) {
+      this.variant = variant;
+    }
+    this.#anchor = anchor ?? null;
+  }
+
   attributeChangedCallback(name: string): void {
+    if (!this.isConnected) {
+      // There is no need to do anything before the connectedCallback is called.
+      return;
+    }
     if (name === 'id') {
       this.#removeEventListeners();
       this.#attachToAnchor();
@@ -121,7 +142,6 @@ export class Tooltip extends HTMLElement {
     if (this.#anchor) {
       this.#anchor.removeEventListener('mouseenter', this.showTooltip);
       this.#anchor.removeEventListener('mouseleave', this.hideTooltip);
-      this.#anchor.removeEventListener('click', this.#preventDefault);
     }
     this.removeEventListener('mouseleave', this.hideTooltip);
     this.removeEventListener('click', this.#stopPropagation);
@@ -133,20 +153,34 @@ export class Tooltip extends HTMLElement {
     if (!id) {
       throw new Error('<devtools-tooltip> must have an id.');
     }
-    const anchor = (this.getRootNode() as Element).querySelector(`[aria-describedby="${id}"]`);
+    const describedbyAnchor = closestAnchor(this, `[aria-describedby="${id}"]`);
+    const detailsAnchor = closestAnchor(this, `[aria-details="${id}"]`);
+    const anchor = this.#anchor ?? describedbyAnchor ?? detailsAnchor;
     if (!anchor) {
       throw new Error(`No anchor for tooltip with id ${id} found.`);
     }
     if (!(anchor instanceof HTMLElement)) {
       throw new Error('Anchor must be an HTMLElement.');
     }
+    if (this.variant === 'rich' && describedbyAnchor) {
+      console.warn(`The anchor for tooltip ${
+          id} was defined with "aria-describedby". For rich tooltips "aria-details" is more appropriate.`);
+    }
 
     const anchorName = `--${id}-anchor`;
     anchor.style.anchorName = anchorName;
-    anchor.setAttribute('popovertarget', id);
     this.style.positionAnchor = anchorName;
     this.#anchor = anchor;
   }
+}
+
+export function closestAnchor(tooltip: Element, selector: string): Element|null {
+  const anchors: NodeListOf<Element>|undefined = (tooltip.getRootNode() as Element)?.querySelectorAll(selector);
+  // Find the last anchor with a matching selector that is before the tooltip in the document order.
+  const anchor = [...anchors ?? []]
+                     .filter(anchor => tooltip.compareDocumentPosition(anchor) & Node.DOCUMENT_POSITION_PRECEDING)
+                     .at(-1);
+  return anchor ?? null;
 }
 
 customElements.define('devtools-tooltip', Tooltip);

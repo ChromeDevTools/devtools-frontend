@@ -133,7 +133,7 @@ function makeUpChromeExtensionEntity(entityCache: Map<string, Entity>, url: stri
     category: 'Chrome Extension',
     homepage: 'https://chromewebstore.google.com/detail/' + host,
     categories: [],
-    domains: [],
+    domains: [origin],
     averageExecutionTime: 0,
     totalExecutionTime: 0,
     totalOccurrences: 0,

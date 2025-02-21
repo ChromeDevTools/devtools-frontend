@@ -7,7 +7,6 @@ import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -889,7 +888,6 @@ const treeNodeToGridNode = new WeakMap<Trace.Extras.TraceTree.Node, TreeGridNode
 export class AggregatedTimelineTreeView extends TimelineTreeView {
   protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
   readonly stackView: TimelineStackView;
-  private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
 
   constructor() {
     super();
@@ -906,7 +904,6 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   }
 
   override updateContents(selection: TimelineSelection): void {
-    this.updateExtensionResolver();
     super.updateContents(selection);
     const rootNode = this.dataGrid.rootNode();
     if (rootNode.children.length) {
@@ -915,22 +912,14 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.updateDetailsForSelection();
   }
 
-  private updateExtensionResolver(): void {
-    this.executionContextNamesByOrigin = new Map();
-    for (const runtimeModel of SDK.TargetManager.TargetManager.instance().models(SDK.RuntimeModel.RuntimeModel)) {
-      for (const context of runtimeModel.executionContexts()) {
-        this.executionContextNamesByOrigin.set(context.origin, context.name);
-      }
-    }
-  }
-
-  private beautifyDomainName(this: AggregatedTimelineTreeView, name: string): string {
+  private beautifyDomainName(this: AggregatedTimelineTreeView, name: string, node: Trace.Extras.TraceTree.Node):
+      string {
     if (AggregatedTimelineTreeView.isExtensionInternalURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.chromeExtensionsOverhead);
     } else if (AggregatedTimelineTreeView.isV8NativeURL(name as Platform.DevToolsPath.UrlString)) {
       name = i18nString(UIStrings.vRuntime);
     } else if (name.startsWith('chrome-extension')) {
-      name = this.executionContextNamesByOrigin.get(name as Platform.DevToolsPath.UrlString) || name;
+      name = this.entityMapper()?.entityForEvent(node.event)?.name || name;
     }
     return name;
   }
@@ -956,7 +945,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Domain:
       case AggregatedTimelineTreeView.GroupBy.Subdomain:
       case AggregatedTimelineTreeView.GroupBy.ThirdParties: {
-        const domainName = id ? this.beautifyDomainName(id) : undefined;
+        const domainName = id ? this.beautifyDomainName(id, node) : undefined;
         return {name: domainName || unattributed, color, icon: undefined};
       }
 

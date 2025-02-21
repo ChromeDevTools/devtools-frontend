@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 
@@ -163,5 +164,17 @@ export class EntityMapper {
     });
     // Update our CallFrame cache when we've got a resolved entity.
     this.#resolvedCallFrames.add(callFrame);
+  }
+
+  // Update entities with proper Chrome Extension names.
+  updateExtensionEntitiesWithName(executionContextNamesByOrigin: Map<Platform.DevToolsPath.UrlString, string>): void {
+    const entities = Array.from(this.#entityMappings.eventsByEntity.keys());
+    for (const [origin, name] of executionContextNamesByOrigin) {
+      // In makeUpChromeExtensionEntity, the extension origin is set as the only domain for the entity.
+      const entity = entities.find(e => e.domains[0] === origin);
+      if (entity) {
+        entity.name = entity.company = name;
+      }
+    }
   }
 }

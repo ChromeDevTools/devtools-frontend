@@ -294,7 +294,7 @@ export class TimelineDetailsPane extends
     }
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
-      view.setModelWithEvents(data.selectedEvents, data.parsedTrace);
+      view.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);
     }
     // Set the 3p tree model.
     this.#thirdPartyTree.setModelWithEvents(data.selectedEvents, data.parsedTrace, data.entityMapper);

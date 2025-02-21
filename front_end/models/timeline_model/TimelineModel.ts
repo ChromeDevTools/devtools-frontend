@@ -1729,6 +1729,7 @@ export enum RecordType {
   Coherent_UpdateNodeTransforms = 'Coherent_UpdateNodeTransforms',
   Coherent_ExecuteTimers = 'Coherent_ExecuteTimers',
   Coherent_InvalidateLayout = 'Coherent_InvalidateLayout',
+  Coherent_FlexLayoutImpl = 'Coherent_FlexLayoutImpl',
   Coherent_Layout = 'Coherent_Layout',
   Coherent_ImmediateLayout = 'Coherent_ImmediateLayout',
   Coherent_RecordRendering = 'Coherent_RecordRendering',

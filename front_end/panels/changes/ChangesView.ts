@@ -8,6 +8,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import type * as Formatter from '../../models/formatter/formatter.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -19,6 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import changesViewStyles from './changesView.css.js';
+import * as CombinedDiffView from './CombinedDiffView.js';
 
 const CHANGES_VIEW_URL = 'https://developer.chrome.com/docs/devtools/changes' as Platform.DevToolsPath.UrlString;
 
@@ -79,8 +81,9 @@ export class ChangesView extends UI.Widget.VBox {
   #learnMoreLinkElement?: HTMLElement;
   private readonly diffContainer: HTMLElement;
   private readonly toolbar: UI.Toolbar.Toolbar;
-  private readonly diffStats: UI.Toolbar.ToolbarText;
-  private readonly diffView: DiffView.DiffView.DiffView;
+  private readonly diffStats?: UI.Toolbar.ToolbarText;
+  private readonly diffView?: DiffView.DiffView.DiffView;
+  private readonly combinedDiffView?: CombinedDiffView.CombinedDiffView;
 
   constructor() {
     super(true);
@@ -98,6 +101,7 @@ export class ChangesView extends UI.Widget.VBox {
 
     this.workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
     this.changesSidebar = new ChangesSidebar(this.workspaceDiff);
+    // TODO(ergunsh): Add scroll to singular diffs when they are clicked on sidebar.
     this.changesSidebar.addEventListener(
         Events.SELECTED_UI_SOURCE_CODE_CHANGED, this.selectedUISourceCodeChanged, this);
     splitWidget.setSidebarWidget(this.changesSidebar);
@@ -106,20 +110,29 @@ export class ChangesView extends UI.Widget.VBox {
 
     this.diffContainer = mainWidget.element.createChild('div', 'diff-container');
     UI.ARIAUtils.markAsTabpanel(this.diffContainer);
-    this.diffContainer.addEventListener('click', event => this.click(event));
-
-    this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
+    if (shouldRenderCombinedDiffView()) {
+      // TODO(ergunsh): Handle clicks from CombinedDiffView too.
+      this.combinedDiffView = new CombinedDiffView.CombinedDiffView();
+      this.combinedDiffView.workspaceDiff = this.workspaceDiff;
+      this.combinedDiffView.show(this.diffContainer);
+    } else {
+      this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
+      this.diffContainer.addEventListener('click', event => this.click(event));
+    }
 
     this.toolbar = mainWidget.element.createChild('devtools-toolbar', 'changes-toolbar');
     this.toolbar.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('changes.revert'));
-    this.diffStats = new UI.Toolbar.ToolbarText('');
-    this.toolbar.appendToolbarItem(this.diffStats);
+    if (!shouldRenderCombinedDiffView()) {
+      // TODO(ergunsh): We do not show the diff stats & the copy button for the combined view.
+      this.diffStats = new UI.Toolbar.ToolbarText('');
+      this.toolbar.appendToolbarItem(this.diffStats);
 
-    this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
-    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('changes.copy', {
-      label: i18nLazyString(UIStrings.copy),
-    }));
+      this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
+      this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton('changes.copy', {
+        label: i18nLazyString(UIStrings.copy),
+      }));
+    }
 
     this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
     this.selectedUISourceCodeChanged();
@@ -235,7 +248,7 @@ export class ChangesView extends UI.Widget.VBox {
   }
 
   private hideDiff(header: string, text: string, link?: Platform.DevToolsPath.UrlString): void {
-    this.diffStats.setText('');
+    this.diffStats?.setText('');
     this.toolbar.setEnabled(false);
     this.diffContainer.style.display = 'none';
     this.emptyWidget.header = header;
@@ -257,12 +270,14 @@ export class ChangesView extends UI.Widget.VBox {
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
       this.hideDiff(i18nString(UIStrings.noChanges), i18nString(UIStrings.changesViewDescription), CHANGES_VIEW_URL);
     } else {
-      this.diffStats.setText(diffStats(diff));
+      this.diffStats?.setText(diffStats(diff));
       this.toolbar.setEnabled(true);
       this.emptyWidget.hideWidget();
       const mimeType = (this.selectedUISourceCode as Workspace.UISourceCode.UISourceCode).mimeType();
       this.diffContainer.style.display = 'block';
-      this.diffView.data = {diff, mimeType};
+      if (this.diffView) {
+        this.diffView.data = {diff, mimeType};
+      }
     }
   }
 }
@@ -283,4 +298,9 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     }
     return false;
   }
+}
+
+function shouldRenderCombinedDiffView(): boolean {
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.patching);
 }

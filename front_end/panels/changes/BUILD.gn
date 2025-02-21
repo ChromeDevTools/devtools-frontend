@@ -12,6 +12,7 @@ generate_css("css_files") {
   sources = [
     "changesSidebar.css",
     "changesView.css",
+    "combinedDiffView.css",
   ]
 }
 
@@ -19,6 +20,7 @@ devtools_module("changes") {
   sources = [
     "ChangesSidebar.ts",
     "ChangesView.ts",
+    "CombinedDiffView.ts",
   ]
 
   deps = [
@@ -67,10 +69,15 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "changes.test.ts" ]
+  sources = [
+    "CombinedDiffView.test.ts",
+    "changes.test.ts",
+  ]
 
   deps = [
     ":bundle",
+    "../../models/workspace:bundle",
+    "../../models/workspace_diff:bundle",
     "../../testing",
   ]
 }

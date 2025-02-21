@@ -111,6 +111,10 @@ export class TracingContext {
     return true;
   }
 
+  didApplyEvaluations(): boolean {
+    return this.#appliedEvaluations > 0;
+  }
+
   #setHasMoreEvaluations(value: boolean): void {
     if (this.#parent) {
       this.#parent.#setHasMoreEvaluations(value);

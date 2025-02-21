@@ -213,19 +213,38 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
   readonly #stylesPane: StylesSidebarPane;
   readonly #treeElement: StylePropertyTreeElement|null;
   readonly #matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  readonly #computedStyles: Map<string, string>;
   constructor(
       stylesPane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null,
-      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string>) {
     super();
     this.#treeElement = treeElement;
     this.#stylesPane = stylesPane;
     this.#matchedStyles = matchedStyles;
+    this.#computedStyles = computedStyles;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
+
+    const substitution = context.tracing?.substitution();
+    if (substitution) {
+      if (declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
+        const valueElement = Renderer.renderValueElement(
+            declaration.declaration.name, declaration.declaration.value,
+            declaration.declaration.parseValue(this.#matchedStyles, this.#computedStyles),
+            getPropertyRenderers(
+                declaration.declaration.ownerStyle, this.#stylesPane, this.#matchedStyles, this.#treeElement,
+                this.#computedStyles),
+            substitution);
+        return [valueElement];
+      }
+      if (!declaration && match.fallback.length > 0) {
+        return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
+      }
+    }
 
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
@@ -1418,7 +1437,7 @@ export function getPropertyRenderers(
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, treeElement: StylePropertyTreeElement|null,
     computedStyles: Map<string, string>): Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
   return [
-    new VariableRenderer(stylesPane, treeElement, matchedStyles),
+    new VariableRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
     new ColorRenderer(stylesPane, treeElement),
     new ColorMixRenderer(stylesPane),
     new URLRenderer(style.parentRule, stylesPane.node()),

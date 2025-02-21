@@ -124,6 +124,9 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     this.#substitutions = substitutions;
     this.#finalResult = evaluations.pop();
     this.#evaluations = evaluations;
+    if (evaluations.length === 0 && !tracing.didApplyEvaluations()) {
+      this.#substitutions.pop();
+    }
     this.requestUpdate();
   }
 

@@ -120,18 +120,55 @@ describeWithMockConnection('CSSValueTraceView', () => {
     }
   });
 
-  it('does not have substitutions yet', async () => {
+  it('applies substitutions', async () => {
     const {matchedStyles, stylesPane} = await setUpStyles();
     const {property, treeElement} =
-        await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w)', {'--w': {value: '40em'}});
+        await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w)', {'--w': {value: '40px'}});
     const input = await showTrace(property, matchedStyles, treeElement);
     const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
     const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
     const result = input.finalResult?.map(node => node.textContent ?? '').join();
-    // TODO(pfaffe) once vars actually substitute this needs to show the first line
+    assert.deepEqual(substitutions, []);
+    assert.deepEqual(evaluations, []);
+    assert.deepEqual(result, '40px');
+  });
+
+  it('substitutes the variable declaration if the variable is found (with fallback)', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles();
+    const {property, treeElement} =
+        await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w, 10px)', {'--w': {value: '40px'}});
+    const input = await showTrace(property, matchedStyles, treeElement);
+    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    assert.deepEqual(substitutions, []);
+    assert.deepEqual(evaluations, []);
+    assert.deepEqual(result, '40px');
+  });
+
+  it('substitutes the fallback if the variable is found', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles();
+    const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w, 10px)');
+    const input = await showTrace(property, matchedStyles, treeElement);
+    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    assert.deepEqual(substitutions, []);
+    assert.deepEqual(evaluations, []);
+    assert.deepEqual(result, '10px');
+  });
+
+  it('shows chains of substitutions', async () => {
+    const {matchedStyles, stylesPane} = await setUpStyles();
+    const {property, treeElement} = await getTreeElement(
+        matchedStyles, stylesPane, 'width', 'var(--v)', {'--w': {value: '40px'}, '--v': {value: 'var(--w)'}});
+    const input = await showTrace(property, matchedStyles, treeElement);
+    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
+    const result = input.finalResult?.map(node => node.textContent ?? '').join();
     assert.deepEqual(substitutions, ['var(--w)']);
     assert.deepEqual(evaluations, []);
-    assert.deepEqual(result, 'var(--w)');
+    assert.deepEqual(result, '40px');
   });
 
   it('shows intermediate evaluation steps', async () => {

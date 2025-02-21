@@ -128,7 +128,8 @@ What is this?`;
       const expectedOutput = JSON.stringify({requests: expectedRequestsOutput});
 
       assert.exists(action);
-      assert.deepEqual(action, {type: 'action' as ActionResponse['type'], output: expectedOutput, canceled: false});
+      assert.deepEqual(
+          action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
     });
   });
 });

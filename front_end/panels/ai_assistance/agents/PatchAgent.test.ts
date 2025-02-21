@@ -50,7 +50,8 @@ describeWithEnvironment('PatchAgent', () => {
     assert.deepEqual(action, {
       type: 'action' as ActionResponse['type'],
       output: '{"files":["//path/to/overrides/example.html"]}',
-      canceled: false
+      canceled: false,
+      code: undefined,
     });
   });
 
@@ -76,7 +77,8 @@ describeWithEnvironment('PatchAgent', () => {
       type: 'action' as ActionResponse['type'],
       output:
           '{"matches":[{"filepath":"//path/to/overrides/example.html","lineNumber":0,"columnNumber":0,"matchLength":7}]}',
-      canceled: false
+      canceled: false,
+      code: undefined
     });
   });
 
@@ -97,6 +99,8 @@ describeWithEnvironment('PatchAgent', () => {
 
     const action = responses.find(response => response.type === ResponseType.ACTION);
     assert.exists(action);
-    assert.deepEqual(action, {type: 'action' as ActionResponse['type'], output: '{"success":true}', canceled: false});
+    assert.deepEqual(
+        action,
+        {type: 'action' as ActionResponse['type'], output: '{"success":true}', code: undefined, canceled: false});
   });
 });

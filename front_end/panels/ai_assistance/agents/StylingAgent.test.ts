@@ -54,11 +54,7 @@ describeWithEnvironment('StylingAgent', () => {
     });
 
     function getParsedTextResponse(explanation: string): AiAssistance.ParsedResponse {
-      return agent.parseResponse({
-        explanation,
-        metadata: {},
-        completed: false,
-      });
+      return agent.parseTextResponse(explanation);
     }
 
     it('parses a thought', async () => {
@@ -698,8 +694,7 @@ STOP`,
         });
         promise.resolve(false);
         const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
-
-        const actionStep = responses.find(response => response.type === AiAssistance.ResponseType.ACTION)!;
+        const actionStep = responses.findLast(response => response.type === AiAssistance.ResponseType.ACTION)!;
 
         assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
         assert.lengthOf(execJs.getCalls(), 1);
@@ -1130,7 +1125,6 @@ STOP
         {
           type: AiAssistance.ResponseType.THOUGHT,
           thought: 'I am thinking.',
-          rpcId: undefined,
         },
         {
           type: AiAssistance.ResponseType.ACTION,

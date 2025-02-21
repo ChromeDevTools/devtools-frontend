@@ -365,7 +365,17 @@ h2:focus-visible {
 }
 
 .sources-list x-link.highlighted { /* stylelint-disable-line selector-type-no-unknown */
-  background-color: var(--sys-color-yellow-container);
+  animation: highlight-fadeout 2s;
+}
+
+@keyframes highlight-fadeout {
+  from {
+    background-color: var(--sys-color-yellow-container);
+  }
+
+  to {
+    background-color: transparent;
+  }
 }
 
 .references-list {

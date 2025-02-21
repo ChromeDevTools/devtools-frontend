@@ -1443,6 +1443,9 @@ declare abstract class Text implements Iterable<string> {
     objects that it is made up of. For leaf nodes, this holds null.
     */
     abstract readonly children: readonly Text[] | null;
+    /**
+    @hide
+    */
     [Symbol.iterator]: () => Iterator<string>;
     /**
     Create a `Text` instance for the given array of lines.
@@ -1554,7 +1557,7 @@ declare class ChangeDesc {
     Map this description, which should start with the same document
     as `other`, over another set of changes, so that it can be
     applied after it. When `before` is true, map as if the changes
-    in `other` happened before the ones in `this`.
+    in `this` happened before the ones in `other`.
     */
     mapDesc(other: ChangeDesc, before?: boolean): ChangeDesc;
     /**
@@ -2774,6 +2777,13 @@ interface RangeComparator<T extends RangeValue> {
     Notification for a changed (or inserted, or deleted) point range.
     */
     comparePoint(from: number, to: number, pointA: T | null, pointB: T | null): void;
+    /**
+    Notification for a changed boundary between ranges. For example,
+    if the same span is covered by two partial ranges before and one
+    bigger range after, this is called at the point where the ranges
+    used to be split.
+    */
+    boundChange?(pos: number): void;
 }
 /**
 Methods used when iterating over the spans created by a set of
@@ -6721,13 +6731,7 @@ type _codemirror_lang_xml_ElementSpec = ElementSpec;
 declare const _codemirror_lang_xml_completeFromSchema: typeof completeFromSchema;
 declare const _codemirror_lang_xml_xmlLanguage: typeof xmlLanguage;
 declare namespace _codemirror_lang_xml {
-  export {
-    _codemirror_lang_xml_AttrSpec as AttrSpec,
-    _codemirror_lang_xml_ElementSpec as ElementSpec,
-    _codemirror_lang_xml_completeFromSchema as completeFromSchema,
-    xml$1 as xml,
-    _codemirror_lang_xml_xmlLanguage as xmlLanguage,
-  };
+  export { type _codemirror_lang_xml_AttrSpec as AttrSpec, type _codemirror_lang_xml_ElementSpec as ElementSpec, _codemirror_lang_xml_completeFromSchema as completeFromSchema, xml$1 as xml, _codemirror_lang_xml_xmlLanguage as xmlLanguage };
 }
 
 declare const wastLanguage: LRLanguage;
@@ -6735,10 +6739,7 @@ declare function wast$1(): LanguageSupport;
 
 declare const _codemirror_lang_wast_wastLanguage: typeof wastLanguage;
 declare namespace _codemirror_lang_wast {
-  export {
-    wast$1 as wast,
-    _codemirror_lang_wast_wastLanguage as wastLanguage,
-  };
+  export { wast$1 as wast, _codemirror_lang_wast_wastLanguage as wastLanguage };
 }
 
 /**
@@ -6759,10 +6760,7 @@ declare function vue$1(config?: {
 
 declare const _codemirror_lang_vue_vueLanguage: typeof vueLanguage;
 declare namespace _codemirror_lang_vue {
-  export {
-    vue$1 as vue,
-    _codemirror_lang_vue_vueLanguage as vueLanguage,
-  };
+  export { vue$1 as vue, _codemirror_lang_vue_vueLanguage as vueLanguage };
 }
 
 declare const parser: Parser
@@ -6772,11 +6770,7 @@ declare function svelte$1(): LanguageSupport;
 
 declare const _replit_codemirror_lang_svelte_svelteLanguage: typeof svelteLanguage;
 declare namespace _replit_codemirror_lang_svelte {
-  export {
-    svelte$1 as svelte,
-    _replit_codemirror_lang_svelte_svelteLanguage as svelteLanguage,
-    parser as svelteParser,
-  };
+  export { svelte$1 as svelte, _replit_codemirror_lang_svelte_svelteLanguage as svelteLanguage, parser as svelteParser };
 }
 
 /**
@@ -6804,11 +6798,7 @@ declare function sass$1(config?: {
 declare const _codemirror_lang_sass_sassCompletionSource: typeof sassCompletionSource;
 declare const _codemirror_lang_sass_sassLanguage: typeof sassLanguage;
 declare namespace _codemirror_lang_sass {
-  export {
-    sass$1 as sass,
-    _codemirror_lang_sass_sassCompletionSource as sassCompletionSource,
-    _codemirror_lang_sass_sassLanguage as sassLanguage,
-  };
+  export { sass$1 as sass, _codemirror_lang_sass_sassCompletionSource as sassCompletionSource, _codemirror_lang_sass_sassLanguage as sassLanguage };
 }
 
 /**
@@ -6835,12 +6825,7 @@ declare function python$1(): LanguageSupport;
 declare const _codemirror_lang_python_globalCompletion: typeof globalCompletion;
 declare const _codemirror_lang_python_pythonLanguage: typeof pythonLanguage;
 declare namespace _codemirror_lang_python {
-  export {
-    _codemirror_lang_python_globalCompletion as globalCompletion,
-    localCompletionSource$1 as localCompletionSource,
-    python$1 as python,
-    _codemirror_lang_python_pythonLanguage as pythonLanguage,
-  };
+  export { _codemirror_lang_python_globalCompletion as globalCompletion, localCompletionSource$1 as localCompletionSource, python$1 as python, _codemirror_lang_python_pythonLanguage as pythonLanguage };
 }
 
 /**
@@ -6869,124 +6854,501 @@ declare function php$1(config?: {
 
 declare const _codemirror_lang_php_phpLanguage: typeof phpLanguage;
 declare namespace _codemirror_lang_php {
-  export {
-    php$1 as php,
-    _codemirror_lang_php_phpLanguage as phpLanguage,
-  };
+  export { php$1 as php, _codemirror_lang_php_phpLanguage as phpLanguage };
 }
 
+/**
+Data structure used to accumulate a block's content during [leaf
+block parsing](#BlockParser.leaf).
+*/
 declare class LeafBlock {
+    /**
+    The start position of the block.
+    */
     readonly start: number;
+    /**
+    The block's text content.
+    */
     content: string;
+    /**
+    The block parsers active for this block.
+    */
     parsers: LeafBlockParser[];
 }
+/**
+Data structure used during block-level per-line parsing.
+*/
 declare class Line {
+    /**
+    The line's full text.
+    */
     text: string;
+    /**
+    The base indent provided by the composite contexts (that have
+    been handled so far).
+    */
     baseIndent: number;
+    /**
+    The string position corresponding to the base indent.
+    */
     basePos: number;
+    /**
+    The position of the next non-whitespace character beyond any
+    list, blockquote, or other composite block markers.
+    */
     pos: number;
+    /**
+    The column of the next non-whitespace character.
+    */
     indent: number;
+    /**
+    The character code of the character after `pos`.
+    */
     next: number;
+    /**
+    Skip whitespace after the given position, return the position of
+    the next non-space character or the end of the line if there's
+    only space after `from`.
+    */
     skipSpace(from: number): number;
+    /**
+    Move the line's base position forward to the given position.
+    This should only be called by composite [block
+    parsers](#BlockParser.parse) or [markup skipping
+    functions](#NodeSpec.composite).
+    */
     moveBase(to: number): void;
+    /**
+    Move the line's base position forward to the given _column_.
+    */
     moveBaseColumn(indent: number): void;
+    /**
+    Store a composite-block-level marker. Should be called from
+    [markup skipping functions](#NodeSpec.composite) when they
+    consume any non-whitespace characters.
+    */
     addMarker(elt: Element$1): void;
+    /**
+    Find the column position at `to`, optionally starting at a given
+    position and column.
+    */
     countIndent(to: number, from?: number, indent?: number): number;
+    /**
+    Find the position corresponding to the given column.
+    */
     findColumn(goal: number): number;
 }
 type BlockResult = boolean | null;
+/**
+Block-level parsing functions get access to this context object.
+*/
 declare class BlockContext implements PartialParse {
+    /**
+    The parser configuration used.
+    */
     readonly parser: MarkdownParser;
     private line;
     private atEnd;
     private fragments;
     private to;
     stoppedAt: number | null;
+    /**
+    The start of the current line.
+    */
     lineStart: number;
     get parsedPos(): number;
-    advance(): Tree;
+    advance(): Tree | null;
     stopAt(pos: number): void;
     private reuseFragment;
+    /**
+    The number of parent blocks surrounding the current block.
+    */
     get depth(): number;
+    /**
+    Get the type of the parent block at the given depth. When no
+    depth is passed, return the type of the innermost parent.
+    */
     parentType(depth?: number): NodeType;
+    /**
+    Move to the next input line. This should only be called by
+    (non-composite) [block parsers](#BlockParser.parse) that consume
+    the line directly, or leaf block parser
+    [`nextLine`](#LeafBlockParser.nextLine) methods when they
+    consume the current line (and return true).
+    */
     nextLine(): boolean;
+    /**
+    Retrieve the text of the line after the current one, without
+    actually moving the context's current line forward.
+    */
+    peekLine(): string;
     private moveRangeI;
     private lineChunkAt;
+    /**
+    The end position of the previous line.
+    */
     prevLineEnd(): number;
+    /**
+    Start a composite block. Should only be called from [block
+    parser functions](#BlockParser.parse) that return null.
+    */
     startComposite(type: string, start: number, value?: number): void;
+    /**
+    Add a block element. Can be called by [block
+    parsers](#BlockParser.parse).
+    */
     addElement(elt: Element$1): void;
+    /**
+    Add a block element from a [leaf parser](#LeafBlockParser). This
+    makes sure any extra composite block markup (such as blockquote
+    markers) inside the block are also added to the syntax tree.
+    */
     addLeafElement(leaf: LeafBlock, elt: Element$1): void;
     private finish;
     private addGaps;
+    /**
+    Create an [`Element`](#Element) object to represent some syntax
+    node.
+    */
     elt(type: string, from: number, to: number, children?: readonly Element$1[]): Element$1;
     elt(tree: Tree, at: number): Element$1;
 }
+/**
+Used in the [configuration](#MarkdownConfig.defineNodes) to define
+new [syntax node
+types](https://lezer.codemirror.net/docs/ref/#common.NodeType).
+*/
 interface NodeSpec {
+    /**
+    The node's name.
+    */
     name: string;
+    /**
+    Should be set to true if this type represents a block node.
+    */
     block?: boolean;
+    /**
+    If this is a composite block, this should hold a function that,
+    at the start of a new line where that block is active, checks
+    whether the composite block should continue (return value) and
+    optionally [adjusts](#Line.moveBase) the line's base position
+    and [registers](#Line.addMarker) nodes for any markers involved
+    in the block's syntax.
+    */
     composite?(cx: BlockContext, line: Line, value: number): boolean;
+    /**
+    Add highlighting tag information for this node. The value of
+    this property may either by a tag or array of tags to assign
+    directly to this node, or an object in the style of
+    [`styleTags`](https://lezer.codemirror.net/docs/ref/#highlight.styleTags)'s
+    argument to assign more complicated rules.
+    */
     style?: Tag | readonly Tag[] | {
         [selector: string]: Tag | readonly Tag[];
     };
 }
+/**
+Inline parsers are called for every character of parts of the
+document that are parsed as inline content.
+*/
 interface InlineParser {
+    /**
+    This parser's name, which can be used by other parsers to
+    [indicate](#InlineParser.before) a relative precedence.
+    */
     name: string;
+    /**
+    The parse function. Gets the next character and its position as
+    arguments. Should return -1 if it doesn't handle the character,
+    or add some [element](#InlineContext.addElement) or
+    [delimiter](#InlineContext.addDelimiter) and return the end
+    position of the content it parsed if it can.
+    */
     parse(cx: InlineContext, next: number, pos: number): number;
+    /**
+    When given, this parser will be installed directly before the
+    parser with the given name. The default configuration defines
+    inline parsers with names Escape, Entity, InlineCode, HTMLTag,
+    Emphasis, HardBreak, Link, and Image. When no `before` or
+    `after` property is given, the parser is added to the end of the
+    list.
+    */
     before?: string;
+    /**
+    When given, the parser will be installed directly _after_ the
+    parser with the given name.
+    */
     after?: string;
 }
+/**
+Block parsers handle block-level structure. There are three
+general types of block parsers:
+
+- Composite block parsers, which handle things like lists and
+  blockquotes. These define a [`parse`](#BlockParser.parse) method
+  that [starts](#BlockContext.startComposite) a composite block
+  and returns null when it recognizes its syntax.
+
+- Eager leaf block parsers, used for things like code or HTML
+  blocks. These can unambiguously recognize their content from its
+  first line. They define a [`parse`](#BlockParser.parse) method
+  that, if it recognizes the construct,
+  [moves](#BlockContext.nextLine) the current line forward to the
+  line beyond the end of the block,
+  [add](#BlockContext.addElement) a syntax node for the block, and
+  return true.
+
+- Leaf block parsers that observe a paragraph-like construct as it
+  comes in, and optionally decide to handle it at some point. This
+  is used for "setext" (underlined) headings and link references.
+  These define a [`leaf`](#BlockParser.leaf) method that checks
+  the first line of the block and returns a
+  [`LeafBlockParser`](#LeafBlockParser) object if it wants to
+  observe that block.
+*/
 interface BlockParser {
+    /**
+    The name of the parser. Can be used by other block parsers to
+    [specify](#BlockParser.before) precedence.
+    */
     name: string;
+    /**
+    The eager parse function, which can look at the block's first
+    line and return `false` to do nothing, `true` if it has parsed
+    (and [moved past](#BlockContext.nextLine) a block), or `null` if
+    it has started a composite block.
+    */
     parse?(cx: BlockContext, line: Line): BlockResult;
+    /**
+    A leaf parse function. If no [regular](#BlockParser.parse) parse
+    functions match for a given line, its content will be
+    accumulated for a paragraph-style block. This method can return
+    an [object](#LeafBlockParser) that overrides that style of
+    parsing in some situations.
+    */
     leaf?(cx: BlockContext, leaf: LeafBlock): LeafBlockParser | null;
+    /**
+    Some constructs, such as code blocks or newly started
+    blockquotes, can interrupt paragraphs even without a blank line.
+    If your construct can do this, provide a predicate here that
+    recognizes lines that should end a paragraph (or other non-eager
+    [leaf block](#BlockParser.leaf)).
+    */
     endLeaf?(cx: BlockContext, line: Line, leaf: LeafBlock): boolean;
+    /**
+    When given, this parser will be installed directly before the
+    block parser with the given name. The default configuration
+    defines block parsers with names LinkReference, IndentedCode,
+    FencedCode, Blockquote, HorizontalRule, BulletList, OrderedList,
+    ATXHeading, HTMLBlock, and SetextHeading.
+    */
     before?: string;
+    /**
+    When given, the parser will be installed directly _after_ the
+    parser with the given name.
+    */
     after?: string;
 }
+/**
+Objects that are used to [override](#BlockParser.leaf)
+paragraph-style blocks should conform to this interface.
+*/
 interface LeafBlockParser {
+    /**
+    Update the parser's state for the next line, and optionally
+    finish the block. This is not called for the first line (the
+    object is constructed at that line), but for any further lines.
+    When it returns `true`, the block is finished. It is okay for
+    the function to [consume](#BlockContext.nextLine) the current
+    line or any subsequent lines when returning true.
+    */
     nextLine(cx: BlockContext, line: Line, leaf: LeafBlock): boolean;
+    /**
+    Called when the block is finished by external circumstances
+    (such as a blank line or the [start](#BlockParser.endLeaf) of
+    another construct). If this parser can handle the block up to
+    its current position, it should
+    [finish](#BlockContext.addLeafElement) the block and return
+    true.
+    */
     finish(cx: BlockContext, leaf: LeafBlock): boolean;
 }
+/**
+Objects of this type are used to
+[configure](#MarkdownParser.configure) the Markdown parser.
+*/
 interface MarkdownConfig {
+    /**
+    Node props to add to the parser's node set.
+    */
     props?: readonly NodePropSource[];
+    /**
+    Define new [node types](#NodeSpec) for use in parser extensions.
+    */
     defineNodes?: readonly (string | NodeSpec)[];
+    /**
+    Define additional [block parsing](#BlockParser) logic.
+    */
     parseBlock?: readonly BlockParser[];
+    /**
+    Define new [inline parsing](#InlineParser) logic.
+    */
     parseInline?: readonly InlineParser[];
+    /**
+    Remove the named parsers from the configuration.
+    */
     remove?: readonly string[];
+    /**
+    Add a parse wrapper (such as a [mixed-language
+    parser](#common.parseMixed)) to this parser.
+    */
     wrap?: ParseWrapper;
 }
+/**
+To make it possible to group extensions together into bigger
+extensions (such as the [Github-flavored Markdown](#GFM)
+extension), [reconfiguration](#MarkdownParser.configure) accepts
+nested arrays of [config](#MarkdownConfig) objects.
+*/
 type MarkdownExtension = MarkdownConfig | readonly MarkdownExtension[];
+/**
+A Markdown parser configuration.
+*/
 declare class MarkdownParser extends Parser {
+    /**
+    The parser's syntax [node
+    types](https://lezer.codemirror.net/docs/ref/#common.NodeSet).
+    */
     readonly nodeSet: NodeSet;
     createParse(input: Input, fragments: readonly TreeFragment[], ranges: readonly {
         from: number;
         to: number;
     }[]): PartialParse;
+    /**
+    Reconfigure the parser.
+    */
     configure(spec: MarkdownExtension): MarkdownParser;
-    parseInline(text: string, offset: number): any[];
+    /**
+    Parse the given piece of inline text at the given offset,
+    returning an array of [`Element`](#Element) objects representing
+    the inline content.
+    */
+    parseInline(text: string, offset: number): Element$1[];
 }
+/**
+Elements are used to compose syntax nodes during parsing.
+*/
 declare class Element$1 {
+    /**
+    The node's
+    [id](https://lezer.codemirror.net/docs/ref/#common.NodeType.id).
+    */
     readonly type: number;
+    /**
+    The start of the node, as an offset from the start of the document.
+    */
     readonly from: number;
+    /**
+    The end of the node.
+    */
     readonly to: number;
 }
+/**
+Delimiters are used during inline parsing to store the positions
+of things that _might_ be delimiters, if another matching
+delimiter is found. They are identified by objects with these
+properties.
+*/
 interface DelimiterType {
+    /**
+    If this is given, the delimiter should be matched automatically
+    when a piece of inline content is finished. Such delimiters will
+    be matched with delimiters of the same type according to their
+    [open and close](#InlineContext.addDelimiter) properties. When a
+    match is found, the content between the delimiters is wrapped in
+    a node whose name is given by the value of this property.
+
+    When this isn't given, you need to match the delimiter eagerly
+    using the [`findOpeningDelimiter`](#InlineContext.findOpeningDelimiter)
+    and [`takeContent`](#InlineContext.takeContent) methods.
+    */
     resolve?: string;
+    /**
+    If the delimiter itself should, when matched, create a syntax
+    node, set this to the name of the syntax node.
+    */
     mark?: string;
 }
+/**
+Inline parsing functions get access to this context, and use it to
+read the content and emit syntax nodes.
+*/
 declare class InlineContext {
+    /**
+    The parser that is being used.
+    */
     readonly parser: MarkdownParser;
+    /**
+    The text of this inline section.
+    */
     readonly text: string;
+    /**
+    The starting offset of the section in the document.
+    */
     readonly offset: number;
+    /**
+    Get the character code at the given (document-relative)
+    position.
+    */
     char(pos: number): number;
+    /**
+    The position of the end of this inline section.
+    */
     get end(): number;
+    /**
+    Get a substring of this inline section. Again uses
+    document-relative positions.
+    */
     slice(from: number, to: number): string;
+    /**
+    Add a [delimiter](#DelimiterType) at this given position. `open`
+    and `close` indicate whether this delimiter is opening, closing,
+    or both. Returns the end of the delimiter, for convenient
+    returning from [parse functions](#InlineParser.parse).
+    */
     addDelimiter(type: DelimiterType, from: number, to: number, open: boolean, close: boolean): number;
+    /**
+    Returns true when there is an unmatched link or image opening
+    token before the current position.
+    */
     get hasOpenLink(): boolean;
+    /**
+    Add an inline element. Returns the end of the element.
+    */
     addElement(elt: Element$1): number;
-    findOpeningDelimiter(type: DelimiterType): number;
-    takeContent(startIndex: number): any[];
+    /**
+    Find an opening delimiter of the given type. Returns `null` if
+    no delimiter is found, or an index that can be passed to
+    [`takeContent`](#InlineContext.takeContent) otherwise.
+    */
+    findOpeningDelimiter(type: DelimiterType): number | null;
+    /**
+    Remove all inline elements and delimiters starting from the
+    given index (which you should get from
+    [`findOpeningDelimiter`](#InlineContext.findOpeningDelimiter),
+    resolve delimiters inside of them, and return them as an array
+    of elements.
+    */
+    takeContent(startIndex: number): Element$1[];
+    /**
+    Skip space after the given (document) position, returning either
+    the position of the next non-space character or the end of the
+    section.
+    */
     skipSpace(from: number): number;
+    /**
+    Create an [`Element`](#Element) for a syntax node.
+    */
     elt(type: string, from: number, to: number, children?: readonly Element$1[]): Element$1;
     elt(tree: Tree, at: number): Element$1;
 }
@@ -7081,14 +7443,7 @@ declare const _codemirror_lang_markdown_insertNewlineContinueMarkup: typeof inse
 declare const _codemirror_lang_markdown_markdownKeymap: typeof markdownKeymap;
 declare const _codemirror_lang_markdown_markdownLanguage: typeof markdownLanguage;
 declare namespace _codemirror_lang_markdown {
-  export {
-    _codemirror_lang_markdown_commonmarkLanguage as commonmarkLanguage,
-    _codemirror_lang_markdown_deleteMarkupBackward as deleteMarkupBackward,
-    _codemirror_lang_markdown_insertNewlineContinueMarkup as insertNewlineContinueMarkup,
-    markdown$1 as markdown,
-    _codemirror_lang_markdown_markdownKeymap as markdownKeymap,
-    _codemirror_lang_markdown_markdownLanguage as markdownLanguage,
-  };
+  export { _codemirror_lang_markdown_commonmarkLanguage as commonmarkLanguage, _codemirror_lang_markdown_deleteMarkupBackward as deleteMarkupBackward, _codemirror_lang_markdown_insertNewlineContinueMarkup as insertNewlineContinueMarkup, markdown$1 as markdown, _codemirror_lang_markdown_markdownKeymap as markdownKeymap, _codemirror_lang_markdown_markdownLanguage as markdownLanguage };
 }
 
 /**
@@ -7108,11 +7463,7 @@ declare function less$1(): LanguageSupport;
 declare const _codemirror_lang_less_lessCompletionSource: typeof lessCompletionSource;
 declare const _codemirror_lang_less_lessLanguage: typeof lessLanguage;
 declare namespace _codemirror_lang_less {
-  export {
-    less$1 as less,
-    _codemirror_lang_less_lessCompletionSource as lessCompletionSource,
-    _codemirror_lang_less_lessLanguage as lessLanguage,
-  };
+  export { less$1 as less, _codemirror_lang_less_lessCompletionSource as lessCompletionSource, _codemirror_lang_less_lessLanguage as lessLanguage };
 }
 
 /**
@@ -7128,10 +7479,7 @@ declare function java$1(): LanguageSupport;
 
 declare const _codemirror_lang_java_javaLanguage: typeof javaLanguage;
 declare namespace _codemirror_lang_java {
-  export {
-    java$1 as java,
-    _codemirror_lang_java_javaLanguage as javaLanguage,
-  };
+  export { java$1 as java, _codemirror_lang_java_javaLanguage as javaLanguage };
 }
 
 /**
@@ -7147,10 +7495,7 @@ declare function cpp$1(): LanguageSupport;
 
 declare const _codemirror_lang_cpp_cppLanguage: typeof cppLanguage;
 declare namespace _codemirror_lang_cpp {
-  export {
-    cpp$1 as cpp,
-    _codemirror_lang_cpp_cppLanguage as cppLanguage,
-  };
+  export { cpp$1 as cpp, _codemirror_lang_cpp_cppLanguage as cppLanguage };
 }
 
 /**
@@ -7171,10 +7516,7 @@ declare function angular$1(config?: {
 
 declare const _codemirror_lang_angular_angularLanguage: typeof angularLanguage;
 declare namespace _codemirror_lang_angular {
-  export {
-    angular$1 as angular,
-    _codemirror_lang_angular_angularLanguage as angularLanguage,
-  };
+  export { angular$1 as angular, _codemirror_lang_angular_angularLanguage as angularLanguage };
 }
 
 /**
@@ -7446,15 +7788,7 @@ declare const index_d$1_htmlCompletionSourceWith: typeof htmlCompletionSourceWit
 declare const index_d$1_htmlLanguage: typeof htmlLanguage;
 declare const index_d$1_htmlPlain: typeof htmlPlain;
 declare namespace index_d$1 {
-  export {
-    index_d$1_TagSpec as TagSpec,
-    autoCloseTags$1 as autoCloseTags,
-    index_d$1_html as html,
-    index_d$1_htmlCompletionSource as htmlCompletionSource,
-    index_d$1_htmlCompletionSourceWith as htmlCompletionSourceWith,
-    index_d$1_htmlLanguage as htmlLanguage,
-    index_d$1_htmlPlain as htmlPlain,
-  };
+  export { type index_d$1_TagSpec as TagSpec, autoCloseTags$1 as autoCloseTags, index_d$1_html as html, index_d$1_htmlCompletionSource as htmlCompletionSource, index_d$1_htmlCompletionSourceWith as htmlCompletionSourceWith, index_d$1_htmlLanguage as htmlLanguage, index_d$1_htmlPlain as htmlPlain };
 }
 
 type Severity = "hint" | "info" | "warning" | "error";
@@ -7617,20 +7951,7 @@ declare const index_d_tsxLanguage: typeof tsxLanguage;
 declare const index_d_typescriptLanguage: typeof typescriptLanguage;
 declare const index_d_typescriptSnippets: typeof typescriptSnippets;
 declare namespace index_d {
-  export {
-    index_d_autoCloseTags as autoCloseTags,
-    index_d_completionPath as completionPath,
-    index_d_esLint as esLint,
-    index_d_javascript as javascript,
-    index_d_javascriptLanguage as javascriptLanguage,
-    index_d_jsxLanguage as jsxLanguage,
-    index_d_localCompletionSource as localCompletionSource,
-    index_d_scopeCompletionSource as scopeCompletionSource,
-    index_d_snippets as snippets,
-    index_d_tsxLanguage as tsxLanguage,
-    index_d_typescriptLanguage as typescriptLanguage,
-    index_d_typescriptSnippets as typescriptSnippets,
-  };
+  export { index_d_autoCloseTags as autoCloseTags, index_d_completionPath as completionPath, index_d_esLint as esLint, index_d_javascript as javascript, index_d_javascriptLanguage as javascriptLanguage, index_d_jsxLanguage as jsxLanguage, index_d_localCompletionSource as localCompletionSource, index_d_scopeCompletionSource as scopeCompletionSource, index_d_snippets as snippets, index_d_tsxLanguage as tsxLanguage, index_d_typescriptLanguage as typescriptLanguage, index_d_typescriptSnippets as typescriptSnippets };
 }
 
 type HighlightOptions = {
@@ -7736,4 +8057,4 @@ declare function vue(): Promise<typeof _codemirror_lang_vue>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bidiIsolates, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, forceParsing, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxParserRunning, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, type ChangeSpec, type Command, Compartment, type Completion, CompletionContext, type CompletionResult, type CompletionSource, Decoration, type DecorationSet, EditorSelection, EditorState, type EditorStateConfig, EditorView, type Extension, Facet, GutterMarker, HighlightStyle, type KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, type Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, type StreamParser, StringStream, StyleModule, type SyntaxNode, Tag, type TagStyle, Text, type TextIterator, type Tooltip, type TooltipView, Transaction, type TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bidiIsolates, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, forceParsing, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxParserRunning, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };

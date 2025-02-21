@@ -11,7 +11,7 @@ export default [{
       if (/legacy-modes/.test(id)) return 'chunk/legacy';
     },
     chunkFileNames(info) {
-      for (let mod of Object.keys(info.modules)) {
+      for (let mod of info.moduleIds) {
         const match = /(@codemirror\/|@replit\/codemirror-)(?<name>[\w-]+)/.exec(mod);
         if (match) {
           const {name} = match.groups;

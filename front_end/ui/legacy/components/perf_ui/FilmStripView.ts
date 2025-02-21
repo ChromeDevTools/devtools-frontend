@@ -176,13 +176,13 @@ export class Dialog {
     const nextButton = UI.UIUtils.createTextButton('\u25B6', this.onNextFrame.bind(this));
     UI.Tooltip.Tooltip.install(nextButton, i18nString(UIStrings.nextFrame));
     this.fragment = UI.Fragment.Fragment.build`
-      <x-widget flex=none margin=12px>
-        <x-hbox overflow=auto border='1px solid #ddd'>
+      <x-widget flex=none margin='var(--sys-size-7) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8)'>
+        <x-hbox overflow=auto border='var(--sys-size-1) solid var(--sys-color-divider)'>
           <img $='image' data-film-strip-dialog-img style="max-height: 80vh; max-width: 80vw;"></img>
         </x-hbox>
-        <x-hbox x-center justify-content=center margin-top=10px>
+        <x-hbox x-center justify-content=center margin-top='var(--sys-size-6)'>
           ${prevButton}
-          <x-hbox $='time' margin=8px></x-hbox>
+          <x-hbox $='time' margin='var(--sys-size-5)'></x-hbox>
           ${nextButton}
         </x-hbox>
       </x-widget>

@@ -62,7 +62,7 @@ const UIStrings = {
    *@description Text that refers to closure as a programming term
    */
   closure: 'Closure',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance: ScopeChainSidebarPane;

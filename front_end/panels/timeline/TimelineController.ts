@@ -19,7 +19,7 @@ const UIStrings = {
    * worker) doesn't support it.
    */
   tracingNotSupported: 'Performance trace recording not supported for this type of target',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineController implements Trace.TracingManager.TracingManagerClient {

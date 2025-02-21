@@ -160,7 +160,7 @@ const UIStrings = {
    *@description Text in Layer Details View of the Layers panel
    */
   mainThreadScrollingReason: 'Main thread scrolling reason',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

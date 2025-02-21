@@ -35,7 +35,7 @@ const UIStrings = {
    * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the right to show more entries.
    */
   scrollRight: 'Scroll right',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbs.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

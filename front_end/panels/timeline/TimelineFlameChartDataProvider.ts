@@ -100,7 +100,7 @@ const UIStrings = {
    *@description Text for an action that shows all of the hidden entries of the Flame Chart
    */
   resetTrace: 'Reset trace',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

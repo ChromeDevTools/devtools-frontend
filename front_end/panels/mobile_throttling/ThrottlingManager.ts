@@ -97,7 +97,7 @@ const UIStrings = {
    * @description Text to prompt the user to re-run the CPU calibration process.
    */
   recalibrate: 'Recalibrate…',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;

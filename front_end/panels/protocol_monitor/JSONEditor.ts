@@ -52,7 +52,7 @@ const UIStrings = {
    * @description he title of a the button that copies a CDP command.
    */
   copyCommand: 'Copy command',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/JSONEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

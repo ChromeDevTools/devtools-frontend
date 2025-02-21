@@ -14,7 +14,7 @@ const UIStrings = {
    *@description Tooltip text that appears when hovering over largeicon phone button in Screencast App of the Remote Devices tab when toggling screencast
    */
   toggleScreencast: 'Toggle screencast',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastApp.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let appInstance: ScreencastApp;

@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Title of the Laptop with MDPI screen device
    */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

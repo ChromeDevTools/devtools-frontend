@@ -30,7 +30,7 @@ const UIStrings = {
    *@description Side-panel entry title text for the players section.
    */
   players: 'Players',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface PlayerStatus {

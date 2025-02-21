@@ -17,7 +17,7 @@ const {collectAndBakeCtcStrings} = require('./bake-ctc-to-lhl.js');
 const {writeIfChanged} = require('../../scripts/build/ninja/write-if-changed.js');
 
 const OUTPUT_ROOT = path.join(process.cwd(), 'front_end');
-const UISTRINGS_REGEX = /UIStrings = .*?\};\n/s;
+const UISTRINGS_REGEX = /(UIStrings = .*?\}) as const;\n/s;
 
 /** @typedef {import('./bake-ctc-to-lhl.js').CtcMessage} CtcMessage */
 /** @typedef {Required<Pick<CtcMessage, 'message'|'placeholders'>>} IncrementalCtc */
@@ -633,7 +633,7 @@ function collectAllStringsInDir(directory) {
     }
 
     // just parse the UIStrings substring to avoid ES version issues, save time, etc
-    const justUIStrings = 'const ' + regexMatch[0];
+    const justUIStrings = `const ${regexMatch[1]};`;
 
     const parsedMessages = parseUIStrings(justUIStrings);
     for (const [key, parsed] of Object.entries(parsedMessages)) {

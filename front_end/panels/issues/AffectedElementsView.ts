@@ -13,7 +13,7 @@ const UIStrings = {
    *@description Noun for singular or plural number of affected element resource indication in issue view.
    */
   nElements: '{n, plural, =1 {# element} other {# elements}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedElementsView extends AffectedResourcesView {

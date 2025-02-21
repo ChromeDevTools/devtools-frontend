@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/settings/SettingCheckbox.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

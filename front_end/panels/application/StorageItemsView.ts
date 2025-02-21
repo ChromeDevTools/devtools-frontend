@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Text that informs screen reader users that the storage table has been refreshed
    */
   refreshedStatus: 'Table refreshed',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

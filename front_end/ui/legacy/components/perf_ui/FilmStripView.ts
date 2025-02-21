@@ -33,7 +33,7 @@ const UIStrings = {
    *@description Next button title in Film Strip View of the Performance panel
    */
   nextFrame: 'Next frame',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {

@@ -130,7 +130,7 @@ const UIStrings = {
    *@description Label for a button which opens a file picker.
    */
   selectFolder: 'Select folder',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;

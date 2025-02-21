@@ -42,7 +42,7 @@ const UIStrings = {
    *@example {An error occurred} PH2
    */
   couldNotLoadContentForSS: 'Could not load content for {PH1} ({PH2})',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CompilerSourceMappingContentProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

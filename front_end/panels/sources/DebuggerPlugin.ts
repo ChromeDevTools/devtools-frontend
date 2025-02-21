@@ -171,7 +171,7 @@ const UIStrings = {
    *@description Tooltip text that shows on hovering over a button to see more details on a request
    */
   openDeveloperResources: 'Opens the request in the Developer resource panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

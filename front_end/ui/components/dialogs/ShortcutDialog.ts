@@ -26,7 +26,7 @@ const UIStrings = {
    * @description Title of the keyboard shortcuts help menu.
    */
   dialogTitle: 'Keyboard shortcuts',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/ShortcutDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

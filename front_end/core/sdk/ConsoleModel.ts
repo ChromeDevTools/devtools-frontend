@@ -91,7 +91,7 @@ const UIStrings = {
    *@description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
    */
   failedToSaveToTempVariable: 'Failed to save to temp variable.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

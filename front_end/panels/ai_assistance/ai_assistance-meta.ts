@@ -48,7 +48,7 @@ const UIStrings = {
    * not allow this feature.
    */
   policyRestricted: 'This setting is managed by your administrator.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/ai_assistance-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -65,7 +65,7 @@ const UIStrings = {
    *@description Text indicating that source url of a link is currently unknown
    */
   unknownSource: 'unknown',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/JSPresentationUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

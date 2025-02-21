@@ -18,7 +18,7 @@ const UIStrings = {
    *@description Title for Client Hint specification url link
    */
   clientHintsInfrastructure: 'Client Hints Infrastructure',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ClientHintIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

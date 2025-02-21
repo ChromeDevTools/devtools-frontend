@@ -67,7 +67,7 @@ const UIStrings = {
    *@description Label for command log tree in the Profiler tab
    */
   commandLog: 'Command Log',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/PaintProfilerView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let categories: {[x: string]: PaintProfilerCategory}|null = null;

@@ -51,7 +51,7 @@ const UIStrings = {
    *@description The number of bytes used by entries currently in the origin's database
    */
   numBytesUsed: 'Number of Bytes Used',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/SharedStorageMetadataView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

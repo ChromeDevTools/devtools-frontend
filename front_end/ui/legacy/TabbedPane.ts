@@ -85,7 +85,7 @@ const UIStrings = {
    * @description Text to move a tab backward.
    */
   moveTabLeft: 'Move left',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof VBox>(VBox) {

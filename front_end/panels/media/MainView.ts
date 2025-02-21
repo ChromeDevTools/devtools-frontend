@@ -34,7 +34,7 @@ const UIStrings = {
    * A media player can be an audio and video source of a page.
    */
   mediaPlayerDescription: 'On this page you can view and export media player details.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/MainView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

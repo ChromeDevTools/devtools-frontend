@@ -65,7 +65,7 @@ const UIStrings = {
    *@example {20ms latency} PH1
    */
   sFromCache: '{PH1} (from cache)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkTimeCalculator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

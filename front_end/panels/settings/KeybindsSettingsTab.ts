@@ -96,7 +96,7 @@ const UIStrings = {
    *@description Screen reader announcment for discarded short cut changes
    */
   shortcutChangesDiscared: 'Changes to shortcut discarded',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/KeybindsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -14,7 +14,7 @@ const UIStrings = {
    *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
    */
   noStackTraceAvailable: 'No stack trace available',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

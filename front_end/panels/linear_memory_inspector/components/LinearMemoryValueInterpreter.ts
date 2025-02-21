@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear memory inspector.
    */
   changeEndianness: 'Change `Endianness`',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

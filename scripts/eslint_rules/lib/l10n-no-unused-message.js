@@ -74,7 +74,7 @@ module.exports = {
           return;
         }
 
-        for (const property of variableDeclarator.init.properties) {
+        for (const property of variableDeclarator.init.expression.properties) {
           if (property.type !== 'Property' || property.key.type !== 'Identifier') {
             continue;
           }

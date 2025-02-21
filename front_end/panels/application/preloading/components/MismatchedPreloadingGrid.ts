@@ -55,7 +55,7 @@ const UIStrings = {
    *@description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/MismatchedPreloadingGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

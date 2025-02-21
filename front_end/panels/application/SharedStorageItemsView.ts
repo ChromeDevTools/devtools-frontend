@@ -39,7 +39,7 @@ const UIStrings = {
    *@description Text for announcing a Shared Storage key/value item edit request has been canceled
    */
   sharedStorageItemEditCanceled: 'The storage item edit was canceled.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/SharedStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

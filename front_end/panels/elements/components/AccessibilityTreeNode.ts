@@ -19,7 +19,7 @@ const UIStrings = {
    *@description Ignored node element text content in Accessibility Tree View of the Elements panel
    */
   ignored: 'Ignored',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AccessibilityTreeNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

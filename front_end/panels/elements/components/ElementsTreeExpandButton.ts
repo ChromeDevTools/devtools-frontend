@@ -19,7 +19,7 @@ const UIStrings = {
    *@description Aria label for a button expanding collapsed subtree
    */
   expand: 'Expand',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsTreeExpandButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

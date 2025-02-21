@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Title of an action in the Coverage tool to export the data.
    */
   exportCoverage: 'Export coverage',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/coverage-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

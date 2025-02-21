@@ -35,7 +35,7 @@ const UIStrings = {
    *@description text show in feedback tooltip
    */
   feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

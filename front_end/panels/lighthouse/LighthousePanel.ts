@@ -54,7 +54,7 @@ const UIStrings = {
    *@description Text in Lighthouse Panel
    */
   cancelling: 'Cancelling',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthousePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

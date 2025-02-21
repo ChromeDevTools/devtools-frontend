@@ -50,7 +50,7 @@ const UIStrings = {
    * Translation of this phrase should be limited to 10 characters.
    */
   laptopL: 'Laptop L',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

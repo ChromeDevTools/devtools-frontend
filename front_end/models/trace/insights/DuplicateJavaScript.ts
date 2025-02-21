@@ -25,7 +25,7 @@ export const UIStrings = {
    */
   description:
       'Remove large, duplicate JavaScript modules from bundles to reduce unnecessary bytes consumed by network activity.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DuplicateJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

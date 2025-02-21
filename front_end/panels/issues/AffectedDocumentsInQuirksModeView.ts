@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Column title for the Mode column in the quirks mode issue view
    */
   mode: 'Mode',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDocumentsInQuirksModeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

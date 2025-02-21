@@ -45,7 +45,7 @@ const UIStrings = {
    * @description The intrinsic aspect ratio of an image.
    */
   intrinsicAspectRatio: 'Intrinsic aspect ratio:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

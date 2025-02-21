@@ -116,7 +116,7 @@ const UIStrings = {
    *@description Title of the link in Styles panel to jump to the Animations panel.
    */
   jumpToAnimationsPanel: 'Jump to Animations panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const parentMap = new WeakMap<StylesSidebarPane, StylePropertyTreeElement>();

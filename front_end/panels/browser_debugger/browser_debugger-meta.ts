@@ -79,7 +79,7 @@ const UIStrings = {
    *@description Label for a button in the sources panel that refreshes the list of global event listeners.
    */
   refreshGlobalListeners: 'Refresh global listeners',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/browser_debugger-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedBrowserDebuggerModule: (typeof BrowserDebugger|undefined);

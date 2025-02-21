@@ -81,7 +81,7 @@ const UIStrings = {
    *@description The default file name when downloading a file
    */
   download: 'download',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ImageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ImageView extends UI.View.SimpleView {

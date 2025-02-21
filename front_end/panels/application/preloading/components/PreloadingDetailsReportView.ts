@@ -111,7 +111,7 @@ const UIStrings = {
    *@description button: Title of button to reveal rule set
    */
   buttonClickToRevealRuleSet: 'Click to reveal rule set',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

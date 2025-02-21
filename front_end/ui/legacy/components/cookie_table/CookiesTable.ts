@@ -144,7 +144,7 @@ const UIStrings = {
    * @description Text to be show in the Partition Key column in case it is an opaque origin.
    */
   opaquePartitionKey: '(opaque)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/cookie_table/CookiesTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

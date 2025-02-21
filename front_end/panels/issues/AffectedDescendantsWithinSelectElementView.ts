@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Label for the disallowed node link in the issue view.
    */
   disallowedNode: 'Disallowed descendant',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedDescendantsWithinSelectElementView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

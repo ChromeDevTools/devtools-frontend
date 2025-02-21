@@ -32,7 +32,7 @@ const UIStrings = {
    */
   thirdPartyPhaseout:
       'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/utils/utils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -41,7 +41,7 @@ const UIStrings = {
    * front of the email address currently used for Chrome Sync.
    */
   signedIn: 'Signed into Chrome as:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

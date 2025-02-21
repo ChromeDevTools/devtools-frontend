@@ -67,7 +67,7 @@ const UIStrings = {
    *@description Text for the value of something
    */
   value: 'Value',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/KeyValueStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

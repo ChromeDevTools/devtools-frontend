@@ -157,7 +157,7 @@ const UIStrings = {
    *@example {(0,0,1)} PH1
    */
   specificity: 'Specificity: {PH1}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

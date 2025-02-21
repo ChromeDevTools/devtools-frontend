@@ -27,7 +27,7 @@ const UIStrings = {
    *@example {example.com} PH1
    */
   NodejsTitleS: 'DevTools - Node.js: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let nodeMainImplInstance: NodeMainImpl;

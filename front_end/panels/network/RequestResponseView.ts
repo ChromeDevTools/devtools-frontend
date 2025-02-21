@@ -52,7 +52,7 @@ const UIStrings = {
    *@description Text in Request Preview View of the Network panel
    */
   failedToLoadResponseData: 'Failed to load response data',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestResponseView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestResponseView extends UI.Widget.VBox {

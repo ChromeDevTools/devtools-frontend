@@ -102,7 +102,7 @@ const UIStrings = {
    *@description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
    */
   exitTrackConfigurationMode: 'Finish configuring tracks',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FlameChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

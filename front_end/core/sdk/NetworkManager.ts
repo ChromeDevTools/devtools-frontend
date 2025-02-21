@@ -116,7 +116,7 @@ const UIStrings = {
    *@example {https://example.com} PH3
    */
   sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

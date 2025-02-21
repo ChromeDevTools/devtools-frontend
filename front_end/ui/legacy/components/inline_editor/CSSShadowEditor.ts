@@ -32,7 +32,7 @@ const UIStrings = {
    *@description Text in CSSShadow Editor of the inline editor in the Styles tab
    */
   spread: 'Spread',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/CSSShadowEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

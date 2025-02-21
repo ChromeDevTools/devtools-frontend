@@ -30,7 +30,7 @@ const UIStrings = {
    *@description Header for the column that contains URL of the resource in a web bundle.
    */
   bundledResource: 'Bundled resource',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/WebBundleInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

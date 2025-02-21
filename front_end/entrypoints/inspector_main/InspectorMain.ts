@@ -40,7 +40,7 @@ const UIStrings = {
    * @description A message that prompts the user to open devtools for a specific environment (Node.js)
    */
   openDedicatedTools: 'Open dedicated DevTools for `Node.js`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/InspectorMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorMainImplInstance: InspectorMainImpl;

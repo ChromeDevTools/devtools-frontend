@@ -65,7 +65,7 @@ const UIStringsNotTranslate = {
    * @description The title of the button for scrolling to see previous suggestions
    */
   scrollToPrevious: 'Scroll to previous suggestions',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 

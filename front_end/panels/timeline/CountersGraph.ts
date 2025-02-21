@@ -71,7 +71,7 @@ const UIStrings = {
    * @description text shown when no counter events are found and the graph is empty
    */
   noEventsFound: 'No memory usage data found within selected events.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

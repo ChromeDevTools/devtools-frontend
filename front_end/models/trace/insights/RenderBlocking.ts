@@ -44,7 +44,7 @@ export const UIStrings = {
    * @description Text status indicating that no requests blocked the initial render of a navigation
    */
   noRenderBlocking: 'No render blocking requests for this navigation',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

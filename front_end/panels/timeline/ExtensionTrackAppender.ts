@@ -25,7 +25,7 @@ const UIStrings = {
    * @example {A track name} PH1
    */
   customTrackName: '{PH1} — Custom track',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ExtensionTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

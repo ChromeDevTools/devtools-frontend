@@ -69,7 +69,7 @@ const UIStrings = {
    * outcome of a FLEDGE auction.
    */
   interestGroupDescription: 'On this page you can inspect and analyze interest groups',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/InterestGroupAccessGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

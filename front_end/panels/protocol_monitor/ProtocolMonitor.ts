@@ -128,7 +128,7 @@ const UIStrings = {
    * @description Screen reader announcement when the sidebar is hidden in the Console panel.
    */
   CDPCommandEditorHidden: 'CDP command editor hidden',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/ProtocolMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

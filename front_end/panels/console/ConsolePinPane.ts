@@ -50,7 +50,7 @@ const UIStrings = {
    *@description Text of a DOM element in Console Pin Pane of the Console panel
    */
   notAvailable: 'not available',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePinPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

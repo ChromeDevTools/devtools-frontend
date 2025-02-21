@@ -402,7 +402,7 @@ const UIStrings = {
    *@description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingString.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

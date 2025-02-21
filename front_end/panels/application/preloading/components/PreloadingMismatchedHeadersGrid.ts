@@ -33,7 +33,7 @@ const UIStrings = {
    *@description The string to indicate the value of the header is missing.
    */
   missing: '(missing)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/application/preloading/components/PreloadingMismatchedHeadersGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

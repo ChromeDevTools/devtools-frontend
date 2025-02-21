@@ -115,7 +115,7 @@ const UIStrings = {
    *@description Text describing how to navigate the dock side menu
    */
   dockSideNaviation: 'Use left and right arrow keys to navigate the options',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/MainImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

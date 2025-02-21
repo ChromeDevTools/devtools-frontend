@@ -23,7 +23,7 @@ const UIStrings = {
   addAllContentScriptsToIgnoreList: 'Add all extension scripts to ignore list',
   addAllThirdPartyScriptsToIgnoreList: 'Add all third-party scripts to ignore list',
   addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
-};
+} as const;
 
 const sourceMapThirdPartyFolderUrl = urlString`http://a.b.c/lib`;
 const sourceMapThirdPartyUrl = urlString`http://a.b.c/lib/source1.ts`;

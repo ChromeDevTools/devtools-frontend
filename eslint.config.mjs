@@ -615,6 +615,7 @@ export default [
           rootFrontendDirectory: join(import.meta.dirname, 'front_end'),
         },
       ],
+      'rulesdir/enforce-ui-strings-as-const': 'error',
     },
   },
   {

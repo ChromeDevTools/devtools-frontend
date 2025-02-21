@@ -43,7 +43,7 @@ const UIStrings = {
    *@example {folder does not exist} PH1
    */
   unableToAddFilesystemS: 'Unable to add filesystem: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystemManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;

@@ -104,7 +104,7 @@ const UIStrings = {
    *@description AI assistance UI text explains that he user had no pas conversations.
    */
   noPastConversations: 'No past conversations',
-};
+} as const;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -119,7 +119,7 @@ const UIStringsNotTranslate = {
    *@description Announcement text for screen readers when the answer comes.
    */
   answerReady: 'Answer ready',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

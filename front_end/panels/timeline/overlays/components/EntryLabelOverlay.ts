@@ -25,7 +25,7 @@ const UIStrings = {
    */
   inputTextPrompt: 'Enter an annotation label',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

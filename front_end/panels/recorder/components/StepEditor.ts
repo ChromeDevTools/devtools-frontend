@@ -274,7 +274,7 @@ const UIStrings = {
    *@description The error message display when a user enters a type in the input not associates with any existing types.
    */
   unknownActionType: 'Unknown action type.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/components/StepEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

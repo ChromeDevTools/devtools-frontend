@@ -17,7 +17,7 @@ const UIStrings = {
    *@description New report item label in Lighthouse Report Selector
    */
   newReport: '(new report)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseReportSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ReportSelector {

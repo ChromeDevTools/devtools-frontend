@@ -72,7 +72,7 @@ const UIStrings = {
    */
   patternAlreadyExistsWillBeEnables:
       'This rule already exists but is disabled. Saving this value will re-enable the rule',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/IgnoreListSetting.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

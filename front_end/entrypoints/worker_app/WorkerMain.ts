@@ -13,7 +13,7 @@ const UIStrings = {
    *@description Text that refers to the main target.
    */
   main: 'Main',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/worker_app/WorkerMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

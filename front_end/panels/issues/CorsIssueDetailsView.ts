@@ -122,7 +122,7 @@ const UIStrings = {
    *@description A failed network request.
    */
   failedRequest: 'Failed Request',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/CorsIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -54,7 +54,7 @@ const UIStrings = {
    * @description Label shown above a list of CPU calibration preset options.
    */
   labelCalibratedPresets: 'Calibrated presets',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/CPUThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -20,7 +20,7 @@ const UIStrings = {
    *@description Tooltip for the 3-dots menu in the Memory panel profiles list.
    */
   profileOptions: 'Profile options',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileSidebarTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

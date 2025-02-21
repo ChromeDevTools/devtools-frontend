@@ -515,7 +515,7 @@ const UIStrings = {
    * @description Label for a URL origin.
    */
   origin: 'Origin',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

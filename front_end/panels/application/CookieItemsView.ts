@@ -80,7 +80,7 @@ const UIStrings = {
    *@example {5} PH1
    */
   numberOfCookiesShownInTableS: 'Number of cookies shown in table: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/CookieItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class CookiePreviewWidget extends UI.Widget.VBox {

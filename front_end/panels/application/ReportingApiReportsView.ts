@@ -22,7 +22,7 @@ const UIStrings = {
    *report body (https://developers.google.com/web/updates/2018/09/reportingapi#sending).
    */
   clickToDisplayBody: 'Click on any report to display its body',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ReportingApiReportsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

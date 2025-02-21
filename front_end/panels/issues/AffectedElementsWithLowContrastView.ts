@@ -85,6 +85,6 @@ const UIStrings = {
    *@description Column title for the text weight column in the low contrast issue view
    */
   textWeight: 'Text weight',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedElementsWithLowContrastView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

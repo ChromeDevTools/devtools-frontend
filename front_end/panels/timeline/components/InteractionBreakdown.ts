@@ -27,7 +27,7 @@ const UIStrings = {
    *@description Text shown next to the interaction event's presentation delay time in the detail view.
    */
   presentationDelay: 'Presentation delay',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/InteractionBreakdown.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

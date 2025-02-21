@@ -98,7 +98,7 @@ const UIStrings = {
    *@description Text for the issuer of an item
    */
   issuer: 'Issuer',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {

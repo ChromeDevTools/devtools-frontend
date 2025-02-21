@@ -36,7 +36,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   detachedElementProfile: 'Detached elements {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapDetachedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

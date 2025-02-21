@@ -22,7 +22,7 @@ const UIStrings = {
    *@description Placeholder text in Soft Drop Down
    */
   noItemSelected: '(no item selected)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SoftDropDown.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

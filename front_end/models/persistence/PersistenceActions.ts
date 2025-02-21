@@ -51,7 +51,7 @@ const UIStrings = {
    * the context menu of a WebAssembly file.
    */
   saveWasmFailed: 'Unable to save WASM module to disk. Most likely the module is too large.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceActions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

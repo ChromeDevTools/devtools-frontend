@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Text in isolate selector in Performance panel
    */
   selectJavascriptVmInstance: 'Select JavaScript VM instance',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/IsolateSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -52,7 +52,7 @@ const UIStrings = {
    *@description Label for right window resizer for Overview grids
    */
   rightResizer: 'Right Resizer',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/OverviewGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class OverviewGrid {

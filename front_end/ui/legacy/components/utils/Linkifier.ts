@@ -72,7 +72,7 @@ const UIStrings = {
    * can react to them.
    */
   linkHandling: 'Link handling:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/Linkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const instances = new Set<Linkifier>();

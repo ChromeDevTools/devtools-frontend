@@ -29,7 +29,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   showDMore: 'Show {PH1} more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchResultsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

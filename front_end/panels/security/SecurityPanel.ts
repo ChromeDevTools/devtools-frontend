@@ -436,7 +436,7 @@ const UIStrings = {
    *@description Shown when a field refers to a TLS feature which was enabled.
    */
   enabled: 'enabled',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

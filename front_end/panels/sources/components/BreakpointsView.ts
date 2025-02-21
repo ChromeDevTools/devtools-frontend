@@ -110,7 +110,7 @@ const UIStrings = {
    *@example {'hello'} PH1
    */
   logpointCode: 'Logpoint: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_SNIPPET_LENGTH = 200;

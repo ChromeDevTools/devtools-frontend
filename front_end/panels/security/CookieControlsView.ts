@@ -110,7 +110,7 @@ const UIStrings = {
    *@description Text used for link within the enableFlag to show users where they can enable the Third-party Cookie Heuristics Grants flag.
    */
   tpcdHeuristicsGrants: '#tpcd-heuristics-grants',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

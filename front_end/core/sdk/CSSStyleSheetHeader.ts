@@ -24,7 +24,7 @@ const UIStrings = {
    *@description Error message to display when a source CSS file could not be retrieved.
    */
   thereWasAnErrorRetrievingThe: 'There was an error retrieving the source styles.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

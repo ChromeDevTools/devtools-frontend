@@ -20,7 +20,7 @@ const UIStrings = {
    * @description Accessible label for the CSS overview panel sidebar
    */
   cssOverviewPanelSidebar: 'CSS overview panel sidebar',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

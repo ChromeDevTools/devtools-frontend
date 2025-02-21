@@ -148,7 +148,7 @@ const UIStrings = {
    *@description Text in Heap Snapshot View of a profiler tool
    */
   allocation: 'Allocation',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotDataGrids.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const adjacencyMap = new WeakMap<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, HeapSnapshotGridNode[]>();

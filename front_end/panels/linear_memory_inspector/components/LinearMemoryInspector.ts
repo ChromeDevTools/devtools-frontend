@@ -43,7 +43,7 @@ const UIStrings = {
    *@example {0x00400000} PH2
    */
   addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

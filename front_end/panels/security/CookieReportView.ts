@@ -181,7 +181,7 @@ const UIStrings = {
    *@description String that shows up in the context menu when right clicking one of the entries in the cookie report.
    */
   showRequestsWithThisCookie: 'Show requests with this cookie',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

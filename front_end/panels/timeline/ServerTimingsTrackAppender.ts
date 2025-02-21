@@ -25,7 +25,7 @@ const UIStrings = {
    * @example {origin} PH1
    */
   serverSideTrack: 'Server Timings — {PH1}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ServerTimingsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

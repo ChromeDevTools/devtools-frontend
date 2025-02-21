@@ -179,7 +179,7 @@ const UIStrings = {
    *@description Link to view all the Service Workers that have been registered.
    */
   seeAllRegistrations: 'See all registrations',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttleDisabledForDebugging = false;

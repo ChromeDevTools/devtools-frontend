@@ -32,7 +32,7 @@ const UIStrings = {
    *@description Title of an action in the timeline tool to record a reload of the current page
    */
   recordAndReload: 'Record and reload',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/js_timeline/js_timeline-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

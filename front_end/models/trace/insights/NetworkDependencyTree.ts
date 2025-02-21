@@ -37,7 +37,7 @@ export const UIStrings = {
    * the browser must download before it can render the page.
    */
   maxCriticalPathLatency: 'Max critical path latency:'
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/NetworkDependencyTree.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

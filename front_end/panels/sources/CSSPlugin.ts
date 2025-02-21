@@ -35,7 +35,7 @@ const UIStrings = {
    *@description Text for a context menu item for attaching a sourcemap to the currently open css file
    */
   addSourceMap: 'Add source map…',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CSSPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

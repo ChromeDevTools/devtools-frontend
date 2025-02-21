@@ -29,7 +29,7 @@ const UIStrings = {
    * while a video/media player was present on the page.
    */
   eventDisplay: 'Event display',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/EventDisplayTable.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface EventDisplayColumnConfig {

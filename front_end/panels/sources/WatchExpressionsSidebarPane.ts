@@ -84,7 +84,7 @@ const UIStrings = {
    *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
    */
   copyValue: 'Copy value',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance: WatchExpressionsSidebarPane;

@@ -51,7 +51,7 @@ export const UIStrings = {
    * @description Text status indicating that no user interactions were detected.
    */
   noInteractions: 'No interactions detected',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/InteractionToNextPaint.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

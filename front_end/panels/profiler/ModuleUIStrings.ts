@@ -104,4 +104,4 @@ export const UIStrings = {
    *@description Text in Heap Snapshot Loader of the Memory panel when taking a heap snapshot
    */
   loadingStrings: 'Loading strings…',
-};
+} as const;

@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Text for web URLs
    */
   url: 'URL',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkSearchScope implements Search.SearchScope.SearchScope {

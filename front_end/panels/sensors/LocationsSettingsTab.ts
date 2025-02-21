@@ -95,7 +95,7 @@ const UIStrings = {
    *@description Text of add locations button in Locations Settings Tab of the Device Toolbar
    */
   addLocation: 'Add location',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/LocationsSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

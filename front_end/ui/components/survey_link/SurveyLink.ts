@@ -24,7 +24,7 @@ const UIStrings = {
    *@description Text displayed instead of the survey link after the survey link is clicked, if the survey was not shown successfully
    */
   anErrorOccurredWithTheSurvey: 'An error occurred with the survey',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/survey_link/SurveyLink.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

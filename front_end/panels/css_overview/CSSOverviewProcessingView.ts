@@ -14,7 +14,7 @@ const UIStrings = {
    *@description Text to cancel something
    */
   cancel: 'Cancel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewProcessingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

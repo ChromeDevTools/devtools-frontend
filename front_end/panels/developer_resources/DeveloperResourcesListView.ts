@@ -65,7 +65,7 @@ const UIStrings = {
    *@description Accessible text for the value in bytes in memory allocation.
    */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {withThousandsSeparator} = Platform.NumberUtilities;

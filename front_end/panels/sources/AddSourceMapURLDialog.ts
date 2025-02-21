@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Text to add something
    */
   add: 'Add',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/AddSourceMapURLDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AddDebugInfoURLDialog extends UI.Widget.HBox {

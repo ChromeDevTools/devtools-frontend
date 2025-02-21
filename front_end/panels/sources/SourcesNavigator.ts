@@ -120,7 +120,7 @@ const UIStrings = {
    *              to connect to an automatic workspace folder.
    */
   automaticWorkspaceFolderConnect: 'Connect...',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance: NetworkNavigatorView;

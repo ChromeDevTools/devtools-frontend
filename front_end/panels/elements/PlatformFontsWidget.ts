@@ -65,7 +65,7 @@ const UIStrings = {
    *@description Text in Platform Fonts Widget of the Elements panel. Indicates a number of glyphs (characters) .
    */
   dGlyphs: '{n, plural, =1 {(# glyph)} other {(# glyphs)}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PlatformFontsWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

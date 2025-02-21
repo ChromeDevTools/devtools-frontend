@@ -44,7 +44,7 @@ export const UIStrings = {
    * @description Text to describe the total reflow time
    */
   totalReflowTime: 'Total reflow time',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ForcedReflow.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

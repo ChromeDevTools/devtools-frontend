@@ -178,7 +178,7 @@ const UIStrings = {
    * @description Message shown when the user is offline.
    */
   offline: 'This feature is only available with an active internet connection.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

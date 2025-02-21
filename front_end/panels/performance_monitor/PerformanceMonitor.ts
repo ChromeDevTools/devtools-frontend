@@ -54,7 +54,7 @@ const UIStrings = {
    *@description Text in Performance Monitor of the Performance monitor tab
    */
   styleRecalcsSec: 'Style recalcs / sec',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

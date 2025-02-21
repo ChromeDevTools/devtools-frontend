@@ -110,7 +110,7 @@ const UIStrings = {
    *@description Text that is announced by the screen reader when the user focuses on an input field for editing the name of a CSS selector in the Styles panel
    */
   cssSelector: '`CSS` selector',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

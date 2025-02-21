@@ -32,7 +32,7 @@ const UIStrings = {
    * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
    */
   originOption: 'Origin',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/OverlaysImpl.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

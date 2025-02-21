@@ -465,7 +465,7 @@ const UIStrings = {
    * @description Text for the Show only/Hide requests dropdown button of the filterbar
    */
   moreFilters: 'More filters',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

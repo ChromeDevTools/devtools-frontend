@@ -33,7 +33,7 @@ const UIStrings = {
    * @description Title for toggling code action in command menu
    */
   toggleCode: 'Toggle code view',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/recorder-meta.ts',

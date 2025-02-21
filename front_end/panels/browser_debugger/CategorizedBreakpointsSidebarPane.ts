@@ -120,7 +120,7 @@ const UIStrings = {
    *@description Text that appears on a button for the xhr resource type filter.
    */
   xhr: 'XHR',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

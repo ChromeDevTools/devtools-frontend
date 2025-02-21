@@ -20,7 +20,7 @@ const UIStrings = {
    * @description Command for showing the 'Animations' tool in the bottom drawer
    */
   showAnimations: 'Show Animations',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/animation/animation-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

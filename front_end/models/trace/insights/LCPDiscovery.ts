@@ -57,7 +57,7 @@ export const UIStrings = {
    * @description Text status indicating that the Largest Contentful Paint (LCP) metric was text rather than an image. "LCP" is an acronym and should not be translated.
    */
   noLcpResource: 'No LCP resource detected because the LCP is not an image',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -52,7 +52,7 @@ const UIStrings = {
    *@example {10ms} PH2
    */
   sAtS: '{PH1} at {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

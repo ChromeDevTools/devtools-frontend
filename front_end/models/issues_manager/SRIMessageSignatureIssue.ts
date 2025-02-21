@@ -22,7 +22,7 @@ const UIStrings = {
    *@description Title for Signature-based Integrity specification url
    */
   signatureBasedIntegrity: 'Signature-based Integrity',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SRIMessageSignatureIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const specLinks = [

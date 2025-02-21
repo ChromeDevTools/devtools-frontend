@@ -17,7 +17,7 @@ const UIStrings = {
    * This should be translated if appropriate.
    */
   node: '<node>',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

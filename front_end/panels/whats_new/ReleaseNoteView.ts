@@ -20,7 +20,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to more documentation
    */
   seeFeatures: 'See all new features',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/whats_new/ReleaseNoteView.ts', UIStrings);
 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

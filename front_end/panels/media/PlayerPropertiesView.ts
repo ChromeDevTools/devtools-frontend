@@ -130,7 +130,7 @@ const UIStrings = {
    *@description Media property signaling whether the encoder is hardware accelerated.
    */
   hardwareEncoder: 'Hardware encoder',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

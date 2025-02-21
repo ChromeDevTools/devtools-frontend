@@ -38,7 +38,7 @@ const UIStrings = {
    * @description title for CORB explainer.
    */
   corbExplainerPageTitle: 'CORB explainer',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/GenericIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

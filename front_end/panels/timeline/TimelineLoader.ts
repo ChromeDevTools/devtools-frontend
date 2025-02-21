@@ -19,7 +19,7 @@ const UIStrings = {
    *@example {Unknown JSON format} PH1
    */
   malformedTimelineDataS: 'Malformed timeline data: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

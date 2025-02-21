@@ -18,7 +18,7 @@ const UIStrings = {
    *@description Label for the link for CORS network issues
    */
   CORS: 'Cross-Origin Resource Sharing (`CORS`)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CorsIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

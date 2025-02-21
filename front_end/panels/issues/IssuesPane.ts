@@ -111,7 +111,7 @@ const UIStrings = {
    * @description Category title for the different 'Generic' issues.
    */
   generic: 'Generic',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssuesPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

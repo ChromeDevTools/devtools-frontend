@@ -23,7 +23,7 @@ const UIStrings = {
    *@description Text in Overlay Model
    */
   pausedInDebugger: 'Paused in debugger',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/OverlayModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

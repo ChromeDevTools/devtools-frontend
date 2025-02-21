@@ -102,7 +102,7 @@ const UIStrings = {
    *@description Text for web URLs
    */
   url: 'URL',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 function convertToSamplingHeapProfile(profileHeader: SamplingHeapProfileHeader):

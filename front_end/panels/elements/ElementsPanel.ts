@@ -150,7 +150,7 @@ const UIStrings = {
    * @description A context menu item to reveal a submenu with badge settings.
    */
   adornerSettings: 'Badge settings',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

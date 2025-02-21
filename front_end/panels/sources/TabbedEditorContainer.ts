@@ -59,7 +59,7 @@ const UIStrings = {
    *@description Icon title in Tabbed Editor Container of the Sources panel
    */
   changesToThisFileWereNotSavedTo: 'Changes to this file were not saved to file system.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface TabbedEditorContainerDelegate {

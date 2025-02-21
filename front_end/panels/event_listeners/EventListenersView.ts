@@ -46,7 +46,7 @@ const UIStrings = {
    *@description Text in Event Listeners Widget of the Elements panel
    */
   passive: 'Passive',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/event_listeners/EventListenersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventListenersView extends UI.Widget.VBox {

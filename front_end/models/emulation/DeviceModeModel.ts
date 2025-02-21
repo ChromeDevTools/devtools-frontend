@@ -80,7 +80,7 @@ const UIStrings = {
    * @example {0} PH1
    */
   devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

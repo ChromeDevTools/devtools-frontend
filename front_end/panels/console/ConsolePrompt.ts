@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(

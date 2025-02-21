@@ -12,7 +12,7 @@ const UIStrings = {
    *             Abbreviation stands for 'not applicable'.
    */
   notApplicable: 'N/A',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

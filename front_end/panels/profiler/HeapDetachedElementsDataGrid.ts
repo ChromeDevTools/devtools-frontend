@@ -23,7 +23,7 @@ const UIStrings = {
    *@description Label for the detached elements table
    */
   detachedElementsList: 'Detached elements list',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapDetachedElementsDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

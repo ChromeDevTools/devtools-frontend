@@ -128,7 +128,7 @@ const UIStrings = {
    * Clicking on the button will display that object in the Memory inspector panel.
    */
   openInMemoryInpector: 'Open in Memory inspector panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const EXPANDABLE_MAX_LENGTH = 50;

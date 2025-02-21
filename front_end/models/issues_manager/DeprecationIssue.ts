@@ -24,7 +24,7 @@ const UIStrings = {
    * @description Title of issue raised when a deprecated feature is used
    */
   title: 'Deprecated feature used',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

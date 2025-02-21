@@ -164,7 +164,7 @@ const UIStrings = {
    *@description Label for one dimension of device orientation that the user can override.
    */
   gamma: '\u03B3 (gamma)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -45,7 +45,7 @@ const UIStrings = {
    * @description Text for screen reader to announce that an item has been removed.
    */
   removedItem: 'Item has been removed',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

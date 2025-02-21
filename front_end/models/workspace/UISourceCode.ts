@@ -46,7 +46,7 @@ const UIStrings = {
    *@description Text in UISource Code of the DevTools local workspace
    */
   thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

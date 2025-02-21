@@ -60,7 +60,7 @@ const UIStrings = {
    *@description Command for deleting a profile in the Profiler panel
    */
   deleteProfile: 'Delete profile',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/profiler-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

@@ -85,7 +85,7 @@ const UIStrings = {
    */
   flexGridContainerPropertyRuleFix:
       'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

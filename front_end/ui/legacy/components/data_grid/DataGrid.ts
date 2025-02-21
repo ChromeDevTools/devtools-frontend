@@ -115,7 +115,7 @@ const UIStrings = {
    *@description Label for sortable column headers.
    */
   sortableColumn: 'Sortable column. Press enter to apply sorting filter',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/DataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

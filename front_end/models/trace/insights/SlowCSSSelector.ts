@@ -52,7 +52,7 @@ export const UIStrings = {
    */
   enableSelectorData:
       'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/SlowCSSSelector.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

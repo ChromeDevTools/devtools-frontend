@@ -107,7 +107,7 @@ const UIStrings = {
    *@description Explanation text shown in the confirmation dialogue that displays before deleting the bucket.
    */
   bucketWillBeRemoved: 'The selected storage bucket and contained data will be removed.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StorageMetadataView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

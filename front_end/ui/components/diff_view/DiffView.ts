@@ -36,7 +36,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/diff_view/DiffView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

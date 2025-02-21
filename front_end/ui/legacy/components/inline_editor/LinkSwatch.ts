@@ -21,7 +21,7 @@ const UIStrings = {
    *@example {--my-custom-property-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/LinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, Directives: {ifDefined, classMap}} = Lit;

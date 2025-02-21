@@ -12,7 +12,7 @@ const UIStrings = {
    * is a text node, meaning it contains text only and no other HTML elements. Should be translatd.
    */
   text: '(text)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

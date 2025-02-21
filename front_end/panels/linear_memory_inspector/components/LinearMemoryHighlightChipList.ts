@@ -27,7 +27,7 @@ const UIStrings = {
    'Memory' is a slice of bytes in the computer memory.
    */
   deleteHighlight: 'Stop highlighting this memory',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

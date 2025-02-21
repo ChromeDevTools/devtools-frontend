@@ -146,7 +146,7 @@ const UIStrings = {
    */
   inpHelpTooltip:
       'INP measures the overall responsiveness to all click, tap, and keyboard interactions. Click here to learn more about INP.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

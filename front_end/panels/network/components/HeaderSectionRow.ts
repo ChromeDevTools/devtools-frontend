@@ -61,7 +61,7 @@ const UIStrings = {
    *@description The title of a button which removes a HTTP header override.
    */
   removeOverride: 'Remove this header override',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/HeaderSectionRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

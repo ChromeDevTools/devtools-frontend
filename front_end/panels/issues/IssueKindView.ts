@@ -25,7 +25,7 @@ const UIStrings = {
    * @description Menu entry for hiding all current Page Errors.
    */
   hideAllCurrentImprovements: 'Hide all current Improvements',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueKindView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

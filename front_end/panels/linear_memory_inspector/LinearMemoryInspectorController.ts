@@ -21,7 +21,7 @@ const UIStrings = {
    *@description A context menu item in the Scope View of the Sources Panel
    */
   openInMemoryInspectorPanel: 'Open in Memory inspector panel',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

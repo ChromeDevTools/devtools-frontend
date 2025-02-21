@@ -20,7 +20,7 @@ const UIStrings = {
    *@description Text in ARIAAttributes View of the Accessibility panel
    */
   noAriaAttributes: 'No ARIA attributes',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/ARIAAttributesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ARIAAttributesPane extends AccessibilitySubPane {

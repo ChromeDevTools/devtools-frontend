@@ -148,7 +148,7 @@ const UIStrings = {
    *@example {Authenticator ABCDEF} PH1
    */
   setSAsTheActiveAuthenticator: 'Set {PH1} as the active authenticator',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/webauthn/WebauthnPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

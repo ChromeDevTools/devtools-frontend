@@ -79,7 +79,7 @@ const UIStrings = {
    *@description Text in Profiles Panel of a profiler tool
    */
   profiles: 'Profiles',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisplayDelegate {

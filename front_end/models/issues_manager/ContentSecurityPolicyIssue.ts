@@ -34,7 +34,7 @@ const UIStrings = {
    *@description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
    */
   trustedTypesPolicyViolation: 'Trusted Types - Policy violation',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ContentSecurityPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

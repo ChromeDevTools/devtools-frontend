@@ -37,7 +37,7 @@ const UIStrings = {
    *@description Command for showing the 'Node' tool in the Network Navigator View, which is part of the Sources tool
    */
   showNode: 'Show Node',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/node_app.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

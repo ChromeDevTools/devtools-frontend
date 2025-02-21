@@ -90,7 +90,7 @@ const UIStrings = {
    *@example {1} PH1
    */
   animationPreviewS: 'Animation Preview {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();

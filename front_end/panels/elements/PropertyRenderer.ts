@@ -25,7 +25,7 @@ const UIStrings = {
    *@example {10px} PH1
    */
   cssPropertyValue: '`CSS` property value: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertyRenderer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

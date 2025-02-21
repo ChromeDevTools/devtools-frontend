@@ -20,7 +20,7 @@ const UIStrings = {
    *@description Title for the tooltip of the (3 dots) Hide Issues menu icon.
    */
   tooltipTitle: 'Hide issues',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/components/HideIssuesMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

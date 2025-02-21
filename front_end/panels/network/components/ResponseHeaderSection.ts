@@ -77,7 +77,7 @@ const UIStrings = {
    */
   toUseThisResourceFromADifferentSite:
       'To use this resource from a different site, the server may relax the cross-origin resource policy response header:',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/ResponseHeaderSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

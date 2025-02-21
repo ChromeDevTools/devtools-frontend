@@ -145,7 +145,7 @@ const UIStrings = {
    *@description Text in Network Log View Columns of the Network panel
    */
   remoteAddressSpace: 'Remote Address Space',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

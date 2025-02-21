@@ -139,7 +139,7 @@ const UIStrings = {
    *@description Tooltip text explaining that DevTools has overridden the response
    */
   responseIsOverridden: 'This response is overridden by DevTools',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkItemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkItemView extends UI.TabbedPane.TabbedPane {

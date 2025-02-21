@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text in Network Priorities of the Performance panel
    */
   highest: 'Highest',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/NetworkPriorities.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function uiLabelForNetworkPriority(priority: Protocol.Network.ResourcePriority): string {

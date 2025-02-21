@@ -97,7 +97,7 @@ const UIStrings = {
    *@description Text in Search View of the Search tab
    */
   searchInterrupted: 'Search interrupted.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

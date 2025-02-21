@@ -123,7 +123,7 @@ const UIStrings = {
    *@description Text on a button to search previous instance for the ctrl+F search bar
    */
   clearInput: 'Clear',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SearchableView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

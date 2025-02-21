@@ -66,7 +66,7 @@ const UIStrings = {
    *@example {mainp.debug.wasm.dwp} PH1
    */
   debugSymbolsIncomplete: 'The debug information for function {PH1} is incomplete',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/bindings/DebuggerLanguagePlugins.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

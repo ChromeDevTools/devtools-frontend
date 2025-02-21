@@ -127,7 +127,7 @@ const UIStrings = {
    * @description Link text to forward to a documentation page on the recorder.
    */
   learnMore: 'Learn more'
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/RecorderController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

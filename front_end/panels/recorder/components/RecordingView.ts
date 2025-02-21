@@ -146,7 +146,7 @@ const UIStrings = {
    * @description The title of the button that open current recording in Performance panel.
    */
   performancePanel: 'Performance panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/RecordingView.ts',
     UIStrings,

@@ -57,7 +57,7 @@ const UIStrings = {
    *@description Text to remove a breakpoint
    */
   removeBreakpoint: 'Remove breakpoint',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/XHRBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const containerToBreakpointEntry = new WeakMap<Element, HTMLElement>();

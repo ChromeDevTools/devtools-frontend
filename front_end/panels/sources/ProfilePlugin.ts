@@ -27,7 +27,7 @@ const UIStrings = {
    *@description A unit
    */
   kb: 'kB',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ProfilePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

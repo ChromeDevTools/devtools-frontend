@@ -66,7 +66,7 @@ const UIStrings = {
    *@description Title of the selector stats tab
    */
   selectorStats: 'Selector stats',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineDetailsPane extends

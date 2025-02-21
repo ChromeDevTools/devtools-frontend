@@ -18,7 +18,7 @@ const UIStrings = {
    */
   lcpEmulationWarning:
       'Simulating a new device after the page loads can affect LCP. Reload the page after simulating a new device for accurate LCP data.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

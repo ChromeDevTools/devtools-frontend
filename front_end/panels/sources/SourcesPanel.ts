@@ -167,7 +167,7 @@ const UIStrings = {
    *@description Text in Sources Panel of the Sources panel
    */
   openInSourcesPanel: 'Open in Sources panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const primitiveRemoteObjectTypes = new Set(['number', 'boolean', 'bigint', 'undefined']);

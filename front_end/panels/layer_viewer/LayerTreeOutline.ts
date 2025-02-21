@@ -56,7 +56,7 @@ const UIStrings = {
    *@example {10} PH2
    */
   updateChildDimension: ' ({PH1} × {PH2})',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.TreeOutline.TreeOutline>(

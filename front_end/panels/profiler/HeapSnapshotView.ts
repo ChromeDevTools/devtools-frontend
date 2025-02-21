@@ -278,7 +278,7 @@ const UIStrings = {
    * This text is on a button to undo all previous "Ignore this retainer" actions.
    */
   restoreIgnoredRetainers: 'Restore ignored retainers',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

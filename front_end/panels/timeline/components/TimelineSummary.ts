@@ -22,7 +22,7 @@ const UIStrings = {
    *@example {10ms} PH2
    */
   rangeSS: 'Range:  {PH1} – {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/TimelineSummary.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

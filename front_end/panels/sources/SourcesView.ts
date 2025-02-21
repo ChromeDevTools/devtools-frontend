@@ -51,7 +51,7 @@ const UIStrings = {
    */
   sourceViewActions: 'Source View Actions',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

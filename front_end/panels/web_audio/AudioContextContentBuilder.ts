@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Text in Audio Context Content Builder
    */
   renderCapacity: 'Render Capacity',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextContentBuilder.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

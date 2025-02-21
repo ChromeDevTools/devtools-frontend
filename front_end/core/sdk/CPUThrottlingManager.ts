@@ -30,7 +30,7 @@ const UIStrings = {
    * @description Text label indicating why an option is not available, because the user's device is not fast enough to emulate a device.
    */
   calibrationErrorDeviceTooWeak: 'Device is not powerful enough',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

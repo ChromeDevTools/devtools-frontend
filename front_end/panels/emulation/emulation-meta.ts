@@ -60,7 +60,7 @@ const UIStrings = {
    */
   hideDeviceFrame: 'Hide device frame',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/emulation-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

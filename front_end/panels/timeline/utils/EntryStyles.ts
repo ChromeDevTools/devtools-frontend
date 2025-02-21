@@ -520,7 +520,7 @@ const UIStrings = {
    * postTask API was cancelled, so will no longer run.
    */
   abortPostTaskCallback: 'Cancel postTask',
-};
+} as const;
 
 export enum EventCategory {
   DRAWING = 'drawing',

@@ -69,7 +69,7 @@ const UIStrings = {
    *@example {bottom} PH1
    */
   devToolsDockedTo: 'DevTools is docked to {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/DockController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let dockControllerInstance: DockController;

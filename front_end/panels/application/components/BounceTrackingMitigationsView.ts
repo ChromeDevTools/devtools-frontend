@@ -64,7 +64,7 @@ const UIStrings = {
    * @description Text for link to Bounce Tracking Mitigations feature flag entry in the chrome://flags page.
    */
   featureFlag: 'Bounce Tracking Mitigations Feature Flag',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTrackingMitigationsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

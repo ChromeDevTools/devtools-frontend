@@ -24,7 +24,7 @@ const UIStrings = {
    * which allows the user to edit CSS shadow properties.
    */
   openShadowEditor: 'Open shadow editor',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ColorSwatchPopoverIcon.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

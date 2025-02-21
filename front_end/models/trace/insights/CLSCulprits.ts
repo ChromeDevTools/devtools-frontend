@@ -67,7 +67,7 @@ export const UIStrings = {
    * @description Text status when there no layout shifts culprits/root causes were found.
    */
   noCulprits: 'Could not detect any layout shift culprits',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CLSCulprits.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

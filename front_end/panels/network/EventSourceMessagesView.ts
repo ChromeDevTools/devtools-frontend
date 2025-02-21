@@ -47,7 +47,7 @@ const UIStrings = {
    *@description Example for placeholder text
    */
   filterByRegex: 'Filter using regex (example: https?)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventSourceMessagesView extends UI.Widget.VBox {

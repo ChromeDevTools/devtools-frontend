@@ -66,7 +66,7 @@ const UIStrings = {
    * @description Label for a group of items in the replay menu that indicate various extensions that can be used for replay.
    */
   extensionGroup: 'Extensions',
-};
+} as const;
 
 const items: SelectButtonItem[] = [
   {

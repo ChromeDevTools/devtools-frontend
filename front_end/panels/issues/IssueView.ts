@@ -83,7 +83,7 @@ const UIStrings = {
    *@description Menu entry for unhiding a particular issue, in the Hide Issues context menu.
    */
   unhideIssuesLikeThis: 'Unhide issues like this',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/IssueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

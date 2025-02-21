@@ -98,7 +98,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to a feedback form
    */
   sendFeedback: 'Send feedback',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

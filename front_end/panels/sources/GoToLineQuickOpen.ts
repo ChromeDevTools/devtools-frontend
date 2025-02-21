@@ -50,7 +50,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   goToLineS: 'Go to line {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/GoToLineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -150,7 +150,7 @@ const UIStrings = {
    *@description A short summary of the text at https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots#sliced-string
    */
   slicedStringSummary: 'A string which represents some of the characters from another string.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotGridNodes.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

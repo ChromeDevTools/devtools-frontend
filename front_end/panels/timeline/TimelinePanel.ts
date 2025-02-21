@@ -339,7 +339,7 @@ const UIStrings = {
    * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
    */
   thirdPartiesByThirdPartyWeb: '3rd parties classified by third-party-web',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

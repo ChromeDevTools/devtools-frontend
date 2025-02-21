@@ -51,7 +51,7 @@ const UIStrings = {
    * entries were deleted.
    */
   extensionStorageItemsCleared: 'Extension Storage Items cleared',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ExtensionStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

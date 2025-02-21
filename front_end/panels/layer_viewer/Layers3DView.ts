@@ -92,7 +92,7 @@ const UIStrings = {
    *@description A context menu item in the DView of the Layers panel
    */
   showPaintProfiler: 'Show Paint Profiler',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/Layers3DView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

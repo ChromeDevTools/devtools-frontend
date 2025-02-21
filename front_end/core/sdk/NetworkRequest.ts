@@ -228,7 +228,7 @@ const UIStrings = {
     *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
     exemptionReasonScheme: 'This cookie is allowed by the top-level url scheme',
-};
+} as const;
 // clang-format on
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkRequest.ts', UIStrings);

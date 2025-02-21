@@ -94,7 +94,7 @@ const UIStrings = {
    *@description Title of the keybind category 'Changes' in Settings' Shortcuts pannel.
    */
   changes: 'Changes',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -29,7 +29,7 @@ const UIStrings = {
    *might not be applicable to every user or situation.
    */
   advanced: 'Advanced',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/MobileThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

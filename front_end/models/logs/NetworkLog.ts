@@ -40,7 +40,7 @@ const UIStrings = {
    * show this phrase instead. 'unknown' would also work in this context.
    */
   anonymous: '<anonymous>',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/logs/NetworkLog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

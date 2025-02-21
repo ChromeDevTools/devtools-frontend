@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
    */
   reveal: 'reveal',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/TopLayerContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

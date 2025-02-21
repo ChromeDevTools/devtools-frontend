@@ -18,7 +18,7 @@ const UIStrings = {
    *@example {10ms} PH2
    */
   sSelfS: '{PH1} (self {PH2})',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/AppenderUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -51,7 +51,7 @@ const UIStrings = {
    *@description Text that refers to a network request is render blocking
    */
   renderBlocking: 'Render blocking',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestTooltip.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

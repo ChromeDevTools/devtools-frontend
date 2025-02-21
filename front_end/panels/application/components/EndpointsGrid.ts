@@ -33,7 +33,7 @@ const UIStrings = {
    *(https://developers.google.com/web/updates/2018/09/reportingapi#tldr)
    */
   endpointsDescription: 'Here you will find the list of endpoints that receive the reports'
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/EndpointsGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

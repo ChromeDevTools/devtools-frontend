@@ -42,7 +42,7 @@ const UIStringsNotTranslate = {
    *@description Heading text for context details of Freestyler agent.
    */
   dataUsed: 'Data used',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 

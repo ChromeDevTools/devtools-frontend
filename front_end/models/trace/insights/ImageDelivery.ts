@@ -65,7 +65,7 @@ export const UIStrings = {
    * @example {50 MB} PH2
    */
   estimatedSavings: '{PH1} (Est {PH2})',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ImageDelivery.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

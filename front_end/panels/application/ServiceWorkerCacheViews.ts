@@ -79,7 +79,7 @@ const UIStrings = {
    *@description Text for previewing items
    */
   preview: 'Preview',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {

@@ -19,7 +19,7 @@ const UIStrings = {
    * @example {10:32:48} TIME
    */
   defaultRecordingName: 'Recording {DATE} at {TIME}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/models/RecorderSettings.ts',

@@ -137,7 +137,7 @@ const UIStrings = {
    * @description The title of the menu group that holds actions related to breakpoints.
    */
   breakpoints: 'Breakpoints',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/StepView.ts',
     UIStrings,

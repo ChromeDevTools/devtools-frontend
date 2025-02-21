@@ -74,7 +74,7 @@ const UIStrings = {
    *@example {example.com} PH1
    */
   devtoolsS: 'DevTools - {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/host/InspectorFrontendHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

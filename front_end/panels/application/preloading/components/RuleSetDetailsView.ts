@@ -42,7 +42,7 @@ const UIStrings = {
    *             https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
    */
   selectAnElementForMoreDetails: 'Select an element for more details',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -94,7 +94,7 @@ const UIStrings = {
    *@description Text in Timeline UIUtils of the Performance panel
    */
   messaging: 'Messaging',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/UIDevtoolsUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

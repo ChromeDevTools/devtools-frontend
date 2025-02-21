@@ -42,7 +42,7 @@ const UIStrings = {
    *@description A drop-down menu option to set indentation to tab character
    */
   tabCharacter: 'Tab character',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/source_frame-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

@@ -22,7 +22,7 @@ const UIStrings = {
    *@description Title for an external link to more information in the issues view
    */
   samesiteAndSameorigin: 'Same-Site and Same-Origin',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CrossOriginEmbedderPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

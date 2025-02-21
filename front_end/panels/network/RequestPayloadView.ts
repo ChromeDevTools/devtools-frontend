@@ -118,7 +118,7 @@ const UIStrings = {
    *@description Text in Request Payload View of the Network panel
    */
   viewSourceL: 'view source',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPayloadView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPayloadView extends UI.Widget.VBox {

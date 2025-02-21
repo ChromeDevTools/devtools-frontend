@@ -50,7 +50,7 @@ export const UIStrings = {
    * @description Label for a value representing the maximum number of child elements of any parent element on the page.
    */
   maxChildren: 'Most children',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DOMSize.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

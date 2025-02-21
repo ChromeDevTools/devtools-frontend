@@ -292,7 +292,7 @@ const UIStrings = {
    * @description Description of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
    */
   nodeClickToRecord: 'Record a performance timeline of the connected Node process.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -60,7 +60,7 @@ const UIStrings = {
    * @description The aria alert message when the Network conditions panel is shown.
    */
   networkConditionsPanelShown: 'Network conditions shown',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkConfigView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

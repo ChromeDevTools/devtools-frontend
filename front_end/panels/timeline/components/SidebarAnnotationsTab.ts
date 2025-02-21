@@ -90,7 +90,7 @@ const UIStrings = {
    *@example {Recalculate styles} PH2
    */
   entryLinkDescriptionLabel: 'A link between a "{PH1}" event and a "{PH2}" event',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

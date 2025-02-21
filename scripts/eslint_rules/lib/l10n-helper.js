@@ -22,7 +22,7 @@ function isUIStringsVariableDeclarator(context, variableDeclarator) {
     return false;
   }
 
-  return variableDeclarator.init?.type === 'ObjectExpression';
+  return variableDeclarator.init?.type === 'TSAsExpression';
 }
 
 exports.isModuleScope = isModuleScope;

@@ -298,7 +298,7 @@ const UIStrings = {
    *@example {Low} PH2
    */
   initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

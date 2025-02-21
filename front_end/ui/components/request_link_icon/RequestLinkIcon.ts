@@ -37,7 +37,7 @@ const UIStrings = {
    * @description Label for the shortened URL displayed in a link to show a request in the network panel
    */
   shortenedURL: 'Shortened URL',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/request_link_icon/RequestLinkIcon.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

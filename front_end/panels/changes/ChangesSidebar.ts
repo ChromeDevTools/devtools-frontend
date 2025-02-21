@@ -20,7 +20,7 @@ const UIStrings = {
    *@example {compile.html} PH1
    */
   sFromSourceMap: '{PH1} (from source map)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

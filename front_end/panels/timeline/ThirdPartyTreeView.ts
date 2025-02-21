@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Title referencing self time.
    */
   selfTime: 'Self time',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThirdPartyTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

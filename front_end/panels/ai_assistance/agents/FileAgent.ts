@@ -66,7 +66,7 @@ const UIStringsNotTranslate = {
    *@description Title for thinking step of File agent.
    */
   analyzingFile: 'Analyzing file',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 

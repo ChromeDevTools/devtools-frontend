@@ -144,7 +144,7 @@ const UIStrings = {
    */
   lighthouseOnlySimulatesMobile:
       '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStatusView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

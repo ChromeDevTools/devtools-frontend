@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Text in Network Throttling Selector of the Network panel
    */
   custom: 'Custom',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkThrottlingSelector {

@@ -36,7 +36,7 @@ const UIStrings = {
    *@example {2.0} PH2
    */
   unableToParseSValueS: 'Unable to parse "{PH1}" value "{PH2}".',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServerTiming.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

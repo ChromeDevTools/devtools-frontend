@@ -125,7 +125,7 @@ const UIStrings = {
    */
   pressArrowKeysMessage:
       'Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/Spectrum.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const colorElementToMutable = new WeakMap<HTMLElement, boolean>();

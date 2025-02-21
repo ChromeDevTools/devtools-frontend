@@ -77,7 +77,7 @@ const UIStrings = {
    *@description Label shown when there are no Origin Trial Tokens in the Frame view of the Application panel.
    */
   noTrialTokens: 'No trial tokens',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

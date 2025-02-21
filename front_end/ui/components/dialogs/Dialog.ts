@@ -25,7 +25,7 @@ const UIStrings = {
    * @description Title of close button for the shortcuts dialog.
    */
   close: 'Close',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/Dialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

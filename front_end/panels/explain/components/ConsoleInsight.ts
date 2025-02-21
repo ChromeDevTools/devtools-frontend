@@ -152,7 +152,7 @@ const UIStrings = {
    * @description Error message shown when the request to get an AI response times out.
    */
   timedOut: 'Generating a response took too long. Please try again.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

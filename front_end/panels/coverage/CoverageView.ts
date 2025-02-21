@@ -113,7 +113,7 @@ const UIStrings = {
    *@example {29%} PH4
    */
   sOfSSUsedSoFarSUnused: '{PH1} of {PH2} ({PH3}%) used so far, {PH4} unused.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

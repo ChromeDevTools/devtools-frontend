@@ -70,7 +70,7 @@ const UIStrings = {
    *@description Screen reader announcement when opening color picker tool.
    */
   colorPickerOpened: 'Color picker opened.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export {LayoutElement};

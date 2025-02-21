@@ -216,7 +216,7 @@ const UIStrings = {
    *@description Text of the tooltip for scroll adorner.
    */
   elementHasScrollableOverflow: 'This element has a scrollable overflow',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Command for showing the 'Performance monitor' tool in the bottom drawer
    */
   showPerformanceMonitor: 'Show Performance monitor',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/performance_monitor-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

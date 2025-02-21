@@ -54,7 +54,7 @@ const UIStrings = {
    *@example {name} PH1
    */
   sSuggestionSSelected: '{PH1}, suggestion selected',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SuggestBox.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface SuggestBoxDelegate {

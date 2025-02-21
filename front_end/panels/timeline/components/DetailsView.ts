@@ -65,7 +65,7 @@ const UIStrings = {
    * @description Details text indicating how many bytes were sent in a WebSocket message
    */
   webSocketDataLength: 'Data length',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

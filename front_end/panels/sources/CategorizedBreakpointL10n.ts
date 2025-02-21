@@ -106,7 +106,7 @@ const UIStrings = {
    *@description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
    */
   policyViolations: 'Policy Violations',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CategorizedBreakpointL10n.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

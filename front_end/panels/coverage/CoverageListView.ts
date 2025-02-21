@@ -109,7 +109,7 @@ const UIStrings = {
    *@example {12.3} PH2
    */
   sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -47,7 +47,7 @@ const UIStrings = {
    * @example {LCP by phase} PH1
    */
   viewDetails: 'View details for {PH1}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/BaseInsightComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

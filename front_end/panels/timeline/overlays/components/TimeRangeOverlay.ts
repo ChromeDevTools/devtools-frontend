@@ -19,7 +19,7 @@ const UIStrings = {
    *@description Accessible label used to explain to a user that they are viewing an entry label.
    */
   timeRange: 'Time range',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/TimeRangeOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

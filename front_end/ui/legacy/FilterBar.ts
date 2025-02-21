@@ -64,7 +64,7 @@ const UIStrings = {
    *@description Text for everything
    */
   allStrings: 'All',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTypes, typeof HBox>(HBox) {

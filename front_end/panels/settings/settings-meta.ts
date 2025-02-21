@@ -61,7 +61,7 @@ const UIStrings = {
    *@description Command for showing the AI innovation settings
    */
   showAiInnovations: 'Show AI innovations',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/settings/settings-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Command for showing the 'Scripts' tool in the Network Navigator View, which is part of the Sources tool
    */
   showNode: 'Show Scripts',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/js_app/js_app.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

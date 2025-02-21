@@ -142,7 +142,7 @@ const UIStrings = {
    * Storage quota refers to the amount of disk available for the website or app.
    */
   simulateCustomStorage: 'Simulate custom storage quota',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -91,7 +91,7 @@ const UIStringsNotTranslate = {
    *@description Title text for request initiator chain.
    */
   requestInitiatorChain: 'Request initiator chain',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 

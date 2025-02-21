@@ -91,7 +91,7 @@ const UIStrings = {
    *@example {activated} PH3
    */
   sSS: '{PH1} #{PH2} ({PH3})',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

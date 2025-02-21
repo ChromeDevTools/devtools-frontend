@@ -39,7 +39,7 @@ const UIStrings = {
    *@description Label for an item to remove something
    */
   remove: 'Remove',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/WorkspaceSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -78,7 +78,7 @@ const UIStrings = {
    *@example {14} PH2
    */
   lineNumber: 'Line {PH1}:{PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineSelectorStatsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

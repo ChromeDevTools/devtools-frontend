@@ -13,7 +13,7 @@ const UIStrings = {
    *@example {rgb(255 255 255)} PH1
    */
   colorClippedTooltipText: 'This color was clipped to match the format\'s gamut. The actual result was {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/FormatPickerContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

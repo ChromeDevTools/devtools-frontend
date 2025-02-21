@@ -55,7 +55,7 @@ const UIStrings = {
    *@description Text for a button in the Changes tool that copies all the changes from the currently open file.
    */
   copy: 'Copy',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

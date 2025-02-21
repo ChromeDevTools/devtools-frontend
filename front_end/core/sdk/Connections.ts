@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Text on the remote debugging window to indicate the connection is lost
    */
   websocketDisconnected: 'WebSocket disconnected',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Connections.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MainConnection implements ProtocolClient.InspectorBackend.Connection {

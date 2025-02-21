@@ -43,7 +43,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   profileD: 'Profile {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUProfilerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

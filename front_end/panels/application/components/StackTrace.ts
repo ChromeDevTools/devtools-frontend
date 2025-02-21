@@ -41,7 +41,7 @@ const UIStrings = {
    * stack trace for the line of code which caused the creation of the iframe. This is the stack trace we are showing here.
    */
   creationStackTrace: 'Frame Creation `Stack Trace`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/StackTrace.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

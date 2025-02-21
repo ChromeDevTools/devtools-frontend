@@ -34,7 +34,7 @@ const UIStrings = {
    *@description Label to explain why vertical-align values are ignored
    */
   verticalAlignmentAppliedTo: 'Vertical alignment applied to element which is neither `inline` nor `table-cell`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewUnusedDeclarations.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface UnusedDeclaration {

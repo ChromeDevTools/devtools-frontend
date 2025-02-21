@@ -235,7 +235,7 @@ const UIStrings = {
    *@example {network} PH1
    */
   routerActualSource: 'Actual source: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTimingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {

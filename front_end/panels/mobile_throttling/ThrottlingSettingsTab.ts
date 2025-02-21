@@ -177,7 +177,7 @@ const UIStrings = {
    * @example {2} PH1
    */
   dSlowdown: '{PH1}× slowdown',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

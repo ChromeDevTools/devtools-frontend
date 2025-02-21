@@ -39,7 +39,7 @@ const UIStrings = {
    *@description Badge label for an entry in the Quick Open menu. Selecting the entry opens the 'Sources' panel.
    */
   sources: 'Sources',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

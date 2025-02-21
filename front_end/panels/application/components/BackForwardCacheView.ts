@@ -148,7 +148,7 @@ const UIStrings = {
    * @description Shows the number of files with a particular issue.
    */
   filesPerIssue: '{n, plural, =1 {# file} other {# files}}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

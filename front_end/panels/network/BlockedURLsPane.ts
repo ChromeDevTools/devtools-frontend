@@ -62,7 +62,7 @@ const UIStrings = {
    *@description Message to be announced for a when list item is removed from list widget
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/BlockedURLsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

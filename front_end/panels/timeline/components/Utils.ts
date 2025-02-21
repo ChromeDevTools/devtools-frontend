@@ -26,7 +26,7 @@ const UIStrings = {
    *@example {2.14} PH1
    */
   fs: '{PH1}[s]()',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/Utils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

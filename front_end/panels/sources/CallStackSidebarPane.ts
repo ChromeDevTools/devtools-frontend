@@ -83,7 +83,7 @@ const UIStrings = {
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
    */
   restartFrame: 'Restart frame',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

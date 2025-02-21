@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Text for everything
    */
   all: 'All',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventsTimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {

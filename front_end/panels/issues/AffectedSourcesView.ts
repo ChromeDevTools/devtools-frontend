@@ -15,7 +15,7 @@ const UIStrings = {
    *@description Singular or Plural label for number of affected sources (consisting of (source) file name + line number) in issue view
    */
   nSources: '{n, plural, =1 {# source} other {# sources}}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -265,7 +265,7 @@ const UIStrings = {
    *(please don't translate 'origin trials').
    */
   originTrialsExplanation: 'Origin trials give you access to a new or experimental feature.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

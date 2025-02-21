@@ -16,10 +16,10 @@ const expectedErrors = [
 new RuleTester().run('l10n-i18nString-call-only-with-uistrings', rule, {
   valid: [
     {
-      code: 'const UIStrings = { foo: "foo" }; i18nString(UIStrings.foo);',
+      code: 'const UIStrings = { foo: "foo" } as const; i18nString(UIStrings.foo);',
     },
     {
-      code: 'const UIStrings = { foo: "foo" }; i18nLazyString(UIStrings.foo);',
+      code: 'const UIStrings = { foo: "foo" } as const; i18nLazyString(UIStrings.foo);',
     },
   ],
   invalid: [

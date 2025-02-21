@@ -69,7 +69,7 @@ const UIStrings = {
    *@description The label for a root cause error associated with this error.
    */
   errorCauseLabel: 'Caused by:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

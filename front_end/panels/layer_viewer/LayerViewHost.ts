@@ -12,7 +12,7 @@ const UIStrings = {
    *@description Text in Layer View Host of the Layers panel
    */
   showInternalLayers: 'Show internal layers',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerViewHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -56,7 +56,7 @@ const UIStrings = {
    *The column contains the timestamp of when a report was generated.
    */
   generatedAt: 'Generated at'
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/ReportsGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -41,7 +41,7 @@ const UIStrings = {
    * @description The title of the row corresponding to a recording. By clicking on the row, the user open the recording for editing.
    */
   openRecording: 'Open recording',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/RecordingListView.ts',
     UIStrings,

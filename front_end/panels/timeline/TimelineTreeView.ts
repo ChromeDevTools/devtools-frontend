@@ -161,7 +161,7 @@ const UIStrings = {
    * @description Text referring to an entity that is an extension
    */
   extension: 'Extension',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends

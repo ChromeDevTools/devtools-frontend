@@ -33,7 +33,7 @@ const UIStrings = {
    * @example {5} PH3
    */
   sItemSOfS: '{PH1}, item {PH2} of {PH3}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

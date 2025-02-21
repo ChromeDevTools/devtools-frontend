@@ -437,7 +437,7 @@ const UIStrings = {
    *@description Text for emulation OS selection dropdown
    */
   selectWindowControlsOverlayEmulationOs: 'Emulate the Window Controls Overlay on',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

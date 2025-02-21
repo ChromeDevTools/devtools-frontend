@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Command to open the privacy and security panel. This is used when the kDevToolPrivacyUI feature flag is enabled
    */
   showPrivacyAndSecurity: 'Show Privacy and security',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/security-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

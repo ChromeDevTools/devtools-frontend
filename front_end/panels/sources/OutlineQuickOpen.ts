@@ -24,7 +24,7 @@ const UIStrings = {
    *@description Text to show no results have been found
    */
   noResultsFound: 'No results found',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/OutlineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

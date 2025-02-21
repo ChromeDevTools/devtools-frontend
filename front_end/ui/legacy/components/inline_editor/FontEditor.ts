@@ -115,7 +115,7 @@ const UIStrings = {
    *@description Label for Font Editor alert in CSS Properties section when toggling inputs
    */
   sliderInputMode: 'Slider Input Mode',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/FontEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

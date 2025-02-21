@@ -110,7 +110,7 @@ const UIStrings = {
    *@example {"script-src 'self'"} PH1
    */
   scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

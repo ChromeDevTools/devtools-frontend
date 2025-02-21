@@ -29,7 +29,7 @@ const UIStrings = {
    *@example {5} PH3
    */
   sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/text_editor/config.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

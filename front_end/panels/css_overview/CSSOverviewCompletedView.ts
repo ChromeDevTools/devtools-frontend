@@ -175,7 +175,7 @@ const UIStrings = {
    *@description Title of the button to show the element in the CSS overview panel
    */
   showElement: 'Show element',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewCompletedView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

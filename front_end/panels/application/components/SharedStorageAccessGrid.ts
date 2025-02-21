@@ -77,7 +77,7 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
 
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/SharedStorageAccessGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Label in the Linear Memory inspector tool for a link.
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorInstance: LinearMemoryInspectorPane;

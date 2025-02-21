@@ -42,7 +42,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementStatePaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 enum SpecificPseudoStates {

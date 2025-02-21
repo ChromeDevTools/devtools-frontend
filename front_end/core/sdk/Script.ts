@@ -56,7 +56,7 @@ const UIStrings = {
    *@description Error message when failing to load a script source text
    */
   unableToFetchScriptSource: 'Unable to fetch script source.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Script.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

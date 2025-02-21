@@ -56,7 +56,7 @@ const UIStrings = {
    */
   srEntriesLinked: 'The connected entries annotation now links from {PH1} to {PH2}',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/AnnotationHelpers.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

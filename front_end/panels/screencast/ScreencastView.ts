@@ -77,7 +77,7 @@ const UIStrings = {
    *@description Accessible text for the mouse emulation button.
    */
   mouseInput: 'Use mouse',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

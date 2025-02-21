@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Text for a checkbox to turn off the CSS property documentation.
    */
   dontShow: 'Don\'t show',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSPropertyDocsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

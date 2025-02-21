@@ -40,7 +40,7 @@ const UIStrings = {
    *@example {Sensors} PH1
    */
   sPanel: '{PH1} panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

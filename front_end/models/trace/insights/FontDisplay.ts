@@ -28,7 +28,7 @@ export const UIStrings = {
   fontColumn: 'Font',
   /** Column for the amount of time wasted. */
   wastedTimeColumn: 'Wasted time',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

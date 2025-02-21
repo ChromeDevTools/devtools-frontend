@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Title in the styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: 'Jump to anchor node',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AnchorFunctionLinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;

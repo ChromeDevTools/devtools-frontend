@@ -24,7 +24,7 @@ export const UIStrings = {
    */
   description:
       'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Viewport.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

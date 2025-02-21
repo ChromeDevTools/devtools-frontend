@@ -17,7 +17,7 @@ const UIStrings = {
    *@description A Postscript hinting the user the possibility to open the game using a keycombo.
    */
   ps: 'PS: You can also open the game by typing `fixme`',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/BrickBreaker.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

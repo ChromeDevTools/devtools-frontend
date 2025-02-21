@@ -41,7 +41,7 @@ const UIStrings = {
    * outcome of a FLEDGE auction.
    */
   noDataDescription: 'The browser may have left the group.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupStorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

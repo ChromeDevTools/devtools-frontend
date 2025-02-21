@@ -18,7 +18,7 @@ const UIStrings = {
    *@description Title for Client Hint specification url link
    */
   fedCmUserInfo: 'Federated Credential Management User Info API',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/FederatedAuthUserInfoRequestIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

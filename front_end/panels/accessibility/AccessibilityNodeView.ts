@@ -114,7 +114,7 @@ const UIStrings = {
    * element doesn't have any special accessibility considerations
    */
   elementNotInteresting: 'Element not interesting for accessibility.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {

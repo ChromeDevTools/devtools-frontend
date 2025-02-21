@@ -33,7 +33,7 @@ const UIStrings = {
    *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

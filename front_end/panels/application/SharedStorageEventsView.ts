@@ -26,7 +26,7 @@ const UIStrings = {
    * A shared storage event is for example an access from a site to that storage.
    */
   clickToDisplayBody: 'Click on any shared storage event to display the event parameters',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/SharedStorageEventsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

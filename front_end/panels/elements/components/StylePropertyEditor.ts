@@ -28,7 +28,7 @@ const UIStrings = {
    * @example {row} propertyValue
    */
   deselectButton: 'Remove {propertyName}: {propertyValue}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/StylePropertyEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

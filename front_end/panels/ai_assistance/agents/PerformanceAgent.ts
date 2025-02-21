@@ -119,7 +119,7 @@ Perhaps there's room for optimization there. You could investigate whether the c
 */
 const UIStringsNotTranslate = {
   analyzingCallTree: 'Analyzing call tree',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 

@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Title of a section in Request Initiator view of the Network Panel
    */
   requestInitiatorChain: 'Request initiator chain',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {

@@ -14,7 +14,7 @@ const UIStrings = {
    *@description Link title for the Quirks Mode issue in the Issues panel
    */
   documentCompatibilityMode: 'Document compatibility mode',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/QuirksModeIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

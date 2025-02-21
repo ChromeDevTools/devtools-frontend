@@ -19,7 +19,7 @@ const UIStrings = {
    * Takes the user to the source code where this media query actually came from.
    */
   revealInSourceCode: 'Reveal in source code',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/MediaQueryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class MediaQueryInspector extends UI.Widget.Widget implements

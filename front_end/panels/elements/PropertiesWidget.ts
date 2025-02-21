@@ -64,7 +64,7 @@ const UIStrings = {
    * no properties matched the filter and thus no results were returned.
    */
   noMatchingProperty: 'No matching property',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

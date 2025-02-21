@@ -56,7 +56,7 @@ const UIStrings = {
    * @description Title of a setting to enable the Automatic Workspace Folders.
    */
   enableAutomaticWorkspaceFolders: 'Enable automatic workspace folders',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/persistence-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

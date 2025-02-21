@@ -170,7 +170,7 @@ const UIStrings = {
    */
   poorPoorDetailedCompare:
       'Your local {PH1} value of {PH2} is poor and is rated the same as {PH4} of real-user {PH1} experiences. Additionally, the field data 75th percentile {PH1} value of {PH3} is poor.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCompareStrings.ts', UIStrings);
 

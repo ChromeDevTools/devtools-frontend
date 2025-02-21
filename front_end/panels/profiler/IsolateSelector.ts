@@ -53,7 +53,7 @@ const UIStrings = {
    *@description Text to show an item is empty
    */
   empty: '(empty)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/IsolateSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.ListDelegate<ListItem>,

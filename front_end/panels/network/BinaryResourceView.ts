@@ -59,7 +59,7 @@ const UIStrings = {
    *to the clipboard. UTF-8 is a format for encoding data.
    */
   copyAsUtf: 'Copy as `UTF-8`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BinaryResourceView extends UI.Widget.VBox {

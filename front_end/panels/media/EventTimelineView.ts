@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Title of the 'Buffering Status' button
    */
   bufferingStatus: 'Buffering Status',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/EventTimelineView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -16,7 +16,7 @@ const UIStrings = {
    * @description Label for the button to unhide all hidden issues
    */
   unhideAll: 'Unhide all',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/issues/HiddenIssuesRow.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

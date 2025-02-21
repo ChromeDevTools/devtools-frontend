@@ -23,7 +23,7 @@ const UIStrings = {
    *@example {example.url} PH1
    */
   linkedTo: 'Linked to {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/ScriptSnippetFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

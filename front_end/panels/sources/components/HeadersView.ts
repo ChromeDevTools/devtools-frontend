@@ -53,7 +53,7 @@ const UIStrings = {
    *@description Text which is a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/components/HeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

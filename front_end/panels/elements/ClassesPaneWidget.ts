@@ -33,7 +33,7 @@ const UIStrings = {
    * panel. Element is a HTML DOM Element and classes refers to CSS classes.
    */
   elementClasses: 'Element Classes',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ClassesPaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ClassesPaneWidget extends UI.Widget.Widget {

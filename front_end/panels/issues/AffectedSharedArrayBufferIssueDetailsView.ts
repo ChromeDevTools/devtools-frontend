@@ -50,7 +50,7 @@ const UIStrings = {
    *@description Title for the status column in the SAB affected resources list
    */
   status: 'Status',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AffectedSharedArrayBufferIssueDetailsView extends AffectedResourcesView {

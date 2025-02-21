@@ -38,7 +38,7 @@ const UIStrings = {
    * @description Warning message explaining that a page doesn't have enough real user data to show any information for. "Chrome UX Report" is a product name and should not be translated.
    */
   pageHasNoData: 'The Chrome UX Report does not have sufficient real user data for this page.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/OriginMap.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

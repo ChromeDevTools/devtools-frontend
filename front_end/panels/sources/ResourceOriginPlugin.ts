@@ -21,7 +21,7 @@ const UIStrings = {
    * @example {bundle.min.js} PH1
    */
   sourceMappedFromS: '(Source mapped from {PH1})',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ResourceOriginPlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

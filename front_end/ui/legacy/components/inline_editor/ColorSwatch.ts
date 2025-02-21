@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Icon element title in Color Swatch of the inline editor in the Styles tab
    */
   shiftclickToChangeColorFormat: 'Shift-click to change color format',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/ColorSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

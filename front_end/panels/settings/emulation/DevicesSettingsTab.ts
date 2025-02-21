@@ -69,7 +69,7 @@ const UIStrings = {
    *@example {TestDevice} PH1
    */
   deviceAddedOrUpdated: 'Device {PH1} successfully added/updated.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

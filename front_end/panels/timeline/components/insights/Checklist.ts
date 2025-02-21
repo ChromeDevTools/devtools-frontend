@@ -28,7 +28,7 @@ const UIStrings = {
    *@example {Server response time} PH1
    */
   failedAriaLabel: 'Insight check failed: {PH1}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Checklist.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -51,7 +51,7 @@ const UIStrings = {
    * @description No resource matches
    */
   noResourceMatches: 'No resource matches',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.PageResourceLoader.ResourceKey> {

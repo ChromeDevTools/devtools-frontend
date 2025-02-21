@@ -35,7 +35,7 @@ const UIStrings = {
    *@description Text to be shown in the status bar if no coverage data is available
    */
   coverageNa: 'Coverage: n/a',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CoveragePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

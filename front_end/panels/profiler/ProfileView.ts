@@ -101,7 +101,7 @@ const UIStrings = {
    * from file, as opposed to a profile that has been captured locally.
    */
   loaded: 'Loaded',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileView extends UI.View.SimpleView implements UI.SearchableView.Searchable {

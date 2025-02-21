@@ -26,7 +26,7 @@ const UIStrings = {
    * @description Refers to when the current script is ignored because of an unknown rule.
    */
   unknown: 'Unknown',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/IgnoreList.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

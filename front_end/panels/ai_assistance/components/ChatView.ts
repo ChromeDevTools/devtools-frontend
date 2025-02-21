@@ -73,7 +73,7 @@ const UIStrings = {
    *@description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
-};
+} as const;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -288,7 +288,7 @@ const UIStringsNotTranslate = {
    *@description Title for the x-link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: 'Open image in a new tab',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

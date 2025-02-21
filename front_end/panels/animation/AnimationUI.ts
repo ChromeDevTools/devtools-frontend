@@ -27,7 +27,7 @@ const UIStrings = {
    *@example {anilogo} PH1
    */
   sSlider: '{PH1} slider',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

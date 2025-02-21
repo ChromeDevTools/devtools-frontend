@@ -131,7 +131,7 @@ const UIStrings = {
    *@description Text in Background Service View of the Application panel
    */
   noMetadataForThisEvent: 'No metadata for this event',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/BackgroundServiceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BackgroundServiceView extends UI.Widget.VBox {

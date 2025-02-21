@@ -129,7 +129,7 @@ const UIStrings = {
    * @example {https://google.com} PH1
    */
   workletServiceS: 'Auction Worklet service — {PH1}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -107,7 +107,7 @@ const UIStrings = {
    *@description Link text for a hyperlink to webpage for leaving user feedback
    */
   sendFeedback: 'Send feedback',
-};
+} as const;
 
 const AUTOFILL_INFO_URL = 'https://goo.gle/devtools-autofill-panel' as Platform.DevToolsPath.UrlString;
 const AUTOFILL_FEEDBACK_URL = 'https://crbug.com/329106326' as Platform.DevToolsPath.UrlString;

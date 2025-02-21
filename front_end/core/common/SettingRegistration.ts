@@ -78,7 +78,7 @@ const UIStrings = {
    * @description Text for the privacy section of the page.
    */
   privacy: 'Privacy',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/SettingRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let registeredSettings: SettingRegistration[] = [];

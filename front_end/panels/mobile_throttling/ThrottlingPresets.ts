@@ -48,7 +48,7 @@ const UIStrings = {
    *@description Text in Throttling Presets of the Network panel
    */
   checkNetworkAndPerformancePanels: 'Check Network and Performance panels',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingPresets.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

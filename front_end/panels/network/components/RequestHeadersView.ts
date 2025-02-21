@@ -114,7 +114,7 @@ const UIStrings = {
    *@description HTTP response code
    */
   statusCode: 'Status Code',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

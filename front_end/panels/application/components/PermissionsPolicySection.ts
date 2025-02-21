@@ -64,7 +64,7 @@ const UIStrings = {
    *@description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.
    */
   disabledByFencedFrame: 'disabled inside a `fencedframe`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/PermissionsPolicySection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

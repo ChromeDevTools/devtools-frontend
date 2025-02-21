@@ -31,7 +31,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   endTimeS: 'End time: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerUpdateCycleView {

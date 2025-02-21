@@ -120,7 +120,7 @@ const UIStrings = {
    */
   binaryContentError:
       'Editor can\'t show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

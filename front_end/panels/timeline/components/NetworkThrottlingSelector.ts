@@ -59,7 +59,7 @@ const UIStrings = {
    * @description Text label for a menu option to add a new custom throttling preset.
    */
   add: 'Add…',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

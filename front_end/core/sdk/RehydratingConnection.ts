@@ -48,7 +48,7 @@ const UIStrings = {
    * @description Text to indicate that there is an error loading the log
    */
   errorLoadingLog: 'Error loading log',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/RehydratingConnection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

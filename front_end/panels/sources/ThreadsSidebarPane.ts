@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Text in Threads Sidebar Pane of the Sources panel
    */
   paused: 'paused',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ThreadsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -29,7 +29,7 @@ const UIStrings = {
    * @description The label that indicates that the content shown is provided by a browser extension.
    */
   extension: 'Content provided by a browser extension',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/ExtensionView.ts',
     UIStrings,

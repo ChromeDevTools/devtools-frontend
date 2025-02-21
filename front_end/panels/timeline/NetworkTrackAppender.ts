@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   network: 'Network',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/NetworkTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

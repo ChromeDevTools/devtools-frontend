@@ -63,7 +63,7 @@ export const UIStrings = {
    * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
    */
   uncompressedDownload: 'Uncompressed download',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DocumentLatency.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

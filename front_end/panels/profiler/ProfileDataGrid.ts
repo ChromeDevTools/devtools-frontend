@@ -49,7 +49,7 @@ const UIStrings = {
    *@example {44 %} PH2
    */
   genericTextTwoPlaceholders: '{PH1}, {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileDataGrid.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileDataGridNode extends DataGrid.DataGrid.DataGridNode<unknown> {

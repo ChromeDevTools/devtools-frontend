@@ -37,7 +37,7 @@ const UIStrings = {
    *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
    */
   doNotShowWhatsNewAfterEachUpdate: 'Don\'t show what\'s new after each update',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/whats_new/whats_new-meta.ts', UIStrings);
 

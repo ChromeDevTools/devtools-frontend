@@ -23,7 +23,7 @@ const UIStrings = {
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   timings: 'Timings',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimingsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

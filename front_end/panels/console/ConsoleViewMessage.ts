@@ -219,7 +219,7 @@ const UIStrings = {
    *@description Tooltip shown when user hovers over the cookie icon to explain that the button will bring the user to the cookie report
    */
   SeeIssueInCookieReport: 'Click to open privacy and security panel and show third-party cookie report',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const elementToMessage = new WeakMap<Element, ConsoleViewMessage>();

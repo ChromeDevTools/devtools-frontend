@@ -81,7 +81,7 @@ const UIStrings = {
    * for this computed property.
    */
   navigateToStyle: 'Navigate to style',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ComputedStyleWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

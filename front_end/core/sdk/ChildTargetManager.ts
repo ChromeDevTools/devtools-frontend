@@ -23,7 +23,7 @@ const UIStrings = {
    * targets at the same time in some scenarios.
    */
   main: 'Main',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ChildTargetManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

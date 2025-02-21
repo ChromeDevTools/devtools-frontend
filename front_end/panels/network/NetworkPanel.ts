@@ -184,7 +184,7 @@ const UIStrings = {
    * @description Text of a button in the Network panel's toolbar that open Network Conditions panel in the drawer.
    */
   moreNetworkConditions: 'More network conditions…',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkPanelInstance: NetworkPanel;

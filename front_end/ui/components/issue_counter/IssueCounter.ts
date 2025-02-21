@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Label for link to Issues tab, specifying how many issues there are.
    */
   possibleImprovements: '{issueCount, plural, =1 {# possible improvement} other {# possible improvements}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/issue_counter/IssueCounter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

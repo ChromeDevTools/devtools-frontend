@@ -139,7 +139,7 @@ const UIStrings = {
    */
   allowToGenerateHarWithSensitiveDataDocumentation:
       'By default generated HAR logs are sanitized and don\'t include `Cookie`, `Set-Cookie`, or `Authorization` HTTP headers. When this setting is enabled, options to export/copy HAR with sensitive data are provided.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedNetworkModule: (typeof Network|undefined);

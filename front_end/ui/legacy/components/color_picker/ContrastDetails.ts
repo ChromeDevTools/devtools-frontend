@@ -61,7 +61,7 @@ const UIStrings = {
    *@description Text to show less content
    */
   showLess: 'Show less',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/ContrastDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

@@ -66,7 +66,7 @@ const UIStrings = {
    *@description Placeholder for filter bars that shows before the user types in a filter keyword.
    */
   filter: 'Filter',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Toolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

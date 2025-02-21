@@ -177,7 +177,7 @@ const UIStrings = {
    * @description Explanation text for the 'Forces CSS forced-colors' setting in the Rendering tool.
    */
   forcesCssForcedColors: 'Forces CSS forced-colors media feature',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/RenderingOptions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

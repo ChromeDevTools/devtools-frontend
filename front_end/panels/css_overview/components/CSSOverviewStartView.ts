@@ -42,7 +42,7 @@ const UIStrings = {
    *@description Title of the link to the quick start video and documentation to CSS overview panel
    */
   quickStartWithCSSOverview: 'Quick start: get started with the new CSS overview panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/components/CSSOverviewStartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

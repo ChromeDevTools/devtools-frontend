@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text to close something
    */
   close: 'Close',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Infobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

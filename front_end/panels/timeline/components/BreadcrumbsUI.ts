@@ -31,7 +31,7 @@ const UIStrings = {
    */
   removeChildBreadcrumbs: 'Remove child breadcrumbs',
 
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/BreadcrumbsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

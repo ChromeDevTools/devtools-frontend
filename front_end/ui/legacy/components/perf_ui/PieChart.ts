@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Text for sum
    */
   total: 'Total',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/PieChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -14,7 +14,7 @@ const UIStrings = {
    * @description The title of the button that leads to the feedback form.
    */
   feedback: 'Feedback',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/components/panel_feedback/FeedbackButton.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

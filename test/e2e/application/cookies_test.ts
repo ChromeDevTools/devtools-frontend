@@ -204,4 +204,32 @@ describe('The Application Tab', () => {
       },
     ]);
   });
+
+  it('can sort cookies', async () => {
+    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
+    await navigateToApplicationTab('cookies');
+
+    await navigateToCookiesForTopDomain();
+    const dataGrid = await waitFor('devtools-data-grid');
+    await click('th.name-column', {root: dataGrid});
+    await click('th.name-column', {root: dataGrid});
+    const dataGridRowValues = await waitForFunction(async () => {
+      const values = await getDataGridData('.storage-view table', ['name']);
+      return values.length === 4 && values[0].name === 'urlencoded' ? values : undefined;
+    });
+    assert.deepEqual(dataGridRowValues, [
+      {
+        name: 'urlencoded',
+      },
+      {
+        name: 'foo2',
+      },
+      {
+        name: 'foo',
+      },
+      {
+        name: '__Host-foo3',
+      },
+    ]);
+  });
 });

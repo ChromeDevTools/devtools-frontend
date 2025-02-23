@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
@@ -57,14 +56,6 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     this.dataGrid.expandNodesWhenArrowing = false;
   }
 
-  override wasShown(): void {
-    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
-  }
-
-  override childWasDetached(_widget: UI.Widget.Widget): void {
-    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
-  }
-
   override buildTree(): Trace.Extras.TraceTree.Node {
     const parsedTrace = this.parsedTrace();
     const entityMapper = this.entityMapper();
@@ -75,19 +66,12 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         filters: this.filtersWithoutTextFilter(),
         startTime: this.startTime,
         endTime: this.endTime,
-        eventGroupIdCallback: this.groupingFunction(),
+        eventGroupIdCallback: this.groupingFunction.bind(this),
       });
     }
 
-    // Update summaries.
-    const min = Trace.Helpers.Timing.milliToMicro(this.startTime);
-    const max = Trace.Helpers.Timing.milliToMicro(this.endTime);
-    const bounds: Trace.Types.Timing.TraceWindowMicro = {max, min, range: Trace.Types.Timing.Micro(max - min)};
-    this.#thirdPartySummaries =
-        Trace.Extras.ThirdParties.getSummariesAndEntitiesWithMapping(parsedTrace, bounds, entityMapper.mappings());
-
-    const events = this.#thirdPartySummaries?.entityByEvent.keys();
-    const relatedEvents = Array.from(events ?? []).sort(Trace.Helpers.Trace.eventTimeComparator);
+    // const events = this.#thirdPartySummaries.entityByEvent.keys();
+    const relatedEvents = this.selectedEvents().sort(Trace.Helpers.Trace.eventTimeComparator);
 
     // The filters for this view are slightly different; we want to use the set
     // of visible event types, but also include network events, which by
@@ -95,12 +79,14 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     // the main flame chart).
     const filter = new Trace.Extras.TraceFilter.VisibleEventsFilter(
         Utils.EntryStyles.visibleTypes().concat([Trace.Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
+
     const node = new Trace.Extras.TraceTree.BottomUpRootNode(relatedEvents, {
       textFilter: this.textFilter(),
       filters: [filter],
       startTime: this.startTime,
       endTime: this.endTime,
-      eventGroupIdCallback: this.groupingFunction(),
+      eventGroupIdCallback: this.groupingFunction.bind(this),
+      calculateTransferSize: true,
     });
     return node;
   }
@@ -112,22 +98,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     return;
   }
 
-  protected groupingFunction(): ((arg0: Trace.Types.Events.Event) => string)|null {
-    return this.domainByEvent.bind(this);
-  }
-
-  private domainByEvent(event: Trace.Types.Events.Event): string {
-    const parsedTrace = this.parsedTrace();
-    if (!parsedTrace) {
-      return '';
-    }
-
-    const entityMappings = this.entityMapper();
-    if (!entityMappings) {
-      return '';
-    }
-
-    const entity = entityMappings.entityForEvent(event);
+  private groupingFunction(event: Trace.Types.Events.Event): string {
+    const entity = this.entityMapper()?.entityForEvent(event);
     if (!entity) {
       return '';
     }
@@ -171,8 +143,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       b: DataGrid.SortableDataGrid.SortableDataGridNode<TimelineTreeView.GridNode>): number {
     const nodeA = a as TimelineTreeView.TreeGridNode;
     const nodeB = b as TimelineTreeView.TreeGridNode;
-    const transferA = this.extractThirdPartySummary(nodeA.profileNode).transferSize ?? 0;
-    const transferB = this.extractThirdPartySummary(nodeB.profileNode).transferSize ?? 0;
+    const transferA = nodeA.profileNode.transferSize ?? 0;
+    const transferB = nodeB.profileNode.transferSize ?? 0;
     return transferA - transferB;
   }
 
@@ -199,29 +171,6 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     }
   }
 
-  /**
-   * This event fires when the user selects a row in the grid, either by
-   * clicking or by using the arrow keys. We want to have the same effect as
-   * when the user hover overs a row.
-   */
-  #onDataGridSelectionChange(
-      event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<TimelineTreeView.GridNode>>): void {
-    this.onHover((event.data as TimelineTreeView.GridNode).profileNode);
-  }
-
-  override onHover(node: Trace.Extras.TraceTree.Node|null): void {
-    const entityMappings = this.entityMapper();
-    if (!entityMappings || !node?.event) {
-      return;
-    }
-    const nodeEntity = entityMappings.entityForEvent(node.event);
-    if (!nodeEntity) {
-      return;
-    }
-    const eventsForEntity = entityMappings.eventsForEntity(nodeEntity);
-    this.dispatchEventToListeners(TimelineTreeView.TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, eventsForEntity);
-  }
-
   displayInfoForGroupNode(node: Trace.Extras.TraceTree.Node): {
     name: string,
     color: string,
@@ -230,7 +179,9 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
     const color = 'gray';
     const unattributed = i18nString(UIStrings.unattributed);
     const id = typeof node.id === 'symbol' ? undefined : node.id;
-    const domainName = id ? this.domainByEvent(node.event) : undefined;
+    // This `undefined` is [unattributed]
+    // TODO(paulirish,aixba): Improve attribution to reduce amount of items in [unattributed].
+    const domainName = id ? this.entityMapper()?.entityForEvent(node.event)?.name || id : undefined;
     return {name: domainName || unattributed, color, icon: undefined};
   }
 

@@ -1010,8 +1010,10 @@ describeWithEnvironment('RendererHandler', function() {
         'paulirish.com',
         'Google Tag Manager',
         'Google Fonts',
-        'Disqus',
         'Google Analytics',
+        'Disqus',
+        // Firebase has no self time, but entity was created in NetworkHandler because transferSize
+        'Firebase',
       ]);
     });
   });

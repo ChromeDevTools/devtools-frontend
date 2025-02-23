@@ -8,7 +8,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
-import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -268,8 +267,6 @@ export class TimelineTreeView extends
     this.dataGrid.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener(
         'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null));
-    this.dataGrid.element.addEventListener(
-        'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, null));
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OPENED_NODE, this.onGridNodeOpened, this);
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.setRowContextMenuCallback(this.onContextMenu.bind(this));
@@ -591,10 +588,27 @@ export class TimelineTreeView extends
     this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node);
   }
 
-  // TODO: do this on selection (before opened)
+  override wasShown(): void {
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange, this);
+  }
+
+  override childWasDetached(_widget: UI.Widget.Widget): void {
+    this.dataGrid.removeEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, this.#onDataGridSelectionChange);
+  }
+
+  /**
+   * This event fires when the user selects a row in the grid, either by
+   * clicking or by using the arrow keys. We want to have the same effect as
+   * when the user hover overs a row.
+   */
+  #onDataGridSelectionChange(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<GridNode>>):
+      void {
+    this.onHover((event.data as GridNode).profileNode);
+  }
+
   onGridNodeOpened(): void {
-    const node = this.dataGrid.selectedNode as TreeGridNode;
-    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.profileNode);
+    const gridNode = this.dataGrid.selectedNode as TreeGridNode;
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, gridNode.profileNode);
     this.updateDetailsForSelection();
   }
 
@@ -675,7 +689,7 @@ export namespace TimelineTreeView {
 
   export interface EventTypes {
     [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
-    [Events.THIRD_PARTY_ROW_HOVERED]: Trace.Types.Events.Event[]|null;
+    [Events.THIRD_PARTY_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
     [Events.BOTTOM_UP_BUTTON_CLICKED]: Trace.Extras.TraceTree.Node|null;
   }
 }
@@ -796,7 +810,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         showPercents = true;
         break;
       case 'transfer-size':
-        value = thirdPartyView.extractThirdPartySummary(this.profileNode).transferSize;
+        value = this.profileNode.transferSize;
         isSize = true;
         break;
       default:
@@ -945,6 +959,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Domain:
       case AggregatedTimelineTreeView.GroupBy.Subdomain:
       case AggregatedTimelineTreeView.GroupBy.ThirdParties: {
+        // This `undefined` is [unattributed]
+        // TODO(paulirish,aixba): Improve attribution to reduce amount of items in [unattributed].
         const domainName = id ? this.beautifyDomainName(id, node) : undefined;
         return {name: domainName || unattributed, color, icon: undefined};
       }
@@ -1083,11 +1099,13 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (parsedURL.scheme === 'chrome-extension') {
       return parsedURL.scheme + '://' + parsedURL.host;
     }
+    // This must follow after the extension checks.
     if (groupBy === AggregatedTimelineTreeView.GroupBy.ThirdParties) {
-      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(url);
+      const entity = this.entityMapper()?.entityForEvent(event);
       if (!entity) {
-        return parsedURL.host;
+        return '';
       }
+
       return entity.name;
     }
     if (groupBy === AggregatedTimelineTreeView.GroupBy.Subdomain) {

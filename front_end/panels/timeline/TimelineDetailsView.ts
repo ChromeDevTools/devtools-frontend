@@ -130,6 +130,7 @@ export class TimelineDetailsPane extends
     this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this.rangeDetailViews.set(Tab.EventLog, eventsView);
 
+    // Listeners for hover dimming
     this.rangeDetailViews.values().forEach(view => {
       view.addEventListener(
           TimelineTreeView.Events.TREE_ROW_HOVERED,
@@ -142,7 +143,8 @@ export class TimelineDetailsPane extends
             node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.data));
       }
     });
-    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
+    this.#thirdPartyTree.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
+      // Redispatch through 3P event to get 3P dimmer.
       this.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node.data);
     });
 

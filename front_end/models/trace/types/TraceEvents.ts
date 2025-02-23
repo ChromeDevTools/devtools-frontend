@@ -2206,6 +2206,14 @@ export function isResourceReceivedData(
   return event.name === 'ResourceReceivedData';
 }
 
+// Any event where we receive data (and get an encodedDataLength)
+export function isReceivedDataEvent(
+    event: Event,
+    ): event is ResourceReceivedData|ResourceFinish|ResourceReceiveResponse {
+  return event.name === 'ResourceReceivedData' || event.name === 'ResourceFinish' ||
+      event.name === 'ResourceReceiveResponse';
+}
+
 export function isSyntheticNetworkRequest(
     event: Event,
     ): event is SyntheticNetworkRequest {

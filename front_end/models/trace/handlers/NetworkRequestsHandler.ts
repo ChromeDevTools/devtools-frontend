@@ -22,7 +22,7 @@ const SECONDS_TO_MICROSECONDS = 1000000;
 // keep for each request in the trace. In the finalize we will convert
 // these 5 types of trace records to a synthetic complete event that
 // represents a composite of these trace records.
-interface TraceEventsForNetworkRequest {
+export interface TraceEventsForNetworkRequest {
   changePriority?: Types.Events.ResourceChangePriority;
   willSendRequests?: Types.Events.ResourceWillSendRequest[];
   sendRequests?: Types.Events.ResourceSendRequest[];
@@ -484,8 +484,11 @@ export async function finalize(): Promise<void> {
     requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
-    // Update entity relationships for network events.
-    HandlerHelpers.addEventToEntityMapping(networkEvent, entityMappings);
+
+    // Update entity relationships for network events
+    HandlerHelpers.addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
+
+    // Establish initiator relationships
     const initiatorUrl = networkEvent.args.data.initiator?.url ||
         Helpers.Trace.getZeroIndexedStackTraceForEvent(networkEvent)?.at(0)?.url;
     if (initiatorUrl) {

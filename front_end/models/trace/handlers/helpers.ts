@@ -6,6 +6,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Types from '../types/types.js';
 
+import type {TraceEventsForNetworkRequest} from './NetworkRequestsHandler.js';
 import type {ParsedTrace} from './types.js';
 
 export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number]&{
@@ -149,12 +150,38 @@ export function addEventToEntityMapping(event: Types.Events.Event, entityMapping
     return;
   }
 
-  const events = entityMappings.eventsByEntity.get(entity);
-  if (events) {
-    events.push(event);
+  // As we share the entityMappings between Network and Renderer... We can have ResourceSendRequest events passed in here
+  // that were already mapped in Network. So, to avoid mapping twice, we always check that we didn't yet.
+  if (entityMappings.entityByEvent.has(event)) {
+    return;
+  }
+
+  const mappedEvents = entityMappings.eventsByEntity.get(entity);
+  if (mappedEvents) {
+    mappedEvents.push(event);
   } else {
     entityMappings.eventsByEntity.set(entity, [event]);
   }
-
   entityMappings.entityByEvent.set(event, entity);
+}
+
+// A slight upgrade of addEventToEntityMapping to handle the sub-events of a network request.
+export function addNetworkRequestToEntityMapping(
+    networkRequest: Types.Events.SyntheticNetworkRequest, entityMappings: EntityMappings,
+    requestTraceEvents: TraceEventsForNetworkRequest): void {
+  const entity = getEntityForEvent(networkRequest, entityMappings.createdEntityCache);
+  if (!entity) {
+    return;
+  }
+  // In addition to mapping the network request, we'll also assign this entity to its "child" instant events like receiveData, willSendRequest, finishLoading, etc,
+  const eventsToMap = [networkRequest, ...Object.values(requestTraceEvents).flat()];
+  const mappedEvents = entityMappings.eventsByEntity.get(entity);
+  if (mappedEvents) {
+    mappedEvents.push(...eventsToMap);
+  } else {
+    entityMappings.eventsByEntity.set(entity, eventsToMap);
+  }
+  for (const evt of eventsToMap) {
+    entityMappings.entityByEvent.set(evt, entity);
+  }
 }

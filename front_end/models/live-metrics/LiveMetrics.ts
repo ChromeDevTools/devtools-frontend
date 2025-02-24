@@ -18,6 +18,10 @@ const UIStrings = {
    */
   lcpEmulationWarning:
       'Simulating a new device after the page loads can affect LCP. Reload the page after simulating a new device for accurate LCP data.',
+  /**
+   * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the page loading in the background.
+   */
+  lcpVisibilityWarning: 'LCP value may be inflated because the page started loading in the background.',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);
@@ -275,6 +279,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
         if (this.#lastEmulationChangeTime && Date.now() - this.#lastEmulationChangeTime < 500) {
           warnings.push(i18nString(UIStrings.lcpEmulationWarning));
+        }
+
+        if (webVitalsEvent.startedHidden) {
+          warnings.push(i18nString(UIStrings.lcpVisibilityWarning));
         }
 
         this.#lcpValue = lcpEvent;

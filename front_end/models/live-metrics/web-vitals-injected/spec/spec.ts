@@ -35,6 +35,7 @@ export interface InpPhases {
 export interface LcpChangeEvent extends MetricChangeEvent {
   name: 'LCP';
   phases: LcpPhases;
+  startedHidden: boolean;
   nodeIndex?: number;
 }
 

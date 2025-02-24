@@ -148,6 +148,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private placeholderElement(): Element {
     const placeholder = document.createElement('div');
+    placeholder.classList.add('sources-placeholder');
 
     const workspaceElement = placeholder.createChild('div', 'tabbed-pane-placeholder-row');
     workspaceElement.classList.add('workspace');

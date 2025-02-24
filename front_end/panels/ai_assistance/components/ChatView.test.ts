@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -32,6 +33,10 @@ describeWithEnvironment('ChatView', () => {
       blockedByCrossOrigin: false,
       stripLinks: false,
       isReadOnly: false,
+      isTextInputDisabled: false,
+      emptyStateSuggestions: [],
+      inputPlaceholder: i18n.i18n.lockedString('input placeholder'),
+      disclaimerText: i18n.i18n.lockedString('disclaimer text'),
       ...options,
     };
   }
@@ -73,9 +78,6 @@ describeWithEnvironment('ChatView', () => {
       const optIn = chat.shadowRoot?.querySelector('.disabled-view');
       assert.strictEqual(
           optIn?.textContent?.trim(), 'Turn on AI assistance in Settings to get help with understanding CSS styles');
-      const chatInput = chat.shadowRoot?.querySelector('.chat-input') as HTMLTextAreaElement;
-      assert.isTrue(chatInput.disabled);
-      assert.strictEqual(chatInput.placeholder, 'Follow the steps above to ask a question');
     });
 
     it('shows the disabled view when the AIDA is not available', async () => {
@@ -88,9 +90,6 @@ describeWithEnvironment('ChatView', () => {
 
       const optIn = chat.shadowRoot?.querySelector('.disabled-view');
       assert.strictEqual(optIn?.textContent?.trim(), 'Check your internet connection and try again');
-      const chatInput = chat.shadowRoot?.querySelector('.chat-input') as HTMLTextAreaElement;
-      assert.isTrue(chatInput.disabled);
-      assert.strictEqual(chatInput.placeholder, 'Ask a question about the selected element');
     });
 
     describe('no agent empty state', () => {

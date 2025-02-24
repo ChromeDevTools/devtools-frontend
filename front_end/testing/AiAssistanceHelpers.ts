@@ -167,11 +167,17 @@ export async function createAiAssistancePanel(options?: {
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   syncInfo?: Host.InspectorFrontendHostAPI.SyncInformation,
 }) {
+  let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
+
   const view = sinon.stub<[AiAssistance.ViewInput, unknown, HTMLElement]>();
   const aidaClient = options?.aidaClient ?? mockAidaClient();
+  const checkAccessPreconditionsStub =
+      sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions').callsFake(() => {
+        return Promise.resolve(aidaAvailabilityForStub);
+      });
   const panel = new AiAssistance.AiAssistancePanel(view, {
     aidaClient,
-    aidaAvailability: options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+    aidaAvailability: aidaAvailabilityForStub,
     syncInfo: options?.syncInfo ?? {isSyncActive: true},
   });
   panels.push(panel);
@@ -192,7 +198,19 @@ export async function createAiAssistancePanel(options?: {
     panel.show(document.body);
   });
 
-  return {initialViewInput, panel, view, aidaClient, expectViewUpdate};
+  const stubAidaCheckAccessPreconditions = (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => {
+    aidaAvailabilityForStub = aidaAvailability;
+    return checkAccessPreconditionsStub;
+  };
+
+  return {
+    initialViewInput,
+    panel,
+    view,
+    aidaClient,
+    expectViewUpdate,
+    stubAidaCheckAccessPreconditions,
+  };
 }
 
 export function detachPanels() {

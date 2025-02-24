@@ -93,14 +93,13 @@ describeWithMockConnection('AI Assistance Panel', () => {
     it('updates when the user logs in', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
-      const {initialViewInput, expectViewUpdate} =
+      const {initialViewInput, expectViewUpdate, stubAidaCheckAccessPreconditions} =
           await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL});
 
       assert.strictEqual(initialViewInput.state, AiAssistance.State.CHAT_VIEW);
       assert.strictEqual(initialViewInput.aidaAvailability, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
 
-      sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
-          .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
+      stubAidaCheckAccessPreconditions(Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
 
       const updatedViewInput = await expectViewUpdate(() => {
         Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
@@ -1015,6 +1014,120 @@ describeWithMockConnection('AI Assistance Panel', () => {
         steps: [],
       },
     ]);
+  });
+
+  describe('chat input', () => {
+    describe('disabled state', () => {
+      it('should be disabled when ai assistance enabled setting is disabled and show followTheSteps placeholder',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
+
+           const {initialViewInput} = await createAiAssistancePanel();
+
+           assert.isTrue(initialViewInput.isTextInputDisabled);
+           assert.strictEqual(initialViewInput.inputPlaceholder, 'Follow the steps above to ask a question');
+           assert.strictEqual(
+               initialViewInput.disclaimerText, 'This is an experimental AI feature and won\'t always get it right.');
+         });
+
+      it('should be disabled when ai assistance setting is marked as false and show followTheSteps placeholder',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(false);
+
+           const {initialViewInput} = await createAiAssistancePanel();
+
+           assert.isTrue(initialViewInput.isTextInputDisabled);
+           assert.strictEqual(initialViewInput.inputPlaceholder, 'Follow the steps above to ask a question');
+           assert.strictEqual(
+               initialViewInput.disclaimerText, 'This is an experimental AI feature and won\'t always get it right.');
+         });
+
+      it('should be disabled when the user is blocked by age and show followTheSteps placeholder', async () => {
+        Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+        updateHostConfig({
+          aidaAvailability: {
+            blockedByAge: true,
+          },
+        });
+
+        const {initialViewInput} = await createAiAssistancePanel();
+
+        assert.isTrue(initialViewInput.isTextInputDisabled);
+        assert.strictEqual(initialViewInput.inputPlaceholder, 'Follow the steps above to ask a question');
+        assert.strictEqual(
+            initialViewInput.disclaimerText, 'This is an experimental AI feature and won\'t always get it right.');
+      });
+
+      it('should be disabled when Aida availability status is not AVAILABLE', async () => {
+        Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+        const {initialViewInput} =
+            await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_INTERNET});
+
+        assert.isTrue(initialViewInput.isTextInputDisabled);
+      });
+
+      it('should be disabled when the next message is blocked by cross origin and show crossOriginError placeholder',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const networkRequest = createNetworkRequest({
+             url: urlString`https://a.test`,
+           });
+           UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+
+           const {panel, expectViewUpdate} = await createAiAssistancePanel({
+             aidaClient: mockAidaClient([
+               [{explanation: 'test'}],
+             ]),
+           });
+           const updatedViewInput = await expectViewUpdate(() => {
+             panel.handleAction('drjones.network-floating-button');
+           });
+
+           assert.isFalse(updatedViewInput.blockedByCrossOrigin);
+           assert.strictEqual(updatedViewInput.selectedContext?.getItem(), networkRequest);
+
+           // Send a query for https://a.test.
+           await expectViewUpdate(() => {
+             panel.handleAction('drjones.network-floating-button');
+             updatedViewInput.onTextSubmit('test');
+           });
+
+           // Change context to https://b.test.
+           const networkRequest2 = createNetworkRequest({
+             url: urlString`https://b.test`,
+           });
+           UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
+
+           const updatedViewInputWithCrossOriginContext = await expectViewUpdate(() => {
+             panel.handleAction('drjones.network-floating-button');
+           });
+
+           assert.isTrue(updatedViewInputWithCrossOriginContext.blockedByCrossOrigin);
+           assert.isTrue(updatedViewInputWithCrossOriginContext.isTextInputDisabled);
+           assert.strictEqual(
+               updatedViewInputWithCrossOriginContext.inputPlaceholder,
+               'To talk about data from another origin, start a new chat');
+         });
+
+      it('should be disabled when there is no selected context and show inputPlaceholderForStylingNoContext',
+         async () => {
+           updateHostConfig({
+             devToolsFreestyler: {
+               enabled: true,
+             },
+           });
+           Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+           const {panel, expectViewUpdate} =
+               await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+           const updatedViewInput = await expectViewUpdate(() => {
+             panel.handleAction('freestyler.elements-floating-button');
+           });
+
+           assert.isNull(updatedViewInput.selectedContext);
+           assert.isTrue(updatedViewInput.isTextInputDisabled);
+           assert.strictEqual(updatedViewInput.inputPlaceholder, 'Select an element to ask a question');
+         });
+    });
   });
 
   describe('multimodal input', () => {

@@ -888,6 +888,49 @@ describeWithMockConnection('AI Assistance Panel', () => {
         },
       ]);
     });
+
+    it('blocks input on cross origin request, when the selected context is changed while the panel was hidden',
+       async () => {
+         const networkRequest = createNetworkRequest({
+           url: urlString`https://a.test`,
+         });
+         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+
+         const {panel, expectViewUpdate} = await createAiAssistancePanel({
+           aidaClient: mockAidaClient([
+             [{explanation: 'test'}],
+           ])
+         });
+         const updatedViewInput = await expectViewUpdate(() => {
+           panel.handleAction('drjones.network-floating-button');
+         });
+
+         assert.isFalse(updatedViewInput.blockedByCrossOrigin);
+         assert.strictEqual(updatedViewInput.selectedContext?.getItem(), networkRequest);
+
+         // Send a query for https://a.test.
+         await expectViewUpdate(() => {
+           panel.handleAction('drjones.network-floating-button');
+           updatedViewInput.onTextSubmit('test');
+         });
+
+         // Hide the panel
+         panel.hideWidget();
+
+         // Change context to https://b.test.
+         const networkRequest2 = createNetworkRequest({
+           url: urlString`https://b.test`,
+         });
+         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
+
+         // Show the widget again
+         const updatedViewInputWithCrossOriginContext = await expectViewUpdate(() => {
+           panel.showWidget();
+         });
+
+         assert.isTrue(updatedViewInputWithCrossOriginContext.blockedByCrossOrigin);
+         assert.strictEqual(updatedViewInputWithCrossOriginContext.selectedContext?.getItem(), networkRequest2);
+       });
   });
 
   describe('auto agent selection for panels', () => {

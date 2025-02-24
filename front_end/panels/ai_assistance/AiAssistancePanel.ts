@@ -647,7 +647,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedPerformanceInsight =
         createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.ActiveInsight));
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
-    this.#selectedContext = this.#getConversationContext();
+    this.#onContextSelectionChanged();
     this.requestUpdate();
 
     this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);

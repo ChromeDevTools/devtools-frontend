@@ -299,10 +299,17 @@ export class RemoteObjectImpl extends RemoteObject {
   readonly #classNameInternal: string|null;
 
   constructor(
-      runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, type: string,
-      subtype: string|undefined, value: typeof RemoteObject.prototype.value, unserializableValue?: string,
-      description?: string, preview?: Protocol.Runtime.ObjectPreview, customPreview?: Protocol.Runtime.CustomPreview,
-      className?: string) {
+      runtimeModel: RuntimeModel,
+      objectId: Protocol.Runtime.RemoteObjectId|undefined,
+      type: string,
+      subtype: string|undefined,
+      value: typeof RemoteObject.prototype.value,
+      unserializableValue?: string,
+      description?: string,
+      preview?: Protocol.Runtime.ObjectPreview,
+      customPreview?: Protocol.Runtime.CustomPreview,
+      className?: string,
+  ) {
     super();
 
     this.runtimeModelInternal = runtimeModel;

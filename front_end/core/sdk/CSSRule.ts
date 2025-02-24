@@ -86,8 +86,8 @@ export class CSSRule {
 
 class CSSValue {
   text: string;
-  range: TextUtils.TextRange.TextRange|undefined;
-  specificity: Protocol.CSS.Specificity|undefined;
+  range?: TextUtils.TextRange.TextRange;
+  specificity?: Protocol.CSS.Specificity;
   constructor(payload: Protocol.CSS.Value) {
     this.text = payload.text;
     if (payload.range) {

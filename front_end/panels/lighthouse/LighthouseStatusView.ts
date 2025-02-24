@@ -196,14 +196,14 @@ export class StatusView {
       jslogContext: 'lighthouse.cancel',
     });
     const fragment = UI.Fragment.Fragment.build`
-  <div class="lighthouse-view vbox">
-  <h2 $="status-header">Auditing your web page…</h2>
+  <span $="status-header">Auditing your web page…</span>
   <div class="lighthouse-status vbox" $="status-view">
   <div class="lighthouse-progress-wrapper" $="progress-wrapper">
   <div class="lighthouse-progress-bar" $="progress-bar"></div>
   </div>
   <div class="lighthouse-status-text" $="status-text"></div>
   </div>
+  <div class="lighthouse-button-container">
   ${cancelButton}
   </div>
   `;

@@ -44,6 +44,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -156,9 +157,18 @@ const UIStrings = {
   throttling: 'Throttling',
   /**
    *@description Text in Network Panel to tell the user to reload the page to capture screenshots.
-   *@example {Ctrl + R} PH1
+   *@example {Reload page} PH1
+   *@example {Ctrl + R} PH2
    */
-  hitSToReloadAndCaptureFilmstrip: 'Hit {PH1} to reload and capture filmstrip.',
+  reloadAndCaptureFilmstrip: 'Reload and capture filmstrip by using the "{PH1}" button or by hitting {PH2}',
+  /**
+   * @description A label for a button in the Network panel for reloading the page to capture screenshots.
+   */
+  reloadPage: 'Reload page',
+  /**
+   * @description Text in Network Panel if no filmstrips have been captured
+   */
+  noFilmstrips: 'No filmstrips captured',
   /**
    * @description A context menu item that is shown for resources in other panels
    * to open them in the Network panel.
@@ -175,11 +185,11 @@ const UIStrings = {
   /**
    *@description Text in Network Panel that is displayed whilst the recording is in progress.
    */
-  recordingFrames: 'Recording frames...',
+  recordingFrames: 'Currenty recording frames',
   /**
    *@description Text in Network Panel that is displayed when frames are being fetched.
    */
-  fetchingFrames: 'Fetching frames...',
+  fetchingFrames: 'Currently fetching frames',
   /**
    * @description Text of a button in the Network panel's toolbar that open Network Conditions panel in the drawer.
    */
@@ -623,14 +633,23 @@ export class NetworkPanel extends UI.Panel.Panel implements
   }
 
   private resetFilmStripView(): void {
-    const reloadShortcut =
-        UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('inspector-main.reload')[0];
+    const actionId = 'inspector-main.reload';
+    const reloadShortcut = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(actionId)[0];
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionId);
 
     if (this.filmStripView) {
       this.filmStripView.reset();
-      if (reloadShortcut) {
-        this.filmStripView.setStatusText(
-            i18nString(UIStrings.hitSToReloadAndCaptureFilmstrip, {PH1: reloadShortcut.title()}));
+      if (reloadShortcut && action) {
+        const button = UI.UIUtils.createTextButton(
+            i18nString(UIStrings.reloadPage), () => action.execute(),
+            {jslogContext: actionId, variant: Buttons.Button.Variant.TONAL});
+        const placeholder = new UI.EmptyWidget.EmptyWidget(
+            i18nString(UIStrings.noFilmstrips),
+            i18nString(
+                UIStrings.reloadAndCaptureFilmstrip,
+                {PH1: i18nString(UIStrings.reloadPage), PH2: reloadShortcut.title()}));
+        placeholder.contentElement.appendChild(button);
+        this.filmStripView.setStatusPlaceholder(placeholder);
       }
     }
   }
@@ -947,7 +966,7 @@ export class FilmStripRecorder implements Trace.TracingManager.TracingManagerCli
   startRecording(): void {
     this.#collectedTraceEvents = [];
     this.filmStripView.reset();
-    this.filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
+    this.filmStripView.setStatusPlaceholder(new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.recordingFrames), ''));
     const tracingManager =
         SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(Trace.TracingManager.TracingManager);
     if (this.tracingManager || !tracingManager) {
@@ -975,7 +994,7 @@ export class FilmStripRecorder implements Trace.TracingManager.TracingManagerCli
       this.resourceTreeModel.suspendReload();
     }
     this.callback = callback;
-    this.filmStripView.setStatusText(i18nString(UIStrings.fetchingFrames));
+    this.filmStripView.setStatusPlaceholder(new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.fetchingFrames), ''));
   }
 }
 

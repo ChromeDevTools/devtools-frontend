@@ -37,7 +37,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
-  private statusLabel: HTMLElement;
+  private statusPlaceholder?: UI.Widget.Widget;
   private zeroTime: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
 
@@ -45,7 +45,6 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     super(true);
     this.registerRequiredCSS(filmStripViewStyles);
     this.contentElement.classList.add('film-strip-view');
-    this.statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
   }
 
@@ -98,6 +97,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     const frameElements = frames.map(frame => this.createFrameElement(frame));
+    this.statusPlaceholder?.detach();
     this.contentElement.removeChildren();
     for (const element of frameElements) {
       this.contentElement.appendChild(element);
@@ -119,12 +119,15 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   reset(): void {
     this.zeroTime = Trace.Types.Timing.Milli(0);
+    this.statusPlaceholder?.detach();
     this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.statusLabel);
+    this.statusPlaceholder?.show(this.contentElement);
   }
 
-  setStatusText(text: string): void {
-    this.statusLabel.textContent = text;
+  setStatusPlaceholder(element: UI.Widget.Widget): void {
+    this.statusPlaceholder?.detach();
+    this.statusPlaceholder = element;
+    this.statusPlaceholder.show(this.contentElement);
   }
 }
 

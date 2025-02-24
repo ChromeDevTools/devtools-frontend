@@ -27,7 +27,6 @@ devtools_module("trace") {
     "helpers:bundle",
     "insights:bundle",
     "lantern:bundle",
-    "root-causes:bundle",
     "types:bundle",
   ]
 }

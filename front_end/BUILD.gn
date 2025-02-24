@@ -143,7 +143,6 @@ group("unittests") {
     "models/trace/lantern/graph:unittests",
     "models/trace/lantern/metrics:unittests",
     "models/trace/lantern/simulation:unittests",
-    "models/trace/root-causes:unittests",
     "models/trace/types:unittests",
     "models/workspace:unittests",
     "models/workspace_diff:unittests",

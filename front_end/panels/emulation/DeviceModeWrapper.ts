@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
+import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -32,8 +32,6 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.SCREENSHOT_REQUESTED,
         this.screenshotRequestedFromOverlay, this);
-    SDK.TargetManager.TargetManager.instance().addEventListener(
-        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, () => this.update(), this);
     this.update(true);
   }
 
@@ -85,14 +83,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   update(force?: boolean): void {
     this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
 
-    // Only allow device mode for non chrome:// pages.
-    function allowDeviceMode(): boolean {
-      const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      const url = target?.inspectedURL();
-      return url ? !Common.ParsedURL.schemeIs(url, 'chrome:') : false;
-    }
-
-    const shouldShow = this.showDeviceModeSetting.get() && allowDeviceMode();
+    const shouldShow = this.showDeviceModeSetting.get();
     if (!force && shouldShow === this.deviceModeView?.isShowing()) {
       return;
     }

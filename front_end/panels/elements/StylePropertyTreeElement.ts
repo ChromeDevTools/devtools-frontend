@@ -588,33 +588,29 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
     const color1Text = match.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
     const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
-    swatch.appendChild(contentChild);
+    swatch.tabIndex = -1;
     swatch.setColorMixText(`color-mix(${space}, ${color1Text}, ${color2Text})`);
-    swatch.setRegisterPopoverCallback(swatch => {
-      if (swatch.icon) {
-        this.#pane.addPopover(swatch.icon, {
-          contents: () => {
-            const color = swatch.mixedColor();
-            if (!color) {
-              return undefined;
-            }
-            const span = document.createElement('span');
-            span.style.padding = '11px 7px';
-            const rgb = color.as(Common.Color.Format.HEX);
-            const text = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-            if (!text) {
-              return undefined;
-            }
-            span.appendChild(document.createTextNode(text));
-            return span;
-          },
-          jslogContext: 'elements.css-color-mix',
-        });
-      }
+    this.#pane.addPopover(swatch, {
+      contents: () => {
+        const color = swatch.mixedColor();
+        if (!color) {
+          return undefined;
+        }
+        const span = document.createElement('span');
+        span.style.padding = '11px 7px';
+        const rgb = color.as(Common.Color.Format.HEX);
+        const text = rgb.isGamutClipped() ? color.asString() : rgb.asString();
+        if (!text) {
+          return undefined;
+        }
+        span.appendChild(document.createTextNode(text));
+        return span;
+      },
+      jslogContext: 'elements.css-color-mix',
     });
 
     context.addControl('color', swatch);
-    return [swatch];
+    return [swatch, contentChild];
   }
 
   matcher(): SDK.CSSPropertyParserMatchers.ColorMixMatcher {

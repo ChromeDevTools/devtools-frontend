@@ -660,7 +660,10 @@ export class DebuggerPlugin extends Plugin {
         tokenType === 'PropertyDefinition';
   }
 
-  private getPopoverRequest(event: MouseEvent): UI.PopoverHelper.PopoverRequest|null {
+  private getPopoverRequest(event: MouseEvent|KeyboardEvent): UI.PopoverHelper.PopoverRequest|null {
+    if (event instanceof KeyboardEvent) {
+      return null;
+    }
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event)) {
       return null;
     }

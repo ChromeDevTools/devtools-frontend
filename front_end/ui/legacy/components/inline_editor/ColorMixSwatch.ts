@@ -4,7 +4,7 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import {html, render} from '../../../lit/lit.js';
+import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorMixSwatchStylesRaw from './colorMixSwatch.css.js';
@@ -12,6 +12,8 @@ import colorMixSwatchStylesRaw from './colorMixSwatch.css.js';
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const colorMixSwatchStyles = new CSSStyleSheet();
 colorMixSwatchStyles.replaceSync(colorMixSwatchStylesRaw.cssContent);
+
+const {html, render, Directives: {ref}} = Lit;
 
 export const enum Events {
   COLOR_CHANGED = 'colorChanged',
@@ -26,7 +28,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private colorMixText = '';     // color-mix(in srgb, hotpink, white)
   private firstColorText = '';   // hotpink
   private secondColorText = '';  // white
-  #registerPopoverCallback: undefined|((swatch: ColorMixSwatch) => void);
+  #icon: HTMLElement|null = null;
 
   constructor() {
     super();
@@ -35,12 +37,8 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
     ];
   }
 
-  get icon(): Element|null {
-    return this.shadow.firstElementChild;
-  }
-
   mixedColor(): Common.Color.Color|null {
-    const colorText = this.icon?.computedStyleMap().get('color')?.toString() ?? null;
+    const colorText = this.#icon?.computedStyleMap().get('color')?.toString() ?? null;
     return colorText ? Common.Color.parse(colorText) : null;
   }
 
@@ -75,11 +73,6 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.#render();
   }
 
-  setRegisterPopoverCallback(callback: (swatch: ColorMixSwatch) => void): void {
-    this.#registerPopoverCallback = callback;
-    callback(this);
-  }
-
   getText(): string {
     return this.colorMixText;
   }
@@ -98,15 +91,15 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     render(
-      html`<div class="swatch-icon" jslog=${VisualLogging.cssColorMix()} style="--color: ${this.colorMixText}">
+      html`<div class="swatch-icon"
+      ${ref(e => {this.#icon = e as HTMLElement; })}
+      jslog=${VisualLogging.cssColorMix()}
+      style="--color: ${this.colorMixText}">
         <span class="swatch swatch-left" id="swatch-1" style="--color: ${this.firstColorText}"></span>
         <span class="swatch swatch-right" id="swatch-2" style="--color: ${this.secondColorText}"></span>
-        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span>
-      </div><slot>${this.colorMixText}</slot>`,
+        <span class="swatch swatch-mix" id="mix-result" style="--color: ${this.colorMixText}"></span></div>`,
       this.shadow, {host: this});
     // clang-format on
-
-    this.#registerPopoverCallback && this.#registerPopoverCallback(this);
   }
 }
 

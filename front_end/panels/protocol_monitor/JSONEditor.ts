@@ -460,7 +460,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     };
   }
 
-  #handlePopoverDescriptions(event: MouseEvent):
+  #handlePopoverDescriptions(event: MouseEvent|KeyboardEvent):
       {box: AnchorBox, show: (popover: UI.GlassPane.GlassPane) => Promise<boolean>}|null {
     const hintElement = event.composedPath()[0] as HTMLElement;
     const elementData = this.#getDescriptionAndTypeForElement(hintElement);

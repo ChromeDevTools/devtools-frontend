@@ -396,7 +396,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.#genericPopoverHelper.setTimeout(500, 200);
   }
 
-  addPopover(element: Node, popover: {contents: () => HTMLElement | undefined, jslogContext?: string}): void {
+  addPopover(element: HTMLElement, popover: {contents: () => HTMLElement | undefined, jslogContext?: string}): void {
     this.#elementPopoverHooks.set(element, popover);
   }
 

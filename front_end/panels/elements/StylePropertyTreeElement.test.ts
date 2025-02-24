@@ -190,7 +190,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
         assert.exists(colorMixSwatch);
-        assert.isTrue(colorMixSwatch.textContent?.includes('var(--space)'));
       });
 
       it('should show color mix swatch when color-mix is used with an known variable in interpolation method even if it is not a valid method',
@@ -201,7 +200,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
            const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
            assert.exists(colorMixSwatch);
-           assert.isTrue(colorMixSwatch.textContent?.includes('var(--garbage-space)'));
          });
 
       it('should not show color mix swatch when color-mix is used with an unknown variable in interpolation method',
@@ -225,7 +223,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         renderElementIntoDOM(colorMixSwatch);
 
         assert.isTrue(addPopoverSpy.calledOnce);
-        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch.icon);
+        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
         assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, '#ff8000');
       });
 
@@ -239,7 +237,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         renderElementIntoDOM(colorMixSwatch);
 
         assert.isTrue(addPopoverSpy.calledOnce);
-        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch.icon);
+        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
         assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, 'color(srgb 1 0.24 0.17)');
       });
 
@@ -248,12 +246,14 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
             getTreeElement('color', 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
         stylePropertyTreeElement.updateTitle();
 
-        const outerColorMix = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
+        assert.exists(stylePropertyTreeElement.valueElement);
+
+        const [outerColorMix, innerColorMix] =
+            Array.from(stylePropertyTreeElement.valueElement.querySelectorAll('devtools-color-mix-swatch'));
         assert.exists(outerColorMix);
+        assert.exists(innerColorMix);
         const handler = sinon.fake();
         outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.Events.COLOR_CHANGED, handler);
-        const innerColorMix = outerColorMix.querySelector('devtools-color-mix-swatch');
-        assert.exists(innerColorMix);
         assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
         assert.strictEqual(innerColorMix.getText(), 'color-mix(in oklch, red, green)');
         innerColorMix.setFirstColor('blue');
@@ -262,7 +262,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         // setFirstColor does not actually update the rendered color swatches or the textContent, which is why the first
         // color is still red here.
-        const colorSwatch = innerColorMix.querySelector('devtools-color-swatch');
+        const colorSwatch = stylePropertyTreeElement.valueElement.querySelector('devtools-color-swatch');
         assert.isOk(colorSwatch);
         const newColor = colorSwatch.getColor()?.as(Common.Color.Format.HEX);
         assert.isOk(newColor);

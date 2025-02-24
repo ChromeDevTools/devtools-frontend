@@ -178,7 +178,7 @@ export async function waitForStorageUsage(p: (quota: number) => boolean) {
 }
 
 export async function waitForTimespanStarted() {
-  await waitForElementWithTextContent('Timespan started, interact with the page');
+  await waitForElementWithTextContent('Timespan started');
 }
 
 export async function endTimespan() {

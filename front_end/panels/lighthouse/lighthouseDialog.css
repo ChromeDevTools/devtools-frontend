@@ -8,14 +8,18 @@
   flex: auto;
   align-items: start;
   width: 100%;
-  max-width: 500px;
-}
+  max-width: var(--sys-size-34);
 
-.lighthouse-view span {
-  font: var(--sys-typescale-body2-medium);
-  padding-top: var(--sys-size-3);
-  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
-  flex: none;
+  .header {
+    font: var(--sys-typescale-body2-medium);
+    padding-top: var(--sys-size-3);
+    margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+    flex: none;
+  }
+
+  .lighthouse-dialog-text {
+    margin: 0 var(--sys-size-8);
+  }
 }
 
 .lighthouse-view button {
@@ -46,10 +50,6 @@
   text-align: left;
   white-space: pre-wrap;
   overflow: auto;
-}
-
-.lighthouse-button-container {
-  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
 }
 
 .lighthouse-progress-wrapper {
@@ -117,6 +117,8 @@
 }
 
 .lighthouse-action-buttons {
+  justify-content: space-between;
   align-self: end;
-  column-gap: var(--sys-size-6);
+  width: calc(100% - 2*var(--sys-size-8));
+  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
 }

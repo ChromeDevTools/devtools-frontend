@@ -240,6 +240,10 @@ export class BottomUpTreeMatching extends TreeWalker {
     this.#matchers.push(...matchers);
   }
 
+  hasMatches(...matchTypes: Array<Constructor<Match>>): boolean {
+    return Boolean(this.#matchedNodes.values().find(match => matchTypes.some(matchType => match instanceof matchType)));
+  }
+
   getMatch(node: CodeMirror.SyntaxNode): Match|undefined {
     return this.#matchedNodes.get(this.#key(node));
   }

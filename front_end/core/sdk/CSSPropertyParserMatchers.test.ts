@@ -589,12 +589,11 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     });
   });
 
-  describe('SelectFunctionMatcher', () => {
+  describe('MathFunctionMatcher', () => {
     it('matches selecting functions', () => {
       const success = ['clamp(1px, 2px, 3px)', 'min(1, 2)', 'max(3, 4)'];
       for (const value of success) {
-        const {match, text} =
-            matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.SelectFunctionMatcher());
+        const {match, text} = matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.MathFunctionMatcher());
         assert.exists(match, text);
         assert.strictEqual(match.text, value);
         assert.strictEqual(match.func, value.substr(0, value.indexOf('(')));
@@ -603,8 +602,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
 
       const failure = ['clomp(1px, 2px, 3px)', 'min()'];
       for (const value of failure) {
-        const {match, text} =
-            matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.SelectFunctionMatcher());
+        const {match, text} = matchSingleValue('width', value, new SDK.CSSPropertyParserMatchers.MathFunctionMatcher());
         assert.notExists(match, text);
       }
     });

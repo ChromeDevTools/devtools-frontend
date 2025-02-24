@@ -28,9 +28,9 @@ import {
   LightDarkColorMatcher,
   LinearGradientMatcher,
   LinkableNameMatcher,
+  MathFunctionMatcher,
   PositionAnchorMatcher,
   PositionTryMatcher,
-  SelectFunctionMatcher,
   ShadowMatcher,
   StringMatcher,
   URLMatcher,
@@ -136,7 +136,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       new FlexGridMatcher(),
       new PositionTryMatcher(),
       new LengthMatcher(),
-      new SelectFunctionMatcher(),
+      new MathFunctionMatcher(),
       new AutoBaseMatcher(),
     ];
 

@@ -18,6 +18,7 @@ import {
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
+import type * as UI from '../../ui/legacy/legacy.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
@@ -224,7 +225,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         assert.isTrue(addPopoverSpy.calledOnce);
         assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
-        assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, '#ff8000');
+        assert.strictEqual((addPopoverSpy.args[0][1].contents() as HTMLElement | undefined)?.textContent, '#ff8000');
       });
 
       it('shows a popover with it\'s computed color as wide gamut if necessary', () => {
@@ -238,7 +239,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         assert.isTrue(addPopoverSpy.calledOnce);
         assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
-        assert.strictEqual(addPopoverSpy.args[0][1].contents()?.textContent, 'color(srgb 1 0.24 0.17)');
+        assert.strictEqual(
+            (addPopoverSpy.args[0][1].contents() as HTMLElement | undefined)?.textContent, 'color(srgb 1 0.24 0.17)');
       });
 
       it('propagates updates to outer color-mixes', () => {
@@ -1593,7 +1595,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       node.id = 0 as Protocol.DOM.NodeId;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
       const stylePropertyTreeElement = getTreeElement('margin', '5px 2em');
-      const addPopoverPromise = Promise.withResolvers<() => HTMLElement | undefined>();
+      const addPopoverPromise = Promise.withResolvers<() => HTMLElement | UI.Widget.Widget | undefined>();
       sinon.stub(stylePropertyTreeElement.parentPane(), 'addPopover')
           .callsFake((element, popover) => addPopoverPromise.resolve(popover.contents));
       setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({computedStyle: {}}));
@@ -1601,11 +1603,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       await stylePropertyTreeElement.onpopulate();
       stylePropertyTreeElement.updateTitle();
       const popover = (await addPopoverPromise.promise)();
-      assert.strictEqual(popover?.textContent, '15px');
+      assert.strictEqual((popover as HTMLElement | undefined)?.textContent, '15px');
     });
   });
 
-  describe('SelectFunctionRenderer', () => {
+  describe('MathFunctionRenderer', () => {
     it('strikes out non-selected values', async () => {
       await setUpCSSModel();
       setMockConnectionResponseHandler(
@@ -1615,14 +1617,14 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                 value => value.startsWith('min') ? '4px' : value.trim().replaceAll(/(em|pt)$/g, 'px'))
           }));
       const strikeOutSpy =
-          sinon.spy(Elements.StylePropertyTreeElement.SelectFunctionRenderer.prototype, 'applySelectFunction');
+          sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applySelectFunction');
       const stylePropertyTreeElement = getTreeElement('width', 'min(5em, 4px, 8pt)');
       stylePropertyTreeElement.updateTitle();
 
       assert.isTrue(strikeOutSpy.calledOnce);
       await strikeOutSpy.returnValues[0];
-      const args =
-          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLSpanElement>;
+      const args = stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span > span') as
+          NodeListOf<HTMLSpanElement>;
       assert.lengthOf(args, 3);
       assert.deepEqual(
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [true, false, true]);

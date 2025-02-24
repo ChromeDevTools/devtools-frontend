@@ -251,6 +251,7 @@ export class PopoverHelper {
 
       VisualLogging.setMappedParent(popover.contentElement, this.container);
       popover.contentElement.classList.toggle('has-padding', this.hasPadding);
+      popover.contentElement.style.scrollbarGutter = 'stable';
       popover.contentElement.addEventListener('mousemove', this.popoverMouseMove.bind(this), true);
       popover.contentElement.addEventListener('mouseout', this.popoverMouseOut.bind(this, popover), true);
       popover.setContentAnchorBox(request.box);

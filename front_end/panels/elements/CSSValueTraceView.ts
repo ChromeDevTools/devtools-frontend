@@ -2,10 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Lit from '../../third_party/lit/lit.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import cssValueTraceViewStyles from './cssValueTraceView.css.js';
+import {
+  type MatchRenderer,
+  Renderer,
+  RenderingContext,
+  TracingContext,
+} from './PropertyRenderer.js';
+import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
 
 const {html, render} = Lit;
 
@@ -63,19 +71,61 @@ export class CSSValueTraceView extends UI.Widget.VBox {
           },
   ) {
     super(true);
-    this.registerRequiredCSS(cssValueTraceViewStyles);
+    this.registerRequiredCSS(cssValueTraceViewStyles, stylePropertiesTreeOutlineStyles);
     this.#view = view;
     this.requestUpdate();
   }
 
   showTrace(
-      substitutions: Node[][],
-      evaluations: Node[][],
-      finalResult: Node[]|undefined,
+      property: SDK.CSSProperty.CSSProperty,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      computedStyles: Map<string, string>|null,
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
       ): void {
+    const matchedResult = property.parseValue(matchedStyles, computedStyles);
+    if (!matchedResult) {
+      return undefined;
+    }
+
+    const rendererMap = new Map(
+        renderers.map(r => [r.matcher().matchType, r]),
+    );
+
+    // Compute all trace lines
+    // 1st: Apply substitutions for var() functions
+    const substitutions = [];
+    const evaluations = [];
+    const tracing = new TracingContext(matchedResult);
+    while (tracing.nextSubstitution()) {
+      const context = new RenderingContext(
+          matchedResult.ast,
+          rendererMap,
+          matchedResult,
+          /* cssControls */ undefined,
+          /* options */ {},
+          tracing,
+      );
+      substitutions.push(
+          Renderer.render(matchedResult.ast.tree, context).nodes,
+      );
+    }
+
+    // 2nd: Apply evaluations for calc, min, max, etc.
+    while (tracing.nextEvaluation()) {
+      const context = new RenderingContext(
+          matchedResult.ast,
+          rendererMap,
+          matchedResult,
+          /* cssControls */ undefined,
+          /* options */ {},
+          tracing,
+      );
+      evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
+    }
+
     this.#substitutions = substitutions;
+    this.#finalResult = evaluations.pop();
     this.#evaluations = evaluations;
-    this.#finalResult = finalResult;
     this.requestUpdate();
   }
 

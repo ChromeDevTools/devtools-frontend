@@ -225,7 +225,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #webCustomData?: WebCustomData;
   #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
   #genericPopoverHelper: UI.PopoverHelper.PopoverHelper;
-  #elementPopoverHooks = new WeakMap<Node, {contents: () => HTMLElement | undefined, jslogContext?: string}>();
+  #elementPopoverHooks =
+      new WeakMap<Node, {contents: () => HTMLElement | UI.Widget.Widget | undefined, jslogContext?: string}>();
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
@@ -384,7 +385,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
                   VisualLogging.popover(`${hook?.jslogContext ?? 'elements.generic-sidebar-popover'}`)
                       .parent('popoverParent')}`);
               popover.contentElement.classList.add('borderless-popover');
-              popover.contentElement.appendChild(contents);
+              if (contents instanceof HTMLElement) {
+                popover.contentElement.appendChild(contents);
+              } else {
+                contents.show(popover.contentElement);
+              }
               return true;
             },
           };
@@ -396,7 +401,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.#genericPopoverHelper.setTimeout(500, 200);
   }
 
-  addPopover(element: HTMLElement, popover: {contents: () => HTMLElement | undefined, jslogContext?: string}): void {
+  addPopover(element: Node, popover: {
+    contents: () => UI.Widget.Widget | HTMLElement | undefined,
+    jslogContext?: string,
+  }): void {
     this.#elementPopoverHooks.set(element, popover);
   }
 

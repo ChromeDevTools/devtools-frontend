@@ -132,6 +132,11 @@ export class CSSModel extends SDKModel<EventTypes> {
     return this.#colorScheme;
   }
 
+  async resolveValues(nodeId: Protocol.DOM.NodeId, ...values: string[]): Promise<string[]|null> {
+    const response = await this.agent.invoke_resolveValues({values, nodeId});
+    return response.getError() ? null : response.results;
+  }
+
   headersForSourceURL(sourceURL: Platform.DevToolsPath.UrlString): CSSStyleSheetHeader[] {
     const headers = [];
     for (const headerId of this.getStyleSheetIdsForURL(sourceURL)) {

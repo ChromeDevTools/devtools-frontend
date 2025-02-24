@@ -58,6 +58,126 @@ export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
   return RendererBase;
 }
 
+// This class is used to guide value tracing when passed to the Renderer. Tracing has two phases. First, substitutions
+// such as var() are applied step by step. In each step, all vars in the value are replaced by their definition until no
+// vars remain. In the second phase, we evaluate other functions such as calc() or min() or color-mix(). Which CSS
+// function types are actually substituted or evaluated is not relevant here, rather it is decided by an individual
+// MatchRenderer.
+//
+// Callers don't need to keep track of the tracing depth (i.e., the number of substitution/evaluation steps).
+// TracingContext is stateful and keeps track of the deps, so callers can progressively produce steps by calling
+// TracingContext#nextSubstitution or TracingContext#nextEvaluation. Calling Renderer with the tracing context will then
+// produce the next step of tracing. The tracing depth is passed to the individual MatchRenderers by way of
+// TracingContext#substitution or TracingContext#applyEvaluation/TracingContext#evaluation (see function-level comments
+// about how these two play together), which MatchRenderers call to request a fresh TracingContext for the next level of
+// substitution/evaluation.
+export class TracingContext {
+  #substitutionDepth = 0;
+  #hasMoreSubstitutions: boolean;
+  #parent: TracingContext|null = null;
+  #evaluationCount = 0;
+  #appliedEvaluations = 0;
+  #hasMoreEvaluations = true;
+
+  constructor(matchedResult?: SDK.CSSPropertyParser.BottomUpTreeMatching) {
+    this.#hasMoreSubstitutions =
+        matchedResult?.hasMatches(
+            SDK.CSSPropertyParserMatchers.VariableMatch, SDK.CSSPropertyParserMatchers.BaseVariableMatch) ??
+        false;
+  }
+
+  renderingContext(context: RenderingContext): RenderingContext {
+    return new RenderingContext(
+        context.ast, context.renderers, context.matchedResult, context.cssControls, context.options, this);
+  }
+
+  nextSubstitution(): boolean {
+    if (!this.#hasMoreSubstitutions) {
+      return false;
+    }
+    this.#substitutionDepth++;
+    this.#hasMoreSubstitutions = false;
+    return true;
+  }
+
+  nextEvaluation(): boolean {
+    if (this.#hasMoreSubstitutions) {
+      throw new Error('Need to apply substitutions first');
+    }
+    if (!this.#hasMoreEvaluations) {
+      return false;
+    }
+    this.#appliedEvaluations = 0;
+    this.#hasMoreEvaluations = false;
+    this.#evaluationCount++;
+    return true;
+  }
+
+  #setHasMoreEvaluations(value: boolean): void {
+    if (this.#parent) {
+      this.#parent.#setHasMoreEvaluations(value);
+    }
+    this.#hasMoreEvaluations = value;
+  }
+
+  // Evaluations are applied bottom up, i.e., innermost sub-expressions are evaluated first before evaluating any
+  // function call. This function produces TracingContexts for each of the arguments of the function call which should
+  // be passed to the Renderer calls for the respective subtrees.
+  evaluation(args: unknown[]): TracingContext[]|null {
+    const childContexts = args.map(() => {
+      const child = new TracingContext();
+      child.#parent = this;
+      child.#substitutionDepth = this.#substitutionDepth;
+      child.#evaluationCount = this.#evaluationCount;
+      child.#hasMoreSubstitutions = this.#hasMoreSubstitutions;
+      return child;
+    });
+    return childContexts;
+  }
+
+  #setAppliedEvaluations(value: number): void {
+    if (this.#parent) {
+      this.#parent.#setAppliedEvaluations(value);
+    }
+    this.#appliedEvaluations = Math.max(this.#appliedEvaluations, value);
+  }
+
+  // After rendering the arguments of a function call, the TracingContext produced by TracingContext#evaluation need
+  // to be passed here to determine whether the "current" function call should be evaluated or not.
+  applyEvaluation(children: TracingContext[]): boolean {
+    if (this.#evaluationCount === 0 || children.some(child => child.#appliedEvaluations >= this.#evaluationCount)) {
+      this.#setHasMoreEvaluations(true);
+      return false;
+    }
+    this.#setAppliedEvaluations(
+        children.map(child => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1);
+    return true;
+  }
+
+  #setHasMoreSubstitutions(): void {
+    if (this.#parent) {
+      this.#parent.#setHasMoreSubstitutions();
+    }
+    this.#hasMoreSubstitutions = true;
+  }
+
+  // Request a tracing context for the next level of substitutions. If this returns null, no further substitution should
+  // be applied on this branch of the AST. Otherwise, the TracingContext should be passed to the Renderer call for the
+  // substitution subtree.
+  substitution(): TracingContext|null {
+    if (this.#substitutionDepth <= 0) {
+      this.#setHasMoreSubstitutions();
+      return null;
+    }
+    const child = new TracingContext();
+    child.#parent = this;
+    child.#substitutionDepth = this.#substitutionDepth - 1;
+    child.#evaluationCount = this.#evaluationCount;
+    child.#hasMoreSubstitutions = false;
+    return child;
+  }
+}
+
 export class RenderingContext {
   constructor(
       readonly ast: SDK.CSSPropertyParser.SyntaxTree,
@@ -65,9 +185,10 @@ export class RenderingContext {
           Map<SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>,
               MatchRenderer<SDK.CSSPropertyParser.Match>>,
       readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
-      readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap,
-      readonly options: {readonly: boolean} = {readonly: false}) {
+      readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap, readonly options: {readonly?: boolean} = {},
+      readonly tracing?: TracingContext) {
   }
+
   addControl(cssType: string, control: HTMLElement): void {
     if (this.cssControls) {
       const controls = this.cssControls.get(cssType);
@@ -90,13 +211,16 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       renderers:
           Map<SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>,
               MatchRenderer<SDK.CSSPropertyParser.Match>>,
-      matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching, cssControls: SDK.CSSPropertyParser.CSSControlMap,
+      matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
+      cssControls: SDK.CSSPropertyParser.CSSControlMap,
       options: {
-        readonly: boolean,
-      }) {
+        readonly?: boolean,
+      },
+      tracing: TracingContext|undefined,
+  ) {
     super(ast);
     this.#matchedResult = matchedResult;
-    this.#context = new RenderingContext(this.ast, renderers, this.#matchedResult, cssControls, options);
+    this.#context = new RenderingContext(this.ast, renderers, this.#matchedResult, cssControls, options, tracing);
   }
 
   static render(nodeOrNodes: CodeMirror.SyntaxNode|CodeMirror.SyntaxNode[], context: RenderingContext):
@@ -107,7 +231,8 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const cssControls = new SDK.CSSPropertyParser.CSSControlMap();
     const renderers = nodeOrNodes.map(
         node => this.walkExcludingSuccessors(
-            context.ast.subtree(node), context.renderers, context.matchedResult, cssControls, context.options));
+            context.ast.subtree(node), context.renderers, context.matchedResult, cssControls, context.options,
+            context.tracing));
     const nodes = renderers.map(node => node.#output).reduce(mergeWithSpacing);
     return {nodes, cssControls};
   }
@@ -166,7 +291,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   // unmatched text and around rendered matching results.
   static renderValueElement(
       name: string, value: string, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
-      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>): HTMLElement {
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext): HTMLElement {
     const valueElement = document.createElement('span');
     valueElement.setAttribute(
         'jslog', `${VisualLogging.value().track({
@@ -186,7 +311,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       rendererMap.set(renderer.matchType, renderer);
     }
 
-    const context = new RenderingContext(matchedResult.ast, rendererMap, matchedResult);
+    const context = new RenderingContext(matchedResult.ast, rendererMap, matchedResult, undefined, {}, tracing);
     Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context)
         .nodes.forEach(node => valueElement.appendChild(node));
     valueElement.normalize();

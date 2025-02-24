@@ -26,6 +26,7 @@ import {
 } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
+import {CSSValueTraceView} from './CSSValueTraceView.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
   type MatchRenderer,
@@ -223,11 +224,11 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.VariableMatch, context: RenderingContext): Node[] {
-    const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
-
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
+
+    const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
     varSwatch.data = {
@@ -1193,44 +1194,48 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
     this.#treeElement = treeElement;
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, _context: RenderingContext): Node[] {
-    const lengthText = match.text;
-    if (!this.#treeElement.editable()) {
-      return [document.createTextNode(lengthText)];
-    }
+  override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[] {
     const valueElement = document.createElement('span');
-    valueElement.textContent = lengthText;
+    valueElement.textContent = match.text;
 
-    void this.#attachPopover(valueElement, match.text, match.unit);
+    if (context.tracing?.applyEvaluation([])) {
+      void this.#applyEvaluation(valueElement, match.text);
+    } else {
+      void this.#attachPopover(valueElement, match.text);
+    }
 
     return [valueElement];
   }
 
-  async #attachPopover(valueElement: HTMLElement, value: string, unit: string): Promise<void> {
-    if (unit === 'px') {
-      return;
-    }
+  async #applyEvaluation(valueElement: HTMLElement, value: string): Promise<void> {
     const nodeId = this.#treeElement.parentPane().node()?.id;
     if (nodeId === undefined) {
       return;
     }
 
-    let pixelValue = '';
-    const result =
-        await this.#treeElement.parentPane().cssModel()?.agent.invoke_resolveValues({values: [value], nodeId});
-    if (!result || result.getError()) {
+    const pixelValue = await this.#treeElement.parentPane().cssModel()?.resolveValues(nodeId, value);
+
+    if (pixelValue) {
+      valueElement.textContent = pixelValue[0];
+    }
+  }
+
+  async #attachPopover(valueElement: HTMLElement, value: string): Promise<void> {
+    const nodeId = this.#treeElement.parentPane().node()?.id;
+    if (nodeId === undefined) {
       return;
     }
 
-    pixelValue = result.results[0];
+    const pixelValue = await this.#treeElement.parentPane().cssModel()?.resolveValues(nodeId, value);
+    if (!pixelValue) {
+      return;
+    }
+
     this.#treeElement.parentPane().addPopover(valueElement, {
       contents: () => {
-        if (!pixelValue) {
-          return undefined;
-        }
         const contents = document.createElement('span');
         contents.style.margin = '4px';
-        contents.appendChild(document.createTextNode(pixelValue));
+        contents.appendChild(document.createTextNode(pixelValue[0]));
         return contents;
       },
       jslogContext: 'length-popover'
@@ -1243,32 +1248,51 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
 }
 
 // clang-format off
-export class SelectFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.SelectFunctionMatch) {
+export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.MathFunctionMatch) {
   // clang-format on
   constructor(private readonly treeElement: StylePropertyTreeElement) {
     super();
   }
-  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.SelectFunctionMatch> {
-    return new SDK.CSSPropertyParserMatchers.SelectFunctionMatcher();
+  matcher(): SDK.CSSPropertyParser.Matcher<SDK.CSSPropertyParserMatchers.MathFunctionMatch> {
+    return new SDK.CSSPropertyParserMatchers.MathFunctionMatcher();
   }
 
-  override render(match: SDK.CSSPropertyParserMatchers.SelectFunctionMatch, context: RenderingContext): Node[] {
-    const resolvedArgs = match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
-
-    const renderedArgs = match.args.map(arg => {
+  override render(match: SDK.CSSPropertyParserMatchers.MathFunctionMatch, context: RenderingContext): Node[] {
+    const childTracingContexts = context.tracing?.evaluation(match.args);
+    const renderedArgs = match.args.map((arg, idx) => {
       const span = document.createElement('span');
-      Renderer.renderInto(arg, context, span);
+      Renderer.renderInto(
+          arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context, span);
       return span;
     });
 
-    void this.applySelectFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
+    const span = document.createElement('span');
+    span.append(
+        document.createTextNode(match.func), document.createTextNode('('),
+        ...renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [document.createTextNode(', '), arg]).flat(),
+        document.createTextNode(')'));
 
-    return [
-      document.createTextNode(match.func),
-      document.createTextNode('('),
-      ...renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [document.createTextNode(', '), arg]).flat(),
-      document.createTextNode(')'),
-    ];
+    if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
+      void this.#applyEvaluation(span, context.matchedResult.getComputedText(match.node));
+    } else if (match.func !== 'calc') {
+      const resolvedArgs =
+          match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
+      void this.applySelectFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
+    }
+
+    return [span];
+  }
+
+  async #applyEvaluation(span: HTMLSpanElement, value: string): Promise<void> {
+    const nodeId = this.treeElement.node()?.id;
+    if (nodeId === undefined) {
+      return;
+    }
+    const evaled = await this.treeElement.parentPane().cssModel()?.resolveValues(nodeId, value);
+    if (!evaled || evaled[0] === value) {
+      return;
+    }
+    span.textContent = evaled[0];
   }
 
   async applySelectFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
@@ -1280,16 +1304,16 @@ export class SelectFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
     // and compare the function result to the values of all its arguments. Evaluating the arguments eliminates nested
     // function calls and normalizes all units to px.
     values.unshift(functionText);
-    const evaledArgs = await this.treeElement.parentPane().cssModel()?.agent.invoke_resolveValues({values, nodeId});
-    if (!evaledArgs || evaledArgs.getError()) {
+    const evaledArgs = await this.treeElement.parentPane().cssModel()?.resolveValues(nodeId, ...values);
+    if (!evaledArgs) {
       return;
     }
-    const functionResult = evaledArgs.results.shift();
+    const functionResult = evaledArgs.shift();
     if (!functionResult) {
       return;
     }
     for (let i = 0; i < renderedArgs.length; ++i) {
-      if (evaledArgs.results[i] !== functionResult) {
+      if (evaledArgs[i] !== functionResult) {
         renderedArgs[i].classList.add('inactive-value');
       }
     }
@@ -1564,6 +1588,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   getComputedStyle(property: string): string|null {
     return this.computedStyles?.get(property) ?? null;
+  }
+
+  getComputedStyles(): Map<string, string>|null {
+    return this.computedStyles;
   }
 
   setParentsComputedStyles(parentsComputedStyles: Map<string, string>|null): void {
@@ -1854,14 +1882,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.innerUpdateTitle();
   }
 
-  private innerUpdateTitle(): void {
-    this.updateState();
-    if (this.isExpandable()) {
-      this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
-      this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
-    }
-
-    const renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>> = this.property.parsedOk ?
+  getPropertyRenderers(): Array<MatchRenderer<SDK.CSSPropertyParser.Match>> {
+    const renderers = this.property.parsedOk ?
         [
           new VariableRenderer(this, this.style),
           new ColorRenderer(this),
@@ -1881,7 +1903,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new FlexGridRenderer(this),
           new PositionTryRenderer(this),
           new LengthRenderer(this),
-          new SelectFunctionRenderer(this),
+          new MathFunctionRenderer(this),
           new AutoBaseRenderer(this),
         ] :
         [];
@@ -1889,16 +1911,33 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.property.parsedOk) {
       renderers.push(new FontRenderer(this));
     }
+    return renderers;
+  }
 
+  private innerUpdateTitle(): void {
+    this.updateState();
+    if (this.isExpandable()) {
+      this.expandElement = IconButton.Icon.create('triangle-right', 'expand-icon');
+      this.expandElement.setAttribute('jslog', `${VisualLogging.expand().track({click: true})}`);
+    }
+
+    const renderers = this.getPropertyRenderers();
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
     this.valueElement = Renderer.renderValueElement(this.name, this.value, matchedResult, renderers);
     this.nameElement = Renderer.renderNameElement(this.name);
     if (this.property.name.startsWith('--') && this.nameElement) {
       this.parentPaneInternal.addPopover(this.nameElement, {
-        contents: () => this.getVariablePopoverContents(
-            this.property.name,
-            this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null),
+        contents: () => {
+          if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled) {
+            return this.getVariablePopoverContents(
+                this.property.name,
+                this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+          }
+          const view = new CSSValueTraceView();
+          view.showTrace(this.property, this.matchedStyles(), this.computedStyles, renderers);
+          return view;
+        },
         jslogContext: 'elements.css-var',
       });
     }

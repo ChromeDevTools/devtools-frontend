@@ -660,10 +660,10 @@ export class LengthMatch implements Match {
 export class LengthMatcher extends matcherBase(LengthMatch) {
   // clang-format on
   static readonly LENGTH_UNITS = new Set([
-    'em',    'ex',    'ch',    'cap', 'ic',  'lh',    'rem',   'rex',   'rch',   'rlh',  'ric',  'rcap', 'px',  'pt',
-    'pc',    'in',    'cm',    'mm',  'Q',   'vw',    'vh',    'vi',    'vb',    'vmin', 'vmax', 'dvw',  'dvh', 'dvi',
-    'dvb',   'dvmin', 'dvmax', 'svw', 'svh', 'svi',   'svb',   'svmin', 'svmax', 'lvw',  'lvh',  'lvi',  'lvb', 'lvmin',
-    'lvmax', 'cqw',   'cqh',   'cqi', 'cqb', 'cqmin', 'cqmax', 'cqem',  'cqlh',  'cqex', 'cqch',
+    'em',  'ex',    'ch',    'cap',   'ic',  'lh',  'rem', 'rex',   'rch',   'rlh',   'ric',  'rcap', 'pt',
+    'pc',  'in',    'cm',    'mm',    'Q',   'vw',  'vh',  'vi',    'vb',    'vmin',  'vmax', 'dvw',  'dvh',
+    'dvi', 'dvb',   'dvmin', 'dvmax', 'svw', 'svh', 'svi', 'svb',   'svmin', 'svmax', 'lvw',  'lvh',  'lvi',
+    'lvb', 'lvmin', 'lvmax', 'cqw',   'cqh', 'cqi', 'cqb', 'cqmin', 'cqmax', 'cqem',  'cqlh', 'cqex', 'cqch',
   ]);
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LengthMatch|null {
     if (node.name !== 'NumberLiteral') {
@@ -678,7 +678,7 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
   }
 }
 
-export class SelectFunctionMatch implements Match {
+export class MathFunctionMatch implements Match {
   constructor(
       readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly func: string,
       readonly args: CodeMirror.SyntaxNode[][]) {
@@ -686,14 +686,14 @@ export class SelectFunctionMatch implements Match {
 }
 
 // clang-format off
-export class SelectFunctionMatcher extends matcherBase(SelectFunctionMatch) {
+export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
   // clang-format on
-  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): SelectFunctionMatch|null {
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MathFunctionMatch|null {
     if (node.name !== 'CallExpression') {
       return null;
     }
     const callee = matching.ast.text(node.getChild('Callee'));
-    if (!['min', 'max', 'clamp'].includes(callee)) {
+    if (!['min', 'max', 'clamp', 'calc'].includes(callee)) {
       return null;
     }
     const args = ASTUtils.callArgs(node);
@@ -701,7 +701,7 @@ export class SelectFunctionMatcher extends matcherBase(SelectFunctionMatch) {
       return null;
     }
     const text = matching.ast.text(node);
-    return new SelectFunctionMatch(text, node, callee, args);
+    return new MathFunctionMatch(text, node, callee, args);
   }
 }
 

@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -13,13 +14,10 @@ import * as Logs from '../../models/logs/logs.js';
 import {
   findMenuItemWithLabel,
   getContextMenuForElement,
+  getMenu,
   getMenuItemLabels,
 } from '../../testing/ContextMenuHelpers.js';
-import {
-  dispatchClickEvent,
-  dispatchMouseUpEvent,
-  raf,
-} from '../../testing/DOMHelpers.js';
+import {dispatchClickEvent, raf} from '../../testing/DOMHelpers.js';
 import {createTarget, registerNoopActions, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
@@ -386,28 +384,31 @@ describeWithMockConnection('NetworkLogView', () => {
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
         [urlString`chrome-extension://url1`, urlString`url2`]);
 
-    const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+    const dropdown = await getMoreTypesDropdown(filterBar);
     if (!dropdown) {
       return;
     }
-    const softMenu = getSoftMenu();
-    const hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
-    assert.isFalse(hideExtensionURL.hasAttribute('checked'));
-    dispatchMouseUpEvent(hideExtensionURL);
-    await raf();
-    assert.isTrue(hideExtensionURL.hasAttribute('checked'));
+    let softMenu = getMenu(() => dropdown.click());
+    let hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
+    assert.isFalse(hideExtensionURL.buildDescriptor().checked);
+    softMenu.invokeHandler(hideExtensionURL.id());
+    softMenu.discard();
+
+    softMenu = getMenu(() => dropdown.click());
+    hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
+    assert.isTrue(hideExtensionURL.buildDescriptor().checked);
 
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [urlString`url2`]);
 
-    dropdown.discard();
+    softMenu.discard();
   });
 
   it('displays correct count for more filters', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
-    const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+    const dropdown = await getMoreTypesDropdown(filterBar);
     if (!dropdown) {
       return;
     }
@@ -415,13 +416,13 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.strictEqual(getMoreFiltersActiveCount(filterBar), '0');
     assert.isTrue(getCountAdorner(filterBar)?.classList.contains('hidden'));
 
-    const softMenu = getSoftMenu();
+    const softMenu = getMenu(() => dropdown.click());
     await selectMoreFiltersOption(softMenu, 'Hide extension URLs');
 
     assert.strictEqual(getMoreFiltersActiveCount(filterBar), '1');
     assert.isFalse(getCountAdorner(filterBar)?.classList.contains('hidden'));
 
-    dropdown.discard();
+    softMenu.discard();
   });
 
   it('can filter requests with blocked response cookies from checkbox', async () => {
@@ -460,22 +461,25 @@ describeWithMockConnection('NetworkLogView', () => {
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
         [urlString`url1`, urlString`url2`]);
 
-    const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+    const dropdown = await getMoreTypesDropdown(filterBar);
     if (!dropdown) {
       return;
     }
-    const softMenu = getSoftMenu();
-    const blockedResponseCookies = getDropdownItem(softMenu, 'Blocked response cookies');
-    assert.isFalse(blockedResponseCookies.hasAttribute('checked'));
-    dispatchMouseUpEvent(blockedResponseCookies);
-    await raf();
-    assert.isTrue(blockedResponseCookies.hasAttribute('checked'));
+    let softMenu = getMenu(() => dropdown.click());
+    let blockedResponseCookies = getDropdownItem(softMenu, 'Blocked response cookies');
+    assert.isFalse(blockedResponseCookies.buildDescriptor().checked);
+    softMenu.invokeHandler(blockedResponseCookies.id());
+    softMenu.discard();
+
+    softMenu = getMenu(() => dropdown.click());
+    blockedResponseCookies = getDropdownItem(softMenu, 'Blocked response cookies');
+    assert.isTrue(blockedResponseCookies.buildDescriptor().checked);
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
       urlString`url1`,
     ]);
 
-    dropdown.discard();
+    softMenu.discard();
   });
 
   it('lists selected options in more filters tooltip', async () => {
@@ -483,20 +487,18 @@ describeWithMockConnection('NetworkLogView', () => {
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
 
-    const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+    const dropdown = await getMoreTypesDropdown(filterBar);
     assert.exists(dropdown);
 
-    const button = dropdown.element().querySelector('.toolbar-button');
-    assert.instanceOf(button, HTMLElement);
-    assert.strictEqual(button.title, 'Show only/hide requests');
+    assert.strictEqual(dropdown.title, 'Show only/hide requests');
 
-    const softMenu = getSoftMenu();
+    const softMenu = getMenu(() => dropdown.click());
     await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
     await selectMoreFiltersOption(softMenu, 'Hide extension URLs');
 
-    assert.strictEqual(button.title, 'Hide extension URLs, Blocked response cookies');
+    assert.strictEqual(dropdown.title, 'Hide extension URLs, Blocked response cookies');
 
-    dropdown.discard();
+    softMenu.discard();
   });
 
   it('updates tooltip to default when more filters option deselected', async () => {
@@ -504,23 +506,21 @@ describeWithMockConnection('NetworkLogView', () => {
     let filterBar;
     ({filterBar, networkLogView} = createEnvironment());
 
-    const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+    const dropdown = await getMoreTypesDropdown(filterBar);
     assert.exists(dropdown);
 
-    const button = dropdown.element().querySelector('.toolbar-button');
-    assert.instanceOf(button, HTMLElement);
-    assert.strictEqual(button.title, 'Show only/hide requests');
+    assert.strictEqual(dropdown.title, 'Show only/hide requests');
 
-    const softMenu = getSoftMenu();
+    const softMenu = getMenu(() => dropdown.click());
     await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
 
-    assert.strictEqual(button.title, 'Blocked response cookies');
+    assert.strictEqual(dropdown.title, 'Blocked response cookies');
 
     await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
 
-    assert.strictEqual(button.title, 'Show only/hide requests');
+    assert.strictEqual(dropdown.title, 'Show only/hide requests');
 
-    dropdown.discard();
+    softMenu.discard();
   });
 
   it('can remove requests', async () => {
@@ -977,15 +977,9 @@ function getCheckbox(filterBar: UI.FilterBar.FilterBar, title: string) {
   return checkbox;
 }
 
-async function openMoreTypesDropdown(
-    filterBar: UI.FilterBar.FilterBar, networkLogView: Network.NetworkLogView.NetworkLogView):
-    Promise<Network.NetworkLogView.MoreFiltersDropDownUI|undefined> {
-  const button = filterBar.element.querySelector('[aria-label="Show only/hide requests dropdown"]')
-                     ?.querySelector('.toolbar-button');
-  button?.dispatchEvent(new Event('click'));
-  await raf();
-  const dropdown = networkLogView.getMoreFiltersDropdown();
-  return dropdown;
+async function getMoreTypesDropdown(filterBar: UI.FilterBar.FilterBar): Promise<HTMLElement> {
+  return filterBar.element.querySelector('[aria-label="Show only/hide requests dropdown"]')
+             ?.querySelector('.toolbar-button') as HTMLElement;
 }
 
 function getCountAdorner(filterBar: UI.FilterBar.FilterBar): HTMLElement|null {
@@ -1000,22 +994,15 @@ function getMoreFiltersActiveCount(filterBar: UI.FilterBar.FilterBar): string {
   return count;
 }
 
-function getSoftMenu(): HTMLElement {
-  const container = document.querySelector('div[data-devtools-glass-pane]');
-  const softMenu = container!.shadowRoot!.querySelector('.soft-context-menu');
-  assert.instanceOf(softMenu, HTMLElement);
-  return softMenu;
-}
-
-function getDropdownItem(softMenu: HTMLElement, label: string) {
-  const item = softMenu?.querySelector(`[aria-label^="${label}"]`);
-  assert.instanceOf(item, HTMLElement);
+function getDropdownItem(softMenu: UI.ContextMenu.ContextMenu, label: string) {
+  const item = findMenuItemWithLabel(softMenu.defaultSection(), label);
+  assertNotNullOrUndefined(item);
   return item;
 }
 
-async function selectMoreFiltersOption(softMenu: HTMLElement, option: string) {
+async function selectMoreFiltersOption(softMenu: UI.ContextMenu.ContextMenu, option: string) {
   const item = getDropdownItem(softMenu, option);
-  dispatchMouseUpEvent(item);
+  softMenu.invokeHandler(item.id());
   await raf();
 }
 

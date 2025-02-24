@@ -663,85 +663,6 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
   }
 }
 
-export class ToolbarCombobox extends ToolbarItem<ToolbarButton.EventTypes> {
-  private textElement?: HTMLElement;
-  private text?: string;
-  private iconName?: string;
-  private adorner?: Adorners.Adorner.Adorner;
-
-  constructor(title: string, isIconDropdown?: boolean, jslogContext?: string, iconName?: string) {
-    let element;
-    if (iconName) {
-      element = new Buttons.Button.Button();
-      element.data = {variant: Buttons.Button.Variant.ICON, iconName};
-    } else {
-      element = document.createElement('button');
-    }
-    element.classList.add('toolbar-button');
-    super(element);
-    this.element.addEventListener('click', this.clicked.bind(this), false);
-
-    this.iconName = iconName;
-
-    this.setTitle(title);
-    if (jslogContext) {
-      this.element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
-    }
-    this.title = '';
-    if (!isIconDropdown) {
-      this.element.classList.add('toolbar-has-dropdown');
-      const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
-      this.element.appendChild(dropdownArrowIcon);
-    }
-  }
-
-  setText(text: string): void {
-    if (this.text === text || this.iconName) {
-      return;
-    }
-    if (!this.textElement) {
-      this.textElement = document.createElement('div');
-      this.textElement.classList.add('toolbar-text', 'hidden');
-      const dropDownArrow = this.element.querySelector('.toolbar-dropdown-arrow');
-      this.element.insertBefore(this.textElement, dropDownArrow);
-    }
-    this.textElement.textContent = text;
-    this.textElement.classList.toggle('hidden', !text);
-    this.text = text;
-  }
-
-  setAdorner(adorner: Adorners.Adorner.Adorner): void {
-    if (this.iconName) {
-      return;
-    }
-    if (!this.adorner) {
-      this.adorner = adorner;
-    } else {
-      adorner.replaceWith(adorner);
-      if (this.element.firstChild) {
-        this.element.removeChild(this.element.firstChild);
-      }
-    }
-    this.element.prepend(adorner);
-  }
-
-  setDarkText(): void {
-    this.element.classList.add('dark-text');
-  }
-
-  turnShrinkable(): void {
-    this.element.classList.add('toolbar-has-dropdown-shrinkable');
-  }
-
-  clicked(event: Event): void {
-    if (!this.enabled) {
-      return;
-    }
-    this.dispatchEventToListeners(ToolbarButton.Events.CLICK, event);
-    event.consume();
-  }
-}
-
 export namespace ToolbarButton {
   export const enum Events {
     CLICK = 'Click',
@@ -939,23 +860,86 @@ export class ToolbarToggle extends ToolbarButton {
   }
 }
 
-export class ToolbarMenuButton extends ToolbarCombobox {
+export class ToolbarMenuButton extends ToolbarItem<ToolbarButton.EventTypes> {
+  private textElement?: HTMLElement;
+  private text?: string;
+  private iconName?: string;
+  private adorner?: Adorners.Adorner.Adorner;
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
+  private readonly keepOpen: boolean;
   private triggerTimeoutId?: number;
   #triggerDelay = 200;
 
   constructor(
       contextMenuHandler: (arg0: ContextMenu) => void, isIconDropdown?: boolean, useSoftMenu?: boolean,
-      jslogContext?: string, iconName?: string) {
-    super('', isIconDropdown, jslogContext, iconName);
+      jslogContext?: string, iconName?: string, keepOpen?: boolean) {
+    let element;
+    if (iconName) {
+      element = new Buttons.Button.Button();
+      element.data = {variant: Buttons.Button.Variant.ICON, iconName};
+    } else {
+      element = document.createElement('button');
+    }
+    element.classList.add('toolbar-button');
+    super(element);
+    this.element.addEventListener('click', this.clicked.bind(this), false);
+
+    this.iconName = iconName;
+
+    this.setTitle('');
+    this.title = '';
+    if (!isIconDropdown) {
+      this.element.classList.add('toolbar-has-dropdown');
+      const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
+      this.element.appendChild(dropdownArrowIcon);
+    }
     if (jslogContext) {
       this.element.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context(jslogContext)}`);
     }
     this.element.addEventListener('mousedown', this.mouseDown.bind(this), false);
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
+    this.keepOpen = Boolean(keepOpen);
     ARIAUtils.markAsMenuButton(this.element);
+  }
+
+  setText(text: string): void {
+    if (this.text === text || this.iconName) {
+      return;
+    }
+    if (!this.textElement) {
+      this.textElement = document.createElement('div');
+      this.textElement.classList.add('toolbar-text', 'hidden');
+      const dropDownArrow = this.element.querySelector('.toolbar-dropdown-arrow');
+      this.element.insertBefore(this.textElement, dropDownArrow);
+    }
+    this.textElement.textContent = text;
+    this.textElement.classList.toggle('hidden', !text);
+    this.text = text;
+  }
+
+  setAdorner(adorner: Adorners.Adorner.Adorner): void {
+    if (this.iconName) {
+      return;
+    }
+    if (!this.adorner) {
+      this.adorner = adorner;
+    } else {
+      adorner.replaceWith(adorner);
+      if (this.element.firstChild) {
+        this.element.removeChild(this.element.firstChild);
+      }
+    }
+    this.element.prepend(adorner);
+  }
+
+  setDarkText(): void {
+    this.element.classList.add('dark-text');
+  }
+
+  turnShrinkable(): void {
+    this.element.classList.add('toolbar-has-dropdown-shrinkable');
   }
 
   setTriggerDelay(x: number): void {
@@ -980,6 +964,7 @@ export class ToolbarMenuButton extends ToolbarCombobox {
 
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
+      keepOpen: this.keepOpen,
       x: this.element.getBoundingClientRect().left,
       y: this.element.getBoundingClientRect().top + this.element.offsetHeight,
       // Without adding a delay, pointer events will be un-ignored too early, and a single click causes
@@ -991,7 +976,7 @@ export class ToolbarMenuButton extends ToolbarCombobox {
     void contextMenu.show();
   }
 
-  override clicked(event: Event): void {
+  clicked(event: Event): void {
     if (this.triggerTimeoutId) {
       clearTimeout(this.triggerTimeoutId);
     }

@@ -87,11 +87,13 @@ export interface Event {
 
 export interface Args {
   data?: ArgsData;
+  sampleTraceId?: number;
   stackTrace?: CallFrame[];
 }
 
 export interface ArgsData {
   stackTrace?: CallFrame[];
+  sampleTraceId?: number;
   url?: string;
   navigationId?: string;
   frame?: string;
@@ -247,9 +249,7 @@ export interface ParseHTML extends Complete {
   name: 'ParseHTML';
   args: Args&{
     beginData: {
-      frame: string,
-      startLine: number,
-      url: string,
+      sampleTraceId?: number, frame: string, startLine: number, url: string,
     },
     endData?: {
       endLine: number,
@@ -1885,7 +1885,7 @@ export interface UpdateLayoutTree extends Complete {
   args: Args&{
     elementCount: number,
     beginData?: {
-      frame: string,
+      sampleTraceId?: number, frame: string,
       stackTrace?: CallFrame[],
     },
   };
@@ -1898,10 +1898,7 @@ export interface Layout extends Complete {
   name: Name.LAYOUT;
   args: Args&{
     beginData: {
-      frame: string,
-      dirtyObjects: number,
-      partialLayout: boolean,
-      totalObjects: number,
+      sampleTraceId?: number, frame: string, dirtyObjects: number, partialLayout: boolean, totalObjects: number,
     },
     // endData is not reliably populated.
     // Why? TBD. https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/local_frame_view.cc;l=847-851;drc=8b6aaad8027390ce6b32d82d57328e93f34bb8e5

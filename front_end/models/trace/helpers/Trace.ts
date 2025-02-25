@@ -695,11 +695,12 @@ export function eventContainsTimestamp(event: Types.Events.Event, ts: Types.Timi
 }
 
 export function extractSampleTraceId(event: Types.Events.Event): number|null {
-  if (Types.Events.isConsoleRunTask(event) || Types.Events.isConsoleTimeStamp(event)) {
-    return event.args?.data?.sampleTraceId || null;
+  if (!event.args) {
+    return null;
   }
-  if (Types.Events.isUserTimingMeasure(event)) {
-    return event.args.sampleTraceId;
+  if ('beginData' in event.args) {
+    const beginData = event.args['beginData'] as {sampleTraceId?: number};
+    return beginData.sampleTraceId ?? null;
   }
-  return null;
+  return event.args?.sampleTraceId ?? event.args?.data?.sampleTraceId ?? null;
 }

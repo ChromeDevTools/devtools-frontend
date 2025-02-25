@@ -478,7 +478,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     const selector = new UI.Toolbar.ToolbarComboBox(() => {
       this.#selectedTargetId = selector.selectedOption()?.value;
     }, i18nString(UIStrings.selectTarget), undefined, 'target-selector');
-    selector.setMaxWidth(120);
+    selector.element.classList.add('target-selector');
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const syncTargets = (): void => {
       selector.removeOptions();

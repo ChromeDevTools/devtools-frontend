@@ -11,3 +11,7 @@
 .protocol-monitor .protocol-monitor-bottom-toolbar {
   border-top: 1px solid var(--sys-color-divider);
 }
+
+.target-selector {
+  max-width: 120px;
+}

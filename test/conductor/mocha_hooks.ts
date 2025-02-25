@@ -5,6 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import {AsyncScope} from './async-scope.js';
 import {
   postFileTeardown,
   preFileSetup,
@@ -101,8 +102,11 @@ export const mochaHooks = {
   afterEach: makeInstrumentedTestFunction(
       async function(this: Mocha.Context) {
         this.timeout(20000);
-        await resetPages();
-        await unregisterAllServiceWorkers();
+        const scope = new AsyncScope();
+        await scope.exec(async () => {
+          await resetPages();
+          await unregisterAllServiceWorkers();
+        });
       },
       'afterEach in global hooks'),
 };

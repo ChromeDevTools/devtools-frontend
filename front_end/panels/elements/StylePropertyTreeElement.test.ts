@@ -31,18 +31,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   let fakeComputeCSSVariable: SinonStub<
       [style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, variableName: string],
       SDK.CSSMatchedStyles.CSSVariableValue|null>;
-
-  async function setUpCSSModel() {
-    stubNoopSettings();
-    setMockConnectionResponseHandler('CSS.enable', () => ({}));
-    const cssModel = new SDK.CSSModel.CSSModel(createTarget());
-    await cssModel.resumeModel();
-    const domModel = cssModel.domModel();
-    const node = new SDK.DOMModel.DOMNode(domModel);
-    node.id = 0 as Protocol.DOM.NodeId;
-    LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    return {cssModel};
-  }
+  let cssModel: SDK.CSSModel.CSSModel;
 
   beforeEach(async () => {
     const computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
@@ -73,6 +62,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace);
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager: SDK.TargetManager.TargetManager.instance()});
+
+    stubNoopSettings();
+    setMockConnectionResponseHandler('CSS.enable', () => ({}));
+    cssModel = new SDK.CSSModel.CSSModel(createTarget());
+    await cssModel.resumeModel();
+    const domModel = cssModel.domModel();
+    const node = new SDK.DOMModel.DOMNode(domModel);
+    node.id = 0 as Protocol.DOM.NodeId;
+    LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
   });
 
   function addProperty(name: string, value: string, longhandProperties: Protocol.CSS.CSSProperty[] = []) {
@@ -125,7 +123,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
        });
 
     it('is able to expand longhands with vars', async () => {
-      await setUpCSSModel();
       setMockConnectionResponseHandler(
           'CSS.getLonghandProperties', (request: Protocol.CSS.GetLonghandPropertiesRequest) => {
             if (request.shorthandName !== 'shorthand') {
@@ -298,15 +295,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       describe('jumping to animations panel', () => {
         let domModel: SDK.DOMModel.DOMModel;
-        beforeEach(() => {
+        beforeEach(async () => {
           const target = createTarget();
           const domModelBeforeAssertion = target.model(SDK.DOMModel.DOMModel);
           assert.exists(domModelBeforeAssertion);
           domModel = domModelBeforeAssertion;
-        });
-
-        afterEach(() => {
-          sinon.reset();
         });
 
         it('should render a jump-to icon when the animation with the given name exists for the node', async () => {
@@ -1592,7 +1585,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('LengthRenderer', () => {
     it('shows a popover with pixel values for relative units', async () => {
-      await setUpCSSModel();
       setMockConnectionResponseHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) =>
@@ -1617,7 +1609,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('MathFunctionRenderer', () => {
     it('strikes out non-selected values', async () => {
-      await setUpCSSModel();
       setMockConnectionResponseHandler(
           'CSS.resolveValues',
           (request: Protocol.CSS.ResolveValuesRequest) => ({
@@ -1641,7 +1632,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('AutoBaseRenderer', () => {
     it('strikes out non-selected values', async () => {
-      await setUpCSSModel();
 
       const stylePropertyTreeElement = getTreeElement('display', '-internal-auto-base(inline, block)');
 
@@ -1667,7 +1657,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     beforeEach(async () => {
       promptStub = sinon.stub(Elements.StylesSidebarPane.CSSPropertyPrompt.prototype, 'initialize').resolves([]);
 
-      const {cssModel} = await setUpCSSModel();
       const gridNode = LegacyUI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
       const currentNode = new SDK.DOMModel.DOMNode(cssModel.domModel());
       currentNode.id = 1 as Protocol.DOM.NodeId;

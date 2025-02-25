@@ -72,7 +72,11 @@ async function showTrace(
       }));
   await renderPromise.promise;
   renderPromise = Promise.withResolvers<Elements.CSSValueTraceView.ViewInput>();
-  view.showTrace(property, matchedStyles, new Map(), treeElement.getPropertyRenderers());
+  view.showTrace(
+      property, matchedStyles, new Map(),
+      Elements.StylePropertyTreeElement.getPropertyRenderers(
+          property.ownerStyle, treeElement.parentPane(), matchedStyles, treeElement,
+          treeElement.getComputedStyles() ?? new Map()));
   return await renderPromise.promise;
 }
 

@@ -773,6 +773,31 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: this.hasMatchedStyles});
   }
 
+  #getRegisteredPropertyDetails(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
+      ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails|undefined {
+    const registration = matchedStyles.getRegisteredProperty(variableName);
+    const goToDefinition = (): void => this.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
+    return registration ? {registration, goToDefinition} : undefined;
+  }
+
+  getVariableParserError(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string):
+      ElementsComponents.CSSVariableValueView.CSSVariableParserError|null {
+    const registrationDetails = this.#getRegisteredPropertyDetails(matchedStyles, variableName);
+    return registrationDetails ?
+        new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
+        null;
+  }
+
+  getVariablePopoverContents(
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, variableName: string,
+      computedValue: string|null): HTMLElement|undefined {
+    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
+      variableName,
+      value: computedValue ?? undefined,
+      details: this.#getRegisteredPropertyDetails(matchedStyles, variableName),
+    });
+  }
+
   private async fetchComputedStylesFor(nodeId: Protocol.DOM.NodeId|undefined): Promise<Map<string, string>|null> {
     const node = this.node();
     if (node === null || nodeId === undefined) {

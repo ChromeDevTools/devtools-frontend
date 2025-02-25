@@ -196,6 +196,18 @@ const UIStringsNotTranslate = {
    *@description Title for the x-link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: 'Open image in a new tab',
+  /**
+   *@description Button text to change the selected workspace
+   */
+  change: 'Change',
+  /**
+   *@description Button text while data is being loaded
+   */
+  loading: 'Loading...',
+  /**
+   *@description Label for the selected workspace/folder
+   */
+  selectedFolder: 'Selected folder:'
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);
@@ -538,6 +550,12 @@ export class ChatView extends HTMLElement {
   }
 }
 
+async function onChangeWorkspaceClick(): Promise<void> {
+  await UI.UIUtils.ConfirmDialog.show(
+      'Changing workspace is not implemented yet', 'Change workspace', undefined,
+      {jslogContext: 'change-workspace-dialog'});
+}
+
 function renderChangeSummary({
   changeSummary,
   patchSuggestion,
@@ -570,14 +588,24 @@ function renderChangeSummary({
         .displayNotice=${true}
       ></devtools-code-block>
       <div class="workspace">
+        <div class="change-workspace">
+          <div class="selected-folder">
+            ${lockedString(UIStringsNotTranslate.selectedFolder)} ${projectName}
+          </div>
+          <devtools-button
+            @click=${onChangeWorkspaceClick}
+            .jslogContext=${'change-workspace'}
+            .variant=${Buttons.Button.Variant.TEXT}>
+              ${lockedString(UIStringsNotTranslate.change)}
+          </devtools-button>
+        </div>
         <devtools-button
           class='apply-to-workspace'
           @click=${onApplyToWorkspace}
           .jslogContext=${'stage-to-workspace'}
           .variant=${Buttons.Button.Variant.OUTLINED}>
-            ${!patchSuggestionLoading ? lockedString(UIStringsNotTranslate.applyToWorkspace) : 'Loading...'}
+            ${!patchSuggestionLoading ? lockedString(UIStringsNotTranslate.applyToWorkspace) : lockedString(UIStringsNotTranslate.loading)}
         </devtools-button>
-        <div>Selected folder: ${projectName}</div>
       </div>
       ${patchSuggestion ? html`<div class="patch-tmp-message">
         ${patchSuggestion}

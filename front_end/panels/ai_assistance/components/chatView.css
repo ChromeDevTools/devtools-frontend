@@ -790,7 +790,16 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: var(--sys-size-4);
+    margin: var(--sys-size-5);
+  }
+
+  .selected-folder {
+    margin: var(--sys-size-3) var(--sys-size-3) 0 0;
+  }
+
+  .change-workspace {
+    display: flex;
+    flex-direction: row;
   }
 
   .patch-tmp-message {

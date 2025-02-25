@@ -668,6 +668,7 @@ export const knownContextValues = new Set([
   'caret-color',
   'category',
   'change',
+  'change-workspace-dialog',
   'changes',
   'changes.changes',
   'changes.copy',

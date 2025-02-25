@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("ai_assistance") {
   sources = [
+    "high-specificity.html",
     "iframe.html",
     "index.html",
   ]

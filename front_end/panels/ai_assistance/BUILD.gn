@@ -97,6 +97,7 @@ ts_library("unittests") {
     "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",
     "EvaluateAction.test.ts",
+    "ExtensionScope.test.ts",
     "agents/AiAgent.test.ts",
     "agents/FileAgent.test.ts",
     "agents/NetworkAgent.test.ts",

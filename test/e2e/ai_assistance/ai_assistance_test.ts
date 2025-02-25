@@ -505,4 +505,27 @@ STOP`,
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
+
+  it('modifies styles to a selector with high specificity', async () => {
+    await runAiAssistance({
+      query: 'Change the color for this element to rebeccapurple',
+      messages: [
+        `THOUGHT: I can change the color of an element by setting the color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'color': 'rebeccapurple' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      resource: '../resources/ai_assistance/high-specificity.html',
+      node: 'h1',
+    });
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      // @ts-expect-error page context.
+      return window.getComputedStyle(document.querySelector('h1')).color === 'rgb(102, 51, 153)';
+    });
+  });
 });

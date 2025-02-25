@@ -343,9 +343,11 @@ describe('CSSMatchedStyles', () => {
        node.id = 1 as Protocol.DOM.NodeId;
        const startColumn = 0, endColumn = 1;
        const matchedPayload = [
-         ruleMatch('body', [{name: '--var', value: 'blue'}], {startLine: 0, startColumn, endLine: 0, endColumn}),
-         ruleMatch('*', [{name: 'color', value: 'var(--var)'}], {startLine: 1, startColumn, endLine: 1, endColumn}),
-         ruleMatch('*', [{name: '--var', value: 'red'}], {startLine: 2, startColumn, endLine: 2, endColumn}),
+         ruleMatch(
+             'body', [{name: '--var', value: 'blue'}], {range: {startLine: 0, startColumn, endLine: 0, endColumn}}),
+         ruleMatch(
+             '*', [{name: 'color', value: 'var(--var)'}], {range: {startLine: 1, startColumn, endLine: 1, endColumn}}),
+         ruleMatch('*', [{name: '--var', value: 'red'}], {range: {startLine: 2, startColumn, endLine: 2, endColumn}}),
        ];
        const inheritedPayload = [{matchedCSSRules: matchedPayload.slice(1)}];
        const matchedStyles = await getMatchedStyles({

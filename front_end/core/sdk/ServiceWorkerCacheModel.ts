@@ -120,11 +120,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   caches(): Cache[] {
-    const caches = new Array();
-    for (const cache of this.#cachesInternal.values()) {
-      caches.push(cache);
-    }
-    return caches;
+    return [...this.#cachesInternal.values()];
   }
 
   override dispose(): void {

@@ -4,9 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import type * as puppeteer from 'puppeteer-core';
 
 import {installPageErrorHandlers} from './events.js';
 import {BUILD_ROOT} from './paths.js';

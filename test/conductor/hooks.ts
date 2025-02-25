@@ -4,9 +4,7 @@
 
 /* eslint-disable no-console */
 
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import * as puppeteer from 'puppeteer-core';
 
 import {
   dumpCollectedErrors,
@@ -14,9 +12,9 @@ import {
   setupBrowserProcessIO,
 } from './events.js';
 import {
+  type DevToolsFrontendReloadOptions,
   DevToolsFrontendTab,
   loadEmptyPageAndWaitForContent,
-  type DevToolsFrontendReloadOptions,
 } from './frontend_tab.js';
 import {
   clearPuppeteerState,
@@ -27,13 +25,6 @@ import {
 } from './puppeteer-state.js';
 import {TargetTab} from './target_tab.js';
 import {TestConfig} from './test_config.js';
-
-// Workaround for mismatching versions of puppeteer types and puppeteer library.
-declare module 'puppeteer-core' {
-  interface ConsoleMessage {
-    stackTrace(): ConsoleMessageLocation[];
-  }
-}
 
 const viewportWidth = 1280;
 const viewportHeight = 720;

@@ -9,11 +9,8 @@
 
 /* eslint-disable no-console */
 
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
-
-const path = require('path');
+import * as path from 'path';
+import type * as puppeteer from 'puppeteer-core';
 
 const ALLOWED_ASSERTION_FAILURES = [
   // Failure during shutdown. crbug.com/1145969

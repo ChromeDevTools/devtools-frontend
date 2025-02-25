@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import type * as puppeteer from 'puppeteer-core';
 
 import {loadEmptyPageAndWaitForContent} from './frontend_tab.js';
 

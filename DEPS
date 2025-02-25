@@ -57,6 +57,9 @@ vars = {
 
   # condition to allowlist deps for non-git-source processing.
   'non_git_source': 'True',
+
+  # siso CIPD package version
+  'siso_version': 'git_revision:aa31236f9e208039b6196cbae4318d56d4c30e3d',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -141,6 +144,16 @@ deps = {
   'build': {
     'url': Var('build_url') + '@' + Var('build_revision'),
     'condition': 'build_with_chromium == False',
+  },
+  'third_party/siso': {
+    'packages': [
+      {
+        'package': 'infra/build/siso/${{platform}}',
+        'version': Var('siso_version'),
+      }
+    ],
+    'dep_type': 'cipd',
+    'condition': 'not build_with_chromium and host_cpu != "s390" and host_os != "zos" and host_cpu != "ppc"',
   },
   'third_party/depot_tools': {
     'url': Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
@@ -290,7 +303,6 @@ hooks = [
                 '--version_number=' + Var('chrome'),
     ],
   },
-
   {
     # Update LASTCHANGE for build script timestamps
     'name': 'lastchange',
@@ -317,6 +329,16 @@ hooks = [
       '--no-warnings=ExperimentalWarning',
       'scripts/deps/sync-vscode-settings.mjs'
     ]
+  },
+  {
+    'name': 'configure_siso',
+    'pattern': '.',
+    'condition': 'build_with_chromium == False',
+    'action': ['python3',
+               'build/config/siso/configure_siso.py',
+               '--rbe_instance',
+               'projects/rbe-chrome-untrusted/instances/default_instance',
+               ],
   },
 ]
 

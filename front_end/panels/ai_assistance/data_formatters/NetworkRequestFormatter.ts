@@ -167,6 +167,10 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
 
 // Header names that could be included in the prompt, lowercase.
 const allowedHeaders = new Set([
+  ':authority',
+  ':method',
+  ':path',
+  ':scheme',
   'a-im',
   'accept-ch',
   'accept-charset',

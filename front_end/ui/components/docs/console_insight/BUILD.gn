@@ -12,6 +12,7 @@ ts_library("ts") {
     "error.ts",
     "loading.ts",
     "optin.ts",
+    "references.ts",
     "reminder.ts",
     "static.ts",
   ]
@@ -32,6 +33,7 @@ copy_to_gen("console_insight") {
     "error.html",
     "loading.html",
     "optin.html",
+    "references.html",
     "reminder.html",
     "static.html",
   ]

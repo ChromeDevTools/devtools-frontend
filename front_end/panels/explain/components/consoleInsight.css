@@ -295,12 +295,12 @@ details {
 details.references {
   /* This transition is only added because there is no `transitionend` event in
      JS for the `::details-content` transition. */
-  transition: margin-top var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
+  transition: margin-bottom var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
 }
 
 details.references[open] {
-  /* This transition does not affect the actual UI. */
-  margin-top: 11px;
+  /* This transition does not affect the actual UI because of collapsing margins. */
+  margin-bottom: var(--sys-size-1);
 }
 
 h2 {

@@ -87,11 +87,47 @@ export class Toolbar extends HTMLElement {
   private items: ToolbarItem[] = [];
   enabled = true;
   private compactLayout = false;
+  private mutationObserver = new MutationObserver(this.onItemsChange.bind(this));
 
   constructor() {
     super();
     this.#shadowRoot.createChild('style').textContent = toolbarStyles.cssContent;
     this.#shadowRoot.createChild('slot');
+  }
+
+  onItemsChange(mutationList: MutationRecord[]): void {
+    for (const mutation of mutationList) {
+      for (const element of mutation.removedNodes) {
+        if (!(element instanceof HTMLElement)) {
+          continue;
+        }
+        for (const item of this.items) {
+          if (item.element === element) {
+            this.items.splice(this.items.indexOf(item), 1);
+            break;
+          }
+        }
+      }
+      for (const element of mutation.addedNodes) {
+        if (!(element instanceof HTMLElement)) {
+          continue;
+        }
+        if (this.items.some(item => item.element === element)) {
+          continue;
+        }
+        let item: ToolbarItem;
+        if (element instanceof Buttons.Button.Button) {
+          item = new ToolbarButton('', undefined, undefined, undefined, element);
+        } else if (element instanceof ToolbarInputElement) {
+          item = element.item;
+        } else {
+          item = new ToolbarItem(element);
+        }
+        if (item) {
+          this.appendToolbarItem(item);
+        }
+      }
+    }
   }
 
   connectedCallback(): void {
@@ -329,7 +365,9 @@ export class Toolbar extends HTMLElement {
     if (!this.enabled) {
       item.applyEnabledState(false);
     }
-    this.appendChild(item.element);
+    if (item.element.parentElement !== this) {
+      this.appendChild(item.element);
+    }
     this.hideSeparatorDupes();
   }
 
@@ -552,22 +590,30 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes, Buttons
   private text?: string;
   private adorner?: HTMLElement;
 
-  constructor(title: string, glyphOrAdorner?: string|Adorners.Adorner.Adorner, text?: string, jslogContext?: string) {
-    const button = new Buttons.Button.Button();
+  constructor(
+      title: string, glyphOrAdorner?: string|Adorners.Adorner.Adorner, text?: string, jslogContext?: string,
+      button?: Buttons.Button.Button) {
+    let adorner: Adorners.Adorner.Adorner|null = null;
+    if (!button) {
+      button = new Buttons.Button.Button();
+      if (glyphOrAdorner instanceof Adorners.Adorner.Adorner) {
+        button.variant = Buttons.Button.Variant.ADORNER_ICON;
+        adorner = glyphOrAdorner;
+      } else if (typeof glyphOrAdorner === 'string' && !text) {
+        button.data = {variant: Buttons.Button.Variant.ICON, iconName: glyphOrAdorner};
+      } else {
+        button.variant = Buttons.Button.Variant.TEXT;
+        button.reducedFocusRing = true;
+        if (glyphOrAdorner) {
+          button.iconName = glyphOrAdorner;
+        }
+      }
+    }
     super(button);
     this.button = button;
-    if (glyphOrAdorner instanceof Adorners.Adorner.Adorner) {
-      this.button.variant = Buttons.Button.Variant.ADORNER_ICON;
-      this.setAdorner(glyphOrAdorner);
-      this.button.prepend(glyphOrAdorner);
-    } else if (typeof glyphOrAdorner === 'string' && !text) {
-      this.button.data = {variant: Buttons.Button.Variant.ICON, iconName: glyphOrAdorner};
-    } else {
-      this.button.variant = Buttons.Button.Variant.TEXT;
-      this.button.reducedFocusRing = true;
-      if (glyphOrAdorner) {
-        this.button.iconName = glyphOrAdorner;
-      }
+    if (adorner) {
+      this.setAdorner(adorner);
+      this.button.prepend(adorner);
     }
     button.classList.add('toolbar-button');
     this.element.addEventListener('click', this.clicked.bind(this), false);
@@ -680,8 +726,10 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
   constructor(
       placeholder: string, accessiblePlaceholder?: string, growFactor?: number, shrinkFactor?: number, tooltip?: string,
       completions?: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestion[]>),
-      dynamicCompletions?: boolean, jslogContext?: string) {
-    const element = document.createElement('div');
+      dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement) {
+    if (!element) {
+      element = document.createElement('div');
+    }
     element.classList.add('toolbar-input');
     super(element);
 
@@ -799,17 +847,71 @@ export class ToolbarFilter extends ToolbarInput {
   constructor(
       filterBy?: Common.UIString.LocalizedString, growFactor?: number, shrinkFactor?: number, tooltip?: string,
       completions?: ((arg0: string, arg1: string, arg2?: boolean|undefined) => Promise<Suggestion[]>),
-      dynamicCompletions?: boolean, jslogContext?: string) {
+      dynamicCompletions?: boolean, jslogContext?: string, element?: HTMLElement) {
     const filterPlaceholder = filterBy ? filterBy : i18nString(UIStrings.filter);
     super(
         filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions,
-        jslogContext || 'filter');
+        jslogContext || 'filter', element);
 
     const filterIcon = IconButton.Icon.create('filter');
     this.element.prepend(filterIcon);
     this.element.classList.add('toolbar-filter');
   }
 }
+
+class ToolbarInputElement extends HTMLElement {
+  static observedAttributes = ['value'];
+
+  item!: ToolbarInput;
+  datalist: HTMLDataListElement|null = null;
+
+  connectedCallback(): void {
+    const list = this.getAttribute('list');
+    if (list) {
+      this.datalist = (this.getRootNode() as ShadowRoot | Document).querySelector(`datalist[id="${list}"]`);
+    }
+    const placeholder = this.getAttribute('placeholder') || '';
+    const accessiblePlaceholder = this.getAttribute('aria-placeholder') ?? undefined;
+    const tooltip = this.getAttribute('title') ?? undefined;
+    const jslogContext = this.id ?? undefined;
+    const isFilter = this.getAttribute('type') === 'filter';
+    if (isFilter) {
+      this.item = new ToolbarFilter(
+          placeholder as Platform.UIString.LocalizedString, /* growFactor=*/ undefined,
+          /* shrinkFactor=*/ undefined, tooltip, this.datalist ? this.#onAutocomplete.bind(this) : undefined,
+          /* dynamicCompletions=*/ undefined, jslogContext || 'filter', this);
+    } else {
+      this.item = new ToolbarInput(
+          placeholder, accessiblePlaceholder, /* growFactor=*/ undefined,
+          /* shrinkFactor=*/ undefined, tooltip, this.datalist ? this.#onAutocomplete.bind(this) : undefined,
+          /* dynamicCompletions=*/ undefined, jslogContext, this);
+    }
+    this.item.addEventListener(ToolbarInput.Event.TEXT_CHANGED, event => {
+      this.dispatchEvent(new CustomEvent('change', {detail: event.data}));
+    });
+    this.item.addEventListener(ToolbarInput.Event.ENTER_PRESSED, event => {
+      this.dispatchEvent(new CustomEvent('submit', {detail: event.data}));
+    });
+  }
+
+  async #onAutocomplete(expression: string, prefix: string, force?: boolean): Promise<Suggestion[]> {
+    if (!prefix && !force && expression || !this.datalist) {
+      return [];
+    }
+
+    const options = this.datalist.options;
+    return [...options].map((({value}) => value)).filter(value => value.startsWith(prefix)).map(text => ({text}));
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    if (name === 'value') {
+      if (this.item && this.item.value() !== newValue) {
+        this.item.setValue(newValue, true);
+      }
+    }
+  }
+}
+customElements.define('devtools-toolbar-input', ToolbarInputElement);
 
 export namespace ToolbarInput {
   export const enum Event {

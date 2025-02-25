@@ -186,11 +186,14 @@ export class SelectButton extends HTMLElement {
       ): Lit.TemplateResult {
     // clang-format off
     return html`
-      <devtools-menu-item .value=${item.value} .selected=${
-      item.value === selectedItem.value
-    } jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}>
-        ${item.label()}
-      </devtools-menu-item>
+      <devtools-menu-item
+      .title=${item.label()}
+      .value=${item.value}
+      .selected=${item.value === selectedItem.value}
+      jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}
+      >${
+        item.label()
+      }</devtools-menu-item>
     `;
     // clang-format on
   }
@@ -234,6 +237,7 @@ export class SelectButton extends HTMLElement {
       html`
       <div class="select-button" title=${ifDefined(this.#getTitle(menuLabel))}>
       <devtools-select-menu
+          title=""
           class=${classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
           ?disabled=${this.#props.disabled}

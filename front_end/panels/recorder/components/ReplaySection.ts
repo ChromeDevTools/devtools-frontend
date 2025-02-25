@@ -235,8 +235,8 @@ export class ReplaySection extends HTMLElement {
       .value=${this.#settings?.replayExtension || this.#settings?.speed || ''}
       .buttonLabel=${i18nString(UIStrings.Replay)}
       .groups=${groups}
-      jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}>
-    </devtools-select-button>`,
+      jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}
+    ></devtools-select-button>`,
       this.#shadow,
       { host: this },
     );

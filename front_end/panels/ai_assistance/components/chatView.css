@@ -182,6 +182,13 @@
     /* cancel + start new chat button */
     --right-padding: 172px;
   }
+
+  &.screenshot-button {
+    --right-padding:
+    calc(
+      2*var(--sys-size-3) + 2*26px
+    ); /* Gaps because of right paddings + width of two icons */
+  }
 }
 
 .chat-input-buttons {

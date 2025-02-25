@@ -1203,14 +1203,16 @@ function renderChatInputButtons(
 
 function renderTakeScreenshotButton({
   multimodalInputEnabled,
+  blockedByCrossOrigin,
   isTextInputDisabled,
   onTakeScreenshot,
 }: {
   isTextInputDisabled: boolean,
+  blockedByCrossOrigin: boolean,
   multimodalInputEnabled?: boolean,
   onTakeScreenshot?: () => void,
 }): Lit.LitTemplate {
-    if (!multimodalInputEnabled) {
+    if (!multimodalInputEnabled || blockedByCrossOrigin) {
       return Lit.nothing;
     }
     return html`<devtools-button
@@ -1308,6 +1310,7 @@ function renderChatInput({
   const chatInputCls = Lit.Directives.classMap({
     'chat-input': true,
     'two-big-buttons': blockedByCrossOrigin,
+    'screenshot-button': Boolean(multimodalInputEnabled) && !blockedByCrossOrigin,
   });
 
     const chatInputContainerCls = Lit.Directives.classMap({
@@ -1348,13 +1351,13 @@ function renderChatInput({
       ></textarea>
       <div class="chat-input-buttons">
         ${renderTakeScreenshotButton({
-          multimodalInputEnabled, isTextInputDisabled, onTakeScreenshot
+          multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, onTakeScreenshot
         })}
         ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat })}
       </div>
     </div>
   </form>`;
-    // clang-format on
+  // clang-format on
   }
 
   function renderAidaUnavailableContents(

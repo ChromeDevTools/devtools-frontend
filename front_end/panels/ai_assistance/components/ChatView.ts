@@ -960,7 +960,7 @@ function renderSelection({
   const icon = selectedContext?.getIcon() ?? Lit.nothing;
 
   const handleKeyDown = (ev: KeyboardEvent): void => {
-    if (ev.key === 'Enter') {
+    if (ev.key === 'Enter' || ev.key === ' ') {
       void onContextClick();
     }
   };

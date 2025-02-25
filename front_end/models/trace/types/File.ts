@@ -192,6 +192,14 @@ export interface MetaData {
   enhancedTraceVersion?: number;
   modifications?: Modifications;
   cruxFieldData?: CrUXManager.PageResult[];
+  /** Currently only stores JS maps, not CSS. This never stores data url source maps. */
+  sourceMaps?: MetadataSourceMap[];
+}
+
+interface MetadataSourceMap {
+  url: string;
+  sourceMapUrl: string;
+  sourceMap: SDK.SourceMap.SourceMapV3;
 }
 
 export type Contents = TraceFile|Event[];

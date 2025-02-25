@@ -1400,7 +1400,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           traceAsString = cpuprofileJsonGenerator(profile);
         }
       } else {
-        const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
+        const formattedTraceIter = traceJsonGenerator(traceEvents, {
+          ...metadata,
+          sourceMaps: isEnhancedTraces ? metadata?.sourceMaps : undefined,
+        });
         traceAsString = Array.from(formattedTraceIter).join('');
       }
       if (!traceAsString) {
@@ -2416,7 +2419,59 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
-  #createSourceMapResolver(isFreshRecording: boolean): Trace.TraceModel.ParseConfig['resolveSourceMap'] {
+  /**
+   * Store source maps on trace metadata (but just the non-data url ones).
+   *
+   * Many raw source maps are already in memory, but there are some cases where they may
+   * not be and have to be fetched here:
+   *
+   * 1. If the trace processor (via `#createSourceMapResolver`) never fetched it,
+   *    due to `ScriptHandler` skipping the script if it could not find an associated frame.
+   * 2. If the initial fetch failed (perhaps the failure was intermittent and a
+   *    subsequent attempt will work).
+   */
+  async #retainSourceMapsForEnhancedTrace(
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, metadata: Trace.Types.File.MetaData): Promise<void> {
+    const handleScript = async(script: Trace.Handlers.ModelHandlers.Scripts.Script): Promise<void> => {
+      if (!script.sourceMapUrl || script.sourceMapUrl.startsWith('data:')) {
+        return;
+      }
+
+      if (metadata.sourceMaps?.find(m => m.sourceMapUrl === script.sourceMapUrl)) {
+        return;
+      }
+
+      // TimelineController sets `SDK.SourceMap.SourceMap.retainRawSourceMaps` to true,
+      // which means the raw source map is present (assuming `script.sourceMap` is too).
+      let rawSourceMap = script.sourceMap?.json();
+
+      // If the raw map is not present for some reason, fetch it again.
+      if (!rawSourceMap) {
+        const initiator = {
+          target: null,
+          frameId: script.frame as Protocol.Page.FrameId,
+          initiatorUrl: script.url as Platform.DevToolsPath.UrlString
+        };
+        rawSourceMap = await SDK.SourceMapManager.tryLoadSourceMap(
+            script.sourceMapUrl as Platform.DevToolsPath.UrlString, initiator);
+      }
+
+      if (script.url && rawSourceMap) {
+        metadata.sourceMaps?.push({url: script.url, sourceMapUrl: script.sourceMapUrl, sourceMap: rawSourceMap});
+      }
+    };
+
+    metadata.sourceMaps = [];
+
+    const promises = [];
+    for (const script of parsedTrace?.Scripts.scripts.values() ?? []) {
+      promises.push(handleScript(script));
+    }
+    await Promise.all(promises);
+  }
+
+  #createSourceMapResolver(isFreshRecording: boolean, metadata: Trace.Types.File.MetaData|null):
+      Trace.TraceModel.ParseConfig['resolveSourceMap'] {
     // Currently, only experimental insights need source maps.
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS)) {
       return;
@@ -2462,38 +2517,63 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         }
       }
 
-      // Else... fetch it!
+      // If loading from disk, check the metadata for source maps.
+      // The metadata doesn't store data url source maps.
+      const isDataUrl = sourceMapUrl.startsWith('data:');
+      if (!isFreshRecording && metadata?.sourceMaps && !isDataUrl) {
+        const cachedSourceMap = metadata.sourceMaps.find(m => m.sourceMapUrl === sourceMapUrl);
+        if (cachedSourceMap) {
+          return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, cachedSourceMap.sourceMap);
+        }
+      }
+
+      // Never fetch source maps if the trace is not fresh - the source maps may not
+      // reflect what was actually loaded by the page for this trace on disk.
+      if (!isFreshRecording && !isDataUrl) {
+        return null;
+      }
+
       if (!scriptUrl) {
         return null;
       }
 
-      // In all other cases, we must fetch the source map.
-      // For example, since the debugger model is disable during recording, any non-final navigations during
-      // the trace will never have their source maps fetched by the debugger model. That's only ever done here.
+      // In all other cases, fetch the source map.
+      //
+      // 1) data urls
+      // 2) fresh recording + source map not for active frame
+      //
+      // For example, since the debugger model is disable during recording, any
+      // non-final navigations during the trace will never have their source maps
+      // fetched by the debugger model. That's only ever done here.
 
-      try {
-        const initiator = {target: null, frameId: frame, initiatorUrl: scriptUrl};
-        const payload = await SDK.SourceMapManager.loadSourceMap(sourceMapUrl, initiator);
-        return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, payload);
-      } catch (cause) {
-        console.error(`Could not load content for ${sourceMapUrl}: ${cause.message}`, {cause});
-      }
-
-      return null;
+      const initiator = {target: null, frameId: frame, initiatorUrl: scriptUrl};
+      const payload = await SDK.SourceMapManager.tryLoadSourceMap(sourceMapUrl, initiator);
+      return payload ? new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, payload) : null;
     };
   }
 
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
-    return await this.#traceEngineModel.parse(
+    await this.#traceEngineModel.parse(
         collectedEvents,
         {
           metadata: metadata ?? undefined,
           isFreshRecording,
-          resolveSourceMap: this.#createSourceMapResolver(isFreshRecording),
+          resolveSourceMap: this.#createSourceMapResolver(isFreshRecording, metadata),
         },
     );
+
+    // Store all source maps on the trace metadata.
+    // If not fresh, we can't validate the maps are still accurate.
+    if (isFreshRecording && metadata &&
+        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
+      const traceIndex = this.#traceEngineModel.lastTraceIndex();
+      const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+      if (parsedTrace) {
+        await this.#retainSourceMapsForEnhancedTrace(parsedTrace, metadata);
+      }
+    }
   }
 
   loadingCompleteForTest(): void {

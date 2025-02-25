@@ -148,6 +148,8 @@ interface SourceInfo {
 }
 
 export class SourceMap {
+  static retainRawSourceMaps = false;
+
   #json: SourceMapV3|null;
   readonly #compiledURLInternal: Platform.DevToolsPath.UrlString;
   readonly #sourceMappingURL: Platform.DevToolsPath.UrlString;
@@ -179,6 +181,10 @@ export class SourceMap {
       }
     }
     this.eachSection(this.parseSources.bind(this));
+  }
+
+  json(): SourceMapV3|null {
+    return this.#json;
   }
 
   augmentWithScopes(scriptUrl: Platform.DevToolsPath.UrlString, ranges: NamedFunctionRange[]): void {
@@ -411,6 +417,9 @@ export class SourceMap {
       this.mappings().sort(SourceMapEntry.compare);
 
       this.#computeReverseMappings(this.#mappingsInternal);
+    }
+
+    if (!SourceMap.retainRawSourceMaps) {
       this.#json = null;
     }
   }

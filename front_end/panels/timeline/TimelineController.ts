@@ -178,12 +178,22 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
 
     this.client.loadingStarted();
 
-    const [fieldData] = await Promise.all([
-      this.fetchFieldData(),
-      // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
-      SDK.TargetManager.TargetManager.instance().resumeAllTargets(),
-      this.waitForTracingToStop(),
-    ]);
+    // Give `TimelinePanel.#executeNewTrace` a chance to retain source maps from SDK.SourceMap.SourceMapManager.
+    SDK.SourceMap.SourceMap.retainRawSourceMaps = true;
+
+    const [fieldData] =
+        await Promise
+            .all([
+              this.fetchFieldData(),
+              // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
+              SDK.TargetManager.TargetManager.instance().resumeAllTargets(),
+              this.waitForTracingToStop(),
+            ])
+            .catch(e => {
+              // Normally set false in allSourcesFinished, but just in case something fails, catch it here.
+              SDK.SourceMap.SourceMap.retainRawSourceMaps = false;
+              throw e;
+            });
     this.#fieldData = fieldData;
 
     // Now we re-enable throttling again to maintain the setting being persistent.
@@ -271,6 +281,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     const metadata = await this.createMetadata();
     await this.client.loadingComplete(this.#collectedEvents, /* exclusiveFilter= */ null, metadata);
     this.client.loadingCompleteForTest();
+    SDK.SourceMap.SourceMap.retainRawSourceMaps = false;
   }
 
   tracingBufferUsage(usage: number): void {

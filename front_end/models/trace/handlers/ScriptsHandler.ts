@@ -124,6 +124,8 @@ export async function finalize(options: Types.Configuration.ParseOptions): Promi
       continue;
     }
 
+    script.sourceMapUrl = sourceMapUrl;
+
     const params: Types.Configuration.ResolveSourceMapParams = {
       scriptId: script.scriptId,
       scriptUrl: sourceUrl as Platform.DevToolsPath.UrlString,

@@ -182,6 +182,17 @@ export async function loadSourceMap(
   }
 }
 
+export async function tryLoadSourceMap(
+    url: Platform.DevToolsPath.UrlString, initiator: PageResourceLoadInitiator): Promise<SourceMapV3|null> {
+  try {
+    const {content} = await PageResourceLoader.instance().loadResource(url, initiator);
+    return parseSourceMap(content);
+  } catch (cause) {
+    console.error(`Could not load content for ${url}: ${cause.message}`, {cause});
+    return null;
+  }
+}
+
 interface ClientData {
   relativeSourceURL: Platform.DevToolsPath.UrlString;
   // Stores the raw sourceMappingURL as provided by V8. These are not guaranteed to

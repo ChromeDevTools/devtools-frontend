@@ -51,6 +51,7 @@ devtools_entrypoint("bundle") {
     "../../testing/*",
     "../../ui/components/docs/*",
     "../../ui/legacy/components/utils/*",
+    "../live-metrics/*",
     "./*",
   ]
 

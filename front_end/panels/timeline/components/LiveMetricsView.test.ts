@@ -7,6 +7,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
+import type * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
@@ -14,6 +15,8 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
+
+type Milli = Trace.Types.Timing.Milli;
 
 function renderLiveMetrics(): Components.LiveMetricsView.LiveMetricsView {
   const root = document.createElement('div');
@@ -190,9 +193,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 500,
         phases: {
-          inputDelay: 100,
-          processingDuration: 300,
-          presentationDelay: 100,
+          inputDelay: 100 as Milli,
+          processingDuration: 300 as Milli,
+          presentationDelay: 100 as Milli,
         },
         interactionId: 'interaction-1-1',
       },
@@ -204,7 +207,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -214,7 +217,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -277,9 +280,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 500,
         phases: {
-          inputDelay: 100,
-          processingDuration: 300,
-          presentationDelay: 100,
+          inputDelay: 100 as Milli,
+          processingDuration: 300 as Milli,
+          presentationDelay: 100 as Milli,
         },
         interactionId: 'interaction-1-1',
       },
@@ -291,7 +294,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [{
             renderStart: 0,
             duration: 0,
@@ -305,7 +308,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -329,9 +332,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 50,
         phases: {
-          inputDelay: 10,
-          processingDuration: 30,
-          presentationDelay: 10,
+          inputDelay: 10 as Milli,
+          processingDuration: 30 as Milli,
+          presentationDelay: 10 as Milli,
         },
         interactionId: 'interaction-1-2',
       },
@@ -343,7 +346,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -353,7 +356,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -461,9 +464,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 500,
         phases: {
-          inputDelay: 100,
-          processingDuration: 300,
-          presentationDelay: 100,
+          inputDelay: 100 as Milli,
+          processingDuration: 300 as Milli,
+          presentationDelay: 100 as Milli,
         },
         interactionId: 'interaction-1-1',
       },
@@ -475,7 +478,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -485,7 +488,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -516,9 +519,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 500,
         phases: {
-          inputDelay: 100,
-          processingDuration: 300,
-          presentationDelay: 100,
+          inputDelay: 100 as Milli,
+          processingDuration: 300 as Milli,
+          presentationDelay: 100 as Milli,
         },
         interactionId: 'interaction-1-1',
       },
@@ -530,7 +533,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 10 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -553,9 +556,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 50,
         phases: {
-          inputDelay: 10,
-          processingDuration: 30,
-          presentationDelay: 10,
+          inputDelay: 10 as Milli,
+          processingDuration: 30 as Milli,
+          presentationDelay: 10 as Milli,
         },
         interactionId: 'interaction-1-2',
       },
@@ -567,7 +570,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -577,7 +580,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),
@@ -610,9 +613,9 @@ describeWithMockConnection('LiveMetricsView', () => {
       inp: {
         value: 50,
         phases: {
-          inputDelay: 10,
-          processingDuration: 30,
-          presentationDelay: 10,
+          inputDelay: 10 as Milli,
+          processingDuration: 30 as Milli,
+          presentationDelay: 10 as Milli,
         },
         interactionId: 'interaction-1-2',
       },
@@ -624,7 +627,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'keyboard',
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
-          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          phases: {inputDelay: 10 as Milli, processingDuration: 30 as Milli, presentationDelay: 10 as Milli},
           longAnimationFrameTimings: [],
         },
         {
@@ -634,7 +637,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionType: 'pointer',
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
-          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          phases: {inputDelay: 100 as Milli, processingDuration: 300 as Milli, presentationDelay: 100 as Milli},
           longAnimationFrameTimings: [],
         },
       ]),

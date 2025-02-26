@@ -158,6 +158,7 @@ details.environment-recs[open] > summary::before {
 
 .bucket-range {
   color: var(--sys-color-token-subtle);
+  white-space: nowrap;
 }
 
 .histogram-bar {

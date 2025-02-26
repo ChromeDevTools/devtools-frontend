@@ -15,6 +15,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -28,7 +29,7 @@ import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js'
 import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
 
 import liveMetricsViewStylesRaw from './liveMetricsView.css.js';
-import type {MetricCardData} from './MetricCard.js';
+import type {MetricCardData, PhaseTable} from './MetricCard.js';
 import metricValueStylesRaw from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
@@ -427,6 +428,32 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
+  #getLcpFieldPhases(): PhaseTable|undefined {
+    const ttfb = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')
+                     ?.percentiles?.p75;
+    const loadDelay =
+        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_delay')
+            ?.percentiles?.p75;
+    const loadDuration =
+        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_resource_load_duration')
+            ?.percentiles?.p75;
+    const renderDelay =
+        this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_element_render_delay')
+            ?.percentiles?.p75;
+
+    if (typeof ttfb !== 'number' || typeof loadDelay !== 'number' || typeof loadDuration !== 'number' ||
+        typeof renderDelay !== 'number') {
+      return;
+    }
+
+    return [
+      [i18nString(UIStrings.timeToFirstByte), Trace.Types.Timing.Milli(ttfb)],
+      [i18nString(UIStrings.resourceLoadDelay), Trace.Types.Timing.Milli(loadDelay)],
+      [i18nString(UIStrings.resourceLoadDuration), Trace.Types.Timing.Milli(loadDuration)],
+      [i18nString(UIStrings.elementRenderDelay), Trace.Types.Timing.Milli(renderDelay)],
+    ];
+  }
+
   #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink = this.#lcpValue?.nodeRef?.link;
@@ -447,6 +474,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime],
           [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay],
         ],
+        fieldDataPhases: this.#getLcpFieldPhases(),
       } as MetricCardData}>
         ${nodeLink ? html`
             <div class="related-info" slot="extra-info">

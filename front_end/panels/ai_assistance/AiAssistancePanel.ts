@@ -487,7 +487,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
           continue;
         }
-        if (project.fileSystem().type() !== Persistence.PlatformFileSystem.PlatformFileSystemType.DISK) {
+        if (project.fileSystem().type() !== Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT) {
           continue;
         }
         this.#project = project;

@@ -115,7 +115,11 @@ describeWithMockConnection('PersistenceImpl', () => {
     const fileSystemPath = urlString`file://path/to/filesystem`;
     const fileSystemFileUrl = urlString`${fileSystemPath + '/script.js'}`;
     const {uiSourceCode: fileSystemUiSourceCode, project} = createFileSystemFileForPersistenceTests(
-        {fileSystemPath, fileSystemFileUrl, type: Persistence.PlatformFileSystem.PlatformFileSystemType.DISK},
+        {
+          fileSystemPath,
+          fileSystemFileUrl,
+          type: Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT
+        },
         SCRIPT_DESCRIPTION.url, SCRIPT_DESCRIPTION.content, target);
     const breakpointLine = 0;
 
@@ -141,7 +145,11 @@ describeWithMockConnection('PersistenceImpl', () => {
        const fileSystemPath = urlString`file://path/to/filesystem`;
        const fileSystemFileUrl = urlString`${fileSystemPath + '/script.js'}`;
        const {uiSourceCode: fileSystemUiSourceCode, project} = createFileSystemFileForPersistenceTests(
-           {fileSystemPath, fileSystemFileUrl, type: Persistence.PlatformFileSystem.PlatformFileSystemType.DISK},
+           {
+             fileSystemPath,
+             fileSystemFileUrl,
+             type: Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT
+           },
            SCRIPT_DESCRIPTION.url, SCRIPT_DESCRIPTION.content, target);
        const breakpointLine = 0;
 

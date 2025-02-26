@@ -368,6 +368,6 @@ function hostFileSystemTypeToPlatformFileSystemType(type: string): PlatformFileS
     case 'overrides':
       return PlatformFileSystemType.OVERRIDES;
     default:
-      return PlatformFileSystemType.DISK;
+      return PlatformFileSystemType.WORKSPACE_PROJECT;
   }
 }

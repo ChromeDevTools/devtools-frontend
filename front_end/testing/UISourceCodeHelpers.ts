@@ -130,7 +130,7 @@ export function createFileSystemUISourceCode(options: {
   const type = options.type || '';
   const content = options.content || '';
   const platformFileSystem = new TestPlatformFileSystem(
-      fileSystemPath, type || Persistence.PlatformFileSystem.PlatformFileSystemType.DISK, options.mimeType,
+      fileSystemPath, type || Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT, options.mimeType,
       Boolean(options.autoMapping));
   const metadata = options.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
 

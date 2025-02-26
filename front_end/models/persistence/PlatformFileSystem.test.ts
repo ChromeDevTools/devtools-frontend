@@ -10,10 +10,10 @@ const {urlString} = Platform.DevToolsPath;
 describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {
     const platformFileSystem = new Persistence.PlatformFileSystem.PlatformFileSystem(
-        urlString`Test Path`, Persistence.PlatformFileSystem.PlatformFileSystemType.DISK, false);
+        urlString`Test Path`, Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT, false);
     assert.strictEqual(platformFileSystem.path(), 'Test Path', 'path was not set or retrieved correctly');
     assert.strictEqual(
-        platformFileSystem.type(), Persistence.PlatformFileSystem.PlatformFileSystemType.DISK,
+        platformFileSystem.type(), Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT,
         'Type was not set or retrieved correctly');
   });
 });

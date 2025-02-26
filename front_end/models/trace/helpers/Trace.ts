@@ -130,10 +130,10 @@ export function eventTimeComparator(a: Types.Events.Event, b: Types.Events.Event
   // since an exactly equal timestamp with a trace event is likely
   // indicates that the SamplesIntegrator meant to parent the trace
   // event with the profile call.
-  if (Types.Events.isProfileCall(a)) {
+  if (Types.Events.isProfileCall(a) && !Types.Events.isProfileCall(b)) {
     return -1;
   }
-  if (Types.Events.isProfileCall(b)) {
+  if (Types.Events.isProfileCall(b) && !Types.Events.isProfileCall(a)) {
     return 1;
   }
   return 0;

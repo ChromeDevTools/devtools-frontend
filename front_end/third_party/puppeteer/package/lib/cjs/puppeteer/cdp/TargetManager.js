@@ -11,6 +11,7 @@ const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
+const CdpSession_js_1 = require("./CdpSession.js");
 const Target_js_1 = require("./Target.js");
 function isPageTargetBecomingPrimary(target, newTargetInfo) {
     return Boolean(target._subtype()) && !newTargetInfo.subtype;
@@ -213,7 +214,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
     };
     #onAttachedToTarget = async (parentSession, event) => {
         const targetInfo = event.targetInfo;
-        const session = this.#connection.session(event.sessionId);
+        const session = this.#connection._session(event.sessionId);
         if (!session) {
             throw new Error(`Session ${event.sessionId} was not created.`);
         }
@@ -252,7 +253,7 @@ class TargetManager extends EventEmitter_js_1.EventEmitter {
         const isExistingTarget = this.#attachedTargetsByTargetId.has(targetInfo.targetId);
         const target = isExistingTarget
             ? this.#attachedTargetsByTargetId.get(targetInfo.targetId)
-            : this.#targetFactory(targetInfo, session, parentSession instanceof CDPSession_js_1.CDPSession ? parentSession : undefined);
+            : this.#targetFactory(targetInfo, session, parentSession instanceof CdpSession_js_1.CdpCDPSession ? parentSession : undefined);
         if (this.#targetFilterCallback && !this.#targetFilterCallback(target)) {
             this.#ignoredTargets.add(targetInfo.targetId);
             this.#finishInitializationIfReady(targetInfo.targetId);

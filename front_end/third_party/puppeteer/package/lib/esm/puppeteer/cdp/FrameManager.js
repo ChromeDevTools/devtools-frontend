@@ -12,7 +12,6 @@ import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { CdpPreloadScript } from './CdpPreloadScript.js';
-import { CdpCDPSession } from './CdpSession.js';
 import { isTargetClosedError } from './Connection.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { ExecutionContext } from './ExecutionContext.js';
@@ -74,8 +73,9 @@ export class FrameManager extends EventEmitter {
         if (!mainFrame) {
             return;
         }
-        if (this.client.connection()?._closed) {
-            // On connection disconnected remove all frames
+        if (!this.#page.browser().connected) {
+            // If the browser is not connected we know
+            // that activation will not happen
             this.#removeFramesRecursively(mainFrame);
             return;
         }
@@ -103,7 +103,6 @@ export class FrameManager extends EventEmitter {
      */
     async swapFrameTree(client) {
         this.#client = client;
-        assert(this.#client instanceof CdpCDPSession, 'CDPSession is not an instance of CDPSessionImpl.');
         const frame = this._frameTree.getMainFrame();
         if (frame) {
             this.#frameNavigatedReceived.add(this.#client.target()._targetId);

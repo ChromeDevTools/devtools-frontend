@@ -54,7 +54,7 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
     connection() {
         return this.#connection;
     }
-    get #closed() {
+    get detached() {
         return this.#connection._closed || this.#detached;
     }
     parentSession() {
@@ -67,7 +67,7 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
         return parent ?? undefined;
     }
     send(method, params, options) {
-        if (this.#closed) {
+        if (this.detached) {
             return Promise.reject(new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
         }
         return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId, options);
@@ -99,7 +99,7 @@ class CdpCDPSession extends CDPSession_js_1.CDPSession {
      * won't emit any events and can't be used to send messages.
      */
     async detach() {
-        if (this.#closed) {
+        if (this.detached) {
             throw new Error(`Session already detached. Most likely the ${this.#targetType} has been closed.`);
         }
         await this.#connection.send('Target.detachFromTarget', {

@@ -378,9 +378,7 @@ let BidiFrame = (() => {
                             return of(undefined);
                         }
                         return combineLatest(frames);
-                    }), raceWith(fromEmitterEvent(navigation, 'fragment'), fromEmitterEvent(navigation, 'failed'), fromEmitterEvent(navigation, 'aborted').pipe(map(({ url }) => {
-                        throw new Error(`Navigation aborted: ${url}`);
-                    }))), switchMap(() => {
+                    }), raceWith(fromEmitterEvent(navigation, 'fragment'), fromEmitterEvent(navigation, 'failed'), fromEmitterEvent(navigation, 'aborted')), switchMap(() => {
                         if (navigation.request) {
                             function requestFinished$(request) {
                                 if (navigation === null) {

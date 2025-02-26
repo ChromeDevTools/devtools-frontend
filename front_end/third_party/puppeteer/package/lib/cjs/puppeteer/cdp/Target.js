@@ -9,7 +9,6 @@ exports.OtherTarget = exports.WorkerTarget = exports.DevToolsTarget = exports.Pa
 const Target_js_1 = require("../api/Target.js");
 const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
-const CdpSession_js_1 = require("./CdpSession.js");
 const Page_js_1 = require("./Page.js");
 const WebWorker_js_1 = require("./WebWorker.js");
 /**
@@ -46,7 +45,7 @@ class CdpTarget extends Target_js_1.Target {
         this.#browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this.#sessionFactory = sessionFactory;
-        if (this.#session && this.#session instanceof CdpSession_js_1.CdpCDPSession) {
+        if (this.#session) {
             this.#session.setTarget(this);
         }
     }

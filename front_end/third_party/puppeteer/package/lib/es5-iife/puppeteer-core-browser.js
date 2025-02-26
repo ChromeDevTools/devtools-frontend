@@ -186,7 +186,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    limitations under the License.
    
    */
-  // node_modules/tslib/tslib.es6.mjs
+  // ../../node_modules/rxjs/node_modules/tslib/tslib.es6.mjs
   var extendStatics = function (d, b) {
     extendStatics = Object.setPrototypeOf || {
       
@@ -245,12 +245,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       f,
       y,
       t,
-      g;
-    return g = {
-      next: verb(0),
-      "throw": verb(1),
-      "return": verb(2)
-    }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+      g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function () {
       return this;
     }), g;
     function verb(n) {
@@ -375,15 +371,23 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     var g = generator.apply(thisArg, _arguments || []),
       i,
       q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () {
+    return i = Object.create((typeof AsyncIterator === "function" ? AsyncIterator : Object).prototype), verb("next"), verb("throw"), verb("return", awaitReturn), i[Symbol.asyncIterator] = function () {
       return this;
     }, i;
-    function verb(n) {
-      if (g[n]) i[n] = function (v) {
-        return new Promise(function (a, b) {
-          q.push([n, v, a, b]) > 1 || resume(n, v);
-        });
+    function awaitReturn(f) {
+      return function (v) {
+        return Promise.resolve(v).then(f, reject);
       };
+    }
+    function verb(n, f) {
+      if (g[n]) {
+        i[n] = function (v) {
+          return new Promise(function (a, b) {
+            q.push([n, v, a, b]) > 1 || resume(n, v);
+          });
+        };
+        if (f) i[n] = f(i[n]);
+      }
     }
     function resume(n, v) {
       try {
@@ -429,12 +433,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isFunction.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isFunction.js
   function isFunction(value) {
     return typeof value === "function";
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/createErrorClass.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/createErrorClass.js
   function createErrorClass(createImpl) {
     var _super = function (instance) {
       Error.call(instance);
@@ -446,7 +450,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return ctorFunc;
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/UnsubscriptionError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/UnsubscriptionError.js
   var UnsubscriptionError = createErrorClass(function (_super) {
     return function UnsubscriptionErrorImpl(errors) {
       _super(this);
@@ -458,7 +462,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   });
 
-  // node_modules/rxjs/dist/esm5/internal/util/arrRemove.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/arrRemove.js
   function arrRemove(arr, item) {
     if (arr) {
       var index = arr.indexOf(item);
@@ -466,7 +470,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
 
-  // node_modules/rxjs/dist/esm5/internal/Subscription.js
+  // ../../node_modules/rxjs/dist/esm5/internal/Subscription.js
   var Subscription = function () {
     function Subscription2(initialTeardown) {
       this.initialTeardown = initialTeardown;
@@ -603,12 +607,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
 
-  // node_modules/rxjs/dist/esm5/internal/config.js
+  // ../../node_modules/rxjs/dist/esm5/internal/config.js
   var config = {
     Promise: void 0
   };
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/timeoutProvider.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/timeoutProvider.js
   var timeoutProvider = {
     setTimeout: function (handler, timeout) {
       var args = [];
@@ -623,7 +627,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     delegate: void 0
   };
 
-  // node_modules/rxjs/dist/esm5/internal/util/reportUnhandledError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/reportUnhandledError.js
   function reportUnhandledError(err) {
     timeoutProvider.setTimeout(function () {
       {
@@ -632,7 +636,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/noop.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/noop.js
   function noop() {}
   function errorContext(cb) {
     {
@@ -640,7 +644,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
 
-  // node_modules/rxjs/dist/esm5/internal/Subscriber.js
+  // ../../node_modules/rxjs/dist/esm5/internal/Subscriber.js
   var Subscriber = function (_super) {
     __extends(Subscriber2, _super);
     function Subscriber2(destination) {
@@ -776,17 +780,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     complete: noop
   };
 
-  // node_modules/rxjs/dist/esm5/internal/symbol/observable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/symbol/observable.js
   var observable = function () {
     return typeof Symbol === "function" && Symbol.observable || "@@observable";
   }();
 
-  // node_modules/rxjs/dist/esm5/internal/util/identity.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/identity.js
   function identity(x) {
     return x;
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/pipe.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/pipe.js
   function pipe() {
     var fns = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -808,7 +812,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   }
 
-  // node_modules/rxjs/dist/esm5/internal/Observable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/Observable.js
   var Observable = function () {
     function Observable2(subscribe) {
       if (subscribe) {
@@ -902,7 +906,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return value && value instanceof Subscriber || isObserver(value) && isSubscription(value);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/lift.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/lift.js
   function hasLift(source) {
     return isFunction(source === null || source === void 0 ? void 0 : source.lift);
   }
@@ -921,7 +925,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/OperatorSubscriber.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/OperatorSubscriber.js
   function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
     return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
   }
@@ -969,7 +973,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return OperatorSubscriber2;
   }(Subscriber);
 
-  // node_modules/rxjs/dist/esm5/internal/util/ObjectUnsubscribedError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/ObjectUnsubscribedError.js
   var ObjectUnsubscribedError = createErrorClass(function (_super) {
     return function ObjectUnsubscribedErrorImpl() {
       _super(this);
@@ -978,7 +982,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   });
 
-  // node_modules/rxjs/dist/esm5/internal/Subject.js
+  // ../../node_modules/rxjs/dist/esm5/internal/Subject.js
   var Subject = function (_super) {
     __extends(Subject2, _super);
     function Subject2() {
@@ -1141,7 +1145,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return AnonymousSubject2;
   }(Subject);
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/dateTimestampProvider.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/dateTimestampProvider.js
   var dateTimestampProvider = {
     now: function () {
       return (dateTimestampProvider.delegate || Date).now();
@@ -1149,7 +1153,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     delegate: void 0
   };
 
-  // node_modules/rxjs/dist/esm5/internal/ReplaySubject.js
+  // ../../node_modules/rxjs/dist/esm5/internal/ReplaySubject.js
   var ReplaySubject = function (_super) {
     __extends(ReplaySubject2, _super);
     function ReplaySubject2(_bufferSize, _windowTime, _timestampProvider) {
@@ -1221,7 +1225,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return ReplaySubject2;
   }(Subject);
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/Action.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/Action.js
   var Action = function (_super) {
     __extends(Action2, _super);
     function Action2(scheduler, work) {
@@ -1233,7 +1237,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return Action2;
   }(Subscription);
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/intervalProvider.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/intervalProvider.js
   var intervalProvider = {
     setInterval: function (handler, timeout) {
       var args = [];
@@ -1248,7 +1252,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     delegate: void 0
   };
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/AsyncAction.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/AsyncAction.js
   var AsyncAction = function (_super) {
     __extends(AsyncAction2, _super);
     function AsyncAction2(scheduler, work) {
@@ -1340,7 +1344,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return AsyncAction2;
   }(Action);
 
-  // node_modules/rxjs/dist/esm5/internal/Scheduler.js
+  // ../../node_modules/rxjs/dist/esm5/internal/Scheduler.js
   var Scheduler = function () {
     function Scheduler2(schedulerActionCtor, now) {
       if (now === void 0) {
@@ -1359,7 +1363,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return Scheduler2;
   }();
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/AsyncScheduler.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/AsyncScheduler.js
   var AsyncScheduler = function (_super) {
     __extends(AsyncScheduler2, _super);
     function AsyncScheduler2(SchedulerAction, now) {
@@ -1395,21 +1399,21 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return AsyncScheduler2;
   }(Scheduler);
 
-  // node_modules/rxjs/dist/esm5/internal/scheduler/async.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduler/async.js
   var asyncScheduler = new AsyncScheduler(AsyncAction);
   var async = asyncScheduler;
 
-  // node_modules/rxjs/dist/esm5/internal/observable/empty.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/empty.js
   var EMPTY = new Observable(function (subscriber) {
     return subscriber.complete();
   });
 
-  // node_modules/rxjs/dist/esm5/internal/util/isScheduler.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isScheduler.js
   function isScheduler(value) {
     return value && isFunction(value.schedule);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/args.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/args.js
   function last(arr) {
     return arr[arr.length - 1];
   }
@@ -1420,32 +1424,32 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return typeof last(args) === "number" ? args.pop() : defaultValue;
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isArrayLike.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isArrayLike.js
   var isArrayLike = function (x) {
     return x && typeof x.length === "number" && typeof x !== "function";
   };
 
-  // node_modules/rxjs/dist/esm5/internal/util/isPromise.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isPromise.js
   function isPromise(value) {
     return isFunction(value === null || value === void 0 ? void 0 : value.then);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isInteropObservable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isInteropObservable.js
   function isInteropObservable(input) {
     return isFunction(input[observable]);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isAsyncIterable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isAsyncIterable.js
   function isAsyncIterable(obj) {
     return Symbol.asyncIterator && isFunction(obj === null || obj === void 0 ? void 0 : obj[Symbol.asyncIterator]);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/throwUnobservableError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/throwUnobservableError.js
   function createInvalidObservableTypeError(input) {
     return new TypeError("You provided " + (input !== null && typeof input === "object" ? "an invalid object" : "'" + input + "'") + " where a stream was expected. You can provide an Observable, Promise, ReadableStream, Array, AsyncIterable, or Iterable.");
   }
 
-  // node_modules/rxjs/dist/esm5/internal/symbol/iterator.js
+  // ../../node_modules/rxjs/dist/esm5/internal/symbol/iterator.js
   function getSymbolIterator() {
     if (typeof Symbol !== "function" || !Symbol.iterator) {
       return "@@iterator";
@@ -1454,12 +1458,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
   var iterator = getSymbolIterator();
 
-  // node_modules/rxjs/dist/esm5/internal/util/isIterable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isIterable.js
   function isIterable(input) {
     return isFunction(input === null || input === void 0 ? void 0 : input[iterator]);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isReadableStreamLike.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isReadableStreamLike.js
   function readableStreamLikeToAsyncGenerator(readableStream) {
     return __asyncGenerator(this, arguments, function readableStreamLikeToAsyncGenerator_1() {
       var reader, _a, value, done;
@@ -1501,7 +1505,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return isFunction(obj === null || obj === void 0 ? void 0 : obj.getReader);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/innerFrom.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/innerFrom.js
   function innerFrom(input) {
     if (input instanceof Observable) {
       return input;
@@ -1645,7 +1649,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/executeSchedule.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/executeSchedule.js
   function executeSchedule(parentSubscription, scheduler, work, delay2, repeat) {
     if (delay2 === void 0) {
       delay2 = 0;
@@ -1667,7 +1671,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/observeOn.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/observeOn.js
   function observeOn(scheduler, delay2) {
     if (delay2 === void 0) {
       delay2 = 0;
@@ -1689,7 +1693,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/subscribeOn.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/subscribeOn.js
   function subscribeOn(scheduler, delay2) {
     if (delay2 === void 0) {
       delay2 = 0;
@@ -1701,17 +1705,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduleObservable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduleObservable.js
   function scheduleObservable(input, scheduler) {
     return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/schedulePromise.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/schedulePromise.js
   function schedulePromise(input, scheduler) {
     return innerFrom(input).pipe(subscribeOn(scheduler), observeOn(scheduler));
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduleArray.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduleArray.js
   function scheduleArray(input, scheduler) {
     return new Observable(function (subscriber) {
       var i = 0;
@@ -1728,7 +1732,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduleIterable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduleIterable.js
   function scheduleIterable(input, scheduler) {
     return new Observable(function (subscriber) {
       var iterator2;
@@ -1757,7 +1761,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduleAsyncIterable.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduleAsyncIterable.js
   function scheduleAsyncIterable(input, scheduler) {
     if (!input) {
       throw new Error("Iterable cannot be null");
@@ -1778,12 +1782,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduleReadableStreamLike.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduleReadableStreamLike.js
   function scheduleReadableStreamLike(input, scheduler) {
     return scheduleAsyncIterable(readableStreamLikeToAsyncGenerator(input), scheduler);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/scheduled/scheduled.js
+  // ../../node_modules/rxjs/dist/esm5/internal/scheduled/scheduled.js
   function scheduled(input, scheduler) {
     if (input != null) {
       if (isInteropObservable(input)) {
@@ -1808,12 +1812,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     throw createInvalidObservableTypeError(input);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/from.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/from.js
   function from(input, scheduler) {
     return scheduler ? scheduled(input, scheduler) : innerFrom(input);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/of.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/of.js
   function of() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -1823,7 +1827,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return from(args, scheduler);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/EmptyError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/EmptyError.js
   var EmptyError = createErrorClass(function (_super) {
     return function EmptyErrorImpl() {
       _super(this);
@@ -1832,7 +1836,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   });
 
-  // node_modules/rxjs/dist/esm5/internal/firstValueFrom.js
+  // ../../node_modules/rxjs/dist/esm5/internal/firstValueFrom.js
   function firstValueFrom(source, config2) {
     return new Promise(function (resolve, reject) {
       var subscriber = new SafeSubscriber({
@@ -1851,12 +1855,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/isDate.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/isDate.js
   function isValidDate(value) {
     return value instanceof Date && !isNaN(value);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/map.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/map.js
   function map(project, thisArg) {
     return operate(function (source, subscriber) {
       var index = 0;
@@ -1866,7 +1870,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/util/mapOneOrManyArgs.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/mapOneOrManyArgs.js
   var isArray = Array.isArray;
   function callOrApply(fn, args) {
     return isArray(args) ? fn.apply(void 0, __spreadArray([], __read(args))) : fn(args);
@@ -1877,7 +1881,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/mergeInternals.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/mergeInternals.js
   function mergeInternals(source, subscriber, project, concurrent, onBeforeNext, expand, innerSubScheduler, additionalFinalizer) {
     var buffer = [];
     var active = 0;
@@ -1933,7 +1937,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/mergeMap.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/mergeMap.js
   function mergeMap(project, resultSelector, concurrent) {
     if (concurrent === void 0) {
       concurrent = Infinity;
@@ -1952,7 +1956,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/mergeAll.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/mergeAll.js
   function mergeAll(concurrent) {
     if (concurrent === void 0) {
       concurrent = Infinity;
@@ -1960,12 +1964,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return mergeMap(identity, concurrent);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/concatAll.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/concatAll.js
   function concatAll() {
     return mergeAll(1);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/concat.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/concat.js
   function concat() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -1974,14 +1978,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return concatAll()(from(args, popScheduler(args)));
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/defer.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/defer.js
   function defer(observableFactory) {
     return new Observable(function (subscriber) {
       innerFrom(observableFactory()).subscribe(subscriber);
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/fromEvent.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/fromEvent.js
   var nodeEventEmitterMethods = ["addListener", "removeListener"];
   var eventTargetMethods = ["addEventListener", "removeEventListener"];
   var jqueryMethods = ["on", "off"];
@@ -2041,7 +2045,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return isFunction(target.addEventListener) && isFunction(target.removeEventListener);
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/timer.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/timer.js
   function timer(dueTime, intervalOrScheduler, scheduler) {
     if (dueTime === void 0) {
       dueTime = 0;
@@ -2066,7 +2070,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/merge.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/merge.js
   function merge() {
     var args = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -2078,16 +2082,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return !sources.length ? EMPTY : sources.length === 1 ? innerFrom(sources[0]) : mergeAll(concurrent)(from(sources, scheduler));
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/never.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/never.js
   var NEVER = new Observable(noop);
 
-  // node_modules/rxjs/dist/esm5/internal/util/argsOrArgArray.js
+  // ../../node_modules/rxjs/dist/esm5/internal/util/argsOrArgArray.js
   var isArray3 = Array.isArray;
   function argsOrArgArray(args) {
     return args.length === 1 && isArray3(args[0]) ? args[0] : args;
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/filter.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/filter.js
   function filter(predicate, thisArg) {
     return operate(function (source, subscriber) {
       var index = 0;
@@ -2097,7 +2101,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/observable/race.js
+  // ../../node_modules/rxjs/dist/esm5/internal/observable/race.js
   function race() {
     var sources = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -2126,7 +2130,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/catchError.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/catchError.js
   function catchError(selector) {
     return operate(function (source, subscriber) {
       var innerSub = null;
@@ -2150,7 +2154,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/defaultIfEmpty.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/defaultIfEmpty.js
   function defaultIfEmpty(defaultValue) {
     return operate(function (source, subscriber) {
       var hasValue = false;
@@ -2166,7 +2170,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/take.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/take.js
   function take(count) {
     return count <= 0 ? function () {
       return EMPTY;
@@ -2183,14 +2187,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/ignoreElements.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/ignoreElements.js
   function ignoreElements() {
     return operate(function (source, subscriber) {
       source.subscribe(createOperatorSubscriber(subscriber, noop));
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/throwIfEmpty.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/throwIfEmpty.js
   function throwIfEmpty(errorFactory) {
     if (errorFactory === void 0) {
       errorFactory = defaultErrorFactory;
@@ -2209,7 +2213,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     return new EmptyError();
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/first.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/first.js
   function first(predicate, defaultValue) {
     var hasDefaultValue = arguments.length >= 2;
     return function (source) {
@@ -2221,7 +2225,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     };
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/mergeScan.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/mergeScan.js
   function mergeScan(accumulator, seed, concurrent) {
     if (concurrent === void 0) {
       concurrent = Infinity;
@@ -2238,7 +2242,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/raceWith.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/raceWith.js
   function raceWith() {
     var otherSources = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -2249,7 +2253,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/retry.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/retry.js
   function retry(configOrCount) {
     if (configOrCount === void 0) {
       configOrCount = Infinity;
@@ -2314,7 +2318,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/startWith.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/startWith.js
   function startWith() {
     var values = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -2326,7 +2330,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/switchMap.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/switchMap.js
   function switchMap(project, resultSelector) {
     return operate(function (source, subscriber) {
       var innerSubscriber = null;
@@ -2352,7 +2356,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/takeUntil.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/takeUntil.js
   function takeUntil(notifier) {
     return operate(function (source, subscriber) {
       innerFrom(notifier).subscribe(createOperatorSubscriber(subscriber, function () {
@@ -2362,7 +2366,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  // node_modules/rxjs/dist/esm5/internal/operators/tap.js
+  // ../../node_modules/rxjs/dist/esm5/internal/operators/tap.js
   function tap(observerOrNext, error, complete) {
     var tapObserver = isFunction(observerOrNext) || error || complete ? {
       next: observerOrNext,
@@ -2831,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.2.1';
+  const packageVersion = '24.3.0';
 
   /**
    * @license
@@ -13249,14 +13253,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _target = /*#__PURE__*/new WeakMap();
   var _rawErrors = /*#__PURE__*/new WeakMap();
   var _detached = /*#__PURE__*/new WeakMap();
-  var _CdpCDPSession_brand = /*#__PURE__*/new WeakSet();
   class CdpCDPSession extends CDPSession {
     /**
      * @internal
      */
     constructor(connection, targetType, sessionId, parentSessionId, rawErrors) {
       super();
-      _classPrivateMethodInitSpec(this, _CdpCDPSession_brand);
       _classPrivateFieldInitSpec(this, _sessionId, void 0);
       _classPrivateFieldInitSpec(this, _targetType, void 0);
       _classPrivateFieldInitSpec(this, _callbacks2, new CallbackRegistry());
@@ -13291,6 +13293,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     connection() {
       return _classPrivateFieldGet(_connection, this);
     }
+    get detached() {
+      return _classPrivateFieldGet(_connection, this)._closed || _classPrivateFieldGet(_detached, this);
+    }
     parentSession() {
       if (!_classPrivateFieldGet(_parentSessionId, this)) {
         // In some cases, e.g., DevTools pages there is no parent session. In this
@@ -13301,7 +13306,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return parent ?? undefined;
     }
     send(method, params, options) {
-      if (_classPrivateGetter(_CdpCDPSession_brand, this, _get_closed)) {
+      if (this.detached) {
         return Promise.reject(new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${_classPrivateFieldGet(_targetType, this)} has been closed.`));
       }
       return _classPrivateFieldGet(_connection, this)._rawSend(_classPrivateFieldGet(_callbacks2, this), method, params, _classPrivateFieldGet(_sessionId, this), options);
@@ -13330,7 +13335,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * won't emit any events and can't be used to send messages.
      */
     async detach() {
-      if (_classPrivateGetter(_CdpCDPSession_brand, this, _get_closed)) {
+      if (this.detached) {
         throw new Error(`Session already detached. Most likely the ${_classPrivateFieldGet(_targetType, this)} has been closed.`);
       }
       await _classPrivateFieldGet(_connection, this).send('Target.detachFromTarget', {
@@ -13365,9 +13370,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  function _get_closed(_this3) {
-    return _classPrivateFieldGet(_connection, _this3)._closed || _classPrivateFieldGet(_detached, _this3);
-  }
   const debugProtocolSend = debug('puppeteer:protocol:SEND ►');
   const debugProtocolReceive = debug('puppeteer:protocol:RECV ◀');
   /**
@@ -13430,11 +13432,17 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return _classPrivateFieldGet(_sessions, this);
     }
     /**
+     * @internal
+     */
+    _session(sessionId) {
+      return _classPrivateFieldGet(_sessions, this).get(sessionId) || null;
+    }
+    /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
      */
     session(sessionId) {
-      return _classPrivateFieldGet(_sessions, this).get(sessionId) || null;
+      return this._session(sessionId);
     }
     url() {
       return _classPrivateFieldGet(_url2, this);
@@ -14561,34 +14569,34 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         value: _metadata
       });
     })(), _EmulationManager;
-    function _get_applyViewport(_this4) {
+    function _get_applyViewport(_this3) {
       return _private_applyViewport_descriptor.value;
     }
-    function _get_emulateIdleState(_this5) {
+    function _get_emulateIdleState(_this4) {
       return _private_emulateIdleState_descriptor.value;
     }
-    function _get_emulateTimezone(_this6) {
+    function _get_emulateTimezone(_this5) {
       return _private_emulateTimezone_descriptor.value;
     }
-    function _get_emulateVisionDeficiency(_this7) {
+    function _get_emulateVisionDeficiency(_this6) {
       return _private_emulateVisionDeficiency_descriptor.value;
     }
-    function _get_emulateCpuThrottling(_this8) {
+    function _get_emulateCpuThrottling(_this7) {
       return _private_emulateCpuThrottling_descriptor.value;
     }
-    function _get_emulateMediaFeatures(_this9) {
+    function _get_emulateMediaFeatures(_this8) {
       return _private_emulateMediaFeatures_descriptor.value;
     }
-    function _get_emulateMediaType(_this10) {
+    function _get_emulateMediaType(_this9) {
       return _private_emulateMediaType_descriptor.value;
     }
-    function _get_setGeolocation(_this11) {
+    function _get_setGeolocation(_this10) {
       return _private_setGeolocation_descriptor.value;
     }
-    function _get_setDefaultBackgroundColor(_this12) {
+    function _get_setDefaultBackgroundColor(_this11) {
       return _private_setDefaultBackgroundColor_descriptor.value;
     }
-    function _get_setJavaScriptEnabled(_this13) {
+    function _get_setJavaScriptEnabled(_this12) {
       return _private_setJavaScriptEnabled_descriptor.value;
     }
   })();
@@ -15406,8 +15414,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         value: _metadata
       });
     })(), _CdpElementHandle;
-    function _get_frameManager(_this14) {
-      return _this14.frame._frameManager;
+    function _get_frameManager(_this13) {
+      return _this13.frame._frameManager;
     }
   })();
 
@@ -17840,7 +17848,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     async swapFrameTree(client) {
       _classPrivateFieldSet(_client11, this, client);
-      assert(_classPrivateFieldGet(_client11, this) instanceof CdpCDPSession, 'CDPSession is not an instance of CDPSessionImpl.');
       const frame = this._frameTree.getMainFrame();
       if (frame) {
         _classPrivateFieldGet(_frameNavigatedReceived, this).add(_classPrivateFieldGet(_client11, this).target()._targetId);
@@ -18019,8 +18026,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (!mainFrame) {
       return;
     }
-    if (this.client.connection()?._closed) {
-      // On connection disconnected remove all frames
+    if (!_classPrivateFieldGet(_page, this).browser().connected) {
+      // If the browser is not connected we know
+      // that activation will not happen
       _assertClassBrand(_FrameManager_brand, this, _removeFramesRecursively).call(this, mainFrame);
       return;
     }
@@ -20026,10 +20034,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  function _get_state(_this15) {
+  function _get_state(_this14) {
     return Object.assign({
-      ..._classPrivateFieldGet(_state2, _this15)
-    }, ..._classPrivateFieldGet(_transactions, _this15));
+      ..._classPrivateFieldGet(_state2, _this14)
+    }, ..._classPrivateFieldGet(_transactions, _this14));
   }
   function _createTransaction() {
     const transaction = {};
@@ -21047,9 +21055,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
   async function _onActivation(newSession) {
+    // TODO: Remove assert once we have separate Event type for CdpCDPSession.
+    assert(newSession instanceof CdpCDPSession, 'CDPSession is not instance of CdpCDPSession');
     _classPrivateFieldSet(_primaryTargetClient, this, newSession);
-    assert(_classPrivateFieldGet(_primaryTargetClient, this) instanceof CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
-    _classPrivateFieldSet(_primaryTarget, this, _classPrivateFieldGet(_primaryTargetClient, this).target());
+    _classPrivateFieldSet(_primaryTarget, this, newSession.target());
     assert(_classPrivateFieldGet(_primaryTarget, this), 'Missing target on swap');
     _classPrivateFieldGet(_keyboard4, this).updateClient(newSession);
     _classPrivateFieldGet(_mouse, this).updateClient(newSession);
@@ -21505,7 +21514,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_browserContext, this, browserContext);
       this._targetId = targetInfo.targetId;
       _classPrivateFieldSet(_sessionFactory, this, sessionFactory);
-      if (_classPrivateFieldGet(_session, this) && _classPrivateFieldGet(_session, this) instanceof CdpCDPSession) {
+      if (_classPrivateFieldGet(_session, this)) {
         _classPrivateFieldGet(_session, this).setTarget(this);
       }
     }
@@ -21853,7 +21862,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldInitSpec(this, _onAttachedToTarget2, async (parentSession, event) => {
         const targetInfo = event.targetInfo;
-        const session = _classPrivateFieldGet(_connection3, this).session(event.sessionId);
+        const session = _classPrivateFieldGet(_connection3, this)._session(event.sessionId);
         if (!session) {
           throw new Error(`Session ${event.sessionId} was not created.`);
         }
@@ -21888,7 +21897,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           return;
         }
         const isExistingTarget = _classPrivateFieldGet(_attachedTargetsByTargetId, this).has(targetInfo.targetId);
-        const target = isExistingTarget ? _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId) : _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CDPSession ? parentSession : undefined);
+        const target = isExistingTarget ? _classPrivateFieldGet(_attachedTargetsByTargetId, this).get(targetInfo.targetId) : _classPrivateFieldGet(_targetFactory, this).call(this, targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
         if (_classPrivateFieldGet(_targetFilterCallback, this) && !_classPrivateFieldGet(_targetFilterCallback, this).call(this, target)) {
           _classPrivateFieldGet(_ignoredTargets, this).add(targetInfo.targetId);
           _assertClassBrand(_TargetManager_brand, this, _finishInitializationIfReady).call(this, targetInfo.targetId);
@@ -24370,9 +24379,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '133.0.6943.98',
-    'chrome-headless-shell': '133.0.6943.98',
-    firefox: 'stable_135.0'
+    chrome: '133.0.6943.126',
+    'chrome-headless-shell': '133.0.6943.126',
+    firefox: 'stable_135.0.1'
   });
 
   /**

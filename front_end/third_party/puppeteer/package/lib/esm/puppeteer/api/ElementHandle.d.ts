@@ -639,6 +639,9 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
  * @public
  */
 export interface AutofillData {
+    /**
+     * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
+     */
     creditCard: {
         number: string;
         name: string;

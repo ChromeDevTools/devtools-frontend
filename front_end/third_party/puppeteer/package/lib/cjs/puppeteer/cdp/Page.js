@@ -219,9 +219,10 @@ class CdpPage extends Page_js_1.Page {
         }
     }
     async #onActivation(newSession) {
+        // TODO: Remove assert once we have separate Event type for CdpCDPSession.
+        (0, assert_js_1.assert)(newSession instanceof CdpSession_js_1.CdpCDPSession, 'CDPSession is not instance of CdpCDPSession');
         this.#primaryTargetClient = newSession;
-        (0, assert_js_1.assert)(this.#primaryTargetClient instanceof CdpSession_js_1.CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
-        this.#primaryTarget = this.#primaryTargetClient.target();
+        this.#primaryTarget = newSession.target();
         (0, assert_js_1.assert)(this.#primaryTarget, 'Missing target on swap');
         this.#keyboard.updateClient(newSession);
         this.#mouse.updateClient(newSession);

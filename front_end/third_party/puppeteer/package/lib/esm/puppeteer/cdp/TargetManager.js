@@ -8,6 +8,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
+import { CdpCDPSession } from './CdpSession.js';
 import { CdpTarget, InitializationStatus } from './Target.js';
 function isPageTargetBecomingPrimary(target, newTargetInfo) {
     return Boolean(target._subtype()) && !newTargetInfo.subtype;
@@ -210,7 +211,7 @@ export class TargetManager extends EventEmitter {
     };
     #onAttachedToTarget = async (parentSession, event) => {
         const targetInfo = event.targetInfo;
-        const session = this.#connection.session(event.sessionId);
+        const session = this.#connection._session(event.sessionId);
         if (!session) {
             throw new Error(`Session ${event.sessionId} was not created.`);
         }
@@ -249,7 +250,7 @@ export class TargetManager extends EventEmitter {
         const isExistingTarget = this.#attachedTargetsByTargetId.has(targetInfo.targetId);
         const target = isExistingTarget
             ? this.#attachedTargetsByTargetId.get(targetInfo.targetId)
-            : this.#targetFactory(targetInfo, session, parentSession instanceof CDPSession ? parentSession : undefined);
+            : this.#targetFactory(targetInfo, session, parentSession instanceof CdpCDPSession ? parentSession : undefined);
         if (this.#targetFilterCallback && !this.#targetFilterCallback(target)) {
             this.#ignoredTargets.add(targetInfo.targetId);
             this.#finishInitializationIfReady(targetInfo.targetId);

@@ -45,6 +45,9 @@ class BidiCdpSession extends CDPSession_js_1.CDPSession {
     connection() {
         return undefined;
     }
+    get detached() {
+        return this.#detached;
+    }
     async send(method, params, options) {
         if (this.#connection === undefined) {
             throw new Errors_js_1.UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');

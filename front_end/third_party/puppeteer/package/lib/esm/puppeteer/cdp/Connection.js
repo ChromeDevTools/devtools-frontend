@@ -61,11 +61,17 @@ export class Connection extends EventEmitter {
         return this.#sessions;
     }
     /**
+     * @internal
+     */
+    _session(sessionId) {
+        return this.#sessions.get(sessionId) || null;
+    }
+    /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
      */
     session(sessionId) {
-        return this.#sessions.get(sessionId) || null;
+        return this._session(sessionId);
     }
     url() {
         return this.#url;

@@ -381,9 +381,7 @@ let BidiFrame = (() => {
                             return (0, rxjs_js_1.of)(undefined);
                         }
                         return (0, rxjs_js_1.combineLatest)(frames);
-                    }), (0, rxjs_js_1.raceWith)((0, util_js_1.fromEmitterEvent)(navigation, 'fragment'), (0, util_js_1.fromEmitterEvent)(navigation, 'failed'), (0, util_js_1.fromEmitterEvent)(navigation, 'aborted').pipe((0, rxjs_js_1.map)(({ url }) => {
-                        throw new Error(`Navigation aborted: ${url}`);
-                    }))), (0, rxjs_js_1.switchMap)(() => {
+                    }), (0, rxjs_js_1.raceWith)((0, util_js_1.fromEmitterEvent)(navigation, 'fragment'), (0, util_js_1.fromEmitterEvent)(navigation, 'failed'), (0, util_js_1.fromEmitterEvent)(navigation, 'aborted')), (0, rxjs_js_1.switchMap)(() => {
                         if (navigation.request) {
                             function requestFinished$(request) {
                                 if (navigation === null) {

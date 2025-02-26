@@ -95,6 +95,9 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
  * @public
  */
 export declare interface AutofillData {
+    /**
+     * See {@link https://chromedevtools.github.io/devtools-protocol/tot/Autofill/#type-CreditCard | Autofill.CreditCard}.
+     */
     creditCard: {
         number: string;
         name: string;
@@ -699,7 +702,18 @@ export declare type CDPEvents = {
  */
 export declare abstract class CDPSession extends EventEmitter<CDPSessionEvents> {
 
+    /**
+     * The underlying connection for this session, if any.
+     *
+     * @public
+     */
     abstract connection(): Connection | undefined;
+    /**
+     * True if the session has been detached, false otherwise.
+     *
+     * @public
+     */
+    abstract get detached(): boolean;
 
     abstract send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
@@ -937,6 +951,7 @@ export declare class Connection extends EventEmitter<CDPSessionEvents> {
     get timeout(): number;
 
 
+
     /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
@@ -1170,8 +1185,8 @@ export declare interface Cookie extends CookieData {
     /**
      * Cookie partition key. In Chrome, it is the top-level site the
      * partitioned cookie is available in. In Firefox, it matches the
-     * source origin
-     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     * source origin in the
+     * {@link https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey | PartitionKey }.
      */
     partitionKey?: CookiePartitionKey | string;
     /**
@@ -1234,8 +1249,8 @@ export declare interface CookieData {
     /**
      * Cookie partition key. In Chrome, it matches the top-level site the
      * partitioned cookie is available in. In Firefox, it matches the
-     * source origin
-     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     * source origin in the
+     * {@link https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey | PartitionKey }.
      */
     partitionKey?: CookiePartitionKey | string;
 }
@@ -1299,8 +1314,8 @@ export declare interface CookieParam {
     /**
      * Cookie partition key. In Chrome, it matches the top-level site the
      * partitioned cookie is available in. In Firefox, it matches the
-     * source origin
-     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     * source origin in the
+     * {@link https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey | PartitionKey }.
      */
     partitionKey?: CookiePartitionKey | string;
 }
@@ -1582,8 +1597,9 @@ export declare interface DeleteCookiesRequest {
     /**
      * If specified, deletes cookies in the given partition key. In
      * Chrome, partitionKey matches the top-level site the partitioned
-     * cookie is available in. In Firefox, it matches the source origin
-     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     * cookie is available in.
+     * In Firefox, it matches the source origin in the
+     * {@link https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey | PartitionKey }.
      */
     partitionKey?: CookiePartitionKey | string;
 }

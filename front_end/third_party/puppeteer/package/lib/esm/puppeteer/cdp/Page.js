@@ -215,9 +215,10 @@ export class CdpPage extends Page {
         }
     }
     async #onActivation(newSession) {
+        // TODO: Remove assert once we have separate Event type for CdpCDPSession.
+        assert(newSession instanceof CdpCDPSession, 'CDPSession is not instance of CdpCDPSession');
         this.#primaryTargetClient = newSession;
-        assert(this.#primaryTargetClient instanceof CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
-        this.#primaryTarget = this.#primaryTargetClient.target();
+        this.#primaryTarget = newSession.target();
         assert(this.#primaryTarget, 'Missing target on swap');
         this.#keyboard.updateClient(newSession);
         this.#mouse.updateClient(newSession);

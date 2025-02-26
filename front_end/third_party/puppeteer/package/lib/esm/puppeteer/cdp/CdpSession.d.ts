@@ -29,6 +29,7 @@ export declare class CdpCDPSession extends CDPSession {
      */
     target(): CdpTarget;
     connection(): Connection | undefined;
+    get detached(): boolean;
     parentSession(): CDPSession | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, params?: ProtocolMapping.Commands[T]['paramsType'][0], options?: CommandOptions): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**

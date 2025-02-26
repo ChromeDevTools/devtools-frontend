@@ -25,9 +25,9 @@ const UIStrings = {
    */
   transferSize: 'Transfer size',
   /**
-   *@description Title referencing self time.
+   *@description Title referencing main thread time.
    */
-  selfTime: 'Self time',
+  mainThreadTime: 'Main thread time',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThirdPartyTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -127,8 +127,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
         },
         {
           id: 'self',
-          title: i18nString(UIStrings.selfTime),
-          width: '105px',  // Mostly to fit large self-time plus devtools-button
+          title: i18nString(UIStrings.mainThreadTime),
+          width: '120px',  // Mostly to fit large self-time/main thread time plus devtools-button
           fixedWidth: true,
           sortable: true,
         });

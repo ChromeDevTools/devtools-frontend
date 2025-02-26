@@ -7,7 +7,6 @@ import './MarkdownImage.js';
 import './MarkdownLink.js';
 
 import type * as Marked from '../../../third_party/marked/marked.js';
-import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
@@ -341,7 +340,8 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         if (!sanitizedUrl) {
           return null;
         }
-        return html`${UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
+        // Only links pointing to resources within DevTools can be rendered here.
+        return html`${token.text ?? token.href}`;
       }
       case 'code':
         return html`<devtools-code-block

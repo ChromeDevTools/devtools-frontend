@@ -824,7 +824,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           changeSummary: this.#getChangeSummary(),
           patchSuggestion: this.#patchSuggestion,
           patchSuggestionLoading: this.#patchSuggestionLoading,
-          stripLinks: this.#currentAgent?.type === AgentType.PERFORMANCE,
           inspectElementToggled: this.#toggleSearchElementAction.toggled(),
           userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,

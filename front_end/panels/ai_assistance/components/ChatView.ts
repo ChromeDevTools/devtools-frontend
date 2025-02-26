@@ -277,7 +277,6 @@ export interface Props {
   agentType?: AgentType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
-  stripLinks: boolean;
   changeSummary?: string;
   patchSuggestion?: string;
   patchSuggestionLoading?: boolean;
@@ -317,7 +316,7 @@ export class ChatView extends HTMLElement {
   }
 
   set props(props: Props) {
-    this.#markdownRenderer = new MarkdownRendererWithCodeBlock({stripLinks: props.stripLinks});
+    this.#markdownRenderer = new MarkdownRendererWithCodeBlock();
     this.#props = props;
     this.#render();
   }

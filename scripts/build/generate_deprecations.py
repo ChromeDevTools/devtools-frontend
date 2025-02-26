@@ -87,7 +87,7 @@ with open(GENERATED_LOCATION, mode="w+") as f:
         f.write("   * @description %s\n" % note)
         f.write("   */\n")
         f.write("  %s: %s,\n" % (name, json.dumps(message)))
-    f.write("};\n")
+    f.write("} as const;\n")
     f.write("\n")
     f.write("export interface DeprecationDescriptor {\n")
     f.write("  milestone?: number;\n")

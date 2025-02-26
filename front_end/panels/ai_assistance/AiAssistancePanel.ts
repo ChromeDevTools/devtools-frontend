@@ -414,7 +414,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #currentConversation?: Conversation;
   #conversations: Conversation[] = [];
 
-  #previousSameOriginContext?: ConversationContext<unknown>;
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
@@ -858,9 +857,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onCancelClick: this.#cancel.bind(this),
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
-          onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
-              this.#handleCrossOriginChatCancellation.bind(this) :
-              undefined,
           onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        undefined,
@@ -1147,13 +1143,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }
 
-  #handleCrossOriginChatCancellation(): void {
-    if (this.#previousSameOriginContext) {
-      this.#onContextSelectionChanged(this.#previousSameOriginContext);
-      this.requestUpdate();
-    }
-  }
-
   async #handleTakeScreenshot(): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!mainTarget) {
@@ -1198,9 +1187,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return;
     }
     this.#blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
-    if (!this.#blockedByCrossOrigin) {
-      this.#previousSameOriginContext = currentContext;
-    }
   }
 
   #getConversationContext(): ConversationContext<unknown>|null {

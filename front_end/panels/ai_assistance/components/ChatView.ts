@@ -264,7 +264,6 @@ export interface Props {
   onCancelClick: () => void;
   onContextClick: () => void;
   onNewConversation: () => void;
-  onCancelCrossOriginChat?: () => void;
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
   inspectElementToggled: boolean;
@@ -523,7 +522,6 @@ export class ChatView extends HTMLElement {
                 onTextAreaKeyDown: this.#handleTextAreaKeyDown,
                 onCancel: this.#handleCancel,
                 onNewConversation: this.#props.onNewConversation,
-                onCancelCrossOriginChat: this.#props.onCancelCrossOriginChat,
                 onTakeScreenshot: this.#props.onTakeScreenshot,
                 onRemoveImageInput: this.#props.onRemoveImageInput,
               })
@@ -1154,15 +1152,13 @@ function renderReadOnlySection({onNewConversation, agentType}: {
   // clang-format on
 }
 
-function renderChatInputButtons(
-    {isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat}: {
-      isLoading: boolean,
-      blockedByCrossOrigin: boolean,
-      isTextInputDisabled: boolean,
-      onCancel: (ev: SubmitEvent) => void,
-      onNewConversation: () => void,
-      onCancelCrossOriginChat?: () => void,
-    }): Lit.TemplateResult {
+function renderChatInputButtons({isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation}: {
+  isLoading: boolean,
+  blockedByCrossOrigin: boolean,
+  isTextInputDisabled: boolean,
+  onCancel: (ev: SubmitEvent) => void,
+  onNewConversation: () => void,
+}): Lit.TemplateResult {
   if (isLoading) {
     // clang-format off
     return html`<devtools-button
@@ -1184,17 +1180,6 @@ function renderChatInputButtons(
   if (blockedByCrossOrigin) {
     // clang-format off
     return html`
-      ${blockedByCrossOrigin && Boolean(onCancelCrossOriginChat) ? html`<devtools-button
-        class="chat-cancel-context-button"
-        @click=${onCancelCrossOriginChat}
-        .data=${
-          {
-            variant: Buttons.Button.Variant.TEXT,
-            size: Buttons.Button.Size.REGULAR,
-            jslogContext: 'cancel-cross-origin-context-chat',
-          } as Buttons.Button.ButtonData
-        }
-      >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : Lit.nothing}
       <devtools-button
         class="chat-input-button"
         aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
@@ -1307,7 +1292,6 @@ function renderChatInput({
   onTextAreaKeyDown,
   onCancel,
   onNewConversation,
-  onCancelCrossOriginChat,
   onTakeScreenshot,
   onRemoveImageInput,
 }: {
@@ -1327,7 +1311,6 @@ function renderChatInput({
   onTextAreaKeyDown: (ev: KeyboardEvent) => void,
   onCancel: (ev: SubmitEvent) => void,
   onNewConversation: () => void,
-  onCancelCrossOriginChat?: () => void,
   onTakeScreenshot?: () => void,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
@@ -1381,11 +1364,11 @@ function renderChatInput({
         ${renderTakeScreenshotButton({
           multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, onTakeScreenshot
         })}
-        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation, onCancelCrossOriginChat })}
+        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation })}
       </div>
     </div>
   </form>`;
-  // clang-format on
+    // clang-format on
   }
 
   function renderAidaUnavailableContents(

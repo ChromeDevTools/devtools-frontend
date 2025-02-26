@@ -46,6 +46,26 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
+  #renderCulpritsSection(culprits: string[]): Lit.LitTemplate {
+    if (culprits.length === 0) {
+      return html`<div class="insight-section">${i18nString(UIStrings.noCulprits)}</div>`;
+    }
+
+    // clang-format off
+    return html`
+      <div class="insight-section">
+        <p class="list-title">${i18nString(UIStrings.topCulprits)}:</p>
+        <ul class="worst-culprits">
+          ${culprits.map(culprit => {
+            return html `
+              <li>${culprit}</li>
+            `;
+          })}
+        </ul>
+      </div>`;
+    // clang-format on
+  }
+
   override renderContent(): Lit.LitTemplate {
     if (!this.model || !this.bounds) {
       return Lit.nothing;
@@ -57,9 +77,6 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
 
     const worstCluster = this.model.worstCluster;
     const culprits = this.model.topCulpritsByCluster.get(worstCluster) ?? [];
-    if (culprits.length === 0) {
-      return html`<div class="insight-section">${i18nString(UIStrings.noCulprits)}</div>`;
-    }
 
     const ts = Trace.Types.Timing.Micro(worstCluster.ts - this.bounds.min);
     const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
@@ -68,15 +85,9 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     return html`
       <div class="insight-section">
         <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</button></span>
-          <p class="list-title">${i18nString(UIStrings.topCulprits)}:</p>
-          <ul class="worst-culprits">
-            ${culprits.map(culprit => {
-              return html `
-                <li>${culprit}</li>
-              `;
-            })}
-          </ul>
-      </div>`;
+      </div>
+      ${this.#renderCulpritsSection(culprits)}
+    `;
     // clang-format on
   }
 }

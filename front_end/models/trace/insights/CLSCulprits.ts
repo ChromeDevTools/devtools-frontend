@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -520,8 +521,16 @@ function getTopCulprits(
 }
 
 function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): CLSCulpritsInsightModel {
-  const topCulprits =
-      partialModel.worstCluster ? partialModel.topCulpritsByCluster.get(partialModel.worstCluster) ?? [] : [];
+  let state: CLSCulpritsInsightModel['state'] = 'pass';
+  if (partialModel.worstCluster) {
+    const classification = Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(
+        partialModel.worstCluster.clusterCumulativeScore);
+    if (classification === Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification.GOOD) {
+      state = 'informative';
+    } else {
+      state = 'fail';
+    }
+  }
 
   return {
     insightKey: InsightKeys.CLS_CULPRITS,
@@ -529,7 +538,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.CLS,
-    state: topCulprits.length > 0 ? 'fail' : 'pass',
+    state,
     ...partialModel,
   };
 }

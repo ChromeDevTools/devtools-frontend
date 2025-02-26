@@ -36,7 +36,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   detachedElementProfile: 'Detached elements {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapDetachedElementsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -167,7 +167,7 @@ export class DetachedElementsProfileHeader extends WritableProfileHeader {
       heapProfilerModel: SDK.HeapProfilerModel.HeapProfilerModel|null, type: DetachedElementsProfileType,
       detachedElements: Protocol.DOM.DetachedElementInfo[]|null, title?: string) {
     super(
-        heapProfilerModel && heapProfilerModel.debuggerModel(), type,
+        heapProfilerModel?.debuggerModel() ?? null, type,
         title || i18nString(UIStrings.detachedElementProfile, {PH1: type.nextProfileUid()}));
     this.detachedElements = detachedElements;
     this.heapProfilerModelInternal = heapProfilerModel;

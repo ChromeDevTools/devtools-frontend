@@ -22,7 +22,7 @@ const UIStrings = {
    *@description Text in Preview Factory of the Sources panel if there's no data to preview
    */
   nothingToPreview: 'Nothing to preview',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/PreviewFactory.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PreviewFactory {

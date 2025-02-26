@@ -25,7 +25,7 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
   await waitForFunction(async () => {
     // Open the “More Tools” option.
     await hover('aria/More tools[role="menuitem"]');
-    return $(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
+    return await $(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
   });
 
   // Click the desired menu item

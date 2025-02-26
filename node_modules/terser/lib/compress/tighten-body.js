@@ -82,6 +82,7 @@ import {
     AST_Number,
     AST_Object,
     AST_ObjectKeyVal,
+    AST_ObjectProperty,
     AST_PropAccess,
     AST_RegExp,
     AST_Return,
@@ -116,7 +117,7 @@ import {
     walk,
     walk_abort,
 
-    _NOINLINE
+    _NOINLINE,
 } from "../ast.js";
 import {
     make_node,
@@ -328,6 +329,7 @@ export function tighten_body(statements, compressor) {
                 || node instanceof AST_SymbolRef
                     && parent instanceof AST_Call
                     && has_annotation(parent, _NOINLINE)
+                || node instanceof AST_ObjectProperty && node.key instanceof AST_Node
             ) {
                 abort = true;
                 return node;
@@ -574,6 +576,14 @@ export function tighten_body(statements, compressor) {
             return found;
         }
 
+        function arg_is_injectable(arg) {
+            if (arg instanceof AST_Expansion) return false;
+            const contains_await = walk(arg, (node) => {
+                if (node instanceof AST_Await) return walk_abort;
+            });
+            if (contains_await) return false;
+            return true;
+        }
         function extract_args() {
             var iife, fn = compressor.self();
             if (is_func_expr(fn)
@@ -582,7 +592,8 @@ export function tighten_body(statements, compressor) {
                 && !fn.pinned()
                 && (iife = compressor.parent()) instanceof AST_Call
                 && iife.expression === fn
-                && iife.args.every((arg) => !(arg instanceof AST_Expansion))) {
+                && iife.args.every(arg_is_injectable)
+            ) {
                 var fn_strict = compressor.has_directive("use strict");
                 if (fn_strict && !member(fn_strict, fn.body))
                     fn_strict = false;
@@ -981,7 +992,11 @@ export function tighten_body(statements, compressor) {
         var self = compressor.self();
         var multiple_if_returns = has_multiple_if_returns(statements);
         var in_lambda = self instanceof AST_Lambda;
-        for (var i = statements.length; --i >= 0;) {
+        // Prevent extremely deep nesting
+        // https://github.com/terser/terser/issues/1432
+        // https://github.com/webpack/webpack/issues/17548
+        const iteration_start = Math.min(statements.length, 500);
+        for (var i = iteration_start; --i >= 0;) {
             var stat = statements[i];
             var j = next_index(i);
             var next = statements[j];

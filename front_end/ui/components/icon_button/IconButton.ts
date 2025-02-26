@@ -7,7 +7,7 @@ import './Icon.js';
 import * as Lit from '../../lit/lit.js';
 
 import type {IconData} from './Icon.js';
-import iconButtonStyles from './iconButton.css.legacy.js';
+import iconButtonStyles from './iconButton.css.js';
 
 const {html} = Lit;
 
@@ -32,9 +32,9 @@ export class IconButton extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #groups: IconWithTextData[] = [];
-  #compact: boolean = false;
-  #leadingText: string = '';
-  #trailingText: string = '';
+  #compact = false;
+  #leadingText = '';
+  #trailingText = '';
   #accessibleName: string|undefined;
 
   set data(data: IconButtonData) {

@@ -14,8 +14,8 @@ import {
   type MenuItemSelectedEvent,
   type MenuItemValue,
 } from './Menu.js';
-import selectMenuStylesRaw from './selectMenu.css.legacy.js';
-import selectMenuButtonStylesRaw from './selectMenuButton.css.legacy.js';
+import selectMenuStylesRaw from './selectMenu.css.js';
+import selectMenuButtonStylesRaw from './selectMenuButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const selectMenuStyles = new CSSStyleSheet();
@@ -89,7 +89,7 @@ export class SelectMenu extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #button: SelectMenuButton|null = null;
-  #open: boolean = false;
+  #open = false;
   #props: SelectMenuData = {
     buttonTitle: '',
     position: Dialogs.Dialog.DialogVerticalPosition.BOTTOM,

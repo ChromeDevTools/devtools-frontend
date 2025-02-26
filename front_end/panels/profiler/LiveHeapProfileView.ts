@@ -13,7 +13,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import liveHeapProfileStyles from './liveHeapProfile.css.legacy.js';
+import liveHeapProfileStyles from './liveHeapProfile.css.js';
 
 const UIStrings = {
   /**
@@ -53,7 +53,7 @@ const UIStrings = {
    *@description A unit
    */
   kb: 'kB',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/LiveHeapProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let liveHeapProfileViewInstance: LiveHeapProfileView;
@@ -81,7 +81,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this.toggleRecordButton);
 
     const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel)) {
+    if (mainTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel)) {
       const startWithReloadAction =
           UI.ActionRegistry.ActionRegistry.instance().getAction('live-heap-profile.start-with-reload');
       this.startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
@@ -149,11 +149,10 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
         sortable: true,
         tooltip: i18nString(UIStrings.urlOfTheScriptSource),
       },
-    ] as ({tooltip: Common.UIString.LocalizedString} & DataGrid.DataGrid.ColumnDescriptor)[];
+    ] as Array<{tooltip: Common.UIString.LocalizedString}&DataGrid.DataGrid.ColumnDescriptor>;
     const dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.heapProfile),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
@@ -208,7 +207,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
 
   update(
       isolates: SDK.IsolateManager.Isolate[] = [],
-      profiles: (Protocol.HeapProfiler.SamplingHeapProfile|null)[] = []): void {
+      profiles: Array<Protocol.HeapProfiler.SamplingHeapProfile|null> = []): void {
     const dataByUrl = new Map<string, {
       size: number,
       isolates: Set<SDK.IsolateManager.Isolate>,
@@ -222,9 +221,9 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     const rootNode = this.dataGrid.rootNode();
     const exisitingNodes = new Set<GridNode>();
     for (const pair of dataByUrl) {
-      const url = (pair[0] as string);
-      const size = (pair[1].size as number);
-      const isolateCount = (pair[1].isolates.size as number);
+      const url = (pair[0]);
+      const size = (pair[1].size);
+      const isolateCount = (pair[1].isolates.size);
       if (!url) {
         console.info(`Node with empty URL: ${size} bytes`);  // eslint-disable-line no-console
         continue;
@@ -288,7 +287,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
 
   revealSourceForSelectedNode(): void {
     const node = (this.dataGrid.selectedNode as GridNode);
-    if (!node || !node.url) {
+    if (!node?.url) {
       return;
     }
     const sourceCode =
@@ -338,8 +337,7 @@ export class LiveHeapProfileView extends UI.Widget.VBox {
     if (!mainTarget) {
       return;
     }
-    const resourceTreeModel =
-        (mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null);
+    const resourceTreeModel = (mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel));
     if (resourceTreeModel) {
       resourceTreeModel.reloadPage();
     }

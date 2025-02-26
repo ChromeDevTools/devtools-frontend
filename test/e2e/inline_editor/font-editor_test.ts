@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {enableExperiment, getBrowserAndPages, goToResource, waitFor} from '../../shared/helper.js';
-
 import {
   clickNthChildOfSelectedElementNode,
   getElementStyleFontEditorButton,
@@ -15,7 +14,7 @@ import {
   waitForCSSPropertyValue,
 } from '../helpers/elements-helpers.js';
 
-async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/fontEditor.html') {
+async function goToTestPageAndSelectTestElement(path = 'inline_editor/fontEditor.html') {
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
   await clickNthChildOfSelectedElementNode(1);

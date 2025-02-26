@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import lighthouseDialogStyles from './lighthouseDialog.css.legacy.js';
+import lighthouseDialogStyles from './lighthouseDialog.css.js';
 import type {LighthousePanel} from './LighthousePanel.js';
 
 const UIStrings = {
@@ -26,7 +26,7 @@ const UIStrings = {
    * @description Label for a button that cancels a Lighthouse timespan.
    */
   cancel: 'Cancel',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseTimespanView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/cards/cards.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Cards from '../../../ui/components/cards/cards.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as EmulationComponents from './components/components.js';
-import devicesSettingsTabStyles from './devicesSettingsTab.css.legacy.js';
+import devicesSettingsTabStyles from './devicesSettingsTab.css.js';
 
 const UIStrings = {
   /**
@@ -68,7 +69,7 @@ const UIStrings = {
    *@example {TestDevice} PH1
    */
   deviceAddedOrUpdated: 'Device {PH1} successfully added/updated.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/emulation/DevicesSettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -117,24 +118,18 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
     const deviceList = customSettings.createChild('div');
     customSettings.appendChild(this.addCustomButton);
 
-    const customDevicesCard = new Cards.Card.Card();
-    customDevicesCard.data = {
-      heading: i18nString(UIStrings.customDevices),
-      content: [customSettings],
-    };
-    this.containerElement.appendChild(customDevicesCard);
+    const customDevicesCard = this.containerElement.createChild('devtools-card');
+    customDevicesCard.heading = i18nString(UIStrings.customDevices);
+    customDevicesCard.append(customSettings);
 
     this.#customDeviceList = new UI.ListWidget.ListWidget(this, false /* delegatesFocus */);
     this.#customDeviceList.registerRequiredCSS(devicesSettingsTabStyles);
     this.#customDeviceList.element.classList.add('devices-list');
     this.#customDeviceList.show(deviceList);
 
-    const defaultDevicesCard = new Cards.Card.Card();
-    defaultDevicesCard.data = {
-      heading: i18nString(UIStrings.defaultDevices),
-      content: [this.#defaultDeviceList.element],
-    };
-    this.containerElement.appendChild(defaultDevicesCard);
+    const defaultDevicesCard = this.containerElement.createChild('devtools-card');
+    defaultDevicesCard.heading = i18nString(UIStrings.defaultDevices);
+    defaultDevicesCard.append(this.#defaultDeviceList.element);
   }
 
   override wasShown(): void {

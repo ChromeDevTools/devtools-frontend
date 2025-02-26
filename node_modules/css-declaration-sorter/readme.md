@@ -1,7 +1,6 @@
 <img alt='CSS declaration sorter logo' src='https://raw.githubusercontent.com/Siilwyn/css-declaration-sorter/master/logo.svg?sanitize=true' height='260' align='right'>
 
 # CSS Declaration Sorter
-[![LGTM Grade][lgtm-badge]][lgtm]
 [![npm][npm-badge]][npm]
 
 A Node.js module and [PostCSS] plugin to sort CSS, SCSS or Less declarations based on their property names. Ensuring styling is organized, more consistent and in order... The goal of this package is to sort the source code of a project in the build process or to decrease the distributed CSS gzipped size.
@@ -123,7 +122,5 @@ To prevent breaking legacy CSS where shorthand declarations override longhand de
 
 [PostCSS]: https://github.com/postcss/postcss
 
-[lgtm]: https://lgtm.com/projects/g/Siilwyn/css-declaration-sorter/
-[lgtm-badge]: https://tinyshields.dev/lgtm/grade/javascript/g/Siilwyn/css-declaration-sorter.svg
 [npm]: https://www.npmjs.com/package/css-declaration-sorter
 [npm-badge]: https://tinyshields.dev/npm/css-declaration-sorter.svg

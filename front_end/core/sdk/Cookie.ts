@@ -117,7 +117,7 @@ export class Cookie {
     if (!this.#partitionKey) {
       return '';
     }
-    return this.#partitionKey?.topLevelSite as string;
+    return this.#partitionKey?.topLevelSite;
   }
 
   setTopLevelSite(topLevelSite: string, hasCrossSiteAncestor: boolean): void {
@@ -128,7 +128,7 @@ export class Cookie {
     if (!this.#partitionKey) {
       return false;
     }
-    return this.#partitionKey?.hasCrossSiteAncestor as boolean;
+    return this.#partitionKey?.hasCrossSiteAncestor;
   }
 
   setHasCrossSiteAncestor(hasCrossSiteAncestor: boolean): void {
@@ -235,6 +235,14 @@ export class Cookie {
       default:
         this.#attributes.set(key, value);
     }
+  }
+
+  hasAttribute(key: Attribute): boolean {
+    return this.#attributes.has(key);
+  }
+
+  getAttribute(key: Attribute): string|number|boolean|undefined {
+    return this.#attributes.get(key);
   }
 
   setCookieLine(cookieLine: string): void {

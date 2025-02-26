@@ -18,7 +18,7 @@ interface TrieableTrait<T extends ArrayLike<ElementType<T>>> {
 export class Trie<T extends ArrayLike<ElementType<T>>> {
   #size!: number;
   #root: number;
-  #edges!: Map<ElementType<T>, number>[];
+  #edges!: Array<Map<ElementType<T>, number>>;
   #isWord!: boolean[];
   #wordsInSubtree!: number[];
   #freeNodes!: number[];
@@ -38,8 +38,8 @@ export class Trie<T extends ArrayLike<ElementType<T>>> {
     });
   }
 
-  static newArrayTrie<T extends ElementType<T>[]>(): Trie<ElementType<T>[]> {
-    return new Trie<ElementType<T>[]>({
+  static newArrayTrie<T extends Array<ElementType<T>>>(): Trie<Array<ElementType<T>>> {
+    return new Trie<Array<ElementType<T>>>({
       empty: () => [],
       append: (base, appendage) => base.concat([appendage]),
       slice: (base, start, end) => base.slice(start, end),

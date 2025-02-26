@@ -40,7 +40,7 @@ import type {DebuggerModel, FunctionDetails} from './DebuggerModel.js';
 import type {RuntimeModel} from './RuntimeModel.js';
 
 // This cannot be an interface due to "instanceof RemoteObject" checks in the code.
-export class RemoteObject {
+export abstract class RemoteObject {
   static fromLocalObject(value: unknown): RemoteObject {
     return new LocalJSONObject(value);
   }
@@ -82,17 +82,17 @@ export class RemoteObject {
     }
     // Array lengths in V8-generated descriptions switched from square brackets to parentheses.
     // Both formats are checked in case the front end is dealing with an old version of V8.
-    const parenMatches = object.description && object.description.match(descriptionLengthParenRegex);
-    const squareMatches = object.description && object.description.match(descriptionLengthSquareRegex);
+    const parenMatches = object.description?.match(descriptionLengthParenRegex);
+    const squareMatches = object.description?.match(descriptionLengthSquareRegex);
     return parenMatches ? parseInt(parenMatches[1], 10) : (squareMatches ? parseInt(squareMatches[1], 10) : 0);
   }
 
-  static arrayBufferByteLength(object: RemoteObject|Protocol.Runtime.RemoteObject|
-                               Protocol.Runtime.ObjectPreview): number {
+  static arrayBufferByteLength(object: RemoteObject|Protocol.Runtime.RemoteObject|Protocol.Runtime.ObjectPreview):
+      number {
     if (object.subtype !== 'arraybuffer') {
       return 0;
     }
-    const matches = object.description && object.description.match(descriptionLengthParenRegex);
+    const matches = object.description?.match(descriptionLengthParenRegex);
     return matches ? parseInt(matches[1], 10) : 0;
   }
 
@@ -113,8 +113,8 @@ export class RemoteObject {
     return null;
   }
 
-  static toCallArgument(object: string|number|bigint|boolean|RemoteObject|Protocol.Runtime.RemoteObject|null|
-                        undefined): Protocol.Runtime.CallArgument {
+  static toCallArgument(object: string|number|bigint|boolean|RemoteObject|Protocol.Runtime.RemoteObject|null|undefined):
+      Protocol.Runtime.CallArgument {
     const type = typeof object;
     if (type === 'undefined') {
       return {};
@@ -156,9 +156,8 @@ export class RemoteObject {
     return {value: objectAsProtocolRemoteObject.value};
   }
 
-  static async loadFromObjectPerProto(
-      object: RemoteObject, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+  static async loadFromObjectPerProto(object: RemoteObject, generatePreview: boolean, nonIndexedPropertiesOnly = false):
+      Promise<GetPropertiesResult> {
     const result = await Promise.all([
       object.getAllProperties(true /* accessorPropertiesOnly */, generatePreview, nonIndexedPropertiesOnly),
       object.getOwnProperties(generatePreview, nonIndexedPropertiesOnly),
@@ -202,39 +201,30 @@ export class RemoteObject {
     return null;
   }
 
-  get objectId(): Protocol.Runtime.RemoteObjectId|undefined {
-    // TODO(crbug.com/1226471): Return undefined here.
-    return 'Not implemented' as Protocol.Runtime.RemoteObjectId;
-  }
+  abstract get objectId(): Protocol.Runtime.RemoteObjectId|undefined;
+  abstract get type(): string;
 
-  get type(): string {
-    throw 'Not implemented';
-  }
-
-  get subtype(): string|undefined {
-    throw 'Not implemented';
-  }
+  abstract get subtype(): string|undefined;
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get value(): any {
-    throw 'Not implemented';
-  }
+  abstract get value(): any;
+
+  abstract get description(): string|undefined;
+  abstract set description(description: string|undefined);
+
+  abstract get hasChildren(): boolean;
+
+  abstract arrayLength(): number;
+
+  abstract getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult>;
+
+  abstract getAllProperties(
+      accessorPropertiesOnly: boolean, generatePreview: boolean,
+      nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult>;
 
   unserializableValue(): string|undefined {
-    throw 'Not implemented';
-  }
-
-  get description(): string|undefined {
-    throw 'Not implemented';
-  }
-
-  set description(description: string|undefined) {
-    throw 'Not implemented';
-  }
-
-  get hasChildren(): boolean {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   get preview(): Protocol.Runtime.ObjectPreview|undefined {
@@ -245,40 +235,27 @@ export class RemoteObject {
     return null;
   }
 
-  arrayLength(): number {
-    throw 'Not implemented';
-  }
-
-  arrayBufferByteLength(): number {
-    throw 'Not implemented';
-  }
-
-  getOwnProperties(_generatePreview: boolean, _nonIndexedPropertiesOnly?: boolean): Promise<GetPropertiesResult> {
-    throw 'Not implemented';
-  }
-
-  getAllProperties(_accessorPropertiesOnly: boolean, _generatePreview: boolean, _nonIndexedPropertiesOnly?: boolean):
-      Promise<GetPropertiesResult> {
-    throw 'Not implemented';
-  }
-
-  async deleteProperty(_name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
-    throw 'Not implemented';
-  }
-
-  async setPropertyValue(_name: string|Protocol.Runtime.CallArgument, _value: string): Promise<string|undefined> {
-    throw 'Not implemented';
-  }
-
   callFunction<T, U>(_functionDeclaration: (this: U, ...args: any[]) => T, _args?: Protocol.Runtime.CallArgument[]):
       Promise<CallFunctionResult> {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   callFunctionJSON<T, U>(
       _functionDeclaration: (this: U, ...args: any[]) => T,
       _args: Protocol.Runtime.CallArgument[]|undefined): Promise<T> {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
+  }
+
+  arrayBufferByteLength(): number {
+    throw new Error('Not implemented');
+  }
+
+  deleteProperty(_name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
+    throw new Error('Not implemented');
+  }
+
+  setPropertyValue(_name: string|Protocol.Runtime.CallArgument, _value: string): Promise<string|undefined> {
+    throw new Error('Not implemented');
   }
 
   release(): void {
@@ -322,10 +299,17 @@ export class RemoteObjectImpl extends RemoteObject {
   readonly #classNameInternal: string|null;
 
   constructor(
-      runtimeModel: RuntimeModel, objectId: Protocol.Runtime.RemoteObjectId|undefined, type: string,
-      subtype: string|undefined, value: typeof RemoteObject.prototype.value, unserializableValue?: string,
-      description?: string, preview?: Protocol.Runtime.ObjectPreview, customPreview?: Protocol.Runtime.CustomPreview,
-      className?: string) {
+      runtimeModel: RuntimeModel,
+      objectId: Protocol.Runtime.RemoteObjectId|undefined,
+      type: string,
+      subtype: string|undefined,
+      value: typeof RemoteObject.prototype.value,
+      unserializableValue?: string,
+      description?: string,
+      preview?: Protocol.Runtime.ObjectPreview,
+      customPreview?: Protocol.Runtime.CustomPreview,
+      className?: string,
+  ) {
     super();
 
     this.runtimeModelInternal = runtimeModel;
@@ -413,14 +397,13 @@ export class RemoteObjectImpl extends RemoteObject {
     return this.#classNameInternal;
   }
 
-  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false):
-      Promise<GetPropertiesResult> {
+  override getOwnProperties(generatePreview: boolean, nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     return this.doGetProperties(true, false, nonIndexedPropertiesOnly, generatePreview);
   }
 
   override getAllProperties(
       accessorPropertiesOnly: boolean, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+      nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     return this.doGetProperties(false, accessorPropertiesOnly, nonIndexedPropertiesOnly, generatePreview);
   }
 
@@ -518,7 +501,7 @@ export class RemoteObjectImpl extends RemoteObject {
       void this.#runtimeAgent.invoke_releaseObject({objectId: response.result.objectId});
     }
 
-    return resultPromise;
+    return await resultPromise;
   }
 
   async doSetObjectPropertyValue(result: Protocol.Runtime.RemoteObject, name: Protocol.Runtime.CallArgument):
@@ -898,7 +881,7 @@ export class LocalJSONObject extends RemoteObject {
     return Boolean(Object.keys((this.valueInternal as Object)).length);
   }
 
-  override async getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly: boolean = false):
+  override async getOwnProperties(_generatePreview: boolean, nonIndexedPropertiesOnly = false):
       Promise<GetPropertiesResult> {
     function isArrayIndex(name: string): boolean {
       const index = Number(name) >>> 0;
@@ -914,7 +897,7 @@ export class LocalJSONObject extends RemoteObject {
 
   override async getAllProperties(
       accessorPropertiesOnly: boolean, generatePreview: boolean,
-      nonIndexedPropertiesOnly: boolean = false): Promise<GetPropertiesResult> {
+      nonIndexedPropertiesOnly = false): Promise<GetPropertiesResult> {
     if (accessorPropertiesOnly) {
       return {properties: [], internalProperties: null};
     }
@@ -1039,7 +1022,7 @@ export class RemoteArray {
       throw new Error('Out of range');
     }
     const result =
-        await this.#objectInternal.callFunction<unknown, Array<unknown>>(at, [RemoteObject.toCallArgument(index)]);
+        await this.#objectInternal.callFunction<unknown, unknown[]>(at, [RemoteObject.toCallArgument(index)]);
     if (result.wasThrown || !result.object) {
       throw new Error('Exception in callFunction or result value is empty');
     }

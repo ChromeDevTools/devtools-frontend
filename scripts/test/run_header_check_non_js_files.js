@@ -7,10 +7,10 @@
 
 // @ts-check
 
-const readline = require('readline');
-const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
+const path = require('path');
+const readline = require('readline');
 
 const ROOT_DIRECTORY = path.join(__dirname, '..', '..');
 const FRONT_END_DIRECTORY = path.join(ROOT_DIRECTORY, 'front_end');

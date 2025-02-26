@@ -28,7 +28,7 @@ const zip2 = <T, S>(xs: T[], ys: S[]) => {
 
 // Holds targets and ids, and emits events.
 class NavigationEmulator {
-  private seq: number = 0;
+  private seq = 0;
   private tabTarget: SDK.Target.Target;
   primaryTarget: SDK.Target.Target;
   private frameId: Protocol.Page.FrameId;
@@ -297,7 +297,30 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
   });
 
-  it('renders grid and details', async () => {
+  it('renders placeholder', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createRuleSetView(emulator.primaryTarget);
+    await RenderCoordinator.done();
+
+    const placeholder = view.contentElement.querySelector('.empty-state');
+    assert.exists(placeholder);
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'flex');
+
+    const header = placeholder.querySelector('.empty-state-header')?.textContent;
+    const description = placeholder.querySelector('.empty-state-description > span')?.textContent;
+
+    assert.deepEqual(header, 'No rules detected');
+    assert.deepEqual(
+        description,
+        'On this page you will see the speculation rules used to prefetch and prerender page navigations.');
+
+    const rules = view.contentElement.querySelector('devtools-split-view');
+    assert.exists(rules);
+    assert.deepEqual(window.getComputedStyle(rules).display, 'none');
+  });
+
+  it('renders grid and details and hides placeholder', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createRuleSetView(emulator.primaryTarget);
@@ -340,6 +363,10 @@ describeWithMockConnection('PreloadingRuleSetView', () => {
           ['example.com/', '1 running'],
         ],
     );
+
+    const placeholder = view.contentElement.querySelector('.empty-state');
+    assert.exists(placeholder);
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'none');
   });
 
   it('shows error of rule set', async () => {
@@ -501,7 +528,28 @@ describeWithMockConnection('PreloadingAttemptView', () => {
     SDK.ChildTargetManager.ChildTargetManager.install();
   });
 
-  it('renders grid and details', async () => {
+  it('renders placeholder', async () => {
+    const emulator = new NavigationEmulator();
+    await emulator.openDevTools();
+    const view = createAttemptView(emulator.primaryTarget);
+    await RenderCoordinator.done();
+
+    const placeholder = view.contentElement.querySelector('.empty-state');
+    assert.exists(placeholder);
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'flex');
+
+    const header = placeholder.querySelector('.empty-state-header')?.textContent;
+    const description = placeholder.querySelector('.empty-state-description > span')?.textContent;
+
+    assert.deepEqual(header, 'No speculation detected');
+    assert.deepEqual(description, 'On this page you will see details on speculative loads.');
+
+    const rules = view.contentElement.querySelector('devtools-split-view');
+    assert.exists(rules);
+    assert.deepEqual(window.getComputedStyle(rules).display, 'none');
+  });
+
+  it('renders grid and details and hides placeholder', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createAttemptView(emulator.primaryTarget);
@@ -538,9 +586,9 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
-
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+    const placeholder = view.contentElement.querySelector('.empty-state');
+    assert.exists(placeholder);
+    assert.deepEqual(window.getComputedStyle(placeholder).display, 'none');
   });
 
   // See https://crbug.com/1432880
@@ -600,9 +648,11 @@ describeWithMockConnection('PreloadingAttemptView', () => {
         ],
     );
 
-    const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
+    const placeholderHeader = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-header');
+    assert.strictEqual(placeholderHeader?.textContent?.trim(), 'No element selected');
 
-    assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
+    const placeholderDescription = preloadingDetailsComponent.shadowRoot.querySelector('.empty-state-description');
+    assert.strictEqual(placeholderDescription?.textContent, 'Select an element for more details');
   });
 
   it('filters preloading attempts by selected rule set', async () => {
@@ -969,10 +1019,10 @@ describeWithMockConnection('PreloadingSummaryView', () => {
 
 async function testWarnings(
     event: Protocol.Preload.PreloadEnabledStateUpdatedEvent, headerExpected: string|null,
-    sectionsExpected: [string, string][]): Promise<void> {
+    sectionsExpected: Array<[string, string]>): Promise<void> {
   const target = createTarget();
 
-  const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
+  const warningsUpdatedPromise = new Promise<void>(resolve => {
     const model = target.model(SDK.PreloadingModel.PreloadingModel);
     assert.exists(model);
     model.addEventListener(SDK.PreloadingModel.Events.WARNINGS_UPDATED, _ => resolve());

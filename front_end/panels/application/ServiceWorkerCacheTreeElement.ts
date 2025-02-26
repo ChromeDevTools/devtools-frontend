@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Text to delete something
    */
   delete: 'Delete',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheTreeElement extends ExpandableApplicationPanelTreeElement {

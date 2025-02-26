@@ -15,7 +15,7 @@ const {urlString} = Platform.DevToolsPath;
 type PersistentHighlightSettingItem = SDK.OverlayPersistentHighlighter.PersistentHighlightSettingItem;
 type PersistentHighlighterCallbacks = SDK.OverlayPersistentHighlighter.PersistentHighlighterCallbacks;
 
-function resetSavedSetting(forcedState: Array<PersistentHighlightSettingItem> = []): void {
+function resetSavedSetting(forcedState: PersistentHighlightSettingItem[] = []): void {
   const setting = Common.Settings.Settings.instance().createLocalSetting<PersistentHighlightSettingItem[]>(
       'persistent-highlight-setting', []);
   setting.set(forcedState);

@@ -2,18 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/legacy/components/data_grid/data_grid.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../network/forward/forward.js';
 
-import cookieReportViewStyles from './cookieReportView.css.legacy.js';
+import cookieReportViewStyles from './cookieReportView.css.js';
 
 const {render, html, Directives: {ref}} = Lit;
 
@@ -180,21 +181,19 @@ const UIStrings = {
    *@description String that shows up in the context menu when right clicking one of the entries in the cookie report.
    */
   showRequestsWithThisCookie: 'Show requests with this cookie',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface ViewInput {
-  gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[];
+  cookieRows: IssuesManager.CookieIssue.CookieReportInfo[];
   filterItems: UI.FilterBar.Item[];
   onFilterChanged: () => void;
   onSortingChanged: () => void;
-  populateContextMenu:
-      (arg0: UI.ContextMenu.ContextMenu, arg1: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>) => void;
+  populateContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
 }
 export interface ViewOutput {
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
-  dataGrid?: DataGrid.DataGrid.DataGridImpl<CookieReportNodeData>;
 }
 
 export interface CookieReportNodeData {
@@ -211,39 +210,23 @@ export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) =
 export class CookieReportView extends UI.Widget.VBox {
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
-  #cookieRows: Map<string, IssuesManager.CookieIssue.CookieReportInfo> = new Map();
+  #cookieRows = new Map<string, IssuesManager.CookieIssue.CookieReportInfo>();
   #view: View;
-  dataGrid?: DataGrid.DataGrid.DataGridImpl<CookieReportNodeData>;
-  gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[] = [];
   filterItems: UI.FilterBar.Item[] = [];
 
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
-    const dataGridOptions: DataGrid.DataGrid.DataGridWidgetOptions<CookieReportNodeData> = {
-      nodes: input.gridData,
-      displayName: i18nString(UIStrings.report),
-      columns: [
-        {id: 'name', title: i18nString(UIStrings.name), weight: 1, sortable: true},
-        {id: 'domain', title: i18nString(UIStrings.domain), weight: 1, sortable: true},
-        {id: 'type', title: i18nString(UIStrings.type), weight: 1, sortable: true},
-        {id: 'platform', title: i18nString(UIStrings.platform), weight: 1, sortable: true},
-        {id: 'status', title: i18nString(UIStrings.status), weight: 1, sortable: true},
-        {id: 'recommendation', title: i18nString(UIStrings.recommendation), weight: 1, sortable: true},
-      ],
-      striped: true,
-      rowContextMenuCallback: input.populateContextMenu.bind(input),
-    };
-
     // clang-format off
     render(html `
         <div class="report overflow-auto">
             <div class="header">
-              <div class="title">${i18nString(UIStrings.title)}</div>
-              <div class="body">${i18nString(UIStrings.body)} <x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
+              <h1>${i18nString(UIStrings.title)}</h1>
+              <div class="body">${i18nString(UIStrings.body)} <x-link class="devtools-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
             </div>
-            ${input.gridData.length > 0 ?
+            ${input.cookieRows.length > 0 ?
               html`
                 <devtools-named-bit-set-filter
                   class="filter"
+                  aria-label="Third-party cookie status filters"
                   @filterChanged=${input.onFilterChanged}
                   .options=${{items: input.filterItems}}
                   ${ref((el?: Element) => {
@@ -253,13 +236,33 @@ export class CookieReportView extends UI.Widget.VBox {
                   })}
                 ></devtools-named-bit-set-filter>
                 <!-- @ts-ignore -->
-                <devtools-data-grid-widget
-                  @sortingChanged=${input.onSortingChanged}
-                  .options=${dataGridOptions}
-                  ${UI.Widget.widgetRef(DataGrid.DataGrid.DataGridWidget, w => {
-                    output.dataGrid = w.dataGrid;
-                  })}
-                ></devtools-data-grid-widget>
+                <devtools-data-grid
+                  name=${i18nString(UIStrings.report)}
+                  striped
+                  @sort=${input.onSortingChanged}
+                  @contextmenu=${input.populateContextMenu.bind(input)}
+                >
+                  <table>
+                    <tr>
+                      <th id="name" sortable>${i18nString(UIStrings.name)}</th>
+                      <th id="domain" sortable>${i18nString(UIStrings.domain)}</th>
+                      <th id="type" sortable>${i18nString(UIStrings.type)}</th>
+                      <th id="platform" sortable>${i18nString(UIStrings.platform)}</th>
+                      <th id="status" sortable>${i18nString(UIStrings.status)}</th>
+                      <th id="recommendation" sortable>${i18nString(UIStrings.recommendation)}</th>
+                    </tr>
+                    ${[...input.cookieRows.values()].map(row => html`
+                      <tr data-name=${row.name} data-domain=${row.domain}>
+                        <td>${row.name}</td>
+                        <td>${row.domain}</td>
+                        <td>${CookieReportView.getCookieTypeString(row.type)}</td>
+                        <td>${row.platform ?? i18nString(UIStrings.unknown)}</td>
+                        <td>${CookieReportView.getStatusString(row.status)}</td>
+                        <td>${CookieReportView.getRecommendation(row.domain, row.insight)}</td>
+                      </tr>
+                    `)}
+                  </table>
+                </devtools-data-grid>
               ` :
               html `
                 <div class="empty-report">
@@ -302,17 +305,20 @@ export class CookieReportView extends UI.Widget.VBox {
   }
 
   override performUpdate(): void {
-    this.gridData = this.#buildNodes();
     this.filterItems = this.#buildFilterItems();
-    this.#view(this, this, this.contentElement);
-  }
-
-  onFilterChanged(): void {
-    this.requestUpdate();
-  }
-
-  onSortingChanged(): void {
-    this.requestUpdate();
+    const viewInput = {
+      cookieRows: [...this.#cookieRows.values()].filter(row => {
+        if (this.namedBitSetFilterUI) {
+          return this.namedBitSetFilterUI.accept(CookieReportView.getStatusString(row.status));
+        }
+        return true;
+      }),
+      filterItems: this.filterItems,
+      onFilterChanged: () => this.requestUpdate(),
+      onSortingChanged: () => this.requestUpdate(),
+      populateContextMenu: this.populateContextMenu.bind(this),
+    };
+    this.#view(viewInput, this, this.contentElement);
   }
 
   #onPrimaryPageChanged(): void {
@@ -346,7 +352,7 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.blocked,
         label: () => i18nString(UIStrings.blocked),
         title: UIStrings.blocked,
-        jslogContext: UIStrings.blocked,
+        jslogContext: 'blocked',
       });
     }
     if (this.#cookieRows.values().some(n => n.status === IssuesManager.CookieIssue.CookieStatus.ALLOWED)) {
@@ -354,7 +360,7 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.allowed,
         label: () => i18nString(UIStrings.allowed),
         title: UIStrings.allowed,
-        jslogContext: UIStrings.allowed,
+        jslogContext: 'allowed',
       });
     }
     if (this.#cookieRows.values().some(
@@ -364,74 +370,29 @@ export class CookieReportView extends UI.Widget.VBox {
         name: UIStrings.allowedByException,
         label: () => i18nString(UIStrings.allowedByException),
         title: UIStrings.allowedByException,
-        jslogContext: UIStrings.allowedByException,
+        jslogContext: 'allowed-by-exception',
       });
     }
 
     return filterItems;
   }
 
-  #buildNodes(): DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[] {
-    return [...this.#cookieRows.values()]
-        .filter(row => {
-          if (this.namedBitSetFilterUI) {
-            return this.namedBitSetFilterUI.accept(CookieReportView.getStatusString(row.status));
-          }
-          return true;
-        })
-        .sort((a, b) => {
-          if (!this.dataGrid) {
-            return 0;
-          }
-          const columnId = this.dataGrid.sortColumnId();
-          let result = 0;
-          if (columnId === 'name') {
-            result = a.name.localeCompare(b.name);
-          } else if (columnId === 'domain') {
-            result = a.domain.localeCompare(b.domain);
-          } else if (columnId === 'type') {
-            result = (a.type ?? i18nString(UIStrings.unknown)).localeCompare((b.type ?? i18nString(UIStrings.unknown)));
-          } else if (columnId === 'platform') {
-            result = (a.platform ?? i18nString(UIStrings.unknown))
-                         .localeCompare((b.platform ?? i18nString(UIStrings.unknown)));
-          } else if (columnId === 'status') {
-            result =
-                CookieReportView.getStatusString(a.status).localeCompare(CookieReportView.getStatusString(b.status));
-          } else if (columnId === 'recommendation') {
-            result = CookieReportView.getInsightTypeString(a.insight).localeCompare(
-                CookieReportView.getInsightTypeString(b.insight));
-          }
-          return this.dataGrid.isSortOrderAscending() ? result : -result;
-        })
-        .map(
-            row => new DataGrid.DataGrid.DataGridNode<CookieReportNodeData>(
-                {
-                  name: row.name,
-                  domain: row.domain,
-                  type: CookieReportView.getCookieTypeString(row.type),
-                  platform: row.platform ?? i18nString(UIStrings.unknown),
-                  status: CookieReportView.getStatusString(row.status),
-                  recommendation: CookieReportView.getRecommendation(row.domain, row.insight),
-                } as CookieReportNodeData,
-                ));
-  }
-
-  populateContextMenu(
-      contextMenu: UI.ContextMenu.ContextMenu, gridNode: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>): void {
-    const cookie = gridNode as DataGrid.DataGrid.DataGridNode<CookieReportNodeData>;
-    if (!cookie) {
+  populateContextMenu(event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>): void {
+    const {menu, element} = event.detail;
+    const {domain, name} = element?.dataset;
+    if (!domain || !name) {
       return;
     }
 
-    contextMenu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
+    menu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
       const requestFilter = NetworkForward.UIFilter.UIRequestFilter.filters([
         {
           filterType: NetworkForward.UIFilter.FilterType.CookieDomain,
-          filterValue: cookie.data['domain'],
+          filterValue: domain,
         },
         {
           filterType: NetworkForward.UIFilter.FilterType.CookieName,
-          filterValue: cookie.data['name'],
+          filterValue: name,
         },
       ]);
       void Common.Revealer.reveal(requestFilter);

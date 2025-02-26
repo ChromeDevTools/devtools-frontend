@@ -16,7 +16,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import permissionsPolicySectionStylesRaw from './permissionsPolicySection.css.legacy.js';
+import permissionsPolicySectionStylesRaw from './permissionsPolicySection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const permissionsPolicySectionStyles = new CSSStyleSheet();
@@ -64,7 +64,7 @@ const UIStrings = {
    *@description Text describing that a specific feature is blocked by virtue of being inside a fenced frame tree.
    */
   disabledByFencedFrame: 'disabled inside a `fencedframe`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/PermissionsPolicySection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -147,12 +147,10 @@ export class PermissionsPolicySection extends HTMLElement {
     const featureRows = await Promise.all(disallowed.map(async policy => {
       const frame = policy.locator ? frameManager.getFrame(policy.locator.frameId) : null;
       const blockReason = policy.locator?.blockReason;
-      const linkTargetDOMNode = await (
-          blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute && frame &&
-          frame.getOwnerDOMNodeOrDocument());
-      const resource = frame && frame.resourceForURL(frame.url);
-      const linkTargetRequest =
-          blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource && resource.request;
+      const linkTargetDOMNode = await (blockReason === Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute &&
+                                       frame?.getOwnerDOMNodeOrDocument());
+      const resource = frame?.resourceForURL(frame.url);
+      const linkTargetRequest = blockReason === Protocol.Page.PermissionsPolicyBlockReason.Header && resource?.request;
       const blockReasonText = (() => {
         switch (blockReason) {
           case Protocol.Page.PermissionsPolicyBlockReason.IframeAttribute:

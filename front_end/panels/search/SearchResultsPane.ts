@@ -10,7 +10,7 @@ import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import searchResultsPaneStyles from './searchResultsPane.css.legacy.js';
+import searchResultsPaneStyles from './searchResultsPane.css.js';
 import type {SearchResult} from './SearchScope.js';
 
 const UIStrings = {
@@ -29,7 +29,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   showDMore: 'Show {PH1} more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchResultsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

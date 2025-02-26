@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Title of command that runs a Quick Open command
    */
   runCommand: 'Run command',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/quick_open-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

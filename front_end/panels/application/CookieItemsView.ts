@@ -39,7 +39,7 @@ import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_tab
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cookieItemsViewStyles from './cookieItemsView.css.legacy.js';
+import cookieItemsViewStyles from './cookieItemsView.css.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
 const UIStrings = {
@@ -80,7 +80,7 @@ const UIStrings = {
    *@example {5} PH1
    */
   numberOfCookiesShownInTableS: 'Number of cookies shown in table: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/CookieItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 class CookiePreviewWidget extends UI.Widget.VBox {
@@ -256,7 +256,7 @@ export class CookieItemsView extends StorageItemsView {
     if (oldCookie && newCookie.key() !== oldCookie.key()) {
       await this.model.deleteCookie(oldCookie);
     }
-    return this.model.saveCookie(newCookie);
+    return await this.model.saveCookie(newCookie);
   }
 
   private deleteCookie(cookie: SDK.Cookie.Cookie, callback: () => void): void {

@@ -98,7 +98,7 @@ const UIStrings = {
    *@description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   returnValue: 'Return value',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -180,7 +180,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
                                      start: Location,
                                      end: Location,
                                    }>>)|null;
-  #expandCallFramesCallback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null;
+  #expandCallFramesCallback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null;
   evaluateOnCallFrameCallback: ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null;
   #synchronizeBreakpointsCallback: ((script: Script) => Promise<void>)|null;
   // We need to be able to register listeners for individual breakpoints. As such, we dispatch
@@ -332,7 +332,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     const maxScriptsCacheSize = isRemoteFrontend ? 10e6 : 100e6;
     const enablePromise = this.agent.invoke_enable({maxScriptsCacheSize});
     void enablePromise.then(this.registerDebugger.bind(this));
-    return enablePromise;
+    return await enablePromise;
   }
 
   private onFrameNavigated(): void {
@@ -657,7 +657,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     this.#beforePausedCallback = callback;
   }
 
-  setExpandCallFramesCallback(callback: ((arg0: Array<CallFrame>) => Promise<Array<CallFrame>>)|null): void {
+  setExpandCallFramesCallback(callback: ((arg0: CallFrame[]) => Promise<CallFrame[]>)|null): void {
     this.#expandCallFramesCallback = callback;
   }
 
@@ -895,7 +895,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (!callFrame) {
       throw new Error('No call frame selected');
     }
-    return callFrame.evaluate(options);
+    return await callFrame.evaluate(options);
   }
 
   functionDetailsPromise(remoteObject: RemoteObject): Promise<FunctionDetails|null> {
@@ -987,10 +987,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private static shouldResyncDebuggerId = false;
-
-  getContinueToLocationCallback(): ((arg0: DebuggerPausedDetails) => boolean)|null {
-    return this.continueToLocationCallback;
-  }
 
   getEvaluateOnCallFrameCallback():
       ((arg0: CallFrame, arg1: EvaluationOptions) => Promise<EvaluationResult|null>)|null {

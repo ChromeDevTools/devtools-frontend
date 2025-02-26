@@ -74,7 +74,7 @@ export const getValuesOfAllBodyRows = (shadowRoot: ShadowRoot, options: {onlyVis
         return {
           rowValues: [...row.querySelectorAll('td[jslog]')]
                          .filter(cell => !options.onlyVisible || !cell.classList.contains('hidden'))
-                         .map(cell => (cell as HTMLTableCellElement).innerText!.trim()),
+                         .map(cell => (cell as HTMLTableCellElement).innerText.trim()),
           hidden: options.onlyVisible && rowIsHidden,
         };
       })

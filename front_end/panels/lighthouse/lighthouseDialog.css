@@ -5,22 +5,17 @@
  */
 
 .lighthouse-view {
-  --view-horizontal-margin: 20px;
-
-  margin: 7px var(--view-horizontal-margin);
   flex: auto;
-  align-items: center;
+  align-items: start;
   width: 100%;
   max-width: 500px;
 }
 
-.lighthouse-view h2 {
-  color: var(--sys-color-on-surface);
-  font-weight: bold;
-  font-size: 14px;
+.lighthouse-view span {
+  font: var(--sys-typescale-body2-medium);
+  padding-top: var(--sys-size-3);
+  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
   flex: none;
-  width: 100%;
-  text-align: left;
 }
 
 .lighthouse-view button {
@@ -30,20 +25,20 @@
 }
 
 .lighthouse-status {
-  width: 100%;
+  width: calc(100% - 2*var(--sys-size-8));
   flex: auto;
-  align-items: center;
-  color: var(--sys-color-on-surface);
+  color: var(
+  --sys-color-on-surface);
+  margin: 0 var(
+  --sys-size-8);
 }
 
 .lighthouse-status-text {
   text-align: center;
-  min-height: 50px;
-  margin-bottom: 10px;
+  min-height: var(--sys-size-16);
   display: flex;
   justify-content: center;
   flex-direction: column;
-  max-width: 100%;
 }
 
 .lighthouse-status-text code {
@@ -53,12 +48,15 @@
   overflow: auto;
 }
 
+.lighthouse-button-container {
+  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
+}
+
 .lighthouse-progress-wrapper {
-  width: calc(100% + 2 * var(--view-horizontal-margin));
-  height: 2px;
+  height: var(--sys-size-2);
   background-color: var(--sys-color-neutral-outline);
   position: relative;
-  margin: 10px;
+  margin: var(--sys-size-5) 0;
 }
 
 .lighthouse-progress-bar {
@@ -79,7 +77,7 @@
 
 .lighthouse-progress-bar.errored {
   width: 100%;
-  background: #e50303; /* stylelint-disable-line plugin/use_theme_colors */
+  background: var(--sys-color-error); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
 }
 

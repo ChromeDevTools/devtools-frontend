@@ -22,9 +22,9 @@ export function createNetworkRequest(requestId: string): SDK.NetworkRequest.Netw
 }
 
 export class MockNetworkLog extends Common.ObjectWrapper.ObjectWrapper<Logs.NetworkLog.EventTypes> {
-  private mockRequests: Array<MockNetworkRequest>;
+  private mockRequests: MockNetworkRequest[];
 
-  constructor(mockRequests: Array<MockNetworkRequest>) {
+  constructor(mockRequests: MockNetworkRequest[]) {
     super();
     this.mockRequests = mockRequests;
   }

@@ -28,9 +28,15 @@ devtools_module("ai_assistance") {
     "agents/NetworkAgent.ts",
     "agents/PatchAgent.ts",
     "agents/PerformanceAgent.ts",
+    "agents/PerformanceInsightsAgent.ts",
     "agents/StylingAgent.ts",
     "components/ChatView.ts",
+    "components/MarkdownRendererWithCodeBlock.ts",
     "components/UserActionRow.ts",
+    "data_formatters/FileFormatter.ts",
+    "data_formatters/NetworkRequestFormatter.ts",
+    "data_formatters/PerformanceInsightFormatter.ts",
+    "debug.ts",
   ]
 
   deps = [
@@ -41,6 +47,7 @@ devtools_module("ai_assistance") {
     "../../core/root:bundle",
     "../../models/bindings:bundle",
     "../../models/logs:bundle",
+    "../../models/persistence:bundle",
     "../../models/text_utils:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
@@ -90,13 +97,20 @@ ts_library("unittests") {
     "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",
     "EvaluateAction.test.ts",
+    "ExtensionScope.test.ts",
     "agents/AiAgent.test.ts",
     "agents/FileAgent.test.ts",
     "agents/NetworkAgent.test.ts",
+    "agents/PatchAgent.test.ts",
     "agents/PerformanceAgent.test.ts",
+    "agents/PerformanceInsightsAgent.test.ts",
     "agents/StylingAgent.test.ts",
     "components/ChatView.test.ts",
+    "components/MarkdownRendererWithCodeBlock.test.ts",
     "components/UserActionRow.test.ts",
+    "data_formatters/FileFormatter.test.ts",
+    "data_formatters/NetworkRequestFormatter.test.ts",
+    "data_formatters/PerformanceInsightFormatter.test.ts",
   ]
 
   deps = [

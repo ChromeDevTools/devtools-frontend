@@ -36,11 +36,11 @@ export interface EventTypes {
   [Events.SourceMapResolved]: void;
 }
 
-const COVERAGE_POLLING_PERIOD_MS: number = 200;
+const COVERAGE_POLLING_PERIOD_MS = 200;
 const RESOLVE_SOURCEMAP_TIMEOUT = 500;
 
 interface BacklogItem<T> {
-  rawCoverageData: Array<T>;
+  rawCoverageData: T[];
   stamp: number;
 }
 
@@ -55,8 +55,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private pollTimer: number|null;
   private currentPollPromise: Promise<void>|null;
   private shouldResumePollingOnResume: boolean|null;
-  private jsBacklog: BacklogItem<Protocol.Profiler.ScriptCoverage>[];
-  private cssBacklog: BacklogItem<Protocol.CSS.RuleUsage>[];
+  private jsBacklog: Array<BacklogItem<Protocol.Profiler.ScriptCoverage>>;
+  private cssBacklog: Array<BacklogItem<Protocol.CSS.RuleUsage>>;
   private performanceTraceRecording: boolean|null;
   private sourceMapManager: SDK.SourceMapManager.SourceMapManager<SDK.Script.Script>|null;
   private willResolveSourceMaps: boolean;
@@ -92,7 +92,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   async start(jsCoveragePerBlock: boolean): Promise<boolean> {
     if (this.suspensionState !== SuspensionState.ACTIVE) {
-      throw Error('Cannot start CoverageModel while it is not active.');
+      throw new Error('Cannot start CoverageModel while it is not active.');
     }
     const promises = [];
     if (this.cssModel) {
@@ -281,7 +281,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   usageForRange(contentProvider: TextUtils.ContentProvider.ContentProvider, startOffset: number, endOffset: number):
       boolean|undefined {
     const coverageInfo = this.coverageByContentProvider.get(contentProvider);
-    return coverageInfo && coverageInfo.usageForRange(startOffset, endOffset);
+    return coverageInfo?.usageForRange(startOffset, endOffset);
   }
 
   private clearCSS(): void {
@@ -320,11 +320,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     const {coverage, timestamp} = await this.cpuProfilerModel.takePreciseCoverage();
     this.coverageUpdateTimes.add(timestamp);
-    return this.backlogOrProcessJSCoverage(coverage, timestamp);
-  }
-
-  getCoverageUpdateTimes(): Set<number> {
-    return this.coverageUpdateTimes;
+    return await this.backlogOrProcessJSCoverage(coverage, timestamp);
   }
 
   private async backlogOrProcessJSCoverage(
@@ -375,7 +371,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         }
       }
       const subentry = await this.addCoverage(
-          script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type as CoverageType, stamp);
+          script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type, stamp);
       if (subentry) {
         updatedEntries.push(...subentry);
       }
@@ -395,7 +391,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
     const {coverage, timestamp} = await this.cssModel.takeCoverageDelta();
     this.coverageUpdateTimes.add(timestamp);
-    return this.backlogOrProcessCSSCoverage(coverage, timestamp);
+    return await this.backlogOrProcessCSSCoverage(coverage, timestamp);
   }
 
   private async backlogOrProcessCSSCoverage(freshRawCoverageData: Protocol.CSS.RuleUsage[], freshTimestamp: number):
@@ -434,8 +430,8 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       ranges.push({startOffset: rule.startOffset, endOffset: rule.endOffset, count: Number(rule.used)});
     }
     for (const entry of rulesByStyleSheet) {
-      const styleSheetHeader = entry[0] as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader;
-      const ranges = entry[1] as RangeUseCount[];
+      const styleSheetHeader = entry[0];
+      const ranges = entry[1];
       const subentry = await this.addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
           ranges, CoverageType.CSS, stamp);
@@ -634,8 +630,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   private addCoverageForSource(
       url: Platform.DevToolsPath.UrlString, size: number, type: CoverageType,
       generatedUrlCoverage: URLCoverageInfo): CoverageInfo|null {
-    const uiSourceCode =
-        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
+    const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
     const contentProvider = uiSourceCode as TextUtils.ContentProvider.ContentProvider;
     const urlCoverage = new SourceURLCoverageInfo(url, generatedUrlCoverage);
     const coverageInfo = urlCoverage.ensureEntry(contentProvider, size, 0, 0, type);
@@ -646,7 +641,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   async exportReport(fos: Bindings.FileUtils.FileOutputStream): Promise<void> {
-    const result: {url: string, ranges: {start: number, end: number}[], text: string|null}[] = [];
+    const result: Array<{url: string, ranges: Array<{start: number, end: number}>, text: string | null}> = [];
     const coverageByUrlKeys = Array.from(this.coverageByURL.keys()).sort();
     for (const urlInfoKey of coverageByUrlKeys) {
       const urlInfo = this.coverageByURL.get(urlInfoKey);
@@ -668,7 +663,7 @@ SDK.SDKModel.SDKModel.register(CoverageModel, {capabilities: SDK.Target.Capabili
 
 export interface EntryForExport {
   url: Platform.DevToolsPath.UrlString;
-  ranges: {start: number, end: number}[];
+  ranges: Array<{start: number, end: number}>;
   text: string|null;
 }
 
@@ -686,7 +681,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
   private usedSizeInternal: number;
   private typeInternal!: CoverageType;
   private isContentScriptInternal: boolean;
-  sourcesURLCoverageInfo: Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo> = new Map();
+  sourcesURLCoverageInfo = new Map<Platform.DevToolsPath.UrlString, SourceURLCoverageInfo>();
   sourceSegments: SourceSegment[]|undefined;
 
   constructor(url: Platform.DevToolsPath.UrlString) {
@@ -778,7 +773,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider).isContentScript();
     }
     this.typeInternal |= type;
 
@@ -789,7 +784,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
 
     if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
-      this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
+      this.isContentScriptInternal = (contentProvider).isContentScript();
     }
 
     entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type, this);
@@ -864,7 +859,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     }
 
     // Fall back to the per-script operation.
-    return this.entriesForExportBasedOnContent();
+    return await this.entriesForExportBasedOnContent();
   }
 }
 
@@ -933,8 +928,8 @@ export class CoverageInfo {
   private coverageType: CoverageType;
   private segments: CoverageSegment[];
   private generatedUrlCoverageInfo: URLCoverageInfo;
-  sourceUsedSizeMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
-  sourceDeltaMap: Map<Platform.DevToolsPath.UrlString, number> = new Map();
+  sourceUsedSizeMap = new Map<Platform.DevToolsPath.UrlString, number>();
+  sourceDeltaMap = new Map<Platform.DevToolsPath.UrlString, number>();
   sourceUsedRangeMap = new Map<Platform.DevToolsPath.UrlString, RangeOffset[]>();
 
   constructor(
@@ -983,10 +978,6 @@ export class CoverageInfo {
       this.updateSourceCoverage();
     }
     return this.usedSize - oldUsedSize;
-  }
-
-  usedByTimestamp(): Map<number, number> {
-    return this.statsByTimestamp;
   }
 
   getSize(): number {
@@ -1082,7 +1073,7 @@ export class CoverageInfo {
     }
   }
 
-  rangesForExport(offset: number = 0): {start: number, end: number}[] {
+  rangesForExport(offset = 0): Array<{start: number, end: number}> {
     const ranges = [];
     let start = 0;
     for (const segment of this.segments) {

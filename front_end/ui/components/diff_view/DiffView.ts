@@ -8,13 +8,13 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Lit from '../../lit/lit.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
-import diffViewStylesRaw from './diffView.css.legacy.js';
+import diffViewStylesRaw from './diffView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const diffViewStyles = new CSSStyleSheet();
 diffViewStyles.replaceSync(diffViewStylesRaw.cssContent);
 const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.Style.default.cssContent);
+CodeHighlighterStyles.replaceSync(CodeHighlighter.codeHighlighterStyles.cssContent);
 
 const {html} = Lit;
 
@@ -36,7 +36,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   SkippingDMatchingLines: '( … Skipping {PH1} matching lines … )',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/diff_view/DiffView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -237,7 +237,7 @@ class DiffRenderer {
     const content: Lit.TemplateResult[] = [];
     let pos = startPos;
     for (const token of row.tokens) {
-      const tokenContent: (Lit.TemplateResult|string)[] = [];
+      const tokenContent: Array<Lit.TemplateResult|string> = [];
       doc.highlightRange(pos, pos + token.text.length, (text, style) => {
         tokenContent.push(style ? html`<span class=${style}>${text}</span>` : text);
       });

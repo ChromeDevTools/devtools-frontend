@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text in Network Priorities of the Performance panel
    */
   highest: 'Highest',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/NetworkPriorities.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export function uiLabelForNetworkPriority(priority: Protocol.Network.ResourcePriority): string {
@@ -46,7 +46,7 @@ export function uiLabelToNetworkPriority(priorityLabel: string): Protocol.Networ
   throw new Error('Priority not found');
 }
 
-const priorityUILabelMapInstance: Map<Protocol.Network.ResourcePriority, string> = new Map();
+const priorityUILabelMapInstance = new Map<Protocol.Network.ResourcePriority, string>();
 
 export function priorityUILabelMap(): Map<Protocol.Network.ResourcePriority, string> {
   if (priorityUILabelMapInstance.size === 0) {

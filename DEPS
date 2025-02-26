@@ -12,19 +12,19 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '3ec76f733becfd04ebf68a3519784aa910a6882b',
+  'build_revision': 'e13953ced04ed05f45aa3c961bd6d802aced74ec',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '6b4eaa1ed0f3a604f354b4098e4f676f7815f1da',
+  'buildtools_revision': '1b5a0e6c5169ab6b007e4fd41f81909c23a50aba',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': 'c88ad7af1a5c20b6788d52beb54f33203de492a8',
+  'depot_tools_revision': 'feeac124f25235044d687bd84326a0e558951424',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
-  'inspector_protocol_revision': '69d69ddf3aa698b171886551a4a672c5af1ad902',
+  'inspector_protocol_revision': '940abfc668be2591483f7132145593c6a047f3cf',
 
   # Keeping track of the last time we rollerd the browser protocol files.
-  'chromium_browser_protocol_revision' : 'f0291784c51fa7a64cf7711bc60f52b0d505be8d',
+  'chromium_browser_protocol_revision' : '935ce46c51ff9b569f2528306475d1773d6a142e',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '37f6e68a107df43b7d7e044fd36a13cbae3413f2',
@@ -49,7 +49,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '134.0.6990.0',
+  'chrome': '135.0.7034.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.
@@ -57,6 +57,9 @@ vars = {
 
   # condition to allowlist deps for non-git-source processing.
   'non_git_source': 'True',
+
+  # siso CIPD package version
+  'siso_version': 'git_revision:aa31236f9e208039b6196cbae4318d56d4c30e3d',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -141,6 +144,16 @@ deps = {
   'build': {
     'url': Var('build_url') + '@' + Var('build_revision'),
     'condition': 'build_with_chromium == False',
+  },
+  'third_party/siso': {
+    'packages': [
+      {
+        'package': 'infra/build/siso/${{platform}}',
+        'version': Var('siso_version'),
+      }
+    ],
+    'dep_type': 'cipd',
+    'condition': 'not build_with_chromium and host_cpu != "s390" and host_os != "zos" and host_cpu != "ppc"',
   },
   'third_party/depot_tools': {
     'url': Var('depot_tools_url') + '@' + Var('depot_tools_revision'),
@@ -290,7 +303,6 @@ hooks = [
                 '--version_number=' + Var('chrome'),
     ],
   },
-
   {
     # Update LASTCHANGE for build script timestamps
     'name': 'lastchange',
@@ -317,6 +329,16 @@ hooks = [
       '--no-warnings=ExperimentalWarning',
       'scripts/deps/sync-vscode-settings.mjs'
     ]
+  },
+  {
+    'name': 'configure_siso',
+    'pattern': '.',
+    'condition': 'build_with_chromium == False',
+    'action': ['python3',
+               'build/config/siso/configure_siso.py',
+               '--rbe_instance',
+               'projects/rbe-chrome-untrusted/instances/default_instance',
+               ],
   },
 ]
 

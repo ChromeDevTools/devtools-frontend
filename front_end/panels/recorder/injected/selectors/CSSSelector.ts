@@ -291,12 +291,12 @@ export const queryCSSSelectorAll = (selectors: Selector): Element[] => {
   } else if (selectors.length === 0) {
     return [];
   }
-  let lists: NodeListOf<Element>[] = [
+  let lists: Array<NodeListOf<Element>> = [
     [document.documentElement] as unknown as NodeListOf<Element>,
   ];
   do {
     const selector = selectors.shift() as string;
-    const roots: NodeListOf<Element>[] = [];
+    const roots: Array<NodeListOf<Element>> = [];
     for (const nodes of lists) {
       for (const node of nodes) {
         const list = (node.shadowRoot ?? node).querySelectorAll(selector);

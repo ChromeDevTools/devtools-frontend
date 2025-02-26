@@ -3,22 +3,21 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Lit from '../../../lit/lit.js';
+import {html, render, svg} from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import pieChartStylesRaw from './pieChart.css.legacy.js';
+import pieChartStylesRaw from './pieChart.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const pieChartStyles = new CSSStyleSheet();
 pieChartStyles.replaceSync(pieChartStylesRaw.cssContent);
 
-const {render, html, svg} = Lit;
 const UIStrings = {
   /**
    *@description Text for sum
    */
   total: 'Total',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/PieChart.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

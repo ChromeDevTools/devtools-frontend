@@ -42,7 +42,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Snippets from '../snippets/snippets.js';
 
 import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
-import sourcesNavigatorStyles from './sourcesNavigator.css.legacy.js';
+import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const UIStrings = {
   /**
@@ -109,7 +109,18 @@ const UIStrings = {
    *@description Text to save content as a specific file type
    */
   saveAs: 'Save as...',
-};
+  /**
+   * @description Text in Workspaces tab in the Sources panel when an automatic
+   *              workspace folder is detected.
+   * @example {/path/to/foo} PH1
+   */
+  automaticWorkspaceFolderDetected: 'Workspace folder {PH1} detected.',
+  /**
+   * @description Button description in Workspaces tab in the Sources panel
+   *              to connect to an automatic workspace folder.
+   */
+  automaticWorkspaceFolderConnect: 'Connect...',
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkNavigatorViewInstance: NetworkNavigatorView;
@@ -182,6 +193,10 @@ export class NetworkNavigatorView extends NavigatorView {
 }
 
 export class FilesNavigatorView extends NavigatorView {
+  #automaticFileSystemManager = Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
+  #infobar: UI.Infobar.Infobar|null = null;
+  #eventListeners: Common.EventTarget.EventDescriptor[] = [];
+
   constructor() {
     super('navigator-files');
     const placeholder =
@@ -196,6 +211,22 @@ export class FilesNavigatorView extends NavigatorView {
         this.contentElement.insertBefore(toolbar, this.contentElement.firstChild);
       }
     });
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.#eventListeners = [
+      this.#automaticFileSystemManager.addEventListener(
+          Persistence.AutomaticFileSystemManager.Events.AUTOMATIC_FILE_SYSTEM_CHANGED, this.#automaticFileSystemChanged,
+          this),
+    ];
+    this.#automaticFileSystemChanged({data: this.#automaticFileSystemManager.automaticFileSystem});
+  }
+
+  override willHide(): void {
+    Common.EventTarget.removeEventListeners(this.#eventListeners);
+    this.#automaticFileSystemChanged({data: null});
+    super.willHide();
   }
 
   override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
@@ -213,6 +244,33 @@ export class FilesNavigatorView extends NavigatorView {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
     void contextMenu.show();
+  }
+
+  #automaticFileSystemChanged(
+      event: Common.EventTarget.EventTargetEvent<Persistence.AutomaticFileSystemManager.AutomaticFileSystem|null>):
+      void {
+    const automaticFileSystem = event.data;
+    if (automaticFileSystem === null || automaticFileSystem.state !== 'disconnected') {
+      this.#infobar?.dispose();
+      this.#infobar = null;
+    } else {
+      this.#infobar = UI.Infobar.Infobar.create(
+          UI.Infobar.Type.INFO,
+          i18nString(UIStrings.automaticWorkspaceFolderDetected, {PH1: automaticFileSystem.root}),
+          [{
+            text: i18nString(UIStrings.automaticWorkspaceFolderConnect),
+            highlight: true,
+            delegate: () => this.#automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true),
+            dismiss: true,
+            jslogContext: 'automatic-workspace-folders.connect',
+          }],
+          Common.Settings.Settings.instance().moduleSetting('persistence-automatic-workspace-folders'),
+          'automatic-workspace-folders',
+      );
+      if (this.#infobar) {
+        this.contentElement.append(this.#infobar.element);
+      }
+    }
   }
 }
 

@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 
 import {CSSModel} from './CSSModel.js';
 import {MultitargetNetworkManager} from './NetworkManager.js';
 import {Events, OverlayModel} from './OverlayModel.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export class EmulationModel extends SDKModel<void> {
   readonly #emulationAgent: ProtocolProxyApi.EmulationApi;
@@ -322,10 +321,10 @@ export class EmulationModel extends SDKModel<void> {
     await this.#emulationAgent.invoke_clearIdleOverride();
   }
 
-  private async emulateCSSMedia(type: string, features: {
-    name: string,
-    value: string,
-  }[]): Promise<void> {
+  private async emulateCSSMedia(type: string, features: Array<{
+                                  name: string,
+                                  value: string,
+                                }>): Promise<void> {
     await this.#emulationAgent.invoke_setEmulatedMedia({media: type, features});
     if (this.#cssModel) {
       this.#cssModel.mediaQueryResultChanged();
@@ -447,7 +446,7 @@ export class EmulationModel extends SDKModel<void> {
         value: this.#mediaConfiguration.get('prefers-reduced-transparency') ?? '',
       },
     ];
-    return this.emulateCSSMedia(type, features);
+    return await this.emulateCSSMedia(type, features);
   }
 }
 

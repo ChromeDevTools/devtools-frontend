@@ -73,12 +73,12 @@ export async function reveal(obj: IssuesAssociatable, category?: IssueCategory):
   if (typeof obj === 'string') {
     const issue = IssuesManager.instance().getIssueById(obj);
     if (issue) {
-      return Common.Revealer.reveal(issue);
+      return await Common.Revealer.reveal(issue);
     }
   }
   const issues = Array.from(IssuesManager.instance().issues());
   const candidates = issuesAssociatedWith(issues, obj).filter(issue => !category || issue.getCategory() === category);
   if (candidates.length > 0) {
-    return Common.Revealer.reveal(candidates[0]);
+    return await Common.Revealer.reveal(candidates[0]);
   }
 }

@@ -61,7 +61,7 @@ export async function format(
     indent: string =
         Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get()): Promise<FormattedContent> {
   if (contentType.isDocumentOrScriptOrStyleSheet()) {
-    return formatScriptContent(mimeType, content, indent);
+    return await formatScriptContent(mimeType, content, indent);
   }
 
   return {formattedContent: content, formattedMapping: new IdentityFormatterSourceMapping()};

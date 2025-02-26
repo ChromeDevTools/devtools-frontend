@@ -293,4 +293,4 @@ declare abstract class Directive implements Disconnectable {
     update(_part: Part, props: Array<unknown>): unknown;
 }
 
-export { AttributePart, AttributePartInfo, BooleanAttributePart, ChildPart, ChildPartInfo, Directive, DirectiveClass, DirectiveParameters, DirectiveResult, ElementPart, ElementPartInfo, EventPart, Part, PartInfo, PartType, PropertyPart, directive };
+export { AttributePart, type AttributePartInfo, BooleanAttributePart, ChildPart, type ChildPartInfo, Directive, type DirectiveClass, type DirectiveParameters, type DirectiveResult, ElementPart, type ElementPartInfo, EventPart, type Part, type PartInfo, PartType, PropertyPart, directive };

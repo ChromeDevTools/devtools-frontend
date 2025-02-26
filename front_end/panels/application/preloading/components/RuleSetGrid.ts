@@ -19,7 +19,7 @@ import * as NetworkForward from '../../../network/forward/forward.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
 import * as PreloadingString from './PreloadingString.js';
-import ruleSetGridStylesRaw from './ruleSetGrid.css.legacy.js';
+import ruleSetGridStylesRaw from './ruleSetGrid.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const ruleSetGridStyles = new CSSStyleSheet();
@@ -52,7 +52,7 @@ const UIStrings = {
    *@description button: Title of button to reveal preloading attempts with filter by selected rule set
    */
   buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

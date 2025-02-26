@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Title of the Marker Decorator of Elements
    */
   elementIsHidden: 'Element is hidden',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/MarkerDecorator.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -41,7 +41,7 @@ export class GenericDecorator implements MarkerDecorator {
       throw new Error(`Generic decorator requires a color and a title: ${extension.marker}`);
     }
     this.title = extension.title();
-    this.color = (extension.color as string);
+    this.color = (extension.color);
   }
 
   decorate(_node: SDK.DOMModel.DOMNode): {

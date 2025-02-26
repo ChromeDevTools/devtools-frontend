@@ -52,7 +52,7 @@ const UIStrings = {
    *@description Text in Request Preview View of the Network panel
    */
   previewNotAvailable: 'Preview not available',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPreviewView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPreviewView extends RequestResponseView {

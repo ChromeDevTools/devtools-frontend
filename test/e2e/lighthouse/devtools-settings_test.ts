@@ -12,7 +12,6 @@ import {
   waitForAria,
   waitForElementWithTextContent,
 } from '../../shared/helper.js';
-
 import {openDeviceToolbar, reloadDockableFrontEnd, selectDevice} from '../helpers/emulation-helpers.js';
 import {
   clickStartButton,

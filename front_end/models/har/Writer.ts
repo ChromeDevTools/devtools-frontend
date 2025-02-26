@@ -49,7 +49,7 @@ const UIStrings = {
    *@description Text to indicate DevTools is writing to a file
    */
   writingFile: 'Writing file…',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/har/Writer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class Writer {

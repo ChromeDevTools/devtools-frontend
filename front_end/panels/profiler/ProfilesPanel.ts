@@ -35,11 +35,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import heapProfilerStyles from './heapProfiler.css.legacy.js';
+import heapProfilerStyles from './heapProfiler.css.js';
 import {
   type DataDisplayDelegate,
   ProfileEvents as ProfileTypeEvents,
@@ -48,8 +48,8 @@ import {
 } from './ProfileHeader.js';
 import {Events as ProfileLauncherEvents, ProfileLauncherView} from './ProfileLauncherView.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
-import profilesPanelStyles from './profilesPanel.css.legacy.js';
-import profilesSidebarTreeStyles from './profilesSidebarTree.css.legacy.js';
+import profilesPanelStyles from './profilesPanel.css.js';
+import profilesSidebarTreeStyles from './profilesSidebarTree.css.js';
 
 const UIStrings = {
   /**
@@ -63,9 +63,13 @@ const UIStrings = {
   cantLoadProfileWhileAnother: 'Can’t load profile while another profile is being recorded.',
   /**
    *@description Text in Profiles Panel of a profiler tool
+   */
+  profileLoadingFailed: 'Profile loading failed',
+  /**
+   *@description Text in Profiles Panel of a profiler tool
    *@example {cannot open file} PH1
    */
-  profileLoadingFailedS: 'Profile loading failed: {PH1}.',
+  failReason: 'Reason: {PH1}.',
   /**
    *@description Text in Profiles Panel of a profiler tool
    *@example {2} PH1
@@ -75,7 +79,7 @@ const UIStrings = {
    *@description Text in Profiles Panel of a profiler tool
    */
   profiles: 'Profiles',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfilesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisplayDelegate {
@@ -91,10 +95,10 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   profileGroups: {};
   launcherView: ProfileLauncherView;
   visibleView!: UI.Widget.Widget|undefined;
-  readonly profileToView: {
+  readonly profileToView: Array<{
     profile: ProfileHeader,
     view: UI.Widget.Widget,
-  }[];
+  }>;
   typeIdToSidebarSection: {
     [x: string]: ProfileTypeSidebarSection,
   };
@@ -194,7 +198,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const visibleView = (this.visibleView as any);
-    return visibleView && visibleView.searchableView ? visibleView.searchableView() : null;
+    return visibleView?.searchableView ? visibleView.searchableView() : null;
   }
 
   createFileSelectorElement(): void {
@@ -230,7 +234,8 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     const error = await profileType.loadFromFile(file);
     if (error && 'message' in error) {
       void UI.UIUtils.MessageDialog.show(
-          i18nString(UIStrings.profileLoadingFailedS, {PH1: error.message}), undefined, 'profile-loading-failed');
+          i18nString(UIStrings.profileLoadingFailed), i18nString(UIStrings.failReason, {PH1: error.message}), undefined,
+          'profile-loading-failed');
     }
   }
 

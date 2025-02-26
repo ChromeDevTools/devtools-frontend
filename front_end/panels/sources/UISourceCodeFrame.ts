@@ -50,7 +50,7 @@ import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
 
-function sourceFramePlugins(): (typeof Plugin)[] {
+function sourceFramePlugins(): Array<typeof Plugin> {
   // The order of these plugins matters for toolbar items and editor
   // extension precedence
   return [
@@ -110,7 +110,7 @@ export class UISourceCodeFrame extends
     if (this.uiSourceCodeInternal.isDirty()) {
       return this.uiSourceCodeInternal.workingCopyContentData();
     }
-    return this.uiSourceCodeInternal.requestContentData();
+    return await this.uiSourceCodeInternal.requestContentData();
   }
 
   protected override editorConfiguration(doc: string): CodeMirror.Extension {
@@ -712,10 +712,6 @@ class MessageWidget extends CodeMirror.WidgetType {
     }
     return wrap;
   }
-
-  ignoreEvents(): boolean {
-    return true;
-  }
 }
 
 class RowMessageDecorations {
@@ -800,6 +796,10 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
 }
 
 const rowMessageTheme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-tooltip-message': {
     padding: '4px',
   },

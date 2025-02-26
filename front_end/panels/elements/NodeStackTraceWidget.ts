@@ -7,14 +7,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.legacy.js';
+import nodeStackTraceWidgetStyles from './nodeStackTraceWidget.css.js';
 
 const UIStrings = {
   /**
    *@description Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel
    */
   noStackTraceAvailable: 'No stack trace available',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/NodeStackTraceWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

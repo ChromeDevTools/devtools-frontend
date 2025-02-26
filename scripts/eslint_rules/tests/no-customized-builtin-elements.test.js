@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/no-customized-builtin-elements.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('no-customized-builtin-elements', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-customized-builtin-elements', rule, {
   valid: [
     {
       code: 'class Foo {}',

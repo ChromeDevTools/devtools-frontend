@@ -71,7 +71,7 @@ const UIStrings = {
    * @description text shown when no counter events are found and the graph is empty
    */
   noEventsFound: 'No memory usage data found within selected events.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -94,7 +94,7 @@ export class CountersGraph extends UI.Widget.VBox {
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
 
   #noEventsFoundMessage = document.createElement('div');
-  #showNoEventsMessage: boolean = false;
+  #showNoEventsMessage = false;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -254,7 +254,7 @@ export class CountersGraph extends UI.Widget.VBox {
 
   private onClick(event: Event): void {
     const x = (event as MouseEvent).x - this.canvasContainer.getBoundingClientRect().left;
-    let minDistance: number = Infinity;
+    let minDistance = Infinity;
     let bestTime;
     for (const counterUI of this.counterUI) {
       if (!counterUI.counter.times.length) {
@@ -438,7 +438,7 @@ export class CounterUI {
     const parsedColor = Common.Color.parse(graphColor);
     if (parsedColor) {
       const colorWithAlpha = parsedColor.setAlpha(0.5).asString(Common.Color.Format.RGBA);
-      const htmlElement = (this.filter.element as HTMLElement);
+      const htmlElement = (this.filter.element);
       if (colorWithAlpha) {
         htmlElement.style.backgroundColor = colorWithAlpha;
       }

@@ -2,20 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/no-a-tags-in-lit.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'Adding links to a component should be done using `front_end/ui/legacy/XLink.ts`';
 
-ruleTester.run('no-a-tags-in-lit', rule, {
+new RuleTester().run('no-a-tags-in-lit', rule, {
   valid: [
     {
       code: 'Lit.html`<p></p>`',

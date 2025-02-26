@@ -15,7 +15,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import appManifestViewStyles from './appManifestView.css.legacy.js';
+import appManifestViewStyles from './appManifestView.css.js';
 import * as ApplicationComponents from './components/components.js';
 
 const UIStrings = {
@@ -437,7 +437,7 @@ const UIStrings = {
    *@description Text for emulation OS selection dropdown
    */
   selectWindowControlsOverlayEmulationOs: 'Emulate the Window Controls Overlay on',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

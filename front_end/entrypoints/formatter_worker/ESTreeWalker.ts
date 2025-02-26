@@ -32,7 +32,7 @@ export class ESTreeWalker {
     }
 
     if (node.type === 'TemplateLiteral') {
-      const templateLiteral = (node as Acorn.ESTree.TemplateLiteral);
+      const templateLiteral = (node);
       const expressionsLength = templateLiteral.expressions.length;
       for (let i = 0; i < expressionsLength; ++i) {
         this.#innerWalk(templateLiteral.quasis[i], templateLiteral);
@@ -41,7 +41,7 @@ export class ESTreeWalker {
       this.#innerWalk(templateLiteral.quasis[expressionsLength], templateLiteral);
     } else {
       for (let i = 0; i < walkOrder.length; ++i) {
-        // @ts-ignore We are doing type traversal here, but the strings
+        // @ts-expect-error We are doing type traversal here, but the strings
         // in _walkOrder are not mapping. Preferably, we would use the
         // properties as defined in the types, but we can't do that yet.
         // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration

@@ -61,8 +61,8 @@ export class Overlay {
   protected scrollY = 0;
   protected style: CSSStyleSheet[];
   protected canvas?: HTMLCanvasElement;
-  protected canvasWidth: number = 0;
-  protected canvasHeight: number = 0;
+  protected canvasWidth = 0;
+  protected canvasHeight = 0;
   protected platform?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private _window?: Window;

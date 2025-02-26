@@ -266,6 +266,6 @@ export function nearestIndexFromEnd<T>(arr: readonly T[], predicate: (arrayItem:
 }
 
 // Type guard for ensuring that `arr` does not contain null or undefined
-export function arrayDoesNotContainNullOrUndefined<T>(arr: (T|null|undefined)[]): arr is T[] {
+export function arrayDoesNotContainNullOrUndefined<T>(arr: Array<T|null|undefined>): arr is T[] {
   return !arr.includes(null) && !arr.includes(undefined);
 }

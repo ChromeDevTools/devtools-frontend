@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/prefer-url-string.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('prefer-url-string', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('prefer-url-string', rule, {
   valid: [
     {
       code: 'assert.isOk(foo as Platform.DevTools.RawPathString);',

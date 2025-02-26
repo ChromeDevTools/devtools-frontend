@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text for help title of run code snippet menu
    */
   runSnippet: 'Run snippet',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/snippets/SnippetsQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

@@ -50,13 +50,6 @@ export class IsolateManager extends Common.ObjectWrapper.ObjectWrapper<EventType
     }
   }
 
-  unobserveIsolates(observer: Observer): void {
-    this.#observers.delete(observer);
-    if (!this.#observers.size) {
-      ++this.#pollId;
-    }  // Stops the current polling loop.
-  }
-
   modelAdded(model: RuntimeModel): void {
     void this.modelAddedInternal(model);
   }
@@ -176,7 +169,7 @@ export class Isolate {
 
   heapProfilerModel(): HeapProfilerModel|null {
     const runtimeModel = this.runtimeModel();
-    return runtimeModel && runtimeModel.heapProfilerModel();
+    return runtimeModel?.heapProfilerModel() ?? null;
   }
 
   async update(): Promise<void> {
@@ -185,7 +178,7 @@ export class Isolate {
     if (!usage) {
       return;
     }
-    this.#usedHeapSizeInternal = usage.usedSize;
+    this.#usedHeapSizeInternal = usage.usedSize + usage.embedderHeapUsedSize + usage.backingStorageSize;
     this.#memoryTrend.add(this.#usedHeapSizeInternal);
     IsolateManager.instance().dispatchEventToListeners(Events.MEMORY_CHANGED, this);
   }

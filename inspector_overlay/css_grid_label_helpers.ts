@@ -125,8 +125,8 @@ export interface GridHighlightConfig {
   negativeRowLineNumberPositions?: Position[];
   positiveColumnLineNumberPositions?: Position[];
   negativeColumnLineNumberPositions?: Position[];
-  rowLineNameOffsets?: {name: string, x: number, y: number}[];
-  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  rowLineNameOffsets?: Array<{name: string, x: number, y: number}>;
+  columnLineNameOffsets?: Array<{name: string, x: number, y: number}>;
   gridHighlightConfig?: GridHighlightOptions;
 }
 
@@ -163,17 +163,15 @@ export function drawGridLabels(
     labelContainerForNode.id = labelContainerId;
   }
 
-  const rowColor = config.gridHighlightConfig && config.gridHighlightConfig.rowLineColor ?
-      config.gridHighlightConfig.rowLineColor :
-      defaultLabelColor;
+  const rowColor =
+      config.gridHighlightConfig?.rowLineColor ? config.gridHighlightConfig.rowLineColor : defaultLabelColor;
   const rowTextColor = generateLegibleTextColor(rowColor);
 
   labelContainerForNode.style.setProperty('--row-label-color', rowColor);
   labelContainerForNode.style.setProperty('--row-label-text-color', rowTextColor);
 
-  const columnColor = config.gridHighlightConfig && config.gridHighlightConfig.columnLineColor ?
-      config.gridHighlightConfig.columnLineColor :
-      defaultLabelColor;
+  const columnColor =
+      config.gridHighlightConfig?.columnLineColor ? config.gridHighlightConfig.columnLineColor : defaultLabelColor;
   const columnTextColor = generateLegibleTextColor(columnColor);
 
   labelContainerForNode.style.setProperty('--column-label-color', columnColor);
@@ -189,7 +187,7 @@ export function drawGridLabels(
 
   // Draw line numbers and names.
   const normalizedData = normalizePositionData(config, gridBounds);
-  if (config.gridHighlightConfig && config.gridHighlightConfig.showLineNames) {
+  if (config.gridHighlightConfig?.showLineNames) {
     drawGridLineNames(
         lineNameContainer, normalizedData as GridPositionNormalizedDataWithNames, canvasSize, emulationScaleFactor,
         writingModeMatrix, config.writingMode);
@@ -247,8 +245,8 @@ const first = <T>(array: T[]) => array[0];
 /**
  * Massage the list of line name positions given by the backend for easier consumption.
  */
-function normalizeNameData(namePositions: {name: string, x: number, y: number}[]):
-    {positions: {x: number, y: number}[], names: string[][]} {
+function normalizeNameData(namePositions: Array<{name: string, x: number, y: number}>):
+    {positions: Array<{x: number, y: number}>, names: string[][]} {
   const positions = [];
   const names = [];
 
@@ -275,8 +273,8 @@ export interface NormalizePositionDataConfig {
   negativeRowLineNumberPositions?: Position[];
   positiveColumnLineNumberPositions?: Position[];
   negativeColumnLineNumberPositions?: Position[];
-  rowLineNameOffsets?: {name: string, x: number, y: number}[];
-  columnLineNameOffsets?: {name: string, x: number, y: number}[];
+  rowLineNameOffsets?: Array<{name: string, x: number, y: number}>;
+  columnLineNameOffsets?: Array<{name: string, x: number, y: number}>;
   gridHighlightConfig?: {showLineNames: boolean};
 }
 
@@ -317,7 +315,7 @@ export function normalizePositionData(config: NormalizePositionDataConfig, bound
   // If showLineNames is set to true, then don't show line numbers, even if the
   // data is present.
 
-  if (config.gridHighlightConfig && config.gridHighlightConfig.showLineNames) {
+  if (config.gridHighlightConfig?.showLineNames) {
     const rowData = normalizeNameData(config.rowLineNameOffsets || []);
     const positiveRows: PositionDataWithNames = {
       positions: rowData.positions,
@@ -421,7 +419,7 @@ export function drawGridLineNumbers(
  * Places the grid track size labels on the overlay.
  */
 export function drawGridTrackSizes(
-    container: HTMLElement, trackSizes: Array<TrackSize>, direction: 'row'|'column', canvasSize: CanvasSize,
+    container: HTMLElement, trackSizes: TrackSize[], direction: 'row'|'column', canvasSize: CanvasSize,
     emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
     writingMode: string|undefined = 'horizontal-tb') {
   const {main, cross} = getAxes(writingMode);
@@ -583,8 +581,8 @@ function placePositiveRowLabel(
   const {crossSize} = getCanvasSizes(writingMode, canvasSize);
   const labelSize = getLabelSize(element, writingMode);
 
-  const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns && data.columns.positive.hasFirst;
-  const isAtSharedEndCorner = pos[cross] === end[cross] && data.columns && data.columns.negative.hasFirst;
+  const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns?.positive.hasFirst;
+  const isAtSharedEndCorner = pos[cross] === end[cross] && data.columns?.negative.hasFirst;
   const isTooCloseToViewportStart = pos[cross] < gridPageMargin;
   const isTooCloseToViewportEnd = crossSize - pos[cross] < gridPageMargin;
   const flipIn = pos[main] - labelSize.mainSize < gridPageMargin;
@@ -615,8 +613,8 @@ function placeNegativeRowLabel(
   const {mainSize, crossSize} = getCanvasSizes(writingMode, canvasSize);
   const labelSize = getLabelSize(element, writingMode);
 
-  const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns && data.columns.positive.hasLast;
-  const isAtSharedEndCorner = pos[cross] === end[cross] && data.columns && data.columns.negative.hasLast;
+  const isAtSharedStartCorner = pos[cross] === start[cross] && data.columns?.positive.hasLast;
+  const isAtSharedEndCorner = pos[cross] === end[cross] && data.columns?.negative.hasLast;
   const isTooCloseToViewportStart = pos[cross] < gridPageMargin;
   const isTooCloseToViewportEnd = crossSize - pos[cross] < gridPageMargin;
   const flipIn = mainSize - pos[main] - labelSize.mainSize < gridPageMargin;
@@ -647,8 +645,8 @@ function placePositiveColumnLabel(
   const {mainSize, crossSize} = getCanvasSizes(writingMode, canvasSize);
   const labelSize = getLabelSize(element, writingMode);
 
-  const isAtSharedStartCorner = pos[main] === start[main] && data.rows && data.rows.positive.hasFirst;
-  const isAtSharedEndCorner = pos[main] === end[main] && data.rows && data.rows.negative.hasFirst;
+  const isAtSharedStartCorner = pos[main] === start[main] && data.rows?.positive.hasFirst;
+  const isAtSharedEndCorner = pos[main] === end[main] && data.rows?.negative.hasFirst;
   const isTooCloseToViewportStart = pos[main] < gridPageMargin;
   const isTooCloseToViewportEnd = mainSize - pos[main] < gridPageMargin;
   const flipIn = isFlippedBlocksWritingMode(writingMode) ?
@@ -682,8 +680,8 @@ function placeNegativeColumnLabel(
   const {mainSize, crossSize} = getCanvasSizes(writingMode, canvasSize);
   const labelSize = getLabelSize(element, writingMode);
 
-  const isAtSharedStartCorner = pos[main] === start[main] && data.rows && data.rows.positive.hasLast;
-  const isAtSharedEndCorner = pos[main] === end[main] && data.rows && data.rows.negative.hasLast;
+  const isAtSharedStartCorner = pos[main] === start[main] && data.rows?.positive.hasLast;
+  const isAtSharedEndCorner = pos[main] === end[main] && data.rows?.negative.hasLast;
   const isTooCloseToViewportStart = pos[main] < gridPageMargin;
   const isTooCloseToViewportEnd = mainSize - pos[main] < gridPageMargin;
   const flipIn = isFlippedBlocksWritingMode(writingMode) ?

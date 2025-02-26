@@ -121,6 +121,7 @@ module.exports = function(config: any) {
     client: {
       mocha: {
         ...TestConfig.mochaGrep,
+        retries: TestConfig.retries,
         timeout: 5_000,
       },
       remoteDebuggingPort: REMOTE_DEBUGGING_PORT,

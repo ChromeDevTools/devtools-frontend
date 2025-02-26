@@ -73,7 +73,7 @@ export class ContrastOverlay {
 
   private async drawContrastRatioLines(): Promise<void> {
     for (const [level, element] of this.contrastRatioLines) {
-      const path = this.contrastRatioLineBuilder.drawContrastRatioLine(this.width, this.height, level as string);
+      const path = this.contrastRatioLineBuilder.drawContrastRatioLine(this.width, this.height, level);
       if (path) {
         element.setAttribute('d', path);
       } else {

@@ -32,7 +32,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {BinaryResourceView} from './BinaryResourceView.js';
-import webSocketFrameViewStyles from './webSocketFrameView.css.legacy.js';
+import webSocketFrameViewStyles from './webSocketFrameView.css.js';
 
 const UIStrings = {
   /**
@@ -140,7 +140,7 @@ const UIStrings = {
    *@description Example for placeholder text
    */
   filterUsingRegex: 'Filter using regex (example: (web)?socket)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/ResourceWebSocketFrameView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -190,7 +190,6 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.webSocketFrame),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
@@ -383,7 +382,7 @@ const enum OpCodes {
   PONG_FRAME = 10,
 }
 
-export const opCodeDescriptions: (() => string)[] = (function(): (() => Common.UIString.LocalizedString)[] {
+export const opCodeDescriptions: Array<() => string> = (function(): Array<() => Common.UIString.LocalizedString> {
   const map = [];
   map[OpCodes.CONTINUATION_FRAME] = i18nLazyString(UIStrings.continuationFrame);
   map[OpCodes.TEXT_FRAME] = i18nLazyString(UIStrings.textMessage);

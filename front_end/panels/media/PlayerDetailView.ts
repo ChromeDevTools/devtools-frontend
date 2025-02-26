@@ -46,7 +46,7 @@ const UIStrings = {
    *@description Hovertext for Timeline tab.
    */
   playerTimeline: 'Player timeline',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerDetailView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -9,7 +9,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.legacy.js';
+import xhrBreakpointsSidebarPaneStyles from './xhrBreakpointsSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -57,7 +57,7 @@ const UIStrings = {
    *@description Text to remove a breakpoint
    */
   removeBreakpoint: 'Remove breakpoint',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/XHRBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const containerToBreakpointEntry = new WeakMap<Element, HTMLElement>();
@@ -389,7 +389,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       }
       return;
     }
-    const url = details.auxData && details.auxData['breakpointURL'];
+    const url = details.auxData?.['breakpointURL'];
     this.#hitBreakpoint = url;
     if (this.#breakpoints.indexOf(url) < 0) {
       return;

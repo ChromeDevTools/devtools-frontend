@@ -4,6 +4,36 @@ This folder contains the majority of the source code for the Performance panel i
 
 Some of the UI components are reused across other panels; those live in `front_end/ui/legacy/components/perf_ui`.
 
+## Working on the performance panel locally
+
+There are a few different ways to run the Performance Panel locally:
+
+#### Option 1: run real DevTools
+
+The first method is to run DevTools! Load up the Chrome for Testing version that comes within DevTools ([see the DevTools documentation here[(https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/get_the_code.md#running-from-file-system)]).
+
+DevTools, navigate to the Performance Panel and record or import a trace. There are a number of trace files saved in `devtools-frontend/test/unittests/fixtures/traces` that you can use.
+
+#### Option 2: the components server
+
+You can also use the DevTools component server. This server runs standalone parts of DevTools in the browser. To do this, run `npm run components-server` in the terminal, which will run a server on `localhost:8090`.
+
+You can then navigate to the Performance Panel examples using the link on the index page. This runs the real Performance Panel code in isolation, and you can additionally preload a trace by appending `?trace=name-of-trace-file-from-fixtures`. This is a nicer development cycle because you do not have to manually import a trace after each change. Note though that some parts of the experience are stubbed, so you always should test your work in proper DevTools too.
+
+These examples can also be used to create screenshot tests, which are an important tool for the Performance Panel because it is the only way to test `<canvas>` output. We define these as interaction tests (`devtools-frontend/tests/interactions/panels/performance`).
+
+#### Option 3: bundled DevTools in the browser
+
+This option loads the DevTools frontend in a browser tab in Chrome, but requires a little more setup to easily load traces.
+
+1.  Head to `devtools-frontend/test/unittests/fixtures/traces` and run `npx statikk --cors`. [This is a tool built by @paulirish to serve local files on a server](https://github.com/paulirish/statikk).
+2.  Build and run the Chrome for Testing binary from devtools-frontend.
+3.  Visit `devtools://devtools/bundled/devtools_app.html` and let it load (you only need to do this the first time you load up the Chrome for Testing binary).
+4.  Update the URL by appending `?loadTimelineFromURL=http://localhost:1234/name-of-trace-file.json`. **Swap the port to the one `statikk` is using on your machine**.
+5.  When you make changes and rebuild DevTools, simply refresh the URL! **Make sure you disable network caching in your DevTools on DevTools instance.**
+
+Each one has its pros and cons, but typically **this option is preferred** for quick iteration because you don't have to manually record or import a trace every time you reload.
+
 ## Trace bounds and visible windows
 
 One slightly confusing aspect of the panel is how the zooming, panning and minimap interactions impact what time-range is shown in the timeline, and how these are tracked in code.

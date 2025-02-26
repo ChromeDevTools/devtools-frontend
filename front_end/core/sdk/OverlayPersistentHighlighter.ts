@@ -415,7 +415,7 @@ export class OverlayPersistentHighlighter {
     const currentURL = document ? document.documentURL : Platform.DevToolsPath.EmptyUrlString;
     await Promise.all(this.#persistentHighlightSetting.get().map(async persistentHighlight => {
       if (persistentHighlight.url === currentURL) {
-        return this.#model.getDOMModel().pushNodeByPathToFrontend(persistentHighlight.path).then(nodeId => {
+        return await this.#model.getDOMModel().pushNodeByPathToFrontend(persistentHighlight.path).then(nodeId => {
           const node = this.#model.getDOMModel().nodeForId(nodeId);
           if (!node) {
             return;

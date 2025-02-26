@@ -38,7 +38,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
-import screencastViewStyles from './screencastView.css.legacy.js';
+import screencastViewStyles from './screencastView.css.js';
 
 const UIStrings = {
   /**
@@ -77,7 +77,7 @@ const UIStrings = {
    *@description Accessible text for the mouse emulation button.
    */
   mouseInput: 'Use mouse',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -116,7 +116,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private navigationBack!: HTMLButtonElement;
   private navigationForward!: HTMLButtonElement;
   private canvasContainerElement?: HTMLElement;
-  private isCasting?: boolean;
   private checkerboardPattern?: CanvasPattern|null;
   private targetInactive?: boolean;
   private deferredCasting?: number;
@@ -133,6 +132,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private mouseInputToggleIcon?: IconButton.Icon.Icon;
   private historyIndex?: number;
   private historyEntries?: Protocol.Page.NavigationEntry[];
+  private isCasting = false;
+  private screencastOperationId?: number;
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
     super();
     this.registerRequiredCSS(screencastViewStyles);
@@ -188,7 +189,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.titleElement.style.left = '0';
 
     this.imageElement = new Image();
-    this.isCasting = false;
     this.context = this.canvasElement.getContext('2d') as CanvasRenderingContext2D;
     this.checkerboardPattern = this.createCheckerboardPattern(this.context);
 
@@ -204,10 +204,11 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.stopCasting();
   }
 
-  private startCasting(): void {
+  private async startCasting(): Promise<void> {
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
+
     if (this.isCasting) {
       return;
     }
@@ -222,7 +223,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     dimensions.width *= window.devicePixelRatio;
     dimensions.height *= window.devicePixelRatio;
     // Note: startScreencast width and height are expected to be integers so must be floored.
-    this.screenCaptureModel.startScreencast(
+    this.screencastOperationId = await this.screenCaptureModel.startScreencast(
         Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this.screencastFrame.bind(this),
         this.screencastVisibilityChanged.bind(this));
@@ -232,11 +233,12 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   private stopCasting(): void {
-    if (!this.isCasting) {
+    if (!this.screencastOperationId) {
       return;
     }
+    this.screenCaptureModel.stopScreencast(this.screencastOperationId);
+    this.screencastOperationId = undefined;
     this.isCasting = false;
-    this.screenCaptureModel.stopScreencast();
     for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
       void emulationModel.overrideEmulateTouch(false);
     }
@@ -286,7 +288,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     if (SDK.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       this.stopCasting();
     } else {
-      this.startCasting();
+      void this.startCasting();
     }
     this.updateGlasspane();
   }
@@ -322,7 +324,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       return;
     }
 
-    const position = this.convertIntoScreenSpace(event as MouseEvent);
+    const position = this.convertIntoScreenSpace(event);
     const node = await this.domModel.nodeForLocation(
         Math.floor(position.x / this.pageScaleFactor + this.scrollOffsetX),
         Math.floor(position.y / this.pageScaleFactor + this.scrollOffsetY),
@@ -359,9 +361,9 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       return;
     }
 
-    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event as KeyboardEvent);
+    const shortcutKey = UI.KeyboardShortcut.KeyboardShortcut.makeKeyFromEvent(event);
     const handler = this.shortcuts[shortcutKey];
-    if (handler && handler(event)) {
+    if (handler?.(event)) {
       event.consume();
       return;
     }
@@ -652,7 +654,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   private createCheckerboardPattern(context: CanvasRenderingContext2D): CanvasPattern|null {
-    const pattern = document.createElement('canvas') as HTMLCanvasElement;
+    const pattern = document.createElement('canvas');
     const size = 32;
     pattern.width = size * 2;
     pattern.height = size * 2;

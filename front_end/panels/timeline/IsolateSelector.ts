@@ -17,15 +17,15 @@ const UIStrings = {
    *@description Text in isolate selector in Performance panel
    */
   selectJavascriptVmInstance: 'Select JavaScript VM instance',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/IsolateSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.IsolateManager.Observer {
   menu: Menus.SelectMenu.SelectMenu;
-  options?: {index: number, isolate: SDK.IsolateManager.Isolate}[];
+  options?: Array<{index: number, isolate: SDK.IsolateManager.Isolate}>;
   items?: Menus.Menu.MenuItem[];
-  readonly itemByIsolate: Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem> = new Map();
+  readonly itemByIsolate = new Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem>();
 
   constructor() {
     const menu = new Menus.SelectMenu.SelectMenu();
@@ -79,7 +79,8 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.Isola
         const model = isolate.runtimeModel();
         UI.Context.Context.instance().setFlavor(
             SDK.CPUProfilerModel.CPUProfilerModel,
-            model && model.target().model(SDK.CPUProfilerModel.CPUProfilerModel));
+            model?.target().model(SDK.CPUProfilerModel.CPUProfilerModel) ?? null,
+        );
       }
     });
   }

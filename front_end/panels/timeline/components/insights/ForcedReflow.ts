@@ -16,29 +16,13 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.ForcedReflow;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   *@description Title of a list to provide related stack trace data
-   */
-  relatedStackTrace: 'Stack trace',
-  /**
-   *@description Text to describe the top time-consuming function call
-   */
-  topTimeConsumingFunctionCall: 'Top function call',
-  /**
-   * @description Text to describe the total reflow time
-   */
-  totalReflowTime: 'Total reflow time',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ForcedReflow.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
-  override internalName: string = 'forced-reflow';
+  override internalName = 'forced-reflow';
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame): Lit.LitTemplate {
     const linkifier = new LegacyComponents.Linkifier.Linkifier();
@@ -72,25 +56,25 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     // clang-format off
     return html`
       <div class="insight-section">
-        ${html`<devtools-performance-table
+        <devtools-performance-table
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
             rows: [{values:[this.#linkifyUrl(topLevelFunctionCallData), time(Trace.Types.Timing.Micro(totalReflowTime))]}],
-            } as TableData}>
-        </devtools-performance-table>`}
+          } as TableData}>
+        </devtools-performance-table>
       </div>
       <div class="insight-section">
-        ${html`<devtools-performance-table
-        .data=${{
-          insight: this,
-          headers: [i18nString(UIStrings.relatedStackTrace)],
-          rows: bottomUpCallStackData.map(data => ({
-            values: [this.#linkifyUrl(data.bottomUpData)],
-            overlays: this.#createOverlayForEvents(data.relatedEvents),
-          })),
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.relatedStackTrace)],
+            rows: bottomUpCallStackData.map(data => ({
+              values: [this.#linkifyUrl(data.bottomUpData)],
+              overlays: this.#createOverlayForEvents(data.relatedEvents),
+            })),
         } as TableData}>
-        </devtools-performance-table>`}
+        </devtools-performance-table>
       </div>`;
     // clang-format on
   }

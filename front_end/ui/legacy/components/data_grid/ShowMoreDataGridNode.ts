@@ -54,7 +54,7 @@ const UIStrings = {
    *@example {50} PH1
    */
   showAllD: 'Show all {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ShowMoreDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -65,7 +65,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "web_audio.test.ts" ]
+  sources = [
+    "WebAudioView.test.ts",
+    "web_audio.test.ts",
+  ]
 
   deps = [
     ":bundle",

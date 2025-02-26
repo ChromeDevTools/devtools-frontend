@@ -19,7 +19,7 @@ const UIStrings = {
    *@description Command for showing the 'Memory inspector' tool
    */
   showMemoryInspector: 'Show Memory inspector',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/linear_memory_inspector-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

@@ -2,15 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import { spawn } from 'child_process';
 import { ESLint } from 'eslint';
-import stylelint from 'stylelint';
-
-import { extname, join } from 'path';
+import { readFileSync } from 'fs';
 import { sync } from 'globby';
+import { extname, join, resolve, relative } from 'path';
+import stylelint from 'stylelint';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { spawn } from 'child_process';
-import { readFileSync } from 'fs';
 
 import {
   devtoolsRootPath,
@@ -25,6 +24,12 @@ const flags = yargs(hideBin(process.argv))
     default: true,
     describe: 'Automatically fix, where possible, problems reported by rules.',
   })
+  .option('debug', {
+    type: 'boolean',
+    default: false,
+    describe:
+      'Disable cache validations during debugging, useful for custom rule creation/debugging.',
+  })
   .usage('$0 [<files...>]', 'Run the linter on the provided files', yargs => {
     yargs.positional('files', {
       describe: 'File(s), glob(s), or directories',
@@ -38,17 +43,30 @@ const flags = yargs(hideBin(process.argv))
       ],
     });
   })
-  .parse();
+  .parseSync();
 
 if (!flags.fix) {
   console.log('[lint]: fix is disabled; no errors will be autofixed.');
 }
+if (flags.debug) {
+  console.log('[lint]: Cache disabled, linting may take longer.');
+}
+const cacheLinters = !flags.debug;
+
+function debugLogging(...args) {
+  if (!flags.debug) {
+    return;
+  }
+
+  console.log(...args);
+}
 
 async function runESLint(scriptFiles) {
+  debugLogging('[lint]: Running EsLint...');
   const cli = new ESLint({
     cwd: join(import.meta.dirname, '..', '..'),
     fix: flags.fix,
-    cache: true,
+    cache: cacheLinters,
   });
 
   // We filter out certain files in the `eslint.config.mjs` `Ignore list` entry.
@@ -102,13 +120,14 @@ async function runESLint(scriptFiles) {
 }
 
 async function runStylelint(files) {
+  debugLogging('[lint]: Running StyleLint...');
   const { report, errored } = await stylelint.lint({
     configFile: join(import.meta.dirname, '..', '..', '.stylelintrc.json'),
     ignorePath: join(import.meta.dirname, '..', '..', '.stylelintignore'),
     fix: flags.fix,
     files,
     formatter: 'string',
-    cache: true,
+    cache: cacheLinters,
     allowEmptyInput: true,
   });
 
@@ -128,6 +147,8 @@ async function runStylelint(files) {
  * @param {string[]} files the input files to analyze.
  */
 async function runLitAnalyzer(files) {
+  debugLogging('[lint]: Running LitAnalyzer...');
+
   const readLitAnalyzerConfigFromCompilerOptions = () => {
     const { compilerOptions } = JSON.parse(
       readFileSync(tsconfigJsonPath(), 'utf-8'),
@@ -145,6 +166,11 @@ async function runLitAnalyzer(files) {
   };
 
   const { rules } = readLitAnalyzerConfigFromCompilerOptions();
+  /**
+   *
+   * @param {string[]} subsetFiles
+   * @returns {{output: string, error: string, status:boolean}}
+   */
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
@@ -208,7 +234,9 @@ async function runLitAnalyzer(files) {
     }),
   );
   for (const result of results) {
-    if (result.output) {
+    // Don't print if no problems are found
+    // Mimics the other tools
+    if (result.output && !result.output.includes('Found 0 problems')) {
       console.log(result.output);
     }
     if (result.error) {
@@ -219,12 +247,37 @@ async function runLitAnalyzer(files) {
   return results.every(r => r.status);
 }
 
+const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
+/**
+ *
+ * @param {string} path
+ * @returns {boolean}
+ */
+function shouldIgnoreFile(path) {
+  const resolvedPath = resolve(path);
+  const relativePath = relative(DEVTOOLS_ROOT_DIR, resolvedPath);
+
+  if (
+    relativePath.includes('third_party') ||
+    relativePath.includes('node_modules')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 async function run() {
   const scripts = [];
   const styles = [];
   for (const path of sync(flags.files, {
     expandDirectories: { extensions: ['css', 'mjs', 'js', 'ts'] },
+    gitignore: true,
   })) {
+    if (shouldIgnoreFile(path)) {
+      continue;
+    }
+
     if (extname(path) === '.css') {
       styles.push(path);
     } else {

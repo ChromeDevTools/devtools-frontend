@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {goToResource} from '../../shared/helper.js';
-
 import {checkCommandResultFunction, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

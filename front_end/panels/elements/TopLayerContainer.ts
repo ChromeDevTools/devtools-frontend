@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Link text content in Elements Tree Outline of the Elements panel. When clicked, it "reveals" the true location of an element.
    */
   reveal: 'reveal',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/TopLayerContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -24,7 +24,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TopLayerContainer extends UI.TreeOutline.TreeElement {
   tree: ElementsTreeOutline.ElementsTreeOutline;
   document: SDK.DOMModel.DOMDocument;
-  currentTopLayerDOMNodes: Set<SDK.DOMModel.DOMNode> = new Set();
+  currentTopLayerDOMNodes = new Set<SDK.DOMModel.DOMNode>();
   topLayerUpdateThrottler: Common.Throttler.Throttler;
 
   constructor(tree: ElementsTreeOutline.ElementsTreeOutline, document: SDK.DOMModel.DOMDocument) {

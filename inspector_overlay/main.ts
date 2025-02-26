@@ -2,32 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import commonStyle from './common.css';
 import {adoptStyleSheet} from './common.js';
 import {gridStyle} from './highlight_grid_common.js';
 import {DistancesOverlay} from './tool_distances.js';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import highlightGridStyle from './tool_grid.css';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import highlightStyle from './tool_highlight.css';
 import {HighlightOverlay} from './tool_highlight.js';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import pausedStyle from './tool_paused.css';
 import {PausedOverlay, type PausedToolMessage} from './tool_paused.js';
 import {PersistentOverlay, type PersistentToolMessage} from './tool_persistent.js';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import screenshotStyle from './tool_screenshot.css';
 import {ScreenshotOverlay, type ScreenshotToolMessage} from './tool_screenshot.js';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import sourceOrderStyle from './tool_source_order.css';
 import {SourceOrderOverlay} from './tool_source_order.js';
 import {ViewportSizeOverlay} from './tool_viewport_size.js';
-// @ts-ignore Importing CSS is handled in Rollup.
+// @ts-expect-error Importing CSS is handled in Rollup.
 import wcoStyle from './tool_window_controls.css';
 import {WindowControlsOverlay} from './tool_window_controls.js';
-
-// @ts-ignore Importing CSS is handled in Rollup.
 
 declare global {
   interface Window {

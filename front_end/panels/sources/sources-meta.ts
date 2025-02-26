@@ -464,7 +464,7 @@ const UIStrings = {
    * @description Title of an action that navigates to the next editor in the Sources panel.
    */
   previousEditorTab: 'Previous editor',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/sources-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedSourcesModule: (typeof Sources|undefined);

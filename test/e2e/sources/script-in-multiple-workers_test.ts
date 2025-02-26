@@ -17,7 +17,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   addBreakpointForLine,
   BREAKPOINT_ITEM_SELECTOR,

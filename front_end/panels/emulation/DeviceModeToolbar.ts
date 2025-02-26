@@ -181,7 +181,7 @@ const UIStrings = {
    * posture e.g. Continuous, Folded.
    */
   devicePosture: 'Device posture',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeToolbar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

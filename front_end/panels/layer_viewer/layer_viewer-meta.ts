@@ -42,7 +42,7 @@ const UIStrings = {
    *@description Description of a shortcut that pans or rotates the layer viewer right
    */
   panOrRotateRight: 'Pan or rotate right',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/layer_viewer-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

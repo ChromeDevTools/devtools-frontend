@@ -78,6 +78,6 @@ Become a sponsor and get your logo on our README on GitHub with a link to your s
 <a href="https://opencollective.com/sinon/sponsor/28/website" target="_blank"><img src="https://opencollective.com/sinon/sponsor/28/avatar.svg"></a>
 <a href="https://opencollective.com/sinon/sponsor/29/website" target="_blank"><img src="https://opencollective.com/sinon/sponsor/29/avatar.svg"></a>
 
-## Licence
+## License
 
 nise was released under [BSD-3](LICENSE)

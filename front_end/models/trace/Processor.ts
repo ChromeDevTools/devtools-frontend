@@ -1,6 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 import * as Insights from './insights/insights.js';
@@ -114,7 +115,7 @@ export class TraceProcessor extends EventTarget {
     if (Object.keys(providedHandlers).length === Object.keys(Handlers.ModelHandlers).length) {
       return;
     }
-    const requiredHandlerKeys: Set<Handlers.Types.HandlerName> = new Set();
+    const requiredHandlerKeys = new Set<Handlers.Types.HandlerName>();
     for (const [handlerName, handler] of Object.entries(providedHandlers)) {
       requiredHandlerKeys.add(handlerName as Handlers.Types.HandlerName);
       const deps = 'deps' in handler ? handler.deps() : [];
@@ -344,14 +345,15 @@ export class TraceProcessor extends EventTarget {
       LCPDiscovery: null,
       CLSCulprits: null,
       RenderBlocking: null,
+      NetworkDependencyTree: null,
       ImageDelivery: null,
       DocumentLatency: null,
       FontDisplay: null,
       Viewport: null,
       DOMSize: null,
       ThirdParties: null,
+      DuplicateJavaScript: null,
       SlowCSSSelector: null,
-      LongCriticalNetworkTree: null,
       ForcedReflow: null,
     };
 
@@ -429,18 +431,6 @@ export class TraceProcessor extends EventTarget {
       insights: Insights.Types.TraceInsightSets, parsedTrace: Handlers.Types.ParsedTrace,
       insightRunners: Partial<typeof Insights.Models>, context: Insights.Types.InsightSetContext,
       options: Types.Configuration.ParseOptions): void {
-    const model = {} as Insights.Types.InsightSet['model'];
-
-    for (const [name, insight] of Object.entries(insightRunners)) {
-      let insightResult;
-      try {
-        insightResult = insight.generateInsight(parsedTrace, context);
-      } catch (err) {
-        insightResult = err;
-      }
-      Object.assign(model, {[name]: insightResult});
-    }
-
     let id, urlString, navigation;
     if (context.navigation) {
       id = context.navigationId;
@@ -449,6 +439,22 @@ export class TraceProcessor extends EventTarget {
     } else {
       id = Types.Events.NO_NAVIGATION;
       urlString = parsedTrace.Meta.mainFrameURL;
+    }
+
+    const model = {} as Insights.Types.InsightSet['model'];
+
+    for (const [name, insight] of Object.entries(insightRunners)) {
+      let insightResult;
+      try {
+        insightResult = insight.generateInsight(parsedTrace, context);
+        const navId = context.navigation?.args.data?.navigationId;
+        if (navId) {
+          insightResult.navigationId = navId;
+        }
+      } catch (err) {
+        insightResult = err;
+      }
+      Object.assign(model, {[name]: insightResult});
     }
 
     let url;

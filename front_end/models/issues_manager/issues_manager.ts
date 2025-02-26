@@ -24,9 +24,11 @@ import * as MixedContentIssue from './MixedContentIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
+import * as SelectElementAccessibilityIssue from './SelectElementAccessibilityIssue.js';
 import * as SharedArrayBufferIssue from './SharedArrayBufferIssue.js';
 import * as SharedDictionaryIssue from './SharedDictionaryIssue.js';
 import * as SourceFrameIssuesManager from './SourceFrameIssuesManager.js';
+import * as SRIMessageSignatureIssue from './SRIMessageSignatureIssue.js';
 import * as StylesheetLoadingIssue from './StylesheetLoadingIssue.js';
 
 export {
@@ -52,8 +54,10 @@ export {
   PropertyRuleIssue,
   QuirksModeIssue,
   RelatedIssue,
+  SelectElementAccessibilityIssue,
   SharedArrayBufferIssue,
   SharedDictionaryIssue,
   SourceFrameIssuesManager,
+  SRIMessageSignatureIssue,
   StylesheetLoadingIssue,
 };

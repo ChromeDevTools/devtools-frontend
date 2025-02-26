@@ -37,10 +37,10 @@ export class AcornTokenizer {
   #textCursor: TextUtils.TextCursor.TextCursor;
   #tokenLineStartInternal: number;
   #tokenLineEndInternal: number;
-  #tokens: (Acorn.Comment|Acorn.Token)[];
+  #tokens: Array<Acorn.Comment|Acorn.Token>;
   #idx = 0;
 
-  constructor(content: string, tokens: (Acorn.Comment|Acorn.Token)[]) {
+  constructor(content: string, tokens: Array<Acorn.Comment|Acorn.Token>) {
     this.#tokens = tokens;
     const contentLineEndings = Platform.StringUtilities.findLineEndingIndexes(content);
     this.#textCursor = new TextUtils.TextCursor.TextCursor(contentLineEndings);

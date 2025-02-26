@@ -3,9 +3,9 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-import {existsSync} from 'fs';
-import {tmpdir} from 'os';
-import {join} from 'path';
+import {existsSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 
 import {
   Browser as InstalledBrowser,
@@ -123,7 +123,7 @@ export abstract class BrowserLauncher {
       usePipe
     ) {
       throw new Error(
-        'Pipe connections are not supported wtih Firefox and WebDriver BiDi',
+        'Pipe connections are not supported with Firefox and WebDriver BiDi',
       );
     }
 

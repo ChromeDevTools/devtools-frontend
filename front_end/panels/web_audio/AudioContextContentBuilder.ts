@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Text in Audio Context Content Builder
    */
   renderCapacity: 'Render Capacity',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextContentBuilder.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

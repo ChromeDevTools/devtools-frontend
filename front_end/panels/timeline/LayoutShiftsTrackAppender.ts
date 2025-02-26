@@ -32,7 +32,7 @@ const UIStrings = {
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShift: 'Layout shift',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/LayoutShiftsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -199,9 +199,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     return;
   }
 
-  preloadScreenshots(events: Trace.Types.Events.SyntheticLayoutShift[]): Promise<(void|undefined)[]> {
-    const screenshotsToLoad: Set<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot> =
-        new Set();
+  preloadScreenshots(events: Trace.Types.Events.SyntheticLayoutShift[]): Promise<Array<void|undefined>> {
+    const screenshotsToLoad = new Set<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot>();
     for (const event of events) {
       const shots = event.parsedData.screenshots;
       shots.before && screenshotsToLoad.add(shots.before);

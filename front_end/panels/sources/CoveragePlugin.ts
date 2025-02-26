@@ -35,7 +35,7 @@ const UIStrings = {
    *@description Text to be shown in the status bar if no coverage data is available
    */
   coverageNa: 'Coverage: n/a',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CoveragePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -186,8 +186,8 @@ const notCoveredMarker = new (class extends CodeMirror.GutterMarker {
   override elementClass = 'cm-coverageUnused';
 })();
 
-function markersFromCoverageData(
-    usageByLine: (boolean|undefined)[], state: CodeMirror.EditorState): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
+function markersFromCoverageData(usageByLine: Array<boolean|undefined>, state: CodeMirror.EditorState):
+    CodeMirror.RangeSet<CodeMirror.GutterMarker> {
   const builder = new CodeMirror.RangeSetBuilder<CodeMirror.GutterMarker>();
   for (let line = 0; line < usageByLine.length; line++) {
     const usage = usageByLine[line];
@@ -199,7 +199,7 @@ function markersFromCoverageData(
   return builder.finish();
 }
 
-const setCoverageState = CodeMirror.StateEffect.define<(boolean | undefined)[]>();
+const setCoverageState = CodeMirror.StateEffect.define<Array<boolean|undefined>>();
 
 const coverageState = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirror.GutterMarker>>({
   create(): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
@@ -222,11 +222,11 @@ function coverageGutter(url: Platform.DevToolsPath.UrlString): CodeMirror.Extens
             .showView('coverage')
             .then(() => {
               const view = UI.ViewManager.ViewManager.instance().view('coverage');
-              return view && view.widget();
+              return view?.widget();
             })
             .then(widget => {
               const matchFormattedSuffix = url.match(/(.*):formatted$/);
-              const urlWithoutFormattedSuffix = (matchFormattedSuffix && matchFormattedSuffix[1]) || url;
+              const urlWithoutFormattedSuffix = (matchFormattedSuffix?.[1]) || url;
               (widget as Coverage.CoverageView.CoverageView).selectCoverageItemByUrl(urlWithoutFormattedSuffix);
             });
         return true;
@@ -240,6 +240,10 @@ function coverageGutter(url: Platform.DevToolsPath.UrlString): CodeMirror.Extens
 const coverageCompartment = new CodeMirror.Compartment();
 
 const theme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-coverageGutter': {
     width: '5px',
     marginLeft: '3px',

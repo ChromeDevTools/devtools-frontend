@@ -38,7 +38,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.legacy.js';
+import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -62,7 +62,7 @@ const UIStrings = {
    *@description Text that refers to closure as a programming term
    */
   closure: 'Closure',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ScopeChainSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let scopeChainSidebarPaneInstance: ScopeChainSidebarPane;

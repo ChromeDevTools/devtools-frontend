@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {navigateToConsoleTab, waitForIssueButtonLabel} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

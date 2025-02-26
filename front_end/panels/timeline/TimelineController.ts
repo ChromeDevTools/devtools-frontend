@@ -19,7 +19,7 @@ const UIStrings = {
    * worker) doesn't support it.
    */
   tracingNotSupported: 'Performance trace recording not supported for this type of target',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineController implements Trace.TracingManager.TracingManagerClient {
@@ -177,8 +177,14 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     throttlingManager.setCPUThrottlingOption(SDK.CPUThrottlingManager.NoThrottlingOption);
 
     this.client.loadingStarted();
-    this.#fieldData = await this.fetchFieldData();
-    await this.waitForTracingToStop();
+
+    const [fieldData] = await Promise.all([
+      this.fetchFieldData(),
+      // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
+      SDK.TargetManager.TargetManager.instance().resumeAllTargets(),
+      this.waitForTracingToStop(),
+    ]);
+    this.#fieldData = fieldData;
 
     // Now we re-enable throttling again to maintain the setting being persistent.
     throttlingManager.setCPUThrottlingOption(optionDuringRecording);
@@ -194,7 +200,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     }
 
     const urls = [...new Set(this.#navigationUrls)];
-    return Promise.all(urls.map(url => cruxManager.getFieldDataForPage(url)));
+    return await Promise.all(urls.map(url => cruxManager.getFieldDataForPage(url)));
   }
 
   private async createMetadata(): Promise<Trace.Types.File.MetaData> {
@@ -205,7 +211,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
       emulatedDeviceTitle = 'Responsive';
     }
-    return Trace.Extras.Metadata.forNewRecording(
+    return await Trace.Extras.Metadata.forNewRecording(
         false, this.#recordingStartTime ?? undefined, emulatedDeviceTitle, this.#fieldData ?? undefined);
   }
 
@@ -259,8 +265,6 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
   }
 
   private async allSourcesFinished(): Promise<void> {
-    // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
-    await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStopped();
 
     this.client.processingStarted();

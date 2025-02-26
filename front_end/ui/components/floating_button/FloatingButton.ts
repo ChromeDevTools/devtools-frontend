@@ -6,7 +6,7 @@ import '../icon_button/icon_button.js';
 
 import * as Lit from '../../lit/lit.js';
 
-import floatingButtonStylesRaw from './floatingButton.css.legacy.js';
+import floatingButtonStylesRaw from './floatingButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const floatingButtonStyles = new CSSStyleSheet();

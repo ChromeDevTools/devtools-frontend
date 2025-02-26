@@ -64,7 +64,7 @@ export class ConsolePanel extends UI.Panel.Panel {
   override wasShown(): void {
     super.wasShown();
     const wrapper = wrapperViewInstance;
-    if (wrapper && wrapper.isShowing()) {
+    if (wrapper?.isShowing()) {
       UI.InspectorView.InspectorView.instance().setDrawerMinimized(true);
     }
     this.view.show(this.element);

@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {SearchResultsPane} from './SearchResultsPane.js';
 import type {SearchResult, SearchScope} from './SearchScope.js';
-import searchViewStyles from './searchView.css.legacy.js';
+import searchViewStyles from './searchView.css.js';
 
 const UIStrings = {
   /**
@@ -80,7 +80,15 @@ const UIStrings = {
   /**
    *@description Search results message element text content in Search View of the Search tab
    */
-  noMatchesFound: 'No matches found.',
+  noMatchesFoundStatusbar: 'No matches found.',
+  /**
+   *@description Search results message element text content in Search View of the Search tab
+   */
+  noMatchesFound: 'No matches found',
+  /**
+   *@description Search results message element text content in Search View of the Search tab
+   */
+  nothingMatchedTheQuery: 'Nothing matched your search query',
   /**
    *@description Text in Search View of the Search tab
    */
@@ -89,7 +97,7 @@ const UIStrings = {
    *@description Text in Search View of the Search tab
    */
   searchInterrupted: 'Search interrupted.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/search/SearchView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -163,7 +171,7 @@ export class SearchView extends UI.Widget.VBox {
 
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {
-      this.onKeyDownOnPanel((event as KeyboardEvent));
+      this.onKeyDownOnPanel((event));
     });
 
     this.searchPanelElement = this.contentElement.createChild('div', 'search-drawer-header');
@@ -179,7 +187,7 @@ export class SearchView extends UI.Widget.VBox {
 
     this.search = UI.UIUtils.createHistoryInput('search', 'search-toolbar-input');
     this.search.addEventListener('keydown', event => {
-      this.onKeyDown((event as KeyboardEvent));
+      this.onKeyDown((event));
     });
     this.search.setAttribute(
         'jslog', `${VisualLogging.textField().track({change: true, keydown: 'ArrowUp|ArrowDown|Enter'})}`);
@@ -331,7 +339,7 @@ export class SearchView extends UI.Widget.VBox {
     if (searchId !== this.searchId || !this.progressIndicator) {
       return;
     }
-    if (this.progressIndicator && this.progressIndicator.isCanceled()) {
+    if (this.progressIndicator?.isCanceled()) {
       this.onIndexingFinished();
       return;
     }
@@ -439,10 +447,11 @@ export class SearchView extends UI.Widget.VBox {
 
   private nothingFound(): void {
     if (!this.notFoundView) {
-      this.notFoundView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMatchesFound), '');
+      this.notFoundView = new UI.EmptyWidget.EmptyWidget(
+          i18nString(UIStrings.noMatchesFound), i18nString(UIStrings.nothingMatchedTheQuery));
     }
     this.showPane(this.notFoundView);
-    this.searchResultsMessageElement.textContent = i18nString(UIStrings.noMatchesFound);
+    this.searchResultsMessageElement.textContent = i18nString(UIStrings.noMatchesFoundStatusbar);
   }
 
   private addSearchResult(searchResult: SearchResult): void {
@@ -537,7 +546,7 @@ export class SearchView extends UI.Widget.VBox {
 
   private onAction(): void {
     const searchConfig = this.buildSearchConfig();
-    if (!searchConfig.query() || !searchConfig.query().length) {
+    if (!searchConfig.query()?.length) {
       return;
     }
     this.resetSearch();

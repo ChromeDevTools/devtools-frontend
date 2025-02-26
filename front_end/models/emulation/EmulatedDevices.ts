@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Title of the Laptop with MDPI screen device
    */
   laptopWithMDPIScreen: 'Laptop with MDPI screen',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/emulation/EmulatedDevices.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -124,7 +124,7 @@ export class EmulatedDevice {
           throw new Error('color has wrong a value: ' + result.a);
         }
 
-        return result as SDK.OverlayModel.HighlightColor;
+        return result;
       }
 
       function parseHinge(json: any): SDK.OverlayModel.Hinge {
@@ -158,7 +158,7 @@ export class EmulatedDevice {
           result.outlineColor = parseRGBA(json['outlineColor']);
         }
 
-        return result as SDK.OverlayModel.Hinge;
+        return result;
       }
 
       function parseOrientation(json: any): Orientation {
@@ -187,7 +187,7 @@ export class EmulatedDevice {
           result.hinge = parseHinge(parseValue(json, 'hinge', 'object', undefined));
         }
 
-        return result as Orientation;
+        return result;
       }
 
       const result = new EmulatedDevice();

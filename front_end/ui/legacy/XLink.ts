@@ -4,7 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Lit from '../lit/lit.js';
+import {html} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
@@ -18,8 +18,6 @@ import {
   openLinkExternallyLabel,
 } from './UIUtils.js';
 import {XElement} from './XElement.js';
-
-const {html} = Lit;
 
 export class XLink extends XElement {
   hrefInternal: Platform.DevToolsPath.UrlString|null;

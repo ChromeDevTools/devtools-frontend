@@ -6,7 +6,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_throttling.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
@@ -25,7 +24,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     await RenderCoordinator.done();
 
-    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item');
 
     assert.lengthOf(menuItems, 7);
 
@@ -60,7 +59,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     await RenderCoordinator.done();
 
-    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item');
 
     assert.isTrue(menuItems[0].selected);
     assert.strictEqual(cpuThrottlingManager.cpuThrottlingRate(), 1);
@@ -78,7 +77,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     await RenderCoordinator.done();
 
-    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item');
 
     assert.isTrue(menuItems[0].selected);
 
@@ -95,7 +94,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     renderElementIntoDOM(view);
     await RenderCoordinator.done();
     // Ensure that the component picks up the new changes and has selected the right thorttling setting
-    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item');
     assert.isTrue(menuItems[2].selected);
   });
 });

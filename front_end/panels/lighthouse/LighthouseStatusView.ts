@@ -8,7 +8,7 @@ import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {RuntimeSettings} from './LighthouseController.js';
-import lighthouseDialogStyles from './lighthouseDialog.css.legacy.js';
+import lighthouseDialogStyles from './lighthouseDialog.css.js';
 import type {LighthousePanel} from './LighthousePanel.js';
 
 const UIStrings = {
@@ -144,7 +144,7 @@ const UIStrings = {
    */
   lighthouseOnlySimulatesMobile:
       '`Lighthouse` only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: `Lighthouse` team]',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthouseStatusView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -196,14 +196,14 @@ export class StatusView {
       jslogContext: 'lighthouse.cancel',
     });
     const fragment = UI.Fragment.Fragment.build`
-  <div class="lighthouse-view vbox">
-  <h2 $="status-header">Auditing your web page…</h2>
+  <span $="status-header">Auditing your web page…</span>
   <div class="lighthouse-status vbox" $="status-view">
   <div class="lighthouse-progress-wrapper" $="progress-wrapper">
   <div class="lighthouse-progress-bar" $="progress-bar"></div>
   </div>
   <div class="lighthouse-status-text" $="status-text"></div>
   </div>
+  <div class="lighthouse-button-container">
   ${cancelButton}
   </div>
   `;
@@ -240,11 +240,10 @@ export class StatusView {
     this.updateStatus(i18nString(UIStrings.loading));
 
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(this.inspectedURL);
-    const pageHost = parsedURL && parsedURL.host;
+    const pageHost = parsedURL?.host;
     const statusHeader =
         pageHost ? i18nString(UIStrings.auditingS, {PH1: pageHost}) : i18nString(UIStrings.auditingYourWebPage);
     this.renderStatusHeader(statusHeader);
-    // @ts-ignore TS expects Document, but gets Element (show takes Element|Document)
     this.dialog.show(dialogRenderElement);
   }
 
@@ -260,7 +259,7 @@ export class StatusView {
     }
   }
 
-  setInspectedURL(url: string = ''): void {
+  setInspectedURL(url = ''): void {
     this.inspectedURL = url;
   }
 
@@ -288,7 +287,6 @@ export class StatusView {
 
       if (this.progressBar) {
         this.progressBar.classList.add(nextPhase.progressBarClass);
-        // @ts-ignore indexOf null is valid.
         const nextPhaseIndex = StatusPhases.indexOf(nextPhase);
         UI.ARIAUtils.setProgressBarValue(this.progressBar, nextPhaseIndex, text);
       }
@@ -398,7 +396,7 @@ export class StatusView {
 
   private renderBugReportBody(err: Error, auditURL: string): void {
     const chromeVersion = navigator.userAgent.match(/Chrome\/(\S+)/) || ['', 'Unknown'];
-    // @ts-ignore Lighthouse sets `friendlyMessage` on certain
+    // @ts-expect-error Lighthouse sets `friendlyMessage` on certain
     // important errors such as PROTOCOL_TIMEOUT.
     const errorMessage = err.friendlyMessage || err.message;
     const issueBody = `

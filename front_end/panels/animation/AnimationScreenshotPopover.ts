@@ -4,7 +4,7 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
-import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.legacy.js';
+import animationScreenshotPopoverStyles from './animationScreenshotPopover.css.js';
 
 export class AnimationScreenshotPopover extends UI.Widget.VBox {
   #frames: HTMLImageElement[];

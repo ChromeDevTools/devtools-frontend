@@ -14,7 +14,7 @@ async function waitForTraceElement(treeOutline: TreeOutline.TreeOutline.TreeOutl
     return element;
   }
 
-  return new Promise<HTMLElement>(resolve => {
+  return await new Promise<HTMLElement>(resolve => {
     requestAnimationFrame(async () => {
       const result = await waitForTraceElement(treeOutline);
       resolve(result);

@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/trace-engine-test-timeouts.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('trace-engine-test-timeouts', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('trace-engine-test-timeouts', rule, {
   valid: [
     {
       code: `it('does something', async function() {

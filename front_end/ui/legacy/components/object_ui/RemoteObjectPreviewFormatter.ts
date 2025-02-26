@@ -27,7 +27,7 @@ const UIStrings = {
    * to run some code first in order to compute this property.
    */
   thePropertyIsComputedWithAGetter: 'The property is computed with a getter',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RemoteObjectPreviewFormatter {

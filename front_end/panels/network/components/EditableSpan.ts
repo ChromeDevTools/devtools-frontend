@@ -3,16 +3,14 @@
 // found in the LICENSE file.
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import editableSpanStylesRaw from './EditableSpan.css.legacy.js';
+import editableSpanStylesRaw from './EditableSpan.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const editableSpanStyles = new CSSStyleSheet();
 editableSpanStyles.replaceSync(editableSpanStylesRaw.cssContent);
-
-const {render, html} = Lit;
 
 export interface EditableSpanData {
   value: string;
@@ -21,7 +19,7 @@ export interface EditableSpanData {
 export class EditableSpan extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #value: string = '';
+  #value = '';
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [editableSpanStyles];

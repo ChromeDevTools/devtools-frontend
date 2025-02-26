@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/set-data-type-reference.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('set-data-type-reference', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('set-data-type-reference', rule, {
   valid: [
     {
       code: `class Foo extends HTMLElement {

@@ -145,7 +145,7 @@ const UIStrings = {
    *@description Name of a network initiator type
    */
   webbundle: 'WebBundle',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/ResourceType.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -363,11 +363,6 @@ export class ResourceCategory {
     this.name = name;
     this.title = title;
     this.shortTitle = shortTitle;
-  }
-
-  static categoryByTitle(title: string): ResourceCategory|null {
-    const allCategories = Object.values(resourceCategories);
-    return allCategories.find(category => category.title() === title) || null;
   }
 }
 

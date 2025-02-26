@@ -10,7 +10,7 @@ import type * as InlineEditor from '../../../ui/legacy/components/inline_editor/
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.legacy.js';
+import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const anchorFunctionLinkSwatchStyles = new CSSStyleSheet();
@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Title in the styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: 'Jump to anchor node',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AnchorFunctionLinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;

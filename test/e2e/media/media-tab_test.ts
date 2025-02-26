@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, goToResource, raf} from '../../shared/helper.js';
-
 import {
   getPlayerButtonText,
   getPlayerErrors,

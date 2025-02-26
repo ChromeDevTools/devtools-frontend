@@ -37,11 +37,10 @@ import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import filterStyles from './filter.css.legacy.js';
+import filterStyles from './filter.css.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestions} from './SuggestBox.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
 import {type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
@@ -65,7 +64,7 @@ const UIStrings = {
    *@description Text for everything
    */
   allStrings: 'All',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTypes, typeof HBox>(HBox) {
@@ -117,15 +116,6 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     this.enabled = enabled;
     this.filterButtonInternal.setEnabled(enabled);
     this.updateFilterBar();
-  }
-
-  forceShowFilterBar(): void {
-    this.alwaysShowFilters = true;
-    this.updateFilterBar();
-  }
-
-  showOnce(): void {
-    this.stateSetting.set(true);
   }
 
   private filterChanged(): void {
@@ -218,7 +208,8 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
   constructor() {
     super();
     this.filterElement = document.createElement('div');
-    const filterToolbar = this.filterElement.createChild('devtools-toolbar', 'text-filter');
+    this.filterElement.classList.add('text-filter');
+    const filterToolbar = this.filterElement.createChild('devtools-toolbar');
     // Set the style directly on the element to overwrite parent css styling.
     filterToolbar.style.borderBottom = 'none';
     this.#filter = new ToolbarFilter(undefined, 1, 1, UIStrings.egSmalldUrlacomb, this.completions.bind(this));
@@ -274,6 +265,11 @@ interface NamedBitSetFilterUIOptions {
   items: Item[];
   setting?: Common.Settings.Setting<{[key: string]: boolean}>;
 }
+
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const filterStyleSheet = new CSSStyleSheet();
+filterStyleSheet.replaceSync(filterStyles.cssContent);
+
 export class NamedBitSetFilterUIElement extends HTMLElement {
   #options: NamedBitSetFilterUIOptions = {items: []};
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -311,7 +307,9 @@ export class NamedBitSetFilterUIElement extends HTMLElement {
   }
 
   connectedCallback(): void {
-    ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadow, filterStyles);
+    // TODO(crbug.com/391381439): We cannot simply add a `<style>` element here, because
+    // the `options` setter above clears the shadow DOM.
+    this.#shadow.adoptedStyleSheets = [filterStyleSheet];
   }
 
   #filterChanged(): void {
@@ -343,12 +341,12 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     this.typeFilterElementTypeNames = new WeakMap();
     this.allowedTypes = new Set();
     this.typeFilterElements = [];
-    this.addBit(NamedBitSetFilterUI.ALL_TYPES, i18nString(UIStrings.allStrings));
+    this.addBit(NamedBitSetFilterUI.ALL_TYPES, i18nString(UIStrings.allStrings), NamedBitSetFilterUI.ALL_TYPES);
     this.typeFilterElements[0].tabIndex = 0;
     this.filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
     for (let i = 0; i < items.length; ++i) {
-      this.addBit(items[i].name, items[i].label(), items[i].title);
+      this.addBit(items[i].name, items[i].label(), items[i].jslogContext, items[i].title);
     }
 
     if (setting) {
@@ -402,7 +400,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     this.dispatchEventToListeners(FilterUIEvents.FILTER_CHANGED);
   }
 
-  private addBit(name: string, label: string, title?: string): void {
+  private addBit(name: string, label: string, jslogContext: string, title?: string): void {
     const typeFilterElement = this.filtersElement.createChild('span', name);
     typeFilterElement.tabIndex = -1;
     this.typeFilterElementTypeNames.set(typeFilterElement, name);
@@ -413,7 +411,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     }
     typeFilterElement.addEventListener('click', this.onTypeFilterClicked.bind(this), false);
     typeFilterElement.addEventListener('keydown', this.onTypeFilterKeydown.bind(this), false);
-    typeFilterElement.setAttribute('jslog', `${VisualLogging.item(name).track({click: true})}`);
+    typeFilterElement.setAttribute('jslog', `${VisualLogging.item(jslogContext).track({click: true})}`);
     this.typeFilterElements.push(typeFilterElement);
   }
 

@@ -16,7 +16,6 @@ import {
   waitForAria,
   waitForNone,
 } from '../../shared/helper.js';
-
 import {waitForDomNodeToBeVisible} from '../helpers/elements-helpers.js';
 import {
   clickZoomDropDown,
@@ -41,7 +40,7 @@ async function targetTextContent(selector: string): Promise<string> {
   if (!handle) {
     assert.fail(`targetTextContent: could not find element for ${selector}`);
   }
-  return elementTextContent(handle);
+  return await elementTextContent(handle);
 }
 
 describe('Custom devices', () => {

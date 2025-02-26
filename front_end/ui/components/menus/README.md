@@ -39,7 +39,7 @@ To do so, the styles defined for the items should be part of the styles adopted 
 
 ```ts
 // In Example.ts
-import exampleStylesRaw from './example.css.legacy.js';
+import exampleStylesRaw from './example.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const exampleStyles = new CSSStyleSheet();
@@ -87,7 +87,7 @@ So that the owner of a SelectMenu instance is notified about item selections in 
 
 ```ts
 // In Example.ts
-import exampleStylesRaw from './example.css.legacy.js';
+import exampleStylesRaw from './example.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const exampleStyles = new CSSStyleSheet();

@@ -24,7 +24,7 @@ const UIStrings = {
    *@description Error message to display when a source CSS file could not be retrieved.
    */
   thereWasAnErrorRetrievingThe: 'There was an error retrieving the source styles.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CSSStyleSheetHeader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -134,7 +134,7 @@ export class CSSStyleSheetHeader implements TextUtils.ContentProvider.ContentPro
   }
 
   private viaInspectorResourceURL(): Platform.DevToolsPath.UrlString {
-    return `inspector://${this.getFrameURLPath()}inspector-stylesheet` as Platform.DevToolsPath.UrlString;
+    return `inspector://${this.getFrameURLPath()}inspector-stylesheet#${this.id}` as Platform.DevToolsPath.UrlString;
   }
 
   private dynamicStyleURL(): Platform.DevToolsPath.UrlString {

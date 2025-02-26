@@ -31,7 +31,7 @@
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import requestHTMLViewStyles from './requestHTMLView.css.legacy.js';
+import requestHTMLViewStyles from './requestHTMLView.css.js';
 
 export class RequestHTMLView extends UI.Widget.VBox {
   private readonly dataURL: string;

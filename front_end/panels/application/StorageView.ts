@@ -15,7 +15,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DOMStorageModel} from './DOMStorageModel.js';
 import {IndexedDBModel} from './IndexedDBModel.js';
-import storageViewStyles from './storageView.css.legacy.js';
+import storageViewStyles from './storageView.css.js';
 
 const UIStrings = {
   /**
@@ -142,7 +142,7 @@ const UIStrings = {
    * Storage quota refers to the amount of disk available for the website or app.
    */
   simulateCustomStorage: 'Simulate custom storage quota',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -423,7 +423,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     const selectedStorageTypes = [];
     for (const type of this.settings.keys()) {
       const setting = this.settings.get(type);
-      if (setting && setting.get()) {
+      if (setting?.get()) {
         selectedStorageTypes.push(type);
       }
     }
@@ -486,7 +486,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      const model = target && target.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
+      const model = target?.model(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
         model.clearForStorageKey(storageKey);
       }

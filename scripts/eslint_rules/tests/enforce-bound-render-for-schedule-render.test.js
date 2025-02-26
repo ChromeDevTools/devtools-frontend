@@ -4,16 +4,10 @@
 'use strict';
 
 const rule = require('../lib/enforce-bound-render-for-schedule-render.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('enforce-bound-render-for-schedule-render', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('enforce-bound-render-for-schedule-render', rule, {
   valid: [
     {
       code: `

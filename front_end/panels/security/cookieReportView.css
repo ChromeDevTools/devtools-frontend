@@ -23,8 +23,9 @@
   padding-right: var(--sys-size-6);
   min-width: var(--sys-size-31);
 
-  .title {
+  h1 {
     font: var(--sys-typescale-headline4);
+    margin: 0;
   }
 }
 
@@ -44,7 +45,7 @@
   flex-shrink: 0;
 }
 
-.data-grid {
+devtools-data-grid {
   flex: auto;
   margin-left: -1px;
 }

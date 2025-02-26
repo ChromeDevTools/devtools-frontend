@@ -22,7 +22,7 @@ const SECONDS_TO_MICROSECONDS = 1000000;
 // keep for each request in the trace. In the finalize we will convert
 // these 5 types of trace records to a synthetic complete event that
 // represents a composite of these trace records.
-interface TraceEventsForNetworkRequest {
+export interface TraceEventsForNetworkRequest {
   changePriority?: Types.Events.ResourceChangePriority;
   willSendRequests?: Types.Events.ResourceWillSendRequest[];
   sendRequests?: Types.Events.ResourceSendRequest[];
@@ -46,7 +46,7 @@ export interface WebSocketTraceDataForWorker {
 }
 export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataForWorker;
 
-const webSocketData: Map<number, WebSocketTraceData> = new Map();
+const webSocketData = new Map<number, WebSocketTraceData>();
 interface NetworkRequestData {
   byId: Map<string, Types.Events.SyntheticNetworkRequest>;
   byOrigin: Map<string, {
@@ -219,7 +219,7 @@ export async function finalize(): Promise<void> {
       // is not guaranteed to be present in the data for every request.
       let ts = sendRequest.ts;
       let dur = Types.Timing.Micro(nextSendRequest.ts - sendRequest.ts);
-      if (request.willSendRequests && request.willSendRequests[i] && request.willSendRequests[i + 1]) {
+      if (request.willSendRequests?.[i] && request.willSendRequests[i + 1]) {
         const willSendRequest = request.willSendRequests[i];
         const nextWillSendRequest = request.willSendRequests[i + 1];
         ts = willSendRequest.ts;
@@ -278,16 +278,15 @@ export async function finalize(): Promise<void> {
     // =======================
     // The time where the request started, which is either the first willSendRequest
     // event if there is one, or, if there is not, the sendRequest.
-    const startTime = (request.willSendRequests && request.willSendRequests.length) ?
-        Types.Timing.Micro(request.willSendRequests[0].ts) :
-        Types.Timing.Micro(firstSendRequest.ts);
+    const startTime = (request.willSendRequests?.length) ? Types.Timing.Micro(request.willSendRequests[0].ts) :
+                                                           Types.Timing.Micro(firstSendRequest.ts);
 
     // End redirect time
     // =======================
     // It's possible that when we start requesting data we will receive redirections.
     // Here we note the time of the *last* willSendRequest / sendRequest event,
     // which is used later on in the calculations for time queueing etc.
-    const endRedirectTime = (request.willSendRequests && request.willSendRequests.length) ?
+    const endRedirectTime = (request.willSendRequests?.length) ?
         Types.Timing.Micro(request.willSendRequests[request.willSendRequests.length - 1].ts) :
         Types.Timing.Micro(finalSendRequest.ts);
 
@@ -454,7 +453,7 @@ export async function finalize(): Promise<void> {
             },
           },
           cat: 'loading',
-          name: 'SyntheticNetworkRequest',
+          name: Types.Events.Name.SYNTHETIC_NETWORK_REQUEST,
           ph: Types.Events.Phase.COMPLETE,
           dur: Types.Timing.Micro(endTime - startTime),
           tdur: Types.Timing.Micro(endTime - startTime),
@@ -485,8 +484,11 @@ export async function finalize(): Promise<void> {
     requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
     requestsById.set(networkEvent.args.data.requestId, networkEvent);
-    // Update entity relationships for network events.
-    HandlerHelpers.updateEventForEntities(networkEvent, entityMappings);
+
+    // Update entity relationships for network events
+    HandlerHelpers.addNetworkRequestToEntityMapping(networkEvent, entityMappings, request);
+
+    // Establish initiator relationships
     const initiatorUrl = networkEvent.args.data.initiator?.url ||
         Helpers.Trace.getZeroIndexedStackTraceForEvent(networkEvent)?.at(0)?.url;
     if (initiatorUrl) {

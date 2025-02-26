@@ -9,7 +9,6 @@ import {
   getBrowserAndPages,
   waitFor,
 } from '../../shared/helper.js';
-
 import {
   addBreakpointForLine,
   getCallFrameNames,

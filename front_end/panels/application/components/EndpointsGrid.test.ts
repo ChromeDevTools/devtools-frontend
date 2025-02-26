@@ -37,8 +37,11 @@ describeWithLocale('EndpointsGrid', () => {
     renderElementIntoDOM(component);
     await RenderCoordinator.done();
 
-    const placeholder = component.shadowRoot!.querySelector('.reporting-placeholder div');
-    assert.strictEqual(placeholder?.textContent, 'No endpoints to display');
+    const placeholderHeader = component.shadowRoot!.querySelector('.empty-state-header');
+    assert.strictEqual(placeholderHeader?.textContent, 'No endpoints to display');
+    const placeholderDescription = component.shadowRoot!.querySelector('.empty-state-description');
+    assert.strictEqual(
+        placeholderDescription?.textContent, 'Here you will find the list of endpoints that receive the reports');
   });
 
   it('renders grid with correct content', async () => {

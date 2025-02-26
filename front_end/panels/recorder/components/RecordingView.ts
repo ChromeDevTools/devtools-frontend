@@ -29,7 +29,7 @@ import * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
-import recordingViewStylesRaw from './recordingView.css.legacy.js';
+import recordingViewStylesRaw from './recordingView.css.js';
 import type {ReplaySectionData, StartReplayEvent} from './ReplaySection.js';
 import {
   type CopyStepEvent,
@@ -146,7 +146,7 @@ const UIStrings = {
    * @description The title of the button that open current recording in Performance panel.
    */
   performancePanel: 'Performance panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/components/RecordingView.ts',
     UIStrings,
@@ -314,8 +314,8 @@ export class RecordingView extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #replayState: ReplayState = {isPlaying: false, isPausedOnBreakpoint: false};
   #userFlow: Models.Schema.UserFlow|null = null;
-  #isRecording: boolean = false;
-  #recordingTogglingInProgress: boolean = false;
+  #isRecording = false;
+  #recordingTogglingInProgress = false;
   #isTitleInvalid = false;
   #currentStep?: Models.Schema.Step;
   #steps: Models.Schema.Step[] = [];
@@ -324,7 +324,7 @@ export class RecordingView extends HTMLElement {
   #settings?: Models.RecordingSettings.RecordingSettings;
   #recorderSettings?: Models.RecorderSettings.RecorderSettings;
   #lastReplayResult?: Models.RecordingPlayer.ReplayResult;
-  #breakpointIndexes: Set<number> = new Set();
+  #breakpointIndexes = new Set<number>();
   #selectedStep?: Models.Schema.Step|null;
 
   #replaySettingsExpanded = false;
@@ -333,8 +333,8 @@ export class RecordingView extends HTMLElement {
   #extensionConverters: Converters.Converter.Converter[] = [];
   #replayExtensions?: Extensions.ExtensionManager.Extension[];
   #showCodeView = false;
-  #code: string = '';
-  #converterId: string = '';
+  #code = '';
+  #converterId = '';
   #editorState?: CodeMirror.EditorState;
   #sourceMap: PuppeteerReplay.SourceMap|undefined;
   #extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;

@@ -43,23 +43,6 @@ You can disable type checking for TypeScript by using `devtools_skip_typecheck` 
 gn gen out/fast-build --args="devtools_skip_typecheck=true"
 ```
 
-#### Faster incremental builds & CSS hot reload
-In addition to that, you can enable CSS hot reload while using `watch` script with `devtools_css_hot_reload_enabled` argument:
-```bash
-gn gen out/fast-build --args="devtools_css_hot_reload_enabled=true"
-```
-
-with this and `devtools_skip_typecheck=true` in place, you can use `watch` script by:
-```bash
-npm run watch -- --target=fast-build
-```
-which will automatically apply CSS changes & instantly build changed TS files.
-
-> Caution! `watch` script is not based on `ninja` thus the build output and behavior
-> might differ with the official ninja build. In addition to that,
-> there might be some cases that `watch` build doesn't reliably handle, so you
-> might need to run `autoninja` and restart the script from time to time.
-
 ### Update to latest
 
 To update to latest tip of tree version:

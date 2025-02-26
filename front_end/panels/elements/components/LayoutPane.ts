@@ -13,12 +13,12 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import layoutPaneStylesRaw from './layoutPane.css.legacy.js';
+import layoutPaneStylesRaw from './layoutPane.css.js';
 import type {BooleanSetting, EnumSetting, LayoutElement, Setting} from './LayoutPaneUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -70,7 +70,7 @@ const UIStrings = {
    *@description Screen reader announcement when opening color picker tool.
    */
   colorPickerOpened: 'Color picker opened.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/LayoutPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export {LayoutElement};
@@ -176,7 +176,7 @@ let layoutPaneWrapperInstance: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widg
 
 export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #settings: Readonly<Setting[]> = [];
+  #settings: readonly Setting[] = [];
   readonly #uaShadowDOMSetting: Common.Settings.Setting<boolean>;
   #domModels: SDK.DOMModel.DOMModel[];
 
@@ -217,10 +217,10 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
     this.#domModels = this.#domModels.filter(model => model !== domModel);
   }
 
-  async #fetchNodesByStyle(style: {
+  async #fetchNodesByStyle(style: Array<{
     name: string,
     value: string,
-  }[]): Promise<SDK.DOMModel.DOMNode[]> {
+  }>): Promise<SDK.DOMModel.DOMNode[]> {
     const showUAShadowDOM = this.#uaShadowDOMSetting.get();
 
     const nodes = [];

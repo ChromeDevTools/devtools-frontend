@@ -25,7 +25,7 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import frameDetailsReportViewStylesRaw from './frameDetailsReportView.css.legacy.js';
+import frameDetailsReportViewStylesRaw from './frameDetailsReportView.css.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
 import {
   type PermissionsPolicySectionData,
@@ -265,7 +265,7 @@ const UIStrings = {
    *(please don't translate 'origin trials').
    */
   originTrialsExplanation: 'Origin trials give you access to a new or experimental feature.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/FrameDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -325,7 +325,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
             this.#permissionsPolicySectionData.policies = policies || [];
             return html`
               <devtools-resources-permissions-policy-section
-                .data=${this.#permissionsPolicySectionData as PermissionsPolicySectionData}
+                .data=${this.#permissionsPolicySectionData}
               >
               </devtools-resources-permissions-policy-section>
             `;
@@ -402,7 +402,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #maybeRenderNetworkLinkForURL(): Lit.LitTemplate {
     if (this.#frame) {
       const resource = this.#frame.resourceForURL(this.#frame.url);
-      if (resource && resource.request) {
+      if (resource?.request) {
         const request = resource.request;
         return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
           const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
@@ -510,7 +510,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
   #maybeRenderCreationStacktrace(): Lit.LitTemplate {
     const creationStackTraceData = this.#frame?.getCreationStackTraceData();
-    if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
+    if (creationStackTraceData?.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       return html`
@@ -716,7 +716,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-section-header>
         ${i18nString(UIStrings.contentSecurityPolicy)}
       </devtools-report-section-header>
-      ${(cspInfos && cspInfos.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : html`
+      ${(cspInfos?.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : html`
         <devtools-report-key>${
           i18n.i18n.lockedString('Content-Security-Policy')}</devtools-report-key>
         <devtools-report-value>

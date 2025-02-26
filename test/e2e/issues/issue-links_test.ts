@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
-
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('Issue links in the console tab', () => {

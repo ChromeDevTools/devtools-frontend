@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Command for showing the WebAuthn tab in bottom drawer.
    */
   showWebauthn: 'Show WebAuthn',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/webauthn/webauthn-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

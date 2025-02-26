@@ -146,8 +146,8 @@ const CHAR_PIPE: number = '|'.charCodeAt(0);
 const CHAR_TILDE: number = '~'.charCodeAt(0);
 
 // ASCII printable range.
-const CHAR_MIN_ASCII_PRINTABLE: number = 0x20;
-const CHAR_MAX_ASCII_PRINTABLE: number = 0x7e;
+const CHAR_MIN_ASCII_PRINTABLE = 0x20;
+const CHAR_MAX_ASCII_PRINTABLE = 0x7e;
 
 // Note: structured headers operates over ASCII, not unicode, so these are
 // all indeed supposed to return false on things outside 32-127 range regardless
@@ -415,7 +415,7 @@ function parseParameters(input: Input): Parameters|Error {
 
 // 4.2.3.3.  Parsing a Key
 function parseKey(input: Input): ParamName|Error {
-  let outputString: string = '';
+  let outputString = '';
   const first = input.peekCharCode();
   if (first !== CHAR_STAR && !isLcAlpha(first)) {
     return makeError();
@@ -437,7 +437,7 @@ function parseKey(input: Input): ParamName|Error {
 // 4.2.4.  Parsing an Integer or Decimal
 function parseIntegerOrDecimal(input: Input): Integer|Decimal|Error {
   let resultKind = ResultKind.INTEGER;
-  let sign: number = 1;
+  let sign = 1;
   let inputNumber = '';
   if (input.peek() === '-') {
     input.eat();
@@ -734,7 +734,7 @@ function serializeInteger(input: Integer): SerializationResult|Error {
 
 // 4.1.5.  Serializing a Decimal
 function serializeDecimal(_input: Decimal): SerializationResult|Error {
-  throw 'Unimplemented';
+  throw new Error('Unimplemented');
 }
 
 // 4.1.6.  Serializing a String
@@ -781,7 +781,7 @@ function serializeToken(input: Token): SerializationResult|Error {
 
 // 4.1.8.  Serializing a Byte Sequence
 function serializeByteSequence(_input: Binary): SerializationResult|Error {
-  throw 'Unimplemented';
+  throw new Error('Unimplemented');
 }
 
 // 4.1.9.  Serializing a Boolean

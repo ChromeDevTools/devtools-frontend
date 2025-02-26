@@ -12,7 +12,7 @@ import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import stylesRaw from './codeBlock.css.legacy.js';
+import stylesRaw from './codeBlock.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -37,7 +37,7 @@ const UIStrings = {
    * @description Disclaimer shown in the code blocks.
    */
   disclaimer: 'Use code snippets with caution',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/CodeBlock.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

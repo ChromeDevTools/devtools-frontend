@@ -1,35 +1,42 @@
 # css-select [![NPM version](http://img.shields.io/npm/v/css-select.svg)](https://npmjs.org/package/css-select) [![Build Status](https://travis-ci.com/fb55/css-select.svg?branch=master)](http://travis-ci.com/fb55/css-select) [![Downloads](https://img.shields.io/npm/dm/css-select.svg)](https://npmjs.org/package/css-select) [![Coverage](https://coveralls.io/repos/fb55/css-select/badge.svg?branch=master)](https://coveralls.io/r/fb55/css-select)
 
-a CSS selector compiler/engine
+A CSS selector compiler and engine
 
 ## What?
 
-css-select turns CSS selectors into functions that tests if elements match them.
-When searching for elements, testing is executed "from the top", similar to how
-browsers execute CSS selectors.
+As a **compiler**, css-select turns CSS selectors into functions that tests if
+elements match them.
+
+As an **engine**, css-select looks through a DOM tree, searching for elements.
+Elements are tested "from the top", similar to how browsers execute CSS
+selectors.
 
 In its default configuration, css-select queries the DOM structure of the
 [`domhandler`](https://github.com/fb55/domhandler) module (also known as
-htmlparser2 DOM). It uses [`domutils`](https://github.com/fb55/domutils) as its
-default adapter over the DOM structure. See Options below for details on
-querying alternative DOM structures.
+htmlparser2 DOM). To query alternative DOM structures, see [`Options`](#options)
+below.
 
 **Features:**
 
--   Full implementation of CSS3 selectors
--   Partial implementation of jQuery/Sizzle extensions
--   Very high test coverage
--   Pretty good performance
+-   🔬 Full implementation of CSS3 selectors, as well as most CSS4 selectors
+-   🧪 Partial implementation of jQuery/Sizzle extensions (see
+    [cheerio-select](https://github.com/cheeriojs/cheerio-select) for the
+    remaining selectors)
+-   🧑‍🔬 High test coverage, including the full test suites from
+    [`Sizzle`](https://github.com/jquery/sizzle),
+    [`Qwery`](https://github.com/ded/qwery) and
+    [`NWMatcher`](https://github.com/dperini/nwmatcher/) and .
+-   🥼 Reliably great performance
 
 ## Why?
 
-The traditional approach of executing CSS selectors, named left-to-right
-execution, is to execute every component of the selector in order, from left to
-right _(duh)_. The execution of the selector `a b` for example will first query
-for `a` elements, then search these for `b` elements. (That's the approach of
-eg. [`Sizzle`](https://github.com/jquery/sizzle),
-[`nwmatcher`](https://github.com/dperini/nwmatcher/) and
-[`qwery`](https://github.com/ded/qwery).)
+Most CSS engines written in JavaScript execute selectors left-to-right. That
+means thet execute every component of the selector in order, from left to right.
+As an example: For the selector `a b`, these engines will first query for `a`
+elements, then search these for `b` elements. (That's the approach of eg.
+[`Sizzle`](https://github.com/jquery/sizzle),
+[`Qwery`](https://github.com/ded/qwery) and
+[`NWMatcher`](https://github.com/dperini/nwmatcher/).)
 
 While this works, it has some downsides: Children of `a`s will be checked
 multiple times; first, to check if they are also `a`s, then, for every superior
@@ -50,10 +57,9 @@ By building a stack of functions.
 
 _Wait, what?_
 
-Okay, so let's suppose we want to compile the selector `a b` again, for
-right-to-left execution. We start by _parsing_ the selector, which means we turn
-the selector into an array of the building-blocks of the selector, so we can
-distinguish them easily. That's what the
+Okay, so let's suppose we want to compile the selector `a b`, for right-to-left
+execution. We start by _parsing_ the selector. This turns the selector into an
+array of the building blocks. That's what the
 [`css-what`](https://github.com/fb55/css-what) module is for, if you want to
 have a look.
 
@@ -67,23 +73,26 @@ Anyway, after parsing, we end up with an array like this one:
 ];
 ```
 
-Actually, this array is wrapped in another array, but that's another story
-(involving commas in selectors).
+(Actually, this array is wrapped in another array, but that's another story,
+involving commas in selectors.)
 
 Now that we know the meaning of every part of the selector, we can compile it.
-That's where it becomes interesting.
+That is where things become interesting.
 
 The basic idea is to turn every part of the selector into a function, which
 takes an element as its only argument. The function checks whether a passed
 element matches its part of the selector: If it does, the element is passed to
-the next turned-into-a-function part of the selector, which does the same. If an
-element is accepted by all parts of the selector, it _matches_ the selector and
-double rainbow ALL THE WAY.
+the next function representing the next part of the selector. That function does
+the same. If an element is accepted by all parts of the selector, it _matches_
+the selector and double rainbow ALL THE WAY.
 
 As said before, we want to do right-to-left execution with all the big O
-improvements nonsense, so elements are passed from the rightmost part of the
+improvements. That means elements are passed from the rightmost part of the
 selector (`b` in our example) to the leftmost (~~which would be `c`~~ of course
 `a`).
+
+For traversals, such as the _descendant_ operating the space between `a` and
+`b`, we walk up the DOM tree, starting from the element passed as argument.
 
 _//TODO: More in-depth description. Implementation details. Build a spaceship._
 
@@ -93,10 +102,9 @@ _//TODO: More in-depth description. Implementation details. Build a spaceship._
 const CSSselect = require("css-select");
 ```
 
-**Note:** css-select throws errors when invalid selectors are passed to it,
-contrary to the behavior in browsers, which swallow them. This is done to aid
-with writing css selectors, but can be unexpected when processing arbitrary
-strings.
+**Note:** css-select throws errors when invalid selectors are passed to it. This
+is done to aid with writing css selectors, but can be unexpected when processing
+arbitrary strings.
 
 #### `CSSselect.selectAll(query, elems, options)`
 
@@ -133,11 +141,18 @@ All options are optional.
 -   `adapter`: The adapter to use when interacting with the backing DOM
     structure. By default it uses the `domutils` module.
 -   `context`: The context of the current query. Used to limit the scope of
-    searches. Can be matched directly using the `:scope` pseudo-selector.
+    searches. Can be matched directly using the `:scope` pseudo-class.
+-   `relativeSelector`: By default, selectors are relative to the `context`,
+    which means that no parent elements of the context will be matched. (Eg.
+    `a b c` with context `b` will never give any results.) If `relativeSelector`
+    is set to `false`, selectors won't be
+    [absolutized](http://www.w3.org/TR/selectors4/#absolutizing) and selectors
+    can test for parent elements outside of the `context`.
 -   `cacheResults`: Allow css-select to cache results for some selectors,
     sometimes greatly improving querying performance. Disable this if your
     document can change in between queries with the same compiled selector.
     Default: `true`.
+-   `pseudos`: A map of pseudo-class names to functions or strings.
 
 #### Custom Adapters
 
@@ -178,8 +193,10 @@ _As defined by CSS 4 and / or jQuery._
     -   `^=`
     -   `$=`
     -   `!=`
-    -   Also, `i` can be added after the comparison to make the comparison
-        case-insensitive (eg. `[attr=foo i]`)
+    -   `i` and `s` can be added after the comparison to make the comparison
+        case-insensitive or case-sensitive (eg. `[attr=foo i]`). If neither is
+        supplied, css-select will follow the HTML spec's
+        [case-sensitivity rules](https://html.spec.whatwg.org/multipage/semantics-other.html#case-sensitivity-of-selectors).
 -   Pseudos:
     -   [`:not`](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
     -   [`:contains`](https://api.jquery.com/contains-selector)

@@ -79,7 +79,8 @@ export const assertElementScreenshotUnchanged = async (
   if (platform !== 'linux') {
     return;
   }
-  return assertScreenshotUnchangedWithRetries(element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
+  return await assertScreenshotUnchangedWithRetries(
+      element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
 };
 
 const assertScreenshotUnchangedWithRetries = async (
@@ -189,7 +190,7 @@ const assertScreenshotUnchanged = async (options: ScreenshotAssertionOptions) =>
   }
 
   try {
-    await compare(goldenScreenshotPath, generatedScreenshotPath, maximumDiffThreshold);
+    await compare(goldenScreenshotPath, generatedScreenshotPath, maximumDiffThreshold, shouldUpdate);
   } catch (compareError) {
     if (!onBotAndImageNotFound) {
       console.log(`=> Test failed. Retrying (retry ${retryCount} of ${maximumRetries} maximum).`);
@@ -230,7 +231,7 @@ interface ImageDiff {
 }
 
 async function imageDiff(golden: string, generated: string) {
-  return new Promise<ImageDiff>(async (resolve, reject) => {
+  return await new Promise<ImageDiff>(async (resolve, reject) => {
     try {
       const imageDiff: ImageDiff = {rawMisMatchPercentage: 0, diffPath: ''};
       const diffText = await execImageDiffCommand(`${IMAGE_DIFF_BINARY} --histogram ${golden} ${generated}`);
@@ -256,7 +257,7 @@ async function imageDiff(golden: string, generated: string) {
 }
 
 async function execImageDiffCommand(cmd: string) {
-  return new Promise<string>((resolve, reject) => {
+  return await new Promise<string>((resolve, reject) => {
     let commandOutput = '';
     try {
       commandOutput = childProcess.execSync(cmd, {encoding: 'utf8'});
@@ -275,7 +276,7 @@ async function execImageDiffCommand(cmd: string) {
   });
 }
 
-async function compare(golden: string, generated: string, maximumDiffThreshold: number) {
+async function compare(golden: string, generated: string, maximumDiffThreshold: number, isInDiffUpdateMode: boolean) {
   const isOnBot = process.env.LUCI_CONTEXT !== undefined;
   if (!isOnBot && process.env.SKIP_SCREENSHOT_COMPARISONS_FOR_FAST_COVERAGE) {
     // When checking test coverage locally the tests get sped up significantly
@@ -304,7 +305,7 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
   let debugInfo = '';
   if (isOnBot) {
     debugInfo = `${base64TestGeneratedImageLog}\n${base64DiffImageLog}\n`;
-  } else {
+  } else if (!isInDiffUpdateMode) {
     debugInfo = `Run the tests again with --on-diff=update to update all tests that fail.
   Only do this if you expected this screenshot to have changed!
 

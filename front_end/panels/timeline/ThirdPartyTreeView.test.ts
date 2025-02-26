@@ -50,18 +50,18 @@ describeWithEnvironment('TimelineTreeView', function() {
           firstNode, firstNode.totalTime, firstNode.selfTime, firstNode.totalTime, treeView);
       const extEntity = extensionNode?.createCell('site');
 
-      let gotBadgeName = extEntity.querySelector<HTMLTableRowElement>('.entity-badge-name')?.textContent || '';
+      let gotBadgeName = extEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
       assert.strictEqual(gotBadgeName, 'Extension');
 
       // Node with first party
-      const secondNode = topNodesIterator[1] as Trace.Extras.TraceTree.Node;
+      const secondNode = topNodesIterator[1];
       assert.strictEqual(secondNode.id.toString(), 'localhost');
 
       const firstPartyNode = new Timeline.TimelineTreeView.TreeGridNode(
           secondNode, secondNode.totalTime, secondNode.selfTime, secondNode.totalTime, treeView);
       const firstPartyEntity = firstPartyNode?.createCell('site');
 
-      gotBadgeName = firstPartyEntity.querySelector<HTMLTableRowElement>('.entity-badge-name')?.textContent || '';
+      gotBadgeName = firstPartyEntity.querySelector<HTMLTableRowElement>('.entity-badge')?.textContent || '';
       assert.strictEqual(gotBadgeName, '1st party');
     });
   });

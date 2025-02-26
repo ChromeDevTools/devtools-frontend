@@ -22,7 +22,8 @@
   padding-left: var(--sys-size-5);
 }
 
-.title {
+h1 {
+  margin: 0;
   font: var(--sys-typescale-headline4);
 }
 
@@ -65,8 +66,9 @@
   gap: var(--sys-size-2);
 }
 
-.card-title {
+h2 {
   font: var(--sys-typescale-headline5);
+  margin: 0;
 }
 
 .body {
@@ -85,8 +87,9 @@
   padding-left: var(--sys-size-8);
 }
 
-.card-row-title {
+h3 {
   font: var(--sys-typescale-body4-medium);
+  margin: 0;
 }
 
 .x-link {

@@ -10,9 +10,9 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import metricCardStylesRaw from './metricCard.css.legacy.js';
+import metricCardStylesRaw from './metricCard.css.js';
 import {type CompareRating, renderCompareText, renderDetailedCompareText} from './MetricCompareStrings.js';
-import metricValueStylesRaw from './metricValueStyles.css.legacy.js';
+import metricValueStylesRaw from './metricValueStyles.css.js';
 import {
   CLS_THRESHOLDS,
   determineCompareRating,
@@ -146,7 +146,7 @@ const UIStrings = {
    */
   inpHelpTooltip:
       'INP measures the overall responsiveness to all click, tap, and keyboard interactions. Click here to learn more about INP.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

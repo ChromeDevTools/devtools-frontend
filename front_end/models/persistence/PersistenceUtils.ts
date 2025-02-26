@@ -25,7 +25,7 @@ const UIStrings = {
    *@example {example.url} PH1
    */
   linkedToS: 'Linked to {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PersistenceUtils {

@@ -36,7 +36,6 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {ContentProviderBasedProject} from './ContentProviderBasedProject.js';
-
 import {CSSWorkspaceBinding, type SourceMapping} from './CSSWorkspaceBinding.js';
 import {NetworkProject} from './NetworkProject.js';
 
@@ -239,7 +238,7 @@ class Binding {
     }
   }
 
-  getReferringSourceMaps(): Array<SDK.SourceMap.SourceMap> {
+  getReferringSourceMaps(): SDK.SourceMap.SourceMap[] {
     return this.referringSourceMaps;
   }
 

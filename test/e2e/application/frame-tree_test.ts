@@ -15,7 +15,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   getFrameTreeTitles,
   getTrimmedTextContent,
@@ -61,7 +60,7 @@ const getFieldValuesTextContent = async () => {
     // system-specific, so we get rid of it and only look at the (URL) text.
     fieldValues[0] = getTrailingURL(fieldValues[0]);
   }
-  if (fieldValues[10] && fieldValues[10].includes('accelerometer')) {
+  if (fieldValues[10]?.includes('accelerometer')) {
     fieldValues[10] = 'accelerometer';
   }
   // Make sure the length is equivalent to the expected value below
@@ -74,8 +73,7 @@ const getFieldValuesTextContent = async () => {
 describe('The Application Tab', () => {
   // Update and reactivate when the whole FrameDetailsView is a custom component
   it.skip('[crbug.com/1519420]: shows details for a frame when clicked on in the frame tree', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'frame-tree');
+    await navigateToApplicationTab('frame-tree');
     await click('#tab-resources');
     await navigateToFrame('top');
 
@@ -99,8 +97,7 @@ describe('The Application Tab', () => {
 
   it('shows stack traces for OOPIF', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'js-oopif');
+    await navigateToApplicationTab('js-oopif');
     await waitForFunction(async () => {
       await navigateToFrame('top');
       await navigateToFrame('iframe.html');
@@ -127,8 +124,7 @@ describe('The Application Tab', () => {
   it('stack traces for OOPIF with ignore listed frames can be expanded and collapsed', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await setIgnoreListPattern('js-oopif.js');
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'js-oopif');
+    await navigateToApplicationTab('js-oopif');
     await waitForFunction(async () => {
       await navigateToFrame('top');
       await navigateToFrame('iframe.html');
@@ -191,7 +187,7 @@ describe('The Application Tab', () => {
 
     it('shows details for opened windows in the frame tree', async () => {
       const {target, frontend} = getBrowserAndPages();
-      await navigateToApplicationTab(target, 'frame-tree');
+      await navigateToApplicationTab('frame-tree');
       await click('#tab-resources');
       await navigateToFrame('top');
 
@@ -227,7 +223,7 @@ describe('The Application Tab', () => {
   it('shows dedicated workers in the frame tree', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'frame-tree');
+    await navigateToApplicationTab('frame-tree');
     await navigateToFrame('top');
     // DevTools is not ready yet when the worker is being initially attached.
     // We therefore need to reload the page to see the worker in DevTools.
@@ -253,8 +249,7 @@ describe('The Application Tab', () => {
 
   it('shows service workers in the frame tree', async () => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'service-worker-network');
+    await navigateToApplicationTab('service-worker-network');
     await navigateToFrameServiceWorkers('top');
     void pressKey('ArrowDown');
 

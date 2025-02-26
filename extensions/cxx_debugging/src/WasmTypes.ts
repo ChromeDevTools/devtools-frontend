@@ -33,23 +33,23 @@ export function serializeWasmValue(value: WasmValue|ArrayBuffer, buffer: ArrayBu
   const view = new DataView(buffer);
   switch (value.type) {
     case 'i32': {
-      view.setInt32(0, value.value as number, true);
+      view.setInt32(0, value.value, true);
       return SerializedWasmType.i32;
     }
     case 'i64': {
-      view.setBigInt64(0, value.value as bigint, true);
+      view.setBigInt64(0, value.value, true);
       return SerializedWasmType.i64;
     }
     case 'f32': {
-      view.setFloat32(0, value.value as number, true);
+      view.setFloat32(0, value.value, true);
       return SerializedWasmType.f32;
     }
     case 'f64': {
-      view.setFloat64(0, value.value as number, true);
+      view.setFloat64(0, value.value, true);
       return SerializedWasmType.f64;
     }
     case 'v128': {
-      const [, a, b, c, d] = (value.value as string).split(' ');
+      const [, a, b, c, d] = (value.value).split(' ');
       view.setInt32(0, Number(a), true);
       view.setInt32(4, Number(b), true);
       view.setInt32(8, Number(c), true);

@@ -18,7 +18,7 @@ import * as RenderCoordinator from '../../../../ui/components/render_coordinator
 import * as PreloadingComponents from './components.js';
 
 const {urlString} = Platform.DevToolsPath;
-const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
+const zip2 = <T, S>(xs: T[], ys: S[]): Array<[T, S]> => {
   assert.strictEqual(xs.length, ys.length);
 
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
@@ -37,7 +37,7 @@ async function renderMismatchedPreloadingGrid(
 
 function assertDiff(
     gridComponent: HTMLElement, cellIndex: {row: number, column: number},
-    spansExpected: {textContent: string, partOfStyle: string}[]) {
+    spansExpected: Array<{textContent: string, partOfStyle: string}>) {
   const grid = gridComponent.shadowRoot!.querySelector('devtools-data-grid')!;
   assert.isNotNull(grid.shadowRoot);
   const cell = getCellByIndexes(grid.shadowRoot, cellIndex);

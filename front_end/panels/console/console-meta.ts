@@ -133,7 +133,7 @@ const UIStrings = {
    * @description Title of a setting under the Console category in Settings that controls whether `console.trace()` messages appear collapsed by default.
    */
   collapseConsoleTraceMessagesByDefault: 'Do not automatically expand `console.trace()` messages',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/console-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedConsoleModule: (typeof Console|undefined);

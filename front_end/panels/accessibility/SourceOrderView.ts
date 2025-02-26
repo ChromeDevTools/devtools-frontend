@@ -30,7 +30,7 @@ const UIStrings = {
    * means the order in which the HTML elements show up in the source code.
    */
   showSourceOrder: 'Show source order',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/SourceOrderView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_CHILD_ELEMENTS_THRESHOLD = 300;

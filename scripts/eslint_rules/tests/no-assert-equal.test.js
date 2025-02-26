@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/no-assert-equal.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('no-assert-equal', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-assert-equal', rule, {
   valid: [
     {
       code: `import {assert} from 'chai';

@@ -28,8 +28,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
   });
 
   const assertExpectedPseudoClasses = async (
-      nodeName: string, expectedPseudoClasses: string[], formAssociated: boolean = false,
-      attribute?: [string, string]) => {
+      nodeName: string, expectedPseudoClasses: string[], formAssociated = false, attribute?: [string, string]) => {
     view = new Elements.ElementStatePaneWidget.ElementStatePaneWidget();
     const tableUpdatedPromise = new Promise<void>(
         resolve => sinon.stub(view, 'updateElementSpecificStatesTableForTest').callsFake(resolve),

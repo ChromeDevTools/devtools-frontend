@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import stylelint from 'stylelint';
-import { parse, comment } from 'postcss';
-import { join } from 'path';
 import { readFileSync } from 'fs';
+import { join } from 'path';
+import { comment, parse } from 'postcss';
+import stylelint from 'stylelint';
 
 const {
   createPlugin,

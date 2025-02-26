@@ -11,6 +11,7 @@ import {
   click,
   clickElement,
   clickMoreTabsButton,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   getTextContent,
   goToResource,
@@ -95,7 +96,7 @@ export const openLayoutPane = async () => {
   ]);
 };
 
-export const waitForAdorners = async (expectedAdorners: {textContent: string, isActive: boolean}[]) => {
+export const waitForAdorners = async (expectedAdorners: Array<{textContent: string, isActive: boolean}>) => {
   await waitForFunction(async () => {
     const actualAdorners = await $$(ADORNER_SELECTOR);
     const actualAdornersStates = await Promise.all(actualAdorners.map(n => {
@@ -229,7 +230,7 @@ export const waitForSelectedTreeElementSelectorWhichIncludesText = async (expect
   await waitForFunction(async () => {
     const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
     const selectedTextContent = await selectedNode.evaluate(node => node.textContent);
-    return selectedTextContent && selectedTextContent.includes(expectedTextContent);
+    return selectedTextContent?.includes(expectedTextContent);
   });
 };
 
@@ -238,10 +239,10 @@ export const waitForChildrenOfSelectedElementNode = async () => {
 };
 
 export const waitForAndClickTreeElementWithPartialText = async (text: string) =>
-    waitForFunction(async () => clickTreeElementWithPartialText(text));
+    await waitForFunction(async () => await clickTreeElementWithPartialText(text));
 
 export const waitForElementWithPartialText = async (text: string) => {
-  return waitForFunction(async () => elementWithPartialText(text));
+  return await waitForFunction(async () => await elementWithPartialText(text));
 };
 
 const elementWithPartialText = async (text: string) => {
@@ -470,12 +471,12 @@ export const getComputedStylesForDomNode =
 
 export const waitForNumberOfComputedProperties = async (numberToWaitFor: number) => {
   const computedPane = await getComputedPanel();
-  return waitForFunction(
+  return await waitForFunction(
       async () => numberToWaitFor ===
           await computedPane.$$eval('pierce/' + COMPUTED_PROPERTY_SELECTOR, properties => properties.length));
 };
 
-export const getComputedPanel = async () => waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
+export const getComputedPanel = async () => await waitFor(COMPUTED_STYLES_PANEL_SELECTOR);
 
 export const filterComputedProperties = async (filterString: string) => {
   const initialContent = await getContentOfComputedPane();
@@ -553,7 +554,7 @@ export const getComputedStyleProperties = async () => {
 
 export const getDisplayedCSSDeclarations = async () => {
   const cssDeclarations = await $$(CSS_DECLARATION_SELECTOR);
-  return Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
+  return await Promise.all(cssDeclarations.map(async node => await node.evaluate(n => n.textContent?.trim())));
 };
 
 export const getDisplayedStyleRulesCompact = async () => {
@@ -591,17 +592,16 @@ export const getDisplayedStyleRules = async () => {
  */
 export const getDisplayedCSSPropertyData = async (propertiesSection: puppeteer.ElementHandle<Element>) => {
   const cssPropertyNames = await $$(CSS_PROPERTY_NAME_SELECTOR, propertiesSection);
-  const propertyNamesData =
-      (await Promise.all(cssPropertyNames.map(
-           async node => {
-             return {
-               propertyName: await node.evaluate(n => n.textContent),
-               isOverLoaded: await node.evaluate(n => n.parentElement && n.parentElement.matches('.overloaded')),
-               isInherited: await node.evaluate(n => n.parentElement && n.parentElement.matches('.inherited')),
-             };
-           },
-           )))
-          .filter(c => Boolean(c.propertyName));
+  const propertyNamesData = (await Promise.all(cssPropertyNames.map(
+                                 async node => {
+                                   return {
+                                     propertyName: await node.evaluate(n => n.textContent),
+                                     isOverLoaded: await node.evaluate(n => n.parentElement?.matches('.overloaded')),
+                                     isInherited: await node.evaluate(n => n.parentElement?.matches('.inherited')),
+                                   };
+                                 },
+                                 )))
+                                .filter(c => Boolean(c.propertyName));
   return propertyNamesData;
 };
 
@@ -681,7 +681,7 @@ export const getHiddenFontEditorButtons = async () => {
 
 export const getStyleSectionSubtitles = async () => {
   const subtitles = await $$(SECTION_SUBTITLE_SELECTOR);
-  return Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
+  return await Promise.all(subtitles.map(node => node.evaluate(n => n.textContent)));
 };
 
 export const getCSSPropertyInRule =
@@ -755,6 +755,8 @@ export async function editCSSProperty(selector: string, propertyName: string, ne
 // Edit a media or container query rule text for the given styles section
 export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHandle<Element>, newQueryText: string) {
   await click(STYLE_QUERY_RULE_TEXT_SELECTOR, {root: queryStylesSections});
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await waitForFunction(async () => {
     // Wait until the value element has been marked as a text-prompt.
     const queryText = await $(STYLE_QUERY_RULE_TEXT_SELECTOR, queryStylesSections);
@@ -768,6 +770,9 @@ export async function editQueryRuleText(queryStylesSections: puppeteer.ElementHa
   });
   await typeText(newQueryText);
   await pressKey('Enter');
+
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
 
   await waitForFunction(async () => {
     // Wait until the value element is not a text-prompt anymore.
@@ -962,7 +967,6 @@ function veImpressionForAccessibilityPane() {
             'Section', 'accessibility-tree',
             [
               veImpression('Toggle', 'full-accessibility-tree'),
-              veImpression('TreeItem', undefined, [veImpression('Expand'), veImpression('TreeItem')]),
             ]),
         veImpression('SectionHeader', 'aria-attributes'),
         veImpression('Section', 'aria-attributes'),

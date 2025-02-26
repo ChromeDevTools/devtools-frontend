@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/no-bound-component-methods.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('no-bound-component-methods', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-bound-component-methods', rule, {
   valid: [
     {
       code: `export class FeedbackButton extends SomeOtherNonElementThing {

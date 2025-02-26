@@ -9,7 +9,7 @@ import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
-import treeOutlineStylesRaw from './treeOutline.css.legacy.js';
+import treeOutlineStyles from './treeOutline.css.js';
 import {
   findNextNodeForTreeOutlineKeyboardNavigation,
   getNodeChildren,
@@ -21,12 +21,6 @@ import {
   type TreeNodeWithChildren,
 } from './TreeOutlineUtils.js';
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const treeOutlineStyles = new CSSStyleSheet();
-treeOutlineStyles.replaceSync(treeOutlineStylesRaw.cssContent);
-const CodeHighlighterStyles = new CSSStyleSheet();
-CodeHighlighterStyles.replaceSync(CodeHighlighter.Style.default.cssContent);
-
 const {html, Directives: {ifDefined}} = Lit;
 
 export interface TreeOutlineData<TreeNodeDataType> {
@@ -37,7 +31,7 @@ export interface TreeOutlineData<TreeNodeDataType> {
    * node is expanded or not), and providing the same object multiple times will
    * cause issues in the TreeOutline.
    */
-  tree: readonly TreeNode<TreeNodeDataType>[];
+  tree: ReadonlyArray<TreeNode<TreeNodeDataType>>;
   filter?: (node: TreeNodeDataType) => FilterOption;
   compact?: boolean;
 }
@@ -97,9 +91,9 @@ export const enum FilterOption {
 
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #treeData: readonly TreeNode<TreeNodeDataType>[] = [];
-  #nodeExpandedMap: Map<string, boolean> = new Map();
-  #domNodeToTreeNodeMap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>> = new WeakMap();
+  #treeData: ReadonlyArray<TreeNode<TreeNodeDataType>> = [];
+  #nodeExpandedMap = new Map<string, boolean>();
+  #domNodeToTreeNodeMap = new WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>>();
   #hasRenderedAtLeastOnce = false;
   /**
    * If we have expanded to a certain node, we want to focus it once we've
@@ -150,12 +144,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   connectedCallback(): void {
     this.#setTopLevelNodeBorderColorCSSVariable(this.getAttribute('toplevelbordercolor'));
     this.#setNodeKeyNoWrapCSSVariable(this.getAttribute('nowrap'));
-    this.#shadow.adoptedStyleSheets = [treeOutlineStyles, CodeHighlighterStyles];
   }
 
   get data(): TreeOutlineData<TreeNodeDataType> {
     return {
-      tree: this.#treeData as TreeNode<TreeNodeDataType>[],
+      tree: this.#treeData as Array<TreeNode<TreeNodeDataType>>,
       defaultRenderer: this.#defaultRenderer,
     };
   }
@@ -194,7 +187,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
    * Takes a TreeNode, expands the outline to reveal it, and focuses it.
    */
   async expandToAndSelectTreeNode(targetTreeNode: TreeNode<TreeNodeDataType>): Promise<void> {
-    return this.expandToAndSelectTreeNodeId(targetTreeNode.id);
+    return await this.expandToAndSelectTreeNodeId(targetTreeNode.id);
   }
 
   /**
@@ -262,7 +255,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
   }
 
   async #flattenSubtree(node: TreeNodeWithChildren<TreeNodeDataType>, filter: (node: TreeNodeDataType) => FilterOption):
-      Promise<TreeNode<TreeNodeDataType>[]> {
+      Promise<Array<TreeNode<TreeNodeDataType>>> {
     const children = await getNodeChildren(node);
     const filteredChildren = [];
     for (const child of children) {
@@ -281,7 +274,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     return filteredChildren;
   }
 
-  async #fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> {
+  async #fetchNodeChildren(node: TreeNodeWithChildren<TreeNodeDataType>): Promise<Array<TreeNode<TreeNodeDataType>>> {
     const children = await getNodeChildren(node);
     const filter = this.#nodeFilter;
     if (!filter) {
@@ -528,6 +521,8 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
+      <style>${treeOutlineStyles.cssContent}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles.cssContent}</style>
       <div class="wrapping-container">
         <ul role="tree" @keydown=${this.#onTreeKeyDown}>
           ${this.#treeData.map((topLevelNode, index) => {
@@ -551,7 +546,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     // to ensure we're not rendering any stale UI.
     if (this.#enqueuedRender) {
       this.#enqueuedRender = false;
-      return this.#render();
+      return await this.#render();
     }
   }
 }

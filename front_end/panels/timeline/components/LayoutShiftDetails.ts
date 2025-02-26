@@ -14,11 +14,13 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
-import layoutShiftDetailsStylesRaw from './layoutShiftDetails.css.legacy.js';
+import layoutShiftDetailsStylesRaw from './layoutShiftDetails.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const layoutShiftDetailsStyles = new CSSStyleSheet();
 layoutShiftDetailsStyles.replaceSync(layoutShiftDetailsStylesRaw.cssContent);
+const textButtonStyles = new CSSStyleSheet();
+textButtonStyles.replaceSync(Buttons.textButtonStyles.cssContent);
 
 const {html} = Lit;
 
@@ -79,7 +81,7 @@ const UIStrings = {
    * @description Text for a culprit type of Unsized image.
    */
   unsizedImage: 'Unsized image',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LayoutShiftDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -96,7 +98,7 @@ export class LayoutShiftDetails extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [
       layoutShiftDetailsStyles,
       // Styles for linkifier button.
-      Buttons.textButtonStyles,
+      textButtonStyles,
     ];
     this.#render();
   }
@@ -429,7 +431,7 @@ export class LayoutShiftDetails extends HTMLElement {
       return;
     }
     const rowEl = e.target.closest('tbody tr');
-    if (!rowEl || !rowEl.parentElement) {
+    if (!rowEl?.parentElement) {
       return;
     }
 

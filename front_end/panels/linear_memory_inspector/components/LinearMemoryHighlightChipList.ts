@@ -8,7 +8,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryHighlightChipListStylesRaw from './linearMemoryHighlightChipList.css.legacy.js';
+import linearMemoryHighlightChipListStylesRaw from './linearMemoryHighlightChipList.css.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -27,14 +27,14 @@ const UIStrings = {
    'Memory' is a slice of bytes in the computer memory.
    */
   deleteHighlight: 'Stop highlighting this memory',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings(
     'panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = Lit;
 
 export interface LinearMemoryHighlightChipListData {
-  highlightInfos: Array<HighlightInfo>;
+  highlightInfos: HighlightInfo[];
   focusedMemoryHighlight?: HighlightInfo;
 }
 

@@ -1,11 +1,15 @@
-# css-what [![Build Status](https://secure.travis-ci.org/fb55/css-what.svg?branch=master)](http://travis-ci.org/fb55/css-what)
+# css-what
 
-a CSS selector parser
+[![Build Status](https://img.shields.io/github/workflow/status/fb55/css-what/Node.js%20CI/master)](https://github.com/fb55/css-what/actions/workflows/nodejs-test.yml)
+[![Coverage](https://img.shields.io/coveralls/github/fb55/css-what/master)](https://coveralls.io/github/fb55/css-what?branch=master)
+
+A CSS selector parser.
 
 ## Example
 
 ```js
-const CSSwhat = require("css-what")
+import * as CSSwhat from "css-what";
+
 CSSwhat.parse("foo[bar]:baz")
 
 ~> [
@@ -16,7 +20,7 @@ CSSwhat.parse("foo[bar]:baz")
             name: "bar",
             action: "exists",
             value: "",
-            ignoreCase: false
+            ignoreCase: null
         },
         { type: "pseudo", name: "baz", data: null }
     ]
@@ -25,32 +29,27 @@ CSSwhat.parse("foo[bar]:baz")
 
 ## API
 
-**`CSSwhat.parse(selector, options)` - Parses `selector`, optionally with the passed `options`.**
+**`CSSwhat.parse(selector)` - Parses `selector`.**
 
 The function returns a two-dimensional array. The first array represents selectors separated by commas (eg. `sub1, sub2`), the second contains the relevant tokens for that selector. Possible token types are:
 
-| name             | properties                              | example       | output                                                                                   |
-| ---------------- | --------------------------------------- | ------------- | ---------------------------------------------------------------------------------------- |
-| `tag`            | `name`                                  | `div`         | `{ type: 'tag', name: 'div' }`                                                           |
-| `universal`      | -                                       | `*`           | `{ type: 'universal' }`                                                                  |
-| `pseudo`         | `name`, `data`                          | `:name(data)` | `{ type: 'pseudo', name: 'name', data: 'data' }`                                         |
-| `pseudo`         | `name`, `data`                          | `:name`       | `{ type: 'pseudo', name: 'name', data: null }`                                           |
-| `pseudo-element` | `name`                                  | `::name`      | `{ type: 'pseudo-element', name: 'name' }`                                               |
-| `attribute`      | `name`, `action`, `value`, `ignoreCase` | `[attr]`      | `{ type: 'attribute', name: 'attr', action: 'exists', value: '', ignoreCase: false }`    |
-| `attribute`      | `name`, `action`, `value`, `ignoreCase` | `[attr=val]`  | `{ type: 'attribute', name: 'attr', action: 'equals', value: 'val', ignoreCase: false }` |
-| `attribute`      | `name`, `action`, `value`, `ignoreCase` | `[attr^=val]` | `{ type: 'attribute', name: 'attr', action: 'start', value: 'val', ignoreCase: false }`  |
-| `attribute`      | `name`, `action`, `value`, `ignoreCase` | `[attr$=val]` | `{ type: 'attribute', name: 'attr', action: 'end', value: 'val', ignoreCase: false }`    |
-| `child`          | -                                       | `>`           | `{ type: 'child' }`                                                                      |
-| `parent`         | -                                       | `<`           | `{ type: 'parent' }`                                                                     |
-| `sibling`        | -                                       | `~`           | `{ type: 'sibling' }`                                                                    |
-| `adjacent`       | -                                       | `+`           | `{ type: 'adjacent' }`                                                                   |
-| `descendant`     | -                                       |               | `{ type: 'descendant' }`                                                                 |
-
-**Options:**
-
--   `lowerCaseTags`: When false, tag names will not be lowercased. Defaults to `true`.
--   `lowerCaseAttributeNames`: When false, attribute names will not be lowercased. Defaults to `true`.
--   `xmlMode`: When `true`, `xmlMode` implies both `lowerCaseTags` and `lowerCaseAttributeNames` are set to `false`.
+| name                | properties                              | example       | output                                                                                   |
+| ------------------- | --------------------------------------- | ------------- | ---------------------------------------------------------------------------------------- |
+| `tag`               | `name`                                  | `div`         | `{ type: 'tag', name: 'div' }`                                                           |
+| `universal`         | -                                       | `*`           | `{ type: 'universal' }`                                                                  |
+| `pseudo`            | `name`, `data`                          | `:name(data)` | `{ type: 'pseudo', name: 'name', data: 'data' }`                                         |
+| `pseudo`            | `name`, `data`                          | `:name`       | `{ type: 'pseudo', name: 'name', data: null }`                                           |
+| `pseudo-element`    | `name`                                  | `::name`      | `{ type: 'pseudo-element', name: 'name' }`                                               |
+| `attribute`         | `name`, `action`, `value`, `ignoreCase` | `[attr]`      | `{ type: 'attribute', name: 'attr', action: 'exists', value: '', ignoreCase: false }`    |
+| `attribute`         | `name`, `action`, `value`, `ignoreCase` | `[attr=val]`  | `{ type: 'attribute', name: 'attr', action: 'equals', value: 'val', ignoreCase: false }` |
+| `attribute`         | `name`, `action`, `value`, `ignoreCase` | `[attr^=val]` | `{ type: 'attribute', name: 'attr', action: 'start', value: 'val', ignoreCase: false }`  |
+| `attribute`         | `name`, `action`, `value`, `ignoreCase` | `[attr$=val]` | `{ type: 'attribute', name: 'attr', action: 'end', value: 'val', ignoreCase: false }`    |
+| `child`             | -                                       | `>`           | `{ type: 'child' }`                                                                      |
+| `parent`            | -                                       | `<`           | `{ type: 'parent' }`                                                                     |
+| `sibling`           | -                                       | `~`           | `{ type: 'sibling' }`                                                                    |
+| `adjacent`          | -                                       | `+`           | `{ type: 'adjacent' }`                                                                   |
+| `descendant`        | -                                       |               | `{ type: 'descendant' }`                                                                 |
+| `column-combinator` | -                                       | `\|\|`        | `{ type: 'column-combinator' }`                                                          |
 
 **`CSSwhat.stringify(selector)` - Turns `selector` back into a string.**
 

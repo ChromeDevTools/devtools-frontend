@@ -286,7 +286,7 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
       Promise<AccessibilityNode[]> {
     const parent = this.#axIdToAXNode.get(nodeId);
     if (!parent) {
-      throw Error('Cannot request children before parent');
+      throw new Error('Cannot request children before parent');
     }
     if (!parent.hasUnloadedChildren()) {
       return parent.children();
@@ -334,10 +334,6 @@ export class AccessibilityModel extends SDKModel<EventTypes> implements Protocol
 
   setRootAXNodeForFrameId(frameId: Protocol.Page.FrameId, axNode: AccessibilityNode): void {
     this.#frameIdToAXNode.set(frameId, axNode);
-  }
-
-  axNodeForFrameId(frameId: Protocol.Page.FrameId): AccessibilityNode|null {
-    return this.#frameIdToAXNode.get(frameId) ?? null;
   }
 
   setAXNodeForAXId(axId: string, axNode: AccessibilityNode): void {

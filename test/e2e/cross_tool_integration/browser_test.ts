@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {closeAllCloseableTabs, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 

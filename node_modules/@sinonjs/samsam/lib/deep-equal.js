@@ -67,7 +67,7 @@ function deepEqualCyclic(actual, expectation, match) {
         actualObj,
         expectationObj,
         actualPath,
-        expectationPath
+        expectationPath,
     ) {
         // If both are matchers they must be the same instance in order to be
         // considered equal If we didn't do that we would end up running one
@@ -140,7 +140,7 @@ function deepEqualCyclic(actual, expectation, match) {
                   [];
         var expectationKeysAndSymbols = concat(
             expectationKeys,
-            expectationSymbols
+            expectationSymbols,
         );
 
         if (isArguments(actualObj) || isArguments(expectationObj)) {
@@ -289,7 +289,7 @@ function deepEqualCyclic(actual, expectation, match) {
                 actualValue,
                 expectationValue,
                 newActualPath,
-                newExpectationPath
+                newExpectationPath,
             );
         });
     })(actual, expectation, "$1", "$2");

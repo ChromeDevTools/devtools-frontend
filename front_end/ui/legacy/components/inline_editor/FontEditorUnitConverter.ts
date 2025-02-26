@@ -14,7 +14,7 @@ function getPxMultiplier(): number {
 async function getEmMultiplier(isFontSizeProperty?: boolean): Promise<number> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   let currentFontSize;
-  if (selectedNode && selectedNode.parentNode && selectedNode.nodeName() !== 'HTML') {
+  if (selectedNode?.parentNode && selectedNode.nodeName() !== 'HTML') {
     const [model] =
         SDK.TargetManager.TargetManager.instance().models(CssOverviewModule.CSSOverviewModel.CSSOverviewModel);
     const fontSizeNodeId = isFontSizeProperty ? selectedNode.parentNode.id : selectedNode.id;
@@ -118,10 +118,10 @@ function findFontSizeValue(computedObject: {
   }>,
   getError: () => void,
 }): string {
-  const computedArray: {
+  const computedArray: Array<{
     name: string,
     value: string,
-  }[] = computedObject.computedStyle;
+  }> = computedObject.computedStyle;
   let index = computedArrayFontSizeIndex;
   if (computedArray[index].name && computedArray[index].name !== 'font-size') {
     for (let i = 0; i < computedArray.length; i++) {

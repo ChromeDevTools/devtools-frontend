@@ -5,13 +5,13 @@
 import {assert} from 'chai';
 
 import {
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   timeout,
   waitFor,
   waitForFunction,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
-
 import {getSelectedItemText, QUICK_OPEN_SELECTOR} from '../helpers/quick_open-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 import {
@@ -74,6 +74,7 @@ describe('Shortcuts Settings tab', () => {
 
     // make sure the command menu reflects the new shortcuts
     await frontend.keyboard.type('Show Shortcuts');
+    await drainFrontendTaskQueue();
     const shortcutsItemText = await getSelectedItemText();
 
     assert.strictEqual(shortcutsItemText, VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT);

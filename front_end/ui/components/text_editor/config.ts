@@ -29,7 +29,7 @@ const UIStrings = {
    *@example {5} PH3
    */
   sSuggestionSOfS: '{PH1}, suggestion {PH2} of {PH3}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/text_editor/config.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -73,7 +73,7 @@ export class DynamicSetting<T> {
     return new DynamicSetting<boolean>(name, val => val ? enabled : disabled);
   }
 
-  static none: readonly DynamicSetting<unknown>[] = [];
+  static none: ReadonlyArray<DynamicSetting<unknown>> = [];
 }
 
 export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
@@ -474,7 +474,7 @@ currentHint:
 export function contentIncludingHint(view: CM.EditorView): string {
   const plugin = view.plugin(showCompletionHint);
   let content = view.state.doc.toString();
-  if (plugin && plugin.currentHint) {
+  if (plugin?.currentHint) {
     const {head} = view.state.selection.main;
     content = content.slice(0, head) + plugin.currentHint + content.slice(head);
   }

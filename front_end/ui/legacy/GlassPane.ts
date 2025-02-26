@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import type {Size} from './Geometry.js';
-import glassPaneStyles from './glassPane.css.legacy.js';
+import glassPaneStyles from './glassPane.css.js';
 import {deepElementFromEvent, measuredScrollbarWidth} from './UIUtils.js';
 import {Widget} from './Widget.js';
 
@@ -23,7 +23,7 @@ export class GlassPane {
   private anchorBehavior: AnchorBehavior;
   private sizeBehavior: SizeBehavior;
   private marginBehavior: MarginBehavior;
-  #ignoreLeftMargin: boolean = false;
+  #ignoreLeftMargin = false;
 
   constructor(jslog?: string) {
     this.widgetInternal = new Widget(true);
@@ -61,7 +61,7 @@ export class GlassPane {
     return this.widgetInternal.isShowing();
   }
 
-  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+  registerRequiredCSS(...cssFiles: Array<{cssContent: string}>): void {
     this.widgetInternal.registerRequiredCSS(...cssFiles);
   }
 
@@ -164,7 +164,7 @@ export class GlassPane {
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const arrowSize = 10;
 
-    const container = (containers.get((this.element.ownerDocument as Document))) as HTMLElement;
+    const container = (containers.get((this.element.ownerDocument))) as HTMLElement;
     if (this.sizeBehavior === SizeBehavior.MEASURE_CONTENT) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = '';
@@ -340,7 +340,7 @@ export class GlassPane {
   }
 
   static setContainer(element: Element): void {
-    containers.set((element.ownerDocument as Document), element);
+    containers.set((element.ownerDocument), element);
     GlassPane.containerMoved(element);
   }
 

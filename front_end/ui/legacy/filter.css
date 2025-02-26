@@ -38,7 +38,9 @@
 }
 
 .text-filter {
-  width: 200px;
+  flex-grow: 1;
+  min-width: var(--sys-size-25);
+  max-width: var(--sys-size-36);
 }
 
 .filter-bitset-filter {
@@ -150,7 +152,7 @@
   justify-content: space-between;
   align-items: center;
   height: var(--sys-size-9);
-  padding: 0 var(--sys-size-3) 0 var(--sys-size-5);
+  margin: 0 var(--sys-size-3) 0 var(--sys-size-5);
   border: none;
   border-radius: var(--sys-shape-corner-extra-small);
   display: flex;

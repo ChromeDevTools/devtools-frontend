@@ -12,7 +12,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 
 import {EditingAllowedStatus, type HeaderDescriptor} from './HeaderSectionRow.js';
-import requestHeaderSectionStylesRaw from './RequestHeaderSection.css.legacy.js';
+import requestHeaderSectionStylesRaw from './RequestHeaderSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const requestHeaderSectionStyles = new CSSStyleSheet();
@@ -38,7 +38,7 @@ const UIStrings = {
    *@description Message to explain lack of raw headers for a particular network request
    */
   provisionalHeadersAreShown: 'Provisional headers are shown.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeaderSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

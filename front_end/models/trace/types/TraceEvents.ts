@@ -178,6 +178,14 @@ export interface ProfileChunk extends Sample {
 export interface PartialProfile {
   nodes?: PartialNode[];
   samples: CallFrameID[];
+  /**
+   * Contains trace ids assigned to samples, if any. Trace ids are
+   * keyed by the sample index in the profile (the keys of the object
+   * are strings containing the numeric index).
+   */
+  /* eslint-disable @typescript-eslint/naming-convention */
+  trace_ids?: Record<string, number>;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export interface PartialNode {
@@ -402,7 +410,7 @@ export interface SyntheticNetworkRequest extends Complete, SyntheticBased<Phase.
     },
   };
   cat: 'loading';
-  name: 'SyntheticNetworkRequest';
+  name: Name.SYNTHETIC_NETWORK_REQUEST;
   ph: Phase.COMPLETE;
   dur: Micro;
   tdur: Micro;
@@ -1381,8 +1389,8 @@ export type PairableUserTiming = UserTiming&PairableAsync;
 export interface PerformanceMeasureBegin extends PairableUserTiming {
   args: Args&{
     detail?: string,
-    stackTrace?: CallFrame[],
     callTime?: Micro,
+    traceId?: number,
   };
   ph: Phase.ASYNC_NESTABLE_START;
 }
@@ -1394,7 +1402,6 @@ export interface PerformanceMark extends UserTiming {
   args: Args&{
     data?: ArgsData & {
       detail?: string,
-      stackTrace?: CallFrame[],
       callTime?: Micro,
     },
   };
@@ -1416,7 +1423,7 @@ export interface ConsoleTimeStamp extends Event {
   name: Name.CONSOLE_TIME_STAMP;
   ph: Phase.COMPLETE;
   args: Args&{
-    data: ArgsData & {
+    data?: ArgsData & {
       // The console.timeStamp allows to pass integers as values as well
       // as strings
       name: string | number,
@@ -1425,6 +1432,7 @@ export interface ConsoleTimeStamp extends Event {
       track?: string|number,
       trackGroup?: string|number,
       color?: string|number,
+      sampleTraceId?: number,
     },
   };
 }
@@ -1432,6 +1440,16 @@ export interface ConsoleTimeStamp extends Event {
 export interface SyntheticConsoleTimeStamp extends Event, SyntheticBased {
   cat: 'disabled-by-default-v8.inspector';
   ph: Phase.COMPLETE;
+}
+
+export interface UserTimingMeasure extends Event {
+  cat: 'devtools.timeline';
+  ph: Phase.COMPLETE;
+  name: Name.USER_TIMING_MEASURE;
+  args: Args&{
+    sampleTraceId: number,
+    traceId: number,
+  };
 }
 
 /** ChromeFrameReporter args for PipelineReporter event.
@@ -1447,7 +1465,7 @@ interface ChromeFrameReporter {
   /**  Identifies a BeginFrameArgs (along with the source_id).
        See comments in components/viz/common/frame_sinks/begin_frame_args.h. */
   frame_sequence: number;
-  /**  If this is a droped frame (i.e. if |state| is set to |STATE_DROPPED| or
+  /**  If this is a dropped frame (i.e. if |state| is set to |STATE_DROPPED| or
        |STATE_PRESENTED_PARTIAL|), then indicates whether this frame impacts smoothness. */
   affects_smoothness: boolean;
   /** The type of active scroll. */
@@ -1607,7 +1625,7 @@ export interface SyntheticInteractionPair extends SyntheticEventPair<EventTiming
  * trace event.
  *
  * We store the sampleIndex, profileId and nodeId so that we can easily link
- * back a Synthetic Trace Entry to an indivdual Sample trace event within a
+ * back a Synthetic Trace Entry to an individual Sample trace event within a
  * Profile.
  *
  * Because a sample contains a set of call frames representing the stack at the
@@ -1647,7 +1665,8 @@ export interface SyntheticJSSample extends Event {
   name: Name.JS_SAMPLE;
   args: Args&{
     data: ArgsData & {
-      stackTrace: Protocol.Runtime.CallFrame[],
+      // Used to associate a stack sample with a trace event.
+      traceId?: number, stackTrace: Protocol.Runtime.CallFrame[],
     },
   };
   ph: Phase.INSTANT;
@@ -1671,17 +1690,6 @@ export interface DrawFrame extends Instant {
 export function isDrawFrame(event: Event): event is DrawFrame {
   // The extra check for INSTANT here is because in the past DrawFrame events had an ASYNC_NESTABLE_START and ASYNC_NESTABLE_END pair. We don't want to support those old events, so we have to check we are dealing with an instant event.
   return event.name === Name.DRAW_FRAME && event.ph === Phase.INSTANT;
-}
-export interface LegacyDrawFrameBegin extends Async {
-  name: Name.DRAW_FRAME;
-  ph: Phase.ASYNC_NESTABLE_START;
-  args: Args&{
-    layerTreeId: number,
-    frameSeqId: number,
-  };
-}
-export function isLegacyTraceEventDrawFrameBegin(event: Event): event is LegacyDrawFrameBegin {
-  return event.name === Name.DRAW_FRAME && event.ph === Phase.ASYNC_NESTABLE_START;
 }
 
 export interface BeginFrame extends Instant {
@@ -2202,10 +2210,18 @@ export function isResourceReceivedData(
   return event.name === 'ResourceReceivedData';
 }
 
+// Any event where we receive data (and get an encodedDataLength)
+export function isReceivedDataEvent(
+    event: Event,
+    ): event is ResourceReceivedData|ResourceFinish|ResourceReceiveResponse {
+  return event.name === 'ResourceReceivedData' || event.name === 'ResourceFinish' ||
+      event.name === 'ResourceReceiveResponse';
+}
+
 export function isSyntheticNetworkRequest(
     event: Event,
     ): event is SyntheticNetworkRequest {
-  return event.name === 'SyntheticNetworkRequest';
+  return event.name === Name.SYNTHETIC_NETWORK_REQUEST;
 }
 
 export function isSyntheticWebSocketConnection(
@@ -2287,6 +2303,10 @@ export function isConsoleTime(event: Event): event is ConsoleTime {
 
 export function isConsoleTimeStamp(event: Event): event is ConsoleTimeStamp {
   return event.ph === Phase.COMPLETE && event.name === Name.CONSOLE_TIME_STAMP;
+}
+
+export function isUserTimingMeasure(event: Event): event is UserTimingMeasure {
+  return event.name === Name.USER_TIMING_MEASURE;
 }
 
 export function isParseHTML(event: Event): event is ParseHTML {
@@ -2766,6 +2786,11 @@ export function isJSInvocationEvent(event: Event): boolean {
   return false;
 }
 export interface ConsoleRunTask extends Event {
+  args: Args&{
+    data: ArgsData & {
+      sampleTraceId?: number,
+    },
+  };
   name: Name.V8_CONSOLE_RUN_TASK;
 }
 
@@ -2997,6 +3022,9 @@ export const enum Name {
 
   ANIMATION_FRAME = 'AnimationFrame',
   ANIMATION_FRAME_PRESENTATION = 'AnimationFrame::Presentation',
+
+  SYNTHETIC_NETWORK_REQUEST = 'SyntheticNetworkRequest',
+  USER_TIMING_MEASURE = 'UserTiming::Measure',
 }
 
 // NOT AN EXHAUSTIVE LIST: just some categories we use and refer
@@ -3052,6 +3080,91 @@ export interface LegacyLayerPaintEvent {
 }
 
 export interface LegacyLayerPaintEventPicture {
-  rect: Array<number>;
+  rect: number[];
   serializedPicture: string;
+}
+
+export interface TargetRundownEvent extends Event {
+  cat: 'disabled-by-default-devtools.target-rundown';
+  name: 'ScriptCompiled';
+  args: Args&{
+    data?: {
+      frame: Protocol.Page.FrameId,
+      frameType: string,
+      url: string,
+      isolate: string,
+      v8context: string,
+      origin: string,
+      scriptId: number,
+      isDefault?: boolean,
+      contextType?: string,
+    },
+  };
+}
+
+export function isTargetRundownEvent(event: Event): event is TargetRundownEvent {
+  return event.cat === 'disabled-by-default-devtools.target-rundown' && event.name === 'ScriptCompiled';
+}
+
+export interface V8SourceRundownEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown';
+  name: 'ScriptCatchup';
+  args: Args&{
+    data: {
+      isolate: string,
+      executionContextId: Protocol.Runtime.ExecutionContextId,
+      scriptId: number,
+      startLine: number,
+      startColumn: number,
+      endLine: number,
+      endColumn: number,
+      hash: string,
+      isModule: boolean,
+      hasSourceUrl: boolean,
+      url?: string,
+      sourceUrl?: string,
+      sourceMapUrl?: string,
+    },
+  };
+}
+
+export function isV8SourceRundownEvent(event: Event): event is V8SourceRundownEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown' && event.name === 'ScriptCatchup';
+}
+
+export interface V8SourceRundownSourcesScriptCatchupEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'ScriptCatchup';
+  args: Args&{
+    data: {
+      isolate: string,
+      scriptId: number,
+      length: number,
+      sourceText: string,
+    },
+  };
+}
+
+export function isV8SourceRundownSourcesScriptCatchupEvent(event: Event):
+    event is V8SourceRundownSourcesScriptCatchupEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'ScriptCatchup';
+}
+
+export interface V8SourceRundownSourcesLargeScriptCatchupEvent extends Event {
+  cat: 'disabled-by-default-devtools.v8-source-rundown-sources';
+  name: 'LargeScriptCatchup';
+  args: Args&{
+    data: {
+      isolate: string,
+      scriptId: number,
+      splitIndex: number,
+      splitCount: number,
+      sourceText: string,
+    },
+  };
+}
+
+export function isV8SourceRundownSourcesLargeScriptCatchupEvent(event: Event):
+    event is V8SourceRundownSourcesLargeScriptCatchupEvent {
+  return event.cat === 'disabled-by-default-devtools.v8-source-rundown-sources' && event.name === 'LargeScriptCatchup';
 }

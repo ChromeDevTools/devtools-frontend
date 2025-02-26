@@ -298,7 +298,7 @@ const UIStrings = {
    *@example {Low} PH2
    */
   initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -427,7 +427,7 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   }
 
   updateBackgroundColor(): void {
-    const element = (this.existingElement() as HTMLElement | null);
+    const element = (this.existingElement());
     if (!element) {
       return;
     }
@@ -651,8 +651,8 @@ export class NetworkRequestNode extends NetworkNode {
       return !aHasInitiatorCell ? -1 : 1;
     }
     // `a` and `b` are guaranteed NetworkRequestNodes with present initiatorCell elements.
-    const networkRequestNodeA = (a as NetworkRequestNode);
-    const networkRequestNodeB = (b as NetworkRequestNode);
+    const networkRequestNodeA = (a);
+    const networkRequestNodeB = (b);
 
     const aText = networkRequestNodeA.linkifiedInitiatorAnchor ?
         networkRequestNodeA.linkifiedInitiatorAnchor.textContent || '' :
@@ -1057,27 +1057,13 @@ export class NetworkRequestNode extends NetworkNode {
     }
   }
 
-  private arrayLength(array: Array<unknown>|null): string {
+  private arrayLength(array: unknown[]|null): string {
     return array ? String(array.length) : '';
   }
 
   override select(supressSelectedEvent?: boolean): void {
     super.select(supressSelectedEvent);
     this.parentView().dispatchEventToListeners(Events.RequestSelected, this.requestInternal);
-  }
-
-  highlightMatchedSubstring(regexp: RegExp|null): Object[] {
-    if (!regexp || !this.nameCell || this.nameCell.textContent === null) {
-      return [];
-    }
-    // Ensure element is created.
-    this.element();
-    const domChanges: UI.UIUtils.HighlightChange[] = [];
-    const matchInfo = this.nameCell.textContent.match(regexp);
-    if (matchInfo) {
-      UI.UIUtils.highlightSearchResult(this.nameCell, matchInfo.index || 0, matchInfo[0].length, domChanges);
-    }
-    return domChanges;
   }
 
   private openInNewTab(): void {
@@ -1312,7 +1298,7 @@ export class NetworkRequestNode extends NetworkNode {
     const initiator = Logs.NetworkLog.NetworkLog.instance().initiatorInfoForRequest(request);
 
     const timing = request.timing;
-    if (timing && timing.pushStart) {
+    if (timing?.pushStart) {
       cell.appendChild(document.createTextNode(i18nString(UIStrings.push)));
     }
     switch (initiator.type) {

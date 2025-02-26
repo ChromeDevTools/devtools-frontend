@@ -35,16 +35,16 @@ import * as UI from '../../legacy.js';
 import * as Components from '../utils/utils.js';
 
 import {CustomPreviewComponent} from './CustomPreviewComponent.js';
-import objectPopoverStyles from './objectPopover.css.legacy.js';
+import objectPopoverStyles from './objectPopover.css.js';
 import {ObjectPropertiesSection} from './ObjectPropertiesSection.js';
-import objectValueStyles from './objectValue.css.legacy.js';
+import objectValueStyles from './objectValue.css.js';
 
 const UIStrings = {
   /**
    *@description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/ObjectPopoverHelper.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TimelineComponents from '../../../../panels/timeline/components/components.js';
+import * as Timeline from '../../../../panels/timeline/timeline.js';
 import * as EnvironmentHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as TraceLoader from '../../../../testing/TraceLoader.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
@@ -20,10 +21,11 @@ async function renderTooltips1() {
   }
 
   const {parsedTrace} = await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'lcp-images.json.gz');
-  const networkEvent = parsedTrace.NetworkRequests.byTime[0];
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const networkRequest = parsedTrace.NetworkRequests.byTime[0];
 
   const tooltip = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
-  tooltip.networkRequest = networkEvent;
+  tooltip.data = {networkRequest, entityMapper};
 
   container.appendChild(tooltip);
 }
@@ -39,10 +41,11 @@ async function renderTooltips2() {
 
   const {parsedTrace} =
       await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'render-blocking-in-iframe.json.gz');
-  const networkEvent = parsedTrace.NetworkRequests.byTime[1];
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const networkRequest = parsedTrace.NetworkRequests.byTime[1];
 
   const tooltip = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
-  tooltip.networkRequest = networkEvent;
+  tooltip.data = {networkRequest, entityMapper};
 
   container.appendChild(tooltip);
 }
@@ -58,15 +61,16 @@ async function renderTooltips3() {
 
   const {parsedTrace} =
       await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'changing-priority.json.gz');
-  const networkEvent = parsedTrace.NetworkRequests.byTime.find(request => {
+  const entityMapper = new Timeline.Utils.EntityMapper.EntityMapper(parsedTrace);
+  const networkRequest = parsedTrace.NetworkRequests.byTime.find(request => {
     return request.args.data.url === 'https://via.placeholder.com/3000.jpg';
   });
-  if (!networkEvent) {
+  if (!networkRequest) {
     throw new Error('The priority change event is not found');
   }
 
   const tooltip = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
-  tooltip.networkRequest = networkEvent;
+  tooltip.data = {networkRequest, entityMapper};
 
   container.appendChild(tooltip);
 }

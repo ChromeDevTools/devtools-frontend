@@ -15,7 +15,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
 import type * as Actions from '../recorder-actions/recorder-actions.js';
 
-import selectButtonStylesRaw from './selectButton.css.legacy.js';
+import selectButtonStylesRaw from './selectButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const selectButtonStyles = new CSSStyleSheet();
@@ -56,7 +56,7 @@ interface SelectButtonProps {
   /**
    * Groups for the select menu of the button.
    */
-  groups: Array<SelectMenuGroup>;
+  groups: SelectMenuGroup[];
   /**
    * Similar to the button variant
    */
@@ -140,7 +140,7 @@ export class SelectButton extends HTMLElement {
     this.#props.buttonLabel = buttonLabel;
   }
 
-  set groups(groups: Array<SelectMenuGroup>) {
+  set groups(groups: SelectMenuGroup[]) {
     this.#props.groups = groups;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
@@ -186,11 +186,14 @@ export class SelectButton extends HTMLElement {
       ): Lit.TemplateResult {
     // clang-format off
     return html`
-      <devtools-menu-item .value=${item.value} .selected=${
-      item.value === selectedItem.value
-    } jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}>
-        ${item.label()}
-      </devtools-menu-item>
+      <devtools-menu-item
+      .title=${item.label()}
+      .value=${item.value}
+      .selected=${item.value === selectedItem.value}
+      jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}
+      >${
+        item.label()
+      }</devtools-menu-item>
     `;
     // clang-format on
   }
@@ -234,6 +237,7 @@ export class SelectButton extends HTMLElement {
       html`
       <div class="select-button" title=${ifDefined(this.#getTitle(menuLabel))}>
       <devtools-select-menu
+          title=""
           class=${classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
           ?disabled=${this.#props.disabled}

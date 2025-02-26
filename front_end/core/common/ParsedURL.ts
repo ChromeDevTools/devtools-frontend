@@ -168,7 +168,7 @@ export class ParsedURL {
     // Based on net::FilePathToFileURL. Ideally we would handle
     // '\\' as well on non-Windows file systems.
     for (const specialChar of ['%', ';', '#', '?', ' ']) {
-      (path as string) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
+      (path) = path.replaceAll(specialChar, encodeURIComponent(specialChar));
     }
     return path;
   }
@@ -372,7 +372,7 @@ export class ParsedURL {
 
     // Return absolute URLs with normalized path and other components as-is.
     const parsedHref = this.fromString(trimmedHref);
-    if (parsedHref && parsedHref.scheme) {
+    if (parsedHref?.scheme) {
       const securityOrigin = parsedHref.securityOrigin();
       const pathText = normalizePath(parsedHref.path);
       const queryText = parsedHref.queryParams && `?${parsedHref.queryParams}`;
@@ -535,10 +535,6 @@ export class ParsedURL {
 
   isDataURL(): boolean {
     return this.scheme === 'data';
-  }
-
-  isHttpOrHttps(): boolean {
-    return this.scheme === 'http' || this.scheme === 'https';
   }
 
   isBlobURL(): boolean {

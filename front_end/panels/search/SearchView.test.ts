@@ -120,6 +120,10 @@ describeWithEnvironment('SearchView', () => {
     searchFinishedCallback(/* finished */ true);
 
     assert.strictEqual(searchView.currentSearchResultMessage, 'No matches found.');
+    assert.deepEqual(searchView.contentElement.querySelector('.empty-state-header')?.textContent, 'No matches found');
+    assert.deepEqual(
+        searchView.contentElement.querySelector('.empty-state-description')?.textContent,
+        'Nothing matched your search query');
   });
 
   it('updates the search result message with a count when search results are added', async () => {

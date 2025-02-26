@@ -18,7 +18,7 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
 
   protected override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
       SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
-    const breakpointType = details.auxData && details.auxData['violationType'] ? details.auxData['violationType'] : '';
+    const breakpointType = details.auxData?.['violationType'] ? details.auxData['violationType'] : '';
     const breakpoints = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     const breakpoint = breakpoints.find(x => x.type() === breakpointType);
     return breakpoint ? breakpoint : null;

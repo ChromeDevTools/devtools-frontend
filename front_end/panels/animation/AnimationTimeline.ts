@@ -15,14 +15,22 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
-import animationTimelineStyles from './animationTimeline.css.legacy.js';
+import animationTimelineStyles from './animationTimeline.css.js';
 import {AnimationUI} from './AnimationUI.js';
 
 const UIStrings = {
   /**
-   *@description Timeline hint text content in Animation Timeline of the Animation Inspector
+   *@description Timeline hint text content in Animation Timeline of the Animation Inspector if no effect
+   * is shown.
+   * Animation effects are the visual effects of an animation on the page.
    */
-  selectAnEffectAboveToInspectAnd: 'Select an effect above to inspect and modify.',
+  noEffectSelected: 'No animation effect selected',
+  /**
+   *@description Timeline hint text content in Animation Timeline of the Animation Inspector that instructs
+   * users to select an effect.
+   * Animation effects are the visual effects of an animation on the page.
+   */
+  selectAnEffectAboveToInspectAnd: 'Select an effect above to inspect and modify',
   /**
    *@description Text to clear everything
    */
@@ -54,9 +62,13 @@ const UIStrings = {
    */
   animationPreviews: 'Animation previews',
   /**
-   *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector
+   *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector.
    */
-  waitingForAnimations: 'Waiting for animations...',
+  waitingForAnimations: 'Currently waiting for animations',
+  /**
+   *@description Empty buffer hint text content in Animation Timeline of the Animation Inspector that explains the panel.
+   */
+  animationDescription: 'On this page you can inspect and modify animations.',
   /**
    *@description Tooltip text that appears when hovering over largeicon replay animation button in Animation Timeline of the Animation Inspector
    */
@@ -78,7 +90,7 @@ const UIStrings = {
    *@example {1} PH1
    */
   animationPreviewS: 'Animation Preview {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationTimeline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
@@ -88,6 +100,9 @@ const playbackRates = new WeakMap<HTMLElement, number>();
 const MIN_TIMELINE_CONTROLS_WIDTH = 120;
 const DEFAULT_TIMELINE_CONTROLS_WIDTH = 150;
 const MAX_TIMELINE_CONTROLS_WIDTH = 720;
+
+const ANIMATION_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/css/animations' as Platform.DevToolsPath.UrlString;
 
 let animationTimelineInstance: AnimationTimeline;
 
@@ -150,8 +165,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.createHeader();
     this.#animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     this.#animationsContainer.setAttribute('jslog', `${VisualLogging.section('animations')}`);
+    const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
+    const noAnimationsPlaceholder = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.waitingForAnimations), i18nString(UIStrings.animationDescription));
+    noAnimationsPlaceholder.appendLink(ANIMATION_EXPLANATION_URL);
+    noAnimationsPlaceholder.show(emptyBufferHint);
+
     const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
-    timelineHint.textContent = i18nString(UIStrings.selectAnEffectAboveToInspectAnd);
+    const noEffectSelectedPlaceholder = new UI.EmptyWidget.EmptyWidget(
+        i18nString(UIStrings.noEffectSelected), i18nString(UIStrings.selectAnEffectAboveToInspectAnd));
+    noEffectSelectedPlaceholder.show(timelineHint);
 
     /** @const */ this.#defaultDuration = 100;
     this.#durationInternal = this.#defaultDuration;
@@ -259,7 +282,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
 
     this.#showPanelInDrawer();
-    return this.selectAnimationGroup(animationGroup);
+    return await this.selectAnimationGroup(animationGroup);
   }
 
   modelAdded(animationModel: SDK.AnimationModel.AnimationModel): void {
@@ -351,8 +374,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.#previewContainer.setAttribute('jslog', `${VisualLogging.section('film-strip')}`);
     UI.ARIAUtils.markAsListBox(this.#previewContainer);
     UI.ARIAUtils.setLabel(this.#previewContainer, i18nString(UIStrings.animationPreviews));
-    const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
-    emptyBufferHint.textContent = i18nString(UIStrings.waitingForAnimations);
     const container = this.contentElement.createChild('div', 'animation-timeline-header');
     const controls = container.createChild('div', 'animation-controls');
     this.#currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
@@ -1005,7 +1026,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   override onResize(): void {
-    this.#cachedTimelineWidth = Math.max(0, this.#animationsContainer.offsetWidth - this.#timelineControlsWidth) || 0;
+    this.#cachedTimelineWidth = Math.max(0, this.contentElement.offsetWidth - this.#timelineControlsWidth) || 0;
     this.scheduleRedraw();
     if (this.#scrubberPlayer) {
       this.syncScrubber();
@@ -1101,9 +1122,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     }
 
     if (this.#selectedGroup?.scrollOrientation() === Protocol.DOM.ScrollOrientation.Vertical) {
-      return node.setScrollTop(offset);
+      return await node.setScrollTop(offset);
     }
-    return node.setScrollLeft(offset);
+    return await node.setScrollLeft(offset);
   }
 
   private setTimelineScrubberPosition(time: number): void {

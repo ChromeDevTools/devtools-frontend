@@ -33,7 +33,7 @@ describe('Cookie Deprecation Metadata issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
       const issue2 = {
         code: 'CookieDeprecationMetadataIssue',
@@ -46,7 +46,7 @@ describe('Cookie Deprecation Metadata issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue2);
     });
     await expandIssue();

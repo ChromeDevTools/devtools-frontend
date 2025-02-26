@@ -17,8 +17,8 @@ export interface ViewDescriptor {
 }
 
 export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  #plugins: Set<RecorderExtensionEndpoint> = new Set();
-  #views: Map<string, ViewDescriptor> = new Map();
+  #plugins = new Set<RecorderExtensionEndpoint>();
+  #views = new Map<string, ViewDescriptor>();
 
   static instance(): RecorderPluginManager {
     if (!instance) {

@@ -36,7 +36,7 @@ async function waitFor<ReturnT>(
       reject(e);
     }
   };
-  return new Promise<ReturnT>((resolve, reject) => callback(resolve, reject));
+  return await new Promise<ReturnT>((resolve, reject) => callback(resolve, reject));
 }
 
 export interface BreakLocation {
@@ -49,18 +49,18 @@ export class Debugger {
   private readonly targetId: string;
   private connected: boolean;
   private readonly queue: string[];
-  private readonly callbacks: Map<number, {
+  private readonly callbacks = new Map<number, {
     method: string,
     resolve: (r: ProtocolMapping.Commands[keyof ProtocolMapping.Commands]['returnType']) => unknown,
     reject: (r: unknown) => unknown,
-  }> = new Map();
+  }>();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly eventHandlers: Map<string, Set<Handler<any>>> = new Map();
+  private readonly eventHandlers = new Map<string, Set<Handler<any>>>();
   private nextMessageId = 0;
-  private readonly scripts: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
-  private readonly scriptsById: Map<string, Protocol.Debugger.ScriptParsedEvent> = new Map();
+  private readonly scripts = new Map<string, Protocol.Debugger.ScriptParsedEvent>();
+  private readonly scriptsById = new Map<string, Protocol.Debugger.ScriptParsedEvent>();
   private nextStopId = 0n;
-  private waitForPauseQueue: {resolve: (pauseLocation: PauseLocation) => void}[] = [];
+  private waitForPauseQueue: Array<{resolve: (pauseLocation: PauseLocation) => void}> = [];
   private pauseLocation?: PauseLocation;
   private readonly callFrameToStopId = new Map<string, bigint>();
   private readonly stopIdToCallFrame = new Map<bigint, string>();
@@ -218,7 +218,7 @@ export class Debugger {
   }
 
   async waitForScript(url: string, timeout = 0): Promise<string> {
-    return waitFor(() => this.scripts.get(url)?.scriptId, timeout);
+    return await waitFor(() => this.scripts.get(url)?.scriptId, timeout);
   }
 
   async waitForPause(timeout = 0): Promise<PauseLocation> {
@@ -227,10 +227,10 @@ export class Debugger {
     }
     const waitPromise = new Promise<PauseLocation>(resolve => this.waitForPauseQueue.push({resolve}));
     if (timeout === 0) {
-      return waitPromise;
+      return await waitPromise;
     }
     const timeoutPromise = new Promise<PauseLocation>((_, r) => setTimeout(() => r(new Error('Timeout')), timeout));
-    return Promise.race([waitPromise, timeoutPromise]);
+    return await Promise.race([waitPromise, timeoutPromise]);
   }
 
   async evaluateFunction<T>(expression: string): Promise<T> {
@@ -285,7 +285,7 @@ export class Debugger {
   async evaluateOnCallFrame<T>(
       expectValue: boolean, convert: (result: Protocol.Runtime.RemoteObject) => T, expression: string,
       {callFrameId}: Protocol.Debugger.CallFrame): Promise<T> {
-    return this.evaluateOnCallFrameId(expectValue, convert, expression, callFrameId);
+    return await this.evaluateOnCallFrameId(expectValue, convert, expression, callFrameId);
   }
 
   async evaluateOnCallFrameId<T>(
@@ -301,7 +301,7 @@ export class Debugger {
   }
 
   async waitForFunction<T>(expression: string, timeout = 0): Promise<T> {
-    return waitFor(() => this.evaluateFunction<T>(expression), timeout);
+    return await waitFor(() => this.evaluateFunction<T>(expression), timeout);
   }
 
   page(script: string): WasmBackendPage {
@@ -347,7 +347,7 @@ export class Debugger {
 
   async setBreakpointsOnSourceLines(
       sourceLines: Array<string|RegExp>, sourceFileURL: URL, plugin: Chrome.DevTools.LanguageExtensionPlugin,
-      rawModuleId: string): Promise<Array<BreakLocation>> {
+      rawModuleId: string): Promise<BreakLocation[]> {
     if (sourceFileURL.protocol !== 'file:') {
       throw new Error('Not a file URL');
     }
@@ -465,7 +465,7 @@ class WasmBackendPage {
 
   async go(timeout = 0): Promise<number> {
     await this.debug.waitForFunction('window.isReady && window.isReady()', timeout);
-    return this.debug.evaluateFunction<number>('window.go()');
+    return await this.debug.evaluateFunction<number>('window.go()');
   }
 }
 

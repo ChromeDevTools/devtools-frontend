@@ -9,7 +9,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.legacy.js';
+import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.js';
 
 const UIStrings = {
   /**
@@ -20,7 +20,7 @@ const UIStrings = {
    * @description Accessible label for the CSS overview panel sidebar
    */
   cssOverviewPanelSidebar: 'CSS overview panel sidebar',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewSidebarPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

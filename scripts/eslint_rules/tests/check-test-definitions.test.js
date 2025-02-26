@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/check-test-definitions.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('check-test-definitions', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('check-test-definitions', rule, {
   valid: [
     {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';

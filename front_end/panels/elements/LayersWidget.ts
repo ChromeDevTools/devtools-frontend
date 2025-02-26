@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import layersWidgetStyles from './layersWidget.css.legacy.js';
+import layersWidgetStyles from './layersWidget.css.js';
 
 const UIStrings = {
   /**
@@ -23,7 +23,7 @@ const UIStrings = {
    * For a button that opens a tool that shows the layers present in the current document.
    */
   toggleCSSLayers: 'Toggle CSS Layers view',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/LayersWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -113,7 +113,7 @@ export class LayersWidget extends UI.Widget.Widget {
       ElementsPanel.instance().showToolbarPane(this, ButtonProvider.instance().item());
     }
     await this.update();
-    return this.layerTreeComponent.expandToAndSelectTreeNodeId('implicit outer layer.' + layerName);
+    return await this.layerTreeComponent.expandToAndSelectTreeNodeId('implicit outer layer.' + layerName);
   }
 
   static instance(opts: {

@@ -27,7 +27,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     return component;
   }
 
-  function getAllRules(component: HTMLElement): {regex: string, disabled: boolean}[] {
+  function getAllRules(component: HTMLElement): Array<{regex: string, disabled: boolean}> {
     assert.isNotNull(component.shadowRoot);
     const regexRows = component.shadowRoot.querySelectorAll<HTMLElement>('.regex-row');
     return Array.from(regexRows).map(row => {

@@ -4,21 +4,17 @@
 'use strict';
 
 const rule = require('../lib/check-css-import.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('check-css-import', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('check-css-import', rule, {
   valid: [
     {
-      code: 'import styles from \'./check_css_import_test_file.css.legacy.js\';',
+      code: 'import styles from \'./check_css_import_test_file.css.js\';',
       filename: 'scripts/eslint_rules/tests/file.ts',
     },
     {
-      code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.legacy.js\';',
+      code: 'import styles from \'../../../scripts/eslint_rules/tests/check_css_import_test_file.css.js\';',
       filename: 'front_end/ui/components/file.ts',
     },
   ],
@@ -26,7 +22,7 @@ ruleTester.run('check-css-import', rule, {
   invalid: [
     {
       // Files that do not exist are caught
-      code: 'import styles from \'styles.css.legacy.js\';',
+      code: 'import styles from \'styles.css.js\';',
       filename: 'front_end/ui/components/component/file.ts',
       errors: [
         {
@@ -36,7 +32,7 @@ ruleTester.run('check-css-import', rule, {
     },
     {
       // Filename typos are caught
-      code: 'import styles from \'../../../scripts/eslint_rules/test/check_css_import_tests_file.css.legacy.js\';',
+      code: 'import styles from \'../../../scripts/eslint_rules/test/check_css_import_tests_file.css.js\';',
       filename: 'front_end/ui/components/icon_button/file.ts',
       errors: [
         {

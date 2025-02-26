@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, getTestServerPort, goToResource, waitFor} from '../../shared/helper.js';
-
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 describe('Location emulation on Sensors panel', () => {

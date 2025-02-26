@@ -23,7 +23,7 @@ const UIStrings = {
   addAllContentScriptsToIgnoreList: 'Add all extension scripts to ignore list',
   addAllThirdPartyScriptsToIgnoreList: 'Add all third-party scripts to ignore list',
   addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
-};
+} as const;
 
 const sourceMapThirdPartyFolderUrl = urlString`http://a.b.c/lib`;
 const sourceMapThirdPartyUrl = urlString`http://a.b.c/lib/source1.ts`;
@@ -179,9 +179,9 @@ describeWithMockConnection('IgnoreListManager', () => {
 
   // Wrapper around getIgnoreListURLContextMenuItems to make its result more convenient for testing
   function getContextMenu(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      {items: Array<string>, callbacks: Map<string, () => void>} {
-    const items: Array<string> = [];
-    const callbacks: Map<string, () => void> = new Map();
+      {items: string[], callbacks: Map<string, () => void>} {
+    const items: string[] = [];
+    const callbacks = new Map<string, () => void>();
 
     for (const {text, callback} of ignoreListManager.getIgnoreListURLContextMenuItems(uiSourceCode)) {
       items.push(text);
@@ -192,9 +192,9 @@ describeWithMockConnection('IgnoreListManager', () => {
 
   // Wrapper around getIgnoreListFolderContextMenuItems to make its result more convenient for testing
   function getFolderContextMenu(url: Platform.DevToolsPath.UrlString):
-      {items: Array<string>, callbacks: Map<string, () => void>} {
-    const items: Array<string> = [];
-    const callbacks: Map<string, () => void> = new Map();
+      {items: string[], callbacks: Map<string, () => void>} {
+    const items: string[] = [];
+    const callbacks = new Map<string, () => void>();
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const options: Bindings.IgnoreListManager.IgnoreListGeneralRules = {
       isContentScript: url === contentScriptFolderUrl,

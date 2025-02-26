@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as TextUtils from '../text_utils/text_utils.js';
 
 const UIStrings = {
@@ -12,7 +12,7 @@ const UIStrings = {
    * @description Assertion error message when failing to load a file.
    */
   unableToReadFilesWithThis: '`PlatformFileSystem` cannot read files.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class PlatformFileSystem {
@@ -50,7 +50,7 @@ export class PlatformFileSystem {
 
   async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
       Promise<Platform.DevToolsPath.EncodedPathString|null> {
-    return Promise.resolve(null);
+    return await Promise.resolve(null);
   }
 
   deleteFile(_path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {

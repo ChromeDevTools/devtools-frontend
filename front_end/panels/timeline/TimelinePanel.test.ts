@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -117,5 +118,23 @@ describeWithEnvironment('TimelinePanel', function() {
 
     const overlaysAfterEnablingSetting = timeline.getFlameChart().overlays().allOverlays();
     assert.deepEqual(overlaysBeforeDisablingSetting, overlaysAfterEnablingSetting);
+  });
+
+  it('keeps entries set to be dimmed as so after toggling the custom tracks setting', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+    const thirdPartyDimSetting = Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
+
+    // Dim 3P entries.
+    thirdPartyDimSetting.set(true);
+    const dimIndicesBeforeToggle = timeline.getFlameChart().getMainFlameChart().getDimIndices();
+    assert.exists(dimIndicesBeforeToggle);
+    assert.isAbove(dimIndicesBeforeToggle.length, 0);
+
+    // Toggle the custom track setting and verify 3P entries remain dimmed.
+    Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
+    const dimIndicesAfterToggle = timeline.getFlameChart().getMainFlameChart().getDimIndices();
+    assert.exists(dimIndicesAfterToggle);
+    assert.isAbove(dimIndicesAfterToggle.length, 0);
   });
 });

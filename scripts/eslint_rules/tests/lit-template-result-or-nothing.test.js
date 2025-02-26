@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/lit-template-result-or-nothing.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('lit-template-result-or-nothing', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('lit-template-result-or-nothing', rule, {
   valid: [
     {
       code: 'function foo(): Lit.LitTemplate {}',

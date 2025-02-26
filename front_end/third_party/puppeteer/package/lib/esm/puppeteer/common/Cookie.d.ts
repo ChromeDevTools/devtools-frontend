@@ -51,7 +51,7 @@ export interface CookiePartitionKey {
  *
  * @public
  */
-export interface Cookie {
+export interface Cookie extends CookieData {
     /**
      * Cookie name.
      */

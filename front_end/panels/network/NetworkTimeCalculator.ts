@@ -65,7 +65,7 @@ const UIStrings = {
    *@example {20ms latency} PH1
    */
   sFromCache: '{PH1} (from cache)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkTimeCalculator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -109,11 +109,6 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
   setWindow(window: NetworkTimeBoundary|null): void {
     this.window = window;
     this.boundaryChanged();
-  }
-
-  setInitialUserFriendlyBoundaries(): void {
-    this.minimumBoundaryInternal = 0;
-    this.maximumBoundaryInternal = 1;
   }
 
   computePosition(time: number): number {
@@ -191,21 +186,6 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
 
     return {start, middle, end};
-  }
-
-  computePercentageFromEventTime(eventTime: number): number {
-    // This function computes a percentage in terms of the total loading time
-    // of a specific event. If startAtZero is set, then this is useless, and we
-    // want to return 0.
-    if (eventTime !== -1 && !this.startAtZero) {
-      return ((eventTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
-    }
-
-    return 0;
-  }
-
-  percentageToTime(percentage: number): number {
-    return percentage * this.boundarySpan() / 100 + this.minimumBoundary();
   }
 
   boundaryChanged(): void {

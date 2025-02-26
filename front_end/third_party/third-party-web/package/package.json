@@ -1,6 +1,6 @@
 {
   "name": "third-party-web",
-  "version": "0.24.5",
+  "version": "0.26.2",
   "description": "Categorized data on third party entities on the web.",
   "main": "./lib/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@google-cloud/bigquery": "^5.10.0",
+    "@google-cloud/bigquery": "^7.9.0",
     "chart.js": "^2.9.4",
     "chartjs-node-canvas": "^3.2.0",
     "colors": "^1.4.0",
@@ -33,7 +33,7 @@
     "lodash": "^4.17.15",
     "prettier": "^1.18.2",
     "prompts": "^2.4.2",
-    "semantic-release": "^19.0.2"
+    "semantic-release": "^24.2.0"
   },
   "config": {
     "exportAliases": {
@@ -41,5 +41,6 @@
       "httparchive-nostats-subset": "./lib/subsets/httparchive-nostats.js",
       "httparchive-subset": "./lib/subsets/httparchive.js"
     }
-  }
+  },
+  "packageManager": "yarn@4.1.1"
 }

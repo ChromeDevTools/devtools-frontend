@@ -65,7 +65,7 @@ describeWithLocale('ResourceTimingView', () => {
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
     const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
-    const sendStart = timingInfo.sendStart as number;
+    const sendStart = timingInfo.sendStart;
 
     const routerEvaluation = timeRanges.find(
         timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
@@ -84,7 +84,7 @@ describeWithLocale('ResourceTimingView', () => {
     const timingInfo = request.timing as Protocol.Network.ResourceTiming;
     const timeRanges = RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, 100);
     const routerEvaluationTime = timingInfo.workerRouterEvaluationStart as number;
-    const workerStart = timingInfo.workerStart as number;
+    const workerStart = timingInfo.workerStart;
 
     const routerEvaluation = timeRanges.find(
         timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);

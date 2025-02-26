@@ -10,7 +10,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
-import tableStylesRaw from './table.css.legacy.js';
+import tableStylesRaw from './table.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const tableStyles = new CSSStyleSheet();
@@ -18,7 +18,7 @@ tableStyles.replaceSync(tableStylesRaw.cssContent);
 
 const {html} = Lit;
 
-type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>;
+type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}, {}>>;
 
 /**
  * @fileoverview An interactive table component.
@@ -60,7 +60,7 @@ export class Table extends HTMLElement {
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];
-  #interactive: boolean = false;
+  #interactive = false;
   #currentHoverIndex: number|null = null;
 
   set data(data: TableData) {
@@ -86,7 +86,7 @@ export class Table extends HTMLElement {
     }
 
     const rowEl = e.target.closest('tr');
-    if (!rowEl || !rowEl.parentElement) {
+    if (!rowEl?.parentElement) {
       return;
     }
 
@@ -106,7 +106,7 @@ export class Table extends HTMLElement {
     }
 
     const rowEl = e.target.closest('tr');
-    if (!rowEl || !rowEl.parentElement) {
+    if (!rowEl?.parentElement) {
       return;
     }
 

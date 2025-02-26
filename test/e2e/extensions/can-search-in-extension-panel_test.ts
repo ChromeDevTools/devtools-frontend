@@ -10,7 +10,7 @@ import {loadExtension} from '../helpers/extension-helpers.js';
 
 declare global {
   interface Window {
-    searchEvents: {action: string, queryString?: string}[];
+    searchEvents: Array<{action: string, queryString?: string}>;
   }
 }
 

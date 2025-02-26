@@ -4,14 +4,15 @@
 
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
+import {SamplesIntegrator} from '../helpers/SamplesIntegrator.js';
 import * as Types from '../types/types.js';
 
-import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 import type {TraceFilter} from './TraceFilter.js';
 
 export class Node {
   totalTime: number;
   selfTime: number;
+  transferSize: number;
   id: string|symbol;
   /** The first trace event encountered that necessitated the creation of this tree node. */
   event: Types.Events.Event;
@@ -27,6 +28,7 @@ export class Node {
   constructor(id: string|symbol, event: Types.Events.Event) {
     this.totalTime = 0;
     this.selfTime = 0;
+    this.transferSize = 0;
     this.id = id;
     this.event = event;
     this.events = [event];
@@ -41,18 +43,18 @@ export class Node {
   }
 
   hasChildren(): boolean {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   setHasChildren(_value: boolean): void {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
   /**
    * Returns the direct descendants of this node.
    * @returns a map with ordered <nodeId, Node> tuples.
    */
   children(): ChildrenCache {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   searchTree(matchFunction: (arg0: Types.Events.Event) => boolean, results?: Node[]): Node[] {
@@ -75,7 +77,7 @@ export class TopDownNode extends Node {
 
   constructor(id: string|symbol, event: Types.Events.Event, parent: TopDownNode|null) {
     super(id, event);
-    this.root = parent && parent.root;
+    this.root = parent?.root ?? null;
     this.hasChildrenInternal = false;
     this.childrenInternal = null;
     this.parent = parent;
@@ -97,7 +99,7 @@ export class TopDownNode extends Node {
     // Tracks the ancestor path of this node, includes the current node.
     const path: TopDownNode[] = [];
     for (let node: TopDownNode = (this as TopDownNode); node.parent && !node.isGroupNode(); node = node.parent) {
-      path.push((node as TopDownNode));
+      path.push((node));
     }
     path.reverse();
     const children: ChildrenCache = new Map();
@@ -191,6 +193,9 @@ export class TopDownNode extends Node {
       }
       node.selfTime += duration;
       node.totalTime += duration;
+      if (Types.Events.isReceivedDataEvent(e)) {
+        node.transferSize += e.args.data.encodedDataLength;
+      }
       currentDirectChild = node;
     }
 
@@ -256,9 +261,15 @@ export class TopDownRootNode extends TopDownNode {
   override selfTime: number;
 
   constructor(
-      events: Types.Events.Event[], filters: TraceFilter[], startTime: Types.Timing.Milli, endTime: Types.Timing.Milli,
-      doNotAggregate?: boolean, eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
-      includeInstantEvents?: boolean) {
+      events: Types.Events.Event[],
+      {filters, startTime, endTime, doNotAggregate, eventGroupIdCallback, includeInstantEvents}: {
+        filters: TraceFilter[],
+        startTime: Types.Timing.Milli,
+        endTime: Types.Timing.Milli,
+        doNotAggregate?: boolean,
+        eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
+        includeInstantEvents?: boolean,
+      }) {
     super('', events[0], null);
     this.event = events[0];
     this.root = this;
@@ -273,8 +284,8 @@ export class TopDownRootNode extends TopDownNode {
     this.totalTime = endTime - startTime;
     this.selfTime = this.totalTime;
   }
-
   override children(): ChildrenCache {
+    // FYI tree nodes are built lazily. https://codereview.chromium.org/2674283003
     return this.childrenInternal || this.grouppedTopNodes();
   }
 
@@ -296,7 +307,7 @@ export class TopDownRootNode extends TopDownNode {
       } else {
         groupNode.events.push(...node.events);
       }
-      groupNode.addChild(node as BottomUpNode, node.selfTime, node.totalTime);
+      groupNode.addChild(node as BottomUpNode, node.selfTime, node.totalTime, node.transferSize);
     }
     this.childrenInternal = groupNodes;
     return groupNodes;
@@ -313,12 +324,25 @@ export class BottomUpRootNode extends Node {
   readonly filter: (e: Types.Events.Event) => boolean;
   readonly startTime: Types.Timing.Milli;
   readonly endTime: Types.Timing.Milli;
-  private eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null;
+  private eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   override totalTime: number;
+  private calculateTransferSize?: boolean;
 
-  constructor(
-      events: Types.Events.Event[], textFilter: TraceFilter, filters: TraceFilter[], startTime: Types.Timing.Milli,
-      endTime: Types.Timing.Milli, eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null) {
+  constructor(events: Types.Events.Event[], {
+    textFilter,
+    filters,
+    startTime,
+    endTime,
+    eventGroupIdCallback,
+    calculateTransferSize,
+  }: {
+    textFilter: TraceFilter,
+    filters: readonly TraceFilter[],
+    startTime: Types.Timing.Milli,
+    endTime: Types.Timing.Milli,
+    eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
+    calculateTransferSize?: boolean,
+  }) {
     super('', events[0]);
     this.childrenInternal = null;
     this.events = events;
@@ -328,6 +352,7 @@ export class BottomUpRootNode extends Node {
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
     this.totalTime = endTime - startTime;
+    this.calculateTransferSize = calculateTransferSize;
   }
 
   override hasChildren(): boolean {
@@ -338,19 +363,23 @@ export class BottomUpRootNode extends Node {
     for (const [id, child] of children) {
       // to provide better context to user only filter first (top) level.
       if (child.event && child.depth <= 1 && !this.textFilter.accept(child.event)) {
-        children.delete((id as string | symbol));
+        children.delete((id));
       }
     }
     return children;
   }
 
   override children(): ChildrenCache {
+    // FYI tree nodes are built lazily. https://codereview.chromium.org/2674283003
     if (!this.childrenInternal) {
       this.childrenInternal = this.filterChildren(this.grouppedTopNodes());
     }
     return this.childrenInternal;
   }
 
+  // If no grouping is applied, the nodes returned here are what's initially shown in the bottom-up view.
+  // "No grouping" == no grouping in UI dropdown == no groupingFunction…
+  // … HOWEVER, nodes are still aggregated via `generateEventID`, which is ~= the event name.
   private ungrouppedTopNodes(): ChildrenCache {
     const root = this;
     const startTime = this.startTime;
@@ -359,11 +388,28 @@ export class BottomUpRootNode extends Node {
     const selfTimeStack: number[] = [endTime - startTime];
     const firstNodeStack: boolean[] = [];
     const totalTimeById = new Map<string, number>();
+
+    // encodedDataLength is provided solely on instant events.
+    const sumTransferSizeOfInstantEvent = (e: Types.Events.Event): void => {
+      if (Types.Events.isReceivedDataEvent(e)) {
+        const id = generateEventID(e);
+        let node = nodeById.get(id);
+        if (!node) {
+          node = new BottomUpNode(root, id, e, false, root);
+          nodeById.set(id, node);
+        } else {
+          node.events.push(e);
+        }
+        node.transferSize += e.args.data.encodedDataLength;
+      }
+    };
+
     Helpers.Trace.forEachEvent(
         this.events,
         {
           onStartEvent,
           onEndEvent,
+          onInstantEvent: this.calculateTransferSize ? sumTransferSizeOfInstantEvent : undefined,
           startTime: Helpers.Timing.milliToMicro(this.startTime),
           endTime: Helpers.Timing.milliToMicro(this.endTime),
           eventFilter: this.filter,
@@ -406,9 +452,10 @@ export class BottomUpRootNode extends Node {
     }
 
     this.selfTime = selfTimeStack.pop() || 0;
+    // Delete any nodes that have no selfTime (or transferSize, if it's being calculated)
     for (const pair of nodeById) {
-      if (pair[1].selfTime <= 0) {
-        nodeById.delete((pair[0] as string));
+      if (pair[1].selfTime <= 0 && (!this.calculateTransferSize || pair[1].transferSize <= 0)) {
+        nodeById.delete((pair[0]));
       }
     }
     return nodeById;
@@ -429,7 +476,7 @@ export class BottomUpRootNode extends Node {
       } else {
         groupNode.events.push(...node.events);
       }
-      groupNode.addChild(node as BottomUpNode, node.selfTime, node.selfTime);
+      groupNode.addChild(node as BottomUpNode, node.selfTime, node.selfTime, node.transferSize);
     }
     return groupNodes;
   }
@@ -448,10 +495,11 @@ export class GroupNode extends Node {
     this.isGroupNodeInternal = true;
   }
 
-  addChild(child: BottomUpNode, selfTime: number, totalTime: number): void {
+  addChild(child: BottomUpNode, selfTime: number, totalTime: number, transferSize: number): void {
     this.childrenInternal.set(child.id, child);
     this.selfTime += selfTime;
     this.totalTime += totalTime;
+    this.transferSize += transferSize;
     child.parent = this;
   }
 
@@ -582,15 +630,18 @@ export function eventStackFrame(event: Types.Events.Event): Protocol.Runtime.Cal
 
 export function generateEventID(event: Types.Events.Event): string {
   if (Types.Events.isProfileCall(event)) {
-    const name = TimelineJSProfileProcessor.isNativeRuntimeFrame(event.callFrame) ?
-        TimelineJSProfileProcessor.nativeGroup(event.callFrame.functionName) :
+    const name = SamplesIntegrator.isNativeRuntimeFrame(event.callFrame) ?
+        SamplesIntegrator.nativeGroup(event.callFrame.functionName) :
         event.callFrame.functionName;
     const location = event.callFrame.scriptId || event.callFrame.url || '';
     return `f:${name}@${location}`;
   }
 
-  if (Types.Events.isConsoleTimeStamp(event)) {
+  if (Types.Events.isConsoleTimeStamp(event) && event.args.data) {
     return `${event.name}:${event.args.data.name}`;
+  }
+  if (Types.Events.isSyntheticNetworkRequest(event) || Types.Events.isReceivedDataEvent(event)) {
+    return `req:${event.args.data.requestId}`;
   }
 
   return event.name;

@@ -56,7 +56,7 @@ const UIStrings = {
    *@example {10} PH2
    */
   updateChildDimension: ' ({PH1} × {PH2})',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.TreeOutline.TreeOutline>(
@@ -91,7 +91,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
 
   selectObject(selection: Selection|null): void {
     this.hoverObject(null);
-    const layer = selection && selection.layer();
+    const layer = selection?.layer();
     const node = layer && layerToTreeElement.get(layer);
     if (node) {
       node.revealAndSelect(true);
@@ -101,7 +101,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   hoverObject(selection: Selection|null): void {
-    const layer = selection && selection.layer();
+    const layer = selection?.layer();
     const node = layer && layerToTreeElement.get(layer);
     if (node === this.lastHoveredNode) {
       return;
@@ -219,13 +219,13 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
   private onContextMenu(event: MouseEvent): void {
     const selection = this.selectionForNode(this.treeOutline.treeElementFromEvent(event) as LayerTreeElement | null);
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    const layer = selection && selection.layer();
-    if (layer) {
+    const layer = selection?.layer();
+    if (selection && layer) {
       this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
       if (this.layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.showPaintProfiler),
-            () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection as Selection),
+            () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection),
             {jslogContext: 'layers.paint-profiler'});
       }
     }
@@ -233,7 +233,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   private selectionForNode(node: LayerTreeElement|null): Selection|null {
-    return node && node.layer ? new LayerSelection(node.layer) : null;
+    return node?.layer ? new LayerSelection(node.layer) : null;
   }
 }
 

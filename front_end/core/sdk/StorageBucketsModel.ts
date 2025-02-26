@@ -28,20 +28,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as Common from '../common/common.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
+import type * as Common from '../common/common.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
 import {Events as StorageKeyManagerEvents, StorageKeyManager} from './StorageKeyManager.js';
+import {Capability, type Target} from './Target.js';
 
 export class StorageBucketsModel extends SDKModel<EventTypes> implements ProtocolProxyApi.StorageDispatcher {
-  private enabled: boolean = false;
+  private enabled = false;
   readonly storageAgent: ProtocolProxyApi.StorageApi;
   private readonly storageKeyManager: StorageKeyManager|null;
-  private bucketsById: Map<string, Protocol.Storage.StorageBucketInfo> = new Map();
-  private trackedStorageKeys: Set<string> = new Set();
+  private bucketsById = new Map<string, Protocol.Storage.StorageBucketInfo>();
+  private trackedStorageKeys = new Set<string>();
 
   constructor(target: Target) {
     super(target);

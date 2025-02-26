@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {click, getBrowserAndPages, typeText, waitFor, waitForNone} from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, CONSOLE_TOOLTIP_SELECTOR, focusConsolePrompt} from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 

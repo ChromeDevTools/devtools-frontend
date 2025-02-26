@@ -11,7 +11,7 @@ const domLookUpSingleNodeCache =
     new Map<Handlers.Types.ParsedTrace, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
 const domLookUpBatchNodesCache = new Map<
     Handlers.Types.ParsedTrace,
-    Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
+    Map<Protocol.DOM.BackendNodeId[], Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>>();
 
 export function clearCacheForTesting(): void {
   domLookUpSingleNodeCache.clear();
@@ -87,12 +87,12 @@ export function nodeIdsForEvent(
     // done the work to build the relationship between a DecodeImage event and
     // the corresponding PaintImage event.
     const paintImageEvent = modelData.ImagePainting.paintImageForEvent.get(event);
-    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+    if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
   } else if (Types.Events.isDrawLazyPixelRef(event) && event.args?.LazyPixelRef) {
     const paintImageEvent = modelData.ImagePainting.paintImageByDrawLazyPixelRef.get(event.args.LazyPixelRef);
-    if (paintImageEvent && typeof paintImageEvent.args.data.nodeId !== 'undefined') {
+    if (typeof paintImageEvent?.args.data.nodeId !== 'undefined') {
       foundIds.add(paintImageEvent.args.data.nodeId);
     }
   } else if (Types.Events.isParseMetaViewport(event) && typeof event.args?.data.node_id !== 'undefined') {
@@ -112,7 +112,7 @@ export async function extractRelatedDOMNodesFromEvent(modelData: Handlers.Types.
     Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>|null> {
   const nodeIds = nodeIdsForEvent(modelData, event);
   if (nodeIds.size) {
-    return domNodesForMultipleBackendNodeIds(modelData, Array.from(nodeIds));
+    return await domNodesForMultipleBackendNodeIds(modelData, Array.from(nodeIds));
   }
   return null;
 }
@@ -123,7 +123,7 @@ export async function extractRelatedDOMNodesFromEvent(modelData: Handlers.Types.
  */
 export async function domNodesForMultipleBackendNodeIds(
     modelData: Handlers.Types.ParsedTrace,
-    nodeIds: Array<Protocol.DOM.BackendNodeId>): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
+    nodeIds: Protocol.DOM.BackendNodeId[]): Promise<Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>> {
   const fromCache = domLookUpBatchNodesCache.get(modelData)?.get(nodeIds);
   if (fromCache) {
     return fromCache;
@@ -137,7 +137,7 @@ export async function domNodesForMultipleBackendNodeIds(
   const domNodesMap = await domModel.pushNodesByBackendIdsToFrontend(new Set(nodeIds)) || new Map();
 
   const cacheForModel = domLookUpBatchNodesCache.get(modelData) ||
-      new Map<Array<Protocol.DOM.BackendNodeId>, Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
+      new Map<Protocol.DOM.BackendNodeId[], Map<Protocol.DOM.BackendNodeId, SDK.DOMModel.DOMNode|null>>();
   cacheForModel.set(nodeIds, domNodesMap);
   domLookUpBatchNodesCache.set(modelData, cacheForModel);
 

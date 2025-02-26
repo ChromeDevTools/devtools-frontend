@@ -18,43 +18,14 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import type {TableData} from './Table.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.SlowCSSSelector;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   *@description Column name for count of elements that the engine attempted to match against a style rule
-   */
-  matchAttempts: 'Match attempts',
-  /**
-   *@description Column name for count of elements that matched a style rule
-   */
-  matchCount: 'Match count',
-  /**
-   *@description Column name for elapsed time spent computing a style rule
-   */
-  elapsed: 'Elapsed time',
-  /**
-   *@description Column name for the selectors that took the longest amount of time/effort.
-   */
-  topSelectors: 'Top selectors',
-  /**
-   *@description Column name for a total sum.
-   */
-  total: 'Total',
-  /**
-   * @description Text status indicating that no CSS selector data was found.
-   */
-  enableSelectorData:
-      'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SlowCSSSelector.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-slow-css-selector`;
-  override internalName: string = 'slow-css-selector';
-  #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
+  override internalName = 'slow-css-selector';
+  #selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     return [];
@@ -85,7 +56,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
 
     const locations = ranges.map((range, itemIndex) => {
       return {
-        url: styleSheetHeader.resourceURL() as Platform.DevToolsPath.UrlString,
+        url: styleSheetHeader.resourceURL(),
         lineNumber: range.startLine,
         columnNumber: range.startColumn,
         linkText: `[${itemIndex + 1}]`,
@@ -114,8 +85,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     const links = html`
     ${locations.map((location, itemIndex) => {
       const divider = itemIndex !== locations.length - 1 ? ', ' : '';
-      return html`<devtools-linkifier .data=${location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>${
-          divider}`;
+      return html`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
     })}`;
 
     return links;

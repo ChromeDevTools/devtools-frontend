@@ -6,17 +6,11 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 
-import chromeLinkStylesRaw from './chromeLink.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const chromeLinkStyles = new CSSStyleSheet();
-chromeLinkStyles.replaceSync(chromeLinkStylesRaw.cssContent);
-
-const {html} = Lit;
+import chromeLinkStyles from './chromeLink.css.js';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -29,10 +23,9 @@ declare global {
 export class ChromeLink extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #href: string = '';
+  #href = '';
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [chromeLinkStyles];
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -65,10 +58,11 @@ export class ChromeLink extends HTMLElement {
     urlForContext.search = '';
     const jslogContext = Platform.StringUtilities.toKebabCase(urlForContext.toString());
     // clang-format off
-    Lit.render(
+    render(
       /* x-link doesn't work with custom click/keydown handlers */
       /* eslint-disable rulesdir/no-a-tags-in-lit */
       html`
+        <style>${chromeLinkStyles.cssContent}</style>
         <a href=${this.#href} class="link" target="_blank"
           jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}
           @click=${this.#handleClick}><slot></slot></a>

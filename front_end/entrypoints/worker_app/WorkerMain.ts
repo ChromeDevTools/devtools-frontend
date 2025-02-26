@@ -13,7 +13,7 @@ const UIStrings = {
    *@description Text that refers to the main target.
    */
   main: 'Main',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('entrypoints/worker_app/WorkerMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -39,7 +39,7 @@ export class WorkerMainImpl implements Common.Runnable.Runnable {
       }
       SDK.TargetManager.TargetManager.instance().createTarget(
           'main', i18nString(UIStrings.main), SDK.Target.Type.ServiceWorker, null);
-    }, Components.TargetDetachedDialog.TargetDetachedDialog.webSocketConnectionLost);
+    }, Components.TargetDetachedDialog.TargetDetachedDialog.connectionLost);
     new MobileThrottling.NetworkPanelIndicator.NetworkPanelIndicator();
   }
 }

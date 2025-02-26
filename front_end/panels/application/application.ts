@@ -17,6 +17,7 @@ import * as IndexedDBViews from './IndexedDBViews.js';
 import * as InterestGroupStorageModel from './InterestGroupStorageModel.js';
 import * as InterestGroupStorageView from './InterestGroupStorageView.js';
 import * as InterestGroupTreeElement from './InterestGroupTreeElement.js';
+import * as KeyValueStorageItemsView from './KeyValueStorageItemsView.js';
 import * as OpenedWindowDetailsView from './OpenedWindowDetailsView.js';
 import * as PreloadingView from './preloading/PreloadingView.js';
 import * as PreloadingTreeElement from './PreloadingTreeElement.js';
@@ -52,6 +53,7 @@ export {
   InterestGroupStorageModel,
   InterestGroupStorageView,
   InterestGroupTreeElement,
+  KeyValueStorageItemsView,
   OpenedWindowDetailsView,
   PreloadingTreeElement,
   PreloadingView,

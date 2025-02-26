@@ -93,7 +93,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async #buildResourceTree(): Promise<void> {
-    return this.agent.invoke_getResourceTree().then(event => {
+    return await this.agent.invoke_getResourceTree().then(event => {
       this.processCachedResources(event.getError() ? null : event.frameTree);
       if (this.mainFrame) {
         this.processPendingEvents(this.mainFrame);
@@ -121,6 +121,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   static resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
     for (const resourceTreeModel of TargetManager.instance().models(ResourceTreeModel)) {
       const mainFrame = resourceTreeModel.mainFrame;
+      // Workers call into this with no #frames available.
       const result = mainFrame ? mainFrame.resourceForURL(url) : null;
       if (result) {
         return result;
@@ -356,11 +357,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     return [...this.framesInternal.values()];
   }
 
-  resourceForURL(url: Platform.DevToolsPath.UrlString): Resource|null {
-    // Workers call into this with no #frames available.
-    return this.mainFrame ? this.mainFrame.resourceForURL(url) : null;
-  }
-
   private addFramesRecursively(
       sameTargetParentFrame: ResourceTreeFrame|null, frameTreePayload: Protocol.Page.FrameResourceTree): void {
     const framePayload = frameTreePayload.frame;
@@ -444,7 +440,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
 
   async navigationHistory(): Promise<{
     currentIndex: number,
-    entries: Array<Protocol.Page.NavigationEntry>,
+    entries: Protocol.Page.NavigationEntry[],
   }|null> {
     const response = await this.agent.invoke_getNavigationHistory();
     if (response.getError()) {
@@ -464,7 +460,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   async fetchAppManifest(): Promise<{
     url: Platform.DevToolsPath.UrlString,
     data: string|null,
-    errors: Array<Protocol.Page.AppManifestError>,
+    errors: Protocol.Page.AppManifestError[],
   }> {
     const response = await this.agent.invoke_getAppManifest({});
     if (response.getError()) {
@@ -479,7 +475,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getAppId(): Promise<Protocol.Page.GetAppIdResponse> {
-    return this.agent.invoke_getAppId();
+    return await this.agent.invoke_getAppId();
   }
 
   private executionContextComparator(a: ExecutionContext, b: ExecutionContext): number {
@@ -584,7 +580,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   }
 
   async getMainStorageKey(): Promise<string|null> {
-    return this.mainFrame ? this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
+    return this.mainFrame ? await this.mainFrame.getStorageKey(/* forceFetch */ false) : null;
   }
 
   getMainSecurityOrigin(): string|null {
@@ -669,7 +665,8 @@ export class ResourceTreeFrame {
   #nameInternal: string|null|undefined;
   #urlInternal: Platform.DevToolsPath.UrlString;
   #domainAndRegistryInternal: string;
-  #securityOriginInternal: string|null;
+  #securityOrigin: string|null;
+  #securityOriginDetails?: Protocol.Page.SecurityOriginDetails;
   #storageKeyInternal?: Promise<string|null>;
   #unreachableUrlInternal: Platform.DevToolsPath.UrlString;
   #adFrameStatusInternal?: Protocol.Page.AdFrameStatus;
@@ -699,17 +696,18 @@ export class ResourceTreeFrame {
     this.crossTargetParentFrameId = null;
 
     this.#loaderIdInternal = payload?.loaderId ?? '' as Protocol.Network.LoaderId;
-    this.#nameInternal = payload && payload.name;
+    this.#nameInternal = payload?.name;
     this.#urlInternal =
         payload && payload.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
-    this.#domainAndRegistryInternal = (payload && payload.domainAndRegistry) || '';
-    this.#securityOriginInternal = payload && payload.securityOrigin;
+    this.#domainAndRegistryInternal = (payload?.domainAndRegistry) || '';
+    this.#securityOrigin = payload?.securityOrigin ?? null;
+    this.#securityOriginDetails = payload?.securityOriginDetails;
     this.#unreachableUrlInternal =
         (payload && payload.unreachableUrl as Platform.DevToolsPath.UrlString) || Platform.DevToolsPath.EmptyUrlString;
     this.#adFrameStatusInternal = payload?.adFrameStatus;
-    this.#secureContextType = payload && payload.secureContextType;
-    this.#crossOriginIsolatedContextType = payload && payload.crossOriginIsolatedContextType;
-    this.#gatedAPIFeatures = payload && payload.gatedAPIFeatures;
+    this.#secureContextType = payload?.secureContextType ?? null;
+    this.#crossOriginIsolatedContextType = payload?.crossOriginIsolatedContextType ?? null;
+    this.#gatedAPIFeatures = payload?.gatedAPIFeatures ?? null;
 
     this.#creationStackTrace = creationStackTrace;
     this.#creationStackTraceTarget = null;
@@ -756,7 +754,8 @@ export class ResourceTreeFrame {
     this.#nameInternal = framePayload.name;
     this.#urlInternal = framePayload.url as Platform.DevToolsPath.UrlString;
     this.#domainAndRegistryInternal = framePayload.domainAndRegistry;
-    this.#securityOriginInternal = framePayload.securityOrigin;
+    this.#securityOrigin = framePayload.securityOrigin;
+    this.#securityOriginDetails = framePayload.securityOriginDetails;
     void this.getStorageKey(/* forceFetch */ true);
     this.#unreachableUrlInternal =
         framePayload.unreachableUrl as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
@@ -804,7 +803,11 @@ export class ResourceTreeFrame {
   }
 
   get securityOrigin(): string|null {
-    return this.#securityOriginInternal;
+    return this.#securityOrigin;
+  }
+
+  get securityOriginDetails(): Protocol.Page.SecurityOriginDetails|null {
+    return this.#securityOriginDetails ?? null;
   }
 
   getStorageKey(forceFetch: boolean): Promise<string|null> {
@@ -995,16 +998,16 @@ export class ResourceTreeFrame {
     if (!parentFrame) {
       return null;
     }
-    return parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this.#idInternal);
+    return await parentFrame.resourceTreeModel().domModel().getOwnerNodeForFrame(this.#idInternal);
   }
 
   async getOwnerDOMNodeOrDocument(): Promise<DOMNode|null> {
     const deferredNode = await this.getOwnerDeferredDOMNode();
     if (deferredNode) {
-      return deferredNode.resolvePromise();
+      return await deferredNode.resolvePromise();
     }
     if (this.isOutermostFrame()) {
-      return this.resourceTreeModel().domModel().requestDocument();
+      return await this.resourceTreeModel().domModel().requestDocument();
     }
     return null;
   }
@@ -1020,14 +1023,14 @@ export class ResourceTreeFrame {
     };
 
     if (parentFrame) {
-      return highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
+      return await highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
     }
 
     // Fenced frames.
     if (parentTarget?.type() === Type.FRAME) {
       const domModel = parentTarget.model(DOMModel);
       if (domModel) {
-        return highlightFrameOwner(domModel);
+        return await highlightFrameOwner(domModel);
       }
     }
 
@@ -1057,9 +1060,10 @@ export class ResourceTreeFrame {
     return response.originTrials;
   }
 
-  setCreationStackTrace(creationStackTraceData:
-                            {creationStackTrace: Protocol.Runtime.StackTrace|null, creationStackTraceTarget: Target}):
-      void {
+  setCreationStackTrace(creationStackTraceData: {
+    creationStackTrace: Protocol.Runtime.StackTrace|null,
+    creationStackTraceTarget: Target,
+  }): void {
     this.#creationStackTrace = creationStackTraceData.creationStackTrace;
     this.#creationStackTraceTarget = creationStackTraceData.creationStackTraceTarget;
   }

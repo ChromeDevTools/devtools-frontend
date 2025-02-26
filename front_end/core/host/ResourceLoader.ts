@@ -65,7 +65,7 @@ const UIStrings = {
    *@description Name of an error category used in error messages
    */
   decodingDataUrlFailed: 'Decoding Data URL failed',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/host/ResourceLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const ResourceLoader = {};

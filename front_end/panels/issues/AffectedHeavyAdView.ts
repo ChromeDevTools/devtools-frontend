@@ -4,8 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -50,7 +50,7 @@ const UIStrings = {
    *@description Reason for a Heavy Ad being flagged in issue view
    */
   networkLimit: 'Network limit',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedHeavyAdView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

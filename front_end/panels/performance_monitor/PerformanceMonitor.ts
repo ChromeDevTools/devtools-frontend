@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import performanceMonitorStyles from './performanceMonitor.css.legacy.js';
+import performanceMonitorStyles from './performanceMonitor.css.js';
 
 const UIStrings = {
   /**
@@ -54,13 +54,13 @@ const UIStrings = {
    *@description Text in Performance Monitor of the Performance monitor tab
    */
   styleRecalcsSec: 'Style recalcs / sec',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/performance_monitor/PerformanceMonitor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     SDK.TargetManager.SDKModelObserver<SDK.PerformanceMetricsModel.PerformanceMetricsModel> {
-  private metricsBuffer: {timestamp: number, metrics: Map<string, number>}[];
+  private metricsBuffer: Array<{timestamp: number, metrics: Map<string, number>}>;
   private readonly pixelsPerMs: number;
   private pollIntervalMs: number;
   private readonly scaleHeight: number;
@@ -75,7 +75,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
   private startTimestamp?: number;
   private pollTimer?: number;
 
-  constructor(pollIntervalMs: number = 500) {
+  constructor(pollIntervalMs = 500) {
     super(true);
     this.registerRequiredCSS(performanceMonitorStyles);
 
@@ -289,7 +289,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     }
     const width = this.width;
     const startTime = performance.now() - this.pollIntervalMs - width / this.pixelsPerMs;
-    let max: number = -Infinity;
+    let max = -Infinity;
     for (const metricInfo of chartInfo.metrics) {
       for (let i = this.metricsBuffer.length - 1; i >= 0; --i) {
         const metrics = this.metricsBuffer[i];
@@ -441,7 +441,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   private readonly enabledCharts: Set<string>;
 
   private chartsInfo: ChartInfo[] = [];
-  private indicators: Map<string, MetricIndicator> = new Map();
+  private indicators = new Map<string, MetricIndicator>();
 
   constructor(parent: Element) {
     super();
@@ -676,7 +676,7 @@ export interface MetricInfo {
 }
 export interface ChartInfo {
   title: Common.UIString.LocalizedString;
-  metrics: {name: string, color: string}[];
+  metrics: Array<{name: string, color: string}>;
   max?: number;
   currentMax?: number;
   format?: Format;

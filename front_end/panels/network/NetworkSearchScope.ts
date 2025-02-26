@@ -17,7 +17,7 @@ const UIStrings = {
    *@description Text for web URLs
    */
   url: 'URL',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkSearchScope implements Search.SearchScope.SearchScope {
@@ -46,7 +46,7 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       promises.push(promise);
     }
     const resultsWithNull = await Promise.all(promises);
-    const results = (resultsWithNull.filter(result => result !== null) as NetworkSearchResult[]);
+    const results = (resultsWithNull.filter(result => result !== null));
     if (progress.isCanceled()) {
       searchFinishedCallback(false);
       return;
@@ -98,7 +98,7 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       let pos = 0;
       for (const regExp of regExps) {
         const match = string.substr(pos).match(regExp);
-        if (!match || match.index === undefined) {
+        if (match?.index === undefined) {
           return false;
         }
         pos += match.index + match[0].length;

@@ -9,7 +9,6 @@ import {
   goToResource,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   getStructuredConsoleMessages,
   navigateToConsoleTab,

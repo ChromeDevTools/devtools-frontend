@@ -11,7 +11,7 @@ import * as UI from '../../legacy/legacy.js';
 import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-import markdownViewStylesRaw from './markdownView.css.legacy.js';
+import markdownViewStylesRaw from './markdownView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const markdownViewStyles = new CSSStyleSheet();

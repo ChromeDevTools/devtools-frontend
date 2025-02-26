@@ -42,7 +42,7 @@ import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import propertiesWidgetStyles from './propertiesWidget.css.legacy.js';
+import propertiesWidgetStyles from './propertiesWidget.css.js';
 
 const OBJECT_GROUP_NAME = 'properties-sidebar-pane';
 
@@ -64,7 +64,7 @@ const UIStrings = {
    * no properties matched the filter and thus no results were returned.
    */
   noMatchingProperty: 'No matching property',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/PropertiesWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -179,7 +179,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
       return;
     }
     const data = event.data;
-    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node as SDK.DOMModel.DOMNode);
+    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node);
     if (this.node !== node) {
       return;
     }

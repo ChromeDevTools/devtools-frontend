@@ -10,7 +10,7 @@ import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
 import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 
 export interface ActiveInsight {
-  model: Trace.Insights.Types.InsightModel<{}>;
+  model: Trace.Insights.Types.InsightModel<{}, {}>;
   insightSetKey: string;
 }
 
@@ -88,10 +88,8 @@ export class SidebarWidget extends UI.Widget.VBox {
     // Swap to the Annotations tab if:
     // 1. Insights is currently selected.
     // 2. The Insights tab is disabled (which means we have no insights for this trace)
-    // 3. The annotations tab exists (we can remove this check once annotations
-    //    are non-experimental)
     if (this.#tabbedPane.selectedTabId === SidebarTabs.INSIGHTS &&
-        this.#tabbedPane.tabIsDisabled(SidebarTabs.INSIGHTS) && this.#tabbedPane.hasTab(SidebarTabs.ANNOTATIONS)) {
+        this.#tabbedPane.tabIsDisabled(SidebarTabs.INSIGHTS)) {
       this.#tabbedPane.selectTab(SidebarTabs.ANNOTATIONS);
     }
   }
@@ -105,9 +103,7 @@ export class SidebarWidget extends UI.Widget.VBox {
 
   #updateAnnotationsCountBadge(): void {
     const annotations = this.#annotationsView.deduplicatedAnnotations();
-    if (annotations.length) {
-      this.#tabbedPane.setBadge('annotations', annotations.length.toString(), 'primary');
-    }
+    this.#tabbedPane.setBadge('annotations', annotations.length > 0 ? annotations.length.toString() : null);
   }
 
   setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, metadata: Trace.Types.File.MetaData|null): void {

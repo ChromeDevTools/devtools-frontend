@@ -150,7 +150,7 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       return;
     }
     const data = event.data;
-    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node as SDK.DOMModel.DOMNode);
+    const node = (data instanceof SDK.DOMModel.DOMNode ? data : data.node);
     if (this.node() !== node) {
       return;
     }

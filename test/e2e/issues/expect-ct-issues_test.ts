@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getBrowserAndPages} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -31,7 +30,7 @@ describe('Expect-CT Issue', () => {
           },
         },
       };
-      // @ts-ignore
+      // @ts-expect-error
       window.addIssueForTest(issue);
     });
 

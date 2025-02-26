@@ -171,7 +171,7 @@ describe('LayoutShiftsHandler', function() {
           assert.strictEqual(cluster.scoreWindows.needsImprovement.min, event.ts);
         }
 
-        // Here we have transitioned from eiter Good or NI to Bad, so
+        // Here we have transitioned from either Good or NI to Bad, so
         // again we assert that the Bad window starts when expected,
         // and that either the NI or Good window finishes just prior.
         if (scoreBeforeEvent < Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD &&

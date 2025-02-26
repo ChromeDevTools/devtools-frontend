@@ -59,7 +59,7 @@ const UIStrings = {
    *@description Icon title in Tabbed Editor Container of the Sources panel
    */
   changesToThisFileWereNotSavedTo: 'Changes to this file were not saved to file system.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface TabbedEditorContainerDelegate {
@@ -549,9 +549,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   private restoreEditorProperties(
       editorView: UI.Widget.Widget, selection?: TextUtils.TextRange.TextRange, firstLineNumber?: number): void {
-    const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ?
-        editorView as SourceFrame.SourceFrame.SourceFrameImpl :
-        null;
+    const sourceFrame = editorView instanceof SourceFrame.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
     }
@@ -851,8 +849,7 @@ export class History {
     return serializedHistoryItems;
   }
 
-  // eslint-disable-next-line rulesdir/prefer-readonly-keyword
-  keys(): ReadonlyArray<HistoryItemKey> {
+  keys(): HistoryItemKey[] {
     return this.items;
   }
 }

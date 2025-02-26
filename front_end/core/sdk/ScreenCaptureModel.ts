@@ -14,32 +14,108 @@ export const enum ScreenshotMode {
   FROM_CLIP = 'fromClip',
   FULLPAGE = 'fullpage',
 }
+
+// This structure holds a specific `startScreencast` request's parameters
+// and its callbacks so that they can be re-started if needed.
+interface ScreencastOperation {
+  id: number;
+  request: {
+    format: Protocol.Page.StartScreencastRequestFormat,
+    quality: number,
+    maxWidth: number|undefined,
+    maxHeight: number|undefined,
+    everyNthFrame: number|undefined,
+  };
+  callbacks: {
+    onScreencastFrame: ScreencastFrameCallback,
+    onScreencastVisibilityChanged: ScreencastVisibilityChangedCallback,
+  };
+}
+
+type ScreencastFrameCallback = ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void);
+type ScreencastVisibilityChangedCallback = ((arg0: boolean) => void);
+
+// Manages concurrent screencast requests by queuing and prioritizing.
+//
+// When startScreencast is invoked:
+//   - If a screencast is currently active, the existing screencast's parameters and callbacks are
+//     saved in the #screencastOperations array.
+//   - The active screencast is then stopped.
+//   - A new screencast is initiated using the parameters and callbacks from the current startScreencast call.
+//
+// When stopScreencast is invoked:
+//   - The currently active screencast is stopped.
+//   - The #screencastOperations is checked for interrupted screencast operations.
+//   - If any operations are found, the latest one is started
+//     using its saved parameters and callbacks.
+//
+// This ensures that:
+//   - Only one screencast is active at a time.
+//   - Interrupted screencasts are resumed after the current screencast is stopped.
+// This ensures animation previews, which use screencasting, don't disrupt ongoing remote debugging sessions. Without this mechanism, stopping a preview screencast would terminate the debugging screencast, freezing the ScreencastView.
 export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyApi.PageDispatcher {
   readonly #agent: ProtocolProxyApi.PageApi;
-  #onScreencastFrame: ((arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void)|null;
-  #onScreencastVisibilityChanged: ((arg0: boolean) => void)|null;
+  #nextScreencastOperationId = 1;
+  #screencastOperations: ScreencastOperation[] = [];
   constructor(target: Target) {
     super(target);
     this.#agent = target.pageAgent();
-    this.#onScreencastFrame = null;
-    this.#onScreencastVisibilityChanged = null;
     target.registerPageDispatcher(this);
   }
 
-  startScreencast(
+  async startScreencast(
       format: Protocol.Page.StartScreencastRequestFormat, quality: number, maxWidth: number|undefined,
-      maxHeight: number|undefined, everyNthFrame: number|undefined,
-      onFrame: (arg0: Protocol.binary, arg1: Protocol.Page.ScreencastFrameMetadata) => void,
-      onVisibilityChanged: (arg0: boolean) => void): void {
-    this.#onScreencastFrame = onFrame;
-    this.#onScreencastVisibilityChanged = onVisibilityChanged;
+      maxHeight: number|undefined, everyNthFrame: number|undefined, onFrame: ScreencastFrameCallback,
+      onVisibilityChanged: ScreencastVisibilityChangedCallback): Promise<number> {
+    const currentRequest = this.#screencastOperations.at(-1);
+    if (currentRequest) {
+      // If there already is a screencast operation in progress, we need to stop it now and handle the
+      // incoming request. Once that request is stopped, we'll return back to handling the stopped operation.
+      await this.#agent.invoke_stopScreencast();
+    }
+
+    const operation = {
+      id: this.#nextScreencastOperationId++,
+      request: {
+        format,
+        quality,
+        maxWidth,
+        maxHeight,
+        everyNthFrame,
+      },
+      callbacks: {
+        onScreencastFrame: onFrame,
+        onScreencastVisibilityChanged: onVisibilityChanged,
+      }
+    };
+    this.#screencastOperations.push(operation);
     void this.#agent.invoke_startScreencast({format, quality, maxWidth, maxHeight, everyNthFrame});
+
+    return operation.id;
   }
 
-  stopScreencast(): void {
-    this.#onScreencastFrame = null;
-    this.#onScreencastVisibilityChanged = null;
+  stopScreencast(id: number): void {
+    const operationToStop = this.#screencastOperations.pop();
+    if (!operationToStop) {
+      throw new Error('There is no screencast operation to stop.');
+    }
+
+    if (operationToStop.id !== id) {
+      throw new Error('Trying to stop a screencast operation that is not being served right now.');
+    }
     void this.#agent.invoke_stopScreencast();
+
+    // The latest operation is concluded, let's return back to the previous request now, if it exists.
+    const nextOperation = this.#screencastOperations.at(-1);
+    if (nextOperation) {
+      void this.#agent.invoke_startScreencast({
+        format: nextOperation.request.format,
+        quality: nextOperation.request.quality,
+        maxWidth: nextOperation.request.maxWidth,
+        maxHeight: nextOperation.request.maxHeight,
+        everyNthFrame: nextOperation.request.everyNthFrame,
+      });
+    }
   }
 
   async captureScreenshot(
@@ -71,36 +147,19 @@ export class ScreenCaptureModel extends SDKModel<void> implements ProtocolProxyA
     return result.data;
   }
 
-  async fetchLayoutMetrics(): Promise<{
-    viewportX: number,
-    viewportY: number,
-    viewportScale: number,
-    contentWidth: number,
-    contentHeight: number,
-  }|null> {
-    const response = await this.#agent.invoke_getLayoutMetrics();
-    if (response.getError()) {
-      return null;
-    }
-    return {
-      viewportX: response.cssVisualViewport.pageX,
-      viewportY: response.cssVisualViewport.pageY,
-      viewportScale: response.cssVisualViewport.scale,
-      contentWidth: response.cssContentSize.width,
-      contentHeight: response.cssContentSize.height,
-    };
-  }
-
   screencastFrame({data, metadata, sessionId}: Protocol.Page.ScreencastFrameEvent): void {
     void this.#agent.invoke_screencastFrameAck({sessionId});
-    if (this.#onScreencastFrame) {
-      this.#onScreencastFrame.call(null, data, metadata);
+
+    const currentRequest = this.#screencastOperations.at(-1);
+    if (currentRequest) {
+      currentRequest.callbacks.onScreencastFrame.call(null, data, metadata);
     }
   }
 
   screencastVisibilityChanged({visible}: Protocol.Page.ScreencastVisibilityChangedEvent): void {
-    if (this.#onScreencastVisibilityChanged) {
-      this.#onScreencastVisibilityChanged.call(null, visible);
+    const currentRequest = this.#screencastOperations.at(-1);
+    if (currentRequest) {
+      currentRequest.callbacks.onScreencastVisibilityChanged.call(null, visible);
     }
   }
 

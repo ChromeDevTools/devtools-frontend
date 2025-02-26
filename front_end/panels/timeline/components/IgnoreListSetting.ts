@@ -14,7 +14,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import ignoreListSettingStylesRaw from './ignoreListSetting.css.legacy.js';
+import ignoreListSettingStylesRaw from './ignoreListSetting.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const ignoreListSettingStyles = new CSSStyleSheet();
@@ -72,7 +72,7 @@ const UIStrings = {
    */
   patternAlreadyExistsWillBeEnables:
       'This rule already exists but is disabled. Saving this value will re-enable the rule',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/IgnoreListSetting.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

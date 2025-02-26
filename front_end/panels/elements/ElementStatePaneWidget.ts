@@ -11,7 +11,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
-import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.legacy.js';
+import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
 
 const UIStrings = {
   /**
@@ -42,7 +42,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementStatePaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 enum SpecificPseudoStates {

@@ -5,6 +5,7 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 import * as ApplicationComponents from './components/components.js';
@@ -35,5 +36,17 @@ describeWithMockConnection('ReportingApiView', () => {
     assert.isTrue(endpointsGridData.set.calledTwice);
     sinon.assert.calledWith(
         endpointsGridData.set, {endpoints: new Map([[ORIGIN_1, ENDPOINTS_1], [ORIGIN_2, ENDPOINTS_2]])});
+  });
+
+  it('shows reports (main element) and endpoints (sidebar element)', () => {
+    const target = createTarget();
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const endpointsGrid = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
+    const view = new Application.ReportingApiView.ReportingApiView(endpointsGrid);
+
+    assert.isTrue(view.showMode() === UI.SplitWidget.ShowMode.BOTH);
+    assert.isNotNull(view.mainWidget());
+    assert.isNotNull(view.sidebarElement());
   });
 });

@@ -4,10 +4,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as CrUXManager from './crux-manager.js';
@@ -79,6 +78,7 @@ describeWithMockConnection('CrUXManager', () => {
 
   describe('storing the user consent', () => {
     it('uses global storage if the user is not in an OffTheRecord profile', async () => {
+      updateHostConfig({isOffTheRecord: false});
       const dummyStorage = new Common.Settings.SettingsStorage({});
       const globalStorage = new Common.Settings.SettingsStorage({});
 
@@ -87,9 +87,6 @@ describeWithMockConnection('CrUXManager', () => {
         syncedStorage: dummyStorage,
         globalStorage,
         localStorage: dummyStorage,
-        config: {
-          isOffTheRecord: false,
-        } as Root.Runtime.HostConfig,
       });
       const manager = CrUXManager.CrUXManager.instance({forceNew: true});
       manager.getConfigSetting().set({enabled: true});
@@ -97,6 +94,7 @@ describeWithMockConnection('CrUXManager', () => {
     });
 
     it('uses session storage if the user is in an OffTheRecord profile', async () => {
+      updateHostConfig({isOffTheRecord: true});
       const dummyStorage = new Common.Settings.SettingsStorage({});
 
       Common.Settings.Settings.instance({
@@ -104,9 +102,6 @@ describeWithMockConnection('CrUXManager', () => {
         syncedStorage: dummyStorage,
         globalStorage: dummyStorage,
         localStorage: dummyStorage,
-        config: {
-          isOffTheRecord: true,
-        } as Root.Runtime.HostConfig,
       });
       const manager = CrUXManager.CrUXManager.instance({forceNew: true});
       manager.getConfigSetting().set({enabled: true});

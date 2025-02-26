@@ -77,16 +77,28 @@ export enum InsightCategory {
 
 export type RelatedEventsMap = Map<Types.Events.Event, string[]>;
 
-export type InsightModel<R extends Record<string, unknown>> = R&{
+export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIString.LocalizedString, value: boolean}>;
+
+export type InsightModel<UIStrings extends Record<string, string>, R extends Record<string, unknown>> = R&{
+  /** Used internally to identify the type of a model, not shown visibly to users **/
+  insightKey: keyof InsightModelsType,
+  /** Not used within DevTools - this is for external consumers (like Lighthouse). */
+  strings: UIStrings,
   title: Common.UIString.LocalizedString,
   description: Common.UIString.LocalizedString,
   category: InsightCategory,
-  /** True if there is anything of interest to display to the user. */
-  shouldShow: boolean,
+  state: 'pass' | 'fail' | 'informative',
   relatedEvents?: RelatedEventsMap | Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
+  /**
+   * If this insight is attached to a navigation, this stores its ID.
+   */
+  navigationId?: string,
 };
+
+export type PartialInsightModel<T> =
+    Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,
@@ -124,3 +136,21 @@ export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
  */
 export type RequiredData<D extends() => Array<keyof typeof Handlers.ModelHandlers>> =
     Handlers.Types.EnabledHandlerDataWithMeta<Pick<typeof Handlers.ModelHandlers, ReturnType<D>[number]>>;
+
+export const enum InsightKeys {
+  LCP_PHASES = 'LCPPhases',
+  INTERACTION_TO_NEXT_PAINT = 'InteractionToNextPaint',
+  CLS_CULPRITS = 'CLSCulprits',
+  THIRD_PARTIES = 'ThirdParties',
+  DOCUMENT_LATENCY = 'DocumentLatency',
+  DOM_SIZE = 'DOMSize',
+  DUPLICATE_JAVASCRIPT = 'DuplicateJavaScript',
+  FONT_DISPLAY = 'FontDisplay',
+  FORCED_REFLOW = 'ForcedReflow',
+  IMAGE_DELIVERY = 'ImageDelivery',
+  LCP_DISCOVERY = 'LCPDiscovery',
+  NETWORK_DEPENDENCY_TREE = 'NetworkDependencyTree',
+  RENDER_BLOCKING = 'RenderBlocking',
+  SLOW_CSS_SELECTOR = 'SlowCSSSelector',
+  VIEWPORT = 'Viewport',
+}

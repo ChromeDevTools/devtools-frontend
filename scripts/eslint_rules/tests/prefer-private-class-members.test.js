@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/prefer-private-class-members.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('prefer-private-class-members', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('prefer-private-class-members', rule, {
   valid: [
     {
       code: `class Foo {

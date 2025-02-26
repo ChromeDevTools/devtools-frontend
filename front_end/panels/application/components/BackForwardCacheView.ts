@@ -24,7 +24,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
-import backForwardCacheViewStylesRaw from './backForwardCacheView.css.legacy.js';
+import backForwardCacheViewStylesRaw from './backForwardCacheView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const backForwardCacheViewStyles = new CSSStyleSheet();
@@ -148,7 +148,7 @@ const UIStrings = {
    * @description Shows the number of files with a particular issue.
    */
   filesPerIssue: '{n, plural, =1 {# file} other {# files}}',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -391,7 +391,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       {node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>, frameCount: number, issueCount: number} {
     let frameCount = 1;
     let issueCount = 0;
-    const children: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>[] = [];
+    const children: Array<TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>> = [];
 
     let nodeUrlText = '';
     if (explanationTree.url.length) {
@@ -518,7 +518,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     const circumstantial = explanations.filter(
         explanation => explanation.type === Protocol.Page.BackForwardCacheNotRestoredReasonType.Circumstantial);
 
-    const reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]> = new Map();
+    const reasonToFramesMap = new Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>();
     if (explanationTree) {
       this.#buildReasonToFramesMap(explanationTree, {blankCount: 1}, reasonToFramesMap);
     }

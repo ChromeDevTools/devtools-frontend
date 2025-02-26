@@ -33,7 +33,7 @@ export interface Layer {
   requestCompositingReasons(): Promise<string[]>;
   requestCompositingReasonIds(): Promise<string[]>;
   drawsContent(): boolean;
-  snapshots(): Promise<SnapshotWithRect|null>[];
+  snapshots(): Array<Promise<SnapshotWithRect|null>>;
 }
 
 export namespace Layer {

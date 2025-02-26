@@ -84,7 +84,7 @@ export class KeyboardShortcut {
 
   static createShortcutFromSettingObject(settingObject: {
     action: string,
-    descriptors: Array<Descriptor>,
+    descriptors: Descriptor[],
     type: Type,
   }): KeyboardShortcut {
     return new KeyboardShortcut(settingObject.descriptors, settingObject.action, settingObject.type);
@@ -118,15 +118,9 @@ export class KeyboardShortcut {
     }
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
-    // @ts-ignore ExtensionServer.js installs '__keyCode' on some events.
+    // @ts-expect-error ExtensionServer.js installs '__keyCode' on some events.
     const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, modifiers);
-  }
-
-  static makeKeyFromEventIgnoringModifiers(keyboardEvent: KeyboardEvent): number {
-    // @ts-ignore ExtensionServer.js installs '__keyCode' on some events.
-    const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
-    return KeyboardShortcut.makeKeyFromCodeAndModifiers(keyCode, Modifiers.None.value);
   }
 
   // This checks if a "control equivalent" key is pressed. For non-mac platforms this means checking

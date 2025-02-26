@@ -23,7 +23,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   });
 
   it('shows the dropdown including a landing page link', async function() {
-    assert.strictEqual(historyManager.button().element.innerText!, 'Live metrics');
+    assert.strictEqual(historyManager.button().element.innerText, 'Live metrics');
 
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
@@ -38,7 +38,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
         },
     );
 
-    assert.strictEqual(historyManager.button().element.innerText!, 'web.dev #1');
+    assert.strictEqual(historyManager.button().element.innerText, 'web.dev #1');
 
     const showPromise = historyManager.showHistoryDropDown();
     const glassPane = document.querySelector('div[data-devtools-glass-pane]');
@@ -59,7 +59,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   it('uses Node specific landing page title', async function() {
     historyManager = new Timeline.TimelineHistoryManager.TimelineHistoryManager(undefined, true);
-    assert.strictEqual(historyManager.button().element.innerText!, 'New recording');
+    assert.strictEqual(historyManager.button().element.innerText, 'New recording');
 
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(

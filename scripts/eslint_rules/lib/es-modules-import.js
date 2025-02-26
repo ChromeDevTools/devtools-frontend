@@ -227,6 +227,11 @@ module.exports = {
               return;
             }
 
+            // We explicitly allow destructuring imports from 'lit/lit.js'.
+            if (importPath.endsWith(path.join('lit', 'lit.js'))) {
+              return;
+            }
+
             let message = CROSS_NAMESPACE_MESSAGE;
 
             if (importPath.endsWith(path.join('common', 'ls.js'))) {
@@ -256,7 +261,7 @@ module.exports = {
               return;
             }
 
-            if (importPath.endsWith('.css.legacy.js')) {
+            if (importPath.endsWith('.css.js')) {
               // We allow files to import CSS files within the same module.
               return;
             }

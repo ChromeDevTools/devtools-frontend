@@ -43,13 +43,13 @@ import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scop
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
-import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css.legacy.js';
+import watchExpressionsSidebarPaneStyles from './watchExpressionsSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -84,7 +84,7 @@ const UIStrings = {
    *@description A context menu item in the Watch Expressions Sidebar Pane of the Sources panel and Network pane request.
    */
   copyValue: 'Copy value',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/WatchExpressionsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance: WatchExpressionsSidebarPane;
@@ -157,10 +157,6 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     if (this.watchExpressions.length > 0) {
       this.treeOutline.forceSelect();
     }
-  }
-
-  hasExpressions(): boolean {
-    return Boolean(this.watchExpressionsSetting.get().length);
   }
 
   private saveExpressions(): void {
@@ -346,7 +342,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   async #evaluateExpression(executionContext: SDK.RuntimeModel.ExecutionContext, expression: string):
       Promise<SDK.RuntimeModel.EvaluationResult> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame && callFrame.script.isJavaScript()) {
+    if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       try {
         expression =
@@ -355,7 +351,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
     }
 
-    return executionContext.evaluate(
+    return await executionContext.evaluate(
         {
           expression,
           objectGroup: WatchExpression.watchObjectGroupId,
@@ -451,7 +447,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.element.removeChildren();
     const oldTreeElement = this.treeElementInternal;
     this.createWatchExpressionTreeElement(result, exceptionDetails);
-    if (oldTreeElement && oldTreeElement.parent) {
+    if (oldTreeElement?.parent) {
       const root = oldTreeElement.parent;
       const index = root.indexOfChild(oldTreeElement);
       root.removeChild(oldTreeElement);
@@ -490,8 +486,7 @@ export class WatchExpression extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.valueElement.classList.add('value');
       titleElement.classList.add('dimmed');
       this.valueElement.textContent = i18nString(UIStrings.notAvailable);
-      if (exceptionDetails !== undefined && exceptionDetails.exception !== undefined &&
-          exceptionDetails.exception.description !== undefined) {
+      if (exceptionDetails?.exception?.description !== undefined) {
         UI.Tooltip.Tooltip.install(this.valueElement as HTMLElement, exceptionDetails.exception.description);
       }
     } else {

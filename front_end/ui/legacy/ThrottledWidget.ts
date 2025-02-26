@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+
 import {VBox} from './Widget.js';
 
 export class ThrottledWidget extends VBox {

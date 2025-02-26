@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
-import * as Helpers from '../helpers/helpers.js';
+import type * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export const stackTraceForEventInTrace =
@@ -36,6 +35,8 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
     result = getForProfileCall(event, parsedTrace);
   } else if (Types.Extensions.isSyntheticExtensionEntry(event)) {
     result = getForExtensionEntry(event, parsedTrace);
+  } else if (Types.Events.isUserTiming(event)) {
+    result = getForUserTiming(event, parsedTrace);
   }
   if (result) {
     cacheForTrace.set(event, result);
@@ -114,54 +115,36 @@ function getForProfileCall(
  */
 function getForExtensionEntry(event: Types.Extensions.SyntheticExtensionEntry, parsedTrace: Handlers.Types.ParsedTrace):
     Protocol.Runtime.StackTrace|null {
-  const eventCallPoint = Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.[0];
-  if (!eventCallPoint) {
-    return null;
-  }
-  const eventCallTime = Types.Events.isPerformanceMeasureBegin(event.rawSourceEvent) ?
-      event.rawSourceEvent.args.callTime :
-      Types.Events.isPerformanceMark(event.rawSourceEvent) ?
-      event.rawSourceEvent.args.data?.callTime :
-      // event added with console.timeStamp: take the original event's
-      // ts.
-      event.rawSourceEvent.ts;
-  if (eventCallTime === undefined) {
-    return null;
-  }
-  const callsInThread = parsedTrace.Renderer.processes.get(event.pid)?.threads.get(event.tid)?.profileCalls;
-  if (!callsInThread) {
-    return null;
-  }
-  const matchByName = callsInThread.filter(e => {
-    return e.callFrame.functionName === eventCallPoint.functionName;
-  });
+  return getForUserTiming(event.rawSourceEvent, parsedTrace);
+}
 
-  const lastCallBeforeEventIndex =
-      Platform.ArrayUtilities.nearestIndexFromEnd(matchByName, profileCall => profileCall.ts <= eventCallTime);
-  const firstCallAfterEventIndex =
-      Platform.ArrayUtilities.nearestIndexFromBeginning(matchByName, profileCall => profileCall.ts >= eventCallTime);
-  const lastCallBeforeEvent = typeof lastCallBeforeEventIndex === 'number' && matchByName.at(lastCallBeforeEventIndex);
-  const firstCallAfterEvent = typeof firstCallAfterEventIndex === 'number' && matchByName.at(firstCallAfterEventIndex);
-
-  let closestMatchingProfileCall: Types.Events.SyntheticProfileCall;
-  if (!lastCallBeforeEvent && !firstCallAfterEvent) {
+/**
+ * Finds the JS call in which the user timing API was called and returns
+ * its stack trace.
+ */
+function getForUserTiming(
+    event: Types.Events.UserTiming|Types.Events.ConsoleTimeStamp,
+    parsedTrace: Handlers.Types.ParsedTrace): Protocol.Runtime.StackTrace|null {
+  let rawEvent: Types.Events.Event|undefined = event;
+  if (Types.Events.isPerformanceMeasureBegin(event)) {
+    if (event.args.traceId === undefined) {
+      return null;
+    }
+    rawEvent = parsedTrace.UserTimings.measureTraceByTraceId.get(event.args.traceId);
+  }
+  if (!rawEvent) {
     return null;
   }
-  if (!lastCallBeforeEvent) {
-    // Per the check above firstCallAfterEvent is guaranteed to exist
-    // but ts is unaware, so we cast the type.
-    closestMatchingProfileCall = firstCallAfterEvent as Types.Events.SyntheticProfileCall;
-  } else if (!firstCallAfterEvent) {
-    closestMatchingProfileCall = lastCallBeforeEvent;
-  } else if (Helpers.Trace.eventContainsTimestamp(lastCallBeforeEvent, eventCallTime)) {
-    closestMatchingProfileCall = lastCallBeforeEvent;
-  }  // pick the closest when the choice isn't clear.
-  else if (eventCallTime - lastCallBeforeEvent.ts < firstCallAfterEvent.ts - eventCallTime) {
-    closestMatchingProfileCall = lastCallBeforeEvent;
-  } else {
-    closestMatchingProfileCall = firstCallAfterEvent;
+  // Look for the nearest profile call ancestor of the event tracing
+  // the call to the API.
+  let node: Helpers.TreeHelpers.TraceEntryNode|undefined|null = parsedTrace.Renderer.entryToNode.get(rawEvent);
+  while (node && !Types.Events.isProfileCall(node.entry)) {
+    node = node.parent;
   }
-  return get(closestMatchingProfileCall, parsedTrace);
+  if (node && Types.Events.isProfileCall(node.entry)) {
+    return get(node.entry, parsedTrace);
+  }
+  return null;
 }
 /**
  * Determines if a function is a native JS API (like setTimeout,

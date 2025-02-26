@@ -3,14 +3,10 @@
 // found in the LICENSE file.
 
 const rule = require('../lib/canvas-context-tracking.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('canvas-context-tracking-test', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('canvas-context-tracking-test', rule, {
   valid: [
     {
       code: `function renderCanvas() {

@@ -9,7 +9,7 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
-import customPreviewComponentStyles from './customPreviewComponent.css.legacy.js';
+import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import {
   ObjectPropertiesSection,
   ObjectPropertiesSectionsTreeOutline,
@@ -21,7 +21,7 @@ const UIStrings = {
    *@description A context menu item in the Custom Preview Component
    */
   showAsJavascriptObject: 'Show as JavaScript object',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

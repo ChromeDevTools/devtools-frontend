@@ -185,7 +185,7 @@ export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
 
 export function lineWhitespace(line: string): string|null {
   const matches = /^\s*/.exec(line);
-  if (!matches || !matches.length) {
+  if (!matches?.length) {
     // This should not happen
     return null;
   }
@@ -208,7 +208,7 @@ export function formatRelatedCode(
   let relatedCodeSize = 0;
   let currentLineNumber = lineNumber;
   let currentWhitespace = lineWhitespace(lines[lineNumber]);
-  const startByPrefix: Map<string, number> = new Map();
+  const startByPrefix = new Map<string, number>();
   while (lines[currentLineNumber] !== undefined &&
          (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize / 2)) {
     const whitespace = lineWhitespace(lines[currentLineNumber]);
@@ -268,9 +268,9 @@ export function formatNetworkRequest(
     string {
   return `Request: ${request.url()}
 
-${AiAssistance.formatHeaders('Request headers:', request.requestHeaders())}
+${AiAssistance.NetworkRequestFormatter.formatHeaders('Request headers:', request.requestHeaders())}
 
-${AiAssistance.formatHeaders('Response headers:', request.responseHeaders)}
+${AiAssistance.NetworkRequestFormatter.formatHeaders('Response headers:', request.responseHeaders)}
 
 Response status: ${request.statusCode} ${request.statusText}`;
 }

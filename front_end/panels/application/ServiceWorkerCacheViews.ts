@@ -18,7 +18,7 @@ import * as NetworkComponents from '../network/components/components.js';
 import * as Network from '../network/network.js';
 
 import * as ApplicationComponents from './components/components.js';
-import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.legacy.js';
+import serviceWorkerCacheViewsStyles from './serviceWorkerCacheViews.css.js';
 
 const UIStrings = {
   /**
@@ -79,7 +79,7 @@ const UIStrings = {
    *@description Text for previewing items
    */
   preview: 'Preview',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerCacheViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerCacheView extends UI.View.SimpleView {
@@ -97,7 +97,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
   private returnCount: number|null;
   private summaryBarElement: Element|null;
   private loadingPromise: Promise<{
-    entries: Array<Protocol.CacheStorage.DataEntry>,
+    entries: Protocol.CacheStorage.DataEntry[],
     returnCount: number,
   }>|null;
   private readonly metadataView = new ApplicationComponents.StorageMetadataView.StorageMetadataView();
@@ -236,7 +236,6 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
       columns,
       deleteCallback: this.deleteButtonClicked.bind(this),
       refreshCallback: this.updateData.bind(this, true),
-      editCallback: undefined,
     });
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
@@ -283,7 +282,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
 
   private async deleteButtonClicked(node: DataGrid.DataGrid.DataGridNode<DataGridNode>|null): Promise<void> {
     if (!node) {
-      node = this.dataGrid && this.dataGrid.selectedNode;
+      node = this.dataGrid?.selectedNode ?? null;
       if (!node) {
         return;
       }
@@ -321,7 +320,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     if (!this.dataGrid) {
       return;
     }
-    const selected = this.dataGrid.selectedNode && this.dataGrid.selectedNode.data.url();
+    const selected = this.dataGrid.selectedNode?.data.url();
     this.refreshButton.setEnabled(true);
     this.entriesForTest = entries;
     this.returnCount = returnCount;
@@ -361,12 +360,12 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     returnCount: number,
   }|undefined> {
     if (!force && this.loadingPromise) {
-      return this.loadingPromise;
+      return await this.loadingPromise;
     }
     this.refreshButton.setEnabled(false);
 
     if (this.loadingPromise) {
-      return this.loadingPromise;
+      return await this.loadingPromise;
     }
 
     this.loadingPromise = new Promise(resolve => {
@@ -404,7 +403,7 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     }
 
     // It is possible that table selection changes before the preview opens.
-    if (this.dataGrid && this.dataGrid.selectedNode && request === this.dataGrid.selectedNode.data) {
+    if (this.dataGrid?.selectedNode && request === this.dataGrid.selectedNode.data) {
       this.showPreview(preview);
     }
   }

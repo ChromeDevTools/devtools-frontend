@@ -14,12 +14,12 @@ import * as Workspace from '../models/workspace/workspace.js';
 const {urlString} = Platform.DevToolsPath;
 
 export function createContentProviderUISourceCodes(options: {
-  items: {
+  items: Array<{
     url: Platform.DevToolsPath.UrlString,
     content?: string, mimeType: string,
     resourceType?: Common.ResourceType.ResourceType,
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
-  }[],
+  }>,
   projectType?: Workspace.Workspace.projectTypes,
   projectId?: string,
   target?: SDK.Target.Target,
@@ -139,7 +139,7 @@ export function createFileSystemUISourceCode(options: {
   return {uiSourceCode, project};
 }
 
-export function setupMockedUISourceCode(url: string = 'https://example.com/') {
+export function setupMockedUISourceCode(url = 'https://example.com/') {
   const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
   const urlStringTagExample = urlString`${url}`;
   const contentTypeStub = sinon.createStubInstance(Common.ResourceType.ResourceType);

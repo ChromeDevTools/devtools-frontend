@@ -1,3 +1,7 @@
+# 7.0.0
+
+- Feat: make insertions during iteration safe (major)
+
 # 6.1.2
 
 - Fixed: erroneous trailing combinators in pseudos

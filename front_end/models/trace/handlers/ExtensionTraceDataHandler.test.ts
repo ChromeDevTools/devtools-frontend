@@ -82,13 +82,13 @@ export async function createTraceExtensionDataFromPerformanceAPITestInput(
     extensionData: PerformanceAPIExtensionTestData[]):
     Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData> {
   const events = extensionData.flatMap(makeTimingEventWithPerformanceExtensionData).sort((e1, e2) => e1.ts - e2.ts);
-  return createTraceExtensionDataFromEvents(events);
+  return await createTraceExtensionDataFromEvents(events);
 }
 
 async function createTraceExtensionDataFromConsoleAPITestInput(extensionData: ConsoleAPIExtensionTestData[]):
     Promise<Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData> {
   const events = extensionData.flatMap(makeTimingEventWithConsoleExtensionData).sort((e1, e2) => e1.ts - e2.ts);
-  return createTraceExtensionDataFromEvents(events);
+  return await createTraceExtensionDataFromEvents(events);
 }
 
 async function createTraceExtensionDataFromEvents(events: Trace.Types.Events.Event[]):
@@ -364,7 +364,7 @@ describe('ExtensionTraceDataHandler', function() {
 
     describe('Track groups', () => {
       it('builds extension track data for grouped tracks correctly', async function() {
-        const extensionDevToolsObjects: PerformanceAPIExtensionTestData['detail']['devtools'][] = [
+        const extensionDevToolsObjects: Array<PerformanceAPIExtensionTestData['detail']['devtools']> = [
           // Track group 1
           {
             dataType: 'track-entry',

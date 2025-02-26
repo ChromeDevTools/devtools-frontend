@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {BaseNode} from './BaseNode.js';
 import type * as Lantern from '../types/types.js';
+
+import {BaseNode} from './BaseNode.js';
 
 class CPUNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
   _event: Lantern.TraceEvent;
@@ -62,7 +63,7 @@ class CPUNode<T = Lantern.AnyNetworkObject> extends BaseNode<T> {
       if (event.name !== 'EvaluateScript') {
         continue;
       }
-      if (!event.args.data || !event.args.data.url) {
+      if (!event.args.data?.url) {
         continue;
       }
       urls.add(event.args.data.url);

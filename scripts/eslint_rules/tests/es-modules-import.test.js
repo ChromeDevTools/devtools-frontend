@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/es-modules-import.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('es-modules-import', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('es-modules-import', rule, {
   valid: [
     {
       code: 'import { Exporting } from \'./Exporting.js\';',
@@ -50,6 +43,11 @@ ruleTester.run('es-modules-import', rule, {
     {
       code: 'import * as UI from \'../../legacy.js\';',
       filename: 'front_end/ui/legacy/components/data_grid/DataGrid.ts',
+    },
+    // the `lit/lit.js` package is an exception
+    {
+      code: 'import {html, render} from \'../ui/lit/lit.js\';',
+      filename: 'front_end/elements/ElementsBreadcrumbs.ts',
     },
     // the `ls` helper from Platform is an exception
     {
@@ -139,7 +137,7 @@ ruleTester.run('es-modules-import', rule, {
       filename: 'front_end/ui/components/docs/data_grid/basic.ts',
     },
     {
-      code: 'import checkboxStyles from \'./checkbox.css.legacy.js\';',
+      code: 'import checkboxStyles from \'./checkbox.css.js\';',
       filename: 'front_end/ui/components/input/input.ts',
     },
     {
@@ -321,12 +319,12 @@ ruleTester.run('es-modules-import', rule, {
       ],
     },
     {
-      code: 'import checkboxStyles from \'../../../input/checkbox.css.legacy.js\';',
+      code: 'import checkboxStyles from \'../../../input/checkbox.css.js\';',
       filename: 'front_end/ui/panels/foo/FooPanel.ts',
       errors: [
         {
           message:
-              'Incorrect cross-namespace import: "../../../input/checkbox.css.legacy.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
+              'Incorrect cross-namespace import: "../../../input/checkbox.css.js". Use "import * as Namespace from \'../namespace/namespace.js\';" instead.',
         },
       ],
     },
@@ -337,7 +335,6 @@ ruleTester.run('es-modules-import', rule, {
       filename: 'front_end/panels/foo/FooPanel.ts',
       errors: [{messageId: 'doubleSlashInImportPath'}],
       output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
-    }
+    },
   ],
-
 });

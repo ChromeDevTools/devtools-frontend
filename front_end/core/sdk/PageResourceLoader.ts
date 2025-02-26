@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Error message for canceled source map loads
    */
   loadCanceledDueToReloadOf: 'Load canceled due to reload of inspected page',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/PageResourceLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -294,7 +294,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
 
     let failureReason: string|null = null;
     if (this.#loadOverride) {
-      return this.#loadOverride(url);
+      return await this.#loadOverride(url);
     }
     const parsedURL = new Common.ParsedURL.ParsedURL(url);
     const eligibleForLoadFromTarget = getLoadThroughTargetSetting().get() && parsedURL && parsedURL.scheme !== 'file' &&

@@ -41,7 +41,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import callStackSidebarPaneStyles from './callStackSidebarPane.css.legacy.js';
+import callStackSidebarPaneStyles from './callStackSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -83,7 +83,7 @@ const UIStrings = {
    * The user opens this context menu by selecting a specific call frame in the call stack sidebar pane.
    */
   restartFrame: 'Restart frame',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/CallStackSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -226,7 +226,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     this.notPausedMessageElement.classList.add('hidden');
 
     const itemPromises = [];
-    const uniqueWarnings: Set<string> = new Set();
+    const uniqueWarnings = new Set<string>();
     for (const frame of details.callFrames) {
       const itemPromise = Item.createForDebuggerCallFrame(frame, this.locationPool, this.refreshItem.bind(this));
       itemPromises.push(itemPromise);
@@ -354,7 +354,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     element.appendChild(icon);
     element.tabIndex = item === this.list.selectedItem() ? 0 : -1;
 
-    if (callframe && callframe.missingDebugInfoDetails) {
+    if (callframe?.missingDebugInfoDetails) {
       const icon = new IconButton.Icon.Icon();
       icon.data = {
         iconName: 'warning-filled',

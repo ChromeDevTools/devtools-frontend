@@ -9,20 +9,18 @@ import * as Marked from '../../third_party/marked/marked.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
-import releaseNoteViewStyles from './releaseNoteView.css.legacy.js';
-
-const {render, html} = Lit;
+import releaseNoteViewStyles from './releaseNoteView.css.js';
 
 const UIStrings = {
   /**
    *@description Text that is usually a hyperlink to more documentation
    */
   seeFeatures: 'See all new features',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/whats_new/ReleaseNoteView.ts', UIStrings);
 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -118,7 +116,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     const url = new URL('./resources/WNDT.md', import.meta.url);
     try {
       const response = await fetch(url.toString());
-      return response.text();
+      return await response.text();
     } catch {
       throw new Error(`Markdown file ${
           url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);

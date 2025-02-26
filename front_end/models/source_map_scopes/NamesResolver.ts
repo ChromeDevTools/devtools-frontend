@@ -32,9 +32,9 @@ export async function getTextFor(contentProvider: TextUtils.ContentProvider.Cont
 
 export class IdentifierPositions {
   name: string;
-  positions: {lineNumber: number, columnNumber: number}[];
+  positions: Array<{lineNumber: number, columnNumber: number}>;
 
-  constructor(name: string, positions: {lineNumber: number, columnNumber: number}[] = []) {
+  constructor(name: string, positions: Array<{lineNumber: number, columnNumber: number}> = []) {
     this.name = name;
     this.positions = positions;
   }
@@ -208,7 +208,7 @@ const resolveDebuggerScope = async(scope: SDK.DebuggerModel.ScopeChainEntry):
       }
       const script = scope.callFrame().script;
       const scopeChain = await findScopeChainForDebuggerScope(scope);
-      return resolveScope(script, scopeChain);
+      return await resolveScope(script, scopeChain);
     };
 
 const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.FormatterWorkerPool.ScopeTreeNode[]):
@@ -231,13 +231,13 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
               }
               // Extract as much as possible from SourceMap and resolve
               // missing identifier names from SourceMap ranges.
-              const promises: Promise<void>[] = [];
+              const promises: Array<Promise<void>> = [];
 
               const resolveEntry = (id: IdentifierPositions, handler: (sourceName: string) => void): void => {
                 // First see if we have a source map entry with a name for the identifier.
                 for (const position of id.positions) {
                   const entry = sourceMap.findEntry(position.lineNumber, position.columnNumber);
-                  if (entry && entry.name) {
+                  if (entry?.name) {
                     handler(entry.name);
                     return;
                   }
@@ -727,11 +727,11 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
         break;
       }
     }
-    return this.object.setPropertyValue(actualName, value);
+    return await this.object.setPropertyValue(actualName, value);
   }
 
   override async deleteProperty(name: Protocol.Runtime.CallArgument): Promise<string|undefined> {
-    return this.object.deleteProperty(name);
+    return await this.object.deleteProperty(name);
   }
 
   override callFunction<T, U>(

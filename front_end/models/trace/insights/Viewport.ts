@@ -8,13 +8,15 @@ import type * as Types from '../types/types.js';
 
 import {
   InsightCategory,
+  InsightKeys,
   type InsightModel,
   type InsightSetContext,
   InsightWarning,
+  type PartialInsightModel,
   type RequiredData,
 } from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
   title: 'Optimize viewport for mobile',
   /**
@@ -22,27 +24,28 @@ const UIStrings = {
    */
   description:
       'Tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimized for mobile.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Viewport.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['Meta', 'UserInteractions'] {
   return ['Meta', 'UserInteractions'];
 }
 
-export type ViewportInsightModel = InsightModel<{
+export type ViewportInsightModel = InsightModel<typeof UIStrings, {
   mobileOptimized: boolean | null,
   viewportEvent?: Types.Events.ParseMetaViewport,
 }>;
 
-function finalize(partialModel: Omit<ViewportInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    ViewportInsightModel {
+function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): ViewportInsightModel {
   return {
+    insightKey: InsightKeys.VIEWPORT,
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    shouldShow: partialModel.mobileOptimized === false,
+    state: partialModel.mobileOptimized === false ? 'fail' : 'pass',
     ...partialModel,
   };
 }

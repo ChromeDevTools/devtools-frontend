@@ -20,7 +20,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
-import sourcesViewStyles from './sourcesView.css.legacy.js';
+import sourcesViewStyles from './sourcesView.css.js';
 import {
   type EditorSelectedEvent,
   Events as TabbedEditorContainerEvents,
@@ -51,7 +51,7 @@ const UIStrings = {
    */
   sourceViewActions: 'Source View Actions',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -148,6 +148,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private placeholderElement(): Element {
     const placeholder = document.createElement('div');
+    placeholder.classList.add('sources-placeholder');
 
     const workspaceElement = placeholder.createChild('div', 'tabbed-pane-placeholder-row');
     workspaceElement.classList.add('workspace');
@@ -178,7 +179,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       UI.ARIAUtils.markAsListitem(listItemElement);
 
       // Take the first shortcut for display.
-      if (shortcutKeys && shortcutKeys[0]) {
+      if (shortcutKeys?.[0]) {
         const button = listItemElement.createChild('button');
         button.textContent = shortcut.description;
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
@@ -257,7 +258,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!(view instanceof UISourceCodeFrame)) {
       return null;
     }
-    return (view as UISourceCodeFrame);
+    return (view);
   }
 
   currentUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
@@ -460,7 +461,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const sourceView = this.sourceViewByUISourceCode.get(uiSourceCode);
     this.sourceViewByUISourceCode.delete(uiSourceCode);
     if (sourceView && sourceView instanceof UISourceCodeFrame) {
-      (sourceView as UISourceCodeFrame).dispose();
+      (sourceView).dispose();
     }
     uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this.#uiSourceCodeTitleChanged, this);
   }
@@ -623,7 +624,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!(sourceFrame instanceof UISourceCodeFrame)) {
       return;
     }
-    const uiSourceCodeFrame = (sourceFrame as UISourceCodeFrame);
+    const uiSourceCodeFrame = (sourceFrame);
     uiSourceCodeFrame.commitEditing();
   }
 
@@ -651,7 +652,7 @@ export interface EditorAction {
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;
 }
 
-const registeredEditorActions: (() => EditorAction)[] = [];
+const registeredEditorActions: Array<() => EditorAction> = [];
 
 export function registerEditorAction(editorAction: () => EditorAction): void {
   registeredEditorActions.push(editorAction);

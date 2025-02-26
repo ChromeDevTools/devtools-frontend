@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {
   $,
   $$,
   click,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   goToResource,
   pasteText,
   timeout,
   waitFor,
-  waitForFunction,
+  waitForFunction
 } from '../../shared/helper.js';
 
 import {
@@ -57,9 +57,9 @@ export const Level = {
   Error: CONSOLE_ERROR_MESSAGES_SELECTOR,
 };
 
-export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
-  await waitFor('.console-main-toolbar');
-  const main = await $('.console-main-toolbar');
+export async function deleteConsoleMessagesFilter() {
+  const {frontend} = getBrowserAndPages();
+  const main = await waitFor('.console-main-toolbar');
   await frontend.evaluate(toolbar => {
     const deleteButton = toolbar.querySelector<HTMLElement>('.toolbar-input-clear-button');
     if (deleteButton) {
@@ -69,14 +69,15 @@ export async function deleteConsoleMessagesFilter(frontend: puppeteer.Page) {
   await expectVeEvents([veClick('Toolbar > TextField: filter > Action: clear')], await veRoot());
 }
 
-export async function filterConsoleMessages(frontend: puppeteer.Page, filter: string) {
-  await waitFor('.console-main-toolbar');
-  const main = await $('.console-main-toolbar');
+export async function filterConsoleMessages(filter: string) {
+  const {frontend} = getBrowserAndPages();
+  const main = await waitFor('.console-main-toolbar');
   await frontend.evaluate(toolbar => {
     const prompt = toolbar.querySelector<HTMLElement>('.toolbar-input-prompt.text-prompt');
     prompt!.focus();
   }, main);
   await pasteText(filter);
+  await drainFrontendTaskQueue();
   await frontend.keyboard.press('Tab');
   if (filter.length) {
     await expectVeEvents([veChange('Toolbar > TextField: filter')], await veRoot());
@@ -115,7 +116,7 @@ export async function getConsoleMessages(testName: string, withAnchor = false, c
   // Have the target load the page.
   await goToResource(`console/${testName}.html`);
 
-  return getCurrentConsoleMessages(withAnchor, Level.All, callback);
+  return await getCurrentConsoleMessages(withAnchor, Level.All, callback);
 }
 
 export async function getCurrentConsoleMessages(withAnchor = false, level = Level.All, callback?: () => Promise<void>) {
@@ -153,7 +154,7 @@ export async function getCurrentConsoleMessages(withAnchor = false, level = Leve
   }, selector);
 }
 
-export async function getLastConsoleMessages(offset: number = 0) {
+export async function getLastConsoleMessages(offset = 0) {
   return (await getCurrentConsoleMessages()).at(-1 - offset);
 }
 
@@ -249,7 +250,8 @@ export async function showVerboseMessages() {
       `${await veRoot()} > Toolbar > DropDown: log-level`);
 }
 
-export async function typeIntoConsole(frontend: puppeteer.Page, message: string) {
+export async function typeIntoConsole(message: string) {
+  const {frontend} = getBrowserAndPages();
   const asyncScope = new AsyncScope();
   const consoleElement = await waitFor(CONSOLE_PROMPT_SELECTOR, undefined, asyncScope);
   await consoleElement.click();
@@ -272,13 +274,14 @@ export async function typeIntoConsole(frontend: puppeteer.Page, message: string)
 }
 
 export async function typeIntoConsoleAndWaitForResult(
-    frontend: puppeteer.Page, message: string, leastExpectedMessages = 1, selector = Level.All) {
+    message: string, leastExpectedMessages = 1, selector = Level.All) {
+  const {frontend} = getBrowserAndPages();
   // Get the current number of console results so we can check we increased it.
   const originalLength = await frontend.evaluate(selector => {
     return document.querySelectorAll(selector).length;
   }, selector);
 
-  await typeIntoConsole(frontend, message);
+  await typeIntoConsole(message);
 
   await new AsyncScope().exec(
       () => frontend.waitForFunction((originalLength: number, leastExpectedMessages: number, selector: string) => {
@@ -389,20 +392,19 @@ export async function clickOnContextMenu(selectorForNode: string, jslogContext: 
  * Creates a function that runs a command and checks the nth output from the
  * bottom (checks last message by default)
  */
-export function checkCommandResultFunction(offset: number = 0) {
+export function checkCommandResultFunction(offset = 0) {
   return async function(command: string, expected: string, message?: string) {
-    await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command);
+    await typeIntoConsoleAndWaitForResult(command);
     assert.strictEqual(await getLastConsoleMessages(offset), expected, message);
   };
 }
 
-export async function getLastConsoleStacktrace(offset: number = 0) {
+export async function getLastConsoleStacktrace(offset = 0) {
   return (await getStructuredConsoleMessages()).at(-1 - offset)?.stackPreview as string;
 }
 
-export async function checkCommandStacktrace(
-    command: string, expected: string, leastMessages: number = 1, offset: number = 0) {
-  await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, command, leastMessages);
+export async function checkCommandStacktrace(command: string, expected: string, leastMessages = 1, offset = 0) {
+  await typeIntoConsoleAndWaitForResult(command, leastMessages);
   await unifyLogVM(await getLastConsoleStacktrace(offset), expected);
 }
 

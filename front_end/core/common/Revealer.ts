@@ -54,7 +54,7 @@ const UIStrings = {
    * @description The UI destination when revealing loaded resources through the Animations panel
    */
   animationsPanel: 'Animations panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -78,7 +78,7 @@ let revealerRegistry: RevealerRegistry|undefined;
  * @see Revealer
  */
 export class RevealerRegistry {
-  private readonly registeredRevealers: RevealerRegistration<unknown>[] = [];
+  private readonly registeredRevealers: Array<RevealerRegistration<unknown>> = [];
 
   /**
    * Yields the singleton instance, creating it on-demand when necessary.
@@ -126,7 +126,7 @@ export class RevealerRegistry {
     return await revealers[0].reveal(revealable, omitFocus);
   }
 
-  getApplicableRegisteredRevealers(revealable: unknown): RevealerRegistration<unknown>[] {
+  getApplicableRegisteredRevealers(revealable: unknown): Array<RevealerRegistration<unknown>> {
     return this.registeredRevealers.filter(registration => {
       for (const contextType of registration.contextTypes()) {
         if (revealable instanceof contextType) {
@@ -164,7 +164,7 @@ export function registerRevealer<T>(registration: RevealerRegistration<T>): void
  * @param revealable the object to reveal.
  * @param omitFocus whether to omit focusing on the presentation of `revealable` afterwards.
  */
-export async function reveal(revealable: unknown, omitFocus: boolean = false): Promise<void> {
+export async function reveal(revealable: unknown, omitFocus = false): Promise<void> {
   await RevealerRegistry.instance().reveal(revealable, omitFocus);
 }
 

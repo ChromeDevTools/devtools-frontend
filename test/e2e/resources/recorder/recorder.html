@@ -3,6 +3,7 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
+<!DOCTYPE html>
 <div>
   <button id="mouse-button">Mouse click button</button>
   <button id="test">Test Button</button>
@@ -31,8 +32,8 @@
 <script>
   document
     .getElementById('mouse-button')
-    .addEventListener('mouseup', (event) => event.preventDefault());
-  window.addEventListener('submit', (event) => {
+    .addEventListener('mouseup', event => event.preventDefault());
+  window.addEventListener('submit', event => {
     if (!event.target.classList.contains('submittable')) {
       event.preventDefault();
     }
@@ -63,7 +64,7 @@
     window.open(
       'popup.html',
       'Window Name ' + new Date(),
-      'resizable,scrollbars,status,width=200,height=200'
+      'resizable,scrollbars,status,width=200,height=200',
     );
   });
 

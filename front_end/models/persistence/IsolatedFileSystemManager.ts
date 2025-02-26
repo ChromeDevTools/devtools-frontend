@@ -43,14 +43,14 @@ const UIStrings = {
    *@example {folder does not exist} PH1
    */
   unableToAddFilesystemS: 'Unable to add filesystem: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystemManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let isolatedFileSystemManagerInstance: IsolatedFileSystemManager|null;
 
 export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly fileSystemsInternal: Map<Platform.DevToolsPath.UrlString, PlatformFileSystem>;
-  private readonly callbacks: Map<number, (arg0: Array<Platform.DevToolsPath.RawPathString>) => void>;
+  private readonly callbacks: Map<number, (arg0: Platform.DevToolsPath.RawPathString[]) => void>;
   private readonly progresses: Map<number, Common.Progress.Progress>;
   private readonly workspaceFolderExcludePatternSettingInternal: Common.Settings.RegExpSetting;
   private fileSystemRequestResolve: ((arg0: IsolatedFileSystem|null) => void)|null;
@@ -132,10 +132,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private requestFileSystems(): Promise<IsolatedFileSystem[]> {
-    let fulfill: (arg0: IsolatedFileSystem[]) => void;
-    const promise = new Promise<IsolatedFileSystem[]>(f => {
-      fulfill = f;
-    });
+    const {resolve, promise} = Promise.withResolvers<IsolatedFileSystem[]>();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
         Host.InspectorFrontendHostAPI.Events.FileSystemsLoaded, onFileSystemsLoaded, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.requestFileSystems();
@@ -152,8 +149,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
       void Promise.all(promises).then(onFileSystemsAdded);
     }
 
-    function onFileSystemsAdded(fileSystems: (IsolatedFileSystem|null)[]): void {
-      fulfill(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
+    function onFileSystemsAdded(fileSystems: Array<IsolatedFileSystem|null>): void {
+      resolve(fileSystems.filter(fs => Boolean(fs)) as IsolatedFileSystem[]);
     }
   }
 
@@ -257,8 +254,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
         const filePath = Common.ParsedURL.ParsedURL.rawPathToUrlString(embedderPath);
         for (const fileSystemPath of this.fileSystemsInternal.keys()) {
           const fileSystem = this.fileSystemsInternal.get(fileSystemPath);
-          if (fileSystem &&
-              fileSystem.isFileExcluded(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(embedderPath))) {
+          if (fileSystem?.isFileExcluded(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(embedderPath))) {
             continue;
           }
           const pathPrefix = fileSystemPath.endsWith('/') ? fileSystemPath : fileSystemPath + '/';
@@ -284,7 +280,7 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     return this.workspaceFolderExcludePatternSettingInternal;
   }
 
-  registerCallback(callback: (arg0: Array<Platform.DevToolsPath.RawPathString>) => void): number {
+  registerCallback(callback: (arg0: Platform.DevToolsPath.RawPathString[]) => void): number {
     const requestId = ++lastRequestId;
     this.callbacks.set(requestId, callback);
     return requestId;

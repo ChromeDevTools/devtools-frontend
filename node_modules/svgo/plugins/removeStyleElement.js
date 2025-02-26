@@ -3,8 +3,6 @@
 const { detachNodeFromParent } = require('../lib/xast.js');
 
 exports.name = 'removeStyleElement';
-exports.type = 'visitor';
-exports.active = false;
 exports.description = 'removes <style> element (disabled by default)';
 
 /**
@@ -14,7 +12,7 @@ exports.description = 'removes <style> element (disabled by default)';
  *
  * @author Betsy Dupuis
  *
- * @type {import('../lib/types').Plugin<void>}
+ * @type {import('./plugins-types').Plugin<'removeStyleElement'>}
  */
 exports.fn = () => {
   return {

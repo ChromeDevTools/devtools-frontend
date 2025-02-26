@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeviceModeToolbar} from './DeviceModeToolbar.js';
-import deviceModeViewStyles from './deviceModeView.css.legacy.js';
+import deviceModeViewStyles from './deviceModeView.css.js';
 import {MediaQueryInspector} from './MediaQueryInspector.js';
 
 const UIStrings = {
@@ -50,7 +50,7 @@ const UIStrings = {
    * Translation of this phrase should be limited to 10 characters.
    */
   laptopL: 'Laptop L',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/emulation/DeviceModeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -486,7 +486,7 @@ export class DeviceModeView extends UI.Widget.VBox {
         await this.paintImage(ctx, this.model.screenImage(), screenRect.relativeTo(outlineRect));
       }
       ctx.drawImage(pageImage, Math.floor(contentLeft), Math.floor(contentTop));
-      this.saveScreenshot((canvas as HTMLCanvasElement));
+      this.saveScreenshot((canvas));
     };
   }
 
@@ -521,7 +521,7 @@ export class DeviceModeView extends UI.Widget.VBox {
       }
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(pageImage, 0, 0);
-      this.saveScreenshot((canvas as HTMLCanvasElement));
+      this.saveScreenshot((canvas));
     };
   }
 
@@ -577,8 +577,7 @@ export class Ruler extends UI.Widget.VBox {
     this.element.classList.add('device-mode-ruler');
     this.element.setAttribute('jslog', `${VisualLogging.deviceModeRuler().track({click: true})}`);
     this.contentElementInternal =
-        this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner') as
-        HTMLDivElement;
+        this.element.createChild('div', 'device-mode-ruler-content').createChild('div', 'device-mode-ruler-inner');
     this.horizontal = horizontal;
     this.scale = 1;
     this.count = 0;

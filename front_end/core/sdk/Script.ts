@@ -56,7 +56,7 @@ const UIStrings = {
    *@description Error message when failing to load a script source text
    */
   unableToFetchScriptSource: 'Unable to fetch script source.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/Script.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -311,7 +311,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
   async getWasmBytecode(): Promise<ArrayBuffer> {
     const base64 = await this.debuggerModel.target().debuggerAgent().invoke_getWasmBytecode({scriptId: this.scriptId});
     const response = await fetch(`data:application/wasm;base64,${base64.bytecode}`);
-    return response.arrayBuffer();
+    return await response.arrayBuffer();
   }
 
   originalContentProvider(): TextUtils.ContentProvider.ContentProvider {
@@ -490,7 +490,7 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
   }
   // This is to overcome compilation cache which doesn't get reset.
   const resourceTreeModel = script.debuggerModel.target().model(ResourceTreeModel);
-  if (!resourceTreeModel || !resourceTreeModel.mainFrame) {
+  if (!resourceTreeModel?.mainFrame) {
     return null;
   }
   return resourceTreeModel.mainFrame.id;

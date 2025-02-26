@@ -256,7 +256,7 @@ function chooseInitiatorRequest(request: NetworkRequest, requestsByURL: Map<stri
 }
 
 function linkInitiators(lanternRequests: NetworkRequest[]): void {
-  const requestsByURL: Map<string, NetworkRequest[]> = new Map();
+  const requestsByURL = new Map<string, NetworkRequest[]>();
   for (const request of lanternRequests) {
     const requests = requestsByURL.get(request.url) || [];
     requests.push(request);
@@ -354,7 +354,7 @@ function createNetworkRequests(
     }
 
     // Apply the `:redirect` requestId convention: only redirects[0].requestId is the actual
-    // requestId, all the rest have n occurences of `:redirect` as a suffix.
+    // requestId, all the rest have n occurrences of `:redirect` as a suffix.
     for (let i = 1; i < requestChain.length; i++) {
       requestChain[i].requestId = `${requestChain[i - 1].requestId}:redirect`;
     }
@@ -428,7 +428,7 @@ function createGraph(
 }
 
 export {
-  createProcessedNavigation,
-  createNetworkRequests,
   createGraph,
+  createNetworkRequests,
+  createProcessedNavigation,
 };

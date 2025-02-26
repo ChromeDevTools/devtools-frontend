@@ -4,9 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import type * as puppeteer from 'puppeteer-core';
 
 import {installPageErrorHandlers} from './events.js';
 import {BUILD_ROOT} from './paths.js';
@@ -80,8 +78,12 @@ export class DevToolsFrontendTab {
     // Clear any local storage settings.
     await this.page.evaluate(() => {
       localStorage.clear();
-      // @ts-ignore Test logging needs debug event logging, which is controlled via localStorage, hence we need to restart test logging here
-      globalThis.setVeDebugLoggingEnabled(true, 'Test');
+
+      // Test logging needs debug event logging,
+      // which is controlled via localStorage, hence we need to restart test logging here
+      // This can be called after a page fails to load DevTools so make it conditional
+      // @ts-expect-error
+      globalThis?.setVeDebugLoggingEnabled(true, 'Test');
     });
     await this.reload();
   }

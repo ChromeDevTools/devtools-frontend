@@ -9,6 +9,7 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
+
 import {
   createAndStartRecording,
   enableAndOpenRecorderPanel,

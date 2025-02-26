@@ -18,11 +18,11 @@ import * as Resources from './application.js';
 
 class SharedStorageListener {
   #model: Resources.SharedStorageModel.SharedStorageModel;
-  #storagesWatched: Array<Resources.SharedStorageModel.SharedStorageForOrigin>;
-  #accessEvents: Array<Protocol.Storage.SharedStorageAccessedEvent>;
+  #storagesWatched: Resources.SharedStorageModel.SharedStorageForOrigin[];
+  #accessEvents: Protocol.Storage.SharedStorageAccessedEvent[];
   #changeEvents:
       Map<Resources.SharedStorageModel.SharedStorageForOrigin,
-          Array<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>>;
+          Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent[]>;
 
   constructor(model: Resources.SharedStorageModel.SharedStorageModel) {
     this.#model = model;
@@ -30,7 +30,7 @@ class SharedStorageListener {
     this.#accessEvents = new Array<Protocol.Storage.SharedStorageAccessedEvent>();
     this.#changeEvents = new Map<
         Resources.SharedStorageModel.SharedStorageForOrigin,
-        Array<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>>();
+        Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent[]>();
 
     this.#model.addEventListener(
         Resources.SharedStorageModel.Events.SHARED_STORAGE_ADDED, this.#sharedStorageAdded, this);
@@ -55,12 +55,12 @@ class SharedStorageListener {
     }
   }
 
-  get accessEvents(): Array<Protocol.Storage.SharedStorageAccessedEvent> {
+  get accessEvents(): Protocol.Storage.SharedStorageAccessedEvent[] {
     return this.#accessEvents;
   }
 
   changeEventsForStorage(storage: Resources.SharedStorageModel.SharedStorageForOrigin):
-      Array<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>|null {
+      Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent[]|null {
     return this.#changeEvents.get(storage) || null;
   }
 
@@ -70,7 +70,7 @@ class SharedStorageListener {
 
   #sharedStorageAdded(event: Common.EventTarget.EventTargetEvent<Resources.SharedStorageModel.SharedStorageForOrigin>):
       void {
-    const storage = (event.data as Resources.SharedStorageModel.SharedStorageForOrigin);
+    const storage = (event.data);
     this.#storagesWatched.push(storage);
     storage.addEventListener(
         Resources.SharedStorageModel.SharedStorageForOrigin.Events.SHARED_STORAGE_CHANGED,
@@ -79,7 +79,7 @@ class SharedStorageListener {
 
   #sharedStorageRemoved(
       event: Common.EventTarget.EventTargetEvent<Resources.SharedStorageModel.SharedStorageForOrigin>): void {
-    const storage = (event.data as Resources.SharedStorageModel.SharedStorageForOrigin);
+    const storage = (event.data);
     storage.removeEventListener(
         Resources.SharedStorageModel.SharedStorageForOrigin.Events.SHARED_STORAGE_CHANGED,
         this.#sharedStorageChanged.bind(this, storage), this);
@@ -91,7 +91,7 @@ class SharedStorageListener {
   }
 
   #sharedStorageAccess(event: Common.EventTarget.EventTargetEvent<Protocol.Storage.SharedStorageAccessedEvent>): void {
-    this.#accessEvents.push(event.data as Protocol.Storage.SharedStorageAccessedEvent);
+    this.#accessEvents.push(event.data);
   }
 
   #sharedStorageChanged(
@@ -102,8 +102,7 @@ class SharedStorageListener {
       this.#changeEvents.set(
           storage, new Array<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>());
     }
-    this.#changeEvents.get(storage)?.push(
-        event.data as Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent);
+    this.#changeEvents.get(storage)?.push(event.data);
   }
 
   async waitForStoragesAdded(expectedCount: number): Promise<void> {

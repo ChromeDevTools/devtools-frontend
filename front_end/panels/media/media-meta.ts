@@ -20,7 +20,7 @@ const UIStrings = {
    *@description Command for showing the media tool.
    */
   showMedia: 'Show Media',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/media-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

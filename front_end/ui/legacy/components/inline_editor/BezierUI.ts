@@ -30,7 +30,7 @@ export class BezierUI {
 
   static drawVelocityChart(bezier: UI.Geometry.CubicBezier, path: Element, width: number): void {
     const height = Height;
-    let pathBuilder: (string|number)[]|(string | number)[] = ['M', 0, height];
+    let pathBuilder: Array<string|number>|Array<string|number> = ['M', 0, height];
     /** @const */ const sampleSize = 1 / 40;
 
     let prev = bezier.evaluateAt(0);

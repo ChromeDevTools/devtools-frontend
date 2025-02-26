@@ -146,7 +146,7 @@ export function veImpressionForDrawerToolbar(options?: {
 export async function dumpVeEvents(label: string) {
   const {frontend} = getBrowserAndPages();
   const events =
-      // @ts-ignore
+      // @ts-expect-error
       await frontend.evaluate(async () => (await globalThis.getUnmatchedVeEvents()) as unknown as string[]);
   // eslint-disable-next-line no-console
   console.log(label + '\n', events);
@@ -159,7 +159,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[], root?: stri
   prependRoot(expectedEvents, root);
 
   const {frontend} = getBrowserAndPages();
-  // @ts-ignore
+  // @ts-expect-error
   await frontend.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
 }
 

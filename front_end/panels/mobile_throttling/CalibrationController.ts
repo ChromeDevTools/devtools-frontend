@@ -10,7 +10,7 @@ const UIStrings = {
    *@description Text to display to user while a calibration process is running.
    */
   runningCalibration: 'Running CPU calibration, please do not leave this tab or close DevTools.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/CalibrationController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

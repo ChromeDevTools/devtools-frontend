@@ -53,6 +53,18 @@ export const markdownLinks = new Map<string, string>([
   ['https://w3c.github.io/uievents/#legacy-event-types', 'https://w3c.github.io/uievents/#legacy-event-types'],
   ['manageCookiesHelpPage', 'https://support.google.com/chrome/answer/95647'],
   ['gracePeriodStagedControlExplainer', 'https://developers.google.com/privacy-sandbox/blog/grace-period-opt-out'],
+  ['signatureHeader', 'https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-http-field'],
+  ['signatureInputHeader', 'https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-http-fi'],
+  ['signatureParameters', 'https://www.rfc-editor.org/rfc/rfc9421.html#name-signature-parameters'],
+  ['sfDictionary', 'https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries'],
+  ['sfByteSequence', 'https://www.rfc-editor.org/rfc/rfc8941.html#name-byte-sequences'],
+  ['sfInnerList', 'https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists'],
+  ['componentParameterSf', 'https://www.rfc-editor.org/rfc/rfc9421.html#name-strict-serialization-of-htt'],
+  ['componentParameterReq', 'https://www.rfc-editor.org/rfc/rfc9421.html#content-request-response'],
+  [
+    'unencodedDigestHeader',
+    'https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html'
+  ],
 ]);
 
 export const getMarkdownLink = (key: string): string => {

@@ -29,7 +29,6 @@
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {createChild, Overlay, type Bounds, type ResetData} from './common.js';
-
 import {buildPath, emptyBounds, type PathBounds} from './highlight_common.js';
 
 interface Path {

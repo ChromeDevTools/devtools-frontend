@@ -6,16 +6,14 @@ import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 import * as Input from '../input/input.js';
 
-import previewToggleStylesRaw from './previewToggle.css.legacy.js';
+import previewToggleStylesRaw from './previewToggle.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const previewToggleStyles = new CSSStyleSheet();
 previewToggleStyles.replaceSync(previewToggleStylesRaw.cssContent);
-
-const {render, html, nothing} = Lit;
 
 export interface PreviewToggleData {
   name: string;
@@ -39,7 +37,7 @@ const UIStrings = {
    *@description Link text the user can click to see documentation.
    */
   learnMoreLink: 'Learn More',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/components/panel_feedback/PreviewToggle.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -51,7 +49,7 @@ export class PreviewToggle extends HTMLElement {
   #helperText: string|null = null;
   #feedbackURL: string|null = null;
   #learnMoreURL: string|undefined;
-  #experiment: string = '';
+  #experiment = '';
   #onChangeCallback?: (checked: boolean) => void;
 
   connectedCallback(): void {

@@ -16,17 +16,17 @@ function threadKey(data: Types.Events.Event): string {
 }
 // Track all the start + end events. We key them by the PID+TID so we don't
 // accidentally pair across different threads.
-const animationFrameStarts: Map<string, Types.Events.AnimationFrameAsyncStart[]> = new Map();
-const animationFrameEnds: Map<string, Types.Events.AnimationFrameAsyncEnd[]> = new Map();
+const animationFrameStarts = new Map<string, Types.Events.AnimationFrameAsyncStart[]>();
+const animationFrameEnds = new Map<string, Types.Events.AnimationFrameAsyncEnd[]>();
 // Store all the AnimationFrame::Presentation events. Key them by their ID for
 // easy look-up later on when we associate one to the AnimationFrame event.
-const animationFramePresentations: Map<string, Types.Events.AnimationFramePresentation> = new Map();
+const animationFramePresentations = new Map<string, Types.Events.AnimationFramePresentation>();
 
 // The final list of animation frames that we return.
 const animationFrames: Types.Events.SyntheticAnimationFramePair[] = [];
 
-const presentationForFrame: Map<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation> =
-    new Map();
+const presentationForFrame =
+    new Map<Types.Events.SyntheticAnimationFramePair, Types.Events.AnimationFramePresentation>();
 
 export function reset(): void {
   animationFrameStarts.clear();

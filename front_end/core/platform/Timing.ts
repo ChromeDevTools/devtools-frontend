@@ -8,10 +8,6 @@ export type Seconds = Brand<number, 'Seconds'>;
 export type MilliSeconds = Brand<number, 'MilliSeconds'>;
 export type MicroSeconds = Brand<number, 'MicroSeconds'>;
 
-export function secondsToMilliSeconds(x: Seconds): MilliSeconds {
-  return (x * 1000) as MilliSeconds;
-}
-
 export function milliSecondsToSeconds(x: MilliSeconds): Seconds {
   return (x / 1000) as Seconds;
 }

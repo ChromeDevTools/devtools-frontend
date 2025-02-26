@@ -5,9 +5,9 @@
 import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {Directives, html, render} from '../../../ui/lit/lit.js';
 
-import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.legacy.js';
+import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssHintDetailsViewStyles = new CSSStyleSheet();
@@ -17,12 +17,10 @@ const UIStrings = {
   /**
    *@description Text for button that redirects to CSS property documentation.
    */
-    learnMore: 'Learn More',
-};
+  learnMore: 'Learn More',
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSHintDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const {render, html, Directives} = Lit;
 
 interface Hint {
   getMessage(): string;

@@ -1,6 +1,3 @@
-monorail: {
-  component: "Platform>DevTools>Security"
-}
 buganizer_public: {
   component_id: 1456324
 }

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 const parser = require('@typescript-eslint/parser');
+const {assert} = require('chai');
 
 const utils = require('../lib/utils.js');
-const {assert} = require('chai');
 
 describe('eslint utils', () => {
   describe('isLitHtmlTemplateCall', () => {

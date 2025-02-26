@@ -5,7 +5,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getDurationString} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type PopoverInfo,
@@ -25,7 +25,7 @@ const UIStrings = {
    * @example {A track name} PH1
    */
   customTrackName: '{PH1} — Custom track',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ExtensionTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -84,7 +84,7 @@ export class ExtensionTrackAppender implements TrackAppender {
     for (const [trackName, entries] of Object.entries(this.#extensionTopLevelTrack.entriesByTrack)) {
       if (this.#extensionTopLevelTrack.isTrackGroup) {
         // Second level header is used for only sub-tracks.
-        this.#appendSecondLevelHeader(currentStartLevel, trackName as string);
+        this.#appendSecondLevelHeader(currentStartLevel, trackName);
       }
       currentStartLevel = this.#compatibilityBuilder.appendEventsAtLevel(entries, currentStartLevel, this);
     }
@@ -107,6 +107,6 @@ export class ExtensionTrackAppender implements TrackAppender {
     info.title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
         event.args.tooltipText :
         this.titleForEvent(event);
-    info.formattedTime = getFormattedTime(event.dur);
+    info.formattedTime = getDurationString(event.dur);
   }
 }

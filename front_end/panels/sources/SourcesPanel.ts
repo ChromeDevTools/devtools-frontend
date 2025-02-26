@@ -51,7 +51,7 @@ import * as Snippets from '../snippets/snippets.js';
 import {CallStackSidebarPane} from './CallStackSidebarPane.js';
 import {DebuggerPausedMessage} from './DebuggerPausedMessage.js';
 import {NavigatorView} from './NavigatorView.js';
-import sourcesPanelStyles from './sourcesPanel.css.legacy.js';
+import sourcesPanelStyles from './sourcesPanel.css.js';
 import {Events, SourcesView} from './SourcesView.js';
 import {ThreadsSidebarPane} from './ThreadsSidebarPane.js';
 import {UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -167,7 +167,7 @@ const UIStrings = {
    *@description Text in Sources Panel of the Sources panel
    */
   openInSourcesPanel: 'Open in Sources panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const primitiveRemoteObjectTypes = new Set(['number', 'boolean', 'bigint', 'undefined']);
@@ -647,10 +647,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
         contextMenu.viewSection(), Root.Runtime.ExperimentName.JUST_MY_CODE, i18nString(UIStrings.hideIgnoreListed));
   }
 
-  setIgnoreExecutionLineEvents(ignoreExecutionLineEvents: boolean): void {
-    this.ignoreExecutionLineEvents = ignoreExecutionLineEvents;
-  }
-
   updateLastModificationTime(): void {
     this.lastModificationTime = window.performance.now();
   }
@@ -667,14 +663,6 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     this.sourcesViewInternal.showSourceLocation(uiLocation.uiSourceCode, uiLocation, undefined, true);
-  }
-
-  private lastModificationTimeoutPassedForTest(): void {
-    lastModificationTimeout = Number.MIN_VALUE;
-  }
-
-  private updateLastModificationTimeForTest(): void {
-    lastModificationTimeout = Number.MAX_VALUE;
   }
 
   private async callFrameChanged(): Promise<void> {
@@ -961,7 +949,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       const editorElement = this.element.querySelector('devtools-text-editor');
       if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
-        contextMenu.headerSection().appendAction(
+        contextMenu.footerSection().appendAction(
             'drjones.sources-panel-context',
         );
       }
@@ -996,7 +984,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (contentType.hasScripts()) {
       const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
       const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
-      if (debuggerModel && debuggerModel.isPaused()) {
+      if (debuggerModel?.isPaused()) {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.continueToHere), this.continueToLocation.bind(this, uiLocation),
             {jslogContext: 'continue-to-here'});
@@ -1129,7 +1117,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private async didGetFunctionDetails(response: {
     location: SDK.DebuggerModel.Location|null,
   }|null): Promise<void> {
-    if (!response || !response.location) {
+    if (!response?.location) {
       return;
     }
 
@@ -1169,7 +1157,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
 
-    if (this.sidebarPaneView && this.sidebarPaneView.shouldHideOnDetach()) {
+    if (this.sidebarPaneView?.shouldHideOnDetach()) {
       return;
     }  // We can't reparent extension iframes.
 
@@ -1272,7 +1260,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       return;
     }
     const entry = items[0].webkitGetAsEntry();
-    if (entry && entry.isDirectory) {
+    if (entry?.isDirectory) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceDropFolder);
       void UI.ViewManager.ViewManager.instance().showView('navigator-files');
@@ -1280,7 +1268,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
   }
 }
 
-export let lastModificationTimeout = 200;
+export const lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 
 export class UILocationRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UILocation> {
@@ -1325,7 +1313,7 @@ export class DebuggerPausedDetailsRevealer implements
     Common.Revealer.Revealer<SDK.DebuggerModel.DebuggerPausedDetails> {
   async reveal(_object: SDK.DebuggerModel.DebuggerPausedDetails): Promise<void> {
     if (Common.Settings.Settings.instance().moduleSetting('auto-focus-on-debugger-paused-enabled').get()) {
-      return SourcesPanel.instance().setAsCurrentPanel();
+      return await SourcesPanel.instance().setAsCurrentPanel();
     }
   }
 }

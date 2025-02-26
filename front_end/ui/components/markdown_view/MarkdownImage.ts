@@ -7,7 +7,7 @@ import '../../components/icon_button/icon_button.js';
 import type * as IconButton from '../../components/icon_button/icon_button.js';
 import * as Lit from '../../lit/lit.js';
 
-import markdownImageStylesRaw from './markdownImage.css.legacy.js';
+import markdownImageStylesRaw from './markdownImage.css.js';
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

@@ -17,14 +17,14 @@ import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 
 interface Navigator {
   userAgentData?: {
-    brands: {
+    brands: Array<{
       brand: string,
       version: string,
-    }[],
-    fullVersionList: {
+    }>,
+    fullVersionList: Array<{
       brand: string,
       version: string,
-    }[],
+    }>,
     mobile: string,
     getHighEntropyValues: (metaDataKeys: string[]) => Promise<string[]>,
   };

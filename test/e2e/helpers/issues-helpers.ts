@@ -38,7 +38,7 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu(root?: puppeteer.JSHandle) {
+export async function getHideIssuesMenu(root?: puppeteer.ElementHandle) {
   return await waitFor(HIDE_ISSUES_MENU, root);
 }
 
@@ -103,7 +103,7 @@ export async function getIssueByTitle(issueMessage: string): Promise<puppeteer.E
   const issueMessageElement = await waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
-  return getIssueByTitleElement(issueMessageElement);
+  return await getIssueByTitleElement(issueMessageElement);
 }
 
 // Works also if there are multiple issues.
@@ -121,7 +121,7 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
   });
   await clickElement(issueMessageElement);
   await waitFor('.message');
-  return getIssueByTitleElement(issueMessageElement);
+  return await getIssueByTitleElement(issueMessageElement);
 }
 
 export async function getIssueHeaderByTitle(issueMessage: string):
@@ -184,8 +184,8 @@ export async function getResourcesElement(
     const elements = await $$(className ?? RESOURCES_LABEL, issueElement);
     for (const el of elements) {
       const text = await el.evaluate(el => el.textContent);
-      if (text && text.includes(resourceName)) {
-        const content = await el.evaluateHandle(el => el.parentElement && el.parentElement.nextSibling);
+      if (text?.includes(resourceName)) {
+        const content = await el.evaluateHandle(el => el.parentElement?.nextSibling);
         return {label: el, content: content as puppeteer.ElementHandle<Element>};
       }
     }
@@ -242,7 +242,8 @@ export async function waitForTableFromResourceSection(
 }
 
 export function waitForTableFromResourceSectionContents(
-    resourceContentElement: puppeteer.ElementHandle<Element>, expected: (string|RegExp)[][]): Promise<string[][]> {
+    resourceContentElement: puppeteer.ElementHandle<Element>,
+    expected: Array<Array<string|RegExp>>): Promise<string[][]> {
   return waitForTableFromResourceSection(
       resourceContentElement, table => matchStringTable(table, expected) === true ? true : undefined);
 }

@@ -6,7 +6,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import {throttlingManager} from './ThrottlingManager.js';
-
 import {
   ThrottlingPresets,
   type Conditions,
@@ -30,17 +29,17 @@ const UIStrings = {
    *might not be applicable to every user or situation.
    */
   advanced: 'Advanced',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/MobileThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class MobileThrottlingSelector {
-  private readonly populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList;
+  private readonly populateCallback: (arg0: MobileThrottlingConditionsGroup[]) => ConditionsList;
   private readonly selectCallback: (arg0: number) => void;
   private readonly options: ConditionsList;
 
   constructor(
-      populateCallback: (arg0: Array<MobileThrottlingConditionsGroup>) => ConditionsList,
+      populateCallback: (arg0: MobileThrottlingConditionsGroup[]) => ConditionsList,
       selectCallback: (arg0: number) => void) {
     this.populateCallback = populateCallback;
     this.selectCallback = selectCallback;

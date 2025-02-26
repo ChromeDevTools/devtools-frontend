@@ -18,7 +18,7 @@ import {
   TimelineEventOverviewResponsiveness,
   TimelineFilmStripOverview,
 } from './TimelineEventOverview.js';
-import miniMapStyles from './timelineMiniMap.css.legacy.js';
+import miniMapStyles from './timelineMiniMap.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {
@@ -203,7 +203,7 @@ export class TimelineMiniMap extends
     };
   }
 
-  highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket: boolean = false): void {
+  highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicro, withBracket = false): void {
     this.#overviewComponent.highlightBounds(bounds, withBracket);
   }
   clearBoundsHighlight(): void {

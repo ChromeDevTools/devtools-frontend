@@ -9,7 +9,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerPropertiesViewStyles from './playerPropertiesView.css.legacy.js';
+import playerPropertiesViewStyles from './playerPropertiesView.css.js';
 
 const UIStrings = {
   /**
@@ -130,7 +130,7 @@ const UIStrings = {
    *@description Media property signaling whether the encoder is hardware accelerated.
    */
   hardwareEncoder: 'Hardware encoder',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -285,36 +285,6 @@ export class NestedPropertyRenderer extends PropertyRenderer {
   constructor(title: Platform.UIString.LocalizedString, content: object) {
     super(title);
     this.changeNestedContents(content);
-  }
-}
-
-export class DimensionPropertyRenderer extends PropertyRenderer {
-  private width: number;
-  private height: number;
-
-  constructor(title: Platform.UIString.LocalizedString) {
-    super(title);
-    this.width = 0;
-    this.height = 0;
-  }
-
-  override updateDataInternal(propname: string, propvalue: string|null): void {
-    let needsUpdate = false;
-    if (propname === 'width' && Number(propvalue) !== this.width) {
-      this.width = Number(propvalue);
-      needsUpdate = true;
-    }
-    if (propname === 'height' && Number(propvalue) !== this.height) {
-      this.height = Number(propvalue);
-      needsUpdate = true;
-    }
-    // If both properties arent set, don't bother updating, since
-    // temporarily showing ie: 1920x0 is meaningless.
-    if (this.width === 0 || this.height === 0) {
-      this.changeContents(null);
-    } else if (needsUpdate) {
-      this.changeContents(`${this.width}×${this.height}`);
-    }
   }
 }
 

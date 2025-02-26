@@ -76,8 +76,8 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   static isSideEffectFailure(response: Protocol.Runtime.EvaluateResponse|EvaluationResult): boolean {
     const exceptionDetails = 'exceptionDetails' in response && response.exceptionDetails;
     return Boolean(
-        exceptionDetails && exceptionDetails.exception && exceptionDetails.exception.description &&
-        exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
+        exceptionDetails &&
+        exceptionDetails.exception?.description?.startsWith('EvalError: Possible side-effect in debug-evaluate'));
   }
 
   debuggerModel(): DebuggerModel {
@@ -165,7 +165,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     let unserializableValue: string|undefined = undefined;
     const unserializableDescription = RemoteObject.unserializableDescription(value);
     if (unserializableDescription !== null) {
-      unserializableValue = (unserializableDescription as string);
+      unserializableValue = (unserializableDescription);
     }
     if (typeof unserializableValue !== 'undefined') {
       value = undefined;
@@ -189,7 +189,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     if ('object' in result && result.object) {
       result.object.release();
     }
-    if ('exceptionDetails' in result && result.exceptionDetails && result.exceptionDetails.exception) {
+    if ('exceptionDetails' in result && result.exceptionDetails?.exception) {
       const exception = result.exceptionDetails.exception;
       const exceptionObject = this.createRemoteObject({type: exception.type, objectId: exception.objectId});
       exceptionObject.release();
@@ -269,6 +269,8 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   async heapUsage(): Promise<{
     usedSize: number,
     totalSize: number,
+    embedderHeapUsedSize: number,
+    backingStorageSize: number,
   }|null> {
     const result = await this.agent.invoke_getHeapUsage();
     return result.getError() ? null : result;
@@ -301,7 +303,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 
     function didGetDetails(response: FunctionDetails|null): void {
       object.release();
-      if (!response || !response.location) {
+      if (!response?.location) {
         return;
       }
       void Common.Revealer.reveal(response.location);
@@ -372,7 +374,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
 
   static simpleTextFromException(exceptionDetails: Protocol.Runtime.ExceptionDetails): string {
     let text = exceptionDetails.text;
-    if (exceptionDetails.exception && exceptionDetails.exception.description) {
+    if (exceptionDetails.exception?.description) {
       let description: string = exceptionDetails.exception.description;
       if (description.indexOf('\n') !== -1) {
         description = description.substring(0, description.indexOf('\n'));
@@ -415,7 +417,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     while (currentStackTrace && !currentStackTrace.callFrames.length) {
       currentStackTrace = currentStackTrace.parent || null;
     }
-    if (!currentStackTrace || !currentStackTrace.callFrames.length) {
+    if (!currentStackTrace?.callFrames.length) {
       return 0;
     }
     return this.executionContextIdForScriptId(currentStackTrace.callFrames[0].scriptId);
@@ -617,9 +619,9 @@ export class ExecutionContext {
   async evaluate(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean): Promise<EvaluationResult> {
     // FIXME: It will be moved to separate ExecutionContext.
     if (this.debuggerModel.selectedCallFrame()) {
-      return this.debuggerModel.evaluateOnSelectedCallFrame(options);
+      return await this.debuggerModel.evaluateOnSelectedCallFrame(options);
     }
-    return this.evaluateGlobal(options, userGesture, awaitPromise);
+    return await this.evaluateGlobal(options, userGesture, awaitPromise);
   }
 
   globalObject(objectGroup: string, generatePreview: boolean): Promise<EvaluationResult> {
@@ -751,7 +753,7 @@ export interface CallFunctionOptions {
   returnByValue?: boolean;
   throwOnSideEffect?: boolean;
   allowUnsafeEvalBlockedByCSP?: boolean;
-  arguments: Array<Protocol.Runtime.CallArgument>;
+  arguments: Protocol.Runtime.CallArgument[];
   userGesture: boolean;
   awaitPromise: boolean;
 }

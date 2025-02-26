@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import dialogStyles from './dialog.css.legacy.js';
+import dialogStyles from './dialog.css.js';
 
 const UIStrings = {
   /**
@@ -21,7 +21,7 @@ const UIStrings = {
    *@description Text to add something
    */
   add: 'Add',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/AddSourceMapURLDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AddDebugInfoURLDialog extends UI.Widget.HBox {
@@ -63,10 +63,6 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
 
   override show(): void {
     super.show(this.dialog.contentElement);
-    // UI.Dialog extends GlassPane and overrides the `show` method with a wider
-    // accepted type. However, TypeScript uses the supertype declaration to
-    // determine the full type, which requires a `!Document`.
-    // @ts-ignore
     this.dialog.show();
   }
 

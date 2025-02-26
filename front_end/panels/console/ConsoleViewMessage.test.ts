@@ -19,7 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line rulesdir/es-modules-import
-import consoleViewStyles from './consoleView.css.legacy.js';
+import consoleViewStyles from './consoleView.css.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -135,7 +135,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
       const button = messageElement.querySelector('[aria-label=\'Understand this error. Powered by AI.\']');
-      assert.strictEqual(button?.textContent, 'Understand this errorAI');
+      assert.strictEqual(button?.textContent, 'Understand this error');
     });
 
     it('does not show a hover button if the console message text is empty', () => {

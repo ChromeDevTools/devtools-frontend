@@ -43,6 +43,6 @@ function isLitHtmlRenderCall(callExpressionNode) {
 }
 
 module.exports = {
-  isLitHtmlTemplateCall,
-  isLitHtmlRenderCall
+  isLitHtmlRenderCall,
+  isLitHtmlTemplateCall
 };

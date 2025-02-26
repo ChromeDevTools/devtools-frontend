@@ -10,7 +10,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import coverageListViewStyles from './coverageListView.css.legacy.js';
+import coverageListViewStyles from './coverageListView.css.js';
 import {
   CoverageType,
   SourceURLCoverageInfo,
@@ -109,7 +109,7 @@ const UIStrings = {
    *@example {12.3} PH2
    */
   sOfFileUnusedSOfFileUsed: '{PH1} % of file unused, {PH2} % of file used',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/coverage/CoverageListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -181,7 +181,6 @@ export class CoverageListView extends UI.Widget.VBox {
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid<GridNode>({
       displayName: i18nString(UIStrings.codeCoverage),
       columns,
-      editCallback: undefined,
       refreshCallback: undefined,
       deleteCallback: undefined,
     });
@@ -488,7 +487,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       return;
     }
     const matches = this.highlightRegExp.exec(textContent);
-    if (!matches || !matches.length) {
+    if (!matches?.length) {
       return;
     }
     const range = new TextUtils.TextRange.SourceRange(matches.index, matches[0].length);

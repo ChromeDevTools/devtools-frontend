@@ -11,8 +11,8 @@ const rendererProcessesByFrameId: FrameProcessData = new Map();
 
 // We will often want to key data by Frame IDs, and commonly we'll care most
 // about the main frame's ID, so we store and expose that.
-let mainFrameId: string = '';
-let mainFrameURL: string = '';
+let mainFrameId = '';
+let mainFrameURL = '';
 
 const framesByProcessId = new Map<Types.Events.ProcessID, Map<string, Types.Events.TraceFrame>>();
 
@@ -25,7 +25,7 @@ let gpuThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
 let devicePixelRatio: number|null = null;
 
-const processNames: Map<Types.Events.ProcessID, Types.Events.ProcessName> = new Map();
+const processNames = new Map<Types.Events.ProcessID, Types.Events.ProcessName>();
 
 const topLevelRendererIds = new Set<Types.Events.ProcessID>();
 const traceBounds: Types.Timing.TraceWindowMicro = {
@@ -44,7 +44,7 @@ const traceBounds: Types.Timing.TraceWindowMicro = {
  * Note that these Maps will have the same values in them; these are just keyed
  * differently to make look-ups easier.
  *
- * We also additionally maintain an array of only navigations that occured on
+ * We also additionally maintain an array of only navigations that occurred on
  * the main frame. In many places in the UI we only care about highlighting
  * main frame navigations, so calculating this list here is better than
  * filtering either of the below maps over and over again at the UI layer.
@@ -109,8 +109,8 @@ function updateRendererProcessByFrame(event: Types.Events.Event, frame: Types.Ev
 
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
-      () =>
-          new Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}[]>());
+      () => new Map<
+          Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>());
   const rendererProcessInfo = Platform.MapUtilities.getWithDefault(rendererProcessInFrame, frame.processId, () => {
     return [];
   });
@@ -236,7 +236,7 @@ export function handleEvent(event: Types.Events.Event): void {
           mainFrameURL = frame.url;
         }
       } else if (traceHasOutermostMainFrameFlag) {
-        // Less ideal: "guess" at the main thread by using this falg.
+        // Less ideal: "guess" at the main thread by using this flag.
         if (frame.isOutermostMainFrame) {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
@@ -376,7 +376,7 @@ export async function finalize(): Promise<void> {
   // the previous page. This doesn't matter too much except we often use this
   // URL as the visual name of the trace shown to the user (e.g. in the history
   // dropdown). We can be more accurate by finding the first main frame
-  // navigaton, and using its URL, if we have it.
+  // navigation, and using its URL, if we have it.
   // However, to avoid doing this in a case where the first navigation is far
   // into the trace's lifecycle, we only do this in situations where the first
   // navigation happened very soon (0.5 seconds) after the trace started
@@ -436,7 +436,8 @@ export interface MetaHandlerData {
 // https://developer.chrome.com/articles/renderingng-architecture/#threads
 // and https://web.dev/same-site-same-origin/
 export type FrameProcessData =
-    Map<string, Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}[]>>;
+    Map<string,
+        Map<Types.Events.ProcessID, Array<{frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicro}>>>;
 
 export function data(): MetaHandlerData {
   return {

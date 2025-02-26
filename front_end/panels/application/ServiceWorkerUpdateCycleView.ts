@@ -31,12 +31,12 @@ const UIStrings = {
    *@example {2} PH1
    */
   endTimeS: 'End time: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ServiceWorkerUpdateCycleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServiceWorkerUpdateCycleView {
   private registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration;
-  private rows: Array<HTMLTableRowElement>;
+  private rows: HTMLTableRowElement[];
   private selectedRowIndex: number;
   tableElement: HTMLElement;
   constructor(registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration) {
@@ -47,8 +47,8 @@ export class ServiceWorkerUpdateCycleView {
     this.createTimingTable();
   }
 
-  calculateServiceWorkerUpdateRanges(): Array<ServiceWorkerUpdateRange> {
-    function addRange(ranges: Array<ServiceWorkerUpdateRange>, range: ServiceWorkerUpdateRange): void {
+  calculateServiceWorkerUpdateRanges(): ServiceWorkerUpdateRange[] {
+    function addRange(ranges: ServiceWorkerUpdateRange[], range: ServiceWorkerUpdateRange): void {
       if (range.start < Number.MAX_VALUE && range.start <= range.end) {
         ranges.push(range);
       }
@@ -58,7 +58,7 @@ export class ServiceWorkerUpdateCycleView {
      * Add ranges representing Install, Wait or Activate of a sw version represented by id.
      */
     function addNormalizedRanges(
-        ranges: Array<ServiceWorkerUpdateRange>, id: string, startInstallTime: number, endInstallTime: number,
+        ranges: ServiceWorkerUpdateRange[], id: string, startInstallTime: number, endInstallTime: number,
         startActivateTime: number, endActivateTime: number,
         status: Protocol.ServiceWorker.ServiceWorkerVersionStatus): void {
       addRange(ranges, {id, phase: ServiceWorkerUpdateNames.INSTALL, start: startInstallTime, end: endInstallTime});
@@ -76,12 +76,12 @@ export class ServiceWorkerUpdateCycleView {
       }
     }
 
-    function rangesForVersion(version: SDK.ServiceWorkerManager.ServiceWorkerVersion): Array<ServiceWorkerUpdateRange> {
+    function rangesForVersion(version: SDK.ServiceWorkerManager.ServiceWorkerVersion): ServiceWorkerUpdateRange[] {
       let state: SDK.ServiceWorkerManager.ServiceWorkerVersionState|null = version.currentState;
-      let endActivateTime: number = 0;
-      let beginActivateTime: number = 0;
-      let endInstallTime: number = 0;
-      let beginInstallTime: number = 0;
+      let endActivateTime = 0;
+      let beginActivateTime = 0;
+      let endInstallTime = 0;
+      let beginInstallTime = 0;
       const currentStatus = state.status;
       if (currentStatus === Protocol.ServiceWorker.ServiceWorkerVersionStatus.New) {
         return [];
@@ -106,7 +106,7 @@ export class ServiceWorkerUpdateCycleView {
         }
         state = state.previousState;
       }
-      const ranges: Array<ServiceWorkerUpdateRange> = [];
+      const ranges: ServiceWorkerUpdateRange[] = [];
       addNormalizedRanges(
           ranges, version.id, beginInstallTime, endInstallTime, beginActivateTime, endActivateTime, currentStatus);
       return ranges;
@@ -155,7 +155,7 @@ export class ServiceWorkerUpdateCycleView {
     this.rows = [];
   }
 
-  private updateTimingTable(timeRanges: Array<ServiceWorkerUpdateRange>): void {
+  private updateTimingTable(timeRanges: ServiceWorkerUpdateRange[]): void {
     this.selectedRowIndex = -1;
     this.removeRows();
     this.createTimingTableHead();
@@ -181,7 +181,7 @@ export class ServiceWorkerUpdateCycleView {
                         click: true,
                         keydown: 'ArrowLeft|ArrowRight|ArrowUp|ArrowDown|Enter|Space',
                       })}`);
-      this.rows.push(tr as HTMLTableRowElement);
+      this.rows.push(tr);
       const timingBarVersionElement = tr.createChild('td');
       UI.UIUtils.createTextChild(timingBarVersionElement, '#' + range.id);
       timingBarVersionElement.classList.add('service-worker-update-timing-bar-clickable');

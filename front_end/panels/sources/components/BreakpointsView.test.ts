@@ -104,9 +104,9 @@ function createStubBreakpointManagerAndSettingsWithMockdata(testData: LocationTe
 }
 
 function createLocationTestData(
-    url: string, lineNumber: number, columnNumber: number, enabled: boolean = true, content: string = '',
+    url: string, lineNumber: number, columnNumber: number, enabled = true, content = '',
     condition: Breakpoints.BreakpointManager.UserCondition = Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
-    isLogpoint: boolean = false, hoverText?: string): LocationTestData {
+    isLogpoint = false, hoverText?: string): LocationTestData {
   return {
     url: urlString`${url}`,
     lineNumber,
@@ -1207,7 +1207,7 @@ describeWithMockConnection('BreakpointsView', () => {
   describe('group checkboxes', () => {
     async function waitForCheckboxToggledEventsWithCheckedUpdate(
         component: SourcesComponents.BreakpointsView.BreakpointsView, numBreakpointItems: number, checked: boolean) {
-      return new Promise<void>(resolve => {
+      return await new Promise<void>(resolve => {
         let numCheckboxToggledEvents = 0;
         const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance();
         sinon.stub(controller, 'breakpointStateChanged').callsFake((_, checkedArg) => {

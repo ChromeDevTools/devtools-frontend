@@ -7,7 +7,7 @@ import '../icon_button/icon_button.js';
 import * as Common from '../../../core/common/common.js';
 import * as Lit from '../../lit/lit.js';
 
-import settingDeprecationWarningRaw from './settingDeprecationWarning.css.legacy.js';
+import settingDeprecationWarningRaw from './settingDeprecationWarning.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const settingDeprecationWarning = new CSSStyleSheet();

@@ -7,9 +7,16 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  InsightKeys,
+  type InsightModel,
+  type InsightSetContext,
+  type PartialInsightModel,
+  type RequiredData
+} from './types.js';
 
-const UIStrings = {
+export const UIStrings = {
   /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
   title: 'Font display',
   /**
@@ -17,16 +24,20 @@ const UIStrings = {
    */
   description:
       'Consider setting [`font-display`](https://developer.chrome.com/blog/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).',
-};
+  /** Column for a font loaded by the page to render text. */
+  fontColumn: 'Font',
+  /** Column for the amount of time wasted. */
+  wastedTimeColumn: 'Wasted time',
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['Meta', 'NetworkRequests', 'LayoutShifts'] {
   return ['Meta', 'NetworkRequests', 'LayoutShifts'];
 }
 
-export type FontDisplayInsightModel = InsightModel<{
+export type FontDisplayInsightModel = InsightModel<typeof UIStrings, {
   fonts: Array<{
     request: Types.Events.SyntheticNetworkRequest,
     display: string,
@@ -34,13 +45,14 @@ export type FontDisplayInsightModel = InsightModel<{
   }>,
 }>;
 
-function finalize(partialModel: Omit<FontDisplayInsightModel, 'title'|'description'|'category'|'shouldShow'>):
-    FontDisplayInsightModel {
+function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): FontDisplayInsightModel {
   return {
+    insightKey: InsightKeys.FONT_DISPLAY,
+    strings: UIStrings,
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
-    shouldShow: Boolean(partialModel.fonts.find(font => font.wastedTime > 0)),
+    state: partialModel.fonts.find(font => font.wastedTime > 0) ? 'fail' : 'pass',
     ...partialModel,
   };
 }

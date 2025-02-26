@@ -94,14 +94,14 @@ describeWithMockConnection('TrustTokensView', () => {
     ]);
   });
 
-  it('hides trust token table when there are no trust tokens', async () => {
+  it('shows empty state when there are no trust tokens', async () => {
     sinon.stub(target.storageAgent(), 'invoke_getTrustTokens').resolves({tokens: [], getError: () => undefined});
     const component = await renderTrustTokensView();
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
 
-    const noTrustTokensElement = component.shadowRoot!.querySelector('div.no-tt-message');
+    const noTrustTokensElement = component.shadowRoot!.querySelector('.empty-state');
     assert.instanceOf(noTrustTokensElement, HTMLDivElement);
   });
 

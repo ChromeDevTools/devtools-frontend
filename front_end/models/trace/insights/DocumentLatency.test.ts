@@ -27,7 +27,7 @@ describeWithEnvironment('DocumentLatency', function() {
     const insight =
         getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.data?.serverResponseTime, 43);
-    assert(!insight.data?.serverResponseTooSlow);
+    assert(insight.data?.checklist.serverResponseIsFast.value === true);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);
   });
 
@@ -56,7 +56,7 @@ describeWithEnvironment('DocumentLatency', function() {
     const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
     const insight = Trace.Insights.Models.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.data?.serverResponseTime, 1043);
-    assert(insight.data?.serverResponseTooSlow);
+    assert(insight.data?.checklist.serverResponseIsFast.value === false);
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943} as Trace.Insights.Types.MetricSavings);
   });
 
@@ -100,7 +100,7 @@ describeWithEnvironment('DocumentLatency', function() {
     assert.strictEqual(insight.data?.redirectDuration, 6059);
     assert.strictEqual(insight.data?.uncompressedResponseBytes, 111506);
     assert.strictEqual(insight.data?.serverResponseTime, 2008);
-    assert(insight.data?.serverResponseTooSlow);
+    assert(insight.data?.checklist.serverResponseIsFast.value === false);
     assert.deepEqual(insight.metricSavings, {FCP: 7967, LCP: 7967} as Trace.Insights.Types.MetricSavings);
   });
 });

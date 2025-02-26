@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import type * as puppeteer from 'puppeteer-core';
 
 import {loadEmptyPageAndWaitForContent} from './frontend_tab.js';
 
@@ -29,7 +27,7 @@ export class TargetTab {
 
   async reset(): Promise<void> {
     await loadEmptyPageAndWaitForContent(this.page);
-    const client = await this.page.target().createCDPSession();
+    const client = await this.page.createCDPSession();
     await client.send('ServiceWorker.enable');
     await client.send('ServiceWorker.stopAllWorkers');
     await client.detach();

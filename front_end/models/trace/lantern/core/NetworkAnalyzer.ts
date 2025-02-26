@@ -13,7 +13,7 @@ class UrlUtils {
    * As a result, the network URL (chrome://chrome/settings/) doesn't match the final document URL (chrome://settings/).
    */
   static rewriteChromeInternalUrl(url: string): string {
-    if (!url || !url.startsWith('chrome://')) {
+    if (!url?.startsWith('chrome://')) {
       return url;
     }
     // Chrome adds a trailing slash to `chrome://` URLs, but the spec does not.
@@ -471,7 +471,7 @@ class NetworkAnalyzer {
   static estimateServerResponseTimeByOrigin(records: Lantern.NetworkRequest[], options?: RTTEstimateOptions&{
     rttByOrigin?: Map<string, number>,
   }): Map<string, Summary> {
-    let rttByOrigin = (options || {}).rttByOrigin;
+    let rttByOrigin = options?.rttByOrigin;
     if (!rttByOrigin) {
       rttByOrigin = new Map();
 
@@ -587,14 +587,14 @@ class NetworkAnalyzer {
     };
   }
 
-  static findResourceForUrl<T extends Lantern.NetworkRequest>(records: Array<T>, resourceUrl: string): T|undefined {
+  static findResourceForUrl<T extends Lantern.NetworkRequest>(records: T[], resourceUrl: string): T|undefined {
     // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
     return records.find(
         request => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl),
     );
   }
 
-  static findLastDocumentForUrl<T extends Lantern.NetworkRequest>(records: Array<T>, resourceUrl: string): T|undefined {
+  static findLastDocumentForUrl<T extends Lantern.NetworkRequest>(records: T[], resourceUrl: string): T|undefined {
     // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
     const matchingRequests = records.filter(
         request => request.resourceType === 'Document' && !request.failed &&

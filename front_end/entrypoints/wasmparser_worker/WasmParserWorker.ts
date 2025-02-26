@@ -76,8 +76,8 @@ export function dissambleWASM(
       const finished = dis.disassembleChunk(parser, offsetInModule);
 
       const result = (dis.getResult() as {
-        lines: Array<string>,
-        offsets: Array<number>,
+        lines: string[],
+        offsets: number[],
         functionBodyOffsets: Array<{
           start: number,
           end: number,

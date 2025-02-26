@@ -92,11 +92,12 @@ describe('lineSegmentForMatch', () => {
 class FakeSearchResult implements Search.SearchScope.SearchResult {
   #label: string;
   #description: string;
-  #matchDescriptors: {lineNumber: number, lineContent: string, matchRange?: TextUtils.TextRange.SourceRange}[];
+  #matchDescriptors: Array<{lineNumber: number, lineContent: string, matchRange?: TextUtils.TextRange.SourceRange}>;
 
   constructor(
       label: string, description: string,
-      matchDescriptors: {lineNumber: number, lineContent: string, matchRange?: TextUtils.TextRange.SourceRange}[]) {
+      matchDescriptors:
+          Array<{lineNumber: number, lineContent: string, matchRange?: TextUtils.TextRange.SourceRange}>) {
     this.#label = label;
     this.#description = description;
     this.#matchDescriptors = matchDescriptors;

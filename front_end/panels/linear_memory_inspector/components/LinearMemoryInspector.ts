@@ -8,10 +8,10 @@ import './LinearMemoryViewer.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, nothing, render} from '../../../ui/lit/lit.js';
 
 import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
-import linearMemoryInspectorStylesRaw from './linearMemoryInspector.css.legacy.js';
+import linearMemoryInspectorStylesRaw from './linearMemoryInspector.css.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import {
   type AddressInputChangedEvent,
@@ -36,8 +36,6 @@ import {
 const linearMemoryInspectorStyles = new CSSStyleSheet();
 linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssContent);
 
-const {render, html} = Lit;
-
 const UIStrings = {
   /**
    *@description Tooltip text that appears when hovering over an invalid address in the address line in the Linear memory inspector
@@ -45,7 +43,7 @@ const UIStrings = {
    *@example {0x00400000} PH2
    */
   addressHasToBeANumberBetweenSAnd: 'Address has to be a number between {PH1} and {PH2}',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -222,7 +220,7 @@ export class LinearMemoryInspector extends HTMLElement {
           @resize=${this.#resize}>
         </devtools-linear-memory-inspector-viewer>
       </div>
-      ${this.#hideValueInspector ? Lit.nothing : html`
+      ${this.#hideValueInspector ? nothing : html`
       <div class="value-interpreter">
         <devtools-linear-memory-inspector-interpreter
           .data=${{

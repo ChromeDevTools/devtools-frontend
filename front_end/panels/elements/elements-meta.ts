@@ -158,7 +158,7 @@ const UIStrings = {
    * @description Command for toggling the eye dropper when the color picker is open
    */
   toggleEyeDropper: 'Toggle eye dropper',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/elements-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedElementsModule: (typeof Elements|undefined);

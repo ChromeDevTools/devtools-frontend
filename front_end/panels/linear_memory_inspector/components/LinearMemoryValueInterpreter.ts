@@ -11,7 +11,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.legacy.js';
+import linearMemoryValueInterpreterStylesRaw from './linearMemoryValueInterpreter.css.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
 
@@ -29,7 +29,7 @@ const UIStrings = {
    *@description Tooltip text that appears when hovering over the 'Little Endian' or 'Big Endian' setting in the Linear memory inspector.
    */
   changeEndianness: 'Change `Endianness`',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryValueInterpreter.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -68,8 +68,8 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
-  #valueTypes: Set<ValueType> = new Set();
-  #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = new Map();
+  #valueTypes = new Set<ValueType>();
+  #valueTypeModeConfig = new Map<ValueType, ValueTypeMode>();
   #memoryLength = 0;
   #showSettings = false;
 

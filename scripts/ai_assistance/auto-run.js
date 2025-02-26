@@ -2,17 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const puppeteer = require('puppeteer-core');
-const yargs = require('yargs/yargs');
-const {hideBin} = require('yargs/helpers');
 const fs = require('fs');
 const path = require('path');
+const puppeteer = require('puppeteer-core');
+const {hideBin} = require('yargs/helpers');
+const yargs = require('yargs/yargs');
+
 const {parseComment} = require('./auto-run-helpers');
 
 const DEFAULT_FOLLOW_UP_QUERY = 'Fix the issue using JavaScript code execution.';
 
 const startTime = performance.now();
-const numberFormatter = new Intl.NumberFormat('en-EN', {maximumSignificantDigits: 3});
+const numberFormatter = new Intl.NumberFormat('en-EN', {
+  maximumSignificantDigits: 3,
+});
 const acquiredDevToolsTargets = new WeakMap();
 function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
@@ -101,7 +104,9 @@ class TraceDownloader {
     }, traceUrl);
     const foundFile = await TraceDownloader.ensureDownloadExists(fileName);
     if (!foundFile) {
-      console.error(`Could not find '${fileName}' in download location (${TraceDownloader.LOCATION}). Aborting.`);
+      console.error(
+          `Could not find '${fileName}' in download location (${TraceDownloader.LOCATION}). Aborting.`,
+      );
     }
     example.log(`Downloaded performance trace: ${fileName}`);
     return fileName;
@@ -121,7 +126,10 @@ class Logger {
   }
 
   #updateElapsedTime() {
-    this.#logs['elapsedTime'] = {index: 999, text: `\nElapsed time: ${formatElapsedTime()}`};
+    this.#logs['elapsedTime'] = {
+      index: 999,
+      text: `\nElapsed time: ${formatElapsedTime()}`,
+    };
     this.#flushLogs();
   }
 
@@ -207,7 +215,9 @@ class Example {
     const tracePath = path.join(TraceDownloader.LOCATION, fileName);
     await fileUploader.uploadFile(tracePath);
     this.log(`[Info]: imported ${fileName} to performance panel`);
-    const canvas = await devtoolsPage.waitForSelector(':scope >>> canvas.flame-chart-canvas');
+    const canvas = await devtoolsPage.waitForSelector(
+        ':scope >>> canvas.flame-chart-canvas',
+    );
     if (!canvas) {
       throw new Error('Could not find canvas.');
     }
@@ -245,10 +255,7 @@ class Example {
        * @return {Array<{comment: string, commentElement: Comment, targetElement: Element|null}>}
        */
       function collectComments(root) {
-        const walker = document.createTreeWalker(
-            root,
-            NodeFilter.SHOW_COMMENT,
-        );
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_COMMENT);
         const results = [];
         while (walker.nextNode()) {
           const comment = walker.currentNode;
@@ -287,10 +294,13 @@ class Example {
    * @returns {Promise<puppeteer.ElementHandle<HTMLElement>>} - the prompt from the annotation, if it exists, or undefined if one was not found.
    */
   async #lookForAnnotatedPerformanceEvent(devtoolsPage) {
-    const elem = await devtoolsPage.$('devtools-entry-label-overlay >>> [aria-label="Entry label"]');
+    const elem = await devtoolsPage.$(
+        'devtools-entry-label-overlay >>> [aria-label="Entry label"]',
+    );
     if (!elem) {
       throw new Error(
-          'Could not find annotated event in the performance panel. Only traces that have one entry label annotation are supported.');
+          'Could not find annotated event in the performance panel. Only traces that have one entry label annotation are supported.',
+      );
     }
 
     const overlay = /** @type{puppeteer.ElementHandle<HTMLElement>} */ (elem);
@@ -314,7 +324,9 @@ class Example {
     }
 
     const commentStringsFromPage = await this.#getCommentStringsFromPage(page);
-    const comments = commentStringsFromPage.map(comment => parseComment(comment));
+    const comments = commentStringsFromPage.map(
+        comment => parseComment(comment),
+    );
     // Only get the first comment for now.
     const comment = comments[0];
     const queries = [comment.prompt];
@@ -353,7 +365,7 @@ class Example {
 
     const devtoolsTarget = await this.#browser.waitForTarget(target => {
       const isAcquiredBefore = acquiredDevToolsTargets.has(target);
-      return target.type() === 'other' && target.url().startsWith('devtools://') && !isAcquiredBefore;
+      return (target.type() === 'other' && target.url().startsWith('devtools://') && !isAcquiredBefore);
     });
     acquiredDevToolsTargets.set(devtoolsTarget, true);
 
@@ -370,7 +382,7 @@ class Example {
     // Strip comments to prevent LLM from seeing it.
     await page.evaluate(() => {
       // @ts-expect-error we don't type globalThis.__commentElements
-      for (const {commentElement} of (globalThis.__commentElements ?? [])) {
+      for (const {commentElement} of globalThis.__commentElements ?? []) {
         commentElement.remove();
       }
     });
@@ -398,7 +410,9 @@ class Example {
       this.log('[Info]: Locating console');
       await devtoolsPage.locator(':scope >>> #tab-console').click();
       await devtoolsPage.locator('aria/Console prompt').click();
-      await devtoolsPage.keyboard.type(`inspect(globalThis.__commentElements[${idx}].targetElement)`);
+      await devtoolsPage.keyboard.type(
+          `inspect(globalThis.__commentElements[${idx}].targetElement)`,
+      );
       await devtoolsPage.keyboard.press('Enter');
 
       // Once we are done with the console, go back to the elements tab.
@@ -411,7 +425,9 @@ class Example {
       // Clicking on the annotation will also have the side-effect of selecting the event
       await performanceAnnotation.click();
       // Wait until the event is selected (confirming via the HTML in the details drawer)
-      await devtoolsPage.waitForSelector(':scope >>> .timeline-details-chip-title');
+      await devtoolsPage.waitForSelector(
+          ':scope >>> .timeline-details-chip-title',
+      );
     }
 
     this.log('[Info]: Locating AI assistance tab');
@@ -433,7 +449,9 @@ class Example {
       this.#ready = true;
     } catch (err) {
       this.#ready = false;
-      this.error(`Preparation failed.\n${err instanceof Error ? logger.formatError(err) : err}`);
+      this.error(
+          `Preparation failed.\n${err instanceof Error ? logger.formatError(err) : err}`,
+      );
     }
   }
 
@@ -461,12 +479,12 @@ class Example {
     }
     const executionStartTime = performance.now();
     await this.#devtoolsPage.waitForFunction(() => {
-      return 'setDebugFreestylerEnabled' in window;
+      return 'setDebugAiAssistanceEnabled' in window;
     });
 
     await this.#devtoolsPage.evaluate(() => {
-      // @ts-ignore this is run in the DevTools page context where this function does exist.
-      setDebugFreestylerEnabled(true);
+      // @ts-expect-error this is run in the DevTools page context where this function does exist.
+      setDebugAiAssistanceEnabled(true);
     });
 
     /** @type {Array<import('./types').IndividualPromptRequestResponse>} */
@@ -505,11 +523,15 @@ class Example {
 
       const done = this.#devtoolsPage.evaluate(() => {
         return /** @type {Promise<void>} */ (new Promise(resolve => {
-          window.addEventListener('freestylerdone', () => {
-            resolve();
-          }, {
-            once: true,
-          });
+          window.addEventListener(
+              'aiassistancedone',
+              () => {
+                resolve();
+              },
+              {
+                once: true,
+              },
+          );
         }));
       });
 
@@ -518,10 +540,10 @@ class Example {
       abort.abort();
 
       const logs = await devtoolsPage.evaluate(() => {
-        return localStorage.getItem('freestylerStructuredLog');
+        return localStorage.getItem('aiAssistanceStructuredLog');
       });
       if (!logs) {
-        throw new Error('No freestylerStructuredLog entries were found.');
+        throw new Error('No aiAssistanceStructuredLog entries were found.');
       }
       /** @type {import('./types').IndividualPromptRequestResponse[]} */
       const results = JSON.parse(logs);
@@ -530,17 +552,24 @@ class Example {
     };
 
     for (const query of this.#queries) {
-      this.log(`[Info]: Running the user prompt "${query}" (This step might take long time)`);
+      this.log(
+          `[Info]: Running the user prompt "${query}" (This step might take long time)`,
+      );
       const result = await prompt(query);
       results.push(...result);
     }
 
     await this.#page.close();
-    const elapsedTime = numberFormatter.format((performance.now() - executionStartTime) / 1000);
+    const elapsedTime = numberFormatter.format(
+        (performance.now() - executionStartTime) / 1000,
+    );
     this.log(`Finished (${elapsedTime}s)`);
 
     /** @type {import('./types').ExecutedExample} */
-    return {results, metadata: {exampleId: this.id(), explanation: this.#explanation}};
+    return {
+      results,
+      metadata: {exampleId: this.id(), explanation: this.#explanation},
+    };
   }
 
   /**
@@ -549,8 +578,10 @@ class Example {
   log(text) {
     const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
     logger.log(
-        this.#url, indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`);
+        this.#url,
+        indexOfExample,
+        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m ${text}`,
+    );
   }
 
   /**
@@ -559,8 +590,10 @@ class Example {
   error(text) {
     const indexOfExample = userArgs.exampleUrls.indexOf(this.#url);
     logger.log(
-        this.#url, indexOfExample,
-        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`);
+        this.#url,
+        indexOfExample,
+        `\x1b[33m[${indexOfExample + 1}/${userArgs.exampleUrls.length}] ${this.id()}:\x1b[0m \x1b[31m${text}\x1b[0m`,
+    );
   }
 }
 
@@ -581,15 +614,19 @@ async function runInParallel(examples) {
   const allExampleResults = [];
   /** @type {Array<import('./types').ExampleMetadata>} **/
   const metadata = [];
-  await Promise.all(examples.filter(example => example.isReady()).map(async example => {
-    try {
-      const {results, metadata: singleMetadata} = await example.execute();
-      allExampleResults.push(...results);
-      metadata.push(singleMetadata);
-    } catch (err) {
-      example.error(`There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`);
-    }
-  }));
+  await Promise.all(
+      examples.filter(example => example.isReady()).map(async example => {
+        try {
+          const {results, metadata: singleMetadata} = await example.execute();
+          allExampleResults.push(...results);
+          metadata.push(singleMetadata);
+        } catch (err) {
+          example.error(
+              `There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`,
+          );
+        }
+      }),
+  );
 
   return {allExampleResults, metadata};
 }
@@ -616,7 +653,9 @@ async function runSequentially(examples) {
       allExampleResults.push(...results);
       metadata.push(singleMetadata);
     } catch (err) {
-      example.error(`There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`);
+      example.error(
+          `There is an error, skipping it.\n${err instanceof Error ? logger.formatError(err) : err}`,
+      );
     }
   }
 
@@ -640,7 +679,8 @@ async function main() {
   // Close any non about:blank pages. There should be only one
   // about:blank page and DevTools should be closed manually for it.
   logger.head(
-      'Getting browser pages... (If stuck in here, please close all the tabs in the connected Chrome manually.)');
+      'Getting browser pages... (If stuck in here, please close all the tabs in the connected Chrome manually.)',
+  );
   try {
     for (const page of await browser.pages()) {
       if (page.url() === 'about:blank') {
@@ -649,11 +689,15 @@ async function main() {
       await page.close();
     }
   } catch (err) {
-    logger.head(`There was an error closing pages\n${err instanceof Error ? err.stack : err}`);
+    logger.head(
+        `There was an error closing pages\n${err instanceof Error ? err.stack : err}`,
+    );
   }
 
   logger.head('Preparing examples...');
-  const examples = userArgs.exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
+  const examples = userArgs.exampleUrls.map(
+      exampleUrl => new Example(exampleUrl, browser),
+  );
   /** @type {import('./types').IndividualPromptRequestResponse[]} */
   let allExampleResults = [];
   /** @type {import('./types').ExampleMetadata[]} */
@@ -681,12 +725,17 @@ async function main() {
   };
 
   const dateSuffix = new Date().toISOString().slice(0, 19);
-  const outputPath = path.resolve(OUTPUT_DIR, `${userArgs.label}-${dateSuffix}.json`);
+  const outputPath = path.resolve(
+      OUTPUT_DIR,
+      `${userArgs.label}-${dateSuffix}.json`,
+  );
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR);
   }
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
-  console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
+  console.info(
+      `\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`,
+  );
   logger.destroy();
 }
 

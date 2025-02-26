@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import cssQueryStylesRaw from './cssQuery.css.legacy.js';
+import cssQueryStylesRaw from './cssQuery.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const inspectorCommonStyles = new CSSStyleSheet();
@@ -30,9 +30,9 @@ export interface CSSQueryData {
 export class CSSQuery extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #queryPrefix: string = '';
+  #queryPrefix = '';
   #queryName?: string;
-  #queryText: string = '';
+  #queryText = '';
   #onQueryTextClick?: (event: Event) => void;
   #jslogContext?: string;
 

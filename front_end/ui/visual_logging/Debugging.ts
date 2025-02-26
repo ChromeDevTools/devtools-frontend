@@ -34,7 +34,7 @@ export function setVeDebuggingEnabled(enabled: boolean, inspect?: (query: string
   }
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
 
 export function processForDebugging(loggable: Loggable): void {
@@ -376,7 +376,7 @@ export function debugString(config: LoggingConfig): string {
   return components.join('; ');
 }
 
-const veDebugEventsLog: (IntuitiveLogEntry|AdHocAnalysisLogEntry|TestLogEntry)[] = [];
+const veDebugEventsLog: Array<IntuitiveLogEntry|AdHocAnalysisLogEntry|TestLogEntry> = [];
 
 function maybeLogDebugEvent(entry: IntuitiveLogEntry|AdHocAnalysisLogEntry|TestLogEntry): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
@@ -429,7 +429,8 @@ function findVeDebugImpression(veid: number, includeAncestorChain?: boolean): In
 
 function fieldValuesForSql<T>(
     obj: T,
-    fields: {strings: readonly(keyof T)[], numerics: readonly(keyof T)[], booleans: readonly(keyof T)[]}): string {
+    fields: {strings: ReadonlyArray<keyof T>, numerics: ReadonlyArray<keyof T>, booleans: ReadonlyArray<keyof T>}):
+    string {
   return [
     ...fields.strings.map(f => obj[f] ? `"${obj[f]}"` : '$NullString'),
     ...fields.numerics.map(f => obj[f] ?? 'null'),
@@ -674,7 +675,8 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
   const {promise, resolve: success, reject: fail} = Promise.withResolvers<void>();
   pendingEventExpectation = {expectedEvents, success, fail};
   checkPendingEventExpectation();
-  setTimeout(() => {
+
+  const timeout = setTimeout(() => {
     if (pendingEventExpectation?.missingEvents) {
       pendingEventExpectation.fail(new Error(
           'Missing VE Events: ' +
@@ -683,7 +685,10 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
               .join('\n')));
     }
   }, EVENT_EXPECTATION_TIMEOUT);
-  return promise;
+
+  return await promise.finally(() => {
+    clearTimeout(timeout);
+  });
 }
 
 let numMatchedEvents = 0;
@@ -719,17 +724,17 @@ function getUnmatchedVeEvents(): string {
       .join('\n');
 }
 
-// @ts-ignore
+// @ts-expect-error
 globalThis.setVeDebugLoggingEnabled = setVeDebugLoggingEnabled;
-// @ts-ignore
+// @ts-expect-error
 globalThis.getUnmatchedVeEvents = getUnmatchedVeEvents;
-// @ts-ignore
+// @ts-expect-error
 globalThis.veDebugEventsLog = veDebugEventsLog;
-// @ts-ignore
+// @ts-expect-error
 globalThis.findVeDebugImpression = findVeDebugImpression;
-// @ts-ignore
+// @ts-expect-error
 globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
-// @ts-ignore
+// @ts-expect-error
 globalThis.buildStateFlow = buildStateFlow;
-// @ts-ignore
+// @ts-expect-error
 globalThis.expectVeEvents = expectVeEvents;

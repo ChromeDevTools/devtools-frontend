@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {getIssueKindIconData} from './IssueCounter.js';
-import IssueLinkIconStylesRaw from './issueLinkIcon.css.legacy.js';
+import IssueLinkIconStylesRaw from './issueLinkIcon.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const IssueLinkIconStyles = new CSSStyleSheet();
@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Title for an link to show an issue that is unavailable because the issue couldn't be resolved
    */
   issueUnavailable: 'Issue unavailable at this time',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/issue_counter/IssueLinkIcon.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

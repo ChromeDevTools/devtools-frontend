@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
-import {getBrowserAndPages, selectOption, waitFor} from '../../shared/helper.js';
+import {selectOption, waitFor} from '../../shared/helper.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 
 const TEST_HTML_FILE = 'window-controls';
@@ -17,8 +17,7 @@ async function assertChecked(checkbox: ElementHandle<HTMLInputElement>, expected
 
 describe('The Window Controls Overlay', () => {
   it('shows emulation controls when manifest with property display_overide is present', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, TEST_HTML_FILE);
+    await navigateToApplicationTab(TEST_HTML_FILE);
     const windowControlsCheckbox =
         await (await waitFor('[title="Emulate the Window Controls Overlay on"]')).toElement('input');
     const controlsDropDown = await waitFor('select');

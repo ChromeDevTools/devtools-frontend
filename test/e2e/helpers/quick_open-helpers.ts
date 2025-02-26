@@ -2,7 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {$$, click, getBrowserAndPages, platform, typeText, waitFor} from '../../shared/helper.js';
+import {
+  $$,
+  click,
+  drainFrontendTaskQueue,
+  getBrowserAndPages,
+  platform,
+  typeText,
+  waitFor
+} from '../../shared/helper.js';
 
 import {SourceFileEvents, waitForSourceFiles} from './sources-helpers.js';
 
@@ -77,6 +85,8 @@ export async function runCommandWithQuickOpen(command: string): Promise<void> {
   const {frontend} = getBrowserAndPages();
   await openCommandMenu();
   await frontend.keyboard.type(command);
+  // TODO: it should actually wait for rendering to finish.
+  await drainFrontendTaskQueue();
   await frontend.keyboard.press('Enter');
 }
 

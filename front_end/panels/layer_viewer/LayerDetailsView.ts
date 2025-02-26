@@ -35,7 +35,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import layerDetailsViewStyles from './layerDetailsView.css.legacy.js';
+import layerDetailsViewStyles from './layerDetailsView.css.js';
 import {
   type LayerView,
   type LayerViewHost,
@@ -160,7 +160,7 @@ const UIStrings = {
    *@description Text in Layer Details View of the Layers panel
    */
   mainThreadScrollingReason: 'Main thread scrolling reason',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -304,7 +304,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   update(): void {
-    const layer = this.selection && this.selection.layer();
+    const layer = this.selection?.layer();
     if (!layer) {
       this.tableElement.remove();
       this.paintProfilerLink.remove();
@@ -363,7 +363,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   private updateCompositingReasons(compositingReasons: string[]): void {
-    if (!compositingReasons || !compositingReasons.length) {
+    if (!compositingReasons?.length) {
       this.compositingReasonsCell.textContent = 'n/a';
       return;
     }

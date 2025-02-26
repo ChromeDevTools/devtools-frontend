@@ -35,7 +35,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
 import type {ProfileType} from './ProfileHeader.js';
-import profileLauncherViewStyles from './profileLauncherView.css.legacy.js';
+import profileLauncherViewStyles from './profileLauncherView.css.js';
 import type {ProfilesPanel} from './ProfilesPanel.js';
 
 const UIStrings = {
@@ -63,7 +63,7 @@ const UIStrings = {
    *@description Profile type header element text content in Profile Launcher View of a profiler tool
    */
   selectProfilingType: 'Select profiling type',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileLauncherView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(

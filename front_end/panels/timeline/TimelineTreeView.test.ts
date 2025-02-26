@@ -7,6 +7,7 @@ import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
+import * as Utils from './utils/utils.js';
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   select(_selection: Timeline.TimelineSelection.TimelineSelection|null): void {
@@ -168,8 +169,8 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       assert.isTrue(node.isGroupNode());
       const children = node.children().values();
-      assert.strictEqual(children.next().value!.event!.name, 'first console time');
-      assert.strictEqual(children.next().value!.event!.name, 'third console time');
+      assert.strictEqual(children.next().value!.event.name, 'first console time');
+      assert.strictEqual(children.next().value!.event.name, 'third console time');
     });
     it('groups events by category in the Bottom up Tree view', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'sync-like-timings.json.gz');
@@ -190,9 +191,9 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       assert.isTrue(node.isGroupNode());
       const children = node.children().values();
-      assert.strictEqual(children.next().value!.event!.name, 'second console time');
-      assert.strictEqual(children.next().value!.event!.name, 'first console time');
-      assert.strictEqual(children.next().value!.event!.name, 'third console time');
+      assert.strictEqual(children.next().value!.event.name, 'second console time');
+      assert.strictEqual(children.next().value!.event.name, 'first console time');
+      assert.strictEqual(children.next().value!.event.name, 'third console time');
     });
 
     it('can group entries by domain', async function() {
@@ -222,13 +223,14 @@ describeWithEnvironment('TimelineTreeView', function() {
 
     it('can group entries by third parties', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const mapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
       const startTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.min);
       const endTime = Trace.Helpers.Timing.microToMilli(parsedTrace.Meta.traceBounds.max);
 
       callTreeView.setRange(startTime, endTime);
       callTreeView.setGroupBySetting(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties);
-      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      callTreeView.setModelWithEvents(parsedTrace.Renderer.allTraceEntries, parsedTrace, mapper);
 
       const tree = callTreeView.buildTree();
       const topLevelGroupNodes = Array.from(tree.children().entries());
@@ -241,7 +243,8 @@ describeWithEnvironment('TimelineTreeView', function() {
         'imgix',
         'Google Tag Manager',
         'Google Analytics',
-        'shared-storage-demo-content-producer.web.app',
+        // This is not 'shared-storage-demo-web.app' because the entity is based on the site, the full domain.
+        'web.app',
       ]);
     });
 

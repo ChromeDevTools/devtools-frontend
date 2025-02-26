@@ -284,8 +284,6 @@ describe('The Network Tab', function() {
 });
 
 describe('The Network Tab', function() {
-  this.timeout(5000);
-
   beforeEach(async () => {
     await disableExperiment('network-panel-filter-bar-redesign');
 
@@ -299,13 +297,11 @@ describe('The Network Tab', function() {
     await navigateToNetworkTab('third-party-resources.html');
     await waitForSomeRequestsToAppear(1);
 
-    assert.deepEqual(await getAllRequestNames(), ['external_image.svg']);
+    assert.deepEqual(await getAllRequestNames(), ['image.svg']);
   });
 });
 
 describe('The Network Tab', function() {
-  this.timeout(5000);
-
   beforeEach(async () => {
     await reloadDevTools({enableExperiments: ['network-panel-filter-bar-redesign']});
 
@@ -330,7 +326,7 @@ describe('The Network Tab', function() {
 
       names = await getAllRequestNames();
       assert.lengthOf(names, 1);
-      assert.deepEqual(names, ['external_image.svg'], 'The right request names should appear in the list');
+      assert.deepEqual(names, ['image.svg'], 'The right request names should appear in the list');
     });
 
     await step('verify the dropdown state and the requests when 3rd-party filter is deselected', async () => {
@@ -340,7 +336,12 @@ describe('The Network Tab', function() {
       names = await getAllRequestNames();
       assert.lengthOf(names, 3);
       assert.deepEqual(
-          names, ['third-party-resources.html', 'image.svg', 'external_image.svg'],
+          names,
+          [
+            'third-party-resources.html',
+            'image.svg',
+            'hello.html',
+          ],
           'The right request names should appear in the list');
     });
   });

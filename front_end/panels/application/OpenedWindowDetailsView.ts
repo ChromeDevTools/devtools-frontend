@@ -9,7 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.legacy.js';
+import openedWindowDetailsViewStyles from './openedWindowDetailsView.css.js';
 
 const UIStrings = {
   /**
@@ -85,7 +85,7 @@ const UIStrings = {
    *and warnings through the Report-to API. Following this label will be the URL of the server.
    */
   reportingTo: 'reporting to',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/OpenedWindowDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const booleanToYesNo = (b: boolean): Common.UIString.LocalizedString =>

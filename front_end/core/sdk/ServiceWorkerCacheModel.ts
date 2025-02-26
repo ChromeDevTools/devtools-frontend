@@ -20,7 +20,7 @@ const UIStrings = {
    *@example {error message} PH2
    */
   serviceworkercacheagentError: '`ServiceWorkerCacheAgent` error deleting cache entry {PH1} in cache: {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ServiceWorkerCacheModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -68,8 +68,8 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   clearForStorageKey(storageKey: string): void {
     for (const [opaqueId, cache] of this.#cachesInternal.entries()) {
       if (cache.storageKey === storageKey) {
-        this.#cachesInternal.delete((opaqueId as string));
-        this.cacheRemoved((cache as Cache));
+        this.#cachesInternal.delete((opaqueId));
+        this.cacheRemoved((cache));
       }
     }
     for (const storageBucket of this.#storageBucketModel.getBucketsForStorageKey(storageKey)) {
@@ -109,22 +109,18 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   loadCacheData(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): void {
     void this.requestEntries(cache, skipCount, pageSize, pathFilter, callback);
   }
 
   loadAllCacheData(
       cache: Cache, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): void {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): void {
     void this.requestAllEntries(cache, pathFilter, callback);
   }
 
   caches(): Cache[] {
-    const caches = new Array();
-    for (const cache of this.#cachesInternal.values()) {
-      caches.push(cache);
-    }
-    return caches;
+    return [...this.#cachesInternal.values()];
   }
 
   override dispose(): void {
@@ -156,8 +152,8 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
       }
       if (cache.inBucket(storageBucket)) {
         storageKeyCount--;
-        this.#cachesInternal.delete((opaqueId as string));
-        this.cacheRemoved((cache as Cache));
+        this.#cachesInternal.delete((opaqueId));
+        this.cacheRemoved((cache));
       }
     }
     if (storageKeyCount === 0) {
@@ -224,7 +220,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   private async requestEntries(
       cache: Cache, skipCount: number, pageSize: number, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): Promise<void> {
     const response =
         await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize, pathFilter});
     if (response.getError()) {
@@ -236,7 +232,7 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
 
   private async requestAllEntries(
       cache: Cache, pathFilter: string,
-      callback: (arg0: Array<Protocol.CacheStorage.DataEntry>, arg1: number) => void): Promise<void> {
+      callback: (arg0: Protocol.CacheStorage.DataEntry[], arg1: number) => void): Promise<void> {
     const response = await this.cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, pathFilter});
     if (response.getError()) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response.getError());

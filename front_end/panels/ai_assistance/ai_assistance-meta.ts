@@ -48,7 +48,7 @@ const UIStrings = {
    * not allow this feature.
    */
   policyRestricted: 'This setting is managed by your administrator.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/ai_assistance-meta.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -88,6 +88,10 @@ function isNetworkAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boole
 function isPerformanceAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistancePerformanceAgent?.enabled)) === true;
 }
+function isPerformanceInsightsAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return (config?.aidaAvailability?.enabled && config?.devToolsAiAssistancePerformanceAgent?.enabled &&
+          config?.devToolsAiAssistancePerformanceAgent.insightsEnabled) === true;
+}
 
 function isFileAgentFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && (config?.devToolsAiAssistanceFileAgent?.enabled)) === true;
@@ -110,7 +114,7 @@ UI.ViewManager.registerViewExtension({
   condition: config => isAnyFeatureAvailable(config) && !isPolicyRestricted(config),
   async loadView() {
     const AiAssistance = await loadAiAssistanceModule();
-    return AiAssistance.AiAssistancePanel.instance();
+    return await AiAssistance.AiAssistancePanel.instance();
   },
 });
 
@@ -222,6 +226,22 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
+  actionId: 'drjones.performance-insight-context',
+  contextTypes(): [] {
+    return [];
+  },
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nLazyString(UIStrings.askAi),
+  async loadActionDelegate() {
+    const AiAssistance = await loadAiAssistanceModule();
+    return new AiAssistance.ActionDelegate();
+  },
+  condition: config => {
+    return isPerformanceInsightsAgentFeatureAvailable(config) && !isPolicyRestricted(config);
+  }
+});
+
+UI.ActionRegistration.registerActionExtension({
   actionId: 'drjones.sources-floating-button',
   contextTypes(): [] {
     return [];
@@ -234,20 +254,6 @@ UI.ActionRegistration.registerActionExtension({
     return new AiAssistance.ActionDelegate();
   },
   condition: config => isFileAgentFeatureAvailable(config) && !isPolicyRestricted(config),
-});
-
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'ai-assistance.filesystem',
-  contextTypes(): [] {
-    return [];
-  },
-  category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAi),
-  async loadActionDelegate() {
-    const AiAssistance = await loadAiAssistanceModule();
-    return new AiAssistance.ActionDelegate();
-  },
-  condition: _config => Boolean(window.localStorage.getItem('ai_assistance_experimental_patch_do_not_use')),
 });
 
 UI.ActionRegistration.registerActionExtension({

@@ -19,19 +19,16 @@ interface ResolvedCodeLocationData {
 }
 export class SourceMappingsUpdated extends Event {
   static readonly eventName = 'sourcemappingsupdated';
-
   constructor() {
-    super(SourceMappingsUpdated.eventName, {
-      composed: true,
-      bubbles: true,
-    });
+    super(SourceMappingsUpdated.eventName, {composed: true, bubbles: true});
   }
 }
 
 // The code location key is created as a concatenation of its fields.
-export const resolvedCodeLocationDataNames: Map<string, ResolvedCodeLocationData|null> = new Map();
+export const resolvedCodeLocationDataNames = new Map<string, ResolvedCodeLocationData|null>();
 
 export class SourceMapsResolver extends EventTarget {
+  private executionContextNamesByOrigin = new Map<Platform.DevToolsPath.UrlString, string>();
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   #entityMapper: EntityMapper.EntityMapper|null = null;
 
@@ -72,7 +69,7 @@ export class SourceMapsResolver extends EventTarget {
    * TODO(andoli): This can return incorrect scripts if the target page has been reloaded since the trace.
    */
   static resolvedCodeLocationForCallFrame(callFrame: Protocol.Runtime.CallFrame): ResolvedCodeLocationData|null {
-    const codeLocationKey = this.keyForCodeLocation(callFrame as Protocol.Runtime.CallFrame);
+    const codeLocationKey = this.keyForCodeLocation(callFrame);
     return resolvedCodeLocationDataNames.get(codeLocationKey) ?? null;
   }
 
@@ -140,6 +137,8 @@ export class SourceMapsResolver extends EventTarget {
       debuggerModel.sourceMapManager().addEventListener(
           SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
     }
+
+    this.#updateExtensionNames();
 
     // Although we have added listeners for SourceMapAttached events, we also
     // immediately try to resolve function names. This ensures we use any
@@ -230,5 +229,14 @@ export class SourceMapsResolver extends EventTarget {
       return SDK.TargetManager.TargetManager.instance().targetById(maybeWorkerId);
     }
     return SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  }
+
+  #updateExtensionNames(): void {
+    for (const runtimeModel of SDK.TargetManager.TargetManager.instance().models(SDK.RuntimeModel.RuntimeModel)) {
+      for (const context of runtimeModel.executionContexts()) {
+        this.executionContextNamesByOrigin.set(context.origin, context.name);
+      }
+    }
+    this.#entityMapper?.updateExtensionEntitiesWithName(this.executionContextNamesByOrigin);
   }
 }

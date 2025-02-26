@@ -24,7 +24,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../../sources/sources.js';
 
 import type {RequestHeaderSectionData} from './RequestHeaderSection.js';
-import requestHeadersViewStylesRaw from './RequestHeadersView.css.legacy.js';
+import requestHeadersViewStylesRaw from './RequestHeadersView.css.js';
 import {
   RESPONSE_HEADER_SECTION_DATA_KEY,
   type ResponseHeaderSectionData,
@@ -114,7 +114,7 @@ const UIStrings = {
    *@description HTTP response code
    */
   statusCode: 'Status Code',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -199,7 +199,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       return;
     }
 
-    return RenderCoordinator.write(() => {
+    return await RenderCoordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`

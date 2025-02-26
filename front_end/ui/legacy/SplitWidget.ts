@@ -35,7 +35,7 @@ import * as VisualLogging from '../visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {Constraints} from './Geometry.js';
 import {Events as ResizerWidgetEvents, type ResizeUpdatePositionEvent, SimpleResizerWidget} from './ResizerWidget.js';
-import splitWidgetStyles from './splitWidget.css.legacy.js';
+import splitWidgetStyles from './splitWidget.css.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Widget, WidgetElement} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
@@ -282,13 +282,13 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       return;
     }
     this.secondIsSidebar = secondIsSidebar;
-    if (!this.mainWidgetInternal || !this.mainWidgetInternal.shouldHideOnDetach()) {
+    if (!this.mainWidgetInternal?.shouldHideOnDetach()) {
       if (secondIsSidebar) {
         this.contentElement.insertBefore(this.mainElement, this.sidebarElementInternal);
       } else {
         this.contentElement.insertBefore(this.mainElement, this.resizerElementInternal);
       }
-    } else if (!this.sidebarWidgetInternal || !this.sidebarWidgetInternal.shouldHideOnDetach()) {
+    } else if (!this.sidebarWidgetInternal?.shouldHideOnDetach()) {
       if (secondIsSidebar) {
         this.contentElement.insertBefore(this.sidebarElementInternal, this.resizerElementInternal);
       } else {
@@ -298,14 +298,6 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       console.error('Could not swap split widget side. Both children widgets contain iframes.');
       this.secondIsSidebar = !secondIsSidebar;
     }
-  }
-
-  sidebarSide(): string|null {
-    if (this.showModeInternal !== ShowMode.BOTH) {
-      return null;
-    }
-    return this.isVerticalInternal ? (this.secondIsSidebar ? 'right' : 'left') :
-                                     (this.secondIsSidebar ? 'bottom' : 'top');
   }
 
   resizerElement(): Element {
@@ -398,6 +390,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showBoth(animate?: boolean): void {
+    // Do nothing if both components are already showing.
+    if (!this.mainElement.classList.contains('hidden') && !this.sidebarElementInternal.classList.contains('hidden')) {
+      return;
+    }
+
     if (this.showModeInternal === ShowMode.BOTH) {
       animate = false;
     }
@@ -430,6 +427,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.resizerWidget.setEnabled(resizable);
   }
 
+  // Currently unused
   forceSetSidebarWidth(width: number): void {
     this.defaultSidebarWidth = width;
     this.savedSidebarSizeDIP = width;
@@ -761,11 +759,6 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.resizerWidget.removeElement((resizerElement as HTMLElement));
   }
 
-  hasCustomResizer(): boolean {
-    const elements = this.resizerWidget.elements();
-    return elements.length > 1 || (elements.length === 1 && elements[0] !== this.resizerElementInternal);
-  }
-
   toggleResizer(resizer: Element, on: boolean): void {
     if (on) {
       this.installResizer(resizer);
@@ -799,8 +792,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   private restoreAndApplyShowModeFromSettings(): void {
     const orientationState = this.settingForOrientation();
-    this.savedShowMode =
-        orientationState && orientationState.showMode ? orientationState.showMode : this.showModeInternal;
+    this.savedShowMode = orientationState?.showMode ? orientationState.showMode : this.showModeInternal;
     this.showModeInternal = this.savedShowMode;
 
     switch (this.savedShowMode) {

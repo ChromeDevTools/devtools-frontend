@@ -47,7 +47,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -57,7 +57,7 @@ import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
 import {ConsolePinPane} from './ConsolePinPane.js';
 import {ConsolePrompt, Events as ConsolePromptEvents} from './ConsolePrompt.js';
 import {ConsoleSidebar, Events} from './ConsoleSidebar.js';
-import consoleViewStyles from './consoleView.css.legacy.js';
+import consoleViewStyles from './consoleView.css.js';
 import {
   ConsoleCommand,
   ConsoleCommandResult,
@@ -258,7 +258,7 @@ const UIStrings = {
    */
   filteredMessagesInConsole: '{PH1} messages in console',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
@@ -323,13 +323,13 @@ export class ConsoleView extends UI.Widget.VBox implements
   private issueToolbarThrottle: Common.Throttler.Throttler;
   private requestResolver = new Logs.RequestResolver.RequestResolver();
   private issueResolver = new IssuesManager.IssueResolver.IssueResolver();
-  #isDetached: boolean = false;
+  #isDetached = false;
   #onIssuesCountUpdateBound = this.#onIssuesCountUpdate.bind(this);
 
   constructor(viewportThrottlerTimeout: number) {
     super();
     this.setMinimumSize(0, 35);
-    this.registerRequiredCSS(consoleViewStyles, objectValueStyles, CodeHighlighter.Style.default);
+    this.registerRequiredCSS(consoleViewStyles, objectValueStyles, CodeHighlighter.codeHighlighterStyles);
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
     this.searchableViewInternal.element.classList.add('console-searchable-view');
@@ -998,7 +998,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
     const currentGroup = viewMessage.consoleGroup();
 
-    if (!currentGroup || !currentGroup.messagesHidden()) {
+    if (!currentGroup?.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
       const adjacent = Boolean(originatingMessage && lastMessage?.consoleMessage() === originatingMessage);
       viewMessage.setAdjacentUserCommandResult(adjacent);
@@ -1184,7 +1184,7 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   private async copyConsole(): Promise<void> {
-    const messageContents: Array<string> = [];
+    const messageContents: string[] = [];
     for (let i = 0; i < this.itemCount(); i++) {
       const message = (this.itemElement(i) as ConsoleViewMessage);
       messageContents.push(message.toExportString());
@@ -1470,7 +1470,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private innerSearch(index: number): void {
     delete this.innerSearchTimeoutId;
-    if (this.searchProgressIndicator && this.searchProgressIndicator.isCanceled()) {
+    if (this.searchProgressIndicator?.isCanceled()) {
       this.cleanupAfterSearch();
       return;
     }
@@ -1609,9 +1609,9 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 }
 
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Console = globalThis.Console || {};
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Console.ConsoleView = ConsoleView;
 
 export class ConsoleViewFilter {

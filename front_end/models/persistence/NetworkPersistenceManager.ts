@@ -38,7 +38,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   private activeInternal: boolean;
   private enabled: boolean;
   private eventDescriptors: Common.EventTarget.EventDescriptor[];
-  #headerOverridesMap: Map<Platform.DevToolsPath.EncodedPathString, HeaderOverrideWithRegex[]> = new Map();
+  #headerOverridesMap = new Map<Platform.DevToolsPath.EncodedPathString, HeaderOverrideWithRegex[]>();
   readonly #sourceCodeToBindProcessMutex = new WeakMap<Workspace.UISourceCode.UISourceCode, Common.Mutex.Mutex>();
   readonly #eventDispatchThrottler: Common.Throttler.Throttler;
   #headerOverridesForEventDispatch: Set<Workspace.UISourceCode.UISourceCode>;
@@ -437,7 +437,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     if (!this.#isUISourceCodeAlreadyOverridden(uiSourceCode)) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSaveNewFile);
       uiSourceCode.commitWorkingCopy();
-      await this.saveUISourceCodeForOverrides(uiSourceCode as Workspace.UISourceCode.UISourceCode);
+      await this.saveUISourceCodeForOverrides(uiSourceCode);
     } else {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuOpenExistingFile);
     }
@@ -552,7 +552,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     try {
       headerOverrides = JSON.parse(content) as HeaderOverride[];
       if (!headerOverrides.every(isHeaderOverride)) {
-        throw 'Type mismatch after parsing';
+        throw new Error('Type mismatch after parsing');
       }
     } catch {
       console.error('Failed to parse', uiSourceCode.url(), 'for locally overriding headers.');
@@ -700,7 +700,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   async #innerUpdateInterceptionPatterns(): Promise<void> {
     this.#headerOverridesMap.clear();
     if (!this.activeInternal || !this.projectInternal) {
-      return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
+      return await SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
           [], this.interceptionHandlerBound);
     }
     let patterns = new Set<string>();
@@ -730,7 +730,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       }
     }
 
-    return SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
+    return await SDK.NetworkManager.MultitargetNetworkManager.instance().setInterceptionHandlerForPatterns(
         Array.from(patterns).map(
             pattern => ({urlPattern: pattern, requestStage: Protocol.Fetch.RequestStage.Response})),
         this.interceptionHandlerBound);
@@ -1013,7 +1013,7 @@ interface HeaderOverrideWithRegex {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isHeaderOverride(arg: any): arg is HeaderOverride {
-  if (!(arg && typeof arg.applyTo === 'string' && arg.headers && arg.headers.length && Array.isArray(arg.headers))) {
+  if (!(arg && typeof arg.applyTo === 'string' && arg.headers?.length && Array.isArray(arg.headers))) {
     return false;
   }
   return arg.headers.every(

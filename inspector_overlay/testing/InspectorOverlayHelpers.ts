@@ -187,7 +187,7 @@ export function drawGridLineNamesAndAssertLabels(
   assert.strictEqual(labels.length, expectedLabels.length, 'The right total number of line name labels were displayed');
   assertElements(labels, HTMLElement);
 
-  const foundLabels: {textContent: string, x: number, y: number}[] = [];
+  const foundLabels: Array<{textContent: string, x: number, y: number}> = [];
   labels.forEach(el => {
     const width = el.offsetWidth;
     const height = el.offsetHeight;

@@ -132,6 +132,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
     this.dependencies.splice(this.dependencies.indexOf(node), 1);
   }
 
+  // Unused in devtools, but used in LH.
   removeAllDependencies(): void {
     for (const node of this.dependencies.slice()) {
       this.removeDependency(node);
@@ -179,7 +180,7 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
    * node this was called on is not included in the resulting filtered graph, the method will throw.
    *
    * This does not clone NetworkNode's `record` or `rawRecord` fields. It may be reasonable to clone the former,
-   * to assist in graph construction, but the latter should never be cloned as one contraint of Lantern is that
+   * to assist in graph construction, but the latter should never be cloned as one constraint of Lantern is that
    * the underlying data records are accessible for plain object reference equality checks.
    */
   cloneWithRelationships(predicate?: (arg0: Node) => boolean): Node {
@@ -240,8 +241,9 @@ class BaseNode<T = Lantern.AnyNetworkObject> {
    * The `getNextNodes` function takes a visited node and returns which nodes to
    * visit next. It defaults to returning the node's dependents.
    */
-  traverse(callback: (node: Node<T>, traversalPath: Node<T>[]) => void, getNextNodes?: (arg0: Node<T>) => Node<T>[]):
-      void {
+  traverse(
+      callback: (node: Node<T>, traversalPath: Array<Node<T>>) => void,
+      getNextNodes?: (arg0: Node<T>) => Array<Node<T>>): void {
     for (const {node, traversalPath} of this.traverseGenerator(getNextNodes)) {
       callback(node, traversalPath);
     }

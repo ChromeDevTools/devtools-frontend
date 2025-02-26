@@ -38,3 +38,7 @@
 slot {
   height: var(--toolbar-height);
 }
+
+devtools-toolbar-input {
+  display: flex;
+}

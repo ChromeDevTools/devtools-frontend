@@ -15,7 +15,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import networkThrottlingSelectorStylesRaw from './networkThrottlingSelector.css.legacy.js';
+import networkThrottlingSelectorStylesRaw from './networkThrottlingSelector.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const networkThrottlingSelectorStyles = new CSSStyleSheet();
@@ -59,7 +59,7 @@ const UIStrings = {
    * @description Text label for a menu option to add a new custom throttling preset.
    */
   add: 'Add…',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

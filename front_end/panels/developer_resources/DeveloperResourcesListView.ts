@@ -11,11 +11,9 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 
-import developerResourcesListViewStyles from './developerResourcesListView.css.legacy.js';
-
-const {render, html, nothing} = Lit;
+import developerResourcesListViewStyles from './developerResourcesListView.css.js';
 
 const UIStrings = {
   /**
@@ -67,7 +65,7 @@ const UIStrings = {
    *@description Accessible text for the value in bytes in memory allocation.
    */
   sBytes: '{n, plural, =1 {# byte} other {# bytes}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {withThousandsSeparator} = Platform.NumberUtilities;
@@ -149,7 +147,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
                   </tr>`)}
               </table>
             </devtools-data-grid>`,
-            target, {host: input});  // eslint-disable-line rulesdir/lit-host-this
+            target, {host: input});
     // clang-format on
     function renderUrl(url: string): HTMLElement {
       const outer = document.createElement('div');
@@ -245,7 +243,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
       return;
     }
     const matches = filter.regex.exec(textContent);
-    if (!matches || !matches.length) {
+    if (!matches?.length) {
       return;
     }
     const range = new TextUtils.TextRange.SourceRange(matches.index, matches[0].length);

@@ -5,7 +5,6 @@
 import {
   goToResource,
 } from '../../shared/helper.js';
-
 import {
   checkCommandResultFunction,
   navigateToConsoleTab,

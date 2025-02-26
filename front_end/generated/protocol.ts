@@ -960,6 +960,7 @@ export namespace Audits {
     KInlineViolation = 'kInlineViolation',
     KEvalViolation = 'kEvalViolation',
     KURLViolation = 'kURLViolation',
+    KSRIViolation = 'kSRIViolation',
     KTrustedTypesSinkViolation = 'kTrustedTypesSinkViolation',
     KTrustedTypesPolicyViolation = 'kTrustedTypesPolicyViolation',
     KWasmEvalViolation = 'kWasmEvalViolation',
@@ -1077,6 +1078,29 @@ export namespace Audits {
     WriteErrorUnsupportedType = 'WriteErrorUnsupportedType',
   }
 
+  export const enum SRIMessageSignatureError {
+    MissingSignatureHeader = 'MissingSignatureHeader',
+    MissingSignatureInputHeader = 'MissingSignatureInputHeader',
+    InvalidSignatureHeader = 'InvalidSignatureHeader',
+    InvalidSignatureInputHeader = 'InvalidSignatureInputHeader',
+    SignatureHeaderValueIsNotByteSequence = 'SignatureHeaderValueIsNotByteSequence',
+    SignatureHeaderValueIsParameterized = 'SignatureHeaderValueIsParameterized',
+    SignatureHeaderValueIsIncorrectLength = 'SignatureHeaderValueIsIncorrectLength',
+    SignatureInputHeaderMissingLabel = 'SignatureInputHeaderMissingLabel',
+    SignatureInputHeaderValueNotInnerList = 'SignatureInputHeaderValueNotInnerList',
+    SignatureInputHeaderValueMissingComponents = 'SignatureInputHeaderValueMissingComponents',
+    SignatureInputHeaderInvalidComponentType = 'SignatureInputHeaderInvalidComponentType',
+    SignatureInputHeaderInvalidComponentName = 'SignatureInputHeaderInvalidComponentName',
+    SignatureInputHeaderInvalidHeaderComponentParameter = 'SignatureInputHeaderInvalidHeaderComponentParameter',
+    SignatureInputHeaderInvalidDerivedComponentParameter = 'SignatureInputHeaderInvalidDerivedComponentParameter',
+    SignatureInputHeaderKeyIdLength = 'SignatureInputHeaderKeyIdLength',
+    SignatureInputHeaderInvalidParameter = 'SignatureInputHeaderInvalidParameter',
+    SignatureInputHeaderMissingRequiredParameters = 'SignatureInputHeaderMissingRequiredParameters',
+    ValidationFailedSignatureExpired = 'ValidationFailedSignatureExpired',
+    ValidationFailedInvalidLength = 'ValidationFailedInvalidLength',
+    ValidationFailedSignatureMismatch = 'ValidationFailedSignatureMismatch',
+  }
+
   /**
    * Details for issues around "Attribution Reporting API" usage.
    * Explainer: https://github.com/WICG/attribution-reporting-api
@@ -1111,6 +1135,11 @@ export namespace Audits {
 
   export interface SharedDictionaryIssueDetails {
     sharedDictionaryError: SharedDictionaryError;
+    request: AffectedRequest;
+  }
+
+  export interface SRIMessageSignatureIssueDetails {
+    error: SRIMessageSignatureError;
     request: AffectedRequest;
   }
 
@@ -1242,6 +1271,7 @@ export namespace Audits {
     RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
     TypeNotMatching = 'TypeNotMatching',
     UiDismissedNoEmbargo = 'UiDismissedNoEmbargo',
+    CorsError = 'CorsError',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -1284,6 +1314,22 @@ export namespace Audits {
      */
     failureMessage: string;
     requestId?: Network.RequestId;
+  }
+
+  export const enum PartitioningBlobURLInfo {
+    BlockedCrossPartitionFetching = 'BlockedCrossPartitionFetching',
+    EnforceNoopenerForNavigation = 'EnforceNoopenerForNavigation',
+  }
+
+  export interface PartitioningBlobURLIssueDetails {
+    /**
+     * The BlobURL that failed to load.
+     */
+    url: string;
+    /**
+     * Additional information about the Partitioning Blob URL issue.
+     */
+    partitioningBlobURLInfo: PartitioningBlobURLInfo;
   }
 
   export const enum SelectElementAccessibilityIssueReason {
@@ -1368,6 +1414,7 @@ export namespace Audits {
     CorsIssue = 'CorsIssue',
     AttributionReportingIssue = 'AttributionReportingIssue',
     QuirksModeIssue = 'QuirksModeIssue',
+    PartitioningBlobURLIssue = 'PartitioningBlobURLIssue',
     NavigatorUserAgentIssue = 'NavigatorUserAgentIssue',
     GenericIssue = 'GenericIssue',
     DeprecationIssue = 'DeprecationIssue',
@@ -1380,6 +1427,7 @@ export namespace Audits {
     PropertyRuleIssue = 'PropertyRuleIssue',
     SharedDictionaryIssue = 'SharedDictionaryIssue',
     SelectElementAccessibilityIssue = 'SelectElementAccessibilityIssue',
+    SRIMessageSignatureIssue = 'SRIMessageSignatureIssue',
   }
 
   /**
@@ -1398,6 +1446,7 @@ export namespace Audits {
     corsIssueDetails?: CorsIssueDetails;
     attributionReportingIssueDetails?: AttributionReportingIssueDetails;
     quirksModeIssueDetails?: QuirksModeIssueDetails;
+    partitioningBlobURLIssueDetails?: PartitioningBlobURLIssueDetails;
     navigatorUserAgentIssueDetails?: NavigatorUserAgentIssueDetails;
     genericIssueDetails?: GenericIssueDetails;
     deprecationIssueDetails?: DeprecationIssueDetails;
@@ -1410,6 +1459,7 @@ export namespace Audits {
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
     selectElementAccessibilityIssueDetails?: SelectElementAccessibilityIssueDetails;
+    sriMessageSignatureIssueDetails?: SRIMessageSignatureIssueDetails;
   }
 
   /**
@@ -1510,6 +1560,13 @@ export namespace Extensions {
   }
 
   export interface LoadUnpackedResponse extends ProtocolResponseWithError {
+    /**
+     * Extension id.
+     */
+    id: string;
+  }
+
+  export interface UninstallRequest {
     /**
      * Extension id.
      */
@@ -4751,6 +4808,7 @@ export namespace DOM {
 
   export const enum GetElementByRelationRequestRelation {
     PopoverTarget = 'PopoverTarget',
+    InterestTarget = 'InterestTarget',
   }
 
   export interface GetElementByRelationRequest {
@@ -11881,6 +11939,18 @@ export namespace Page {
   }
 
   /**
+   * Additional information about the frame document's security origin.
+   */
+  export interface SecurityOriginDetails {
+    /**
+     * Indicates whether the frame document's security origin is one
+     * of the local hostnames (e.g. "localhost") or IP addresses (IPv4
+     * 127.0.0.0/8 or IPv6 ::1).
+     */
+    isLocalhost: boolean;
+  }
+
+  /**
    * Information about the Frame on the page.
    */
   export interface Frame {
@@ -11919,6 +11989,10 @@ export namespace Page {
      * Frame document's security origin.
      */
     securityOrigin: string;
+    /**
+     * Additional details about the frame document's security origin.
+     */
+    securityOriginDetails?: SecurityOriginDetails;
     /**
      * Frame document's mimeType as determined by the browser.
      */
@@ -15825,6 +15899,10 @@ export namespace Target {
      * Binding name, 'cdp' if not specified.
      */
     bindingName?: string;
+    /**
+     * If true, inherits the current root session's permissions (default: false).
+     */
+    inheritPermissions?: boolean;
   }
 
   export interface CreateBrowserContextRequest {
@@ -17605,6 +17683,7 @@ export namespace Preload {
     OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
     V8OptimizerDisabled = 'V8OptimizerDisabled',
     PrerenderFailedDuringPrefetch = 'PrerenderFailedDuringPrefetch',
+    BrowsingDataRemoved = 'BrowsingDataRemoved',
   }
 
   /**

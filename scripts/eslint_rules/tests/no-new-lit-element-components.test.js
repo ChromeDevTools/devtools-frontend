@@ -2,20 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/no-new-lit-element-components.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'New LitElement components are banned.';
 
-ruleTester.run('no-new-lit-element-components', rule, {
+new RuleTester().run('no-new-lit-element-components', rule, {
   valid: [
     {
       code: 'class A extends B {}',

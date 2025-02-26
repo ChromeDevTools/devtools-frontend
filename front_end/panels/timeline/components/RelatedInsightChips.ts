@@ -7,7 +7,7 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import stylesRaw from './relatedInsightChips.css.legacy.js';
+import stylesRaw from './relatedInsightChips.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -25,7 +25,7 @@ const UIStrings = {
    * @example {Improve image delivery} PH1
    */
   insightWithName: 'Insight: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/RelatedInsightChips.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

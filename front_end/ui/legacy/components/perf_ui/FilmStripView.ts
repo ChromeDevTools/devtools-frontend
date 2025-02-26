@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filmStripViewStyles from './filmStripView.css.legacy.js';
+import filmStripViewStyles from './filmStripView.css.js';
 
 const UIStrings = {
   /**
@@ -33,11 +33,11 @@ const UIStrings = {
    *@description Next button title in Film Strip View of the Performance panel
    */
   nextFrame: 'Next frame',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
-  private statusLabel: HTMLElement;
+  private statusPlaceholder?: UI.Widget.Widget;
   private zeroTime: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
 
@@ -45,7 +45,6 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     super(true);
     this.registerRequiredCSS(filmStripViewStyles);
     this.contentElement.classList.add('film-strip-view');
-    this.statusLabel = this.contentElement.createChild('div', 'label');
     this.reset();
   }
 
@@ -98,6 +97,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     }
 
     const frameElements = frames.map(frame => this.createFrameElement(frame));
+    this.statusPlaceholder?.detach();
     this.contentElement.removeChildren();
     for (const element of frameElements) {
       this.contentElement.appendChild(element);
@@ -119,12 +119,15 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
 
   reset(): void {
     this.zeroTime = Trace.Types.Timing.Milli(0);
+    this.statusPlaceholder?.detach();
     this.contentElement.removeChildren();
-    this.contentElement.appendChild(this.statusLabel);
+    this.statusPlaceholder?.show(this.contentElement);
   }
 
-  setStatusText(text: string): void {
-    this.statusLabel.textContent = text;
+  setStatusPlaceholder(element: UI.Widget.Widget): void {
+    this.statusPlaceholder?.detach();
+    this.statusPlaceholder = element;
+    this.statusPlaceholder.show(this.contentElement);
   }
 }
 
@@ -173,13 +176,13 @@ export class Dialog {
     const nextButton = UI.UIUtils.createTextButton('\u25B6', this.onNextFrame.bind(this));
     UI.Tooltip.Tooltip.install(nextButton, i18nString(UIStrings.nextFrame));
     this.fragment = UI.Fragment.Fragment.build`
-      <x-widget flex=none margin=12px>
-        <x-hbox overflow=auto border='1px solid #ddd'>
+      <x-widget flex=none margin='var(--sys-size-7) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8)'>
+        <x-hbox overflow=auto border='var(--sys-size-1) solid var(--sys-color-divider)'>
           <img $='image' data-film-strip-dialog-img style="max-height: 80vh; max-width: 80vw;"></img>
         </x-hbox>
-        <x-hbox x-center justify-content=center margin-top=10px>
+        <x-hbox x-center justify-content=center margin-top='var(--sys-size-6)'>
           ${prevButton}
-          <x-hbox $='time' margin=8px></x-hbox>
+          <x-hbox $='time' margin='var(--sys-size-5)'></x-hbox>
           ${nextButton}
         </x-hbox>
       </x-widget>

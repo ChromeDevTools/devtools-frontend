@@ -34,7 +34,7 @@ describeWithMockConnection('ResourceUtils', () => {
     createTarget({parentTarget: tabTarget, subtype: 'prerender'});
     target = createTarget({parentTarget: tabTarget});
     target.setInspectedURL(INSPECTED_URL);
-    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel.prototype, 'resourceForURL')
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'resourceForURL')
         .returns(null)
         .withArgs(RESOURCE_URL)
         .returns(RESOURCE);

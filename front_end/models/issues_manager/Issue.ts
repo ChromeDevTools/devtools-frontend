@@ -36,7 +36,7 @@ const UIStrings = {
    *@description A description for a kind of issue we display in the issues tab.
    */
   improvementIssue: 'An improvement issue: there is an opportunity to improve the page',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/Issue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

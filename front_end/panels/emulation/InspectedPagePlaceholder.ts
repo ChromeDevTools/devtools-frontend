@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.legacy.js';
+import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
 
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 

@@ -43,7 +43,7 @@ const UIStrings = {
    *@description Title of an action in the components tool to collect garbage
    */
   collectGarbage: 'Collect garbage',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/perf_ui-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

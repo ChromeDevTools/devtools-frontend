@@ -97,7 +97,7 @@ const UIStrings = {
    * @description Text to prompt the user to re-run the CPU calibration process.
    */
   recalibrate: 'Recalibrate…',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;
@@ -256,7 +256,7 @@ export class ThrottlingManager {
   }
 
   createNetworkThrottlingSelector(selectElement: HTMLSelectElement): NetworkThrottlingSelectorWrapper {
-    let options: (SDK.NetworkManager.Conditions|null)[] = [];
+    let options: Array<SDK.NetworkManager.Conditions|null> = [];
     let titles: string[] = [];
     let optionEls: HTMLOptionElement[] = [];
     const selector = new NetworkThrottlingSelector(populate, select, this.customNetworkConditionsSetting);
@@ -268,7 +268,7 @@ export class ThrottlingManager {
                 .context(this.currentNetworkThrottlingConditionsSetting.name)}`);
     selectElement.addEventListener('change', optionSelected, false);
 
-    function populate(groups: NetworkThrottlingConditionsGroup[]): (SDK.NetworkManager.Conditions|null)[] {
+    function populate(groups: NetworkThrottlingConditionsGroup[]): Array<SDK.NetworkManager.Conditions|null> {
       selectElement.removeChildren();
       options = [];
       titles = [];
@@ -404,7 +404,7 @@ export class ThrottlingManager {
     const numericInput =
         new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency'));
     numericInput.setTitle(i18nString(UIStrings.hardwareConcurrencySettingLabel));
-    const inputElement = numericInput.element as HTMLInputElement;
+    const inputElement = numericInput.element;
     inputElement.min = '1';
     numericInput.setEnabled(false);
 

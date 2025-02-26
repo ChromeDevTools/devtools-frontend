@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -43,7 +44,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   }
 
   cssModel(): SDK.CSSModel.CSSModel|null {
-    return this.cssModelInternal && this.cssModelInternal.isEnabled() ? this.cssModelInternal : null;
+    return this.cssModelInternal?.isEnabled() ? this.cssModelInternal : null;
   }
 
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
@@ -58,7 +59,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
       return;
     }
 
-    const hostConfig = Common.Settings.Settings.instance().getHostConfig();
+    const {hostConfig} = Root.Runtime;
     const isComputedStyleWidgetVisible = Boolean(UI.Context.Context.instance().flavor(ComputedStyleWidget));
     const isStylesTabVisible = Boolean(UI.Context.Context.instance().flavor(StylesSidebarPane));
     const shouldTrackComputedStyleUpdates =
@@ -177,7 +178,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
       this.computedStylePromise = cssModel.getComputedStyle(nodeId).then(verifyOutdated.bind(this, elementNode));
     }
 
-    return this.computedStylePromise;
+    return await this.computedStylePromise;
 
     function verifyOutdated(
         this: ComputedStyleModel, elementNode: SDK.DOMModel.DOMNode, style: Map<string, string>|null): ComputedStyle|

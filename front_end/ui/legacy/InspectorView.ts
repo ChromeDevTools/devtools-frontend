@@ -45,7 +45,7 @@ import {Dialog} from './Dialog.js';
 import {DockController, DockState} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
-import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
+import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
 import {ShowMode, SplitWidget} from './SplitWidget.js';
@@ -130,7 +130,7 @@ const UIStrings = {
    *@description Label for a button which opens a file picker.
    */
   selectFolder: 'Select folder',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/InspectorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let inspectorViewInstance: InspectorView|null = null;
@@ -313,7 +313,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     if (!view) {
       throw new Error(`Expected view for panel '${panelName}'`);
     }
-    return view.widget() as Promise<Panel>;
+    return await (view.widget() as Promise<Panel>);
   }
 
   onSuspendStateChanged(allTargetsSuspended: boolean): void {
@@ -366,7 +366,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   }
 
   currentPanelDeprecated(): Widget|null {
-    return (ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || '') as Widget | null);
+    return (ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || ''));
   }
 
   showDrawer({focus, hasTargetDrawer}: {focus: boolean, hasTargetDrawer: boolean}): void {
@@ -409,10 +409,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
 
   isDrawerMinimized(): boolean {
     return this.drawerSplitWidget.isSidebarMinimized();
-  }
-
-  closeDrawerTab(id: string, userGesture?: boolean): void {
-    this.drawerTabbedPane.closeTab(id, userGesture);
   }
 
   private keyDown(event: Event): void {

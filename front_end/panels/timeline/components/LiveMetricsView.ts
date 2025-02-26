@@ -27,9 +27,9 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
 
-import liveMetricsViewStylesRaw from './liveMetricsView.css.legacy.js';
+import liveMetricsViewStylesRaw from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
-import metricValueStylesRaw from './metricValueStyles.css.legacy.js';
+import metricValueStylesRaw from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -292,7 +292,7 @@ const UIStrings = {
    * @description Description of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
    */
   nodeClickToRecord: 'Record a performance timeline of the connected Node process.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -300,7 +300,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #isNode: boolean = false;
+  #isNode = false;
 
   #lcpValue?: LiveMetrics.LcpValue;
   #clsValue?: LiveMetrics.ClsValue;
@@ -711,7 +711,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #getLabelForDeviceOption(deviceOption: DeviceOption): string {
     let baseLabel;
     if (deviceOption === 'AUTO') {
-      const deviceScope = this.#cruxManager.getSelectedDeviceScope();
+      const deviceScope = this.#cruxManager.resolveDeviceOptionToScope(deviceOption);
       const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
       baseLabel = i18nString(UIStrings.auto, {PH1: deviceScopeLabel});
     } else {

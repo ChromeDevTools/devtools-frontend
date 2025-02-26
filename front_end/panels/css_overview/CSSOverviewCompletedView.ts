@@ -15,7 +15,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.legacy.js';
+import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
 import {
   Events as CSSOverViewControllerEvents,
   type OverviewController,
@@ -175,7 +175,7 @@ const UIStrings = {
    *@description Title of the button to show the element in the CSS overview panel
    */
   showElement: 'Show element',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/css_overview/CSSOverviewCompletedView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -685,8 +685,8 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   }
 
   #groupToFragment(
-      items: Map<string, (number | UnusedDeclaration | Protocol.CSS.CSSMedia)[]>, type: string, dataLabel: string,
-      path: string = ''): UI.Fragment.Fragment {
+      items: Map<string, Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>>, type: string, dataLabel: string,
+      path = ''): UI.Fragment.Fragment {
     // Sort by number of items descending.
     const values = Array.from(items.entries()).sort((d1, d2) => {
       const v1Nodes = d1[1];
@@ -740,8 +740,8 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
       }
     }
 
-    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA) as string);
-    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA) as string);
+    const color = (minContrastIssue.textColor.asString(Common.Color.Format.HEXA));
+    const backgroundColor = (minContrastIssue.backgroundColor.asString(Common.Color.Format.HEXA));
 
     const showAPCA = Root.Runtime.experiments.isEnabled('apca');
 
@@ -972,7 +972,6 @@ export class ElementDetailsView extends UI.Widget.Widget {
     this.#elementGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.cssOverviewElements),
       columns: this.#elementGridColumns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
@@ -998,7 +997,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
   #onMouseOver(evt: Event): void {
     // Traverse the event path on the grid to find the nearest element with a backend node ID attached. Use
     // that for the highlighting.
-    const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset && el.dataset.backendNodeId);
+    const node = (evt.composedPath() as HTMLElement[]).find(el => el.dataset?.backendNodeId);
     if (!node) {
       return;
     }
@@ -1025,7 +1024,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     if ('nodeId' in firstItem && visibility.has('node-id')) {
       // Grab the nodes from the frontend, but only those that have not been
       // retrieved already.
-      const nodeIds = (data as {nodeId: Protocol.DOM.BackendNodeId}[]).reduce((prev, curr) => {
+      const nodeIds = (data as Array<{nodeId: Protocol.DOM.BackendNodeId}>).reduce((prev, curr) => {
         const nodeId = curr.nodeId;
         if (CSSOverviewCompletedView.pushedNodes.has(nodeId)) {
           return prev;

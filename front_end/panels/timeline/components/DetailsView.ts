@@ -65,7 +65,7 @@ const UIStrings = {
    * @description Details text indicating how many bytes were sent in a WebSocket message
    */
   webSocketDataLength: 'Data length',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -173,7 +173,7 @@ export function generateInvalidationsList(
 } {
   const groupedByReason: Record<string, Trace.Types.Events.InvalidationTrackingEvent[]> = {};
 
-  const backendNodeIds: Set<Protocol.DOM.BackendNodeId> = new Set();
+  const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
   for (const invalidation of invalidations) {
     backendNodeIds.add(invalidation.args.data.nodeId);
 

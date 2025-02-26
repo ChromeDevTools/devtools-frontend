@@ -35,14 +35,14 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ObjectUI from '../object_ui/object_ui.js';
 
-import jsonViewStyles from './jsonView.css.legacy.js';
+import jsonViewStyles from './jsonView.css.js';
 
 const UIStrings = {
   /**
    *@description Text to find an item
    */
   find: 'Find',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/JSONView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
@@ -95,7 +95,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
   private static parseJSON(text: string|null): Promise<ParsedJSON|null> {
     let returnObj: (ParsedJSON|null)|null = null;
     if (text) {
-      returnObj = JSONView.extractJSON((text as string));
+      returnObj = JSONView.extractJSON((text));
     }
     if (!returnObj) {
       return Promise.resolve(null);

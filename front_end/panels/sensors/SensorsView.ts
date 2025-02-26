@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
-import sensorsStyles from './sensors.css.legacy.js';
+import sensorsStyles from './sensors.css.js';
 
 const UIStrings = {
   /**
@@ -164,7 +164,7 @@ const UIStrings = {
    *@description Label for one dimension of device orientation that the user can override.
    */
   gamma: '\u03B3 (gamma)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/SensorsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

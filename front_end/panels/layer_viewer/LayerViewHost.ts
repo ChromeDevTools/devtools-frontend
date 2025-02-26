@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
-
 import type * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
@@ -13,7 +12,7 @@ const UIStrings = {
    *@description Text in Layer View Host of the Layers panel
    */
   showInternalLayers: 'Show internal layers',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layer_viewer/LayerViewHost.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -129,12 +128,12 @@ export class LayerViewHost {
       return;
     }
     this.target = layerTree.target();
-    const selectedLayer = this.selectedObject && this.selectedObject.layer();
-    if (selectedLayer && (!layerTree || !layerTree.layerById(selectedLayer.id()))) {
+    const selectedLayer = this.selectedObject?.layer();
+    if (selectedLayer && (!layerTree?.layerById(selectedLayer.id()))) {
       this.selectObject(null);
     }
-    const hoveredLayer = this.hoveredObject && this.hoveredObject.layer();
-    if (hoveredLayer && (!layerTree || !layerTree.layerById(hoveredLayer.id()))) {
+    const hoveredLayer = this.hoveredObject?.layer();
+    if (hoveredLayer && (!layerTree?.layerById(hoveredLayer.id()))) {
       this.hoverObject(null);
     }
     for (const view of this.views) {
@@ -147,7 +146,7 @@ export class LayerViewHost {
       return;
     }
     this.hoveredObject = selection;
-    const layer = selection && selection.layer();
+    const layer = selection?.layer();
     this.toggleNodeHighlight(layer ? layer.nodeForSelfOrAncestor() : null);
     for (const view of this.views) {
       view.hoverObject(selection);
@@ -174,7 +173,7 @@ export class LayerViewHost {
           checked: this.showInternalLayersSettingInternal.get(),
           jslogContext: this.showInternalLayersSettingInternal.name,
         });
-    const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
+    const node = selection?.layer()?.nodeForSelfOrAncestor();
     if (node) {
       contextMenu.appendApplicableItems(node);
     }

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
@@ -48,10 +49,6 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
 
   modifiedUISourceCodes(): Workspace.UISourceCode.UISourceCode[] {
     return Array.from(this.#modified);
-  }
-
-  isUISourceCodeModified(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.#modified.has(uiSourceCode) || this.loadingUISourceCodes.has(uiSourceCode);
   }
 
   private uiSourceCodeDiff(uiSourceCode: Workspace.UISourceCode.UISourceCode): UISourceCodeDiff {
@@ -124,7 +121,7 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
     // a binding (as part of the kDevToolsImprovedWorkspaces feature).
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         this.#persistence.binding(uiSourceCode) === null &&
-        Common.Settings.Settings.instance().getHostConfig().devToolsImprovedWorkspaces?.enabled) {
+        Root.Runtime.hostConfig.devToolsImprovedWorkspaces?.enabled) {
       return true;
     }
 
@@ -244,7 +241,7 @@ export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourc
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().originalContentForUISourceCode(
             this.uiSourceCode);
     if (originalNetworkContent) {
-      return originalNetworkContent;
+      return await originalNetworkContent;
     }
 
     const content = await this.uiSourceCode.project().requestFileContent(this.uiSourceCode);

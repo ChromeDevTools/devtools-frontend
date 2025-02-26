@@ -11,7 +11,7 @@ import * as TextPrompt from '../../../../ui/components/text_prompt/text_prompt.j
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import filteredListWidgetStyles from './filteredListWidget.css.legacy.js';
+import filteredListWidgetStyles from './filteredListWidget.css.js';
 
 const UIStrings = {
   /**
@@ -33,7 +33,7 @@ const UIStrings = {
    * @example {5} PH3
    */
   sItemSOfS: '{PH1}, item {PH2} of {PH3}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -159,13 +159,6 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     this.hintElement.textContent = hint;
   }
 
-  /**
-   * Sets the text prompt's accessible title. By default, it is "Quick open prompt".
-   */
-  setPromptTitle(title: string): void {
-    UI.ARIAUtils.setLabel(this.inputBoxElement, title);
-  }
-
   showAsDialog(dialogTitle?: string): void {
     if (!dialogTitle) {
       dialogTitle = i18nString(UIStrings.quickOpen);
@@ -183,7 +176,6 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     void this.dialog.once(UI.Dialog.Events.HIDDEN).then(() => {
       this.dispatchEventToListeners(Events.HIDDEN);
     });
-    // @ts-ignore
     this.dialog.show();
   }
 
@@ -286,7 +278,7 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTyp
     wrapperElement.className = 'filtered-list-widget-item-wrapper';
 
     const itemElement = wrapperElement.createChild('div');
-    const renderAsTwoRows = this.provider && this.provider.renderAsTwoRows();
+    const renderAsTwoRows = this.provider?.renderAsTwoRows();
     itemElement.className = 'filtered-list-widget-item ' + (renderAsTwoRows ? 'two-rows' : 'one-row');
     const titleElement = itemElement.createChild('div', 'filtered-list-widget-title');
     const subtitleElement = itemElement.createChild('div', 'filtered-list-widget-subtitle');

@@ -1,4 +1,6 @@
 # This key is expected to be visible in the frontend code
 # b/349721878
 CRUX_API_KEY
+# Publicly-visible API key for Firebase analytics, used in NetworkRequestHandler.test.ts
+AIzaSyCGxLbbFQxH4BV1fY0RODlxTos9nJa2l_g
 

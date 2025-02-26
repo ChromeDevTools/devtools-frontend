@@ -34,7 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import renderingOptionsStyles from './renderingOptions.css.legacy.js';
+import renderingOptionsStyles from './renderingOptions.css.js';
 
 const UIStrings = {
   /**
@@ -177,7 +177,7 @@ const UIStrings = {
    * @description Explanation text for the 'Forces CSS forced-colors' setting in the Rendering tool.
    */
   forcesCssForcedColors: 'Forces CSS forced-colors media feature',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/RenderingOptions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

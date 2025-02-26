@@ -41,7 +41,7 @@ import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import jsUtilsStyles from './jsUtils.css.legacy.js';
+import jsUtilsStyles from './jsUtils.css.js';
 import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
 
 const UIStrings = {
@@ -65,7 +65,7 @@ const UIStrings = {
    *@description Text indicating that source url of a link is currently unknown
    */
   unknownSource: 'unknown',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/JSPresentationUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -97,10 +97,10 @@ export function buildStackTraceRows(
     target: SDK.Target.Target|null,
     linkifier: Linkifier,
     tabStops: boolean|undefined,
-    updateCallback?: (arg0: (StackTraceRegularRow|StackTraceAsyncRow)[]) => void,
+    updateCallback?: (arg0: Array<StackTraceRegularRow|StackTraceAsyncRow>) => void,
     showColumnNumber?: boolean,
-    ): (StackTraceRegularRow|StackTraceAsyncRow)[] {
-  const stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[] = [];
+    ): Array<StackTraceRegularRow|StackTraceAsyncRow> {
+  const stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow> = [];
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
@@ -179,7 +179,8 @@ export function buildStackTracePreviewContents(
 }
 
 function renderStackTraceTable(
-    container: Element, parent: Element, stackTraceRows: (StackTraceRegularRow|StackTraceAsyncRow)[]): HTMLElement[] {
+    container: Element, parent: Element,
+    stackTraceRows: Array<StackTraceRegularRow|StackTraceAsyncRow>): HTMLElement[] {
   container.removeChildren();
   const links: HTMLElement[] = [];
 

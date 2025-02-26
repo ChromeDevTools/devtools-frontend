@@ -5,7 +5,6 @@
 import * as Acorn from '../../third_party/acorn/acorn.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
-
 import {DefinitionKind, type ScopeTreeNode} from './FormatterActions.js';
 
 export function parseScopes(expression: string, sourceType: 'module'|'script' = 'script'): Scope|null {
@@ -437,7 +436,7 @@ export class ScopeVariableAnalysis {
 
   #addVariable(
       name: string, offset: number, definitionKind: DefinitionKind = DefinitionKind.NONE,
-      isShorthandAssignmentProperty: boolean = false): void {
+      isShorthandAssignmentProperty = false): void {
     this.#allNames.add(name);
     this.#currentScope.addVariable(name, offset, definitionKind, isShorthandAssignmentProperty);
   }

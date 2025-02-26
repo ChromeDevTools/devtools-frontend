@@ -73,7 +73,7 @@ export interface EventTimingsData<ValueType extends Types.Timing.Micro|Types.Tim
 
 export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Micro> {
   return {
-    startTime: event.ts as Types.Timing.Micro,
+    startTime: event.ts,
     endTime: (event.ts + (event.dur ?? 0)) as Types.Timing.Micro,
     duration: (event.dur || 0) as Types.Timing.Micro,
   };
@@ -94,14 +94,6 @@ export function traceWindowMilliSeconds(bounds: Types.Timing.TraceWindowMicro): 
   };
 }
 
-export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilli):
-    Types.Timing.TraceWindowMicro {
-  return {
-    min: milliToMicro(bounds.min),
-    max: milliToMicro(bounds.max),
-    range: milliToMicro(bounds.range),
-  };
-}
 export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.TraceWindowMicro):
     Types.Timing.TraceWindowMilli {
   return {

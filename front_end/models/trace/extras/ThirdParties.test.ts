@@ -21,6 +21,39 @@ describeWithEnvironment('ThirdParties', function() {
         ['localhost', {mainThreadTime: 26381, transferSize: 751}],
         ['Google Fonts', {mainThreadTime: 0, transferSize: 0}],
       ]);
+
+      assert.deepEqual([...thirdPartySummary.byUrl.entries()], [
+        ['extensions::SafeBuiltins', {mainThreadTime: 1448, transferSize: 0}],
+        ['http://localhost:8080/', {mainThreadTime: 21674, transferSize: 751}],
+        ['http://localhost:8080/blocking.js', {mainThreadTime: 2451, transferSize: 0}],
+        ['http://localhost:8080/module.js', {mainThreadTime: 2256, transferSize: 0}],
+        ['https://fonts.googleapis.com/css2?family=Orelega+One&display=swap', {mainThreadTime: 0, transferSize: 0}],
+        ['http://localhost:8080/styles.css', {mainThreadTime: 0, transferSize: 0}],
+        [
+          'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
+          {mainThreadTime: 0, transferSize: 0}
+        ],
+      ]);
+
+      const urls = [...thirdPartySummary.urlsByEntity.entries()].map(([entity, urls]) => [entity.name, [...urls]]);
+      assert.deepEqual(urls, [
+        [
+          'localhost',
+          [
+            'http://localhost:8080/',
+            'http://localhost:8080/blocking.js',
+            'http://localhost:8080/module.js',
+            'http://localhost:8080/styles.css',
+          ]
+        ],
+        [
+          'Google Fonts',
+          [
+            'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
+            'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
+          ]
+        ],
+      ]);
     });
 
     it('works even without network requests', async function() {
@@ -33,6 +66,25 @@ describeWithEnvironment('ThirdParties', function() {
       assert.deepEqual(results, [
         // Since network requests were not given, there is no transfer size.
         ['localhost', {mainThreadTime: 26381, transferSize: 0}],
+      ]);
+
+      assert.deepEqual([...thirdPartySummary.byUrl.entries()], [
+        ['extensions::SafeBuiltins', {mainThreadTime: 1448, transferSize: 0}],
+        ['http://localhost:8080/', {mainThreadTime: 21674, transferSize: 0}],
+        ['http://localhost:8080/blocking.js', {mainThreadTime: 2451, transferSize: 0}],
+        ['http://localhost:8080/module.js', {mainThreadTime: 2256, transferSize: 0}],
+      ]);
+
+      const urls = [...thirdPartySummary.urlsByEntity.entries()].map(([entity, urls]) => [entity.name, [...urls]]);
+      assert.deepEqual(urls, [
+        [
+          'localhost',
+          [
+            'http://localhost:8080/',
+            'http://localhost:8080/blocking.js',
+            'http://localhost:8080/module.js',
+          ]
+        ],
       ]);
     });
 

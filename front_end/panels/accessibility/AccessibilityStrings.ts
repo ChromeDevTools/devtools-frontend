@@ -465,7 +465,7 @@ const UIStrings = {
    *@description Tooltip text that appears when hovering over the 'From native HTML' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane
    */
   valueFromNativeHtmlUnknownSource: 'Value from native HTML (unknown source).',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityStrings.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 export const AXAttributes = {

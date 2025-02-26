@@ -14,7 +14,7 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import breakpointEditDialogStyles from './breakpointEditDialog.css.legacy.js';
+import breakpointEditDialogStyles from './breakpointEditDialog.css.js';
 
 const {Direction} = TextEditor.TextEditorHistory;
 
@@ -62,7 +62,7 @@ const UIStrings = {
    *@description Type selector element title in Breakpoint Edit Dialog of the Sources panel
    */
   logAMessageToConsoleDoNotBreak: 'Log a message to Console, do not break',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointEditDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

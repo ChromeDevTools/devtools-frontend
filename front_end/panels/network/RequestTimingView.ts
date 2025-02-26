@@ -39,7 +39,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-import networkingTimingTableStyles from './networkTimingTable.css.legacy.js';
+import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const UIStrings = {
   /**
@@ -235,7 +235,7 @@ const UIStrings = {
    *@example {network} PH1
    */
   routerActualSource: 'Actual source: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestTimingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestTimingView extends UI.Widget.VBox {

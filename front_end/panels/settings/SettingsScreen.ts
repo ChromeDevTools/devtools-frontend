@@ -28,13 +28,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import '../../ui/components/cards/cards.js';
+
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Cards from '../../ui/components/cards/cards.js';
+import type * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -43,7 +45,7 @@ import {PanelUtils} from '../utils/utils.js';
 
 import * as PanelComponents from './components/components.js';
 import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
-import settingsScreenStyles from './settingsScreen.css.legacy.js';
+import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
 
@@ -96,15 +98,16 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to a feedback form
    */
   sendFeedback: 'Send feedback',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let settingsScreenInstance: SettingsScreen;
 
 function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Cards.Card.Card {
-  const card = new Cards.Card.Card();
-  card.data = {heading, content};
+  const card = document.createElement('devtools-card');
+  card.heading = heading;
+  card.append(...content);
   return card;
 }
 
@@ -174,10 +177,6 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
     settingsScreen.show(dialog.contentElement);
     dialog.setEscapeKeyCallback(settingsScreen.onEscapeKeyPressed.bind(settingsScreen));
     dialog.setMarginBehavior(UI.GlassPane.MarginBehavior.NO_MARGIN);
-    // UI.Dialog extends GlassPane and overrides the `show` method with a wider
-    // accepted type. However, TypeScript uses the supertype declaration to
-    // determine the full type, which requires a `!Document`.
-    // @ts-ignore
     dialog.show();
 
     return settingsScreen;
@@ -594,8 +593,7 @@ export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experimen
     }
 
     // Reveal settings views
-    for (const view of UI.ViewManager.getRegisteredViewExtensions(
-             Common.Settings.Settings.instance().getHostConfig())) {
+    for (const view of UI.ViewManager.getRegisteredViewExtensions()) {
       const id = view.viewId();
       const location = view.location();
       if (location !== UI.ViewManager.ViewLocationValues.SETTINGS_VIEW) {

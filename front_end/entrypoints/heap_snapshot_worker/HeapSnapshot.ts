@@ -1048,13 +1048,6 @@ export abstract class HeapSnapshot {
     return this.rootNode().retainedSize() + (this.profile.snapshot.extra_native_bytes ?? 0);
   }
 
-  private getDominatedIndex(nodeIndex: number): number {
-    if (nodeIndex % this.nodeFieldCount) {
-      throw new Error('Invalid nodeIndex: ' + nodeIndex);
-    }
-    return this.firstDominatedNodeIndex[nodeIndex / this.nodeFieldCount];
-  }
-
   private createFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
       ((arg0: HeapSnapshotNode) => boolean)|undefined {
     const {minNodeId, maxNodeId, allocationNodeId, filterName} = nodeFilter;
@@ -1064,15 +1057,15 @@ export abstract class HeapSnapshot {
       if (!filter) {
         throw new Error('Unable to create filter');
       }
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'AllocationNodeId: ' + allocationNodeId;
     } else if (typeof minNodeId === 'number' && typeof maxNodeId === 'number') {
       filter = this.createNodeIdFilter(minNodeId, maxNodeId);
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'NodeIdRange: ' + minNodeId + '..' + maxNodeId;
     } else if (filterName !== undefined) {
       filter = this.createNamedFilter(filterName);
-      // @ts-ignore key can be added as a static property
+      // @ts-expect-error key can be added as a static property
       filter.key = 'NamedFilter: ' + filterName;
     }
     return filter;
@@ -1145,7 +1138,7 @@ export abstract class HeapSnapshot {
   aggregatesWithFilter(nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
       {[x: string]: HeapSnapshotModel.HeapSnapshotModel.Aggregate} {
     const filter = this.createFilter(nodeFilter);
-    // @ts-ignore key is added in createFilter
+    // @ts-expect-error key is added in createFilter
     const key = filter ? filter.key : 'allObjects';
     return this.getAggregatesByClassKey(false, key, filter);
   }
@@ -1499,7 +1492,7 @@ export abstract class HeapSnapshot {
     const node = this.createNode(rootNodeIndex);
     const list = [rootNodeIndex];
     const sizes = [-1];
-    const classKeys: (string|number)[] = [];
+    const classKeys: Array<string|number> = [];
 
     const seenClassKeys = new Map<string|number, boolean>();
     const nodeFieldCount = this.nodeFieldCount;
@@ -1735,7 +1728,7 @@ export abstract class HeapSnapshot {
         v = ancestor[v];
       }
       while (stackPointer > 0) {
-        const w = compressionStack[stackPointer--] as number;
+        const w = compressionStack[stackPointer--];
         if (semi[label[ancestor[w]]] < semi[label[w]]) {
           label[w] = label[ancestor[w]];
         }
@@ -2365,7 +2358,7 @@ export abstract class HeapSnapshot {
 
   private buildSamples(): void {
     const samples = this.#rawSamples;
-    if (!samples || !samples.length) {
+    if (!samples?.length) {
       return;
     }
     const sampleCount = samples.length / 2;
@@ -2867,7 +2860,7 @@ export class HeapSnapshotEdgesProvider extends HeapSnapshotItemProvider {
     function compareEdgeField(fieldName: string, ascending: boolean, indexA: number, indexB: number): number {
       edgeA.edgeIndex = indexA;
       edgeB.edgeIndex = indexB;
-      let result: number = 0;
+      let result = 0;
       if (fieldName === '!edgeName') {
         if (edgeB.name() === '__proto__') {
           return -1;
@@ -3145,7 +3138,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
 
     const node = this.createNode(0);
     for (let i = 0; i < nodeCount; ++i) {
-      if (node.isHidden() || node.isArray()) {
+      if (node.isHidden() || node.isArray() || (node.isNative() && node.rawName() === 'system / ExternalStringData')) {
         owners[i] = kUnvisited;
       } else {
         // The node owns itself.
@@ -3652,6 +3645,10 @@ export class JSHeapSnapshotNode extends HeapSnapshotNode {
     return this.rawType() === this.snapshot.nodeSyntheticType;
   }
 
+  isNative(): boolean {
+    return this.rawType() === this.snapshot.nodeNativeType;
+  }
+
   override isUserRoot(): boolean {
     return !this.isSynthetic();
   }
@@ -3688,7 +3685,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     if (!this.isShortcut()) {
       return this.hasStringNameInternal();
     }
-    // @ts-ignore parseInt is successful against numbers.
+    // @ts-expect-error parseInt is successful against numbers.
     return isNaN(parseInt(this.nameInternal(), 10));
   }
 
@@ -3721,7 +3718,7 @@ export class JSHeapSnapshotEdge extends HeapSnapshotEdge {
     if (!this.isShortcut()) {
       return String(name);
     }
-    // @ts-ignore parseInt is successful against numbers.
+    // @ts-expect-error parseInt is successful against numbers.
     const numName = parseInt(name, 10);
     return String(isNaN(numName) ? name : numName);
   }

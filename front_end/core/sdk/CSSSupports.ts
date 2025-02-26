@@ -13,7 +13,7 @@ export class CSSSupports extends CSSQuery {
     return payload.map(supports => new CSSSupports(cssModel, supports));
   }
 
-  #active: boolean = true;
+  #active = true;
 
   constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSSupports) {
     super(cssModel);

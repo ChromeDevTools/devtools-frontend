@@ -4,13 +4,72 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {AI_ASSISTANCE_CSS_CLASS_NAME, type ChangeManager} from './ChangeManager.js';
 
-export const FREESTYLER_WORLD_NAME = 'devtools_freestyler';
+export const FREESTYLER_WORLD_NAME = 'DevTools AI Assistance';
 export const FREESTYLER_BINDING_NAME = '__freestyler';
+
+interface FreestyleCallbackArgs {
+  method: string;
+  selector: string;
+  className: `.${typeof AI_ASSISTANCE_CSS_CLASS_NAME}-${number}`;
+  styles: Record<string, string>;
+  element: Node;
+}
+
+interface FreestyleCallbackData {
+  args: string;
+  element: Node;
+  resolve(value: string): void;
+}
+interface FreestylerBinding {
+  (args: FreestyleCallbackArgs): Promise<string>;
+  id: number;
+  callbacks: Map<number, FreestyleCallbackData>;
+  respond(id: number, styleChanges: string): void;
+  getElement(id: number): Node|undefined;
+  getArgs(id: number): string|undefined;
+}
+
+function freestylerBindingFunc(bindingName: string): void {
+  // Executed in another world
+  const global = globalThis as unknown as {
+    freestyler?: FreestylerBinding,
+  };
+
+  if (!global.freestyler) {
+    const freestyler = (args: FreestyleCallbackArgs): Promise<string> => {
+      const {resolve, promise} = Promise.withResolvers<string>();
+      freestyler.callbacks.set(freestyler.id, {
+        args: JSON.stringify(args),
+        element: args.element,
+        resolve,
+      });
+      // @ts-expect-error this is binding added though CDP
+      globalThis[bindingName](String(freestyler.id));
+      freestyler.id++;
+      return promise;
+    };
+    freestyler.id = 1;
+    freestyler.callbacks = new Map<number, FreestyleCallbackData>();
+    freestyler.getElement = (callbackId: number) => {
+      return freestyler.callbacks.get(callbackId)?.element;
+    };
+    freestyler.getArgs = (callbackId: number) => {
+      return freestyler.callbacks.get(callbackId)?.args;
+    };
+    freestyler.respond = (callbackId: number, styleChanges: string) => {
+      freestyler.callbacks.get(callbackId)?.resolve(styleChanges);
+      freestyler.callbacks.delete(callbackId);
+    };
+    global.freestyler = freestyler;
+  }
+}
+
+const freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
 
 /**
  * Injects Freestyler extension functions in to the isolated world.
@@ -21,7 +80,9 @@ export class ExtensionScope {
                     }) => Promise<void>> = [];
   #changeManager: ChangeManager;
   #agentId: string;
+  /** Don't use directly use the getter */
   #frameId?: Protocol.Page.FrameId|null;
+  /** Don't use directly use the getter */
   #target?: SDK.Target.Target;
 
   readonly #bindingMutex = new Common.Mutex.Mutex();
@@ -100,16 +161,19 @@ export class ExtensionScope {
     });
   }
 
-  async #simpleEval(context: SDK.RuntimeModel.ExecutionContext, expression: string): Promise<{
+  async #simpleEval(
+      context: SDK.RuntimeModel.ExecutionContext,
+      expression: string,
+      returnByValue = true,
+      ): Promise<{
     object: SDK.RemoteObject.RemoteObject,
-    exceptionDetails?: Protocol.Runtime.ExceptionDetails,
   }> {
     const response = await context.evaluate(
         {
           expression,
           replMode: true,
           includeCommandLineAPI: false,
-          returnByValue: true,
+          returnByValue,
           silent: false,
           generatePreview: false,
           allowUnsafeEvalBlockedByCSP: true,
@@ -130,6 +194,92 @@ export class ExtensionScope {
     return response;
   }
 
+  static getSelectorForRule(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string {
+    let styleRule: SDK.CSSRule.CSSStyleRule|undefined;
+    for (const style of matchedStyles.nodeStyles()) {
+      // Ignore inline as we can't override them
+      if (style.type === 'Inline') {
+        continue;
+      }
+
+      const rule = style.parentRule;
+      if (rule?.origin === Protocol.CSS.StyleSheetOrigin.UserAgent) {
+        // TODO(nvitkov): this may not be true after crbug.com/40280502
+        // All rule after the User Agent one are inherit
+        // We can't use them to build the selector
+        break;
+      }
+      if (rule instanceof SDK.CSSRule.CSSStyleRule) {
+        // If the rule we created was our own return directly
+        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
+          // We know that the last character will be & so remove it
+          const text = rule.selectors[0].text;
+          return text.at(-1) === '&' ? text.slice(0, -1) : text;
+        }
+        styleRule = rule;
+        break;
+      }
+    }
+
+    if (!styleRule) {
+      return '';
+    }
+
+    const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
+    // TODO: Compute the selector when nested selector is present
+    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).sort((a, b) => {
+      if (!a.specificity) {
+        return -1;
+      }
+
+      if (!b.specificity) {
+        return 1;
+      }
+
+      if (b.specificity.a !== a.specificity.a) {
+        return b.specificity.a - a.specificity.a;
+      }
+
+      if (b.specificity.b !== a.specificity.b) {
+        return b.specificity.b - a.specificity.b;
+      }
+
+      return b.specificity.b - a.specificity.b;
+    });
+
+    // See https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector
+    return selectors.at(0)?.text.replace(':visited', '') ?? '';
+  }
+
+  async #computeSelectorFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<string> {
+    if (!remoteObject.objectId) {
+      throw new Error('DOMModel is not found');
+    }
+
+    const cssModel = this.target.model(SDK.CSSModel.CSSModel);
+    if (!cssModel) {
+      throw new Error('CSSModel is not found');
+    }
+
+    const domModel = this.target.model(SDK.DOMModel.DOMModel);
+    if (!domModel) {
+      throw new Error('DOMModel is not found');
+    }
+
+    const node = await domModel.pushNodeToFrontend(remoteObject.objectId);
+    if (!node) {
+      throw new Error('Node is not found');
+    }
+
+    const matchedStyles = await cssModel.getMatchedStyles(node.id);
+
+    if (!matchedStyles) {
+      throw new Error('No Matching styles');
+    }
+
+    return ExtensionScope.getSelectorForRule(matchedStyles);
+  }
+
   async #bindingCalled(executionContext: SDK.RuntimeModel.ExecutionContext, event: {
     data: Protocol.Runtime.BindingCalledEvent,
   }): Promise<void> {
@@ -137,56 +287,42 @@ export class ExtensionScope {
     if (data.name !== FREESTYLER_BINDING_NAME) {
       return;
     }
+
+    // We need to clean-up if anything fails here.
     await this.#bindingMutex.run(async () => {
-      const id = data.payload;
-      const {object} = await this.#simpleEval(executionContext, `freestyler.getArgs(${id})`);
-      const arg = JSON.parse(object.value);
-      const selector = arg.selector;
-      const className = arg.className;
       const cssModel = this.target.model(SDK.CSSModel.CSSModel);
       if (!cssModel) {
         throw new Error('CSSModel is not found');
       }
-      await this.#changeManager.addChange(cssModel, this.frameId, {
+
+      const id = data.payload;
+      const [args, element] = await Promise.all([
+        this.#simpleEval(executionContext, `freestyler.getArgs(${id})`),
+        this.#simpleEval(executionContext, `freestyler.getElement(${id})`, false)
+      ]);
+
+      const arg = JSON.parse(args.object.value) as Omit<FreestyleCallbackArgs, 'element'>;
+      let selector = arg.selector;
+
+      try {
+        const computedSelector = await this.#computeSelectorFromElement(element.object);
+        selector = computedSelector || selector;
+      } catch (err) {
+        console.error(err);
+      } finally {
+        element.object.release();
+      }
+
+      const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
         groupId: this.#agentId,
         selector,
-        className,
+        className: arg.className,
         styles: arg.styles,
       });
-
-      await this.#simpleEval(executionContext, `freestyler.respond(${id})`);
+      await this.#simpleEval(executionContext, `freestyler.respond(${id}, ${JSON.stringify(styleChanges)})`);
     });
   }
 }
-
-const freestylerBinding = `if (!globalThis.freestyler) {
-  globalThis.freestyler = (args) => {
-    let resolver;
-    let rejecter;
-    const p = new Promise((resolve, reject) => {
-      resolver = resolve;
-      rejecter = reject;
-    });
-    freestyler.callbacks.set(freestyler.id , {
-      args: JSON.stringify(args),
-      callbackId: freestyler.id,
-      resolver,
-      rejecter
-    });
-    ${FREESTYLER_BINDING_NAME}(String(freestyler.id));
-    freestyler.id++;
-    return p;
-  }
-  freestyler.id = 1;
-  freestyler.callbacks = new Map();
-  freestyler.getArgs = (callbackId) => {
-    return freestyler.callbacks.get(callbackId).args;
-  }
-  freestyler.respond = (callbackId) => {
-    freestyler.callbacks.get(callbackId).resolver();
-    freestyler.callbacks.delete(callbackId);
-  }
-}`;
 
 const functions = `async function setElementStyles(el, styles) {
   let selector = el.tagName.toLowerCase();
@@ -219,10 +355,32 @@ const functions = `async function setElementStyles(el, styles) {
     el.style[key] = '';
   }
 
-  await freestyler({
+  const result = await freestyler({
     method: 'setElementStyles',
-    selector: selector,
+    selector,
     className,
-    styles
+    styles,
+    element: el,
   });
+
+  let rootNode = el.getRootNode();
+  if (rootNode instanceof ShadowRoot) {
+    let stylesheets = rootNode.adoptedStyleSheets;
+    let hasAiStyleChange = false;
+    let stylesheet = new CSSStyleSheet();
+    for (let i = 0; i < stylesheets.length; i++) {
+      const sheet = stylesheets[i];
+      for (let j = 0; j < sheet.cssRules.length; j++) {
+        hasAiStyleChange = sheet.cssRules[j].selectorText.startsWith('.${AI_ASSISTANCE_CSS_CLASS_NAME}');
+        if (hasAiStyleChange) {
+          stylesheet = sheet;
+          break;
+        }
+      }
+    }
+    stylesheet.replaceSync(result);
+    if (!hasAiStyleChange) {
+      rootNode.adoptedStyleSheets = [...stylesheets, stylesheet];
+    }
+  }
 }`;

@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import playerMessagesViewStyles from './playerMessagesView.css.legacy.js';
+import playerMessagesViewStyles from './playerMessagesView.css.js';
 
 const UIStrings = {
   /**
@@ -69,7 +69,7 @@ const UIStrings = {
    *@description The label for a root cause error associated with this error.
    */
   errorCauseLabel: 'Caused by:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -183,8 +183,8 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
     this.hiddenLevels = [];
     for (const [key, item] of this.itemMap) {
       if (!item.overwrite) {
-        const elementForItem = this.elementsForItems.get(item as SelectableLevel);
-        if (elementForItem && elementForItem.firstChild) {
+        const elementForItem = this.elementsForItems.get(item);
+        if (elementForItem?.firstChild) {
           elementForItem.firstChild.remove();
         }
         if (elementForItem && key & this.bitFieldValue) {
@@ -330,7 +330,7 @@ export class PlayerMessagesView extends UI.Widget.VBox {
     for (const message of messages) {
       if (userString === '') {
         message.classList.remove('media-messages-message-filtered');
-      } else if (message.textContent && message.textContent.includes(userString)) {
+      } else if (message.textContent?.includes(userString)) {
         message.classList.remove('media-messages-message-filtered');
       } else {
         message.classList.add('media-messages-message-filtered');

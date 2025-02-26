@@ -117,7 +117,7 @@ const UIStrings = {
    *@description An option that appears in a drop-down that represents the critical state.
    */
   critical: 'Critical',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sensors/sensors-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

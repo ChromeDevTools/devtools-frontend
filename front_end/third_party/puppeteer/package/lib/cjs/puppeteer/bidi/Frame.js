@@ -436,8 +436,8 @@ let BidiFrame = (() => {
             if (this.#exposedFunctions.has(name)) {
                 throw new Error(`Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`);
             }
-            const exposeable = await ExposedFunction_js_1.ExposeableFunction.from(this, name, apply);
-            this.#exposedFunctions.set(name, exposeable);
+            const exposable = await ExposedFunction_js_1.ExposableFunction.from(this, name, apply);
+            this.#exposedFunctions.set(name, exposable);
         }
         async removeExposedFunction(name) {
             const exposedFunction = this.#exposedFunctions.get(name);

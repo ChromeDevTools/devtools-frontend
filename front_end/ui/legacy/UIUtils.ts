@@ -44,15 +44,15 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
-import confirmDialogStyles from './confirmDialog.css.legacy.js';
+import checkboxTextLabelStyles from './checkboxTextLabel.css.js';
+import confirmDialogStyles from './confirmDialog.css.js';
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
-import inlineButtonStyles from './inlineButton.css.legacy.js';
-import inspectorCommonStyles from './inspectorCommon.css.legacy.js';
+import inlineButtonStyles from './inlineButton.css.js';
+import inspectorCommonStyles from './inspectorCommon.css.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
-import smallBubbleStyles from './smallBubble.css.legacy.js';
+import smallBubbleStyles from './smallBubble.css.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import type {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
@@ -113,7 +113,7 @@ const UIStrings = {
    *@description Text to cancel something
    */
   cancel: 'Cancel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/UIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -215,7 +215,7 @@ class DragHandler {
       return;
     }
 
-    if (elementDragStart && !elementDragStart((event as MouseEvent))) {
+    if (elementDragStart && !elementDragStart((event))) {
       return;
     }
 
@@ -509,7 +509,7 @@ export function createReplacementString(
   let number;
   let replacementString: string|null = null;
   let matches = /(.*#)([\da-fA-F]+)(.*)/.exec(wordString);
-  if (matches && matches.length) {
+  if (matches?.length) {
     prefix = matches[1];
     suffix = matches[3];
     number = modifiedHexValue(matches[2], event);
@@ -518,7 +518,7 @@ export function createReplacementString(
     }
   } else {
     matches = /(.*?)(-?(?:\d+(?:\.\d+)?|\.\d+))(.*)/.exec(wordString);
-    if (matches && matches.length) {
+    if (matches?.length) {
       prefix = matches[1];
       suffix = matches[3];
       number = modifiedFloatNumber(parseFloat(matches[2]), event);
@@ -553,7 +553,7 @@ export function handleElementValueModifications(
   void VisualLogging.logKeyDown(event.currentTarget, event, 'element-value-modification');
 
   const selection = element.getComponentSelection();
-  if (!selection || !selection.rangeCount) {
+  if (!selection?.rangeCount) {
     return false;
   }
 
@@ -567,7 +567,7 @@ export function handleElementValueModifications(
       selectionRange.startContainer, selectionRange.startOffset, StyleValueDelimiters, element);
   const wordString = wordRange.toString();
 
-  if (suggestionHandler && suggestionHandler(wordString)) {
+  if (suggestionHandler?.(wordString)) {
     return false;
   }
 
@@ -615,7 +615,7 @@ export function anotherProfilerActiveLabel(): string {
 }
 
 export function asyncStackTraceLabel(
-    description: string|undefined, previousCallFrames: {functionName: string}[]): string {
+    description: string|undefined, previousCallFrames: Array<{functionName: string}>): string {
   if (description) {
     if (description === 'Promise.resolve') {
       return i18nString(UIStrings.promiseResolvedAsync);
@@ -837,6 +837,7 @@ export function highlightRangesWithStyleClass(
   return highlightNodes;
 }
 
+// Used in chromium/src/third_party/blink/web_tests/http/tests/devtools/components/utilities-highlight-results.js
 export function applyDomChanges(domChanges: HighlightChange[]): void {
   for (let i = 0, size = domChanges.length; i < size; ++i) {
     const entry = domChanges[i];
@@ -951,10 +952,10 @@ export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): 
 }
 
 export function animateFunction(
-    window: Window, func: Function, params: {
+    window: Window, func: Function, params: Array<{
       from: number,
       to: number,
-    }[],
+    }>,
     duration: number, animationComplete?: (() => void)): () => void {
   const start = window.performance.now();
   let raf = window.requestAnimationFrame(animationStep);
@@ -1176,7 +1177,8 @@ export function createHistoryInput(type = 'search', className?: string): HTMLInp
   }
 }
 
-export function createSelect(name: string, options: string[]|Map<string, string[]>[]|Set<string>): HTMLSelectElement {
+export function createSelect(
+    name: string, options: string[]|Array<Map<string, string[]>>|Set<string>): HTMLSelectElement {
   const select = document.createElement('select');
   ARIAUtils.setLabel(select, name);
   for (const option of options) {
@@ -1414,6 +1416,10 @@ export class DevToolsCloseButton extends HTMLElement {
     ARIAUtils.setLabel(this.#button, name);
   }
 
+  setSize(size: Buttons.Button.Size): void {
+    this.#button.size = size;
+  }
+
   setTabbable(tabbable: boolean): void {
     if (tabbable) {
       this.#button.tabIndex = 0;
@@ -1618,7 +1624,7 @@ export function createFileSelectorElement(callback: (arg0: File) => void, accept
 export const MaxLengthForDisplayedURLs = 150;
 
 export class MessageDialog {
-  static async show(message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
+  static async show(header: string, message: string, where?: Element|Document, jslogContext?: string): Promise<void> {
     const dialog = new Dialog(jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
@@ -1627,6 +1633,7 @@ export class MessageDialog {
     await new Promise(resolve => {
       const okButton = createTextButton(
           i18nString(UIStrings.ok), resolve, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
+      content.createChild('span', 'header').textContent = header;
       content.createChild('div', 'message').createChild('span').textContent = message;
       content.createChild('div', 'button').appendChild(okButton);
       dialog.setOutsideClickCallback(event => {
@@ -1641,13 +1648,17 @@ export class MessageDialog {
 }
 
 export class ConfirmDialog {
-  static async show(message: string, where?: Element|Document, options?: ConfirmDialogOptions): Promise<boolean> {
+  static async show(message: string, header?: string, where?: Element|Document, options?: ConfirmDialogOptions):
+      Promise<boolean> {
     const dialog = new Dialog(options?.jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
+    if (header) {
+      content.createChild('span', 'header').textContent = header;
+    }
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
     const result = await new Promise<boolean>(resolve => {
@@ -1696,7 +1707,7 @@ export abstract class Renderer {
       return null;
     }
     const renderer = await extension.loadRenderer();
-    return renderer.render(object, options);
+    return await renderer.render(object, options);
   }
 }
 
@@ -1809,7 +1820,7 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
 }
 export interface RendererRegistration {
   loadRenderer: () => Promise<Renderer>;
-  contextTypes: () => Array<Function>;
+  contextTypes: () => Function[];
 }
 
 export interface ConfirmDialogOptions {
@@ -1831,7 +1842,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
   }
 
   let widget = Widget.get(node);
-  while (widget && widget.parentWidget()) {
+  while (widget?.parentWidget()) {
     const parentWidget = widget.parentWidget();
     if (!parentWidget) {
       break;
@@ -1843,7 +1854,7 @@ function updateWidgetfocusWidgetForNode(node: Node|null): void {
 }
 
 function updateXWidgetfocusWidgetForNode(node: Node|null): void {
-  node = node && node.parentNodeOrShadowHost();
+  node = node?.parentNodeOrShadowHost() ?? null;
   const XWidgetCtor = customElements.get('x-widget');
   let widget = null;
   while (node) {
@@ -1869,10 +1880,7 @@ function focusChanged(event: Event): void {
 
 export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void {
   ThemeSupport.ThemeSupport.instance().appendStyle(elementOrShadowRoot, inspectorCommonStyles);
-  const shadowRootOrDocument = (elementOrShadowRoot instanceof ShadowRoot) ?
-      elementOrShadowRoot :
-      (elementOrShadowRoot.shadowRoot ?? elementOrShadowRoot.ownerDocument);
-  shadowRootOrDocument.adoptedStyleSheets.push(Buttons.textButtonStyles);
+  ThemeSupport.ThemeSupport.instance().appendStyle(elementOrShadowRoot, Buttons.textButtonStyles);
 }
 
 /**
@@ -1885,7 +1893,8 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element, options: {cssFile?: ({cssContent: string})[]|{cssContent: string}, delegatesFocus?: boolean} = {
+    element: Element,
+    options: {cssFile?: Array<{cssContent: string}>|{cssContent: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {

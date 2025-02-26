@@ -13,7 +13,6 @@ import {
   waitFor,
   waitForVisible,
 } from '../../shared/helper.js';
-
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 

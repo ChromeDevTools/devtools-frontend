@@ -4,36 +4,39 @@
  * found in the LICENSE file.
  */
 
-.widget {
-  padding: 20px;
+.header {
+  display: flex;
+  justify-content: space-between;
+  font: var(--sys-typescale-body2-medium);
+  margin: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
 }
 
 .title {
-  font-size: larger;
+  padding-top: var(--sys-size-3);
 }
 
-.title,
+.dialog-close-button {
+  margin: var(--sys-size-3);
+  z-index: 1;
+}
+
 .message,
-.button,
 .text-input {
-  margin: 5px;
+  margin: 0 var(--sys-size-8);
+}
+
+.text-input {
+  margin-top: var(--sys-size-5);
 }
 
 .button {
   text-align: right;
-  margin-top: 10px;
+  margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
+  gap: var(--sys-size-5);
   display: flex;
   justify-content: flex-end;
-  gap: var(--sys-size-6);
 }
 
 .button button {
-  min-width: 80px;
-}
-
-.dialog-close-button {
-  position: absolute;
-  right: 9px;
-  top: 9px;
-  z-index: 1;
+  min-width: var(--sys-size-19);
 }

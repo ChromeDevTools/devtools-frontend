@@ -4,7 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 
-import targetCrashedScreenStyles from './targetCrashedScreen.css.legacy.js';
+import targetCrashedScreenStyles from './targetCrashedScreen.css.js';
 import {VBox} from './Widget.js';
 
 const UIStrings = {
@@ -16,7 +16,7 @@ const UIStrings = {
    *@description Text content of content element
    */
   oncePageIsReloadedDevtoolsWill: 'Once page is reloaded, DevTools will automatically reconnect.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TargetCrashedScreen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TargetCrashedScreen extends VBox {

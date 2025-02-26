@@ -18,7 +18,7 @@ const UIStrings = {
    *@description Title for Compression Dictionary Transport specification url link
    */
   compressionDictionaryTransport: 'Compression Dictionary Transport',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/SharedDictionaryIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -164,7 +164,7 @@ const specLinks = [{
   linkTitle: i18nLazyString(UIStrings.compressionDictionaryTransport),
 }];
 
-const issueDescriptions: Map<Protocol.Audits.SharedDictionaryError, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<Protocol.Audits.SharedDictionaryError, LazyMarkdownIssueDescription>([
 
   [
     Protocol.Audits.SharedDictionaryError.UseErrorCrossOriginNoCorsRequest,

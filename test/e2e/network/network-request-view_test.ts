@@ -156,7 +156,7 @@ describe('The Network Request view', () => {
     await waitForSomeRequestsToAppear(3);
 
     const names = await getAllRequestNames();
-    const name = names.find(v => v && v.startsWith('data:'));
+    const name = names.find(v => v?.startsWith('data:'));
     assertNotNullOrUndefined(name);
     await selectRequestByName(name);
 
@@ -190,7 +190,7 @@ describe('The Network Request view', () => {
     await waitForSomeRequestsToAppear(2);
 
     const names = await getAllRequestNames();
-    const name = names.find(v => v && v.startsWith('data:'));
+    const name = names.find(v => v?.startsWith('data:'));
     assertNotNullOrUndefined(name);
     await selectRequestByName(name);
 
@@ -223,7 +223,7 @@ describe('The Network Request view', () => {
         '[aria-label=EventStream][role=tab][aria-selected=true]',
         networkView,
     );
-    return waitFor('.event-source-messages-view');
+    return await waitFor('.event-source-messages-view');
   };
 
   interface EventSourceMessageRaw {
@@ -234,13 +234,13 @@ describe('The Network Request view', () => {
   }
 
   const waitForMessages = async (messagesView: puppeteer.ElementHandle<Element>, count: number) => {
-    return waitForFunction(async () => {
+    return await waitForFunction(async () => {
       const messages = await $$('.data-grid-data-grid-node', messagesView);
       if (messages.length !== count) {
         return undefined;
       }
 
-      return Promise.all(messages.map(message => {
+      return await Promise.all(messages.map(message => {
         return new Promise<EventSourceMessageRaw>(async resolve => {
           const [id, type, data] = await Promise.all([
             getTextContent('.id-column', message),
@@ -330,17 +330,17 @@ describe('The Network Request view', () => {
         root: networkView,
       });
       await waitFor('[aria-label=Messages][role=tab][aria-selected=true]', networkView);
-      return waitFor('.websocket-frame-view');
+      return await waitFor('.websocket-frame-view');
     };
 
     let messagesView = await navigateToWebsocketMessages();
     const waitForMessages = async (count: number) => {
-      return waitForFunction(async () => {
+      return await waitForFunction(async () => {
         const messages = await $$('.data-column.websocket-frame-view-td', messagesView);
         if (messages.length !== count) {
           return undefined;
         }
-        return Promise.all(messages.map(message => {
+        return await Promise.all(messages.map(message => {
           return message.evaluate(message => message.textContent || '');
         }));
       });

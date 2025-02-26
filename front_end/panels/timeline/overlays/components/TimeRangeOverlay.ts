@@ -1,26 +1,25 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import {html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import stylesRaw from './timeRangeOverlay.css.legacy.js';
+import stylesRaw from './timeRangeOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
 styles.replaceSync(stylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
    *@description Accessible label used to explain to a user that they are viewing an entry label.
    */
   timeRange: 'Time range',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/TimeRangeOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -47,8 +46,8 @@ export class TimeRangeOverlay extends HTMLElement {
   #label: string;
 
   // The label is set to editable and in focus anytime the label is empty and when the label it is double clicked.
-  // If the user clicks away from the selected range element and the label is not empty, the lable is set to not editable until it is double clicked.
-  #isLabelEditable: boolean = true;
+  // If the user clicks away from the selected range element and the label is not empty, the label is set to not editable until it is double clicked.
+  #isLabelEditable = true;
 
   #rangeContainer: HTMLElement|null = null;
   #labelBox: HTMLElement|null = null;
@@ -259,7 +258,7 @@ export class TimeRangeOverlay extends HTMLElement {
   #render(): void {
     const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
     // clang-format off
-    Lit.render(
+    render(
         html`
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
             <span

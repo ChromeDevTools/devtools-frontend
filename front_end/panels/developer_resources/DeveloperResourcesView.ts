@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
-import developerResourcesViewStyles from './developerResourcesView.css.legacy.js';
+import developerResourcesViewStyles from './developerResourcesView.css.js';
 
 const UIStrings = {
   /**
@@ -51,7 +51,7 @@ const UIStrings = {
    * @description No resource matches
    */
   noResourceMatches: 'No resource matches',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.PageResourceLoader.ResourceKey> {
@@ -62,7 +62,7 @@ export class DeveloperResourcesRevealer implements Common.Revealer.Revealer<SDK.
       await UI.ViewManager.ViewManager.instance().showView('developer-resources');
       const developerResourcesView =
           await UI.ViewManager.ViewManager.instance().view('developer-resources').widget() as DeveloperResourcesView;
-      return developerResourcesView.select(resource);
+      return await developerResourcesView.select(resource);
     }
   }
 }

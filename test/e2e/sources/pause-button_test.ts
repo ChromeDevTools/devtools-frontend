@@ -11,7 +11,6 @@ import {
   step,
   waitFor,
 } from '../../shared/helper.js';
-
 import {
   navigateToConsoleTab,
   waitForLastConsoleMessageToHaveContent,

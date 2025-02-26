@@ -258,7 +258,7 @@ export class TargetManager extends EventEmitter {
         }
         this.#setupAttachmentListeners(session);
         if (isExistingTarget) {
-            session._setTarget(target);
+            session.setTarget(target);
             this.#attachedTargetsBySessionId.set(session.id(), this.#attachedTargetsByTargetId.get(targetInfo.targetId));
         }
         else {
@@ -267,7 +267,7 @@ export class TargetManager extends EventEmitter {
             this.#attachedTargetsBySessionId.set(session.id(), target);
         }
         const parentTarget = parentSession instanceof CDPSession
-            ? parentSession._target()
+            ? parentSession.target()
             : null;
         parentTarget?._addChildTarget(target);
         parentSession.emit(CDPSessionEvent.Ready, session);
@@ -303,7 +303,7 @@ export class TargetManager extends EventEmitter {
             return;
         }
         if (parentSession instanceof CDPSession) {
-            parentSession._target()._removeChildTarget(target);
+            parentSession.target()._removeChildTarget(target);
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
         this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);

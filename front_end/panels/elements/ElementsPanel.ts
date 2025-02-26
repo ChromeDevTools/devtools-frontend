@@ -51,7 +51,7 @@ import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
-import elementsPanelStyles from './elementsPanel.css.legacy.js';
+import elementsPanelStyles from './elementsPanel.css.js';
 import type {ElementsTreeElement} from './ElementsTreeElement.js';
 import {ElementsTreeElementHighlighter} from './ElementsTreeElementHighlighter.js';
 import {ElementsTreeOutline} from './ElementsTreeOutline.js';
@@ -150,7 +150,7 @@ const UIStrings = {
    * @description A context menu item to reveal a submenu with badge settings.
    */
   adornerSettings: 'Badge settings',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -198,12 +198,12 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   stylesWidget: StylesSidebarPane;
   private readonly computedStyleWidget: ComputedStyleWidget;
   private readonly metricsWidget: MetricsSidebarPane;
-  private treeOutlines: Set<ElementsTreeOutline> = new Set();
-  private searchResults!: {
+  private treeOutlines = new Set<ElementsTreeOutline>();
+  private searchResults!: Array<{
     domModel: SDK.DOMModel.DOMModel,
     index: number,
     node: ((SDK.DOMModel.DOMNode | undefined)|null),
-  }[]|undefined;
+  }>|undefined;
   private currentSearchResultIndex: number;
   pendingNodeReveal: boolean;
   private readonly adornerManager: ElementsComponents.AdornerManager.AdornerManager;
@@ -355,7 +355,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
 
     return this.sidebarPaneView.showView(this.stylesViewToReveal).then(() => {
-      this.stylesWidget.revealProperty((cssProperty as SDK.CSSProperty.CSSProperty));
+      this.stylesWidget.revealProperty((cssProperty));
     });
   }
 
@@ -532,7 +532,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     let selectedNode = event.data.node;
 
     // If the selectedNode is a pseudoNode, we want to ensure that it has a valid parentNode
-    if (selectedNode && (selectedNode.pseudoType() && !selectedNode.parentNode)) {
+    if (selectedNode?.pseudoType() && !selectedNode.parentNode) {
       selectedNode = null;
     }
     const {focus} = event.data;
@@ -617,7 +617,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
       if (savedSelectedNodeOnReset !== this.selectedNodeOnReset) {
         return;
       }
-      let node: (SDK.DOMModel.DOMNode|null) = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
+      let node = domModel.nodeForId(restoredNodeId);
       if (!node) {
         const inspectedDocument = domModel.existingDocument();
         node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
@@ -730,12 +730,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     }
   }
 
-  switchToAndFocus(node: SDK.DOMModel.DOMNode): void {
-    // Reset search restore.
-    this.searchableViewInternal.cancelSearch();
-    void UI.ViewManager.ViewManager.instance().showView('elements').then(() => this.selectDOMNode(node, true));
-  }
-
   private jumpToSearchResult(index: number): void {
     if (!this.searchResults) {
       return;
@@ -809,7 +803,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private hideSearchHighlights(): void {
-    if (!this.searchResults || !this.searchResults.length || this.currentSearchResultIndex === -1) {
+    if (!this.searchResults?.length || this.currentSearchResultIndex === -1) {
       return;
     }
     const searchResult = this.searchResults[this.currentSearchResultIndex];
@@ -1110,7 +1104,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private updateSidebarPosition(): void {
-    if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach()) {
+    if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }  // We can't reparent extension iframes.
 
@@ -1176,7 +1170,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   private trackedCSSPropertiesUpdated({data: domNodes}:
-                                          Common.EventTarget.EventTargetEvent<(SDK.DOMModel.DOMNode | null)[]>): void {
+                                          Common.EventTarget.EventTargetEvent<Array<SDK.DOMModel.DOMNode|null>>): void {
     for (const domNode of domNodes) {
       if (!domNode) {
         continue;
@@ -1237,9 +1231,9 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   private static firstInspectElementNodeNameForTest = '';
 }
 
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Elements = globalThis.Elements || {};
-// @ts-ignore exported for Tests.js
+// @ts-expect-error exported for Tests.js
 globalThis.Elements.ElementsPanel = ElementsPanel;
 
 const enum SplitMode {
@@ -1319,9 +1313,9 @@ export class DOMNodeRevealer implements
     function revealPromise(
         resolve: () => void, reject: (arg0: Platform.UserVisibleError.UserVisibleError) => void): void {
       if (node instanceof SDK.DOMModel.DOMNode) {
-        onNodeResolved((node as SDK.DOMModel.DOMNode));
+        onNodeResolved((node));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
-        (node as SDK.DOMModel.DeferredDOMNode).resolve(checkDeferredDOMNodeThenReveal);
+        (node).resolve(checkDeferredDOMNodeThenReveal);
       } else {
         const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {

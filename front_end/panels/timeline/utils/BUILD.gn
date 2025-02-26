@@ -14,6 +14,7 @@ devtools_module("utils") {
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
+    "InsightAIContext.ts",
     "SourceMapsResolver.ts",
   ]
 
@@ -63,6 +64,7 @@ ts_library("unittests") {
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",
+    "InsightAIContext.test.ts",
     "SourceMapsResolver.test.ts",
   ]
 
@@ -72,7 +74,6 @@ ts_library("unittests") {
     "../../../core/root:bundle",
     "../../../core/sdk:bundle",
     "../../../models/bindings:bundle",
-    "../../../models/timeline_model:bundle",
     "../../../models/trace:bundle",
     "../../../models/workspace:bundle",
     "../../../testing",

@@ -4,9 +4,8 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 
-const imageCache:
-    WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null> =
-        new WeakMap();
+const imageCache =
+    new WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null>();
 export const emitter = new EventTarget();
 
 /**
@@ -41,7 +40,7 @@ function loadImage(url: string): Promise<HTMLImageElement|null> {
 }
 
 /** Populate the cache ahead of use, to allow for getOrQueue to synchronously return images. */
-export function preload(screenshots: (Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot)[]):
+export function preload(screenshots: Array<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot>):
     Promise<void[]> {
   const promises = screenshots.map(screenshot => {
     if (imageCache.has(screenshot)) {

@@ -65,7 +65,7 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
   }
 
   // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight as Trace.Insights.Types.InsightModels[InsightName];
+  return insight;
 }
 
 export function getFirstOrError<T>(iterator: IterableIterator<T>): T {

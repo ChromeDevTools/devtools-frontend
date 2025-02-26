@@ -211,9 +211,8 @@ export async function clickSelectButtonItem(itemLabel: string, root: string) {
       'devtools-select-menu-button',
       selectMenu,
   );
-  const selectMenuButtonArrow = await waitFor('#arrow', selectMenuButton);
   const animationEndPromise = waitForDialogAnimationEnd();
-  await clickElement(selectMenuButtonArrow);
+  await click('#arrow', {root: selectMenuButton});
   await animationEndPromise;
 
   const selectMenuItems = await selectMenu.$$('pierce/devtools-menu-item');
@@ -235,13 +234,12 @@ export async function clickSelectButtonItem(itemLabel: string, root: string) {
   }
 
   await clickElement(selectMenuItems[selectMenuItemIndex]);
-  const button = await waitFor('devtools-button', selectMenu);
-  await clickElement(button);
+  await click('devtools-button', {root: selectMenu});
 }
 
 export async function setupRecorderWithScript(
     script: UserFlow,
-    path: string = 'recorder/recorder.html',
+    path = 'recorder/recorder.html',
     ): Promise<void> {
   await enableAndOpenRecorderPanel(path);
   await createAndStartRecording(script.title);
@@ -251,7 +249,7 @@ export async function setupRecorderWithScript(
 
 export async function setupRecorderWithScriptAndReplay(
     script: UserFlow,
-    path: string = 'recorder/recorder.html',
+    path = 'recorder/recorder.html',
     ): Promise<void> {
   await setupRecorderWithScript(script, path);
   const onceFinished = onReplayFinished();

@@ -10,7 +10,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {MainView, TriggerDispatcher} from './MainView.js';
 import type {PlayerEvent} from './MediaModel.js';
-import playerListViewStyles from './playerListView.css.legacy.js';
+import playerListViewStyles from './playerListView.css.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 const UIStrings = {
@@ -30,7 +30,7 @@ const UIStrings = {
    *@description Side-panel entry title text for the players section.
    */
   players: 'Players',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerListView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface PlayerStatus {
@@ -127,7 +127,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       return;
     }
     const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment === undefined || fragment.element() === undefined) {
+    if (fragment?.element() === undefined) {
       return;
     }
     fragment.$('frame-title').textContent = frameTitle;
@@ -182,7 +182,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
       return;
     }
     const fragment = this.playerEntryFragments.get(playerID);
-    if (fragment === undefined || fragment.element() === undefined) {
+    if (fragment?.element() === undefined) {
       return;
     }
     this.contentElement.removeChild(fragment.element());

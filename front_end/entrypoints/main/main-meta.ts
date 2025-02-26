@@ -223,7 +223,7 @@ const UIStrings = {
    * @description Command to turn the browser color scheme matching off through the command menu.
    */
   dontMatchChromeColorSchemeCommand: 'Don\'t match Chrome color scheme',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 let loadedMainModule: (typeof Main|undefined);

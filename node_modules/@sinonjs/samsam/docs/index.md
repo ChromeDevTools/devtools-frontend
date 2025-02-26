@@ -249,7 +249,7 @@ samsam.match(
             return "yeah";
         },
     },
-    "Yeah!"
+    "Yeah!",
 ); // true
 ```
 
@@ -278,7 +278,7 @@ samsam.match(
             return "yeah!";
         },
     },
-    /yeah/
+    /yeah/,
 ); // true
 samsam.match(234, /[a-z]/); // false
 ```
@@ -296,7 +296,7 @@ samsam.match(
             return "42";
         },
     },
-    42
+    42,
 ); // true
 samsam.match(234, 1234); // false
 ```
@@ -328,7 +328,7 @@ samsam.match(
     },
     function () {
         return true;
-    }
+    },
 );
 
 // false
@@ -367,7 +367,7 @@ samsam.match(
     },
     {
         name: "Chris",
-    }
+    },
 );
 
 // false

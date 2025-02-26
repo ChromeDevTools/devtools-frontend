@@ -68,19 +68,20 @@ import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsMana
 import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {type Client, TimelineController} from './TimelineController.js';
+import {Tab} from './TimelineDetailsView.js';
 import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {Events as TimelineFlameChartViewEvents, TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineMiniMap} from './TimelineMiniMap.js';
-import timelinePanelStyles from './timelinePanel.css.legacy.js';
+import timelinePanelStyles from './timelinePanel.css.js';
 import {
   rangeForSelection,
   selectionFromEvent,
   selectionIsRange,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import timelineStatusDialogStyles from './timelineStatusDialog.css.legacy.js';
+import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
@@ -338,7 +339,7 @@ const UIStrings = {
    * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
    */
   thirdPartiesByThirdPartyWeb: '3rd parties classified by third-party-web',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -392,7 +393,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * we store the filters by the trace index, so if the user then navigates back
    * to a previous trace we can reinstate the filters from this map.
    */
-  #exclusiveFilterPerTrace: Map<number, Trace.Extras.TraceFilter.TraceFilter> = new Map();
+  #exclusiveFilterPerTrace = new Map<number, Trace.Extras.TraceFilter.TraceFilter>();
   /**
    * This widget holds the timeline sidebar which shows Insights & Annotations,
    * and the main UI which shows the timeline
@@ -460,7 +461,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * (status pane, landing page, trace view) into distinct components /
    * widgets, to avoid this complexity.
    */
-  #restoreSidebarVisibilityOnTraceLoad: boolean = false;
+  #restoreSidebarVisibilityOnTraceLoad = false;
 
   /**
    * Used to track an aria announcement that we need to alert for
@@ -529,8 +530,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.traceLoadStart = null;
 
-    this.disableCaptureJSProfileSetting =
-        Common.Settings.Settings.instance().createSetting('timeline-disable-js-sampling', false);
+    this.disableCaptureJSProfileSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-disable-js-sampling', false, Common.Settings.SettingStorageType.SESSION);
     this.disableCaptureJSProfileSetting.setTitle(i18nString(UIStrings.disableJavascriptSamples));
     this.captureLayersAndPicturesSetting = Common.Settings.Settings.instance().createSetting(
         'timeline-capture-layers-and-pictures', false, Common.Settings.SettingStorageType.SESSION);
@@ -544,16 +545,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showScreenshotsSetting.setTitle(i18nString(UIStrings.screenshots));
     this.showScreenshotsSetting.addChangeListener(this.updateMiniMap, this);
 
-    this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
+    this.showMemorySetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-show-memory', false, Common.Settings.SettingStorageType.SESSION);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
-      this.#dimThirdPartiesSetting =
-          Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
-      this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
-      this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
-    }
+    this.#dimThirdPartiesSetting = Common.Settings.Settings.instance().createSetting(
+        'timeline-dim-third-parties', false, Common.Settings.SettingStorageType.SESSION);
+    this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
+    this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
 
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
@@ -641,6 +641,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
       const {model, insightSetKey} = event;
       this.#setActiveInsight({model, insightSetKey});
+
+      // Open the summary panel for the 3p insight.
+      if (model.insightKey === Trace.Insights.Types.InsightKeys.THIRD_PARTIES) {
+        this.#openSummaryTab();
+      }
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
@@ -654,11 +659,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       } else {
         this.#minimapComponent.clearBoundsHighlight();
       }
-    });
-
-    this.flameChart.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
-      const fromTraceEvent = selectionFromEvent(event.event);
-      this.flameChart.setSelectionAndReveal(fromTraceEvent);
     });
 
     this.#sideBar.contentElement.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
@@ -738,18 +738,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   /**
    * This "disables" the 3P checkbox in the toolbar.
    * Disabling here does a couple of things:
-   * 1) updates the setting to "disabled"
-   * 2) makes the checkbox dimmed and unclickable
-   * 3) gives the checkbox UI an indeterminate state
-   * Only make the change if it's different to avoid an infinite loop
+   * 1) makes the checkbox dimmed and unclickable
+   * 2) gives the checkbox UI an indeterminate state
    */
   set3PCheckboxDisabled(disabled: boolean): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
-      if (this.#thirdPartyCheckbox?.inputElement.disabled !== disabled) {
-        this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
-        this.#thirdPartyCheckbox?.setIndeterminate(disabled);
-        this.#dimThirdPartiesSetting?.setDisabled(disabled);
-      }
+      this.#thirdPartyCheckbox?.applyEnabledState(!disabled);
+      this.#thirdPartyCheckbox?.setIndeterminate(disabled);
     }
   }
 
@@ -939,7 +934,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#setModelForActiveTrace();
         this.#removeStatusPane();
         this.#showSidebarIfRequired();
-        this.#dimThirdPartiesIfRequired(newMode.traceIndex);
+        this.flameChart.dimThirdPartiesIfRequired();
         return;
       }
 
@@ -1166,8 +1161,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
     this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES) &&
-        this.#dimThirdPartiesSetting) {
+    if (this.#dimThirdPartiesSetting) {
       const dimThirdPartiesCheckbox =
           this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.thirdPartiesByThirdPartyWeb));
       this.#thirdPartyCheckbox = dimThirdPartiesCheckbox;
@@ -1357,7 +1351,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void contextMenu.show();
   }
 
-  async saveToFile(isEnhancedTraces: boolean = false, addModifications: boolean = false): Promise<void> {
+  async saveToFile(isEnhancedTraces = false, addModifications = false): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
@@ -1366,24 +1360,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
-
-    if (metadata && addModifications) {
-      metadata.modifications = ModificationsManager.activeManager()?.toJSON();
-    } else if (metadata) {
-      delete metadata.modifications;
-    }
-    if (metadata && isEnhancedTraces) {
-      metadata.enhancedTraceVersion = SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion;
-    }
     if (!traceEvents) {
       return;
+    }
+
+    if (metadata) {
+      metadata.modifications = addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
+      metadata.enhancedTraceVersion =
+          isEnhancedTraces ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
     }
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
     let fileName: Platform.DevToolsPath.RawPathString;
     if (metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE) {
       fileName = `CPU-${traceStart}.cpuprofile` as Platform.DevToolsPath.RawPathString;
-    } else if (metadata && metadata.enhancedTraceVersion) {
+    } else if (metadata?.enhancedTraceVersion) {
       fileName = `EnhancedTraces-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
     } else {
       fileName = `Trace-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
@@ -1394,7 +1385,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       let traceAsString;
       if (metadata?.dataOrigin === Trace.Types.File.DataOrigin.CPU_PROFILE) {
         const profileEvent = traceEvents.find(e => e.name === 'CpuProfile');
-        if (!profileEvent || !profileEvent.args?.data) {
+        if (!profileEvent?.args?.data) {
           return;
         }
         const profileEventData = profileEvent.args?.data;
@@ -1406,7 +1397,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           // This will be solved when the CPUProfileHandler is done. Then we can directly get it
           // from the new traceEngine
           const profile = (profileEventData as {cpuProfile: Protocol.Profiler.Profile}).cpuProfile;
-          traceAsString = cpuprofileJsonGenerator(profile as Protocol.Profiler.Profile);
+          traceAsString = cpuprofileJsonGenerator(profile);
         }
       } else {
         const formattedTraceIter = traceJsonGenerator(traceEvents, metadata);
@@ -1555,7 +1546,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return;
     }
-    this.#dimThirdPartiesIfRequired(this.#viewMode.traceIndex);
+    this.flameChart.dimThirdPartiesIfRequired();
   }
 
   #extensionDataVisibilityChanged(): void {
@@ -1987,18 +1978,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
-    let traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
-    if (traceInsightsSets) {
-      // Omit insight sets that don't have anything of interest to show to the user.
-      const filteredTraceInsightsSets = new Map();
-      for (const [key, insightSet] of traceInsightsSets) {
-        if (Object.values(insightSet.model).some(model => model.shouldShow)) {
-          filteredTraceInsightsSets.set(key, insightSet);
-        }
-      }
-
-      traceInsightsSets = filteredTraceInsightsSets.size ? filteredTraceInsightsSets : null;
-    }
+    const traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
     this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
 
     this.flameChart.setModel(parsedTrace, traceMetadata);
@@ -2063,7 +2043,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Set up line level profiling with CPU profiles, if we found any.
     PerfUI.LineLevelProfile.Performance.instance().reset();
-    if (parsedTrace && parsedTrace.Samples.profilesInProcess.size) {
+    if (parsedTrace?.Samples.profilesInProcess.size) {
       const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       // Gather up all CPU Profiles we found when parsing this trace.
       const cpuProfiles =
@@ -2159,23 +2139,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#splitWidget.showBoth();
     }
     this.#restoreSidebarVisibilityOnTraceLoad = false;
-  }
-
-  // Activates or disables dimming when checkbox is clicked.
-  #dimThirdPartiesIfRequired(traceIndex: number): void {
-    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
-    if (!parsedTrace) {
-      return;
-    }
-
-    const checkboxState = this.#dimThirdPartiesSetting?.getIfNotDisabled() ?? false;
-    const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
-
-    if (checkboxState && thirdPartyEvents.length) {
-      this.flameChart.setActiveThirdPartyDimmingSetting(thirdPartyEvents);
-    } else {
-      this.flameChart.setActiveThirdPartyDimmingSetting(null);
-    }
   }
 
   // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.
@@ -2453,14 +2416,82 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
+  #createSourceMapResolver(isFreshRecording: boolean): Trace.TraceModel.ParseConfig['resolveSourceMap'] {
+    // Currently, only experimental insights need source maps.
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS)) {
+      return;
+    }
+
+    const debuggerModelForFrameId = new Map<string, SDK.DebuggerModel.DebuggerModel>();
+    for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      if (!debuggerModel) {
+        continue;
+      }
+
+      const resourceModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      const activeFrameIds = (resourceModel?.frames() ?? []).map(frame => frame.id);
+      for (const frameId of activeFrameIds) {
+        debuggerModelForFrameId.set(frameId, debuggerModel);
+      }
+    }
+
+    async function getExistingSourceMap(frame: string, scriptId: string, scriptUrl: Platform.DevToolsPath.UrlString):
+        Promise<SDK.SourceMap.SourceMap|undefined> {
+      const debuggerModel = debuggerModelForFrameId.get(frame);
+      if (!debuggerModel) {
+        return;
+      }
+
+      const script = debuggerModel.scriptForId(scriptId);
+      if (!script || (scriptUrl && scriptUrl !== script.sourceURL)) {
+        return;
+      }
+
+      return await debuggerModel.sourceMapManager().sourceMapForClientPromise(script);
+    }
+
+    return async function resolveSourceMap(params: Trace.Types.Configuration.ResolveSourceMapParams) {
+      const {scriptId, scriptUrl, sourceMapUrl, frame} = params;
+
+      // For still-active frames, the source map is likely already fetched or at least in-flight.
+      if (isFreshRecording) {
+        const map = await getExistingSourceMap(frame, scriptId, scriptUrl);
+        if (map) {
+          return map;
+        }
+      }
+
+      // Else... fetch it!
+      if (!scriptUrl) {
+        return null;
+      }
+
+      // In all other cases, we must fetch the source map.
+      // For example, since the debugger model is disable during recording, any non-final navigations during
+      // the trace will never have their source maps fetched by the debugger model. That's only ever done here.
+
+      try {
+        const initiator = {target: null, frameId: frame, initiatorUrl: scriptUrl};
+        const payload = await SDK.SourceMapManager.loadSourceMap(sourceMapUrl, initiator);
+        return new SDK.SourceMap.SourceMap(scriptUrl, sourceMapUrl, payload);
+      } catch (cause) {
+        console.error(`Could not load content for ${sourceMapUrl}: ${cause.message}`, {cause});
+      }
+
+      return null;
+    };
+  }
+
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
       metadata: Trace.Types.File.MetaData|null): Promise<void> {
-    return this.#traceEngineModel.parse(
+    return await this.#traceEngineModel.parse(
         collectedEvents,
         {
           metadata: metadata ?? undefined,
           isFreshRecording,
+          resolveSourceMap: this.#createSourceMapResolver(isFreshRecording),
         },
     );
   }
@@ -2666,6 +2697,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
       void this.loadFromFile(file);
     }
+  }
+
+  #openSummaryTab(): void {
+    // If we have a selection, we should remove it.
+    this.flameChart.setSelectionAndReveal(null);
+    this.flameChart.selectDetailsViewTab(Tab.Details, null);
   }
 }
 

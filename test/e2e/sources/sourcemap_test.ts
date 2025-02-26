@@ -21,7 +21,6 @@ import {
   waitForFunction,
   withControlOrMetaKey,
 } from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, getCurrentConsoleMessages} from '../helpers/console-helpers.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
@@ -230,7 +229,7 @@ describe('The Sources Tab', function() {
 
       const scopeValues = await waitForFunction(async () => {
         const values = await getValuesForScope('Local', 0, 0);
-        return (values && values.includes(unminifiedVariable)) ? values : undefined;
+        return (values?.includes(unminifiedVariable)) ? values : undefined;
       });
       assert.include(scopeValues, unminifiedVariable);
     });
@@ -281,7 +280,7 @@ describe('The Sources Tab', function() {
     await step('Check local scope variable is eventually un-minified', async () => {
       const scopeValues = await waitForFunction(async () => {
         const values = await getValuesForScope('Local', 0, 0);
-        return (values && values.includes(outerUnminifiedVariable)) ? values : undefined;
+        return (values?.includes(outerUnminifiedVariable)) ? values : undefined;
       });
       assert.include(scopeValues, outerUnminifiedVariable);
     });
@@ -296,13 +295,13 @@ describe('The Sources Tab', function() {
     await step('Check local and block scope variables are eventually un-minified', async () => {
       const blockScopeValues = await waitForFunction(async () => {
         const values = await getValuesForScope('Block', 0, 0);
-        return (values && values.includes(innerUnminifiedVariable)) ? values : undefined;
+        return (values?.includes(innerUnminifiedVariable)) ? values : undefined;
       });
       assert.include(blockScopeValues, innerUnminifiedVariable);
 
       const scopeValues = await waitForFunction(async () => {
         const values = await getValuesForScope('Local', 0, 0);
-        return (values && values.includes(outerUnminifiedVariable)) ? values : undefined;
+        return (values?.includes(outerUnminifiedVariable)) ? values : undefined;
       });
       assert.include(scopeValues, outerUnminifiedVariable);
     });

@@ -35,7 +35,7 @@ export function makeURL(path: string): string {
 }
 
 export async function createWorkerPlugin(debug?: Debugger): Promise<Chrome.DevTools.LanguageExtensionPlugin> {
-  return WorkerPlugin.create([], true).then(p => {
+  return await WorkerPlugin.create([], true).then(p => {
     if (debug) {
       p.getWasmLinearMemory = debug.getWasmLinearMemory.bind(debug);
       p.getWasmLocal = debug.getWasmLocal.bind(debug);
@@ -70,8 +70,8 @@ export function nonNull<T>(value: T|null|undefined): T {
   return value as T;
 }
 
-export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|
-                             null): Chrome.DevTools.RemoteObject {
+export function remoteObject(value: Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null):
+    Chrome.DevTools.RemoteObject {
   assert.exists(value);
   assert(value.type !== 'reftype');
   return value;
@@ -83,7 +83,7 @@ export class TestWasmInterface implements WasmInterface {
   globals = new Map<number, WasmValue>();
   stack = new Map<number, WasmValue>();
 
-  readMemory(offset: number, length: number): Uint8Array {
+  readMemory(offset: number, length: number): Uint8Array<ArrayBuffer> {
     return new Uint8Array(this.memory, offset, length);
   }
   getOp(op: number): WasmValue {
@@ -116,52 +116,52 @@ export class TestValue implements Value {
   size: number;
   typeNames: string[];
 
-  static fromInt8(value: number, typeName: string = 'int8_t'): TestValue {
+  static fromInt8(value: number, typeName = 'int8_t'): TestValue {
     const content = new DataView(new ArrayBuffer(1));
     content.setInt8(0, value);
     return new TestValue(content, typeName);
   }
-  static fromInt16(value: number, typeName: string = 'int16_t'): TestValue {
+  static fromInt16(value: number, typeName = 'int16_t'): TestValue {
     const content = new DataView(new ArrayBuffer(2));
     content.setInt16(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromInt32(value: number, typeName: string = 'int32_t'): TestValue {
+  static fromInt32(value: number, typeName = 'int32_t'): TestValue {
     const content = new DataView(new ArrayBuffer(4));
     content.setInt32(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromInt64(value: bigint, typeName: string = 'int64_t'): TestValue {
+  static fromInt64(value: bigint, typeName = 'int64_t'): TestValue {
     const content = new DataView(new ArrayBuffer(8));
     content.setBigInt64(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromUint8(value: number, typeName: string = 'uint8_t'): TestValue {
+  static fromUint8(value: number, typeName = 'uint8_t'): TestValue {
     const content = new DataView(new ArrayBuffer(1));
     content.setUint8(0, value);
     return new TestValue(content, typeName);
   }
-  static fromUint16(value: number, typeName: string = 'uint16_t'): TestValue {
+  static fromUint16(value: number, typeName = 'uint16_t'): TestValue {
     const content = new DataView(new ArrayBuffer(2));
     content.setUint16(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromUint32(value: number, typeName: string = 'uint32_t'): TestValue {
+  static fromUint32(value: number, typeName = 'uint32_t'): TestValue {
     const content = new DataView(new ArrayBuffer(4));
     content.setUint32(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromUint64(value: bigint, typeName: string = 'uint64_t'): TestValue {
+  static fromUint64(value: bigint, typeName = 'uint64_t'): TestValue {
     const content = new DataView(new ArrayBuffer(8));
     content.setBigUint64(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromFloat32(value: number, typeName: string = 'float'): TestValue {
+  static fromFloat32(value: number, typeName = 'float'): TestValue {
     const content = new DataView(new ArrayBuffer(4));
     content.setFloat32(0, value, true);
     return new TestValue(content, typeName);
   }
-  static fromFloat64(value: number, typeName: string = 'double'): TestValue {
+  static fromFloat64(value: number, typeName = 'double'): TestValue {
     const content = new DataView(new ArrayBuffer(8));
     content.setFloat64(0, value, true);
     return new TestValue(content, typeName);

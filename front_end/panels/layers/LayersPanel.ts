@@ -46,7 +46,7 @@ const UIStrings = {
    *@description Title of the Profiler tool
    */
   profiler: 'Profiler',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/layers/LayersPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

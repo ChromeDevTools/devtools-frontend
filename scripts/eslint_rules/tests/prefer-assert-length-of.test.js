@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/prefer-assert-length-of.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('prefer-assert-length-of', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('prefer-assert-length-of', rule, {
   valid: [
     {
       code: 'assert.strictEqual(a.length + b.length, 4);',

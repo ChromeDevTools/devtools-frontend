@@ -29,7 +29,7 @@
  */
 import * as SDK from '../../core/sdk/sdk.js';
 
-const EPS: number = 1e-5;
+const EPS = 1e-5;
 
 export class Vector {
   x: number;

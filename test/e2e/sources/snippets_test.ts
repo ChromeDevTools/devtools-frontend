@@ -11,7 +11,6 @@ import {
   goToResource,
   typeText,
 } from '../../shared/helper.js';
-
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
 

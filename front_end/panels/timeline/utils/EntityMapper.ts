@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Trace from '../../../models/trace/trace.js';
 
@@ -16,71 +17,31 @@ export class EntityMapper {
    * as different cpu profile nodes. To avoid duplicate work on the
    * same CallFrame, we can keep track of them.
    */
-  #resolvedCallFrames: Set<Protocol.Runtime.CallFrame> = new Set();
+  #resolvedCallFrames = new Set<Protocol.Runtime.CallFrame>();
 
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#parsedTrace = parsedTrace;
-    this.#entityMappings = this.#initializeEntityMappings(this.#parsedTrace);
+    this.#entityMappings = this.#parsedTrace.Renderer.entityMappings;
     this.#firstPartyEntity = this.#findFirstPartyEntity();
     this.#thirdPartyEvents = this.#getThirdPartyEvents();
-  }
-
-  /**
-   * This initializes our maps using the parsedTrace data from both the RendererHandler and
-   * the NetworkRequestsHandler.
-   */
-  #initializeEntityMappings(parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Handlers.Helpers.EntityMappings {
-    // NetworkRequestHander caches.
-    const entityByNetworkEvent = parsedTrace.NetworkRequests.entityMappings.entityByEvent;
-    const networkEventsByEntity = parsedTrace.NetworkRequests.entityMappings.eventsByEntity;
-    const networkCreatedCache = parsedTrace.NetworkRequests.entityMappings.createdEntityCache;
-
-    // RendrerHandler caches.
-    const entityByRendererEvent = parsedTrace.Renderer.entityMappings.entityByEvent;
-    const rendererEventsByEntity = parsedTrace.Renderer.entityMappings.eventsByEntity;
-    const rendererCreatedCache = parsedTrace.Renderer.entityMappings.createdEntityCache;
-
-    // Build caches.
-    const entityByEvent = new Map([...entityByNetworkEvent, ...entityByRendererEvent]);
-    const createdEntityCache = new Map([...networkCreatedCache, ...rendererCreatedCache]);
-    const eventsByEntity = this.#mergeEventsByEntities(rendererEventsByEntity, networkEventsByEntity);
-
-    return {
-      entityByEvent,
-      eventsByEntity,
-      createdEntityCache,
-    };
   }
 
   #findFirstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
     // As a starting point, we consider the first navigation as the 1P.
     const nav = Array.from(this.#parsedTrace.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
     const firstPartyUrl = nav?.args.data?.documentLoaderURL ?? this.#parsedTrace.Meta.mainFrameURL;
+    if (!firstPartyUrl) {
+      return null;
+    }
     return Trace.Handlers.Helpers.getEntityForUrl(firstPartyUrl, this.#entityMappings.createdEntityCache) ?? null;
   }
 
   #getThirdPartyEvents(): Trace.Types.Events.Event[] {
     const entries = Array.from(this.#entityMappings.eventsByEntity.entries());
-    const thirdPartyEvents = entries.flatMap(([entity, requests]) => {
-      return entity.name !== this.#firstPartyEntity?.name ? requests : [];
+    const thirdPartyEvents = entries.flatMap(([entity, events]) => {
+      return entity !== this.#firstPartyEntity ? events : [];
     });
     return thirdPartyEvents;
-  }
-
-  #mergeEventsByEntities(
-      a: Map<Trace.Handlers.Helpers.Entity, Trace.Types.Events.Event[]>,
-      b: Map<Trace.Handlers.Helpers.Entity, Trace.Types.Events.Event[]>):
-      Map<Trace.Handlers.Helpers.Entity, Trace.Types.Events.Event[]> {
-    const merged = new Map(a);
-    for (const [entity, events] of b.entries()) {
-      if (merged.has(entity)) {
-        const currentEvents = merged.get(entity) ?? [];
-        merged.set(entity, [...currentEvents, ...events]);
-      } else {
-        merged.set(entity, [...events]);
-      }
-    }
-    return merged;
   }
 
   /**
@@ -160,5 +121,17 @@ export class EntityMapper {
     });
     // Update our CallFrame cache when we've got a resolved entity.
     this.#resolvedCallFrames.add(callFrame);
+  }
+
+  // Update entities with proper Chrome Extension names.
+  updateExtensionEntitiesWithName(executionContextNamesByOrigin: Map<Platform.DevToolsPath.UrlString, string>): void {
+    const entities = Array.from(this.#entityMappings.eventsByEntity.keys());
+    for (const [origin, name] of executionContextNamesByOrigin) {
+      // In makeUpChromeExtensionEntity, the extension origin is set as the only domain for the entity.
+      const entity = entities.find(e => e.domains[0] === origin);
+      if (entity) {
+        entity.name = entity.company = name;
+      }
+    }
   }
 }

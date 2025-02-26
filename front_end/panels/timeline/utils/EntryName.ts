@@ -10,7 +10,7 @@ import {getEventStyle} from './EntryStyles.js';
 
 const UIStrings = {
   /**
-   *@description Text shown for an entry in the flame chart that has no explict name.
+   *@description Text shown for an entry in the flame chart that has no explicit name.
    */
   anonymous: '(anonymous)',
   /**
@@ -39,7 +39,7 @@ const UIStrings = {
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
   layoutShift: 'Layout shift',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/EntryName.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

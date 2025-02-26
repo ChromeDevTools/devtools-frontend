@@ -73,7 +73,7 @@ export const getEventListenerProperties = async (selector: string) => {
     return [key, value];
   })));
 
-  return propertiesOutput as Array<string[]>;
+  return propertiesOutput as string[][];
 };
 
 export const getFirstNodeForEventListener = async (listenerTypeSelector: string) => {

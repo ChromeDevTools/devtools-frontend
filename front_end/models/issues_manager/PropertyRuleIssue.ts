@@ -18,7 +18,7 @@ export class PropertyRuleIssue extends Issue {
     this.#issueDetails = issueDetails;
   }
 
-  override sources(): Array<Protocol.Audits.SourceCodeLocation> {
+  override sources(): Protocol.Audits.SourceCodeLocation[] {
     return [this.#issueDetails.sourceCodeLocation];
   }
 

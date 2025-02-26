@@ -5,8 +5,11 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {
+  Capability,
+  type Target,
+} from './Target.js';
 
 /**
  * The `IssuesModel` is a thin dispatch that does not store issues, but only creates the representation

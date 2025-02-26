@@ -8,6 +8,7 @@ import {openCommandMenu} from './quick_open-helpers.js';
 import {openPanelViaMoreTools} from './settings-helpers.js';
 import {veImpression} from './visual-logging-helpers.js';
 
+const PRIVACY_AND_SECURITY_PANEL_CONTENT = '.view-container[aria-label="Privacy and security panel"]';
 const SECURITY_PANEL_CONTENT = '.view-container[aria-label="Security panel"]';
 const SECURITY_TAB_SELECTOR = '#tab-security';
 const SECURITY_PANEL_TITLE = 'Security';
@@ -20,13 +21,13 @@ export async function securityTabDoesNotExist() {
   await waitForNone(SECURITY_TAB_SELECTOR);
 }
 
-export async function securityPanelContentIsLoaded() {
-  await waitFor(SECURITY_PANEL_CONTENT);
+export async function securityPanelContentIsLoaded(privacyEnabled?: boolean) {
+  await waitFor(privacyEnabled ? PRIVACY_AND_SECURITY_PANEL_CONTENT : SECURITY_PANEL_CONTENT);
 }
 
-export async function navigateToSecurityTab() {
+export async function navigateToSecurityTab(privacyEnabled?: boolean) {
   await click(SECURITY_TAB_SELECTOR);
-  await securityPanelContentIsLoaded();
+  await securityPanelContentIsLoaded(privacyEnabled);
 }
 
 export async function closeSecurityTab() {

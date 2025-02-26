@@ -148,7 +148,7 @@ describeWithMockConnection('SharedStorageEventsView', () => {
   it('initially has placeholder sidebar', () => {
     const view = new View.SharedStorageEventsView();
     assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
-    assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('Click'));
+    assert.deepEqual(view.sidebarWidget()?.contentElement.firstChild?.textContent, 'No shared storage event selected');
   });
 
   it('updates sidebarWidget upon receiving cellFocusedEvent', async () => {
@@ -186,7 +186,7 @@ describeWithMockConnection('SharedStorageEventsView', () => {
     view.clearEvents();
     assert.isTrue(spy.calledTwice);
     assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
-    assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('Click'));
+    assert.deepEqual(view.sidebarWidget()?.contentElement.firstChild?.textContent, 'No shared storage event selected');
   });
 
   it('records events only from the target page', () => {

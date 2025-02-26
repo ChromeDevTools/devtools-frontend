@@ -79,8 +79,7 @@ export class WorkerRPC<LocalInterface extends Record<string, any>, RemoteInterfa
   private nextRequestId = 0;
   private readonly channel: Channel<LocalInterface, RemoteInterface>;
   private readonly localHandler: LocalInterface;
-  private readonly requests: Map<number, {resolve: (params: unknown) => void, reject: (message: Error) => void}> =
-      new Map();
+  private readonly requests = new Map<number, {resolve: (params: unknown) => void, reject: (message: Error) => void}>();
   private readonly semaphore: Int32Array;
 
   constructor(channel: Channel<LocalInterface, RemoteInterface>, localHandler: LocalInterface) {

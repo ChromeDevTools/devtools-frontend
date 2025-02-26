@@ -215,7 +215,7 @@ export class DOMNode {
   private async requestChildDocument(frameId: Protocol.Page.FrameId, notInTarget: Target): Promise<DOMDocument|null> {
     const frame = await FrameManager.instance().getOrWaitForFrame(frameId, notInTarget);
     const childModel = frame.resourceTreeModel()?.target().model(DOMModel);
-    return childModel?.requestDocument() || null;
+    return await (childModel?.requestDocument() || null);
   }
 
   isAdFrameNode(): boolean {
@@ -299,10 +299,6 @@ export class DOMNode {
 
   setChildNodeCount(childNodeCount: number): void {
     this.childNodeCountInternal = childNodeCount;
-  }
-
-  hasShadowRoots(): boolean {
-    return Boolean(this.shadowRootsInternal.length);
   }
 
   shadowRoots(): DOMNode[] {
@@ -551,7 +547,7 @@ export class DOMNode {
     });
   }
 
-  getChildNodes(callback: (arg0: Array<DOMNode>|null) => void): void {
+  getChildNodes(callback: (arg0: DOMNode[]|null) => void): void {
     if (this.childrenInternal) {
       callback(this.children());
       return;
@@ -652,7 +648,7 @@ export class DOMNode {
   }
 
   isDescendant(descendant: DOMNode): boolean {
-    return descendant !== null && descendant.isAncestor(this);
+    return descendant.isAncestor(this);
   }
 
   frameOwnerFrameId(): Protocol.Page.FrameId|null {
@@ -937,8 +933,8 @@ export class DOMNode {
   }
 
   async setAsInspectedNode(): Promise<void> {
-    let node: (DOMNode|null)|DOMNode = (this as DOMNode | null);
-    if (node && node.pseudoType()) {
+    let node: DOMNode|null = this;
+    if (node?.pseudoType()) {
       node = node.parentNode;
     }
     while (node) {
@@ -1094,7 +1090,7 @@ export class DeferredDOMNode {
   async resolvePromise(): Promise<DOMNode|null> {
     const nodeIds =
         await this.#domModelInternal.pushNodesByBackendIdsToFrontend(new Set([this.#backendNodeIdInternal]));
-    return nodeIds && nodeIds.get(this.#backendNodeIdInternal) || null;
+    return nodeIds?.get(this.#backendNodeIdInternal) || null;
   }
 
   backendNodeId(): Protocol.DOM.BackendNodeId {
@@ -1138,7 +1134,7 @@ export class DOMDocument extends DOMNode {
 
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
-  idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode> = new Map();
+  idToDOMNode = new Map<Protocol.DOM.NodeId, DOMNode>();
   #document: DOMDocument|null;
   readonly #attributeLoadNodeIds: Set<Protocol.DOM.NodeId>;
   readonly runtimeModelInternal: RuntimeModel;
@@ -1272,7 +1268,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   async pushNodeToFrontend(objectId: Protocol.Runtime.RemoteObjectId): Promise<DOMNode|null> {
     await this.requestDocument();
     const {nodeId} = await this.agent.invoke_requestNode({objectId});
-    return nodeId ? this.nodeForId(nodeId) : null;
+    return this.nodeForId(nodeId);
   }
 
   pushNodeByPathToFrontend(path: string): Promise<Protocol.DOM.NodeId|null> {
@@ -1565,11 +1561,11 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   async getNodesByStyle(
-      computedStyles: {
+      computedStyles: Array<{
         name: string,
         value: string,
-      }[],
-      pierce: boolean = false): Promise<Protocol.DOM.NodeId[]> {
+      }>,
+      pierce = false): Promise<Protocol.DOM.NodeId[]> {
     await this.requestDocument();
     if (!this.#document) {
       throw new Error('DOMModel.getNodesByStyle expects to have a document.');
@@ -1577,7 +1573,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     const response =
         await this.agent.invoke_getNodesForSubtreeByStyle({nodeId: this.#document.id, computedStyles, pierce});
     if (response.getError()) {
-      throw response.getError();
+      throw new Error(response.getError());
     }
     return response.nodeIds;
   }
@@ -1840,7 +1836,7 @@ export class DOMModelUndoStack {
 
   async undo(): Promise<void> {
     if (this.#index === 0) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     --this.#index;
     this.#lastModelWithMinorChange = null;
@@ -1849,7 +1845,7 @@ export class DOMModelUndoStack {
 
   async redo(): Promise<void> {
     if (this.#index >= this.#stack.length) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     ++this.#index;
     this.#lastModelWithMinorChange = null;

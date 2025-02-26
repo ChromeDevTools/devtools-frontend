@@ -11,7 +11,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 
-import dialogStylesRaw from './dialog.css.legacy.js';
+import dialogStylesRaw from './dialog.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const dialogStyles = new CSSStyleSheet();
@@ -25,7 +25,7 @@ const UIStrings = {
    * @description Title of close button for the shortcuts dialog.
    */
   close: 'Close',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/components/dialogs/Dialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -631,6 +631,7 @@ export class Dialog extends HTMLElement {
               variant: Buttons.Button.Variant.TOOLBAR,
               iconName: 'cross',
               title: i18nString(UIStrings.close),
+              size: Buttons.Button.Size.SMALL,
             } as Buttons.Button.ButtonData}
             jslog=${VisualLogging.close().track({click: true})}
           ></devtools-button>

@@ -18,8 +18,8 @@ class InjectedScript {
                                   ))
                                  .text();
     }
-    return this.#injectedScript;
+    return await this.#injectedScript;
   }
 }
 
-export {DEVTOOLS_RECORDER_WORLD_NAME, InjectedScript, SharedObject, isDebugBuild};
+export {DEVTOOLS_RECORDER_WORLD_NAME, InjectedScript, isDebugBuild, SharedObject};

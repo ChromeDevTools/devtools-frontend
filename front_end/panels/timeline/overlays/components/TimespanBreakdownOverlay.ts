@@ -5,7 +5,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import stylesRaw from './timespanBreakdownOverlay.css.legacy.js';
+import stylesRaw from './timespanBreakdownOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -25,7 +25,7 @@ export interface EntryBreakdown {
 export class TimespanBreakdownOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #canvasRect: DOMRect|null = null;
-  #sections: Array<EntryBreakdown>|null = null;
+  #sections: EntryBreakdown[]|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
@@ -43,7 +43,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     this.#render();
   }
 
-  set sections(sections: Array<EntryBreakdown>|null) {
+  set sections(sections: EntryBreakdown[]|null) {
     if (sections === this.#sections) {
       return;
     }

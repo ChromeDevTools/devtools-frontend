@@ -12,9 +12,9 @@ import type * as IconButton from '../../../ui/components/icon_button/icon_button
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import badgeStylesRaw from './badge.css.legacy.js';
-import originTrialTokenRowsStylesRaw from './originTrialTokenRows.css.legacy.js';
-import originTrialTreeViewStylesRaw from './originTrialTreeView.css.legacy.js';
+import badgeStylesRaw from './badge.css.js';
+import originTrialTokenRowsStylesRaw from './originTrialTokenRows.css.js';
+import originTrialTreeViewStylesRaw from './originTrialTreeView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const badgeStyles = new CSSStyleSheet();
@@ -77,7 +77,7 @@ const UIStrings = {
    *@description Label shown when there are no Origin Trial Tokens in the Frame view of the Application panel.
    */
   noTrialTokens: 'No trial tokens',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/OriginTrialTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -186,7 +186,7 @@ function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): Lit.Templa
 }
 
 function constructTokenDetailsNodes(token: Protocol.Page.OriginTrialTokenWithStatus):
-    TreeNode<OriginTrialTreeNodeData>[] {
+    Array<TreeNode<OriginTrialTreeNodeData>> {
   return [
     {
       treeNodeData: token,

@@ -128,7 +128,7 @@ describeWithEnvironment('Trace helpers', function() {
       const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
                       ?.get(firstNavigationId)
                       ?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP);
-      if (!fcp || !fcp.event) {
+      if (!fcp?.event) {
         assert.fail('FCP not found');
       }
       const navigationForFirstRequest =
@@ -426,10 +426,9 @@ describeWithEnvironment('Trace helpers', function() {
     describe('createSortedSyntheticEvents()', () => {
       it('correctly creates synthetic events when instant animation events are present', async function() {
         const events = await TraceLoader.rawEvents(this, 'instant-animation-events.json.gz');
-        const animationEvents =
-            events.filter(event => Trace.Types.Events.isAnimation(event)) as Trace.Types.Events.Animation[];
+        const animationEvents = events.filter(event => Trace.Types.Events.isAnimation(event));
         const animationSynthEvents = Trace.Helpers.Trace.createMatchedSortedSyntheticEvents(animationEvents);
-        const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: Array<string>}>([
+        const wantPairs = new Map<string, {compositeFailed: number, unsupportedProperties?: string[]}>([
           [
             'blink.animations,devtools.timeline,benchmark,rail:0x11d00230380:Animation',
             {compositeFailed: 8224, unsupportedProperties: ['width']},
@@ -444,7 +443,7 @@ describeWithEnvironment('Trace helpers', function() {
             {compositeFailed: 8224, unsupportedProperties: ['font-size']},
           ],
         ]);
-        // Ensure we have the correct numner of synthetic events created.
+        // Ensure we have the correct number of synthetic events created.
         assert.deepEqual(wantPairs.size, animationSynthEvents.length);
 
         animationSynthEvents.forEach(event => {
@@ -748,7 +747,7 @@ describeWithEnvironment('Trace helpers', function() {
         assert.isNotNull(nextScreenshot);
         assert.isNotNull(prevScreenshot);
         // Make sure the screenshot came after the shift.
-        assert.isAbove(nextScreenshot!.ts, shift.ts);
+        assert.isAbove(nextScreenshot.ts, shift.ts);
         // Make sure the previous screenshot came before the shift
         assert.isBelow(prevScreenshot.ts, shift.ts);
 

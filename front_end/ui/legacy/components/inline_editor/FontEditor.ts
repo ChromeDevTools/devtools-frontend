@@ -12,7 +12,7 @@ import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import fontEditorStyles from './fontEditor.css.legacy.js';
+import fontEditorStyles from './fontEditor.css.js';
 import * as FontEditorUnitConverter from './FontEditorUnitConverter.js';
 import * as FontEditorUtils from './FontEditorUtils.js';
 
@@ -115,7 +115,7 @@ const UIStrings = {
    *@description Label for Font Editor alert in CSS Properties section when toggling inputs
    */
   sliderInputMode: 'Slider Input Mode',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/FontEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -124,7 +124,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private readonly propertyMap: Map<string, string>;
   private readonly fontSelectorSection: HTMLElement;
   private fontSelectors: FontEditor.FontSelectorObject[];
-  private fontsList: Map<string, string[]>[]|null;
+  private fontsList: Array<Map<string, string[]>>|null;
 
   constructor(propertyMap: Map<string, string>) {
     super(true);
@@ -199,7 +199,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.resizePopout();
   }
 
-  private async createFontsList(): Promise<Map<string, string[]>[]> {
+  private async createFontsList(): Promise<Array<Map<string, string[]>>> {
     const computedFontArray = await FontEditorUtils.generateComputedFontArray();
     const computedMap = new Map<string, string[]>();
     const splicedArray = this.splitComputedFontArray(computedFontArray);
@@ -230,7 +230,7 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
         array.push(fontFamilyValue.replace(/"/g, ''));
       }
     }
-    return array as string[];
+    return array;
   }
 
   private async createFontSelector(value: string, isPrimary?: boolean): Promise<void> {
@@ -332,10 +332,10 @@ export class FontEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private createSelector(
-      field: Element, label: string, options: Map<string, string[]>[], currentValue: string,
+      field: Element, label: string, options: Array<Map<string, string[]>>, currentValue: string,
       jslogContext: string): void {
     const index = this.fontSelectors.length;
-    const selectInput = (UI.UIUtils.createSelect(label, options) as HTMLSelectElement);
+    const selectInput = (UI.UIUtils.createSelect(label, options));
     selectInput.value = currentValue;
     selectInput.setAttribute('jslog', `${VisualLogging.dropDown(jslogContext).track({click: true, change: true})}`);
     const selectLabel = UI.UIUtils.createLabel(label, 'shadow-editor-label', selectInput);

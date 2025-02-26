@@ -7,7 +7,6 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
-
 import {
   resolveLazyDescription,
   type LazyMarkdownIssueDescription,
@@ -23,7 +22,7 @@ const UIStrings = {
    *@description Title for an external link to more information in the issues view
    */
   samesiteAndSameorigin: 'Same-Site and Same-Origin',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CrossOriginEmbedderPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -80,7 +79,7 @@ export class CrossOriginEmbedderPolicyIssue extends Issue {
   }
 }
 
-const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
+const issueDescriptions = new Map<string, LazyMarkdownIssueDescription>([
   [
     'CrossOriginEmbedderPolicyIssue::CorpNotSameOriginAfterDefaultedToSameOriginByCoep',
     {

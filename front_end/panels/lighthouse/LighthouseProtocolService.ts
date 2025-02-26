@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as ReportRenderer from './LighthouseReporterTypes.js';
@@ -152,7 +152,7 @@ export class ProtocolService {
       mode = 'endTimespan';
     }
 
-    return this.sendWithResponse(mode, {
+    return await this.sendWithResponse(mode, {
       url: inspectedURL,
       categoryIDs,
       flags,
@@ -202,7 +202,7 @@ export class ProtocolService {
       sessionId?: string,
       method?: string,
     };
-    if (protocolMessage.sessionId || (protocolMessage.method && protocolMessage.method.startsWith('Target'))) {
+    if (protocolMessage.sessionId || (protocolMessage.method?.startsWith('Target'))) {
       void this.send('dispatchProtocolMessage', {message});
     }
   }
@@ -283,6 +283,6 @@ export class ProtocolService {
     });
     worker.postMessage({id: messageId, action, args: {...args, id: messageId}});
 
-    return messageResult;
+    return await messageResult;
   }
 }

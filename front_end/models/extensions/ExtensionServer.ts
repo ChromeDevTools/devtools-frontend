@@ -55,7 +55,7 @@ import {LanguageExtensionEndpoint} from './LanguageExtensionEndpoint.js';
 import {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 import {RecorderPluginManager} from './RecorderPluginManager.js';
 
-const extensionOrigins: WeakMap<MessagePort, Platform.DevToolsPath.UrlString> = new WeakMap();
+const extensionOrigins = new WeakMap<MessagePort, Platform.DevToolsPath.UrlString>();
 const kPermittedSchemes = ['http:', 'https:', 'file:', 'data:', 'chrome-extension:', 'about:'];
 
 declare global {
@@ -161,7 +161,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private extensionsEnabled: boolean;
   private inspectedTabId?: string;
   private readonly extensionAPITestHook?: (server: unknown, api: unknown) => unknown;
-  private themeChangeHandlers: Map<string, MessagePort> = new Map();
+  private themeChangeHandlers = new Map<string, MessagePort>();
   readonly #pendingExtensions: Host.InspectorFrontendHostAPI.ExtensionDescriptor[] = [];
 
   private constructor() {
@@ -195,6 +195,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(PrivateAPI.Commands.SetOpenResourceHandler, this.onSetOpenResourceHandler.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetThemeChangeHandler, this.onSetThemeChangeHandler.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetResourceContent, this.onSetResourceContent.bind(this));
+    this.registerHandler(PrivateAPI.Commands.AttachSourceMapToResource, this.onAttachSourceMapToResource.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarHeight, this.onSetSidebarHeight.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarContent, this.onSetSidebarContent.bind(this));
     this.registerHandler(PrivateAPI.Commands.SetSidebarPage, this.onSetSidebarPage.bind(this));
@@ -212,13 +213,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.registerHandler(
         PrivateAPI.Commands.RegisterRecorderExtensionPlugin, this.registerRecorderExtensionEndpoint.bind(this));
     this.registerHandler(PrivateAPI.Commands.ReportResourceLoad, this.onReportResourceLoad.bind(this));
+    this.registerHandler(PrivateAPI.Commands.SetFunctionRangesForScript, this.onSetFunctionRangesForScript.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateRecorderView, this.onCreateRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowRecorderView, this.onShowRecorderView.bind(this));
     this.registerHandler(PrivateAPI.Commands.ShowNetworkPanel, this.onShowNetworkPanel.bind(this));
     window.addEventListener('message', this.onWindowMessage, false);  // Only for main window.
 
-    const existingTabId =
-        window.DevToolsAPI && window.DevToolsAPI.getInspectedTabId && window.DevToolsAPI.getInspectedTabId();
+    const existingTabId = window.DevToolsAPI?.getInspectedTabId?.();
 
     if (existingTabId) {
       this.setInspectedTabId({data: existingTabId});
@@ -444,6 +445,30 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       size: status.size ?? null,
     };
     SDK.PageResourceLoader.PageResourceLoader.instance().resourceLoadedThroughExtension(pageResource);
+    return this.status.OK();
+  }
+
+  private onSetFunctionRangesForScript(message: PrivateAPI.ExtensionServerRequestMessage): Record {
+    if (message.command !== PrivateAPI.Commands.SetFunctionRangesForScript) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetFunctionRangesForScript}`);
+    }
+    const {scriptUrl, ranges} = message;
+    if (!scriptUrl || !ranges?.length) {
+      return this.status.E_BADARG('command', 'expected valid scriptUrl and non-empty NamedFunctionRanges');
+    }
+    const uiSourceCode =
+        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(scriptUrl as Platform.DevToolsPath.UrlString);
+    if (!uiSourceCode) {
+      return this.status.E_NOTFOUND(scriptUrl);
+    }
+    if (!uiSourceCode.contentType().isScript() || !uiSourceCode.contentType().isFromSourceMap()) {
+      return this.status.E_BADARG('command', `expected a source map script resource for url: ${scriptUrl}`);
+    }
+    try {
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().setFunctionRanges(uiSourceCode, ranges);
+    } catch (e) {
+      return this.status.E_FAILED(e);
+    }
     return this.status.OK();
   }
 
@@ -893,7 +918,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Logs.NetworkLog.NetworkLog.instance().requests().filter(r => this.extensionAllowedOnURL(r.url(), port));
     const harLog = await HAR.Log.Log.build(requests, {sanitize: false});
     for (let i = 0; i < harLog.entries.length; ++i) {
-      // @ts-ignore
+      // @ts-expect-error
       harLog.entries[i]._requestId = this.requestId(requests[i]);
     }
     return harLog;
@@ -903,7 +928,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
   }
 
-  private onGetPageResources(_message: unknown, port: MessagePort): {url: string, type: string}[] {
+  private onGetPageResources(_message: unknown, port: MessagePort): Array<{url: string, type: string}> {
     const resources = new Map<unknown, {
       url: string,
       type: string,
@@ -973,6 +998,33 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
+  private onAttachSourceMapToResource(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
+    if (message.command !== PrivateAPI.Commands.AttachSourceMapToResource) {
+      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.GetResourceContent}`);
+    }
+
+    if (!message.sourceMapURL) {
+      return this.status.E_FAILED('Expected a source map URL but got null');
+    }
+
+    const url = message.contentUrl as Platform.DevToolsPath.UrlString;
+    const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url);
+    if (!contentProvider) {
+      return this.status.E_NOTFOUND(url);
+    }
+
+    const debuggerBindingsInstance = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+    const scriptFiles = debuggerBindingsInstance.scriptsForUISourceCode(contentProvider);
+    if (scriptFiles.length > 0) {
+      for (const script of scriptFiles) {
+        const resourceFile = debuggerBindingsInstance.scriptFile(contentProvider, script.debuggerModel);
+        resourceFile?.addSourceMapURL(message.sourceMapURL as Platform.DevToolsPath.UrlString);
+      }
+    }
+
+    return this.status.OK();
+  }
+
   private onSetResourceContent(message: PrivateAPI.ExtensionServerRequestMessage, port: MessagePort): Record|undefined {
     if (message.command !== PrivateAPI.Commands.SetResourceContent) {
       return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.SetResourceContent}`);
@@ -989,7 +1041,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const uiSourceCode =
         Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url as Platform.DevToolsPath.UrlString);
-    if (!uiSourceCode || !uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
+    if (!uiSourceCode?.contentType().isDocumentOrScriptOrStyleSheet()) {
       const resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(url as Platform.DevToolsPath.UrlString);
       if (!resource) {
         return this.status.E_NOTFOUND(url);
@@ -1039,7 +1091,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         metaKey: entry.metaKey,
       });
 
-      // @ts-ignore
+      // @ts-expect-error
       event.__keyCode = keyCodeForEntry(entry);
       document.dispatchEvent(event);
     }
@@ -1159,7 +1211,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     try {
-      const startPageURL = new URL((startPage as string));
+      const startPageURL = new URL((startPage));
       const extensionOrigin = startPageURL.origin;
       const name = extensionInfo.name || `Extension ${extensionOrigin}`;
       const extensionRegistration = new RegisteredExtension(name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
@@ -1323,8 +1375,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       frame = resolveURLToFrame(options.frameURL as Platform.DevToolsPath.UrlString);
     } else {
       const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      const resourceTreeModel = target && target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      frame = resourceTreeModel && resourceTreeModel.mainFrame;
+      const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      frame = resourceTreeModel?.mainFrame;
     }
     if (!frame) {
       if (options.frameURL) {
@@ -1414,9 +1466,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return false;
     }
 
-    if ((window.DevToolsAPI && window.DevToolsAPI.getOriginsForbiddenForExtensions &&
-             window.DevToolsAPI.getOriginsForbiddenForExtensions() ||
-         []).includes(parsedURL.origin)) {
+    if ((window.DevToolsAPI?.getOriginsForbiddenForExtensions?.() || []).includes(parsedURL.origin)) {
       return false;
     }
 

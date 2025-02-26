@@ -33,8 +33,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.EventTypes> {
   private readonly model: DOMStorageModel;
@@ -126,10 +126,6 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.storageKeyManagerInternal = target.model(SDK.StorageKeyManager.StorageKeyManager);
     this.storagesInternal = {};
     this.agent = target.domstorageAgent();
-  }
-
-  get storageKeyManagerForTest(): SDK.StorageKeyManager.StorageKeyManager|null {
-    return this.storageKeyManagerInternal;
   }
 
   enable(): void {

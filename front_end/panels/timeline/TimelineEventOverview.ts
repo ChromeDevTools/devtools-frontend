@@ -29,7 +29,6 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -57,7 +56,7 @@ const UIStrings = {
    *@example {30 MB} PH2
    */
   sSDash: '{PH1} – {PH2}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
@@ -78,12 +77,6 @@ export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.
     ctx.fillRect(x, position, width, height);
   }
 }
-
-const HIGH_NETWORK_PRIORITIES = new Set<Protocol.Network.ResourcePriority>([
-  Protocol.Network.ResourcePriority.VeryHigh,
-  Protocol.Network.ResourcePriority.High,
-  Protocol.Network.ResourcePriority.Medium,
-]);
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
@@ -125,7 +118,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
     const lowPath = new Path2D();
 
     for (const request of this.#parsedTrace.NetworkRequests.byTime) {
-      const path = HIGH_NETWORK_PRIORITIES.has(request.args.data.priority) ? highPath : lowPath;
+      const path = Trace.Helpers.Network.isSyntheticNetworkRequestHighPriority(request) ? highPath : lowPath;
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       const rectStart = Math.max(Math.floor((startTime - traceBoundsMilli.min) * scale), 0);
       const rectEnd = Math.min(Math.ceil((endTime - traceBoundsMilli.min) * scale + 1), canvasWidth);
@@ -278,7 +271,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
             context.stroke(paths[i]);
           }
         };
-    const backgroundContext = (this.backgroundCanvas.getContext('2d') as CanvasRenderingContext2D | null);
+    const backgroundContext = (this.backgroundCanvas.getContext('2d'));
     if (!backgroundContext) {
       throw new Error('Could not find 2d canvas');
     }
@@ -442,7 +435,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       if (this.drawGeneration !== drawGeneration) {
         return;
       }
-      if (!image || !image.naturalWidth || !image.naturalHeight) {
+      if (!image?.naturalWidth || !image.naturalHeight) {
         return;
       }
       const imageHeight = this.height() - 2 * TimelineFilmStripOverview.Padding;
@@ -461,7 +454,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       imagePromise = UI.UIUtils.loadImage(uri);
       this.frameToImagePromise.set(frame, (imagePromise as Promise<HTMLImageElement>));
     }
-    return imagePromise;
+    return await imagePromise;
   }
 
   private drawFrames(
@@ -668,10 +661,10 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
 export class Quantizer {
   private lastTime: number;
   private quantDuration: number;
-  private readonly callback: (arg0: Array<number>) => void;
+  private readonly callback: (arg0: number[]) => void;
   private counters: number[];
   private remainder: number;
-  constructor(startTime: number, quantDuration: number, callback: (arg0: Array<number>) => void) {
+  constructor(startTime: number, quantDuration: number, callback: (arg0: number[]) => void) {
     this.lastTime = startTime;
     this.quantDuration = quantDuration;
     this.callback = callback;

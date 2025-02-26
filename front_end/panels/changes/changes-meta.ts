@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Title for action in the Changes tool that copies all changes from the currently open file.
    */
   copyAllChangesFromCurrentFile: 'Copy all changes from current file',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/changes-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

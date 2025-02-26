@@ -17,7 +17,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsolePanel} from './ConsolePanel.js';
-import consolePromptStyles from './consolePrompt.css.legacy.js';
+import consolePromptStyles from './consolePrompt.css.js';
 
 const {Direction} = TextEditor.TextEditorHistory;
 
@@ -36,7 +36,7 @@ const UIStrings = {
    *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
@@ -373,7 +373,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
       executionContext: SDK.RuntimeModel.ExecutionContext, message: SDK.ConsoleModel.ConsoleMessage, expression: string,
       useCommandLineAPI: boolean): Promise<void> {
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame && callFrame.script.isJavaScript()) {
+    if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       expression = await this.substituteNames(expression, nameMap);
     }

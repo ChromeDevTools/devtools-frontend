@@ -9,7 +9,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import categorizedBreakpointsSidebarPaneStyles from './categorizedBreakpointsSidebarPane.css.legacy.js';
+import categorizedBreakpointsSidebarPaneStyles from './categorizedBreakpointsSidebarPane.css.js';
 
 const UIStrings = {
   /**
@@ -120,7 +120,7 @@ const UIStrings = {
    *@description Text that appears on a button for the xhr resource type filter.
    */
   xhr: 'XHR',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -220,7 +220,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     const labelNode = UI.UIUtils.CheckboxLabel.create(
         Sources.CategorizedBreakpointL10n.getLocalizedBreakpointName(breakpoint.name), undefined, undefined,
         Platform.StringUtilities.toKebabCase(breakpoint.name), /* small */ true);
-    labelNode.classList.add('source-code');
+    labelNode.classList.add('source-code', 'breakpoint');
     labelNode.checkboxElement.addEventListener('click', this.breakpointCheckboxClicked.bind(this, breakpoint), true);
     labelNode.checkboxElement.tabIndex = -1;
 

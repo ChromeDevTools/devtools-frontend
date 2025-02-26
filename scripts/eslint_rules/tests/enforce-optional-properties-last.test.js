@@ -4,16 +4,9 @@
 'use strict';
 
 const rule = require('../lib/enforce-optional-properties-last.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('optional-properties-last', rule, {
+const {RuleTester} = require('./utils/utils.js');
+new RuleTester().run('optional-properties-last', rule, {
   valid: [
     {
       code: `

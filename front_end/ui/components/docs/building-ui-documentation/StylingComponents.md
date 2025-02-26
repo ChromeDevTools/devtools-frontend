@@ -10,7 +10,7 @@ Components are styled by a CSS file that is co-located next to the TypeScript so
 To import this file you use a regular `import` statement, and import the filename with `.js` appended:
 
 ```ts
-import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.legacy.js';
+import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsBreadcrumbsStyles = new CSSStyleSheet();

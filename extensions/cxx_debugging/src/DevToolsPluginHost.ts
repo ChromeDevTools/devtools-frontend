@@ -35,7 +35,7 @@ export class WorkerPlugin implements Chrome.DevTools.LanguageExtensionPlugin, As
 
   static async create(
       moduleConfigurations: ModuleConfigurations = DEFAULT_MODULE_CONFIGURATIONS,
-      logPluginApiCalls: boolean = false): Promise<WorkerPlugin> {
+      logPluginApiCalls = false): Promise<WorkerPlugin> {
     const plugin = new WorkerPlugin();
     await plugin.rpc.sendMessage('hello', moduleConfigurations, logPluginApiCalls);
     return plugin;
@@ -109,7 +109,7 @@ export interface Storage {
 
 export declare const chrome: Chrome.DevTools.Chrome&{storage?: Storage};
 
-if (typeof chrome !== 'undefined' && typeof chrome.storage !== 'undefined') {
+if (typeof chrome?.storage !== 'undefined') {
   const {storage} = chrome;
   const {languageServices} = chrome.devtools;
 

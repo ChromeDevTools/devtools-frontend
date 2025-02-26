@@ -228,7 +228,7 @@ const UIStrings = {
     *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
     exemptionReasonScheme: 'This cookie is allowed by the top-level url scheme',
-};
+} as const;
 // clang-format on
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkRequest.ts', UIStrings);
@@ -619,7 +619,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   set endTime(x: number) {
-    if (this.timing && this.timing.requestTime) {
+    if (this.timing?.requestTime) {
       // Check against accurate responseReceivedTime.
       this.#endTimeInternal = Math.max(x, this.responseReceivedTime);
     } else {
@@ -1422,7 +1422,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]> {
     if (!this.#contentDataProvider) {
-      return NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+      return await NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
 
     const contentData = await this.requestContentData();
@@ -1430,10 +1430,6 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
       return [];
     }
     return TextUtils.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
-  }
-
-  isHttpFamily(): boolean {
-    return Boolean(this.url().match(/^https?:/i));
   }
 
   requestContentType(): string|undefined {
@@ -1695,7 +1691,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   nonBlockedResponseCookies(): Cookie[] {
-    const blockedCookieLines: (string|null)[] =
+    const blockedCookieLines: Array<string|null> =
         this.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
     // Use array and remove 1 by 1 to handle the (potential) case of multiple
     // identical cookies, only some of which are blocked.
@@ -2045,10 +2041,10 @@ export interface EventSourceMessage {
 }
 
 export interface ExtraRequestInfo {
-  blockedRequestCookies: {
+  blockedRequestCookies: Array<{
     blockedReasons: Protocol.Network.CookieBlockedReason[],
     cookie: Cookie,
-  }[];
+  }>;
   requestHeaders: NameValue[];
   includedRequestCookies: IncludedCookieWithReason[];
   clientSecurityState?: Protocol.Network.ClientSecurityState;
@@ -2057,22 +2053,22 @@ export interface ExtraRequestInfo {
 }
 
 export interface ExtraResponseInfo {
-  blockedResponseCookies: {
+  blockedResponseCookies: Array<{
     blockedReasons: Protocol.Network.SetCookieBlockedReason[],
     cookieLine: string,
     cookie: Cookie|null,
-  }[];
+  }>;
   responseHeaders: NameValue[];
   responseHeadersText?: string;
   resourceIPAddressSpace: Protocol.Network.IPAddressSpace;
   statusCode: number|undefined;
   cookiePartitionKey?: Protocol.Network.CookiePartitionKey;
   cookiePartitionKeyOpaque: boolean|undefined;
-  exemptedResponseCookies: {
+  exemptedResponseCookies: Array<{
     cookie: Cookie,
     cookieLine: string,
     exemptionReason: Protocol.Network.CookieExemptionReason,
-  }[]|undefined;
+  }>|undefined;
 }
 
 export interface EarlyHintsInfo {

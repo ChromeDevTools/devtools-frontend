@@ -6,6 +6,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 
@@ -118,5 +119,28 @@ describeWithEnvironment('Sidebar', () => {
     assert.isOk(annotationsTab);
     const countBadge = annotationsTab.querySelector<HTMLElement>('.badge');
     assert.strictEqual(countBadge?.innerText, '1');
+  });
+
+  it('removes the annotations badge when the user deletes the final annotation', async function() {
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const entryLabelAnnotation: Trace.Types.File.Annotation = {
+      type: 'ENTRY_LABEL',
+      entry: parsedTrace.Renderer.allTraceEntries[0],  // random event, doesn't matter
+      label: 'hello world',
+    };
+
+    const sidebar = await renderSidebar(parsedTrace, metadata, null);
+    sidebar.setAnnotations([entryLabelAnnotation], new Map());
+    await RenderCoordinator.done();
+    const tabbedPane = sidebar.element.querySelector('.tabbed-pane')?.shadowRoot;
+    assert.isOk(tabbedPane);
+    const annotationsTab = tabbedPane.querySelector('#tab-annotations');
+    assert.isOk(annotationsTab);
+    const countBadge = annotationsTab.querySelector<HTMLElement>('.badge');
+    assert.strictEqual(countBadge?.innerText, '1');
+
+    sidebar.setAnnotations([], new Map());  // delete the annotations
+    const updatedCountBadge = annotationsTab.querySelector<HTMLElement>('.badge');
+    assert.isNull(updatedCountBadge);  // No badge is shown when the count is 0.
   });
 });

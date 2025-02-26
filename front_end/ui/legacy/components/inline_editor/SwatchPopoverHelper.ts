@@ -8,7 +8,7 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import {ColorSwatch} from './ColorSwatch.js';
-import swatchPopoverStyles from './swatchPopover.css.legacy.js';
+import swatchPopoverStyles from './swatchPopover.css.js';
 
 export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly popover: UI.GlassPane.GlassPane;
@@ -91,7 +91,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
     if (this.anchorElement) {
       let anchorBox = this.anchorElement.boxInWindow();
       if (ColorSwatch.isColorSwatch(this.anchorElement)) {
-        const swatch = (this.anchorElement as ColorSwatch);
+        const swatch = (this.anchorElement);
         if (!swatch.anchorBox) {
           return;
         }
@@ -99,7 +99,7 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<Even
       }
 
       this.popover.setContentAnchorBox(anchorBox);
-      this.popover.show((this.anchorElement.ownerDocument as Document));
+      this.popover.show((this.anchorElement.ownerDocument));
     }
     this.view.contentElement.addEventListener('focusout', this.boundFocusOut, false);
     if (!this.focusRestorer) {

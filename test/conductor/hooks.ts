@@ -4,10 +4,18 @@
 
 /* eslint-disable no-console */
 
-// use require here due to
-// https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
-import puppeteer = require('puppeteer-core');
+import * as puppeteer from 'puppeteer-core';
 
+import {
+  dumpCollectedErrors,
+  installPageErrorHandlers,
+  setupBrowserProcessIO,
+} from './events.js';
+import {
+  type DevToolsFrontendReloadOptions,
+  DevToolsFrontendTab,
+  loadEmptyPageAndWaitForContent,
+} from './frontend_tab.js';
 import {
   clearPuppeteerState,
   getBrowserAndPages,
@@ -15,25 +23,8 @@ import {
   setBrowserAndPages,
   setTestServerPort,
 } from './puppeteer-state.js';
-import {
-  loadEmptyPageAndWaitForContent,
-  DevToolsFrontendTab,
-  type DevToolsFrontendReloadOptions,
-} from './frontend_tab.js';
-import {
-  dumpCollectedErrors,
-  installPageErrorHandlers,
-  setupBrowserProcessIO,
-} from './events.js';
 import {TargetTab} from './target_tab.js';
 import {TestConfig} from './test_config.js';
-
-// Workaround for mismatching versions of puppeteer types and puppeteer library.
-declare module 'puppeteer-core' {
-  interface ConsoleMessage {
-    stackTrace(): ConsoleMessageLocation[];
-  }
-}
 
 const viewportWidth = 1280;
 const viewportHeight = 720;
@@ -75,7 +66,6 @@ function launchChrome() {
   ];
 
   const disabledFeatures = [
-    'DeferRendererTasksAfterInput',                // crbug.com/361078921
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'RasterInducingScroll',                        // crbug.com/381055647
@@ -212,10 +202,11 @@ async function throttleCPUIfRequired(page: puppeteer.Page): Promise<void> {
     return;
   }
   console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
-  const client = await page.target().createCDPSession();
+  const client = await page.createCDPSession();
   await client.send('Emulation.setCPUThrottlingRate', {
     rate: envThrottleRate,
   });
+  await client.detach();
 }
 
 export async function reloadDevTools(options?: DevToolsFrontendReloadOptions) {

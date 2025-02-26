@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import type * as UI from '../../ui/legacy/legacy.js';
 
 export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
@@ -117,7 +117,7 @@ export class ExecutionContextSelector implements SDK.TargetManager.SDKModelObser
       return false;
     }
     const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
-    const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    const frame = resourceTreeModel?.frameForId(executionContext.frameId);
     return Boolean(frame?.isOutermostFrame());
   }
 

@@ -58,7 +58,7 @@ const UIStrings = {
    *@example {example.url} PH1
    */
   linkedToS: 'Linked to {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/IsolatedFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolatedFileSystem extends PlatformFileSystem {
@@ -95,7 +95,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
-    return fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
+    return await fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
       return null;
     });
@@ -223,11 +223,8 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     if (!dirEntry) {
       return null;
     }
-    const fileEntry =
-        await this.serializedFileOperation(
-            path, createFileCandidate.bind(this, name || 'NewFile' as Platform.DevToolsPath.RawPathString)) as
-            FileEntry |
-        null;
+    const fileEntry = await this.serializedFileOperation(
+        path, createFileCandidate.bind(this, name || 'NewFile' as Platform.DevToolsPath.RawPathString));
     if (!fileEntry) {
       return null;
     }
@@ -384,7 +381,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
 
     function errorHandler(this: IsolatedFileSystem, error: DOMError|ProgressEvent<EventTarget>): void {
-      // @ts-ignore TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
+      // @ts-expect-error TODO(crbug.com/1172300) Properly type this after jsdoc to ts migration
       const errorMessage = IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
       resolve(undefined);
@@ -444,7 +441,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  private readDirectory(dirEntry: DirectoryEntry, callback: (arg0: Array<FileEntry>) => void): void {
+  private readDirectory(dirEntry: DirectoryEntry, callback: (arg0: FileEntry[]) => void): void {
     const dirReader = dirEntry.createReader();
     let entries: FileEntry[] = [];
 
@@ -470,7 +467,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
-  private requestEntries(path: Platform.DevToolsPath.RawPathString, callback: (arg0: Array<FileEntry>) => void): void {
+  private requestEntries(path: Platform.DevToolsPath.RawPathString, callback: (arg0: FileEntry[]) => void): void {
     this.domFileSystem.root.getDirectory(path, undefined, innerCallback.bind(this), errorHandler);
 
     function innerCallback(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {
@@ -513,7 +510,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
       return true;
     }
     const regex = (this.manager.workspaceFolderExcludePatternSetting()).asRegExp();
-    return Boolean(regex && regex.test(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(folderPath)));
+    return Boolean(regex?.test(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(folderPath)));
   }
 
   override excludedFolders(): Set<Platform.DevToolsPath.EncodedPathString> {

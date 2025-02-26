@@ -40,7 +40,7 @@ const UIStrings = {
    *@description Title of an action in the network tool to toggle recording
    */
   recordNetworkLog: 'Record network log',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/logs/logs-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 

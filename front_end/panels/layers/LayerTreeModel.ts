@@ -30,9 +30,9 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
   readonly layerTreeAgent: ProtocolProxyApi.LayerTreeApi;
@@ -365,7 +365,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
     return this.drawsContent() ? this.width() * this.height() * bytesPerPixel : 0;
   }
 
-  snapshots(): Promise<SDK.PaintProfiler.SnapshotWithRect|null>[] {
+  snapshots(): Array<Promise<SDK.PaintProfiler.SnapshotWithRect|null>> {
     const promise = this.layerTreeModel.paintProfilerModel.makeSnapshot(this.id()).then(snapshot => {
       if (!snapshot) {
         return null;

@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -146,7 +145,7 @@ const UIStrings = {
    *@description Text in Network Log View Columns of the Network panel
    */
   remoteAddressSpace: 'Remote Address Space',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogViewColumns.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -273,7 +272,6 @@ export class NetworkLogViewColumns {
     this.dataGridInternal = new DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>(({
       displayName: (i18nString(UIStrings.networkLog) as string),
       columns: this.columns.map(NetworkLogViewColumns.convertToDataGridDescriptor),
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     }));
@@ -505,7 +503,7 @@ export class NetworkLogViewColumns {
     this.waterfallColumnSortIcon.name = null;
 
     const columnConfig = this.columns.find(columnConfig => columnConfig.id === columnId);
-    if (!columnConfig || !columnConfig.sortingFunction) {
+    if (!columnConfig?.sortingFunction) {
       return;
     }
     const sortingFunction =
@@ -827,8 +825,7 @@ export class NetworkLogViewColumns {
         this.popupLinkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, () => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
         });
-        const content = RequestInitiatorView.createStackTracePreview(
-            (request as SDK.NetworkRequest.NetworkRequest), this.popupLinkifier, false);
+        const content = RequestInitiatorView.createStackTracePreview((request), this.popupLinkifier, false);
         if (!content) {
           return false;
         }

@@ -13,7 +13,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
   }
 
   const listenersResult = {internalHandlers: null, eventListeners: []} as FrameworkEventListenersObject;
-  return object.callFunction(frameworkEventListenersImpl, undefined)
+  return await object.callFunction(frameworkEventListenersImpl, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
       .then(createEventListeners)
@@ -181,7 +181,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
     return result.object;
   }
 
-  function filterOutEmptyObjects<T>(objects: (T|null)[]): T[] {
+  function filterOutEmptyObjects<T>(objects: Array<T|null>): T[] {
     return objects.filter(filterOutEmpty) as T[];
 
     function filterOutEmpty(object: T|null): boolean {
@@ -212,15 +212,15 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
           ]
         }
     */
-  function frameworkEventListenersImpl(this: Object): {eventListeners: Array<EventListenerObjectInInspectedPage>} {
+  function frameworkEventListenersImpl(this: Object): {eventListeners: EventListenerObjectInInspectedPage[]} {
     const errorLines = [];
     let eventListeners: EventListenerObjectInInspectedPage[] = [];
-    let internalHandlers: (() => void)[] = [];
+    let internalHandlers: Array<() => void> = [];
     let fetchers = [jQueryFetcher];
     try {
-      // @ts-ignore Here because of layout tests.
+      // @ts-expect-error Here because of layout tests.
       if (self.devtoolsFrameworkEventListeners && isArrayLike(self.devtoolsFrameworkEventListeners)) {
-        // @ts-ignore Here because of layout tests.
+        // @ts-expect-error Here because of layout tests.
         fetchers = fetchers.concat(self.devtoolsFrameworkEventListeners);
       }
     } catch (e) {
@@ -240,13 +240,13 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
           eventListeners = eventListeners.concat(nonEmptyEventListeners as EventListenerObjectInInspectedPage[]);
         }
         if (fetcherResult.internalHandlers && isArrayLike(fetcherResult.internalHandlers)) {
-          const fetcherResultInternalHandlers = fetcherResult.internalHandlers as (() => void)[];
+          const fetcherResultInternalHandlers = fetcherResult.internalHandlers as Array<() => void>;
           const nonEmptyInternalHandlers = fetcherResultInternalHandlers
                                                .map(handler => {
                                                  return checkInternalHandler(handler);
                                                })
                                                .filter(nonEmptyObject);
-          internalHandlers = internalHandlers.concat(nonEmptyInternalHandlers as (() => void)[]);
+          internalHandlers = internalHandlers.concat(nonEmptyInternalHandlers as Array<() => void>);
         }
       } catch (e) {
         errorLines.push('fetcher call produced error: ' + toString(e));
@@ -254,7 +254,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
     }
     const result: {
       eventListeners: EventListenerObjectInInspectedPage[],
-      internalHandlers?: (() => void)[],
+      internalHandlers?: Array<() => void>,
       errorString?: string,
     } = {
       eventListeners,
@@ -298,8 +298,8 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       return false;
     }
 
-    function checkEventListener(eventListener: PossibleEventListenerObjectInInspectedPage|
-                                null): EventListenerObjectInInspectedPage|null {
+    function checkEventListener(eventListener: PossibleEventListenerObjectInInspectedPage|null):
+        EventListenerObjectInInspectedPage|null {
       try {
         let errorString = '';
         if (!eventListener) {
@@ -374,15 +374,15 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function jQueryFetcher(node: any): {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      eventListeners: {handler: any, useCapture: boolean, passive: boolean, once: boolean, type: string}[],
-      internalHandlers?: (() => void)[],
+      eventListeners: Array<{handler: any, useCapture: boolean, passive: boolean, once: boolean, type: string}>,
+      internalHandlers?: Array<() => void>,
     } {
       if (!node || !(node instanceof Node)) {
         return {eventListeners: []};
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const jQuery = (window as any)['jQuery'];
-      if (!jQuery || !jQuery.fn) {
+      if (!jQuery?.fn) {
         return {eventListeners: []};
       }
       const jQueryFunction = jQuery;
@@ -427,7 +427,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
             }
           }
         }
-        if (entry && entry['$handle']) {
+        if (entry?.['$handle']) {
           internalHandlers.push(entry['$handle']);
         }
       }
@@ -438,15 +438,14 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
       if (!this || !(this instanceof Node)) {
         return;
       }
-      const node = this as Node;
+      const node = this;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const jQuery = (window as any)['jQuery'];
-      if (!jQuery || !jQuery.fn) {
+      if (!jQuery?.fn) {
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {
-        off:
-          Function,
+        off: Function,
       };
       jQueryFunction(node).off(type, selector, handler);
     }

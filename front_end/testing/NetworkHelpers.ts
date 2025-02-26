@@ -11,7 +11,7 @@ import {
 } from './EnvironmentHelpers.js';
 
 export async function createNetworkPanelForMockConnection(): Promise<Network.NetworkPanel.NetworkPanel> {
-  registerNoopActions(['network.toggle-recording', 'network.clear']);
+  registerNoopActions(['network.toggle-recording', 'network.clear', 'inspector-main.reload']);
 
   const dummyStorage = new Common.Settings.SettingsStorage({});
   for (const settingName

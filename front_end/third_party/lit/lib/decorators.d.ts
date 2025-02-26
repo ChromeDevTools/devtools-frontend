@@ -941,4 +941,4 @@ type CustomElementDecorator = {
  */
 declare const customElement: (tagName: string) => CustomElementDecorator;
 
-export { CustomElementDecorator, InternalPropertyDeclaration, PropertyDecorator, StateDeclaration, customElement, property, standardProperty, state };
+export { type CustomElementDecorator, type InternalPropertyDeclaration, type PropertyDecorator, type StateDeclaration, customElement, property, standardProperty, state };

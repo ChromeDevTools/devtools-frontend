@@ -66,7 +66,7 @@ export async function takeAllocationTimelineProfile({recordStacks}: {recordStack
   await waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot(name: string = 'Snapshot 1') {
+export async function takeHeapSnapshot(name = 'Snapshot 1') {
   await click(NEW_HEAP_SNAPSHOT_BUTTON);
   await waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await waitForFunction(async () => {
@@ -146,7 +146,7 @@ export async function waitForSearchResultNumber(results: number) {
   const findMatch = async () => {
     const currentMatch = await waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
-    if (currentTextContent && currentTextContent.endsWith(` ${results}`)) {
+    if (currentTextContent?.endsWith(` ${results}`)) {
       return currentMatch;
     }
     return undefined;
@@ -154,7 +154,7 @@ export async function waitForSearchResultNumber(results: number) {
   return await waitForFunction(findMatch);
 }
 
-export async function findSearchResult(searchResult: string, pollIntrerval: number = 500) {
+export async function findSearchResult(searchResult: string, pollIntrerval = 500) {
   const {frontend} = getBrowserAndPages();
   const match = await waitFor('#profile-views table.data');
   const matches = await waitFor(' .search-results-matches');
@@ -182,7 +182,7 @@ export async function findSearchResult(searchResult: string, pollIntrerval: numb
           setTimeout(resolve, pollIntrerval, false);
         }),
       ]);
-      return result;
+      return await result;
     });
   }
 }
@@ -211,7 +211,7 @@ interface RetainerChainEntry {
   retainerClassName: string;
 }
 
-export async function assertRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
+export async function assertRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows('.retaining-paths-view table.data');
   const retainerChain = [];
@@ -237,7 +237,7 @@ export async function assertRetainerChainSatisfies(p: (retainerChain: Array<Reta
   return p(retainerChain);
 }
 
-export async function waitUntilRetainerChainSatisfies(p: (retainerChain: Array<RetainerChainEntry>) => boolean) {
+export async function waitUntilRetainerChainSatisfies(p: (retainerChain: RetainerChainEntry[]) => boolean) {
   await waitForFunction(assertRetainerChainSatisfies.bind(null, p));
 }
 
@@ -266,7 +266,7 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
   return false;
 }
 
-export async function waitForRetainerChain(expectedRetainers: Array<string>) {
+export async function waitForRetainerChain(expectedRetainers: string[]) {
   await waitForFunction(assertRetainerChainSatisfies.bind(null, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);
@@ -344,7 +344,7 @@ export async function getSizesFromSelectedRow() {
   return await getSizesFromRow(row);
 }
 
-export async function getCategoryRow(text: string, wait: boolean = true) {
+export async function getCategoryRow(text: string, wait = true) {
   const selector = `//td[text()="${text}"]/ancestor::tr`;
   return await (wait ? waitFor(selector, undefined, undefined, 'xpath') : $(selector, undefined, 'xpath'));
 }

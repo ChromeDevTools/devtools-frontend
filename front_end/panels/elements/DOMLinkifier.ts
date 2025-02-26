@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import domLinkifierStyles from './domLinkifier.css.legacy.js';
+import domLinkifierStyles from './domLinkifier.css.js';
 
 const UIStrings = {
   /**
@@ -17,7 +17,7 @@ const UIStrings = {
    * This should be translated if appropriate.
    */
   node: '<node>',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMLinkifier.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -1,6 +1,3 @@
-monorail: {
-  component: "Platform>DevTools>Console"
-}
 buganizer_public: {
   component_id: 1519297
 }

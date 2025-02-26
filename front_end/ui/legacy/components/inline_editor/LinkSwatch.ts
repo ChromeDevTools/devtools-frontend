@@ -7,11 +7,13 @@ import * as Buttons from '../../../components/buttons/buttons.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
-import linkSwatchStylesRaw from './linkSwatch.css.legacy.js';
+import linkSwatchStylesRaw from './linkSwatch.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linkSwatchStyles = new CSSStyleSheet();
 linkSwatchStyles.replaceSync(linkSwatchStylesRaw.cssContent);
+const textButtonStyles = new CSSStyleSheet();
+textButtonStyles.replaceSync(Buttons.textButtonStyles.cssContent);
 
 const UIStrings = {
   /**
@@ -19,7 +21,7 @@ const UIStrings = {
    *@example {--my-custom-property-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/LinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, Directives: {ifDefined, classMap}} = Lit;
@@ -38,7 +40,7 @@ class BaseLinkSwatch extends HTMLElement {
   #linkElement: HTMLSpanElement|undefined;
 
   connectedCallback(): void {
-    this.shadow.adoptedStyleSheets = [linkSwatchStyles, Buttons.textButtonStyles];
+    this.shadow.adoptedStyleSheets = [linkSwatchStyles, textButtonStyles];
   }
 
   set data(data: BaseLinkSwatchRenderData) {

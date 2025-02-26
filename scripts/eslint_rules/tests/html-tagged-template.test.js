@@ -4,19 +4,25 @@
 'use strict';
 
 const rule = require('../lib/html-tagged-template.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {RuleTester} = require('./utils/utils.js');
 
 const error = {
   message: 'Use unqualified html tagged template for compatibility with lit-analyzer',
 };
 
-ruleTester.run('html-tagged-template', rule, {
+new RuleTester().run('html-tagged-template', rule, {
   valid: [
+    {
+      code: `import {html, render} from '../../ui/lit/lit.js';
+
+      function render() {
+        render(
+            html\`<div></div>\`,
+            this.shadow, {host: this});
+      }
+      `,
+    },
     {
       code: `import * as Lit from '../../../../ui/lit/lit.js';
 

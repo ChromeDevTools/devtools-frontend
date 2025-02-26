@@ -42,4 +42,13 @@ describeWithEnvironment('LinearMemoryInspectorPane', () => {
     const inspector = tabbedPane.querySelector('devtools-linear-memory-inspector-inspector');
     assert.notInstanceOf(inspector, HTMLSpanElement);
   });
+
+  it('placeholder is as expected', () => {
+    const instance = LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane.instance();
+    const placeholder = instance.createPlaceholder();
+    assert.deepEqual(placeholder.querySelector('.empty-state-header')?.textContent, 'No open inspections');
+    assert.deepEqual(
+        placeholder.querySelector('.empty-state-description > span')?.textContent,
+        'On this page you can inspect binary data.');
+  });
 });

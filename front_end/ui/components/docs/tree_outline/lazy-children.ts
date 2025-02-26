@@ -9,8 +9,8 @@ import * as TreeOutline from '../../tree_outline/tree_outline.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-async function loadInSomeNodes(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<string>[]> {
-  const europeanOffices: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
+async function loadInSomeNodes(): Promise<Array<TreeOutline.TreeOutlineUtils.TreeNode<string>>> {
+  const europeanOffices: Array<TreeOutline.TreeOutlineUtils.TreeNode<string>> = [
     {
       treeNodeData: 'UK',
       id: 'UK',
@@ -33,7 +33,7 @@ async function loadInSomeNodes(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<
     },
   ];
 
-  return new Promise(resolve => {
+  return await new Promise(resolve => {
     setTimeout(() => resolve(europeanOffices), 250);
   });
 }

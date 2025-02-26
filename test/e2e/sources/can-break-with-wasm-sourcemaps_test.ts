@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, step, waitFor, waitForFunction} from '../../shared/helper.js';
-
 import {
   addBreakpointForLine,
   checkBreakpointDidNotActivate,

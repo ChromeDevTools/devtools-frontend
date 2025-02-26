@@ -47,7 +47,7 @@ import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetail
 import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 import {FormatPickerContextMenu} from './FormatPickerContextMenu.js';
-import spectrumStyles from './spectrum.css.legacy.js';
+import spectrumStyles from './spectrum.css.js';
 
 const UIStrings = {
   /**
@@ -125,7 +125,7 @@ const UIStrings = {
    */
   pressArrowKeysMessage:
       'Press arrow keys with or without modifiers to move swatch position. Arrow key with Shift key moves position largely, with Ctrl key it is less and with Alt key it is even less',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/Spectrum.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const colorElementToMutable = new WeakMap<HTMLElement, boolean>();
@@ -868,7 +868,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         colors.push(color);
       }
     }
-    const palette = this.customPaletteSetting.get() as Palette;
+    const palette = this.customPaletteSetting.get();
     palette.colors = colors;
     this.customPaletteSetting.set(palette);
     this.showPalette(palette, false);
@@ -883,14 +883,14 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         Palette = {title: 'Custom', colors: [], colorNames: [], mutable: true, matchUserFormat: undefined};
     this.customPaletteSetting =
         Common.Settings.Settings.instance().createSetting('custom-color-palette', defaultCustomPalette);
-    const customPalette = this.customPaletteSetting.get() as Palette;
+    const customPalette = this.customPaletteSetting.get();
     // Fallback case for custom palettes created pre-m67
     customPalette.colorNames = customPalette.colorNames || [];
     this.palettes.set(customPalette.title, customPalette);
 
     this.selectedColorPalette =
         Common.Settings.Settings.instance().createSetting('selected-color-palette', GeneratedPaletteTitle);
-    const palette = this.palettes.get(this.selectedColorPalette.get() as string);
+    const palette = this.palettes.get(this.selectedColorPalette.get());
     if (palette) {
       this.showPalette(palette, true);
     }
@@ -931,7 +931,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private resizeForSelectedPalette(force?: boolean): void {
-    const palette = this.palettes.get(this.selectedColorPalette.get() as string);
+    const palette = this.palettes.get(this.selectedColorPalette.get());
     if (!palette) {
       return;
     }
@@ -1019,7 +1019,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private addColorToCustomPalette(): void {
-    const palette = this.customPaletteSetting.get() as Palette;
+    const palette = this.customPaletteSetting.get();
     palette.colors.push(this.colorString());
     this.customPaletteSetting.set(palette);
     this.showPalette(palette, false);
@@ -1047,7 +1047,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private deletePaletteColors(colorIndex: number, toRight: boolean): void {
-    const palette = this.customPaletteSetting.get() as Palette;
+    const palette = this.customPaletteSetting.get();
     if (toRight) {
       palette.colors.splice(colorIndex + 1, palette.colors.length - colorIndex - 1);
     } else {
@@ -1241,7 +1241,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private showSrgbOverlay(): void {
-    if ((this.contrastDetails && this.contrastDetails.expanded()) || this.gamut !== SpectrumGamut.DISPLAY_P3) {
+    if ((this.contrastDetails?.expanded()) || this.gamut !== SpectrumGamut.DISPLAY_P3) {
       return;
     }
 
@@ -1265,14 +1265,14 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   }
 
   private updateUI(): void {
-    this.colorElement.style.backgroundColor = getColorFromHsva(this.gamut, [this.hsv[0], 1, 1, 1]).asString() as string;
+    this.colorElement.style.backgroundColor = getColorFromHsva(this.gamut, [this.hsv[0], 1, 1, 1]).asString();
     if (this.contrastOverlay) {
       this.contrastOverlay.setDimensions(this.dragWidth, this.dragHeight);
     }
     this.updateSrgbOverlay();
 
     this.swatch.setColor(this.color, this.colorString());
-    this.colorDragElement.style.backgroundColor = this.color.asString(Common.Color.Format.LCH) as string;
+    this.colorDragElement.style.backgroundColor = this.color.asString(Common.Color.Format.LCH);
     const noAlpha = Common.Color.Legacy.fromHSVA(this.hsv.slice(0, 3).concat(1) as Common.ColorUtils.Color4D);
     this.alphaElementBackground.style.backgroundImage = Platform.StringUtilities.sprintf(
         'linear-gradient(to right, rgba(0,0,0,0), %s)', noAlpha.asString(Common.Color.Format.LCH));
@@ -1645,7 +1645,7 @@ export class Swatch {
 
   setColor(color: Common.Color.Color, colorString?: string): void {
     const lchColor = color.as(Common.Color.Format.LCH);
-    this.swatchInnerElement.style.backgroundColor = lchColor.asString() as string;
+    this.swatchInnerElement.style.backgroundColor = lchColor.asString();
     // Show border if the swatch is white.
     this.swatchInnerElement.classList.toggle('swatch-inner-white', lchColor.l > 90);
     this.colorString = colorString || null;

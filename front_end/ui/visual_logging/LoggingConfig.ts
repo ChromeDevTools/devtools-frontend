@@ -119,7 +119,7 @@ function resolveVe(ve: string): number {
   return VisualElements[ve as VisualElementName] ?? 0;
 }
 
-const reportedUnknownVeContext: Set<string> = new Set();
+const reportedUnknownVeContext = new Set<string>();
 
 function checkContextValue(context: string|number|undefined): void {
   if (typeof context !== 'string' || !context.length || knownContextValues.has(context) ||
@@ -143,7 +143,7 @@ export function parseJsLog(jslog: string): LoggingConfig {
   }
   const config: LoggingConfig = {ve};
   const context = getComponent('context:');
-  if (context && context.trim().length) {
+  if (context?.trim().length) {
     checkContextValue(context);
     config.context = context;
   }

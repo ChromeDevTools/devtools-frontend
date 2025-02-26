@@ -5,10 +5,10 @@
 import {
   deinitializeGlobalVars,
   initializeGlobalVars,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as Root from '../root/root.js';
 
 import * as Common from './common.js';
 
@@ -51,8 +51,7 @@ describe('SettingRegistration', () => {
 
   it('retrieves a registered setting', () => {
     try {
-      const preRegisteredSetting =
-          Common.Settings.Settings.instance().moduleSetting(settingName) as Common.Settings.Setting<boolean>;
+      const preRegisteredSetting = Common.Settings.Settings.instance().moduleSetting(settingName);
       assert.strictEqual(preRegisteredSetting.title(), settingTitle, 'Setting title is not returned correctly');
       assert.strictEqual(
           preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');
@@ -108,6 +107,13 @@ describe('SettingRegistration', () => {
 
   it('can handle settings with condition which depends on host config', () => {
     const configSettingName = 'mock-setting-with-host-config';
+    updateHostConfig({
+      devToolsConsoleInsights: {
+        modelId: 'mockModel',
+        temperature: -1,
+        enabled: true,
+      },
+    });
     Common.Settings.registerSettingExtension({
       settingName: configSettingName,
       settingType: Common.Settings.SettingType.BOOLEAN,
@@ -124,13 +130,6 @@ describe('SettingRegistration', () => {
       syncedStorage: dummyStorage,
       globalStorage: dummyStorage,
       localStorage: dummyStorage,
-      config: {
-        devToolsConsoleInsights: {
-          modelId: 'mockModel',
-          temperature: -1,
-          enabled: true,
-        },
-      } as Root.Runtime.HostConfig,
     });
     const setting = Common.Settings.Settings.instance().moduleSetting(configSettingName);
     assert.isNotNull(setting);

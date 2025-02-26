@@ -11,6 +11,7 @@ import {
   $$,
   assertNotNullOrUndefined,
   click,
+  drainFrontendTaskQueue,
   getAllTextContents,
   getBrowserAndPages,
   getDevToolsFrontendHostname,
@@ -493,6 +494,8 @@ describe('The Debugger Language Plugins', () => {
     await goToResource('sources/wasm/unreachable.html');
     await addDummyExternalDWARFInfo('unreachable.wasm');
     await waitFor(RESUME_BUTTON);
+    // TODO: it should actually wait for rendering to finish.
+    await drainFrontendTaskQueue();
 
     // Call stack shows inline function names and source locations.
     const funcNames = await getCallFrameNames();

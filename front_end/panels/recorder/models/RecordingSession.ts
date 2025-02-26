@@ -5,26 +5,25 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as UI from '../../../ui/legacy/legacy.js';
-import * as Util from '../util/util.js';
-
 import type * as ProtocolProxyApi from '../../../generated/protocol-proxy-api.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import type * as Injected from '../injected/injected.js';
+import * as Util from '../util/util.js';
 
 import {
   AssertedEventType,
-  StepType,
-  type Key,
   type ChangeStep,
   type ClickStep,
   type DoubleClickStep,
   type FrameSelector,
+  type Key,
   type KeyDownStep,
   type KeyUpStep,
   type NavigationEvent,
   type SelectorType,
   type Step,
+  StepType,
   type Target,
   type UserFlow,
 } from './Schema.js';
@@ -124,17 +123,18 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
   readonly #resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel;
   readonly #targets = new Map<string, SDK.Target.Target>();
   readonly #lastNavigationEntryIdByTarget = new Map<string, number>();
-  readonly #lastNavigationHistoryByTarget = new Map<string, Array<number>>();
+  readonly #lastNavigationHistoryByTarget = new Map<string, number[]>();
   readonly #scriptIdentifiers = new Map<string, Protocol.Page.ScriptIdentifier>();
   readonly #runtimeEventDescriptors = new Map<
-      SDK.Target.Target, Common.EventTarget.EventDescriptor<SDK.RuntimeModel.EventTypes, SDK.RuntimeModel.Events>[]>();
+      SDK.Target.Target,
+      Array<Common.EventTarget.EventDescriptor<SDK.RuntimeModel.EventTypes, SDK.RuntimeModel.Events>>>();
   readonly #childTargetEventDescriptors = new Map<
       SDK.Target.Target,
-      Common.EventTarget.EventDescriptor<SDK.ChildTargetManager.EventTypes, SDK.ChildTargetManager.Events>[]>();
+      Array<Common.EventTarget.EventDescriptor<SDK.ChildTargetManager.EventTypes, SDK.ChildTargetManager.Events>>>();
   readonly #mutex = new Common.Mutex.Mutex();
 
   #userFlow: UserFlow;
-  #stepsPendingNavigationByTargetId: Map<string, Step> = new Map();
+  #stepsPendingNavigationByTargetId = new Map<string, Step>();
   #started = false;
   #selectorTypesToRecord: SelectorType[] = [];
 
@@ -745,10 +745,8 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async #waitForDOMContentLoadedWithTimeout(
       resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, timeout: number): Promise<void> {
-    let resolver: (value: void|Promise<void>) => void = () => Promise.resolve();
-    const contentLoadedPromise = new Promise<void>(resolve => {
-      resolver = resolve;
-    });
+    const {resolve: resolver, promise: contentLoadedPromise} = Promise.withResolvers<void>();
+
     const onDomContentLoaded = (): void => {
       resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, onDomContentLoaded);
       resolver();

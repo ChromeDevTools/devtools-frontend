@@ -10,7 +10,7 @@ import {TCPConnection} from './TCPConnection.js';
 const DEFAULT_SERVER_RESPONSE_TIME = 30;
 const TLS_SCHEMES = ['https', 'wss'];
 
-// Each origin can have 6 simulatenous connections open
+// Each origin can have 6 simultaneous connections open
 // https://cs.chromium.org/chromium/src/net/socket/client_socket_pool_manager.cc?type=cs&q="int+g_max_sockets_per_group"
 const CONNECTIONS_PER_ORIGIN = 6;
 

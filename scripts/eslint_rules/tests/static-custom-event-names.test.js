@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 'use strict';
-
 const rule = require('../lib/static-custom-event-names.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('static-custom-event-names', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('static-custom-event-names', rule, {
   valid: [
     {
       code: `class FooEvent extends Event {

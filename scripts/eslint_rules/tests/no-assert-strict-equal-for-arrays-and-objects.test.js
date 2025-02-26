@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/no-assert-strict-equal-for-arrays-and-objects.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('no-assert-strict-equal-for-arrays-and-objects', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-assert-strict-equal-for-arrays-and-objects', rule, {
   valid: [
     {
       code: 'assert.deepEqual(someResult, [2])',

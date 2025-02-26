@@ -51,7 +51,7 @@ import { isErrorLike } from '../util/ErrorLike.js';
 import { BidiCdpSession } from './CDPSession.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiDialog } from './Dialog.js';
-import { ExposeableFunction } from './ExposedFunction.js';
+import { ExposableFunction } from './ExposedFunction.js';
 import { BidiHTTPRequest, requests } from './HTTPRequest.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiFrameRealm } from './Realm.js';
@@ -433,8 +433,8 @@ let BidiFrame = (() => {
             if (this.#exposedFunctions.has(name)) {
                 throw new Error(`Failed to add page binding with name ${name}: globalThis['${name}'] already exists!`);
             }
-            const exposeable = await ExposeableFunction.from(this, name, apply);
-            this.#exposedFunctions.set(name, exposeable);
+            const exposable = await ExposableFunction.from(this, name, apply);
+            this.#exposedFunctions.set(name, exposable);
         }
         async removeExposedFunction(name) {
             const exposedFunction = this.#exposedFunctions.get(name);

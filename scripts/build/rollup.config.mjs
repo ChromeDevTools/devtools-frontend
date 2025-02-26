@@ -4,8 +4,8 @@
 
 // @ts-check
 
-import sourcemaps from 'rollup-plugin-sourcemaps2';
 import terser from '@rollup/plugin-terser';
+import sourcemaps from 'rollup-plugin-sourcemaps2';
 
 import { devtoolsPlugin } from './devtools_plugin.js';
 

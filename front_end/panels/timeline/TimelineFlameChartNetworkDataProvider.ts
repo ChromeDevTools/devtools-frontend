@@ -14,7 +14,7 @@ import * as TimelineComponents from './components/components.js';
 import {initiatorsDataToDrawForNetwork} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {NetworkTrackAppender, type NetworkTrackEvent} from './NetworkTrackAppender.js';
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.legacy.js';
+import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {
   selectionFromEvent,
@@ -25,19 +25,20 @@ import {
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  #minimumBoundary: number = 0;
-  #timeSpan: number = 0;
+  #minimumBoundary = 0;
+  #timeSpan = 0;
   #events: NetworkTrackEvent[] = [];
-  #maxLevel: number = 0;
+  #maxLevel = 0;
   #networkTrackAppender: NetworkTrackAppender|null = null;
 
   #timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
   #lastSelection: Selection|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
-  #eventIndexByEvent: Map<NetworkTrackEvent, number|null> = new Map();
+  #eventIndexByEvent = new Map<NetworkTrackEvent, number|null>();
   // -1 means no entry is selected.
-  #lastInitiatorEntry: number = -1;
+  #lastInitiatorEntry = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
+  #entityMapper: TimelineUtils.EntityMapper.EntityMapper|null = null;
 
   constructor() {
     this.reset();
@@ -60,9 +61,10 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#networkTrackAppender = null;
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace, entityMapper: TimelineUtils.EntityMapper.EntityMapper): void {
     this.reset();
     this.#parsedTrace = parsedTrace;
+    this.#entityMapper = entityMapper;
 
     this.setEvents(this.#parsedTrace);
     this.#setTimingBoundsData(this.#parsedTrace);
@@ -415,7 +417,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
       const contents = root.createChild('div', 'timeline-flamechart-popover');
       const infoElement = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();
-      infoElement.networkRequest = event;
+      infoElement.data = {networkRequest: event, entityMapper: this.#entityMapper};
       contents.appendChild(infoElement);
       return element;
     }

@@ -1,20 +1,19 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
-import * as Lit from '../../../../ui/lit/lit.js';
+import {html, render} from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import stylesRaw from './entryLabelOverlay.css.legacy.js';
+import stylesRaw from './entryLabelOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
 styles.replaceSync(stylesRaw.cssContent);
-
-const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -26,7 +25,7 @@ const UIStrings = {
    */
   inputTextPrompt: 'Enter an annotation label',
 
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -67,11 +66,11 @@ export class EntryLabelOverlay extends HTMLElement {
   // can fire, and that triggers a second removal. So we set this flag after
   // the first removal to avoid a duplicate event firing which is a no-op but
   // causes errors when we try to delete an already deleted annotation.
-  #isPendingRemoval: boolean = false;
+  #isPendingRemoval = false;
 
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
-  // element, the lable is set to not editable until it double clicked.s
-  #isLabelEditable: boolean = true;
+  // element, the label is set to not editable until it double clicked.s
+  #isLabelEditable = true;
   #entryLabelVisibleHeight: number|null = null;
 
   #labelPartsWrapper: HTMLElement|null = null;
@@ -100,7 +99,7 @@ export class EntryLabelOverlay extends HTMLElement {
    * Otherwise, the entry label overlay object only gets repositioned.
    */
 
-  constructor(label: string, shouldDrawBelowEntry: boolean = false) {
+  constructor(label: string, shouldDrawBelowEntry = false) {
     super();
     this.#render();
     this.#shouldDrawBelowEntry = shouldDrawBelowEntry;
@@ -245,7 +244,7 @@ export class EntryLabelOverlay extends HTMLElement {
     }
     // PART 2: draw the connector from label to the entry
     // Set the width of the canvas that draws the connector to be equal to the length of the shift multiplied by two.
-    // That way, we can draw the connector from its corner to its middle. Since all elements are alligned in the middle, the connector
+    // That way, we can draw the connector from its corner to its middle. Since all elements are aligned in the middle, the connector
     // will end in the middle of the entry.
     this.#connectorLineContainer.setAttribute(
         'width', (EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2).toString());
@@ -339,7 +338,7 @@ export class EntryLabelOverlay extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    Lit.render(
+    render(
         html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <span

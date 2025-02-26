@@ -224,8 +224,8 @@ export class ItemsRange {
   startPosition: number;
   endPosition: number;
   totalLength: number;
-  items: (Node|Edge)[];
-  constructor(startPosition: number, endPosition: number, totalLength: number, items: (Node|Edge)[]) {
+  items: Array<Node|Edge>;
+  constructor(startPosition: number, endPosition: number, totalLength: number, items: Array<Node|Edge>) {
     this.startPosition = startPosition;
     this.endPosition = endPosition;
     this.totalLength = totalLength;

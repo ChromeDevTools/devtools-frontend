@@ -69,7 +69,7 @@ export interface GeneratedRange {
    * `undefined` denotes that the value of a variable is unavailble in the whole range.
    * This can happen e.g. if the variable was optimized out and can't be recomputed.
    */
-  values: (string|undefined|BindingRange[])[];
+  values: Array<string|undefined|BindingRange[]>;
   children: GeneratedRange[];
 }
 
@@ -339,11 +339,11 @@ interface EncodedGeneratedRangeStart {
     line: number,
     column: number,
   };
-  bindings: {
+  bindings: Array<Array<{
     line: number,
     column: number,
     nameIdx: number,
-  }[][];
+  }>>;
 }
 
 interface EncodedGeneratedRangeEnd {

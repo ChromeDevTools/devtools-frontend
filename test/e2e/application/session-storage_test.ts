@@ -4,8 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, step} from '../../shared/helper.js';
-
+import {step} from '../../shared/helper.js';
 import {
   deleteSelectedStorageItem,
   getStorageItemsData,
@@ -16,10 +15,8 @@ import {
 
 describe('The Application Tab', () => {
   it('shows Session Storage keys and values', async () => {
-    const {target} = getBrowserAndPages();
-
     await step('navigate to session-storage resource and open Application tab', async () => {
-      await navigateToApplicationTab(target, 'session-storage');
+      await navigateToApplicationTab('session-storage');
     });
 
     await step('open the domain storage', async () => {
@@ -42,9 +39,7 @@ describe('The Application Tab', () => {
   });
 
   it('can delete selected items', async () => {
-    const {target} = getBrowserAndPages();
-
-    await navigateToApplicationTab(target, 'session-storage');
+    await navigateToApplicationTab('session-storage');
 
     await navigateToSessionStorageForTopDomain();
 

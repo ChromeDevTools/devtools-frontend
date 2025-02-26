@@ -148,7 +148,7 @@ describe('LoggingDriver', () => {
   });
 
   it('logs impressions on mutation in additional document', async () => {
-    const iframe = document.createElement('iframe') as HTMLIFrameElement;
+    const iframe = document.createElement('iframe');
     renderElementIntoDOM(iframe);
 
     await VisualLoggingTesting.LoggingDriver.startLogging({processingThrottler: throttler});
@@ -160,7 +160,7 @@ describe('LoggingDriver', () => {
   });
 
   it('correctly determines visibility in additional document', async () => {
-    const iframe = document.createElement('iframe') as HTMLIFrameElement;
+    const iframe = document.createElement('iframe');
     renderElementIntoDOM(iframe);
     iframe.style.width = '100px';
     iframe.style.height = '100px';

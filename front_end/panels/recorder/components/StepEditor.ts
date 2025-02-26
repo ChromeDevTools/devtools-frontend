@@ -14,7 +14,7 @@ import * as Controllers from '../controllers/controllers.js';
 import * as Models from '../models/models.js';
 import * as Util from '../util/util.js';
 
-import stepEditorStylesRaw from './stepEditor.css.legacy.js';
+import stepEditorStylesRaw from './stepEditor.css.js';
 import {
   ArrayAssignments,
   assert,
@@ -135,7 +135,7 @@ const defaultValuesByAttribute = deepFreeze({
 
 const attributesByType = deepFreeze<{
   [Type in Models.Schema.StepType]:
-      {required: Exclude<RequiredKeys<StepFor<Type>>, 'type'>[], optional: OptionalKeys<StepFor<Type>>[]};
+      {required: Array<Exclude<RequiredKeys<StepFor<Type>>, 'type'>>, optional: Array<OptionalKeys<StepFor<Type>>>};
 }>({
   [Models.Schema.StepType.Click]: {
     required: ['selectors', 'offsetX', 'offsetY'],
@@ -274,7 +274,7 @@ const UIStrings = {
    *@description The error message display when a user enters a type in the input not associates with any existing types.
    */
   unknownActionType: 'Unknown action type.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/components/StepEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -368,7 +368,7 @@ export class EditorState {
       attribute: Attribute): Promise<DeepImmutable<typeof defaultValuesByAttribute[Attribute]>>;
   static async defaultByAttribute(_state: DeepImmutable<EditorState>, attribute: keyof typeof defaultValuesByAttribute):
       Promise<unknown> {
-    return this.#puppeteer.run(puppeteer => {
+    return await this.#puppeteer.run(puppeteer => {
       switch (attribute) {
         case 'assertedEvents': {
           return immutableDeepAssign(defaultValuesByAttribute.assertedEvents, new ArrayAssignments({
@@ -401,7 +401,7 @@ export class EditorState {
     const state = structuredClone(step) as EditorState;
     for (const key of ['parameters', 'properties'] as Array<'properties'>) {
       if (key in step && step[key] !== undefined) {
-        // @ts-ignore Potential infinite type instantiation.
+        // @ts-expect-error Potential infinite type instantiation.
         state[key] = JSON.stringify(step[key]);
       }
     }
@@ -419,7 +419,7 @@ export class EditorState {
         return [...selector];
       });
     }
-    return deepFreeze(state as EditorState);
+    return deepFreeze(state);
   }
 
   static toStep(state: DeepImmutable<EditorState>): Models.Schema.Step {
@@ -523,7 +523,7 @@ export class StepEditor extends LitElement {
   @property({type: Boolean}) declare isTypeEditable: boolean;
   @property({type: Boolean}) declare disabled: boolean;
 
-  #renderedAttributes: Set<Attribute> = new Set();
+  #renderedAttributes = new Set<Attribute>();
 
   constructor() {
     super();

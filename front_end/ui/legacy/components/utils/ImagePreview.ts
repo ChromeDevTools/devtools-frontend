@@ -8,11 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 
-import imagePreviewStylesRaw from './imagePreview.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const imagePreviewStyles = new CSSStyleSheet();
-imagePreviewStyles.replaceSync(imagePreviewStylesRaw.cssContent);
+import imagePreviewStyles from './imagePreview.css.js';
 
 const UIStrings = {
   /**
@@ -49,7 +45,7 @@ const UIStrings = {
    * @description The intrinsic aspect ratio of an image.
    */
   intrinsicAspectRatio: 'Intrinsic aspect ratio:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -84,15 +80,12 @@ export class ImagePreview {
       }|undefined = {precomputedFeatures: undefined, imageAltText: undefined, align: Align.CENTER}):
       Promise<Element|null> {
     const {precomputedFeatures, imageAltText, align} = options;
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!resourceTreeModel) {
-      return null;
-    }
-    let resource = resourceTreeModel.resourceForURL(originalImageURL);
+
+    let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(originalImageURL);
     let imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
-      resource = resourceTreeModel.resourceForURL(imageURL);
+      resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(imageURL);
     }
     if (!resource || !isImageResource(resource)) {
       return null;
@@ -107,7 +100,7 @@ export class ImagePreview {
     const resourceSize = contentSize ? contentSize : Platform.StringUtilities.base64ToSize(content);
     const resourceSizeText = resourceSize > 0 ? i18n.ByteUtilities.bytesToString(resourceSize) : '';
 
-    return new Promise(resolve => {
+    return await new Promise(resolve => {
       const imageElement = document.createElement('img');
       imageElement.addEventListener('load', buildContent, false);
       imageElement.addEventListener('error', () => resolve(null), false);
@@ -119,7 +112,7 @@ export class ImagePreview {
       function buildContent(): void {
         const shadowBoundary = document.createElement('div');
         const shadowRoot = shadowBoundary.attachShadow({mode: 'open'});
-        shadowRoot.adoptedStyleSheets = [imagePreviewStyles];
+        shadowRoot.createChild('style').textContent = imagePreviewStyles.cssContent;
         const container = shadowRoot.createChild('table');
         container.className = 'image-preview-container';
 

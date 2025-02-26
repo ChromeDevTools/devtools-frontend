@@ -9,7 +9,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {ValueType, valueTypeToLocalizedString} from './ValueInterpreterDisplayUtils.js';
-import valueInterpreterSettingsStylesRaw from './valueInterpreterSettings.css.legacy.js';
+import valueInterpreterSettingsStylesRaw from './valueInterpreterSettings.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const valueInterpreterSettingsStyles = new CSSStyleSheet();
@@ -22,7 +22,7 @@ const UIStrings = {
    *@description Name of a group of selectable value types that do not fall under integer and floating point value types, e.g. Pointer32. The group appears name appears under the Value Interpreter Settings.
    */
   otherGroup: 'Other',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterSettings.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -67,7 +67,7 @@ export class TypeToggleEvent extends Event {
 export class ValueInterpreterSettings extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #valueTypes: Set<ValueType> = new Set();
+  #valueTypes = new Set<ValueType>();
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [Input.checkboxStyles, valueInterpreterSettingsStyles];

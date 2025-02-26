@@ -46,7 +46,7 @@ const UIStrings = {
    *@description Text in UISource Code of the DevTools local workspace
    */
   thisFileWasChangedExternally: 'This file was changed externally. Would you like to reload it?',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/workspace/UISourceCode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -59,7 +59,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private nameInternal: string;
   private contentTypeInternal: Common.ResourceType.ResourceType;
   private requestContentPromise: Promise<TextUtils.ContentData.ContentDataOrError>|null;
-  private decorations: Map<string, any> = new Map();
+  private decorations = new Map<string, any>();
   private hasCommitsInternal: boolean;
   private messagesInternal: Set<Message>|null;
   private contentInternal: TextUtils.ContentData.ContentDataOrError|null;
@@ -160,10 +160,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   }
 
   rename(newName: Platform.DevToolsPath.RawPathString): Promise<boolean> {
-    let fulfill: (arg0: boolean) => void;
-    const promise = new Promise<boolean>(x => {
-      fulfill = x;
-    });
+    const {resolve, promise} = Promise.withResolvers<boolean>();
     this.projectInternal.rename(this, newName, innerCallback.bind(this));
     return promise;
 
@@ -175,7 +172,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
             newName as Platform.DevToolsPath.RawPathString, newURL as Platform.DevToolsPath.UrlString,
             newContentType as Common.ResourceType.ResourceType);
       }
-      fulfill(success);
+      resolve(success);
     }
   }
 
@@ -297,7 +294,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     }
 
     if (!this.isDirty() || this.workingCopyInternal === updatedContent.content) {
-      this.contentCommitted(updatedContent.content as string, false);
+      this.contentCommitted(updatedContent.content, false);
       return;
     }
 
@@ -308,7 +305,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
 
     const shouldUpdate = window.confirm(i18nString(UIStrings.thisFileWasChangedExternally));
     if (shouldUpdate) {
-      this.contentCommitted(updatedContent.content as string, false);
+      this.contentCommitted(updatedContent.content, false);
     } else {
       this.lastAcceptedContent = updatedContent.content;
     }
@@ -580,13 +577,13 @@ export class UILocation {
     this.columnNumber = columnNumber;
   }
 
-  linkText(skipTrim: boolean = false, showColumnNumber: boolean = false): string {
+  linkText(skipTrim = false, showColumnNumber = false): string {
     const displayName = this.uiSourceCode.displayName(skipTrim);
     const lineAndColumnText = this.lineAndColumnText(showColumnNumber);
     return lineAndColumnText ? displayName + ':' + lineAndColumnText : displayName;
   }
 
-  lineAndColumnText(showColumnNumber: boolean = false): string|undefined {
+  lineAndColumnText(showColumnNumber = false): string|undefined {
     let lineAndColumnText;
     if (this.uiSourceCode.mimeType() === 'application/wasm') {
       // For WebAssembly locations, we follow the conventions described in
@@ -613,10 +610,6 @@ export class UILocation {
 
   lineId(): string {
     return this.uiSourceCode.project().id() + ':' + this.uiSourceCode.url() + ':' + this.lineNumber;
-  }
-
-  toUIString(): string {
-    return this.uiSourceCode.url() + ':' + (this.lineNumber + 1);
   }
 
   static comparator(location1: UILocation, location2: UILocation): number {
@@ -711,30 +704,6 @@ export namespace Message {
     ERROR = 'Error',
     ISSUE = 'Issue',
     WARNING = 'Warning',
-  }
-}
-
-export class LineMarker {
-  private readonly rangeInternal: TextUtils.TextRange.TextRange;
-  private readonly typeInternal: string;
-  private readonly dataInternal: any;
-
-  constructor(range: TextUtils.TextRange.TextRange, type: string, data: any) {
-    this.rangeInternal = range;
-    this.typeInternal = type;
-    this.dataInternal = data;
-  }
-
-  range(): TextUtils.TextRange.TextRange {
-    return this.rangeInternal;
-  }
-
-  type(): string {
-    return this.typeInternal;
-  }
-
-  data(): any {
-    return this.dataInternal;
   }
 }
 

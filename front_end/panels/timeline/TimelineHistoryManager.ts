@@ -16,7 +16,7 @@ import {
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
-import timelineHistoryManagerStyles from './timelineHistoryManager.css.legacy.js';
+import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import type {TimelineMiniMap} from './TimelineMiniMap.js';
 
 /**
@@ -57,7 +57,7 @@ const UIStrings = {
    * @example {2} PH1
    */
   dSlowdown: '{PH1}× slowdown',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineHistoryManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -107,10 +107,10 @@ export class TimelineHistoryManager {
   private readonly action: UI.ActionRegistration.Action;
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
-  private readonly allOverviews: {
+  private readonly allOverviews: Array<{
     constructor: (parsedTrace: Trace.Handlers.Types.ParsedTrace) => TimelineEventOverview,
     height: number,
-  }[];
+  }>;
   private totalHeight: number;
   private enabled: boolean;
   private lastActiveTrace: RecordingData|null = null;

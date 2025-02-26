@@ -18,7 +18,7 @@ import {type EventData, Events as TabbedPaneEvents, TabbedPane} from './TabbedPa
 import {type ItemsProvider, type ToolbarItem, ToolbarMenuButton} from './Toolbar.js';
 import {createTextChild} from './UIUtils.js';
 import type {TabbedViewLocation, View, ViewLocation} from './View.js';
-import viewContainersStyles from './viewContainers.css.legacy.js';
+import viewContainersStyles from './viewContainers.css.js';
 import {
   getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers,
@@ -40,7 +40,7 @@ const UIStrings = {
    *@example {Sensors} PH1
    */
   sPanel: '{PH1} panel',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -161,7 +161,7 @@ export class ViewManager {
     // default ordering as defined by the views themselves.
 
     const viewsByLocation = new Map<ViewLocationValues|'none', PreRegisteredView[]>();
-    for (const view of getRegisteredViewExtensions(Common.Settings.Settings.instance().getHostConfig())) {
+    for (const view of getRegisteredViewExtensions()) {
       const location = view.location() || 'none';
       const views = viewsByLocation.get(location) || [];
       views.push(view);
@@ -915,15 +915,15 @@ class StackLocation extends Location implements ViewLocation {
 }
 
 export {
-  ViewRegistration,
-  ViewPersistence,
+  getLocalizedViewLocationCategory,
+  getRegisteredLocationResolvers,
   getRegisteredViewExtensions,
   maybeRemoveViewExtension,
-  registerViewExtension,
-  ViewLocationValues,
-  getRegisteredLocationResolvers,
   registerLocationResolver,
-  ViewLocationCategory,
-  getLocalizedViewLocationCategory,
+  registerViewExtension,
   resetViewRegistration,
+  ViewLocationCategory,
+  ViewLocationValues,
+  ViewPersistence,
+  ViewRegistration,
 };

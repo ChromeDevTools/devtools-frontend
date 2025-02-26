@@ -5,7 +5,6 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import * as FormatterWorker from './formatter_worker.js';
-
 import {FormatterActions} from './FormatterActions.js';
 
 self.onmessage = function(event: MessageEvent): void {

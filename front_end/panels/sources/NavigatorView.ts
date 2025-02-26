@@ -44,8 +44,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 import {PanelUtils} from '../utils/utils.js';
 
-import navigatorTreeStyles from './navigatorTree.css.legacy.js';
-import navigatorViewStyles from './navigatorView.css.legacy.js';
+import navigatorTreeStyles from './navigatorTree.css.js';
+import navigatorViewStyles from './navigatorView.css.js';
 import {SearchSources} from './SearchSourcesView.js';
 
 const UIStrings = {
@@ -80,11 +80,15 @@ const UIStrings = {
   /**
    *@description Text in Navigator View of the Sources panel
    */
-  areYouSureYouWantToExcludeThis: 'Are you sure you want to exclude this folder?',
+  excludeThisFolder: 'Exclude this folder?',
+  /**
+   *@description Text in a dialog which appears when users click on 'Exclude from Workspace' menu item
+   */
+  folderWillNotBeShown: 'This folder and its contents will not be shown in workspace.',
   /**
    *@description Text in Navigator View of the Sources panel
    */
-  areYouSureYouWantToDeleteThis: 'Are you sure you want to delete this file?',
+  deleteThisFile: 'Delete this file?',
   /**
    *@description A context menu item in the Navigator View of the Sources panel
    */
@@ -104,9 +108,9 @@ const UIStrings = {
   /**
    *@description Text in Navigator View of the Sources panel
    */
-  areYouSureYouWantToDeleteFolder: 'Are you sure you want to delete this folder and its contents?',
+  deleteFolder: 'Delete this folder and its contents?',
   /**
-   *@description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder.
+   *@description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder or file.
    */
   actionCannotBeUndone: 'This action cannot be undone.',
   /**
@@ -144,7 +148,7 @@ const UIStrings = {
    *@example {compile.html} PH1
    */
   sIgnoreListed: '{PH1} (ignore listed)',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/sources/NavigatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -494,9 +498,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     const isFromSourceMap = uiSourceCode.contentType().isFromSourceMap();
     let path;
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
-      path =
-          Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1) as
-          Platform.DevToolsPath.EncodedPathString[];
+      path = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode).slice(0, -1);
     } else {
       path = Common.ParsedURL.ParsedURL.extractPath(uiSourceCode.url()).split('/').slice(1, -1) as
           Platform.DevToolsPath.EncodedPathString[];
@@ -838,7 +840,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   #isUISourceCodeOrAnyAncestorSelected(node: NavigatorUISourceCodeTreeNode): boolean {
     const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
-    const selectedNode = selectedTreeElement && selectedTreeElement.node;
+    const selectedNode = selectedTreeElement?.node;
     let currentNode: NavigatorTreeNode|null = node;
     while (currentNode) {
       if (currentNode === selectedNode) {
@@ -948,8 +950,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private async renameShortcut(): Promise<boolean> {
     const selectedTreeElement = (this.scriptsTree.selectedTreeElement as NavigatorSourceTreeElement | null);
-    const node = selectedTreeElement && selectedTreeElement.node;
-    if (!node || !node.uiSourceCode() || !node.uiSourceCode().canRename()) {
+    const node = selectedTreeElement?.node;
+    if (!node?.uiSourceCode()?.canRename()) {
       return false;
     }
     this.rename(node, false);
@@ -974,7 +976,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   private async handleContextMenuExclude(
       project: Workspace.Workspace.Project, path: Platform.DevToolsPath.EncodedPathString): Promise<void> {
     const shouldExclude = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.areYouSureYouWantToExcludeThis), undefined, {jslogContext: 'exclude-folder-confirmation'});
+        i18nString(UIStrings.folderWillNotBeShown), i18nString(UIStrings.excludeThisFolder), undefined,
+        {jslogContext: 'exclude-folder-confirmation'});
     if (shouldExclude) {
       UI.UIUtils.startBatchUpdate();
       project.excludeFolder(
@@ -985,7 +988,8 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
 
   private async handleContextMenuDelete(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const shouldDelete = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.areYouSureYouWantToDeleteThis), undefined, {jslogContext: 'delete-file-confirmation'});
+        i18nString(UIStrings.actionCannotBeUndone), i18nString(UIStrings.deleteThisFile), undefined,
+        {jslogContext: 'delete-file-confirmation'});
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
@@ -1013,10 +1017,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
   }
 
   private async handleDeleteFolder(node: NavigatorTreeNode): Promise<void> {
-    const warningMsg =
-        `${i18nString(UIStrings.areYouSureYouWantToDeleteFolder)}\n${i18nString(UIStrings.actionCannotBeUndone)}`;
-    const shouldRemove =
-        await UI.UIUtils.ConfirmDialog.show(warningMsg, undefined, {jslogContext: 'delete-folder-confirmation'});
+    const shouldRemove = await UI.UIUtils.ConfirmDialog.show(
+        i18nString(UIStrings.actionCannotBeUndone), i18nString(UIStrings.deleteFolder), undefined,
+        {jslogContext: 'delete-folder-confirmation'});
     if (shouldRemove) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideTabDeleteFolderContextMenu);
       const topNode = this.findTopNonMergedNode(node);
@@ -1111,24 +1114,17 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       if (!isFileOverrides) {
         if (node instanceof NavigatorGroupTreeNode) {
           contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
-            const warningMessage = `${i18nString(UIStrings.areYouSureYouWantToRemoveThis, {
-              PH1: (node as NavigatorGroupTreeNode).title,
-            })}\n${i18nString(UIStrings.workspaceStopSyncing)}`;
-            const shouldRemove = await UI.UIUtils.ConfirmDialog.show(warningMessage, undefined, {
-              okButtonLabel: i18nString(UIStrings.remove),
-              jslogContext: 'remove-folder-from-workspace-confirmation',
-            });
+            const header =
+                i18nString(UIStrings.areYouSureYouWantToRemoveThis, {PH1: (node as NavigatorGroupTreeNode).title});
+            const shouldRemove =
+                await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.workspaceStopSyncing), header, undefined, {
+                  okButtonLabel: i18nString(UIStrings.remove),
+                  jslogContext: 'remove-folder-from-workspace-confirmation',
+                });
             if (shouldRemove) {
               project.remove();
             }
           }, {jslogContext: 'remove-folder-from-workspace'});
-
-          if (UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.filesystem')) {
-            contextMenu.headerSection().appendAction(
-                'ai-assistance.filesystem',
-            );
-            UI.Context.Context.instance().setFlavor(Persistence.FileSystemWorkspaceBinding.FileSystem, project);
-          }
         }
       } else {
         if (!(node instanceof NavigatorGroupTreeNode)) {
@@ -1151,7 +1147,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       }
       if (!committed) {
         uiSourceCode.remove();
-      } else if (node.treeElement && node.treeElement.listItemElement.hasFocus()) {
+      } else if (node.treeElement?.listItemElement.hasFocus()) {
         this.sourceSelected(uiSourceCode, true);
       }
     }
@@ -1550,7 +1546,7 @@ export class NavigatorTreeNode {
   }
 
   treeNode(): UI.TreeOutline.TreeElement {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   dispose(): void {
@@ -1585,7 +1581,7 @@ export class NavigatorTreeNode {
   }
 
   setTitle(_title: string): void {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   populate(): void {
@@ -1602,19 +1598,19 @@ export class NavigatorTreeNode {
   wasPopulated(): void {
     const children = this.children();
     for (let i = 0; i < children.length; ++i) {
-      this.navigatorView.appendChild(this.treeNode(), (children[i].treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.appendChild(this.treeNode(), (children[i].treeNode()));
     }
   }
 
   didAddChild(node: NavigatorTreeNode): void {
     if (this.isPopulated()) {
-      this.navigatorView.appendChild(this.treeNode(), (node.treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.appendChild(this.treeNode(), (node.treeNode()));
     }
   }
 
   willRemoveChild(node: NavigatorTreeNode): void {
     if (this.isPopulated()) {
-      this.navigatorView.removeChild(this.treeNode(), (node.treeNode() as UI.TreeOutline.TreeElement));
+      this.navigatorView.removeChild(this.treeNode(), (node.treeNode()));
     }
   }
 
@@ -1910,7 +1906,6 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
   }
 
   override wasPopulated(): void {
-    // @ts-ignore These types are invalid, but removing this check causes wrong behavior
     if (!this.treeElement || this.treeElement.node !== this) {
       return;
     }
@@ -1952,7 +1947,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
     if (children.length === 2) {
       oldNode = children[0] !== node ? children[0] : children[1];
     }
-    if (oldNode && oldNode.isMerged) {
+    if (oldNode?.isMerged) {
       oldNode.isMerged = false;
       const mergedToNodes = [];
       mergedToNodes.push(this);
@@ -1972,7 +1967,7 @@ export class NavigatorFolderTreeNode extends NavigatorTreeNode {
         nodes.push(treeNode);
         children = treeNode.children();
         treeNode = children.length === 1 ? children[0] : null;
-      } while (treeNode && treeNode.isMerged);
+      } while (treeNode?.isMerged);
 
       if (!this.isPopulated()) {
         this.treeElement.title = titleText;

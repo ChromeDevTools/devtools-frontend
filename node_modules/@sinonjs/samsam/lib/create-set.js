@@ -17,7 +17,7 @@ var forEach = require("@sinonjs/commons").prototypes.array.forEach;
 function createSet(array) {
     if (arguments.length > 0 && !Array.isArray(array)) {
         throw new TypeError(
-            "createSet can be called with either no arguments or an Array"
+            "createSet can be called with either no arguments or an Array",
         );
     }
 

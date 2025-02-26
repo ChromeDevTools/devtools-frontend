@@ -245,7 +245,7 @@ function getStack(error: Error): string {
   return (error.stack ?? 'No stack').split('\n').slice(2).join('\n');
 }
 
-// We can't use Sinon for stubbing as 1) we need to double wrap somtimes and 2)
+// We can't use Sinon for stubbing as 1) we need to double wrap sometimes and 2)
 // we need to access original values.
 interface Stub<TKey extends keyof typeof window> {
   name: TKey;
@@ -253,7 +253,7 @@ interface Stub<TKey extends keyof typeof window> {
   stubWith: (typeof window)[TKey];
 }
 
-const stubs: Stub<keyof typeof window>[] = [];
+const stubs: Array<Stub<keyof typeof window>> = [];
 
 function stub<T extends keyof typeof window>(name: T, stubWith: (typeof window)[T]) {
   const original = window[name];

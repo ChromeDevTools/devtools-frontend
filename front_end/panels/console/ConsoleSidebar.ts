@@ -13,7 +13,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ConsoleFilter, FilterType, type LevelsMask} from './ConsoleFilter.js';
-import consoleSidebarStyles from './consoleSidebar.css.legacy.js';
+import consoleSidebarStyles from './consoleSidebar.css.js';
 import type {ConsoleViewMessage} from './ConsoleViewMessage.js';
 
 const UIStrings = {
@@ -48,7 +48,7 @@ const UIStrings = {
    *@description Text in Console Sidebar of the Console panel to show how many verbose messages exist.
    */
   dVerbose: '{n, plural, =0 {No verbose} =1 {# verbose} other {# verbose}}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -8,6 +8,10 @@
   color: inherit;
 }
 
+.inactive-value:not(:hover) {
+  text-decoration: line-through;
+}
+
 .tree-outline {
   padding: 0;
 }
@@ -291,4 +295,8 @@ devtools-icon.open-in-animations-panel {
   &:hover {
     color: var(--icon-css-hover);
   }
+}
+
+.value :focus {
+  outline: 1px solid var(--sys-color-outline);
 }

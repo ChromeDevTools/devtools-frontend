@@ -25,7 +25,7 @@ __exportStar(require("./Binding.js"), exports);
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowserContext.js"), exports);
 __exportStar(require("./BrowserConnector.js"), exports);
-__exportStar(require("./CDPSession.js"), exports);
+__exportStar(require("./CdpSession.js"), exports);
 __exportStar(require("./Connection.js"), exports);
 __exportStar(require("./Coverage.js"), exports);
 __exportStar(require("./CdpPreloadScript.js"), exports);

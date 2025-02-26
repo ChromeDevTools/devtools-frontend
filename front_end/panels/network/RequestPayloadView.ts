@@ -39,14 +39,14 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/objectPropertiesSection.css.legacy.js';
+import objectPropertiesSectionStyles from '../../ui/legacy/components/object_ui/objectPropertiesSection.css.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.legacy.js';
+import objectValueStyles from '../../ui/legacy/components/object_ui/objectValue.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestPayloadTreeStyles from './requestPayloadTree.css.legacy.js';
-import requestPayloadViewStyles from './requestPayloadView.css.legacy.js';
+import requestPayloadTreeStyles from './requestPayloadTree.css.js';
+import requestPayloadViewStyles from './requestPayloadView.css.js';
 
 const UIStrings = {
   /**
@@ -118,7 +118,7 @@ const UIStrings = {
    *@description Text in Request Payload View of the Network panel
    */
   viewSourceL: 'view source',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPayloadView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestPayloadView extends UI.Widget.VBox {
@@ -456,12 +456,12 @@ export class RequestPayloadView extends UI.Widget.VBox {
   private appendJSONPayloadParsed(rootListItem: Category, parsedObject: any, sourceText: string): void {
     const object = (SDK.RemoteObject.RemoteObject.fromLocalObject(parsedObject) as SDK.RemoteObject.LocalJSONObject);
     const section = new ObjectUI.ObjectPropertiesSection.RootElement(object);
-    section.title = (object.description as string);
+    section.title = (object.description);
     section.expand();
     // `editable` is not a valid property for `ObjectUI.ObjectPropertiesSection.RootElement`. Only for
     // `ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection`. We do not know if this assignment is
     // safe to delete.
-    // @ts-ignore
+    // @ts-expect-error
     section.editable = false;
     rootListItem.childrenListElement.classList.add('source-code', 'object-properties-section');
 

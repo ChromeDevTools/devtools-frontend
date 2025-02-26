@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import cssVariableValueViewStylesRaw from './cssVariableValueView.css.legacy.js';
+import cssVariableValueViewStylesRaw from './cssVariableValueView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssVariableValueViewStyles = new CSSStyleSheet();
@@ -29,7 +29,7 @@ const UIStrings = {
    *@example {--my-custom-property-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSVariableValueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nTemplate = Lit.i18nTemplate.bind(undefined, str_);

@@ -30,7 +30,7 @@ const UIStrings = {
    * @description Text label indicating why an option is not available, because the user's device is not fast enough to emulate a device.
    */
   calibrationErrorDeviceTooWeak: 'Device is not powerful enough',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/CPUThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -128,14 +128,14 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
     // If the main target hasn't attached yet, block callers until it appears.
     if (!target) {
       if (existingCallback) {
-        return new Promise(r => {
+        return await new Promise(r => {
           this.#pendingMainTargetPromise = (result: number) => {
             r(result);
             existingCallback(result);
           };
         });
       }
-      return new Promise(r => {
+      return await new Promise(r => {
         this.#pendingMainTargetPromise = r;
       });
     }

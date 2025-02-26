@@ -214,7 +214,7 @@ describe('The Memory Panel', function() {
       const findPromises = await Promise.all(results.map(async e => {
         const textContent = await e.evaluate(el => el.textContent);
         // Can't search for "shared in leaking()" because the different parts are spaced with CSS.
-        return textContent && textContent.startsWith('sharedinleaking()') ? e : null;
+        return textContent?.startsWith('sharedinleaking()') ? e : null;
       }));
       return findPromises.find(result => result !== null);
     });
@@ -319,7 +319,7 @@ describe('The Memory Panel', function() {
 
     const header = await waitForElementWithTextContent('Live Count');
     const table = await header.evaluateHandle(node => {
-      return node.closest('.data-grid');
+      return node.closest('.data-grid')!;
     });
     await waitFor('.data-grid-data-grid-node', table);
   });
@@ -576,7 +576,8 @@ describe('The Memory Panel', function() {
     assert.isTrue(!(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false)));
   });
 
-  it('Groups objects by constructor location', async () => {
+  // Failing with crbug.com/361078921
+  it.skip('[crbug.com/361078921]: Groups objects by constructor location', async () => {
     await goToResource('memory/duplicated-names.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

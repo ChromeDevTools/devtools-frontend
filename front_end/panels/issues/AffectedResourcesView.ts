@@ -33,7 +33,7 @@ const UIStrings = {
    *@description Replacement text for a link to an HTML element which is not available (anymore).
    */
   unavailable: 'unavailable',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AffectedResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

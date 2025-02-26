@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import {createFakeSetting, createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createFakeSetting, createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -34,6 +34,8 @@ describeWithMockConnection('CookieControlsView', () => {
   });
 
   it('should invoke getAffectedUrlsForThirdPartyCookieMetadata upon construction', async () => {
+    updateHostConfig({thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
+
     target = createTarget();
     const getAffectedUrlsSpy = sinon.spy(target.storageAgent(), 'invoke_getAffectedUrlsForThirdPartyCookieMetadata');
     new Security.CookieControlsView.CookieControlsView(undefined, mockView);
@@ -42,6 +44,7 @@ describeWithMockConnection('CookieControlsView', () => {
   });
 
   it('should invoke getAffectedUrlsForThirdPartyCookieMetadata when a resource is added', async () => {
+    updateHostConfig({thirdPartyCookieControls: {thirdPartyCookieMetadataEnabled: true}});
     new Security.CookieControlsView.CookieControlsView(undefined, mockView);
 
     target = createTarget();

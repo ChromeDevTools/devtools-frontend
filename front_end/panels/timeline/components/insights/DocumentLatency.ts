@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../../ui/components/icon_button/icon_button.js';
+import './Checklist.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {DocumentLatencyInsightModel} from '../../../../models/trace/insights/DocumentLatency.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
@@ -12,78 +11,13 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 
+const {UIStrings, i18nString} = Trace.Insights.Models.DocumentLatency;
+
 const {html} = Lit;
-
-const UIStrings = {
-  /**
-   * @description Text to tell the user that the document request does not have redirects.
-   */
-  passingRedirects: 'Avoids redirects',
-  /**
-   * @description Text to tell the user that the document request had redirects.
-   */
-  failedRedirects: 'Had redirects',
-  /**
-   * @description Text to tell the user that the time starting the document request to when the server started responding is acceptable.
-   */
-  passingServerResponseTime: 'Server responds quickly',
-  /**
-   * @description Text to tell the user that the time starting the document request to when the server started responding is not acceptable.
-   */
-  failedServerResponseTime: 'Server responded slowly',
-  /**
-   * @description Text to tell the user that text compression (like gzip) was applied.
-   */
-  passingTextCompression: 'Applies text compression',
-  /**
-   * @description Text to tell the user that text compression (like gzip) was not applied.
-   */
-  failedTextCompression: 'No compression applied',
-  /**
-   * @description Text for a label describing a network request event as having redirects.
-   */
-  redirectsLabel: 'Redirects',
-  /**
-   * @description Text for a label describing a network request event as taking too long to start delivery by the server.
-   */
-  serverResponseTimeLabel: 'Server response time',
-  /**
-   * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
-   */
-  uncompressedDownload: 'Uncompressed download',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
-   *@example {Server response time} PH1
-   */
-  successAriaLabel: 'Insight check passed: {PH1}',
-  /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
-   *@example {Server response time} PH1
-   */
-  failedAriaLabel: 'Insight check failed: {PH1}',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-document-latency`;
-  override internalName: string = 'document-latency';
-
-  #check(didPass: boolean, good: string, bad: string): Lit.TemplateResult {
-    const icon = didPass ? 'check-circle' : 'clear';
-
-    const ariaLabel = didPass ? i18nString(UIStrings.successAriaLabel, {PH1: good}) :
-                                i18nString(UIStrings.failedAriaLabel, {PH1: bad});
-    return html`
-      <devtools-icon
-        aria-label=${ariaLabel}
-        name=${icon}
-        class=${didPass ? 'metric-value-good' : 'metric-value-bad'}
-      ></devtools-icon>
-      <span>${didPass ? good : bad}</span>
-    `;
-  }
+  override internalName = 'document-latency';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model?.data?.documentRequest) {
@@ -103,7 +37,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
       sections.push({bounds, label: i18nString(UIStrings.redirectsLabel), showDuration: true});
       overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
     }
-    if (this.model.data.serverResponseTooSlow) {
+    if (!this.model.data.checklist.serverResponseIsFast.value) {
       const serverResponseTimeMicro = Trace.Helpers.Timing.milliToMicro(this.model.data.serverResponseTime);
       // NOTE: NetworkRequestHandlers never makes a synthetic network request event if `timing` is missing.
       const sendEnd = event.args.data.timing?.sendEnd ?? Trace.Types.Timing.Milli(0);
@@ -156,23 +90,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     }
 
     // clang-format off
-    return html`
-      <div class="insight-section">
-        <ul class="insight-results insight-icon-results">
-          <li class="insight-entry">
-            ${this.#check(this.model.data.redirectDuration === 0,
-              i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
-          </li>
-          <li class="insight-entry">
-            ${this.#check(!this.model.data.serverResponseTooSlow,
-              i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
-          </li>
-          <li class="insight-entry">
-            ${this.#check(this.model.data.uncompressedResponseBytes === 0,
-              i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
-          </li>
-        </ul>
-      </div>`;
+    return html`<devtools-performance-checklist .checklist=${this.model.data.checklist}></devtools-performance-checklist>`;
     // clang-format on
   }
 }

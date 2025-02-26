@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -12,22 +11,21 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import {linkifyNodeReference} from '../../elements/DOMLinkifier.js';
 import {AI_ASSISTANCE_CSS_CLASS_NAME, ChangeManager} from '../ChangeManager.js';
+import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from '../ExtensionScope.js';
 
 import {
-  type ActionResponse,
   type AgentOptions as BaseAgentOptions,
   AgentType,
   AiAgent,
   type ContextResponse,
   ConversationContext,
-  debugLog,
+  type FunctionCallHandlerResult,
   type ParsedAnswer,
   type ParsedResponse,
   type RequestOptions,
   ResponseType,
-  type SideEffectResponse,
 } from './AiAgent.js';
 
 /*
@@ -42,7 +40,7 @@ const UIStringsNotTranslate = {
    *@description Heading text for context details of Freestyler agent.
    */
   dataUsed: 'Data used',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 
@@ -66,6 +64,7 @@ The user selected a DOM element in the browser's DevTools and sends a query abou
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
 * **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
 * **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about debugging web pages."
+* **CRITICAL** You are a CSS debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, or any other non web-development topics.
 
 # Instructions
 You are going to answer to the query in these steps:
@@ -141,6 +140,22 @@ OBSERVATION: {"elementStyles":{"display":"block","visibility":"visible","positio
 ANSWER: Even though the popup itself has a z-index of 3, its parent container has position: relative and z-index: 1. This creates a new stacking context for the popup. Because the "background" div has a z-index of 2, which is higher than the stacking context of the popup, it is rendered on top, obscuring the popup.
 SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking order?"]
 `;
+
+const promptForMultimodalInputEvaluation = `The user has provided you a screenshot of the page (as visible in the viewport) in base64-encoded format. You SHOULD use it while answering user's queries.
+
+# Considerations for evaluating image:
+* Pay close attention to the spatial details as well as the visual appearance of the selected element in the image, particularly in relation to layout, spacing, and styling.
+* Try to connect the screenshot to actual DOM elements in the page.
+* Analyze the image to identify the layout structure surrounding the element, including the positioning of neighboring elements.
+* Extract visual information from the image, such as colors, fonts, spacing, and sizes, that might be relevant to the user's query.
+* If the image suggests responsiveness issues (e.g., cropped content, overlapping elements), consider those in your response.
+* Consider the surrounding elements and overall layout in the image, but prioritize the selected element's styling and positioning.
+* **CRITICAL** When the user provides a screenshot, interpret and use content and information from the screenshot STRICTLY for web site debugging purposes.
+
+* As part of THOUGHT, evaluate the image to gather data that might be needed to answer the question.
+In case query is related to the image, ALWAYS first use image evaluation to get all details from the image. ONLY after you have all data needed from image, you should move to other steps.
+
+`;
 /* clang-format on */
 
 async function executeJsCode(
@@ -197,7 +212,7 @@ type CreateExtensionScopeFunction = (changes: ChangeManager) => {
 
 interface AgentOptions extends BaseAgentOptions {
   changeManager?: ChangeManager;
-  confirmSideEffectForTest?: typeof Promise.withResolvers;
+
   createExtensionScope?: CreateExtensionScopeFunction;
   execJs?: typeof executeJsCode;
 }
@@ -242,24 +257,23 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
  */
 export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   override readonly type = AgentType.STYLING;
+  protected override functionCallEmulationEnabled = true;
 
-  readonly preamble = preamble;
+  preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier(): string|undefined {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-
-    return config.devToolsFreestyler?.userTier;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsFreestyler?.userTier;
   }
   get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-
-    return config.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
 
   get options(): RequestOptions {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsFreestyler?.temperature;
-    const modelId = config.devToolsFreestyler?.modelId;
+    const {hostConfig} = Root.Runtime;
+    const temperature = hostConfig.devToolsFreestyler?.temperature;
+    const modelId = hostConfig.devToolsFreestyler?.modelId;
 
     return {
       temperature,
@@ -267,17 +281,18 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     };
   }
 
-  override parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
-    if (response.functionCalls) {
-      throw new Error('Function calling not supported yet');
-    }
+  get multimodalInputEnabled(): boolean {
+    const {hostConfig} = Root.Runtime;
+    return Boolean(hostConfig.devToolsFreestyler?.multimodal);
+  }
 
+  override parseTextResponse(text: string): ParsedResponse {
     // We're returning an empty answer to denote the erroneous case.
-    if (!response.explanation) {
+    if (!text) {
       return {answer: ''};
     }
 
-    const lines = response.explanation.split('\n');
+    const lines = text.split('\n');
     let thought: string|undefined;
     let title: string|undefined;
     let action: string|undefined;
@@ -305,7 +320,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     // The block below ensures that the response we parse always contains a defining instruction tag.
     const hasDefiningInstruction = lines.some(line => isDefiningInstructionStart(line));
     if (!hasDefiningInstruction) {
-      return this.parseResponse({...response, explanation: `ANSWER: ${response.explanation}`});
+      return this.parseTextResponse(`ANSWER: ${text}`);
     }
 
     while (i < lines.length) {
@@ -348,7 +363,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         // Here, we check whether the last line ends with STOP keyword and if so, remove it
         // from the last line.
         const lastActionLine = actionLines[actionLines.length - 1];
-        if (lastActionLine && lastActionLine.endsWith('STOP')) {
+        if (lastActionLine?.endsWith('STOP')) {
           actionLines[actionLines.length - 1] = lastActionLine.substring(0, lastActionLine.length - 'STOP'.length);
         }
         action = actionLines.join('\n').replaceAll('```', '').replaceAll('``', '').trim();
@@ -404,45 +419,116 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return {
       // If we could not parse the parts, consider the response to be an
       // answer.
-      answer: answer || response.explanation,
+      answer: answer || text,
       suggestions,
     };
   }
 
   #execJs: typeof executeJsCode;
-  #confirmSideEffect: typeof Promise.withResolvers;
-  #changes: ChangeManager;
-  #createExtensionScope: CreateExtensionScopeFunction;
+
+  changes: ChangeManager;
+  createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
     super({
       aidaClient: opts.aidaClient,
       serverSideLoggingEnabled: opts.serverSideLoggingEnabled,
+      confirmSideEffectForTest: opts.confirmSideEffectForTest,
     });
 
-    this.#changes = opts.changeManager || new ChangeManager();
+    this.changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
-                                   return new ExtensionScope(changes, this.id);
-                                 });
-    this.#confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
+    this.createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                  return new ExtensionScope(changes, this.id);
+                                });
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
+
+    this.declareFunction<{
+      title: string,
+      thought: string,
+      action: string,
+    }>('gatherInformation', {
+      description:
+          `When you want to gather additional information, call this function giving a THOUGHT, a TITLE and an ACTION.
+    * Use \`window.getComputedStyle\` to gather **rendered** styles and make sure that you take the distinction between authored styles and computed styles into account.
+    * **CRITICAL** Call \`window.getComputedStyle\` only once per element and store results into a local variable. Never try to return all the styles of the element in \`data\`. Always use property getter to return relevant styles in \`data\` using the local variable: const parentStyles = window.getComputedStyle($0.parentElement); const data = { parentElementColor: parentStyles['color']}.
+    * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
+    * **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
+    *
+    You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
+    After that, you can answer the question with ANSWER or run another ACTION query.
+    Please run ACTION again if the information you received is not enough to answer the query.`,
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: false,
+        properties: {
+          thought: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'Use THOUGHT to explain why you take the ACTION.',
+          },
+          title: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description: 'Use TITLE to provide a short summary of the thought.',
+          },
+          action: {
+            type: Host.AidaClient.ParametersTypes.STRING,
+            description:
+                'ACTION (a JavaScript snippet to run on the page to collect additional data, do not wrap in a function definition). Add the data into a new top-level `data` variable. The serialized `data` variable will be returned. If you need to set styles on an HTML element, always call the \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for your actions and should never be presented as a command to the user.',
+          },
+        },
+      },
+      displayInfoFromArgs: params => {
+        return {
+          title: params.title,
+          thought: params.thought,
+          action: params.action,
+        };
+      },
+      handler: async (
+          params,
+          options,
+          ) => {
+        return await this.executeAction(params.action, options);
+      },
+    });
   }
 
   onPrimaryPageChanged(): void {
-    void this.#changes.clear();
+    void this.changes.clear();
   }
 
-  async #generateObservation(
+  protected override emulateFunctionCall(aidaResponse: Host.AidaClient.AidaResponse):
+      Host.AidaClient.AidaFunctionCallResponse|'no-function-call'|'wait-for-completion' {
+    const parsed = this.parseTextResponse(aidaResponse.explanation);
+    // If parsing detected an answer, it is a streaming text response.
+    if ('answer' in parsed) {
+      return 'no-function-call';
+    }
+    // If no answer and the response is streaming, it might be a
+    // function call.
+    if (!aidaResponse.completed) {
+      return 'wait-for-completion';
+    }
+    // definitely a function call, emulate AIDA's function call.
+    return {
+      name: 'gatherInformation',
+      args: {
+        title: parsed.title,
+        thought: parsed.thought,
+        action: parsed.action,
+      },
+    };
+  }
+
+  async generateObservation(
       action: string,
       {
         throwOnSideEffect,
-        confirmExecJs: confirm,
       }: {
         throwOnSideEffect: boolean,
-        confirmExecJs?: Promise<boolean>,
       },
       ): Promise<{
     observation: string,
@@ -459,14 +545,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 }`;
     try {
-      const runConfirmed = await confirm ?? Promise.resolve(true);
-      if (!runConfirmed) {
-        return {
-          observation: 'Error: User denied code execution with side effects.',
-          sideEffect: false,
-          canceled: true,
-        };
-      }
       const result = await Promise.race([
         this.#execJs(
             functionDeclaration,
@@ -592,76 +670,65 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return output.trim();
   }
 
-  override async *
-      handleAction(action: string, options?: {signal?: AbortSignal}):
-          AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+  async executeAction(action: string, options?: {signal?: AbortSignal, approved?: boolean}):
+      Promise<FunctionCallHandlerResult<unknown>> {
     debugLog(`Action to execute: ${action}`);
 
-    function createCancelledResult(output: string): ActionResponse {
+    if (options?.approved === false) {
       return {
-        type: ResponseType.ACTION,
-        code: action,
-        output,
-        canceled: true,
+        error: 'Error: User denied code execution with side effects.',
       };
     }
 
     if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
-      return createCancelledResult('Error: JavaScript execution is currently disabled.');
+      return {
+        error: 'Error: JavaScript execution is currently disabled.',
+      };
     }
 
     const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
-      return createCancelledResult(
-          'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
+      return {
+        error: 'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.',
+      };
     }
 
-    const scope = this.#createExtensionScope(this.#changes);
+    const scope = this.createExtensionScope(this.changes);
     await scope.install();
     try {
-      let result = await this.#generateObservation(action, {throwOnSideEffect: true});
+      let throwOnSideEffect = true;
+      if (options?.approved) {
+        throwOnSideEffect = false;
+      }
+
+      const result = await this.generateObservation(action, {throwOnSideEffect});
       debugLog(`Action result: ${JSON.stringify(result)}`);
       if (result.sideEffect) {
         if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
-          return createCancelledResult('Error: JavaScript execution that modifies the page is currently disabled.');
+          return {
+            error: 'Error: JavaScript execution that modifies the page is currently disabled.',
+          };
         }
 
         if (options?.signal?.aborted) {
-          return createCancelledResult('Error: evaluation has been cancelled');
+          return {
+            error: 'Error: evaluation has been cancelled',
+          };
         }
 
-        const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
-
-        void sideEffectConfirmationPromiseWithResolvers.promise.then(result => {
-          Host.userMetrics.actionTaken(
-              result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
-                       Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
-          );
-        });
-
-        options?.signal?.addEventListener('abort', () => {
-          sideEffectConfirmationPromiseWithResolvers.resolve(false);
-        }, {once: true});
-
-        yield {
-          type: ResponseType.SIDE_EFFECT,
-          code: action,
-          confirm: (result: boolean) => {
-            sideEffectConfirmationPromiseWithResolvers.resolve(result);
-          },
+        return {
+          requiresApproval: true,
         };
-
-        result = await this.#generateObservation(action, {
-          throwOnSideEffect: false,
-          confirmExecJs: sideEffectConfirmationPromiseWithResolvers.promise,
-        });
       }
+      if (result.canceled) {
+        return {
+          error: result.observation,
+        };
+      }
+
       return {
-        type: ResponseType.ACTION,
-        code: action,
-        output: result.observation,
-        canceled: result.canceled,
+        result: result.observation,
       };
     } finally {
       await scope.uninstall();
@@ -684,16 +751,44 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     };
   }
 
-  override async enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null):
-      Promise<string> {
-    const elementEnchantmentQuery = selectedElement ?
+  override async enhanceQuery(
+      query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null,
+      hasImageInput?: boolean): Promise<string> {
+    const elementEnchancementQuery = selectedElement ?
         `# Inspected element\n\n${
             await StylingAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :
         '';
-    return `${elementEnchantmentQuery}QUERY: ${query}`;
+    const multimodalInputEnhancementQuery =
+        this.multimodalInputEnabled && hasImageInput ? promptForMultimodalInputEvaluation : '';
+    return `${multimodalInputEnhancementQuery}${elementEnchancementQuery}QUERY: ${query}`;
   }
 
   override formatParsedAnswer({answer}: ParsedAnswer): string {
     return `ANSWER: ${answer}`;
   }
+}
+
+/* clang-format off */
+const preambleFunctionCalling = `You are the most advanced CSS debugging assistant integrated into Chrome DevTools.
+You always suggest considering the best web development practices and the newest platform features such as view transitions.
+The user selected a DOM element in the browser's DevTools and sends a query about the page or the selected DOM element.
+
+# Considerations
+* After applying a fix, please ask the user to confirm if the fix worked or not.
+* Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element's parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.
+* Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.
+* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.
+* When presenting solutions, clearly distinguish between the primary cause and contributing factors.
+* Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
+* When answering, always consider MULTIPLE possible solutions.
+*
+* **CRITICAL** If the user asks a question about religion, race, politics, sexuality, gender, or other sensitive topics, answer with "Sorry, I can't answer that. I'm best at questions about debugging web pages."
+
+Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
+When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.`;
+/* clang-format on */
+
+export class StylingAgentWithFunctionCalling extends StylingAgent {
+  override functionCallEmulationEnabled = false;
+  override preamble = preambleFunctionCalling;
 }

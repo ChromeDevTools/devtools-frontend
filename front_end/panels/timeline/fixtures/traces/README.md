@@ -145,7 +145,7 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/f
 
 ### two-workers
 
-Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculcate fibonnaci numbers.
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculate fibonnaci numbers.
 
 ### timer-initiators
 
@@ -250,3 +250,19 @@ This is a trace where a `LargestImagePaint` event occurs after the last `largest
 ### web-dev-screenshot-source-ids
 
 A trace generated from crrev.com/c/6197645 (January 2025), which changed the format of screenshots from the legacy OBJECT_SNAPSHOT format to be instant events with more information attached to them.
+
+### dom-size-overlap
+
+Trace containing a cross-origin navigation where DOM size events from the pre-navigation page are emitted *after* the navigation event.
+
+### lcp-fetchpriority-high
+
+A page that loads an image as the LCP resource with fetchpriority=high set.
+
+### enhanced-traces
+
+(faked) script contents and source map urls, from the new "enhanced traces" feature. See http://crbug.com/337909145
+
+### lcp-discovery-delay
+
+A page that has an LCP image but is delayed by main thread blocking JS. Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-discovery-delay.

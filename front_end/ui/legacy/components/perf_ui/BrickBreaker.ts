@@ -17,7 +17,7 @@ const UIStrings = {
    *@description A Postscript hinting the user the possibility to open the game using a keycombo.
    */
   ps: 'PS: You can also open the game by typing `fixme`',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/BrickBreaker.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -108,7 +108,6 @@ const colorPallettes: ColorPalette[] = [
   },
 ];
 
-/* rulesdir/no-underscored-properties, rulesdir/no-a-tags-in-lit, rulesdir/lit-host-this */
 export class BrickBreaker extends HTMLElement {
   #canvas: HTMLCanvasElement;
   #ctx: CanvasRenderingContext2D;
@@ -116,9 +115,9 @@ export class BrickBreaker extends HTMLElement {
   #helperCanvas: HTMLCanvasElement;
   #helperCanvasCtx: CanvasRenderingContext2D;
   #scorePanel: HTMLElement;
-  #trackTimelineOffset: number = 0;
-  #visibleEntries: Set<number> = new Set();
-  #brokenBricks: Map<number, Brick> = new Map();
+  #trackTimelineOffset = 0;
+  #visibleEntries = new Set<number>();
+  #brokenBricks = new Map<number, Brick>();
   #keyDownHandlerBound = this.#keyDownHandler.bind(this);
   #keyUpHandlerBound = this.#keyUpHandler.bind(this);
   #keyPressHandlerBound = this.#keyPressHandler.bind(this);
@@ -126,7 +125,7 @@ export class BrickBreaker extends HTMLElement {
   #mouseMoveHandlerBound = this.#mouseMoveHandler.bind(this);
   #boundingElement = WindowBounds.WindowBoundsService.WindowBoundsServiceImpl.instance().getDevToolsBoundingElement();
   // Value by which we moved the game up relative to the viewport
-  #gameViewportOffset: number = 0;
+  #gameViewportOffset = 0;
   #running = false;
   #initialDPR = devicePixelRatio;
   #ballX = 0;
@@ -495,7 +494,7 @@ export class BrickBreaker extends HTMLElement {
     const breakBrick = (entryIndex: number): void => {
       const entryCoordinates = this.timelineFlameChart.entryIndexToCoordinates(entryIndex);
       if (entryCoordinates) {
-        // Cap entries starting before the visibile window in the game.
+        // Cap entries starting before the visible window in the game.
         const entryBegin = Math.max(entryCoordinates.x - timelineCanvasOffset.left, 0);
         // Extend the patch width and height an extra 0.5 px to ensure the
         // entry is completely covered.

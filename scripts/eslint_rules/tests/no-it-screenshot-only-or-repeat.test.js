@@ -3,18 +3,11 @@
 // found in the LICENSE file.
 
 'use strict';
-
 const rule = require('../lib/no-it-screenshot-only-or-repeat.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
 
-ruleTester.run('no-it-screenshot-only-or-repeat', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-it-screenshot-only-or-repeat', rule, {
   valid: [
     {
       code: `itScreenshot('does a thing', () => {

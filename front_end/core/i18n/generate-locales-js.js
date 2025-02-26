@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 const path = require('path');
+const yargs = require('yargs');
+
 const {writeIfChanged} = require('../../../scripts/build/ninja/write-if-changed.js');
 
-const yargsObject = require('yargs')
+const yargsObject = yargs
                         .option('target-gen-dir', {
                           type: 'string',
                           demandOption: true,
@@ -31,7 +33,7 @@ const yargsObject = require('yargs')
                           demandOption: true,
                         })
                         .strict()
-                        .argv;
+                        .parseSync();
 
 const remoteLocaleList = yargsObject['remote-locales'].map(locale => `\n  '${locale}',`).join('');
 const bundledLocaleList = yargsObject['bundled-locales'].map(locale => `\n  '${locale}',`).join('');

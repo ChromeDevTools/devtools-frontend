@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const {argv} = require('yargs');
+
 const {writeIfChanged} = require('./ninja/write-if-changed.js');
 
 const {template} = argv;

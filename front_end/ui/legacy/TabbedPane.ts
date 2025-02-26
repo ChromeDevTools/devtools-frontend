@@ -40,7 +40,7 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
-import tabbedPaneStyles from './tabbedPane.css.legacy.js';
+import tabbedPaneStyles from './tabbedPane.css.js';
 import type {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
@@ -85,7 +85,7 @@ const UIStrings = {
    * @description Text to move a tab backward.
    */
   moveTabLeft: 'Move left',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof VBox>(VBox) {
@@ -224,11 +224,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.contentElementInternal;
   }
 
-  isTabCloseable(id: string): boolean {
-    const tab = this.tabsById.get(id);
-    return tab ? tab.isCloseable() : false;
-  }
-
   setTabDelegate(delegate: TabbedPaneTabDelegate): void {
     const tabs = this.tabs.slice();
     for (let i = 0; i < tabs.length; ++i) {
@@ -339,7 +334,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private viewHasFocus(): boolean {
-    if (this.visibleView && this.visibleView.hasFocus()) {
+    if (this.visibleView?.hasFocus()) {
       return true;
     }
     const root = this.contentElement.getComponentRoot();
@@ -468,13 +463,6 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const tab = this.tabsById.get(id);
     const disabled = tab?.tabElement.classList.contains('disabled') ?? false;
     return !disabled;
-  }
-
-  toggleTabClass(id: string, className: string, force?: boolean): void {
-    const tab = this.tabsById.get(id);
-    if (tab && tab.toggleClass(className, force)) {
-      this.updateTabElements();
-    }
   }
 
   private zoomChanged(): void {

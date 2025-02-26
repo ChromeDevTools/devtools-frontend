@@ -19,7 +19,7 @@ const UIStrings = {
    *@example {Unknown JSON format} PH1
    */
   malformedTimelineDataS: 'Malformed timeline data: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineLoader.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -88,7 +88,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     loader.#traceIsCPUProfile = true;
 
     try {
-      const contents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+      const contents = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
@@ -202,7 +202,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
    */
   async write(chunk: string, endOfFile: boolean): Promise<void> {
     if (!this.client) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     this.buffer += chunk;
     if (this.firstRawChunk) {
@@ -224,11 +224,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       try {
         trace = JSON.parse(this.buffer) as ParsedJSONFile;
         this.#processParsedFile(trace);
-        return Promise.resolve();
       } catch (e) {
         this.reportErrorAndCancelLoading(i18nString(UIStrings.malformedTimelineDataS, {PH1: e.toString()}));
-        return;
       }
+      return;
     }
   }
 
@@ -261,7 +260,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
-    const traceFile = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const traceFile = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
         parsedTrace, Trace.Types.Events.ThreadID(1));
 
     this.#collectEvents(traceFile.traceEvents);

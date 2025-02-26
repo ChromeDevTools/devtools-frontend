@@ -35,7 +35,7 @@ const UIStrings = {
    *@description A context menu item in the Call Stack Sidebar Pane of the Sources panel
    */
   addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/bindings/IgnoreListManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -471,7 +471,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
   private async patternChanged(): Promise<void> {
     this.#isIgnoreListedURLCache.clear();
 
-    const promises: Promise<unknown>[] = [];
+    const promises: Array<Promise<unknown>> = [];
     for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
       promises.push(this.setIgnoreListPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();

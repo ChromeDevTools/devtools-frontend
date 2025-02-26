@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {goToResource} from '../../shared/helper.js';
-
 import {assertStatus, expandIssue, navigateToIssuesTab} from '../helpers/issues-helpers.js';
 
 describe('The Issues tab report-only issues', () => {

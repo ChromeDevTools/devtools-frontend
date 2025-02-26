@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import audioContextSelectorStyles from './audioContextSelector.css.legacy.js';
+import audioContextSelectorStyles from './audioContextSelector.css.js';
 
 const UIStrings = {
   /**
@@ -20,7 +20,7 @@ const UIStrings = {
    *@example {realtime (1e03ec)} PH1
    */
   audioContextS: 'Audio context: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/web_audio/AudioContextSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

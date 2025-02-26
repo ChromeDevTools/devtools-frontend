@@ -29,7 +29,7 @@ export class EntriesFilter {
   #expandableEntries: Trace.Types.Events.Event[] = [];
   // Cache for descendants of entry that have already been gathered. The descendants
   // will never change so we can avoid running the potentially expensive search again.
-  #entryToDescendantsMap: Map<Trace.Helpers.TreeHelpers.TraceEntryNode, Trace.Types.Events.Event[]> = new Map();
+  #entryToDescendantsMap = new Map<Trace.Helpers.TreeHelpers.TraceEntryNode, Trace.Types.Events.Event[]>();
 
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#parsedTrace = parsedTrace;

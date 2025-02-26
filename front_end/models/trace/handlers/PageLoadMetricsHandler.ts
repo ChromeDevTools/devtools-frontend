@@ -352,7 +352,7 @@ function gatherFinalLCPEvents(): Types.Events.PageLoadEvent[] {
   for (let i = 0; i < dataForAllNavigations.length; i++) {
     const navigationData = dataForAllNavigations[i];
     const lcpInNavigation = navigationData.get(MetricName.LCP);
-    if (!lcpInNavigation || !lcpInNavigation.event) {
+    if (!lcpInNavigation?.event) {
       continue;
     }
 
@@ -442,7 +442,7 @@ export interface MetricScore {
   metricName: MetricName;
   classification: ScoreClassification;
   event?: Types.Events.PageLoadEvent;
-  // The last navigation that occured before this metric score.
+  // The last navigation that occurred before this metric score.
   navigation?: Types.Events.NavigationStart;
   estimated?: boolean;
   timing: Types.Timing.Micro;

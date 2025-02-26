@@ -3,9 +3,10 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
+<!DOCTYPE html>
 <input autofocus />
 <script>
-  window.addEventListener('keydown', (e) => {
+  window.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       e.stopPropagation();

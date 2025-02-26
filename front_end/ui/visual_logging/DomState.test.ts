@@ -112,7 +112,7 @@ describe('DomState', () => {
     const {loggables} = VisualLogging.DomState.getDomState([document]);
     assert.sameDeepMembers(loggables, [
       {element: el('1'), parent: undefined},
-      {element: el('1311', shadow) as Element, parent: el('1')},
+      {element: el('1311', shadow), parent: el('1')},
       {element: el('12'), parent: el('1')},
     ]);
   });

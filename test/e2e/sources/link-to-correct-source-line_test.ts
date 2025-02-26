@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {goToResource} from '../../shared/helper.js';
-
 import {expandIssue, navigateToIssuesTab, revealViolatingSourcesLines} from '../helpers/issues-helpers.js';
 import {waitForHighlightedLine} from '../helpers/sources-helpers.js';
 

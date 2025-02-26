@@ -3,13 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
-
 import type * as puppeteer from 'puppeteer-core';
 
 import {click, goToResource} from '../../shared/helper.js';
-
+import {waitForSoftContextMenu} from '../helpers/context-menu-helpers.js';
 import {
   clickNthChildOfSelectedElementNode,
   editCSSProperty,
@@ -24,7 +21,7 @@ import {
   waitForElementsComputedSection,
 } from '../helpers/elements-helpers.js';
 
-async function goToTestPageAndSelectTestElement(path: string = 'inline_editor/default.html') {
+async function goToTestPageAndSelectTestElement(path = 'inline_editor/default.html') {
   await goToResource(path);
   await waitForContentOfSelectedElementsNode('<body>\u200B');
   await clickNthChildOfSelectedElementNode(1);

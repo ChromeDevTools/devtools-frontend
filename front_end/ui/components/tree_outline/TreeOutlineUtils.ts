@@ -14,7 +14,7 @@ interface BaseTreeNode<TreeNodeDataType> {
 }
 
 export interface TreeNodeWithChildren<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
-  children: () => Promise<TreeNode<TreeNodeDataType>[]>;
+  children: () => Promise<Array<TreeNode<TreeNodeDataType>>>;
 }
 
 interface LeafNode<TreeNodeDataType> extends BaseTreeNode<TreeNodeDataType> {
@@ -169,20 +169,20 @@ const getParentListItemForDOMNode = (currentDOMNode: HTMLLIElement): HTMLLIEleme
  * back as that's enforced by the TreeOutline types elsewhere. We can't make
  * this WeakMap easily generic as it's a top level variable.
  */
-const treeNodeChildrenWeakMap = new WeakMap<TreeNode<unknown>, TreeNode<unknown>[]>();
+const treeNodeChildrenWeakMap = new WeakMap<TreeNode<unknown>, Array<TreeNode<unknown>>>();
 export const getNodeChildren =
-    async<TreeNodeDataType>(node: TreeNode<TreeNodeDataType>): Promise<TreeNode<TreeNodeDataType>[]> => {
+    async<TreeNodeDataType>(node: TreeNode<TreeNodeDataType>): Promise<Array<TreeNode<TreeNodeDataType>>> => {
   if (!node.children) {
     throw new Error('Asked for children of node that does not have any children.');
   }
 
   const cachedChildren = treeNodeChildrenWeakMap.get(node as TreeNode<unknown>);
   if (cachedChildren) {
-    return cachedChildren as unknown as TreeNode<TreeNodeDataType>[];
+    return cachedChildren as unknown as Array<TreeNode<TreeNodeDataType>>;
   }
 
   const children = await node.children();
-  treeNodeChildrenWeakMap.set(node as TreeNode<unknown>, children as TreeNode<unknown>[]);
+  treeNodeChildrenWeakMap.set(node as TreeNode<unknown>, children as Array<TreeNode<unknown>>);
   return children;
 };
 
@@ -199,8 +199,8 @@ export const getNodeChildren =
  * And you look for F, you'll get back [A, D, F]
  */
 export const getPathToTreeNode =
-    async<TreeNodeDataType>(tree: readonly TreeNode<TreeNodeDataType>[], nodeIdToFind: TreeNodeId):
-        Promise<TreeNode<TreeNodeDataType>[]|null> => {
+    async<TreeNodeDataType>(tree: ReadonlyArray<TreeNode<TreeNodeDataType>>, nodeIdToFind: TreeNodeId):
+        Promise<Array<TreeNode<TreeNodeDataType>>|null> => {
           for (const rootNode of tree) {
             const foundPathOrNull = await getPathToTreeNodeRecursively(rootNode, nodeIdToFind, [rootNode]);
             if (foundPathOrNull !== null) {
@@ -212,7 +212,7 @@ export const getPathToTreeNode =
 
 const getPathToTreeNodeRecursively = async<TreeNodeDataType>(
     currentNode: TreeNode<TreeNodeDataType>, nodeIdToFind: TreeNodeId,
-    pathToNode: TreeNode<TreeNodeDataType>[]): Promise<TreeNode<TreeNodeDataType>[]|null> => {
+    pathToNode: Array<TreeNode<TreeNodeDataType>>): Promise<Array<TreeNode<TreeNodeDataType>>|null> => {
   if (currentNode.id === nodeIdToFind) {
     return pathToNode;
   }

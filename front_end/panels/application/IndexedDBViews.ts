@@ -43,7 +43,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ApplicationComponents from './components/components.js';
 import type {
   Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
-import indexedDBViewsStyles from './indexedDBViews.css.legacy.js';
+import indexedDBViewsStyles from './indexedDBViews.css.js';
 
 const {html} = Lit;
 
@@ -65,10 +65,14 @@ const UIStrings = {
    */
   refreshDatabase: 'Refresh database',
   /**
-   *@description Text in Indexed DBViews of the Application panel
+   *@description Text in Application panel IndexedDB delete confirmation dialog
    *@example {msb} PH1
    */
-  pleaseConfirmDeleteOfSDatabase: 'Please confirm delete of "{PH1}" database.',
+  confirmDeleteDatabase: 'Delete "{PH1}" database?',
+  /**
+   *@description Explanation text in Application panel IndexedDB delete confirmation dialog
+   */
+  databaseWillBeRemoved: 'The selected database and contained data will be removed.',
   /**
    *@description Text in Indexed DBViews of the Application panel
    */
@@ -143,7 +147,7 @@ const UIStrings = {
    *@example {2} PH1
    */
   keyGeneratorValueS: 'Key generator value: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/IndexedDBViews.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -222,7 +226,8 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
 
   private async deleteDatabase(): Promise<void> {
     const ok = await UI.UIUtils.ConfirmDialog.show(
-        i18nString(UIStrings.pleaseConfirmDeleteOfSDatabase, {PH1: this.database.databaseId.name}), this,
+        i18nString(UIStrings.databaseWillBeRemoved),
+        i18nString(UIStrings.confirmDeleteDatabase, {PH1: this.database.databaseId.name}), this,
         {jslogContext: 'delete-database-confirmation'});
     if (ok) {
       void this.model.deleteDatabase(this.database.databaseId);
@@ -367,7 +372,6 @@ export class IDBDataView extends UI.View.SimpleView {
       columns,
       deleteCallback: this.deleteButtonClicked.bind(this),
       refreshCallback: this.updateData.bind(this, true),
-      editCallback: undefined,
     });
     dataGrid.setStriped(true);
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SELECTED_NODE, () => {
@@ -649,7 +653,7 @@ export class IDBDataView extends UI.View.SimpleView {
     this.dataGrid.selectedNode?.element().querySelectorAll('.source-code').forEach(element => {
       const shadowRoot = element.shadowRoot;
       const sheet = new CSSStyleSheet();
-      sheet.replaceSync('::selection {background-color: var(--sys-color-state-focus-select);}');
+      sheet.replaceSync('::selection {background-color: var(--sys-color-state-focus-select); color: currentColor;}');
       shadowRoot?.adoptedStyleSheets.push(sheet);
     });
   }

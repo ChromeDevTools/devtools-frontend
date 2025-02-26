@@ -4,14 +4,7 @@ const os = require('os');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
 const path = require('path');
-const {
-  extendDefaultPlugins,
-  optimize: optimizeAgnostic,
-  createContentItem,
-} = require('./svgo.js');
-
-exports.extendDefaultPlugins = extendDefaultPlugins;
-exports.createContentItem = createContentItem;
+const { optimize: optimizeAgnostic } = require('./svgo.js');
 
 const importConfig = async (configFile) => {
   let config;
@@ -21,24 +14,10 @@ const importConfig = async (configFile) => {
   if (configFile.endsWith('.cjs')) {
     config = require(configFile);
   } else {
-    try {
-      // dynamic import expects file url instead of path and may fail
-      // when windows path is provided
-      const { default: imported } = await import(pathToFileURL(configFile));
-      config = imported;
-    } catch (importError) {
-      // TODO remove require in v3
-      try {
-        config = require(configFile);
-      } catch (requireError) {
-        // throw original error if es module is detected
-        if (requireError.code === 'ERR_REQUIRE_ESM') {
-          throw importError;
-        } else {
-          throw requireError;
-        }
-      }
-    }
+    // dynamic import expects file url instead of path and may fail
+    // when windows path is provided
+    const { default: imported } = await import(pathToFileURL(configFile));
+    config = imported;
   }
   if (config == null || typeof config !== 'object' || Array.isArray(config)) {
     throw Error(`Invalid config file "${configFile}"`);

@@ -44,7 +44,7 @@ import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
-import searchableViewStyles from './searchableView.css.legacy.js';
+import searchableViewStyles from './searchableView.css.js';
 import {ToolbarButton, ToolbarText, ToolbarToggle} from './Toolbar.js';  // eslint-disable-line import/no-duplicates
 import {createHistoryInput, createTextButton} from './UIUtils.js';
 import {VBox} from './Widget.js';
@@ -123,7 +123,7 @@ const UIStrings = {
    *@description Text on a button to search previous instance for the ctrl+F search bar
    */
   clearInput: 'Clear',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SearchableView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -427,10 +427,6 @@ export class SearchableView extends VBox {
     this.updateSearchMatchesCountAndCurrentMatchIndex(untypedSearchProvider.currentSearchMatches, currentMatchIndex);
   }
 
-  isSearchVisible(): boolean {
-    return Boolean(this.searchIsVisible);
-  }
-
   closeSearch(): void {
     this.cancelSearch();
     if (this.footerElementContainer.hasFocus()) {
@@ -527,7 +523,7 @@ export class SearchableView extends VBox {
     let queryCandidate;
     if (!this.searchInputElement.hasFocus()) {
       const selection = InspectorView.instance().element.window().getSelection();
-      if (selection && selection.rangeCount) {
+      if (selection?.rangeCount) {
         queryCandidate = selection.toString().replace(/\r?\n.*/, '');
       }
     }

@@ -10,11 +10,30 @@ describeWithEnvironment('LCPDiscovery', function() {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
-    const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
+    const {checklist} = insight;
 
-    assert.isFalse(shouldRemoveLazyLoading);
-    assert.isFalse(shouldPreloadImage);
-    assert.isTrue(shouldIncreasePriorityHint);
+    assert.exists(checklist);
+    assert.isFalse(checklist.priorityHinted.value);
+    assert.isTrue(checklist.requestDiscoverable.value);
+    assert.isTrue(checklist.eagerlyLoaded.value);
+  });
+
+  it('uses the fetchpriority=high text when the image has fetchpriority set', async () => {
+    const {data, insights} = await processTrace(this, 'lcp-fetchpriority-high.json.gz');
+    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
+    assert.isOk(insight.checklist);
+    assert.isTrue(insight.checklist.priorityHinted.value);
+    assert.strictEqual(insight.checklist.priorityHinted.label, 'fetchpriority=high applied');
+  });
+
+  it('uses the should apply fetchpriority=high text when the image does not fetchpriority set', async () => {
+    const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
+    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
+    assert.isOk(insight.checklist);
+    assert.isFalse(insight.checklist.priorityHinted.value);
+    assert.strictEqual(insight.checklist.priorityHinted.label, 'fetchpriority=high should be applied');
   });
 
   it('calculates the LCP optimal time as the document request download start time', async () => {

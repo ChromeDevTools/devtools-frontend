@@ -7,7 +7,7 @@ import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import * as UI from './legacy.js';
 
 class MockSuggestBoxDelegate implements UI.SuggestBox.SuggestBoxDelegate {
-  readonly appliedSuggestions: {suggestion: string, isIntermediateSuggestion?: boolean}[] = [];
+  readonly appliedSuggestions: Array<{suggestion: string, isIntermediateSuggestion?: boolean}> = [];
   readonly accceptedSuggestions: string[] = [];
 
   private lastAppliedSuggestion!: UI.SuggestBox.Suggestion;

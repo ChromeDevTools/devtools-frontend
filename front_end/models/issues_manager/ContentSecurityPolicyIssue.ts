@@ -7,7 +7,6 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
-
 import {
   resolveLazyDescription,
   type LazyMarkdownIssueDescription,
@@ -35,7 +34,7 @@ const UIStrings = {
    *@description Title for Trusted Types policy violation issue link. https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API
    */
   trustedTypesPolicyViolation: 'Trusted Types - Policy violation',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/ContentSecurityPolicyIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
@@ -163,11 +162,10 @@ export const trustedTypesPolicyViolationCode = [
   Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation,
 ].join('::');
 
-const issueDescriptions: Map<Protocol.Audits.ContentSecurityPolicyViolationType, LazyMarkdownIssueDescription> =
-    new Map([
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
-      [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
-    ]);
+const issueDescriptions = new Map<Protocol.Audits.ContentSecurityPolicyViolationType, LazyMarkdownIssueDescription>([
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation, cspURLViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation, cspInlineViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation, cspEvalViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation, cspTrustedTypesSinkViolation],
+  [Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation, cspTrustedTypesPolicyViolation],
+]);

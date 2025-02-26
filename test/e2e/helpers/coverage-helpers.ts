@@ -13,7 +13,7 @@ export async function waitForTheCoveragePanelToLoad() {
   // Open panel and wait for content
   await openPanelViaMoreTools('Coverage');
   await waitFor('div[aria-label="Coverage panel"]');
-  await waitFor('.coverage-results .landing-page');
+  await waitFor('.coverage-results .empty-state');
 }
 
 export async function navigateToCoverageTestSite() {
@@ -22,7 +22,7 @@ export async function navigateToCoverageTestSite() {
 
 export async function startInstrumentingCoverage() {
   await click(START_INSTRUMENTING_BUTTON);
-  await waitForNone('.coverage-results .landing-page');
+  await waitForNone('.coverage-results .empty-state');
 }
 
 export async function stopInstrumentingCoverage() {
@@ -32,19 +32,14 @@ export async function stopInstrumentingCoverage() {
 
 export async function clearCoverageContent() {
   await click('devtools-button[aria-label="Clear coverage"]');
-  await waitFor('.coverage-results .landing-page');
-}
-
-export async function getMessageContents() {
-  const messageElement = await waitFor('.coverage-results .landing-page .message');
-  return messageElement.evaluate(node => (node as HTMLElement).innerText);
+  await waitFor('.coverage-results .empty-state');
 }
 
 export async function getCoverageData(expectedCount: number) {
   const rows = await waitForMany('.data-grid-data-grid-node', expectedCount, await waitFor('.coverage-results'));
-  return Promise.all(rows.map(r => r.evaluate((r: Element) => ({
-                                                url: r.querySelector('.url-column')?.textContent,
-                                                total: r.querySelector('.size-column')?.textContent,
-                                                unused: r.querySelector('.unused-size-column span')?.textContent,
-                                              }))));
+  return await Promise.all(rows.map(r => r.evaluate((r: Element) => ({
+                                                      url: r.querySelector('.url-column')?.textContent,
+                                                      total: r.querySelector('.size-column')?.textContent,
+                                                      unused: r.querySelector('.unused-size-column span')?.textContent,
+                                                    }))));
 }

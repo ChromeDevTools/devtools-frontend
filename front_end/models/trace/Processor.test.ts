@@ -261,6 +261,10 @@ describeWithEnvironment('TraceProcessor', function() {
       sinon.stub(Trace.Processor.TraceProcessor, 'getEnabledInsightRunners').callsFake(() => {
         return {
           RenderBlocking: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            UIStrings: {} as any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            i18nString: (() => {}) as any,
             generateInsight: () => {
               throw new Error('forced error');
             },
@@ -402,13 +406,14 @@ describeWithEnvironment('TraceProcessor', function() {
         'LCPPhases',
         'LCPDiscovery',
         'RenderBlocking',
+        'NetworkDependencyTree',
         'ImageDelivery',
         'DocumentLatency',
         'FontDisplay',
         'DOMSize',
         'ThirdParties',
+        'DuplicateJavaScript',
         'SlowCSSSelector',
-        'LongCriticalNetworkTree',
         'ForcedReflow',
       ]);
 
@@ -421,13 +426,14 @@ describeWithEnvironment('TraceProcessor', function() {
         'LCPPhases',
         'LCPDiscovery',
         'RenderBlocking',
+        'NetworkDependencyTree',
         'ImageDelivery',
         'DocumentLatency',
         'FontDisplay',
         'DOMSize',
         'ThirdParties',
+        'DuplicateJavaScript',
         'SlowCSSSelector',
-        'LongCriticalNetworkTree',
         'ForcedReflow',
       ]);
     });

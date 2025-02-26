@@ -47,7 +47,7 @@ export class JavaScriptREPL {
 
   static async evaluateAndBuildPreview(
       text: string, throwOnSideEffect: boolean, replMode: boolean, timeout?: number, allowErrors?: boolean,
-      objectGroup?: string, awaitPromise: boolean = false, silent: boolean = false): Promise<{
+      objectGroup?: string, awaitPromise = false, silent = false): Promise<{
     preview: DocumentFragment,
     result: SDK.RuntimeModel.EvaluationResult|null,
   }> {
@@ -59,7 +59,7 @@ export class JavaScriptREPL {
 
     let expression = text;
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
-    if (callFrame && callFrame.script.isJavaScript()) {
+    if (callFrame?.script.isJavaScript()) {
       const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(callFrame);
       try {
         expression =
@@ -92,7 +92,7 @@ export class JavaScriptREPL {
       return fragment;
     }
 
-    if (result.exceptionDetails && result.exceptionDetails.exception && result.exceptionDetails.exception.description) {
+    if (result.exceptionDetails?.exception?.description) {
       const exception = result.exceptionDetails.exception.description;
       if (exception.startsWith('TypeError: ') || allowErrors) {
         fragment.createChild('span').textContent = result.exceptionDetails.text + ' ' + exception;
@@ -113,12 +113,4 @@ export class JavaScriptREPL {
   }
 }
 
-let maxLengthForEvaluation: number = 2000;
-
-export function setMaxLengthForEvaluation(value: number): void {
-  maxLengthForEvaluation = value;
-}
-
-export function getMaxLengthForEvaluation(): number {
-  return maxLengthForEvaluation;
-}
+const maxLengthForEvaluation = 2000;

@@ -7,16 +7,14 @@ import './Toolbar.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as Lit from '../lit/lit.js';
+import {html, render} from '../lit/lit.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import listWidgetStyles from './listWidget.css.legacy.js';
+import listWidgetStyles from './listWidget.css.js';
 import {Tooltip} from './Tooltip.js';
 import {createInput, createTextButton, ElementFocusRestorer} from './UIUtils.js';
 import {VBox} from './Widget.js';
-
-const {html, render} = Lit;
 
 const UIStrings = {
   /**
@@ -47,7 +45,7 @@ const UIStrings = {
    * @description Text for screen reader to announce that an item has been removed.
    */
   removedItem: 'Item has been removed',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -64,7 +62,7 @@ export class ListWidget<T> extends VBox {
   private editElement: Element|null;
   private emptyPlaceholder: Element|null;
   private isTable: boolean;
-  constructor(delegate: Delegate<T>, delegatesFocus: boolean|undefined = true, isTable: boolean = false) {
+  constructor(delegate: Delegate<T>, delegatesFocus: boolean|undefined = true, isTable = false) {
     super(true, delegatesFocus);
     this.registerRequiredCSS(listWidgetStyles);
     this.delegate = delegate;
@@ -144,16 +142,16 @@ export class ListWidget<T> extends VBox {
     const element = this.elements[index];
 
     const previous = element.previousElementSibling;
-    const previousIsSeparator = previous && previous.classList.contains('list-separator');
+    const previousIsSeparator = previous?.classList.contains('list-separator');
 
     const next = element.nextElementSibling;
-    const nextIsSeparator = next && next.classList.contains('list-separator');
+    const nextIsSeparator = next?.classList.contains('list-separator');
 
     if (previousIsSeparator && (nextIsSeparator || !next)) {
-      (previous as Element).remove();
+      previous?.remove();
     }
     if (nextIsSeparator && !previous) {
-      (next as Element).remove();
+      next?.remove();
     }
     element.remove();
 
@@ -285,7 +283,7 @@ export class ListWidget<T> extends VBox {
     if (this.editElement) {
       this.editElement.classList.remove('hidden');
     }
-    if (this.editor && this.editor.element.parentElement) {
+    if (this.editor?.element.parentElement) {
       this.editor.element.remove();
     }
 
@@ -318,7 +316,7 @@ export class Editor<T> {
   private errorMessageContainer: HTMLElement;
   private readonly controls: EditorControl[];
   private readonly controlByName: Map<string, EditorControl>;
-  private readonly validators: ((arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult)[];
+  private readonly validators: Array<(arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult>;
   private commit: (() => void)|null;
   private cancel: (() => void)|null;
   private item: T|null;
@@ -383,7 +381,7 @@ export class Editor<T> {
   createInput(
       name: string, type: string, title: string,
       validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult): HTMLInputElement {
-    const input = (createInput('', type) as HTMLInputElement);
+    const input = (createInput('', type));
     input.placeholder = title;
     input.addEventListener('input', this.validateControls.bind(this, false), false);
     input.setAttribute('jslog', `${VisualLogging.textField().track({change: true, keydown: 'Enter'}).context(name)}`);

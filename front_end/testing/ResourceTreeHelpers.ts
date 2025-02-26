@@ -55,7 +55,7 @@ export async function getInitializedResourceTreeModel(target: SDK.Target.Target)
   const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel)!;
   return resourceTreeModel.cachedResourcesLoaded() ?
       resourceTreeModel :
-      resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
+      await resourceTreeModel.once(SDK.ResourceTreeModel.Events.CachedResourcesLoaded);
 }
 
 function getEffectivePayload(

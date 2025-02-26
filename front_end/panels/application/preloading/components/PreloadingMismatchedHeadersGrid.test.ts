@@ -39,7 +39,7 @@ async function testPreloadingMismatchedHeadersGrid(
     status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
     prerenderStatus: Protocol.Preload.PrerenderFinalStatus.ActivationNavigationParameterMismatch,
     disallowedMojoInterface: null,
-    mismatchedHeaders: recievedMismatchedHeaders as Protocol.Preload.PrerenderMismatchedHeaders[],
+    mismatchedHeaders: recievedMismatchedHeaders,
     ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
     nodeIds: [1] as Protocol.DOM.BackendNodeId[],
   };

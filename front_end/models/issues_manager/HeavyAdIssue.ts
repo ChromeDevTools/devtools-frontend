@@ -14,7 +14,7 @@ const UIStrings = {
    *@description Title for a learn more link in Heavy Ads issue description
    */
   handlingHeavyAdInterventions: 'Handling Heavy Ad Interventions',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/HeavyAdIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

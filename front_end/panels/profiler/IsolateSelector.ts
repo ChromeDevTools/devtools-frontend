@@ -53,7 +53,7 @@ const UIStrings = {
    *@description Text to show an item is empty
    */
   empty: '(empty)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/IsolateSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.ListDelegate<ListItem>,
@@ -225,11 +225,11 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     if (toElement) {
       toElement.classList.add('selected');
     }
-    const model = to && to.model();
+    const model = to?.model();
     UI.Context.Context.instance().setFlavor(
-        SDK.HeapProfilerModel.HeapProfilerModel, model && model.heapProfilerModel());
+        SDK.HeapProfilerModel.HeapProfilerModel, model?.heapProfilerModel() ?? null);
     UI.Context.Context.instance().setFlavor(
-        SDK.CPUProfilerModel.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel.CPUProfilerModel));
+        SDK.CPUProfilerModel.CPUProfilerModel, model?.target().model(SDK.CPUProfilerModel.CPUProfilerModel) ?? null);
   }
 
   update(): void {

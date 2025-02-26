@@ -47,7 +47,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   speed: PlayRecordingSpeed;
   timeout: number;
   breakpointIndexes: Set<number>;
-  steppingOver: boolean = false;
+  steppingOver = false;
   aborted = false;
   abortPromise: Promise<void>;
   #abortResolveFn?: Function;
@@ -243,13 +243,10 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       }
 
       override async beforeEachStep?(step: Step, flow: UserFlow): Promise<void> {
-        let resolver: () => void = () => {};
-        const promise = new Promise<void>(r => {
-          resolver = r;
-        });
+        const {resolve, promise} = Promise.withResolvers<void>();
         player.dispatchEventToListeners(Events.STEP, {
           step,
-          resolve: resolver,
+          resolve,
         });
         await promise;
         const currentStepIndex = flow.steps.indexOf(step);

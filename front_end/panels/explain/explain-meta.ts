@@ -41,7 +41,7 @@ const UIStrings = {
    * not allow this feature.
    */
   policyRestricted: 'This setting is managed by your administrator.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

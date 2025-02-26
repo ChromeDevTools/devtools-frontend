@@ -3,15 +3,9 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as Lit from '../../lit/lit.js';
+import {html, render} from '../../lit/lit.js';
 
-import textPromptStylesRaw from './textPrompt.css.legacy.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const textPromptStyles = new CSSStyleSheet();
-textPromptStyles.replaceSync(textPromptStylesRaw.cssContent);
-
-const {html} = Lit;
+import textPromptStyles from './textPrompt.css.js';
 
 export interface TextPromptData {
   ariaLabel: string;
@@ -34,10 +28,6 @@ export class TextPrompt extends HTMLElement {
   #ariaLabelText = '';
   #prefixText = '';
   #suggestionText = '';
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [textPromptStyles];
-  }
 
   set data(data: TextPromptData) {
     this.#ariaLabelText = data.ariaLabel;
@@ -130,11 +120,12 @@ export class TextPrompt extends HTMLElement {
 
   #render(): void {
     const output = html`
+      <style>${textPromptStyles.cssContent}</style>
       <span class="prefix">${this.#prefixText} </span>
       <span class="text-prompt-input"><input class="input" aria-label=${
         this.#ariaLabelText} spellcheck="false" @input=${this.onInput} @keydown=${
         this.onKeyDown}/><input class="suggestion" aria-label=${this.#ariaLabelText + ' Suggestion'}></span>`;
-    Lit.render(output, this.#shadow, {host: this});
+    render(output, this.#shadow, {host: this});
   }
 }
 

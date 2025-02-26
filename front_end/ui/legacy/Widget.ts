@@ -109,6 +109,41 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {
     Widget.getOrCreateWidget(this).show(
         this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   }
+
+  override appendChild<T extends Node>(child: T): T {
+    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
+      Widget.getOrCreateWidget(child).show(this);
+      return child;
+    }
+    return super.appendChild(child);
+  }
+
+  override insertBefore<T extends Node>(child: T, referenceChild: Node): T {
+    if (child instanceof HTMLElement && child.tagName !== 'STYLE') {
+      Widget.getOrCreateWidget(child).show(this, referenceChild);
+      return child;
+    }
+    return super.insertBefore(child, referenceChild);
+  }
+
+  override removeChild<T extends Node>(child: T): T {
+    const childWidget = Widget.get(child as unknown as HTMLElement);
+    if (childWidget) {
+      childWidget.detach();
+      return child;
+    }
+    return super.removeChild(child);
+  }
+
+  override removeChildren(): void {
+    for (const child of this.children) {
+      const childWidget = Widget.get(child as unknown as HTMLElement);
+      if (childWidget) {
+        childWidget.detach();
+      }
+    }
+    super.removeChildren();
+  }
 }
 
 customElements.define('devtools-widget', WidgetElement);
@@ -265,15 +300,14 @@ export class Widget {
   }
 
   private inNotification(): boolean {
-    return Boolean(this.notificationDepth) ||
-        Boolean(this.parentWidgetInternal && this.parentWidgetInternal.inNotification());
+    return Boolean(this.notificationDepth) || Boolean(this.parentWidgetInternal?.inNotification());
   }
 
   private parentIsShowing(): boolean {
     if (this.isRoot) {
       return true;
     }
-    return this.parentWidgetInternal !== null && this.parentWidgetInternal.isShowing();
+    return this.parentWidgetInternal?.isShowing() ?? false;
   }
 
   protected callOnVisibleChildren(method: (this: Widget) => void): void {
@@ -576,12 +610,13 @@ export class Widget {
     this.doResize();
   }
 
-  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+  registerRequiredCSS(...cssFiles: Array<{cssContent: string}>): void {
     for (const cssFile of cssFiles) {
       ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
     }
   }
 
+  // Unused, but useful for debugging.
   printWidgetHierarchy(): void {
     const lines: string[] = [];
     this.collectWidgetHierarchy('', lines);
@@ -622,7 +657,7 @@ export class Widget {
       return;
     }
 
-    if (this.defaultFocusedChild && this.defaultFocusedChild.visibleInternal) {
+    if (this.defaultFocusedChild?.visibleInternal) {
       this.defaultFocusedChild.focus();
     } else {
       for (const child of this.childrenInternal) {
@@ -666,7 +701,11 @@ export class Widget {
   }
 
   setMinimumSize(width: number, height: number): void {
-    this.constraintsInternal = new Constraints(new Size(width, height));
+    this.minimumSize = new Size(width, height);
+  }
+
+  set minimumSize(size: Size) {
+    this.constraintsInternal = new Constraints(size);
     this.invalidateConstraints();
   }
 
@@ -797,7 +836,11 @@ const storedScrollPositions = new WeakMap<Element, {
 }>();
 
 export class VBox extends Widget {
-  constructor(useShadowDom?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
+  constructor(useShadowDom?: boolean|HTMLElement, delegatesFocus?: boolean, element?: HTMLElement) {
+    if (useShadowDom instanceof HTMLElement) {
+      element = useShadowDom;
+      useShadowDom = false;
+    }
     super(useShadowDom, delegatesFocus, element);
     this.contentElement.classList.add('vbox');
   }

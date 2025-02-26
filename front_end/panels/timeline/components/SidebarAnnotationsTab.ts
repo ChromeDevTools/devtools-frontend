@@ -14,7 +14,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Utils from '../utils/utils.js';
 
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
-import sidebarAnnotationsTabStylesRaw from './sidebarAnnotationsTab.css.legacy.js';
+import sidebarAnnotationsTabStylesRaw from './sidebarAnnotationsTab.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const sidebarAnnotationsTabStyles = new CSSStyleSheet();
@@ -90,7 +90,7 @@ const UIStrings = {
    *@example {Recalculate styles} PH2
    */
   entryLinkDescriptionLabel: 'A link between a "{PH1}" event and a "{PH2}" event',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -101,7 +101,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #annotations: Trace.Types.File.Annotation[] = [];
   // A map with annotated entries and the colours that are used to display them in the FlameChart.
   // We need this map to display the entries in the sidebar with the same colours.
-  #annotationEntryToColorMap: Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string> = new Map();
+  #annotationEntryToColorMap = new Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>();
 
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
 

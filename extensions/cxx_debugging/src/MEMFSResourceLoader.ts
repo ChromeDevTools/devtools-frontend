@@ -26,7 +26,7 @@ export class ResourceLoader implements DWARFSymbols.ResourceLoader {
         // get a 404 response.
         console.error(symbolsDwpError);
       }
-      if (!(symbolsDwpResponse && symbolsDwpResponse.ok)) {
+      if (!(symbolsDwpResponse?.ok)) {
         // Often this won't exist, but remember the missing file because if
         // we can't find symbol information later it is likely because this
         // file was missing.
@@ -37,7 +37,7 @@ export class ResourceLoader implements DWARFSymbols.ResourceLoader {
       }
       const [symbolsData, symbolsDwpData] = await Promise.all([
         symbolsResponse.arrayBuffer(),
-        symbolsDwpResponse && symbolsDwpResponse.ok ? symbolsDwpResponse.arrayBuffer() : undefined,
+        symbolsDwpResponse?.ok ? symbolsDwpResponse.arrayBuffer() : undefined,
       ]);
       void hostInterface.reportResourceLoad(url.href, {success: true, size: symbolsData.byteLength});
       if (symbolsDwpData) {

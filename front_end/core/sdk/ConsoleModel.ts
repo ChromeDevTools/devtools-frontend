@@ -91,7 +91,7 @@ const UIStrings = {
    *@description Error message shown in the console after the user tries to save a JavaScript value to a temporary variable.
    */
   failedToSaveToTempVariable: 'Failed to save to temp variable.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/ConsoleModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -283,7 +283,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;
     }
-    const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
+    const callFrame = call.stackTrace?.callFrames.length ? call.stackTrace.callFrames[0] : null;
     const details = {
       type: call.type,
       url: callFrame?.url as Platform.DevToolsPath.UrlString | undefined,
@@ -295,8 +295,8 @@ export class ConsoleModel extends SDKModel<EventTypes> {
       executionContextId: call.executionContextId,
       context: call.context,
     };
-    const consoleMessage = new ConsoleMessage(
-        runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, level, (message as string), details);
+    const consoleMessage =
+        new ConsoleMessage(runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, level, (message), details);
     for (const msg of this.#messagesByTimestamp.get(consoleMessage.timestamp).values()) {
       if (consoleMessage.isEqual(msg)) {
         return;
@@ -449,21 +449,13 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     return this.#violationsInternal;
   }
 
-  static allViolations(): number {
-    let violations = 0;
-    for (const target of TargetManager.instance().targets()) {
-      violations += target.model(ConsoleModel)?.violations() || 0;
-    }
-    return violations;
-  }
-
   async saveToTempVariable(currentExecutionContext: ExecutionContext|null, remoteObject: RemoteObject|null):
       Promise<void> {
     if (!remoteObject || !currentExecutionContext) {
       failedToSave(null);
       return;
     }
-    const executionContext = (currentExecutionContext as ExecutionContext);
+    const executionContext = (currentExecutionContext);
 
     const result = await executionContext.globalObject(/* objectGroup */ '', /* generatePreview */ false);
     if ('error' in result || Boolean(result.exceptionDetails) || !result.object) {
@@ -493,7 +485,7 @@ export class ConsoleModel extends SDKModel<EventTypes> {
         ++index;
       }
       const name = prefix + index;
-      // @ts-ignore Assignment to global object
+      // @ts-expect-error Assignment to global object
       this[name] = value;
       return name;
     }
@@ -579,7 +571,7 @@ export interface ConsoleMessageDetails {
   url?: Platform.DevToolsPath.UrlString;
   line?: number;
   column?: number;
-  parameters?: (string|RemoteObject|Protocol.Runtime.RemoteObject)[];
+  parameters?: Array<string|RemoteObject|Protocol.Runtime.RemoteObject>;
   stackTrace?: Protocol.Runtime.StackTrace;
   timestamp?: number;
   executionContextId?: number;
@@ -600,7 +592,7 @@ export class ConsoleMessage {
   url: Platform.DevToolsPath.UrlString|undefined;
   line: number;
   column: number;
-  parameters: (string|RemoteObject|Protocol.Runtime.RemoteObject)[]|undefined;
+  parameters: Array<string|RemoteObject|Protocol.Runtime.RemoteObject>|undefined;
   stackTrace: Protocol.Runtime.StackTrace|undefined;
   timestamp: number;
   #executionContextId: number;
@@ -612,7 +604,7 @@ export class ConsoleMessage {
   #exceptionId?: number = undefined;
   #affectedResources?: AffectedResources;
   category?: Protocol.Log.LogEntryCategory;
-  isCookieReportIssue: boolean = false;
+  isCookieReportIssue = false;
 
   /**
    * The parent frame of the `console.log` call of logpoints or conditional breakpoints
@@ -629,7 +621,7 @@ export class ConsoleMessage {
       messageText: string, details?: ConsoleMessageDetails) {
     this.#runtimeModelInternal = runtimeModel;
     this.source = source;
-    this.level = (level as Protocol.Log.LogEntryLevel | null);
+    this.level = (level);
     this.messageText = messageText;
     this.type = details?.type || Protocol.Runtime.ConsoleAPICalledEventType.Log;
     this.url = details?.url;

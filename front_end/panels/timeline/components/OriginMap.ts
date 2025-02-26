@@ -11,7 +11,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import originMapStyles from './originMap.css.legacy.js';
+import originMapStyles from './originMap.css.js';
 
 const {html} = Lit;
 
@@ -38,7 +38,7 @@ const UIStrings = {
    * @description Warning message explaining that a page doesn't have enough real user data to show any information for. "Chrome UX Report" is a product name and should not be translated.
    */
   pageHasNoData: 'The Chrome UX Report does not have sufficient real user data for this page.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/OriginMap.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

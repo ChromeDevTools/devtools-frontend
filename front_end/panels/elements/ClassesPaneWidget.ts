@@ -9,7 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import classesPaneWidgetStyles from './classesPaneWidget.css.legacy.js';
+import classesPaneWidgetStyles from './classesPaneWidget.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
 
 const UIStrings = {
@@ -33,7 +33,7 @@ const UIStrings = {
    * panel. Element is a HTML DOM Element and classes refers to CSS classes.
    */
   elementClasses: 'Element Classes',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ClassesPaneWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ClassesPaneWidget extends UI.Widget.Widget {
@@ -168,7 +168,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     }
 
     this.classesContainer.removeChildren();
-    // @ts-ignore this.input is a div, not an input element. So this line makes no sense at all
+    // @ts-expect-error this.input is a div, not an input element. So this line makes no sense at all
     this.input.disabled = !node;
 
     if (!node) {
@@ -355,7 +355,7 @@ export class ClassNamePrompt extends UI.TextPrompt.TextPrompt {
     }
 
     let completions: string[] = await this.classNamesPromise;
-    const classesMap = this.nodeClasses((selectedNode as SDK.DOMModel.DOMNode));
+    const classesMap = this.nodeClasses((selectedNode));
     completions = completions.filter(value => !classesMap.get(value));
 
     if (prefix[0] === '.') {

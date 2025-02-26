@@ -9,7 +9,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import accessibilityNodeStyles from './accessibilityNode.css.legacy.js';
+import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -114,7 +114,7 @@ const UIStrings = {
    * element doesn't have any special accessibility considerations
    */
   elementNotInteresting: 'Element not interesting for accessibility.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityNodeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXNodeSubPane extends AccessibilitySubPane {
@@ -272,7 +272,7 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   appendNameElement(name: string): void {
     const nameElement = document.createElement('span');
     if (name in AXAttributes) {
-      // @ts-ignore TS can't cast name here but we checked it's valid.
+      // @ts-expect-error TS can't cast name here but we checked it's valid.
       const attribute = AXAttributes[name];
       nameElement.textContent = attribute.name();
       UI.Tooltip.Tooltip.install(nameElement, attribute.description());
@@ -676,7 +676,7 @@ export class AXNodeIgnoredReasonTreeElement extends AXNodePropertyTreeElement {
         reasonElement = i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementIsNotVisible, {});
         break;
       case 'presentationalRole': {
-        const role = axNode && axNode.role()?.value || '';
+        const role = axNode?.role()?.value || '';
         const rolePresentationSpan = document.createElement('span', {is: 'source-code'}).textContent = 'role=' + role;
         reasonElement =
             i18n.i18n.getFormatLocalizedString(str_, UIStrings.elementHasPlaceholder, {PH1: rolePresentationSpan});

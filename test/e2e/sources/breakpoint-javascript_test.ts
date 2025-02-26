@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import {
   click,
   clickElement,
+  drainFrontendTaskQueue,
   enableExperiment,
   getBrowserAndPages,
   goToResource,
@@ -16,7 +17,6 @@ import {
   waitForFunction,
   withControlOrMetaKey,
 } from '../../shared/helper.js';
-
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {getMenuItemAtPosition, getMenuItemTitleAtPosition, openFileQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
@@ -244,6 +244,8 @@ describe('The Sources Tab', function() {
        await step('open the hello.js file (inline script)', async () => {
          await openFileQuickOpen();
          await frontend.keyboard.type('hello.js');
+         // TODO: it should actually wait for rendering to finish.
+         await drainFrontendTaskQueue();
 
          const firstItemTitle = await getMenuItemTitleAtPosition(0);
          const firstItem = await getMenuItemAtPosition(0);

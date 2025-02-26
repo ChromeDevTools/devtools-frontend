@@ -43,7 +43,7 @@ import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import selfXssDialogStyles from './selfXssDialog.css.legacy.js';
+import selfXssDialogStyles from './selfXssDialog.css.js';
 
 const UIStrings = {
   /**
@@ -120,7 +120,7 @@ const UIStrings = {
    */
   binaryContentError:
       'Editor can\'t show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -836,7 +836,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
     const editor = this.textEditor;
     const currentActiveSearch = editor.state.field(activeSearchState);
-    if (currentActiveSearch && currentActiveSearch.currentRange) {
+    if (currentActiveSearch?.currentRange) {
       editor.dispatch({effects: setActiveSearch.of(new ActiveSearch(currentActiveSearch.regexp, null))});
     }
   }
@@ -1049,7 +1049,7 @@ class SearchMatch {
         return this.match[0];
       }
       if (selector[0] === '<') {
-        return (this.match.groups && this.match.groups[selector.slice(1, selector.length - 1)]) || '';
+        return (this.match.groups?.[selector.slice(1, selector.length - 1)]) || '';
       }
       return this.match[Number.parseInt(selector, 10)] || '';
     });
@@ -1066,15 +1066,18 @@ export class SelfXssWarningDialog {
     const content = shadowRoot.createChild('div', 'widget');
 
     const result = await new Promise<boolean>(resolve => {
-      const closeButton = content.createChild('dt-close-button', 'dialog-close-button');
+      const header = content.createChild('div', 'header');
+      header.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
+
+      const closeButton = header.createChild('dt-close-button', 'dialog-close-button');
       closeButton.setTabbable(true);
       self.onInvokeElement(closeButton, event => {
         dialog.hide();
         event.consume(true);
         resolve(false);
       });
+      closeButton.setSize(Buttons.Button.Size.SMALL);
 
-      content.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
       content.createChild('div', 'message').textContent =
           i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)});
 
@@ -1159,7 +1162,7 @@ class ActiveSearch {
 }
 
 const setActiveSearch =
-    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value && value.map(mapping)});
+    CodeMirror.StateEffect.define<ActiveSearch|null>({map: (value, mapping) => value?.map(mapping)});
 
 const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   create(): null {
@@ -1168,7 +1171,7 @@ const activeSearchState = CodeMirror.StateField.define<ActiveSearch|null>({
   update(state, tr): ActiveSearch |
       null {
         return tr.effects.reduce(
-            (state, effect) => effect.is(setActiveSearch) ? effect.value : state, state && state.map(tr.changes));
+            (state, effect) => effect.is(setActiveSearch) ? effect.value : state, state?.map(tr.changes) ?? null);
       },
 });
 
@@ -1176,8 +1179,7 @@ const searchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch'});
 const currentSearchMatchDeco = CodeMirror.Decoration.mark({class: 'cm-searchMatch cm-searchMatch-selected'});
 
 const searchHighlighter = CodeMirror.ViewPlugin.fromClass(class {
-decorations:
-  CodeMirror.DecorationSet;
+  decorations: CodeMirror.DecorationSet;
 
   constructor(view: CodeMirror.EditorView) {
     this.decorations = this.computeDecorations(view);

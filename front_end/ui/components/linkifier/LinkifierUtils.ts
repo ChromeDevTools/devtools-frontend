@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../../../models/bindings/bindings.js';
 import type * as Platform from '../../../core/platform/platform.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 
 export function linkText(url: Platform.DevToolsPath.UrlString, lineNumber?: number): string {
   if (url) {

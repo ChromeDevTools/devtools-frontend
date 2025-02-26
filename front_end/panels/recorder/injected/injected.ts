@@ -84,8 +84,8 @@ if (!window.DevToolsRecorder) {
 }
 
 export {
-  type Step,
+  type DevToolsRecorder,
   type RecordingClient,
   type SelectorPicker,
-  type DevToolsRecorder,
+  type Step,
 };

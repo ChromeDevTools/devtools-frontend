@@ -40,7 +40,7 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
     {
       treeNodeData: {cssProperty: 'margin', cssValue: '10px 5px'},
       id: '3',
-      async children(): Promise<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>[]> {
+      async children(): Promise<Array<TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeData>>> {
         return [
           {treeNodeData: {cssProperty: 'margin-left', cssValue: '5px'}, id: '4'},
           {treeNodeData: {cssProperty: 'margin-right', cssValue: '5px'}, id: '5'},

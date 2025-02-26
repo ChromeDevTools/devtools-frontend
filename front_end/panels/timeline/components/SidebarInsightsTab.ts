@@ -15,7 +15,7 @@ import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
-import stylesRaw from './sidebarInsightsTab.css.legacy.js';
+import stylesRaw from './sidebarInsightsTab.css.js';
 import type {SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -35,7 +35,7 @@ const UIStrings = {
    *@description text show in feedback tooltip
    */
   feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

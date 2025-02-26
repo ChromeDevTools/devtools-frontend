@@ -345,9 +345,9 @@ function applyWritingModeTransformation(writingMode: string, gridBounds: Bounds,
 function drawGridLines(
     context: CanvasRenderingContext2D, highlight: GridHighlight, direction: 'row'|'column',
     emulationScaleFactor: number) {
-  const tracks = highlight[`${direction}s` as 'rows' | 'columns'];
-  const color = highlight.gridHighlightConfig[`${direction}LineColor` as 'rowLineColor' | 'columnLineColor'];
-  const dash = highlight.gridHighlightConfig[`${direction}LineDash` as 'rowLineDash' | 'columnLineDash'];
+  const tracks = highlight[`${direction}s`];
+  const color = highlight.gridHighlightConfig[`${direction}LineColor`];
+  const dash = highlight.gridHighlightConfig[`${direction}LineDash`];
 
   if (!color) {
     return null;

@@ -101,7 +101,7 @@ const UIStrings = {
    * from file, as opposed to a profile that has been captured locally.
    */
   loaded: 'Loaded',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/ProfileView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ProfileView extends UI.View.SimpleView implements UI.SearchableView.Searchable {
@@ -193,7 +193,6 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.dataGrid = new DataGrid.DataGrid.DataGridImpl({
       displayName: i18nString(UIStrings.profiler),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });
@@ -223,10 +222,10 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     this.linkifierInternal = new Components.Linkifier.Linkifier(maxLinkLength);
   }
 
-  static buildPopoverTable(popoverInfo: {
+  static buildPopoverTable(popoverInfo: Array<{
     title: string,
     value: string,
-  }[]): Element {
+  }>): Element {
     const table = document.createElement('table');
     for (const entry of popoverInfo) {
       const row = table.createChild('tr');
@@ -281,7 +280,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   columnHeader(_columnId: string): Common.UIString.LocalizedString {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   selectRange(timeLeft: number, timeRight: number): void {
@@ -343,7 +342,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
 
     if (selectedProfileNode) {
       // TODO(crbug.com/1011811): Cleanup the added `selected` property to this SDK class.
-      // @ts-ignore
+      // @ts-expect-error
       selectedProfileNode.selected = true;
     }
   }
@@ -397,7 +396,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   }
 
   createFlameChartDataProvider(): ProfileFlameChartDataProvider {
-    throw 'Not implemented';
+    throw new Error('Not implemented');
   }
 
   ensureFlameChartCreated(): void {
@@ -425,8 +424,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     if (!script) {
       return;
     }
-    const location =
-        (debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber) as SDK.DebuggerModel.Location);
+    const location = (debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber));
     const uiLocation =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(location);
     void Common.Revealer.reveal(uiLocation);
@@ -629,10 +627,10 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     }
 
     this.updateStatus(i18nString(UIStrings.parsing), true);
-    let error: null = null;
+    let error = null;
     try {
       this.profile = (JSON.parse(this.jsonifiedProfile) as Protocol.Profiler.Profile);
-      this.setProfile((this.profile as Protocol.Profiler.Profile));
+      this.setProfile((this.profile));
       this.updateStatus(i18nString(UIStrings.loaded), false);
     } catch (e) {
       error = e;

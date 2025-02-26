@@ -20,7 +20,7 @@ class ARIASelectorComputer {
   // every element resolves to a single result. If it does, the selector is added
   // to the chain of selectors.
   #computeUniqueARIASelectorForElements = (
-      elements: {name: string, role: string}[],
+      elements: Array<{name: string, role: string}>,
       queryByRoleOnly: boolean,
       ): DeepSelector|undefined => {
     const selectors: string[] = [];
@@ -144,7 +144,7 @@ class ARIASelectorComputer {
   compute = (node: Node): Selector|undefined => {
     let selector: Selector|undefined;
     let current: Node|null = node;
-    const elements: {name: string, role: string}[] = [];
+    const elements: Array<{name: string, role: string}> = [];
     while (current) {
       const role = this.#bindings.getAccessibleRole(current);
       const name = this.#bindings.getAccessibleName(current);

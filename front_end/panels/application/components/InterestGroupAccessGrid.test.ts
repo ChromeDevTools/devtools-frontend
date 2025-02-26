@@ -64,7 +64,7 @@ describeWithLocale('InterestGroupAccessGrid', () => {
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid');
     assert.isNull(nullGridElement);
 
-    const noEventsElement = component.shadowRoot!.querySelector('div.no-events-message');
+    const noEventsElement = component.shadowRoot!.querySelector('.empty-state');
     assert.instanceOf(noEventsElement, HTMLDivElement);
   });
 });

@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
@@ -118,7 +119,7 @@ Perhaps there's room for optimization there. You could investigate whether the c
 */
 const UIStringsNotTranslate = {
   analyzingCallTree: 'Analyzing call tree',
-};
+} as const;
 
 const lockedString = i18n.i18n.lockedString;
 
@@ -131,7 +132,12 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
   }
 
   override getOrigin(): string {
-    const selectedEvent = this.#callTree.selectedNode.event;
+    // Although in this context we expect the call tree to have a selected node
+    // as the entrypoint into the "Ask AI" tool is via selecting a node, it is
+    // possible to build trees without a selected node, in which case we
+    // fallback to the root node.
+    const node = this.#callTree.selectedNode ?? this.#callTree.rootNode;
+    const selectedEvent = node.event;
     // Get the non-resolved (ignore sourcemaps) URL for the event. We use the
     // non-resolved URL as in the context of the AI Assistance panel, we care
     // about the origin it was served on.
@@ -167,7 +173,7 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
   }
 
   override getTitle(): string {
-    const {event} = this.#callTree.selectedNode;
+    const event = this.#callTree.selectedNode?.event ?? this.#callTree.rootNode.event;
     if (!event) {
       return 'unknown';
     }
@@ -185,13 +191,13 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistancePerformanceAgent?.userTier;
+    const {hostConfig} = Root.Runtime;
+    return hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options(): RequestOptions {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = config.devToolsAiAssistancePerformanceAgent?.modelId;
+    const {hostConfig} = Root.Runtime;
+    const temperature = hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
 
     return {
       temperature,
@@ -214,24 +220,25 @@ export class PerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTre
     };
   }
 
+  #contextSet = new WeakSet();
+
   override async enhanceQuery(query: string, aiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null):
       Promise<string> {
-    const treeStr = aiCallTree?.getItem().serialize();
+    const treeItem = aiCallTree?.getItem();
+    let treeStr = treeItem?.serialize();
 
     // Collect the queries from previous messages in this session
-    const prevQueries: string[] = [];
-    for await (const data of this.runFromHistory()) {
-      if (data.type === ResponseType.QUERYING) {
-        prevQueries.push(data.query);
-      }
-    }
+
     // If this is a followup chat about the same call tree, don't include the call tree serialization again.
     // We don't need to repeat it and we'd rather have more the context window space.
-    if (prevQueries.length && treeStr && prevQueries.find(q => q.startsWith(treeStr))) {
-      aiCallTree = null;
+    if (treeItem && this.#contextSet.has(treeItem) && treeStr) {
+      treeStr = undefined;
+    }
+    if (treeItem && !this.#contextSet.has(treeItem)) {
+      this.#contextSet.add(treeItem);
     }
 
-    const perfEnhancementQuery = aiCallTree ? `${treeStr}\n\n# User request\n\n` : '';
+    const perfEnhancementQuery = treeStr ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
   }
 }

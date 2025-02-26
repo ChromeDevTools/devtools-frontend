@@ -21,7 +21,7 @@ const UIStrings = {
    * outcome of a FLEDGE auction. (https://developer.chrome.com/blog/fledge-api/)
    */
   interestGroups: 'Interest groups',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

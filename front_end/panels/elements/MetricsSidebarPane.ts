@@ -38,18 +38,18 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
-import metricsSidebarPaneStyles from './metricsSidebarPane.css.legacy.js';
+import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
 
 export class MetricsSidebarPane extends ElementsSidebarPane {
   originalPropertyData: SDK.CSSProperty.CSSProperty|null;
   previousPropertyDataCandidate: SDK.CSSProperty.CSSProperty|null;
   private inlineStyle: SDK.CSSStyleDeclaration.CSSStyleDeclaration|null;
   private highlightMode: string;
-  private boxElements: {
+  private boxElements: Array<{
     element: HTMLElement,
     name: string,
     backgroundColor: string,
-  }[];
+  }>;
   private isEditingMetrics?: boolean;
 
   constructor(computedStyleModel: ComputedStyleModel) {

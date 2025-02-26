@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 'use strict';
 
-const {isLitHtmlTemplateCall} = require('./utils.js');
 const path = require('path');
+
+const {isLitHtmlTemplateCall} = require('./utils.js');
 
 const FRONT_END_DIRECTORY = path.join(__dirname, '..', '..', '..', 'front_end');
 

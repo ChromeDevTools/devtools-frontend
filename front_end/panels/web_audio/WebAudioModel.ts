@@ -40,7 +40,7 @@ export class WebAudioModel extends SDK.SDKModel.SDKModel<EventTypes> implements 
 
   override async resumeModel(): Promise<void> {
     if (!this.enabled) {
-      return Promise.resolve();
+      return await Promise.resolve();
     }
     await this.agent.invoke_enable();
   }

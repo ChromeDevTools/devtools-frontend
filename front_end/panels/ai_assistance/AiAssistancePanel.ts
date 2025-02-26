@@ -8,9 +8,12 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -28,7 +31,6 @@ import {
   ErrorType,
   type ResponseData,
   ResponseType,
-  type SerializedAgent,
 } from './agents/AiAgent.js';
 import {
   FileAgent,
@@ -38,27 +40,28 @@ import {
   NetworkAgent,
   RequestContext,
 } from './agents/NetworkAgent.js';
-import {PatchAgent, ProjectContext} from './agents/PatchAgent.js';
+import {PatchAgent} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
-import {NodeContext, StylingAgent} from './agents/StylingAgent.js';
-import aiAssistancePanelStyles from './aiAssistancePanel.css.legacy.js';
-import {
-  AiHistoryStorage,
-} from './AiHistoryStorage.js';
+import {InsightContext, PerformanceInsightsAgent} from './agents/PerformanceInsightsAgent.js';
+import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
+import aiAssistancePanelStyles from './aiAssistancePanel.css.js';
+import {AiHistoryStorage, Conversation, ConversationType} from './AiHistoryStorage.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
+  type ChatMessage,
   ChatMessageEntity,
   ChatView,
   type ModelChatMessage,
   type Props as ChatViewProps,
   State as ChatViewState,
-  type Step,
+  type Step
 } from './components/ChatView.js';
 
 const {html} = Lit;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
+const SCREENSHOT_QUALITY = 100;
 
 const UIStrings = {
   /**
@@ -101,13 +104,20 @@ const UIStrings = {
    *@description AI assistance UI text explains that he user had no pas conversations.
    */
   noPastConversations: 'No past conversations',
-};
+  /**
+   * @description Placeholder text for an inactive text field. When active, it's used for the user's input to the GenAI assistance.
+   */
+  followTheSteps: 'Follow the steps above to ask a question',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForEmptyState: 'This is an experimental AI feature and won\'t always get it right.',
+} as const;
 
 /*
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
-
   /**
    *@description Announcement text for screen readers when the conversation starts.
    */
@@ -116,16 +126,95 @@ const UIStringsNotTranslate = {
    *@description Announcement text for screen readers when the answer comes.
    */
   answerReady: 'Answer ready',
-};
+  /**
+   * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
+   */
+  crossOriginError: 'To talk about data from another origin, start a new chat',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForStyling: 'Ask a question about the selected element',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForNetwork: 'Ask a question about the selected network request',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForFile: 'Ask a question about the selected file',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformance: 'Ask a question about the selected item and its call tree',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForStylingNoContext: 'Select an element to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForNetworkNoContext: 'Select a network request to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForFileNoContext: 'Select a file to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForPerformanceNoContext: 'Select an item to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceInsights: 'Ask a question about the selected performance insight',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForPerformanceInsightsNoContext: 'Select a performance insight to ask a question',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForStyling:
+      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForStylingEnterpriseNoLogging:
+      'Chat messages and any data the inspected page can access via Web APIs are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForNetwork:
+      'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForNetworkEnterpriseNoLogging:
+      'Chat messages and the selected network request are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForFile:
+      'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForFileEnterpriseNoLogging:
+      'Chat messages and the selected file are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForPerformance:
+      'Chat messages and the selected call tree are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForPerformanceEnterpriseNoLogging:
+      'Chat messages and the selected call stack are sent to Google. The content you submit and that is generated by this feature will not be used to improve Google’s AI models. This is an experimental AI feature and won’t always get it right.',
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
-
-interface ViewOutput {
-  chatView?: ChatView;
-}
-type View = (input: ChatViewProps, output: ViewOutput, target: HTMLElement) => void;
 
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {
@@ -135,17 +224,126 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-function defaultView(input: ChatViewProps, output: ViewOutput, target: HTMLElement): void {
+function getEmptyStateSuggestions(conversationType: ConversationType): string[] {
+  switch (conversationType) {
+    case ConversationType.STYLING:
+      return [
+        'What can you help me with?',
+        'Why isn’t this element visible?',
+        'How do I center this element?',
+      ];
+    case ConversationType.FILE:
+      return [
+        'What does this script do?',
+        'Is the script optimized for performance?',
+        'Does the script handle user input safely?',
+      ];
+    case ConversationType.NETWORK:
+      return [
+        'Why is this network request taking so long?',
+        'Are there any security headers present?',
+        'Why is the request failing?',
+      ];
+    case ConversationType.PERFORMANCE:
+      return [
+        'Identify performance issues in this call tree',
+        'Where is most of the time being spent in this call tree?',
+        'How can I reduce the time of this call tree?',
+      ];
+    case ConversationType.PERFORMANCE_INSIGHT:
+      // TODO(b/393061683): Define these.
+      return ['Placeholder', 'Suggestions', 'For now'];
+  }
+}
+
+interface ToolbarViewInput {
+  onNewChatClick: () => void;
+  onHistoryClick: (event: MouseEvent) => void;
+  onDeleteClick: () => void;
+  onHelpClick: () => void;
+  onSettingsClick: () => void;
+  isDeleteHistoryButtonVisible: boolean;
+}
+
+export type ViewInput = ChatViewProps&ToolbarViewInput;
+interface ViewOutput {
+  chatView?: ChatView;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
+  // clang-format off
+  return html`
+    <div class="toolbar-container" role="toolbar" .jslogContext=${VisualLogging.toolbar()}>
+      <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
+        <devtools-button
+          title=${i18nString(UIStrings.newChat)}
+          aria-label=${i18nString(UIStrings.newChat)}
+          .iconName=${'plus'}
+          .jslogContext=${'freestyler.new-chat'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onNewChatClick}></devtools-button>
+        <div class="toolbar-divider"></div>
+        <devtools-button
+          title=${i18nString(UIStrings.history)}
+          aria-label=${i18nString(UIStrings.history)}
+          .iconName=${'history'}
+          .jslogContext=${'freestyler.history'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onHistoryClick}></devtools-button>
+        ${input.isDeleteHistoryButtonVisible
+          ? html`<devtools-button
+              title=${i18nString(UIStrings.deleteChat)}
+              aria-label=${i18nString(UIStrings.deleteChat)}
+              .iconName=${'bin'}
+              .jslogContext=${'freestyler.delete'}
+              .variant=${Buttons.Button.Variant.TOOLBAR}
+              @click=${input.onDeleteClick}></devtools-button>`
+          : Lit.nothing}
+      </devtools-toolbar>
+      <devtools-toolbar class="freestyler-right-toolbar" role="presentation">
+        <x-link
+          class="toolbar-feedback-link devtools-link"
+          title=${UIStrings.sendFeedback}
+          href=${AI_ASSISTANCE_SEND_FEEDBACK}
+          jslog=${VisualLogging.link().track({click: true, keydown:'Enter|Space'}).context('freestyler.send-feedback')}
+        >${UIStrings.sendFeedback}</x-link>
+        <div class="toolbar-divider"></div>
+        <devtools-button
+          title=${i18nString(UIStrings.help)}
+          aria-label=${i18nString(UIStrings.help)}
+          .iconName=${'help'}
+          .jslogContext=${'freestyler.help'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onHelpClick}></devtools-button>
+        <devtools-button
+          title=${i18nString(UIStrings.settings)}
+          aria-label=${i18nString(UIStrings.settings)}
+          .iconName=${'gear'}
+          .jslogContext=${'freestyler.settings'}
+          .variant=${Buttons.Button.Variant.TOOLBAR}
+          @click=${input.onSettingsClick}></devtools-button>
+      </devtools-toolbar>
+    </div>
+  `;
+  // clang-format on
+}
+
+function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   Lit.render(html`
-    <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
-      if (!el || !(el instanceof ChatView)) {
-        return;
-      }
+    ${toolbarView(input)}
+    <div class="chat-container">
+      <devtools-ai-chat-view .props=${input} ${Lit.Directives.ref((el: Element|undefined) => {
+        if (!el || !(el instanceof ChatView)) {
+          return;
+        }
 
-      output.chatView = el;
-    })}></devtools-ai-chat-view>
-  `, target, {host: input}); // eslint-disable-line rulesdir/lit-host-this
+        output.chatView = el;
+      })}></devtools-ai-chat-view>
+    </div>
+  `, target, {host: input});
   // clang-format on
 }
 
@@ -163,13 +361,6 @@ function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): File
   return new FileContext(file);
 }
 
-function createProjectContext(project: Persistence.FileSystemWorkspaceBinding.FileSystem|null): ProjectContext|null {
-  if (!project) {
-    return null;
-  }
-  return new ProjectContext(project);
-}
-
 function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): RequestContext|null {
   if (!request) {
     return null;
@@ -183,37 +374,79 @@ function createCallTreeContext(callTree: TimelineUtils.AICallTree.AICallTree|nul
   }
   return new CallTreeContext(callTree);
 }
+function createPerfInsightContext(insight: TimelineUtils.InsightAIContext.ActiveInsight|null): InsightContext|null {
+  if (!insight) {
+    return null;
+  }
+  return new InsightContext(insight);
+}
+
+function agentTypeToConversationType(type: AgentType): ConversationType {
+  switch (type) {
+    case AgentType.STYLING:
+      return ConversationType.STYLING;
+    case AgentType.NETWORK:
+      return ConversationType.NETWORK;
+    case AgentType.FILE:
+      return ConversationType.FILE;
+    case AgentType.PERFORMANCE:
+      return ConversationType.PERFORMANCE;
+    case AgentType.PERFORMANCE_INSIGHT:
+      return ConversationType.PERFORMANCE_INSIGHT;
+    case AgentType.PATCH:
+      throw new Error('PATCH AgentType does not have a corresponding ConversationType.');
+  }
+}
 
 let panelInstance: AiAssistancePanel;
 export class AiAssistancePanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
-  #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
-  #viewProps: ChatViewProps;
   #viewOutput: ViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
   #mutex = new Common.Mutex.Mutex();
 
-  #newChatButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newChat), 'plus', undefined, 'freestyler.new-chat');
-  #historyEntriesButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.history), 'history', undefined, 'freestyler.history');
-  #deleteHistoryEntryButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteChat), 'bin', undefined, 'freestyler.delete');
-
-  #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
+  #currentConversation?: Conversation;
+  #conversations: Conversation[] = [];
 
   #previousSameOriginContext?: ConversationContext<unknown>;
-  #project: ProjectContext|null = null;
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
+  #selectedPerformanceInsight: InsightContext|null = null;
   #selectedRequest: RequestContext|null = null;
+
+  // Messages displayed in the `ChatView` component.
+  #messages: ChatMessage[] = [];
+  // Indicates whether the new conversation context is blocked due to cross-origin restrictions.
+  // This happens when the conversation's context has a different
+  // origin than the selected context.
+  #blockedByCrossOrigin = false;
+  // Whether the UI should show loading or not.
+  #isLoading = false;
+  // Selected conversation context. The reason we keep this as a
+  // state field rather than using `#getConversationContext` is that,
+  // there is a case where the context differs from the selectedElement (or other selected context type).
+  // Specifically, it allows restoring the previous context when a new selection is cross-origin.
+  // See `#onContextSelectionChanged` for details.
+  #selectedContext: ConversationContext<unknown>|null = null;
+  // Stores the availability status of the `AidaClient` and the reason for unavailability, if any.
+  #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+  // Info of the currently logged in user.
+  #userInfo: {
+    accountImage?: string,
+    accountFullName?: string,
+  };
+  #project?: Workspace.Workspace.Project;
+  #patchSuggestion?: string;
+  #patchSuggestionLoading?: boolean;
+  #imageInput = '';
+  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -224,92 +457,54 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.registerRequiredCSS(aiAssistancePanelStyles);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
-    this.#createToolbar();
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
-    this.#contentContainer = this.contentElement.createChild('div', 'chat-container');
-
-    this.#viewProps = {
-      state: this.#getChatUiState(),
-      aidaAvailability,
-      messages: [],
-      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      isLoading: false,
-      onTextSubmit: (text: string) => {
-        void this.#startConversation(text);
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-      },
-      onInspectElementClick: this.#handleSelectElementClick.bind(this),
-      onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
-      onCancelClick: this.#cancel.bind(this),
-      onContextClick: this.#handleContextClick.bind(this),
-      onNewConversation: this.#handleNewChatRequest.bind(this),
-      canShowFeedbackForm: this.#serverSideLoggingEnabled,
-      userInfo: {
-        accountImage: syncInfo.accountImage,
-        accountFullName: syncInfo.accountFullName,
-      },
-      selectedContext: null,
-      blockedByCrossOrigin: false,
-      stripLinks: false,
-      isReadOnly: false,
+    this.#aidaAvailability = aidaAvailability;
+    this.#userInfo = {
+      accountImage: syncInfo.accountImage,
+      accountFullName: syncInfo.accountFullName,
     };
 
-    for (const historyEntry of AiHistoryStorage.instance().getHistory()) {
-      this.#createAgent(historyEntry.type, historyEntry);
+    this.#conversations = AiHistoryStorage.instance().getHistory().map(item => {
+      return new Conversation(item.type, item.history, item.id, true);
+    });
+
+    this.#selectProject();
+  }
+
+  #selectProject(): void {
+    if (isAiAssistancePatchingEnabled()) {
+      // TODO: this is temporary code that should be replaced with
+      // workflow selection flow. For now it picks the first Workspace
+      // project that is not Snippets.
+      const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
+      this.#project = undefined;
+      for (const project of projects) {
+        // This is for TypeScript to narrow the types. projectsForType()
+        // probably only returns instances of
+        // Persistence.FileSystemWorkspaceBinding.FileSystem.
+        if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
+          continue;
+        }
+        // Workspace projects do not have a type. Only snippets and
+        // overrides do.
+        if (project.fileSystem().type()) {
+          continue;
+        }
+        this.#project = project;
+        this.requestUpdate();
+        break;
+      }
     }
   }
 
-  #createToolbar(): void {
-    const toolbarContainer = this.contentElement.createChild('div', 'toolbar-container');
-    toolbarContainer.setAttribute('jslog', VisualLogging.toolbar().toString());
-    toolbarContainer.role = 'toolbar';
-    const leftToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-left-toolbar');
-    leftToolbar.role = 'presentation';
-    const rightToolbar = toolbarContainer.createChild('devtools-toolbar', 'freestyler-right-toolbar');
-    rightToolbar.role = 'presentation';
-
-    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#handleNewChatRequest.bind(this));
-    leftToolbar.appendToolbarItem(this.#newChatButton);
-    leftToolbar.appendSeparator();
-
-    this.#historyEntriesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, event => {
-      this.#onHistoryClicked(event.data);
-    });
-    leftToolbar.appendToolbarItem(this.#historyEntriesButton);
-    this.#deleteHistoryEntryButton.addEventListener(
-        UI.Toolbar.ToolbarButton.Events.CLICK, this.#onDeleteClicked.bind(this));
-    leftToolbar.appendToolbarItem(this.#deleteHistoryEntryButton);
-
-    const link = UI.XLink.XLink.create(
-        AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
-        'freestyler.send-feedback');
-    link.style.setProperty('display', null);
-    link.style.setProperty('color', 'var(--sys-color-primary)');
-    link.style.setProperty('margin', '0 var(--sys-size-3)');
-    link.style.setProperty('height', 'calc(100% - 6px)');
-    const linkItem = new UI.Toolbar.ToolbarItem(link);
-    rightToolbar.appendToolbarItem(linkItem);
-
-    rightToolbar.appendSeparator();
-    const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.help), 'help', undefined, 'freestyler.help');
-    helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
-    });
-    rightToolbar.appendToolbarItem(helpButton);
-
-    const settingsButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.settings), 'gear', undefined, 'freestyler.settings');
-    settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-    });
-    rightToolbar.appendToolbarItem(settingsButton);
+  #onProjectAddedOrRemoved(): void {
+    this.#selectProject();
   }
 
   #getChatUiState(): ChatViewState {
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    const blockedByAge = config.aidaAvailability?.blockedByAge === true;
+    const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     return (this.#aiAssistanceEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? ChatViewState.CHAT_VIEW :
                                                                                      ChatViewState.CONSENT_VIEW;
   }
@@ -322,7 +517,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  #createAgent(agentType: AgentType, history?: SerializedAgent): AiAgent<unknown> {
+  #createAgent(agentType: AgentType): AiAgent<unknown> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
@@ -334,6 +529,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           ...options,
           changeManager: this.#changeManager,
         });
+        if (isAiAssistanceStylingWithFunctionCallingEnabled()) {
+          agent = new StylingAgentWithFunctionCalling({
+            ...options,
+            changeManager: this.#changeManager,
+          });
+        }
+
         break;
       }
       case AgentType.NETWORK: {
@@ -348,22 +550,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         agent = new PerformanceAgent(options);
         break;
       }
-      case AgentType.PATCH: {
-        agent = new PatchAgent(options);
+      case AgentType.PERFORMANCE_INSIGHT: {
+        agent = new PerformanceInsightsAgent(options);
         break;
       }
+      case AgentType.PATCH: {
+        throw new Error('AI Assistance does not support direct usage of the patch agent');
+      }
     }
-
-    if (history) {
-      agent.populateHistoryFromStorage(history);
-    }
-
-    this.#agents.add(agent);
     return agent;
-  }
-
-  #updateToolbarState(): void {
-    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
   }
 
   static async instance(opts: {
@@ -385,13 +580,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   // We select the default agent based on the open panels if
   // there isn't any active conversation.
   #selectDefaultAgentIfNeeded(): void {
-    // If there already is an agent and not it is not empty,
-    // we don't automatically change the agent.
-    if (this.#currentAgent && !this.#currentAgent.isEmpty) {
+    // If there already is an agent and if it is not empty,
+    // we don't automatically change the agent. In addition to this,
+    // we don't change the current agent when there is a message in flight.
+    if ((this.#currentAgent && !this.#currentAgent.isEmpty) || this.#isLoading) {
       return;
     }
 
-    const config = Common.Settings.Settings.instance().getHostConfig();
+    const {hostConfig} = Root.Runtime;
     const isElementsPanelVisible =
         Boolean(UI.Context.Context.instance().flavor(ElementsPanel.ElementsPanel.ElementsPanel));
     const isNetworkPanelVisible = Boolean(UI.Context.Context.instance().flavor(NetworkPanel.NetworkPanel.NetworkPanel));
@@ -400,13 +596,17 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel));
 
     let targetAgentType: AgentType|undefined = undefined;
-    if (isElementsPanelVisible && config.devToolsFreestyler?.enabled) {
+    if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
       targetAgentType = AgentType.STYLING;
-    } else if (isNetworkPanelVisible && config.devToolsAiAssistanceNetworkAgent?.enabled) {
+    } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
       targetAgentType = AgentType.NETWORK;
-    } else if (isSourcesPanelVisible && config.devToolsAiAssistanceFileAgent?.enabled) {
+    } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
       targetAgentType = AgentType.FILE;
-    } else if (isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled) {
+    } else if (
+        isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled &&
+        hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
+      targetAgentType = AgentType.PERFORMANCE_INSIGHT;
+    } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetAgentType = AgentType.PERFORMANCE;
     }
 
@@ -417,16 +617,19 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #updateAgentState(agent?: AiAgent<unknown>): void {
     if (this.#currentAgent !== agent) {
       this.#cancel();
+      this.#messages = [];
+      this.#isLoading = false;
       this.#currentAgent = agent;
-      this.#viewProps.agentType = this.#currentAgent?.type;
-      this.#viewProps.messages = [];
-      this.#viewProps.changeSummary = undefined;
-      this.#viewProps.isLoading = false;
-      this.#viewProps.isReadOnly = this.#currentAgent?.isHistoryEntry ?? false;
+      this.#currentConversation?.archiveConversation();
+      if (this.#currentAgent?.type) {
+        this.#currentConversation =
+            new Conversation(agentTypeToConversationType(this.#currentAgent.type), [], agent?.id, false);
+        this.#conversations.push(this.#currentConversation);
+      }
     }
 
     this.#onContextSelectionChanged();
-    void this.doUpdate();
+    this.requestUpdate();
   }
 
   override wasShown(): void {
@@ -435,30 +638,23 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#viewOutput.chatView?.focusTextInput();
     this.#selectDefaultAgentIfNeeded();
     void this.#handleAidaAvailabilityChange();
-    void this
-        .#handleAiAssistanceEnabledSettingChanged();  // If the setting was switched on/off while the AiAssistancePanel was not shown.
     this.#selectedElement =
-        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
+        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)));
     this.#selectedRequest =
-        createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
+        createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest));
     this.#selectedCallTree =
-        createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
-    this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
-    this.#project =
-        createProjectContext(UI.Context.Context.instance().flavor(Persistence.FileSystemWorkspaceBinding.FileSystem)),
-    this.#viewProps = {
-      ...this.#viewProps,
-      agentType: this.#currentAgent?.type,
-      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedContext: this.#getConversationContext(),
-    };
-    void this.doUpdate();
+        createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree));
+    this.#selectedPerformanceInsight =
+        createPerfInsightContext(UI.Context.Context.instance().flavor(TimelineUtils.InsightAIContext.ActiveInsight));
+    this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode));
+    this.#onContextSelectionChanged();
+    this.requestUpdate();
 
-    this.#aiAssistanceEnabledSetting?.addChangeListener(this.#handleAiAssistanceEnabledSettingChanged, this);
+    this.#aiAssistanceEnabledSetting?.addChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.addEventListener(
-        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
+
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
@@ -467,7 +663,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
-        Persistence.FileSystemWorkspaceBinding.FileSystem, this.#handlePersistenceFileSystemChange);
+        TimelineUtils.InsightAIContext.ActiveInsight, this.#handlePerfInsightFlavorChange);
+
     UI.Context.Context.instance().addFlavorChangeListener(
         ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().addFlavorChangeListener(
@@ -481,19 +678,30 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
+
+    if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+
+      // @ts-expect-error temporary global function for local testing.
+      window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
+        return await this.#applyPatch(changeSummary);
+      };
+    }
   }
 
   override willHide(): void {
-    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.#handleAiAssistanceEnabledSettingChanged, this);
+    this.#aiAssistanceEnabledSetting?.removeChangeListener(this.requestUpdate, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
         Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
-    this.#toggleSearchElementAction.removeEventListener(
-        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    this.#toggleSearchElementAction.removeEventListener(UI.ActionRegistration.Events.TOGGLED, this.requestUpdate, this);
     UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        TimelineUtils.InsightAIContext.ActiveInsight, this.#handlePerfInsightFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
@@ -516,30 +724,26 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#handleDOMNodeAttrChange,
         this,
     );
+
+    if (isAiAssistancePatchingEnabled()) {
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.removeEventListener(
+          Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+    }
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
-    if (currentAidaAvailability !== this.#viewProps.aidaAvailability) {
-      this.#viewProps.aidaAvailability = currentAidaAvailability;
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
       const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
           resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
-      this.#viewProps.userInfo = {
+      this.#userInfo = {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       };
-      this.#viewProps.state = this.#getChatUiState();
-      void this.doUpdate();
+      this.requestUpdate();
     }
-  };
-
-  #handleSearchElementActionToggled = (ev: Common.EventTarget.EventTargetEvent<boolean>): void => {
-    if (this.#viewProps.inspectElementToggled === ev.data) {
-      return;
-    }
-
-    this.#viewProps.inspectElementToggled = ev.data;
-    void this.doUpdate();
   };
 
   #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
@@ -555,7 +759,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       (ev: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void => {
         if (this.#selectedElement?.getItem() === ev.data.node) {
           if (ev.data.name === 'class' || ev.data.name === 'id') {
-            void this.doUpdate();
+            this.requestUpdate();
           }
         }
       };
@@ -580,6 +784,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateAgentState(this.#currentAgent);
       };
 
+  #handlePerfInsightFlavorChange =
+      (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.InsightAIContext.ActiveInsight>): void => {
+        if (this.#selectedPerformanceInsight?.getItem() === ev.data) {
+          return;
+        }
+
+        this.#selectedPerformanceInsight = Boolean(ev.data) ? new InsightContext(ev.data) : null;
+        this.#updateAgentState(this.#currentAgent);
+      };
+
   #handleUISourceCodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
         const newFile = ev.data;
@@ -593,39 +807,174 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#updateAgentState(this.#currentAgent);
       };
 
-  #handlePersistenceFileSystemChange =
-      (ev: Common.EventTarget.EventTargetEvent<Persistence.FileSystemWorkspaceBinding.FileSystem>): void => {
-        const newProject = ev.data;
-        if (!newProject) {
-          return;
-        }
-        if (this.#project?.getItem() === newProject) {
-          return;
-        }
-        this.#project = new ProjectContext(ev.data as Workspace.Workspace.Project);
-        this.#updateAgentState(this.#currentAgent);
-      };
+  #getChangeSummary(): string|undefined {
+    return (isAiAssistancePatchingEnabled() && this.#currentAgent && !this.#currentConversation?.isReadOnly) ?
+        this.#changeManager.formatChanges(this.#currentAgent.id) :
+        undefined;
+  }
 
-  #handleAiAssistanceEnabledSettingChanged = (): void => {
-    const nextChatUiState = this.#getChatUiState();
-    if (this.#viewProps.state === nextChatUiState) {
-      return;
-    }
-
-    this.#viewProps.state = nextChatUiState;
-    void this.doUpdate();
-  };
-
-  async doUpdate(): Promise<void> {
-    this.#updateToolbarState();
-    this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
+  override async performUpdate(): Promise<void> {
+    this.view(
+        {
+          state: this.#getChatUiState(),
+          blockedByCrossOrigin: this.#blockedByCrossOrigin,
+          aidaAvailability: this.#aidaAvailability,
+          isLoading: this.#isLoading,
+          messages: this.#messages,
+          selectedContext: this.#selectedContext,
+          agentType: this.#currentAgent?.type,
+          isReadOnly: this.#currentConversation?.isReadOnly ?? false,
+          changeSummary: this.#getChangeSummary(),
+          patchSuggestion: this.#patchSuggestion,
+          patchSuggestionLoading: this.#patchSuggestionLoading,
+          stripLinks: this.#currentAgent?.type === AgentType.PERFORMANCE,
+          inspectElementToggled: this.#toggleSearchElementAction.toggled(),
+          userInfo: this.#userInfo,
+          canShowFeedbackForm: this.#serverSideLoggingEnabled,
+          multimodalInputEnabled:
+              isAiAssistanceMultimodalInputEnabled() && this.#currentAgent?.type === AgentType.STYLING,
+          imageInput: this.#imageInput,
+          projectName: this.#project?.displayName() ?? '',
+          isDeleteHistoryButtonVisible: Boolean(this.#currentConversation && !this.#currentConversation.isEmpty),
+          isTextInputDisabled: this.#isTextInputDisabled(),
+          emptyStateSuggestions: this.#currentConversation ? getEmptyStateSuggestions(this.#currentConversation.type) :
+                                                             [],
+          inputPlaceholder: this.#getChatInputPlaceholder(),
+          disclaimerText: this.#getDisclaimerText(),
+          onNewChatClick: this.#handleNewChatRequest.bind(this),
+          onHistoryClick: this.#onHistoryClicked.bind(this),
+          onDeleteClick: this.#onDeleteClicked.bind(this),
+          onHelpClick: () => {
+            Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
+          },
+          onSettingsClick: () => {
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          },
+          onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
+            this.#imageInput = '';
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+            await this.#startConversation(text, imageInput);
+          },
+          onInspectElementClick: this.#handleSelectElementClick.bind(this),
+          onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
+          onCancelClick: this.#cancel.bind(this),
+          onContextClick: this.#handleContextClick.bind(this),
+          onNewConversation: this.#handleNewChatRequest.bind(this),
+          onCancelCrossOriginChat: this.#blockedByCrossOrigin && this.#previousSameOriginContext ?
+              this.#handleCrossOriginChatCancellation.bind(this) :
+              undefined,
+          onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
+          onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
+                                                                       undefined,
+          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this)
+        },
+        this.#viewOutput, this.contentElement);
   }
 
   #handleSelectElementClick(): void {
     void this.#toggleSearchElementAction.execute();
   }
 
-  #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string): void {
+  #isTextInputDisabled(): boolean {
+    // If the `aiAssistanceSetting` is not enabled
+    // or if the user is blocked by age, the text input is disabled.
+    const aiAssistanceSetting = this.#aiAssistanceEnabledSetting?.getIfNotDisabled();
+    const isBlockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
+    if (!aiAssistanceSetting || isBlockedByAge) {
+      return true;
+    }
+
+    // If the Aida is not available, the text input is disabled.
+    const isAidaAvailable = this.#aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
+    if (!isAidaAvailable) {
+      return true;
+    }
+
+    // If sending a new message is blocked by cross origin context
+    // the text input is disabled.
+    if (this.#blockedByCrossOrigin) {
+      return true;
+    }
+
+    // If there is no current agent if there is no selected context
+    // the text input is disabled.
+    if (!this.#currentConversation || !this.#selectedContext) {
+      return true;
+    }
+
+    return false;
+  }
+
+  #getChatInputPlaceholder(): Platform.UIString.LocalizedString {
+    const state = this.#getChatUiState();
+    if (state === ChatViewState.CONSENT_VIEW || !this.#currentConversation) {
+      return i18nString(UIStrings.followTheSteps);
+    }
+
+    if (this.#blockedByCrossOrigin) {
+      return lockedString(UIStringsNotTranslate.crossOriginError);
+    }
+
+    switch (this.#currentConversation.type) {
+      case ConversationType.STYLING:
+        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForStyling) :
+                                       lockedString(UIStringsNotTranslate.inputPlaceholderForStylingNoContext);
+      case ConversationType.FILE:
+        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFile) :
+                                       lockedString(UIStringsNotTranslate.inputPlaceholderForFileNoContext);
+      case ConversationType.NETWORK:
+        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForNetwork) :
+                                       lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkNoContext);
+      case ConversationType.PERFORMANCE:
+        return this.#selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForPerformance) :
+                                       lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceNoContext);
+      case ConversationType.PERFORMANCE_INSIGHT:
+        return this.#selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsights) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceInsightsNoContext);
+    }
+  }
+
+  #getDisclaimerText(): Platform.UIString.LocalizedString {
+    const state = this.#getChatUiState();
+    if (state === ChatViewState.CONSENT_VIEW || !this.#currentConversation || this.#currentConversation.isReadOnly) {
+      return i18nString(UIStrings.inputDisclaimerForEmptyState);
+    }
+
+    const noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
+    switch (this.#currentConversation.type) {
+      case ConversationType.STYLING:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForStylingEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForStyling);
+      case ConversationType.FILE:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForFileEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForFile);
+      case ConversationType.NETWORK:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForNetworkEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForNetwork);
+      case ConversationType.PERFORMANCE:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+      case ConversationType.PERFORMANCE_INSIGHT:
+        // TODO(b/393061683): Define these rather than reuse the existing performance agent.
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformanceEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForPerformance);
+    }
+  }
+
+  async #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string):
+      Promise<void> {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,
@@ -641,7 +990,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleContextClick(): void|Promise<void> {
-    const context = this.#viewProps.selectedContext;
+    const context = this.#selectedContext;
     if (context instanceof RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
@@ -651,14 +1000,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof CallTreeContext) {
-      const trace = new SDK.TraceObject.RevealableEvent(context.getItem().selectedNode.event);
+      const item = context.getItem();
+      const event = item.selectedNode?.event ?? item.rootNode.event;
+      const trace = new SDK.TraceObject.RevealableEvent(event);
       return Common.Revealer.reveal(trace);
     }
     // Node picker is using linkifier.
   }
 
   handleAction(actionId: string): void {
-    if (this.#viewProps.isLoading) {
+    if (this.#isLoading) {
       // If running some queries already, focus the input with the abort
       // button and do nothing.
       this.#viewOutput.chatView?.focusTextInput();
@@ -667,11 +1018,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     let targetAgentType: AgentType|undefined;
     switch (actionId) {
-      case 'ai-assistance.filesystem': {
-        // TODO: metrics if needed.
-        targetAgentType = AgentType.PATCH;
-        break;
-      }
       case 'freestyler.elements-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromElementsPanelFloatingButton);
         targetAgentType = AgentType.STYLING;
@@ -697,6 +1043,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         targetAgentType = AgentType.PERFORMANCE;
         break;
       }
+      case 'drjones.performance-insight-context': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromPerformanceInsight);
+        targetAgentType = AgentType.PERFORMANCE_INSIGHT;
+        break;
+      }
       case 'drjones.sources-floating-button': {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanelFloatingButton);
         targetAgentType = AgentType.FILE;
@@ -714,8 +1065,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     let agent = this.#currentAgent;
-    if (!this.#currentAgent || this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry ||
-        targetAgentType === AgentType.PERFORMANCE) {
+    if (!this.#currentConversation || !this.#currentAgent || this.#currentAgent.type !== targetAgentType ||
+        this.#currentConversation?.isEmpty || targetAgentType === AgentType.PERFORMANCE) {
       agent = this.#createAgent(targetAgentType);
     }
     this.#updateAgentState(agent);
@@ -723,25 +1074,26 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #onHistoryClicked(event: Event): void {
-    const boundingRect = this.#historyEntriesButton.element.getBoundingClientRect();
+    const target = event.target as Element | undefined;
+    const clientRect = target?.getBoundingClientRect();
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
-      x: boundingRect.left,
-      y: boundingRect.bottom,
       useSoftMenu: true,
+      x: clientRect?.left,
+      y: clientRect?.bottom,
     });
 
-    for (const agent of [...this.#agents].reverse()) {
-      if (agent.isEmpty) {
+    for (const conversation of [...this.#conversations].reverse()) {
+      if (conversation.isEmpty) {
         continue;
       }
-      const title = agent.title;
+      const title = conversation.title;
       if (!title) {
         continue;
       }
 
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
-        void this.#switchAgent(agent);
-      }, {checked: (this.#currentAgent === agent)});
+        void this.#openConversation(conversation);
+      }, {checked: (this.#currentConversation === conversation)});
     }
 
     const historyEmpty = contextMenu.defaultSection().items.length === 0;
@@ -765,14 +1117,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #clearHistory(): void {
-    this.#agents = new Set();
+    this.#conversations = [];
+    this.#currentConversation = undefined;
     void AiHistoryStorage.instance().deleteAll();
     this.#updateAgentState();
   }
 
   #onDeleteClicked(): void {
     if (this.#currentAgent) {
-      this.#agents.delete(this.#currentAgent);
+      this.#conversations = this.#conversations.filter(conversation => conversation !== this.#currentConversation);
+      this.#currentConversation = undefined;
       void AiHistoryStorage.instance().deleteHistoryEntry(this.#currentAgent.id);
     }
     this.#updateAgentState();
@@ -780,13 +1134,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }
 
-  async #switchAgent(agent: AiAgent<unknown>): Promise<void> {
-    if (this.#currentAgent === agent) {
+  async #openConversation(conversation: Conversation): Promise<void> {
+    if (this.#currentConversation === conversation) {
       return;
     }
-    this.#updateAgentState(agent);
-    this.#viewProps.isReadOnly = true;
-    await this.#doConversation(agent.runFromHistory());
+    this.#currentConversation = conversation;
+    this.#messages = [];
+    await this.#doConversation(conversation.history);
   }
 
   #handleNewChatRequest(): void {
@@ -798,36 +1152,57 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleCrossOriginChatCancellation(): void {
     if (this.#previousSameOriginContext) {
       this.#onContextSelectionChanged(this.#previousSameOriginContext);
-      void this.doUpdate();
+      this.requestUpdate();
     }
+  }
+
+  async #handleTakeScreenshot(): Promise<void> {
+    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!mainTarget) {
+      throw new Error('Could not find main target');
+    }
+    const model = mainTarget.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
+    if (!model) {
+      throw new Error('Could not find model');
+    }
+    const bytes = await model.captureScreenshot(
+        Protocol.Page.CaptureScreenshotRequestFormat.Jpeg,
+        SCREENSHOT_QUALITY,
+        SDK.ScreenCaptureModel.ScreenshotMode.FROM_VIEWPORT,
+    );
+    if (bytes) {
+      this.#imageInput = bytes;
+      this.requestUpdate();
+    }
+  }
+
+  #handleRemoveImageInput(): void {
+    this.#imageInput = '';
+    this.requestUpdate();
   }
 
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
-    this.#viewProps.isLoading = false;
-    void this.doUpdate();
+    this.#isLoading = false;
+    this.requestUpdate();
   }
 
   #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
     if (!this.#currentAgent) {
-      this.#viewProps.blockedByCrossOrigin = false;
+      this.#blockedByCrossOrigin = false;
       return;
     }
     const currentContext = contextToRestore ?? this.#getConversationContext();
-    this.#viewProps.selectedContext = currentContext;
+    this.#selectedContext = currentContext;
     if (!currentContext) {
-      this.#viewProps.blockedByCrossOrigin = false;
+      this.#blockedByCrossOrigin = false;
       return;
     }
-    this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
-    if (!this.#viewProps.blockedByCrossOrigin) {
+    this.#blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
+    if (!this.#blockedByCrossOrigin) {
       this.#previousSameOriginContext = currentContext;
     }
-    if (this.#viewProps.blockedByCrossOrigin && this.#previousSameOriginContext) {
-      this.#viewProps.onCancelCrossOriginChat = this.#handleCrossOriginChatCancellation.bind(this);
-    }
-    this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.PERFORMANCE;
   }
 
   #getConversationContext(): ConversationContext<unknown>|null {
@@ -848,14 +1223,16 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       case AgentType.PERFORMANCE:
         context = this.#selectedCallTree;
         break;
-      case AgentType.PATCH:
-        context = this.#project;
+      case AgentType.PERFORMANCE_INSIGHT:
+        context = this.#selectedPerformanceInsight;
         break;
+      case AgentType.PATCH:
+        throw new Error('AI Assistance does not support direct usage of the patch agent');
     }
     return context;
   }
 
-  async #startConversation(text: string): Promise<void> {
+  async #startConversation(text: string, imageInput?: Host.AidaClient.Part): Promise<void> {
     if (!this.#currentAgent) {
       return;
     }
@@ -870,16 +1247,64 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       // invariants do not hold anymore.
       throw new Error('cross-origin context data should not be included');
     }
-    const runner = this.#currentAgent.run(text, {
-      signal,
-      selected: context,
-    });
+
+    const image = isAiAssistanceMultimodalInputEnabled() ? imageInput : undefined;
+    const imageId = image ? crypto.randomUUID() : undefined;
+    const runner = this.#currentAgent.run(
+        text, {
+          signal,
+          selected: context,
+        },
+        image, imageId);
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
-    await this.#doConversation(runner);
+    await this.#doConversation(this.#saveResponsesToCurrentConversation(runner));
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
-  async #doConversation(generator: AsyncGenerator<ResponseData, void, void>): Promise<void> {
+  async #onApplyToWorkspace(): Promise<void> {
+    if (!isAiAssistancePatchingEnabled()) {
+      return;
+    }
+    const changeSummary = this.#getChangeSummary();
+    if (!changeSummary) {
+      throw new Error('Change summary does not exist');
+    }
+
+    this.#patchSuggestionLoading = true;
+    this.requestUpdate();
+    const response = await this.#applyPatch(changeSummary);
+    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
+    this.#patchSuggestionLoading = false;
+    this.requestUpdate();
+  }
+
+  async #applyPatch(changeSummary: string): Promise<ResponseData|undefined> {
+    if (!this.#project) {
+      throw new Error('Project does not exist');
+    }
+    const agent = new PatchAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+      project: this.#project,
+    });
+    const responses = await Array.fromAsync(agent.applyChanges(changeSummary));
+    return responses.at(-1);
+  }
+
+  async *
+      #saveResponsesToCurrentConversation(items: AsyncIterable<ResponseData, void, void>):
+          AsyncGenerator<ResponseData, void, void> {
+    for await (const data of items) {
+      // We don't want to save partial responses to the conversation history.
+      if (data.type !== ResponseType.ANSWER || data.complete) {
+        this.#currentConversation?.addHistoryItem(data);
+      }
+      yield data;
+    }
+  }
+
+  async #doConversation(items: Iterable<ResponseData, void, void>|AsyncIterable<ResponseData, void, void>):
+      Promise<void> {
     const release = await this.#mutex.acquire();
     try {
       let systemMessage: ModelChatMessage = {
@@ -897,20 +1322,21 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
       }
 
-      this.#viewProps.isLoading = true;
-      for await (const data of generator) {
+      this.#isLoading = true;
+      for await (const data of items) {
         step.sideEffect = undefined;
         switch (data.type) {
           case ResponseType.USER_QUERY: {
-            this.#viewProps.messages.push({
+            this.#messages.push({
               entity: ChatMessageEntity.USER,
               text: data.query,
+              imageInput: data.imageInput,
             });
             systemMessage = {
               entity: ChatMessageEntity.MODEL,
               steps: [],
             };
-            this.#viewProps.messages.push(systemMessage);
+            this.#messages.push(systemMessage);
             break;
           }
           case ResponseType.QUERYING: {
@@ -939,28 +1365,33 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             commitStep();
             break;
           }
+          case ResponseType.SUGGESTIONS: {
+            systemMessage.suggestions = data.suggestions;
+            break;
+          }
           case ResponseType.SIDE_EFFECT: {
             step.isLoading = false;
-            step.code = data.code;
+            step.code ??= data.code;
             step.sideEffect = {
-              onAnswer: data.confirm,
+              onAnswer: (result: boolean) => {
+                data.confirm(result);
+                step.sideEffect = undefined;
+                this.requestUpdate();
+              },
             };
             commitStep();
             break;
           }
           case ResponseType.ACTION: {
             step.isLoading = false;
-            step.code = data.code;
-            step.output = data.output;
+            step.code ??= data.code;
+            step.output ??= data.output;
             step.canceled = data.canceled;
-            if (isAiAssistanceChangeSummariesEnabled() && this.#currentAgent && !this.#currentAgent.isHistoryEntry) {
-              this.#viewProps.changeSummary = this.#changeManager.formatChanges(this.#currentAgent.id);
-            }
             commitStep();
             break;
           }
           case ResponseType.ANSWER: {
-            systemMessage.suggestions = data.suggestions;
+            systemMessage.suggestions ??= data.suggestions;
             systemMessage.answer = data.text;
             systemMessage.rpcId = data.rpcId;
             // When there is an answer without any thinking steps, we don't want to show the thinking step.
@@ -991,8 +1422,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
         // Commit update intermediated step when not
         // in read only mode.
-        if (!this.#viewProps.isReadOnly) {
-          void this.doUpdate();
+        if (!this.#currentConversation?.isReadOnly) {
+          this.requestUpdate();
 
           // This handles scrolling to the bottom for live conversations when:
           // * User submits the query & the context step is shown.
@@ -1003,9 +1434,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         }
       }
 
-      this.#viewProps.isLoading = false;
+      this.#isLoading = false;
       this.#viewOutput.chatView?.finishTextAnimations();
-      void this.doUpdate();
+      this.requestUpdate();
     } finally {
       release();
     }
@@ -1023,9 +1454,9 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-context':
+      case 'drjones.performance-insight-context':
       case 'drjones.sources-floating-button':
-      case 'drjones.sources-panel-context':
-      case 'ai-assistance.filesystem': {
+      case 'drjones.sources-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(
               AiAssistancePanel.panelName,
@@ -1047,35 +1478,22 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
-function setAiAssistanceChangeSummariesEnabled(enabled: true): void {
-  if (enabled) {
-    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'true');
-  } else {
-    localStorage.setItem('aiAssistance_changeSummariesEnabled', 'false');
-  }
+function isAiAssistanceMultimodalInputEnabled(): boolean {
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.multimodal);
 }
 
-function isAiAssistanceChangeSummariesEnabled(): boolean {
-  return localStorage.getItem('aiAssistance_changeSummariesEnabled') === 'true';
-}
-
-function setAiAssistanceServerSideLoggingEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('aiAssistance_enableServerSideLogging', 'true');
-  } else {
-    localStorage.setItem('aiAssistance_enableServerSideLogging', 'false');
-  }
+function isAiAssistancePatchingEnabled(): boolean {
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.patching);
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
-  const config = Common.Settings.Settings.instance().getHostConfig();
-  if (config.aidaAvailability?.disallowLogging) {
-    return false;
-  }
-  return localStorage.getItem('aiAssistance_enableServerSideLogging') !== 'false';
+  const {hostConfig} = Root.Runtime;
+  return !hostConfig.aidaAvailability?.disallowLogging;
 }
 
-// @ts-ignore
-globalThis.setAiAssistanceServerSideLoggingEnabled = setAiAssistanceServerSideLoggingEnabled;
-// @ts-ignore
-globalThis.setAiAssistanceChangeSummariesEnabled = setAiAssistanceChangeSummariesEnabled;
+function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
+  const {hostConfig} = Root.Runtime;
+  return Boolean(hostConfig.devToolsFreestyler?.functionCalling);
+}

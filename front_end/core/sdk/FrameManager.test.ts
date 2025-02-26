@@ -132,7 +132,7 @@ describe('FrameManager', () => {
     assert.deepEqual(dispatchedEvents[2].data, {frameId: childFrameId});
     let frameFromId = frameManager.getFrame(parentFrameId);
     assert.strictEqual(frameFromId?.id, parentFrameId);
-    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), targetId as Protocol.Target.TargetID);
+    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), targetId);
     frameFromId = frameManager.getFrame(childFrameId);
     assert.isNull(frameFromId);
   });
@@ -199,10 +199,10 @@ describe('FrameManager', () => {
     });
     let frameFromId = frameManager.getFrame(parentFrameId);
     assert.strictEqual(frameFromId?.id, parentFrameId);
-    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), parentTargetId as Protocol.Target.TargetID);
+    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), parentTargetId);
     frameFromId = frameManager.getFrame(childFrameId);
     assert.strictEqual(frameFromId?.id, childFrameId);
-    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), childTargetId as Protocol.Target.TargetID);
+    assert.strictEqual(frameFromId?.resourceTreeModel().target().id(), childTargetId);
   });
 
   it('transfers frame creation stack traces during OOPIF transfer (case 1)', () => {

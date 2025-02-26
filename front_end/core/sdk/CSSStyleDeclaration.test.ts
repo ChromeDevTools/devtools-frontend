@@ -8,7 +8,7 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as SDK from './sdk.js';
 
-function assertPropertValues<T>(object: T, expectedKeyValuePairs: [key: string, value: unknown][]): void {
+function assertPropertValues<T>(object: T, expectedKeyValuePairs: Array<[key: string, value: unknown]>): void {
   for (const [key, value] of expectedKeyValuePairs) {
     assert.propertyVal(object, key, value);
   }

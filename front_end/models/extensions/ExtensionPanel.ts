@@ -219,7 +219,7 @@ export class ExtensionSidebarPane extends UI.View.SimpleView {
         callback();
         return;
       }
-      const firstChild = result.tree && result.tree.firstChild();
+      const firstChild = result.tree?.firstChild();
       if (firstChild) {
         firstChild.expand();
       }

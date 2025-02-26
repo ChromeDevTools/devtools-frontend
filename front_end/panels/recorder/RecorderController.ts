@@ -19,7 +19,7 @@ import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../ui/components/menus/menus.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../ui/legacy/inspectorCommon.css.legacy.js';
+import inspectorCommonStylesRaw from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -31,7 +31,7 @@ import * as Converters from './converters/converters.js';
 import * as Extensions from './extensions/extensions.js';
 import * as Models from './models/models.js';
 import * as Actions from './recorder-actions/recorder-actions.js';
-import recorderControllerStylesRaw from './recorderController.css.legacy.js';
+import recorderControllerStylesRaw from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
@@ -127,7 +127,7 @@ const UIStrings = {
    * @description Link text to forward to a documentation page on the recorder.
    */
   learnMore: 'Learn more'
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/recorder/RecorderController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -220,9 +220,9 @@ export class RecorderController extends LitElement {
   @state() declare private exportMenuExpanded: boolean;
   #exportMenuButton: Buttons.Button.Button|undefined;
 
-  #stepBreakpointIndexes: Set<number> = new Set();
+  #stepBreakpointIndexes = new Set<number>();
 
-  #builtInConverters: Readonly<Converters.Converter.Converter[]>;
+  #builtInConverters: readonly Converters.Converter.Converter[];
   @state() declare private extensionConverters: Converters.Converter.Converter[];
   @state() declare private replayExtensions: Extensions.ExtensionManager.Extension[];
 
@@ -319,7 +319,7 @@ export class RecorderController extends LitElement {
         /* chunkSize */ 10000000);
     const success = await reader.read(outputStream);
     if (!success) {
-      throw reader.error();
+      throw reader.error() ?? new Error('Unknown');
     }
 
     let flow: Models.Schema.UserFlow|undefined;
@@ -338,7 +338,7 @@ export class RecorderController extends LitElement {
     this.#setCurrentRecording(recording);
   }
 
-  getSectionsForTesting(): Array<Models.Section.Section>|undefined {
+  getSectionsForTesting(): Models.Section.Section[]|undefined {
     return this.sections;
   }
 
@@ -462,7 +462,7 @@ export class RecorderController extends LitElement {
       this.viewDescriptor = undefined;
     }
     if (event.data.extension) {
-      return this.#onPlayViaExtension(event.data.extension);
+      return await this.#onPlayViaExtension(event.data.extension);
     }
     Host.userMetrics.recordingReplayStarted(
         event.data.targetPanel !== Components.RecordingView.TargetPanel.DEFAULT ?
@@ -1129,7 +1129,7 @@ export class RecorderController extends LitElement {
           <span>${i18nString(UIStrings.recordingDescription)}</span>
           ${UI.XLink.XLink.create(RECORDER_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
         </div>
-        <devtools-button jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
+        <devtools-button .variant=${Buttons.Button.Variant.TONAL} jslogContext=${Actions.RecorderActions.CREATE_RECORDING} @click=${this.#onCreateNewRecording}>${i18nString(UIStrings.createRecording)}</devtools-button>
       </div>
     `;
     // clang-format on

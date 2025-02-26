@@ -14,8 +14,8 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import type * as TimelineUtils from '../utils/utils.js';
 
-import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.legacy.js';
-import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.legacy.js';
+import NetworkRequestDetailsStylesRaw from './networkRequestDetails.css.js';
+import networkRequestTooltipStylesRaw from './networkRequestTooltip.css.js';
 import {NetworkRequestTooltip} from './NetworkRequestTooltip.js';
 import {colorForNetworkRequest} from './Utils.js';
 
@@ -103,8 +103,8 @@ const UIStrings = {
   /**
    * @description Text to refer to a 3rd Party entity.
    */
-  entity: '3rd party entity',
-};
+  entity: '3rd party',
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

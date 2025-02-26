@@ -40,6 +40,7 @@ import type {Serializer} from '../common/Settings.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import {Cookie} from './Cookie.js';
 import {
@@ -115,7 +116,7 @@ const UIStrings = {
    *@example {https://example.com} PH3
    */
   sFinishedLoadingSS: '{PH1} finished loading: {PH2} "{PH3}".',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/NetworkManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -147,9 +148,9 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (Common.Settings.Settings.instance().moduleSetting('cache-disabled').get()) {
       void this.#networkAgent.invoke_setCacheDisabled({cacheDisabled: true});
     }
-    if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled &&
-        Common.Settings.Settings.instance().getHostConfig().thirdPartyCookieControls?.managedBlockThirdPartyCookies !==
-            true &&
+    const {hostConfig} = Root.Runtime;
+    if (hostConfig.devToolsPrivacyUI?.enabled &&
+        hostConfig.thirdPartyCookieControls?.managedBlockThirdPartyCookies !== true &&
         (Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', undefined).get() ||
          Common.Settings.Settings.instance().createSetting('grace-period-mitigation-disabled', undefined).get() ||
          Common.Settings.Settings.instance().createSetting('heuristic-mitigation-disabled', undefined).get())) {
@@ -358,8 +359,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     void this.#networkAgent.invoke_setBypassServiceWorker({bypass: this.#bypassServiceWorkerSetting.get()});
   }
 
-  async getSecurityIsolationStatus(frameId: Protocol.Page.FrameId|
-                                   null): Promise<Protocol.Network.SecurityIsolationStatus|null> {
+  async getSecurityIsolationStatus(frameId: Protocol.Page.FrameId|null):
+      Promise<Protocol.Network.SecurityIsolationStatus|null> {
     const result = await this.#networkAgent.invoke_getSecurityIsolationStatus({frameId: frameId ?? undefined});
     if (result.getError()) {
       return null;
@@ -367,8 +368,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     return result.status;
   }
 
-  async enableReportingApi(enable: boolean = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
-    return this.#networkAgent.invoke_enableReportingApi({enable});
+  async enableReportingApi(enable = true): Promise<Promise<Protocol.ProtocolResponseWithError>> {
+    return await this.#networkAgent.invoke_enableReportingApi({enable});
   }
 
   async loadNetworkResource(
@@ -1106,9 +1107,12 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     if (loaderId) {
       this.#requestsByLoaderId.set(loaderId, networkRequest);
     }
-    // The following relies on the fact that loaderIds and requestIds are
-    // globally unique and that the main request has them equal.
-    if (networkRequest.loaderId === networkRequest.requestId()) {
+    // The following relies on the fact that loaderIds and requestIds
+    // are globally unique and that the main request has them equal. If
+    // loaderId is an empty string, it indicates a worker request. For the
+    // request to fetch the main worker script, the request ID is the future
+    // worker target ID and, therefore, it is unique.
+    if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === '') {
       MultitargetNetworkManager.instance().inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
 
@@ -1128,7 +1132,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     networkRequest.finished = true;
     if (encodedDataLength >= 0) {
       const redirectSource = networkRequest.redirectSource();
-      if (redirectSource && redirectSource.signedExchangeInfo()) {
+      if (redirectSource?.signedExchangeInfo()) {
         networkRequest.setTransferSize(0);
         redirectSource.setTransferSize(encodedDataLength);
         this.updateNetworkRequest(redirectSource);
@@ -1361,19 +1365,10 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     multiTargetNetworkManagerInstance = null;
   }
 
-  static getChromeVersion(): string {
-    const chromeRegex = /(?:^|\W)(?:Chrome|HeadlessChrome)\/(\S+)/;
-    const chromeMatch = navigator.userAgent.match(chromeRegex);
-    if (chromeMatch && chromeMatch.length > 1) {
-      return chromeMatch[1];
-    }
-    return '';
-  }
-
   static patchUserAgentWithChromeVersion(uaString: string): string {
     // Patches Chrome/ChrOS version from user #agent ("1.2.3.4" when user #agent is: "Chrome/1.2.3.4").
     // Otherwise, ignore it. This assumes additional appVersions appear after the Chrome version.
-    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
+    const chromeVersion = Root.Runtime.getChromeVersion();
     if (chromeVersion.length > 0) {
       // "1.2.3.4" becomes "1.0.100.0"
       const additionalAppVersion = chromeVersion.split('.', 1)[0] + '.0.100.0';
@@ -1388,7 +1383,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     if (!userAgentMetadata.brands) {
       return;
     }
-    const chromeVersion = MultitargetNetworkManager.getChromeVersion();
+    const chromeVersion = Root.Runtime.getChromeVersion();
     if (chromeVersion.length === 0) {
       return;
     }
@@ -1437,11 +1432,11 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
 
   modelRemoved(networkManager: NetworkManager): void {
     for (const entry of this.inflightMainResourceRequests) {
-      const manager = NetworkManager.forRequest((entry[1] as NetworkRequest));
+      const manager = NetworkManager.forRequest((entry[1]));
       if (manager !== networkManager) {
         continue;
       }
-      this.inflightMainResourceRequests.delete((entry[0] as string));
+      this.inflightMainResourceRequests.delete((entry[0]));
     }
     this.#networkAgents.delete(networkManager.target().networkAgent());
     this.#fetchAgents.delete(networkManager.target().fetchAgent());
@@ -1633,7 +1628,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
       Common.Settings.Settings.instance().moduleSetting('cache-disabled').set(true);
     }
     this.#updatingInterceptionPatternsPromise = null;
-    const promises = ([] as Promise<unknown>[]);
+    const promises = ([] as Array<Promise<unknown>>);
     for (const agent of this.#fetchAgents) {
       promises.push(agent.invoke_enable({patterns: this.#urlsForRequestInterceptor.valuesArray()}));
     }
@@ -1700,7 +1695,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     const allowRemoteFilePaths =
         Common.Settings.Settings.instance().moduleSetting('network.enable-remote-file-loading').get();
 
-    return new Promise(
+    return await new Promise(
         resolve => Host.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
           resolve({success, content, errorDescription});
         }, allowRemoteFilePaths));
@@ -1899,8 +1894,8 @@ export class InterceptedRequest {
  */
 class ExtraInfoBuilder {
   readonly #requests: NetworkRequest[];
-  #requestExtraInfos: (ExtraRequestInfo|null)[];
-  #responseExtraInfos: (ExtraResponseInfo|null)[];
+  #requestExtraInfos: Array<ExtraRequestInfo|null>;
+  #responseExtraInfos: Array<ExtraResponseInfo|null>;
   #responseEarlyHintsHeaders: NameValue[];
   #finishedInternal: boolean;
   #webBundleInfo: WebBundleInfo|null;

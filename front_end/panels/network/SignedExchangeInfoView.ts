@@ -10,8 +10,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.legacy.js';
-import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.legacy.js';
+import signedExchangeInfoTreeStyles from './signedExchangeInfoTree.css.js';
+import signedExchangeInfoViewStyles from './signedExchangeInfoView.css.js';
 
 const UIStrings = {
   /**
@@ -98,7 +98,7 @@ const UIStrings = {
    *@description Text for the issuer of an item
    */
   issuer: 'Issuer',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/SignedExchangeInfoView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class SignedExchangeInfoView extends UI.Widget.VBox {
@@ -122,7 +122,7 @@ export class SignedExchangeInfoView extends UI.Widget.VBox {
 
     const errorFieldSetMap = new Map<number|undefined, Set<string>>();
 
-    if (signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
+    if (signedExchangeInfo.errors?.length) {
       const errorMessagesCategory = new Category(root, i18nString(UIStrings.errors));
       for (const error of signedExchangeInfo.errors) {
         const fragment = document.createDocumentFragment();

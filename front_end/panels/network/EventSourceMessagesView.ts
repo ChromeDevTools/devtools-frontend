@@ -12,7 +12,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.legacy.js';
+import eventSourceMessagesViewStyles from './eventSourceMessagesView.css.js';
 
 const UIStrings = {
   /**
@@ -47,7 +47,7 @@ const UIStrings = {
    *@description Example for placeholder text
    */
   filterByRegex: 'Filter using regex (example: https?)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/EventSourceMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventSourceMessagesView extends UI.Widget.VBox {
@@ -96,7 +96,6 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     this.dataGrid = new DataGrid.SortableDataGrid.SortableDataGrid({
       displayName: i18nString(UIStrings.eventSource),
       columns,
-      editCallback: undefined,
       deleteCallback: undefined,
       refreshCallback: undefined,
     });

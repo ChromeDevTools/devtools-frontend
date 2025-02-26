@@ -7,6 +7,7 @@
 const l10nHelper = require('./l10n-helper.js');
 
 const MODULE_UI_STRINGS_FILENAME_REGEX = /ModuleUIStrings\.(js|ts)$/;
+const TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX = /models\/trace\/insights\/.*\.(js|ts)$/;
 
 /**
  * Returns true iff the passed expression is of the form `UIStrings.bar`.
@@ -33,7 +34,7 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    const filename = context.filename ?? context.getFilename();
+    const filename = (context.filename ?? context.getFilename()).replaceAll('\\', '/');
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     const declaredUIStringsKeys = new Map();
     const usedUIStringsKeys = new Set();
@@ -65,11 +66,15 @@ module.exports = {
           return;
         }
 
+        if (TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
+          return;
+        }
+
         if (!l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)) {
           return;
         }
 
-        for (const property of variableDeclarator.init.properties) {
+        for (const property of variableDeclarator.init.expression.properties) {
           if (property.type !== 'Property' || property.key.type !== 'Identifier') {
             continue;
           }

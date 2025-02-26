@@ -4,12 +4,8 @@
 'use strict';
 
 const rule = require('../lib/no-screenshot-test-outside-perf-panel.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
+
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE =
     'It is banned to write screenshot tests outside the directory of the Performance Panel interaction tests.';
@@ -53,7 +49,7 @@ const perfPanelInteractionTestsPath = 'test/interactions/panels/performance/';
 const uiInteractionTestsPath = 'test/interactions/ui/components/';
 const notPerfPanelTestPath = 'test/interactions/data_grid/data_grid_test.ts';
 
-ruleTester.run('no-screenshot-test-outside-perf-panel', rule, {
+new RuleTester().run('no-screenshot-test-outside-perf-panel', rule, {
   valid: [
     {
       code: enabledTestCode,

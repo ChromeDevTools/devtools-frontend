@@ -18,7 +18,7 @@ describeWithMockConnection('StorageKeyManager', () => {
   });
 
   it('updates storage keys and emits events correctly', () => {
-    let eventFired: boolean = false;
+    let eventFired = false;
     const keys = ['storagekey1', 'storagekey2'];
 
     assert.isEmpty(manager.storageKeys());

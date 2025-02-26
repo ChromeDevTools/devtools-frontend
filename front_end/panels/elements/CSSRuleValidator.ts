@@ -85,7 +85,7 @@ const UIStrings = {
    */
   flexGridContainerPropertyRuleFix:
       'Try setting the {PROPERTY_NAME} on the container element or use {ALTERNATIVE_PROPERTY_NAME} instead.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -135,7 +135,7 @@ export abstract class CSSRuleValidator {
 
   abstract getHint(
       propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
-      nodeName?: string, fontFaces?: Array<SDK.CSSFontFace.CSSFontFace>): Hint|undefined;
+      nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined;
 }
 
 export class AlignContentValidator extends CSSRuleValidator {
@@ -655,7 +655,7 @@ export class FontVariationSettingsValidator extends CSSRuleValidator {
 
   getHint(
       propertyName: string, computedStyles?: Map<string, string>, parentComputedStyles?: Map<string, string>,
-      nodeName?: string, fontFaces?: Array<SDK.CSSFontFace.CSSFontFace>): Hint|undefined {
+      nodeName?: string, fontFaces?: SDK.CSSFontFace.CSSFontFace[]): Hint|undefined {
     if (!computedStyles) {
       return;
     }

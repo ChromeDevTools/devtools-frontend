@@ -86,8 +86,8 @@ export class CSSRule {
 
 class CSSValue {
   text: string;
-  range: TextUtils.TextRange.TextRange|undefined;
-  specificity: Protocol.CSS.Specificity|undefined;
+  range?: TextUtils.TextRange.TextRange;
+  specificity?: Protocol.CSS.Specificity;
   constructor(payload: Protocol.CSS.Value) {
     this.text = payload.text;
     if (payload.range) {
@@ -158,11 +158,11 @@ export class CSSStyleRule extends CSSRule {
   setSelectorText(newSelector: string): Promise<boolean> {
     const styleSheetId = this.styleSheetId;
     if (!styleSheetId) {
-      throw 'No rule stylesheet id';
+      throw new Error('No rule stylesheet id');
     }
     const range = this.selectorRange();
     if (!range) {
-      throw 'Rule selector is not editable';
+      throw new Error('Rule selector is not editable');
     }
     return this.cssModelInternal.setSelectorText(styleSheetId, range, newSelector);
   }
@@ -189,7 +189,7 @@ export class CSSStyleRule extends CSSRule {
 
   lineNumberInSource(selectorIndex: number): number {
     const selector = this.selectors[selectorIndex];
-    if (!selector || !selector.range || !this.styleSheetId) {
+    if (!selector?.range || !this.styleSheetId) {
       return 0;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
@@ -198,7 +198,7 @@ export class CSSStyleRule extends CSSRule {
 
   columnNumberInSource(selectorIndex: number): number|undefined {
     const selector = this.selectors[selectorIndex];
-    if (!selector || !selector.range || !this.styleSheetId) {
+    if (!selector?.range || !this.styleSheetId) {
       return undefined;
     }
     const styleSheetHeader = this.getStyleSheetHeader(this.styleSheetId);
@@ -210,7 +210,7 @@ export class CSSStyleRule extends CSSRule {
       return;
     }
     const range = this.selectorRange();
-    if (range && range.equal(edit.oldRange)) {
+    if (range?.equal(edit.oldRange)) {
       this.reinitializeSelectors((edit.payload as Protocol.CSS.SelectorList));
     } else {
       for (let i = 0; i < this.selectors.length; ++i) {
@@ -324,11 +324,11 @@ export class CSSKeyframeRule extends CSSRule {
   setKeyText(newKeyText: string): Promise<boolean> {
     const styleSheetId = this.styleSheetId;
     if (!styleSheetId) {
-      throw 'No rule stylesheet id';
+      throw new Error('No rule stylesheet id');
     }
     const range = this.#keyText.range;
     if (!range) {
-      throw 'Keyframe key is not editable';
+      throw new Error('Keyframe key is not editable');
     }
     return this.cssModelInternal.setKeyframeKey(styleSheetId, range, newKeyText);
   }

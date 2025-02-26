@@ -8,7 +8,7 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import infobarStyles from './infobar.css.legacy.js';
+import infobarStyles from './infobar.css.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createShadowRootWithCoreStyles, createTextButton, type DevToolsCloseButton} from './UIUtils.js';
 import type {Widget} from './Widget.js';
@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Text to close something
    */
   close: 'Close',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Infobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -151,7 +151,7 @@ export class Infobar {
   static create(
       type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
       jslogContext?: string): Infobar|null {
-    if (disableSetting && disableSetting.get()) {
+    if (disableSetting?.get()) {
       return null;
     }
     return new Infobar(type, text, actions, disableSetting, jslogContext);

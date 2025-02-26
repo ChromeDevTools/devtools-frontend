@@ -691,6 +691,7 @@ experimental domain Audits
       kInlineViolation
       kEvalViolation
       kURLViolation
+      kSRIViolation
       kTrustedTypesSinkViolation
       kTrustedTypesPolicyViolation
       kWasmEvalViolation
@@ -800,6 +801,29 @@ experimental domain Audits
       WriteErrorTooLongIdField
       WriteErrorUnsupportedType
 
+  type SRIMessageSignatureError extends string
+    enum
+      MissingSignatureHeader
+      MissingSignatureInputHeader
+      InvalidSignatureHeader
+      InvalidSignatureInputHeader
+      SignatureHeaderValueIsNotByteSequence
+      SignatureHeaderValueIsParameterized
+      SignatureHeaderValueIsIncorrectLength
+      SignatureInputHeaderMissingLabel
+      SignatureInputHeaderValueNotInnerList
+      SignatureInputHeaderValueMissingComponents
+      SignatureInputHeaderInvalidComponentType
+      SignatureInputHeaderInvalidComponentName
+      SignatureInputHeaderInvalidHeaderComponentParameter
+      SignatureInputHeaderInvalidDerivedComponentParameter
+      SignatureInputHeaderKeyIdLength
+      SignatureInputHeaderInvalidParameter
+      SignatureInputHeaderMissingRequiredParameters
+      ValidationFailedSignatureExpired
+      ValidationFailedInvalidLength
+      ValidationFailedSignatureMismatch
+
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
@@ -829,6 +853,11 @@ experimental domain Audits
   type SharedDictionaryIssueDetails extends object
     properties
       SharedDictionaryError sharedDictionaryError
+      AffectedRequest request
+
+  type SRIMessageSignatureIssueDetails extends object
+    properties
+      SRIMessageSignatureError error
       AffectedRequest request
 
   type GenericIssueErrorType extends string
@@ -950,6 +979,7 @@ experimental domain Audits
       RelyingPartyOriginIsOpaque
       TypeNotMatching
       UiDismissedNoEmbargo
+      CorsError
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -984,6 +1014,18 @@ experimental domain Audits
       # The failure message for the failed request.
       string failureMessage
       optional Network.RequestId requestId
+
+  type PartitioningBlobURLInfo extends string
+    enum
+      BlockedCrossPartitionFetching
+      EnforceNoopenerForNavigation
+
+  type PartitioningBlobURLIssueDetails extends object
+    properties
+      # The BlobURL that failed to load.
+      string url
+      # Additional information about the Partitioning Blob URL issue.
+      PartitioningBlobURLInfo partitioningBlobURLInfo
 
   type SelectElementAccessibilityIssueReason extends string
     enum
@@ -1048,6 +1090,7 @@ experimental domain Audits
       CorsIssue
       AttributionReportingIssue
       QuirksModeIssue
+      PartitioningBlobURLIssue
       # Deprecated
       NavigatorUserAgentIssue
       GenericIssue
@@ -1061,6 +1104,7 @@ experimental domain Audits
       PropertyRuleIssue
       SharedDictionaryIssue
       SelectElementAccessibilityIssue
+      SRIMessageSignatureIssue
 
   # This struct holds a list of optional fields with additional information
   # specific to the kind of issue. When adding a new issue code, please also
@@ -1077,6 +1121,7 @@ experimental domain Audits
       optional CorsIssueDetails corsIssueDetails
       optional AttributionReportingIssueDetails attributionReportingIssueDetails
       optional QuirksModeIssueDetails quirksModeIssueDetails
+      optional PartitioningBlobURLIssueDetails partitioningBlobURLIssueDetails
       deprecated optional NavigatorUserAgentIssueDetails navigatorUserAgentIssueDetails
       optional GenericIssueDetails genericIssueDetails
       optional DeprecationIssueDetails deprecationIssueDetails
@@ -1089,6 +1134,7 @@ experimental domain Audits
       optional FederatedAuthUserInfoRequestIssueDetails federatedAuthUserInfoRequestIssueDetails
       optional SharedDictionaryIssueDetails sharedDictionaryIssueDetails
       optional SelectElementAccessibilityIssueDetails selectElementAccessibilityIssueDetails
+      optional SRIMessageSignatureIssueDetails sriMessageSignatureIssueDetails
 
   # A unique id for a DevTools inspector issue. Allows other entities (e.g.
   # exceptions, CDP message, console messages, etc.) to reference an issue.
@@ -1169,6 +1215,13 @@ experimental domain Extensions
       # Absolute file path.
       string path
     returns
+      # Extension id.
+      string id
+  # Uninstalls an unpacked extension (others not supported) from the profile.
+  # Available if the client is connected using the --remote-debugging-pipe flag
+  # and the --enable-unsafe-extension-debugging.
+  command uninstall
+    parameters
       # Extension id.
       string id
   # Gets data from extension storage in the given `storageArea`. If `keys` is
@@ -3366,6 +3419,8 @@ domain DOM
         # Get the popover target for a given element. In this case, this given
         # element can only be an HTMLFormControlElement (<input>, <button>).
         PopoverTarget
+        # Get the interest target for a given element.
+        InterestTarget
     returns
       # NodeId of the element matching the queried relation.
       NodeId nodeId
@@ -8355,6 +8410,14 @@ domain Page
       OriginTrialStatus status
       array of OriginTrialTokenWithStatus tokensWithStatus
 
+  # Additional information about the frame document's security origin.
+  experimental type SecurityOriginDetails extends object
+    properties
+      # Indicates whether the frame document's security origin is one
+      # of the local hostnames (e.g. "localhost") or IP addresses (IPv4
+      # 127.0.0.0/8 or IPv6 ::1).
+      boolean isLocalhost
+
   # Information about the Frame on the page.
   type Frame extends object
     properties
@@ -8377,6 +8440,8 @@ domain Page
       experimental string domainAndRegistry
       # Frame document's security origin.
       string securityOrigin
+      # Additional details about the frame document's security origin.
+      experimental optional SecurityOriginDetails securityOriginDetails
       # Frame document's mimeType as determined by the browser.
       string mimeType
       # If the frame failed to load, this contains the URL that could not be loaded. Note that unlike url above, this URL may contain a fragment.
@@ -11276,6 +11341,8 @@ domain Target
       TargetID targetId
       # Binding name, 'cdp' if not specified.
       optional string bindingName
+      # If true, inherits the current root session's permissions (default: false).
+      optional boolean inheritPermissions
 
   # Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
   # one.
@@ -12641,6 +12708,7 @@ experimental domain Preload
       OtherPrerenderedPageActivated
       V8OptimizerDisabled
       PrerenderFailedDuringPrefetch
+      BrowsingDataRemoved
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated

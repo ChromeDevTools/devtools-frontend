@@ -19,9 +19,9 @@ const SCHEDULABLE_TASK_TITLE_ALT2 = 'ThreadControllerImpl::DoWork';
 const SCHEDULABLE_TASK_TITLE_ALT3 = 'TaskQueueManager::ProcessTaskFromWorkQueue';
 
 interface NetworkNodeOutput {
-  nodes: Array<NetworkNode>;
+  nodes: NetworkNode[];
   idToNodeMap: Map<string, NetworkNode>;
-  urlToNodeMap: Map<string, Array<NetworkNode>>;
+  urlToNodeMap: Map<string, NetworkNode[]>;
   frameIdToNodeMap: Map<string, NetworkNode|null>;
 }
 
@@ -64,9 +64,9 @@ class PageDependencyGraph {
   }
 
   static getNetworkNodeOutput(networkRequests: Lantern.NetworkRequest[]): NetworkNodeOutput {
-    const nodes: Array<NetworkNode> = [];
+    const nodes: NetworkNode[] = [];
     const idToNodeMap = new Map<string, NetworkNode>();
-    const urlToNodeMap = new Map<string, Array<NetworkNode>>();
+    const urlToNodeMap = new Map<string, NetworkNode[]>();
     const frameIdToNodeMap = new Map<string, NetworkNode|null>();
 
     networkRequests.forEach(request => {
@@ -556,6 +556,7 @@ class PageDependencyGraph {
     return rootNode;
   }
 
+  // Unused, but useful for debugging.
   static printGraph(rootNode: Node, widthInCharacters = 100): void {
     function padRight(str: string, target: number, padChar = ' '): string {
       return str + padChar.repeat(Math.max(target - str.length, 0));

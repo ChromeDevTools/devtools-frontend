@@ -5,7 +5,6 @@
 import {beforeEach} from 'mocha';
 
 import {goToResource, timeout} from '../../shared/helper.js';
-
 import {
   assertSelectedNodeClasses,
   toggleClassesPane,

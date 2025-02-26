@@ -20,13 +20,13 @@ function getFieldMetricValue(view: Element): HTMLElement|null {
 
 function getFieldHistogramPercents(view: Element): string[] {
   const histogram = view.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
-  const percents = Array.from(histogram.querySelectorAll('.histogram-percent')) as HTMLElement[];
+  const percents = Array.from(histogram.querySelectorAll('.histogram-percent'));
   return percents.map(p => p.textContent || '');
 }
 
 function getFieldHistogramLabels(view: Element): string[] {
   const histogram = view.shadowRoot!.querySelector('.bucket-summaries') as HTMLElement;
-  const percents = Array.from(histogram.querySelectorAll('.bucket-label')) as HTMLElement[];
+  const percents = Array.from(histogram.querySelectorAll('.bucket-label'));
   return percents.map(p => p.textContent || '');
 }
 

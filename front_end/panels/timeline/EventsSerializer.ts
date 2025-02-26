@@ -5,8 +5,7 @@
 import * as Trace from '../../models/trace/trace.js';
 
 export class EventsSerializer {
-  #modifiedProfileCallByKey: Map<Trace.Types.File.ProfileCallKeyValues, Trace.Types.Events.SyntheticProfileCall> =
-      new Map();
+  #modifiedProfileCallByKey = new Map<Trace.Types.File.ProfileCallKeyValues, Trace.Types.Events.SyntheticProfileCall>();
 
   keyForEvent(event: Trace.Types.Events.Event): Trace.Types.File.SerializableKey|null {
     if (Trace.Types.Events.isProfileCall(event)) {
@@ -59,7 +58,7 @@ export class EventsSerializer {
       const rawEvents = Trace.Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager().getRawTraceEvents();
       return rawEvents[eventValues.rawIndex];
     }
-    throw new Error(`Unknown trace event serializable key values: ${(eventValues as Array<unknown>).join('-')}`);
+    throw new Error(`Unknown trace event serializable key values: ${(eventValues as unknown[]).join('-')}`);
   }
 
   static isProfileCallKey(key: Trace.Types.File.SerializableKeyValues): key is Trace.Types.File.ProfileCallKeyValues {

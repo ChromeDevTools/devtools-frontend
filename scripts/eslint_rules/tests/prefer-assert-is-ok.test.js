@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/prefer-assert-is-ok.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('prefer-assert-is-ok', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('prefer-assert-is-ok', rule, {
   valid: [
     {
       code: 'assert(a);',

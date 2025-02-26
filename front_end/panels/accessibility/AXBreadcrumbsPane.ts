@@ -14,7 +14,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
-import axBreadcrumbsStyles from './axBreadcrumbs.css.legacy.js';
+import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
 
 const UIStrings = {
   /**
@@ -41,7 +41,7 @@ const UIStrings = {
    *@description Message saying that DevTools must be restarted before the experiment is enabled.
    */
   reloadRequired: 'Reload required before the change takes effect.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AXBreadcrumbsPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class AXBreadcrumbsPane extends AccessibilitySubPane {
@@ -309,7 +309,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       return;
     }
     const breadcrumb = elementsToAXBreadcrumb.get(breadcrumbElement);
-    if (!breadcrumb || !breadcrumb.isDOMNode()) {
+    if (!breadcrumb?.isDOMNode()) {
       return;
     }
     this.setHoveredBreadcrumb(breadcrumb);
@@ -486,7 +486,7 @@ export class AXBreadcrumb {
     } else {
       this.appendRoleElement(this.axNodeInternal.role());
       const axNodeName = this.axNodeInternal.name();
-      if (axNodeName && axNodeName.value) {
+      if (axNodeName?.value) {
         this.nodeWrapper.createChild('span', 'separator').textContent = '\xA0';
         this.appendNameElement(axNodeName.value as string);
       }

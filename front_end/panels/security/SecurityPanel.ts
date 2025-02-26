@@ -11,15 +11,15 @@ import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Lit from '../../ui/lit/lit.js';
+import {html, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CookieControlsView} from './CookieControlsView.js';
 import {CookieReportView} from './CookieReportView.js';
-import lockIconStyles from './lockIcon.css.legacy.js';
-import mainViewStyles from './mainView.css.legacy.js';
+import lockIconStyles from './lockIcon.css.js';
+import mainViewStyles from './mainView.css.js';
 import {ShowOriginEvent} from './OriginTreeElement.js';
-import originViewStyles from './originView.css.legacy.js';
+import originViewStyles from './originView.css.js';
 import {
   Events,
   type PageVisibleSecurityState,
@@ -436,7 +436,7 @@ const UIStrings = {
    *@description Shown when a field refers to a TLS feature which was enabled.
    */
   enabled: 'enabled',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -533,7 +533,6 @@ export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, secur
   return highlightedUrl;
 }
 
-const {render, html} = Lit;
 export interface ViewInput {
   panel: SecurityPanel;
 }
@@ -548,7 +547,7 @@ export interface ViewOutput {
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<SecurityModel> {
-  readonly mainView!: SecurityMainView;
+  readonly mainView: SecurityMainView;
   readonly sidebar!: SecurityPanelSidebar;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
   private readonly origins: Map<string, OriginState>;
@@ -565,11 +564,6 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     <devtools-split-widget
     .options=${{vertical: true, settingName: 'security'}}
     ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
-        <devtools-widget
-          slot="main"
-          .widgetConfig=${widgetConfig(SecurityMainView, {panel: input.panel})}
-          ${UI.Widget.widgetRef(SecurityMainView, e => {output.mainView = e;})}>
-        </devtools-widget>
         <devtools-widget
           slot="sidebar"
           .widgetConfig=${widgetConfig(SecurityPanelSidebar)}
@@ -589,6 +583,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     this.sidebar.element.classList.add('panel-sidebar');
     this.sidebar.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
 
+    this.mainView = new SecurityMainView();
+    this.mainView.panel = this;
     this.element.addEventListener(ShowOriginEvent.eventName, (event: ShowOriginEvent) => {
       if (event.origin) {
         this.showOrigin(event.origin);
@@ -611,6 +607,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
+
+    this.sidebar.showLastSelectedElement();
   }
 
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): SecurityPanel {
@@ -872,7 +870,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   private readonly securityExplanationsExtra: HTMLElement;
   private readonly lockSpectrum: Map<Protocol.Security.SecurityState, HTMLElement>;
   private summaryText: HTMLElement;
-  private explanations: (Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation)[]|null;
+  private explanations: Array<Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation>|null;
   private securityState: Protocol.Security.SecurityState|null;
   constructor(element?: HTMLElement) {
     super(undefined, undefined, element);
@@ -967,7 +965,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.viewCertificate), explanation.certificate));
     }
 
-    if (explanation.recommendations && explanation.recommendations.length) {
+    if (explanation.recommendations?.length) {
       const recommendationList = text.createChild('ul', 'security-explanation-recommendations');
       for (const recommendation of explanation.recommendations) {
         recommendationList.createChild('li').textContent = recommendation;
@@ -1009,7 +1007,7 @@ export class SecurityMainView extends UI.Widget.VBox {
   }
 
   private getSecuritySummaryAndExplanations(visibleSecurityState: PageVisibleSecurityState):
-      {summary: (string|undefined), explanations: Array<SecurityStyleExplanation>} {
+      {summary: (string|undefined), explanations: SecurityStyleExplanation[]} {
     const {securityState, securityStateIssueIds} = visibleSecurityState;
     let summary;
     const explanations: SecurityStyleExplanation[] = [];
@@ -1022,8 +1020,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.toCheckThisPagesStatusVisit)));
     } else if (
         securityStateIssueIds.includes('is-error-page') &&
-        (visibleSecurityState.certificateSecurityState === null ||
-         visibleSecurityState.certificateSecurityState.certificateNetworkError === null)) {
+        (visibleSecurityState.certificateSecurityState?.certificateNetworkError === null)) {
       summary = i18nString(UIStrings.thisIsAnErrorPage);
       // In the case of a non cert error page, we usually don't have a
       // certificate, connection, or content that needs to be explained, e.g. in
@@ -1062,7 +1059,7 @@ export class SecurityMainView extends UI.Widget.VBox {
         summary: i18nString(UIStrings.thisPageIsSuspicious),
         description: formatedDescription,
       });
-    } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo && safetyTipInfo.safeUrl) {
+    } else if (securityStateIssueIds.includes('lookalike') && safetyTipInfo?.safeUrl) {
       const hostname = new URL(safetyTipInfo.safeUrl).hostname;
       const hostnamePlaceholder = {PH1: hostname};
       const formatedDescriptionSafety =
@@ -1088,7 +1085,7 @@ export class SecurityMainView extends UI.Widget.VBox {
       visibleSecurityState: PageVisibleSecurityState, explanations: SecurityStyleExplanation[]): void {
     const {certificateSecurityState, securityStateIssueIds} = visibleSecurityState;
     const title = i18nString(UIStrings.certificate);
-    if (certificateSecurityState && certificateSecurityState.certificateHasSha1Signature) {
+    if (certificateSecurityState?.certificateHasSha1Signature) {
       const explanationSummary = i18nString(UIStrings.insecureSha);
       const description = i18nString(UIStrings.theCertificateChainForThisSite);
       if (certificateSecurityState.certificateHasWeakSignature) {
@@ -1127,7 +1124,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.publickeypinningWasBypassedByA)));
     }
 
-    if (certificateSecurityState && certificateSecurityState.isCertificateExpiringSoon()) {
+    if (certificateSecurityState?.isCertificateExpiringSoon()) {
       explanations.push(new SecurityStyleExplanation(
           Protocol.Security.SecurityState.Info, undefined, i18nString(UIStrings.certificateExpiresSoon),
           i18nString(UIStrings.theCertificateForThisSiteExpires)));
@@ -1207,8 +1204,7 @@ export class SecurityMainView extends UI.Widget.VBox {
           i18nString(UIStrings.thisPageIncludesAFormWithA)));
     }
 
-    if (visibleSecurityState.certificateSecurityState === null ||
-        visibleSecurityState.certificateSecurityState.certificateNetworkError === null) {
+    if (visibleSecurityState.certificateSecurityState?.certificateNetworkError === null) {
       if (securityStateIssueIds.includes('ran-content-with-cert-error')) {
         addSecureExplanation = false;
         explanations.push(new SecurityStyleExplanation(
@@ -1626,15 +1622,16 @@ export interface OriginState {
 export type Origin = Platform.DevToolsPath.UrlString;
 
 export class SecurityRevealer implements Common.Revealer.Revealer<CookieReportView> {
-  async reveal(cookieReportView: CookieReportView): Promise<void> {
+  async reveal(): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('security');
     const view = UI.ViewManager.ViewManager.instance().view('security');
     if (view) {
       const securityPanel = await view.widget();
-      if (securityPanel instanceof SecurityPanel) {
-        securityPanel.setVisibleView(cookieReportView);
+      if (securityPanel instanceof SecurityPanel && securityPanel.sidebar.cookieReportTreeElement) {
+        securityPanel.sidebar.cookieReportTreeElement.select(/* omitFocus=*/ false, /* selectedByUser=*/ true);
       } else {
-        throw new Error('Expected securityPanel to be an instance of SecurityPanel');
+        throw new Error(
+            'Expected securityPanel to be an instance of SecurityPanel with a cookieReportTreeElement in the sidebar');
       }
     }
   }

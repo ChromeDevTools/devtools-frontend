@@ -44,7 +44,7 @@ import {type Config, InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
 import {Tooltip} from './Tooltip.js';
-import treeoutlineStyles from './treeoutline.css.legacy.js';
+import treeoutlineStyles from './treeoutline.css.js';
 import {
   createShadowRootWithCoreStyles,
   deepElementFromPoint,
@@ -237,8 +237,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   selectPrevious(): boolean {
-    let nextSelectedElement: (TreeElement|null) =
-        this.selectedTreeElement && this.selectedTreeElement.traversePreviousTreeElement(true);
+    let nextSelectedElement = this.selectedTreeElement?.traversePreviousTreeElement(true) ?? null;
     while (nextSelectedElement && !nextSelectedElement.selectable) {
       nextSelectedElement = nextSelectedElement.traversePreviousTreeElement(!this.expandTreeElementsWhenArrowing);
     }
@@ -250,8 +249,7 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   }
 
   selectNext(): boolean {
-    let nextSelectedElement: (TreeElement|null) =
-        this.selectedTreeElement && this.selectedTreeElement.traverseNextTreeElement(true);
+    let nextSelectedElement = this.selectedTreeElement?.traverseNextTreeElement(true) ?? null;
     while (nextSelectedElement && !nextSelectedElement.selectable) {
       nextSelectedElement = nextSelectedElement.traverseNextTreeElement(!this.expandTreeElementsWhenArrowing);
     }
@@ -416,7 +414,7 @@ export class TreeOutlineInShadow extends TreeOutline {
     }
   }
 
-  registerRequiredCSS(...cssFiles: {cssContent: string}[]): void {
+  registerRequiredCSS(...cssFiles: Array<{cssContent: string}>): void {
     for (const cssFile of cssFiles) {
       ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot, cssFile);
     }
@@ -457,7 +455,7 @@ export class TreeElement {
   expanded: boolean;
   selected: boolean;
   private expandable!: boolean;
-  #expandRecursively: boolean = true;
+  #expandRecursively = true;
   private collapsible: boolean;
   toggleOnClick: boolean;
   button: Buttons.Button.Button|null;
@@ -586,7 +584,7 @@ export class TreeElement {
     let insertionIndex;
     if (comparator) {
       insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, comparator);
-    } else if (this.treeOutline && this.treeOutline.comparator) {
+    } else if (this.treeOutline?.comparator) {
       insertionIndex = Platform.ArrayUtilities.lowerBound(this.childrenInternal, child, this.treeOutline.comparator);
     } else {
       insertionIndex = this.childrenInternal.length;
@@ -600,7 +598,7 @@ export class TreeElement {
     }
 
     if (!child) {
-      throw 'child can\'t be undefined or null';
+      throw new Error('child can\'t be undefined or null');
     }
 
     console.assert(
@@ -652,15 +650,14 @@ export class TreeElement {
 
   removeChildAtIndex(childIndex: number): void {
     if (!this.childrenInternal || childIndex < 0 || childIndex >= this.childrenInternal.length) {
-      throw 'childIndex out of range';
+      throw new Error('childIndex out of range');
     }
 
     const child = this.childrenInternal[childIndex];
     this.childrenInternal.splice(childIndex, 1);
 
     const parent = child.parent;
-    if (this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(child)) {
+    if (this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(child)) {
       if (child.nextSibling) {
         child.nextSibling.select(true);
       } else if (child.previousSibling) {
@@ -694,7 +691,7 @@ export class TreeElement {
 
   removeChild(child: TreeElement): void {
     if (!child) {
-      throw 'child can\'t be undefined or null';
+      throw new Error('child can\'t be undefined or null');
     }
     if (child.parent !== this) {
       return;
@@ -702,15 +699,14 @@ export class TreeElement {
 
     const childIndex = this.childrenInternal ? this.childrenInternal.indexOf(child) : -1;
     if (childIndex === -1) {
-      throw 'child not found in this node\'s children';
+      throw new Error('child not found in this node\'s children');
     }
 
     this.removeChildAtIndex(childIndex);
   }
 
   removeChildren(): void {
-    if (!this.root && this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
+    if (!this.root && this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(this)) {
       this.select(true);
     }
 
@@ -818,23 +814,6 @@ export class TreeElement {
     }
   }
 
-  setTrailingIcons(icons: IconButton.Icon.Icon[]): void {
-    if (!this.trailingIconsElement && !icons.length) {
-      return;
-    }
-    if (!this.trailingIconsElement) {
-      this.trailingIconsElement = document.createElement('div');
-      this.trailingIconsElement.classList.add('trailing-icons');
-      this.trailingIconsElement.classList.add('icons-container');
-      this.listItemNode.appendChild(this.trailingIconsElement);
-      this.ensureSelection();
-    }
-    this.trailingIconsElement.removeChildren();
-    for (const icon of icons) {
-      this.trailingIconsElement.appendChild(icon);
-    }
-  }
-
   get tooltip(): string {
     return this.tooltipInternal;
   }
@@ -907,8 +886,7 @@ export class TreeElement {
     this.listItemNode.classList.toggle('hidden', x);
     this.childrenListNode.classList.toggle('hidden', x);
 
-    if (x && this.treeOutline && this.treeOutline.selectedTreeElement &&
-        this.treeOutline.selectedTreeElement.hasAncestorOrSelf(this)) {
+    if (x && this.treeOutline?.selectedTreeElement?.hasAncestorOrSelf(this)) {
       const hadFocus = this.treeOutline.selectedTreeElement.listItemElement.hasFocus();
       this.treeOutline.forceSelect(!hadFocus, /* selectedByUser */ false);
     }
@@ -922,7 +900,7 @@ export class TreeElement {
   }
 
   private ensureSelection(): void {
-    if (!this.treeOutline || !this.treeOutline.renderSelection) {
+    if (!this.treeOutline?.renderSelection) {
       return;
     }
     if (!this.selectionElementInternal) {
@@ -1016,8 +994,8 @@ export class TreeElement {
       this.treeOutline.dispatchEventToListeners(Events.ElementCollapsed, this);
     }
 
-    const selectedTreeElement = this.treeOutline && this.treeOutline.selectedTreeElement;
-    if (selectedTreeElement && selectedTreeElement.hasAncestor(this)) {
+    const selectedTreeElement = this.treeOutline?.selectedTreeElement;
+    if (selectedTreeElement?.hasAncestor(this)) {
       this.select(/* omitFocus */ true, /* selectedByUser */ true);
     }
   }
@@ -1226,7 +1204,7 @@ export class TreeElement {
 
   setFocusable(focusable: boolean): void {
     if (focusable) {
-      this.listItemNode.setAttribute('tabIndex', (this.treeOutline && this.treeOutline.preventTabOrder) ? '-1' : '0');
+      this.listItemNode.setAttribute('tabIndex', (this.treeOutline?.preventTabOrder) ? '-1' : '0');
       this.listItemNode.addEventListener('focus', this.boundOnFocus, false);
       this.listItemNode.addEventListener('blur', this.boundOnBlur, false);
     } else {

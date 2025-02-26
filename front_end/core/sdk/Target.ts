@@ -32,7 +32,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
    * the page crashes, but a reload fixes it and the targets get restored (see
    * crbug.com/387258086).
    */
-  #hasCrashed: boolean = false;
+  #hasCrashed = false;
   #targetInfoInternal: Protocol.Target.TargetInfo|undefined;
   #creatingModels?: boolean;
 
@@ -195,7 +195,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     if (!this.#modelByConstructor.get(modelClass)) {
       const info = SDKModel.registeredModels.get(modelClass);
       if (info === undefined) {
-        throw 'Model class is not registered @' + new Error().stack;
+        throw new Error('Model class is not registered');
       }
       if ((this.#capabilitiesMask & info.capabilities) === info.capabilities) {
         const model = new modelClass(this);

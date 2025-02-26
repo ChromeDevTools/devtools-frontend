@@ -39,7 +39,7 @@ import * as FormatterActions from '../../../../entrypoints/formatter_worker/Form
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
-import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
+import resourceSourceFrameStyles from './resourceSourceFrame.css.js';
 import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
 
 const UIStrings = {
@@ -47,7 +47,7 @@ const UIStrings = {
    *@description Text to find an item
    */
   find: 'Find',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/ResourceSourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

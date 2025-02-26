@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+
 import {$$, waitFor} from '../../shared/helper.js';
 
 export async function clickStylePropertyEditorButton(

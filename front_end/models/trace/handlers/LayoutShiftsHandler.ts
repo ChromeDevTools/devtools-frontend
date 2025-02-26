@@ -417,7 +417,7 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       updateTraceWindowMax(cluster.clusterWindow, Types.Timing.Micro(clusterEnd));
     }
 
-    let largestScore: number = 0;
+    let largestScore = 0;
     let worstShiftEvent: Types.Events.Event|null = null;
 
     for (const shift of cluster.events) {

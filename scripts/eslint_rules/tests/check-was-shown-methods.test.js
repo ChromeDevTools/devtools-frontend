@@ -4,18 +4,12 @@
 'use strict';
 
 const rule = require('../lib/check-was-shown-methods.js');
-const tsParser = require('@typescript-eslint/parser');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    parser: tsParser,
-  },
-});
+
+const {RuleTester} = require('./utils/utils.js');
 
 const EXPECTED_ERROR_MESSAGE = 'Please make sure the first call in wasShown is to super.wasShown().';
 
-ruleTester.run('check-was-shown-methods', rule, {
+new RuleTester().run('check-was-shown-methods', rule, {
   valid: [
     {
       code: `

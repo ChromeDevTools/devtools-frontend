@@ -406,6 +406,7 @@ window.DevToolsAPI = DevToolsAPI;
  * @enum {string}
  */
 const EnumeratedHistogram = {
+  // LINT.IfChange(EnumeratedHistogram)
   ActionTaken: 'DevTools.ActionTaken',
   CSSHintShown: 'DevTools.CSSHintShown',
   DeveloperResourceLoaded: 'DevTools.DeveloperResourceLoaded',
@@ -439,12 +440,11 @@ const EnumeratedHistogram = {
   SourcesPanelFileOpened: 'DevTools.SourcesPanelFileOpened',
   NetworkPanelResponsePreviewOpened: 'DevTools.NetworkPanelResponsePreviewOpened',
   TimelineNavigationSettingState: 'DevTools.TimelineNavigationSettingState',
-  StyleTextCopied: 'DevTools.StyleTextCopied',
   SyncSetting: 'DevTools.SyncSetting',
-  CSSPropertyDocumentation: 'DevTools.CSSPropertyDocumentation',
   SwatchActivated: 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged: 'DevTools.AnimationPlaybackRateChanged',
   AnimationPointDragged: 'DevTools.AnimationPointDragged',
+  // LINT.ThenChange(/front_end/core/host/InspectorFrontendHostAPI.ts:EnumeratedHistogram)
 };
 
 /**
@@ -800,6 +800,28 @@ const InspectorFrontendHostImpl = class {
    */
   recordUserMetricsAction(umaName) {
     DevToolsAPI.sendMessageToEmbedder('recordUserMetricsAction', [umaName], null);
+  }
+
+  /**
+   * @override
+   */
+  connectAutomaticFileSystem(fileSystemPath, fileSystemUUID, addIfMissing, callback) {
+    DevToolsAPI.sendMessageToEmbedder(
+        'connectAutomaticFileSystem',
+        [fileSystemPath, fileSystemUUID, addIfMissing],
+        callback,
+    );
+  }
+
+  /**
+   * @override
+   */
+  disconnectAutomaticFileSystem(fileSystemPath) {
+    DevToolsAPI.sendMessageToEmbedder(
+        'disconnectAutomaticFileSystem',
+        [fileSystemPath],
+        null,
+    );
   }
 
   /**

@@ -31,7 +31,7 @@ describeWithMockConnection('TopLayerContainer', () => {
     const topLayerDOMNode2 = stubTopLayerDOMNode('div', 2, stubDocument);
     const domModel = {
       target: () => createTarget(),
-      getTopLayerElements: async () => Promise.resolve([1 as Protocol.DOM.NodeId, 2 as Protocol.DOM.NodeId]),
+      getTopLayerElements: async () => await Promise.resolve([1 as Protocol.DOM.NodeId, 2 as Protocol.DOM.NodeId]),
       idToDOMNode: new Map([
         [1, topLayerDOMNode1],
         [2, topLayerDOMNode2],

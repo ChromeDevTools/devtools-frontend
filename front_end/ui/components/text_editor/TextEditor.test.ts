@@ -142,7 +142,7 @@ describeWithEnvironment('TextEditor', () => {
         code: string,
         pos: number,
         type?: TextEditor.JavaScript.QueryType,
-        range: string = '',
+        range = '',
         related?: string,
         ): Promise<void> {
       const state = makeState(code, CodeMirror.javascript.javascriptLanguage);

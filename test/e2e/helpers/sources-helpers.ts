@@ -15,6 +15,7 @@ import {
   click,
   clickElement,
   clickMoreTabsButton,
+  drainFrontendTaskQueue,
   getBrowserAndPages,
   getPendingEvents,
   getTestServerPort,
@@ -30,6 +31,7 @@ import {
   waitForAria,
   waitForFunction,
   waitForFunctionWithTries,
+  waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
 
@@ -187,7 +189,7 @@ export async function openSourceCodeEditorForFile(sourceFile: string, testInput:
 export async function getSelectedSource(): Promise<string> {
   const sourceTabPane = await waitFor('#sources-panel-sources-view .tabbed-pane');
   const sourceTabs = await waitFor('.tabbed-pane-header-tab.selected', sourceTabPane);
-  return sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>;
+  return await (sourceTabs.evaluate(node => node.getAttribute('aria-label')) as Promise<string>);
 }
 
 export async function getBreakpointHitLocation() {
@@ -195,7 +197,7 @@ export async function getBreakpointHitLocation() {
   const locationHandle = await waitFor('.location', breakpointHitHandle);
   const locationText = await locationHandle.evaluate(location => location.textContent);
 
-  const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement);
+  const groupHandle = await breakpointHitHandle.evaluateHandle(x => x.parentElement!);
   const groupHeaderTitleHandle = await waitFor('.group-header-title', groupHandle);
   const groupHeaderTitle = await groupHeaderTitleHandle?.evaluate(header => header.textContent);
 
@@ -229,7 +231,7 @@ export async function getToolbarText() {
     return [];
   }
   const textNodes = await $$('.toolbar-text', toolbar);
-  return Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
+  return await Promise.all(textNodes.map(node => node.evaluate(node => node.textContent, node)));
 }
 
 export async function addBreakpointForLine(frontend: puppeteer.Page, index: number|string) {
@@ -295,7 +297,7 @@ export async function enableInlineBreakpointForLine(line: number, index: number)
  * @param expectNoBreakpoint If we should wait for the line to not have any inline breakpoints after
  *                           the click instead of a disabled one.
  */
-export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint: boolean = false) {
+export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint = false) {
   const {frontend} = getBrowserAndPages();
   const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
   await click(decorationSelector);
@@ -313,11 +315,10 @@ export async function disableInlineBreakpointForLine(line: number, index: number
 export async function checkBreakpointDidNotActivate() {
   await step('check that the script did not pause', async () => {
     // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active
-    const pauseIndicators = await $$(PAUSE_INDICATOR_SELECTOR);
-    const breakpointIndicator = await Promise.all(pauseIndicators.map(elements => {
-      return elements.evaluate(el => el.className);
-    }));
-    assert.lengthOf(breakpointIndicator, 0, 'script had been paused');
+
+    // TODO: it should actually wait for rendering to finish.
+    await drainFrontendTaskQueue();
+    await waitForNone(PAUSE_INDICATOR_SELECTOR);
   });
 }
 
@@ -589,7 +590,7 @@ export async function readIgnoreListedSources(): Promise<string[]> {
 
 async function hasPausedEvents(frontend: puppeteer.Page): Promise<boolean> {
   const events = await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT);
-  return Boolean(events && events.length);
+  return Boolean(events?.length);
 }
 
 export async function stepThroughTheCode() {
@@ -703,7 +704,7 @@ export async function getWatchExpressionsValues() {
   if (!watchExpressionValue) {
     return null;
   }
-  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as puppeteer.ElementHandle<HTMLElement>[];
+  const values = await $$(WATCH_EXPRESSION_VALUE_SELECTOR) as Array<puppeteer.ElementHandle<HTMLElement>>;
   return await Promise.all(values.map(value => value.evaluate(element => element.innerText)));
 }
 
@@ -723,6 +724,12 @@ export async function evaluateSelectedTextInConsole() {
   await frontend.keyboard.press('E');
   await frontend.keyboard.up(modifierKey);
   await frontend.keyboard.up('Shift');
+  // TODO: it should actually wait for rendering to finish. Note: it is
+  // drained three times because rendering currently takes 3 dependent
+  // tasks to finish.
+  await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
+  await drainFrontendTaskQueue();
 }
 
 export async function addSelectedTextToWatches() {
@@ -787,8 +794,8 @@ export class WasmLocationLabels {
       if (entry.length === 0) {
         mappings.set(m.source, entry);
       }
-      const labelLine = m.originalLine as number;
-      const labelColumn = m.originalColumn as number;
+      const labelLine = m.originalLine;
+      const labelColumn = m.originalColumn;
       const sourceLine = labels.get(`${m.source}:${labelLine}:${labelColumn}`);
       assertNotNullOrUndefined(sourceLine);
       entry.push({
@@ -825,6 +832,7 @@ export class WasmLocationLabels {
     const lineNumbers = await Promise.all(visibleLines.map(line => line.evaluate(node => node.textContent)));
     const lineNumberLabels = new Map(lineNumbers.map(label => [Number(label), label]));
     await Promise.all(this.#mappings.get(label)!.map(
+
         ({moduleOffset}) => addBreakpointForLine(frontend, lineNumberLabels.get(moduleOffset)!)));
   }
 
@@ -854,7 +862,7 @@ export class WasmLocationLabels {
   }
 }
 
-export async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> {
+export async function retrieveCodeMirrorEditorContent(): Promise<string[]> {
   const editor = await waitFor('[aria-label="Code editor"]');
   return await editor.evaluate(
       node => [...node.querySelectorAll('.cm-line')].map(node => node.textContent || '') || []);

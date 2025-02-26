@@ -66,7 +66,7 @@ export async function getSelectedRequestName() {
     return null;
   }
   return await request.evaluate(node => {
-    return node && node.childNodes[1].textContent;
+    return node?.childNodes[1].textContent;
   });
 }
 
@@ -186,17 +186,17 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
             'Section', 'filter-bitset',
             [
               veImpression('Item', 'all'),
-              veImpression('Item', 'FetchandXHR'),
-              veImpression('Item', 'Document'),
-              veImpression('Item', 'CSS'),
-              veImpression('Item', 'JavaScript'),
-              veImpression('Item', 'Font'),
-              veImpression('Item', 'Image'),
-              veImpression('Item', 'Media'),
-              veImpression('Item', 'Manifest'),
-              veImpression('Item', 'WebSocket'),
-              veImpression('Item', 'WebAssembly'),
-              veImpression('Item', 'Other'),
+              veImpression('Item', 'xhr'),
+              veImpression('Item', 'document'),
+              veImpression('Item', 'stylesheet'),
+              veImpression('Item', 'script'),
+              veImpression('Item', 'font'),
+              veImpression('Item', 'image'),
+              veImpression('Item', 'media'),
+              veImpression('Item', 'manifest'),
+              veImpression('Item', 'web-socket'),
+              veImpression('Item', 'wasm'),
+              veImpression('Item', 'other'),
             ]),
         veImpression('TextField', 'filter'),
         veImpression('Toggle', 'invert-filter'),
@@ -219,7 +219,12 @@ export function veImpressionForNetworkPanel(options?: {newFilterBar?: boolean}) 
         ]),
     veImpression('Timeline', 'network-overview'),
     veImpression('Toggle', 'network-settings'),
-    veImpression('Link', 'learn-more'),
+    veImpression(
+        'Section', 'empty-view',
+        [
+          veImpression('Action', 'inspector-main.reload'),
+          veImpression('Link', 'learn-more'),
+        ]),
     veImpression('TableHeader', 'name'),
     veImpression('TableHeader', 'status'),
     veImpression('TableHeader', 'type'),

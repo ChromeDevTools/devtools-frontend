@@ -36,7 +36,7 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import fontViewStyles from './fontView.css.legacy.js';
+import fontViewStyles from './fontView.css.js';
 
 const UIStrings = {
   /**
@@ -48,7 +48,7 @@ const UIStrings = {
    *@example {https://example.com} PH1
    */
   previewOfFontFromS: 'Preview of font from {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/FontView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class FontView extends UI.View.SimpleView {

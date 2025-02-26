@@ -14,7 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
-import debuggerPausedMessageStyles from './debuggerPausedMessage.css.legacy.js';
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 const UIStrings = {
   /**
@@ -110,7 +110,7 @@ const UIStrings = {
    *@example {"script-src 'self'"} PH1
    */
   scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -265,8 +265,7 @@ export class DebuggerPausedMessage {
     } else if (details.reason === Protocol.Debugger.PausedEventReason.OOM) {
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedBeforePotentialOutofmemory));
     } else if (
-        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData &&
-        details.auxData['violationType']) {
+        details.reason === Protocol.Debugger.PausedEventReason.CSPViolation && details.auxData?.['violationType']) {
       const text = (details.auxData['violationType'] as string);
       if (text === Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {
         messageWrapper =

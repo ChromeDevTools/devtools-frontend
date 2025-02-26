@@ -30,7 +30,7 @@
 
 import type * as Common from '../../core/common/common.js';
 
-import progressIndicatorStyles from './progressIndicator.css.legacy.js';
+import progressIndicatorStyles from './progressIndicator.css.js';
 import {createShadowRootWithCoreStyles} from './UIUtils.js';
 
 export class ProgressIndicator implements Common.Progress.Progress {

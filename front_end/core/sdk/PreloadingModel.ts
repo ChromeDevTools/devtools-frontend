@@ -31,7 +31,7 @@ export interface WithId<I, V> {
 export class PreloadingModel extends SDKModel<EventTypes> {
   private agent: ProtocolProxyApi.PreloadApi;
   private loaderIds: Protocol.Network.LoaderId[] = [];
-  private targetJustAttached: boolean = true;
+  private targetJustAttached = true;
   private lastPrimaryPageModel: PreloadingModel|null = null;
   private documents: Map<Protocol.Network.LoaderId, DocumentPreloadingData> =
       new Map<Protocol.Network.LoaderId, DocumentPreloadingData>();
@@ -98,7 +98,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getAllRuleSets(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
+  getAllRuleSets(): Array<WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>> {
     return this.currentDocument()?.ruleSets.getAll() || [];
   }
 
@@ -139,8 +139,8 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getRepresentativePreloadingAttempts(ruleSetId: Protocol.Preload.RuleSetId|
-                                      null): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+  getRepresentativePreloadingAttempts(ruleSetId: Protocol.Preload.RuleSetId|null):
+      Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     const document = this.currentDocument();
     if (document === null) {
       return [];
@@ -153,7 +153,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
   //
   // Returns array of pairs of id and reference. Don't save returned references.
   // Returned values may or may not be updated as the time grows.
-  getRepresentativePreloadingAttemptsOfPreviousPage(): WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+  getRepresentativePreloadingAttemptsOfPreviousPage(): Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     if (this.loaderIds.length <= 1) {
       return [];
     }
@@ -219,7 +219,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     // Note that at this timing ResourceTreeFrame.loaderId is ensured to
     // be non empty and Protocol.Network.LoaderId because it is filled
     // by ResourceTreeFrame.navigate.
-    const currentLoaderId = frame.loaderId as Protocol.Network.LoaderId;
+    const currentLoaderId = frame.loaderId;
 
     // Holds histories for two pages at most.
     this.loaderIds.push(currentLoaderId);
@@ -397,7 +397,7 @@ class RuleSetRegistry {
 
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
-  getAll(): WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>[] {
+  getAll(): Array<WithId<Protocol.Preload.RuleSetId, Protocol.Preload.RuleSet>> {
     return Array.from(this.map.entries()).map(([id, value]) => ({id, value}));
   }
 
@@ -634,7 +634,7 @@ class PreloadingAttemptRegistry {
     const pipeline = this.pipelines.get(attempt.pipelineId);
     assertNotNullOrUndefined(pipeline);
     if (pipeline.size === 0) {
-      throw Error('unreachable');
+      throw new Error('unreachable');
     }
     return [...pipeline.keys()].every(action => getSortKey(action) <= getSortKey(attempt.action));
   }
@@ -656,7 +656,7 @@ class PreloadingAttemptRegistry {
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
   getAllRepresentative(ruleSetId: Protocol.Preload.RuleSetId|null, sources: SourceRegistry):
-      WithId<PreloadingAttemptId, PreloadingAttempt>[] {
+      Array<WithId<PreloadingAttemptId, PreloadingAttempt>> {
     return [...this.map.entries()]
         .map(([id, value]) => ({id, value: this.enrich(value, sources.getById(id))}))
         .filter(({value}) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))

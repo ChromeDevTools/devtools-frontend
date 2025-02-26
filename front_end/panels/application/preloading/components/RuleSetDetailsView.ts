@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -11,16 +12,39 @@ import * as CodeHighlighter from '../../../../ui/components/code_highlighter/cod
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TextEditor from '../../../../ui/components/text_editor/text_editor.js';
+// eslint-disable-next-line rulesdir/es-modules-import
+import inspectorCommonStylesRaw from '../../../../ui/legacy/inspectorCommon.css.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import ruleSetDetailsViewStylesRaw from './RuleSetDetailsView.css.legacy.js';
+import ruleSetDetailsViewStylesRaw from './RuleSetDetailsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const ruleSetDetailsViewStyles = new CSSStyleSheet();
 ruleSetDetailsViewStyles.replaceSync(ruleSetDetailsViewStylesRaw.cssContent);
 
+// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
+const inspectorCommonStyles = new CSSStyleSheet();
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+
 const {html} = Lit;
+
+const UIStrings = {
+  /**
+   *@description Text in RuleSetDetailsView of the Application panel if no element is selected. An element here is an item in a
+   *             table of speculation rules. Speculation rules define the rules when and which urls should be prefetched.
+   *             https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  noElementSelected: 'No element selected',
+  /**
+   *@description Text in RuleSetDetailsView of the Application panel if no element is selected. An element here is an item in a
+   *             table of speculation rules. Speculation rules define the rules when and which urls should be prefetched.
+   *             https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  selectAnElementForMoreDetails: 'Select an element for more details',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetDetailsView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 type RuleSet = Protocol.Preload.RuleSet;
 
@@ -31,11 +55,11 @@ export type RuleSetDetailsViewData = RuleSet|null;
 export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetDetailsViewData = null;
-  #shouldPrettyPrint: boolean = true;
+  #shouldPrettyPrint = true;
   #editorState?: CodeMirror.EditorState;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [ruleSetDetailsViewStyles];
+    this.#shadow.adoptedStyleSheets = [ruleSetDetailsViewStyles, inspectorCommonStyles];
   }
 
   set data(data: RuleSetDetailsViewData) {
@@ -50,7 +74,17 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
   async #render(): Promise<void> {
     await RenderCoordinator.write('RuleSetDetailsView render', async () => {
       if (this.#data === null) {
-        Lit.render(Lit.nothing, this.#shadow, {host: this});
+        Lit.render(
+            html`
+          <div class="placeholder">
+            <div class="empty-state">
+              <span class="empty-state-header">${i18nString(UIStrings.noElementSelected)}</span>
+              <span class="empty-state-description">${i18nString(UIStrings.selectAnElementForMoreDetails)}</span>
+            </div>
+          </div>
+      `,
+            this.#shadow, {host: this});
+        // clang-format on
         return;
       }
 

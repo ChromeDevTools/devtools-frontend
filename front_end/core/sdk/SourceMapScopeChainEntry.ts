@@ -31,7 +31,7 @@ const UIStrings = {
    *@description Text in Scope Chain Sidebar Pane of the Sources panel
    */
   returnValue: 'Return value',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/SourceMapScopeChainEntry.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -3,31 +3,34 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
-import type * as Root from '../root/root.js';
+import * as Root from '../root/root.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Role {
-  // Unspecified role.
+  /** Provide this role when giving a function call response  */
   ROLE_UNSPECIFIED = 0,
-  // The user.
+  /** Tags the content came from the user */
   USER = 1,
-  // The model.
+  /** Tags the content came from the LLM */
   MODEL = 2,
 }
 
 export const enum Rating {
+  // Resets the vote to null in the logs
   SENTIMENT_UNSPECIFIED = 'SENTIMENT_UNSPECIFIED',
   POSITIVE = 'POSITIVE',
   NEGATIVE = 'NEGATIVE',
 }
 
-// A `Content` represents a single turn message.
+/**
+ * A `Content` represents a single turn message.
+ */
 export interface Content {
   parts: Part[];
-  // The producer of the content.
+  /** The producer of the content. */
   role: Role;
 }
 
@@ -44,7 +47,7 @@ export type Part = {
     response: Record<string, unknown>,
   },
 }|{
-  // Inline media bytes.
+  /** Inline media bytes. */
   inlineData: MediaBlob,
 };
 
@@ -71,23 +74,23 @@ interface FunctionArrayParam extends BaseFunctionParam {
   items: FunctionPrimitiveParams;
 }
 
-export interface FunctionObjectParam extends BaseFunctionParam {
+export interface FunctionObjectParam<T extends string|number|symbol = string> extends BaseFunctionParam {
   type: ParametersTypes.OBJECT;
   // TODO: this can be also be ObjectParams
-  properties: {[Key in string]: FunctionPrimitiveParams|FunctionArrayParam};
+  properties: Record<T, FunctionPrimitiveParams|FunctionArrayParam>;
 }
 
 /**
  * More about function declaration can be read at
  * https://ai.google.dev/gemini-api/docs/function-calling
  */
-export interface FunctionDeclaration {
+export interface FunctionDeclaration<T extends string|number|symbol = string> {
   name: string;
   /**
    * A description for the LLM to understand what the specific function will do once called.
    */
   description: string;
-  parameters: FunctionObjectParam|FunctionPrimitiveParams|FunctionArrayParam;
+  parameters: FunctionObjectParam<T>;
 }
 
 // Raw media bytes.
@@ -125,6 +128,8 @@ export enum ClientFeature {
   CHROME_FILE_AGENT = 9,
   // Chrome AI Patch Agent.
   CHROME_PATCH_AGENT = 12,
+  // Chrome AI Assistance Performance Insights Agent.
+  CHROME_PERFORMANCE_INSIGHTS_AGENT = 14,
 }
 
 export enum UserTier {
@@ -154,9 +159,11 @@ export interface AidaRequest {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     model_id?: string,
   };
-  metadata?: {
+  metadata: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     disable_user_content_logging: boolean,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_version: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     string_session_id?: string,
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -259,20 +266,28 @@ export class AidaBlockError extends Error {}
 
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
+    const {hostConfig} = Root.Runtime;
+    let temperature = -1;
+    let modelId = '';
+    if (hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = hostConfig.devToolsConsoleInsights.modelId || '';
+    }
+    const disallowLogging = hostConfig.aidaAvailability?.disallowLogging ?? true;
+    const chromeVersion = Root.Runtime.getChromeVersion();
+    if (!chromeVersion) {
+      throw new Error('Cannot determine Chrome version');
+    }
     const request: AidaRequest = {
       current_message: {parts: [{text: input}], role: Role.USER},
       client: CLIENT_NAME,
       functionality_type: FunctionalityType.EXPLAIN_ERROR,
       client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
+      metadata: {
+        disable_user_content_logging: disallowLogging,
+        client_version: chromeVersion,
+      },
     };
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    let temperature = -1;
-    let modelId = '';
-    if (config.devToolsConsoleInsights?.enabled) {
-      temperature = config.devToolsConsoleInsights.temperature ?? -1;
-      modelId = config.devToolsConsoleInsights.modelId || '';
-    }
-    const disallowLogging = config.aidaAvailability?.disallowLogging ?? true;
 
     if (temperature >= 0) {
       request.options ??= {};
@@ -281,11 +296,6 @@ export class AidaClient {
     if (modelId) {
       request.options ??= {};
       request.options.model_id = modelId;
-    }
-    if (disallowLogging) {
-      request.metadata = {
-        disable_user_content_logging: true,
-      };
     }
     return request;
   }
@@ -495,9 +505,9 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
     const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
-      const config = await new Promise<Root.Runtime.HostConfig>(
-          resolve => InspectorFrontendHostInstance.getHostConfig(config => resolve(config)));
-      Common.Settings.Settings.instance().setHostConfig(config);
+      const config =
+          await new Promise<Root.Runtime.HostConfig>(resolve => InspectorFrontendHostInstance.getHostConfig(resolve));
+      Object.assign(Root.Runtime.hostConfig, config);
       this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
     }
   }

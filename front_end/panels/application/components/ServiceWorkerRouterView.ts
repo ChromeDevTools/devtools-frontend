@@ -6,7 +6,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import stylesRaw from './serviceWorkerRouterView.css.legacy.js';
+import stylesRaw from './serviceWorkerRouterView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();

@@ -8,7 +8,6 @@ import {
   goToResource,
   waitForElementWithTextContent,
 } from '../../shared/helper.js';
-
 import {
   expandSelectedNodeRecursively,
   getContentOfSelectedNode,

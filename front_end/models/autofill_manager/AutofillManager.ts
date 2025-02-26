@@ -14,7 +14,7 @@ let autofillManagerInstance: AutofillManager;
 
 export class AutofillManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   #autoOpenViewSetting: Common.Settings.Setting<boolean>;
-  #address: string = '';
+  #address = '';
   #filledFields: Protocol.Autofill.FilledField[] = [];
   #matches: Match[] = [];
   #autofillModel: SDK.AutofillModel.AutofillModel|null = null;

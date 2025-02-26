@@ -92,23 +92,6 @@ export class StylePropertyHighlighter {
     return false;
   }
 
-  /**
-   * Traverse the styles pane tree, execute the provided callback for every tree element found, and
-   * return the first tree element and corresponding section for which the callback returns a truthy value.
-   */
-  private findTreeElementAndSection(compareCb: (arg0: StylePropertyTreeElement) => boolean): {
-    treeElement: StylePropertyTreeElement|null,
-    section: StylePropertiesSection|null,
-  } {
-    for (const section of this.styleSidebarPane.allSections()) {
-      const treeElement = this.findTreeElementFromSection(compareCb, section);
-      if (treeElement) {
-        return {treeElement, section};
-      }
-    }
-    return {treeElement: null, section: null};
-  }
-
   private findTreeElementFromSection(
       compareCb: (arg0: StylePropertyTreeElement) => boolean, section: StylePropertiesSection): StylePropertyTreeElement
       |null {

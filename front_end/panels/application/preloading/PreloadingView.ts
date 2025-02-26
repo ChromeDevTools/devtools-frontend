@@ -15,17 +15,15 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as SplitView from '../../../ui/components/split_view/split_view.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.legacy.js';
+import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
-import preloadingViewStyles from './preloadingView.css.legacy.js';
-import preloadingViewDropDownStyles from './preloadingViewDropDown.css.legacy.js';
-
-const {html} = Lit;
+import preloadingViewStyles from './preloadingView.css.js';
+import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
 const UIStrings = {
   /**
@@ -81,12 +79,36 @@ const UIStrings = {
    *@description Text to pretty print a file
    */
   prettyPrint: 'Pretty print',
-};
+  /**
+   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  noRulesDetected: 'No rules detected',
+  /**
+   *@description Placeholder text if there are no rules to show. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  rulesDescription: 'On this page you will see the speculation rules used to prefetch and prerender page navigations.',
+  /**
+   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  noPrefetchAttempts: 'No speculation detected',
+  /**
+   *@description Placeholder text if there are no speculation attempts for prefetching or prerendering urls. https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules
+   */
+  prefetchDescription: 'On this page you will see details on speculative loads.',
+  /**
+   *@description Text for a learn more link
+   */
+  learnMore: 'Learn more',
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+const SPECULATION_EXPLANATION_URL =
+    'https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules' as
+    Platform.DevToolsPath.UrlString;
+
 // Used for selector, indicating no filter is specified.
-const AllRuleSetRootId: symbol = Symbol('AllRuleSetRootId');
+const AllRuleSetRootId = Symbol('AllRuleSetRootId');
 
 class PreloadingUIUtils {
   static status(status: SDK.PreloadingModel.PreloadingStatus): string {
@@ -152,7 +174,7 @@ class PreloadingUIUtils {
       return ruleSet.url;
     }
 
-    throw Error('unreachable');
+    throw new Error('unreachable');
   }
 
   static processLocalId(id: Protocol.Preload.RuleSetId): string {
@@ -221,15 +243,21 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.warningsView.show(this.warningsContainer);
 
     this.ruleSetGrid.addEventListener('select', this.onRuleSetsGridCellFocused.bind(this));
-
     const onPrettyPrintToggle = (): void => {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
       this.updateRuleSetDetails();
     };
 
     // clang-format off
-    Lit.render(
+    render(
         html`
+        <div class="empty-state">
+          <span class="empty-state-header">${i18nString(UIStrings.noRulesDetected)}</span>
+          <div class="empty-state-description">
+            <span>${i18nString(UIStrings.rulesDescription)}</span>
+            ${UI.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+          </div>
+        </div>
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: max(100vh-200px, 0px)">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.ruleSetGrid}
@@ -300,7 +328,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
       };
     });
     this.ruleSetGrid.update({rows: ruleSetRows, pageURL: pageURL()});
-
+    this.contentElement.classList.toggle('empty', ruleSetRows.length === 0);
     this.updateRuleSetDetails();
   }
 
@@ -377,8 +405,17 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
     this.preloadingGrid.addEventListener('select', this.onPreloadingGridCellFocused.bind(this));
-    Lit.render(
+    render(
         html`
+        <div class="empty-state">
+          <span class="empty-state-header">${i18nString(UIStrings.noPrefetchAttempts)}</span>
+          <div class="empty-state-description">
+            <span>${i18nString(UIStrings.prefetchDescription)}</span>
+            ${
+            UI.XLink.XLink.create(
+                SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
+          </div>
+        </div>
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: 0px">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.preloadingGrid}
@@ -423,8 +460,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       this.preloadingDetails.data = null;
     } else {
       const pipeline = this.model.getPipeline(preloadingAttempt);
-      const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null) as
-          Protocol.Preload.RuleSet[];
+      const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null);
       this.preloadingDetails.data = {
         pipeline,
         ruleSets,
@@ -450,6 +486,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       };
     });
     this.preloadingGrid.update({rows, pageURL: pageURL()});
+    this.contentElement.classList.toggle('empty', rows.length === 0);
 
     this.updatePreloadingDetails();
   }
@@ -584,7 +621,7 @@ class PreloadingRuleSetSelector implements
 
   private onModelUpdated(): void {
     const ids = this.model.getAllRuleSets().map(({id}) => id);
-    const items = [AllRuleSetRootId, ...ids];
+    const items = [AllRuleSetRootId, ...ids] as [typeof AllRuleSetRootId, ...Protocol.Preload.RuleSetId[]];
     const selected = this.dropDown.getSelectedItem();
     this.listModel.replaceAll(items);
     if (selected === null) {
@@ -596,7 +633,7 @@ class PreloadingRuleSetSelector implements
   }
 
   // Updates the width for the DropDown element.
-  private updateWidth(items: (Protocol.Preload.RuleSetId|typeof AllRuleSetRootId)[]): void {
+  private updateWidth(items: Array<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>): void {
     // Width set by `UI.SoftDropDown`.
     const DEFAULT_WIDTH = 315;
     const urlLengths = items.map(x => this.titleFor(x).length);

@@ -2,6 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../core/platform/platform.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
+
 import type * as File from './File.js';
 
 export interface Configuration {
@@ -64,4 +68,12 @@ export interface ParseOptions {
    */
   isCPUProfile?: boolean;
   metadata?: File.MetaData;
+  resolveSourceMap?: (params: ResolveSourceMapParams) => Promise<SDK.SourceMap.SourceMap|null>;
+}
+
+export interface ResolveSourceMapParams {
+  scriptId: string;
+  scriptUrl: Platform.DevToolsPath.UrlString;
+  sourceMapUrl: Platform.DevToolsPath.UrlString;
+  frame: Protocol.Page.FrameId;
 }

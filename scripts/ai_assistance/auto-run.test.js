@@ -9,6 +9,7 @@
  */
 
 const {assert} = require('chai');
+
 const {parseComment} = require('./auto-run-helpers.js');
 
 describe('parsing comments', () => {

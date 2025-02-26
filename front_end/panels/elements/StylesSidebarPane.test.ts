@@ -10,7 +10,7 @@ import {
   createTarget,
   describeWithEnvironment,
   describeWithLocale,
-  getGetHostConfigStub,
+  updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
@@ -125,18 +125,13 @@ describe('StylesSidebarPane', () => {
         setMockConnectionResponseHandler('CSS.getAnimatedStylesForNode', () => response);
       }
 
-      let hostConfigStub: sinon.SinonStub;
       beforeEach(() => {
         sinon.stub(Common.Linkifier.Linkifier, 'linkify').returns(Promise.resolve(document.createTextNode('link')));
-        hostConfigStub = getGetHostConfigStub({
+        updateHostConfig({
           devToolsAnimationStylesInStylesTab: {
             enabled: true,
           },
         });
-      });
-
-      afterEach(() => {
-        hostConfigStub.restore();
       });
 
       it('should render transition & animation styles in the styles tab', async () => {

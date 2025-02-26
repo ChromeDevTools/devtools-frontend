@@ -10,7 +10,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {flattenBreadcrumbs} from './Breadcrumbs.js';
-import breadcrumbsUIStylesRaw from './breadcrumbsUI.css.legacy.js';
+import breadcrumbsUIStylesRaw from './breadcrumbsUI.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const breadcrumbsUIStyles = new CSSStyleSheet();
@@ -31,7 +31,7 @@ const UIStrings = {
    */
   removeChildBreadcrumbs: 'Remove child breadcrumbs',
 
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/BreadcrumbsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

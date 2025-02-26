@@ -4,7 +4,6 @@
 // found in the LICENSE file.
 
 import {goToResource} from '../../shared/helper.js';
-
 import {
   expandSelectedNodeRecursively,
   waitForElementsStyleSection,

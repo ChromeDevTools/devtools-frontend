@@ -21,7 +21,7 @@ const UIStrings = {
    *@description A context menu item in the Scope View of the Sources Panel
    */
   openInMemoryInspectorPanel: 'Open in Memory inspector panel',
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/LinearMemoryInspectorController.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -75,19 +75,12 @@ async function getBufferFromObject(obj: SDK.RemoteObject.RemoteObject): Promise<
   return new SDK.RemoteObject.RemoteArrayBuffer(obj);
 }
 
-export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean {
-  if (obj instanceof Bindings.DebuggerLanguagePlugins.ExtensionRemoteObject) {
-    return obj.linearMemoryAddress !== undefined;
-  }
-  return false;
-}
-
 interface SerializableSettings {
   valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[];
-  valueTypeModes: [
+  valueTypeModes: Array<[
     LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType,
     LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode,
-  ][];
+  ]>;
   endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness;
 }
 
@@ -95,9 +88,8 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable>,
                UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
   #paneInstance = LinearMemoryInspectorPane.instance();
-  #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
-  #bufferIdToHighlightInfo: Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo> =
-      new Map();
+  #bufferIdToRemoteObject = new Map<string, SDK.RemoteObject.RemoteObject>();
+  #bufferIdToHighlightInfo = new Map<string, LinearMemoryInspectorComponents.LinearMemoryViewerUtils.HighlightInfo>();
   #settings: Common.Settings.Setting<SerializableSettings>;
 
   private constructor() {

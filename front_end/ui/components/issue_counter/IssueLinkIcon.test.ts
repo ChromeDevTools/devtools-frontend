@@ -43,7 +43,7 @@ interface MockIssueResolverEntry {
 }
 
 class MockIssueResolver {
-  #promiseMap: Map<string, MockIssueResolverEntry> = new Map();
+  #promiseMap = new Map<string, MockIssueResolverEntry>();
 
   waitFor(issueId?: string) {
     if (!issueId) {
@@ -57,10 +57,7 @@ class MockIssueResolver {
     if (entry) {
       return entry.promise;
     }
-    let resolve: (issue: IssuesManager.Issue.Issue|null) => void = () => {};
-    const promise = new Promise<IssuesManager.Issue.Issue|null>(r => {
-      resolve = r;
-    });
+    const {resolve, promise} = Promise.withResolvers<IssuesManager.Issue.Issue|null>();
     this.#promiseMap.set(issueId, {resolve, promise});
     return promise;
   }

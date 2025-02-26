@@ -31,7 +31,7 @@ const UIStrings = {
    * A origin is (roughly said) the front part of a URL.
    */
   untrustworthyOrigin: 'Untrustworthy origin',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/issues/AttributionReportingIssueDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

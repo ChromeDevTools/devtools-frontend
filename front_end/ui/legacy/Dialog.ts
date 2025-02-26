@@ -32,7 +32,7 @@ import * as Common from '../../core/common/common.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import dialogStyles from './dialog.css.legacy.js';
+import dialogStyles from './dialog.css.js';
 import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
@@ -81,8 +81,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   override show(where?: Document|Element): void {
-    const document =
-        (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument as Document);
+    const document = (where instanceof Document ? where : (where || InspectorView.instance().element).ownerDocument);
     this.targetDocument = document;
     this.targetDocument.addEventListener('keydown', this.targetDocumentKeyDownHandler, true);
 
@@ -140,7 +139,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
     let node: (Node|null)|Document = document;
     for (; node; node = node.traverseNextNode(document)) {
       if (node instanceof HTMLElement) {
-        const element = (node as HTMLElement);
+        const element = (node);
         const tabIndex = element.tabIndex;
         if (!exclusionSet?.has(element)) {
           if (tabIndex >= 0) {
@@ -156,13 +155,13 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   private getMainWidgetTabIndexElements(splitWidget: SplitWidget|null): Set<HTMLElement> {
-    const elementSet = (new Set() as Set<HTMLElement>);
+    const elementSet = new Set<HTMLElement>();
     if (!splitWidget) {
       return elementSet;
     }
 
     const mainWidget = splitWidget.mainWidget();
-    if (!mainWidget || !mainWidget.element) {
+    if (!mainWidget?.element) {
       return elementSet;
     }
 
@@ -172,7 +171,7 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
         continue;
       }
 
-      const element = (node as HTMLElement);
+      const element = (node);
       const tabIndex = element.tabIndex;
       if (tabIndex < 0) {
         continue;

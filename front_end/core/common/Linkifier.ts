@@ -48,5 +48,5 @@ export function getApplicableRegisteredlinkifiers(object: Object): LinkifierRegi
 }
 export interface LinkifierRegistration {
   loadLinkifier: () => Promise<Linkifier>;
-  contextTypes?: (() => Array<Function>);
+  contextTypes?: (() => Function[]);
 }

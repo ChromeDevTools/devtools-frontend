@@ -12,7 +12,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.legacy.js';
+import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.js';
 import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import type {DOMNode} from './Helper.js';
 
@@ -35,7 +35,7 @@ const UIStrings = {
    * @description A label/tooltip for a button that scrolls the breadcrumbs bar to the right to show more entries.
    */
   scrollRight: 'Scroll right',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/ElementsBreadcrumbs.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

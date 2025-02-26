@@ -15,7 +15,6 @@ import {
   waitForMany,
   waitForNone,
 } from '../../shared/helper.js';
-
 import {
   ELEMENTS_PANEL_SELECTOR,
   getStyleRule,

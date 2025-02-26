@@ -67,7 +67,7 @@ describe('AI Assistance', function() {
     await frontend.bringToFront();
     await frontend.evaluate(messages => {
       let call = 0;
-      // @ts-ignore devtools context.
+      // @ts-expect-error devtools context.
       globalThis.InspectorFrontendHost.doAidaConversation = async (request, streamId, cb) => {
         const response = JSON.stringify([
           {
@@ -81,7 +81,7 @@ describe('AI Assistance', function() {
         let first = true;
         for (const chunk of response.split(',{')) {
           await new Promise(resolve => setTimeout(resolve, 0));
-          // @ts-ignore devtools context.
+          // @ts-expect-error devtools context.
           globalThis.InspectorFrontendAPI.streamWrite(streamId, first ? chunk : ',{' + chunk);
           first = false;
         }
@@ -90,13 +90,17 @@ describe('AI Assistance', function() {
     }, messages);
   }
 
-  async function inspectNode(selector: string, iframeId?: string): Promise<void> {
+  async function inspectNode(selector: string, iframeId?: string, shadowRoot?: string): Promise<void> {
     const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);
     await frontend.locator('aria/Console prompt').click();
     let inspectText = `inspect(document.querySelector(${JSON.stringify(selector)}))`;
     if (iframeId) {
       inspectText = `inspect(document.querySelector('iframe#${iframeId}').contentDocument.querySelector((${
+          JSON.stringify(selector)})))`;
+    }
+    if (shadowRoot) {
+      inspectText = `inspect(document.querySelector(${JSON.stringify(shadowRoot)}).shadowRoot.querySelector((${
           JSON.stringify(selector)})))`;
     }
     await frontend.keyboard.type(inspectText);
@@ -121,11 +125,11 @@ describe('AI Assistance', function() {
   async function enableDebugModeForFreestyler(): Promise<void> {
     const {frontend} = getBrowserAndPages();
     await frontend.waitForFunction(() => {
-      return 'setDebugFreestylerEnabled' in window;
+      return 'setDebugAiAssistanceEnabled' in window;
     });
     await frontend.evaluate(() => {
-      // @ts-ignore
-      setDebugFreestylerEnabled(true);
+      // @ts-expect-error
+      setDebugAiAssistanceEnabled(true);
     });
   }
 
@@ -144,11 +148,11 @@ describe('AI Assistance', function() {
     };
   }
 
-  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Array<Log>> {
+  async function submitAndWaitTillDone(waitForSideEffect?: boolean): Promise<Log[]> {
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
-        window.addEventListener('freestylerdone', resolve, {
+        window.addEventListener('aiassistancedone', resolve, {
           once: true,
         });
       });
@@ -158,8 +162,8 @@ describe('AI Assistance', function() {
     if (waitForSideEffect) {
       await frontend.waitForSelector('aria/Continue');
       return JSON.parse(await frontend.evaluate((): string => {
-        return localStorage.getItem('freestylerStructuredLog') as string;
-      })) as Array<Log>;
+        return localStorage.getItem('aiAssistanceStructuredLog') as string;
+      })) as Log[];
     }
 
     const abort = new AbortController();
@@ -173,8 +177,8 @@ describe('AI Assistance', function() {
     await done;
     abort.abort();
     return JSON.parse(await frontend.evaluate((): string => {
-      return localStorage.getItem('freestylerStructuredLog') as string;
-    })) as Array<Log>;
+      return localStorage.getItem('aiAssistanceStructuredLog') as string;
+    })) as Log[];
   }
 
   async function runAiAssistance(options: {
@@ -183,6 +187,7 @@ describe('AI Assistance', function() {
     resource?: string,
     node?: string,
     iframeId?: string,
+    shadowRoot?: string,
     waitForSideEffect?: boolean,
   }) {
     const {
@@ -191,12 +196,17 @@ describe('AI Assistance', function() {
       resource = '../resources/recorder/recorder.html',
       node = 'div',
       iframeId,
+      shadowRoot,
       waitForSideEffect
     } = options;
 
     await setupMocks(
         {
-          aidaAvailability: {},
+          aidaAvailability: {
+            enabled: true,
+            disallowLogging: true,
+            enterprisePolicyValue: 0,
+          },
           devToolsFreestyler: {
             enabled: true,
           },
@@ -211,6 +221,7 @@ describe('AI Assistance', function() {
     return await sendAiAssistanceMessage({
       node,
       iframeId,
+      shadowRoot,
       query,
       messages,
       waitForSideEffect,
@@ -222,12 +233,13 @@ describe('AI Assistance', function() {
     messages: string[],
     node?: string,
     iframeId?: string,
+    shadowRoot?: string,
     waitForSideEffect?: boolean,
   }) {
-    const {messages, query, node = 'div', iframeId, waitForSideEffect} = options;
+    const {messages, query, node = 'div', iframeId, shadowRoot, waitForSideEffect} = options;
 
     await resetMockMessages(messages);
-    await inspectNode(node, iframeId);
+    await inspectNode(node, iframeId, shadowRoot);
     await typeQuery(query);
     return await submitAndWaitTillDone(waitForSideEffect);
   }
@@ -319,9 +331,9 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 0, 255)' &&
-          // @ts-ignore page context.
+          // @ts-expect-error page context.
           window.getComputedStyle(document.querySelector('body')).backgroundColor === 'rgb(0, 128, 0)';
     });
   });
@@ -343,7 +355,7 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 0, 255)';
     });
 
@@ -362,8 +374,55 @@ STOP`,
 
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('button')).backgroundColor === 'rgb(0, 128, 0)';
+    });
+  });
+
+  it('modifies multiple styles for elements inside shadow DOM', async () => {
+    await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'blue' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      resource: '../resources/recorder/shadow-open.html',
+      node: 'button',
+      shadowRoot: 'login-element',
+    });
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      // @ts-expect-error page context.
+      return window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'))
+                 .backgroundColor === 'rgb(0, 0, 255)';
+    });
+
+    await sendAiAssistanceMessage({
+      query: 'Change the font color for this element to green',
+      messages: [
+        `THOUGHT: I can change the font color of an element by setting the color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'color': 'green' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      node: 'button',
+      shadowRoot: 'login-element',
+    });
+
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      const buttonStyles =
+          // @ts-expect-error page context.
+          window.getComputedStyle(document.querySelector('login-element').shadowRoot.querySelector('button'));
+      return buttonStyles.backgroundColor === 'rgb(0, 0, 255)' && buttonStyles.color === 'rgb(0, 128, 0)';
     });
   });
 
@@ -413,7 +472,7 @@ STOP`,
     const {target} = getBrowserAndPages();
     await target.bringToFront();
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgba(0, 0, 0, 0)';
     });
 
@@ -431,20 +490,42 @@ STOP`,
     const {frontend} = getBrowserAndPages();
     const done = frontend.evaluate(() => {
       return new Promise(resolve => {
-        window.addEventListener('freestylerdone', resolve, {
+        window.addEventListener('aiassistancedone', resolve, {
           once: true,
         });
       });
     });
     await frontend.keyboard.press('Enter');
-    await await frontend.locator('aria/Continue').click();
+    await frontend.locator('aria/Continue').click();
     await done;
 
     await target.bringToFront();
-    await new Promise(resolve => setTimeout(resolve, 10000));
     await target.waitForFunction(() => {
-      // @ts-ignore page context.
+      // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
+    });
+  });
+
+  it('modifies styles to a selector with high specificity', async () => {
+    await runAiAssistance({
+      query: 'Change the color for this element to rebeccapurple',
+      messages: [
+        `THOUGHT: I can change the color of an element by setting the color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'color': 'rebeccapurple' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      resource: '../resources/ai_assistance/high-specificity.html',
+      node: 'h1',
+    });
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+    await target.waitForFunction(() => {
+      // @ts-expect-error page context.
+      return window.getComputedStyle(document.querySelector('h1')).color === 'rgb(102, 51, 153)';
     });
   });
 });

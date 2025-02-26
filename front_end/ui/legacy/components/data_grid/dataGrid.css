@@ -232,10 +232,11 @@
 
   & ::selection {
     background-color: var(--sys-color-state-focus-select);
+    color: currentcolor;
   }
 }
 
-.data-grid tbody tr.revealed:focus-within {
+.data-grid:focus-within tbody tr.revealed.selected {
   background-color: var(--sys-color-tonal-container);
 }
 
@@ -285,6 +286,15 @@
   background-color: var(--override-data-grid-dirty-background-color);
   color: var(--sys-color-error);
   font-style: normal;
+}
+
+.data-grid tr.highlighted:not(.selected) {
+  background-color: var(--sys-color-surface-yellow);
+}
+
+.striped-data-grid .revealed.data-grid-data-grid-node.highlighted:nth-child(odd):not(.dirty, .selected),
+.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node.highlighted:nth-child(even):not(.dirty, .selected) {
+  background-color: var(--sys-color-surface-yellow-high);
 }
 
 .data-grid td.show-more {

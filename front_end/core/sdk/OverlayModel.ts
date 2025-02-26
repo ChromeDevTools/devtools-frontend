@@ -23,7 +23,7 @@ const UIStrings = {
    *@description Text in Overlay Model
    */
   pausedInDebugger: 'Paused in debugger',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('core/sdk/OverlayModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -183,11 +183,11 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   static async muteHighlight(): Promise<void[]> {
-    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.suspendModel()));
+    return await Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.suspendModel()));
   }
 
   static async unmuteHighlight(): Promise<void[]> {
-    return Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
+    return await Promise.all(TargetManager.instance().models(OverlayModel).map(model => model.resumeModel()));
   }
 
   static highlightRect(rect: HighlightRect): void {
@@ -471,27 +471,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   sourceOrderModeActive(): boolean {
     return this.#sourceOrderModeActiveInternal;
-  }
-
-  highlightIsolatedElementInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
-    if (!this.#persistentHighlighter) {
-      return;
-    }
-    this.#persistentHighlighter.highlightIsolatedElementInOverlay(nodeId);
-  }
-
-  hideIsolatedElementInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
-    if (!this.#persistentHighlighter) {
-      return;
-    }
-    this.#persistentHighlighter.hideIsolatedElementInOverlay(nodeId);
-  }
-
-  isHighlightedIsolatedElementInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
-    if (!this.#persistentHighlighter) {
-      return false;
-    }
-    return this.#persistentHighlighter.isIsolatedElementHighlighted(nodeId);
   }
 
   private delayedHideHighlight(delay: number): void {
@@ -808,7 +787,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   }
 
   async hasStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
-    return this.#windowControls.initializeStyleSheetText(url);
+    return await this.#windowControls.initializeStyleSheetText(url);
   }
 }
 

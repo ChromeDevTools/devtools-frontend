@@ -13,7 +13,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import requestTrustTokensViewStylesRaw from './RequestTrustTokensView.css.legacy.js';
+import requestTrustTokensViewStylesRaw from './RequestTrustTokensView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const requestTrustTokensViewStyles = new CSSStyleSheet();
@@ -101,7 +101,7 @@ const UIStrings = {
    *@description Text for an error status in the Network panel
    */
   perSiteLimit: 'Per-site issuer limit reached.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

@@ -395,10 +395,10 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
   readonly resources: Set<SDK.Resource.Resource>;
   readonly #project: ContentProviderBasedProject;
   readonly #uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  #edits: {
+  #edits: Array<{
     stylesheet: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader,
     edit: SDK.CSSModel.Edit|null,
-  }[];
+  }>;
   constructor(project: ContentProviderBasedProject, resource: SDK.Resource.Resource) {
     this.resources = new Set([resource]);
     this.#project = project;

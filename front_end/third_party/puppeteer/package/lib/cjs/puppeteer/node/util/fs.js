@@ -10,7 +10,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rm = rm;
 exports.rmSync = rmSync;
-const fs_1 = __importDefault(require("fs"));
+const node_fs_1 = __importDefault(require("node:fs"));
 const rmOptions = {
     force: true,
     recursive: true,
@@ -20,12 +20,12 @@ const rmOptions = {
  * @internal
  */
 async function rm(path) {
-    await fs_1.default.promises.rm(path, rmOptions);
+    await node_fs_1.default.promises.rm(path, rmOptions);
 }
 /**
  * @internal
  */
 function rmSync(path) {
-    fs_1.default.rmSync(path, rmOptions);
+    node_fs_1.default.rmSync(path, rmOptions);
 }
 //# sourceMappingURL=fs.js.map

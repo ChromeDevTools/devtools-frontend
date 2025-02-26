@@ -543,7 +543,7 @@ const UIStrings = {
    */
   webSocketSticky: 'Back/forward cache is disabled because WebSocket has been used.',
 
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

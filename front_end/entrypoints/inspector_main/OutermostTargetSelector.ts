@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import outermostTargetSelectorStyles from './outermostTargetSelector.css.legacy.js';
+import outermostTargetSelectorStyles from './outermostTargetSelector.css.js';
 
 const UIStrings = {
   /**
@@ -22,7 +22,7 @@ const UIStrings = {
    *@example {top} PH1
    */
   targetS: 'Page: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/inspector_main/OutermostTargetSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

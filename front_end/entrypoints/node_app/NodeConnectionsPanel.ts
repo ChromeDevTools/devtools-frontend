@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.legacy.js';
+import nodeConnectionsPanelStyles from './nodeConnectionsPanel.css.js';
 
 const UIStrings = {
   /**
@@ -33,7 +33,7 @@ const UIStrings = {
    *@description Text in Node Connections Panel of the Sources panel when debugging a Node.js app
    */
   networkAddressEgLocalhost: 'Network address (e.g. localhost:9229)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeConnectionsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -83,9 +83,9 @@ export class NodeConnectionsView extends UI.Widget.VBox implements UI.ListWidget
   readonly #callback: (arg0: Adb.NetworkDiscoveryConfig) => void;
   readonly #list: UI.ListWidget.ListWidget<Adb.PortForwardingRule>;
   #editor: UI.ListWidget.Editor<Adb.PortForwardingRule>|null;
-  #networkDiscoveryConfig: {
+  #networkDiscoveryConfig: Array<{
     address: string,
-  }[];
+  }>;
   constructor(callback: (arg0: Adb.NetworkDiscoveryConfig) => void) {
     super();
     this.#callback = callback;

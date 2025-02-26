@@ -13,7 +13,7 @@ import BucketEvents = SDK.StorageBucketsModel.Events;
 
 class StorageBucketModelListener {
   #model: SDK.StorageBucketsModel.StorageBucketsModel;
-  #bucketEvents = new Map<BucketEvents, Array<SDK.StorageBucketsModel.BucketEvent>>();
+  #bucketEvents = new Map<BucketEvents, SDK.StorageBucketsModel.BucketEvent[]>();
 
   constructor(model: SDK.StorageBucketsModel.StorageBucketsModel) {
     this.#model = model;

@@ -76,7 +76,7 @@ function cpuTask({tid, ts, duration}: {
 
 describe('DependencyGraph/Simulator', () => {
   // Insulate the simulator tests from DNS multiplier changes
-  let originalDNSMultiplier: number = 1;
+  let originalDNSMultiplier = 1;
   let trace: Lantern.Types.Trace;
 
   before(async function() {

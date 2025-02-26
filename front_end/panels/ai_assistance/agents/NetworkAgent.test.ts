@@ -7,17 +7,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
-import {
-  getGetHostConfigStub,
-} from '../../../testing/EnvironmentHelpers.js';
+import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
+import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Network from '../../network/network.js';
 import {
-  allowHeader,
-  formatHeaders,
-  formatInitiatorUrl,
   NetworkAgent,
   RequestContext,
   ResponseType,
@@ -29,7 +25,7 @@ describeWithMockConnection('NetworkAgent', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   function mockHostConfig(modelId?: string, temperature?: number) {
-    getGetHostConfigStub({
+    updateHostConfig({
       devToolsAiAssistanceNetworkAgent: {
         modelId,
         temperature,
@@ -57,7 +53,7 @@ describeWithMockConnection('NetworkAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.model_id,
           'test model',
       );
     });
@@ -68,63 +64,8 @@ describeWithMockConnection('NetworkAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({text: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).options?.temperature,
           1,
-      );
-    });
-
-    it('structure matches the snapshot', () => {
-      mockHostConfig('test model');
-      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
-      const agent = new NetworkAgent({
-        aidaClient: {} as Host.AidaClient.AidaClient,
-        serverSideLoggingEnabled: true,
-      });
-      sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'answer',
-        },
-      ];
-      assert.deepEqual(
-          agent.buildRequest({
-            text: 'test input',
-          }),
-          {
-            current_message: {parts: [{text: 'test input'}], role: Host.AidaClient.Role.USER},
-            client: 'CHROME_DEVTOOLS',
-            preamble: 'preamble',
-            historical_contexts: [
-              {
-                role: 1,
-                parts: [{text: 'questions'}],
-              },
-              {
-                role: 2,
-                parts: [{text: 'answer'}],
-              },
-            ],
-            metadata: {
-              disable_user_content_logging: false,
-              string_session_id: 'sessionId',
-              user_tier: 2,
-            },
-            options: {
-              model_id: 'test model',
-              temperature: undefined,
-            },
-            client_feature: 7,
-            functionality_type: 1,
-          },
       );
     });
   });
@@ -197,28 +138,14 @@ describeWithMockConnection('NetworkAgent', () => {
       sinon.restore();
     });
 
-    function mockAidaClient(
-        fetch: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
-        ): Host.AidaClient.AidaClient {
-      return {
-        fetch,
-        registerClientEvent: () => Promise.resolve({}),
-      };
-    }
-
     it('generates an answer', async () => {
-      async function* generateAnswer() {
-        yield {
+      const agent = new NetworkAgent({
+        aidaClient: mockAidaClient([[{
           explanation: 'This is the answer',
           metadata: {
             rpcGlobalId: 123,
           },
-          completed: true,
-        };
-      }
-
-      const agent = new NetworkAgent({
-        aidaClient: mockAidaClient(generateAnswer),
+        }]]),
       });
 
       const responses =
@@ -227,6 +154,8 @@ describeWithMockConnection('NetworkAgent', () => {
         {
           type: ResponseType.USER_QUERY,
           query: 'test',
+          imageInput: undefined,
+          imageId: undefined,
         },
         {
           type: ResponseType.CONTEXT,
@@ -234,11 +163,11 @@ describeWithMockConnection('NetworkAgent', () => {
           details: [
             {
               title: 'Request',
-              text: 'Request URL: https://www.example.com\n\nRequest Headers\ncontent-type: bar1',
+              text: 'Request URL: https://www.example.com\n\nRequest headers:\ncontent-type: bar1',
             },
             {
               title: 'Response',
-              text: 'Response Status: 200 \n\nResponse Headers\ncontent-type: bar2\nx-forwarded-for: bar3',
+              text: 'Response Status: 200 \n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3',
             },
             {
               title: 'Timing',
@@ -256,17 +185,16 @@ describeWithMockConnection('NetworkAgent', () => {
         },
         {
           type: ResponseType.QUERYING,
-          query:
-              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.4 min\nQueueing (duration): 8.4 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.4 min\n\nRequest initiator chain:\n- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,
           text: 'This is the answer',
+          complete: true,
           suggestions: undefined,
           rpcId: 123,
         },
       ]);
-      assert.deepEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts, [
         {
           role: 1,
           parts: [{
@@ -304,78 +232,6 @@ test`,
           parts: [{text: 'This is the answer'}],
         },
       ]);
-    });
-  });
-
-  describe('allowHeader', () => {
-    it('allows a header from the list', () => {
-      assert.isTrue(allowHeader({name: 'content-type', value: 'foo'}));
-    });
-
-    it('disallows headers not on the list', () => {
-      assert.isFalse(allowHeader({name: 'cookie', value: 'foo'}));
-      assert.isFalse(allowHeader({name: 'set-cookie', value: 'foo'}));
-      assert.isFalse(allowHeader({name: 'authorization', value: 'foo'}));
-    });
-  });
-
-  describe('formatInitiatorUrl', () => {
-    const tests = [
-      {
-        allowedResource: 'https://example.test',
-        targetResource: 'https://example.test',
-        shouldBeRedacted: false,
-      },
-      {
-        allowedResource: 'https://example.test',
-        targetResource: 'https://another-example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'file://test',
-        targetResource: 'https://another-example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://another-example.test',
-        targetResource: 'file://test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://test.example.test',
-        targetResource: 'https://example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://test.example.test:9900',
-        targetResource: 'https://test.example.test:9901',
-        shouldBeRedacted: true,
-      },
-    ];
-
-    for (const t of tests) {
-      it(`${t.targetResource} test when allowed resource is ${t.allowedResource}`, () => {
-        const formatted = formatInitiatorUrl(new URL(t.targetResource).origin, new URL(t.allowedResource).origin);
-        if (t.shouldBeRedacted) {
-          assert.strictEqual(
-              formatted, '<redacted cross-origin initiator URL>', `${JSON.stringify(t)} was not redacted`);
-        } else {
-          assert.strictEqual(formatted, t.targetResource, `${JSON.stringify(t)} was redacted`);
-        }
-      });
-    }
-  });
-
-  describe('formatHeaders', () => {
-    it('does not redact a header from the list', () => {
-      assert.strictEqual(formatHeaders('test:', [{name: 'content-type', value: 'foo'}]), 'test:\ncontent-type: foo');
-    });
-
-    it('disallows headers not on the list', () => {
-      assert.strictEqual(formatHeaders('test:', [{name: 'cookie', value: 'foo'}]), 'test:\ncookie: <redacted>');
-      assert.strictEqual(formatHeaders('test:', [{name: 'set-cookie', value: 'foo'}]), 'test:\nset-cookie: <redacted>');
-      assert.strictEqual(
-          formatHeaders('test:', [{name: 'authorization', value: 'foo'}]), 'test:\nauthorization: <redacted>');
     });
   });
 });

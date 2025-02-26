@@ -133,7 +133,7 @@ export class ModificationsManager extends EventTarget {
     }
   }
 
-  createAnnotation(newAnnotation: Trace.Types.File.Annotation, loadedFromFile: boolean = false): void {
+  createAnnotation(newAnnotation: Trace.Types.File.Annotation, loadedFromFile = false): void {
     // If a label already exists on an entry and a user is trying to create a new one, start editing an existing label instead.
     if (newAnnotation.type === 'ENTRY_LABEL') {
       const overlay = this.#findLabelOverlayForEntry(newAnnotation.entry);
@@ -314,10 +314,10 @@ export class ModificationsManager extends EventTarget {
   toJSON(): Trace.Types.File.Modifications {
     const hiddenEntries = this.#entriesFilter.invisibleEntries()
                               .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                              .filter(entry => entry !== null) as Trace.Types.File.SerializableKey[];
+                              .filter(entry => entry !== null);
     const expandableEntries = this.#entriesFilter.expandableEntries()
                                   .map(entry => this.#eventsSerializer.keyForEvent(entry))
-                                  .filter(entry => entry !== null) as Trace.Types.File.SerializableKey[];
+                                  .filter(entry => entry !== null);
     this.#modifications = {
       entriesModifications: {
         hiddenEntries,

@@ -367,13 +367,13 @@ export class CSSMetadata {
 // [^- ][a-zA-Z-]+ matches property key values (e.g. smaller, x-large, initial)
 // -?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+) matches numeric property values (e.g. -.23, 3.3, 55)
 // [a-zA-Z%]{0,4} matches the units of numeric property values (e.g. px, vmin, or blank units)
-export const FontPropertiesRegex: RegExp = /^[^- ][a-zA-Z-]+$|^-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}$/;
+export const FontPropertiesRegex = /^[^- ][a-zA-Z-]+$|^-?\+?(?:[0-9]+\.[0-9]+|\.[0-9]+|[0-9]+)[a-zA-Z%]{0,4}$/;
 
 // "[\w \,-]+",? ? matches double quoted values and the trailing comma/space (e.g. "Tahoma", )
 // ('[\w \,-]+',? ?) matches single quoted values and the trailing comma/space (e.g. 'Segoe UI', )
 // ([\w \,-]+,? ?) matches non quoted values and the trailing comma/space (e.g. Helvetica)
 // (?: ...)+ will match 1 or more of the groups above such that it would match a value with fallbacks (e.g. "Tahoma", 'Segoe UI', Helvetica)
-export const FontFamilyRegex: RegExp = /^("[\w \,-]+"?, ?|'[\w \,-]+',? ?|[\w \-]+,? ?)+$/;
+export const FontFamilyRegex = /^("[\w \,-]+"?, ?|'[\w \,-]+',? ?|[\w \-]+,? ?)+$/;
 
 export const CubicBezierKeywordValues = new Map([
   ['linear', 'cubic-bezier(0, 0, 1, 1)'],

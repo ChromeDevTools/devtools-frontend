@@ -9,7 +9,7 @@ export const belgraveHouse = {
   treeNodeData: 'BEL',
   id: 'BEL',
 };
-export const officesAndProductsData: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [
+export const officesAndProductsData: Array<TreeOutline.TreeOutlineUtils.TreeNode<string>> = [
   {
     treeNodeData: 'Offices',
     id: 'Offices',

@@ -14,7 +14,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import cpuThrottlingSelectorStylesRaw from './cpuThrottlingSelector.css.legacy.js';
+import cpuThrottlingSelectorStylesRaw from './cpuThrottlingSelector.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cpuThrottlingSelectorStyles = new CSSStyleSheet();
@@ -54,7 +54,7 @@ const UIStrings = {
    * @description Label shown above a list of CPU calibration preset options.
    */
   labelCalibratedPresets: 'Calibrated presets',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/CPUThrottlingSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

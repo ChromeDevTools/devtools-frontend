@@ -26,7 +26,7 @@ const UIStrings = {
    *@description Title of the 'Buffering Status' button
    */
   bufferingStatus: 'Buffering Status',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/media/EventTimelineView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -143,7 +143,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         break;
 
       default:
-        throw `_onPlaybackEvent cant handle ${event.event}`;
+        throw new Error(`_onPlaybackEvent cant handle ${event.event}`);
     }
   }
 
@@ -162,9 +162,9 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         // We only want the buffering for audio and video to be displayed.
         // One event may have changes for a single type, or for both audio/video
         // simultaneously.
-        // @ts-ignore
+        // @ts-expect-error
         audioState = event.value['audio_buffering_state'];
-        // @ts-ignore
+        // @ts-expect-error
         videoState = event.value['video_buffering_state'];
 
         if (audioState) {
@@ -199,7 +199,7 @@ export class PlayerEventsTimeline extends TickingFlameChart {
         break;
 
       default:
-        throw `_onPlaybackEvent cant handle ${event.event}`;
+        throw new Error(`_onPlaybackEvent cant handle ${event.event}`);
     }
   }
 

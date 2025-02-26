@@ -9,12 +9,12 @@ import {getRegisteredProviders, Provider, registerProvider, type ProviderRegistr
 import {QuickOpenImpl} from './QuickOpen.js';
 
 export class HelpQuickOpen extends Provider {
-  private providers: {
+  private providers: Array<{
     prefix: string,
     iconName: string,
     title: string,
     jslogContext: string,
-  }[];
+  }>;
 
   constructor(jslogContext: string) {
     super(jslogContext);

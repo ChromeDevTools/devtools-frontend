@@ -12,7 +12,7 @@ import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import binaryResourceViewStyles from './binaryResourceView.css.legacy.js';
+import binaryResourceViewStyles from './binaryResourceView.css.js';
 
 const UIStrings = {
   /**
@@ -59,7 +59,7 @@ const UIStrings = {
    *to the clipboard. UTF-8 is a format for encoding data.
    */
   copyAsUtf: 'Copy as `UTF-8`',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/BinaryResourceView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class BinaryResourceView extends UI.Widget.VBox {
@@ -171,7 +171,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
   }
 
   private binaryViewTypeChanged(): void {
-    const selectedOption = (this.binaryViewTypeCombobox.selectedOption() as HTMLOptionElement | null);
+    const selectedOption = (this.binaryViewTypeCombobox.selectedOption());
     if (!selectedOption) {
       return;
     }

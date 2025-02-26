@@ -7,6 +7,7 @@
 const l10nHelper = require('./l10n-helper.js');
 
 const MODULE_UI_STRINGS_FILENAME_REGEX = /ModuleUIStrings\.(js|ts)$/;
+const TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX = /models\/trace\/insights\/.*\.(js|ts)$/;
 
 /**
  * @type {import('eslint').Rule.RuleModule}
@@ -15,14 +16,14 @@ module.exports = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'UIStrings object literals are only allowed to be exported from ModuleUIStrings.(js|ts)',
+      description: 'UIStrings object literals are only allowed to be exported from ModuleUIStrings.(js|ts) or trace/model/insights',
       category: 'Possible Errors',
     },
     fixable: 'code',
     schema: []  // no options
   },
   create: function(context) {
-    const filename = context.filename ?? context.getFilename();
+    const filename = (context.filename ?? context.getFilename()).replaceAll('\\', '/');
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     function removeExportKeywordFromUIStrings(fixer, exportNamedDeclaration) {
       const exportToken = sourceCode.getFirstToken(exportNamedDeclaration);
@@ -38,6 +39,10 @@ module.exports = {
           return;
         }
 
+        if (TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
+          return;
+        }
+
         const declaration = exportNamedDeclaration.declaration;
         if (declaration?.type !== 'VariableDeclaration') {
           return;
@@ -50,7 +55,7 @@ module.exports = {
         if (l10nHelper.isUIStringsIdentifier(declaration.declarations[0].id)) {
           context.report({
             node: declaration.declarations[0],
-            message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+            message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
             fix: fixer => removeExportKeywordFromUIStrings(fixer, exportNamedDeclaration),
           });
         }
@@ -59,7 +64,7 @@ module.exports = {
         if (specifier.local?.type === 'Identifier' && specifier.local.name === 'UIStrings') {
           context.report({
             node: specifier,
-            message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+            message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts) or trace/model/insights',
           });
         }
       }

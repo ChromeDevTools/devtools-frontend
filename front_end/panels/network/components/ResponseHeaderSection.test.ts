@@ -96,7 +96,7 @@ async function setupHeaderEditing(
     setAssociatedData: () => {},
   } as unknown as SDK.NetworkRequest.NetworkRequest;
 
-  return setupHeaderEditingWithRequest(headerOverridesFileContent, request);
+  return await setupHeaderEditingWithRequest(headerOverridesFileContent, request);
 }
 
 async function setupHeaderEditingWithRequest(
@@ -125,8 +125,8 @@ async function setupHeaderEditingWithRequest(
 
 function checkHeaderSectionRow(
     row: NetworkComponents.HeaderSectionRow.HeaderSectionRow, headerName: string, headerValue: string,
-    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean, isHighlighted: boolean = false,
-    isDeleted: boolean = false): void {
+    isOverride: boolean, isNameEditable: boolean, isValueEditable: boolean, isHighlighted = false,
+    isDeleted = false): void {
   assert.isNotNull(row.shadowRoot);
   const rowElement = row.shadowRoot.querySelector('.row');
   assert.strictEqual(rowElement?.classList.contains('header-overridden'), isOverride);

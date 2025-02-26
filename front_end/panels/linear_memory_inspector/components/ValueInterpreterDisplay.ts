@@ -6,11 +6,11 @@ import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.legacy.js';
+import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.legacy.js';
+import valueInterpreterDisplayStylesRaw from './valueInterpreterDisplay.css.js';
 import {
   Endianness,
   format,
@@ -55,7 +55,7 @@ const UIStrings = {
    */
   addressOutOfRange: 'Address out of memory range',
 
-};
+} as const;
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -100,7 +100,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
-  #valueTypes: Set<ValueType> = new Set();
+  #valueTypes = new Set<ValueType>();
   #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
   #memoryLength = 0;
 

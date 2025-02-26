@@ -66,7 +66,7 @@ const UIStrings = {
    * @description Label for a group of items in the replay menu that indicate various extensions that can be used for replay.
    */
   extensionGroup: 'Extensions',
-};
+} as const;
 
 const items: SelectButtonItem[] = [
   {
@@ -178,7 +178,7 @@ export class ReplaySection extends HTMLElement {
   #handleSelectButtonClick(event: SelectButtonClickEvent): void {
     event.stopPropagation();
 
-    if (event.value && event.value.startsWith(REPLAY_EXTENSION_PREFIX)) {
+    if (event.value?.startsWith(REPLAY_EXTENSION_PREFIX)) {
       if (this.#settings) {
         this.#settings.replayExtension = event.value;
       }
@@ -235,8 +235,8 @@ export class ReplaySection extends HTMLElement {
       .value=${this.#settings?.replayExtension || this.#settings?.speed || ''}
       .buttonLabel=${i18nString(UIStrings.Replay)}
       .groups=${groups}
-      jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}>
-    </devtools-select-button>`,
+      jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}
+    ></devtools-select-button>`,
       this.#shadow,
       { host: this },
     );

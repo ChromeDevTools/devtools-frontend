@@ -80,7 +80,7 @@ const UIStrings = {
    * @example {0} PH1
    */
   devicePixelRatioMustBeGreater: 'Device pixel ratio must be greater than or equal to {PH1}.',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/emulation/DeviceModeModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -782,7 +782,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         deviceMetrics.height = orientation.height;
         const dispFeature = this.getDisplayFeature();
         if (dispFeature) {
-          // @ts-ignore: displayFeature isn't in protocol.ts but is an
+          // @ts-expect-error: displayFeature isn't in protocol.ts but is an
           // experimental flag:
           // https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
           deviceMetrics.displayFeature = dispFeature;
@@ -809,7 +809,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const orientation = (this.#deviceInternal && this.#modeInternal) ?
         this.#deviceInternal.orientationByName(this.#modeInternal.orientation) :
         null;
-    if (orientation && orientation.hinge) {
+    if (orientation?.hinge) {
       overlayModel.showHingeForDualScreen(orientation.hinge);
       return;
     }
@@ -843,7 +843,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const orientation = this.#deviceInternal.orientationByName(this.#modeInternal.orientation);
-    if (!orientation || !orientation.hinge) {
+    if (!orientation?.hinge) {
       return null;
     }
 

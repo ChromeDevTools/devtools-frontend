@@ -54,7 +54,7 @@ describe('UIUtils', () => {
       const el = document.createElement('div');
       const callback = sinon.spy();
       const controller = new UI.UIUtils.LongClickController(el, callback);
-      // @ts-ignore
+      // @ts-expect-error
       const setTimeout = sinon.stub(window, 'setTimeout').callsFake(cb => cb());
 
       el.dispatchEvent(new PointerEvent('pointerdown'));

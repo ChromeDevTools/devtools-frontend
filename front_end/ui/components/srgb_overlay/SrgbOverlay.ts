@@ -4,15 +4,13 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as Lit from '../../../ui/lit/lit.js';
+import {html, render} from '../../../ui/lit/lit.js';
 
-import srgbOverlayStylesRaw from './srgbOverlay.css.legacy.js';
+import srgbOverlayStylesRaw from './srgbOverlay.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const srgbOverlayStyles = new CSSStyleSheet();
 srgbOverlayStyles.replaceSync(srgbOverlayStylesRaw.cssContent);
-
-const {html} = Lit;
 
 interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
@@ -44,7 +42,7 @@ export class SrgbOverlay extends HTMLElement {
     ];
   }
 
-  #getLinePoints({hue, width, height}: SrgbOverlayProps): {x: number, y: number}[]|null {
+  #getLinePoints({hue, width, height}: SrgbOverlayProps): Array<{x: number, y: number}>|null {
     if (width === 0 || height === 0) {
       return null;
     }
@@ -79,7 +77,7 @@ export class SrgbOverlay extends HTMLElement {
     return linePoints;
   }
 
-  #closestPointAtHeight(points: {x: number, y: number}[], atHeight: number): {x: number, y: number}|null {
+  #closestPointAtHeight(points: Array<{x: number, y: number}>, atHeight: number): {x: number, y: number}|null {
     let min = Infinity;
     let closestPoint = null;
     for (const point of points) {
@@ -104,7 +102,7 @@ export class SrgbOverlay extends HTMLElement {
         return;
       }
 
-      Lit.render(
+      render(
           html`
           <span class="label" style="right: ${width - closestPoint.x}px">sRGB</span>
           <svg>

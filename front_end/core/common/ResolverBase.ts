@@ -16,7 +16,7 @@ interface PromiseInfo<T> {
  * promises by using the `clear` method on this class.
  */
 export abstract class ResolverBase<Id, T> {
-  #unresolvedIds: Map<Id, PromiseInfo<T>> = new Map();
+  #unresolvedIds = new Map<Id, PromiseInfo<T>>();
 
   protected abstract getForId(id: Id): T|null;
   protected abstract startListening(): void;
@@ -28,13 +28,13 @@ export abstract class ResolverBase<Id, T> {
   async waitFor(id: Id): Promise<T> {
     const obj = this.getForId(id);
     if (!obj) {
-      return this.getOrCreatePromise(id);
+      return await this.getOrCreatePromise(id);
     }
     return obj;
   }
 
   /**
-   * Resolve the `id`. Returns the object immediatelly if it can be resolved,
+   * Resolve the `id`. Returns the object immediately if it can be resolved,
    * and otherwise waits for the object to appear and calls `callback` once
    * it is resolved.
    */
@@ -68,12 +68,7 @@ export abstract class ResolverBase<Id, T> {
     if (promiseInfo) {
       return promiseInfo.promise;
     }
-    let resolve: (value: T) => void = () => {};
-    let reject: (error: Error) => void = () => {};
-    const promise = new Promise<T>((res, rej) => {
-      resolve = res;
-      reject = rej;
-    });
+    const {resolve, reject, promise} = Promise.withResolvers<T>();
     this.#unresolvedIds.set(id, {promise, resolve, reject});
     this.startListening();
     return promise;

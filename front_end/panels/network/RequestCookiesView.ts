@@ -37,7 +37,7 @@ import * as CookieTable from '../../ui/legacy/components/cookie_table/cookie_tab
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestCookiesViewStyles from './requestCookiesView.css.legacy.js';
+import requestCookiesViewStyles from './requestCookiesView.css.js';
 
 const UIStrings = {
   /**
@@ -93,7 +93,7 @@ const UIStrings = {
    * @description Title of a link to the developer documentation.
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestCookiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -169,7 +169,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   private getRequestCookies(): {
-    requestCookies: Array<SDK.Cookie.Cookie>,
+    requestCookies: SDK.Cookie.Cookie[],
     requestCookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
     requestCookieToExemptionReason: Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>,
   } {
@@ -200,10 +200,10 @@ export class RequestCookiesView extends UI.Widget.Widget {
   }
 
   private getResponseCookies(): {
-    responseCookies: Array<SDK.Cookie.Cookie>,
-    responseCookieToBlockedReasons: Map<SDK.Cookie.Cookie, Array<SDK.CookieModel.BlockedReason>>,
+    responseCookies: SDK.Cookie.Cookie[],
+    responseCookieToBlockedReasons: Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
     responseCookieToExemptionReason: Map<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>,
-    malformedResponseCookies: Array<SDK.NetworkRequest.BlockedSetCookieWithReason>,
+    malformedResponseCookies: SDK.NetworkRequest.BlockedSetCookieWithReason[],
   } {
     let responseCookies: SDK.Cookie.Cookie[] = [];
     const responseCookieToBlockedReasons = new Map<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>();

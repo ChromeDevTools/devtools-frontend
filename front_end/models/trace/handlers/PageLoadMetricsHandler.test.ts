@@ -7,9 +7,9 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 function countMetricOcurrences(
-    scoresByMetricName:
+    scoresByMetricName: Array<
         Map<Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName,
-            Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricScore>[],
+            Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricScore>>,
     metricName: Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName): number {
   return scoresByMetricName.reduce((acc, val) => {
     if (val.get(metricName)) {
@@ -60,7 +60,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
       }
-      // Single FCP event that occured after the refresh.
+      // Single FCP event that occurred after the refresh.
       assert.strictEqual(pageLoadEventsForMainFrame.size, 1);
       const scoresByMetricName = [...pageLoadEventsForMainFrame.values()];
       const fcpCount =
@@ -88,7 +88,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       if (!pageLoadEventsForMainFrame) {
         assert.fail('Page load events for main frame were unexpectedly null.');
       }
-      // Single FCP event that occured after the refresh.
+      // Single FCP event that occurred after the refresh.
       assert.strictEqual(pageLoadEventsForMainFrame.size, 1);
       const events = pageLoadEventsForMainFrame.get(navigationId);
       const allFoundMetricScoresForMainFrame = events ? Array.from(events.values()) : [];

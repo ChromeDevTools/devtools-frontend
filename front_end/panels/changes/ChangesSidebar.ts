@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
-import changesSidebarStyles from './changesSidebar.css.legacy.js';
+import changesSidebarStyles from './changesSidebar.css.js';
 
 const UIStrings = {
   /**
@@ -20,7 +20,7 @@ const UIStrings = {
    *@example {compile.html} PH1
    */
   sFromSourceMap: '{PH1} (from source map)',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/changes/ChangesSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -49,16 +49,8 @@ export class ChangesSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
         WorkspaceDiff.WorkspaceDiff.Events.MODIFIED_STATUS_CHANGED, this.uiSourceCodeMofiedStatusChanged, this);
   }
 
-  selectUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode, omitFocus?: boolean|undefined): void {
-    const treeElement = this.treeElements.get(uiSourceCode);
-    if (!treeElement) {
-      return;
-    }
-    treeElement.select(omitFocus);
-  }
-
   selectedUISourceCode(): Workspace.UISourceCode.UISourceCode|null {
-    // @ts-ignore uiSourceCode seems to be dynamically attached.
+    // @ts-expect-error uiSourceCode seems to be dynamically attached.
     return this.treeoutline.selectedTreeElement ? this.treeoutline.selectedTreeElement.uiSourceCode : null;
   }
 

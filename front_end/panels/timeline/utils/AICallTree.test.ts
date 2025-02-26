@@ -17,7 +17,7 @@ describeWithEnvironment('AICallTree', () => {
       return e.name === Trace.Types.Events.Name.RASTER_TASK && e.pid === 4274 && e.tid === 23555;
     });
     assert.isOk(rasterTask);
-    assert.isNull(Utils.AICallTree.AICallTree.from(rasterTask, parsedTrace));
+    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(rasterTask, parsedTrace));
   });
 
   it('does not build a tree from events the renderer is not aware of', async function() {
@@ -26,7 +26,7 @@ describeWithEnvironment('AICallTree', () => {
     const shift = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
     assert.isOk(shift);
     assert.isTrue(Trace.Types.Events.isSyntheticLayoutShift(shift));
-    assert.isNull(Utils.AICallTree.AICallTree.from(shift, parsedTrace));
+    assert.isNull(Utils.AICallTree.AICallTree.fromEvent(shift, parsedTrace));
   });
 
   it('supports NodeJS traces that do not have a "main thread"', async function() {
@@ -34,7 +34,7 @@ describeWithEnvironment('AICallTree', () => {
     // it takes the CDP Profile and wraps it in fake trace events, before then
     // passing that through to the new engine.
     const rawEvents = await TraceLoader.rawCPUProfile(this, 'basic.cpuprofile.gz');
-    const events = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const events = Trace.Helpers.SamplesIntegrator.SamplesIntegrator.createFakeTraceFromCpuProfile(
         rawEvents,
         Trace.Types.Events.ThreadID(1),
     );
@@ -44,7 +44,7 @@ describeWithEnvironment('AICallTree', () => {
       return Trace.Types.Events.isProfileCall(event) && event.callFrame.functionName === 'callAndPauseOnStart';
     });
     assert.isOk(funcCall);
-    const callTree = Utils.AICallTree.AICallTree.from(funcCall, parsedTrace);
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(funcCall, parsedTrace);
     assert.isOk(callTree);
     const expectedData = '\n' +
         `
@@ -117,7 +117,7 @@ URL #: 3
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, parsedTrace);
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
     const expectedData = '\n' +
         `
 
@@ -170,7 +170,7 @@ self: 0.2
     if (!selectedEvent) {
       throw new Error('Could not find expected event.');
     }
-    const callTree = Utils.AICallTree.AICallTree.from(selectedEvent, parsedTrace);
+    const callTree = Utils.AICallTree.AICallTree.fromEvent(selectedEvent, parsedTrace);
     assert.isOk(callTree);
 
     // We don't need to validate the whole tree, just that it has recursion
@@ -189,7 +189,7 @@ self: 0.2
     if (!tinyEvent) {
       throw new Error('Could not find expected event.');
     }
-    const tinyStr = Utils.AICallTree.AICallTree.from(tinyEvent, parsedTrace)?.serialize();
+    const tinyStr = Utils.AICallTree.AICallTree.fromEvent(tinyEvent, parsedTrace)?.serialize();
     assert.strictEqual(tinyStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
@@ -203,7 +203,7 @@ Node: 5 – get storage`.trim());
     if (!evaluateEvent) {
       throw new Error('Could not find expected event.');
     }
-    const treeStr = Utils.AICallTree.AICallTree.from(evaluateEvent, parsedTrace)?.serialize();
+    const treeStr = Utils.AICallTree.AICallTree.fromEvent(evaluateEvent, parsedTrace)?.serialize();
     assert.strictEqual(treeStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
@@ -218,7 +218,7 @@ Node: 6 – H.la`.trim());
     if (!compileEvent) {
       throw new Error('Could not find expected event.');
     }
-    const compileStr = Utils.AICallTree.AICallTree.from(compileEvent, parsedTrace)?.serialize();
+    const compileStr = Utils.AICallTree.AICallTree.fromEvent(compileEvent, parsedTrace)?.serialize();
     assert.strictEqual(compileStr?.split('\n').filter(l => l.startsWith('Node:')).join('\n'), `
 Node: 1 – Task
 Node: 2 – Parse HTML
@@ -227,33 +227,51 @@ Node: 4 – (anonymous)
 Node: 5 – Compile code`.trim());
     assert.include(compileStr, 'Compile code');
   });
+
+  it('can construct a tree from a period of time', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'nested-interactions.json.gz');
+    // Picked this interaction event because it spans multiple icicles in the main thread.
+    // Note: if you are debugging this test, it is useful to load up this trace
+    // in RPP and look for the first "keydown" event.
+    const interaction = parsedTrace.UserInteractions.interactionEventsWithNoNesting.find(e => {
+      return Trace.Types.Events.isEventTimingStart(e.rawSourceEvent) &&
+          e.rawSourceEvent.args.data.interactionId === 3572;
+    });
+    assert.isOk(interaction);
+    const timings = Trace.Helpers.Timing.eventTimingsMicroSeconds(interaction);
+    const tree = Utils.AICallTree.AICallTree.fromTime(timings.startTime, timings.endTime, parsedTrace);
+    assert.isOk(tree);
+    const output = tree.serialize();
+    const totalNodes = output.split('\n').filter(l => l.startsWith('Node:')).length;
+    assert.strictEqual(totalNodes, 242);  // Check the min duration filter is working.
+    // Check there are 3 keydown events. This confirms that the call tree is taking events from the right timespan.
+    const keyDownEvents = output.split('\n').filter(line => {
+      return line.startsWith('Node:') && line.includes('Event: keydown');
+    });
+    assert.lengthOf(keyDownEvents, 3);
+  });
 });
 
+const makeEvent = (name: string, ts: number, dur: number): Trace.Types.Events.Event => ({
+  name,
+  cat: 'disabled-by-default-devtools.timeline',
+  ph: Trace.Types.Events.Phase.COMPLETE,
+  ts: Trace.Types.Timing.Micro(ts),
+  dur: Trace.Types.Timing.Micro(dur),
+  pid: Trace.Types.Events.ProcessID(1),
+  tid: Trace.Types.Events.ThreadID(4),
+  args: {},
+});
 describe('AITreeFilter', () => {
-  const makeEvent = (
-                        name: string,
-                        ts: number,
-                        dur: number,
-                        ): Trace.Types.Events.Event => ({
-    name,
-    cat: 'disabled-by-default-devtools.timeline',
-    ph: Trace.Types.Events.Phase.COMPLETE,
-    ts: Trace.Types.Timing.Micro(ts),
-    dur: Trace.Types.Timing.Micro(dur),
-    pid: Trace.Types.Events.ProcessID(1),
-    tid: Trace.Types.Events.ThreadID(4),
-    args: {},
-  });
-
   it('always includes the selected event', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
+    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
     assert.isTrue(filter.accept(selectedEvent));
   });
 
   it('includes events that are long enough', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
+    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
 
     assert.isTrue(filter.accept(makeEvent('short', 0, 1)));
     assert.isTrue(filter.accept(makeEvent('short', 0, 0.6)));
@@ -264,23 +282,25 @@ describe('AITreeFilter', () => {
 
   it('excludes events that are too short', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
-    const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
+    const filter = new Utils.AICallTree.SelectedEventDurationFilter(selectedEvent);
 
     assert.isFalse(filter.accept(makeEvent('short', 0, 0)));
     assert.isFalse(filter.accept(makeEvent('short', 0, 0.1)));
     assert.isFalse(filter.accept(makeEvent('short', 0, 0.4)));
   });
+});
 
+describe('CompileCode filter', () => {
   it('excludes COMPILE_CODE nodes if non-selected', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const compileCodeEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
-    const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
+    const filter = new Utils.AICallTree.ExcludeCompileCodeFilter(selectedEvent);
     assert.isFalse(filter.accept(compileCodeEvent));
   });
 
   it('includes COMPILE_CODE nodes if selected', () => {
     const selectedEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
-    const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
+    const filter = new Utils.AICallTree.ExcludeCompileCodeFilter(selectedEvent);
     assert.isTrue(filter.accept(selectedEvent));
   });
 });

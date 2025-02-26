@@ -5,8 +5,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import * as ResultsDb from './resultsdb.js';
-const diff = require('diff');
+
 const chalk = require('chalk');
+const diff = require('diff');
 
 type DiffCallback = (line: string) => string;
 function*
@@ -54,7 +55,7 @@ export const ResultsDBReporter = function(
 
   this.USE_COLORS = true;
 
-  const capturedLog: {log: string, type: string}[] = [];
+  const capturedLog: Array<{log: string, type: string}> = [];
   this.onBrowserLog = (browser: any, log: string, type: string) => {
     capturedLog.push({log, type});
   };

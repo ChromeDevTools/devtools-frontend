@@ -30,7 +30,7 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
 
 const assertContainerContent = (container: HTMLElement, expectedContent: string) => {
   const nodeText = container.shadowRoot!.querySelector<NodeText.NodeText.NodeText>('devtools-node-text');
-  if (!nodeText || !nodeText.shadowRoot) {
+  if (!nodeText?.shadowRoot) {
     assert.fail('node text element and its shadowRoot should exist');
     return;
   }

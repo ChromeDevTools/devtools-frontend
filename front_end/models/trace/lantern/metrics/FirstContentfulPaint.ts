@@ -9,7 +9,7 @@ import {Metric, type MetricCoefficients} from './Metric.js';
 
 interface FirstPaintBasedGraphOpts<T> {
   /**
-   * The timestamp used to filter out tasks that occured after our paint of interest.
+   * The timestamp used to filter out tasks that occurred after our paint of interest.
    * Typically this is First Contentful Paint or First Meaningful Paint.
    */
   cutoffTimestamp: number;

@@ -164,10 +164,6 @@ export function markAsPoliteLiveRegion(element: Element, isAtomic: boolean): voi
   }
 }
 
-export function markAsLog(element: Element): void {
-  element.setAttribute('role', 'log');
-}
-
 export function hasRole(element: Element): boolean {
   return element.hasAttribute('role');
 }
@@ -388,7 +384,7 @@ function createAlertElement(container: HTMLElement): HTMLDivElement {
   hideFromLayout(element);
   element.setAttribute('role', 'alert');
   element.setAttribute('aria-atomic', 'true');
-  return element as HTMLDivElement;
+  return element;
 }
 
 export function getOrCreateAlertElements(container: HTMLElement = document.body): AlertState {
@@ -426,6 +422,6 @@ export function alertElementInstance(container = document.body): HTMLElement {
  */
 export function alert(message: string): void {
   const dialog = Dialog.getInstance();
-  const element = alertElementInstance(dialog && dialog.isShowing() ? dialog.contentElement : undefined);
+  const element = alertElementInstance(dialog?.isShowing() ? dialog.contentElement : undefined);
   element.textContent = Platform.StringUtilities.trimEndWithMaxLength(message, 10000);
 }

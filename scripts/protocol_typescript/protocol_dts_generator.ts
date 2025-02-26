@@ -158,7 +158,7 @@ const emitProperty = (interfaceName: string, prop: Protocol.PropertyType) => {
   emitLine(`${getPropertyDef(interfaceName, prop)};`);
 };
 
-const emitInterface = (interfaceName: string, props?: Protocol.PropertyType[], optionalExtendsClause: string = '') => {
+const emitInterface = (interfaceName: string, props?: Protocol.PropertyType[], optionalExtendsClause = '') => {
   emitOpenBlock(`export interface ${interfaceName}${optionalExtendsClause}`);
   props ? props.forEach(prop => emitProperty(interfaceName, prop)) : emitLine('[key: string]: string;');
   emitCloseBlock();

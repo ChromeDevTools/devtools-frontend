@@ -236,6 +236,15 @@ export interface EventTypes {
 }
 
 export interface InspectorFrontendHostAPI {
+  connectAutomaticFileSystem(
+      fileSystemPath: Platform.DevToolsPath.RawPathString,
+      fileSystemUUID: string,
+      addIfMissing: boolean,
+      callback: (result: {success: boolean}) => void,
+      ): void;
+
+  disconnectAutomaticFileSystem(fileSystemPath: Platform.DevToolsPath.RawPathString): void;
+
   addFileSystem(type?: string): void;
 
   loadCompleted(): void;
@@ -444,10 +453,10 @@ export interface SyncInformation {
  * Warning: There is another definition of this enum in the DevTools code
  * base, keep them in sync:
  * front_end/devtools_compatibility.js
- * @readonly
  */
 export const enum EnumeratedHistogram {
   /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
+  // LINT.IfChange(EnumeratedHistogram)
   ActionTaken = 'DevTools.ActionTaken',
   PanelShown = 'DevTools.PanelShown',
   PanelShownInLocation = 'DevTools.PanelShownInLocation',
@@ -479,13 +488,11 @@ export const enum EnumeratedHistogram {
   SourcesPanelFileOpened = 'DevTools.SourcesPanelFileOpened',
   NetworkPanelResponsePreviewOpened = 'DevTools.NetworkPanelResponsePreviewOpened',
   TimelineNavigationSettingState = 'DevTools.TimelineNavigationSettingState',
-  StyleTextCopied = 'DevTools.StyleTextCopied',
   CSSHintShown = 'DevTools.CSSHintShown',
   LighthouseModeRun = 'DevTools.LighthouseModeRun',
   LighthouseCategoryUsed = 'DevTools.LighthouseCategoryUsed',
-  CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',
   SwatchActivated = 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',
   AnimationPointDragged = 'DevTools.AnimationPointDragged',
-
+  // LINT.ThenChange(/front_end/devtools_compatibility.js:EnumeratedHistogram)
 }

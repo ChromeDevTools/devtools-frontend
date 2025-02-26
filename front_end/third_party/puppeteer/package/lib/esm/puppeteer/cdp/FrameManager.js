@@ -12,7 +12,7 @@ import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { CdpPreloadScript } from './CdpPreloadScript.js';
-import { CdpCDPSession } from './CDPSession.js';
+import { CdpCDPSession } from './CdpSession.js';
 import { isTargetClosedError } from './Connection.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { ExecutionContext } from './ExecutionContext.js';
@@ -74,6 +74,11 @@ export class FrameManager extends EventEmitter {
         if (!mainFrame) {
             return;
         }
+        if (this.client.connection()?._closed) {
+            // On connection disconnected remove all frames
+            this.#removeFramesRecursively(mainFrame);
+            return;
+        }
         for (const child of mainFrame.childFrames()) {
             this.#removeFramesRecursively(child);
         }
@@ -101,9 +106,9 @@ export class FrameManager extends EventEmitter {
         assert(this.#client instanceof CdpCDPSession, 'CDPSession is not an instance of CDPSessionImpl.');
         const frame = this._frameTree.getMainFrame();
         if (frame) {
-            this.#frameNavigatedReceived.add(this.#client._target()._targetId);
+            this.#frameNavigatedReceived.add(this.#client.target()._targetId);
             this._frameTree.removeFrame(frame);
-            frame.updateId(this.#client._target()._targetId);
+            frame.updateId(this.#client.target()._targetId);
             this._frameTree.addFrame(frame);
             frame.updateClient(client);
         }
@@ -160,7 +165,7 @@ export class FrameManager extends EventEmitter {
             this.#frameTreeHandled?.resolve();
             this.#frameTreeHandled = Deferred.create();
             // We need to schedule all these commands while the target is paused,
-            // therefore, it needs to happen synchroniously. At the same time we
+            // therefore, it needs to happen synchronously. At the same time we
             // should not start processing execution context and frame events before
             // we received the initial information about the frame tree.
             await Promise.all([

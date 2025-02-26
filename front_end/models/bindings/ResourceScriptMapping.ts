@@ -54,7 +54,7 @@ const UIStrings = {
    *@example {connection lost} PH1
    */
   liveEditCompileFailed: '`LiveEdit` compile failed: {PH1}',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('models/bindings/ResourceScriptMapping.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -216,7 +216,7 @@ export class ResourceScriptMapping implements DebuggerSourceMapping {
     const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
       const oldScriptFile = this.#uiSourceCodeToScriptFile.get(oldUISourceCode);
-      if (oldScriptFile && oldScriptFile.script) {
+      if (oldScriptFile?.script) {
         this.removeScripts([oldScriptFile.script]);
       }
     }

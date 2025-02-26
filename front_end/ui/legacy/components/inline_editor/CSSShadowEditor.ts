@@ -8,7 +8,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import cssShadowEditorStyles from './cssShadowEditor.css.legacy.js';
+import cssShadowEditorStyles from './cssShadowEditor.css.js';
 
 const UIStrings = {
   /**
@@ -32,14 +32,14 @@ const UIStrings = {
    *@description Text in CSSShadow Editor of the inline editor in the Styles tab
    */
   spread: 'Spread',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/CSSShadowEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const maxRange: number = 20;
-const defaultUnit: string = 'px';
-const sliderThumbRadius: number = 6;
-const canvasSize: number = 88;
+const maxRange = 20;
+const defaultUnit = 'px';
+const sliderThumbRadius = 6;
+const canvasSize = 88;
 
 export interface CSSShadowModel {
   setInset(inset: boolean): void;

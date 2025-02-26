@@ -48,6 +48,8 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
   #attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
   #genericIssues = new Set<IssuesManager.GenericIssue.GenericIssue>();
+  #selectElementAccessibilityIssues =
+      new Set<IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue>();
   #representative?: IssuesManager.Issue.Issue;
   #aggregatedIssuesCount = 0;
   #key: AggregationKey;
@@ -139,6 +141,11 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getGenericIssues(): ReadonlySet<IssuesManager.GenericIssue.GenericIssue> {
     return this.#genericIssues;
+  }
+
+  getSelectElementAccessibilityIssues():
+      Iterable<IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue> {
+    return this.#selectElementAccessibilityIssues;
   }
 
   getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription|null {
@@ -243,6 +250,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.GenericIssue.GenericIssue) {
       this.#genericIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue) {
+      this.#selectElementAccessibilityIssues.add(issue);
     }
   }
 

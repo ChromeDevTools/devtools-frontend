@@ -4,14 +4,10 @@
 'use strict';
 
 const rule = require('../lib/no-assert-equal-boolean-null-undefined.js');
-const ruleTester = new (require('eslint').RuleTester)({
-  languageOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-  },
-});
 
-ruleTester.run('no-assert-equal-boolean-null-undefined', rule, {
+const {RuleTester} = require('./utils/utils.js');
+
+new RuleTester().run('no-assert-equal-boolean-null-undefined', rule, {
   valid: [
     {
       code: 'assert.equal(foo, false);',

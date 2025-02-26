@@ -79,7 +79,7 @@ export const immutableDeepAssign = <T>(
     const keys = Object.keys(assignments.value)
                      .sort(
                          (a, b) => Number(b) - Number(a),
-                         ) as (keyof typeof updatedObject)[];
+                         ) as Array<keyof typeof updatedObject>;
     for (const key of keys) {
       const update = assignments.value[Number(key)];
       if (update === undefined) {
@@ -98,7 +98,7 @@ export const immutableDeepAssign = <T>(
   if (typeof assignments === 'object' && !Array.isArray(assignments)) {
     assert(!Array.isArray(object), 'Expected an object. Got an array.');
     const updatedObject = {...object} as Mutable<typeof object>;
-    const keys = Object.keys(assignments) as (keyof typeof assignments&keyof typeof updatedObject)[];
+    const keys = Object.keys(assignments) as Array<keyof typeof assignments&keyof typeof updatedObject>;
     for (const key of keys) {
       const update = assignments[key];
       if (update === undefined) {

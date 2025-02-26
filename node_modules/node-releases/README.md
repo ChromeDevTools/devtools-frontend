@@ -2,30 +2,11 @@
 
 All data is located in `data` directory.
 
-`data/raw` contains raw data `nodejs.json` and `iojs.json`.
+`data/processed` contains `envs.json` with node.js releases data preprocessed to be used by [Browserslist](https://github.com/ai/browserslist) and other projects. Each version in this file contains only necessary info: version, release date, LTS flag/name, and security flag.
 
-`data/processed` contains `envs.js` with both node.js and io.js data preprocessed to be used by [Browserslist](https://github.com/ai/browserslist) and other projects. Each version in this file contains only necessary info: version, release date and optionally LTS flag.
+`data/release-schedule` contains `release-schedule.json` with node.js releases date and end of life date.
 
 ## Installation
 ```bash
-npm install --save node-releases
+npm install node-releases
 ```
-
-## Updating data
-```bash
-npm run build
-```
-This is a build script which fetches data from web, processes it and saves processed data to `data/processed/envs.json`. If you want to run this steps separately you can use commands described below.
-
-
-### Fetching data
-```bash
-npm run fetch
-```
-This npm script will download new data to `data/raw` directory. Also it'll download Node.js release schedule into `release-schedule` folder.
-
-### Processing data
-```bash
-npm run process
-```
-This script generates `envs.json` file from raw data files and saves it to `data/processed` directory.

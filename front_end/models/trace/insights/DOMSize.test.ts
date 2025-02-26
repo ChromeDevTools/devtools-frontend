@@ -41,4 +41,23 @@ describeWithEnvironment('DOMSize', function() {
     assert.strictEqual(domStats.maxChildren!.numChildren, 4);
     assert.strictEqual(domStats.maxChildren!.nodeName, 'BODY');
   });
+
+  it('separates dom stats in a cross-origin navigation', async () => {
+    const {data, insights} = await processTrace(this, 'dom-size-overlap.json.gz');
+
+    const navigations =
+        [...data.Meta.navigationsByNavigationId.values()].filter(n => n.args.data?.isOutermostMainFrame);
+    {
+      const insight = getInsightOrError('DOMSize', insights, navigations[0]);
+      const domStats = insight.maxDOMStats!.args.data;
+      assert.strictEqual(domStats.totalElements, 6811);
+    }
+    {
+      const insight = getInsightOrError('DOMSize', insights, navigations[1]);
+      const domStats = insight.maxDOMStats!.args.data;
+      // If we don't filter by process id, the DOM stats events from the previous navigation
+      // would leak into this one and this # would be much higher
+      assert.strictEqual(domStats.totalElements, 7);
+    }
+  });
 });

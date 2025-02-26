@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   getBrowserAndPages,
 } from '../../shared/helper.js';
-
 import {getConsoleMessages, navigateToConsoleTab} from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {

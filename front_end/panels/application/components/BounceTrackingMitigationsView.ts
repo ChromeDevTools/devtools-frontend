@@ -14,7 +14,7 @@ import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wra
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import bounceTrackingMitigationsViewStylesRaw from './bounceTrackingMitigationsView.css.legacy.js';
+import bounceTrackingMitigationsViewStylesRaw from './bounceTrackingMitigationsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const bounceTrackingMitigationsViewStyles = new CSSStyleSheet();
@@ -64,7 +64,7 @@ const UIStrings = {
    * @description Text for link to Bounce Tracking Mitigations feature flag entry in the chrome://flags page.
    */
   featureFlag: 'Bounce Tracking Mitigations Feature Flag',
-};
+} as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTrackingMitigationsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

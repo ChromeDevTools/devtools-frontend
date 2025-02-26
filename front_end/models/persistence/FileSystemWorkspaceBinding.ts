@@ -89,10 +89,6 @@ export class FileSystemWorkspaceBinding {
     return projectId;
   }
 
-  fileSystemManager(): IsolatedFileSystemManager {
-    return this.isolatedFileSystemManager;
-  }
-
   private onFileSystemsLoaded(fileSystems: IsolatedFileSystem[]): void {
     for (const fileSystem of fileSystems) {
       this.addFileSystem(fileSystem);

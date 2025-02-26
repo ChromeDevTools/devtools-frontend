@@ -121,21 +121,21 @@ describeWithEnvironment('ResourceType class', () => {
   it('is able to return an wasm resource from the string "application/wasm"', () => {
     const result = ResourceType.fromMimeTypeOverride('application/wasm');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'wasm', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Wasm', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'WebAssembly', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'Wasm', 'category short title was not set correctly');
-    assert.isFalse(result!.isTextType(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'wasm', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Wasm', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'WebAssembly', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Wasm', 'category short title was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return an web bundle resource from the string "application/webbundle"', () => {
     const result = ResourceType.fromMimeTypeOverride('application/webbundle');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'webbundle', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'WebBundle', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'Other', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'Other', 'category short title was not set correctly');
-    assert.isFalse(result!.isTextType(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'webbundle', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'WebBundle', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Other', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Other', 'category short title was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource of type other from the string "test/resource"', () => {
@@ -151,41 +151,41 @@ describeWithEnvironment('ResourceType class', () => {
   it('is able to return a resource type from a URL that contains a mapped extension', () => {
     const result = ResourceType.fromURL('http://www.example.com/test/testFile.js');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'script', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'JavaScript', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result!.isTextType(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource type from a URL that ends in .avif', () => {
     const result = ResourceType.fromURL('https://host.example/image.avif');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'image', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Image', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'Image', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'Img', 'category short title was not set correctly');
-    assert.isTrue(result!.isImage(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'image', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Image', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
+    assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource type from a URL that ends in .jxl', () => {
     const result = ResourceType.fromURL('https://host.example/image.jxl');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'image', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Image', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'Image', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'Img', 'category short title was not set correctly');
-    assert.isTrue(result!.isImage(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'image', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Image', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
+    assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
 
   it('is able to return a resource type from a URL that ends in .woff2', () => {
     const result = ResourceType.fromURL('https://host.example/image.woff2');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'font', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Font', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'Font', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'Font', 'category short title was not set correctly');
-    assert.isFalse(result!.isTextType(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'font', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Font', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'Font', 'category short title was not set correctly');
+    assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return null from a URL that contains an unmapped extension', () => {
@@ -196,11 +196,11 @@ describeWithEnvironment('ResourceType class', () => {
   it('is able to return a resource type from a mapped name', () => {
     const result = ResourceType.fromName('script');
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
-    assert.strictEqual(result!.name(), 'script', 'name was not set correctly');
-    assert.strictEqual(result!.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result!.category().title(), 'JavaScript', 'category title was not set correctly');
-    assert.strictEqual(result!.category().shortTitle(), 'JS', 'category short title was not set correctly');
-    assert.isTrue(result!.isTextType(), 'resource type was not set correctly');
+    assert.strictEqual(result.name(), 'script', 'name was not set correctly');
+    assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
+    assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
+    assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return null from an unmapped name', () => {

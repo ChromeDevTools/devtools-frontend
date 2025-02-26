@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {goToResource, waitFor, waitForNone} from '../../shared/helper.js';
+
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export async function waitForTheWebAudioPanelToLoad() {

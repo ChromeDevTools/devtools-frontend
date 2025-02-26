@@ -12,7 +12,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import syncSectionStylesRaw from './syncSection.css.legacy.js';
+import syncSectionStylesRaw from './syncSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const syncSectionStyles = new CSSStyleSheet();
@@ -41,7 +41,7 @@ const UIStrings = {
    * front of the email address currently used for Chrome Sync.
    */
   signedIn: 'Signed into Chrome as:',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/settings/components/SyncSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

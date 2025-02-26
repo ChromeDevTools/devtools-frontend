@@ -18,7 +18,7 @@ import type {DOMStorage} from './DOMStorageModel.js';
 import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
 import type {ExtensionStorage} from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
-import resourcesPanelStyles from './resourcesPanel.css.legacy.js';
+import resourcesPanelStyles from './resourcesPanel.css.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
 let resourcesPanelInstance: ResourcesPanel;
@@ -196,7 +196,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 
   clearCookies(target: SDK.Target.Target, cookieDomain: string): void {
-    const model = (target.model(SDK.CookieModel.CookieModel) as SDK.CookieModel.CookieModel | null);
+    const model = (target.model(SDK.CookieModel.CookieModel));
     if (!model) {
       return;
     }

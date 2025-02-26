@@ -62,7 +62,7 @@ export class DevToolsLocale {
   forceFallbackLocale(): void {
     // Locale is 'readonly', this is the only case where we want to forceably
     // overwrite the locale.
-    (this.locale as DevToolsLocale['locale']) = 'en-US';
+    (this.locale as unknown) = 'en-US';
   }
 
   /**

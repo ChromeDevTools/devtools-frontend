@@ -35,7 +35,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     creationStackTrace?: Protocol.Runtime.StackTrace,
     creationStackTraceTarget?: Target,
   }>();
-  #awaitedFrames: Map<string, {notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}[]> = new Map();
+  #awaitedFrames = new Map<string, Array<{notInTarget?: Target, resolve: (frame: ResourceTreeFrame) => void}>>();
 
   constructor() {
     super();
@@ -207,7 +207,7 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     if (frame && (!notInTarget || notInTarget !== frame.resourceTreeModel().target())) {
       return frame;
     }
-    return new Promise<ResourceTreeFrame>(resolve => {
+    return await new Promise<ResourceTreeFrame>(resolve => {
       const waiting = this.#awaitedFrames.get(frameId);
       if (waiting) {
         waiting.push({notInTarget, resolve});

@@ -9,8 +9,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import requestInitiatorViewStyles from './requestInitiatorView.css.legacy.js';
-import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.legacy.js';
+import requestInitiatorViewStyles from './requestInitiatorView.css.js';
+import requestInitiatorViewTreeStyles from './requestInitiatorViewTree.css.js';
 
 const UIStrings = {
   /**
@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Title of a section in Request Initiator view of the Network Panel
    */
   requestInitiatorChain: 'Request initiator chain',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestInitiatorView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class RequestInitiatorView extends UI.Widget.VBox {
@@ -49,10 +49,10 @@ export class RequestInitiatorView extends UI.Widget.VBox {
   static createStackTracePreview(
       request: SDK.NetworkRequest.NetworkRequest, linkifier: Components.Linkifier.Linkifier, focusableLink?: boolean): {
     element: Element,
-    links: Array<Element>,
+    links: Element[],
   }|null {
     const initiator = request.initiator();
-    if (!initiator || !initiator.stack) {
+    if (!initiator?.stack) {
       return null;
     }
     const networkManager = SDK.NetworkManager.NetworkManager.forRequest(request);
@@ -99,7 +99,7 @@ export class RequestInitiatorView extends UI.Widget.VBox {
     }
 
     const initiated = initiatorGraph.initiated;
-    this.depthFirstSearchTreeBuilder(initiated, (parent as UI.TreeOutline.TreeElement), this.request);
+    this.depthFirstSearchTreeBuilder(initiated, (parent), this.request);
     return root;
   }
 

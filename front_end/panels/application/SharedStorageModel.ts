@@ -4,8 +4,8 @@
 
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 
 export class SharedStorageForOrigin extends Common.ObjectWrapper.ObjectWrapper<SharedStorageForOrigin.EventTypes> {
   readonly #model: SharedStorageModel;
@@ -22,12 +22,12 @@ export class SharedStorageForOrigin extends Common.ObjectWrapper.ObjectWrapper<S
   }
 
   async getMetadata(): Promise<Protocol.Storage.SharedStorageMetadata|null> {
-    return this.#model.storageAgent.invoke_getSharedStorageMetadata({ownerOrigin: this.securityOrigin})
+    return await this.#model.storageAgent.invoke_getSharedStorageMetadata({ownerOrigin: this.securityOrigin})
         .then(({metadata}) => metadata);
   }
 
   async getEntries(): Promise<Protocol.Storage.SharedStorageEntry[]|null> {
-    return this.#model.storageAgent.invoke_getSharedStorageEntries({ownerOrigin: this.securityOrigin})
+    return await this.#model.storageAgent.invoke_getSharedStorageEntries({ownerOrigin: this.securityOrigin})
         .then(({entries}) => entries);
   }
 

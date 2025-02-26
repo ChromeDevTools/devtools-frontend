@@ -89,7 +89,7 @@ import { first_in_statement } from "./utils/first_in_statement.js";
 
 let mangle_options = undefined;
 AST_Node.prototype.size = function (compressor, stack) {
-    mangle_options = compressor && compressor.mangle_options;
+    mangle_options = compressor && compressor._mangle_options;
 
     let size = 0;
     walk_parent(this, (node, info) => {
@@ -406,8 +406,8 @@ AST_Class.prototype._size = function () {
 };
 
 AST_ClassStaticBlock.prototype._size = function () {
-    // "class{}" + semicolons
-    return 7 + list_overhead(this.body);
+    // "static{}" + semicolons
+    return 8 + list_overhead(this.body);
 };
 
 AST_ClassProperty.prototype._size = function () {

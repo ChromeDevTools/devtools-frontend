@@ -7,11 +7,12 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import {createTarget, describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createWorkspaceProject} from '../../testing/OverridesHelpers.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 import * as SDK from './sdk.js';
 
@@ -21,7 +22,8 @@ const LONG_URL_PART =
 
 describeWithMockConnection('NetworkManager', () => {
   it('setCookieControls is not invoked if the browsers enterprise setting blocks third party cookies', () => {
-    getGetHostConfigStub(
+    Object.assign(
+        Root.Runtime.hostConfig,
         {thirdPartyCookieControls: {managedBlockThirdPartyCookies: true}, devToolsPrivacyUI: {enabled: true}});
 
     const enableThirdPartyCookieRestrictionSetting =
@@ -44,7 +46,7 @@ describeWithMockConnection('NetworkManager', () => {
   });
 
   it('setCookieControls gets invoked with expected values when network agent auto attach', () => {
-    getGetHostConfigStub({devToolsPrivacyUI: {enabled: true}});
+    updateHostConfig({devToolsPrivacyUI: {enabled: true}});
 
     const enableThirdPartyCookieRestrictionSetting =
         Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', false);
@@ -92,6 +94,31 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
       assert.lengthOf(startedRequests, 1);
       assert.strictEqual(startedRequests[0].trustTokenOperationDoneEvent(), mockEvent);
     });
+  });
+
+  it('handles worker requests originating from the frame target', async () => {
+    const target = createTarget();
+    const workerTarget = createTarget({type: SDK.Target.Type.Worker});
+
+    const multiTargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+    const initialNetworkManager = target.model(SDK.NetworkManager.NetworkManager)!;
+
+    assert.strictEqual(multiTargetNetworkManager.inflightMainResourceRequests.size, 0);
+
+    const requestId = 'mockId';
+    const requestPromise = initialNetworkManager.once(SDK.NetworkManager.Events.RequestStarted);
+    initialNetworkManager.dispatcher.requestWillBeSent(
+        {requestId, loaderId: '', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
+
+    const {request} = await requestPromise;
+    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === initialNetworkManager);
+    assert.isOk(multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
+
+    const workerNetworkManager = workerTarget.model(SDK.NetworkManager.NetworkManager)!;
+    workerNetworkManager.dispatcher.loadingFinished({requestId} as Protocol.Network.LoadingFinishedEvent);
+
+    assert.isOk(SDK.NetworkManager.NetworkManager.forRequest(request) === workerNetworkManager);
+    assert.isOk(!multiTargetNetworkManager.inflightMainResourceRequests.has(requestId));
   });
 
   it('uses main frame to get certificate', () => {

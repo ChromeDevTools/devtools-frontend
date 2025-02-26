@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {clickElement, goToResource, waitForAria, waitForElementWithTextContent} from '../../shared/helper.js';
-
 import {toggleAccessibilityPane} from '../helpers/elements-helpers.js';
 
 describe('Accessibility Pane in the Elements Tab', function() {

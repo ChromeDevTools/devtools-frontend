@@ -39,7 +39,7 @@ export interface Extras {
 class Metric {
   static getScriptUrls(dependencyGraph: Graph.Node, treatNodeAsRenderBlocking?: (node: Graph.NetworkNode) => boolean):
       Set<string> {
-    const scriptUrls: Set<string> = new Set();
+    const scriptUrls = new Set<string>();
 
     dependencyGraph.traverse(node => {
       if (node.type !== Graph.BaseNode.types.NETWORK) {

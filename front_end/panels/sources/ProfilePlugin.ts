@@ -6,8 +6,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
-import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import type * as TextEditor from '../../ui/components/text_editor/text_editor.js';
+import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 
 import {Plugin} from './Plugin.js';
 
@@ -27,7 +27,7 @@ const UIStrings = {
    *@description A unit
    */
   kb: 'kB',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/ProfilePlugin.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
@@ -92,7 +92,7 @@ function markersFromProfileData(
     map: Map<number, number>, state: CodeMirror.EditorState,
     type: SourceFrame.SourceFrame.DecoratorType): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
   const markerType = type === SourceFrame.SourceFrame.DecoratorType.PERFORMANCE ? PerformanceMarker : MemoryMarker;
-  const markers: CodeMirror.Range<CodeMirror.GutterMarker>[] = [];
+  const markers: Array<CodeMirror.Range<CodeMirror.GutterMarker>> = [];
   for (const [line, value] of map) {
     if (line <= state.doc.lines) {
       const {from} = state.doc.line(line);
@@ -162,6 +162,10 @@ const makeLineLevelProfilePlugin = (type: SourceFrame.SourceFrame.DecoratorType)
 };
 
 const theme = CodeMirror.EditorView.baseTheme({
+  '.cm-line::selection': {
+    backgroundColor: 'transparent',
+    color: 'currentColor',
+  },
   '.cm-performanceGutter': {
     width: '60px',
     backgroundColor: 'var(--sys-color-cdt-base-container)',

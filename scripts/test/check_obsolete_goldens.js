@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const path = require('path');
-const fs = require('fs');
 const childProcess = require('child_process');
+const fs = require('fs');
+const path = require('path');
 const util = require('util');
+const yargs = require('yargs');
 const exec = util.promisify(childProcess.exec);
 
 const yargsObject =
-    require('yargs')
+    yargs
         .option(
             'remove-files', {type: 'boolean', desc: 'Set to true to have obsolete goldens removed.', default: false})
         .argv;

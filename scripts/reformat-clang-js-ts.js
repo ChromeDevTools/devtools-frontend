@@ -10,10 +10,9 @@
  * directories will not be used.
  **/
 
+const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const childProcess = require('child_process');
-
 const yargs = require('yargs')
                   .option('dry-run', {
                     type: 'boolean',

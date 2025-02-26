@@ -16,7 +16,7 @@ import {
   type PageAuditabilityChangedEvent,
   type PageWarningsChangedEvent,
 } from './LighthouseController.js';
-import lighthousePanelStyles from './lighthousePanel.css.legacy.js';
+import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
 import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
@@ -54,7 +54,7 @@ const UIStrings = {
    *@description Text in Lighthouse Panel
    */
   cancelling: 'Cancelling',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('panels/lighthouse/LighthousePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

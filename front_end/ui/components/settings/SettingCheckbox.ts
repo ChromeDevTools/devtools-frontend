@@ -12,7 +12,7 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
-import settingCheckboxStylesRaw from './settingCheckbox.css.legacy.js';
+import settingCheckboxStylesRaw from './settingCheckbox.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const settingCheckboxStyles = new CSSStyleSheet();
@@ -25,7 +25,7 @@ const UIStrings = {
    *@description Text that is usually a hyperlink to more documentation
    */
   learnMore: 'Learn more',
-};
+} as const;
 const str_ = i18n.i18n.registerUIStrings('ui/components/settings/SettingCheckbox.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 

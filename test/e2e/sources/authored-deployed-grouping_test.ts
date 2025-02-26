@@ -11,7 +11,6 @@ import {
   waitFor,
   waitForNone,
 } from '../../shared/helper.js';
-
 import {
   createSelectorsForWorkerFile,
   expandFileTree,

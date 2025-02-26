@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$$, getBrowserAndPages, goToResource, timeout, waitFor, waitForFunction} from '../../shared/helper.js';
-
 import {
   waitForChildrenOfSelectedElementNode,
   waitForContentOfSelectedElementsNode,

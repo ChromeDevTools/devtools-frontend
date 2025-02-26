@@ -23,7 +23,7 @@ export class ServerSentEvents {
 
   // In the case where we parse the events ourselves we use the time of the last 'dataReceived'
   // event for all the events that come out of the corresponding chunk of data.
-  #lastDataReceivedTime: number = 0;
+  #lastDataReceivedTime = 0;
 
   readonly #eventSourceMessages: EventSourceMessage[] = [];
 

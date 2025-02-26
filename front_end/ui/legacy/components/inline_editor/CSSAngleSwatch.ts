@@ -4,7 +4,7 @@
 
 import * as Lit from '../../../lit/lit.js';
 
-import cssAngleSwatchStylesRaw from './cssAngleSwatch.css.legacy.js';
+import cssAngleSwatchStylesRaw from './cssAngleSwatch.css.js';
 import {type Angle, AngleUnit, get2DTranslationsForAngle} from './CSSAngleUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.

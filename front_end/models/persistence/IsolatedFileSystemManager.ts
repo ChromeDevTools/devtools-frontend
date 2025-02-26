@@ -35,7 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 
 import type {FilesChangedData} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
-import type {PlatformFileSystem} from './PlatformFileSystem.js';
+import {type PlatformFileSystem, PlatformFileSystemType} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
@@ -180,7 +180,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
     const embedderPath = fileSystem.fileSystemPath;
     const fileSystemURL = Common.ParsedURL.ParsedURL.rawPathToUrlString(fileSystem.fileSystemPath);
     const promise = IsolatedFileSystem.create(
-        this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
+        this, fileSystemURL, embedderPath, hostFileSystemTypeToPlatformFileSystemType(fileSystem.type),
+        fileSystem.fileSystemName, fileSystem.rootURL, fileSystem.type === 'automatic');
     return promise.then(storeFileSystem.bind(this));
 
     function storeFileSystem(this: IsolatedFileSystemManager, fileSystem: IsolatedFileSystem|null): IsolatedFileSystem|
@@ -359,3 +360,14 @@ export interface EventTypes {
 }
 
 let lastRequestId = 0;
+
+function hostFileSystemTypeToPlatformFileSystemType(type: string): PlatformFileSystemType {
+  switch (type) {
+    case 'snippets':
+      return PlatformFileSystemType.SNIPPETS;
+    case 'overrides':
+      return PlatformFileSystemType.OVERRIDES;
+    default:
+      return PlatformFileSystemType.DISK;
+  }
+}

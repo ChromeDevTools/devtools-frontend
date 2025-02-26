@@ -15,12 +15,21 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PlatformFileSystem.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
+export enum PlatformFileSystemType {
+  SNIPPETS = 'snippets',
+  OVERRIDES = 'overrides',
+  DISK = 'disk',
+}
+
 export class PlatformFileSystem {
   private readonly pathInternal: Platform.DevToolsPath.UrlString;
-  private readonly typeInternal: string;
-  constructor(path: Platform.DevToolsPath.UrlString, type: string) {
+  #type: PlatformFileSystemType;
+  #automatic: boolean;
+  constructor(path: Platform.DevToolsPath.UrlString, type: PlatformFileSystemType, automatic: boolean) {
     this.pathInternal = path;
-    this.typeInternal = type;
+    this.#type = type;
+    this.#automatic = automatic;
   }
 
   getMetadata(_path: Platform.DevToolsPath.EncodedPathString): Promise<{modificationTime: Date, size: number}|null> {
@@ -44,8 +53,11 @@ export class PlatformFileSystem {
   }
 
   type(): string {
-    // TODO(kozyatinskiy): remove type, overrides should implement this interface.
-    return this.typeInternal;
+    return this.#type;
+  }
+
+  automatic(): boolean {
+    return this.#automatic;
   }
 
   async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):

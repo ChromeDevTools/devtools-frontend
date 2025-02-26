@@ -294,7 +294,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         fileSystemName: 'sandboxedRequestedFileSystem',
         fileSystemPath: OVERRIDES_FILE_SYSTEM_PATH,
         rootURL: 'filesystem:devtools://devtools/isolated/',
-        type: 'overrides',
+        type: 'overrides' as const,
       };
       this.events.dispatchEventToListeners(Events.FileSystemAdded, {fileSystem});
     };

@@ -487,9 +487,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
           continue;
         }
-        // Workspace projects do not have a type. Only snippets and
-        // overrides do.
-        if (project.fileSystem().type()) {
+        if (project.fileSystem().type() !== Persistence.PlatformFileSystem.PlatformFileSystemType.DISK) {
           continue;
         }
         this.#project = project;

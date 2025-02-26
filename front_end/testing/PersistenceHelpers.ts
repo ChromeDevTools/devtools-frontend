@@ -22,7 +22,7 @@ export function createFileSystemFileForPersistenceTests(
     fileSystemScript: {
       fileSystemFileUrl: Platform.DevToolsPath.UrlString,
       fileSystemPath: Platform.DevToolsPath.UrlString,
-      type?: string,
+      type?: Persistence.PlatformFileSystem.PlatformFileSystemType,
     },
     networkScriptUrl: Platform.DevToolsPath.UrlString, content: string, target: SDK.Target.Target):
     {uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Persistence.FileSystemWorkspaceBinding.FileSystem} {

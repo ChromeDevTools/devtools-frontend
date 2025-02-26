@@ -35,7 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, type IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {PlatformFileSystem} from './PlatformFileSystem.js';
+import {PlatformFileSystem, type PlatformFileSystemType} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
@@ -75,8 +75,9 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   constructor(
       manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
-      embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: string) {
-    super(path, type);
+      embedderPath: Platform.DevToolsPath.RawPathString, domFileSystem: FileSystem, type: PlatformFileSystemType,
+      automatic: boolean) {
+    super(path, type, automatic);
     this.manager = manager;
     this.embedderPathInternal = embedderPath;
     this.domFileSystem = domFileSystem;
@@ -87,14 +88,14 @@ export class IsolatedFileSystem extends PlatformFileSystem {
 
   static async create(
       manager: IsolatedFileSystemManager, path: Platform.DevToolsPath.UrlString,
-      embedderPath: Platform.DevToolsPath.RawPathString, type: string, name: string,
-      rootURL: string): Promise<IsolatedFileSystem|null> {
+      embedderPath: Platform.DevToolsPath.RawPathString, type: PlatformFileSystemType, name: string, rootURL: string,
+      automatic: boolean): Promise<IsolatedFileSystem|null> {
     const domFileSystem = Host.InspectorFrontendHost.InspectorFrontendHostInstance.isolatedFileSystem(name, rootURL);
     if (!domFileSystem) {
       return null;
     }
 
-    const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
+    const fileSystem = new IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type, automatic);
     return await fileSystem.initializeFilePaths().then(() => fileSystem).catch(error => {
       console.error(error);
       return null;

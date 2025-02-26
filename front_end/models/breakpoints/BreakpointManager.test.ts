@@ -883,7 +883,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     async function testBreakpointMovedOnInstrumentationBreak(
         fileSystemPath: Platform.DevToolsPath.UrlString, fileSystemFileUrl: Platform.DevToolsPath.UrlString,
-        content: string, type?: string) {
+        content: string, type?: Persistence.PlatformFileSystem.PlatformFileSystemType) {
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.exists(debuggerModel);
 
@@ -1480,10 +1480,10 @@ describeWithMockConnection('BreakpointManager', () => {
 
       const fileSystemPath = urlString`file://path/to/overrides`;
       const fielSystemFileUrl = urlString`${fileSystemPath + '/site/script.js'}`;
-      const type = 'overrides';
       const content = '';
 
-      await testBreakpointMovedOnInstrumentationBreak(fileSystemPath, fielSystemFileUrl, content, type);
+      await testBreakpointMovedOnInstrumentationBreak(
+          fileSystemPath, fielSystemFileUrl, content, Persistence.PlatformFileSystem.PlatformFileSystemType.OVERRIDES);
     });
   });
 

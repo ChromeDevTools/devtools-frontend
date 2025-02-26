@@ -71,8 +71,10 @@ class TestPlatformFileSystem extends Persistence.PlatformFileSystem.PlatformFile
   readonly #mimeType: string;
   readonly #autoMapping: boolean;
 
-  constructor(path: Platform.DevToolsPath.UrlString, type: string, mimeType: string, autoMapping: boolean) {
-    super(path, type);
+  constructor(
+      path: Platform.DevToolsPath.UrlString, type: Persistence.PlatformFileSystem.PlatformFileSystemType,
+      mimeType: string, autoMapping: boolean) {
+    super(path, type, false);
     this.#mimeType = mimeType;
     this.#autoMapping = autoMapping;
   }
@@ -117,7 +119,7 @@ export function createFileSystemUISourceCode(options: {
   content?: string,
   fileSystemPath?: string,
   autoMapping?: boolean,
-  type?: string,
+  type?: Persistence.PlatformFileSystem.PlatformFileSystemType,
   metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
 }): {uiSourceCode: Workspace.UISourceCode.UISourceCode, project: Persistence.FileSystemWorkspaceBinding.FileSystem} {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
@@ -127,8 +129,9 @@ export function createFileSystemUISourceCode(options: {
   const fileSystemPath = urlString`${options.fileSystemPath || ''}`;
   const type = options.type || '';
   const content = options.content || '';
-  const platformFileSystem =
-      new TestPlatformFileSystem(fileSystemPath, type, options.mimeType, Boolean(options.autoMapping));
+  const platformFileSystem = new TestPlatformFileSystem(
+      fileSystemPath, type || Persistence.PlatformFileSystem.PlatformFileSystemType.DISK, options.mimeType,
+      Boolean(options.autoMapping));
   const metadata = options.metadata || new Workspace.UISourceCode.UISourceCodeMetadata(null, null);
 
   const project = new TestFileSystem({fileSystemWorkspaceBinding, platformFileSystem, workspace, content, metadata});

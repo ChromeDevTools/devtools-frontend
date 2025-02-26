@@ -9,10 +9,11 @@ const {urlString} = Platform.DevToolsPath;
 
 describe('PlatformFileSystem', () => {
   it('can be instantiated successfully', () => {
-    const platformFileSystem = new Persistence.PlatformFileSystem.PlatformFileSystem(urlString`Test Path`, 'Test Type');
+    const platformFileSystem = new Persistence.PlatformFileSystem.PlatformFileSystem(
+        urlString`Test Path`, Persistence.PlatformFileSystem.PlatformFileSystemType.DISK, false);
     assert.strictEqual(platformFileSystem.path(), 'Test Path', 'path was not set or retrieved correctly');
-    assert.strictEqual(platformFileSystem.type(), 'Test Type', 'Type was not set or retrieved correctly');
+    assert.strictEqual(
+        platformFileSystem.type(), Persistence.PlatformFileSystem.PlatformFileSystemType.DISK,
+        'Type was not set or retrieved correctly');
   });
-
-  // TODO continue writing tests here or use another describe block
 });

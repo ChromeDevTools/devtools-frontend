@@ -191,8 +191,10 @@ export interface ViewInput {
   onFilterChanged: (e: CustomEvent<string>) => void;
   onCommandChange: (e: CustomEvent<string>) => void;
   onCommandSubmitted: (e: CustomEvent<string>) => void;
+  onTargetChange: (e: Event) => void;
   showHideSidebarButton: UI.Toolbar.ToolbarButton;
-  selector: UI.Toolbar.ToolbarComboBox;
+  targets: SDK.Target.Target[];
+  selectedTargetId: string;
 }
 
 export interface ViewOutput {}
@@ -206,9 +208,8 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   private readonly messageForId = new Map<number, Message>();
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   #filterKeys = ['method', 'request', 'response', 'target', 'session'];
-  readonly selector: UI.Toolbar.ToolbarComboBox;
   #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
-  #selectedTargetId?: string;
+  #selectedTargetId: string;
   #command = '';
   #hideInputBar = false;
   #showHideSidebarButton: UI.Toolbar.ToolbarButton;
@@ -333,7 +334,17 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                   ${input.commandSuggestions.map(c => html`<option value=${c}></option>`)}
                 </datalist>
               </devtools-toolbar-input>
-              ${input.selector.element}
+              <select class="target-selector"
+                      title=${i18nString(UIStrings.selectTarget)}
+                      style=${styleMap({display: input.hideInputBar ? 'none' : 'flex'})}
+                      jslog=${VisualLogging.dropDown('target-selector').track({change: true})}
+                      @change=${input.onTargetChange}>
+                ${input.targets.map(target => html`
+                  <option jslog=${VisualLogging.item('target').track({click: true})}
+                          value=${target.id()} ?selected=${target.id() === input.selectedTargetId}>
+                    ${target.name()} (${target.inspectedURL()})
+                  </option>`)}
+              </select>
             </devtools-toolbar>`,
         target,
         {host: input}
@@ -346,7 +357,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     this.started = false;
     this.startTime = 0;
     this.contentElement.classList.add('protocol-monitor');
-    this.selector = this.#createTargetSelector();
 
     this.#filterKeys = ['method', 'request', 'response', 'type', 'target', 'session'];
     this.filterParser = new TextUtils.TextUtils.FilterParser(this.#filterKeys);
@@ -355,7 +365,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         i18nString(UIStrings.showCDPCommandEditor), i18nString(UIStrings.hideCDPCommandEditor),
         i18nString(UIStrings.CDPCommandEditorShown), i18nString(UIStrings.CDPCommandEditorHidden),
         'protocol-monitor.toggle-command-editor');
-    const tabSelector = this.selector.element;
 
     const populateToolbarInput = (): void => {
       const editorWidget = splitWidget.sidebarWidget();
@@ -365,11 +374,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       const commandJson = editorWidget.jsonEditor.getCommandJson();
       const targetId = editorWidget.jsonEditor.targetId;
       if (targetId) {
-        const selectedIndex = this.selector.options().findIndex(option => option.value === targetId);
-        if (selectedIndex !== -1) {
-          this.selector.setSelectedIndex(selectedIndex);
-          this.#selectedTargetId = targetId;
-        }
+        this.#selectedTargetId = targetId;
       }
       if (commandJson) {
         this.#command = commandJson;
@@ -381,18 +386,21 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                                    if (event.data === 'OnlyMain') {
                                      populateToolbarInput();
                                      this.#hideInputBar = false;
-                                     tabSelector?.setAttribute('style', 'display:flex');
                                    } else {
                                      const {command, parameters} = parseCommandInput(this.#command);
                                      this.dispatchEventToListeners(
                                          Events.COMMAND_CHANGE,
                                          {command, parameters, targetId: this.#selectedTargetId});
                                      this.#hideInputBar = true;
-                                     tabSelector?.setAttribute('style', 'display:none');
                                    }
                                    this.requestUpdate();
                                  }));
+    this.#selectedTargetId = 'main';
     this.performUpdate();
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, () => {
+          this.requestUpdate();
+        });
   }
 
   override performUpdate(): void {
@@ -439,8 +447,14 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         this.#filter = e.detail;
         this.requestUpdate();
       },
+      onTargetChange: (e: Event) => {
+        if (e.target instanceof HTMLSelectElement) {
+          this.#selectedTargetId = e.target.value;
+        }
+      },
       showHideSidebarButton: this.#showHideSidebarButton,
-      selector: this.selector,
+      targets: SDK.TargetManager.TargetManager.instance().targets(),
+      selectedTargetId: this.#selectedTargetId,
     };
     const viewOutput = {};
     this.#view(viewInput, viewOutput, this.contentElement);
@@ -485,23 +499,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}` as
           Platform.DevToolsPath.UrlString);
     }, {jslogContext: 'documentation'});
-  }
-
-  #createTargetSelector(): UI.Toolbar.ToolbarComboBox {
-    const selector = new UI.Toolbar.ToolbarComboBox(() => {
-      this.#selectedTargetId = selector.selectedOption()?.value;
-    }, i18nString(UIStrings.selectTarget), undefined, 'target-selector');
-    selector.element.classList.add('target-selector');
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const syncTargets = (): void => {
-      selector.removeOptions();
-      for (const target of targetManager.targets()) {
-        selector.createOption(`${target.name()} (${target.inspectedURL()})`, target.id(), 'target');
-      }
-    };
-    targetManager.addEventListener(SDK.TargetManager.Events.AVAILABLE_TARGETS_CHANGED, syncTargets);
-    syncTargets();
-    return selector;
   }
 
   onCommandSend(command: string, parameters: object, target?: string): void {

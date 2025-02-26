@@ -120,6 +120,8 @@ export class Toolbar extends HTMLElement {
           item = new ToolbarButton('', undefined, undefined, undefined, element);
         } else if (element instanceof ToolbarInputElement) {
           item = element.item;
+        } else if (element instanceof HTMLSelectElement) {
+          item = new ToolbarComboBox(null, element.title, undefined, undefined, element);
         } else {
           item = new ToolbarItem(element);
         }
@@ -1139,8 +1141,13 @@ export interface ItemsProvider {
 }
 
 export class ToolbarComboBox extends ToolbarItem<void, HTMLSelectElement> {
-  constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string, jslogContext?: string) {
-    super(document.createElement('select'));
+  constructor(
+      changeHandler: ((arg0: Event) => void)|null, title: string, className?: string, jslogContext?: string,
+      element?: HTMLSelectElement) {
+    if (!element) {
+      element = document.createElement('select');
+    }
+    super(element);
     if (changeHandler) {
       this.element.addEventListener('change', changeHandler, false);
     }

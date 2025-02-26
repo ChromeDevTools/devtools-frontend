@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import {
   dispatchClickEvent,
   dispatchKeyDownEvent,
@@ -510,21 +511,20 @@ describeWithEnvironment('JSONEditor', () => {
       const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
       const jsonEditor = editorWidget.jsonEditor;
       jsonEditor.targetId = 'value2';
-      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
-      const selector = dataGrid.selector;
-
-      selector.createOption('Option 1', 'value1');
-      selector.createOption('Option 2', 'value2');
-      selector.createOption('Option 3', 'value3');
+      sinon.stub(SDK.TargetManager.TargetManager.instance(), 'targets').returns([
+        {id: () => 'value1'} as SDK.Target.Target,
+        {id: () => 'value2'} as SDK.Target.Target,
+      ]);
+      const view = sinon.stub();
+      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split, view);
 
       split.setMainWidget(dataGrid);
       split.setSidebarWidget(editorWidget);
 
       split.toggleSidebar();
-      await RenderCoordinator.done();
+      await RenderCoordinator.done({waitForWork: true});
 
-      // Should be index 1 because the targetId equals "value2" which corresponds to the index number 1
-      assert.deepEqual(selector.selectedIndex(), 1);
+      assert.deepEqual(view.lastCall.firstArg.selectedTargetId, 'value2');
     });
 
     // Flaky test.

@@ -253,11 +253,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                 </datalist>
               </devtools-toolbar-input>
             </devtools-toolbar>
-            <devtools-split-widget .options=${{
-                vertical: true,
-                secondIsSidebar: true,
-                settingName: 'protocol-monitor-panel-split',
-              defaultSidebarWidth: 250}}>
+            <devtools-split-view direction="column" sidebar-position="second" name="protocol-monitor-panel-split" sidebar-initial-size="250">
               <devtools-data-grid
                   striped
                   slot="main"
@@ -316,7 +312,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                   })}
                   class="protocol-monitor-info"
                   slot="sidebar"></devtools-widget>
-            </devtools-split-widget>
+            </devtools-split-view>
             <devtools-toolbar class="protocol-monitor-bottom-toolbar"
                jslog=${VisualLogging.toolbar('bottom')}>
               ${input.showHideSidebarButton.element}

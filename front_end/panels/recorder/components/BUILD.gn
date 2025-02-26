@@ -53,7 +53,6 @@ devtools_module("components") {
     "../../../ui/components/panel_feedback:bundle",
     "../../../ui/components/panel_introduction_steps:bundle",
     "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/components/split_view:bundle",
     "../../../ui/components/suggestion_input:bundle",
     "../../../ui/components/text_editor:bundle",
     "../../../ui/legacy:bundle",

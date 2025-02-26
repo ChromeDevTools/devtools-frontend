@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/split_view/split_view.js';
 import '../../../ui/legacy/legacy.js';
 
 import * as Common from '../../../core/common/common.js';
@@ -13,7 +12,6 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as SplitView from '../../../ui/components/split_view/split_view.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import emptyWidgetStyles from '../../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -206,7 +204,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
   private readonly warningsContainer: HTMLDivElement;
   private readonly warningsView = new PreloadingWarningsView();
-  private readonly hsplit: SplitView.SplitView.SplitView;
+  private readonly hsplit: HTMLElement;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
 
@@ -258,12 +256,11 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
             ${UI.XLink.XLink.create(SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
           </div>
         </div>
-        <devtools-split-view .horizontal=${true} style="--min-sidebar-size: max(100vh-200px, 0px)">
-          <div slot="main" class="overflow-auto" style="height: 100%">
+        <devtools-split-view sidebar-position="second">
+          <div slot="main">
             ${this.ruleSetGrid}
           </div>
-          <div slot="sidebar" class="overflow-auto" style="height: 100%"
-          jslog=${VisualLogging.section('rule-set-details')}>
+          <div slot="sidebar" jslog=${VisualLogging.section('rule-set-details')}>
             ${this.ruleSetDetails}
           </div>
         </devtools-split-view>
@@ -281,7 +278,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         </div>`,
         this.contentElement, {host: this});
     // clang-format on
-    this.hsplit = this.contentElement.querySelector('devtools-split-view') as SplitView.SplitView.SplitView;
+    this.hsplit = this.contentElement.querySelector('devtools-split-view') as HTMLElement;
   }
 
   override wasShown(): void {
@@ -311,9 +308,9 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.ruleSetDetails.data = ruleSet;
 
     if (ruleSet === null) {
-      this.hsplit.style.setProperty('--current-main-area-size', '100%');
+      this.hsplit.setAttribute('sidebar-visibility', 'hidden');
     } else {
-      this.hsplit.style.setProperty('--current-main-area-size', '60%');
+      this.hsplit.removeAttribute('sidebar-visibility');
     }
   }
 

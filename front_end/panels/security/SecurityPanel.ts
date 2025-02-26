@@ -561,9 +561,8 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     // clang-format off
     render(
       html`
-    <devtools-split-widget
-    .options=${{vertical: true, settingName: 'security'}}
-    ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
+    <devtools-split-view direction="column" name="security"
+      ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
         <devtools-widget
           slot="sidebar"
           .widgetConfig=${widgetConfig(SecurityPanelSidebar)}
@@ -571,7 +570,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
           @showFlagControls=${() => output.setVisibleView(new CookieControlsView())}
           ${UI.Widget.widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
         </devtools-widget>
-    </devtools-split-widget>`,
+    </devtools-split-view>`,
       target, {host: this});
     // clang-format on
   }) {

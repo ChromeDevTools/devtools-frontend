@@ -109,8 +109,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
       view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
         // clang-format off
         render(html `
-            <devtools-split-widget
-                .options=${{vertical: false, secondIsSidebar: true, settingName: `${id}-split-view-state`}}>
+            <devtools-split-view direction="column" sidebar-position="second" name="${id}-split-view-state">
                <devtools-widget
                   slot="main"
                   .widgetConfig=${widgetConfig(VBox, {minimumSize: new Size(0, 50)})}>
@@ -150,7 +149,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
                   jslog=${VisualLogging.pane('preview').track({resize: true})}>
                ${input.preview?.element}
               </devtools-widget>
-            </devtools-split-widget>`,
+            </devtools-split-view>`,
             // clang-format on
             target, {host: input});
       };

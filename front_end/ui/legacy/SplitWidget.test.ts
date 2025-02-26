@@ -36,13 +36,11 @@ describeWithEnvironment('SplitWidget', () => {
     // clang-format off
     render(
         html`
-      <devtools-split-widget .options=${{vertical: true,
-                                         defaultSidebarWidth: 100,
-                                         markAsRoot: true}}
+      <devtools-split-view direction="column" sidebar-initial-size="100"
                              ${widgetRef(SplitWidget, e => {widget = e;})}>
         <div slot="main">Main content</div>
         <div slot="sidebar">Sidebar content</div>
-      </devtools-split-widget>`,
+      </devtools-split-view>`,
         container, {host: this});
     // clang-format on
 

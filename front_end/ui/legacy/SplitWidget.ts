@@ -897,44 +897,50 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 }
 
-interface SplitWidgetOptions {
-  vertical?: boolean;
-  secondIsSidebar?: boolean;
-  settingName?: string;
-  defaultSidebarWidth?: number;
-  defaultSidebarHeight?: number;
-  constraintsInDip?: boolean;
-  markAsRoot?: boolean;
-}
-
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
-  #options: SplitWidgetOptions = {};
-
-  set options(options: SplitWidgetOptions) {
-    this.#options = options;
-  }
+  static readonly observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'sidebar-visibility'];
 
   override createWidget(): SplitWidget {
-    const {
-      vertical,
-      secondIsSidebar,
-      settingName,
-      defaultSidebarWidth,
-      defaultSidebarHeight,
-      constraintsInDip,
-      markAsRoot,
-    } = this.#options;
+    const vertical = this.getAttribute('direction') === 'column';
+    const secondIsSidebar = this.getAttribute('sidebar-position') === 'second';
+    const settingName = this.getAttribute('name') ?? undefined;
+    const sidebarSize = parseInt(this.getAttribute('sidebar-initial-size') || '', 10);
+    const defaultSidebarWidth = vertical && !isNaN(sidebarSize) ? sidebarSize : undefined;
+    const defaultSidebarHeight = vertical || isNaN(sidebarSize) ? undefined : sidebarSize;
     const widget = new SplitWidget(
-        Boolean(vertical), Boolean(secondIsSidebar), settingName, defaultSidebarWidth, defaultSidebarHeight,
-        constraintsInDip, this);
-    if (markAsRoot) {
-      widget.markAsRoot();
+        vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
+        /* constraintsInDip=*/ false, this);
+    const sidebarHidden = this.getAttribute('sidebar-visibility') === 'hidden';
+    if (sidebarHidden) {
+      widget.hideSidebar();
     }
+    widget.addEventListener(Events.SHOW_MODE_CHANGED, () => {
+      this.dispatchEvent(new CustomEvent('change', {detail: widget.showMode()}));
+    });
+
     return widget;
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    const widget = Widget.get(this) as SplitWidget | null;
+    if (!widget) {
+      return;
+    }
+    if (name === 'direction') {
+      widget.setVertical(newValue === 'column');
+    } else if (name === 'sidebar-position') {
+      widget.setSecondIsSidebar(newValue === 'second');
+    } else if (name === 'sidebar-visibility') {
+      if (newValue === 'hidden') {
+        widget.hideSidebar();
+      } else {
+        widget.showBoth();
+      }
+    }
   }
 }
 
-customElements.define('devtools-split-widget', SplitWidgetElement);
+customElements.define('devtools-split-view', SplitWidgetElement);
 
 export const enum ShowMode {
   BOTH = 'Both',

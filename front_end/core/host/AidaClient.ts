@@ -326,7 +326,7 @@ export class AidaClient {
       let {promise, resolve, reject} = Promise.withResolvers<string|null>();
       options?.signal?.addEventListener('abort', () => {
         reject(new AidaAbortError());
-      });
+      }, {once: true});
       return {
         write: async(data: string): Promise<void> => {
           resolve(data);

@@ -244,6 +244,13 @@ describe('AI Assistance', function() {
     return await submitAndWaitTillDone(waitForSideEffect);
   }
 
+  async function openConversationFromHistory(historyEntrySelector: string) {
+    const {frontend} = getBrowserAndPages();
+    await frontend.bringToFront();
+    await frontend.locator('aria/History').click();
+    await frontend.locator(historyEntrySelector).click();
+  }
+
   it('gets data about elements', async () => {
     const result = await runAiAssistance({
       query: 'Change the background color for this element to blue',
@@ -504,6 +511,43 @@ STOP`,
       // @ts-expect-error page context.
       return window.getComputedStyle(document.querySelector('div')).backgroundColor === 'rgb(0, 128, 0)';
     });
+  });
+
+  it('aborts ongoing conversation when previous chat is opened from history', async () => {
+    await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'blue' });
+STOP`,
+        'ANSWER: changed styles',
+      ],
+      node: 'div',
+    });
+
+    const {frontend} = getBrowserAndPages();
+    await frontend.bringToFront();
+    await frontend.locator('aria/New chat').click();
+
+    await sendAiAssistanceMessage({
+      query: 'Change the background color for this element to green',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+await setElementStyles($0, { 'background-color': 'green' });
+STOP`,
+      ],
+      node: 'div',
+      waitForSideEffect: true,
+    });
+
+    await openConversationFromHistory('aria/Change the background color for this element to blue, unchecked');
+    await openConversationFromHistory('aria/Change the background color for this element to green, unchecked');
+
+    frontend.waitForSelector('aria/Canceled');
   });
 
   it('modifies styles to a selector with high specificity', async () => {

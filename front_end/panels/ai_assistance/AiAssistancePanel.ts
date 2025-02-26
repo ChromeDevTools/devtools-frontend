@@ -1131,6 +1131,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (this.#currentConversation === conversation) {
       return;
     }
+    this.#cancel();
     this.#currentConversation = conversation;
     this.#messages = [];
     await this.#doConversation(conversation.history);
@@ -1170,6 +1171,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
+    this.#runAbortController = new AbortController();
     this.#isLoading = false;
     this.requestUpdate();
   }
@@ -1221,7 +1223,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
     // Cancel any previous in-flight conversation.
     this.#cancel();
-    this.#runAbortController = new AbortController();
     const signal = this.#runAbortController.signal;
     const context = this.#getConversationContext();
     // If a different context is provided, it must be from the same origin.
@@ -1277,10 +1278,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   async *
       #saveResponsesToCurrentConversation(items: AsyncIterable<ResponseData, void, void>):
           AsyncGenerator<ResponseData, void, void> {
+    const currentConversation = this.#currentConversation;
     for await (const data of items) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== ResponseType.ANSWER || data.complete) {
-        this.#currentConversation?.addHistoryItem(data);
+        currentConversation?.addHistoryItem(data);
       }
       yield data;
     }

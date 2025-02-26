@@ -369,4 +369,38 @@ describe('AiHistoryStorage', () => {
       mimeType: 'image/jpeg',
     });
   });
+
+  describe('Conversation', () => {
+    describe('title', () => {
+      it('should return undefined if there is not USER_QUERY entry in history', () => {
+        const conversation = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, []);
+
+        assert.isUndefined(conversation.title);
+      });
+
+      it('should return full title if the first USER_QUERY is less than 80 characters', () => {
+        const conversation = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [{
+                                                             type: AiAssistance.ResponseType.USER_QUERY,
+                                                             query: 'this is less than 80',
+                                                           }]);
+
+        assert.strictEqual(conversation.title, 'this is less than 80');
+      });
+
+      it('should return first 80 characters of the title with ellipis if the first USER_QUERY is more than 80 characters',
+         () => {
+           const conversation = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [
+             {
+               type: AiAssistance.ResponseType.USER_QUERY,
+               query:
+                   'this is more than 80 characters because I\'m just going to keep typing words and words and words until it\'s really, really long, see?',
+             }
+           ]);
+
+           assert.strictEqual(
+               conversation.title,
+               'this is more than 80 characters because I\'m just going to keep typing words and …');
+         });
+    });
+  });
 });

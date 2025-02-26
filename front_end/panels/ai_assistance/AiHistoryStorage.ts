@@ -7,6 +7,8 @@ import * as Common from '../../core/common/common.js';
 
 import {type ResponseData, ResponseType} from './agents/AiAgent.js';
 
+const MAX_TITLE_LENGTH = 80;
+
 export const enum ConversationType {
   STYLING = 'freestyler',
   FILE = 'drjones-file',
@@ -49,12 +51,13 @@ export class Conversation {
   }
 
   get title(): string|undefined {
-    return this.history
-        .filter(response => {
-          return response.type === ResponseType.USER_QUERY;
-        })
-        .at(0)
-        ?.query;
+    const query = this.history.find(response => response.type === ResponseType.USER_QUERY)?.query;
+
+    if (!query) {
+      return;
+    }
+
+    return `${query.substring(0, MAX_TITLE_LENGTH)}${query.length > MAX_TITLE_LENGTH ? '…' : ''}`;
   }
 
   get isEmpty(): boolean {

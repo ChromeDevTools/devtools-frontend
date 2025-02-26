@@ -10,10 +10,11 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import {linkifyNodeReference} from '../../elements/DOMLinkifier.js';
-import {AI_ASSISTANCE_CSS_CLASS_NAME, ChangeManager} from '../ChangeManager.js';
+import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
-import {ExtensionScope, FREESTYLER_WORLD_NAME} from '../ExtensionScope.js';
+import {ExtensionScope} from '../ExtensionScope.js';
+import {AI_ASSISTANCE_CSS_CLASS_NAME, FREESTYLER_WORLD_NAME} from '../injected.js';
 
 import {
   type AgentOptions as BaseAgentOptions,

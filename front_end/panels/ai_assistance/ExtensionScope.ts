@@ -7,69 +7,15 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {AI_ASSISTANCE_CSS_CLASS_NAME, type ChangeManager} from './ChangeManager.js';
-
-export const FREESTYLER_WORLD_NAME = 'DevTools AI Assistance';
-export const FREESTYLER_BINDING_NAME = '__freestyler';
-
-interface FreestyleCallbackArgs {
-  method: string;
-  selector: string;
-  className: `.${typeof AI_ASSISTANCE_CSS_CLASS_NAME}-${number}`;
-  styles: Record<string, string>;
-  element: Node;
-}
-
-interface FreestyleCallbackData {
-  args: string;
-  element: Node;
-  resolve(value: string): void;
-}
-interface FreestylerBinding {
-  (args: FreestyleCallbackArgs): Promise<string>;
-  id: number;
-  callbacks: Map<number, FreestyleCallbackData>;
-  respond(id: number, styleChanges: string): void;
-  getElement(id: number): Node|undefined;
-  getArgs(id: number): string|undefined;
-}
-
-function freestylerBindingFunc(bindingName: string): void {
-  // Executed in another world
-  const global = globalThis as unknown as {
-    freestyler?: FreestylerBinding,
-  };
-
-  if (!global.freestyler) {
-    const freestyler = (args: FreestyleCallbackArgs): Promise<string> => {
-      const {resolve, promise} = Promise.withResolvers<string>();
-      freestyler.callbacks.set(freestyler.id, {
-        args: JSON.stringify(args),
-        element: args.element,
-        resolve,
-      });
-      // @ts-expect-error this is binding added though CDP
-      globalThis[bindingName](String(freestyler.id));
-      freestyler.id++;
-      return promise;
-    };
-    freestyler.id = 1;
-    freestyler.callbacks = new Map<number, FreestyleCallbackData>();
-    freestyler.getElement = (callbackId: number) => {
-      return freestyler.callbacks.get(callbackId)?.element;
-    };
-    freestyler.getArgs = (callbackId: number) => {
-      return freestyler.callbacks.get(callbackId)?.args;
-    };
-    freestyler.respond = (callbackId: number, styleChanges: string) => {
-      freestyler.callbacks.get(callbackId)?.resolve(styleChanges);
-      freestyler.callbacks.delete(callbackId);
-    };
-    global.freestyler = freestyler;
-  }
-}
-
-const freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
+import type {ChangeManager} from './ChangeManager.js';
+import {
+  AI_ASSISTANCE_CSS_CLASS_NAME,
+  type FreestyleCallbackArgs,
+  FREESTYLER_BINDING_NAME,
+  FREESTYLER_WORLD_NAME,
+  freestylerBinding,
+  injectedFunctions
+} from './injected.js';
 
 /**
  * Injects Freestyler extension functions in to the isolated world.
@@ -145,7 +91,7 @@ export class ExtensionScope {
       executionContextId,
     });
     await this.#simpleEval(isolatedWorldContext, freestylerBinding);
-    await this.#simpleEval(isolatedWorldContext, functions);
+    await this.#simpleEval(isolatedWorldContext, injectedFunctions);
   }
 
   async uninstall(): Promise<void> {
@@ -323,64 +269,3 @@ export class ExtensionScope {
     });
   }
 }
-
-const functions = `async function setElementStyles(el, styles) {
-  let selector = el.tagName.toLowerCase();
-  if (el.id) {
-    selector = '#' + el.id;
-  } else if (el.classList.length) {
-    const parts = [];
-    for (const cls of el.classList) {
-      if (cls.startsWith('${AI_ASSISTANCE_CSS_CLASS_NAME}')) {
-        continue;
-      }
-      parts.push('.' + cls);
-    }
-    if (parts.length) {
-      selector = parts.join('');
-    }
-  }
-
-  // __freestylerClassName is not exposed to the page due to this being
-  // run in the isolated world.
-  const className = el.__freestylerClassName ?? '${AI_ASSISTANCE_CSS_CLASS_NAME}-' + freestyler.id;
-  el.__freestylerClassName = className;
-  el.classList.add(className);
-
-  // Remove inline styles with the same keys so that the edit applies.
-  for (const [key, value] of Object.entries(styles)) {
-    // if it's kebab case.
-    el.style.removeProperty(key);
-    // If it's camel case.
-    el.style[key] = '';
-  }
-
-  const result = await freestyler({
-    method: 'setElementStyles',
-    selector,
-    className,
-    styles,
-    element: el,
-  });
-
-  let rootNode = el.getRootNode();
-  if (rootNode instanceof ShadowRoot) {
-    let stylesheets = rootNode.adoptedStyleSheets;
-    let hasAiStyleChange = false;
-    let stylesheet = new CSSStyleSheet();
-    for (let i = 0; i < stylesheets.length; i++) {
-      const sheet = stylesheets[i];
-      for (let j = 0; j < sheet.cssRules.length; j++) {
-        hasAiStyleChange = sheet.cssRules[j].selectorText.startsWith('.${AI_ASSISTANCE_CSS_CLASS_NAME}');
-        if (hasAiStyleChange) {
-          stylesheet = sheet;
-          break;
-        }
-      }
-    }
-    stylesheet.replaceSync(result);
-    if (!hasAiStyleChange) {
-      rootNode.adoptedStyleSheets = [...stylesheets, stylesheet];
-    }
-  }
-}`;

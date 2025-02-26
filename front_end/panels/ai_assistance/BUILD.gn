@@ -37,6 +37,7 @@ devtools_module("ai_assistance") {
     "data_formatters/NetworkRequestFormatter.ts",
     "data_formatters/PerformanceInsightFormatter.ts",
     "debug.ts",
+    "injected.ts",
   ]
 
   deps = [

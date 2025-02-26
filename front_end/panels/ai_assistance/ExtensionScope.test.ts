@@ -6,8 +6,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
 
-import * as ChangeManager from './ChangeManager.js';
 import * as ExtensionScope from './ExtensionScope.js';
+import * as Injected from './injected.js';
 
 async function getSelector(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
   const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -153,7 +153,7 @@ describe('ExtensionScope', () => {
             },
             MOCK_STYLE,
             {
-              nestingSelectors: [`.${ChangeManager.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
+              nestingSelectors: [`.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`],
             },
             ),
       ];

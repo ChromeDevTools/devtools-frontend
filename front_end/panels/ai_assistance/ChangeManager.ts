@@ -14,8 +14,6 @@ export interface Change {
   styles: Record<string, string>;
 }
 
-export const AI_ASSISTANCE_CSS_CLASS_NAME = 'ai-style-change';
-
 function formatStyles(styles: Record<string, string>, indent = 2): string {
   const kebabStyles = Platform.StringUtilities.toKebabCaseKeys(styles);
   const lines = Object.entries(kebabStyles).map(([key, value]) => `${' '.repeat(indent)}${key}: ${value};`);

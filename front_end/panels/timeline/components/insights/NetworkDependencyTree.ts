@@ -11,9 +11,9 @@ import type {
 import * as Trace from '../../../../models/trace/trace.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
-import * as Utils from '../../utils/utils.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {eventRef} from './EventRef.js';
 import networkDependencyTreeInsightRaw from './networkDependencyTreeInsight.css.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.NetworkDependencyTree;
@@ -57,7 +57,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
           return html`
             <li>
               <div class="request">
-                <span class="url">${Utils.Helpers.shortenUrl(new URL(request.args.data.url))}</span>
+                <span class="url">${eventRef(request)}</span>
                 ${
                   // If this is the last request, show the chain time
                   hasChildren ? Lit.nothing :html`

@@ -5,6 +5,8 @@
  */
 
 .insight-body {
+  --override-timeline-link-text-decoration: none;
+
   .max-time {
     text-align: center;
   }

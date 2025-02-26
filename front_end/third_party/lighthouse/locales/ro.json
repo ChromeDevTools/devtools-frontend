@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse nu a putut verifica automat valoarea `font-display` pentru originea {fontOrigin}.}few{Lighthouse nu a putut verifica automat valorile `font-display` pentru originea {fontOrigin}.}other{Lighthouse nu a putut verifica automat valorile `font-display` pentru originea {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Directivă"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Severitate"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Implementarea antetului HSTS reduce semnificativ riscul de downgrade al conexiunilor HTTP și al atacurilor de interceptare. Se recomandă o lansare în etape, începând cu o valoare max-age mică. [Află mai multe despre folosirea unei politici HSTS eficiente.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Sintaxa nu este validă"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Valoarea `max-age` este prea mică"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Nu s-a găsit niciun antet HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Nicio directivă `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Nu s-a găsit nicio directivă `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Nu s-a găsit nicio directivă `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Folosește o politică HSTS eficientă"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Raport de dimensiuni (real)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "S-a injectat un iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "O solicitare din rețea întârziată a ajustat aspectul paginii"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Elementul media nu are o dimensiune clară"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efectul are parametri de temporizare neacceptați"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Directivă"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Severitate"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Cross-Origin-Opener-Policy (COOP) se poate folosi pentru a izola fereastra de nivel superior de alte documente, cum ar fi ferestrele pop-up. [Află mai multe despre implementarea antetului COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Sintaxa nu este validă"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Nu s-a găsit niciun antet COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Asigură-te că izolezi corect sursa cu COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Preîncarcă fonturile `optional` pentru ca vizitatorii noi să le poată folosi. [Află mai multe despre preîncărcarea fonturilor](https://web.dev/articles/preload-optional-fonts)."
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Paginile care au solicitat un AppBanner nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Memoria cache înainte-înapoi este dezactivată din cauza unei solicitări keep-alive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Memoria cache înainte/înapoi este dezactivată de funcțiile experimentale. Accesează chrome://flags/#back-forward-cache ca să o activezi local pe acest dispozitiv."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Paginile care folosesc modul picture-in-picture nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Paginile care folosesc portaluri nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Paginile care afișează interfața de printare nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Compatibilitate cu datele: adresele URL din elementul SVG <use> sunt învechite și vor fi eliminate pe viitor."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxarea politicii pentru aceeași origine prin setarea `document.domain` este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet `Origin-Agent-Cluster: ?0` împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Antetul `Expect-CT` este învechit și va fi eliminat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` și `watchPosition()` nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI va solicita o permisiune de folosit chiar dacă sysex nu este specificat în `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Atributul `shadowroot` nestandardizat mai vechi a fost retras și *nu va mai funcționa* în M119. Folosește noul atribut standardizat `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "API-ul Notification nu mai poate fi folosit din origini nesigure. Îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "SQL web este învechit. Folosește SQLite WebAssembly sau Indexed Database"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Descrierea permisiunii `window-placement` este învechită. Folosește `window-management`. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Politica privind permisiunile `window-placement` este învechită. Folosește `window-management`. Pentru mai mult ajutor, consultă https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "Fișierul JSON de răspuns din `XMLHttpRequest` nu acceptă UTF-16"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Principalii factori care au cauzat schimbarea aspectului"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Un DOM mare va crește folosirea memoriei, va produce calcule de stil mai lungi și rearanjări ale aspectului costisitoare, care afectează receptivitatea paginii. [Află cum să eviți o dimensiune DOM excesivă](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimizează dimensiunea DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Prima solicitare din rețea este cea mai importantă.  Redu latența acesteia evitând redirecționările, asigurând un răspuns rapid al serverului și activând comprimarea textului."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Afișarea fontului"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Reducerea duratei de descărcare a imaginilor poate îmbunătăți durata de încărcare percepută a paginii și LCP. [Află mai multe despre optimizarea dimensiunii imaginii](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Îmbunătățește livrarea imaginilor"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Dacă mărești factorul de comprimare a imaginii, s-ar putea îmbunătăți dimensiunea de descărcare a imaginii. (Est. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Folosirea unui format de imagine modern (WebP, AVIF) sau creșterea comprimării imaginii ar putea îmbunătăți dimensiunea descărcării acestei imagini. (Est. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Fișierul imagine este mai mare decât trebuie ({PH2}) pentru dimensiunile afișate ({PH3}). Folosește imagini adaptabile pentru a reduce dimensiunea de descărcare a imaginii. (Est. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Folosirea formatelor video în locul GIF-urilor poate îmbunătăți dimensiunea descărcării conținutului animat. (Est. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Începe investigația cu cea mai lungă etapă. [Poți să minimizezi întârzierile](https://web.dev/articles/optimize-inp#optimize_interactions). Pentru a reduce durata procesării, [optimizează costurile asociate cu firul principal](https://web.dev/articles/optimize-long-tasks), de obicei JS."
@@ -2676,10 +2724,10 @@
     "message": "Terțe părți"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Aria vizibilă a paginii nu este optimizată pentru dispozitive mobile, astfel că interacțiunile prin atingere pot fi [amânate cu până la 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Interacțiunile prin atingere pot fi [întârziate cu până la 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) dacă aria vizibilă nu este optimizată pentru mobil."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Aria vizibilă nu este optimizată pentru mobil"
+    "message": "Optimizează aria vizibilă pentru mobil"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Pentru conținut animat, folosește [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) ca să minimizezi utilizarea CPU în timp ce conținutul rămâne în afara ecranului."

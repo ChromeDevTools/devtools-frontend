@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{オリジンの {fontOrigin} の `font-display` の値を Lighthouse で確認できませんでした。}other{オリジンの {fontOrigin} の `font-display` の値を Lighthouse で確認できませんでした。}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "ディレクティブ"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "重大度"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "HSTS ヘッダーを実装すると、HTTP 接続のダウングレードやスニッフィング攻撃のリスクが大幅に軽減されます。低い max-age から段階的にロールアウトすることをおすすめします。[強力な HSTS ポリシーの使用に関する詳細](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "無効な構文"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` が低すぎます"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "HSTS ヘッダーはありません"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "`max-age` ディレクティブはありません"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "`preload` ディレクティブはありません"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "`includeSubDomains` ディレクティブはありません"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "強力な HSTS ポリシーを使用する"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "アスペクト比（実際）"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "挿入された iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "遅延したネットワーク リクエストによりページ レイアウトが調整されました"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "メディア要素に明示的なサイズが含まれていません"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "サポートされていないタイミング パラメータがエフェクトで使用されています"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "ディレクティブ"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "重大度"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Cross-Origin-Opener-Policy（COOP）を使用すると、ポップアップなどの他のドキュメントから最上位のウィンドウを分離できます。[COOP ヘッダーの実装に関する詳細](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "無効な構文"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "COOP ヘッダーはありません"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "COOP でオリジン分離が適切に行われていることを確認する"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "`optional` のフォントをプリロードすると、初めてのユーザーも使用できます。[フォントのプリロードの詳細](https://web.dev/articles/preload-optional-fonts)"
@@ -1332,7 +1377,7 @@
     "message": "[構造化データ テストツール](https://search.google.com/structured-data/testing-tool/)と[構造化データ用 Linter](http://linter.structured-data.org/) を実行して構造化データを検証してください。[構造化データの詳細](https://developer.chrome.com/docs/lighthouse/seo/structured-data/)"
   },
   "core/audits/seo/manual/structured-data.js | title": {
-    "message": "構造化データが無効です"
+    "message": "構造化データが有効です"
   },
   "core/audits/seo/meta-description.js | description": {
     "message": "メタ ディスクリプションを検索結果に追加すると、ページ コンテンツの内容を簡潔にまとめることができます。[メタ ディスクリプションの詳細](https://developer.chrome.com/docs/lighthouse/seo/meta-description/)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanner をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "バックフォワード キャッシュはキープアライブ リクエストが原因で無効になっています。"
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "バックフォワード キャッシュはフラグにより無効になっています。chrome://flags/#back-forward-cache に移動して、このデバイスでローカルに有効化してください。"
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "ピクチャー イン ピクチャーを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "ポータルを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "印刷 UI を表示するページは、現時点ではバックフォワード キャッシュの対象になりません。"
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "データのサポート: SVG の <use> 要素の URL は非推奨となり、今後削除される予定です。"
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain` の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。引き続きこの機能を使用するには、オリジンキー エージェント クラスタを無効にしてください。これには、ドキュメントとフレームの HTTP レスポンスとともに `Origin-Agent-Cluster: ?0` ヘッダーを送信します。詳しくは、https://developer.chrome.com/blog/immutable-document-domain/ をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "`Expect-CT` ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` と `watchPosition()` は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI は、`MIDIOptions` で SysEx が指定されていない場合でも使用許可を要求します。"
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "標準化されていない古い `shadowroot` 属性は非推奨になり、M119 以降*は機能しなくなります*。代わりに、標準化されている新しい `shadowrootmode` 属性を使用してください。"
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Notification API は保護されていないオリジンから使用できなくなっている可能性があります。アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "ウェブ SQL は非推奨となっています。SQLite WebAssembly または Indexed Database を使用してください"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "権限記述子 `window-placement` は非推奨になりました。代わりに `window-management` を使用してください。詳しくは、https://bit.ly/window-placement-rename をご覧ください。"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "権限ポリシー `window-placement` は非推奨になりました。代わりに `window-management` を使用してください。詳しくは、https://bit.ly/window-placement-rename をご覧ください。"
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 は、`XMLHttpRequest` のレスポンス JSON ではサポートされていません。"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "レイアウト シフトの原因"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "DOM サイズが大きいと、メモリ使用量が増え、スタイルの計算に時間がかかり、レイアウトのリフローというコストが発生して、ページの応答性に影響を及ぼします。[過度な DOM サイズの回避方法の詳細](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "DOM サイズを最適化する"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "最初のネットワーク リクエストは最も重要です。リダイレクトを回避し、サーバー応答を高速に保ち、テキスト圧縮を有効にして、レイテンシを削減します。"
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "フォント表示"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "画像のダウンロード時間を短縮すると、ページ読み込みの体感時間と LCP を改善できます。[画像サイズの最適化に関する詳細](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "画像配信を改善する"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "画像の圧縮係数を増やすと、この画像のダウンロード サイズ（推定 {PH1}）を抑えることができます。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "最新の画像形式（WebP、AVIF）を使用するか、画像の圧縮率を高くすると、この画像のダウンロード サイズ（推定 {PH1}）を抑えることができます。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "この画像ファイルは、表示サイズ（{PH3}）に必要なサイズ（{PH2}）より大きくなっています。画像のダウンロード サイズ（推定 {PH1}）を小さくするには、レスポンシブ画像を使用してください。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "GIF ではなく動画形式を使用すると、アニメーション コンテンツのダウンロード サイズ（推定 {PH1}）を抑えることができます。"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "最も長いフェーズから調査を開始します。[遅延を最小限に抑えることができます](https://web.dev/articles/optimize-inp#optimize_interactions)。処理期間を削減するには、[メインスレッドのコスト（通常は JS）を最適化](https://web.dev/articles/optimize-long-tasks)します。"
@@ -2676,10 +2724,10 @@
     "message": "サードパーティ"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "ページのビューポートはモバイル向けに最適化されていないため、タップ操作が[最大 300 ミリ秒遅延](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)する可能性があります。"
+    "message": "ビューポートがモバイル向けに最適化されていない場合、タップ操作が[最大 300 ミリ秒遅延](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)する可能性があります。"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "ビューポートがモバイル向けに最適化されていません"
+    "message": "ビューポートをモバイル向けに最適化する"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "アニメーション コンテンツの場合は、[`amp-anim`](https://amp.dev/documentation/components/amp-anim/) を使用して、コンテンツが画面外にあるときの CPU 使用量を最小限に抑えることができます。"

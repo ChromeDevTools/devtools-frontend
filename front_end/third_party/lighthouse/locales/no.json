@@ -774,7 +774,7 @@
     "message": "Direktiv"
   },
   "core/audits/csp-xss.js | columnSeverity": {
-    "message": "Intensitet"
+    "message": "Alvorlighetsgrad"
   },
   "core/audits/csp-xss.js | description": {
     "message": "En sterk Content Security Policy (CSP) reduserer faren for skriptangrep på tvers av nettsteder (XSS) betydelig. [Finn ut hvordan du bruker en CSP for å forhindre XSS](https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/)"
@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse kunne ikke sjekke `font-display`-verdien for opphavet {fontOrigin} automatisk.}other{Lighthouse kunne ikke sjekke `font-display`-verdiene for opphavet {fontOrigin} automatisk.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Direktiv"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Alvorlighetsgrad"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Implementering av HSTS-hodet senker risikoen for nedgradering av HTTP-tilkoblinger og avlyttingsangrep betydelig. Vi anbefaler at du implementerer dette i flere trinn og starter med en lav «max-age»-verdi (maksimumsalder). [Finn ut mer om bruk av sterke HSTS-regler.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Ugyldig syntaks"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` er for lav"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Fant ikke noe HSTS-hode"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Ikke noe `max-age`-direktiv"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Fant ikke noe `preload`-direktiv"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Fant ikke noe `includeSubDomains`-direktiv"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Bruk en sterk HSTS-regel"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Høyde/bredde-forhold (faktisk)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Injisert iframe-element"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "En sen nettverksforespørsel justerte sideutseendet"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Medieelement uten eksplisitt størrelse"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Effekten har tidsparametere som ikke støttes"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Direktiv"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Alvorlighetsgrad"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "COOP (Cross-Origin-Opener-Policy – regel for tverropphavlig åpning) kan brukes til å isolere toppnivåvinduet fra andre dokumenter, for eksempel forgrunnsvinduer. [Finn ut mer om implementering av COOP-hodet.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Ugyldig syntaks"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Fant ikke noe COOP-hode"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Sørg for riktig opphavsisolasjon med COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Forhåndslast `optional` skrifttyper, slik at førstegangsbesøkende kan bruke dem. [Finn ut mer om forhåndslasting av skrifttyper](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en keepalive-forespørsel."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Sider som bruker bilde-i-bilde, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Sider som bruker portaler, er for øyeblikket ikke kvalifisert for frem-og-tilbake-hurtigbuffer."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Sider som viser UI for utskrift, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Støtte for data:-nettadresser i <use>-elementer i SVG-filer er avviklet og kommer til å bli fjernet i fremtiden."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Oppmykning av samme opphav-reglene ved å angi `document.domain` er avviklet og kommer til å være avslått som standard. For å fortsette å bruke denne funksjonen, velg bort agentgrupper med opphavsnøkler ved å sende et `Origin-Agent-Cluster: ?0`-hode sammen med HTTP-svaret for dokumentet og rammene. Se https://developer.chrome.com/blog/immutable-document-domain/ for mer informasjon."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "`Expect-CT`-hodet er avviklet og kommer til å bli fjernet. Chrome krever sertifikatåpenhet for alle offentlig klarerte sertifikater som er utstedt etter 30. april 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` og `watchPosition()` fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI kommer til å be om brukstillatelse selv om sysex ikke er angitt i `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Det eldre, ikke-standardiserte `shadowroot`-attributtet er avviklet og *fungerer ikke lenger* i M119. Bruk det nye, standardiserte `shadowrootmode`-attributtet i stedet."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Notification API kan ikke lenger brukes fra usikre opphav. Vurder å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL er avviklet. Bruk SQLite WebAssembly eller Indexed Database"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Tillatelsesbeskrivelsen `window-placement` er avviklet. Bruk `window-management` i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Tillatelsesregelen `window-placement` er avviklet. Bruk `window-management` i stedet. Du finner mer hjelp på https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 støttes ikke av JSON-svaret i `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Årsaker til utseendeforskyvning"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Store DOM-er øker minnebruken, forårsaker lengre stilberegninger og utløser kostbare dynamiske tilpasninger av layouten, noe som påvirker sidens responstid. [Finn ut hvordan du unngår at DOM-en blir for stor.](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimaliser DOM-størrelsen"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Den første nettverksforespørselen er den viktigste.  Reduser tidsforsinkelsen ved å unngå omdirigeringer, sikre rask tjenerrespons og slå på tekstkomprimering."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Visning av skrifttype"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Hvis du reduserer nedlastingstiden for bilder, kan det redusere den opplevde innlastingstiden for siden og LCP (største innholdsrike opptegning). [Finn ut mer om optimalisering av bildestørrelser](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Forbedre bildeleveringen"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Hvis du øker komprimeringsfaktoren for bildet, kan nedlastingsstørrelsen bli mindre. (Anslått: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Hvis du bruker et moderne bildeformat (WebP, AVIF) eller øker bildekomprimeringsfaktoren, kan nedlastingsstørrelsen for dette bildet bli mindre. (Anslått: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Denne bildefilen er større enn nødvendig ({PH2}) for de viste dimensjonene ({PH3}). Bruk responsivt bildeinnhold for å redusere nedlastingsstørrelsen for bildet. (Anslått: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Ved å bruke videoformater i stedet for GIF-er kan du redusere nedlastingsstørrelsen på animert innhold. (Anslått: {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Begynn med å undersøke den lengste fasen. [Forsinkelser kan minimeres.](https://web.dev/articles/optimize-inp#optimize_interactions) For å redusere behandlingstiden må du [optimalisere kostnadene på hovedtråden](https://web.dev/articles/optimize-long-tasks). Ofte er dette JS."
@@ -2676,10 +2724,10 @@
     "message": "Tredjeparter"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Sidens synlige område er ikke mobiloptimalisert, så det kan [oppstå forsinkelser på opptil 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) når brukeren trykker på siden."
+    "message": "Trykkeinteraksjoner kan [forsinkes med opptil 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) hvis det synlige området ikke er optimalisert for mobil."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Det synlige området er ikke optimalisert for mobil"
+    "message": "Optimaliser det synlige området for mobil"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "For animert innhold, bruk [`amp-anim`‏](https://amp.dev/documentation/components/amp-anim/) for å minimere prosessorbruken når innholdet er utenfor skjermen."

@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse was unable to automatically check the `font-display` value for the origin {fontOrigin}.}other{Lighthouse was unable to automatically check the `font-display` values for the origin {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Directive"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Severity"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Deployment of the HSTS header significantly reduces the risk of downgrading HTTP connections and eavesdropping attacks. A rollout in stages, starting with a low max-age is recommended. [Learn more about using a strong HSTS policy.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Invalid syntax"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` is too low"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "No HSTS header found"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "No `max-age` directive"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "No `preload` directive found"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "No `includeSubDomains` directive found"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Use a strong HSTS policy"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Aspect ratio (actual)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Injected iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "A late network request adjusted the page layout"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Media element lacking an explicit size"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Effect has unsupported timing parameters"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Directive"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Severity"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "The Cross-Origin-Opener-Policy (COOP) can be used to isolate the top-level window from other documents such as pop-ups. [Learn more about deploying the COOP header.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Invalid syntax"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "No COOP header found"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Ensure proper origin isolation with COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Preload `optional` fonts so that first-time visitors may use them. [Learn more about preloading fonts](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Pages that requested an AppBanner are not currently eligible for back-forward cache."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Back-forward cache is disabled due to a keepalive request."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-forward cache is disabled by flags. Visit chrome://flags/#back-forward-cache to enable it locally on this device."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Pages that use picture-in-picture are not currently eligible for back-forward cache."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Pages that use portals are not currently eligible for back-forward cache."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Pages that show Printing UI are not currently eligible for back-forward cache."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Support for data: URLs in SVG <use> element is deprecated and it will be removed in the future."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Relaxing the same-origin policy by setting `document.domain` is deprecated and will be disabled by default. To continue using this feature, please opt out of origin-keyed agent clusters by sending an `Origin-Agent-Cluster: ?0` header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "The `Expect-CT` header is deprecated and will be removed. Chrome requires Certificate Transparency for all publicly trusted certificates issued after 30 April 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` and `watchPosition()` no longer work on insecure origins. To use this feature, you should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI will ask permission to use even if the sysex is not specified in the `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "The older, non-standardised `shadowroot` attribute is deprecated and will *no longer function* in M119. Please use the new, standardised `shadowrootmode` attribute instead."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "The notification API may no longer be used from insecure origins. You should consider switching your application to a secure origin, such as HTTPS. See https://goo.gle/chrome-insecure-origins for more details."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "The permission descriptor `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "The permission policy `window-placement` is deprecated. Use `window-management` instead. For more help, check https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 is not supported by response JSON in `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Layout shift culprits"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "A large DOM will increase memory usage, cause longer style calculations and produce costly layout reflows which impact page responsiveness. [Learn how to avoid an excessive DOM size](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimise DOM size"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response and enabling text compression."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Font display"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimising image size](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Improve image delivery"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Increasing the image compression factor could improve this image's download size. (Est {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Using a modern image format (WebP, AVIF) or increasing the image compression could improve this image's download size. (Est {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "This image file is larger than it needs to be ({PH2}) for its displayed dimensions ({PH3}). Use responsive images to reduce the image download size. (Est {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Using video formats instead of GIFs can improve the download size of animated content. (Est {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Start investigating with the longest phase. [Delays can be minimised](https://web.dev/articles/optimize-inp#optimize_interactions). To reduce processing duration, [optimise the main-thread costs](https://web.dev/articles/optimize-long-tasks), often JS."
@@ -2676,10 +2724,10 @@
     "message": "Third parties"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "The page's viewport is not mobile-optimised, so tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Tap interactions may be [delayed by up to 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) if the viewport is not optimised for mobile."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Viewport not optimised for mobile"
+    "message": "Optimise viewport for mobile"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "For animated content, use [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) to minimise CPU usage when the content is offscreen."

@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse ตรวจสอบค่า`font-display`ของต้นทาง {fontOrigin} โดยอัตโนมัติไม่ได้}other{Lighthouse ตรวจสอบค่า`font-display`ของต้นทาง {fontOrigin} โดยอัตโนมัติไม่ได้}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "คำสั่ง"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "ความรุนแรง"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "การติดตั้งใช้งานส่วนหัว HSTS ช่วยลดความเสี่ยงในการดาวน์เกรดการเชื่อมต่อ HTTP และการโจมตีแบบดักฟังได้อย่างมาก ขอแนะนําให้เปิดตัวทีละขั้น โดยเริ่มต้นด้วยค่า max-age ที่ต่ำ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการใช้นโยบาย HSTS ที่รัดกุม](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "ไวยากรณ์ไม่ถูกต้อง"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` ต่ำเกินไป"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "ไม่พบส่วนหัว HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "ไม่มีคำสั่ง `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "ไม่พบคำสั่ง `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "ไม่พบคำสั่ง `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "ใช้นโยบาย HSTS ที่มีประสิทธิภาพ"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "สัดส่วนภาพ (ขนาดจริง)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "มีการแทรก iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "คำขอเครือข่ายที่ส่งล่าช้าได้ปรับเลย์เอาต์ของหน้า"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "องค์ประกอบสื่อมีขนาดที่ไม่เหมาะสม"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "เอฟเฟกต์มีพารามิเตอร์การจับเวลาที่ไม่รองรับ"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "คำสั่ง"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "ความรุนแรง"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "สามารถใช้ Cross-Origin-Opener-Policy (COOP) เพื่อแยกหน้าต่างระดับบนสุดออกจากเอกสารอื่นๆ เช่น ป๊อปอัป [ดูข้อมูลเพิ่มเติมเกี่ยวกับการติดตั้งใช้งานส่วนหัว COOP](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "ไวยากรณ์ไม่ถูกต้อง"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "ไม่พบส่วนหัว COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "รับรองว่าแยกต้นทางอย่างเหมาะสมด้วย COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "โหลดแบบอักษร `optional` ไว้ล่วงหน้าเพื่อให้ผู้เข้าชมครั้งแรกใช้ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการโหลดแบบอักษรล่วงหน้า](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากคำขอ Keepalive"
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากมีการแจ้งว่าไม่เหมาะสม ไปที่ chrome://flags/#back-forward-cache เพื่อเปิดใช้งานในอุปกรณ์นี้โดยตรง"
   },
@@ -1907,9 +1949,6 @@
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "หน้าที่ใช้การแสดงภาพซ้อนภาพยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "หน้าที่ใช้พอร์ทัลยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
-  },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "หน้าที่แสดง Printing UI ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
@@ -2028,7 +2067,7 @@
     "message": "หน้าที่ใช้ WebXR ยังไม่มีสิทธิ์ใช้ฟีเจอร์ Back-Forward Cache ในขณะนี้"
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ `'strict-dynamic'` จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+    "message": "ลองเพิ่ม URL ในรูปแบบ https: และ http: (ซึ่งเบราว์เซอร์ที่รองรับ `'strict-dynamic'` จะไม่สนใจ) เพื่อให้เข้ากันได้แบบย้อนหลังกับเบราว์เซอร์เวอร์ชันเก่ากว่า"
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
     "message": "`disown-opener` เลิกใช้งานแล้วตั้งแต่ CSP3 โปรดใช้ส่วนหัว Cross-Origin-Opener-Policy แทน"
@@ -2082,7 +2121,7 @@
     "message": "`'unsafe-inline'` ทำให้รันสคริปต์ในหน้าเว็บและตัวจัดการเหตุการณ์ที่ไม่ปลอดภัยได้ ลองใช้ nonces หรือ hashes ของ CSP เพื่ออนุญาตสคริปต์แต่ละรายการ"
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "ลองเพิ่ม `'unsafe-inline'` (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้กับเบราว์เซอร์เวอร์ชันเก่ากว่า"
+    "message": "ลองเพิ่ม `'unsafe-inline'` (ซึ่งเบราว์เซอร์ที่รองรับ nonces/hashes จะไม่สนใจ) เพื่อให้เข้ากันได้แบบย้อนหลังกับเบราว์เซอร์เวอร์ชันเก่ากว่า"
   },
   "core/lib/deprecation-description.js | feature": {
     "message": "ดูรายละเอียดเพิ่มเติมที่หน้าสถานะฟีเจอร์"
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "การรองรับข้อมูล: URL ในองค์ประกอบ SVG <use> เลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า `document.domain` เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว `Origin-Agent-Cluster: ?0` พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "ส่วนหัว `Expect-CT` เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` และ `watchPosition()` ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI จะขอสิทธิ์ในการใช้แม้ว่าจะไม่ได้ระบุ SysEx ใน `MIDIOptions` ก็ตาม"
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "แอตทริบิวต์ `shadowroot` เวอร์ชันเก่าที่ไม่เป็นไปตามมาตรฐานเลิกใช้งานแล้ว และจะ *ไม่ทำงานอีกต่อไป* ใน M119 โปรดใช้แอตทริบิวต์ `shadowrootmode` เวอร์ชันใหม่ที่เป็นมาตรฐานแทน"
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "ต้นทางที่ไม่ปลอดภัยอาจไม่ใช้ Notification API อีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "SQL ในเว็บเลิกใช้งานแล้ว โปรดใช้ SQLite WebAssembly หรือฐานข้อมูลที่จัดทำดัชนีแล้ว"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "ข้อบ่งชี้สิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "นโยบายสิทธิ์ `window-placement` เลิกใช้งานแล้ว โปรดใช้ `window-management` แทน ดูความช่วยเหลือเพิ่มเติมได้ที่ https://bit.ly/window-placement-rename"
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "JSON ของการตอบกลับไม่รองรับ UTF-16 ใน `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "สาเหตุของการเปลี่ยนแปลงเลย์เอาต์"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "DOM ที่มีขนาดใหญ่จะใช้หน่วยความจำเพิ่มขึ้น ทำให้การคำนวณสไตล์ใช้เวลานานขึ้นและส่งผลให้เกิดการจัดเรียงเลย์เอาต์ใหม่ที่มีค่าใช้จ่ายสูง ซึ่งส่งผลกระทบต่อการตอบสนองของหน้าเว็บ [ดูวิธีหลีกเลี่ยง DOM ที่มีขนาดใหญ่เกินไป](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "ปรับขนาด DOM ให้เหมาะสม"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "คำขอเครือข่ายครั้งแรกเป็นสิ่งสำคัญที่สุด  ลดเวลาในการตอบสนองโดยหลีกเลี่ยงการเปลี่ยนเส้นทาง ตรวจสอบการตอบกลับของเซิร์ฟเวอร์ที่รวดเร็ว และเปิดใช้การบีบอัดข้อความ"
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "การแสดงแบบอักษร"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "การลดเวลาดาวน์โหลดรูปภาพจะช่วยปรับปรุงเวลาที่ใช้ในการโหลดที่รับรู้ของหน้าเว็บและ LCP ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับการเพิ่มประสิทธิภาพขนาดรูปภาพ](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "ปรับปรุงการนำส่งรูปภาพ"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "การเพิ่มค่าการบีบอัดรูปภาพสามารถปรับปรุงขนาดการดาวน์โหลดของรูปภาพนี้ได้ (ประมาณ {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "การใช้รูปแบบรูปภาพสมัยใหม่ (WebP, AVIF) หรือการเพิ่มการบีบอัดรูปภาพอาจช่วยปรับปรุงขนาดการดาวน์โหลดของรูปภาพนี้ได้ (ประมาณ {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "ไฟล์ภาพนี้มีขนาดใหญ่เกินความจำเป็น ({PH2}) สำหรับมิติข้อมูลที่แสดง ({PH3}) โปรดใช้รูปภาพที่ปรับเปลี่ยนตามอุปกรณ์เพื่อลดขนาดการดาวน์โหลดรูปภาพ (ประมาณ {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "การใช้รูปแบบวิดีโอแทน GIF จะช่วยปรับปรุงขนาดการดาวน์โหลดเนื้อหาที่เป็นภาพเคลื่อนไหวได้ (ประมาณ {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "เริ่มตรวจสอบด้วยระยะที่ยาวที่สุด [ลดการหน่วงเวลาให้น้อยที่สุด](https://web.dev/articles/optimize-inp#optimize_interactions) หากต้องการลดระยะเวลาในการประมวลผล ให้[เพิ่มประสิทธิภาพต้นทุนของเทรดหลัก](https://web.dev/articles/optimize-long-tasks) ซึ่งมักจะเป็น JS"
@@ -2676,10 +2724,10 @@
     "message": "บุคคลที่สาม"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "วิวพอร์ตของหน้าเว็บไม่ได้เพิ่มประสิทธิภาพสำหรับอุปกรณ์เคลื่อนที่ การโต้ตอบด้วยการแตะจึงอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)"
+    "message": "การโต้ตอบด้วยการแตะอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)หากวิวพอร์ตไม่เหมาะกับอุปกรณ์เคลื่อนที่"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "วิวพอร์ตไม่เหมาะกับอุปกรณ์เคลื่อนที่"
+    "message": "เพิ่มประสิทธิภาพวิวพอร์ตสำหรับอุปกรณ์เคลื่อนที่"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "สำหรับเนื้อหาที่เป็นภาพเคลื่อนไหว ให้ใช้ [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) เพื่อลดการใช้ CPU ขณะที่เนื้อหาไม่ได้อยู่ในหน้าจอ"

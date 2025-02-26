@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Nástroju Lighthouse sa nepodarilo automaticky skontrolovať hodnotu `font-display` webu {fontOrigin}.}few{Nástroju Lighthouse sa nepodarilo automaticky skontrolovať hodnoty `font-display` webu {fontOrigin}.}many{Lighthouse was unable to automatically check the `font-display` values for the origin {fontOrigin}.}other{Nástroju Lighthouse sa nepodarilo automaticky skontrolovať hodnoty `font-display` webu {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Direktíva"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Závažnosť"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Nasadením hlavičky HSTS sa výrazne zníži riziko prechodu na nižšiu verziu pripojení HTTP a útokov spočívajúcich v odpočúvaní. Odporúča sa postupné zavádzanie s nízkou hodnotou max‑age. [Ďalšie informácie o používaní silných pravidiel HSTS](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Neplatná syntax"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Direktíva `max-age` je príliš nízka"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Nenašla sa žiadna hlavička HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Žiadna direktíva `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Nenašla sa žiadna direktíva `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Nenašla sa žiadna direktíva `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Používajte silné pravidlá HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Pomer strán (skutočný)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Vložený prvok iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Posledná sieťová požiadavka upravila rozloženie stránky"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Mediálny prvok nemá explicitnú veľkosť"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efekt má nepodporované parametre časovania"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Direktíva"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Závažnosť"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Pomocou hlavičky Cross-Origin-Opener-Policy (COOP) je možné izolovať okno najvyššej úrovne od iných dokumentov, ako sú vyskakovacie okná. [Ďalšie informácie o nasadení hlavičky COOP](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Neplatná syntax"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Nenašla sa žiadna hlavička COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Zabezpečte správne izolovanie pôvodného zdroja pomocou hlavičky COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Prednačítajte písma s atribútom `optional`, aby ich mohli používať noví návštevníci. [Ďalšie informácie o prednačítavaní písiem](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Stránky, ktoré požiadali o AppBanner, momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Spätná vyrovnávacia pamäť bola deaktivovaná v dôsledku žiadosti so signálom keepalive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Spätná vyrovnávacia pamäť bola deaktivovaná experimentálnymi funkciami. Prejdite na chrome://flags/#back-forward-cache a aktivujte ju miestne v tomto zariadení."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Stránky s obrazom v obraze momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Stránky s portálmi momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Stránky zobrazujúce používateľské rozhranie na tlač momentálne nemôžu používať spätnú vyrovnávaciu pamäť."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Podpora údajov: podpora webových adries v prvku SVG <use> bola ukončená a v budúcnosti budú odstránené."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Podpora uvoľnenia pravidla z rovnakých zdrojov nastavením funkcie `document.domain` bola ukončená a táto možnosť bude predvolene zakázaná. Ak chcete naďalej používať túto funkciu, odhláste sa z klastrov zástupcu spojených so zdrojom odoslaním hlavičky `Origin-Agent-Cluster: ?0` spolu s odpoveďou HTTP pre dokument a rámy. Viac sa dozviete na https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Podpora hlavičky `Expect-CT` bola ukončená a bude odstránená. Chrome vyžaduje transparentnosť pre všetky verejne dôveryhodné certifikáty vydané po 30. apríli 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "Funkcie `getCurrentPosition()` a `watchPosition()` už nefungujú v nezabezpečených zdrojoch. Ak chcete túto funkciu používať, mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI požiada o povolenie na použitie, aj keď exkluzívne správy systému (SysEx) nie sú vo funkcii `MIDIOptions` špecifikované."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Podpora staršieho neštandardizovaného atribútu `shadowroot` bola ukončená a vo verzii M119 *už nebude fungovať*. Použite namiesto neho nový štandardizovaný atribút `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Rozhranie Notification API už nie je možné používať z nezabezpečených zdrojov. Mali by ste zvážiť prechod svojej aplikácie na zabezpečený zdroj, ako je HTTPS. Viac sa dozviete na https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Podpora jazyka Web SQL bola ukončená. Použite SQLite WebAssembly alebo indexovanú databázu."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Podpora deskriptora povolenia `window-placement` bola ukončená. Radšej použite `window-management`. Ďalšiu pomoc nájdete na https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Podpora pravidiel povolenia `window-placement` bola ukončená. Radšej použite `window-management`. Ďalšiu pomoc nájdete na https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "JSON odpoveď nepodporuje kódovanie UTF‑16 v rámci funkcie `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Príčiny zmien rozloženia"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Rozsiahly model DOM zvýši využitie pamäte, predĺži výpočty štýlov a spôsobí nákladné preformátovania rozloženia, ktoré ovplyvňujú rýchlosť odozvy stránky. [Ako sa vyhnúť nadmernej veľkosti modelu DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimalizácia veľkosti modelu DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Vaša prvá požiadavka siete je najdôležitejšia.  Zabráňte presmerovaniam, zaistite rýchlu odozvu servera a povoľte kompresiou textu, aby ste znížili latenciu."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Zobrazenie písma"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Znížením času sťahovania obrázkov môžete zlepšiť registrovaný čas načítania stránky a vykreslenie najväčšieho prvku. [Ďalšie informácie o optimalizácii veľkosti obrázkov](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Zlepšenie zobrazovania obrázkov"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Zvýšením faktora kompresie obrázka sa môže zlepšiť jeho veľkosť pri sťahovaní. (Predpoklad. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Veľkosť tohto obrázka na stiahnutie by sa mohla zlepšiť použitím moderného formátu obrázka (WebP, AVIF) alebo zvýšením kompresie obrázka. (Predpoklad. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Tento súbor obrázka je väčší, než má byť ({PH2}) vzhľadom na jeho zobrazené rozmery ({PH3}). Znížte veľkosť obrázka na stiahnutie použitím responzívnych obrázkov. (Predpoklad. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Používanie videoformátov namiesto súborov GIF môže zlepšiť veľkosť animovaného obsahu na stiahnutie. (Predpoklad. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Začnite skúmať najdlhšiu fázu. [Oneskorenia sa dajú minimalizovať](https://web.dev/articles/optimize-inp#optimize_interactions). Ak chcete skrátiť čas spracovania, [optimalizujte náklady hlavného vlákna](https://web.dev/articles/optimize-long-tasks), vo väčšine prípadov JS."
@@ -2676,10 +2724,10 @@
     "message": "Tretie strany"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Oblasť zobrazenia stránky nie je optimalizovaná pre mobilné zariadenia, takže interakcie klepnutím môžu byť [oneskorené až o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Ak oblasť zobrazenia nie je optimalizovaná pre mobily, interakcie klepnutím môžu byť [oneskorené až o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Oblasť zobrazenia nie je optimalizovaná pre mobilné zariadenia"
+    "message": "Optimalizácia oblasti zobrazenia pre mobily"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "V prípade animovaného obsahu minimalizujete využitie procesora pomocou komponenta [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), keď je tento obsah mimo obrazovky."

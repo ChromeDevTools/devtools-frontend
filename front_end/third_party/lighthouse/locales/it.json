@@ -720,16 +720,16 @@
     "message": "Riduci il codice JavaScript inutilizzato"
   },
   "core/audits/byte-efficiency/uses-long-cache-ttl.js | description": {
-    "message": "La memorizzazione nella cache per un lungo periodo di tempo può velocizzare le visite abituali alla tua pagina. [Scopri di più sui criteri efficaci relativi alla cache](https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl/)."
+    "message": "La memorizzazione nella cache per un lungo periodo di tempo può velocizzare le visite abituali alla tua pagina. [Scopri di più sulle policy efficaci relative alla cache](https://developer.chrome.com/docs/lighthouse/performance/uses-long-cache-ttl/)."
   },
   "core/audits/byte-efficiency/uses-long-cache-ttl.js | displayValue": {
     "message": "{itemCount,plural, =1{1 risorsa trovata}other{# risorse trovate}}"
   },
   "core/audits/byte-efficiency/uses-long-cache-ttl.js | failureTitle": {
-    "message": "Pubblica le risorse statiche con criteri della cache efficaci"
+    "message": "Pubblica le risorse statiche con policy della cache efficaci"
   },
   "core/audits/byte-efficiency/uses-long-cache-ttl.js | title": {
-    "message": "Vengono usati criteri della cache efficaci per le risorse statiche"
+    "message": "Vengono usate policy della cache efficaci per le risorse statiche"
   },
   "core/audits/byte-efficiency/uses-optimized-images.js | description": {
     "message": "Le immagini ottimizzate vengono caricate più velocemente e consumano meno rete dati. [Scopri come codificare le immagini in modo efficiente](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
@@ -777,19 +777,19 @@
     "message": "Gravità"
   },
   "core/audits/csp-xss.js | description": {
-    "message": "Un Criterio di sicurezza del contenuto (CSP) efficace riduce notevolmente il rischio di attacchi cross-site scripting (XSS). [Scopri come utilizzare un CSP per evitare XSS](https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/)"
+    "message": "Una Content Security Policy (CSP) efficace riduce notevolmente il rischio di attacchi cross-site scripting (XSS). [Scopri come utilizzare una CSP per evitare XSS](https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/)"
   },
   "core/audits/csp-xss.js | itemSeveritySyntax": {
     "message": "Sintassi"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "La pagina contiene un criterio CSP definito in un tag `<meta>`. Potresti spostare il CSP in un'intestazione HTTP o definirne un altro rigoroso in un'intestazione HTTP."
+    "message": "La pagina contiene una policy CSP definita in un tag `<meta>`. Potresti spostare la policy CSP in un'intestazione HTTP o definirne un'altra rigorosa in un'intestazione HTTP."
   },
   "core/audits/csp-xss.js | noCsp": {
-    "message": "Nessun criterio CSP trovato in modalità di applicazione forzata"
+    "message": "Nessuna CSP trovata in modalità di applicazione forzata"
   },
   "core/audits/csp-xss.js | title": {
-    "message": "Assicurati che il criterio CSP sia efficace contro gli attacchi XSS (cross-site scripting)"
+    "message": "Assicurati che la CSP sia efficace contro gli attacchi XSS (cross-site scripting)"
   },
   "core/audits/deprecations.js | columnDeprecate": {
     "message": "Ritiro/avviso"
@@ -891,7 +891,7 @@
     "message": "Sono stati registrati degli errori nel riquadro `Issues` in Strumenti per sviluppatori di Chrome"
   },
   "core/audits/dobetterweb/inspector-issues.js | issueTypeBlockedByResponse": {
-    "message": "Bloccata dal criterio multiorigine"
+    "message": "Bloccata dalla policy multiorigine"
   },
   "core/audits/dobetterweb/inspector-issues.js | issueTypeHeavyAds": {
     "message": "Utilizzo intensivo delle risorse da parte degli annunci"
@@ -976,6 +976,36 @@
   },
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Impossibile controllare automaticamente in Lighthouse il valore `font-display` per l'origine {fontOrigin}.}other{Impossibile controllare automaticamente in Lighthouse i valori `font-display` per l'origine {fontOrigin}.}}"
+  },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Istruzione"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Gravità"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Il deployment dell'intestazione HSTS riduce in modo significativo il rischio di downgrade delle connessioni HTTP e di attacchi di intercettazione. È consigliabile un'implementazione graduale, partendo da un'età massima (max-age) bassa. [Scopri di più sull'utilizzo di una policy HSTS efficace.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Sintassi non valida"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "La durata di `max-age` è troppo bassa"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Nessuna intestazione HSTS trovata"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Nessuna istruzione `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Nessuna istruzione `preload` trovata"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Nessuna istruzione `includeSubDomains` trovata"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Utilizza una policy HSTS efficace"
   },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Proporzioni (effettive)"
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "È stato inserito un iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Una richiesta di rete in ritardo ha modificato il layout della pagina"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "L'elemento multimediale è privo di dimensioni esplicite"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "L'effetto ha parametri di timing non supportati"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Istruzione"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Gravità"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "La policy COOP (Cross-Origin-Opener-Policy) può essere utilizzata per isolare la finestra di primo livello da altri documenti, ad esempio i popup. [Scopri di più sul deployment dell'intestazione COOP](https://web.dev/articles/why-coop-coep#coop)."
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Sintassi non valida"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Nessuna intestazione COOP trovata"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Garantisci un isolamento origine corretto con COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Precarica caratteri `optional` per consentirne l'utilizzo ai visitatori alla prima visita. [Scopri di più sul precaricamento dei caratteri](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Al momento le pagine che hanno richiesto un AppBanner non possono essere memorizzate nella cache back-forward."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "La cache back-forward è disattivata a causa di una richiesta keepalive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "La cache back-forward è stata disattivata in chrome://flags. Visita la pagina chrome://flags/#back-forward-cache per attivarla localmente su questo dispositivo."
   },
@@ -1907,9 +1949,6 @@
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Al momento le pagine che utilizzano Picture in picture non possono essere memorizzate nella cache back-forward."
   },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Al momento le pagine che utilizzano portali non possono essere memorizzate nella cache back-forward."
-  },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Al momento le pagine che mostrano le UI di stampa non possono essere memorizzate nella cache back-forward."
   },
@@ -2067,7 +2106,7 @@
     "message": "La destinazione di reporting è configurata soltanto tramite l'istruzione report-to. Questa istruzione è supportata soltanto nei browser basati su Chromium, pertanto è consigliato usare anche un'istruzione `report-uri`."
   },
   "core/lib/csp-evaluator.js | reportingDestinationMissing": {
-    "message": "Nessun criterio CSP configura una destinazione di reporting. In questo modo è difficile mantenere il criterio CSP nel tempo e monitorare eventuali interruzioni."
+    "message": "Nessuna CSP configura una destinazione di reporting. In questo modo è difficile mantenere la CSP nel tempo e monitorare eventuali interruzioni."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
     "message": "Spesso le liste consentite di host possono essere bypassate. Potresti usare hash o nonce CSP, insieme a `'strict-dynamic'` se necessario."
@@ -2115,7 +2154,7 @@
     "message": "I cookie che contengono un carattere `(0|r|n)` verranno rifiutati e non troncati."
   },
   "core/lib/deprecations-strings.js | CrossOriginAccessBasedOnDocumentDomain": {
-    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Questo avviso di ritiro riguarda un accesso multiorigine che è stato attivato impostando `document.domain`."
+    "message": "Il rilascio della policy della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Questo avviso di ritiro riguarda un accesso multiorigine che è stato attivato impostando `document.domain`."
   },
   "core/lib/deprecations-strings.js | CrossOriginWindowAlert": {
     "message": "L'attivazione di window.alert da iframe multiorigine è stata ritirata e verrà rimossa in futuro."
@@ -2128,12 +2167,6 @@
   },
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Supporto per i dati: gli URL nell'elemento <use> SVG sono deprecati e verranno rimossi in futuro."
-  },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Il rilascio del criterio della stessa origine impostando `document.domain` è deprecato e verrà disattivato per impostazione predefinita. Per continuare a utilizzare questa funzionalità, disattiva i cluster di agenti in base all'origine inviando un'intestazione `Origin-Agent-Cluster: ?0` insieme alla risposta HTTP per documento e frame. Vedi https://developer.chrome.com/blog/immutable-document-domain/ per maggiori dettagli."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "L'intestazione `Expect-CT` è deprecata e verrà rimossa. Chrome richiede Certificate Transparency per tutti i certificati attendibili pubblicamente emessi dopo il 30 aprile 2018."
   },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` e `watchPosition()` non funzionano più su origini non sicure. Per utilizzare questa funzionalità, considera di passare la tua applicazione a un'origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
@@ -2168,9 +2201,6 @@
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI richiederà l'autorizzazione per l'utilizzo anche se il valore sysex non è specificato nell'elemento `MIDIOptions`."
   },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "L'attributo precedente `shadowroot` non standardizzato è deprecato e *non funzionerà più* nella versione M119. Usa invece il nuovo attributo `shadowrootmode` standardizzato."
-  },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "L'uso dell'API Notification da origini non sicure potrebbe non essere più supportato. Dovresti considerare di passare la tua applicazione a un’origine sicura, come HTTPS. Vedi https://goo.gle/chrome-insecure-origins per maggiori dettagli."
   },
@@ -2190,7 +2220,7 @@
     "message": "L'API `paymentManager.instruments` è deprecata. Utilizza l'installazione just-in-time per i gestori dei pagamenti."
   },
   "core/lib/deprecations-strings.js | PaymentRequestCSPViolation": {
-    "message": "La tua chiamata `PaymentRequest` ha ignorato l'istruzione `connect-src` dei Criteri di sicurezza del contenuto (CSP). L'esclusione è stata ritirata. Aggiungi all'istruzione CSP `connect-src` l'identificatore del metodo di pagamento dall'API `PaymentRequest` (nel campo `supportedMethods`)."
+    "message": "La tua chiamata `PaymentRequest` ha ignorato l'istruzione `connect-src` di Content Security Policy (CSP). L'esclusione è stata ritirata. Aggiungi all'istruzione CSP `connect-src` l'identificatore del metodo di pagamento dall'API `PaymentRequest` (nel campo `supportedMethods`)."
   },
   "core/lib/deprecations-strings.js | PersistentQuotaType": {
     "message": "L'elemento `StorageType.persistent` è deprecato. Utilizza invece l'elemento `navigator.storage` standardizzato."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "API SQL web deprecata. Utilizza SQLite WebAssembly o Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Il descrittore di autorizzazione `window-placement` è deprecato. Usa invece il descrittore `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Il criterio di autorizzazione `window-placement` è deprecato. Usa invece il criterio `window-management`. Per ulteriore assistenza, visita la pagina https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "L'elemento UTF-16 non è supportato dal file json di risposta in `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Responsabili delle variazioni del layout"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Un DOM di grandi dimensioni aumenta l'utilizzo di memoria, causa calcoli di stile più lunghi e genera costosi adattamenti dinamici del layout che influiscono sulla reattività della pagina. [Scopri come evitare dimensioni eccessive del DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Ottimizza le dimensioni del DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "La prima richiesta di rete è la più importante.  Riduci la latenza evitando i reindirizzamenti, assicurando una risposta rapida del server e attivando la compressione del testo."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Carattere visualizzato"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "La riduzione del tempo di download delle immagini può migliorare il tempo di caricamento percepito della pagina e il l'LCP. [Scopri di più sull'ottimizzazione delle dimensioni delle immagini](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Migliora il caricamento delle immagini"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Aumentare il fattore di compressione dell'immagine potrebbe migliorare le dimensioni del download di questa immagine. (Previsti {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "L'utilizzo di un formato dell'immagine moderno (WebP, AVIF) o l'aumento della compressione dell'immagine potrebbero migliorare le dimensioni di download di questa immagine. (Previsti {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Questo file immagine è più grande del necessario ({PH2}) per le dimensioni visualizzate ({PH3}). Utilizza le immagini adattabili per ridurre le dimensioni di download delle immagini. (Previsti {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "L'utilizzo di formati video anziché di GIF può migliorare le dimensioni di download dei contenuti animati. (Previsti {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Inizia a indagare con la fase più lunga. [I ritardi possono essere ridotti al minimo](https://web.dev/articles/optimize-inp#optimize_interactions). Per ridurre la durata dell'elaborazione, [ottimizza i costi del thread principale](https://web.dev/articles/optimize-long-tasks), spesso JavaScript."
@@ -2676,10 +2724,10 @@
     "message": "Terze parti"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "L'area visibile della pagina non è ottimizzata per i dispositivi mobili, pertanto le interazioni con i tocchi potrebbero essere [ritardate fino a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Le interazioni con i tocchi potrebbero essere [ritardate fino a 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) se l'area visibile non è ottimizzata per i dispositivi mobili."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Area visibile non ottimizzata per dispositivi mobili"
+    "message": "Ottimizza l'area visibile per i dispositivi mobili"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Per i contenuti animati, usa [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) per ridurre al minimo l'utilizzo di CPU mentre i contenuti sono fuori dallo schermo."

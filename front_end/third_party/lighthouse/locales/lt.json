@@ -774,7 +774,7 @@
     "message": "Direktyva"
   },
   "core/audits/csp-xss.js | columnSeverity": {
-    "message": "Svarba"
+    "message": "Rimtumas"
   },
   "core/audits/csp-xss.js | description": {
     "message": "Griežta turinio apsaugos politika (CSP) gerokai sumažina svetainių scenarijų (XSS) atakų riziką. [Sužinokite, kaip naudoti CSP, kad išvengtumėte XSS](https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/)"
@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{„Lighthouse“ nepavyko automatiškai patikrinti `font-display` vertės (pradinis URL: {fontOrigin}).}one{„Lighthouse“ nepavyko automatiškai patikrinti `font-display` vertės (pradinis URL: {fontOrigin}).}few{„Lighthouse“ nepavyko automatiškai patikrinti `font-display` verčių (pradinis URL: {fontOrigin}).}many{„Lighthouse“ nepavyko automatiškai patikrinti `font-display` vertės (pradinis URL: {fontOrigin}).}other{„Lighthouse“ nepavyko automatiškai patikrinti `font-display` verčių (pradinis URL: {fontOrigin}).}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Direktyva"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Rimtumas"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Įdiegus HSTS antraštę, gerokai sumažėja HTTP ryšių ir slapto pasiklausymo atakų rizika. Rekomenduojama išleisti etapais, pradedant nuo mažo maksimalaus amžiaus. [Sužinokite daugiau apie rimtos HSTS politikos naudojimą.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Netinkama sintaksė"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` per mažas"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Nerasta jokių HSTS antraščių"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Nėra jokių `max-age` direktyvų"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Nerasta jokių `preload` direktyvų"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Nerasta jokių `includeSubDomains` direktyvų"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Naudokite rimtą HSTS politiką"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Formato koeficientas (faktinis)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Įterptas „iframe“"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Pavėluota tinklo užklausa pakoregavo puslapio išdėstymą"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Trūksta aiškaus medijos elemento dydžio"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efekto laiko parametrai nepalaikomi"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Direktyva"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Rimtumas"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Kelių šaltinių atidarymo programos politika (angl. „Cross-Origin-Opener-Policy“, COOP) galima naudoti siekiant atskirti aukščiausio lygio langą nuo kitų dokumentų, pvz., iššokančiųjų langų. [Sužinokite daugiau apie COOP antraštės diegimą.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Netinkama sintaksė"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Nerasta jokių COOP antraščių"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Užtikrinkite tinkamą šaltinio atskyrimą naudodami COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Iš anksto įkelkite „`optional`“ šriftus, kad pirmą kartą apsilankantieji galėtų juos naudoti. [Sužinokite daugiau apie išankstinį šriftų įkėlimą](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Puslapiams, kurie pateikė „AppBanner“ užklausą, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta dėl palaikymo užklausos."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Ilgalaikio viso puslapio saugojimo talpykloje funkcija išjungta taikant žymas. Jei norite įgalinti ją vietiniu mastu šiame įrenginyje, apsilankykite adresu chrome://flags/#back-forward-cache."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Puslapiams, kuriuose naudojamas vaizdas vaizde, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Puslapiams, kuriuose naudojami portalai, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Puslapiams, kuriuose rodoma spausdinimo NS, šiuo metu negalima taikyti ilgalaikio viso puslapio saugojimo talpykloje funkcijos."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Duomenų palaikymas: SVG elemento <use> URL teikimas nutrauktas ir jis ateityje bus pašalintas."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "To paties šaltinio politikos apribojimų atlaisvinimo nustatant „`document.domain`“ funkcijos teikimas nutrauktas ir ji bus išjungta pagal numatytuosius nustatymus. Jei norite toliau naudoti šią funkciją, atsisakykite šaltiniu pagrįstų priemonės grupių siųsdami „`Origin-Agent-Cluster: ?0`“ antraštę su HTTP atsaku dokumentui ir rėmeliams. Jei reikia išsamesnės informacijos, žr. https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "„`Expect-CT`“ antraštės teikimas nutrauktas ir ji bus pašalinta. „Chrome“ reikalauja visų viešai pateikiamų sertifikatų, išduotų po 2018 m. balandžio 30 d., sertifikato skaidrumo."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "„`getCurrentPosition()`“ ir „`watchPosition()`“ nebeveikia nesaugiuose šaltiniuose. Jei norite naudoti šią funkciją, turite apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Žiniatinklio MIDI prašys naudojimo leidimo, net jei sistemos išskirtinis pranešimas nenurodytas funkcijoje „`MIDIOptions`“."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Senesnio, nestandartinio atributo „`shadowroot`“ teikimas nutrauktas ir M119 *nebeveiks*. Vietoj jo naudokite naują, standartizuotą atributą „`shadowrootmode`“."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Pranešimų API nebegalima naudoti iš nesaugių šaltinių. Turėtumėte apsvarstyti galimybę perjungti programą į saugų šaltinį, pvz., HTTPS. Jei reikia išsamesnės informacijos, žr. https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Žiniatinklio SQL teikimas nutrauktas. Naudokite „SQLite WebAssembly“ arba indeksuotą duomenų bazę"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Leidimų deskriptoriaus „`window-placement`“ teikimas nutrauktas. Vietoj jo naudokite „`window-management`“. Daugiau pagalbos ieškokite https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Leidimų politikos „`window-placement`“ teikimas nutrauktas. Vietoj jos naudokite „`window-management`“. Daugiau pagalbos ieškokite https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 nepalaikomas atsako JSON naudojant funkciją „`XMLHttpRequest`“"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Išdėstymo poslinkio priežastys"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Dėl didelio DOM elementų skaičiaus bus naudojama daugiau atminties, ilgiau skaičiuojami stiliai ir gali reikėti brangių išdėstymo perskaičiavimų, kurie daro įtaką puslapio interaktyvumui. [Sužinokite, kaip išvengti per didelio DOM dydžio](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimizuoti DOM dydį"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Pirmoji tinklo užklausa yra svarbiausia.  Sumažinkite delsą vengdami peradresavimų, užtikrindami spartų serverio atsaką ir įgalindami teksto glaudinimą."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Šrifto pateikimas"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Sutrumpinus vaizdų atsisiuntimo laiką, galima pagerinti puslapio ir DTŽ įkėlimo laiką. [Sužinokite daugiau apie vaizdo dydžio optimizavimą](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Vaizdų teikimo patobulinimas"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Padidinus vaizdo glaudinimo koeficientą, gali sumažėti šio vaizdo atsisiuntimo dydis. (Numat. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Naudojant šiuolaikinį vaizdo formatą („WebP“, AVIF) arba padidinus vaizdo glaudinimą, šio vaizdo atsisiuntimo dydis gali būti mažesnis. (Numat. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Šis vaizdo failas yra didesnis nei reikia ({PH2}), atsižvelgiant į jo rodomus matmenis ({PH3}). Naudokite interaktyvius vaizdus, kad sumažintumėte vaizdo atsisiuntimo dydį. (Numat. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Naudojant vaizdo įrašų formatus vietoj GIF gali būti sumažintas animuoto turinio atsisiuntimo dydis. (Numat. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Pradėkite tyrimą nuo ilgiausios fazės. [Galite sumažinti vėlavimą](https://web.dev/articles/optimize-inp#optimize_interactions). Kad apdorojimo trukmė būtų trumpesnė, [optimizuokite pagrindinės grupės mokesčius](https://web.dev/articles/optimize-long-tasks), dažnai JS."
@@ -2676,10 +2724,10 @@
     "message": "Trečiosios šalys"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Puslapio peržiūros sritis neoptimizuota mobiliesiems, todėl sąveikos su palietimais gali būti [atidėtos iki 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Palietimo sąveikos gali [vėluoti iki 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), jei peržiūros sritis neoptimizuota mobiliesiems."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Peržiūros sritis neoptimizuota mobiliesiems"
+    "message": "Peržiūros srities optimizavimas mobiliesiems"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Jei teikiate animuotą turinį, naudokite [„`amp-anim`“](https://amp.dev/documentation/components/amp-anim/), kad būtų naudojama mažiau centrinio procesoriaus galios, kai turinys nerodomas ekrane."

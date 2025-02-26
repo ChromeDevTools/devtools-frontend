@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Το Lighthouse δεν μπόρεσε να ελέγξει αυτόματα την τιμή `font-display` για την προέλευση {fontOrigin}.}other{Το Lighthouse δεν μπόρεσε να ελέγξει αυτόματα τις τιμές `font-display` για την προέλευση {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Οδηγία"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Σοβαρότητα"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Η ανάπτυξη της κεφαλίδας HSTS μειώνει σημαντικά τον κίνδυνο υποβάθμισης των συνδέσεων HTTP και των επιθέσεων υποκλοπής. Συνιστάται η σταδιακή διάθεση, ξεκινώντας με χαμηλό μέγιστο όριο ηλικίας. [Μάθετε περισσότερα σχετικά με τη χρήση μιας ισχυρής πολιτικής HSTS.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Μη έγκυρη σύνταξη"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Η διάρκεια της οδηγίας `max-age` είναι πολύ μικρή"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Δεν βρέθηκε κεφαλίδα HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Δεν υπάρχει οδηγία `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Δεν βρέθηκε οδηγία `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Δεν βρέθηκε οδηγία `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Χρήση ισχυρής πολιτικής HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Λόγος διαστάσεων (Πραγματικός)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Έγινε εισαγωγή iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Ένα αίτημα δικτύου που έχει καθυστερήσει προσάρμοσε τη διάταξη της σελίδας"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Λείπει σαφές μέγεθος από το στοιχείο μέσων"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Το εφέ έχει μη υποστηριζόμενες παραμέτρους χρονισμού."
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Οδηγία"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Σοβαρότητα"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Η Πολιτική ανοίγματος διασταυρούμενων προελεύσεων (COOP) μπορεί να χρησιμοποιηθεί για την απομόνωση του παραθύρου ανώτερου επιπέδου από άλλα έγγραφα, όπως τα αναδυόμενα. [Μάθετε περισσότερα σχετικά με την ανάπτυξη της κεφαλίδας COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Μη έγκυρη σύνταξη"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Δεν βρέθηκε κεφαλίδα COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Εξασφαλίστε την κατάλληλη απομόνωση προελεύσεων με την κεφαλίδα COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Προφορτώστε γραμματοσειρές `optional` για να μπορούν να τις χρησιμοποιούν οι νέοι επισκέπτες. [Μάθετε περισσότερα σχετικά με την προφόρτωση γραμματοσειρών](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Οι σελίδες που έχουν ζητήσει ένα AppBanner δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω ενός αιτήματος μηνύματος keepalive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από επισημάνσεις. Μεταβείτε στο chrome://flags/#back-forward-cache για να την ενεργοποιήσετε τοπικά σε αυτήν τη συσκευή."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Οι σελίδες που χρησιμοποιούν τη λειτουργία picture-in-picture δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Οι σελίδες που χρησιμοποιούν πύλες δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Οι σελίδες που εμφανίζουν τη διεπαφή χρήστη εκτύπωσης δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Η υποστήριξη για το στοιχείο data: URLs in SVG <use> έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του `document.domain` έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Για να συνεχίσετε να χρησιμοποιείτε αυτήν τη λειτουργία, εξαιρεθείτε από τα συμπλέγματα παραγόντων με κλειδιά προέλευσης, στέλνοντας μια κεφαλίδα `Origin-Agent-Cluster: ?0` μαζί με την απόκριση HTTP για το έγγραφο και τα πλαίσια. Ανατρέξτε στη σελίδα https://developer.chrome.com/blog/immutable-document-domain/ για περισσότερες λεπτομέρειες."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Η κεφαλίδα `Expect-CT` καταργήθηκε και θα αποσυρθεί. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "Τα `getCurrentPosition()` και `watchPosition()` δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Το MIDI ιστού θα ζητήσει άδεια για χρήση ακόμα και αν το sysex δεν είναι καθορισμένο στο `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Το παλαιότερο, μη τυποποιημένο χαρακτηριστικό `shadowroot` έχει καταργηθεί και *δεν θα λειτουργεί πλέον* στο M119. Εναλλακτικά, χρησιμοποιήστε το νέο τυποποιημένο χαρακτηριστικό `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Το Notification API δεν μπορεί πλέον να χρησιμοποιείται από μη ασφαλείς προελεύσεις. Θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη διεύθυνση https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Το SQL ιστού έχει καταργηθεί. Χρησιμοποιήστε το SQLite WebAssembly ή την καταλογοποιημένη βάση δεδομένων."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Το περιγραφικό στοιχείο άδειας `window-placement` έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε την πολιτική `window-management`. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Η πολιτική άδειας `window-placement` έχει καταργηθεί. Εναλλακτικά, χρησιμοποιήστε την πολιτική `window-management`. Για περισσότερη βοήθεια, ανατρέξτε στη διεύθυνση https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "Το UTF-16 δεν υποστηρίζεται από το json απόκρισης στο `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Αιτίες για τη μετατόπιση διάταξης"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Ένα μεγάλο DOM μπορεί να αυξήσει τη χρήση της μνήμης, να προκαλέσει υπολογισμούς στιλ μεγαλύτερης διάρκειας και να δημιουργήσει επαναλήψεις ροών διάταξης υψηλού κόστους που επηρεάζουν την απόκριση της σελίδας. [Μάθετε πώς μπορείτε να αποφύγετε το υπερβολικό μέγεθος DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Βελτιστοποίηση μεγέθους DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Το πρώτο αίτημα δικτύου είναι το πιο σημαντικό.  Μειώστε τον λανθάνοντα χρόνο αποφεύγοντας τις ανακατευθύνσεις, προκειμένου να διασφαλίσετε μια γρήγορη απόκριση διακομιστή, και ενεργοποιώντας τη συμπίεση κειμένου."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Προβολή γραμματοσειράς"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Η μείωση του χρόνου λήψης των εικόνων μπορεί να βελτιώσει τον αντιληπτό χρόνο φόρτωσης της σελίδας και του LCP. [Μάθετε περισσότερα σχετικά με τη βελτιστοποίηση του μεγέθους εικόνας](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Βελτίωση προβολής εικόνων"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Η αύξηση του συντελεστή συμπίεσης της εικόνας θα μπορούσε να βελτιώσει το μέγεθος λήψης αυτής της εικόνας. (Εκτ. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Η χρήση μιας σύγχρονης μορφής εικόνας (WebP, AVIF) ή η αύξηση της συμπίεσης εικόνας θα μπορούσε να βελτιώσει το μέγεθος λήψης αυτής της εικόνας. (Εκτ. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Το συγκεκριμένο αρχείο εικόνας είναι μεγαλύτερο από όσο χρειάζεται ({PH2}) για τις διαστάσεις προβολής του ({PH3}). Χρησιμοποιήστε αποκριτικές εικόνες, για να μειώσετε το μέγεθος λήψης της εικόνας. (Εκτ. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Η χρήση μορφών βίντεο αντί για GIF μπορεί να βελτιώσει το μέγεθος λήψης του περιεχομένου κινούμενων εικόνων. (Εκτ. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Ξεκινήστε την έρευνα με τη μεγαλύτερη φάση. [Οι καθυστερήσεις μπορούν να ελαχιστοποιηθούν](https://web.dev/articles/optimize-inp#optimize_interactions). Για να μειώσετε τη διάρκεια επεξεργασίας, [βελτιστοποιήστε τα κόστη κύριου νήματος](https://web.dev/articles/optimize-long-tasks), συχνά σε JS."
@@ -2676,10 +2724,10 @@
     "message": "Τρίτα μέρη"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Η θύρα προβολής της σελίδας δεν είναι βελτιστοποιημένη για κινητά, επομένως οι αλληλεπιδράσεις με πάτημα μπορεί να [καθυστερούν έως και 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Οι αλληλεπιδράσεις με πάτημα μπορεί να [καθυστερούν έως και 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), αν η θύρα προβολής δεν είναι βελτιστοποιημένη για κινητά."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Η θύρα προβολής δεν είναι βελτιστοποιημένη για κινητά"
+    "message": "Βελτιστοποίηση θύρας προβολής για κινητά"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Για περιεχόμενο κινούμενης εικόνας, χρησιμοποιήστε το [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) για να ελαχιστοποιήσετε τη χρήση CPU όταν το περιεχόμενο είναι εκτός οθόνης."

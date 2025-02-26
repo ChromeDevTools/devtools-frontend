@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Orodje Lighthouse ni utegnilo samodejno preveriti vrednosti `font-display` za izvorni URL {fontOrigin}.}one{Orodje Lighthouse ni utegnilo samodejno preveriti vrednosti `font-display` za izvorni URL {fontOrigin}.}two{Orodje Lighthouse ni utegnilo samodejno preveriti vrednosti `font-display` za izvorni URL {fontOrigin}.}few{Orodje Lighthouse ni utegnilo samodejno preveriti vrednosti `font-display` za izvorni URL {fontOrigin}.}other{Orodje Lighthouse ni utegnilo samodejno preveriti vrednosti `font-display` za izvorni URL {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Direktiva"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Resnost"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Uvedba glave HSTS znatno zmanjša tveganje za znižanje ravni povezav HTTP in napade s prisluškovanjem. Priporočamo, da uvedbo izvajate postopoma in začnete z nizko vrednostjo »max-age«. [Preberite več o uporabi močnega pravilnika HSTS.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Neveljavna sintaksa"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Vrednost `max-age` je prenizka"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Ni bilo mogoče najti glave HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Ni direktive `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Ni bilo mogoče najti direktive `preload`."
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Ni bilo mogoče najti direktive `includeSubDomains`."
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Uporaba močnega pravilnika HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Razmerje stranic (dejansko)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Vstavljen okvir iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Pozna omrežna zahteva je prilagodila postavitev strani"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Predstavnostni element nima eksplicitne velikosti"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Učinek ima nepodprte časovne parametre"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Direktiva"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Resnost"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Pravilnik o odpiranju iz več izvorov (COOP) se lahko uporablja za izolacijo okna na najvišji ravni od drugih dokumentov, kot so pojavni elementi. [Preberite več o uveljavljanju glave COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Neveljavna sintaksa"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Ni bilo mogoče najti glave COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Zagotovite ustrezno izolacijo izvora s pravilnikom COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Vnaprej naložite pisave (`optional`), da jih bodo novi obiskovalci lahko uporabili. [Preberite več o vnaprejšnjem nalaganju pisav](https://web.dev/articles/preload-optional-fonts)."
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Strani, ki so zahtevale AppBanner, trenutno niso primerne za predpomnilnik za hitro obnovitev strani."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Predpomnilnik za hitro obnovitev strani je onemogočen zaradi zahteve za ohranjanje povezave."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Predpomnilnik za hitro obnovitev strani je onemogočen z zastavicami. Če ga želite lokalno omogočiti v tej napravi, obiščite chrome://flags/#back-forward-cache."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Strani, ki uporabljajo sliko v sliki, trenutno niso primerne za predpomnilnik za hitro obnovitev strani."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Strani, ki uporabljajo portale, trenutno niso primerne za predpomnilnik za hitro obnovitev strani."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Strani, ki prikazujejo uporabniški vmesnik za tiskanje, trenutno niso primerne za predpomnilnik za hitro obnovitev strani."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Podpora za podatke: URL-ji v elementu <use> SVG so zastareli in bodo v prihodnosti odstranjeni."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Opustitev pravilnika, ki predpisuje isti izvor, z nastavitvijo možnosti »`document.domain`« je zastarela in bo privzeto onemogočena. Če želite še naprej uporabljati to funkcijo, onemogočite gruče posrednikov, ki uporabljajo ključ izvora, tako da pošljete glavo »`Origin-Agent-Cluster: ?0`« skupaj z odgovorom HTTP za dokumente in okvire. Več podrobnosti: https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Glava možnosti »`Expect-CT`« je zastarela in bo odstranjena. Chrome zahteva preglednost potrdila za vsa javna zaupanja vredna potrdila, izdana po 30. aprilu 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "»`getCurrentPosition()`« in »`watchPosition()`« ne delujeta več z izvori, ki niso varni. Če želite uporabiti to funkcijo, razmislite o tem, da bi za aplikacijo uporabili varen izvor, kot je HTTPS. Več podrobnosti: https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Spletni MIDI bo zahteval dovoljenje za uporabo, tudi če sysex ni določen v »`MIDIOptions`«."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Starejši, nestandardizirani atribut `shadowroot` je zastarel in v različici M119 *ne bo več deloval*. Uporabite novi, standardizirani atribut `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Obvestilnega API-ja ni več dovoljeno uporabljati iz izvorov, ki niso varni. Razmislite o tem, da bi za aplikacijo uporabili varen izvor, kot je HTTPS. Več podrobnosti: https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Spletni SQL je zastarel. Uporabite SQLite WebAssembly ali programski vmesnik Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Deskriptor dovoljenja `window-placement` je zastarel. Uporabite pravilnik o dovoljenjih `window-management`. Dodatna pomoč je na voljo na https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Pravilnik o dovoljenjih `window-placement` je zastarel. Uporabite pravilnik o dovoljenjih `window-management`. Dodatna pomoč je na voljo na https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "JSON odgovora v »`XMLHttpRequest`« ne podpira standarda UTF-16."
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Razlogi za težave pri spremembi postavitve"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Velik DOM povzroči povečano uporabo pomnilnika, daljše slogovne izračune in drage prilagoditve postavitve, ki vplivajo na odzivnost strani. [Preberite, kako se izognete prekomerni velikosti DOM-a](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimizirajte velikost DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Vaša prva omrežna zahteva je najpomembnejša.  Zmanjšajte zakasnitev tako, da se izognete preusmeritvam, s čimer poskrbite za hiter odziv strežnika in omogočite stiskanje besedila."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Prikaz pisave"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Če zmanjšate čas prenosa slik, lahko izboljšate zaznano nalaganje strani in največji izris vsebine (LCP). [Preberite več o optimiziranju velikosti slike](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Izboljšajte prikazovanje slik"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Če povečate faktor stiskanja slike, lahko izboljšate velikost prenosa te slike. (Pribl. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Če uporabite sodobno obliko zapisa slike (WebP, AVIF) ali povečate stiskanje slike, lahko izboljšate velikost prenosa te slike. (Pribl. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Ta slikovna datoteka je prevelika ({PH2}) za prikazane dimenzije ({PH3}). Uporabite odzivne slike, da zmanjšate velikost prenosa slike. (Pribl. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Če namesto GIF-ov uporabite videoposnetke, lahko izboljšate velikost prenosa animirane vsebine. (Pribl. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Začnite preiskavo z najdaljšo fazo. [Zamude se lahko zmanjšajo](https://web.dev/articles/optimize-inp#optimize_interactions). Če želite zmanjšati trajanje obdelave, [optimizirajte stroške glavne niti](https://web.dev/articles/optimize-long-tasks) (to je pogosto JavaScript)."
@@ -2676,10 +2724,10 @@
     "message": "Drugi ponudniki"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Vidno območje strani ni optimizirano za mobilne naprave, zato so lahko interakcije z dotikom [zakasnjene do 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Interakcije z dotikom imajo lahko [zakasnitev do 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), če vidno območje ni optimizirano za mobilne naprave."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Vidno območje ni optimizirano za mobilne naprave"
+    "message": "Optimiziranje vidnega območja za mobilne naprave"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Za animirano vsebino uporabite [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), da zmanjšate uporabo CPE-ja, ko vsebina ni na zaslonu."

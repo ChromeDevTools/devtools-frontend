@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Narzędziu Lighthouse nie udało się automatycznie sprawdzić wartości `font-display` dla strony źródłowej {fontOrigin}.}few{Narzędziu Lighthouse nie udało się automatycznie sprawdzić wartości `font-display` dla strony źródłowej {fontOrigin}.}many{Narzędziu Lighthouse nie udało się automatycznie sprawdzić wartości `font-display` dla strony źródłowej {fontOrigin}.}other{Narzędziu Lighthouse nie udało się automatycznie sprawdzić wartości `font-display` dla strony źródłowej {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Dyrektywa"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Waga"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Wdrożenie nagłówka HSTS znacznie zmniejsza ryzyko obniżenia poziomu zabezpieczeń połączeń HTTP i przeprowadzenia ataków polegających na podsłuchiwaniu. Zalecamy stopniowe wdrażanie z niską wartością max-age na początku. [Więcej informacji o używaniu silnej zasady HSTS](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Nieprawidłowa składnia"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Wartość `max-age` jest za niska"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Nie znaleziono nagłówka HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Brak dyrektywy `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Nie znaleziono dyrektywy `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Nie znaleziono dyrektywy `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Używaj silnej zasady HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Współczynnik proporcji (rzeczywisty)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Wstrzyknięty element iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Spóźnione żądanie sieciowe spowodowało zmianę układu strony"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Element multimedialny nie ma wyraźnego rozmiaru"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Efekt ma nieobsługiwane parametry czasowe"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Dyrektywa"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Waga"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Zasady dotyczącej otwierającego z innej domeny (COOP) można użyć do oddzielenia okna najwyższego poziomu od innych dokumentów, takich jak wyskakujące okienka. [Więcej informacji o wdrażaniu nagłówka COOP](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Nieprawidłowa składnia"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Nie znaleziono nagłówka COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Zapewnij prawidłowe izolowanie źródła za pomocą COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Włącz wstępne wczytywanie czcionek z atrybutem `optional`, aby mogli z nich korzystać nowi użytkownicy. [Więcej informacji o wstępnym wczytywaniu czcionek](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Strony, które poprosiły o AppBanner, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Pamięć podręczna stanu strony internetowej jest wyłączona z powodu żądania utrzymywania aktywności."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Pamięć podręczna stanu strony internetowej jest wyłączona przez flagi. Wejdź na chrome://flags/#back-forward-cache, aby włączyć ją lokalnie na tym urządzeniu."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Strony, które używają obrazu w obrazie, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Strony, które używają portali, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Strony, które wyświetlają interfejs drukowania, nie kwalifikują się obecnie do korzystania z pamięci podręcznej stanu strony internetowej."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Obsługa danych: adresy URL w elemencie SVG <use> zostały wycofane i w przyszłości zostaną usunięte."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Złagodzenie zasady dotyczącej tej samej domeny przez ustawienie `document.domain` zostało wycofane i będzie domyślnie wyłączone. Aby nadal używać tej funkcji, przestań używać klastrów agentów ze źródłem jako kluczem, wysyłając nagłówek `Origin-Agent-Cluster: ?0` z odpowiedzią HTTP dla dokumentu i ramek. Więcej informacji znajdziesz na stronie https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Nagłówek `Expect-CT` został wycofany i zostanie usunięty. Chrome wymaga protokołu Certificate Transparency w przypadku wszystkich publicznie zaufanych certyfikatów wystawionych po 30 kwietnia 2018 roku."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "Metody `getCurrentPosition()` i `watchPosition()` nie działają już w przypadku niezabezpieczonych źródeł. Aby używać tej funkcji, rozważ przełączenie aplikacji na zabezpieczone źródło, np. HTTPS. Więcej informacji znajdziesz na stronie https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI poprosi o uprawnienia do użycia, nawet jeśli w interfejsie `MIDIOptions` nie określono komunikatów SysEx."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Starszy, niestandaryzowany atrybut `shadowroot` został wycofany i w wersji M119 *nie będzie już działać*. Użyj nowego, ustandaryzowanego atrybutu `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Nie można już używać interfejsu Notification API z niezabezpieczonych źródeł. Przełącz aplikację na zabezpieczone źródło, np. HTTPS. Więcej informacji znajdziesz na stronie https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Usługa Web SQL została wycofana. Użyj bazy danych SQLite WebAssembly lub Indexed Database"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Deskryptor uprawnień `window-placement` został wycofany. Użyj w zamian zasady `window-management`. Więcej informacji znajdziesz na stronie https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Zasada dotycząca uprawnień `window-placement` została wycofana. Użyj w zamian zasady `window-management`. Więcej informacji znajdziesz na stronie https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "Kodowanie UTF-16 nie jest obsługiwane w kodzie JSON odpowiedzi na żądanie `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Przyczyny problemów związanych z przesunięciem układu"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Duży DOM zwiększy wykorzystanie pamięci, wydłuży obliczenia stylów i spowoduje kosztowne przeformatowania układu, które będą miały wpływ na responsywność strony. [Jak unikać nadmiernego rozmiaru DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optymalizuj rozmiar DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Pierwsze żądanie sieciowe jest najważniejsze.  Zmniejsz jego opóźnienie, unikając przekierowań, zapewniając szybką reakcję serwera i włączając kompresję tekstu."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Wyświetlanie czcionki"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Skrócenie czasu pobierania obrazów może poprawić postrzegany czas wczytywania strony i LCP. [Dowiedz się więcej o optymalizowaniu rozmiaru obrazu](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Ulepsz dostarczanie obrazów"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Zwiększenie współczynnika kompresji obrazu może zmniejszyć rozmiar pobierania. (Szac. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Pobieranie tego obrazu może być szybsze, jeśli użyjesz nowoczesnego formatu (WebP, AVIF) lub zwiększysz kompresję obrazu. (Szac. {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Ten plik obrazu jest większy niż powinien ({PH2}) przy wyświetlanych wymiarach ({PH3}). Aby zmniejszyć rozmiar pobierania obrazu, użyj obrazów elastycznych. (Ok. {PH1})."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Używanie formatów wideo zamiast GIF-ów może zmniejszyć rozmiar pobieranych treści animowanych. (Szac. {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Zacznij analizę od najdłuższego etapu. [Można zminimalizować opóźnienia](https://web.dev/articles/optimize-inp#optimize_interactions). Aby skrócić czas przetwarzania, [zoptymalizuj koszty wątku głównego](https://web.dev/articles/optimize-long-tasks), często JS."
@@ -2676,10 +2724,10 @@
     "message": "Spoza witryny"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Widoczny obszar strony nie jest zoptymalizowany pod kątem urządzeń mobilnych, więc interakcje dotykowe mogą być [opóźnione nawet o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Interakcje dotykowe mogą być [opóźnione nawet o 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), jeśli widoczny obszar nie jest zoptymalizowany dla telefonów."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Widoczny obszar niezoptymalizowany pod kątem urządzeń mobilnych"
+    "message": "Zoptymalizuj widoczny obszar dla telefonów"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "W przypadku treści animowanych stosuj atrybut [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), by zminimalizować wykorzystanie procesora, gdy te treści znajdują się poza ekranem."

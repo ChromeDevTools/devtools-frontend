@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse no pudo verificar automáticamente el valor de `font-display` de la URL de origen {fontOrigin}.}other{Lighthouse no pudo verificar automáticamente los valores de `font-display` de la URL de origen {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Directiva"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Gravedad"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "La implementación del encabezado HSTS reduce significativamente el riesgo de cambiar a una versión inferior las conexiones HTTP y los ataques de escucha. Se recomienda un lanzamiento por etapas, comenzando con una edad máxima baja. [Obtén más información para usar una política de HSTS sólida.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Sintaxis no válida"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` es demasiado baja"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "No se encontró el encabezado HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "No hay directiva `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "No se encontró la directiva `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "No se encontró la directiva `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Usa una política de HSTS sólida"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Relación de aspecto (real)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "iframe insertado"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Una solicitud de red tardía ajustó el diseño de la página"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Elemento multimedia sin tamaño explícito"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "El efecto tiene parámetros de tiempo no compatibles"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Directiva"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Gravedad"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "La política Cross-Origin-Opener-Policy (COOP) se puede usar para aislar la ventana de nivel superior de otros documentos, como las ventanas emergentes. [Obtén más información para implementar el encabezado COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Sintaxis no válida"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "No se encontró el encabezado COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Asegúrate de que el aislamiento de origen sea adecuado con COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Precarga fuentes `optional` para que los visitantes nuevos puedan usarlas. [Más información sobre la precarga de fuentes](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Las páginas que solicitaron un AppBanner no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Se inhabilitó la memoria caché atrás/adelante debido a una solicitud de keepalive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Las funciones experimentales inhabilitaron la memoria caché atrás/adelante. Para habilitarla localmente en este dispositivo, visita chrome://flags/#back-forward-cache."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Las páginas que utilizan la función Picture-in-Picture no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Las páginas que utilizan portales no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Las páginas que muestran la IU de impresión no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Compatibilidad con datos: Las URLs del elemento <use> SVG están obsoletas y se quitarán en el futuro."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "La función para relajar la política del mismo origen mediante la configuración de `document.domain` ya no está disponible y se inhabilitará de forma predeterminada. Para seguir utilizando esta función, envía un encabezado `Origin-Agent-Cluster: ?0` junto con la respuesta HTTP para el documento y los marcos a fin de inhabilitar los clústeres de agentes con clave de origen. Para obtener más información, consulta https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "El encabezado `Expect-CT` ya no está disponible y se quitará. Chrome requiere un Certificado de transparencia para todos los certificados de confianza pública emitidos después del 30 de abril de 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` y `watchPosition()` ya no funcionan en orígenes inseguros. Para utilizar esta función, considera cambiar tu app a un origen seguro, como HTTPS. Para obtener más información, consulta https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "MIDI web solicitará permiso de uso, incluso si no se especifica el valor de sysex en `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "El atributo `shadowroot` no estandarizado más antiguo dejó de estar disponible y *ya no funcionará* en M119. En su lugar, usa el nuevo atributo estandarizado `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Es posible que la API de Notification deje de usarse en orígenes inseguros. Deberías cambiar tu app a un origen seguro, como HTTPS. Para obtener más información, consulta https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL dejó de estar disponible. Usa SQLite WebAssembly o Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "El descriptor de permisos `window-placement` dejó de estar disponible. En su lugar, usa `window-management`. Para obtener más ayuda, consulta https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "La política de permisos `window-placement` dejó de estar disponible. En su lugar, usa `window-management`. Para obtener más ayuda, consulta https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 no es compatible con el archivo json de respuesta de `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Causantes del cambio de diseño"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Los DOM de gran tamaño aumentarán el uso de memoria, harán que los cálculos de estilos tarden más y generarán costosos reprocesamientos del diseño que afectan la capacidad de respuesta de la página. [Obtén información para evitar un tamaño de DOM excesivo](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Optimiza el tamaño de DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Tu primera solicitud de red es la más importante.  Para reducir la latencia, evita las redirecciones, garantiza una respuesta rápida del servidor y habilita la compresión de texto."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Visualización de la fuente"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Reducir el tiempo de descarga de las imágenes puede mejorar el tiempo de carga percibido de la página y el LCP. [Más información para optimizar el tamaño de las imágenes](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Mejora la entrega de imágenes"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Aumentar el factor de compresión de la imagen podría mejorar el tamaño de descarga de esta imagen. (Estimado: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Usar un formato de imagen moderno (WebP, AVIF) o aumentar la compresión de la imagen podría mejorar el tamaño de descarga de esta imagen. (Estimado: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Este archivo de imagen es más grande de lo necesario ({PH2}) para sus dimensiones de visualización ({PH3}). Usa imágenes responsivas para reducir el tamaño de descarga de la imagen. (Estimado: {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Usar formatos de video en lugar de GIFs puede mejorar el tamaño de descarga del contenido animado. (Estimado: {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Comienza a investigar con la fase más larga. [Los retrasos se pueden minimizar](https://web.dev/articles/optimize-inp#optimize_interactions). Para reducir la duración del procesamiento, [optimiza los costos del subproceso principal](https://web.dev/articles/optimize-long-tasks), a menudo JS."
@@ -2676,10 +2724,10 @@
     "message": "Terceros"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "El viewport no está optimizado para dispositivos móviles, por lo que las interacciones de toque pueden [retrasarse hasta 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Las interacciones de presión pueden [retrasarse hasta 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) si el viewport no está optimizado para dispositivos móviles."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "El viewport no está optimizado para dispositivos móviles"
+    "message": "Optimiza el viewport para dispositivos móviles"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "En el caso de contenido animado, utiliza [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) para minimizar el uso de CPU mientras el contenido no aparezca en pantalla."

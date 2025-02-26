@@ -210,13 +210,13 @@
     "message": "רכיבים שנכשלו בבדיקה"
   },
   "core/audits/accessibility/button-name.js | description": {
-    "message": "כשאין ללחצן תווית נגישות, קוראי מסך אומרים את המילה 'לחצן', ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בלחצן. [איך לשפר את רמת הנגישות של הלחצנים](https://dequeuniversity.com/rules/axe/4.10/button-name)?"
+    "message": "כשאין לכפתור תווית נגישות, קוראי מסך אומרים את המילה \"כפתור\", ובמצב כזה אנשים שמסתמכים על קוראי מסך יתקשו להשתמש בכפתור. [איך לשפר את רמת הנגישות של הכפתורים](https://dequeuniversity.com/rules/axe/4.10/button-name)?"
   },
   "core/audits/accessibility/button-name.js | failureTitle": {
-    "message": "ללחצנים אין שמות ייחודיים"
+    "message": "לכפתורים אין שמות ייחודיים"
   },
   "core/audits/accessibility/button-name.js | title": {
-    "message": "ללחצנים יש שם נגיש"
+    "message": "לכפתורים יש שם נגיש"
   },
   "core/audits/accessibility/bypass.js | description": {
     "message": "כשמוסיפים דרכים לעקיפת תוכן שחוזר על עצמו, אנשים שמשתמשים במקלדת יכולים לנווט בדף בצורה יעילה יותר. [מידע נוסף על שיטות לעקיפת בלוקים של תוכן](https://dequeuniversity.com/rules/axe/4.10/bypass)"
@@ -363,16 +363,16 @@
     "message": "לרכיבי התמונה אין מאפייני `[alt]` שהם טקסט מיותר."
   },
   "core/audits/accessibility/input-button-name.js | description": {
-    "message": "הוספה של טקסט נגיש וברור ללחצני קלט עשויה לעזור למשתמשים בקורא מסך להבין את המטרה של לחצן הקלט. [מידע נוסף על לחצני קלט](https://dequeuniversity.com/rules/axe/4.10/input-button-name)"
+    "message": "הוספה של טקסט נגיש וברור לכפתורי קלט עשויה לעזור למשתמשים בקורא מסך להבין את המטרה של כפתור הקלט. [מידע נוסף על כפתורי קלט](https://dequeuniversity.com/rules/axe/4.10/input-button-name)"
   },
   "core/audits/accessibility/input-button-name.js | failureTitle": {
-    "message": "אין טקסט ברור בלחצני הקלט"
+    "message": "אין טקסט ברור בכפתורי הקלט"
   },
   "core/audits/accessibility/input-button-name.js | title": {
-    "message": "יש טקסט ברור בלחצני הקלט"
+    "message": "יש טקסט ברור בכפתורי הקלט"
   },
   "core/audits/accessibility/input-image-alt.js | description": {
-    "message": "כשתמונה משמשת כלחצן `<input>`, הוספה של טקסט חלופי יכולה לעזור למשתמשים הנעזרים בקוראי מסך להבין מה מטרת הלחצן. [מידע על טקסט חלופי של תמונה בקלט](https://dequeuniversity.com/rules/axe/4.10/input-image-alt)"
+    "message": "כשתמונה משמשת ככפתור `<input>`, הוספה של טקסט חלופי יכולה לעזור למשתמשים הנעזרים בקוראי מסך להבין מה מטרת הכפתור. [מידע על טקסט חלופי של תמונה בקלט](https://dequeuniversity.com/rules/axe/4.10/input-image-alt)"
   },
   "core/audits/accessibility/input-image-alt.js | failureTitle": {
     "message": "יש רכיבי `<input type=\"image\">` שאין להם טקסט `[alt]`"
@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{מערכת Lighthouse לא הצליחה לבדוק את הערך `font-display` של המקור {fontOrigin} באופן אוטומטי.}one{מערכת Lighthouse לא הצליחה לבדוק את ערכי `font-display` של המקור {fontOrigin} באופן אוטומטי.}two{מערכת Lighthouse לא הצליחה לבדוק את ערכי `font-display` של המקור {fontOrigin} באופן אוטומטי.}other{מערכת Lighthouse לא הצליחה לבדוק את ערכי `font-display` של המקור {fontOrigin} באופן אוטומטי.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "הוראה"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "מידת החומרה"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "פריסה של כותרת HSTS מפחיתה באופן משמעותי את הסיכון לשדרוג לאחור של חיבורי HTTP ולמתקפות של ציתות. מומלץ לבצע השקה בשלבים, כשהשלב הראשון הוא עם ערך גיל מקסימלי נמוך. ‫[מידע נוסף על שימוש במדיניות HSTS חזקה.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "התחביר לא תקין"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "הערך של `max-age` נמוך מדי"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "לא נמצאה כותרת HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "אין הוראה של `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "לא נמצאה הוראה מסוג `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "לא נמצאה הוראה מסוג `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "שימוש במדיניות HSTS חזקה"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "יחס גובה-רוחב (בפועל)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "החדרת iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "בקשת רשת מאוחרת גרמה לשינוי בפריסת הדף"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "רכיב מדיה שהגודל שלו לא מוגדר"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "האפקט כולל פרמטרים של תזמון שאינם נתמכים"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "הוראה"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "מידת החומרה"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "אפשר להשתמש במדיניות של פתיחה ממקורות שונים (COOP) כדי לבודד את החלון ברמה העליונה ממסמכים אחרים, כמו חלונות קופצים. [מידע נוסף על פריסה של כותרת COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "התחביר לא תקין"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "לא נמצאה כותרת COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "צריך להשתמש ב-COOP כדי להבטיח חסימת גישה נכונה של המקור"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "כדאי לטעון מראש גופני `optional` כדי שמבקרים לראשונה יוכלו להשתמש בהם. [מידע נוסף על טעינה מראש של גופנים](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "בשלב זה, דפים שנשלחה מהם בקשה ל-AppBanner לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה עקב בקשה מסוג הודעת keep-alive."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה על ידי תכונות ניסיוניות. צריך לעבור לכתובת chrome://flags/#back-forward-cache כדי להפעיל אותה באופן מקומי במכשיר הזה."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "בשלב זה, דפים שבהם נעשה שימוש ב'תמונה בתוך תמונה' לא מתאימים לשמירה במטמון לדף הקודם/הבא."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "בשלב זה, דפים שנעשה בהם שימוש בפורטלים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "בשלב זה, דפים שמוצג בהם ממשק משתמש של הדפסה לא מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "התמיכה בהקצאת כתובות URL מסוג data:‎ לרכיב <use> מסוג SVG הוצאה משימוש ותוסר בעתיד."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת `document.domain` הוצאה משימוש, ותושבת כברירת מחדל. כדי להמשיך להשתמש בתכונה הזו, יש לבטל את ההסכמה לאשכולות סוכנים המשויכים למקור על ידי שליחת כותרת `Origin-Agent-Cluster: ?0` עם תגובת HTTP למסמך ולמסגרות. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/immutable-document-domain/‎."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "הכותרת `Expect-CT` הוצאה משימוש ותוסר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "האפשרויות `getCurrentPosition()` ו-`watchPosition()` לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "תתקבל מ-Web MIDI בקשת הרשאה לשימוש גם אם לא צוין sysex ב-`MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "המאפיין `shadowroot` שהוא ישן יותר ולא סטנדרטי הוצא משימוש, ו*לא יפעל יותר* בגרסה M119. במקומו צריך להשתמש במאפיין `shadowrootmode` שהוא חדש וסטנדרטי."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "אי אפשר יותר להשתמש ב-Notification API ממקורות לא מאובטחים. כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL הוצא משימוש. אפשר להשתמש ב-SQLite WebAssembly או ב-Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "רכיב descriptor של ההרשאה `window-placement` הוצא משימוש. במקומו צריך להשתמש ברכיב `window-management`. ניתן לקבל עוד עזרה בכתובת https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "מדיניות ההרשאות `window-placement` הוצאה משימוש. במקומה צריך להשתמש במדיניות `window-management`. ניתן לקבל עוד עזרה בכתובת https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "אין תמיכה ב-UTF-16 ב-JSON של התגובה ב-`XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "הגורמים לשינוי הפריסה"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "נפח DOM גדול מגביר את מידת השימוש בזיכרון, מאריך את הזמן הדרוש לחישוב סגנונות ומוביל להזרמה חוזרת של פריסות שגוזלת משאבים יקרים, מה שמשפיע על הרספונסיביות של הדף. [כאן מוסבר איך להימנע מנפח DOM גדול מדי](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "אופטימיזציה של גודל DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "בקשת הרשת הראשונה היא החשובה ביותר.  אפשר להפחית את זמן האחזור של הבקשה על ידי הימנעות מהפניות לכתובות URL אחרות, וכך להבטיח תגובה מהירה של השרת ולהפעיל דחיסת טקסט."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "תצוגת גופן"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "צמצום זמן ההורדה של תמונות יכול לשפר את זמן הטעינה של הדף ואת ה-LCP. [מידע נוסף על אופטימיזציה של גודל התמונה](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "שיפור של שליחת התמונות"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "דחיסה יעילה יותר של התמונה יכולה להקטין את קובץ ההורדה שלה. (גודל משוער של {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "שימוש בפורמט תמונה מודרני (WebP, ‏AVIF) או דחיסה יעילה יותר של התמונה יכולים להקטין את קובץ ההורדה שלה. (גודל משוער של {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "קובץ התמונה הזה גדול יותר מהנדרש ({PH2}) למידות המוצגות שלו ({PH3}). כדאי להשתמש בתמונות רספונסיביות כדי להקטין את קובץ ההורדה של התמונה. (גודל משוער של {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "שימוש בפורמטים של וידאו במקום ב-GIF יכול להקטין את קובץ ההורדה של תוכן אנימציה. (גודל משוער של {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "כדאי להתחיל בחקירת השלב הארוך ביותר. [אפשר לקצר את משך הזמן שלוקח לשלוח את הבקשה](https://web.dev/articles/optimize-inp#optimize_interactions). כדי לקצר את משך הזמן של העיבוד, מומלץ [לבצע אופטימיזציה בעלויות של ה-Thread הראשי](https://web.dev/articles/optimize-long-tasks), לרוב JS."
@@ -2676,10 +2724,10 @@
     "message": "צדדים שלישיים"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "אזור התצוגה של הדף לא מותאם לניידים. יכול להיות שאינטראקציות של הקשה [יעוכבו בעד 300 אלפיות השנייה](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "יכול להיות שאינטראקציות של הקשה [יעוכבו בעד 300 אלפיות השנייה](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) אם אזור התצוגה לא עבר אופטימיזציה לנייד."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "אזור התצוגה לא מותאם לנייד"
+    "message": "אופטימיזציה של אזור התצוגה לנייד"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "להצגת תוכן באנימציה, כשהתוכן לא מוצג במסך כדאי להשתמש ב-[`amp-anim`](https://amp.dev/documentation/components/amp-anim/) כדי לצמצם את השימוש ביחידת העיבוד המרכזית (CPU)."
@@ -3021,7 +3069,7 @@
     "message": "עיצובים, יישומי פלאגין ומפרטי שרתים משפיעים על זמן התגובה של השרת. אפשר להשתמש בעיצוב שעבר אופטימיזציה, לבחור בקפידה פלאגין לאופטימיזציה ו/או לשדרג את השרת. מערכת ניהול התוכן October גם מאפשרת למפתחים להשתמש ב[`Queues`](https://octobercms.com/docs/services/queues) כדי לדחות את העיבוד של משימה שגוזלת זמן רב, כמו שליחת אימייל. אפשרות זו מאיצה בקשות אינטרנט באופן משמעותי."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | total-byte-weight": {
-    "message": "אפשר להציג קטעים ברשימות הפוסטים (למשל, עם לחצן `show more`), לצמצם את מספר הפוסטים המוצגים בדף נתון, לחלק פוסטים ארוכים למספר דפים או להשתמש בפלאגין כדי לטעון תגובות בצורה מדורגת."
+    "message": "אפשר להציג קטעים ברשימות הפוסטים (למשל, עם כפתור `show more`), לצמצם את מספר הפוסטים המוצגים בדף נתון, לחלק פוסטים ארוכים למספר דפים או להשתמש בפלאגין כדי לטעון תגובות בצורה מדורגת."
   },
   "node_modules/lighthouse-stack-packs/packs/octobercms.js | unminified-css": {
     "message": "יש הרבה [יישומי פלאגין](https://octobercms.com/plugins?search=css) שיכולים להאיץ את האתר בעזרת שרשור, הקטנה ודחיסה של סגנונות. ניתן להאיץ את הפיתוח בעזרת הקטנה מראש בתהליך build."

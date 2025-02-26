@@ -774,7 +774,7 @@
     "message": "Direktiba"
   },
   "core/audits/csp-xss.js | columnSeverity": {
-    "message": "Tindi"
+    "message": "Kalalaan"
   },
   "core/audits/csp-xss.js | description": {
     "message": "Malaki ang nagagawa ng mahigpit na Patakaran sa Seguridad ng Content (Content Security Policy o CSP) para mabawasan ang panganib ng mga cross-site scripting (XSS) na pag-atake. [Alamin kung paano gumamit ng CSP para mapigilan ang XSS](https://developer.chrome.com/docs/lighthouse/best-practices/csp-xss/)"
@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Hindi awtomatikong nasuri ng Lighthouse ang value ng `font-display` para sa origin na {fontOrigin}.}one{Hindi awtomatikong nasuri ng Lighthouse ang mga value ng `font-display` para sa origin na {fontOrigin}.}other{Hindi awtomatikong nasuri ng Lighthouse ang mga value ng `font-display` para sa origin na {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Direktiba"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Kalalaan"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Malaki ang nagagawa ng pag-deploy ng HSTS header para mabawasan ang panganib ng pag-downgrade ng mga koneksyon sa HTTP at mga eavesdropping attack. Inirerekomendang ilunsad ito nang paunti-unti at magsimula sa mababang max-age. [Matuto pa tungkol sa paggamit ng mahigpit na patakaran sa HSTS.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Invalid na syntax"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Masyadong mababa ang `max-age`"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Walang nakitang HSTS header"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Walang direktiba na `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Walang nakitang direktiba na `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Walang nakitang direktiba na `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Gumamit ng mahigpit na patakaran sa HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Aspect Ratio (Aktwal)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Na-inject na iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "In-adjust ng nahuling request sa network ang layout ng page"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Walang explicit na laki ang element ng media"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "May mga hindi sinusuportahang parameter ng timing ang effect"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Direktiba"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Kalalaan"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Magagamit ang Cross-Origin-Opener-Policy (COOP) para i-isolate ang top-level na window sa iba pang dokumento gaya ng mga pop-up. [Matuto pa tungkol sa pag-deploy ng COOP header.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Invalid na syntax"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Walang nakitang COOP header"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Tiyakin ang wastong pag-isolate ng origin gamit ang COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Mag-preload ng mga `optional` na font para magamit ng mga unang beses na bisita ang mga ito. [Matuto pa tungkol sa pag-preload ng mga font](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nag-request ng AppBanner."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Dini-disable ng mga pag-flag ang back/forward cache. Bumisita sa chrome://flags/#back-forward-cache para lokal itong i-enable sa device na ito."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng Picture-in-Picture."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng mga portal."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na nagpapakita ng UI sa Pag-print."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Suporta para sa data: Hindi na ginagamit ang mga URL sa SVG <use> na element at aalisin na ito sa hinaharap."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa `document.domain`. Para patuloy na magamit ang feature na ito, mag-opt out sa mga origin-keyed agent cluster sa pamamagitan ng pagpapadala ng header na `Origin-Agent-Cluster: ?0` kasama ng sagot ng HTTP para sa dokumento at mga frame. Tingnan ang https://developer.chrome.com/blog/immutable-document-domain/ para sa higit pang detalye."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Hindi na ginagamit at aalisin na ang `Expect-CT` na header. Iniaatas ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "Hindi na gumagana ang `getCurrentPosition()` at `watchPosition()` sa mga hindi secure na origin. Para magamit ang feature na ito, pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Hihingi ng pahintulot ang Web MIDI sa paggamit kahit na hindi tinukoy ang sysex sa `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Hindi na ginagamit ang luma at hindi standardized na attribute na `shadowroot` at *hindi na ito gagana* sa M119. Pakigamit na lang ang bago at standardized na attribute na `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "Posibleng hindi na magamit ang Notification API mula sa mga hindi secure na origin. Pag-isipang ilipat ang iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Hindi na ginagamit ang Web SQL. Gumamit ng SQLite WebAssembly o Indexed Database"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Hindi na ginagamit ang `window-placement` na descriptor ng pahintulot. `window-management` na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Hindi na ginagamit ang `window-placement` na patakaran sa pahintulot. `window-management` na lang ang gamitin. Para sa higit pang tulong, tingnan ang https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "Hindi sinusuportahan ang UTF-16 ng sagot na json sa `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Mga dahilan ng pagbabago sa layout"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Kapag malaki ang DOM, madaragdagan ang paggamit ng memory, magkakaroon ng mas matatagal na pagkalkula ng istilo, at makakagawa ito ng mga magastos na reflow ng layout na makakaapekto sa pagiging responsive ng page. [Alamin kung paano iwasan ang masyadong malaking DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "I-optimize ang laki ng DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Pinakamahalaga ang iyong unang request sa network.  Bawasan ang latency nito sa pamamagitan ng pag-iwas sa mga pag-redirect, na tumitiyak sa mabilis na pagtugon ng server, at nagbibigay-daan sa pag-compress ng text."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Font display"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Kapag binawasan ang tagal ng pag-download ng mga larawan, posibleng mapahusay ang natukoy na oras ng pag-load ng page at LCP. [Matuto pa tungkol sa pag-optimize ng laki ng larawan](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Pahusayin ang paghahatid ng larawan"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Kapag tinaasan ang salik ng pag-compress ng larawan, posibleng mapahusay ang laki ng download ng larawang ito. (Tinatayang {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Kapag gumamit ng modernong format ng imahe (WebP, AVIF) o kapag tinaasan ang pag-compress ng larawan, posibleng mapahusay ang laki ng download ng larawang ito. (Tinatayang {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Ang image file na ito ay mas malaki kaysa sa dapat nitong laki ({PH2}) para sa mga ipinapakitang dimensyon nito ({PH3}). Gumamit ng mga responsive na larawan para bawasan ang laki ng download ng larawan. (Tinatayang {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Kapag gumamit ng mga format ng video sa halip na mga GIF, posibleng mapahusay ang laki ng download ng animated na content. (Tinatayang {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Simulan ang pagsisiyasat sa pinakamahabang phase. [Puwedeng mabawasan ang mga pagkaantala](https://web.dev/articles/optimize-inp#optimize_interactions). Para pabilisin ang pagpoproseso, [i-optimize ang mga gastos sa pangunahing thread](https://web.dev/articles/optimize-long-tasks), na madalas na JS."
@@ -2676,10 +2724,10 @@
     "message": "Mga third party"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Hindi na-optimize sa mobile ang viewport ng page, kaya posibleng [maantala nang hanggang 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ang mga interaction sa pag-tap."
+    "message": "Posibleng [maantala nang hanggang 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) ang mga interaction sa pag-tap kung hindi na-optimize para sa mobile ang viewport."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Hindi na-optimize ang viewport para sa mobile"
+    "message": "I-optimize ang viewport para sa mobile"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Para sa animated na content, gamitin ang [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) para mabawasan ang paggamit ng CPU kapag offscreen ang content."

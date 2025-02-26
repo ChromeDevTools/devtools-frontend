@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{`font-display` ఆరిజిన్‌కు చెందిన విలువను {fontOrigin} Lighthouse ఆటోమేటిక్‌గా చెక్ చేయలేకపోయింది.}other{`font-display` ఆరిజిన్‌కు చెందిన విలువలను {fontOrigin} Lighthouse ఆటోమేటిక్‌గా చెక్ చేయలేకపోయింది.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "డైరెక్టివ్"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "తీవ్రత"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "HSTS హెడర్‌ను రన్ చేయడం ద్వారా, HTTP కనెక్షన్‌లు డౌన్‌గ్రేడ్ అయ్యే ప్రమాదాన్ని తగ్గించవచ్చు, దీనితో, తెలియని దాడుల ముప్పును కూడా చాలా వరకు తగ్గించవచ్చు. దీన్ని దశలవారీగా రన్ చేయాలని మేము సిఫార్సు చేస్తున్నాము, అలాగే, ప్రారంభంలో తక్కువ వ్యవధి విలువలను ఉపయోగించండి. [బలమైన HSTS పాలసీని ఉపయోగించడం గురించి మరింత తెలుసుకోండి.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "చెల్లని సింటాక్స్"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` వ్యవధి చాలా తక్కువ"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "HSTS హెడర్ ఏదీ కనుగొనబడలేదు"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "`max-age` డైరెక్టివ్ ఏదీ లేదు"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "`preload` డైరెక్టివ్ ఏదీ దొరకలేదు"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "`includeSubDomains` డైరెక్టివ్ ఏదీ దొరకలేదు"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "బలమైన HSTS పాలసీని ఉపయోగించండి"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "ఆకార నిష్పత్తి (ఉండాల్సినది)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "iframe ఇంజెక్ట్ చేయబడింది"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "లేట్ నెట్‌వర్క్ రిక్వెస్ట్ కారణంగా పేజీ లేఅవుట్ మార్చబడింది"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "మీడియా ఎలిమెంట్ సైజ్ తగినది కాదు"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "ఎఫెక్ట్‌లో ఉన్న సమయ పారామీటర్‌లకు సపోర్ట్ లేదు"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "డైరెక్టివ్"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "తీవ్రత"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "ఇతర డాక్యుమెంట్‌ల నుండి ఉన్నత స్థాయి విండోను రక్షించడానికి క్రాస్-ఆరిజిన్-ఓపెనర్-పాలసీ (COOP)ని ఉపయోగించవచ్చు ఉదాహరణకు పాప్-అప్‌ల వంటివి. [COOP హెడర్‌లను రన్ చేయడం గురించి మరింత తెలుసుకోండి.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "చెల్లని సింటాక్స్"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "COOP హెడర్ ఏదీ కనుగొనబడలేదు"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "COOP సహాయంతో ఆరిజిన్‌ను పూర్తిగా ఐసొలేట్ చేయండి"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "`optional` ఫాంట్‌లను ప్రీ - లోడ్ చేయండి, తద్వారా మొదటిసారిగా వచ్చే సందర్శకులు వాటిని ఉపయోగించగలరు. [ఫాంట్‌లను ప్రీ - లోడ్ చేయడం గురించి మరింత తెలుసుకోండి](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "AppBanner కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి ప్రస్తుతం అర్హత లేదు."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "యాక్టివ్‌గా ఉంచమని అందిన రిక్వెస్ట్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "ఫ్లాగ్‌లు వెనుకకు/ముందుకు కాష్‌ను డిజేబుల్ చేశాయి. chrome://flags/#back-forward-cache‌కు వెళ్లి, దాన్ని ఈ పరికరంలో లోకల్‌గా ఎనేబుల్ చేయండి."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "పిక్చర్-ఇన్-పిక్చర్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి ప్రస్తుతం అర్హత లేదు."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "పోర్టల్స్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి ప్రస్తుతం అర్హత లేదు."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "ప్రింటింగ్ UIని చూపించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను యాక్సెస్ చేయడానికి ప్రస్తుతం అర్హత లేదు."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "డేటా సపోర్ట్: SVG <use> ఎలిమెంట్‌లో ఉన్న URLలు విస్మరించబడ్డాయి, భవిష్యత్తులో ఈ ఆప్షన్ తీసివేయబడుతుంది."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "`document.domain`‌ను సెట్ చేయడం ద్వారా ఒకే ఆరిజిన్ పాలసీని సడలించడం అనేది విస్మరించబడింది, అది ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. ఈ ఫీచర్‌ను ఉపయోగించడం కొనసాగించడానికి, డాక్యుమెంట్, ఫ్రేమ్‌లకు సంబంధించిన HTTP ప్రతిస్పందనతో పాటు `Origin-Agent-Cluster: ?0` హెడర్‌ను పంపడం ద్వారా ఆరిజిన్ ఆధారిత ఏజెంట్ క్లస్టర్‌లకు దయచేసి సమ్మతి నిలిపివేయండి. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/immutable-document-domain/ లింక్‌లోని కంటెంట్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "`Expect-CT` హెడర్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. Chromeను ఉపయోగించే విషయంలో, ఏప్రిల్ 30, 2018 తర్వాత జారీ చేయబడిన, పబ్లిక్‌గా విశ్వసనీయమైన సర్టిఫికెట్‌లన్నింటికీ పారదర్శకత సర్టిఫికెట్ అవసరం అవుతుంది."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()`, `watchPosition()` ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "`MIDIOptions`‌లో sysex పేర్కొనబడనప్పటికీ, ఉపయోగించడానికి వెబ్ MIDI అనుమతిని అడుగుతుంది."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "పాత, ప్రామాణీకరించని `shadowroot` లక్షణం విస్మరించబడుతుంది, ఇంకా M119లో *ఇకపై పని చేయదు*. దయచేసి బదులుగా కొత్త, ప్రామాణీకరించిన `shadowrootmode` లక్షణాన్ని ఉపయోగించండి."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "నోటిఫికేషన్ APIని ఇకపై సురక్షితం కాని ఆరిజిన్‌ల నుండి ఉపయోగించడం కుదరకపోవచ్చు. మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు మార్చే అంశాన్ని మీరు పరిశీలించాలి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌లోని కంటెంట్‌ను చూడండి."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL విస్మరించబడింది. దయచేసి SQLite WebAssembly‌ని లేదా ఇండెక్స్ చేయబడిన డేటాబేస్‌ను ఉపయోగించండి"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "అనుమతికి సంబంధించిన వివరణ `window-placement` విస్మరించబడింది. బదులుగా `window-management`‌ను ఉపయోగించండి. మరింత సహాయం కోసం, https://bit.ly/window-placement-rename లింక్‌ను చూడండి."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "అనుమతికి సంబంధించిన పాలసీ `window-placement` విస్మరించబడింది. బదులుగా `window-management`‌ను ఉపయోగించండి. మరింత సహాయం కోసం, https://bit.ly/window-placement-rename లింక్‌ను చూడండి."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "`XMLHttpRequest`‌లో రెస్పాన్స్ json, UTF-16ను సపోర్ట్ చేయదు"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "లేఅవుట్ షిఫ్ట్‌కు కారణాలు"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "పెద్ద DOM వలన మెమరీ వినియోగం పెరుగుతుంది, స్టయిల్ లెక్కింపులు ఎక్కువ సమయం తీసుకుంటాయి, అలాగే అది పేజీ ప్రతిస్పందనను ప్రభావితం చేసే ఖరీదైన లేఅవుట్ రీఫ్లోలను ప్రొడ్యూస్ చేస్తుంది. [అధిక DOM సైజ్‌ను ఎలా నివారించాలో తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "DOM సైజ్‌ను ఆప్టిమైజ్ చేయండి"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "మీ మొదటి నెట్‌వర్క్ రిక్వెస్ట్ చాలా ముఖ్యమైనది.  మళ్లింపు‌లను నివారించడం, సర్వర్ ప్రతిస్పందన వేగంగా ఉండేలా చూసుకోవడం, అలాగే టెక్స్ట్ కంప్రెషన్‌ను ఎనేబుల్ చేయడం ద్వారా దాని ల్యాగ్‌ను తగ్గించండి."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "ఫాంట్ డిస్‌ప్లే"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "ఇమేజ్‌ల డౌన్‌లోడ్ సమయాన్ని తగ్గించడం ద్వారా పేజీ, LCP లోడ్ సమయాన్ని మెరుగుపరచవచ్చు. [ఇమేజ్ సైజ్‌ను ఆప్టిమైజ్ చేయడం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "ఇమేజ్ డెలివరీని మెరుగుపరచండి"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "ఇమేజ్ కంప్రెషన్ ఫ్యాక్టర్‌ను పెంచడం వల్ల ఈ ఇమేజ్ డౌన్‌లోడ్ సైజ్‌ను మెరుగుపరచవచ్చు. (అంచనా {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "ఆధునిక ఇమేజ్ ఫార్మాట్‌ను (WebP, AVIF) ఉపయోగించడం లేదా ఇమేజ్ కంప్రెషన్‌ను పెంచడం ద్వారా ఈ ఇమేజ్ డౌన్‌లోడ్ సైజ్‌ను మెరుగుపరచవచ్చు. (అంచనా {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "ఈ ఇమేజ్ ఫైల్, దాన్ని డిస్‌ప్లే చేయడానికి ఉండాల్సిన డైమెన్షన్‌ల ({PH3}) కంటే పెద్దదిగా ({PH2}) ఉంది. ఇమేజ్ డౌన్‌లోడ్ సైజ్‌ను తగ్గించడానికి ఫ్లెక్సిబుల్ ఇమేజ్‌లను ఉపయోగించండి. (అంచనా {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "GIFలకు బదులుగా వీడియో ఫార్మాట్‌లను ఉపయోగించడం ద్వారా యానిమేటెడ్ కంటెంట్ డౌన్‌లోడ్ సైజ్‌ను మెరుగుపరచవచ్చు. (అంచనా {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "సుదీర్ఘమైన దశతో పరిశోధన ప్రారంభించండి. [ఆలస్యాలను తగ్గించుకోవచ్చు](https://web.dev/articles/optimize-inp#optimize_interactions). ప్రాసెసింగ్ వ్యవధిని తగ్గించడానికి, [మెయిన్ థ్రెడ్ ఖర్చులను ఆప్టిమైజ్ చేయండి](https://web.dev/articles/optimize-long-tasks), ఇవి సాధారణంగా JSకి చెందినవి అయి ఉంటాయి."
@@ -2676,10 +2724,10 @@
     "message": "థర్డ్-పార్టీలు"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "పేజీకి సంబంధించిన వీక్షణ పోర్ట్ మొబైల్ కోసం ఆప్టిమైజ్ అవ్వలేదు, కాబట్టి ట్యాప్ ఇంటరాక్షన్‌లు [ 300 మి.సె వరకు ఆలస్యం](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) అవ్వొచ్చు."
+    "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయనట్లయితే ట్యాప్ ఇంటరాక్షన్‌లు [గరిష్ఠంగా 300 మి.సె. వరకు ఆలస్యం కావచ్చు](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "మొబైల్ కోసం వీక్షణ పోర్ట్ ఆప్టిమైజ్ అవ్వలేదు"
+    "message": "మొబైల్ కోసం వీక్షణ పోర్ట్‌ను ఆప్టిమైజ్ చేయండి"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "యానిమేట్ చేసిన కంటెంట్ కోసం, కంటెంట్ ఆఫ్‌స్క్రీన్‌లో ఉన్నప్పుడు CPU వినియోగాన్ని తగ్గించడానికి, [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)ను ఉపయోగించండి."

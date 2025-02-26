@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse не успя да провери автоматично стойността на `font-display` за източника {fontOrigin}.}other{Lighthouse не успя да провери автоматично стойностите на `font-display` за източника {fontOrigin}.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Директива"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Сериозност"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Внедряването на заглавката за HSTS значително намалява риска от атаки за подслушване и от понижаване на връзките през HTTP. Препоръчва се постепенно въвеждане, като се започне с ниска стойност за max-age. [Научете повече за използването на надеждни правила за HSTS.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Невалиден синтаксис"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "Стойността за „`max-age`“ е твърде ниска"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Не е намерена заглавка за HSTS"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Няма директива за `max-age`"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Няма намерена директива за `preload`"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Няма намерена директива за `includeSubDomains`"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Използване на надеждни правила за HSTS"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Съотношение (действително)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Вмъкната вложена рамка"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Оформлението на страницата е коригирано заради закъсняла заявка в мрежата"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Липсва конкретен размер за мултимедийния елемент"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Ефектът съдържа неподдържани параметри за време"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Директива"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Сериозност"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "Правилото Cross-Origin-Opener-Policy (COOP) може да се използва за изолиране на прозореца от първо ниво от други документи, като например изскачащи прозорци. [Научете повече за внедряването на заглавката COOP.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Невалиден синтаксис"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Не е намерена заглавка за COOP"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Осигурете правилното изолиране на източника с COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Заредете предварително шрифтовете със свойство `optional`, за да могат да се ползват от новите посетители. [Научете повече за предварителното зареждане на шрифтове](https://web.dev/articles/preload-optional-fonts)."
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Страниците, които са заявили AppBanner, понастоящем не отговарят на условията за кеша за назад/напред."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Кешът за назад/напред е деактивиран поради заявка за проверка на връзката."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Кешът за назад/напред е деактивиран чрез флагове. За да го активирате локално на това устройство, отворете chrome://flags/#back-forward-cache."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Страниците, които използват картина в картината, понастоящем не отговарят на условията за кеша за назад/напред."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Страниците, които използват портали, понастоящем не отговарят на условията за кеша за назад/напред."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Страниците, които показват потребителския интерфейс за отпечатване, понастоящем не отговарят на условията за кеша за назад/напред."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Поддръжката на данни: URL адресите в елемента <use> в SVG са оттеглени и ще бъдат премахнати в бъдеще."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Възможността за отмяна на правилото за един и същ източник чрез задаване на `document.domain` е оттеглена и ще бъде деактивирана по подразбиране. За да продължите да използвате тази функция, откажете се от групите агенти с ключ източник, като изпратите заглавка `Origin-Agent-Cluster: ?0` заедно с HTTP отговора за документа и рамките. За повече подробности вижте https://developer.chrome.com/blog/immutable-document-domain/."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "Заглавката `Expect-CT` е оттеглена и ще бъде премахната. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` и `watchPosition()` вече не работят за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Уеб MIDI ще иска разрешение за използване на специални системни съобщения дори ако опцията sysex не е посочена в `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "По-старият, нестандартизиран атрибут `shadowroot` е оттеглен и *вече няма да функционира* във версия M119. Вместо него използвайте новия, стандартизиран атрибут `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "API за известия вече не може да се използва от незащитени източници. Препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL се оттегля. Моля, използвайте SQLite WebAssembly или индексирана база от данни"
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "Дескрипторът на разрешение `window-placement` е оттеглен. Вместо него използвайте `window-management`. За допълнителна помощ посетете https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Правилото за разрешения `window-placement` е оттеглено. Вместо него използвайте `window-management`. За допълнителна помощ посетете https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 не се поддържа от JSON отговора в `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Причинители на структурни промени"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Големият размер на DOM води до използване на повече памет, удължаване на стиловите изчисления и забавяне поради преоформяне. Това засяга реакцията на страницата. [Научете как да избягвате прекалено големия размер на DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "Оптимизиране на размера на DOM"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Първата мрежова заявка е най-важна.  Намалете забавянето ѝ, като избягвате пренасочвания, осигурявате бърз отговор от сървъра и активирате компресирането на текста."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Показване на шрифта"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Намаляването на времето за изтегляне на изображенията може да подобри възприеманото време за зареждане на страницата и LCP. [Научете повече за оптимизирането на размера на изображенията](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Подобряване на доставката на изображенията"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Увеличаването на коефициента на компресиране на изображенията може да подобри размера за изтегляне на това изображение. (Приблизително {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Използването на съвременен графичен формат (WebP, AVIF) или увеличаването на компресирането на изображенията може да подобри размера за изтегляне на това изображение. (Приблизително {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Този графичен файл е по-голям от необходимото ({PH2}) за показваните му размери ({PH3}). Използвайте адаптивни изображения, за да намалите размера за изтегляне на изображението. (Приблизително {PH1}.)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Използването на видеоформати вместо GIF файлове може да подобри размера за изтегляне на анимираното съдържание. (Приблизително {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Започнете проверката от най-продължителната фаза. [Забавянията могат да бъдат сведени до минимум](https://web.dev/articles/optimize-inp#optimize_interactions). За да ускорите обработката, [оптимизирайте работата на основната нишка](https://web.dev/articles/optimize-long-tasks), която често е JS."
@@ -2676,10 +2724,10 @@
     "message": "Трети страни"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Прозоречният изглед на страницата не е оптимизиран за мобилни устройства, така че при взаимодействията с докосване може да има [забавяне до 300 мсек](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "При взаимодействията с докосване може да има [забавяне до 300 мсек](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/), ако прозоречният изглед не е оптимизиран за мобилни устройства."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Прозоречният изглед не е оптимизиран за мобилни устройства"
+    "message": "Оптимизиране на прозоречния изглед за мобилни устройства"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "При анимирано съдържание използвайте маркера [`amp-anim`](https://amp.dev/documentation/components/amp-anim/), за да намалите използването на процесора, когато съдържанието е извън екрана."

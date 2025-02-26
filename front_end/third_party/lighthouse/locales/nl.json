@@ -977,6 +977,36 @@
   "core/audits/font-display.js | undeclaredFontOriginWarning": {
     "message": "{fontCountForOrigin,plural, =1{Lighthouse kan de `font-display`-waarde voor de oorsprong {fontOrigin} niet automatisch checken.}other{Lighthouse kan de `font-display`-waarden voor de oorsprong {fontOrigin} niet automatisch checken.}}"
   },
+  "core/audits/has-hsts.js | columnDirective": {
+    "message": "Instructie"
+  },
+  "core/audits/has-hsts.js | columnSeverity": {
+    "message": "Ernst"
+  },
+  "core/audits/has-hsts.js | description": {
+    "message": "Als je de HSTS-header implementeert, verklein je het risico op aanvallen waarbij verbindingen worden gedowngraded naar HTTP en afluisteraanvallen aanzienlijk. We raden aan de uitrol in fasen te doen, te beginnen met een lage maximale leeftijd (max-age). [Meer informatie over het gebruik van een sterk HSTS-beleid.](https://developer.chrome.com/docs/lighthouse/best-practices/has-hsts)"
+  },
+  "core/audits/has-hsts.js | invalidSyntax": {
+    "message": "Ongeldige syntaxis"
+  },
+  "core/audits/has-hsts.js | lowMaxAge": {
+    "message": "`max-age` is te laag"
+  },
+  "core/audits/has-hsts.js | noHsts": {
+    "message": "Geen HSTS-header gevonden"
+  },
+  "core/audits/has-hsts.js | noMaxAge": {
+    "message": "Geen `max-age`-instructie"
+  },
+  "core/audits/has-hsts.js | noPreload": {
+    "message": "Geen `preload`-instructie gevonden"
+  },
+  "core/audits/has-hsts.js | noSubdomain": {
+    "message": "Geen `includeSubDomains`-instructie gevonden"
+  },
+  "core/audits/has-hsts.js | title": {
+    "message": "Een sterk HSTS-beleid gebruiken"
+  },
   "core/audits/image-aspect-ratio.js | columnActual": {
     "message": "Beeldverhouding (origineel)"
   },
@@ -1082,9 +1112,6 @@
   "core/audits/layout-shifts.js | rootCauseInjectedIframe": {
     "message": "Geïnjecteerd iframe"
   },
-  "core/audits/layout-shifts.js | rootCauseRenderBlockingRequest": {
-    "message": "Door een laat netwerkverzoek is de pagina-indeling aangepast"
-  },
   "core/audits/layout-shifts.js | rootCauseUnsizedMedia": {
     "message": "Media-element heeft geen expliciet formaat"
   },
@@ -1186,6 +1213,24 @@
   },
   "core/audits/non-composited-animations.js | unsupportedTimingParameters": {
     "message": "Effect heeft niet-ondersteunde tijdparameters"
+  },
+  "core/audits/origin-isolation.js | columnDirective": {
+    "message": "Instructie"
+  },
+  "core/audits/origin-isolation.js | columnSeverity": {
+    "message": "Ernst"
+  },
+  "core/audits/origin-isolation.js | description": {
+    "message": "De Cross-Origin-Opener-Policy (COOP) kan worden gebruikt om het venster op het hoogste niveau te isoleren van andere documenten, zoals pop-ups. [Meer informatie over het implementeren van de COOP-header.](https://web.dev/articles/why-coop-coep#coop)"
+  },
+  "core/audits/origin-isolation.js | invalidSyntax": {
+    "message": "Ongeldige syntaxis"
+  },
+  "core/audits/origin-isolation.js | noCoop": {
+    "message": "Geen COOP-header gevonden"
+  },
+  "core/audits/origin-isolation.js | title": {
+    "message": "Zorgen voor de juiste bronisolatie met COOP"
   },
   "core/audits/preload-fonts.js | description": {
     "message": "Laad lettertypen `optional` vooraf zodat nieuwe bezoekers deze kunnen gebruiken. [Meer informatie over het vooraf laden van lettertypen](https://web.dev/articles/preload-optional-fonts)"
@@ -1688,9 +1733,6 @@
   "core/lib/bf-cache-strings.js | appBanner": {
     "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
-  "core/lib/bf-cache-strings.js | authorizationHeader": {
-    "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
-  },
   "core/lib/bf-cache-strings.js | backForwardCacheDisabled": {
     "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
   },
@@ -1906,9 +1948,6 @@
   },
   "core/lib/bf-cache-strings.js | pictureInPicture": {
     "message": "Pagina's die Picture-in-Picture gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
-  },
-  "core/lib/bf-cache-strings.js | portal": {
-    "message": "Pagina's die portals gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
   "core/lib/bf-cache-strings.js | printing": {
     "message": "Pagina's die UI voor afdrukken tonen, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -2129,12 +2168,6 @@
   "core/lib/deprecations-strings.js | DataUrlInSvgUse": {
     "message": "Ondersteuning voor gegevens: URL's in <use>-element van svg zijn beëindigd en worden in de toekomst verwijderd."
   },
-  "core/lib/deprecations-strings.js | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "Versoepeling van het same-origin-beleid door `document.domain` in te stellen is beëindigd en wordt standaard uitgezet. Als je deze functie wilt blijven gebruiken, meld je je af voor origin-keyed agentclusters door een `Origin-Agent-Cluster: ?0`-header met de HTTP-reactie voor het document en de frames mee te sturen. Zie https://developer.chrome.com/blog/immutable-document-domain/ voor meer informatie."
-  },
-  "core/lib/deprecations-strings.js | ExpectCTHeader": {
-    "message": "De header `Expect-CT` is beëindigd en wordt verwijderd. Chrome vereist certificaattransparantie voor alle openbaar vertrouwde certificaten die na 30 april 2018 zijn uitgegeven."
-  },
   "core/lib/deprecations-strings.js | GeolocationInsecureOrigin": {
     "message": "`getCurrentPosition()` en `watchPosition()` werken niet meer op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
   },
@@ -2167,9 +2200,6 @@
   },
   "core/lib/deprecations-strings.js | NoSysexWebMIDIWithoutPermission": {
     "message": "Web MIDI vraagt toestemming voor het gebruik van SysEx, zelfs als de SysEx niet is opgegeven in de `MIDIOptions`."
-  },
-  "core/lib/deprecations-strings.js | NonStandardDeclarativeShadowDOM": {
-    "message": "Het oudere, niet-gestandaardiseerde kenmerk `shadowroot` is beëindigd en *werkt niet meer* in M119. Gebruik in plaats daarvan het nieuwe, gestandaardiseerde kenmerk `shadowrootmode`."
   },
   "core/lib/deprecations-strings.js | NotificationInsecureOrigin": {
     "message": "De Notification API mag niet meer worden gebruikt vanaf niet-beveiligde oorsprongen. Je kunt overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
@@ -2254,12 +2284,6 @@
   },
   "core/lib/deprecations-strings.js | WebSQL": {
     "message": "Web SQL is beëindigd. Gebruik SQLite WebAssembly of Indexed Database."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionDescriptorUsed": {
-    "message": "De rechtenbeschrijving `window-placement` is beëindigd. Gebruik in plaats daarvan `window-management`. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
-  },
-  "core/lib/deprecations-strings.js | WindowPlacementPermissionPolicyParsed": {
-    "message": "Het rechtenbeleid `window-placement` is beëindigd. Gebruik in plaats daarvan `window-management`. Ga voor meer hulp naar https://bit.ly/window-placement-rename."
   },
   "core/lib/deprecations-strings.js | XHRJSONEncodingDetection": {
     "message": "UTF-16 wordt niet ondersteund door de reactie-json in `XMLHttpRequest`"
@@ -2627,6 +2651,12 @@
   "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
     "message": "Oorzaken van indelingsverschuivingen"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | description": {
+    "message": "Een groot DOM vergroot het geheugengebruik, leidt tot langere stijlberekeningen en veroorzaakt kostbare dynamische aanpassingen in de vormgeving die de responsiviteit van de pagina beïnvloeden. [Meer informatie over hoe je een overmatige DOM-grootte voorkomt](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DOMSize.js | title": {
+    "message": "DOM-grootte optimaliseren"
+  },
   "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
     "message": "Je eerste netwerkverzoek is het belangrijkst.  Verminder de vertraging door omleidingen te vermijden, een snelle serverreactie te garanderen en tekstcompressie aan te zetten."
   },
@@ -2638,6 +2668,24 @@
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
     "message": "Lettertypeweergave"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | description": {
+    "message": "Als je de downloadtijd van afbeeldingen verkort, kunnen de waargenomen laadtijd van de pagina en LCP verbeteren. [Meer informatie over hoe je de afbeeldingsgrootte optimaliseert](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | title": {
+    "message": "Afbeeldingslevering verbeteren"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useCompression": {
+    "message": "Als je de afbeeldingscompressiefactor verhoogt, kan dit de downloadgrootte van deze afbeelding verbeteren. (Naar schatting {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useModernFormat": {
+    "message": "Als je een moderne bestandsindeling (WebP, AVIF) gebruikt of de compressie van de afbeelding verhoogt, kan dit de downloadgrootte van deze afbeelding verbeteren. (Naar schatting {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useResponsiveSize": {
+    "message": "Dit afbeeldingsbestand is groter dan nodig ({PH2}) voor de weergegeven afmetingen ({PH3}). Gebruik responsieve afbeeldingen om de downloadgrootte van de afbeelding te verkleinen. (Naar schatting {PH1})"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ImageDelivery.js | useVideoFormat": {
+    "message": "Als je video-indelingen gebruikt in plaats van gifjes, kan dit de downloadgrootte van geanimeerde content verbeteren. (Naar schatting {PH1})"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
     "message": "Onderzoek eerst de langste fase. [Je kunt vertraging tot een minimum beperken](https://web.dev/articles/optimize-inp#optimize_interactions). [Optimaliseer de kosten van de hoofdthread](https://web.dev/articles/optimize-long-tasks) (vaak JS) om de verwerkingsduur te verkorten."
@@ -2676,10 +2724,10 @@
     "message": "Derden"
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
-    "message": "Het kijkvenster van de pagina is niet geoptimaliseerd voor mobiele apparaten. Tikinteracties kunnen daarom [tot 300 ms vertraagd](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) worden."
+    "message": "Tikinteracties kunnen [tot 300 ms vertraagd](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/) worden als het kijkvenster niet is geoptimaliseerd voor mobiel."
   },
   "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
-    "message": "Kijkvenster niet geoptimaliseerd voor mobiel"
+    "message": "Kijkvenster optimaliseren voor mobiel"
   },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "Gebruik in het geval van content met animatie [`amp-anim`](https://amp.dev/documentation/components/amp-anim/) om het CPU-gebruik te minimaliseren als de content niet in beeld is."

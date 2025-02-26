@@ -9,11 +9,26 @@ import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHe
 import * as ExtensionScope from './ExtensionScope.js';
 import * as Injected from './injected.js';
 
-async function getSelector(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
+function createNode(options?: {getAttribute?: (attribute: string) => string | undefined}) {
   const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
   node.id = 1 as Protocol.DOM.NodeId;
   // Needed to process the inline styles
   node.nodeType.returns(Node.ELEMENT_NODE);
+  node.localName.returns('div');
+  node.simpleSelector.callThrough();
+  if (options?.getAttribute) {
+    node.getAttribute.callsFake(options.getAttribute);
+  }
+  return node;
+}
+
+async function getSelector(
+    payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>,
+    node?: SDK.DOMModel.DOMNode,
+) {
+  if (!node) {
+    node = createNode();
+  }
 
   const matchedStyles = await getMatchedStyles({
     node,
@@ -31,7 +46,51 @@ describe('ExtensionScope', () => {
     },
   ];
 
-  describe('getSelector', () => {
+  describe('getSimpleSelector', () => {
+    it('should work with node that has classes', () => {
+      const node = createNode({
+        getAttribute: attribute => {
+          if (attribute === 'class') {
+            return 'my-class-a my-class-b';
+          }
+
+          return undefined;
+        }
+      });
+      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      assert.strictEqual(selector, '.my-class-a.my-class-b');
+    });
+
+    it('should exclude ai generated class', () => {
+      const node = createNode({
+        getAttribute: attribute => {
+          if (attribute === 'class') {
+            return `my-class-a my-class-b ${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+          }
+
+          return undefined;
+        }
+      });
+      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      assert.strictEqual(selector, '.my-class-a.my-class-b');
+    });
+
+    it('should work with node has classes that need escaping', () => {
+      const node = createNode({
+        getAttribute: attribute => {
+          if (attribute === 'class') {
+            return `my.special-class my-class-b ${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-2`;
+          }
+
+          return undefined;
+        }
+      });
+      const selector = ExtensionScope.ExtensionScope.getSelectorForNode(node);
+      assert.strictEqual(selector, '.my\\.special-class.my-class-b');
+    });
+  });
+
+  describe('getSelectorFromRules', () => {
     it('should work with empty styles', async () => {
       const selector = await getSelector({});
       assert.strictEqual(selector, '');

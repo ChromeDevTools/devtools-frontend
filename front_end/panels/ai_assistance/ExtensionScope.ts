@@ -197,6 +197,15 @@ export class ExtensionScope {
     return selectors.at(0)?.text.replace(':visited', '') ?? '';
   }
 
+  static getSelectorForNode(node: SDK.DOMModel.DOMNode): string {
+    return node.simpleSelector()
+        .split('.')
+        .filter(chunk => {
+          return !chunk.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME);
+        })
+        .join('.');
+  }
+
   async #computeSelectorFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<string> {
     if (!remoteObject.objectId) {
       throw new Error('DOMModel is not found');
@@ -217,13 +226,21 @@ export class ExtensionScope {
       throw new Error('Node is not found');
     }
 
-    const matchedStyles = await cssModel.getMatchedStyles(node.id);
+    try {
+      const matchedStyles = await cssModel.getMatchedStyles(node.id);
 
-    if (!matchedStyles) {
-      throw new Error('No Matching styles');
+      if (!matchedStyles) {
+        throw new Error('No Matching styles');
+      }
+
+      const selector = ExtensionScope.getSelectorForRule(matchedStyles);
+      if (selector) {
+        return selector;
+      }
+    } catch {
     }
 
-    return ExtensionScope.getSelectorForRule(matchedStyles);
+    return ExtensionScope.getSelectorForNode(node);
   }
 
   async #bindingCalled(executionContext: SDK.RuntimeModel.ExecutionContext, event: {
@@ -248,11 +265,11 @@ export class ExtensionScope {
       ]);
 
       const arg = JSON.parse(args.object.value) as Omit<FreestyleCallbackArgs, 'element'>;
-      let selector = arg.selector;
 
+      // TODO: Should this a be a *?
+      let selector = '';
       try {
-        const computedSelector = await this.#computeSelectorFromElement(element.object);
-        selector = computedSelector || selector;
+        selector = await this.#computeSelectorFromElement(element.object);
       } catch (err) {
         console.error(err);
       } finally {

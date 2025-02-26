@@ -160,6 +160,7 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.#metadataByCommand = metadataByCommand;
     this.#typesByName = typesByName;
     this.#enumsByName = enumsByName;
+    this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
     this.contentElement.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         this.#handleParameterInputKeydown(event);

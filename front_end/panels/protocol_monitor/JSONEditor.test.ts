@@ -480,8 +480,7 @@ describeWithEnvironment('JSONEditor', () => {
   describe('Display command written in editor inside input bar', () => {
     it('should display the command edited inside the CDP editor into the input bar', async () => {
       const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-      const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
-      const jsonEditor = editorWidget.jsonEditor;
+      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
       jsonEditor.command = 'Test.test';
       jsonEditor.parameters = [
         {
@@ -494,7 +493,7 @@ describeWithEnvironment('JSONEditor', () => {
       ];
       const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
       split.setMainWidget(dataGrid);
-      split.setSidebarWidget(editorWidget);
+      split.setSidebarWidget(jsonEditor);
       split.toggleSidebar();
       split.markAsRoot();
       split.show(renderElementIntoDOM(document.createElement('main')));
@@ -508,8 +507,7 @@ describeWithEnvironment('JSONEditor', () => {
 
     it('should update the selected target inside the input bar', async () => {
       const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-      const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
-      const jsonEditor = editorWidget.jsonEditor;
+      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
       jsonEditor.targetId = 'value2';
       sinon.stub(SDK.TargetManager.TargetManager.instance(), 'targets').returns([
         {id: () => 'value1'} as SDK.Target.Target,
@@ -519,7 +517,7 @@ describeWithEnvironment('JSONEditor', () => {
       const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split, view);
 
       split.setMainWidget(dataGrid);
-      split.setSidebarWidget(editorWidget);
+      split.setSidebarWidget(jsonEditor);
 
       split.toggleSidebar();
       await RenderCoordinator.done({waitForWork: true});
@@ -532,12 +530,11 @@ describeWithEnvironment('JSONEditor', () => {
         '[crbug.com/1484534]: should not display the command into the input bar if the command is empty string',
         async () => {
           const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-          const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
-          const jsonEditor = editorWidget.jsonEditor;
+          const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
           jsonEditor.command = '';
           const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
           split.setMainWidget(dataGrid);
-          split.setSidebarWidget(editorWidget);
+          split.setSidebarWidget(jsonEditor);
           split.toggleSidebar();
 
           await RenderCoordinator.done();

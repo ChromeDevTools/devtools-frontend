@@ -368,11 +368,11 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     const populateToolbarInput = (): void => {
       const editorWidget = splitWidget.sidebarWidget();
-      if (!(editorWidget instanceof EditorWidget)) {
+      if (!(editorWidget instanceof JSONEditor)) {
         return;
       }
-      const commandJson = editorWidget.jsonEditor.getCommandJson();
-      const targetId = editorWidget.jsonEditor.targetId;
+      const commandJson = editorWidget.getCommandJson();
+      const targetId = editorWidget.targetId;
       if (targetId) {
         this.#selectedTargetId = targetId;
       }
@@ -605,7 +605,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
 export class ProtocolMonitorImpl extends UI.Widget.VBox {
   #split: UI.SplitWidget.SplitWidget;
-  #editorWidget = new EditorWidget();
+  #editorWidget = new JSONEditor(metadataByCommand, typesByName as Map<string, Parameter[]>, enumsByName);
   #protocolMonitorDataGrid: ProtocolMonitorDataGrid;
   // This width corresponds to the optimal width to use the editor properly
   // It is randomly chosen
@@ -618,14 +618,14 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#split.show(this.contentElement);
     this.#protocolMonitorDataGrid = new ProtocolMonitorDataGrid(this.#split);
     this.#protocolMonitorDataGrid.addEventListener(Events.COMMAND_CHANGE, event => {
-      this.#editorWidget.jsonEditor.displayCommand(event.data.command, event.data.parameters, event.data.targetId);
+      this.#editorWidget.displayCommand(event.data.command, event.data.parameters, event.data.targetId);
     });
 
     this.#editorWidget.element.style.overflow = 'hidden';
     this.#split.setMainWidget(this.#protocolMonitorDataGrid);
     this.#split.setSidebarWidget(this.#editorWidget);
     this.#split.hideSidebar(true);
-    this.#editorWidget.addEventListener(Events.COMMAND_SENT, event => {
+    this.#editorWidget.addEventListener(JSONEditorEvents.SUBMIT_EDITOR, event => {
       this.#protocolMonitorDataGrid.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
     });
   }
@@ -722,20 +722,6 @@ export const enum Events {
 export interface EventTypes {
   [Events.COMMAND_SENT]: Command;
   [Events.COMMAND_CHANGE]: Command;
-}
-
-export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
-  readonly jsonEditor: JSONEditor;
-  constructor() {
-    super();
-    this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
-    this.jsonEditor = new JSONEditor(metadataByCommand, typesByName as Map<string, Parameter[]>, enumsByName);
-    this.jsonEditor.show(this.element);
-    this.jsonEditor.addEventListener(
-        JSONEditorEvents.SUBMIT_EDITOR,
-        ({data}: Common.EventTarget.EventTargetEvent<Command>) =>
-            this.dispatchEventToListeners(Events.COMMAND_SENT, data));
-  }
 }
 
 export function parseCommandInput(input: string): {command: string, parameters: {[paramName: string]: unknown}} {

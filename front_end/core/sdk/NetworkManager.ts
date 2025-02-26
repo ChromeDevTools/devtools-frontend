@@ -1776,12 +1776,10 @@ export class InterceptedRequest {
           } else {
             result.set(match[1], [header.value]);
           }
+        } else if (result.has(header.value)) {
+          result.get(header.value)?.push(header.value);
         } else {
-          if (result.has(header.value)) {
-            result.get(header.value)?.push(header.value);
-          } else {
-            result.set(header.value, [header.value]);
-          }
+          result.set(header.value, [header.value]);
         }
       }
       return result;

@@ -2470,10 +2470,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       } else if (this.hasBeenEditedIncrementally) {
         await this.applyOriginalStyle(context);
       }
-    } else {
-      if (this.nameElement) {
-        await this.applyStyleText(`${this.nameElement.textContent}: ${valueText}`, false);
-      }
+    } else if (this.nameElement) {
+      await this.applyStyleText(`${this.nameElement.textContent}: ${valueText}`, false);
     }
   }
 
@@ -2579,12 +2577,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           blankInput ||
           (this.newProperty && Platform.StringUtilities.isWhitespace(this.valueElement.textContent || ''))) {
         propertyText = '';
+      } else if (isEditingName) {
+        propertyText = userInput + ': ' + this.property.value;
       } else {
-        if (isEditingName) {
-          propertyText = userInput + ': ' + this.property.value;
-        } else {
-          propertyText = this.property.name + ': ' + userInput;
-        }
+        propertyText = this.property.name + ': ' + userInput;
       }
       await this.applyStyleText(propertyText || '', true);
       moveToNextCallback.call(this, this.newProperty, !blankInput, this.#parentSection);

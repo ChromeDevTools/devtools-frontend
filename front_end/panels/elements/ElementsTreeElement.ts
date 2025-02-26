@@ -1283,12 +1283,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           } else {
             this.triggerEditAttribute(attributes[i - 1].name);
           }
+        } else if (i === attributes.length - 1) {
+          this.addNewAttribute();
         } else {
-          if (i === attributes.length - 1) {
-            this.addNewAttribute();
-          } else {
-            this.triggerEditAttribute(attributes[i + 1].name);
-          }
+          this.triggerEditAttribute(attributes[i + 1].name);
         }
         return;
       }
@@ -1300,11 +1298,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           if (attributes.length > 0) {
             this.triggerEditAttribute(attributes[attributes.length - 1].name);
           }
-        } else {
           // Moving from "New Attribute" that holds new value
-          if (attributes.length > 1) {
-            this.triggerEditAttribute(attributes[attributes.length - 2].name);
-          }
+        } else if (attributes.length > 1) {
+          this.triggerEditAttribute(attributes[attributes.length - 2].name);
         }
       } else if (moveDirection === 'forward') {
         if (!Platform.StringUtilities.isWhitespace(newText)) {

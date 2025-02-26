@@ -119,12 +119,10 @@ describe('CXX Debugging Extension Test Suite', function() {
                 } else if (value) {
                   assert.isTrue(scopeVariable?.endsWith(`: ${value}`));
                 }
-              } else {
-                if (variableType) {
-                  assert.strictEqual(scopeVariable, `${variableName}: ${variableType}`);
-                } else if (value) {
-                  assert.strictEqual(scopeVariable, `${variableName}: ${value}`);
-                }
+              } else if (variableType) {
+                assert.strictEqual(scopeVariable, `${variableName}: ${variableType}`);
+              } else if (value) {
+                assert.strictEqual(scopeVariable, `${variableName}: ${value}`);
               }
             }
           }

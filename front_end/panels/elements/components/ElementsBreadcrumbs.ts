@@ -120,12 +120,10 @@ export class ElementsBreadcrumbs extends HTMLElement {
       if (scrollContainerWidth < crumbWindowWidth) {
         this.#overflowing = false;
       }
-    } else {
       // We currently do not have overflow buttons.
       // If the content won't fit anymore, then rerender with overflow.
-      if (scrollContainerWidth > crumbWindowWidth) {
-        this.#overflowing = true;
-      }
+    } else if (scrollContainerWidth > crumbWindowWidth) {
+      this.#overflowing = true;
     }
     void this.#ensureSelectedNodeIsVisible();
     void this.#updateScrollState(crumbWindow);
@@ -194,13 +192,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
         this.#overflowing = false;
         void this.#render();
       }
-    } else {
       // We currently do not have overflow buttons.
       // If the content won't fit anymore, then rerender with overflow.
-      if (scrollContainerWidth > crumbWindowWidth) {
-        this.#overflowing = true;
-        void this.#render();
-      }
+    } else if (scrollContainerWidth > crumbWindowWidth) {
+      this.#overflowing = true;
+      void this.#render();
     }
   }
 
@@ -293,7 +289,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
         </devtools-icon>
       </button>
       `;
-          // clang-format on
+        // clang-format on
   }
 
   #render(): void {

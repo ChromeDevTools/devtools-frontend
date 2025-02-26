@@ -100,15 +100,13 @@ const DevToolsAPIImpl = class {
     // Support for legacy front-ends (<M41).
     if (window['WebInspector'] && window['WebInspector']['addExtensions']) {
       window['WebInspector']['addExtensions'](extensions);
-    } else {
       // The addExtensions command is sent as the onload event happens for
       // DevTools front-end. We should buffer this command until the frontend
       // is ready for it.
-      if (this._addExtensionCallback) {
-        extensions.forEach(this._addExtensionCallback);
-      } else {
-        this._pendingExtensionDescriptors.push(...extensions);
-      }
+    } else if (this._addExtensionCallback) {
+      extensions.forEach(this._addExtensionCallback);
+    } else {
+      this._pendingExtensionDescriptors.push(...extensions);
     }
   }
 

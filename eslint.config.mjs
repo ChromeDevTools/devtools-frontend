@@ -174,6 +174,14 @@ export default [
         },
       ],
 
+      'no-empty': [
+        'error',
+        {
+          allowEmptyCatch: true,
+        },
+      ],
+      'no-lonely-if': 'error',
+
       'no-empty-character-class': 'error',
       'no-global-assign': 'error',
       'no-implied-eval': 'error',

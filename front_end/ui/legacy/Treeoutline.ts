@@ -931,12 +931,10 @@ export class TreeElement {
       } else {
         this.collapse();
       }
+    } else if (event.altKey) {
+      void this.expandRecursively();
     } else {
-      if (event.altKey) {
-        void this.expandRecursively();
-      } else {
-        this.expand();
-      }
+      this.expand();
     }
     void VisualLogging.logClick(this.expandLoggable, event);
     event.consume();

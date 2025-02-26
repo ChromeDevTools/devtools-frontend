@@ -241,10 +241,8 @@ export class PanelUtils {
     } else if (networkPersistenceManager.isActiveHeaderOverrides(uiSourceCode)) {
       hasDotBadge = true;
       isDotPurple = true;
-    } else {
-      if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
-        iconType = 'snippet';
-      }
+    } else if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(uiSourceCode)) {
+      iconType = 'snippet';
     }
 
     const icon = new IconButton.FileSourceIcon.FileSourceIcon(iconType);

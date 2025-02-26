@@ -241,12 +241,10 @@ export function handleEvent(event: Types.Events.Event): void {
           mainFrameId = frame.frame;
           mainFrameURL = frame.url;
         }
-      } else {
         // Worst case: guess by seeing if the frame doesn't have a parent, and does have a URL.
-        if (!frame.parent && frame.url) {
-          mainFrameId = frame.frame;
-          mainFrameURL = frame.url;
-        }
+      } else if (!frame.parent && frame.url) {
+        mainFrameId = frame.frame;
+        mainFrameURL = frame.url;
       }
     }
 

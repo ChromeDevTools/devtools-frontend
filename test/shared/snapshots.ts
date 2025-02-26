@@ -85,11 +85,9 @@ const getOrUpdateSnapshot = (value: unknown, options: SnapshotOptions) => {
       currentSnapshotPath = path;
     }
     currentSnapshot[testName] = value;
-  } else {
-    if (currentSnapshotPath !== path) {
-      currentSnapshotPath = path;
-      restoreSnapshots();
-    }
+  } else if (currentSnapshotPath !== path) {
+    currentSnapshotPath = path;
+    restoreSnapshots();
   }
 
   return currentSnapshot[testName];

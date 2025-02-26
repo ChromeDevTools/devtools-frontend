@@ -1126,11 +1126,9 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
             }
           }, {jslogContext: 'remove-folder-from-workspace'});
         }
-      } else {
-        if (!(node instanceof NavigatorGroupTreeNode)) {
-          contextMenu.defaultSection().appendItem(
-              i18nString(UIStrings.delete), this.handleDeleteFolder.bind(this, node), {jslogContext: 'delete'});
-        }
+      } else if (!(node instanceof NavigatorGroupTreeNode)) {
+        contextMenu.defaultSection().appendItem(
+            i18nString(UIStrings.delete), this.handleDeleteFolder.bind(this, node), {jslogContext: 'delete'});
       }
     }
 

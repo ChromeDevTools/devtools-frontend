@@ -1215,12 +1215,10 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         if (this.selectedNode.expanded) {
           nextSelectedNode = this.selectedNode.children[0];
           handled = nextSelectedNode ? true : false;
+        } else if (event.altKey) {
+          this.selectedNode.expandRecursively();
         } else {
-          if (event.altKey) {
-            this.selectedNode.expandRecursively();
-          } else {
-            this.selectedNode.expand();
-          }
+          this.selectedNode.expand();
         }
       }
     } else if (event.keyCode === 8 || event.keyCode === 46) {
@@ -1271,7 +1269,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     let nextSelectedNode;
     // Skip subtree being deleted when looking for the next selectable node.
-    for (ancestor = root; ancestor && !ancestor.nextSibling; ancestor = ancestor.parent) {
+    ancestor = root;
+    while (ancestor && !ancestor.nextSibling) {
+      ancestor = ancestor.parent;
     }
     if (ancestor) {
       nextSelectedNode = ancestor.nextSibling;
@@ -1508,12 +1508,10 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       } else {
         gridNode.collapse();
       }
+    } else if ((event as MouseEvent).altKey) {
+      gridNode.expandRecursively();
     } else {
-      if ((event as MouseEvent).altKey) {
-        gridNode.expandRecursively();
-      } else {
-        gridNode.expand();
-      }
+      gridNode.expand();
     }
   }
 

@@ -246,11 +246,9 @@ export class Automapping {
               PersistenceImpl.rewrapNodeJSContent(status.fileSystem, fileContent, networkContent.content);
           isValid = fileContent === rewrappedNetworkContent;
         }
-      } else {
-        if (networkContent.content) {
-          // Trim trailing whitespaces because V8 adds trailing newline.
-          isValid = fileContent.trimEnd() === networkContent.content.trimEnd();
-        }
+      } else if (networkContent.content) {
+        // Trim trailing whitespaces because V8 adds trailing newline.
+        isValid = fileContent.trimEnd() === networkContent.content.trimEnd();
       }
       if (!isValid) {
         this.prevalidationFailedForTest(status);

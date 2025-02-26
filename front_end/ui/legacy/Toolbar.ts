@@ -212,13 +212,11 @@ export class Toolbar extends HTMLElement {
           button.setLongClickable(true);
           longClickButtons = buttons;
         }
-      } else {
-        if (longClickController) {
-          longClickController.dispose();
-          longClickController = null;
-          button.setLongClickable(false);
-          longClickButtons = null;
-        }
+      } else if (longClickController) {
+        longClickController.dispose();
+        longClickController = null;
+        button.setLongClickable(false);
+        longClickButtons = null;
       }
     }
 

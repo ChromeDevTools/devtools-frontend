@@ -198,6 +198,7 @@ ${uiSourceCode.workingCopyContentData().text}
 `;
           let response;
           for await (response of this.#fileUpdateAgent.run(prompt, {selected: null})) {
+            // Get the last response
           }
           debugLog('response', response);
           if (response?.type !== ResponseType.ANSWER) {

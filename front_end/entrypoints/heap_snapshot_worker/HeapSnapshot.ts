@@ -1124,12 +1124,10 @@ export abstract class HeapSnapshot {
         if (stringIndexes.has(nodes.getValue(nodeIndex + nodeNameOffset))) {
           nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
         }
-      } else {
         // If the node is displaying a customized name, then we must perform the
         // full string search within that name here.
-        if (useRegExp ? regexp.test(name) : (name.indexOf(query) !== -1)) {
-          nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
-        }
+      } else if (useRegExp ? regexp.test(name) : (name.indexOf(query) !== -1)) {
+        nodeIds.push(nodes.getValue(nodeIndex + nodeIdOffset));
       }
     }
     return nodeIds;

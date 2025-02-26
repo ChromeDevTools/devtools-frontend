@@ -293,12 +293,10 @@ export class StylePropertiesSection {
       // Prevent editing the user agent and user rules.
       if (rule.isUserAgent() || rule.isInjected()) {
         this.editable = false;
-      } else {
         // Check this is a real CSSRule, not a bogus object coming from BlankStylePropertiesSection.
-        if (rule.styleSheetId) {
-          const header = rule.cssModel().styleSheetHeaderForId(rule.styleSheetId);
-          this.navigable = header && !header.isAnonymousInlineStyleSheet();
-        }
+      } else if (rule.styleSheetId) {
+        const header = rule.cssModel().styleSheetHeaderForId(rule.styleSheetId);
+        this.navigable = header && !header.isAnonymousInlineStyleSheet();
       }
     }
 

@@ -180,10 +180,8 @@ export class ChartViewport extends UI.Widget.VBox {
         // Need to scroll up, include height.
         this.vScrollElement.scrollTop = offset - (height + halfPadding);
       }
-    } else {
-      if (this.vScrollElement.scrollTop > offset) {
-        this.vScrollElement.scrollTop = offset;
-      }
+    } else if (this.vScrollElement.scrollTop > offset) {
+      this.vScrollElement.scrollTop = offset;
     }
 
     if (this.vScrollElement.scrollTop < offset - this.offsetHeight + height) {

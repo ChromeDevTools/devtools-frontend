@@ -9,7 +9,11 @@ import {TestRunner} from '../test_runner/test_runner.js';
  */
 export const DataGridTestRunner = {};
 
-DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
+DataGridTestRunner.dumpDataGrid = function(
+    root,
+    descentIntoCollapsed,
+    prefix,
+) {
   if (!prefix) {
     prefix = '';
   }
@@ -43,16 +47,16 @@ DataGridTestRunner.validateDataGrid = function(root) {
       throw 'Wrong parent for child ' + child.data.id + ' of ' + root.data.id;
     }
 
-    if (child.nextSibling !== ((i + 1 === children.length ? null : children[i + 1]))) {
-      throw 'Wrong child.nextSibling for ' + child.data.id + ' (' + i + ' of ' + children.length + ') ';
+    if (child.nextSibling !== (i + 1 === children.length ? null : children[i + 1])) {
+      throw ('Wrong child.nextSibling for ' + child.data.id + ' (' + i + ' of ' + children.length + ') ');
     }
 
-    if (child.previousSibling !== ((i ? children[i - 1] : null))) {
-      throw 'Wrong child.previousSibling for ' + child.data.id + ' (' + i + ' of ' + children.length + ') ';
+    if (child.previousSibling !== (i ? children[i - 1] : null)) {
+      throw ('Wrong child.previousSibling for ' + child.data.id + ' (' + i + ' of ' + children.length + ') ');
     }
 
     if (child.parent && !child.parent.isRoot && child.depth !== root.depth + 1) {
-      throw 'Wrong depth for ' + child.data.id + ' expected ' + (root.depth + 1) + ' but got ' + child.depth;
+      throw ('Wrong depth for ' + child.data.id + ' expected ' + (root.depth + 1) + ' but got ' + child.depth);
     }
 
     DataGridTestRunner.validateDataGrid(child);
@@ -65,11 +69,12 @@ DataGridTestRunner.validateDataGrid = function(root) {
       throw 'Selected node is not selectable';
     }
     let node = selectedNode;
-    for (; node && node !== root; node = node.parent) {
+    while (node && node !== root) {
+      node = node.parent;
     }
 
     if (!node) {
-      throw 'Selected node (' + selectedNode.data.id + ') is not within the DataGrid';
+      throw ('Selected node (' + selectedNode.data.id + ') is not within the DataGrid');
     }
   }
 };

@@ -112,6 +112,7 @@ export class WorkerRPC<LocalInterface extends Record<string, any>, RemoteInterfa
       },
     });
     while (Atomics.wait(this.semaphore, 0, 0) !== 'not-equal') {
+      // Await the semaphore to be equal
     }
     const [response] = this.semaphore;
 

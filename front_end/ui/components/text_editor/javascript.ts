@@ -536,7 +536,8 @@ async function getArgumentsForExpression(
 
 export function argumentsList(input: string): string[] {
   function parseParamList(cursor: CodeMirror.TreeCursor): string[] {
-    while (cursor.name !== 'ParamList' && cursor.nextSibling()) {
+    while (cursor.name !== 'ParamList') {
+      cursor.nextSibling();
     }
     const parameters = [];
     if (cursor.name === 'ParamList' && cursor.firstChild()) {
@@ -591,8 +592,9 @@ export function argumentsList(input: string): string[] {
           if (!cursor.firstChild()) {
             throw new Error(`${cursor.name} rule is expected to have children`);
           }
-          while (cursor.nextSibling() && cursor.name as string !== 'ClassBody') {
-          }
+          do {
+            cursor.nextSibling();
+          } while (cursor.name as string !== 'ClassBody');
           if (cursor.name as string === 'ClassBody' && cursor.firstChild()) {
             do {
               if (cursor.name as string === 'MethodDeclaration' && cursor.firstChild()) {

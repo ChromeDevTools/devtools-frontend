@@ -10,7 +10,14 @@
 
 const path = require('path');
 
-const FRONT_END_FOLDER = path.join(__filename, '..', '..', '..', '..', 'front_end');
+const FRONT_END_FOLDER = path.join(
+    __filename,
+    '..',
+    '..',
+    '..',
+    '..',
+    'front_end',
+);
 
 const CURRENT_YEAR = new Date().getFullYear();
 const LINE_LICENSE_HEADER = [
@@ -49,9 +56,13 @@ const BLOCK_LICENSE_HEADER = [
   'OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.',
 ];
 
-const LINE_REGEXES =
-    LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.replace(CURRENT_YEAR, '(\\(c\\) )?\\d{4}')));
-const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'), 'm');
+const LINE_REGEXES = LINE_LICENSE_HEADER.map(
+    line => new RegExp('[ ]?' + line.replace(CURRENT_YEAR, '(\\(c\\) )?\\d{4}')),
+);
+const BLOCK_REGEX = new RegExp(
+    '[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'),
+    'm',
+);
 
 const LICENSE_HEADER_ADDITION = LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';
 
@@ -136,17 +147,23 @@ module.exports = {
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
+  create: function (context) {
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     const filename = context.filename ?? context.getFilename();
     const fileName = filename;
     // Fix windows paths for exemptions
-    const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');
+    const relativePath = path
+      .relative(FRONT_END_FOLDER, fileName)
+      .replace(/\\/g, '/');
 
-    if (relativePath.startsWith('third_party') || fileName.endsWith('TestRunner.js') ||
-        EXCLUDED_FILES.includes(relativePath) || OTHER_LICENSE_HEADERS.includes(relativePath)) {
+    if (
+      relativePath.startsWith('third_party') ||
+      fileName.endsWith('TestRunner.js') ||
+      EXCLUDED_FILES.includes(relativePath) ||
+      OTHER_LICENSE_HEADERS.includes(relativePath)
+    ) {
       return {};
     }
 
@@ -158,7 +175,11 @@ module.exports = {
 
         const comments = sourceCode.getCommentsBefore(node.body[0]);
 
-        if (!comments || comments.length === 0 || comments.length === 1 && comments[0].type === 'Shebang') {
+        if (
+          !comments ||
+          comments.length === 0 ||
+          (comments.length === 1 && comments[0].type === 'Shebang')
+        ) {
           context.report({
             node,
             message: 'Missing license header',
@@ -184,22 +205,28 @@ module.exports = {
               node,
               message: 'Incorrect line license header',
               fix(fixer) {
-                return fixer.insertTextBefore(firstCommentToCheck, LICENSE_HEADER_ADDITION);
-              }
+                return fixer.insertTextBefore(
+                  firstCommentToCheck,
+                  LICENSE_HEADER_ADDITION,
+                );
+              },
             });
           }
-        } else {
-          if (isMissingBlockLineCommentLicense(firstCommentToCheck.value)) {
-            context.report({
-              node,
-              message: 'Incorrect block license header',
-              fix(fixer) {
-                return fixer.insertTextBefore(firstCommentToCheck, LICENSE_HEADER_ADDITION);
-              }
-            });
-          }
+        } else if (
+          isMissingBlockLineCommentLicense(firstCommentToCheck.value)
+        ) {
+          context.report({
+            node,
+            message: 'Incorrect block license header',
+            fix(fixer) {
+              return fixer.insertTextBefore(
+                firstCommentToCheck,
+                LICENSE_HEADER_ADDITION,
+              );
+            },
+          });
         }
-      }
+      },
     };
-  }
+  },
 };

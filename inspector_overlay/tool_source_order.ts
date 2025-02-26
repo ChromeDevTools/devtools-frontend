@@ -28,7 +28,7 @@
 //  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 //  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import {createChild, Overlay, type Bounds, type ResetData} from './common.js';
+import {type Bounds, createChild, Overlay, type ResetData} from './common.js';
 import {buildPath, emptyBounds, type PathBounds} from './highlight_common.js';
 
 interface Path {
@@ -249,14 +249,12 @@ export function getLabelType(
       labelType = LabelTypes.belowElementWider;
     }
     // Label goes in the bottom left corner of the element if putting it below the element would make it go off the screen
+  } else if (widerThanElement && tallerThanElement) {
+    labelType = LabelTypes.bottomCornerWiderTaller;
+  } else if (widerThanElement) {
+    labelType = LabelTypes.bottomCornerWider;
   } else {
-    if (widerThanElement && tallerThanElement) {
-      labelType = LabelTypes.bottomCornerWiderTaller;
-    } else if (widerThanElement) {
-      labelType = LabelTypes.bottomCornerWider;
-    } else {
-      labelType = LabelTypes.bottomCornerTaller;
-    }
+    labelType = LabelTypes.bottomCornerTaller;
   }
   return labelType;
 }

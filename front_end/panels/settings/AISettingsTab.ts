@@ -364,6 +364,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         })}`,
       },
     ];
+
     return html`
       <div class="shared-disclaimer">
         <h2>${i18nString(UIStrings.boostYourProductivity)}</h2>

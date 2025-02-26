@@ -450,25 +450,23 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
           messageElement = messageElement || this.format(args);
         }
       }
+    } else if (this.message.source === Protocol.Log.LogEntrySource.Network) {
+      messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
     } else {
-      if (this.message.source === Protocol.Log.LogEntrySource.Network) {
-        messageElement = this.formatAsNetworkRequest() || this.format([messageText]);
-      } else {
-        const messageInParameters = this.message.parameters && messageText === (this.message.parameters[0] as string);
-        // These terms are locked because the console message will not be translated anyway.
-        if (this.message.source === Protocol.Log.LogEntrySource.Violation) {
-          messageText = i18nString(UIStrings.violationS, {PH1: messageText});
-        } else if (this.message.source === Protocol.Log.LogEntrySource.Intervention) {
-          messageText = i18nString(UIStrings.interventionS, {PH1: messageText});
-        } else if (this.message.source === Protocol.Log.LogEntrySource.Deprecation) {
-          messageText = i18nString(UIStrings.deprecationS, {PH1: messageText});
-        }
-        const args = this.message.parameters || [messageText];
-        if (messageInParameters) {
-          args[0] = messageText;
-        }
-        messageElement = this.format(args);
+      const messageInParameters = this.message.parameters && messageText === (this.message.parameters[0] as string);
+      // These terms are locked because the console message will not be translated anyway.
+      if (this.message.source === Protocol.Log.LogEntrySource.Violation) {
+        messageText = i18nString(UIStrings.violationS, {PH1: messageText});
+      } else if (this.message.source === Protocol.Log.LogEntrySource.Intervention) {
+        messageText = i18nString(UIStrings.interventionS, {PH1: messageText});
+      } else if (this.message.source === Protocol.Log.LogEntrySource.Deprecation) {
+        messageText = i18nString(UIStrings.deprecationS, {PH1: messageText});
       }
+      const args = this.message.parameters || [messageText];
+      if (messageInParameters) {
+        args[0] = messageText;
+      }
+      messageElement = this.format(args);
     }
     messageElement.classList.add('console-message-text');
 

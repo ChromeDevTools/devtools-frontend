@@ -517,14 +517,12 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         this.resizerElementInternal.style.left = sidebarSizeValue;
         this.resizerElementInternal.style.marginLeft = -this.resizerElementSize / 2 + 'px';
       }
+    } else if (this.secondIsSidebar) {
+      this.resizerElementInternal.style.bottom = sidebarSizeValue;
+      this.resizerElementInternal.style.marginBottom = -this.resizerElementSize / 2 + 'px';
     } else {
-      if (this.secondIsSidebar) {
-        this.resizerElementInternal.style.bottom = sidebarSizeValue;
-        this.resizerElementInternal.style.marginBottom = -this.resizerElementSize / 2 + 'px';
-      } else {
-        this.resizerElementInternal.style.top = sidebarSizeValue;
-        this.resizerElementInternal.style.marginTop = -this.resizerElementSize / 2 + 'px';
-      }
+      this.resizerElementInternal.style.top = sidebarSizeValue;
+      this.resizerElementInternal.style.marginTop = -this.resizerElementSize / 2 + 'px';
     }
 
     this.sidebarSizeDIP = sizeDIP;

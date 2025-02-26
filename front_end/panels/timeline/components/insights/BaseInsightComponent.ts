@@ -69,6 +69,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
   #selected = false;
   #model: T|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
 
   #insightsAskAiEnabled = false;
 
@@ -138,6 +139,14 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
 
   set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#parsedTrace = parsedTrace;
+  }
+
+  set fieldMetrics(fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults) {
+    this.#fieldMetrics = fieldMetrics;
+  }
+
+  get fieldMetrics(): Trace.Insights.Common.CrUXFieldMetricResults|null {
+    return this.#fieldMetrics;
   }
 
   #dispatchInsightToggle(): void {

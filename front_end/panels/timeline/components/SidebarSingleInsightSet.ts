@@ -214,7 +214,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     return {lcp, cls, inp};
   }
 
-  #getFieldMetrics(insightSetKey: string): Omit<Trace.Insights.Common.CrUXFieldMetricResults, 'fcp'>|null {
+  #getFieldMetrics(insightSetKey: string): Trace.Insights.Common.CrUXFieldMetricResults|null {
     const insightSet = this.#data.insights?.get(insightSetKey);
     if (!insightSet) {
       return null;
@@ -380,6 +380,8 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
+      const fieldMetrics = this.#getFieldMetrics(insightSetKey);
+
       // clang-format off
       const component = html`<div>
         <${componentClass.litTagName}
@@ -387,7 +389,8 @@ export class SidebarSingleInsightSet extends HTMLElement {
           .model=${model}
           .bounds=${insightSet.bounds}
           .insightSetKey=${insightSetKey}
-          .parsedTrace=${this.#data.parsedTrace}>
+          .parsedTrace=${this.#data.parsedTrace}
+          .fieldMetrics=${fieldMetrics}>
         </${componentClass.litTagName}>
       </div>`;
       // clang-format on

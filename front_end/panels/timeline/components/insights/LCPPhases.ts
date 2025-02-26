@@ -150,6 +150,46 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return overlays;
   }
 
+  #renderFieldPhases(): Lit.LitTemplate|null {
+    if (!this.fieldMetrics) {
+      return null;
+    }
+
+    const {ttfb, loadDelay, loadDuration, renderDelay} = this.fieldMetrics.lcpPhases;
+    if (!ttfb || !loadDelay || !loadDuration || !renderDelay) {
+      return null;
+    }
+
+    const ttfbMillis = i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(ttfb.value));
+    const loadDelayMillis =
+        i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(loadDelay.value));
+    const loadDurationMillis =
+        i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(loadDuration.value));
+    const renderDelayMillis =
+        i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microToMilli(renderDelay.value));
+
+    const rows = [
+      {values: [i18nString(UIStrings.timeToFirstByte), ttfbMillis]},
+      {values: [i18nString(UIStrings.resourceLoadDelay), loadDelayMillis]},
+      {values: [i18nString(UIStrings.resourceLoadDuration), loadDurationMillis]},
+      {values: [i18nString(UIStrings.elementRenderDelay), renderDelayMillis]},
+    ];
+
+    // clang-format off
+    return html`
+      <div class="insight-section">
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.fieldDuration)],
+            rows,
+          } as TableData}>
+        </devtools-performance-table>
+      </div>
+    `;
+    // clang-format on
+  }
+
   override renderContent(): Lit.LitTemplate {
     if (!this.model) {
       return Lit.nothing;
@@ -172,17 +212,25 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     });
 
     // clang-format off
-    return html`
+    const sections: Lit.LitTemplate[] = [html`
       <div class="insight-section">
-        ${html`<devtools-performance-table
+        <devtools-performance-table
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
             rows,
           } as TableData}>
-        </devtools-performance-table>`}
-      </div>`;
+        </devtools-performance-table>
+      </div>`
+    ];
     // clang-format on
+
+    const fieldDataSection = this.#renderFieldPhases();
+    if (fieldDataSection) {
+      sections.push(fieldDataSection);
+    }
+
+    return html`${sections}`;
   }
 }
 

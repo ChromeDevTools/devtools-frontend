@@ -24,7 +24,9 @@ const CRUX_API_KEY = 'AIzaSyCCSOx25vrb5z0tbedCB3_JRzzbVW6Uwgw';
 const DEFAULT_ENDPOINT = `https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${CRUX_API_KEY}`;
 
 export type StandardMetricNames = 'cumulative_layout_shift'|'first_contentful_paint'|'first_input_delay'|
-    'interaction_to_next_paint'|'largest_contentful_paint'|'experimental_time_to_first_byte'|'round_trip_time';
+    'interaction_to_next_paint'|'largest_contentful_paint'|'experimental_time_to_first_byte'|'round_trip_time'|
+    'largest_contentful_paint_image_time_to_first_byte'|'largest_contentful_paint_image_resource_load_delay'|
+    'largest_contentful_paint_image_resource_load_duration'|'largest_contentful_paint_image_element_render_delay';
 export type MetricNames = StandardMetricNames|'form_factors';
 export type FormFactor = 'DESKTOP'|'PHONE'|'TABLET';
 export type DeviceScope = FormFactor|'ALL';
@@ -114,6 +116,10 @@ const metrics: MetricNames[] = [
   'interaction_to_next_paint',
   'round_trip_time',
   'form_factors',
+  'largest_contentful_paint_image_time_to_first_byte',
+  'largest_contentful_paint_image_resource_load_delay',
+  'largest_contentful_paint_image_resource_load_duration',
+  'largest_contentful_paint_image_element_render_delay',
 ];
 
 export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {

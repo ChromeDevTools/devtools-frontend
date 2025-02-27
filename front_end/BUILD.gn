@@ -10,6 +10,7 @@ import("../scripts/build/typescript/typescript.gni")
 
 group("front_end") {
   public_deps = [
+    ":devtools_json",
     ":embedder-scripts",
     ":html_entrypoints",
     ":integration_test_runner",
@@ -47,6 +48,19 @@ group("integration_test_runner") {
   metadata = {
     grd_files = get_target_outputs(":integration_test_runner-gen")
   }
+}
+
+node_action("devtools_json") {
+  inputs = []
+
+  script = "scripts/build/generate_devtools_json.js"
+
+  args = [ rebase_path(
+          "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json",
+          root_build_dir) ]
+
+  outputs =
+      [ "$target_gen_dir/.well-known/appspecific/com.chrome.devtools.json" ]
 }
 
 node_action("html_entrypoints") {

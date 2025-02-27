@@ -229,8 +229,8 @@ const enum TagType {
 interface OpeningTagContext {
   tagType: TagType.OPENING;
   readonly adornerContainer: HTMLElement;
-  adorners: Adorners.Adorner.Adorner[];
-  styleAdorners: Adorners.Adorner.Adorner[];
+  adorners: Set<Adorners.Adorner.Adorner>;
+  styleAdorners: Set<Adorners.Adorner.Adorner>;
   readonly adornersThrottler: Common.Throttler.Throttler;
   canAddAttributes: boolean;
   slot?: Adorners.Adorner.Adorner;
@@ -303,8 +303,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.tagTypeContext = {
         tagType: TagType.OPENING,
         adornerContainer: this.contentElement.createChild('div', 'adorner-container hidden'),
-        adorners: [],
-        styleAdorners: [],
+        adorners: new Set(),
+        styleAdorners: new Set(),
         adornersThrottler: new Common.Throttler.Throttler(100),
         canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE,
       };
@@ -2136,7 +2136,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       jslogContext: name,
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.tagTypeContext.adorners.push(adorner);
+      this.tagTypeContext.adorners.add(adorner);
       ElementsPanel.instance().registerAdorner(adorner);
       this.updateAdorners(this.tagTypeContext);
     }
@@ -2157,7 +2157,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       content: adornerContent,
       jslogContext: 'slot',
     };
-    context.adorners.push(adorner);
+    context.adorners.add(adorner);
     ElementsPanel.instance().registerAdorner(adorner);
     this.updateAdorners(context);
     return adorner;
@@ -2179,7 +2179,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       jslogContext: 'media',
     };
     if (isOpeningTag(this.tagTypeContext)) {
-      this.tagTypeContext.adorners.push(adorner);
+      this.tagTypeContext.adorners.add(adorner);
       ElementsPanel.instance().registerAdorner(adorner);
       this.updateAdorners(this.tagTypeContext);
     }
@@ -2187,27 +2187,25 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   removeAdorner(adornerToRemove: Adorners.Adorner.Adorner, context: OpeningTagContext): void {
-    const adorners = context.adorners;
     ElementsPanel.instance().deregisterAdorner(adornerToRemove);
     adornerToRemove.remove();
-    for (let i = 0; i < adorners.length; ++i) {
-      if (adorners[i] === adornerToRemove) {
-        adorners.splice(i, 1);
-        this.updateAdorners(context);
-        return;
-      }
-    }
+    context.adorners.delete(adornerToRemove);
+    context.styleAdorners.delete(adornerToRemove);
+    this.updateAdorners(context);
   }
 
-  removeAllAdorners(): void {
-    if (isOpeningTag(this.tagTypeContext)) {
-      for (const adorner of this.tagTypeContext.adorners) {
-        ElementsPanel.instance().deregisterAdorner(adorner);
-        adorner.remove();
-      }
+  /**
+   * @param adornerType optional type of adorner to remove. If not provided, remove all adorners.
+   */
+  removeAdornersByType(adornerType?: ElementsComponents.AdornerManager.RegisteredAdorners): void {
+    if (!isOpeningTag(this.tagTypeContext)) {
+      return;
+    }
 
-      this.tagTypeContext.adorners = [];
-      this.updateAdorners(this.tagTypeContext);
+    for (const adorner of this.tagTypeContext.adorners) {
+      if (adorner.name === adornerType || !adornerType) {
+        this.removeAdorner(adorner, this.tagTypeContext);
+      }
     }
   }
 
@@ -2220,19 +2218,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (!adornerContainer) {
       return Promise.resolve();
     }
-    const adorners = context.adorners;
-    if (adorners.length === 0) {
-      adornerContainer.classList.add('hidden');
-      return Promise.resolve();
-    }
-
-    adorners.sort(adornerComparator);
 
     adornerContainer.removeChildren();
-    for (const adorner of adorners) {
+    for (const adorner of [...context.adorners].sort(adornerComparator)) {
       adornerContainer.appendChild(adorner);
     }
-    adornerContainer.classList.remove('hidden');
+    adornerContainer.classList.toggle('hidden', context.adorners.size === 0);
     return Promise.resolve();
   }
 
@@ -2252,7 +2243,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     for (const styleAdorner of this.tagTypeContext.styleAdorners) {
       this.removeAdorner(styleAdorner, this.tagTypeContext);
     }
-    this.tagTypeContext.styleAdorners = [];
     if (!styles) {
       return;
     }
@@ -2322,7 +2312,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    context.styleAdorners.push(adorner);
+    context.styleAdorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
@@ -2364,7 +2354,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    context.styleAdorners.push(adorner);
+    context.styleAdorners.add(adorner);
 
     if (node.domModel().overlayModel().isHighlightedScrollSnapInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
@@ -2408,7 +2398,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    context.styleAdorners.push(adorner);
+    context.styleAdorners.add(adorner);
 
     if (node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
@@ -2451,7 +2441,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
           adorner.toggle(enabled);
         });
 
-    context.styleAdorners.push(adorner);
+    context.styleAdorners.add(adorner);
     if (node.domModel().overlayModel().isHighlightedContainerQueryInPersistentOverlay(nodeId)) {
       adorner.toggle(true);
     }
@@ -2479,15 +2469,17 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       ariaLabelActive: i18nString(UIStrings.openMediaPanel),
     });
 
-    context.styleAdorners.push(adorner);
+    context.styleAdorners.add(adorner);
   }
 
   updateScrollAdorner(): void {
     if (!isOpeningTag(this.tagTypeContext)) {
       return;
     }
-    const scrollAdorner = this.tagTypeContext.adorners.find(x => x.name === 'scroll');
-    // Check if the node is scrollable, or if it's the <html> element and the document is scrollable because the top-level document (#document) doesn't have a corresponding tree element.
+    const scrollAdorner = this.tagTypeContext.adorners.values().find(
+        x => x.name === ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
+    // Check if the node is scrollable, or if it's the <html> element and the document is scrollable
+    // because the top-level document (#document) doesn't have a corresponding tree element.
     const needsAScrollAdorner = (this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
         (this.node().nodeName() !== '#document' && this.node().isScrollable());
     if (needsAScrollAdorner && !scrollAdorner) {

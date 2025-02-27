@@ -323,10 +323,6 @@ export abstract class AiAgent<T> {
     return this.#id;
   }
 
-  get isEmpty(): boolean {
-    return this.#history.length === 0;
-  }
-
   get origin(): string|undefined {
     return this.#origin;
   }

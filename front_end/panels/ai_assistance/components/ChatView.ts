@@ -15,7 +15,8 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
+import {type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
+import {ConversationType} from '../AiHistoryStorage.js';
 
 import stylesRaw from './chatView.css.js';
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
@@ -274,7 +275,7 @@ export interface Props {
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
-  agentType?: AgentType;
+  conversationType?: ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
@@ -488,7 +489,7 @@ export class ChatView extends HTMLElement {
             suggestions: this.#props.emptyStateSuggestions,
             userInfo: this.#props.userInfo,
             markdownRenderer: this.#markdownRenderer,
-            agentType: this.#props.agentType,
+            conversationType: this.#props.conversationType,
             changeSummary: this.#props.changeSummary,
             patchSuggestion: this.#props.patchSuggestion,
             patchSuggestionLoading: this.#props.patchSuggestionLoading,
@@ -501,7 +502,7 @@ export class ChatView extends HTMLElement {
           })}
           ${this.#props.isReadOnly
             ? renderReadOnlySection({
-                agentType: this.#props.agentType,
+                conversationType: this.#props.conversationType,
                 onNewConversation: this.#props.onNewConversation,
               })
             : renderChatInput({
@@ -513,7 +514,7 @@ export class ChatView extends HTMLElement {
                 selectedContext: this.#props.selectedContext,
                 inspectElementToggled: this.#props.inspectElementToggled,
                 multimodalInputEnabled: this.#props.multimodalInputEnabled,
-                agentType: this.#props.agentType,
+                conversationType: this.#props.conversationType,
                 imageInput: this.#props.imageInput,
                 onContextClick: this.#props.onContextClick,
                 onInspectElementClick: this.#props.onInspectElementClick,
@@ -957,20 +958,20 @@ function renderChatMessage({
 function renderSelection({
   selectedContext,
   inspectElementToggled,
-  agentType,
+  conversationType,
   onContextClick,
   onInspectElementClick,
 }: {
   selectedContext: ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
-  agentType?: AgentType, onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
+  conversationType?: ConversationType, onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
 }): Lit.LitTemplate {
-  if (!agentType) {
+  if (!conversationType) {
     return Lit.nothing;
   }
 
   // TODO: currently the picker behavior is SDKNode specific.
-  const hasPickerBehavior = agentType === AgentType.STYLING;
+  const hasPickerBehavior = conversationType === ConversationType.STYLING;
 
   const resourceClass = Lit.Directives.classMap({
     'not-selected': !selectedContext,
@@ -1123,11 +1124,11 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
   // clang-format on
 }
 
-function renderReadOnlySection({onNewConversation, agentType}: {
+function renderReadOnlySection({onNewConversation, conversationType}: {
   onNewConversation: () => void,
-  agentType?: AgentType,
+  conversationType?: ConversationType,
 }): Lit.LitTemplate {
-  if (!agentType) {
+  if (!conversationType) {
     return Lit.nothing;
   }
 
@@ -1283,7 +1284,7 @@ function renderChatInput({
   selectedContext,
   inspectElementToggled,
   multimodalInputEnabled,
-  agentType,
+  conversationType,
   imageInput,
   onContextClick,
   onInspectElementClick,
@@ -1302,7 +1303,7 @@ function renderChatInput({
   selectedContext: ConversationContext<unknown> | null,
   inspectElementToggled: boolean,
   multimodalInputEnabled?: boolean,
-  agentType?: AgentType,
+  conversationType?: ConversationType,
   imageInput?: string,
   onContextClick: () => void ,
   onInspectElementClick: () => void,
@@ -1313,7 +1314,7 @@ function renderChatInput({
   onTakeScreenshot?: () => void,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
-  if (!agentType) {
+  if (!conversationType) {
     return Lit.nothing;
   }
 
@@ -1340,7 +1341,7 @@ function renderChatInput({
           ${renderSelection({
             selectedContext,
             inspectElementToggled,
-            agentType,
+            conversationType,
             onContextClick,
             onInspectElementClick,
           })}
@@ -1366,7 +1367,8 @@ function renderChatInput({
         ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation })}
       </div>
     </div>
-  </form>`;
+  </form>
+`;
     // clang-format on
   }
 
@@ -1522,7 +1524,7 @@ function renderMainContents({
   suggestions,
   userInfo,
   markdownRenderer,
-  agentType,
+  conversationType,
   changeSummary,
   patchSuggestion,
   patchSuggestionLoading,
@@ -1543,7 +1545,7 @@ function renderMainContents({
   suggestions: string[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
-  agentType?: AgentType,
+  conversationType?: ConversationType,
   changeSummary?: string,
   patchSuggestion?: string,
   patchSuggestionLoading?: boolean,
@@ -1563,7 +1565,7 @@ function renderMainContents({
     return renderDisabledState(renderAidaUnavailableContents(aidaAvailability));
   }
 
-  if (!agentType) {
+  if (!conversationType) {
     return renderNoAgentState();
   }
 

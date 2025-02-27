@@ -445,7 +445,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
-      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.STYLING);
+      assert.deepEqual(updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.STYLING);
     });
 
     it('should select the performance insights agent if it is enabled', async () => {
@@ -488,7 +488,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
-      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
+      assert.deepEqual(
+          updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.PERFORMANCE_INSIGHT);
     });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
@@ -531,7 +532,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
-      assert.deepEqual(updatedViewInputAfterNewChat.agentType, AiAssistance.AgentType.PERFORMANCE);
+      assert.deepEqual(updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.PERFORMANCE);
     });
 
     it('should switch agents and restore history', async () => {
@@ -666,7 +667,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       updatedViewInputAfterMessage.onDeleteClick();
     });
     assert.deepEqual(updatedViewInputAfterDelete.messages, []);
-    assert.isUndefined(updatedViewInputAfterDelete.agentType);
+    assert.isUndefined(updatedViewInputAfterDelete.conversationType);
   });
 
   it('should select default agent based on open panel after clearing the chat', async () => {
@@ -703,7 +704,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       updatedViewInputAfterMessage.onDeleteClick();
     });
     assert.deepEqual(updatedViewInputAfterDelete.messages, []);
-    assert.deepEqual(updatedViewInputAfterDelete.agentType, AiAssistance.AgentType.STYLING);
+    assert.deepEqual(updatedViewInputAfterDelete.conversationType, AiAssistance.ConversationType.STYLING);
   });
 
   it('should have empty state after clear chat history', async () => {
@@ -761,7 +762,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       contextMenu.invokeHandler(clearAll.id());
     });
     assert.deepEqual(updatedViewInputAfterClearAll.messages, []);
-    assert.isUndefined(updatedViewInputAfterClearAll.agentType);
+    assert.isUndefined(updatedViewInputAfterClearAll.conversationType);
     contextMenu.discard();
 
     contextMenu = getMenu(() => {
@@ -936,34 +937,34 @@ describeWithMockConnection('AI Assistance Panel', () => {
   describe('auto agent selection for panels', () => {
     const tests: Array<{
       panel: {new (...args: any[]): UI.Panel.Panel},
-      expectedAgentType: AiAssistance.AgentType,
+      expectedConversationType: AiAssistance.ConversationType,
       featureFlagName: string,
     }> =
         [
           {
             panel: Elements.ElementsPanel.ElementsPanel,
-            expectedAgentType: AiAssistance.AgentType.STYLING,
+            expectedConversationType: AiAssistance.ConversationType.STYLING,
             featureFlagName: 'devToolsFreestyler',
           },
           {
             panel: Network.NetworkPanel.NetworkPanel,
-            expectedAgentType: AiAssistance.AgentType.NETWORK,
+            expectedConversationType: AiAssistance.ConversationType.NETWORK,
             featureFlagName: 'devToolsAiAssistanceNetworkAgent',
           },
           {
             panel: Sources.SourcesPanel.SourcesPanel,
-            expectedAgentType: AiAssistance.AgentType.FILE,
+            expectedConversationType: AiAssistance.ConversationType.FILE,
             featureFlagName: 'devToolsAiAssistanceFileAgent',
           },
           {
             panel: Timeline.TimelinePanel.TimelinePanel,
-            expectedAgentType: AiAssistance.AgentType.PERFORMANCE,
+            expectedConversationType: AiAssistance.ConversationType.PERFORMANCE,
             featureFlagName: 'devToolsAiAssistancePerformanceAgent',
           }
         ];
 
     for (const test of tests) {
-      it(`should select ${test.expectedAgentType} conversation when the panel ${test.panel.name} is opened`,
+      it(`should select ${test.expectedConversationType} conversation when the panel ${test.panel.name} is opened`,
           async () => {
             updateHostConfig({
               [test.featureFlagName]: {
@@ -976,7 +977,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
               aidaClient: mockAidaClient([[{explanation: 'test'}]]),
             });
 
-            assert.strictEqual(initialViewInput.agentType, test.expectedAgentType);
+            assert.strictEqual(initialViewInput.conversationType, test.expectedConversationType);
           });
 
       it(`should reset the conversation when ${test.panel.name} is closed and no other panels are open`, async () => {
@@ -990,12 +991,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
         const {initialViewInput, expectViewUpdate} = await createAiAssistancePanel();
 
-        assert.strictEqual(initialViewInput.agentType, test.expectedAgentType);
+        assert.strictEqual(initialViewInput.conversationType, test.expectedConversationType);
 
         const updatedViewInput = await expectViewUpdate(() => {
           UI.Context.Context.instance().setFlavor(test.panel, null);
         });
-        assert.isUndefined(updatedViewInput.agentType);
+        assert.isUndefined(updatedViewInput.conversationType);
       });
 
       it(`should render no conversation state if the ${
@@ -1009,7 +1010,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
             UI.Context.Context.instance().setFlavor(test.panel, sinon.createStubInstance(test.panel));
             const {initialViewInput} = await createAiAssistancePanel();
 
-            assert.isUndefined(initialViewInput.agentType);
+            assert.isUndefined(initialViewInput.conversationType);
           });
     }
 
@@ -1026,7 +1027,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
                Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
            const {initialViewInput} = await createAiAssistancePanel();
 
-           assert.strictEqual(initialViewInput.agentType, AiAssistance.AgentType.PERFORMANCE_INSIGHT);
+           assert.strictEqual(initialViewInput.conversationType, AiAssistance.ConversationType.PERFORMANCE_INSIGHT);
          });
     });
   });

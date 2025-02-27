@@ -7,6 +7,50 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
+/** The security origin for all DevTools (front-end) resources. */
+const DEVTOOLS_SECURITY_ORIGIN = 'devtools://devtools';
+
+/** The (absolute) path to the project settings file. */
+const WELL_KNOWN_DEVTOOLS_JSON_PATH = '/.well-known/appspecific/com.chrome.devtools.json';
+
+/**
+ * Checks if the origin of the `url` is `devtools://devtools` (meaning that it's
+ * served by the `DevToolsDataSource` in Chromium) and it's path starts with
+ * `/bundled/`.
+ *
+ * @param url the URL string to check.
+ * @returns `true` if `url` refers to a resource in the Chromium DevTools bundle.
+ */
+function isDevToolsBundledURL(url: string): boolean {
+  return url.startsWith(`${DEVTOOLS_SECURITY_ORIGIN}/bundled/`);
+}
+
+/**
+ * Checks if the `frame` should be considered local and safe for loading the
+ * project settings from.
+ *
+ * This checks the security origin of `frame` for whether Chromium considers it
+ * to be localhost. It also supports special logic for when the origin of the
+ * `frame` is `'devtools://devtools'`, in which case we check whether the path
+ * starts with `'/bundled/'` and `debugFrontend=true` is passed as a query
+ * parameter (indicating that `--custom-devtools-frontend=` command line option
+ * was used).
+ *
+ * @param frame the `ResourceTreeFrame` to check.
+ * @returns `true` if `frame` is considered safe for loading the project settings.
+ * @see https://goo.gle/devtools-json-design
+ */
+function isLocalFrame(frame: SDK.ResourceTreeModel.ResourceTreeFrame|null|undefined):
+    frame is SDK.ResourceTreeModel.ResourceTreeFrame {
+  if (!frame) {
+    return false;
+  }
+  if (isDevToolsBundledURL(frame.url)) {
+    return new URL(frame.url).searchParams.get('debugFrontend') === 'true';
+  }
+  return frame.securityOriginDetails?.isLocalhost ?? false;
+}
+
 /**
  * The structure of the project settings.
  *
@@ -124,12 +168,16 @@ export class ProjectSettingsModel extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   async #loadAndValidateProjectSettings(target: SDK.Target.Target): Promise<ProjectSettings> {
     const frame = target.model(SDK.ResourceTreeModel.ResourceTreeModel)?.mainFrame;
-    if (!frame?.securityOriginDetails?.isLocalhost) {
+    if (!isLocalFrame(frame)) {
       return EMPTY_PROJECT_SETTINGS;
     }
     const initiatorUrl = frame.url;
     const frameId = frame.id;
-    const url = new URL('/.well-known/appspecific/com.chrome.devtools.json', initiatorUrl);
+    let url = WELL_KNOWN_DEVTOOLS_JSON_PATH;
+    if (isDevToolsBundledURL(initiatorUrl)) {
+      url = '/bundled' + url;
+    }
+    url = new URL(url, initiatorUrl).toString();
     const {content} = await this.#pageResourceLoader.loadResource(
         Platform.DevToolsPath.urlString`${url}`,
         {target, frameId, initiatorUrl},

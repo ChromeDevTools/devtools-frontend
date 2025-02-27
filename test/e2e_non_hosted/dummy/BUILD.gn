@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("dummy") {
+ts_e2e_library("dummy") {
   deps = [ "../conductor:implementation" ]
   sources = [ "dummy_test.ts" ]
 }

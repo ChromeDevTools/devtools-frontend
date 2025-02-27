@@ -13,7 +13,7 @@ import {type BrowserWrapper, DEFAULT_BROWSER_SETTINGS, Launcher} from '../shared
 import {DEFAULT_DEVTOOLS_SETTINGS, setupDevToolsPage} from '../shared/frontend-helper.js';
 import {setupInspectedPage} from '../shared/target-helper.js';
 
-import type {HarnessSettings, SuiteSettings, TestCallbackWithState} from './mocha-interface-helpers.js';
+import type {TestCallbackWithState} from './mocha-interface-helpers.js';
 
 class DebugModeNotice {
   /* eslint-disable no-console */
@@ -50,7 +50,7 @@ export class StateProvider {
   static instance = new StateProvider();
 
   debugNotice: DebugModeNotice;
-  settingsCallbackMap: Map<Mocha.Suite, SuiteSettings>;
+  settingsCallbackMap: Map<Mocha.Suite, E2E.SuiteSettings>;
   browserMap: Map<string, BrowserWrapper>;
   static serverPort: Number;
 
@@ -60,7 +60,7 @@ export class StateProvider {
     this.browserMap = new Map();
   }
 
-  registerSettingsCallback(suite: Mocha.Suite, suiteSettings: SuiteSettings) {
+  registerSettingsCallback(suite: Mocha.Suite, suiteSettings: E2E.SuiteSettings) {
     this.settingsCallbackMap.set(suite, suiteSettings);
   }
 
@@ -112,7 +112,7 @@ export class StateProvider {
     return {state, browsingContext};
   }
 
-  private async getSettings(suite: Mocha.Suite): Promise<HarnessSettings> {
+  private async getSettings(suite: Mocha.Suite): Promise<E2E.HarnessSettings> {
     const settings = this.settingsCallbackMap.get(suite);
     if (settings) {
       return mergeSettings(settings, DEFAULT_SETTINGS);
@@ -138,7 +138,7 @@ export class StateProvider {
   }
 }
 
-export function mergeSettings(s1: SuiteSettings, s2: HarnessSettings): HarnessSettings {
+export function mergeSettings(s1: E2E.SuiteSettings, s2: E2E.HarnessSettings): E2E.HarnessSettings {
   function mergeAsSet<T>(arr1?: T[], arr2?: T[]) {
     return Array.from(new Set(arr1 ?? []).union(new Set(arr2 ?? [])));
   }

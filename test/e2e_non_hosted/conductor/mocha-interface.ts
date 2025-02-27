@@ -11,11 +11,7 @@ import * as Path from 'path';
 import {platform, type Platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {
-  makeInstrumentedTestFunction,
-  type SuiteSettings,
-  type TestCallbackWithState
-} from './mocha-interface-helpers.js';
+import {makeInstrumentedTestFunction, type TestCallbackWithState} from './mocha-interface-helpers.js';
 import {StateProvider} from './state-provider.js';
 
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;

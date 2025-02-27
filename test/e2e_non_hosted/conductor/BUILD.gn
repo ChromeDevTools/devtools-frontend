@@ -12,7 +12,7 @@ group("conductor") {
   ]
 }
 
-node_ts_library("implementation") {
+ts_e2e_library("implementation") {
   deps = [
     "../../conductor:implementation",
     "../shared",

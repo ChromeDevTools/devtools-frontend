@@ -268,6 +268,10 @@ def main():
     parser.add_argument('--rewrapper-binary', required=False)
     parser.add_argument('--rewrapper-cfg', required=False)
     parser.add_argument('--rewrapper-exec-root', required=False)
+    parser.add_argument('--additional-type-definitions',
+                        nargs='*',
+                        required=False,
+                        help='List of TypeScript declaration files')
     parser.add_argument('--use-esbuild', action='store_true')
     parser.add_argument('--tsconfig-only', action='store_true')
     parser.set_defaults(test_only=False,
@@ -299,6 +303,10 @@ def main():
         sources = shlex.split(opts.sources_list.read())
 
     all_ts_files = sources + GLOBAL_TYPESCRIPT_DEFINITION_FILES
+
+    if (opts.additional_type_definitions):
+        all_ts_files += opts.additional_type_definitions
+
     tsconfig['files'] = [
         get_relative_path_from_output_directory(x) for x in all_ts_files
     ]

@@ -5,29 +5,11 @@
 import type * as Mocha from 'mocha';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
-import type {Platform} from '../../conductor/platform.js';
 import {ScreenshotError} from '../../conductor/screenshot-error.js';
 import {TestConfig} from '../../conductor/test_config.js';
-import type {BrowserSettings, BrowserWrapper} from '../shared/browser-helper.js';
-import type {DevToolsFronendPage, DevtoolsSettings} from '../shared/frontend-helper.js';
+import type {BrowserWrapper} from '../shared/browser-helper.js';
+import type {DevToolsFronendPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
-declare global {
-  namespace Mocha {
-    export interface TestFunction {
-      (title: string, fn: TestCallbackWithState): void;
-
-      skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;
-    }
-    export interface Suite {
-      settings: SuiteSettings;
-      state: State;
-      browser: BrowserWrapper;
-    }
-  }
-}
-
-export type HarnessSettings = BrowserSettings&DevtoolsSettings;
-export type SuiteSettings = Partial<HarnessSettings>;
 
 export interface State {
   devToolsPage: DevToolsFronendPage;

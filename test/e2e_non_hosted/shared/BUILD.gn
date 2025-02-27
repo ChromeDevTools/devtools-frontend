@@ -4,7 +4,7 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("shared") {
+ts_e2e_library("shared") {
   deps = [
     "../../conductor:implementation",
     "../../shared",

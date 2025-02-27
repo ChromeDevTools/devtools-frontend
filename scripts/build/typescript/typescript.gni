@@ -148,6 +148,11 @@ template("ts_library") {
       args += [ "--tsconfig-only" ]
     }
 
+    if (defined(invoker.additional_type_definitions)) {
+      args += [ "--additional-type-definitions" ] +
+              rebase_path(invoker.additional_type_definitions, root_build_dir)
+    }
+
     if (defined(invoker.sourceslist)) {
       args += [
         "--sources-list",
@@ -282,6 +287,19 @@ template("node_ts_library") {
     inputs =
         [ devtools_location_prepend + "node_modules/@types/node/index.d.ts" ]
 
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "visibility",
+                             "deps",
+                             "additional_type_definitions",
+                           ])
+  }
+}
+template("ts_e2e_library") {
+  node_ts_library(target_name) {
+    additional_type_definitions =
+        [ devtools_location_prepend + "test/e2e_non_hosted/types.d.ts" ]
     forward_variables_from(invoker,
                            [
                              "sources",

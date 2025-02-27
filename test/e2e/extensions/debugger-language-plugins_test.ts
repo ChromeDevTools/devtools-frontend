@@ -672,6 +672,7 @@ describe('The Debugger Language Plugins', () => {
       dwoUrl,
       initiatorUrl,
       '',
+      '',
       '404',
       '',
     ]);

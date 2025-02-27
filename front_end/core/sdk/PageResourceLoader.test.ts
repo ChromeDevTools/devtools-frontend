@@ -66,6 +66,7 @@ describeWithLocale('PageResourceLoader', () => {
       success: true,
       initiator,
       size: null,
+      duration: null,
     };
 
     loader.resourceLoadedThroughExtension(extensionResource);

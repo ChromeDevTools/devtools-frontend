@@ -15,7 +15,7 @@ describeWithEnvironment('DeveloperResourcesView', () => {
     const extensionId = 'extensionId';
     const initiator = {target: null, frameId: null, extensionId, initiatorUrl: urlString`${extensionId}`};
 
-    const commonInfo = {success: true, initiator, size: 10};
+    const commonInfo = {success: true, initiator, size: 10, duration: 20};
     const resource1 = {url: urlString`http://www.test.com/test.js`, ...commonInfo};
     const resource2 = {url: urlString`http://www.test.com/test2.js`, ...commonInfo};
     const resource3 = {url: urlString`http://www.test.com/test3.js`, ...commonInfo};

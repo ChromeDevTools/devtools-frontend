@@ -912,6 +912,7 @@ describeWithDevtoolsExtension('Language Extension API', {}, context => {
       initiator: expectedInitiator,
       success: true,
       size: 10,
+      duration: null,
       errorMessage: undefined,
     };
     assert.deepEqual(resource, expectedResource);

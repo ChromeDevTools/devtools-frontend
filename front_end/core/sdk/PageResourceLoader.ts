@@ -56,6 +56,7 @@ export interface PageResource {
   initiator: PageResourceLoadInitiator;
   url: Platform.DevToolsPath.UrlString;
   size: number|null;
+  duration: number|null;
 }
 
 // Used for revealing a resource.
@@ -255,9 +256,11 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       throw new Error('Invalid initiator');
     }
     const key = PageResourceLoader.makeKey(url, initiator);
-    const pageResource: PageResource = {success: null, size: null, errorMessage: undefined, url, initiator};
+    const pageResource:
+        PageResource = {success: null, size: null, duration: null, errorMessage: undefined, url, initiator};
     this.#pageResources.set(key, pageResource);
     this.dispatchEventToListeners(Events.UPDATE);
+    const startTime = performance.now();
     try {
       await this.acquireLoadSlot(initiator.target);
       const resultPromise = this.dispatchLoad(url, initiator);
@@ -278,6 +281,7 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       }
       throw e;
     } finally {
+      pageResource.duration = performance.now() - startTime;
       this.releaseLoadSlot(initiator.target);
       this.dispatchEventToListeners(Events.UPDATE);
     }

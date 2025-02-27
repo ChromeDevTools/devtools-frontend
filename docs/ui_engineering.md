@@ -41,12 +41,12 @@ This will instantiate a `Widget` class with the web component as its `element` a
 ## Examples
 
 ```html
-<devtools-widget .config=${widgetConfig(ElementsPanel)}>
+<devtools-widget .widgetConfig=${widgetConfig(ElementsPanel)}>
   <devtools-split-widget>
-    <devtools-widget slot="main".config=${widgetConfig(ElementsTree)}></devtools-widget>
+    <devtools-widget slot="main" .widgetConfig=${widgetConfig(ElementsTree)}></devtools-widget>
     <devtools-tab-pane slot="sidebar">
-      <devtools-widget .config=${widgetConfig(StylesPane, {element: input.element})}></devtools-widget>
-      <devtools-widget .config=${widgetConfig(ComputedPane, {element: input.element})}></devtools-widget>
+      <devtools-widget .widgetConfig=${widgetConfig(StylesPane, {element: input.element})}></devtools-widget>
+      <devtools-widget .widgetConfig=${widgetConfig(ComputedPane, {element: input.element})}></devtools-widget>
       ...
     </devtools-tab-pane>
   </devtools-split-widget>
@@ -57,7 +57,7 @@ This will instantiate a `Widget` class with the web component as its `element` a
 class StylesPane extends UI.Widget {
   constructor(element, view = (input, output, target) => {
     render(html`
-      <devtools-widget .config=${widgetConfig(MetricsPane, {element: input.element})}>
+      <devtools-widget .widgetConfig=${widgetConfig(MetricsPane, {element: input.element})}>
       </devtools-widget>
       <devtools-toolbar>
         <devtools-filter-input @change=${input.onFilter}></devtools-filter-input>

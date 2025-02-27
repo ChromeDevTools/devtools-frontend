@@ -1220,6 +1220,8 @@ const UIStrings = {
   clearCommands: 'Clear Commands',
   elementsChangedLayout: 'Elements Changed Layout',
   styleMatchCacheMisses: 'Style Match Cache Misses',
+  flexLayoutCacheMisses: 'Flex Layout Cache Misses',
+  flexLayoutCacheHits: 'Flex Layout Cache Hits',
 
   textureId : 'Texture Id',
   textureType : 'Type',
@@ -2518,6 +2520,11 @@ export class TimelineUIUtils {
         contentHelper.appendTextRow(
             UIStrings.nodesThatNeedLayout,
             i18nString(UIStrings.sOfS, {PH1: event.args['int1'], PH2: event.args['int2']}));
+        break;
+      }
+      case recordTypes.Coherent_FlexLayoutImpl: {
+        contentHelper.appendTextRow(UIStrings.flexLayoutCacheMisses, event.args['int0']);
+        contentHelper.appendTextRow(UIStrings.flexLayoutCacheHits, event.args['int1']);
         break;
       }
       case recordTypes.Coherent_ExecuteBuffers:

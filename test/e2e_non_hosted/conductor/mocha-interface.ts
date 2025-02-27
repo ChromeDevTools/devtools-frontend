@@ -87,6 +87,7 @@ function customDescribe(suiteImplementation: SuiteFunctions, file: string) {
 
       if (!suite.isPending()) {
         suite.beforeAll(async () => {
+          suite.timeout(0);
           return await StateProvider.instance.resolveBrowser(suite);
         });
       }

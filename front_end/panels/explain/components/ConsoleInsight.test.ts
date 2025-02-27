@@ -363,7 +363,7 @@ describeWithEnvironment('ConsoleInsight', () => {
 
     assert.isFalse(details?.hasAttribute('open'));
     assert.isFalse(directCitations[0].classList.contains('highlighted'));
-    const link = markdownView!.shadowRoot?.querySelector('sup x-link') as HTMLElement;
+    const link = markdownView!.shadowRoot?.querySelector('sup button') as HTMLElement;
     link.click();
     assert.isTrue(details?.hasAttribute('open'));
     assert.isTrue(directCitations[0].classList.contains('highlighted'));

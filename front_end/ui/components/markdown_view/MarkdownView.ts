@@ -352,11 +352,11 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         </devtools-code-block>`;
       case 'citation':
         // clang-format off
-        return html`<sup><x-link
-            class="devtools-link"
+        return html`<sup><button
+            class="citation"
             jslog=${VisualLogging.link('inline-citation').track({click: true})}
             @click=${this.#citationClickHandler.bind(this, Number(token.linkText))}
-          >[${token.linkText}]</x-link></sup>`;
+          >[${token.linkText}]</button></sup>`;
         // clang-format on
     }
     return super.templateForToken(token as Marked.Marked.MarkedToken);

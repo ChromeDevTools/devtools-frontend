@@ -537,6 +537,15 @@ export class ParsedURL {
     return this.scheme === 'data';
   }
 
+  extractDataUrlMimeType(): {type: string|undefined, subtype: string|undefined} {
+    const regexp = /^data:((?<type>\w+)\/(?<subtype>\w+))?(;base64)?,/;
+    const match = this.url.match(regexp);
+    return {
+      type: match?.groups?.type,
+      subtype: match?.groups?.subtype,
+    };
+  }
+
   isBlobURL(): boolean {
     return this.url.startsWith('blob:');
   }

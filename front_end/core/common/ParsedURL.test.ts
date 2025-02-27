@@ -107,7 +107,39 @@ describe('Parsed URL', () => {
   it('parses a data URL', () => {
     const parsedUrl = new ParsedURL('data:test');
     assert.isFalse(parsedUrl.isValid, 'the URL should not be valid');
-    assert.strictEqual(parsedUrl.scheme, 'data', 'the URL scheme is not data');
+    assert.strictEqual(parsedUrl.scheme, 'data', 'the URL scheme is data');
+  });
+
+  it('parses a data URL and its MIME types', () => {
+    const parsedUrl1 = new ParsedURL('data:image/jpeg,YQ==');
+    assert.isFalse(parsedUrl1.isValid, 'the URL should not be valid');
+    assert.strictEqual(parsedUrl1.scheme, 'data', 'the URL scheme is data');
+    assert.isTrue(parsedUrl1.isDataURL());
+    assert.deepEqual(parsedUrl1.extractDataUrlMimeType(), {type: 'image', subtype: 'jpeg'});
+
+    const parsedUrl2 = new ParsedURL('data:image/jpeg');
+    assert.isFalse(parsedUrl2.isValid, 'the URL should not be valid');
+    assert.strictEqual(parsedUrl2.scheme, 'data', 'the URL scheme is data');
+    assert.isTrue(parsedUrl2.isDataURL());
+    assert.deepEqual(parsedUrl2.extractDataUrlMimeType(), {type: undefined, subtype: undefined});
+
+    const parsedUrl3 = new ParsedURL('data:image');
+    assert.isFalse(parsedUrl3.isValid, 'the URL should not be valid');
+    assert.strictEqual(parsedUrl3.scheme, 'data', 'the URL scheme is data');
+    assert.isTrue(parsedUrl3.isDataURL());
+    assert.deepEqual(parsedUrl3.extractDataUrlMimeType(), {type: undefined, subtype: undefined});
+
+    const parsedUrl4 = new ParsedURL('data:;base64,YQ==');
+    assert.isFalse(parsedUrl4.isValid, 'the URL should not be valid');
+    assert.strictEqual(parsedUrl4.scheme, 'data', 'the URL scheme is data');
+    assert.isTrue(parsedUrl4.isDataURL());
+    assert.deepEqual(parsedUrl4.extractDataUrlMimeType(), {type: undefined, subtype: undefined});
+
+    const parsedUrl5 = new ParsedURL('data:,image/jpeg');
+    assert.isFalse(parsedUrl5.isValid, 'the URL should not be valid');
+    assert.strictEqual(parsedUrl5.scheme, 'data', 'the URL scheme is data');
+    assert.isTrue(parsedUrl5.isDataURL());
+    assert.deepEqual(parsedUrl5.extractDataUrlMimeType(), {type: undefined, subtype: undefined});
   });
 
   it('recognizes an invalid blob URL', () => {

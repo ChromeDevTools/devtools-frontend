@@ -338,7 +338,6 @@ export class MainImpl {
         Root.Runtime.ExperimentName.STYLES_PANE_CSS_CHANGES, 'Sync CSS changes in the Styles tab');
 
     // Highlights a violating node or attribute by rendering a squiggly line under it and adding a tooltip linking to the issues panel.
-    // Right now violating nodes are exclusively form fields that contain an HTML issue, for example, and <input /> whose id is duplicate inside the form.
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
         'Highlights a violating node or attribute in the Elements panel DOM tree');

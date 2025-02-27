@@ -54,6 +54,7 @@ import * as Emulation from '../emulation/emulation.js';
 
 import * as ElementsComponents from './components/components.js';
 import {canGetJSPath, cssPath, jsPath, xPath} from './DOMPath.js';
+import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {type ElementsTreeOutline, MappedCharToEntity, type UpdateRecord} from './ElementsTreeOutline.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -262,8 +263,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private hintElement?: HTMLElement;
   private aiButtonContainer?: HTMLElement;
   private contentElement: HTMLElement;
-  #elementIssues = new Map<string, IssuesManager.GenericIssue.GenericIssue>();
-  #nodeElementToIssue = new Map<Element, IssuesManager.GenericIssue.GenericIssue>();
+  #elementIssues = new Map<string, IssuesManager.Issue.Issue>();
+  #nodeElementToIssue = new Map<Element, IssuesManager.Issue.Issue>();
   #highlights: Range[] = [];
 
   readonly tagTypeContext: TagTypeContext;
@@ -434,7 +435,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  addIssue(newIssue: IssuesManager.GenericIssue.GenericIssue): void {
+  addIssue(newIssue: IssuesManager.Issue.Issue): void {
     if (this.#elementIssues.has(newIssue.primaryKey())) {
       return;
     }
@@ -443,21 +444,24 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.#applyIssueStyleAndTooltip(newIssue);
   }
 
-  #applyIssueStyleAndTooltip(issue: IssuesManager.GenericIssue.GenericIssue): void {
-    const issueDetails = issue.details();
+  #applyIssueStyleAndTooltip(issue: IssuesManager.Issue.Issue): void {
+    const elementIssueDetails = getElementIssueDetails(issue);
+    if (!elementIssueDetails) {
+      return;
+    }
 
-    if (issueDetails.violatingNodeAttribute) {
-      this.#highlightViolatingAttr(issueDetails.violatingNodeAttribute, issue);
+    if (elementIssueDetails.attribute) {
+      this.#highlightViolatingAttr(elementIssueDetails.attribute, issue);
     } else {
       this.#highlightTagAsViolating(issue);
     }
   }
 
-  get issuesByNodeElement(): Map<Element, IssuesManager.GenericIssue.GenericIssue> {
+  get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue> {
     return this.#nodeElementToIssue;
   }
 
-  #highlightViolatingAttr(name: string, issue: IssuesManager.GenericIssue.GenericIssue): void {
+  #highlightViolatingAttr(name: string, issue: IssuesManager.Issue.Issue): void {
     const tag = this.listItemElement.getElementsByClassName('webkit-html-tag')[0];
     const attributes = tag.getElementsByClassName('webkit-html-attribute');
     for (const attribute of attributes) {
@@ -469,7 +473,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  #highlightTagAsViolating(issue: IssuesManager.GenericIssue.GenericIssue): void {
+  #highlightTagAsViolating(issue: IssuesManager.Issue.Issue): void {
     const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
     tagElement.classList.add('violating-element');
     this.#nodeElementToIssue.set(tagElement, issue);

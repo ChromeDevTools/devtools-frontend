@@ -1395,6 +1395,7 @@ grd_files_debug_sources = [
   "front_end/panels/elements/ComputedStyleWidget.js",
   "front_end/panels/elements/DOMLinkifier.js",
   "front_end/panels/elements/DOMPath.js",
+  "front_end/panels/elements/ElementIssueUtils.js",
   "front_end/panels/elements/ElementStatePaneWidget.js",
   "front_end/panels/elements/ElementsPanel.js",
   "front_end/panels/elements/ElementsSidebarPane.js",

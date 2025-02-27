@@ -41,6 +41,7 @@ devtools_module("elements") {
     "ComputedStyleWidget.ts",
     "DOMLinkifier.ts",
     "DOMPath.ts",
+    "ElementIssueUtils.ts",
     "ElementStatePaneWidget.ts",
     "ElementsPanel.ts",
     "ElementsSidebarPane.ts",

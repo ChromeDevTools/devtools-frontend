@@ -213,9 +213,53 @@ export async function createAiAssistancePanel(options?: {
   };
 }
 
-export function detachPanels() {
+let patchWidgets: AiAssistance.PatchWidget.PatchWidget[] = [];
+/**
+ * Creates and shows an AiAssistancePanel instance returning the view
+ * stubs and the initial view input caused by Widget.show().
+ */
+export async function createPatchWidget(options?: {
+  aidaClient?: Host.AidaClient.AidaClient,
+}) {
+  const view = sinon.stub<[AiAssistance.PatchWidget.ViewInput, unknown, HTMLElement]>();
+  const aidaClient = options?.aidaClient ?? mockAidaClient();
+  const widget = new AiAssistance.PatchWidget.PatchWidget(undefined, view, {
+    aidaClient,
+  });
+  patchWidgets.push(widget);
+
+  /**
+   * Triggers the action and returns args of the next view function
+   * call.
+   */
+  async function expectViewUpdate(action: () => void) {
+    const result = expectCall(view);
+    action();
+    const viewArgs = await result;
+    return viewArgs[0];
+  }
+
+  const initialViewInput = await expectViewUpdate(() => {
+    widget.markAsRoot();
+    widget.show(document.body);
+  });
+
+  return {
+    initialViewInput,
+    panel: widget,
+    view,
+    aidaClient,
+    expectViewUpdate,
+  };
+}
+
+export function cleanup() {
   for (const panel of panels) {
     panel.detach();
   }
   panels = [];
+  for (const widget of patchWidgets) {
+    widget.detach();
+  }
+  patchWidgets = [];
 }

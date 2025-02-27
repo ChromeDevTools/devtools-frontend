@@ -11,7 +11,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -40,7 +39,6 @@ import {
   NetworkAgent,
   RequestContext,
 } from './agents/NetworkAgent.js';
-import {PatchAgent} from './agents/PatchAgent.js';
 import {CallTreeContext, PerformanceAgent} from './agents/PerformanceAgent.js';
 import {InsightContext, PerformanceInsightsAgent} from './agents/PerformanceInsightsAgent.js';
 import {NodeContext, StylingAgent, StylingAgentWithFunctionCalling} from './agents/StylingAgent.js';
@@ -56,6 +54,7 @@ import {
   State as ChatViewState,
   type Step
 } from './components/ChatView.js';
+import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 
 const {html} = Lit;
 
@@ -441,11 +440,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     accountImage?: string,
     accountFullName?: string,
   };
-  #project?: Workspace.Workspace.Project;
-  #patchSuggestion?: string;
-  #patchSuggestionLoading?: boolean;
   #imageInput = '';
-  #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -468,36 +463,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#historicalConversations = AiHistoryStorage.instance().getHistory().map(item => {
       return new Conversation(item.type, item.history, item.id, true);
     });
-
-    this.#selectProject();
-  }
-
-  #selectProject(): void {
-    if (isAiAssistancePatchingEnabled()) {
-      // TODO: this is temporary code that should be replaced with
-      // workflow selection flow. For now it picks the first Workspace
-      // project that is not Snippets.
-      const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
-      this.#project = undefined;
-      for (const project of projects) {
-        // This is for TypeScript to narrow the types. projectsForType()
-        // probably only returns instances of
-        // Persistence.FileSystemWorkspaceBinding.FileSystem.
-        if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
-          continue;
-        }
-        if (project.fileSystem().type() !== Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT) {
-          continue;
-        }
-        this.#project = project;
-        this.requestUpdate();
-        break;
-      }
-    }
-  }
-
-  #onProjectAddedOrRemoved(): void {
-    this.#selectProject();
   }
 
   #getChatUiState(): ChatViewState {
@@ -702,16 +667,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
-
-    if (isAiAssistancePatchingEnabled()) {
-      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
-      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
-
-      // @ts-expect-error temporary global function for local testing.
-      window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
-        return await this.#applyPatch(changeSummary);
-      };
-    }
   }
 
   override willHide(): void {
@@ -748,12 +703,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#handleDOMNodeAttrChange,
         this,
     );
-
-    if (isAiAssistancePatchingEnabled()) {
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
-      this.#workspace.removeEventListener(
-          Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
-    }
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
@@ -849,15 +798,12 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           conversationType: this.#conversation?.type,
           isReadOnly: this.#conversation?.isReadOnly ?? false,
           changeSummary: this.#getChangeSummary(),
-          patchSuggestion: this.#patchSuggestion,
-          patchSuggestionLoading: this.#patchSuggestionLoading,
           inspectElementToggled: this.#toggleSearchElementAction.toggled(),
           userInfo: this.#userInfo,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
           multimodalInputEnabled:
               isAiAssistanceMultimodalInputEnabled() && this.#conversation?.type === ConversationType.STYLING,
           imageInput: this.#imageInput,
-          projectName: this.#project?.displayName() ?? '',
           isDeleteHistoryButtonVisible: Boolean(this.#conversation && !this.#conversation.isEmpty),
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions: this.#conversation ? getEmptyStateSuggestions(this.#conversation.type) : [],
@@ -885,7 +831,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        undefined,
-          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this)
         },
         this.#viewOutput, this.contentElement);
   }
@@ -1263,36 +1208,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 
-  async #onApplyToWorkspace(): Promise<void> {
-    if (!isAiAssistancePatchingEnabled()) {
-      return;
-    }
-    const changeSummary = this.#getChangeSummary();
-    if (!changeSummary) {
-      throw new Error('Change summary does not exist');
-    }
-
-    this.#patchSuggestionLoading = true;
-    this.requestUpdate();
-    const response = await this.#applyPatch(changeSummary);
-    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
-    this.#patchSuggestionLoading = false;
-    this.requestUpdate();
-  }
-
-  async #applyPatch(changeSummary: string): Promise<ResponseData|undefined> {
-    if (!this.#project) {
-      throw new Error('Project does not exist');
-    }
-    const agent = new PatchAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-      project: this.#project,
-    });
-    const responses = await Array.fromAsync(agent.applyChanges(changeSummary));
-    return responses.at(-1);
-  }
-
   async *
       #saveResponsesToCurrentConversation(items: AsyncIterable<ResponseData, void, void>):
           AsyncGenerator<ResponseData, void, void> {
@@ -1485,11 +1400,6 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 function isAiAssistanceMultimodalInputEnabled(): boolean {
   const {hostConfig} = Root.Runtime;
   return Boolean(hostConfig.devToolsFreestyler?.multimodal);
-}
-
-function isAiAssistancePatchingEnabled(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return Boolean(hostConfig.devToolsFreestyler?.patching);
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {

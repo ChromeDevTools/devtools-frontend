@@ -17,6 +17,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
 import {ConversationType} from '../AiHistoryStorage.js';
+import {PatchWidget} from '../PatchWidget.js';
 
 import stylesRaw from './chatView.css.js';
 import {MarkdownRendererWithCodeBlock} from './MarkdownRendererWithCodeBlock.js';
@@ -491,14 +492,10 @@ export class ChatView extends HTMLElement {
             markdownRenderer: this.#markdownRenderer,
             conversationType: this.#props.conversationType,
             changeSummary: this.#props.changeSummary,
-            patchSuggestion: this.#props.patchSuggestion,
-            patchSuggestionLoading: this.#props.patchSuggestionLoading,
-            projectName: this.#props.projectName,
             onSuggestionClick: this.#handleSuggestionClick,
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
             onLastAnswerMarkdownViewRef: this.#handleLastAnswerMarkdownViewRef,
             onMessageContainerRef: this.#handleMessageContainerRef,
-            onApplyToWorkspace: this.#props.onApplyToWorkspace,
           })}
           ${this.#props.isReadOnly
             ? renderReadOnlySection({
@@ -546,70 +543,6 @@ export class ChatView extends HTMLElement {
     `, this.#shadow, {host: this});
     // clang-format on
   }
-}
-
-async function onChangeWorkspaceClick(): Promise<void> {
-  await UI.UIUtils.ConfirmDialog.show(
-      'Changing workspace is not implemented yet', 'Change workspace', undefined,
-      {jslogContext: 'change-workspace-dialog'});
-}
-
-function renderChangeSummary({
-  changeSummary,
-  patchSuggestion,
-  patchSuggestionLoading,
-  projectName,
-  onApplyToWorkspace,
-}: {
-  changeSummary: string,
-  patchSuggestion?: string,
-  patchSuggestionLoading?: boolean,
-  projectName?: string,
-  onApplyToWorkspace?: () => void,
-}): Lit.LitTemplate {
-  // clang-format off
-  return html`<details class="change-summary">
-      <summary>
-        <devtools-icon class="difference-icon" .name=${'pen-spark'}
-        ></devtools-icon>
-        <span class="header-text">
-          ${lockedString(UIStringsNotTranslate.changeSummary)}
-        </span>
-        <devtools-icon
-          class="arrow"
-          .name=${'chevron-down'}
-        ></devtools-icon>
-      </summary>
-      <devtools-code-block
-        .code=${changeSummary}
-        .codeLang=${'css'}
-        .displayNotice=${true}
-      ></devtools-code-block>
-      <div class="workspace">
-        <div class="change-workspace">
-          <div class="selected-folder">
-            ${lockedString(UIStringsNotTranslate.selectedFolder)} ${projectName}
-          </div>
-          <devtools-button
-            @click=${onChangeWorkspaceClick}
-            .jslogContext=${'change-workspace'}
-            .variant=${Buttons.Button.Variant.TEXT}>
-              ${lockedString(UIStringsNotTranslate.change)}
-          </devtools-button>
-        </div>
-        <devtools-button
-          class='apply-to-workspace'
-          @click=${onApplyToWorkspace}
-          .jslogContext=${'stage-to-workspace'}
-          .variant=${Buttons.Button.Variant.OUTLINED}>
-            ${!patchSuggestionLoading ? lockedString(UIStringsNotTranslate.applyToWorkspace) : lockedString(UIStringsNotTranslate.loading)}
-        </devtools-button>
-      </div>
-      ${patchSuggestion ? html`<div class="patch-tmp-message">
-        ${patchSuggestion}
-      </div>` : Lit.nothing}
-    </details>`;
-  // clang-format on
 }
 
 function renderTextAsMarkdown(text: string, markdownRenderer: MarkdownRendererWithCodeBlock, {animate, ref: refFn}: {
@@ -1033,14 +966,10 @@ function renderMessages({
   userInfo,
   markdownRenderer,
   changeSummary,
-  patchSuggestion,
-  patchSuggestionLoading,
-  projectName,
   onSuggestionClick,
   onFeedbackSubmit,
   onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
-  onApplyToWorkspace,
 }: {
   messages: ChatMessage[],
   isLoading: boolean,
@@ -1049,15 +978,11 @@ function renderMessages({
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
   changeSummary?: string,
-  patchSuggestion?: string,
-  patchSuggestionLoading?: boolean,
-  projectName?: string,
-  onApplyToWorkspace?: () => void,
-                    onSuggestionClick: (suggestion: string) => void,
-                    onFeedbackSubmit:
-                        (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-                    onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
-                    onMessageContainerRef: (el: Element|undefined) => void,
+               onSuggestionClick: (suggestion: string) => void,
+               onFeedbackSubmit:
+                   (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+               onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+               onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   // clang-format off
   return html`
@@ -1076,13 +1001,9 @@ function renderMessages({
           onLastAnswerMarkdownViewRef,
         }),
       )}
-      ${(changeSummary && !isLoading) ? renderChangeSummary({
-          changeSummary,
-          patchSuggestion,
-          patchSuggestionLoading,
-          projectName,
-          onApplyToWorkspace,
-        }) : Lit.nothing}
+      ${(changeSummary && !isLoading) ? html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
+        changeSummary,
+      })}></devtools-widget>` : Lit.nothing}
     </div>
   `;
   // clang-format on
@@ -1526,14 +1447,10 @@ function renderMainContents({
   markdownRenderer,
   conversationType,
   changeSummary,
-  patchSuggestion,
-  patchSuggestionLoading,
-  projectName,
   onSuggestionClick,
   onFeedbackSubmit,
   onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
-  onApplyToWorkspace,
 }: {
   state: State,
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -1547,15 +1464,11 @@ function renderMainContents({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   conversationType?: ConversationType,
   changeSummary?: string,
-  patchSuggestion?: string,
-  patchSuggestionLoading?: boolean,
-  projectName?: string,
              onSuggestionClick: (suggestion: string) => void,
              onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) =>
                  void,
              onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
              onMessageContainerRef: (el: Element|undefined) => void,
-  onApplyToWorkspace?: () => void,
 }): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(renderConsentViewContents());
@@ -1578,10 +1491,6 @@ function renderMainContents({
       userInfo,
       markdownRenderer,
       changeSummary,
-      patchSuggestion,
-      patchSuggestionLoading,
-      projectName,
-      onApplyToWorkspace,
       onSuggestionClick,
       onFeedbackSubmit,
       onLastAnswerMarkdownViewRef,

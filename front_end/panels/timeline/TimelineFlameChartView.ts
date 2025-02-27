@@ -692,11 +692,6 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
     }
 
-    for (const entry of entries) {
-      // Ensure that the track for the entries are open.
-      this.#expandEntryTrack(entry);
-    }
-
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
       // The insight's `relatedEvents` property likely already includes the events associated with
       // an overlay, but just in case not, include both arrays. Duplicates are fine.
@@ -710,6 +705,13 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
     }
 
     if (options.updateTraceWindow) {
+      // We should only expand the entry track when we are updating the trace window
+      // (eg. when insight cards are initially opened).
+      // Otherwise the track will open when not intending to.
+      for (const entry of entries) {
+        // Ensure that the track for the entries are open.
+        this.#expandEntryTrack(entry);
+      }
       const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       if (overlaysBounds) {
         // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.

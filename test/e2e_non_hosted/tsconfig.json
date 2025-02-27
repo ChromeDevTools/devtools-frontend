@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "baseUrl": ".",
+
+    "checkJs": false,
+    "allowJs": false
+  },
+  "references": [
+    {
+      "path": "../shared/tsconfig.json"
+    }
+  ],
+  "extends": "../../config/typescript/tsconfig.base.json"
+}

@@ -9,7 +9,8 @@ import {AsyncScope} from '../conductor/async-scope.js';
 import type {DevToolsFrontendReloadOptions} from '../conductor/frontend_tab.js';
 import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
 import {platform} from '../conductor/mocha-interface-helpers.js';
-import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';
+import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
+import {getTestServerPort} from '../conductor/server_port.js';
 
 export {platform} from '../conductor/mocha-interface-helpers.js';
 

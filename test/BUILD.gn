@@ -10,6 +10,7 @@ group("test") {
     ":run",
     ":unittests",
     "e2e",
+    "e2e_non_hosted",
     "interactions",
     "perf",
     "shared",

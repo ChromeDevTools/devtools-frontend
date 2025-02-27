@@ -32,7 +32,7 @@ const options = commandLineArgs(yargs(process.argv.slice(2)))
                       type: 'string',
                       desc: 'Path to the test suite, starting from out/Target/gen directory.',
                       normalize: true,
-                      default: ['front_end', 'test/e2e', 'test/interactions'].map(
+                      default: ['front_end', 'test/e2e', 'test/interactions', 'test/e2e_non_hosted'].map(
                           f => path.relative(process.cwd(), path.join(SOURCE_ROOT, f))),
                     })
                     .strict()
@@ -146,6 +146,23 @@ class MochaTests extends Tests {
   }
 }
 
+class NonHostedMochaTests extends Tests {
+  override run(tests: PathPair[]) {
+    return super.run(
+        tests,
+        [
+          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+          '--config',
+          path.join(this.suite.buildPath, 'mocharc.js'),
+          '-u',
+          path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
+        ],
+        /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
+                                          // that by passing the tests as dashed args instead.
+    );
+  }
+}
+
 /**
  * Workaround the fact that these test don't have
  * build output in out/Default like dir.
@@ -194,6 +211,7 @@ function main() {
     new KarmaTests(path.join(GEN_DIR, 'front_end'), path.join(GEN_DIR, 'inspector_overlay')),
     new MochaTests(path.join(GEN_DIR, 'test/interactions')),
     new MochaTests(path.join(GEN_DIR, 'test/e2e')),
+    new NonHostedMochaTests(path.join(GEN_DIR, 'test/e2e_non_hosted')),
     new MochaTests(path.join(GEN_DIR, 'test/perf')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/eslint_rules/tests')),
     new ScriptsMochaTests(path.join(SOURCE_ROOT, 'scripts/stylelint_rules/tests')),

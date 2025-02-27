@@ -49,6 +49,7 @@ export function startServer(server: 'hosted-mode'|'component-docs', commandLineA
   });
 }
 
+process.on('exit', stopServer);
 export function stopServer() {
   runningServer.kill();
 }

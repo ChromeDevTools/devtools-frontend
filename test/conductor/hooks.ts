@@ -21,8 +21,8 @@ import {
   getBrowserAndPages,
   registerHandlers,
   setBrowserAndPages,
-  setTestServerPort,
 } from './puppeteer-state.js';
+import {setTestServerPort} from './server_port.js';
 import {TargetTab} from './target_tab.js';
 import {TestConfig} from './test_config.js';
 
@@ -55,6 +55,7 @@ const envChromeFeatures = process.env['CHROME_FEATURES'];
 
 function launchChrome() {
   // Use port 0 to request any free port.
+  // LINT.IfChange(features)
   const enabledFeatures = [
     'Portals',
     'PortalsCrossOrigin',
@@ -64,13 +65,13 @@ function launchChrome() {
     'PrivacySandboxAdsAPIsOverride',
     'AutofillEnableDevtoolsIssues',
   ];
-
   const disabledFeatures = [
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'RasterInducingScroll',                        // crbug.com/381055647
     'CompositeBackgroundColorAnimation',           // crbug.com/381055647
   ];
+  // LINT.ThenChange(/test/e2e_non_hosted/shared/browser-helper.ts:features)
   const launchArgs = [
     '--remote-allow-origins=*',
     '--remote-debugging-port=0',

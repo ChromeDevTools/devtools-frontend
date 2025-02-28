@@ -473,9 +473,8 @@ export class CookiesTable extends UI.Widget.VBox {
     const isRequest = cookie.type() === SDK.Cookie.Type.REQUEST;
     const data: CookieData = {name: cookie.name(), value: cookie.value()};
     for (const attribute
-             of [SDK.Cookie.Attribute.SIZE, SDK.Cookie.Attribute.HTTP_ONLY, SDK.Cookie.Attribute.SECURE,
-                 SDK.Cookie.Attribute.SAME_SITE, SDK.Cookie.Attribute.SOURCE_SCHEME, SDK.Cookie.Attribute.SOURCE_PORT,
-                 SDK.Cookie.Attribute.PRIORITY]) {
+             of [SDK.Cookie.Attribute.HTTP_ONLY, SDK.Cookie.Attribute.SECURE, SDK.Cookie.Attribute.SAME_SITE,
+                 SDK.Cookie.Attribute.SOURCE_SCHEME, SDK.Cookie.Attribute.SOURCE_PORT]) {
       if (cookie.hasAttribute(attribute)) {
         data[attribute] = String(cookie.getAttribute(attribute) ?? true);
       }
@@ -496,6 +495,8 @@ export class CookiesTable extends UI.Widget.VBox {
     data[SDK.Cookie.Attribute.PARTITION_KEY_SITE] =
         cookie.partitionKeyOpaque() ? i18nString(UIStrings.opaquePartitionKey) : cookie.topLevelSite();
     data[SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR] = cookie.hasCrossSiteAncestor() ? 'true' : '';
+    data[SDK.Cookie.Attribute.SIZE] = String(cookie.size());
+    data[SDK.Cookie.Attribute.PRIORITY] = cookie.priority();
     data.priorityValue = ['Low', 'Medium', 'High'].indexOf(cookie.priority());
     const blockedReasons = this.cookieToBlockedReasons?.get(cookie) || [];
     for (const blockedReason of blockedReasons) {

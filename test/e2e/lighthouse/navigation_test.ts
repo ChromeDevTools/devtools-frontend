@@ -179,7 +179,8 @@ describe('Navigation', function() {
     assert.strictEqual(await getServiceWorkerCount(), 0);
   });
 
-  it('successfully returns a Lighthouse report with DevTools throttling', async () => {
+  // Flaky test
+  it.skip('[crbug.com/399896980] successfully returns a Lighthouse report with DevTools throttling', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
 
     await setThrottlingMethod('devtools');

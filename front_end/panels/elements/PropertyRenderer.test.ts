@@ -24,15 +24,17 @@ describeWithEnvironment('PropertyRenderer', () => {
       // Prevent normaliztaion to get an accurate representation of the parser result.
       sinon.stub(Element.prototype, 'normalize');
       assert.deepEqual(
-          textFragments(Array.from(renderValueElement('--p', 'var(--v)').childNodes)), ['var', '(', '--v', ')']);
+          textFragments(Array.from(renderValueElement('--p', 'var(--v)').valueElement.childNodes)),
+          ['var', '(', '--v', ')']);
 
       assert.deepEqual(
-          textFragments(Array.from(renderValueElement('--p', '/* comments are text */ 1px solid 4').childNodes)),
+          textFragments(
+              Array.from(renderValueElement('--p', '/* comments are text */ 1px solid 4').valueElement.childNodes)),
           ['/* comments are text */', ' ', '1px', ' ', 'solid', ' ', '4']);
       assert.deepEqual(
           textFragments(Array.from(
               renderValueElement('--p', '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)')
-                  .childNodes)),
+                  .valueElement.childNodes)),
           [
             '2px', ' ', 'var',     '(', '--double', ',', ' ',   'var', '(',   '--fallback', ',',  ' ', 'black', ')',
             ')',   ' ', '#32a1ce', ' ', 'rgb',      '(', '124', ' ',   '125', ' ',          '21', ' ', '0',     ')',
@@ -67,12 +69,14 @@ describeWithEnvironment('PropertyRenderer', () => {
 
     it('renders trailing comments', () => {
       const property = '/* color: red */ blue /* color: red */';
-      assert.strictEqual(textFragments(Array.from(renderValueElement('--p', property).childNodes)).join(''), property);
+      assert.strictEqual(
+          textFragments(Array.from(renderValueElement('--p', property).valueElement.childNodes)).join(''), property);
     });
 
     it('renders malformed comments', () => {
       const property = 'red /* foo: bar';
-      assert.strictEqual(textFragments(Array.from(renderValueElement('--p', property).childNodes)).join(''), property);
+      assert.strictEqual(
+          textFragments(Array.from(renderValueElement('--p', property).valueElement.childNodes)).join(''), property);
     });
   });
 });

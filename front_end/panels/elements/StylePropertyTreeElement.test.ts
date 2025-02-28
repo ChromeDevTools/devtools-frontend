@@ -11,7 +11,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../testing/ExpectStubCall.js';
+import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
   getMatchedStylesWithBlankRule,
@@ -272,6 +272,30 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         assert.deepEqual(
             handler.args[1][0].data, {text: 'color-mix(in srgb, color-mix(in oklch, #ff0000, green), blue)'});
       });
+
+      it('supports evaluation during tracing', async () => {
+        const property = addProperty('color', 'color-mix(in srgb, black, white)');
+        setMockConnectionResponseHandler(
+            'CSS.resolveValues',
+            (request: Protocol.CSS.ResolveValuesRequest) =>
+                ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
+        const matchedResult = property.parseValue(matchedStyles, new Map());
+
+        const context = new Elements.PropertyRenderer.TracingContext();
+        assert.isTrue(context.nextEvaluation());
+        const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
+            property.name, property.value, matchedResult,
+            Elements.StylePropertyTreeElement.getPropertyRenderers(
+                matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map()),
+            context);
+
+        const colorSwatch = valueElement.querySelector('devtools-color-swatch');
+        assert.exists(colorSwatch);
+        const setColorTextCall = await spyCall(colorSwatch, 'setColorText');
+
+        assert.strictEqual(setColorTextCall.args[0].asString(), '#808080');
+        assert.strictEqual(valueElement.textContent, '#808080');
+      });
     });
 
     describe('animation-name', () => {
@@ -495,8 +519,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch =
-          renderValueSpy.returnValues.find(value => value.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
-                  ?.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
+          renderValueSpy.returnValues
+                  .find(value => value.valueElement.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
+                  ?.valueElement.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
           undefined;
       assert.exists(varSwatch);
       const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
@@ -541,8 +566,9 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       const varSwatch =
-          renderValueSpy.returnValues.find(value => value.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
-                  ?.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
+          renderValueSpy.returnValues
+                  .find(value => value.valueElement.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
+                  ?.valueElement.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
           undefined;
       assert.exists(varSwatch);
       const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
@@ -1632,7 +1658,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
   describe('AutoBaseRenderer', () => {
     it('strikes out non-selected values', async () => {
-
       const stylePropertyTreeElement = getTreeElement('display', '-internal-auto-base(inline, block)');
 
       stylePropertyTreeElement.updateTitle();

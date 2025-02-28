@@ -116,9 +116,11 @@ function renderPropertyContents(
   }
   const name = Renderer.renderNameElement(propertyName);
   name.slot = 'name';
-  const value = Renderer.renderValueElement(
-      propertyName, propertyValue, matchProperty(propertyName, propertyValue),
-      [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
+  const value = Renderer
+                    .renderValueElement(
+                        propertyName, propertyValue, matchProperty(propertyName, propertyValue),
+                        [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()])
+                    .valueElement;
   value.slot = 'value';
   propertyContentsCache.set(cacheKey, {name, value});
   return {name, value};
@@ -155,7 +157,7 @@ const createTraceElement =
      linkifier: Components.Linkifier.Linkifier): ElementsComponents.ComputedStyleTrace.ComputedStyleTrace => {
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
-      const valueElement = Renderer.renderValueElement(
+      const {valueElement} = Renderer.renderValueElement(
           property.name, property.value, matchProperty(property.name, property.value),
           [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
       valueElement.slot = 'trace-value';

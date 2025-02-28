@@ -232,13 +232,14 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const substitution = context.tracing?.substitution();
     if (substitution) {
       if (declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
-        const valueElement = Renderer.renderValueElement(
+        const {valueElement, cssControls} = Renderer.renderValueElement(
             declaration.declaration.name, declaration.declaration.value,
             declaration.declaration.parseValue(this.#matchedStyles, this.#computedStyles),
             getPropertyRenderers(
                 declaration.declaration.ownerStyle, this.#stylesPane, this.#matchedStyles, this.#treeElement,
                 this.#computedStyles),
             substitution);
+        cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
         return [valueElement];
       }
       if (!declaration && match.fallback.length > 0) {
@@ -562,9 +563,11 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
 export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMixMatch) {
   // clang-format on
   readonly #pane: StylesSidebarPane;
-  constructor(pane: StylesSidebarPane) {
+  #treeElement: StylePropertyTreeElement|null;
+  constructor(pane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null) {
     super();
     this.#pane = pane;
+    this.#treeElement = treeElement;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[] {
@@ -587,17 +590,46 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
       return false;
     };
 
+    const childTracingContexts = context.tracing?.evaluation([match.space, match.color1, match.color2]);
+    const childRenderingContexts =
+        childTracingContexts?.map(ctx => ctx.renderingContext(context)) ?? [context, context, context];
+
     const contentChild = document.createElement('span');
     contentChild.appendChild(document.createTextNode('color-mix('));
-    Renderer.renderInto(match.space, context, contentChild);
+    Renderer.renderInto(match.space, childRenderingContexts[0], contentChild);
     contentChild.appendChild(document.createTextNode(', '));
-    const color1 = Renderer.renderInto(match.color1, context, contentChild).cssControls.get('color') ?? [];
+    const color1 =
+        Renderer.renderInto(match.color1, childRenderingContexts[1], contentChild).cssControls.get('color') ?? [];
     contentChild.appendChild(document.createTextNode(', '));
-    const color2 = Renderer.renderInto(match.color2, context, contentChild).cssControls.get('color') ?? [];
+    const color2 =
+        Renderer.renderInto(match.color2, childRenderingContexts[2], contentChild).cssControls.get('color') ?? [];
     contentChild.appendChild(document.createTextNode(')'));
 
     if (context.matchedResult.hasUnresolvedVars(match.node) || color1.length !== 1 || color2.length !== 1) {
       return [contentChild];
+    }
+
+    const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
+    const color1Text = match.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
+    const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
+    const colorMixText = `color-mix(${space}, ${color1Text}, ${color2Text})`;
+
+    if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
+      const initialColor = Common.Color.parse('#000') as Common.Color.Color;
+      const swatch = new ColorRenderer(this.#pane, this.#treeElement).renderColorSwatch(initialColor);
+      context.addControl('color', swatch);
+      const nodeId = this.#pane.node()?.id;
+      if (nodeId !== undefined) {
+        void this.#pane.cssModel()?.resolveValues(nodeId, colorMixText).then(results => {
+          if (results) {
+            const color = Common.Color.parse(results[0]);
+            if (color) {
+              swatch.setColorText(color.as(Common.Color.Format.HEXA));
+            }
+          }
+        });
+        return [swatch];
+      }
     }
 
     const swatch = new InlineEditor.ColorMixSwatch.ColorMixSwatch();
@@ -605,12 +637,8 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         !hookUpColorArg(color2[0], text => swatch.setSecondColor(text))) {
       return [contentChild];
     }
-
-    const space = match.space.map(space => context.matchedResult.getComputedText(space)).join(' ');
-    const color1Text = match.color1.map(color => context.matchedResult.getComputedText(color)).join(' ');
-    const color2Text = match.color2.map(color => context.matchedResult.getComputedText(color)).join(' ');
     swatch.tabIndex = -1;
-    swatch.setColorMixText(`color-mix(${space}, ${color1Text}, ${color2Text})`);
+    swatch.setColorMixText(colorMixText);
     this.#pane.addPopover(swatch, {
       contents: () => {
         const color = swatch.mixedColor();
@@ -1439,7 +1467,7 @@ export function getPropertyRenderers(
   return [
     new VariableRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
     new ColorRenderer(stylesPane, treeElement),
-    new ColorMixRenderer(stylesPane),
+    new ColorMixRenderer(stylesPane, treeElement),
     new URLRenderer(style.parentRule, stylesPane.node()),
     new AngleRenderer(treeElement),
     new LinkableNameRenderer(matchedStyles, stylesPane),
@@ -1886,7 +1914,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
-    this.valueElement = Renderer.renderValueElement(this.name, this.value, matchedResult, renderers);
+    this.valueElement = Renderer.renderValueElement(this.name, this.value, matchedResult, renderers).valueElement;
     this.nameElement = Renderer.renderNameElement(this.name);
     if (this.property.name.startsWith('--') && this.nameElement) {
       this.parentPaneInternal.addPopover(this.nameElement, {

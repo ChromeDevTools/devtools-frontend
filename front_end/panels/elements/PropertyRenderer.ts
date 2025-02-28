@@ -293,7 +293,8 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   // unmatched text and around rendered matching results.
   static renderValueElement(
       name: string, value: string, matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
-      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>, tracing?: TracingContext): HTMLElement {
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
+      tracing?: TracingContext): {valueElement: HTMLElement, cssControls: SDK.CSSPropertyParser.CSSControlMap} {
     const valueElement = document.createElement('span');
     valueElement.setAttribute(
         'jslog', `${VisualLogging.value().track({
@@ -305,7 +306,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
 
     if (!matchedResult) {
       valueElement.appendChild(document.createTextNode(value));
-      return valueElement;
+      return {valueElement, cssControls: new Map()};
     }
     const rendererMap = new Map<
         SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>();
@@ -314,10 +315,10 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     }
 
     const context = new RenderingContext(matchedResult.ast, rendererMap, matchedResult, undefined, {}, tracing);
-    Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context)
-        .nodes.forEach(node => valueElement.appendChild(node));
+    const {nodes, cssControls} = Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
+    nodes.forEach(node => valueElement.appendChild(node));
     valueElement.normalize();
-    return valueElement;
+    return {valueElement, cssControls};
   }
 }
 

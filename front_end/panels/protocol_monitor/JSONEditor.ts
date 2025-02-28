@@ -150,16 +150,12 @@ export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #targetId?: string;
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
 
-  constructor(
-      metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>,
-      typesByName: Map<string, Parameter[]>,
-      enumsByName: Map<string, Record<string, string>>,
-  ) {
-    super(/* useShadowDom=*/ true);
+  constructor(element: HTMLElement) {
+    super(/* useShadowDom=*/ true, undefined, element);
     this.registerRequiredCSS(editorWidgetStyles);
-    this.#metadataByCommand = metadataByCommand;
-    this.#typesByName = typesByName;
-    this.#enumsByName = enumsByName;
+    this.#metadataByCommand = new Map();
+    this.#typesByName = new Map();
+    this.#enumsByName = new Map();
     this.element.setAttribute('jslog', `${VisualLogging.pane('command-editor').track({resize: true})}`);
     this.contentElement.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

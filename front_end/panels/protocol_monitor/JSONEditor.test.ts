@@ -14,15 +14,13 @@ import {
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
 import * as Menus from '../../ui/components/menus/menus.js';
-import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import type * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ProtocolMonitor from './protocol_monitor.js';
 
 describeWithEnvironment('JSONEditor', () => {
   const renderJSONEditor = () => {
-    const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
+    const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
     jsonEditor.markAsRoot();
     jsonEditor.show(renderElementIntoDOM(document.createElement('main')));
     return jsonEditor;
@@ -479,8 +477,7 @@ describeWithEnvironment('JSONEditor', () => {
 
   describe('Display command written in editor inside input bar', () => {
     it('should display the command edited inside the CDP editor into the input bar', async () => {
-      const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
+      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
       jsonEditor.command = 'Test.test';
       jsonEditor.parameters = [
         {
@@ -491,36 +488,31 @@ describeWithEnvironment('JSONEditor', () => {
           value: 'test',
         },
       ];
-      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
-      split.setMainWidget(dataGrid);
-      split.setSidebarWidget(jsonEditor);
-      split.toggleSidebar();
-      split.markAsRoot();
-      split.show(renderElementIntoDOM(document.createElement('main')));
-      await RenderCoordinator.done();
+      const view = sinon.stub().callsFake((_i, o, _t) => {
+        o.editorWidget = jsonEditor;
+      });
+      const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
+      await protocolMonitor.updateComplete;
+      view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      await protocolMonitor.updateComplete;
 
-      const toolbarInput =
-          dataGrid.element.shadowRoot!.querySelector('.protocol-monitor-bottom-toolbar')!.querySelector(
-              '.toolbar-input-prompt');
-      assert.deepEqual(toolbarInput!.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
+      assert.deepEqual(view.lastCall.firstArg.command, '{"command":"Test.test","parameters":{"test":"test"}}');
     });
 
     it('should update the selected target inside the input bar', async () => {
-      const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
+      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
       jsonEditor.targetId = 'value2';
       sinon.stub(SDK.TargetManager.TargetManager.instance(), 'targets').returns([
         {id: () => 'value1'} as SDK.Target.Target,
         {id: () => 'value2'} as SDK.Target.Target,
       ]);
-      const view = sinon.stub();
-      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split, view);
-
-      split.setMainWidget(dataGrid);
-      split.setSidebarWidget(jsonEditor);
-
-      split.toggleSidebar();
-      await RenderCoordinator.done({waitForWork: true});
+      const view = sinon.stub().callsFake((_i, o, _t) => {
+        o.editorWidget = jsonEditor;
+      });
+      const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
+      await protocolMonitor.updateComplete;
+      view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      await protocolMonitor.updateComplete;
 
       assert.deepEqual(view.lastCall.firstArg.selectedTargetId, 'value2');
     });
@@ -529,20 +521,17 @@ describeWithEnvironment('JSONEditor', () => {
     it.skip(
         '[crbug.com/1484534]: should not display the command into the input bar if the command is empty string',
         async () => {
-          const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-          const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(new Map(), new Map(), new Map());
+          const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
           jsonEditor.command = '';
-          const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
-          split.setMainWidget(dataGrid);
-          split.setSidebarWidget(jsonEditor);
-          split.toggleSidebar();
+          const view = sinon.stub().callsFake((_i, o, _t) => {
+            o.editorWidget = jsonEditor;
+          });
+          const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
+          await protocolMonitor.updateComplete;
+          view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+          await protocolMonitor.updateComplete;
 
-          await RenderCoordinator.done();
-
-          // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
-          const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
-              '.toolbar-input-prompt');
-          assert.deepEqual(toolbarInput?.innerHTML, '');
+          assert.deepEqual(view.lastCall.firstArg.command, '');
         });
   });
   describe('Descriptions', () => {

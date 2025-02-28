@@ -28,6 +28,7 @@
     "inspector_overlay"
   ],
   "exclude": [
-    "front_end/**/*-legacy.ts"
+    "front_end/**/*-legacy.ts",
+    "test/e2e_non_hosted/types.d.ts"
   ]
 }

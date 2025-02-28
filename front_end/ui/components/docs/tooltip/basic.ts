@@ -25,7 +25,10 @@ Lit.render(
       <devtools-tooltip id="simple-tooltip">Simple content</devtools-tooltip>
     </div>
     <div style="position: relative; z-index: 0;">
-      <span aria-details="rich-tooltip" style="position: absolute; left: 16px; top: 116px; border: 1px solid black;">
+      <span
+        aria-details="rich-tooltip"
+        style="position: absolute; left: 16px; top: 116px; border: 1px solid black;"
+      >
         Non-button click trigger
       </span>
       <devtools-tooltip id="rich-tooltip" variant="rich" use-click>
@@ -34,8 +37,13 @@ Lit.render(
       </devtools-tooltip>
     </div>
     <div>
-      <button class="anchor" style="position: absolute; left: 16px; top: 216px;">
-        Programmatic creation
+      <button
+        id="removable"
+        @click=${() => document.getElementById('removable')?.remove()}
+        class="anchor"
+        style="position: absolute; left: 16px; top: 216px;"
+      >
+        Click to remove anchor
       </button>
     </div>
   `,
@@ -44,7 +52,7 @@ Lit.render(
 const anchor = container.querySelector('.anchor') as HTMLElement;
 const programmaticTooltip = new Tooltip({id: 'programatic', variant: 'rich', anchor});
 programmaticTooltip.append('Text content');
-anchor.appendChild(programmaticTooltip);
+anchor.insertAdjacentElement('afterend', programmaticTooltip);
 
 // Make the buttons draggable, so that we can experiment with the position of the tooltip.
 container.querySelectorAll('button,span').forEach(anchor => draggable(anchor as HTMLElement));

@@ -34,6 +34,7 @@ export class Tooltip extends HTMLElement {
   #anchor: HTMLElement|null = null;
   #timeout: number|null = null;
   #closing = false;
+  #anchorObserver: MutationObserver|null = null;
 
   get open(): boolean {
     return this.matches(':popover-open');
@@ -104,6 +105,7 @@ export class Tooltip extends HTMLElement {
 
   disconnectedCallback(): void {
     this.#removeEventListeners();
+    this.#anchorObserver?.disconnect();
   }
 
   showTooltip = (): void => {
@@ -211,7 +213,29 @@ export class Tooltip extends HTMLElement {
     const anchorName = `--${id}-anchor`;
     anchor.style.anchorName = anchorName;
     this.style.positionAnchor = anchorName;
+    this.#observeAnchorRemoval(anchor);
     this.#anchor = anchor;
+  }
+
+  #observeAnchorRemoval(anchor: Element): void {
+    if (anchor.parentElement === null) {
+      return;
+    }
+    if (this.#anchorObserver) {
+      this.#anchorObserver.disconnect();
+    }
+
+    this.#anchorObserver = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' && [...mutation.removedNodes].includes(anchor)) {
+          if (this.#timeout) {
+            window.clearTimeout(this.#timeout);
+          }
+          this.hidePopover();
+        }
+      }
+    });
+    this.#anchorObserver.observe(anchor.parentElement, {childList: true});
   }
 }
 

@@ -1,7 +1,7 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import {type Vector} from '../src/SymbolsBackend.js';
+import type {Vector} from '../src/SymbolsBackend.js';
 
 export interface Debugger {
   runToLine(line: string): Promise<void>;
@@ -15,9 +15,10 @@ export interface EvalResult {
 }
 
 interface Module extends EmscriptenModule {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   StringArray: Vector<string>;
   runTests(dbg: Debugger, args: Vector<string>): Promise<number>;
 }
 
-declare var loadModule: EmscriptenModuleFactory<Module>;
+declare let loadModule: EmscriptenModuleFactory<Module>;
 export default loadModule;

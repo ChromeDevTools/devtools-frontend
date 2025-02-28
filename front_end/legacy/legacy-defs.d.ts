@@ -90,10 +90,10 @@ interface Node {
   isSelfOrDescendant(node: Node|null): boolean;
   parentElementOrShadowHost(): Element|null;
   parentNodeOrShadowHost(): Node|null;
-  setTextContentTruncatedIfNeeded(text: any, placeholder?: string): boolean;
+  setTextContentTruncatedIfNeeded(text: unknown, placeholder?: string): boolean;
   traverseNextNode(stayWithin?: Node): Node|null;
   traversePreviousNode(stayWithin?: Node): Node|null;
-  deepTextContent(): string
+  deepTextContent(): string;
   window(): Window;
   childTextNodes(): Node[];
 }

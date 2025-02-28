@@ -1,4 +1,8 @@
-import {AidaRequest} from '../../front_end/core/host/AidaClient.ts'
+// Copyright 2025 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import type {AidaRequest} from '../../front_end/core/host/AidaClient.ts';
 
 /**
  * Some types used in auto-run.js. They only exist here because it's
@@ -10,7 +14,7 @@ import {AidaRequest} from '../../front_end/core/host/AidaClient.ts'
  */
 export interface RunResult {
   allExampleResults: IndividualPromptRequestResponse[];
-  metadata: ExampleMetadata[]
+  metadata: ExampleMetadata[];
 }
 
 /**
@@ -49,7 +53,7 @@ export interface YargsInput {
 // Clang cannot handle the Record<> syntax over multiple lines, it seems.
 /* clang-format off */
 export type Logs = Record<string, {
-  index: number;
-  text: string;
+  index: number,
+  text: string,
 }> ;
 /* clang-format on */

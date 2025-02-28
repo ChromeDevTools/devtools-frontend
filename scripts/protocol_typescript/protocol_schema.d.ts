@@ -82,10 +82,10 @@ export module Protocol {
 
   type DomainType = {
     /** Name of property */
-    id: string;
+    id: string,
     /** Description of the type */
-    description?: string;
-  }&(StringType|ObjectType|ArrayType|PrimitiveType)
+    description?: string,
+  }&(StringType|ObjectType|ArrayType|PrimitiveType);
 
   type ProtocolType = StringType|ObjectType|ArrayType|PrimitiveType|RefType|AnyType;
   type PropertyType = PropertyBaseType&ProtocolType;

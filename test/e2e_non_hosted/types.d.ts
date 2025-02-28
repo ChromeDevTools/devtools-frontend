@@ -1,9 +1,11 @@
+// Copyright 2025 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 import type {Platform} from '../conductor/platform.js';
 
 import type {BrowserSettings, BrowserWrapper} from './shared/browser-helper.js';
 import type {DevToolsFronendPage, DevtoolsSettings} from './shared/frontend-helper.js';
 import type {InspectedPage} from './shared/target-helper.js';
-
 
 declare global {
   namespace Mocha {

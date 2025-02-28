@@ -2981,6 +2981,8 @@ export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamH
 
 export class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.TraceObject> {
   async reveal(trace: SDK.TraceObject.TraceObject): Promise<void> {
+    // TODO(cjamcl): This needs to be given a TraceFile, so that metadata is loaded too. Important
+    // for source maps (which otherwise won't be saved on export).
     await UI.ViewManager.ViewManager.instance().showView('timeline');
     TimelinePanel.instance().loadFromEvents(trace.traceEvents);
   }

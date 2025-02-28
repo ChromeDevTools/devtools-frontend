@@ -3,11 +3,14 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
+import type * as Platform from '../platform/platform.js';
 import {UserVisibleError} from '../platform/platform.js';
 
 import type {
-  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from
+  HydratingDataPerTarget, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, TraceFile} from
   './RehydratingObject.js';
+import type {SourceMapV3} from './SourceMap.js';
 
 interface RehydratingTraceBase {
   cat: string;
@@ -47,6 +50,7 @@ interface TraceEventScriptRundown extends RehydratingTraceBase {
       hash: string,
       isModule: boolean,
       hasSourceUrl: boolean,
+      sourceUrl?: string,
       sourceMapUrl?: string,
     },
   };
@@ -65,8 +69,10 @@ interface TraceEventScriptRundownSource extends RehydratingTraceBase {
 }
 
 export class EnhancedTracesParser {
+  #trace: TraceFile;
   #scriptRundownEvents: TraceEventScriptRundown[] = [];
   #scriptToV8Context: Map<string, string> = new Map<string, string>();
+  #scriptToFrame: Map<string, string> = new Map<string, string>();
   #scriptToScriptSource: Map<string, string> = new Map<string, string>();
   #largeScriptToScriptSource: Map<string, string[]> = new Map<string, string[]>();
   #scriptToSourceLength: Map<string, number> = new Map<string, number>();
@@ -75,21 +81,24 @@ export class EnhancedTracesParser {
   #scripts: RehydratingScript[] = [];
   static readonly enhancedTraceVersion: number = 1;
 
-  constructor(traceEvents: unknown[]) {
-    // Initialize with the trace events provided.
+  constructor(trace: TraceFile) {
+    this.#trace = trace;
+
+    // Initialize with the trace provided.
     try {
-      this.parseEnhancedTrace(traceEvents);
+      this.parseEnhancedTrace();
     } catch (e) {
       throw new UserVisibleError.UserVisibleError(e);
     }
   }
 
-  parseEnhancedTrace(traceEvents: unknown[]): void {
-    for (const event of traceEvents) {
+  parseEnhancedTrace(): void {
+    for (const event of this.#trace.traceEvents) {
       if (this.isTargetRundownEvent(event)) {
         // Set up script to v8 context mapping
         const data = event.args?.data;
         this.#scriptToV8Context.set(this.getScriptIsolateId(data.isolate, data.scriptId), data.v8context);
+        this.#scriptToFrame.set(this.getScriptIsolateId(data.isolate, data.scriptId), data.frame);
         // Add target
         if (!this.#targets.find(target => target.targetId === data.frame)) {
           this.#targets.push({
@@ -130,8 +139,9 @@ export class EnhancedTracesParser {
             hash: data.hash,
             isModule: data.isModule,
             url: data.url,
-            hasSourceUrl: data.hasSourceUrl,
-            sourceMapUrl: data.sourceMapUrl,
+            hasSourceURL: data.hasSourceUrl,
+            sourceURL: data.sourceUrl,
+            sourceMapURL: data.sourceMapUrl,
           });
         }
       } else if (this.isScriptRundownSourceEvent(event)) {
@@ -197,11 +207,69 @@ export class EnhancedTracesParser {
               .find(context => context.id === script.executionContextId && context.isolate === script.isolate)
               ?.auxData;
     });
+
+    for (const script of this.#scripts) {
+      // Resolve the source map from the provided metadata.
+      // If no map is found for a given source map url, no source map is passed to the debugger model.
+      // Encoded as a data url so that the debugger model makes no network request.
+      // NOTE: consider passing directly as object and hacking `parsedScriptSource` in DebuggerModel.ts to handle
+      // this fake event. Would avoid a lot of wasteful (de)serialization. Maybe add SDK.Script.hydratedSourceMap.
+      script.sourceMapURL = this.getEncodedSourceMapUrl(script);
+    }
+
     const data = new Map<RehydratingTarget, [RehydratingExecutionContext[], RehydratingScript[]]>();
     for (const target of this.#targets) {
       data.set(target, this.groupContextsAndScriptsUnderTarget(target, this.#executionContexts, this.#scripts));
     }
     return data;
+  }
+
+  private getEncodedSourceMapUrl(script: RehydratingScript): string|undefined {
+    if (script.sourceMapURL?.startsWith('data:')) {
+      return script.sourceMapURL;
+    }
+
+    const sourceMap = this.getSourceMapFromMetadata(script);
+    if (!sourceMap) {
+      return;
+    }
+
+    return `data:text/plain;base64,${btoa(JSON.stringify(sourceMap))}`;
+  }
+
+  private getSourceMapFromMetadata(script: RehydratingScript): SourceMapV3|undefined {
+    const {hasSourceURL, sourceURL, url, sourceMapURL, isolate, scriptId} = script;
+
+    if (!sourceMapURL || !this.#trace.metadata.sourceMaps) {
+      return;
+    }
+
+    const frame = this.#scriptToFrame.get(this.getScriptIsolateId(isolate, scriptId));
+    if (!frame) {
+      return;
+    }
+
+    const target = this.#targets.find(t => t.targetId === frame);
+    if (!target) {
+      return;
+    }
+
+    let resolvedSourceUrl = url;
+    if (hasSourceURL && sourceURL) {
+      const targetUrl = target.url as Platform.DevToolsPath.UrlString;
+      resolvedSourceUrl = Common.ParsedURL.ParsedURL.completeURL(targetUrl, sourceURL) ?? sourceURL;
+    }
+
+    // Resolve the source map url. The value given by v8 may be relative, so resolve it here.
+    // This process should match the one in `SourceMapManager.attachSourceMap`.
+    const resolvedSourceMapUrl =
+        Common.ParsedURL.ParsedURL.completeURL(resolvedSourceUrl as Platform.DevToolsPath.UrlString, sourceMapURL);
+    if (!resolvedSourceMapUrl) {
+      return;
+    }
+
+    const {sourceMap} = this.#trace.metadata.sourceMaps.find(m => m.sourceMapUrl === resolvedSourceMapUrl) ?? {};
+    return sourceMap;
   }
 
   private getScriptIsolateId(isolate: string, scriptId: Protocol.Runtime.ScriptId): string {

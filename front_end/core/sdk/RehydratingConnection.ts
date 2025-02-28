@@ -23,15 +23,15 @@
  *
  */
 
-import * as Common from '../../core/common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
 import type {
-  ProtocolMessage, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage} from
+  ProtocolMessage, RehydratingExecutionContext, RehydratingScript, RehydratingTarget, ServerMessage, TraceFile} from
   './RehydratingObject.js';
 import {TraceObject} from './TraceObject.js';
 
@@ -66,7 +66,7 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   rehydratingConnectionState: RehydratingConnectionState = RehydratingConnectionState.UNINITIALIZED;
   onDisconnect: ((arg0: string) => void)|null = null;
   onMessage: ((arg0: Object) => void)|null = null;
-  traceEvents: unknown[] = [];
+  trace: TraceFile|null = null;
   sessions = new Map<number, RehydratingSessionBase>();
   #onConnectionLost: (message: Platform.UIString.LocalizedString) => void;
   #rehydratingWindow: Window&typeof globalThis;
@@ -113,14 +113,14 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
       return false;
     }
 
-    const payload = JSON.parse(logPayload);
+    const payload = JSON.parse(logPayload) as TraceFile;
     if (!('traceEvents' in payload)) {
       console.error('RehydratingConnection failed to initialize due to missing trace events in payload');
       return false;
     }
 
-    this.traceEvents = payload.traceEvents;
-    const enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser(this.traceEvents);
+    this.trace = payload;
+    const enhancedTracesParser = new EnhancedTraces.EnhancedTracesParser(payload);
     const dataPerTarget = enhancedTracesParser.data();
 
     let sessionId = 0;
@@ -151,9 +151,13 @@ export class RehydratingConnection implements ProtocolClient.InspectorBackend.Co
   }
 
   async #onRehydrated(): Promise<void> {
+    if (!this.trace) {
+      return;
+    }
+
     this.rehydratingConnectionState = RehydratingConnectionState.REHYDRATED;
     // Use revealer to load trace into performance panel
-    const trace = new TraceObject(this.traceEvents);
+    const trace = new TraceObject(this.trace.traceEvents as object[], this.trace.metadata);
     await Common.Revealer.reveal(trace);
   }
 

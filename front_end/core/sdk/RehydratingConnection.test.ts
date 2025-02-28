@@ -51,8 +51,8 @@ const mockScript1: RehydratingScript = {
   hash: '',
   isModule: false,
   url: 'example.com',
-  hasSourceUrl: false,
-  sourceMapUrl: undefined,
+  hasSourceURL: false,
+  sourceMapURL: undefined,
   length: 10,
   sourceText: 'source text 1',
   auxData: {
@@ -73,8 +73,8 @@ const mockScript2: RehydratingScript = {
   hash: '',
   isModule: false,
   url: 'example.com',
-  hasSourceUrl: false,
-  sourceMapUrl: undefined,
+  hasSourceURL: false,
+  sourceMapURL: undefined,
   length: 10,
   sourceText: 'source text 2',
   auxData: {

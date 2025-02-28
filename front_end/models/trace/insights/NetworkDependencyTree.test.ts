@@ -59,4 +59,17 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     // The |app.css| is not in the longest chain
     assert.isNotTrue(child0.isLongest);
   });
+
+  it('Store the chain in the last request of the chain', async () => {
+    const root = insight.rootNodes[0];
+    const [child0, child1] = root.children;
+
+    // There are three chains from Lantern:
+    //   |index.html(root)|
+    //   |index.html(root) -> app.css(child0)|
+    //   |index.html(root) -> app.js(child1)|
+    assert.deepEqual(root.chain, [root.request]);
+    assert.deepEqual(child0.chain, [root.request, child0.request]);
+    assert.deepEqual(child1.chain, [root.request, child1.request]);
+  });
 });

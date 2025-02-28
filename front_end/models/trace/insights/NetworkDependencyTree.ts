@@ -56,6 +56,7 @@ export interface CriticalRequestNode {
   timeFromInitialRequest: Types.Timing.Micro;
   children: CriticalRequestNode[];
   isLongest?: boolean;
+  chain?: Types.Events.SyntheticNetworkRequest[];
 }
 
 export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
@@ -155,6 +156,11 @@ export function generateInsight(
         };
         currentNodes.push(found);
       }
+
+      if (networkRequest === lastRequest) {
+        found.chain = path;
+      }
+
       currentNodes = found.children;
     }
   }

@@ -312,12 +312,14 @@ export class TimelineDetailsPane extends
         this.tabbedPane.closeTab(allTabs[i]);
       }
     }
+
+    // Append relatedChips inside of the node being shown.
+    const chipParent = (node instanceof Element && node.shadowRoot || node);
+    chipParent.appendChild(this.#relatedInsightChips);
+
     this.defaultDetailsContentWidget.detach();
     this.defaultDetailsContentWidget = this.#createContentWidget();
     this.defaultDetailsContentWidget.contentElement.append(node);
-    if (this.#relatedInsightChips) {
-      this.defaultDetailsContentWidget.contentElement.appendChild(this.#relatedInsightChips);
-    }
   }
 
   private updateContents(): void {
@@ -330,10 +332,6 @@ export class TimelineDetailsPane extends
     const view = this.rangeDetailViews.get(this.tabbedPane.selectedTabId || '');
     if (view) {
       view.updateContents(this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
-    } else {
-      // If no view, we must be in the summary tab, update the 3p tree.
-      this.#thirdPartyTree.updateContents(
-          this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
     }
   }
 
@@ -584,6 +582,8 @@ export class TimelineDetailsPane extends
     const endOffset = endTime - minBoundsMilli;
     const summaryDetailElem = TimelineUIUtils.generateSummaryDetails(
         aggregatedStats, startOffset, endOffset, this.#selectedEvents, this.#thirdPartyTree);
+
+    this.#thirdPartyTree.updateContents(this.selection || selectionFromRangeMilliSeconds(startTime, endTime));
 
     this.setSummaryContent(summaryDetailElem);
 

@@ -47,8 +47,15 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await detailsView.setSelection(selection);
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    // NetworkRequestDetails and RelatedInsightsChips nodes.
-    assert.lengthOf(detailsContentElement.childNodes, 2);
+    assert.deepEqual(
+        Array.from(detailsContentElement.children).map(n => n.localName),
+        ['devtools-performance-network-request-details']);
+
+    const children = detailsContentElement.firstElementChild?.shadowRoot?.children;
+    assert(children);
+    assert.deepEqual(
+        Array.from(children).map(n => n.localName), ['div', 'div', 'div', 'div', 'devtools-related-insight-chips']);
+
   });
 
   it('displays the details for a frame correctly', async function() {

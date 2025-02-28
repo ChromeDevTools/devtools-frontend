@@ -1171,6 +1171,35 @@ describeWithMockConnection('AI Assistance Panel', () => {
            assert.strictEqual(updatedViewInput.inputPlaceholder, 'Select an element to ask a question');
          });
     });
+
+    it('should disable the send button when the input is empty', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+
+      UI.Context.Context.instance().setFlavor(
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
+      const {panel, expectViewUpdate} =
+          await createAiAssistancePanel({aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE});
+
+      const updateViewInput = await expectViewUpdate(() => {
+        panel.handleAction('freestyler.elements-floating-button');
+      });
+      assert.isTrue(updateViewInput.isTextInputEmpty);
+
+      const updateViewInputAfterTextInputAdded = await expectViewUpdate(() => {
+        updateViewInput.onTextInputChange('test');
+      });
+      assert.isFalse(updateViewInputAfterTextInputAdded.isTextInputEmpty);
+
+      const updateViewInputAfterTextInputRemoved = await expectViewUpdate(() => {
+        updateViewInputAfterTextInputAdded.onTextInputChange('');
+      });
+      assert.isTrue(updateViewInputAfterTextInputRemoved.isTextInputEmpty);
+    });
   });
 
   describe('multimodal input', () => {

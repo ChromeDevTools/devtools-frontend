@@ -21,6 +21,7 @@ describeWithEnvironment('ChatView', () => {
       onCancelClick: noop,
       onContextClick: noop,
       onNewConversation: noop,
+      onTextInputChange: noop,
       inspectElementToggled: false,
       state: AiAssistance.State.CHAT_VIEW,
       conversationType: AiAssistance.ConversationType.STYLING,
@@ -36,6 +37,7 @@ describeWithEnvironment('ChatView', () => {
       emptyStateSuggestions: [],
       inputPlaceholder: i18n.i18n.lockedString('input placeholder'),
       disclaimerText: i18n.i18n.lockedString('disclaimer text'),
+      isTextInputEmpty: true,
       ...options,
     };
   }

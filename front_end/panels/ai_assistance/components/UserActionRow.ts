@@ -130,7 +130,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
   #feedbackValue = '';
   #currentRating: Host.AidaClient.Rating|undefined;
   #isShowingFeedbackForm = false;
-  #isSubmitButtonDisabled = false;
+  #isSubmitButtonDisabled = true;
 
   #view: View;
   #viewOutput: ViewOutput = {};

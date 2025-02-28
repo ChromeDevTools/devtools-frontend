@@ -268,6 +268,7 @@ export interface Props {
   onNewConversation: () => void;
   onTakeScreenshot?: () => void;
   onRemoveImageInput?: () => void;
+  onTextInputChange: (input: string) => void;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -290,6 +291,7 @@ export interface Props {
   emptyStateSuggestions: string[];
   inputPlaceholder: Platform.UIString.LocalizedString;
   disclaimerText: Platform.UIString.LocalizedString;
+  isTextInputEmpty: boolean;
 }
 
 export class ChatView extends HTMLElement {
@@ -513,6 +515,7 @@ export class ChatView extends HTMLElement {
                 multimodalInputEnabled: this.#props.multimodalInputEnabled,
                 conversationType: this.#props.conversationType,
                 imageInput: this.#props.imageInput,
+                isTextInputEmpty: this.#props.isTextInputEmpty,
                 onContextClick: this.#props.onContextClick,
                 onInspectElementClick: this.#props.onInspectElementClick,
                 onSubmit: this.#handleSubmit,
@@ -521,6 +524,7 @@ export class ChatView extends HTMLElement {
                 onNewConversation: this.#props.onNewConversation,
                 onTakeScreenshot: this.#props.onTakeScreenshot,
                 onRemoveImageInput: this.#props.onRemoveImageInput,
+                onTextInputChange: this.#props.onTextInputChange,
               })
           }
         </main>
@@ -1073,13 +1077,15 @@ function renderReadOnlySection({onNewConversation, conversationType}: {
   // clang-format on
 }
 
-function renderChatInputButtons({isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation}: {
-  isLoading: boolean,
-  blockedByCrossOrigin: boolean,
-  isTextInputDisabled: boolean,
-  onCancel: (ev: SubmitEvent) => void,
-  onNewConversation: () => void,
-}): Lit.TemplateResult {
+function renderChatInputButtons(
+    {isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, onCancel, onNewConversation}: {
+      isLoading: boolean,
+      blockedByCrossOrigin: boolean,
+      isTextInputDisabled: boolean,
+      isTextInputEmpty: boolean,
+      onCancel: (ev: SubmitEvent) => void,
+      onNewConversation: () => void,
+    }): Lit.TemplateResult {
   if (isLoading) {
     // clang-format off
     return html`<devtools-button
@@ -1126,7 +1132,7 @@ function renderChatInputButtons({isLoading, blockedByCrossOrigin, isTextInputDis
         type: 'submit',
         variant: Buttons.Button.Variant.ICON,
         size: Buttons.Button.Size.REGULAR,
-        disabled: isTextInputDisabled,
+        disabled: isTextInputDisabled || isTextInputEmpty,
         iconName: 'send',
         title: lockedString(UIStringsNotTranslate.sendButtonTitle),
         jslogContext: 'send',
@@ -1207,6 +1213,7 @@ function renderChatInput({
   multimodalInputEnabled,
   conversationType,
   imageInput,
+  isTextInputEmpty,
   onContextClick,
   onInspectElementClick,
   onSubmit,
@@ -1215,6 +1222,7 @@ function renderChatInput({
   onNewConversation,
   onTakeScreenshot,
   onRemoveImageInput,
+  onTextInputChange,
 }: {
   isLoading: boolean,
   blockedByCrossOrigin: boolean,
@@ -1226,6 +1234,7 @@ function renderChatInput({
   multimodalInputEnabled?: boolean,
   conversationType?: ConversationType,
   imageInput?: string,
+  isTextInputEmpty: boolean,
   onContextClick: () => void ,
   onInspectElementClick: () => void,
   onSubmit: (ev: SubmitEvent) => void,
@@ -1234,6 +1243,7 @@ function renderChatInput({
   onNewConversation: () => void,
   onTakeScreenshot?: () => void,
   onRemoveImageInput?: () => void,
+  onTextInputChange: (input: string) => void,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
@@ -1278,6 +1288,7 @@ function renderChatInput({
         wrap="hard"
         maxlength="10000"
         @keydown=${onTextAreaKeyDown}
+        @input=${(event: KeyboardEvent) => onTextInputChange((event.target as HTMLInputElement).value)}
         placeholder=${inputPlaceholder}
         jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
       ></textarea>
@@ -1285,7 +1296,7 @@ function renderChatInput({
         ${renderTakeScreenshotButton({
           multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, onTakeScreenshot
         })}
-        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, onCancel, onNewConversation })}
+        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, onCancel, onNewConversation })}
       </div>
     </div>
   </form>

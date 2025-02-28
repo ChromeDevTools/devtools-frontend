@@ -441,6 +441,8 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     accountFullName?: string,
   };
   #imageInput = '';
+  // Used to disable send button when there is not text input.
+  #isTextInputEmpty = true;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -809,6 +811,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           emptyStateSuggestions: this.#conversation ? getEmptyStateSuggestions(this.#conversation.type) : [],
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
+          isTextInputEmpty: this.#isTextInputEmpty,
           onNewChatClick: this.#handleNewChatRequest.bind(this),
           onHistoryClick: this.#onHistoryClicked.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
@@ -831,6 +834,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onTakeScreenshot: isAiAssistanceMultimodalInputEnabled() ? this.#handleTakeScreenshot.bind(this) : undefined,
           onRemoveImageInput: isAiAssistanceMultimodalInputEnabled() ? this.#handleRemoveImageInput.bind(this) :
                                                                        undefined,
+          onTextInputChange: this.#handleTextInputChange.bind(this),
         },
         this.#viewOutput, this.contentElement);
   }
@@ -1133,6 +1137,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   #handleRemoveImageInput(): void {
     this.#imageInput = '';
     this.requestUpdate();
+  }
+
+  #handleTextInputChange(value: string): void {
+    const disableSubmit = !value;
+    if (disableSubmit !== this.#isTextInputEmpty) {
+      this.#isTextInputEmpty = disableSubmit;
+      void this.requestUpdate();
+    }
   }
 
   #runAbortController = new AbortController();

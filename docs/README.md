@@ -15,9 +15,13 @@ below.**
 
 [TOC]
 
-## Chromium DevTools Playbook (aka Work With Us)
+## Work With Us
 
-* See the [playbook](./playbook.md) for step-by-step instructions on how to work with Chromium DevTools to implement your idea.
+*   See the [playbook](./playbook.md) for step-by-step instructions on how to
+    work with Chromium DevTools to implement your idea.
+*   See the [Ecosystem Guide](./ecosystem/README.md) if you are working on Web
+    development tools and services, and would like to learn more about
+    integration and extension points with Chromium DevTools.
 
 ## Document Index
 

@@ -1,4 +1,3 @@
-
 import type {Platform} from '../conductor/platform.js';
 
 import type {BrowserSettings, BrowserWrapper} from './shared/browser-helper.js';
@@ -30,6 +29,6 @@ declare global {
     }
 
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    export type TestCallbackWithState = (state: State) => PromiseLike<any>;
+    export type TestCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<any>;
   }
 }

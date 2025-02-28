@@ -1134,12 +1134,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (bytes) {
       this.#imageInput = bytes;
       this.requestUpdate();
+      void this.updateComplete.then(() => {
+        this.#viewOutput.chatView?.focusTextInput();
+      });
     }
   }
 
   #handleRemoveImageInput(): void {
     this.#imageInput = '';
     this.requestUpdate();
+    void this.updateComplete.then(() => {
+      this.#viewOutput.chatView?.focusTextInput();
+    });
   }
 
   #handleTextInputChange(value: string): void {

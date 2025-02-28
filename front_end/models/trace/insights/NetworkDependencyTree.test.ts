@@ -6,6 +6,8 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../trace.js';
 
+import type {RelatedEventsMap} from './types.js';
+
 describeWithEnvironment('NetworkDependencyTree', function() {
   let insight: Trace.Insights.Types.InsightModels['NetworkDependencyTree'];
 
@@ -15,7 +17,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
   });
 
-  it('calculates network dependency tree', async () => {
+  it('calculates network dependency tree', () => {
     // The network dependency tree in this trace is
     // | .../index.html (ts:566777570990, dur:5005590)
     // |
@@ -41,7 +43,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.lengthOf(child1.children, 0);
   });
 
-  it('Calculate the max critical path latency', async () => {
+  it('Calculate the max critical path latency', () => {
     // The chain |index.html(root) -> app.js(child1)| is the longest
     const root = insight.rootNodes[0];
     const child1 = root.children[1];
@@ -49,7 +51,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
         insight.maxTime, Trace.Types.Timing.Micro(child1.request.ts + child1.request.dur - root.request.ts));
   });
 
-  it('Marks the longest network dependency chain', async () => {
+  it('Marks the longest network dependency chain', () => {
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
@@ -60,7 +62,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.isNotTrue(child0.isLongest);
   });
 
-  it('Store the chain in the last request of the chain', async () => {
+  it('Store the chain in the last request of the chain', () => {
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
@@ -71,5 +73,31 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.deepEqual(root.chain, [root.request]);
     assert.deepEqual(child0.chain, [root.request, child0.request]);
     assert.deepEqual(child1.chain, [root.request, child1.request]);
+  });
+
+  it('Calculates the related events', async () => {
+    // Need to load a file with longer dependency chain for this test.
+    // Only those requests whose depth >= 2 will be added to the related events.
+    const {data, insights} = await processTrace(this, 'web-dev-screenshot-source-ids.json.gz');
+    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+
+    // For NetworkDependencyTree, the relatedEvents is a map format.
+    assert.isFalse(Array.isArray(insight.relatedEvents));
+    const relatedEvents = insight.relatedEvents as RelatedEventsMap;
+
+    // There are a few chains, let test the first chain
+    // |web.dev -> /css -> 4UasrENHsx...UvQ.woff2|
+    const root = insight.rootNodes[0];
+    const child0 = root.children[0];
+    const child00 = child0.children[0];
+
+    // Root's depth is 0, so there isn't any warning message
+    assert.deepEqual(relatedEvents.get(root.request), []);
+    // child0's depth is 1, so there isn't any warning message
+    assert.deepEqual(relatedEvents.get(child0.request), []);
+    // child00's depth is 2, so there is one warning message
+    assert.deepEqual(
+        relatedEvents.get(child00.request), [Trace.Insights.Models.NetworkDependencyTree.UIStrings.warningDescription]);
   });
 });

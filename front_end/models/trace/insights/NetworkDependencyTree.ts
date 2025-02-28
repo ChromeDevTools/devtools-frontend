@@ -15,6 +15,7 @@ import {
   type InsightSetContext,
   type InsightSetContextWithNavigation,
   type PartialInsightModel,
+  type RelatedEventsMap,
   type RequiredData
 } from './types.js';
 
@@ -28,6 +29,11 @@ export const UIStrings = {
    */
   description:
       '[Avoid chaining critical requests](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.',
+  /**
+   * @description Description of the warning that recommends avoiding chaining critical requests.
+   */
+  warningDescription:
+      'Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.',
   /**
    * @description Text status indicating that there isn't long chaining critical network requests.
    */
@@ -125,6 +131,7 @@ export function generateInsight(
   }
 
   const rootNodes: CriticalRequestNode[] = [];
+  const relatedEvents: RelatedEventsMap = new Map();
   let maxTime = Types.Timing.Micro(0);
 
   let longestChain: Types.Events.SyntheticNetworkRequest[] = [];
@@ -143,23 +150,26 @@ export function generateInsight(
 
     let currentNodes = rootNodes;
 
-    for (const networkRequest of path) {
+    for (let depth = 0; depth < path.length; ++depth) {
+      const request = path[depth];
       // find the request
-      let found = currentNodes.find(node => node.request === networkRequest);
+      let found = currentNodes.find(node => node.request === request);
 
       if (!found) {
-        const timeFromInitialRequest = Types.Timing.Micro(networkRequest.ts + networkRequest.dur - initialRequest.ts);
+        const timeFromInitialRequest = Types.Timing.Micro(request.ts + request.dur - initialRequest.ts);
         found = {
-          request: networkRequest,
+          request,
           timeFromInitialRequest,
           children: [],
         };
         currentNodes.push(found);
       }
 
-      if (networkRequest === lastRequest) {
+      if (request === lastRequest) {
         found.chain = path;
       }
+      // TODO(b/372897712) Switch the UIString to markdown.
+      relatedEvents.set(request, depth < 2 ? [] : [i18nString(UIStrings.warningDescription)]);
 
       currentNodes = found.children;
     }
@@ -183,7 +193,7 @@ export function generateInsight(
       return;
     }
 
-    const networkPath = traversalPath.filter(node => node.type === 'network').reverse().map(node => (node).rawRequest);
+    const networkPath = traversalPath.filter(node => node.type === 'network').reverse().map(node => node.rawRequest);
 
     // Ignore if some ancestor is not a critical request.
     if (networkPath.some(request => (!isCritical(request, context)))) {
@@ -215,5 +225,6 @@ export function generateInsight(
   return finalize({
     rootNodes,
     maxTime,
+    relatedEvents,
   });
 }

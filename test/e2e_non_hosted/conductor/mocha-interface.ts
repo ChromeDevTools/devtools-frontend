@@ -82,9 +82,9 @@ function customDescribe(suiteImplementation: SuiteFunctions, file: string) {
       });
 
       if (!suite.isPending()) {
-        suite.beforeAll(async () => {
-          suite.timeout(0);
-          return await StateProvider.instance.resolveBrowser(suite);
+        suite.beforeAll(async function(this: Mocha.Context) {
+          this.timeout(0);
+          await StateProvider.instance.resolveBrowser(suite);
         });
       }
       return suite;

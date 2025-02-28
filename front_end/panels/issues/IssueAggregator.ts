@@ -44,6 +44,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #cookieDeprecationMetadataIssues =
       new Set<IssuesManager.CookieDeprecationMetadataIssue.CookieDeprecationMetadataIssue>();
   #mixedContentIssues = new Set<IssuesManager.MixedContentIssue.MixedContentIssue>();
+  #partitioningBlobURLIssues = new Set<IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue>();
   #sharedArrayBufferIssues = new Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>();
   #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
   #attributionReportingIssues = new Set<IssuesManager.AttributionReportingIssue.AttributionReportingIssue>();
@@ -166,6 +167,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     return this.#aggregatedIssuesCount;
   }
 
+  getPartitioningBlobURLIssues(): Iterable<IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue> {
+    return this.#partitioningBlobURLIssues;
+  }
+
   /**
    * Produces a primary key for a cookie. Use this instead of `JSON.stringify` in
    * case new fields are added to `AffectedCookie`.
@@ -253,6 +258,9 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     }
     if (issue instanceof IssuesManager.SelectElementAccessibilityIssue.SelectElementAccessibilityIssue) {
       this.#selectElementAccessibilityIssues.add(issue);
+    }
+    if (issue instanceof IssuesManager.PartitioningBlobURLIssue.PartitioningBlobURLIssue) {
+      this.#partitioningBlobURLIssues.add(issue);
     }
   }
 

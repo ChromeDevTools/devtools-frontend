@@ -32,6 +32,7 @@ devtools_module("issues_manager") {
     "LowTextContrastIssue.ts",
     "MarkdownIssueDescription.ts",
     "MixedContentIssue.ts",
+    "PartitioningBlobURLIssue.ts",
     "PropertyRuleIssue.ts",
     "QuirksModeIssue.ts",
     "RelatedIssue.ts",
@@ -235,6 +236,8 @@ devtools_issue_description_files = [
   "sriValidationFailedInvalidLength.md",
   "sriValidationFailedSignatureMismatch.md",
   "placeholderDescriptionForInvisibleIssues.md",
+  "fetchingPartitionedBlobURL.md",
+  "navigatingPartitionedBlobURL.md",
 ]
 
 devtools_pre_built("descriptions") {

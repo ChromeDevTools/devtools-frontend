@@ -23,6 +23,7 @@ import type {Issue, IssueKind} from './Issue.js';
 import {Events} from './IssuesManagerEvents.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
 import {MixedContentIssue} from './MixedContentIssue.js';
+import {PartitioningBlobURLIssue} from './PartitioningBlobURLIssue.js';
 import {PropertyRuleIssue} from './PropertyRuleIssue.js';
 import {QuirksModeIssue} from './QuirksModeIssue.js';
 import {SelectElementAccessibilityIssue} from './SelectElementAccessibilityIssue.js';
@@ -117,6 +118,10 @@ const issueCodeHandlers = new Map<
   [
     Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue,
     StylesheetLoadingIssue.fromInspectorIssue,
+  ],
+  [
+    Protocol.Audits.InspectorIssueCode.PartitioningBlobURLIssue,
+    PartitioningBlobURLIssue.fromInspectorIssue,
   ],
   [
     Protocol.Audits.InspectorIssueCode.PropertyRuleIssue,

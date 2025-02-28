@@ -21,6 +21,7 @@ import * as IssuesManager from './IssuesManager.js';
 import * as LowTextContrastIssue from './LowTextContrastIssue.js';
 import * as MarkdownIssueDescription from './MarkdownIssueDescription.js';
 import * as MixedContentIssue from './MixedContentIssue.js';
+import * as PartitioningBlobURLIssue from './PartitioningBlobURLIssue.js';
 import * as PropertyRuleIssue from './PropertyRuleIssue.js';
 import * as QuirksModeIssue from './QuirksModeIssue.js';
 import * as RelatedIssue from './RelatedIssue.js';
@@ -51,6 +52,7 @@ export {
   LowTextContrastIssue,
   MarkdownIssueDescription,
   MixedContentIssue,
+  PartitioningBlobURLIssue,
   PropertyRuleIssue,
   QuirksModeIssue,
   RelatedIssue,

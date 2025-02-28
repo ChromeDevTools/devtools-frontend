@@ -175,7 +175,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   #flameChartDimmers: FlameChartDimmer[] = [];
   #searchDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
   #treeRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
-  #thirdPartyRowHoverDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: false});
+  #treeRowClickDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: false});
   #activeInsightDimmer = this.#registerFlameChartDimmer({inclusive: false, outline: true});
   #thirdPartyCheckboxDimmer = this.#registerFlameChartDimmer({inclusive: true, outline: false});
 
@@ -383,9 +383,9 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
       this.#updateFlameChartDimmerWithEvents(this.#treeRowHoverDimmer, events);
     });
 
-    this.detailsView.addEventListener(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, node => {
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_CLICKED, node => {
       const events = node?.data?.events ?? null;
-      this.#updateFlameChartDimmerWithEvents(this.#thirdPartyRowHoverDimmer, events);
+      this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, events);
     });
 
     /**
@@ -1382,6 +1382,12 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
         !this.#timeRangeSelectionAnnotation.label) {
       ModificationsManager.activeManager()?.removeAnnotation(this.#timeRangeSelectionAnnotation);
       this.#timeRangeSelectionAnnotation = null;
+    }
+
+    // If we don't have a selection, update the tree view row click dimmer events to null.
+    // This is a user disabling the persistent hovering from a row click, ensure the events are cleared.
+    if ((selection === null)) {
+      this.#updateFlameChartDimmerWithEvents(this.#treeRowClickDimmer, null);
     }
 
     // Check if this is an entry from main flame chart or network flame chart.

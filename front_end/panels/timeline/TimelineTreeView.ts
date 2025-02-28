@@ -603,6 +603,7 @@ export class TimelineTreeView extends
    */
   #onDataGridSelectionChange(event: Common.EventTarget.EventTargetEvent<DataGrid.DataGrid.DataGridNode<GridNode>>):
       void {
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_CLICKED, (event.data as GridNode).profileNode);
     this.onHover((event.data as GridNode).profileNode);
   }
 
@@ -683,14 +684,14 @@ export class TimelineTreeView extends
 export namespace TimelineTreeView {
   export const enum Events {
     TREE_ROW_HOVERED = 'TreeRowHovered',
-    THIRD_PARTY_ROW_HOVERED = 'ThirdPartyRowHovered',
     BOTTOM_UP_BUTTON_CLICKED = 'BottomUpButtonClicked',
+    TREE_ROW_CLICKED = 'TreeRowClicked',
   }
 
   export interface EventTypes {
     [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
-    [Events.THIRD_PARTY_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
     [Events.BOTTOM_UP_BUTTON_CLICKED]: Trace.Extras.TraceTree.Node|null;
+    [Events.TREE_ROW_CLICKED]: Trace.Extras.TraceTree.Node|null;
   }
 }
 
@@ -865,7 +866,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
   #bottomUpButtonClicked(): void {
     // We should also trigger an event to "unhover" the 3P tree row. Since this isn't
     // triggered when clicking the bottom up button.
-    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.THIRD_PARTY_ROW_HOVERED, null);
+    this.treeView.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null);
     this.treeView.dispatchEventToListeners(TimelineTreeView.Events.BOTTOM_UP_BUTTON_CLICKED, this.profileNode);
   }
 }

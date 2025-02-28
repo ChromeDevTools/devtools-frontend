@@ -29,6 +29,7 @@ import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {CSSValueTraceView} from './CSSValueTraceView.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
+  BinOpRenderer,
   type MatchRenderer,
   Renderer,
   rendererBase,
@@ -1485,6 +1486,7 @@ export function getPropertyRenderers(
     new LengthRenderer(stylesPane),
     new MathFunctionRenderer(stylesPane),
     new AutoBaseRenderer(computedStyles),
+    new BinOpRenderer(),
   ];
 }
 

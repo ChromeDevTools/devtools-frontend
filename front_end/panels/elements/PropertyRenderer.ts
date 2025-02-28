@@ -355,10 +355,6 @@ export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLM
     UI.UIUtils.createTextChild(container, ')');
     return [container];
   }
-
-  matcher(): SDK.CSSPropertyParserMatchers.URLMatcher {
-    return new SDK.CSSPropertyParserMatchers.URLMatcher();
-  }
 }
 
 // clang-format off
@@ -370,8 +366,15 @@ export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
     UI.Tooltip.Tooltip.install(element, unescapeCssString(match.text));
     return [element];
   }
+}
 
-  matcher(): SDK.CSSPropertyParserMatchers.StringMatcher {
-    return new SDK.CSSPropertyParserMatchers.StringMatcher();
+// clang-format off
+export class BinOpRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch) {
+  // clang-format on
+  override render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): Node[] {
+    const [lhs, binop, rhs] =
+        SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => Renderer.render(child, context).nodes);
+
+    return [lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs].flat();
   }
 }

@@ -18,6 +18,7 @@ import {
   AngleMatcher,
   AutoBaseMatcher,
   BezierMatcher,
+  BinOpMatcher,
   ColorMatcher,
   ColorMixMatcher,
   CSSWideKeywordMatcher,
@@ -138,6 +139,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       new LengthMatcher(),
       new MathFunctionMatcher(),
       new AutoBaseMatcher(),
+      new BinOpMatcher(),
     ];
 
     if (Root.Runtime.experiments.isEnabled('font-editor')) {

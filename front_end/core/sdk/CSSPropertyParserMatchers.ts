@@ -141,6 +141,22 @@ export class VariableMatcher extends matcherBase(VariableMatch) {
   }
 }
 
+export class BinOpMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
+  }
+}
+
+// clang-format off
+export class BinOpMatcher extends matcherBase(BinOpMatch) {
+  // clang-format on
+  override accepts(): boolean {
+    return true;
+  }
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): BinOpMatch|null {
+    return node.name === 'BinaryExpression' ? new BinOpMatch(matching.ast.text(node), node) : null;
+  }
+}
+
 export class TextMatch implements Match {
   computedText?: () => string;
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {

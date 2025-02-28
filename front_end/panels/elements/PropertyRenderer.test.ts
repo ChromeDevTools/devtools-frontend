@@ -54,6 +54,21 @@ describeWithEnvironment('PropertyRenderer', () => {
           Printer.walk(ast).get());
     });
 
+    it('nicely formats binary expressions', () => {
+      const property = 'calc((50 -(0* 4))* 1vmin)';
+      const rule = `*{--property: ${property};}`;
+      const tree = cssParser.parse(rule).topNode;
+      const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
+      const matchedResult =
+          SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [new SDK.CSSPropertyParserMatchers.BinOpMatcher()]);
+      const renderer = new Elements.PropertyRenderer.BinOpRenderer();
+      const context =
+          new Elements.PropertyRenderer.RenderingContext(ast, new Map([[renderer.matchType, renderer]]), matchedResult);
+      assert.deepEqual(
+          textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''),
+          '*{--property: calc((50 - (0 * 4)) * 1vmin);}', Printer.walk(ast).get());
+    });
+
     it('correctly renders subtrees', () => {
       const property = '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)';
       const rule = `*{--property: ${property};}`;

@@ -83,9 +83,17 @@ them from the command line:
 google-chrome-canary --enable-features=DevToolsWellKnown,DevToolsAutomaticFileSystems
 ```
 
+## Usage
+
 To check if your setup is correct, you can try out Benedikt’s
 [Hello World][hello-world] demo project. Just follow the steps outlined in the
 `README.md` there.
+
+## Vite
+
+There's also a proof-of-concept plugin for [vite](http://vite.dev) available at
+[bmeurer/vite-plugin-devtools-json](https://github.com/bmeurer/vite-plugin-devtools-json),
+which you can easily add to your existing project.
 
 [self-link]: http://goo.gle/devtools-automatic-workspace-folders
 [design-doc]: http://go/chrome-devtools:automatic-workspace-folders-design

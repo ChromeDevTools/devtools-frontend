@@ -1375,7 +1375,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       }
 
       this.#isLoading = false;
-      this.#viewOutput.chatView?.finishTextAnimations();
       this.requestUpdate();
     } finally {
       release();

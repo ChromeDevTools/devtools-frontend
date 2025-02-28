@@ -11,7 +11,7 @@ import * as Root from '../../../core/root/root.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import type * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -301,7 +301,6 @@ export class ChatView extends HTMLElement {
   #props: Props;
   #messagesContainerElement?: Element;
   #mainElementRef?: Lit.Directives.Ref<Element> = Lit.Directives.createRef();
-  #lastAnswerMarkdownView?: MarkdownView.MarkdownView.MarkdownView;
   #messagesContainerResizeObserver = new ResizeObserver(() => this.#handleMessagesContainerResize());
   /**
    * Indicates whether the chat scroll position should be pinned to the bottom.
@@ -359,14 +358,6 @@ export class ChatView extends HTMLElement {
     this.#mainElementRef.value.scrollTop = this.#scrollTop;
   }
 
-  finishTextAnimations(): void {
-    if (!this.#lastAnswerMarkdownView) {
-      return;
-    }
-
-    this.#lastAnswerMarkdownView.finishAnimations();
-  }
-
   scrollToBottom(): void {
     if (!this.#mainElementRef?.value) {
       return;
@@ -407,17 +398,6 @@ export class ChatView extends HTMLElement {
     } else {
       this.#pinScrollToBottom = true;
       this.#messagesContainerResizeObserver.disconnect();
-    }
-  }
-
-  #handleLastAnswerMarkdownViewRef(el: Element|undefined): void {
-    if (!el) {
-      this.#lastAnswerMarkdownView = undefined;
-      return;
-    }
-
-    if (el instanceof MarkdownView.MarkdownView.MarkdownView) {
-      this.#lastAnswerMarkdownView = el;
     }
   }
 
@@ -497,7 +477,6 @@ export class ChatView extends HTMLElement {
             changeSummary: this.#props.changeSummary,
             onSuggestionClick: this.#handleSuggestionClick,
             onFeedbackSubmit: this.#props.onFeedbackSubmit,
-            onLastAnswerMarkdownViewRef: this.#handleLastAnswerMarkdownViewRef,
             onMessageContainerRef: this.#handleMessageContainerRef,
           })}
           ${this.#props.isReadOnly
@@ -796,7 +775,6 @@ function renderChatMessage({
   markdownRenderer,
   onSuggestionClick,
   onFeedbackSubmit,
-  onLastAnswerMarkdownViewRef,
 }: {
   message: ChatMessage,
   isLoading: boolean,
@@ -807,7 +785,6 @@ function renderChatMessage({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   onSuggestionClick: (suggestion: string) => void,
   onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-  onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   if (message.entity === ChatMessageEntity.USER) {
     const name = userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
@@ -870,7 +847,7 @@ function renderChatMessage({
         },
       )}
       ${message.answer
-        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly, ref: onLastAnswerMarkdownViewRef })}</p>`
+        ? html`<p>${renderTextAsMarkdown(message.answer, markdownRenderer, { animate: !isReadOnly && isLoading && isLast })}</p>`
         : Lit.nothing}
       ${renderError(message)}
       ${isLast && isLoading
@@ -973,7 +950,6 @@ function renderMessages({
   changeSummary,
   onSuggestionClick,
   onFeedbackSubmit,
-  onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
 }: {
   messages: ChatMessage[],
@@ -986,7 +962,6 @@ function renderMessages({
                onSuggestionClick: (suggestion: string) => void,
                onFeedbackSubmit:
                    (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-               onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
                onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   // clang-format off
@@ -1003,7 +978,6 @@ function renderMessages({
           markdownRenderer,
           onSuggestionClick,
           onFeedbackSubmit,
-          onLastAnswerMarkdownViewRef,
         }),
       )}
       ${(changeSummary && !isLoading) ? html`<devtools-widget .widgetConfig=${UI.Widget.widgetConfig(PatchWidget, {
@@ -1461,7 +1435,6 @@ function renderMainContents({
   changeSummary,
   onSuggestionClick,
   onFeedbackSubmit,
-  onLastAnswerMarkdownViewRef,
   onMessageContainerRef,
 }: {
   state: State,
@@ -1479,7 +1452,6 @@ function renderMainContents({
                onSuggestionClick: (suggestion: string) => void,
                onFeedbackSubmit:
                    (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
-               onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
                onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
@@ -1505,7 +1477,6 @@ function renderMainContents({
       changeSummary,
       onSuggestionClick,
       onFeedbackSubmit,
-      onLastAnswerMarkdownViewRef,
       onMessageContainerRef,
     });
   }

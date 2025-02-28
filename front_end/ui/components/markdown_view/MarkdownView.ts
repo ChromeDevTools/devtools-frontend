@@ -52,19 +52,13 @@ export class MarkdownView extends HTMLElement {
         code: 'pending',
       });
     } else {
-      this.#animationEnabled = false;
-      this.#renderer.removeCustomClasses({
-        paragraph: 'pending',
-        heading: 'pending',
-        list_item: 'pending',
-        code: 'pending',
-      });
+      this.#finishAnimations();
     }
 
     this.#update();
   }
 
-  finishAnimations(): void {
+  #finishAnimations(): void {
     const animatingElements = this.#shadow.querySelectorAll('.animating');
     for (const element of animatingElements) {
       element.classList.remove('animating');

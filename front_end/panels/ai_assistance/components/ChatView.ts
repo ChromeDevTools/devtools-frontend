@@ -396,6 +396,7 @@ export class ChatView extends HTMLElement {
     }
 
     textArea.value = text;
+    this.#props.onTextInputChange(text);
   }
 
   #handleMessageContainerRef(el: Element|undefined): void {
@@ -1301,52 +1302,52 @@ function renderChatInput({
     </div>
   </form>
 `;
-    // clang-format on
-  }
+  // clang-format on
+}
 
-  function renderAidaUnavailableContents(
-      aidaAvailability:
-          Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>):
-      Lit.TemplateResult {
-    switch (aidaAvailability) {
-      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
-      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED: {
-        return html`${i18nString(UIStrings.notLoggedIn)}`;
-      }
-      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET: {
-        return html`${i18nString(UIStrings.offline)}`;
-      }
+function renderAidaUnavailableContents(
+    aidaAvailability:
+        Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>):
+    Lit.TemplateResult {
+  switch (aidaAvailability) {
+    case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
+    case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED: {
+      return html`${i18nString(UIStrings.notLoggedIn)}`;
+    }
+    case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET: {
+      return html`${i18nString(UIStrings.offline)}`;
     }
   }
+}
 
-  function renderConsentViewContents(): Lit.TemplateResult {
-    const settingsLink = document.createElement('button');
-    settingsLink.textContent = i18nString(UIStrings.settingsLink);
-    settingsLink.classList.add('link');
-    UI.ARIAUtils.markAsLink(settingsLink);
-    settingsLink.addEventListener('click', () => {
-      void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-    });
-    settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
+function renderConsentViewContents(): Lit.TemplateResult {
+  const settingsLink = document.createElement('button');
+  settingsLink.textContent = i18nString(UIStrings.settingsLink);
+  settingsLink.classList.add('link');
+  UI.ARIAUtils.markAsLink(settingsLink);
+  settingsLink.addEventListener('click', () => {
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+  });
+  settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
 
-    let consentViewContents: HTMLSpanElement;
-    // TODO(ergunsh): Should this `view` access `hostConfig` at all?
-    const config = Root.Runtime.hostConfig;
-    if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
-      consentViewContents = i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});
-    } else if (config.devToolsAiAssistanceFileAgent?.enabled) {
-      consentViewContents =
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
-    } else if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
-      consentViewContents =
-          i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
-    } else {
-      consentViewContents = i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
-    }
-
-    return html`${consentViewContents}`;
+  let consentViewContents: HTMLSpanElement;
+  // TODO(ergunsh): Should this `view` access `hostConfig` at all?
+  const config = Root.Runtime.hostConfig;
+  if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
+    consentViewContents = i18n.i18n.getFormatLocalizedString(
+        str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, {PH1: settingsLink});
+  } else if (config.devToolsAiAssistanceFileAgent?.enabled) {
+    consentViewContents =
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsAndFiles, {PH1: settingsLink});
+  } else if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
+    consentViewContents =
+        i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink});
+  } else {
+    consentViewContents = i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink});
   }
+
+  return html`${consentViewContents}`;
+}
 
 function renderDisabledState(contents: Lit.TemplateResult): Lit.TemplateResult {
   // clang-format off
@@ -1475,11 +1476,11 @@ function renderMainContents({
   markdownRenderer: MarkdownRendererWithCodeBlock,
   conversationType?: ConversationType,
   changeSummary?: string,
-             onSuggestionClick: (suggestion: string) => void,
-             onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) =>
-                 void,
-             onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
-             onMessageContainerRef: (el: Element|undefined) => void,
+               onSuggestionClick: (suggestion: string) => void,
+               onFeedbackSubmit:
+                   (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void,
+               onLastAnswerMarkdownViewRef: (el: Element|undefined) => void,
+               onMessageContainerRef: (el: Element|undefined) => void,
 }): Lit.TemplateResult {
   if (state === State.CONSENT_VIEW) {
     return renderDisabledState(renderConsentViewContents());

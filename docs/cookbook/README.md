@@ -10,3 +10,4 @@ of Chromium DevTools itself.
 *   [Localization](localization.md)
 *   [Release Management](release_management.md)
 *   [UMA metrics in DevTools](uma_metrics.md)
+*   [DevTools-on-DevTools (aka Debugging the Debugger)](devtools_on_devtools.md)

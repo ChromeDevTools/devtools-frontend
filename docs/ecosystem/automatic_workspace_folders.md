@@ -80,11 +80,12 @@ Instead of enabling the feature via `about:flags`, you can instead also enable
 them from the command line:
 
 ```
-google-chrome-canary--enable-features=DevToolsWellKnown,DevToolsAutomaticFileSystems
+google-chrome-canary --enable-features=DevToolsWellKnown,DevToolsAutomaticFileSystems
 ```
 
-To check if your setup is correct, you can try out my [Hello World][hello-world]
-demo project. Just follow the steps outlined in the `README.md` there.
+To check if your setup is correct, you can try out Benedikt’s
+[Hello World][hello-world] demo project. Just follow the steps outlined in the
+`README.md` there.
 
 [self-link]: http://goo.gle/devtools-automatic-workspace-folders
 [design-doc]: http://go/chrome-devtools:automatic-workspace-folders-design

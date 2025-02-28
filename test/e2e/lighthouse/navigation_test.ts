@@ -179,8 +179,7 @@ describe('Navigation', function() {
     assert.strictEqual(await getServiceWorkerCount(), 0);
   });
 
-  // Flaky test
-  it.skip('[crbug.com/399896980] successfully returns a Lighthouse report with DevTools throttling', async () => {
+  it('successfully returns a Lighthouse report with DevTools throttling', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
 
     await setThrottlingMethod('devtools');
@@ -194,6 +193,7 @@ describe('Navigation', function() {
     // [crbug.com/1347220] DevTools throttling can force resources to load slow enough for these audits to fail sometimes.
     const flakyAudits = [
       'server-response-time',
+      'document-latency-insight',
       'render-blocking-resources',
       'render-blocking-insight',
       'max-potential-fid',

@@ -144,6 +144,33 @@ describeWithEnvironment('AidaClient', () => {
     });
   });
 
+  it('adds no model id if configured as empty string', () => {
+    updateHostConfig({
+      aidaAvailability: {
+        disallowLogging: false,
+      },
+      devToolsConsoleInsights: {
+        enabled: true,
+        modelId: '',
+        temperature: 0.5,
+      },
+    });
+    const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
+    assert.deepEqual(request, {
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
+      client: 'CHROME_DEVTOOLS',
+      options: {
+        temperature: 0.5,
+      },
+      client_feature: 1,
+      functionality_type: 2,
+      metadata: {
+        disable_user_content_logging: false,
+        client_version: 'unit_test',
+      },
+    });
+  });
+
   it('adds metadata to disallow logging', () => {
     updateHostConfig({
       aidaAvailability: {

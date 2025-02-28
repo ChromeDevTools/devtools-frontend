@@ -267,12 +267,6 @@ export class AidaBlockError extends Error {}
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
     const {hostConfig} = Root.Runtime;
-    let temperature = -1;
-    let modelId = '';
-    if (hostConfig.devToolsConsoleInsights?.enabled) {
-      temperature = hostConfig.devToolsConsoleInsights.temperature ?? -1;
-      modelId = hostConfig.devToolsConsoleInsights.modelId || '';
-    }
     const disallowLogging = hostConfig.aidaAvailability?.disallowLogging ?? true;
     const chromeVersion = Root.Runtime.getChromeVersion();
     if (!chromeVersion) {
@@ -289,6 +283,12 @@ export class AidaClient {
       },
     };
 
+    let temperature = -1;
+    let modelId;
+    if (hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = hostConfig.devToolsConsoleInsights.modelId;
+    }
     if (temperature >= 0) {
       request.options ??= {};
       request.options.temperature = temperature;

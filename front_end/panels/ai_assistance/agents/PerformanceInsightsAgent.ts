@@ -135,6 +135,51 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         return {result: {requests: formatted}};
       },
     });
+
+    this.declareFunction<Record<never, unknown>, {activity: string}>('getMainThreadActivity', {
+      description: `Returns the main thread activity for the selected insight.
+The tree is represented as a call frame with a root task and a series of children.
+The format of each callframe is:
+
+    Node: $id – $name
+    Selected: true
+    dur: $duration
+    self: $self
+    URL #: $url_number
+    Children:
+      * $child.id – $child.name
+
+The fields are:
+
+* name:  A short string naming the callframe (e.g. 'Evaluate Script' or the JS function name 'InitializeApp')
+* id:  A numerical identifier for the callframe
+* Selected:  Set to true if this callframe is the one the user selected.
+* url_number:  The number of the URL referenced in the "All URLs" list
+* dur:  The total duration of the callframe (includes time spent in its descendants), in milliseconds.
+* self:  The self duration of the callframe (excludes time spent in its descendants), in milliseconds. If omitted, assume the value is 0.
+* children:  An list of child callframes, each denoted by their id and name`,
+      parameters: {
+        type: Host.AidaClient.ParametersTypes.OBJECT,
+        description: '',
+        nullable: true,
+        properties: {},
+      },
+      handler: async () => {
+        if (!this.#insight) {
+          return {error: 'No insight available'};
+        }
+        const activeInsight = this.#insight.getItem();
+        const tree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(
+            activeInsight.insight,
+            activeInsight.parsedTrace,
+        );
+        if (!tree) {
+          return {error: 'No main thread activity found'};
+        }
+        return {result: {activity: tree.serialize()}};
+      },
+
+    });
   }
 
   override async enhanceQuery(

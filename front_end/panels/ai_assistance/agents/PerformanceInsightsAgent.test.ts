@@ -131,5 +131,30 @@ What is this?`;
       assert.deepEqual(
           action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
     });
+
+    it('calls getMainThreadActivity', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(insights);
+      const [firstNav] = parsedTrace.Meta.mainFrameNavigations;
+      const lcpPhases = getInsightOrError('LCPPhases', insights, firstNav);
+      const agent = new PerformanceInsightsAgent({
+        aidaClient: mockAidaClient(
+            [[{explanation: '', functionCalls: [{name: 'getMainThreadActivity', args: {}}]}], [{explanation: 'done'}]])
+      });
+      const activeInsight = new TimelineUtils.InsightAIContext.ActiveInsight(lcpPhases, parsedTrace);
+      const context = new InsightContext(activeInsight);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const action = responses.find(response => response.type === ResponseType.ACTION);
+
+      const expectedTree = TimelineUtils.InsightAIContext.AIQueries.mainThreadActivity(lcpPhases, parsedTrace);
+      assert.isOk(expectedTree);
+
+      const expectedOutput = JSON.stringify({activity: expectedTree.serialize()});
+
+      assert.exists(action);
+      assert.deepEqual(
+          action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
+    });
   });
 });

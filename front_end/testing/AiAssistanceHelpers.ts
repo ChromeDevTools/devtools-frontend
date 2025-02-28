@@ -11,6 +11,7 @@ import * as Logs from '../models/logs/logs.js';
 import type * as Workspace from '../models/workspace/workspace.js';
 import * as AiAssistance from '../panels/ai_assistance/ai_assistance.js';
 
+import {findMenuItemWithLabel, getMenu} from './ContextMenuHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
@@ -262,4 +263,18 @@ export function cleanup() {
     widget.detach();
   }
   patchWidgets = [];
+}
+
+export function openHistoryContextMenu(
+    lastUpdate: AiAssistance.ViewInput,
+    item: string,
+) {
+  const contextMenu = getMenu(() => {
+    lastUpdate.onHistoryClick(new MouseEvent('click'));
+  });
+  const freestylerEntry = findMenuItemWithLabel(contextMenu.defaultSection(), item);
+  return {
+    contextMenu,
+    id: freestylerEntry?.id(),
+  };
 }

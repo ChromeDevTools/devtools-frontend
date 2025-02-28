@@ -608,12 +608,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
     if (!agent) {
       this.#conversation = undefined;
+      // We need to run doConversation separately
+      this.#messages = [];
       // If a no new agent is provided
       // but conversation is
       // update with history conversation
       if (conversation) {
         this.#conversation = conversation;
-        this.#messages = [];
       }
     }
 
@@ -1091,11 +1092,13 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #onDeleteClicked(): void {
-    if (this.#conversationAgent) {
-      this.#historicalConversations =
-          this.#historicalConversations.filter(conversation => conversation !== this.#conversation);
-      void AiHistoryStorage.instance().deleteHistoryEntry(this.#conversationAgent.id);
+    if (!this.#conversation) {
+      return;
     }
+
+    this.#historicalConversations =
+        this.#historicalConversations.filter(conversation => conversation !== this.#conversation);
+    void AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }

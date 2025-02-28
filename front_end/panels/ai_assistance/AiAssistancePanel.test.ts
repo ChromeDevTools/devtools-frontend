@@ -11,7 +11,8 @@ import {
   cleanup,
   createAiAssistancePanel,
   createNetworkRequest,
-  mockAidaClient
+  mockAidaClient,
+  openHistoryContextMenu
 } from '../../testing/AiAssistanceHelpers.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
 import {createTarget, registerNoopActions, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -634,11 +635,64 @@ describeWithMockConnection('AI Assistance Panel', () => {
           addHistoryItemStub, sinon.match({type: 'answer', text: 'partially started and now it\'s finished'}));
       sinon.assert.neverCalledWith(addHistoryItemStub, sinon.match({type: 'answer', text: 'partially started'}));
     });
+
+    it('should switch agents and restore history and allow a single delete', async () => {
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      const {panel, expectViewUpdate} = await createAiAssistancePanel(
+          {
+            aidaClient: mockAidaClient(
+                [
+                  [{explanation: 'test'}],
+                  [{explanation: 'test2'}],
+                ],
+                ),
+          },
+      );
+      const updateViewInput = await expectViewUpdate(() => {
+        panel.handleAction('freestyler.elements-floating-button');
+      });
+      await expectViewUpdate(() => {
+        updateViewInput.onTextSubmit('User question to Freestyler?');
+      });
+
+      const updatedViewInputAfterSwitchToNetwork = await expectViewUpdate(() => {
+        panel.handleAction('drjones.network-floating-button');
+      });
+      await expectViewUpdate(() => {
+        updatedViewInputAfterSwitchToNetwork.onTextSubmit('User question to DrJones?');
+      });
+
+      const {contextMenu, id} =
+          openHistoryContextMenu(updatedViewInputAfterSwitchToNetwork, 'User question to Freestyler?');
+      assert.isDefined(id);
+      const updatedViewInput = await expectViewUpdate(() => {
+        contextMenu.invokeHandler(id);
+      });
+
+      const stub = sinon.createStubInstance(AiAssistance.AiHistoryStorage);
+      sinon.stub(AiAssistance.AiHistoryStorage, 'instance').returns(stub);
+      const updateDeleteSingle = await expectViewUpdate(() => {
+        updatedViewInput.onDeleteClick();
+      });
+
+      assert.deepEqual(updateDeleteSingle.messages, []);
+      assert.strictEqual(stub.deleteHistoryEntry.callCount, 1);
+      assert.isString(stub.deleteHistoryEntry.lastCall.args[0]);
+
+      const menuAfterDelete =
+          openHistoryContextMenu(updatedViewInputAfterSwitchToNetwork, 'User question to Freestyler?');
+      assert.isUndefined(menuAfterDelete.id);
+    });
   });
 
   it('should have empty state after clear chat', async () => {
-    const {panel, expectViewUpdate} =
-        await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+    const {panel, expectViewUpdate} = await createAiAssistancePanel({
+      aidaClient: mockAidaClient([[{explanation: 'test'}]]),
+    });
 
     const updatedViewInput = await expectViewUpdate(() => {
       panel.handleAction('freestyler.elements-floating-button');

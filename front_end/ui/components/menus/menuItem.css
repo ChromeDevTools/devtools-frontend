@@ -52,11 +52,11 @@
 :host(:focus-visible:not(.prevents-close)) .menu-item::after {
   content: "";
   height: 100%;
-  width: 100%;
+  width: calc(100% + 2* var(--sys-size-8));
   border-radius: inherit;
   position: absolute;
   top: 0;
-  left: 0;
+  left: calc(-1 * var(--sys-size-8));
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 

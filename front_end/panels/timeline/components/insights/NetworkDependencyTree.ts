@@ -51,12 +51,17 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format off
     return html`
       <ul>
-        ${nodes.map(({request, timeFromInitialRequest, children}) => {
+        ${nodes.map(({request, timeFromInitialRequest, children, isLongest}) => {
           const hasChildren = children.length > 0;
+
+          const requestClasses = Lit.Directives.classMap({
+            request: true,
+            longest: Boolean(isLongest),
+          });
 
           return html`
             <li>
-              <div class="request">
+              <div class=${requestClasses}>
                 <span class="url">${eventRef(request)}</span>
                 ${
                   // If this is the last request, show the chain time

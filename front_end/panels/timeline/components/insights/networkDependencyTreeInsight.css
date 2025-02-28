@@ -35,6 +35,12 @@
       .request {
         display: flex;
 
+        &.longest {
+          --override-timeline-link-text-color: var(--sys-color-error);
+
+          color: var(--sys-color-error);
+        }
+
         .url {
           flex: auto;
         }

@@ -55,6 +55,7 @@ export interface CriticalRequestNode {
   request: Types.Events.SyntheticNetworkRequest;
   timeFromInitialRequest: Types.Timing.Micro;
   children: CriticalRequestNode[];
+  isLongest?: boolean;
 }
 
 export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
@@ -125,11 +126,20 @@ export function generateInsight(
   const rootNodes: CriticalRequestNode[] = [];
   let maxTime = Types.Timing.Micro(0);
 
+  let longestChain: Types.Events.SyntheticNetworkRequest[] = [];
+
   function addChain(path: Types.Events.SyntheticNetworkRequest[]): void {
     if (path.length === 0) {
       return;
     }
     const initialRequest = path[0];
+    const lastRequest = path[path.length - 1];
+    const totalChainTime = Types.Timing.Micro(lastRequest.ts + lastRequest.dur - initialRequest.ts);
+    if (totalChainTime > maxTime) {
+      maxTime = totalChainTime;
+      longestChain = path;
+    }
+
     let currentNodes = rootNodes;
 
     for (const networkRequest of path) {
@@ -138,7 +148,6 @@ export function generateInsight(
 
       if (!found) {
         const timeFromInitialRequest = Types.Timing.Micro(networkRequest.ts + networkRequest.dur - initialRequest.ts);
-        maxTime = Types.Timing.Micro(Math.max(maxTime, timeFromInitialRequest));
         found = {
           request: networkRequest,
           timeFromInitialRequest,
@@ -182,6 +191,20 @@ export function generateInsight(
 
     addChain(networkPath);
   }, getNextNodes);
+
+  // Mark the longest chain
+  if (longestChain.length > 0) {
+    let currentNodes = rootNodes;
+    for (const request of longestChain) {
+      const found = currentNodes.find(node => node.request === request);
+      if (found) {
+        found.isLongest = true;
+        currentNodes = found.children;
+      } else {
+        console.error('Some request in the longest chain is not found');
+      }
+    }
+  }
 
   return finalize({
     rootNodes,

@@ -7,11 +7,15 @@ import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing
 import * as Trace from '../trace.js';
 
 describeWithEnvironment('NetworkDependencyTree', function() {
-  it('calculates network dependency tree', async () => {
+  let insight: Trace.Insights.Types.InsightModels['NetworkDependencyTree'];
+
+  before(async function() {
     const {data, insights} = await processTrace(this, 'lcp-multiple-frames.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+    insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+  });
 
+  it('calculates network dependency tree', async () => {
     // The network dependency tree in this trace is
     // | .../index.html (ts:566777570990, dur:5005590)
     // |
@@ -35,9 +39,24 @@ describeWithEnvironment('NetworkDependencyTree', function() {
         child1.timeFromInitialRequest,
         Trace.Types.Timing.Micro(child1.request.ts + child1.request.dur - root.request.ts));
     assert.lengthOf(child1.children, 0);
+  });
 
-    // The chain |index.html -> app.js| is the longest
+  it('Calculate the max critical path latency', async () => {
+    // The chain |index.html(root) -> app.js(child1)| is the longest
+    const root = insight.rootNodes[0];
+    const child1 = root.children[1];
     assert.strictEqual(
         insight.maxTime, Trace.Types.Timing.Micro(child1.request.ts + child1.request.dur - root.request.ts));
+  });
+
+  it('Marks the longest network dependency chain', async () => {
+    const root = insight.rootNodes[0];
+    const [child0, child1] = root.children;
+
+    // The chain |index.html(root) -> app.js(child1)| is the longest
+    assert.isTrue(root.isLongest);
+    assert.isTrue(child1.isLongest);
+    // The |app.css| is not in the longest chain
+    assert.isNotTrue(child0.isLongest);
   });
 });

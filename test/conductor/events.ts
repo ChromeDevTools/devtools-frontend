@@ -181,6 +181,9 @@ function formatStackFrame(stackFrame: puppeteer.ConsoleMessageLocation): string 
 }
 
 export function dumpCollectedErrors(): void {
+  if (!(expectedErrors.length + fatalErrors.length)) {
+    return;
+  }
   console.log('Expected errors: ' + expectedErrors.length);
   console.log('   Fatal errors: ' + fatalErrors.length);
   if (fatalErrors.length) {
@@ -190,11 +193,13 @@ export function dumpCollectedErrors(): void {
     console.log(
         '\nErrors from component examples during test run:\n', uiComponentDocErrors.map(e => e.message).join('\n  '));
   }
+  expectedErrors = [];
+  fatalErrors = [];
 }
 
 const pendingErrorExpectations = new Set<ErrorExpectation>();
-export const fatalErrors: string[] = [];
-export const expectedErrors: string[] = [];
+export let fatalErrors: string[] = [];
+export let expectedErrors: string[] = [];
 // Gathered separately so we can surface them during screenshot tests to help
 // give an idea of failures, rather than having to guess purely based on the
 // screenshot.

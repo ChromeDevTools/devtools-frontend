@@ -4,11 +4,10 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("assertion") {
+ts_e2e_library("assertion") {
   sources = [ "assertion_test.ts" ]
-
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../conductor:implementation",
+    "../shared",
   ]
 }

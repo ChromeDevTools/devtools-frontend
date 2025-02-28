@@ -13,7 +13,7 @@ import {TestConfig} from '../../conductor/test_config.js';
 export class BrowserWrapper {
   browser: puppeteer.Browser;
 
-  constructor(b: puppeteer.Browser, readonly serverPort: Number) {
+  constructor(b: puppeteer.Browser) {
     this.browser = b;
   }
 
@@ -22,14 +22,14 @@ export class BrowserWrapper {
   }
 }
 export class Launcher {
-  static async browserSetup(settings: BrowserSettings, serverPort: Number) {
+  static async browserSetup(settings: BrowserSettings) {
     const browser = await Launcher.launchChrome(settings);
     setupBrowserProcessIO(browser);
     // Close default devtools.
     const devToolsTarget = await browser.waitForTarget(target => target.url().startsWith('devtools://'));
     const page = await devToolsTarget.page();
     await page?.close();
-    return new BrowserWrapper(browser, serverPort);
+    return new BrowserWrapper(browser);
   }
 
   private static launchChrome(settings: BrowserSettings) {

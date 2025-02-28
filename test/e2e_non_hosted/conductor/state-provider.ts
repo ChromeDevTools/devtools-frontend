@@ -52,7 +52,7 @@ export class StateProvider {
   debugNotice: DebugModeNotice;
   settingsCallbackMap: Map<Mocha.Suite, E2E.SuiteSettings>;
   browserMap: Map<string, BrowserWrapper>;
-  static serverPort: Number;
+  static serverPort: number;
 
   private constructor() {
     this.debugNotice = new DebugModeNotice();
@@ -87,7 +87,7 @@ export class StateProvider {
     const browserKey = JSON.stringify(browserSettings);
     let browser = this.browserMap.get(browserKey);
     if (!browser) {
-      browser = await Launcher.browserSetup(browserSettings, StateProvider.serverPort);
+      browser = await Launcher.browserSetup(browserSettings);
       this.browserMap.set(browserKey, browser);
     }
     // Suite needs to be aware of the browser instance to be able to create the
@@ -99,7 +99,7 @@ export class StateProvider {
     const settings = await this.getSettings(suite);
     const browser = suite.browser;
     const browsingContext = await browser.createBrowserContext();
-    const inspectedPage = await setupInspectedPage(browsingContext);
+    const inspectedPage = await setupInspectedPage(browsingContext, StateProvider.serverPort);
     const devToolsPage = await setupDevToolsPage(browsingContext, settings);
     const state = {
       devToolsPage,

@@ -15,6 +15,7 @@ group("e2e_non_hosted") {
 node_ts_library("tests") {
   deps = [
     "../conductor:implementation",
+    "assertion",
     "dummy",
   ]
   sources = [ "mocharc.ts" ]

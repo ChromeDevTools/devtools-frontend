@@ -1067,7 +1067,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile(/* isEnhancedTraces */ false, /* addModifications */ true);
+      void this.saveToFile(/* isEnhancedTrace */ false, /* addModifications */ true);
     }, {
       jslogContext: 'timeline.save-to-file-with-annotations',
     });
@@ -1110,7 +1110,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
             void this.saveToFile();
           });
           contextMenu.saveSection().appendItem(i18nString(UIStrings.exportEnhancedTraces), () => {
-            void this.saveToFile(/* isEnhancedTraces */ true);
+            void this.saveToFile(/* isEnhancedTrace */ true);
           });
 
           void contextMenu.show();
@@ -1351,23 +1351,30 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void contextMenu.show();
   }
 
-  async saveToFile(isEnhancedTraces = false, addModifications = false): Promise<void> {
+  async saveToFile(isEnhancedTrace = false, addModifications = false): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return;
     }
-    const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
+    let traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
     if (!traceEvents) {
       return;
     }
 
+    if (!isEnhancedTrace ||
+        !Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES)) {
+      traceEvents = traceEvents.filter(event => {
+        return event.cat !== 'devtools.v8-source-rundown-sources';
+      });
+    }
+
     if (metadata) {
       metadata.modifications = addModifications ? ModificationsManager.activeManager()?.toJSON() : undefined;
       metadata.enhancedTraceVersion =
-          isEnhancedTraces ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
+          isEnhancedTrace ? SDK.EnhancedTracesParser.EnhancedTracesParser.enhancedTraceVersion : undefined;
     }
 
     const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
@@ -1402,7 +1409,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       } else {
         const formattedTraceIter = traceJsonGenerator(traceEvents, {
           ...metadata,
-          sourceMaps: isEnhancedTraces ? metadata?.sourceMaps : undefined,
+          sourceMaps: isEnhancedTrace ? metadata?.sourceMaps : undefined,
         });
         traceAsString = Array.from(formattedTraceIter).join('');
       }

@@ -93,9 +93,12 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
       Trace.Types.Events.Categories.Loading,
       Trace.Types.Events.Categories.UserTiming,
       'devtools.timeline',
-      disabledByDefault('devtools.timeline'),
+      disabledByDefault('devtools.target-rundown'),
       disabledByDefault('devtools.timeline.frame'),
       disabledByDefault('devtools.timeline.stack'),
+      disabledByDefault('devtools.timeline'),
+      disabledByDefault('devtools.v8-source-rundown-sources'),
+      disabledByDefault('devtools.v8-source-rundown'),
       disabledByDefault('v8.compile'),
       disabledByDefault('v8.inspector'),
       disabledByDefault('v8.cpu_profiler.hires'),
@@ -125,13 +128,6 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     }
     if (options.captureSelectorStats) {
       categoriesArray.push(disabledByDefault('blink.debug'));
-    }
-    if (Root.Runtime.experiments.isEnabled('timeline-enhanced-traces')) {
-      categoriesArray.push(disabledByDefault('devtools.target-rundown'));
-      categoriesArray.push(disabledByDefault('devtools.v8-source-rundown'));
-    }
-    if (Root.Runtime.experiments.isEnabled('timeline-compiled-sources')) {
-      categoriesArray.push(disabledByDefault('devtools.v8-source-rundown-sources'));
     }
 
     await LiveMetrics.LiveMetrics.instance().disable();

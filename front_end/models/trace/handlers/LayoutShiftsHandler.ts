@@ -53,10 +53,17 @@ interface LayoutShifts {
   renderFrameImplCreateChildFrameEvents: readonly Types.Events.RenderFrameImplCreateChildFrame[];
   domLoadingEvents: readonly Types.Events.DomLoading[];
   layoutImageUnsizedEvents: readonly Types.Events.LayoutImageUnsized[];
-  beginRemoteFontLoadEvents: readonly Types.Events.BeginRemoteFontLoad[];
+  remoteFonts: readonly RemoteFont[];
   scoreRecords: readonly ScoreRecord[];
   // TODO(crbug/41484172): should be readonly
   backendNodeIds: Protocol.DOM.BackendNodeId[];
+}
+
+interface RemoteFont {
+  display: string;
+  url?: string;
+  name?: string;
+  beginRemoteFontLoadEvent: Types.Events.BeginRemoteFontLoad;
 }
 
 // This represents the maximum #time we will allow a cluster to go before we
@@ -84,7 +91,7 @@ const styleRecalcInvalidationEvents: Types.Events.StyleRecalcInvalidationTrackin
 const renderFrameImplCreateChildFrameEvents: Types.Events.RenderFrameImplCreateChildFrame[] = [];
 const domLoadingEvents: Types.Events.DomLoading[] = [];
 const layoutImageUnsizedEvents: Types.Events.LayoutImageUnsized[] = [];
-const beginRemoteFontLoadEvents: Types.Events.BeginRemoteFontLoad[] = [];
+const remoteFonts: RemoteFont[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
@@ -124,7 +131,7 @@ export function reset(): void {
   renderFrameImplCreateChildFrameEvents.length = 0;
   layoutImageUnsizedEvents.length = 0;
   domLoadingEvents.length = 0;
-  beginRemoteFontLoadEvents.length = 0;
+  remoteFonts.length = 0;
   backendNodeIds.clear();
   clusters.length = 0;
   sessionMaxScore = 0;
@@ -162,7 +169,18 @@ export function handleEvent(event: Types.Events.Event): void {
     layoutImageUnsizedEvents.push(event);
   }
   if (Types.Events.isBeginRemoteFontLoad(event)) {
-    beginRemoteFontLoadEvents.push(event);
+    remoteFonts.push({
+      display: event.args.display,
+      url: event.args.url,
+      beginRemoteFontLoadEvent: event,
+    });
+  }
+  if (Types.Events.isRemoteFontLoaded(event)) {
+    for (const remoteFont of remoteFonts) {
+      if (remoteFont.url === event.args.url) {
+        remoteFont.name = event.args.name;
+      }
+    }
   }
   if (Types.Events.isPaintImage(event)) {
     paintImageEvents.push(event);
@@ -259,7 +277,7 @@ export async function finalize(): Promise<void> {
   renderFrameImplCreateChildFrameEvents.sort((a, b) => a.ts - b.ts);
   domLoadingEvents.sort((a, b) => a.ts - b.ts);
   layoutImageUnsizedEvents.sort((a, b) => a.ts - b.ts);
-  beginRemoteFontLoadEvents.sort((a, b) => a.ts - b.ts);
+  remoteFonts.sort((a, b) => a.beginRemoteFontLoadEvent.ts - b.beginRemoteFontLoadEvent.ts);
   paintImageEvents.sort((a, b) => a.ts - b.ts);
 
   // Each function transforms the data used by the next, as such the invoke order
@@ -514,7 +532,7 @@ export function data(): LayoutShifts {
     renderFrameImplCreateChildFrameEvents,
     domLoadingEvents,
     layoutImageUnsizedEvents,
-    beginRemoteFontLoadEvents,
+    remoteFonts,
     scoreRecords,
     // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],

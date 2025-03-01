@@ -37,12 +37,15 @@ export function deps(): ['Meta', 'NetworkRequests', 'LayoutShifts'] {
   return ['Meta', 'NetworkRequests', 'LayoutShifts'];
 }
 
+interface RemoteFont {
+  name?: string;
+  request: Types.Events.SyntheticNetworkRequest;
+  display: string;
+  wastedTime: Types.Timing.Milli;
+}
+
 export type FontDisplayInsightModel = InsightModel<typeof UIStrings, {
-  fonts: Array<{
-    request: Types.Events.SyntheticNetworkRequest,
-    display: string,
-    wastedTime: Types.Timing.Milli,
-  }>,
+  fonts: RemoteFont[],
 }>;
 
 function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): FontDisplayInsightModel {
@@ -59,8 +62,9 @@ function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): F
 
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): FontDisplayInsightModel {
-  const fonts = [];
-  for (const event of parsedTrace.LayoutShifts.beginRemoteFontLoadEvents) {
+  const fonts: RemoteFont[] = [];
+  for (const remoteFont of parsedTrace.LayoutShifts.remoteFonts) {
+    const event = remoteFont.beginRemoteFontLoadEvent;
     if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {
       continue;
     }
@@ -71,10 +75,9 @@ export function generateInsight(
       continue;
     }
 
-    const display = event.args.display;
     let wastedTime = Types.Timing.Milli(0);
 
-    if (/^(block|fallback|auto)$/.test(display)) {
+    if (/^(block|fallback|auto)$/.test(remoteFont.display)) {
       const wastedTimeMicro = Types.Timing.Micro(
           request.args.data.syntheticData.finishTime - request.args.data.syntheticData.sendStartTime);
       // TODO(crbug.com/352244504): should really end at the time of the next Commit trace event.
@@ -85,8 +88,9 @@ export function generateInsight(
     }
 
     fonts.push({
+      name: remoteFont.name,
       request,
-      display,
+      display: remoteFont.display,
       wastedTime,
     });
   }

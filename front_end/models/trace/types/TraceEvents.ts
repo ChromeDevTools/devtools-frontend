@@ -1377,6 +1377,15 @@ export interface BeginRemoteFontLoad extends UserTiming {
   args: Args&{
     display: string,
     id: number,
+    url?: string,
+  };
+}
+
+export interface RemoteFontLoaded extends UserTiming {
+  name: Name.REMOTE_FONT_LOADED;
+  args: Args&{
+    url: string,
+    name: string,
   };
 }
 
@@ -2278,6 +2287,10 @@ export function isBeginRemoteFontLoad(event: Event): event is BeginRemoteFontLoa
   return event.name === Name.BEGIN_REMOTE_FONT_LOAD;
 }
 
+export function isRemoteFontLoaded(event: Event): event is RemoteFontLoaded {
+  return event.name === Name.REMOTE_FONT_LOADED;
+}
+
 export function isPerformanceMeasure(event: Event): event is PerformanceMeasure {
   return isUserTiming(event) && isPhaseAsync(event.ph);
 }
@@ -3012,6 +3025,7 @@ export const enum Name {
 
   DOM_LOADING = 'domLoading',
   BEGIN_REMOTE_FONT_LOAD = 'BeginRemoteFontLoad',
+  REMOTE_FONT_LOADED = 'RemoteFontLoaded',
 
   ANIMATION_FRAME = 'AnimationFrame',
   ANIMATION_FRAME_PRESENTATION = 'AnimationFrame::Presentation',

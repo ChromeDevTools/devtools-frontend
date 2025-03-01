@@ -612,7 +612,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       renderFrameImplCreateChildFrameEvents: [],
       domLoadingEvents: [],
       layoutImageUnsizedEvents: [],
-      beginRemoteFontLoadEvents: [],
+      remoteFonts: [],
       scoreRecords: [],
       backendNodeIds: [],
       paintImageEvents: [],

@@ -60,8 +60,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
             headers: [i18nString(UIStrings.fontColumn), i18nString(UIStrings.wastedTimeColumn)],
             rows: this.model.fonts.map(font => ({
               values: [
-                // TODO(crbug.com/369422196): the font name would be nicer here.
-                eventRef(font.request),
+                eventRef(font.request, {text: font.name}),
                 i18n.TimeUtilities.millisToString(font.wastedTime),
               ],
               overlays: [this.#overlayForRequest.get(font.request)],

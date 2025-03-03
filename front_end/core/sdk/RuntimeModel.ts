@@ -269,8 +269,9 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   async heapUsage(): Promise<{
     usedSize: number,
     totalSize: number,
-    embedderHeapUsedSize: number,
-    backingStorageSize: number,
+    // Available after V8 13.4. Node.js has not yet been released with this version of V8 yet.
+    embedderHeapUsedSize?: number,
+    backingStorageSize?: number,
   }|null> {
     const result = await this.agent.invoke_getHeapUsage();
     return result.getError() ? null : result;

@@ -824,6 +824,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           },
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
             this.#imageInput = '';
+            this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput);
           },
@@ -942,8 +943,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  async #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string):
-      Promise<void> {
+  #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,

@@ -1253,6 +1253,16 @@ describeWithMockConnection('AI Assistance Panel', () => {
         updateViewInputAfterTextInputAdded.onTextInputChange('');
       });
       assert.isTrue(updateViewInputAfterTextInputRemoved.isTextInputEmpty);
+
+      const updateViewInputAfterTextInputAddedSecond = await expectViewUpdate(() => {
+        updateViewInputAfterTextInputRemoved.onTextInputChange('test');
+      });
+      assert.isFalse(updateViewInputAfterTextInputAddedSecond.isTextInputEmpty);
+
+      const updateViewInputAfterSubmit = await expectViewUpdate(() => {
+        updateViewInputAfterTextInputRemoved.onTextSubmit('test');
+      });
+      assert.isTrue(updateViewInputAfterSubmit.isTextInputEmpty);
     });
   });
 

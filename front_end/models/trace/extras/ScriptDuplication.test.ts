@@ -247,7 +247,10 @@ describeWithEnvironment('ScriptDuplication', function() {
         scripts: new Map(scripts.map(s => ([s.scriptId, s]))),
       };
 
-      const results = Object.fromEntries(Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData));
+      const results = Object.fromEntries(
+          Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData).entries().map(([key, value]) => {
+            return [key, value.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.resourceSize}))];
+          }));
       assert.deepEqual(results, {
         'coursehero:///Control/assets/js/vendor/ng/select/select.js': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 48513},

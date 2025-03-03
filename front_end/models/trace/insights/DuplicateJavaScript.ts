@@ -39,6 +39,9 @@ export function deps(): ['Scripts', 'NetworkRequests'] {
 }
 
 function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
+  const requests = [...partialModel.duplication.values().flatMap(array => array.map(v => v.script.request))].filter(
+      e => !!e);  // eslint-disable-line no-implicit-coercion
+
   return {
     insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
     strings: UIStrings,
@@ -46,8 +49,7 @@ function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightMo
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
     state: Boolean(partialModel.duplication.values().next().value) ? 'fail' : 'pass',
-    // TODO(cjamcl): script network events.
-    // relatedEvents: [],
+    relatedEvents: [...new Set(requests)],
     ...partialModel,
   };
 }

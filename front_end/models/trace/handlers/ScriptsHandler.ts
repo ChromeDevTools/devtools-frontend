@@ -10,6 +10,8 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData, type MetaHandlerData} from './MetaHandler.js';
+import {data as networkRequestsHandlerData} from './NetworkRequestsHandler.js';
+import type {HandlerName} from './types.js';
 
 export interface ScriptsData {
   /** Note: this is only populated when the "Enhanced Traces" feature is enabled. */
@@ -26,9 +28,14 @@ export interface Script {
   /** Note: this is the literal text given as the sourceMappingURL value. It has not been resolved relative to the script url. */
   sourceMapUrl?: string;
   sourceMap?: SDK.SourceMap.SourceMap;
+  request?: Types.Events.SyntheticNetworkRequest;
 }
 
 const scriptById = new Map<Protocol.Runtime.ScriptId, Script>();
+
+export function deps(): HandlerName[] {
+  return ['Meta', 'NetworkRequests'];
+}
 
 export function reset(): void {
   scriptById.clear();
@@ -88,7 +95,17 @@ function findFrame(meta: MetaHandlerData, frameId: string): Types.Events.TraceFr
   return null;
 }
 
+function findNetworkRequest(networkRequests: Types.Events.SyntheticNetworkRequest[], script: Script):
+    Types.Events.SyntheticNetworkRequest|null {
+  return networkRequests.find(request => request.args.data.url === script.url) ?? null;
+}
+
 export async function finalize(options: Types.Configuration.ParseOptions): Promise<void> {
+  const networkRequests = [...networkRequestsHandlerData().byId.values()];
+  for (const script of scriptById.values()) {
+    script.request = findNetworkRequest(networkRequests, script) ?? undefined;
+  }
+
   if (!options.resolveSourceMap) {
     return;
   }

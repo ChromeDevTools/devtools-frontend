@@ -100,9 +100,16 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
       return;
     }
 
-    const title = activeContext.getItem().title();
-    // TODO: Provide proper text with useful context details.
-    const titleDetail: ContextDetail = {title, text: title};
+    const insightTitle = activeContext.getItem().title();
+    const title = `Analyzing insight: ${insightTitle}`;
+    // The details are the exact text sent to the LLM to allow the user to inspect it.
+    const formatter = new PerformanceInsightFormatter(activeContext.getItem().insight);
+    const titleDetail: ContextDetail = {
+      // Purposefully use the raw title in the details view, we don't need to repeat "Analyzing insight"
+      title: insightTitle,
+      // Important: this must reflect what data is sent to the LLM.
+      text: formatter.formatInsight()
+    };
     yield {type: ResponseType.CONTEXT, title, details: [titleDetail]};
   }
 

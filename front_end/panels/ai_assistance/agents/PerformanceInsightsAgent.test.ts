@@ -43,6 +43,8 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
         }]])
       });
 
+      const expectedDetailText = new PerformanceInsightFormatter(mockInsight.insight).formatInsight();
+
       const responses = await Array.fromAsync(agent.run('test', {selected: context}));
       assert.deepEqual(responses, [
         {
@@ -53,11 +55,9 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
         },
         {
           type: ResponseType.CONTEXT,
-          title: 'LCP by phase',
+          title: 'Analyzing insight: LCP by phase',
           details: [
-            // Note: these are placeholder values, see the TODO in
-            // PerformanceInsightsAgent.
-            {title: 'LCP by phase', text: 'LCP by phase'},
+            {title: 'LCP by phase', text: expectedDetailText},
           ],
         },
         {

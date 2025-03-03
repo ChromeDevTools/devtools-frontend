@@ -11,12 +11,6 @@ import("//build/toolchain/siso.gni")
 import("../ninja/vars.gni")
 
 declare_args() {
-  # Set to true to enable remote compilation of TypeScript using reclient.
-  # This flag is temporarily until DevTools reclient support has stabilized.
-  # At that point, this flag will be folded together with "use_remoteexec".
-  # TODO(crbug.com/1139220): Remove the flag once we are confident.
-  devtools_use_remoteexec = false
-
   devtools_skip_typecheck = build_with_chromium && !is_official_build
 }
 
@@ -178,19 +172,6 @@ template("ts_library") {
 
     if (defined(invoker.is_web_worker) && invoker.is_web_worker) {
       args += [ "--is_web_worker" ]
-    }
-
-    if (defined(use_remoteexec) && use_remoteexec &&
-        defined(devtools_use_remoteexec) && devtools_use_remoteexec) {
-      # Allow ts_library template invocations to override user provided flags.
-      if (!defined(invoker.use_remoteexec) || invoker.use_remoteexec) {
-        args += [
-          "--use-remoteexec",
-          "--rewrapper-binary=${rbe_bin_dir}/rewrapper",
-          "--rewrapper-cfg=${rbe_cc_cfg_file}",
-          "--rewrapper-exec-root=${rbe_exec_root}",
-        ]
-      }
     }
 
     if (devtools_skip_typecheck) {

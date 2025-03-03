@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Lit from '../../../ui/lit/lit.js';
 import * as TimelineUtils from '../../timeline/utils/utils.js';
 import * as PanelUtils from '../../utils/utils.js';
@@ -20,6 +21,17 @@ import {
   ResponseType,
 } from './AiAgent.js';
 
+const UIStringsNotTranslated = {
+  /**
+   *@description Shown when the agent is investigating network activity
+   */
+  networkActivity: 'Investigating network activity…',
+  /**
+   *@description Shown when the agent is investigating main thread activity
+   */
+  mainThreadActivity: 'Investigating main thread activity…',
+} as const;
+const lockedString = i18n.i18n.lockedString;
 /* clang-format off */
 const preamble = `You are a performance expert deeply integrated within Chrome DevTools. You specialize in analyzing web application behaviour captured by Chrome DevTools Performance Panel.
 
@@ -122,6 +134,9 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         nullable: true,
         properties: {},
       },
+      displayInfoFromArgs: () => {
+        return {title: lockedString(UIStringsNotTranslated.networkActivity)};
+      },
       handler: async () => {
         if (!this.#insight) {
           return {error: 'No insight available'};
@@ -163,6 +178,9 @@ The fields are:
         description: '',
         nullable: true,
         properties: {},
+      },
+      displayInfoFromArgs: () => {
+        return {title: lockedString(UIStringsNotTranslated.mainThreadActivity)};
       },
       handler: async () => {
         if (!this.#insight) {

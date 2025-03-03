@@ -11,8 +11,8 @@ import {
   getBrowserAndPages,
   registerHandlers,
   setBrowserAndPages,
-  setTestServerPort,
 } from 'test/conductor/puppeteer-state.js';
+import {setTestServerPort} from 'test/conductor/server_port.js';
 import {TestConfig} from 'test/conductor/test_config.js';
 import {click} from 'test/shared/helper.js';
 

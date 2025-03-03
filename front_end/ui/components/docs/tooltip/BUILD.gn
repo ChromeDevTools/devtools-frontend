@@ -12,7 +12,7 @@ ts_library("ts") {
   deps = [
     "../../../../testing",
     "../../../lit:bundle",
-    "../../tooltip:bundle",
+    "../../tooltips:bundle",
   ]
 }
 

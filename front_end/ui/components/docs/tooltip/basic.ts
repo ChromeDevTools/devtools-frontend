@@ -5,7 +5,7 @@
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as Lit from '../../../lit/lit.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
-import {Tooltip} from '../../tooltip/Tooltip.js';
+import {Tooltip} from '../../tooltips/Tooltip.js';
 
 const {html} = Lit;
 

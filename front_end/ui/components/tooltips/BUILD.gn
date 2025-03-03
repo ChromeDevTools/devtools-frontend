@@ -15,7 +15,10 @@ generate_css("css_files") {
 devtools_module("tooltip") {
   sources = [ "Tooltip.ts" ]
 
-  deps = [ "../../lit:bundle" ]
+  deps = [
+    "../../../ui/visual_logging:bundle",
+    "../../lit:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {

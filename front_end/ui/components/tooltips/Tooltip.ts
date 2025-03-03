@@ -11,7 +11,7 @@ const {html} = Lit;
 export type TooltipVariant = 'simple'|'rich';
 
 export interface TooltipProperties {
-  id?: string;
+  id: string;
   variant?: TooltipVariant;
   anchor?: HTMLElement;
 }
@@ -65,15 +65,21 @@ export class Tooltip extends HTMLElement {
     this.setAttribute('variant', variant);
   }
 
-  constructor({id, variant, anchor}: TooltipProperties = {}) {
+  constructor(properties?: TooltipProperties) {
     super();
-    if (id) {
-      this.id = id;
+    if (properties) {
+      this.id = properties.id;
     }
-    if (variant) {
-      this.variant = variant;
+    if (properties?.variant) {
+      this.variant = properties.variant;
     }
-    this.#anchor = anchor ?? null;
+    if (properties?.anchor) {
+      const ref = properties.anchor.getAttribute('aria-details') ?? properties.anchor.getAttribute('aria-describedby');
+      if (ref !== properties.id) {
+        throw new Error('aria-details or aria-describedby must be set on the anchor');
+      }
+      this.#anchor = properties.anchor;
+    }
   }
 
   attributeChangedCallback(name: string): void {
@@ -117,7 +123,7 @@ export class Tooltip extends HTMLElement {
     }, this.hoverDelay);
   };
 
-  hideTooltip = (event: MouseEvent): void => {
+  hideTooltip = (event: MouseEvent|FocusEvent): void => {
     if (this.#timeout) {
       window.clearTimeout(this.#timeout);
     }
@@ -167,6 +173,8 @@ export class Tooltip extends HTMLElement {
         this.#anchor.addEventListener('click', this.toggle);
       } else {
         this.#anchor.addEventListener('mouseenter', this.showTooltip);
+        this.#anchor.addEventListener('focus', this.showTooltip);
+        this.#anchor.addEventListener('blur', this.hideTooltip);
         this.#anchor.addEventListener('mouseleave', this.hideTooltip);
         this.addEventListener('mouseleave', this.hideTooltip);
       }
@@ -179,9 +187,14 @@ export class Tooltip extends HTMLElement {
   }
 
   #removeEventListeners(): void {
+    if (this.#timeout) {
+      window.clearTimeout(this.#timeout);
+    }
     if (this.#anchor) {
       this.#anchor.removeEventListener('click', this.toggle);
       this.#anchor.removeEventListener('mouseenter', this.showTooltip);
+      this.#anchor.removeEventListener('focus', this.showTooltip);
+      this.#anchor.removeEventListener('blur', this.hideTooltip);
       this.#anchor.removeEventListener('mouseleave', this.hideTooltip);
     }
     this.removeEventListener('mouseleave', this.hideTooltip);
@@ -192,29 +205,35 @@ export class Tooltip extends HTMLElement {
   }
 
   #attachToAnchor(): void {
-    const id = this.getAttribute('id');
-    if (!id) {
-      throw new Error('<devtools-tooltip> must have an id.');
-    }
-    const describedbyAnchor = closestAnchor(this, `[aria-describedby="${id}"]`);
-    const detailsAnchor = closestAnchor(this, `[aria-details="${id}"]`);
-    const anchor = this.#anchor ?? describedbyAnchor ?? detailsAnchor;
-    if (!anchor) {
-      throw new Error(`No anchor for tooltip with id ${id} found.`);
-    }
-    if (!(anchor instanceof HTMLElement)) {
-      throw new Error('Anchor must be an HTMLElement.');
-    }
-    if (this.variant === 'rich' && describedbyAnchor) {
-      console.warn(`The anchor for tooltip ${
-          id} was defined with "aria-describedby". For rich tooltips "aria-details" is more appropriate.`);
+    if (!this.#anchor) {
+      const id = this.getAttribute('id');
+      if (!id) {
+        throw new Error('<devtools-tooltip> must have an id.');
+      }
+      const root = this.getRootNode() as Document | ShadowRoot;
+      if (root.querySelectorAll(`#${id}`)?.length > 1) {
+        throw new Error('Duplicate <devtools-tooltip> ids found.');
+      }
+      const describedbyAnchor = root.querySelector(`[aria-describedby="${id}"]`);
+      const detailsAnchor = root.querySelector(`[aria-details="${id}"]`);
+      const anchor = describedbyAnchor ?? detailsAnchor;
+      if (!anchor) {
+        throw new Error(`No anchor for tooltip with id ${id} found.`);
+      }
+      if (!(anchor instanceof HTMLElement)) {
+        throw new Error('Anchor must be an HTMLElement.');
+      }
+      this.#anchor = anchor;
+      if (this.variant === 'rich' && describedbyAnchor) {
+        console.warn(`The anchor for tooltip ${
+            id} was defined with "aria-describedby". For rich tooltips "aria-details" is more appropriate.`);
+      }
     }
 
-    const anchorName = `--${id}-anchor`;
-    anchor.style.anchorName = anchorName;
+    const anchorName = `--devtools-tooltip-${this.id}-anchor`;
+    this.#anchor.style.anchorName = anchorName;
     this.style.positionAnchor = anchorName;
-    this.#observeAnchorRemoval(anchor);
-    this.#anchor = anchor;
+    this.#observeAnchorRemoval(this.#anchor);
   }
 
   #observeAnchorRemoval(anchor: Element): void {
@@ -237,15 +256,6 @@ export class Tooltip extends HTMLElement {
     });
     this.#anchorObserver.observe(anchor.parentElement, {childList: true});
   }
-}
-
-export function closestAnchor(tooltip: Element, selector: string): Element|null {
-  const anchors: NodeListOf<Element>|undefined = (tooltip.getRootNode() as Element)?.querySelectorAll(selector);
-  // Find the last anchor with a matching selector that is before the tooltip in the document order.
-  const anchor = [...anchors ?? []]
-                     .filter(anchor => tooltip.compareDocumentPosition(anchor) & Node.DOCUMENT_POSITION_PRECEDING)
-                     .at(-1);
-  return anchor ?? null;
 }
 
 customElements.define('devtools-tooltip', Tooltip);

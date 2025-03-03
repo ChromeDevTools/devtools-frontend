@@ -93,6 +93,7 @@ devtools_module("elements") {
     "../../ui/components/floating_button:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/components/text_editor:bundle",
+    "../../ui/components/tooltips:bundle",
     "../../ui/components/tree_outline:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/color_picker:bundle",

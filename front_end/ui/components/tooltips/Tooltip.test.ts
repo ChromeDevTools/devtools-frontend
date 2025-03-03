@@ -6,19 +6,12 @@ import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {checkForPendingActivity} from '../../../testing/TrackAsyncOperations.js';
 import * as Lit from '../../lit/lit.js';
 
-import * as TooltipModule from './Tooltip.js';
-import type {TooltipVariant} from './Tooltip.js';
+import * as Tooltips from './tooltips.js';
 
-const {
-  closestAnchor,
-  Tooltip,
-} = TooltipModule;
-
-const {html, Directives} = Lit;
-const {ref, createRef} = Directives;
+const {html} = Lit;
 
 interface RenderProps {
-  variant?: TooltipVariant;
+  variant?: Tooltips.Tooltip.TooltipVariant;
   attribute?: 'aria-describedby'|'aria-details';
   useClick?: boolean;
 }
@@ -69,11 +62,53 @@ describe('Tooltip', () => {
     assert.isTrue(container.querySelector('devtools-tooltip')?.open);
   });
 
+  it('should be activated if focused', async () => {
+    const container = renderTooltip();
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new FocusEvent('focus'));
+
+    await checkForPendingActivity();
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should not be activated if un-hovered', async () => {
+    const container = renderTooltip();
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new MouseEvent('mouseenter'));
+    button?.dispatchEvent(new MouseEvent('mouseleave'));
+
+    await checkForPendingActivity();
+    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should not be activated if un-focused', async () => {
+    const container = renderTooltip();
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new FocusEvent('focus'));
+    button?.dispatchEvent(new FocusEvent('blur'));
+
+    await checkForPendingActivity();
+    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+  });
+
   it('should not open on hover if use-click is set', async () => {
     const container = renderTooltip({useClick: true});
 
     const button = container.querySelector('button');
     button?.dispatchEvent(new MouseEvent('mouseenter'));
+
+    await checkForPendingActivity();
+    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should not open on focus if use-click is set', async () => {
+    const container = renderTooltip({useClick: true});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new FocusEvent('focus'));
 
     await checkForPendingActivity();
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
@@ -113,13 +148,14 @@ describe('Tooltip', () => {
   it('can be instantiated programatically', () => {
     const container = document.createElement('div');
     const anchor = document.createElement('button');
-    const tooltip = new Tooltip({id: 'tooltip-id', anchor});
+    anchor.setAttribute('aria-describedby', 'tooltip-id');
+    const tooltip = new Tooltips.Tooltip.Tooltip({id: 'tooltip-id', anchor});
     tooltip.append('Text content');
     container.appendChild(anchor);
     container.appendChild(tooltip);
     renderElementIntoDOM(container);
 
-    assert.strictEqual(anchor.style.anchorName, '--tooltip-id-anchor');
+    assert.strictEqual(anchor.style.anchorName, '--devtools-tooltip-tooltip-id-anchor');
   });
 
   it('should hide the tooltip if anchor is removed from DOM', async () => {
@@ -132,83 +168,5 @@ describe('Tooltip', () => {
     await checkForPendingActivity();
 
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
-  });
-});
-
-describe('closestAnchor', () => {
-  function renderTemplate(template: Lit.TemplateResult) {
-    const container = document.createElement('div');
-    Lit.render(template, container);
-    renderElementIntoDOM(container);
-  }
-
-  it('finds a previous sibling anchor', () => {
-    const origin = createRef();
-    const expectedAchnor = createRef();
-    // clang-format off
-    renderTemplate(html`
-      <div class="anchor" ${ref(expectedAchnor)}></div>
-      <div ${ref(origin)}></div>
-    `);
-    // clang-format on
-
-    const actual = closestAnchor(origin.value!, '.anchor');
-
-    assert.strictEqual(actual, expectedAchnor.value);
-  });
-
-  it('finds a parent', () => {
-    const origin = createRef();
-    const expectedAchnor = createRef();
-    // clang-format off
-    renderTemplate(html`
-      <div class="anchor" ${ref(expectedAchnor)}>
-        <div ${ref(origin)}></div>
-      </div>
-    `);
-    // clang-format on
-
-    const actual = closestAnchor(origin.value!, '.anchor');
-
-    assert.strictEqual(actual, expectedAchnor.value);
-  });
-
-  it('finds an ancestors decendant', () => {
-    const origin = createRef();
-    const expectedAchnor = createRef();
-    // clang-format off
-    renderTemplate(html`
-      <div>
-        <div>
-          <div class="anchor" ${ref(expectedAchnor)}></div>
-        </div>
-        <div>
-          <div ${ref(origin)}></div>
-        </div>
-      </div>
-    `);
-    // clang-format on
-
-    const actual = closestAnchor(origin.value!, '.anchor');
-
-    assert.strictEqual(actual, expectedAchnor.value);
-  });
-
-  it('takes the next anchor up the tree', () => {
-    const origin = createRef();
-    const expectedAchnor = createRef();
-    // clang-format off
-    renderTemplate(html`
-      <div class="anchor a"></div>
-      <div class="anchor b"></div>
-      <div class="anchor c" ${ref(expectedAchnor)}></div>
-      <div ${ref(origin)}></div>
-      <div class="anchor d"></div>
-    `);
-    // clang-format on
-
-    const actual = closestAnchor(origin.value!, '.anchor');
-
-    assert.strictEqual(actual, expectedAchnor.value);
   });
 });

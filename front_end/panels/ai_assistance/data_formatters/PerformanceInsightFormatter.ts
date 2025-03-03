@@ -23,8 +23,8 @@ function formatMicro(x: number|undefined): string {
 }
 
 export class PerformanceInsightFormatter {
-  #insight: Trace.Insights.Types.InsightModel<{}, {}>;
-  constructor(insight: Trace.Insights.Types.InsightModel<{}, {}>) {
+  #insight: Trace.Insights.Types.InsightModel;
+  constructor(insight: Trace.Insights.Types.InsightModel) {
     this.#insight = insight;
   }
 

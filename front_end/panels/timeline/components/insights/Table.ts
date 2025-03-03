@@ -18,7 +18,7 @@ tableStyles.replaceSync(tableStylesRaw.cssContent);
 
 const {html} = Lit;
 
-type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}, {}>>;
+type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel>;
 
 /**
  * @fileoverview An interactive table component.
@@ -53,7 +53,6 @@ export interface TableDataRow {
 }
 
 export class Table extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #insight?: BaseInsightComponent;

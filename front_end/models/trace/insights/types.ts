@@ -79,23 +79,25 @@ export type RelatedEventsMap = Map<Types.Events.Event, string[]>;
 
 export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIString.LocalizedString, value: boolean}>;
 
-export type InsightModel<UIStrings extends Record<string, string>, R extends Record<string, unknown>> = R&{
-  /** Used internally to identify the type of a model, not shown visibly to users **/
-  insightKey: keyof InsightModelsType,
-  /** Not used within DevTools - this is for external consumers (like Lighthouse). */
-  strings: UIStrings,
-  title: Common.UIString.LocalizedString,
-  description: Common.UIString.LocalizedString,
-  category: InsightCategory,
-  state: 'pass' | 'fail' | 'informative',
-  relatedEvents?: RelatedEventsMap | Types.Events.Event[],
-  warnings?: InsightWarning[],
-  metricSavings?: MetricSavings,
-  /**
-   * If this insight is attached to a navigation, this stores its ID.
-   */
-  navigationId?: string,
-};
+export type InsightModel<UIStrings extends Record<string, string> = Record<string, string>,
+                                           ExtraDetail extends Record<string, unknown> = Record<string, unknown>> =
+    ExtraDetail&{
+      /** Used internally to identify the type of a model, not shown visibly to users **/
+      insightKey: keyof InsightModelsType,
+      /** Not used within DevTools - this is for external consumers (like Lighthouse). */
+      strings: UIStrings,
+      title: Common.UIString.LocalizedString,
+      description: Common.UIString.LocalizedString,
+      category: InsightCategory,
+      state: 'pass' | 'fail' | 'informative',
+      relatedEvents?: RelatedEventsMap | Types.Events.Event[],
+      warnings?: InsightWarning[],
+      metricSavings?: MetricSavings,
+      /**
+       * If this insight is attached to a navigation, this stores its ID.
+       */
+      navigationId?: string,
+    };
 
 export type PartialInsightModel<T> =
     Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'>;

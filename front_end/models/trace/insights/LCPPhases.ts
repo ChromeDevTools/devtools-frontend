@@ -90,7 +90,7 @@ interface LCPPhases {
   renderDelay: Types.Timing.Milli;
 }
 
-export function isLCPPhases(model: InsightModel<{}, {}>): model is LCPPhasesInsightModel {
+export function isLCPPhases(model: InsightModel): model is LCPPhasesInsightModel {
   return model.insightKey === 'LCPPhases';
 }
 export type LCPPhasesInsightModel = InsightModel<typeof UIStrings, {

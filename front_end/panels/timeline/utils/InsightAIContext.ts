@@ -14,15 +14,15 @@ import {AICallTree} from './AICallTree.js';
  * and the parsed trace.
  */
 export class ActiveInsight {
-  #insight: Trace.Insights.Types.InsightModel<{}, {}>;
+  #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
 
-  constructor(insight: Trace.Insights.Types.InsightModel<{}, {}>, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#insight = insight;
     this.#parsedTrace = parsedTrace;
   }
 
-  get insight(): Readonly<Trace.Insights.Types.InsightModel<{}, {}>> {
+  get insight(): Readonly<Trace.Insights.Types.InsightModel> {
     return this.#insight;
   }
   get parsedTrace(): Trace.Handlers.Types.ParsedTrace {
@@ -38,9 +38,8 @@ export class AIQueries {
   /**
    * Returns the set of network requests that occurred within the timeframe of this Insight.
    */
-  static networkRequests(
-      insight: Trace.Insights.Types.InsightModel<{}, {}>,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): readonly Trace.Types.Events.SyntheticNetworkRequest[] {
+  static networkRequests(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
+      readonly Trace.Types.Events.SyntheticNetworkRequest[] {
     const bounds = insightBounds(insight, parsedTrace);
 
     // Now we find network requests that:
@@ -69,9 +68,8 @@ export class AIQueries {
    * Returns an AI Call Tree representing the activity on the main thread for
    * the relevant time range of the given insight.
    */
-  static mainThreadActivity(
-      insight: Trace.Insights.Types.InsightModel<{}, {}>, parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree
-      |null {
+  static mainThreadActivity(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
+      AICallTree|null {
     const bounds = insightBounds(insight, parsedTrace);
     return AICallTree.fromTime(bounds.min, bounds.max, parsedTrace);
   }
@@ -85,9 +83,8 @@ export class AIQueries {
  * bound as LCP time, as anything that happens after that cannot have impacted
  * it.
  */
-function insightBounds(
-    insight: Trace.Insights.Types.InsightModel<{}, {}>,
-    parsedTrace: Trace.Handlers.Types.ParsedTrace): Trace.Types.Timing.TraceWindowMicro {
+function insightBounds(insight: Trace.Insights.Types.InsightModel, parsedTrace: Trace.Handlers.Types.ParsedTrace):
+    Trace.Types.Timing.TraceWindowMicro {
   const navigationStart =
       insight.navigationId ? parsedTrace.Meta.navigationsByNavigationId.get(insight.navigationId) : undefined;
   const minBound = navigationStart?.ts ?? parsedTrace.Meta.traceBounds.min;
@@ -120,7 +117,7 @@ function getNextNavigation(
   return null;
 }
 
-function customMaxBoundForInsight(insight: Trace.Insights.Types.InsightModel<{}, {}>): Trace.Types.Timing.Micro|null {
+function customMaxBoundForInsight(insight: Trace.Insights.Types.InsightModel): Trace.Types.Timing.Micro|null {
   if (Trace.Insights.Models.LCPPhases.isLCPPhases(insight) && insight.lcpEvent) {
     return insight.lcpEvent.ts;
   }

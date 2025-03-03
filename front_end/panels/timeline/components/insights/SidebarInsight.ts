@@ -18,7 +18,7 @@ export interface InsightDetails {
 export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
-  constructor(public model: InsightModel<{}, {}>, public insightSetKey: string) {
+  constructor(public model: InsightModel, public insightSetKey: string) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }

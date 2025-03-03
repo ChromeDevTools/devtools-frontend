@@ -18,7 +18,7 @@ const {html} = Lit;
 
 describeWithEnvironment('BaseInsightComponent', () => {
   const {BaseInsightComponent} = Insights.BaseInsightComponent;
-  class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel<{}, {}>> {
+  class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
     override internalName = 'test-insight';
     override createOverlays(): TimelineOverlay[] {
       return [];

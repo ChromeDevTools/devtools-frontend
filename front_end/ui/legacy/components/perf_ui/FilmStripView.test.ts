@@ -12,7 +12,6 @@ import {
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
-import * as UI from '../../legacy.js';
 
 import * as PerfUI from './perf_ui.js';
 
@@ -58,16 +57,15 @@ describeWithEnvironment('FilmStripView', function() {
     filmStrip.detach();
   });
 
-  it('shows placeholder', async function() {
+  it('shows status text', async function() {
     const filmStripView = new PerfUI.FilmStripView.FilmStripView();
     filmStripView.markAsRoot();
     filmStripView.show(document.body);
 
-    const placeholder = new UI.Widget.Widget();
-    placeholder.contentElement.textContent = 'Placeholder';
+    const expectedStatusText = 'Placeholder';
 
-    filmStripView.setStatusPlaceholder(placeholder);
-    assert.deepEqual(filmStripView.contentElement.textContent, 'Placeholder');
+    filmStripView.setStatusText(expectedStatusText);
+    assert.deepEqual(filmStripView.contentElement.textContent, expectedStatusText);
 
     filmStripView.detach();
   });

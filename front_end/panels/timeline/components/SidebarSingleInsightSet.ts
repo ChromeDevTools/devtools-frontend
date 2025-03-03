@@ -90,7 +90,6 @@ export interface SidebarSingleInsightSetData {
  * us to ship incrementally without turning insights on by default for all
  * users. */
 const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
-  'NetworkDependencyTree',
 ]);
 
 type InsightNameToComponentMapping = Record<

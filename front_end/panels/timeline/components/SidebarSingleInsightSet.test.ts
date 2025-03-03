@@ -62,6 +62,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       '3rd parties',
       'INP by phase',
       'Layout shift culprits',
+      'Network dependency tree',
       'Improve image delivery',
       'Font display',
       'Optimize viewport for mobile',
@@ -76,6 +77,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(passedInsightTitles, [
       'INP by phase',
       'Layout shift culprits',
+      'Network dependency tree',
       'Improve image delivery',
       'Font display',
       'Optimize viewport for mobile',
@@ -107,6 +109,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'Layout shift culprits',
+      'Network dependency tree',
       'Improve image delivery',
       'Font display',
       '3rd parties',

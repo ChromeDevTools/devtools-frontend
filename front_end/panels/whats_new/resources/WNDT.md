@@ -1,6 +1,6 @@
-### [Privacy and security panel](privacy-and-security)
-Test how a website behaves with limited third-party cookies and find relevant issues in the new 'Privacy' section of the evolved 'Privacy and security' panel.
-### [Calibrated CPU throttling presets](calibrated-cpu-throttling)
-Based on your users' experience, automatically calibrate and use more accurate CPU throttling presets for low- and mid-tier mobile devices.
-### [First- and third-party highlighting in Performance](perf-third-party)
-Reduce the noise of third-party data and hover over entries in a new table in Summary to distinguish between first- and third-party data in performance traces.
+### [Origin and script links for profile and function calls in Performance](perf-script-origin)
+The Performance > Summary tab now shows links to the relevant scripts and origins for profile and function calls.
+### [Improved empty states for various panels](empty-panels)
+Empty states (when nothing is open) for many panels, tabs, and sections are updated to let you know what to do to start working with them.
+### [Accessibility tree view in Elements](accessibility-tree)
+The 'Accessibility tree view' experiment is turned on by default. It lets you inspect how assistive technology sees your content.

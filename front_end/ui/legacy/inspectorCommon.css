@@ -1005,7 +1005,7 @@ devtools-toolbar {
     flex: 1;
     overflow: hidden;
     white-space: nowrap;
-    cursor: auto;
+    cursor: text;
     color: var(--sys-color-on-surface);
   }
   /* Separator */

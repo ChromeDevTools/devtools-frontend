@@ -558,6 +558,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     const isPerformancePanelVisible =
         Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel));
 
+    // Check if the user has an insight expanded in the performance panel sidebar.
+    // If they have, we default to the Insights agent; otherwise we fallback to
+    // the regular Performance agent.
+    // Note that we do not listen to this flavor changing; this code is here to
+    // ensure that by default we do not pick the Insights agent if the user has
+    // just imported a trace and not done anything else. It doesn't make sense
+    // to select the Insights AI agent in that case.
+    const userHasExpandedPerfInsight =
+        Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.SelectedInsight));
     let targetConversationType: ConversationType|undefined = undefined;
     if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
       targetConversationType = ConversationType.STYLING;
@@ -567,7 +576,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       targetConversationType = ConversationType.FILE;
     } else if (
         isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled &&
-        hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled) {
+        hostConfig.devToolsAiAssistancePerformanceAgent?.insightsEnabled && userHasExpandedPerfInsight) {
       targetConversationType = ConversationType.PERFORMANCE_INSIGHT;
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
       targetConversationType = ConversationType.PERFORMANCE;

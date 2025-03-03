@@ -18,9 +18,7 @@ export interface InsightDetails {
 export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
-  constructor(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      public model: InsightModel<any, any>, public insightSetKey: string) {
+  constructor(public model: InsightModel<{}, {}>, public insightSetKey: string) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }

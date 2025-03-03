@@ -23,6 +23,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Elements from '../elements/elements.js';
 import * as Network from '../network/network.js';
 import * as Sources from '../sources/sources.js';
+import type * as TimelineComponents from '../timeline/components/components.js';
 import * as Timeline from '../timeline/timeline.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
 
@@ -448,49 +449,54 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.deepEqual(updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.STYLING);
     });
 
-    it('should select the performance insights agent if it is enabled', async () => {
-      updateHostConfig({
-        devToolsAiAssistancePerformanceAgent: {
-          enabled: true,
-          insightsEnabled: true,
-        },
-      });
-      const {panel, expectViewUpdate} =
-          await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
+    it('should select the performance insights agent if it is enabled and the user has expanded an insight',
+       async () => {
+         updateHostConfig({
+           devToolsAiAssistancePerformanceAgent: {
+             enabled: true,
+             insightsEnabled: true,
+           },
+         });
+         const {panel, expectViewUpdate} =
+             await createAiAssistancePanel({aidaClient: mockAidaClient([[{explanation: 'test'}]])});
 
-      const updatedViewInput = await expectViewUpdate(() => {
-        panel.handleAction('freestyler.elements-floating-button');
-      });
+         const updatedViewInput = await expectViewUpdate(() => {
+           panel.handleAction('freestyler.elements-floating-button');
+         });
 
-      const updatedViewInputAfterMessage = await expectViewUpdate(() => {
-        updatedViewInput.onTextSubmit('test');
-      });
+         const updatedViewInputAfterMessage = await expectViewUpdate(() => {
+           updatedViewInput.onTextSubmit('test');
+         });
 
-      UI.Context.Context.instance().setFlavor(
-          Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
+         UI.Context.Context.instance().setFlavor(
+             Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
 
-      assert.deepEqual(updatedViewInputAfterMessage.messages, [
-        {
-          entity: AiAssistance.ChatMessageEntity.USER,
-          text: 'test',
-          imageInput: undefined,
-        },
-        {
-          answer: 'test',
-          entity: AiAssistance.ChatMessageEntity.MODEL,
-          rpcId: undefined,
-          suggestions: undefined,
-          steps: [],
-        },
-      ]);
-      const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
-        updatedViewInputAfterMessage.onNewChatClick();
-      });
+         UI.Context.Context.instance().setFlavor(
+             Timeline.TimelinePanel.SelectedInsight,
+             new Timeline.TimelinePanel.SelectedInsight({} as unknown as TimelineComponents.Sidebar.ActiveInsight));
 
-      assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
-      assert.deepEqual(
-          updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.PERFORMANCE_INSIGHT);
-    });
+         assert.deepEqual(updatedViewInputAfterMessage.messages, [
+           {
+             entity: AiAssistance.ChatMessageEntity.USER,
+             text: 'test',
+             imageInput: undefined,
+           },
+           {
+             answer: 'test',
+             entity: AiAssistance.ChatMessageEntity.MODEL,
+             rpcId: undefined,
+             suggestions: undefined,
+             steps: [],
+           },
+         ]);
+         const updatedViewInputAfterNewChat = await expectViewUpdate(() => {
+           updatedViewInputAfterMessage.onNewChatClick();
+         });
+
+         assert.deepEqual(updatedViewInputAfterNewChat.messages, []);
+         assert.deepEqual(
+             updatedViewInputAfterNewChat.conversationType, AiAssistance.ConversationType.PERFORMANCE_INSIGHT);
+       });
 
     it('should select the Dr Jones performance agent if insights are not enabled', async () => {
       updateHostConfig({
@@ -1068,7 +1074,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
     }
 
     describe('Performance Insight agent', () => {
-      it('should select the PERFORMANCE_INSIGHT agent when the performance panel is open and insights are enabled',
+      it('should select the PERFORMANCE_INSIGHT agent when the performance panel is open and insights are enabled and an insight is expanded',
          async () => {
            updateHostConfig({
              devToolsAiAssistancePerformanceAgent: {
@@ -1078,9 +1084,28 @@ describeWithMockConnection('AI Assistance Panel', () => {
            });
            UI.Context.Context.instance().setFlavor(
                Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
+           UI.Context.Context.instance().setFlavor(
+               Timeline.TimelinePanel.SelectedInsight,
+               new Timeline.TimelinePanel.SelectedInsight({} as unknown as TimelineComponents.Sidebar.ActiveInsight));
            const {initialViewInput} = await createAiAssistancePanel();
 
            assert.strictEqual(initialViewInput.conversationType, AiAssistance.ConversationType.PERFORMANCE_INSIGHT);
+         });
+
+      it('should select the PERFORMANCE agent when the performance panel is open and insights are enabled but the user has not selected an insight',
+         async () => {
+           updateHostConfig({
+             devToolsAiAssistancePerformanceAgent: {
+               enabled: true,
+               insightsEnabled: true,
+             },
+           });
+           UI.Context.Context.instance().setFlavor(
+               Timeline.TimelinePanel.TimelinePanel, sinon.createStubInstance(Timeline.TimelinePanel.TimelinePanel));
+           UI.Context.Context.instance().setFlavor(Timeline.TimelinePanel.SelectedInsight, null);
+
+           const {initialViewInput} = await createAiAssistancePanel();
+           assert.strictEqual(initialViewInput.conversationType, AiAssistance.ConversationType.PERFORMANCE);
          });
     });
   });

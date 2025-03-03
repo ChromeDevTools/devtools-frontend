@@ -733,6 +733,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.#sideBar.setActiveInsight(insight);
     this.flameChart.setActiveInsight(insight);
+
+    if (insight) {
+      const selectedInsight = new SelectedInsight(insight);
+      UI.Context.Context.instance().setFlavor(SelectedInsight, selectedInsight);
+    } else {
+      UI.Context.Context.instance().setFlavor(SelectedInsight, null);
+    }
   }
 
   /**
@@ -3038,5 +3045,15 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
     }
     return false;
+  }
+}
+
+/**
+ * Used to set the UI.Context when the user expands an Insight. This is only
+ * relied upon in the AI Agent code to know which agent to pick by default based
+ * on the context of the panel.
+ */
+export class SelectedInsight {
+  constructor(public insight: TimelineComponents.Sidebar.ActiveInsight) {
   }
 }

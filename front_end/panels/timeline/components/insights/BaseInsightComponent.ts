@@ -156,7 +156,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}, {}>> exten
       return;
     }
 
-    if (!this.data.insightSetKey) {
+    if (!this.data.insightSetKey || !this.model) {
       // Shouldn't happen, but needed to satisfy TS.
       return;
     }

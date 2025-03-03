@@ -680,6 +680,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
+
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }
 
@@ -717,6 +722,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#handleDOMNodeAttrChange,
         this,
     );
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
@@ -793,6 +801,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         this.#selectedFile = new FileContext(ev.data);
         this.#updateConversationState(this.#conversationAgent);
       };
+
+  #onPrimaryPageChanged(): void {
+    if (!this.#imageInput) {
+      return;
+    }
+
+    this.#imageInput = undefined;
+    this.requestUpdate();
+  }
 
   #getChangeSummary(): string|undefined {
     return (isAiAssistancePatchingEnabled() && this.#conversationAgent && !this.#conversation?.isReadOnly) ?

@@ -1292,8 +1292,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
   });
 
   describe('multimodal input', () => {
+    let target: SDK.Target.Target;
+    beforeEach(() => {
+      target = createTarget();
+    });
+
     function mockScreenshotModel() {
-      const target = createTarget();
       const screenCaptureModel = target.model(SDK.ScreenCaptureModel.ScreenCaptureModel);
       assert.exists(screenCaptureModel);
       return {
@@ -1378,6 +1382,34 @@ describeWithMockConnection('AI Assistance Panel', () => {
           steps: [],
         },
       ]);
+    });
+
+    it('image input should be removed when primary target changed', async () => {
+      mockScreenshotModel();
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          multimodal: true,
+        },
+      });
+      UI.Context.Context.instance().setFlavor(
+          Elements.ElementsPanel.ElementsPanel, sinon.createStubInstance(Elements.ElementsPanel.ElementsPanel));
+      const {initialViewInput, expectViewUpdate} = await createAiAssistancePanel();
+
+      assert.isUndefined(initialViewInput.imageInput);
+      const updatedViewInput = await expectViewUpdate(() => {
+        initialViewInput.onTakeScreenshot?.();
+      });
+      assert.exists(updatedViewInput.imageInput);
+
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      const afterNavigationViewInput = await expectViewUpdate(() => {
+        resourceTreeModel?.dispatchEventToListeners(SDK.ResourceTreeModel.Events.PrimaryPageChanged, {
+          frame: sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame),
+          type: SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION
+        });
+      });
+      assert.isUndefined(afterNavigationViewInput.imageInput);
     });
   });
 });

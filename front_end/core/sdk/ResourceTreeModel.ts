@@ -76,7 +76,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
     this.agent = target.pageAgent();
     this.storageAgent = target.storageAgent();
-    void this.agent.invoke_enable();
+    void this.agent.invoke_enable({});
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.#storageKeyManager = (target.model(StorageKeyManager) as StorageKeyManager);
     this.#pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();

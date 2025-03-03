@@ -17451,7 +17451,7 @@
                 },
                 {
                     "id": "PermissionsPolicyFeature",
-                    "description": "All Permissions Policy features. This enum should match the one defined\nin third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.",
+                    "description": "All Permissions Policy features. This enum should match the one defined\nin services/network/public/cpp/permissions_policy/permissions_policy_features.json5.",
                     "experimental": true,
                     "type": "string",
                     "enum": [
@@ -18907,7 +18907,8 @@
                         "EmbedderExtensionMessagingForOpenPort",
                         "EmbedderExtensionSentMessageToCachedFrame",
                         "RequestedByWebViewClient",
-                        "PostMessageByWebViewClient"
+                        "PostMessageByWebViewClient",
+                        "CacheControlNoStoreDeviceBoundSessionTerminated"
                     ]
                 },
                 {
@@ -19227,7 +19228,16 @@
                 },
                 {
                     "name": "enable",
-                    "description": "Enables page domain notifications."
+                    "description": "Enables page domain notifications.",
+                    "parameters": [
+                        {
+                            "name": "enableFileChooserOpenedEvent",
+                            "description": "If true, the `Page.fileChooserOpened` event will be emitted regardless of the state set by\n`Page.setInterceptFileChooserDialog` command (default: false).",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
+                        }
+                    ]
                 },
                 {
                     "name": "getAppManifest",

@@ -11758,7 +11758,7 @@ export namespace Page {
 
   /**
    * All Permissions Policy features. This enum should match the one defined
-   * in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
+   * in services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
    */
   export const enum PermissionsPolicyFeature {
     Accelerometer = 'accelerometer',
@@ -12724,6 +12724,7 @@ export namespace Page {
     EmbedderExtensionSentMessageToCachedFrame = 'EmbedderExtensionSentMessageToCachedFrame',
     RequestedByWebViewClient = 'RequestedByWebViewClient',
     PostMessageByWebViewClient = 'PostMessageByWebViewClient',
+    CacheControlNoStoreDeviceBoundSessionTerminated = 'CacheControlNoStoreDeviceBoundSessionTerminated',
   }
 
   /**
@@ -12915,6 +12916,14 @@ export namespace Page {
      * URL to match cooke domain and path.
      */
     url: string;
+  }
+
+  export interface EnableRequest {
+    /**
+     * If true, the `Page.fileChooserOpened` event will be emitted regardless of the state set by
+     * `Page.setInterceptFileChooserDialog` command (default: false).
+     */
+    enableFileChooserOpenedEvent?: boolean;
   }
 
   export interface GetAppManifestRequest {

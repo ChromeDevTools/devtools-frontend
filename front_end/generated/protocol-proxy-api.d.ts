@@ -2618,7 +2618,7 @@ declare namespace ProtocolProxyApi {
     /**
      * Enables page domain notifications.
      */
-    invoke_enable(): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_enable(params: Protocol.Page.EnableRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
      * Gets the processed manifest for this current document.

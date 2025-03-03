@@ -8235,7 +8235,7 @@ domain Page
       PerformanceProfile
 
   # All Permissions Policy features. This enum should match the one defined
-  # in third_party/blink/renderer/core/permissions_policy/permissions_policy_features.json5.
+  # in services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
   experimental type PermissionsPolicyFeature extends string
     enum
       accelerometer
@@ -8811,6 +8811,10 @@ domain Page
 
   # Enables page domain notifications.
   command enable
+    parameters
+      # If true, the `Page.fileChooserOpened` event will be emitted regardless of the state set by
+      # `Page.setInterceptFileChooserDialog` command (default: false).
+      experimental optional boolean enableFileChooserOpenedEvent
 
   # The manifest of a webapp, see
   # https://www.w3.org/TR/appmanifest/#dfn-manifest.
@@ -9751,6 +9755,7 @@ domain Page
       EmbedderExtensionSentMessageToCachedFrame
       RequestedByWebViewClient
       PostMessageByWebViewClient
+      CacheControlNoStoreDeviceBoundSessionTerminated
 
   # Types of not restored reasons for back-forward cache.
   experimental type BackForwardCacheNotRestoredReasonType extends string

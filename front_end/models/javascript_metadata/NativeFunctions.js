@@ -1257,6 +1257,11 @@ export const NativeFunctions = [
   },
   {
     name: "disconnect",
+    signatures: [["options"]],
+    receivers: ["IdentityCredential"]
+  },
+  {
+    name: "disconnect",
     signatures: [["?disposition"]],
     receivers: ["SmartCardConnection"]
   },
@@ -1943,11 +1948,6 @@ export const NativeFunctions = [
     name: "translate",
     signatures: [["?tx","?ty","?tz"]],
     receivers: ["DOMMatrixReadOnly"]
-  },
-  {
-    name: "translate",
-    signatures: [["input"]],
-    receivers: ["LanguageTranslator"]
   },
   {
     name: "drawFocusIfNeeded",
@@ -5657,7 +5657,13 @@ export const NativeFunctions = [
   },
   {
     name: "finally",
-    signatures: [["?onfinally"]]
+    signatures: [["?onfinally"]],
+    receivers: ["Promise"]
+  },
+  {
+    name: "finally",
+    signatures: [["callback"]],
+    receivers: ["Observable"]
   },
   {
     name: "fromEntries",
@@ -7071,7 +7077,7 @@ export const NativeFunctions = [
   },
   {
     name: "setValueAndClosePopup",
-    signatures: [["numberValue","stringValue","?is_keyboard_event"]]
+    signatures: [["numberValue","stringValue","is_keyboard_event"]]
   },
   {
     name: "setValue",
@@ -7295,7 +7301,13 @@ export const NativeFunctions = [
   },
   {
     name: "availability",
-    signatures: [["?options"]]
+    signatures: [["?options"]],
+    receivers: ["AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
+  },
+  {
+    name: "availability",
+    signatures: [["options"]],
+    receivers: ["AITranslatorFactory"]
   },
   {
     name: "createOptionsAvailable",
@@ -7456,6 +7468,10 @@ export const NativeFunctions = [
   },
   {
     name: "fillTextCluster",
+    signatures: [["textCluster","x","y","?options"]]
+  },
+  {
+    name: "strokeTextCluster",
     signatures: [["textCluster","x","y","?options"]]
   },
   {
@@ -8187,14 +8203,6 @@ export const NativeFunctions = [
     signatures: [["timestamp"]]
   },
   {
-    name: "canTranslate",
-    signatures: [["options"]]
-  },
-  {
-    name: "createTranslator",
-    signatures: [["options"]]
-  },
-  {
     name: "AbortPaymentEvent",
     signatures: [["type","eventInitDict"]]
   },
@@ -8580,7 +8588,7 @@ export const NativeFunctions = [
   },
   {
     name: "install",
-    signatures: [["?manifest_id","?install_url"]]
+    signatures: [["?install_url","?manifest_id"]]
   },
   {
     name: "AnalyserNode",
@@ -9183,18 +9191,6 @@ export const NativeFunctions = [
     signatures: [["type","eventInitDict"]]
   },
   {
-    name: "XRGPUBinding",
-    signatures: [["session","device"]]
-  },
-  {
-    name: "createProjectionLayer",
-    signatures: [["init"]]
-  },
-  {
-    name: "getViewSubImage",
-    signatures: [["layer","view"]]
-  },
-  {
     name: "getPose",
     signatures: [["relative_to"]]
   },
@@ -9225,10 +9221,6 @@ export const NativeFunctions = [
   {
     name: "XRSessionEvent",
     signatures: [["type","eventInitDict"]]
-  },
-  {
-    name: "supportsSession",
-    signatures: [["mode"]]
   },
   {
     name: "isSessionSupported",

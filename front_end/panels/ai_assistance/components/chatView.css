@@ -758,6 +758,13 @@ main {
     height: var(--sys-size-14);
     padding-left: var(--sys-size-3);
 
+    devtools-spinner {
+      width: var(--sys-size-6);
+      height: var(--sys-size-6);
+      margin-left: var(--sys-size-3);
+      margin-right: var(--sys-size-3);
+    }
+
     & .difference-icon {
       color: var(--sys-color-on-tonal-container);
       width: var(--sys-size-8);

@@ -4,6 +4,7 @@
 
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
+import '../../ui/components/spinners/spinners.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -25,6 +26,10 @@ const UIStringsNotTranslate = {
    *@description Text displayed for showing change summary view.
    */
   changeSummary: 'Changes summary',
+  /**
+   *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
+   */
+  loadingPatchSuggestion: 'Applying to workspace…',
   /**
    *@description Button text for staging changes to workspace.
    */
@@ -81,14 +86,14 @@ export class PatchWidget extends UI.Widget.Widget {
       if (!input.changeSummary) {
         return;
       }
+
       render(
         html`
           <details class="change-summary">
             <summary>
-              <devtools-icon class="difference-icon" .name=${'pen-spark'}
-              ></devtools-icon>
+              ${input.patchSuggestionLoading ? html`<devtools-spinner></devtools-spinner>` : html`<devtools-icon class="difference-icon" .name=${'pen-spark'}></devtools-icon>`}
               <span class="header-text">
-                ${lockedString(UIStringsNotTranslate.changeSummary)}
+                ${input.patchSuggestionLoading ? lockedString(UIStringsNotTranslate.loadingPatchSuggestion) : lockedString(UIStringsNotTranslate.changeSummary)}
               </span>
               <devtools-icon
                 class="arrow"
@@ -100,7 +105,7 @@ export class PatchWidget extends UI.Widget.Widget {
               .codeLang=${'css'}
               .displayNotice=${true}
             ></devtools-code-block>
-            <div class="workspace">
+            ${!input.patchSuggestionLoading ? html`<div class="workspace">
               <div class="change-workspace">
                 <div class="selected-folder">
                   ${lockedString(UIStringsNotTranslate.selectedFolder)} ${input.projectName}
@@ -117,9 +122,9 @@ export class PatchWidget extends UI.Widget.Widget {
                 @click=${input.onApplyToWorkspace}
                 .jslogContext=${'stage-to-workspace'}
                 .variant=${Buttons.Button.Variant.OUTLINED}>
-                  ${!input.patchSuggestionLoading ? lockedString(UIStringsNotTranslate.applyToWorkspace) : lockedString(UIStringsNotTranslate.loading)}
+                ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
               </devtools-button>
-            </div>
+            </div>` : nothing}
             ${input.patchSuggestion ? html`<div class="patch-tmp-message">
               ${input.patchSuggestion}
             </div>` : nothing}

@@ -217,6 +217,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 const SCROLL_ROUNDING_OFFSET = 1;
+const JPEG_MIME_TYPE = 'image/jpeg';
 
 export interface Step {
   isLoading: boolean;
@@ -237,6 +238,13 @@ export const enum ChatMessageEntity {
   MODEL = 'model',
   USER = 'user',
 }
+
+export type ImageInputData = {
+  isLoading: true,
+}|{
+  isLoading: false,
+  data: string,
+};
 
 export interface UserChatMessage {
   entity: ChatMessageEntity.USER;
@@ -285,7 +293,7 @@ export interface Props {
   patchSuggestionLoading?: boolean;
   projectName?: string;
   multimodalInputEnabled?: boolean;
-  imageInput?: string;
+  imageInput?: ImageInputData;
   onApplyToWorkspace?: () => void;
   isTextInputDisabled: boolean;
   emptyStateSuggestions: string[];
@@ -413,12 +421,17 @@ export class ChatView extends HTMLElement {
 
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
+    if (this.#props.imageInput?.isLoading) {
+      return;
+    }
+
     const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
     if (!textArea?.value) {
       return;
     }
-    const imageInput =
-        this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
+    const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
+        {inlineData: {data: this.#props.imageInput.data, mimeType: JPEG_MIME_TYPE}} :
+        undefined;
     void this.#props.onTextSubmit(textArea.value, imageInput);
     textArea.value = '';
   };
@@ -431,11 +444,12 @@ export class ChatView extends HTMLElement {
     // Go to a new line only when Shift + Enter is pressed.
     if (ev.key === 'Enter' && !ev.shiftKey) {
       ev.preventDefault();
-      if (!ev.target?.value) {
+      if (!ev.target?.value || this.#props.imageInput?.isLoading) {
         return;
       }
-      const imageInput =
-          this.#props.imageInput ? {inlineData: {data: this.#props.imageInput, mimeType: 'image/jpeg'}} : undefined;
+      const imageInput = !this.#props.imageInput?.isLoading && this.#props.imageInput?.data ?
+          {inlineData: {data: this.#props.imageInput.data, mimeType: JPEG_MIME_TYPE}} :
+          undefined;
       void this.#props.onTextSubmit(ev.target.value, imageInput);
       ev.target.value = '';
     }
@@ -1053,13 +1067,12 @@ function renderReadOnlySection({onNewConversation, conversationType}: {
 }
 
 function renderChatInputButtons(
-    {isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, onCancel, onNewConversation}: {
+    {isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation}: {
       isLoading: boolean,
       blockedByCrossOrigin: boolean,
       isTextInputDisabled: boolean,
       isTextInputEmpty: boolean,
-      onCancel: (ev: SubmitEvent) => void,
-      onNewConversation: () => void,
+      imageInput?: ImageInputData, onCancel: (ev: SubmitEvent) => void, onNewConversation: () => void,
     }): Lit.TemplateResult {
   if (isLoading) {
     // clang-format off
@@ -1107,7 +1120,7 @@ function renderChatInputButtons(
         type: 'submit',
         variant: Buttons.Button.Variant.ICON,
         size: Buttons.Button.Size.REGULAR,
-        disabled: isTextInputDisabled || isTextInputEmpty,
+        disabled: isTextInputDisabled || isTextInputEmpty || imageInput?.isLoading,
         iconName: 'send',
         title: lockedString(UIStringsNotTranslate.sendButtonTitle),
         jslogContext: 'send',
@@ -1120,11 +1133,13 @@ function renderTakeScreenshotButton({
   multimodalInputEnabled,
   blockedByCrossOrigin,
   isTextInputDisabled,
+  imageInput,
   onTakeScreenshot,
 }: {
   isTextInputDisabled: boolean,
   blockedByCrossOrigin: boolean,
   multimodalInputEnabled?: boolean,
+  imageInput?: ImageInputData,
   onTakeScreenshot?: () => void,
 }): Lit.LitTemplate {
     if (!multimodalInputEnabled || blockedByCrossOrigin) {
@@ -1138,7 +1153,7 @@ function renderTakeScreenshotButton({
         {
           variant: Buttons.Button.Variant.ICON,
           size: Buttons.Button.Size.REGULAR,
-          disabled: isTextInputDisabled,
+          disabled: isTextInputDisabled || imageInput?.isLoading,
           iconName: 'photo-camera',
           title: lockedString(UIStringsNotTranslate.takeScreenshotButtonTitle),
           jslogContext: 'take-screenshot',
@@ -1153,15 +1168,14 @@ function renderImageInput({
   onRemoveImageInput,
 }: {
   multimodalInputEnabled?: boolean,
-  imageInput?: string,
+  imageInput?: ImageInputData,
   onRemoveImageInput?: () => void,
 }): Lit.LitTemplate {
-    if (!multimodalInputEnabled || !imageInput || imageInput==='') {
+    if (!multimodalInputEnabled || !imageInput) {
       return Lit.nothing;
     }
-    return  html`
-    <div class="image-input-container">
-      <devtools-button
+
+    const crossButton = html`<devtools-button
       aria-label=${lockedString(UIStringsNotTranslate.removeImageInputButtonTitle)}
       @click=${onRemoveImageInput}
       .data=${
@@ -1172,8 +1186,20 @@ function renderImageInput({
           title: lockedString(UIStringsNotTranslate.removeImageInputButtonTitle),
         } as Buttons.Button.ButtonData
       }
-    ></devtools-button>
-      <img src="data:image/jpeg;base64, ${imageInput}" alt="Screenshot input" />
+    ></devtools-button>`;
+
+    if (imageInput.isLoading) {
+      return html`<div class="image-input-container">
+        ${crossButton}
+        <div class="loading">
+          <devtools-spinner></devtools-spinner>
+        </div>
+      </div>`;
+    }
+    return  html`
+    <div class="image-input-container">
+      ${crossButton}
+      <img src="data:image/jpeg;base64, ${imageInput.data}" alt="Screenshot input" />
     </div>`;
   }
 
@@ -1208,7 +1234,7 @@ function renderChatInput({
   inspectElementToggled: boolean,
   multimodalInputEnabled?: boolean,
   conversationType?: ConversationType,
-  imageInput?: string,
+  imageInput?: ImageInputData,
   isTextInputEmpty: boolean,
   onContextClick: () => void ,
   onInspectElementClick: () => void,
@@ -1230,10 +1256,10 @@ function renderChatInput({
     'screenshot-button': Boolean(multimodalInputEnabled) && !blockedByCrossOrigin,
   });
 
-    const chatInputContainerCls = Lit.Directives.classMap({
-      'chat-input-container': true,
-      disabled: isTextInputDisabled,
-    });
+  const chatInputContainerCls = Lit.Directives.classMap({
+    'chat-input-container': true,
+    disabled: isTextInputDisabled,
+  });
 
   // clang-format off
   return html`
@@ -1269,13 +1295,14 @@ function renderChatInput({
       ></textarea>
       <div class="chat-input-buttons">
         ${renderTakeScreenshotButton({
-          multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, onTakeScreenshot
+          multimodalInputEnabled, blockedByCrossOrigin, isTextInputDisabled, imageInput, onTakeScreenshot
         })}
-        ${renderChatInputButtons({ isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, onCancel, onNewConversation })}
+        ${renderChatInputButtons({
+          isLoading, blockedByCrossOrigin, isTextInputDisabled, isTextInputEmpty, imageInput, onCancel, onNewConversation
+        })}
       </div>
     </div>
-  </form>
-`;
+  </form>`;
   // clang-format on
 }
 

@@ -1291,7 +1291,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
       assert.isFalse(initialViewInput.multimodalInputEnabled);
       assert.notExists(initialViewInput.onTakeScreenshot);
       assert.notExists(initialViewInput.onRemoveImageInput);
-      assert.isEmpty(initialViewInput.imageInput);
+      assert.notExists(initialViewInput.imageInput);
     });
 
     it('adds an image input and then removes it', async () => {
@@ -1313,12 +1313,12 @@ describeWithMockConnection('AI Assistance Panel', () => {
       });
 
       expect(captureScreenshotStub.calledOnce);
-      assert.deepEqual(updatedViewInput.imageInput, 'imageInput');
+      assert.deepEqual(updatedViewInput.imageInput, {isLoading: false, data: 'imageInput'});
 
       const updatedViewInputAfterImageRemoval = await expectViewUpdate(() => {
         updatedViewInput.onRemoveImageInput?.();
       });
-      assert.isEmpty(updatedViewInputAfterImageRemoval.imageInput);
+      assert.notExists(updatedViewInputAfterImageRemoval.imageInput);
     });
 
     it('sends image as input', async () => {

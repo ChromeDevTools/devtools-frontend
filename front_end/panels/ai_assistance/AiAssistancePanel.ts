@@ -49,6 +49,7 @@ import {
   type ChatMessage,
   ChatMessageEntity,
   ChatView,
+  type ImageInputData,
   type ModelChatMessage,
   type Props as ChatViewProps,
   State as ChatViewState,
@@ -61,6 +62,7 @@ const {html} = Lit;
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
 const SCREENSHOT_QUALITY = 100;
+const SHOW_LOADING_STATE_TIMEOUT = 100;
 
 const UIStrings = {
   /**
@@ -440,7 +442,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     accountImage?: string,
     accountFullName?: string,
   };
-  #imageInput = '';
+  #imageInput?: ImageInputData;
   // Used to disable send button when there is not text input.
   #isTextInputEmpty = true;
 
@@ -823,7 +825,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
           },
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part) => {
-            this.#imageInput = '';
+            this.#imageInput = undefined;
             this.#isTextInputEmpty = true;
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
             await this.#startConversation(text, imageInput);
@@ -1126,13 +1128,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!model) {
       throw new Error('Could not find model');
     }
+    const showLoadingTimeout = setTimeout(() => {
+      this.#imageInput = {isLoading: true};
+      this.requestUpdate();
+    }, SHOW_LOADING_STATE_TIMEOUT);
     const bytes = await model.captureScreenshot(
         Protocol.Page.CaptureScreenshotRequestFormat.Jpeg,
         SCREENSHOT_QUALITY,
         SDK.ScreenCaptureModel.ScreenshotMode.FROM_VIEWPORT,
     );
+    clearTimeout(showLoadingTimeout);
     if (bytes) {
-      this.#imageInput = bytes;
+      this.#imageInput = {isLoading: false, data: bytes};
       this.requestUpdate();
       void this.updateComplete.then(() => {
         this.#viewOutput.chatView?.focusTextInput();
@@ -1141,7 +1148,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #handleRemoveImageInput(): void {
-    this.#imageInput = '';
+    this.#imageInput = undefined;
     this.requestUpdate();
     void this.updateComplete.then(() => {
       this.#viewOutput.chatView?.focusTextInput();

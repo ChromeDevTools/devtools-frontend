@@ -138,6 +138,22 @@
       border: 1px solid var(--sys-color-neutral-outline);
       border-radius: var(--sys-shape-corner-small);
     }
+
+    .loading {
+      margin: var(--sys-size-4) 0;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      height: var(--sys-size-18);
+      width: var(--sys-size-19);
+      background-color: var(--sys-color-surface3);
+      border-radius: var(--sys-shape-corner-small);
+      border: 1px solid var(--sys-color-neutral-outline);
+
+      devtools-spinner {
+        color: var(--sys-color-state-disabled);
+      }
+    }
   }
 }
 

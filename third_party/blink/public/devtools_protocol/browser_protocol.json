@@ -4659,6 +4659,119 @@
                     ]
                 },
                 {
+                    "id": "CSSFunctionParameter",
+                    "description": "CSS function argument representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "The parameter name.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "type",
+                            "description": "The parameter type.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSFunctionConditionNode",
+                    "description": "CSS function conditional block representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "media",
+                            "description": "Media query for this conditional block. Only one type of condition should be set.",
+                            "optional": true,
+                            "$ref": "CSSMedia"
+                        },
+                        {
+                            "name": "containerQueries",
+                            "description": "Container query for this conditional block. Only one type of condition should be set.",
+                            "optional": true,
+                            "$ref": "CSSContainerQuery"
+                        },
+                        {
+                            "name": "supports",
+                            "description": "@supports CSS at-rule condition. Only one type of condition should be set.",
+                            "optional": true,
+                            "$ref": "CSSSupports"
+                        },
+                        {
+                            "name": "children",
+                            "description": "Block body.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSFunctionNode"
+                            }
+                        },
+                        {
+                            "name": "conditionText",
+                            "description": "The condition text.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSFunctionNode",
+                    "description": "Section of the body of a CSS function rule.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "condition",
+                            "description": "A conditional block. If set, style should not be set.",
+                            "optional": true,
+                            "$ref": "CSSFunctionConditionNode"
+                        },
+                        {
+                            "name": "style",
+                            "description": "Values set by this node. If set, condition should not be set.",
+                            "optional": true,
+                            "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSFunctionRule",
+                    "description": "CSS function at-rule representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "Name of the function.",
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Parent stylesheet's origin.",
+                            "$ref": "StyleSheetOrigin"
+                        },
+                        {
+                            "name": "parameters",
+                            "description": "List of parameters.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSFunctionParameter"
+                            }
+                        },
+                        {
+                            "name": "children",
+                            "description": "Function body.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSFunctionNode"
+                            }
+                        }
+                    ]
+                },
+                {
                     "id": "CSSKeyframeRule",
                     "description": "CSS keyframe rule representation.",
                     "type": "object",
@@ -5129,6 +5242,16 @@
                             "experimental": true,
                             "optional": true,
                             "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "cssFunctionRules",
+                            "description": "A list of CSS at-function rules referenced by styles of this node.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSFunctionRule"
+                            }
                         }
                     ]
                 },

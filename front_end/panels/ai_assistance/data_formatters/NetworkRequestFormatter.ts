@@ -83,15 +83,15 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
     const allowedOrigin = new URL(this.#request.url()).origin;
     let initiatorChain = '';
     let lineStart = '- URL: ';
-    const initiators = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request).initiators;
+    const graph = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(this.#request);
 
-    for (const initiator of Array.from(initiators).reverse()) {
+    for (const initiator of Array.from(graph.initiators).reverse()) {
       initiatorChain = initiatorChain + lineStart +
           NetworkRequestFormatter.formatInitiatorUrl(initiator.url(), allowedOrigin) + '\n';
       lineStart = '\t' + lineStart;
       if (initiator === this.#request) {
-        initiatorChain = this.#formatRequestInitiated(initiator, initiatorChain, lineStart, allowedOrigin);
-        break;
+        initiatorChain =
+            this.#formatRequestInitiated(graph.initiated, this.#request, initiatorChain, lineStart, allowedOrigin);
       }
     }
 
@@ -150,17 +150,28 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
   }
 
   #formatRequestInitiated(
-      request: SDK.NetworkRequest.NetworkRequest, initiatorChain: string, lineStart: string,
-      allowedOrigin: string): string {
-    const initiated = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiated;
-    initiated.forEach((v, initiatedRequest) => {
-      if (request === v) {
-        initiatorChain = initiatorChain + lineStart +
-            NetworkRequestFormatter.formatInitiatorUrl(initiatedRequest.url(), allowedOrigin) + '\n';
-        initiatorChain =
-            this.#formatRequestInitiated(initiatedRequest, initiatorChain, '\t' + lineStart, allowedOrigin);
+      initiated: Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>,
+      parentRequest: SDK.NetworkRequest.NetworkRequest,
+      initiatorChain: string,
+      lineStart: string,
+      allowedOrigin: string,
+      ): string {
+    const visited = new Set<SDK.NetworkRequest.NetworkRequest>();
+
+    // this.request should be already in the tree when build initiator part
+    visited.add(this.#request);
+    for (const [keyRequest, initiatedRequest] of initiated.entries()) {
+      if (initiatedRequest === parentRequest) {
+        if (!visited.has(keyRequest)) {
+          visited.add(keyRequest);
+          initiatorChain = initiatorChain + lineStart +
+              NetworkRequestFormatter.formatInitiatorUrl(keyRequest.url(), allowedOrigin) + '\n';
+          initiatorChain =
+              this.#formatRequestInitiated(initiated, keyRequest, initiatorChain, '\t' + lineStart, allowedOrigin);
+        }
       }
-    });
+    }
+
     return initiatorChain;
   }
 }

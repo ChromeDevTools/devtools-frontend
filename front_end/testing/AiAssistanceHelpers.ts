@@ -111,7 +111,7 @@ export function createNetworkRequest(opts?: {
   includeInitiators?: boolean,
 }): SDK.NetworkRequest.NetworkRequest {
   const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId,
+      'requestId-0' as Protocol.Network.RequestId,
       opts?.url ?? Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
       Platform.DevToolsPath.urlString``, null, null, null);
   networkRequest.statusCode = 200;
@@ -120,13 +120,13 @@ export function createNetworkRequest(opts?: {
 
   if (opts?.includeInitiators) {
     const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.initiator.com`,
+        'requestId-1' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.initiator.com`,
         Platform.DevToolsPath.urlString``, null, null, null);
     const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/1`,
+        'requestId-2' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/1`,
         Platform.DevToolsPath.urlString``, null, null, null);
     const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/2`,
+        'requestId-3' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/2`,
         Platform.DevToolsPath.urlString``, null, null, null);
 
     sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')

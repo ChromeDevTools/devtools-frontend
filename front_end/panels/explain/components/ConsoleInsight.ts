@@ -314,14 +314,17 @@ export class ConsoleInsight extends HTMLElement {
     this.#areReferenceDetailsOpen = true;
     this.#render();
 
-    const highlightedElement = this.#shadow.querySelector(`.sources-list x-link[data-index="${index}"]`);
+    const highlightedElement =
+        this.#shadow.querySelector(`.sources-list x-link[data-index="${index}"]`) as HTMLElement | null;
     if (highlightedElement) {
       UI.UIUtils.runCSSAnimationOnce(highlightedElement, 'highlighted');
       if (areDetailsAlreadyExpanded) {
         highlightedElement.scrollIntoView({behavior: 'auto'});
+        highlightedElement.focus();
       } else {  // Wait for the details element to open before scrolling.
         this.#referenceDetailsRef.value.addEventListener('transitionend', () => {
           highlightedElement.scrollIntoView({behavior: 'auto'});
+          highlightedElement.focus();
         }, {once: true});
       }
     }

@@ -140,12 +140,12 @@ details.environment-recs[open] > summary::before {
 
 .bucket-summaries {
   margin-top: 8px;
-  overflow-x: auto;
+  white-space: nowrap;
 }
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(20px, 50px) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(40px, 60px) max-content;
   grid-auto-rows: 1fr;
   column-gap: 8px;
   place-items: center flex-end;
@@ -154,11 +154,15 @@ details.environment-recs[open] > summary::before {
 .bucket-label {
   justify-self: start;
   font-weight: var(--ref-typeface-weight-medium);
+  white-space: wrap;
+
+  > * {
+    white-space: nowrap;
+  }
 }
 
 .bucket-range {
   color: var(--sys-color-token-subtle);
-  white-space: nowrap;
 }
 
 .histogram-bar {
@@ -186,11 +190,28 @@ details.environment-recs[open] > summary::before {
   border-radius: var(--sys-shape-corner-small);
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow-depth-3);
+
+  .tooltip-scroll {
+    overflow-x: auto;
+
+    .tooltip-contents {
+      min-width: min-content;
+    }
+  }
+}
+
+.phase-table {
+  display: grid;
+  column-gap: var(--sys-size-3);
+  white-space: nowrap;
 }
 
 .phase-table-row {
-  display: flex;
-  justify-content: space-between;
+  display: contents;
+}
+
+.phase-table-value {
+  text-align: right;
 }
 
 .phase-table-header-row {

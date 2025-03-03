@@ -248,10 +248,10 @@ describeWithMockConnection('MetricCard', () => {
         localValue: 100,
         fieldValue: 200,
         histogram: createMockHistogram(),
-        fieldDataPhases: [
-          ['TTFB', 500 as Trace.Types.Timing.Milli],
-          ['Phase 1', 0 as Trace.Types.Timing.Milli],
-          ['Phase 2', 123.783458345 as Trace.Types.Timing.Milli],
+        phases: [
+          ['TTFB', 500 as Trace.Types.Timing.Milli, 400 as Trace.Types.Timing.Milli],
+          ['Phase 1', 0 as Trace.Types.Timing.Milli, 10 as Trace.Types.Timing.Milli],
+          ['Phase 2', 123.783458345 as Trace.Types.Timing.Milli, 100 as Trace.Types.Timing.Milli],
         ],
       };
       renderElementIntoDOM(view);
@@ -260,9 +260,9 @@ describeWithMockConnection('MetricCard', () => {
 
       const phaseTable = getPhaseTable(view);
       assert.deepEqual(phaseTable, [
-        ['TTFB', '500 ms'],
-        ['Phase 1', '0 ms'],
-        ['Phase 2', '124 ms'],
+        ['TTFB', '400 ms', '500 ms'],
+        ['Phase 1', '10 ms', '0 ms'],
+        ['Phase 2', '100 ms', '124 ms'],
       ]);
     });
   });

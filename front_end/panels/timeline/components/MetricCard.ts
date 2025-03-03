@@ -45,6 +45,10 @@ const UIStrings = {
    */
   field75thPercentile: 'Field 75th percentile',
   /**
+   * @description Column header for the 75th percentile of a metric according to data collected from real users in the field. This should be interpreted as "75th percentile of real users". Width of the column is limited so character length should be as small as possible.
+   */
+  fieldP75: 'Field p75',
+  /**
    * @description Text label for values that are classified as "good".
    */
   good: 'Good',
@@ -130,10 +134,6 @@ const UIStrings = {
    */
   phase: 'Phase',
   /**
-   * @description Column header for table cell values representing a phase duration (in milliseconds) that was measured in the developers local environment.
-   */
-  localDuration: 'Local duration',
-  /**
    * @description Tooltip text for a link that goes to documentation explaining the Largest Contentful Paint (LCP) metric. "LCP" is an acronym and should not be translated.
    */
   lcpHelpTooltip:
@@ -152,7 +152,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export type PhaseTable = Array<[string, Trace.Types.Timing.Milli]>;
+export type PhaseTable = Array<[string, Trace.Types.Timing.Milli, Trace.Types.Timing.Milli?]>;
 
 export interface MetricCardData {
   metric: 'LCP'|'CLS'|'INP';
@@ -161,7 +161,6 @@ export interface MetricCardData {
   histogram?: CrUXManager.MetricResponse['histogram'];
   tooltipContainer?: HTMLElement;
   phases?: PhaseTable;
-  fieldDataPhases?: PhaseTable;
   warnings?: string[];
 }
 
@@ -576,21 +575,31 @@ export class MetricCard extends HTMLElement {
     // clang-format on
   }
 
-  #renderPhaseTable(phases: PhaseTable, isLocal: boolean): Lit.LitTemplate {
+  #renderPhaseTable(phases: PhaseTable): Lit.LitTemplate {
+    const hasFieldData = phases.every(phase => phase[2] !== undefined);
+
     // clang-format off
     return html`
       <hr class="divider">
       <div class="phase-table" role="table">
         <div class="phase-table-row phase-table-header-row" role="row">
-          <div role="columnheader">${i18nString(UIStrings.phase)}</div>
-          <div role="columnheader">${
-            isLocal ? i18nString(UIStrings.localDuration) : i18nString(UIStrings.field75thPercentile)
-          }</div>
+          <div role="columnheader" style="grid-column: 1">${i18nString(UIStrings.phase)}</div>
+          ${hasFieldData ? html`
+            <div
+              role="columnheader"
+              class="phase-table-value"
+              style="grid-column: 2"
+              title=${i18nString(UIStrings.field75thPercentile)}>${i18nString(UIStrings.fieldP75)}</div>
+          ` : nothing}
+          <div role="columnheader" class="phase-table-value" style=${hasFieldData ? 'grid-column: 3' : 'grid-column: 2'}>${i18nString(UIStrings.localValue)}</div>
         </div>
         ${phases.map(phase => html`
           <div class="phase-table-row" role="row">
             <div role="cell">${phase[0]}</div>
-            <div role="cell">${i18n.TimeUtilities.preciseMillisToString(phase[1])}</div>
+            ${phase[2] !== undefined ? html`
+              <div role="cell" class="phase-table-value">${i18n.TimeUtilities.preciseMillisToString(phase[2])}</div>
+            ` : nothing}
+            <div role="cell" class="phase-table-value">${i18n.TimeUtilities.preciseMillisToString(phase[1])}</div>
           </div>
         `)}
       </div>
@@ -649,11 +658,16 @@ export class MetricCard extends HTMLElement {
               this.#tooltipEl = node as HTMLElement;
             })}
           >
-            ${this.#renderDetailedCompareString()}
-            <hr class="divider">
-            ${this.#renderFieldHistogram()}
-            ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases, true) : nothing}
-            ${this.#data.fieldDataPhases ? this.#renderPhaseTable(this.#data.fieldDataPhases, false) : nothing}
+            <div class="tooltip-scroll">
+              <div class="tooltip-contents">
+                <div>
+                  ${this.#renderDetailedCompareString()}
+                  <hr class="divider">
+                  ${this.#renderFieldHistogram()}
+                  ${localValue && this.#data.phases ? this.#renderPhaseTable(this.#data.phases) : nothing}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         ${fieldEnabled ? html`<hr class="divider">` : nothing}

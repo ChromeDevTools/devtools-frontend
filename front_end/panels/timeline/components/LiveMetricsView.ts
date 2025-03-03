@@ -29,7 +29,7 @@ import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js'
 import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
 
 import liveMetricsViewStylesRaw from './liveMetricsView.css.js';
-import type {MetricCardData, PhaseTable} from './MetricCard.js';
+import type {MetricCardData} from './MetricCard.js';
 import metricValueStylesRaw from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
@@ -428,7 +428,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
-  #getLcpFieldPhases(): PhaseTable|undefined {
+  #getLcpFieldPhases(): LiveMetrics.LcpValue['phases']|null {
     const ttfb = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint_image_time_to_first_byte')
                      ?.percentiles?.p75;
     const loadDelay =
@@ -443,21 +443,23 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     if (typeof ttfb !== 'number' || typeof loadDelay !== 'number' || typeof loadDuration !== 'number' ||
         typeof renderDelay !== 'number') {
-      return;
+      return null;
     }
 
-    return [
-      [i18nString(UIStrings.timeToFirstByte), Trace.Types.Timing.Milli(ttfb)],
-      [i18nString(UIStrings.resourceLoadDelay), Trace.Types.Timing.Milli(loadDelay)],
-      [i18nString(UIStrings.resourceLoadDuration), Trace.Types.Timing.Milli(loadDuration)],
-      [i18nString(UIStrings.elementRenderDelay), Trace.Types.Timing.Milli(renderDelay)],
-    ];
+    return {
+      timeToFirstByte: Trace.Types.Timing.Milli(ttfb),
+      resourceLoadDelay: Trace.Types.Timing.Milli(loadDelay),
+      resourceLoadTime: Trace.Types.Timing.Milli(loadDuration),
+      elementRenderDelay: Trace.Types.Timing.Milli(renderDelay),
+    };
   }
 
   #renderLcpCard(): Lit.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const nodeLink = this.#lcpValue?.nodeRef?.link;
     const phases = this.#lcpValue?.phases;
+
+    const fieldPhases = this.#getLcpFieldPhases();
 
     // clang-format off
     return html`
@@ -469,12 +471,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         tooltipContainer: this.#tooltipContainerEl,
         warnings: this.#lcpValue?.warnings,
         phases: phases && [
-          [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte],
-          [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay],
-          [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime],
-          [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay],
+          [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte, fieldPhases?.timeToFirstByte],
+          [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay, fieldPhases?.resourceLoadDelay],
+          [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime, fieldPhases?.resourceLoadTime],
+          [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay, fieldPhases?.elementRenderDelay],
         ],
-        fieldDataPhases: this.#getLcpFieldPhases(),
       } as MetricCardData}>
         ${nodeLink ? html`
             <div class="related-info" slot="extra-info">

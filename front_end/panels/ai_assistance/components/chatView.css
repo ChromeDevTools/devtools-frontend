@@ -831,6 +831,19 @@ main {
     flex-direction: row;
   }
 
+  .apply-to-workspace-container {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+
+    devtools-icon {
+      /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */
+      width: 18px;
+      height: 18px;
+      margin-left: var(--sys-size-2);
+    }
+  }
+
   .patch-tmp-message {
     padding: var(--sys-size-4);
   }

@@ -5,6 +5,7 @@
 import '../../ui/legacy/legacy.js';
 import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
+import '../../ui/components/tooltips/tooltips.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
@@ -45,7 +46,11 @@ const UIStringsNotTranslate = {
   /**
    *@description Label for the selected workspace/folder
    */
-  selectedFolder: 'Selected folder:'
+  selectedFolder: 'Selected folder:',
+  /**
+   *@description Tooltip text for the info icon beside the "Apply to workspace" button
+   */
+  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions'
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -117,13 +122,17 @@ export class PatchWidget extends UI.Widget.Widget {
                     ${lockedString(UIStringsNotTranslate.change)}
                 </devtools-button>
               </div>
-              <devtools-button
-                class='apply-to-workspace'
-                @click=${input.onApplyToWorkspace}
-                .jslogContext=${'stage-to-workspace'}
-                .variant=${Buttons.Button.Variant.OUTLINED}>
-                ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
-              </devtools-button>
+              <div class="apply-to-workspace-container">
+                <devtools-button
+                  class="apply-to-workspace"
+                  @click=${input.onApplyToWorkspace}
+                  .jslogContext=${'stage-to-workspace'}
+                  .variant=${Buttons.Button.Variant.OUTLINED}>
+                  ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
+                </devtools-button>
+                <devtools-icon aria-describedby="info-tooltip" .name=${'info'}></devtools-icon>
+                <devtools-tooltip id="info-tooltip">${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}</devtools-tooltip>
+              </div>
             </div>` : nothing}
             ${input.patchSuggestion ? html`<div class="patch-tmp-message">
               ${input.patchSuggestion}

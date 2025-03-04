@@ -62,6 +62,7 @@ devtools_module("ai_assistance") {
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
     "../../ui/components/spinners:bundle",
+    "../../ui/components/tooltips:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",
   ]

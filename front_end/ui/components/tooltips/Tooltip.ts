@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Lit from '../../lit/lit.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import tooltipStyles from './tooltip.css.js';
 
@@ -14,6 +15,7 @@ export interface TooltipProperties {
   id: string;
   variant?: TooltipVariant;
   anchor?: HTMLElement;
+  jslogContext?: string;
 }
 
 /**
@@ -28,7 +30,7 @@ export interface TooltipProperties {
  * @prop {Boolean} useClick - reflects the `"click"` attribute.
  */
 export class Tooltip extends HTMLElement {
-  static readonly observedAttributes = ['id', 'variant'];
+  static readonly observedAttributes = ['id', 'variant', 'jslogcontext'];
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #anchor: HTMLElement|null = null;
@@ -65,6 +67,14 @@ export class Tooltip extends HTMLElement {
     this.setAttribute('variant', variant);
   }
 
+  get jslogContext(): string|null {
+    return this.getAttribute('jslogcontext');
+  }
+  set jslogContext(jslogContext: string) {
+    this.setAttribute('jslogcontext', jslogContext);
+    this.#updateJslog();
+  }
+
   constructor(properties?: TooltipProperties) {
     super();
     if (properties) {
@@ -72,6 +82,9 @@ export class Tooltip extends HTMLElement {
     }
     if (properties?.variant) {
       this.variant = properties.variant;
+    }
+    if (properties?.jslogContext) {
+      this.jslogContext = properties.jslogContext;
     }
     if (properties?.anchor) {
       const ref = properties.anchor.getAttribute('aria-details') ?? properties.anchor.getAttribute('aria-describedby');
@@ -90,6 +103,8 @@ export class Tooltip extends HTMLElement {
     if (name === 'id') {
       this.#removeEventListeners();
       this.#attachToAnchor();
+    } else if (name === 'jslogcontext') {
+      this.#updateJslog();
     }
   }
 
@@ -144,11 +159,21 @@ export class Tooltip extends HTMLElement {
     }
   };
 
+  #updateJslog(): void {
+    if (this.jslogContext && this.#anchor) {
+      VisualLogging.setMappedParent(this, this.#anchor);
+      this.setAttribute('jslog', VisualLogging.popover(this.jslogContext).parent('mapped').toString());
+    } else {
+      this.removeAttribute('jslog');
+    }
+  }
+
   #setAttributes(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'tooltip');
     }
     this.setAttribute('popover', this.useClick ? 'auto' : 'manual');
+    this.#updateJslog();
   }
 
   #stopPropagation(event: Event): void {
@@ -234,6 +259,8 @@ export class Tooltip extends HTMLElement {
     this.#anchor.style.anchorName = anchorName;
     this.style.positionAnchor = anchorName;
     this.#observeAnchorRemoval(this.#anchor);
+
+    this.#updateJslog();
   }
 
   #observeAnchorRemoval(anchor: Element): void {

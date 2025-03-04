@@ -841,6 +841,8 @@ export const knownContextValues = new Set([
   'content-length',
   'content-type',
   'content-visibility',
+  'context',
+  'context3',
   'contextmenu',
   'continue',
   'continue-replay',

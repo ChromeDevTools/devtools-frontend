@@ -8,18 +8,20 @@ import * as Lit from '../../lit/lit.js';
 
 import * as Tooltips from './tooltips.js';
 
-const {html} = Lit;
+const {html, nothing} = Lit;
 
 interface RenderProps {
   variant?: Tooltips.Tooltip.TooltipVariant;
   attribute?: 'aria-describedby'|'aria-details';
   useClick?: boolean;
+  jslogContext?: string;
 }
 
 function renderTooltip({
   variant = 'simple',
   attribute = 'aria-describedby',
   useClick = false,
+  jslogContext = undefined,
 }: RenderProps = {}) {
   const container = document.createElement('div');
   // clang-format off
@@ -28,7 +30,7 @@ function renderTooltip({
       html`<button aria-details="tooltip-id">Button</button>` :
       html`<button aria-describedby="tooltip-id">Button</button>`
     }
-    <devtools-tooltip id="tooltip-id" variant=${variant} ?use-click=${useClick}>
+    <devtools-tooltip id="tooltip-id" variant=${variant} ?use-click=${useClick} jslogContext=${jslogContext??nothing}>
       ${variant === 'rich' ? html`<p>Rich content</p>` : 'Simple content'}
     </devtools-tooltip>
   `, container);
@@ -168,5 +170,22 @@ describe('Tooltip', () => {
     await checkForPendingActivity();
 
     assert.isFalse(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('automatically sets and updates jslog', () => {
+    const container = renderTooltip({jslogContext: 'context'});
+    const tooltip = container.querySelector('devtools-tooltip');
+    assert.exists(tooltip);
+    assert.strictEqual(tooltip.getAttribute('jslog'), 'Popover; context: context; parent: mapped');
+
+    tooltip.setAttribute('jslogcontext', 'context2');
+    assert.strictEqual(tooltip.getAttribute('jslog'), 'Popover; context: context2; parent: mapped');
+
+    const anchor = container.createChild('button');
+    anchor.setAttribute('aria-details', 'constructed-tooltip-id');
+    const constructedTooltip =
+        new Tooltips.Tooltip.Tooltip({id: 'constructed-tooltip-id', jslogContext: 'context3', anchor});
+    container.appendChild(constructedTooltip);
+    assert.strictEqual(constructedTooltip.getAttribute('jslog'), 'Popover; context: context3; parent: mapped');
   });
 });

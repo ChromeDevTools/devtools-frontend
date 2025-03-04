@@ -38,7 +38,7 @@ const yargsInput = yargs(hideBin(process.argv))
                        })
                        .option('test-target', {
                          describe: 'Which panel do you want to run the examples against?',
-                         choices: ['elements', 'performance'],
+                         choices: ['elements', 'performance-main-thread', 'performance-insights'],
                          demandOption: true,
                        })
                        .parseSync();
@@ -314,12 +314,12 @@ class Example {
    * and explanation.
    * @param {puppeteer.Page} page - the target page
    * @param {puppeteer.Page} devtoolsPage - the DevTools page
-   * @returns {Promise<{idx: number, queries: string[], explanation: string, performanceAnnotation?: puppeteer.ElementHandle<HTMLElement>}>}
+   * @returns {Promise<{idx: number, queries: string[], explanation: string, performanceAnnotation?: puppeteer.ElementHandle<HTMLElement>, rawComment: Record<string, string>}>}
    */
   async #generateMetadata(page, devtoolsPage) {
     /** @type {puppeteer.ElementHandle<HTMLElement>|undefined} */
     let annotation = undefined;
-    if (userArgs.testTarget === 'performance') {
+    if (userArgs.testTarget === 'performance-main-thread') {
       annotation = await this.#lookForAnnotatedPerformanceEvent(devtoolsPage);
     }
 
@@ -339,6 +339,7 @@ class Example {
       queries,
       explanation: comment.explanation,
       performanceAnnotation: annotation,
+      rawComment: comment,
     };
   }
 
@@ -372,12 +373,13 @@ class Example {
     const devtoolsPage = await devtoolsTarget.asPage();
     this.log('[Info]: Got devtools page');
 
-    if (userArgs.testTarget === 'performance') {
+    if (userArgs.testTarget === 'performance-main-thread' || userArgs.testTarget === 'performance-insights') {
       const fileName = await TraceDownloader.run(this, page);
       await this.#loadPerformanceTrace(devtoolsPage, fileName);
     }
 
-    const {idx, queries, explanation, performanceAnnotation} = await this.#generateMetadata(page, devtoolsPage);
+    const {idx, queries, explanation, performanceAnnotation, rawComment} =
+        await this.#generateMetadata(page, devtoolsPage);
     this.log('[Info]: Running...');
     // Strip comments to prevent LLM from seeing it.
     await page.evaluate(() => {
@@ -419,7 +421,7 @@ class Example {
       await devtoolsPage.locator(':scope >>> #tab-elements').click();
     }
 
-    if (userArgs.testTarget === 'performance' && performanceAnnotation) {
+    if (userArgs.testTarget === 'performance-main-thread' && performanceAnnotation) {
       this.log('[Info]: selecting event in the performance timeline');
       await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
       // Clicking on the annotation will also have the side-effect of selecting the event
@@ -430,10 +432,42 @@ class Example {
       );
     }
 
+    if (userArgs.testTarget === 'performance-insights') {
+      const insight = rawComment.insight;
+      if (!insight) {
+        throw new Error('Cannot execute performance-insights example without "Insight:" in example comment metadata.');
+      }
+
+      this.log('[Info]: selecting insight in the performance panel');
+      await devtoolsPage.locator(':scope >>> #tab-timeline').setTimeout(5000).click();
+
+      // Ensure the sidebar is open. If this selector is not found then we assume the sidebar is already open.
+      const sidebarButton = await devtoolsPage.$('aria/Show sidebar');
+      if (sidebarButton) {
+        await sidebarButton.click();
+      }
+
+      this.log(`[Info]: expanding Insight "${insight}"`);
+      // Now find the header for the right insight, and click to expand it.
+      await devtoolsPage.locator(`aria/View details for ${insight}`).setTimeout(5000).click();
+    }
+
     this.log('[Info]: Locating AI assistance tab');
-    await devtoolsPage.locator('aria/Customize and control DevTools').click();
-    await devtoolsPage.locator('aria/More tools').click();
-    await devtoolsPage.locator('aria/AI assistance').click();
+    // Because there are two Performance AI flows, to ensure we activate the
+    // right one for Insights, we go via the "Ask AI" button in the Insights
+    // sidebar directly to select the right insight.
+    // For the other flows, we select the right context item in the right
+    // panel, and then open the AI Assistance panel.
+    if (userArgs.testTarget === 'performance-insights') {
+      // Now click the "Ask AI" button to open up the AI assistance panel
+      await devtoolsPage.locator(':scope >>> devtools-button[data-ask-ai]').setTimeout(5000).click();
+      this.log('[Info]: Opened AI assistance tab');
+    } else {
+      await devtoolsPage.locator('aria/Customize and control DevTools').click();
+      await devtoolsPage.locator('aria/More tools').click();
+      await devtoolsPage.locator('aria/AI assistance').click();
+    }
+
     this.log('[Info]: Opened AI assistance tab');
 
     this.#page = page;
@@ -463,10 +497,10 @@ class Example {
     switch (userArgs.testTarget) {
       case 'elements':
         return 'aria/Ask a question about the selected element';
-      case 'performance':
+      case 'performance-main-thread':
         return 'aria/Ask a question about the selected item and its call tree';
-      default:
-        throw new Error(`Unknown --test-target: ${userArgs.testTarget}`);
+      case 'performance-insights':
+        return 'aria/Ask a question about the selected performance insight';
     }
   }
 

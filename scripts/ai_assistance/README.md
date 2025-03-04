@@ -21,7 +21,7 @@ takes these results and presents them in a UI for evaluation.
 
 3. Close the DevTools window for the initial `about:blank` page but keep the tab open.
 
-4. Run the following command. `--test-target` can be one of `elements` or `performance` to determine which mode the tool is run in.
+4. Run the following command. See below for the list of values `--test-target` supports. This flag is used to determine which AI experience is evaluated.
 ```
 node scripts/ai_assistance/auto-run.js --test-target elements --example-urls <example-url-1> <example-url-2>
 ```
@@ -33,7 +33,14 @@ Tip: You can add a `--label <label>` argument to the run to label the dataset. F
 node scripts/ai_assistance/auto-run.js --label title-change --example-urls <example-url-1> <example-url-2>
 ```
 
+## `--test-target` values
+
+* `elements`: tests the entrypoint via right clicking on an element in the Elements panel.
+* `performance-main-thread`: tests the entrypoint via right clicking on an event in the Performance panel main thread.
+* `performance-insights`: tests the entrypoint via the "Ask AI" button shown on an individual Insight in the Performance panel sidebar.
+
 ## Evaluating the results
+
 **Steps**
 1. Serve the `scripts/ai_assistance` folder by using a simple file server. For example:
 ```

@@ -325,7 +325,8 @@ describe('AiHistoryStorage', () => {
   });
 
   it('should limit the amount of stored images', async () => {
-    const storage = getStorage(2);
+    const MAX_STORAGE_SIZE = 2;
+    const storage = getStorage(MAX_STORAGE_SIZE);
 
     await storage.upsertImage({
       id: 'image-id1',
@@ -401,6 +402,116 @@ describe('AiHistoryStorage', () => {
                conversation.title,
                'this is more than 80 characters because I\'m just going to keep typing words and …');
          });
+    });
+
+    describe('addHistoryItem', () => {
+      const historyItem1: AiAssistance.ResponseData = {
+        type: AiAssistance.ResponseType.USER_QUERY,
+        query: 'text',
+        imageInput: {
+          inlineData: {
+            data: '1',
+            mimeType: 'image/jpeg',
+          }
+        },
+        imageId: 'image-id1',
+      };
+      const historyItem2: AiAssistance.ResponseData = {
+        type: AiAssistance.ResponseType.USER_QUERY,
+        query: 'text',
+        imageInput: {
+          inlineData: {
+            data: '2',
+            mimeType: 'image/jpeg',
+          }
+        },
+        imageId: 'image-id2',
+      };
+
+      it('should store images and text conversation separately', async () => {
+        const storage = getStorage();
+        sinon.stub(AiAssistance.AiHistoryStorage, 'instance').returns(storage);
+        const conversation1 = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [], 'id1', false);
+        await conversation1.addHistoryItem(historyItem1);
+        const conversation2 = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [], 'id2', false);
+        await conversation2.addHistoryItem(historyItem2);
+
+        const imageHistory = storage.getImageHistory();
+        assert.lengthOf(imageHistory, 2);
+        assert.deepEqual(imageHistory[0], {
+          id: 'image-id1',
+          data: '1',
+          mimeType: 'image/jpeg',
+        });
+        assert.deepEqual(imageHistory[1], {
+          id: 'image-id2',
+          data: '2',
+          mimeType: 'image/jpeg',
+        });
+
+        const historyWithoutImages = storage.getHistory();
+        assert.lengthOf(historyWithoutImages, 2);
+        assert.deepEqual(historyWithoutImages[0], {
+          id: 'id1',
+          type: AiAssistance.ConversationType.STYLING,
+          history: [{
+            type: AiAssistance.ResponseType.USER_QUERY,
+            query: 'text',
+            imageId: 'image-id1',
+          }]
+        });
+        assert.deepEqual(historyWithoutImages[1], {
+          id: 'id2',
+          type: AiAssistance.ConversationType.STYLING,
+          history: [{
+            type: AiAssistance.ResponseType.USER_QUERY,
+            query: 'text',
+            imageInput: undefined,
+            imageId: 'image-id2',
+          }]
+        });
+      });
+
+      it('should have empty image data for image not present in history', async () => {
+        const MAX_STORAGE_SIZE = 1;
+        const storage = getStorage(MAX_STORAGE_SIZE);
+        sinon.stub(AiAssistance.AiHistoryStorage, 'instance').returns(storage);
+        const conversation1 = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [], 'id1', false);
+        await conversation1.addHistoryItem(historyItem1);
+        const conversation2 = new AiAssistance.Conversation(AiAssistance.ConversationType.STYLING, [], 'id2', false);
+        await conversation2.addHistoryItem(historyItem2);
+
+        const imageHistory = storage.getImageHistory();
+        assert.lengthOf(imageHistory, 1);
+        const historyWithoutImages = storage.getHistory();
+        assert.lengthOf(historyWithoutImages, 2);
+        const conversationFromHistory = historyWithoutImages.map(item => {
+          return new AiAssistance.Conversation(item.type, item.history, item.id, true);
+        });
+        assert.lengthOf(conversationFromHistory, 2);
+        assert.deepEqual(conversationFromHistory[0].history, [{
+                           type: AiAssistance.ResponseType.USER_QUERY,
+                           query: 'text',
+                           imageInput: {
+                             inlineData: {
+                               data: AiAssistance.NOT_FOUND_IMAGE_DATA,
+                               mimeType: 'image/jpeg',
+                             }
+                           },
+                           imageId: 'image-id1',
+                         }]);
+        assert.deepEqual(conversationFromHistory[1].history, [{
+                           type: AiAssistance.ResponseType.USER_QUERY,
+                           query: 'text',
+                           imageInput: {
+                             inlineData: {
+                               data: '2',
+                               mimeType: 'image/jpeg',
+                             }
+                           },
+                           imageId: 'image-id2',
+                         }]);
+      });
     });
   });
 });

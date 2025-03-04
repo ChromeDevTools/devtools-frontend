@@ -17,6 +17,8 @@ export const enum ConversationType {
   PERFORMANCE_INSIGHT = 'performance-insight',
 }
 
+export const NOT_FOUND_IMAGE_DATA = '';
+
 export interface SerializedConversation {
   id: string;
   type: ConversationType;
@@ -71,7 +73,8 @@ export class Conversation {
       for (const data of historyWithoutImages) {
         if (data.type === ResponseType.USER_QUERY && data.imageId) {
           const image = imageHistory.find(item => item.id === data.imageId);
-          const inlineData = image ? {data: image.data, mimeType: image.mimeType} : {data: '', mimeType: 'image/jpeg'};
+          const inlineData = image ? {data: image.data, mimeType: image.mimeType} :
+                                     {data: NOT_FOUND_IMAGE_DATA, mimeType: 'image/jpeg'};
           history.push({...data, imageInput: {inlineData}});
         } else {
           history.push(data);
@@ -86,16 +89,16 @@ export class Conversation {
     this.#isReadOnly = true;
   }
 
-  addHistoryItem(item: ResponseData): void {
+  async addHistoryItem(item: ResponseData): Promise<void> {
     if (item.type === ResponseType.USER_QUERY) {
       if (item.imageId && item.imageInput && 'inlineData' in item.imageInput) {
         const inlineData = item.imageInput.inlineData;
-        void AiHistoryStorage.instance().upsertImage(
+        await AiHistoryStorage.instance().upsertImage(
             {id: item.imageId, data: inlineData.data, mimeType: inlineData.mimeType});
       }
     }
     this.history.push(item);
-    void AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
+    await AiHistoryStorage.instance().upsertHistoryEntry(this.serialize());
   }
 
   serialize(): SerializedConversation {

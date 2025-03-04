@@ -16,7 +16,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
-import {ConversationType} from '../AiHistoryStorage.js';
+import {ConversationType, NOT_FOUND_IMAGE_DATA} from '../AiHistoryStorage.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import stylesRaw from './chatView.css.js';
@@ -198,6 +198,10 @@ const UIStringsNotTranslate = {
    *@description Title for the x-link which wraps the image input rendered in chat messages.
    */
   openImageInNewTab: 'Open image in a new tab',
+  /**
+   *@description Alt text for image when it is not available.
+   */
+  imageUnavailable: 'Image unavailable',
   /**
    *@description Button text to change the selected workspace
    */
@@ -807,18 +811,9 @@ function renderChatMessage({
         html`<devtools-icon
           .name=${'profile'}
         ></devtools-icon>`;
-    let imageInput = html``;
-    if (message.imageInput && 'inlineData' in message.imageInput) {
-      const imageUrl = `data:image/jpeg;base64,${message.imageInput.inlineData.data}`;
-      // clang-format off
-      imageInput = html`<x-link
-        class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
-        href=${imageUrl}
-      >
-        <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
-      </x-link>`;
-      // clang-format on
-    }
+    const imageInput = message.imageInput && 'inlineData' in message.imageInput ?
+        renderImageChatMessage(message.imageInput.inlineData) :
+        Lit.nothing;
     // clang-format off
     return html`<section
       class="chat-message query"
@@ -881,6 +876,25 @@ function renderChatMessage({
       }
     </section>
   `;
+  // clang-format on
+}
+
+function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitTemplate {
+  if (inlineData.data === NOT_FOUND_IMAGE_DATA) {
+    // clang-format off
+    return html`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
+      <devtools-icon name='file-image'></devtools-icon>
+    </div>`;
+    // clang-format on
+  }
+  const imageUrl = `data:image/jpeg;base64,${inlineData.data}`;
+  // clang-format off
+    return html`<x-link
+      class="image-link" title=${UIStringsNotTranslate.openImageInNewTab}
+      href=${imageUrl}
+    >
+      <img src=${imageUrl} alt=${UIStringsNotTranslate.imageInputSentToTheModel} />
+    </x-link>`;
   // clang-format on
 }
 

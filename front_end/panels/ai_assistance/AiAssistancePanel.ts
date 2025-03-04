@@ -1270,7 +1270,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     for await (const data of items) {
       // We don't want to save partial responses to the conversation history.
       if (data.type !== ResponseType.ANSWER || data.complete) {
-        currentConversation?.addHistoryItem(data);
+        void currentConversation?.addHistoryItem(data);
       }
       yield data;
     }

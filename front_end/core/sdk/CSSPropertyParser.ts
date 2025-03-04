@@ -181,17 +181,14 @@ export interface Match {
   computedText?(): string|null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Constructor<T = any> = (abstract new (...args: any[]) => T)|(new (...args: any[]) => T);
-
 export interface Matcher<MatchT extends Match> {
-  readonly matchType: Constructor<MatchT>;
+  readonly matchType: Platform.Constructor.ConstructorOrAbstract<MatchT>;
   accepts(propertyName: string): boolean;
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MatchT|null;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function matcherBase<MatchT extends Match>(matchT: Constructor<MatchT>) {
+export function matcherBase<MatchT extends Match>(matchT: Platform.Constructor.ConstructorOrAbstract<MatchT>) {
   class MatcherBase implements Matcher<MatchT> {
     matchType = matchT;
     accepts(_propertyName: string): boolean {
@@ -240,7 +237,7 @@ export class BottomUpTreeMatching extends TreeWalker {
     this.#matchers.push(...matchers);
   }
 
-  hasMatches(...matchTypes: Array<Constructor<Match>>): boolean {
+  hasMatches(...matchTypes: Array<Platform.Constructor.Constructor<Match>>): boolean {
     return Boolean(this.#matchedNodes.values().find(match => matchTypes.some(matchType => match instanceof matchType)));
   }
 

@@ -65,18 +65,20 @@ interface AnimationDOMNodeStubs {
 }
 class ManualPromise {
   #waitPromise: Promise<void>;
-  #resolveFn!: Function;
+  #resolveFn: () => void;
   constructor() {
-    this.#waitPromise = new Promise(r => {
-      this.#resolveFn = r;
-    });
+    const {resolve, promise} = Promise.withResolvers<void>();
+
+    this.#waitPromise = promise;
+    this.#resolveFn = resolve;
   }
 
   resolve() {
     this.#resolveFn();
-    this.#waitPromise = new Promise(r => {
-      this.#resolveFn = r;
-    });
+    const {resolve, promise} = Promise.withResolvers<void>();
+
+    this.#waitPromise = promise;
+    this.#resolveFn = resolve;
   }
 
   wait() {

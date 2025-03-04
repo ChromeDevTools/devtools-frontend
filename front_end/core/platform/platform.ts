@@ -30,6 +30,7 @@
 
 import * as ArrayUtilities from './ArrayUtilities.js';
 import * as Brand from './Brand.js';
+import * as Constructor from './Constructor.js';
 import * as DateUtilities from './DateUtilities.js';
 import * as DevToolsPath from './DevToolsPath.js';
 import * as DOMUtilities from './DOMUtilities.js';
@@ -54,6 +55,7 @@ export {assertNever, assertNotNullOrUndefined, assertUnhandled} from './Typescri
 export {
   ArrayUtilities,
   Brand,
+  Constructor,
   DateUtilities,
   DevToolsPath,
   DOMUtilities,

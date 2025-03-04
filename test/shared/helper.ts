@@ -471,7 +471,7 @@ export const getResourcesPath = (host = 'localhost') => {
   return `https://${host}:${getTestServerPort()}/test/e2e/resources`;
 };
 
-export const step = async (description: string, step: Function) => {
+export const step = async<T = unknown>(description: string, step: () => Promise<T>| T): Promise<Awaited<T>> => {
   try {
     return await step();
   } catch (error) {

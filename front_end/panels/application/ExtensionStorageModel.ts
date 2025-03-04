@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
-export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<{}> {
+export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<Record<string, never>> {
   readonly #model: ExtensionStorageModel;
   readonly #extensionIdInternal: string;
   readonly #nameInternal: string;

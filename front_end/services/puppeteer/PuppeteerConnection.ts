@@ -22,7 +22,7 @@ class Transport implements puppeteer.ConnectionTransport {
   }
 
   set onmessage(cb: (message: string) => void) {
-    this.#connection.setOnMessage((message: Object) => {
+    this.#connection.setOnMessage((message: unknown) => {
       const data = (message) as {id: number, method: string, params: unknown, sessionId?: string};
       if (!data.sessionId) {
         return;

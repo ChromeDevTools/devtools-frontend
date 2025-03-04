@@ -59,19 +59,17 @@ describeWithEnvironment('RecordingListView', () => {
                              '.delete-recording-button',
                              ) as HTMLDivElement;
     assert.isOk(deleteButton);
-    let forceResolve: Function|undefined;
-    const eventSent = new Promise<Components.RecordingListView.OpenRecordingEvent>(
-        resolve => {
-          forceResolve = resolve;
-          view.addEventListener('openrecording', resolve, {once: true});
-        },
-    );
+    const {resolve: forceResolve, promise: eventSent} =
+        Promise.withResolvers<Components.RecordingListView.OpenRecordingEvent|void>();
+
+    view.addEventListener('openrecording', forceResolve, {once: true});
+
     dispatchKeyDownEvent(deleteButton, {key: 'Enter', bubbles: true});
     const maybeEvent = await Promise.race([
       eventSent,
       new Promise(resolve => queueMicrotask(() => resolve('timeout'))),
     ]);
     assert.strictEqual(maybeEvent, 'timeout');
-    forceResolve?.();
+    forceResolve();
   });
 });

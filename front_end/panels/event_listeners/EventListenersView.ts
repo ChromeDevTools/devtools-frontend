@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
@@ -134,9 +135,9 @@ export class EventListenersView extends UI.Widget.VBox {
         return SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler());
       }
 
-      function isInternalEventListener(this: Function[]): boolean[] {
+      function isInternalEventListener(this: Array<Platform.Constructor.Constructor<unknown>>): boolean[] {
         const isInternal = [];
-        const internalHandlersSet = new Set<Function>(this);
+        const internalHandlersSet = new Set<Platform.Constructor.Constructor<unknown>>(this);
         for (const handler of arguments) {
           isInternal.push(internalHandlersSet.has(handler));
         }

@@ -540,6 +540,8 @@ export default [
 
       '@typescript-eslint/prefer-optional-chain': 'error',
 
+      '@typescript-eslint/no-unsafe-function-type': 'error',
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',
 

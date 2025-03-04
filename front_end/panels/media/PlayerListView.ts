@@ -160,7 +160,8 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     icon.appendChild(IconButton.Icon.create(iconName, 'media-player'));
   }
 
-  private formatAndEvaluate(playerID: string, func: Function, candidate: string, min: number, max: number): void {
+  private formatAndEvaluate(
+      playerID: string, func: (...args: any[]) => unknown, candidate: string, min: number, max: number): void {
     if (candidate.length <= min) {
       return;
     }

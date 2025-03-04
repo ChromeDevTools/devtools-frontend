@@ -26,12 +26,12 @@ interface Message {
 
 interface OutgoingMessageListenerEntry {
   promise: Promise<void>;
-  resolve: Function;
+  resolve: () => void;
 }
 
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.
-const responseMap = new Map<ProtocolCommand, Function>();
+const responseMap = new Map<ProtocolCommand, ProtocolCommandHandler<ProtocolCommand>>();
 const outgoingMessageListenerEntryMap = new Map<ProtocolCommand, OutgoingMessageListenerEntry>();
 export function setMockConnectionResponseHandler<C extends ProtocolCommand>(
     command: C, handler: ProtocolCommandHandler<C>) {

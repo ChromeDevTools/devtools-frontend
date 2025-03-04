@@ -200,7 +200,7 @@ export class Action extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     return this.actionRegistration.options;
   }
 
-  contextTypes(): undefined|Function[] {
+  contextTypes(): undefined|Array<Platform.Constructor.Constructor<unknown>> {
     if (this.actionRegistration.contextTypes) {
       return this.actionRegistration.contextTypes();
     }
@@ -518,7 +518,7 @@ export interface ActionRegistration {
    * });
    * ```
    */
-  contextTypes?: () => Function[];
+  contextTypes?: () => Array<Platform.Constructor.Constructor<unknown>>;
   /**
    * The descriptions for each of the two states in which a toggleable action can be.
    */

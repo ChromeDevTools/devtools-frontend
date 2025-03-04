@@ -30,7 +30,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
     hasRequest: boolean,
   }>();
   #affectedRawCookieLines = new Map<string, {rawCookieLine: string, hasRequest: boolean}>();
-  #affectedRequests = new Array<Protocol.Audits.AffectedRequest>();
+  #affectedRequests: Protocol.Audits.AffectedRequest[] = [];
   #affectedRequestIds = new Set<Protocol.Network.RequestId>();
   #affectedLocations = new Map<string, Protocol.Audits.SourceCodeLocation>();
   #heavyAdIssues = new Set<IssuesManager.HeavyAdIssue.HeavyAdIssue>();

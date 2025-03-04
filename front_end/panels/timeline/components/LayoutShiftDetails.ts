@@ -92,7 +92,7 @@ export class LayoutShiftDetails extends HTMLElement {
   #event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
-  #isFreshRecording: Boolean = false;
+  #isFreshRecording = false;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [
@@ -106,7 +106,7 @@ export class LayoutShiftDetails extends HTMLElement {
   setData(
       event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster,
       traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
-      isFreshRecording: Boolean): void {
+      isFreshRecording: boolean): void {
     if (this.#event === event) {
       return;
     }

@@ -326,7 +326,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
 export async function deinitializeGlobalVars() {
   // Remove the global SDK.
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const globalObject = (globalThis as unknown as {SDK?: {}, ls?: {}});
+  const globalObject = (globalThis as unknown as {SDK?: unknown, ls?: unknown});
   delete globalObject.SDK;
   delete globalObject.ls;
 

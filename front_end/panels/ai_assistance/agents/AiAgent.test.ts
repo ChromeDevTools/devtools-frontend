@@ -377,10 +377,10 @@ describeWithEnvironment('AiAgent', () => {
         });
       }
 
-      async #test(args: {}) {
+      async #test(...args: any[]) {
         this.called++;
         return {
-          result: args,
+          result: args[0],
         };
       }
 

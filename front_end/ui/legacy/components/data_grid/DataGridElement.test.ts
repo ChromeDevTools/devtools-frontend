@@ -208,7 +208,7 @@ describeWithEnvironment('DataGrid', () => {
   it('supports editable columns', async () => {
     const editCallback = sinon.stub();
     const element = await renderDataGrid(html`
-        <devtools-data-grid striped name=${'Display Name'} @edit=${editCallback as Function}>
+        <devtools-data-grid striped name=${'Display Name'} @edit=${editCallback as () => void}>
           <table>
             <tr>
               <th id="column-1" editable>Column 1</th>
@@ -237,8 +237,8 @@ describeWithEnvironment('DataGrid', () => {
     const editCallback = sinon.stub();
     const element = await renderDataGrid(html`
         <devtools-data-grid striped name=${'Display Name'}
-                            @create=${createCallback as Function}
-                            @edit=${editCallback as Function}>
+                            @create=${createCallback as () => void}
+                            @edit=${editCallback as () => void}>
           <table>
             <tr>
               <th id="column-1" editable>Column 1</th>

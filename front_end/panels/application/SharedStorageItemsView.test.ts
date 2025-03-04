@@ -26,7 +26,7 @@ class SharedStorageItemsListener {
   #cleared = false;
   #filteredCleared = false;
   #refreshed = false;
-  #deletedKeys: String[] = [];
+  #deletedKeys: string[] = [];
   #numEditedEvents = 0;
 
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.SharedStorageItemsDispatcher.EventTypes>) {
@@ -52,7 +52,7 @@ class SharedStorageItemsListener {
     this.#dispatcher.removeEventListener(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemEdited, this);
   }
 
-  get deletedKeys(): String[] {
+  get deletedKeys(): string[] {
     return this.#deletedKeys;
   }
 

@@ -163,7 +163,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<Even
   // the reference for each group that we log. By storing these symbols in
   // a map keyed off the context of the group, we ensure we persist the
   // loggable even if the group gets rebuilt at some point in time.
-  #loggableForGroupByLogContext = new Map<string, Symbol>();
+  #loggableForGroupByLogContext = new Map<string, symbol>();
 
   #onMainEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;

@@ -26,8 +26,8 @@ class SharedStorageListener {
 
   constructor(model: Resources.SharedStorageModel.SharedStorageModel) {
     this.#model = model;
-    this.#storagesWatched = new Array<Resources.SharedStorageModel.SharedStorageForOrigin>();
-    this.#accessEvents = new Array<Protocol.Storage.SharedStorageAccessedEvent>();
+    this.#storagesWatched = [];
+    this.#accessEvents = [];
     this.#changeEvents = new Map<
         Resources.SharedStorageModel.SharedStorageForOrigin,
         Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent[]>();
@@ -99,8 +99,7 @@ class SharedStorageListener {
       event: Common.EventTarget
           .EventTargetEvent<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>): void {
     if (!this.#changeEvents.has(storage)) {
-      this.#changeEvents.set(
-          storage, new Array<Resources.SharedStorageModel.SharedStorageForOrigin.SharedStorageChangedEvent>());
+      this.#changeEvents.set(storage, []);
     }
     this.#changeEvents.get(storage)?.push(event.data);
   }

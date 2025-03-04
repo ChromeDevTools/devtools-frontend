@@ -12,6 +12,7 @@ devtools_module("platform") {
   sources = [
     "ArrayUtilities.ts",
     "Brand.ts",
+    "Constructor.ts",
     "DOMUtilities.ts",
     "DateUtilities.ts",
     "DevToolsPath.ts",

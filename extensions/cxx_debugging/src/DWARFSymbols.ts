@@ -32,7 +32,7 @@ interface ScopeInfo {
   icon?: string;
 }
 
-type LazyFSNode = FS.FSNode&{contents: {cacheLength: Function, length: number}};
+type LazyFSNode = FS.FSNode&{contents: {cacheLength: () => void, length: number}};
 
 function mapEnumerator(apiEnumerator: SymbolsBackend.Enumerator): Formatters.Enumerator {
   return {typeId: apiEnumerator.typeId, value: apiEnumerator.value, name: apiEnumerator.name};
@@ -601,7 +601,7 @@ export async function createPlugin(
                                      .join(', ');
                 // eslint-disable-next-line no-console
                 console.info(`${key}(${jsonArgs})`);
-                return (target[key] as Function).apply(target, arguments);
+                return (target[key] as (...args: any[]) => void).apply(target, arguments);
               } as unknown as DWARFLanguageExtensionPlugin[Key];
             }
             return Reflect.get(target, key);

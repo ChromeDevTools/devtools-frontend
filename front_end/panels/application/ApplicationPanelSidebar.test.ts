@@ -21,7 +21,7 @@ const {urlString} = Platform.DevToolsPath;
 
 class SharedStorageTreeElementListener {
   #sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar;
-  #originsAdded: String[] = new Array<String>();
+  #originsAdded: string[] = [];
 
   constructor(sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar) {
     this.#sidebar = sidebar;

@@ -62,7 +62,7 @@ describe('A user can navigate across', function() {
     // changing at least twice), to ensure that there's at least a single tick within
     // `default.html` below.
     const statusIndicator = await waitFor('.timeline-status-dialog .progress .indicator');
-    const statusIndicatorValues = new Set<Number>();
+    const statusIndicatorValues = new Set<number>();
     do {
       const indicatorValue = await statusIndicator.evaluate(n => Number(n.getAttribute('aria-valuenow')));
       if (statusIndicatorValues.has(indicatorValue)) {

@@ -50,7 +50,10 @@ let lastId = 1;
 export interface LighthouseRun {
   inspectedURL: Platform.DevToolsPath.UrlString;
   categoryIDs: string[];
-  flags: Record<string, Object|undefined>;
+  flags: {
+    formFactor: (string|undefined),
+    mode: string,
+  };
 }
 
 /**
@@ -63,7 +66,7 @@ export class ProtocolService {
   private lighthouseWorkerPromise?: Promise<Worker>;
   private lighthouseMessageUpdateCallback?: ((arg0: string) => void);
   private removeDialogHandler?: () => void;
-  private configForTesting?: Object;
+  private configForTesting?: object;
 
   async attach(): Promise<void> {
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets();
@@ -188,7 +191,7 @@ export class ProtocolService {
     this.lighthouseMessageUpdateCallback = callback;
   }
 
-  private dispatchProtocolMessage(message: Object): void {
+  private dispatchProtocolMessage(message: string|object): void {
     // A message without a sessionId is the main session of the main target (call it "Main session").
     // A parallel connection and session was made that connects to the same main target (call it "Lighthouse session").
     // Messages from the "Lighthouse session" have a sessionId.
@@ -259,14 +262,14 @@ export class ProtocolService {
     }
   }
 
-  private async send(action: string, args: {[x: string]: string|string[]|Object} = {}): Promise<void> {
+  private async send(action: string, args: {[x: string]: string|string[]|object} = {}): Promise<void> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;
     worker.postMessage({id: messageId, action, args: {...args, id: messageId}});
   }
 
   /** sendWithResponse currently only handles the original startLighthouse request and LHR-filled response. */
-  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|Object|undefined} = {}):
+  private async sendWithResponse(action: string, args: {[x: string]: string|string[]|object|undefined} = {}):
       Promise<ReportRenderer.RunnerResult> {
     const worker = await this.ensureWorkerExists();
     const messageId = lastId++;

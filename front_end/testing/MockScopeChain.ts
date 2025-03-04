@@ -293,7 +293,7 @@ export class MockProtocolBackend {
     return Promise.resolve(response);
   }
 
-  #removeBreakpointHandler(request: Protocol.Debugger.RemoveBreakpointRequest): {} {
+  #removeBreakpointHandler(request: Protocol.Debugger.RemoveBreakpointRequest): Record<string, never> {
     const callback = this.#removeBreakpointCallbacks.get(request.breakpointId);
     if (callback) {
       callback();

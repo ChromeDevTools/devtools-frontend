@@ -39,14 +39,14 @@ function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {
 }
 
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
-  readonly matchType: SDK.CSSPropertyParser.Constructor<MatchT>;
+  readonly matchType: Platform.Constructor.Constructor<MatchT>;
   render(match: MatchT, context: RenderingContext): Node[];
 }
 
 // A mixin to automatically expose the match type on specific renrerers
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
-    matchT: SDK.CSSPropertyParser.Constructor<MatchT>) {
+    matchT: Platform.Constructor.Constructor<MatchT>) {
   abstract class RendererBase implements MatchRenderer<MatchT> {
     readonly matchType = matchT;
     render(_match: MatchT, _context: RenderingContext): Node[] {
@@ -184,7 +184,7 @@ export class RenderingContext {
   constructor(
       readonly ast: SDK.CSSPropertyParser.SyntaxTree,
       readonly renderers:
-          Map<SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>,
+          Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
               MatchRenderer<SDK.CSSPropertyParser.Match>>,
       readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
       readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap, readonly options: {readonly?: boolean} = {},
@@ -211,7 +211,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   constructor(
       ast: SDK.CSSPropertyParser.SyntaxTree,
       renderers:
-          Map<SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>,
+          Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
               MatchRenderer<SDK.CSSPropertyParser.Match>>,
       matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
       cssControls: SDK.CSSPropertyParser.CSSControlMap,
@@ -256,8 +256,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   protected override enter({node}: SDK.CSSPropertyParser.SyntaxNodeRef): boolean {
     const match = this.#matchedResult.getMatch(node);
     const renderer = match &&
-        this.#context.renderers.get(
-            match.constructor as SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>);
+        this.#context.renderers.get(match.constructor as Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>);
     if (renderer || match instanceof SDK.CSSPropertyParserMatchers.TextMatch) {
       const output = renderer ? renderer.render(match, this.#context) :
                                 (match as SDK.CSSPropertyParserMatchers.TextMatch).render();
@@ -309,7 +308,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
       return {valueElement, cssControls: new Map()};
     }
     const rendererMap = new Map<
-        SDK.CSSPropertyParser.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>();
+        Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>();
     for (const renderer of renderers) {
       rendererMap.set(renderer.matchType, renderer);
     }

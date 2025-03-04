@@ -106,4 +106,4 @@ const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLooku
 };
 
 // Window has an additional dispatch function added, so retype as unknown first
-(window as unknown as {dispatch: Function}).dispatch = dispatch;
+(window as unknown as {dispatch: typeof dispatch}).dispatch = dispatch;

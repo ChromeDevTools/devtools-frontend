@@ -92,7 +92,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   readonly toggleRecordButton: UI.Toolbar.ToolbarButton;
   readonly #saveToFileAction: UI.ActionRegistration.Action;
   readonly profileViewToolbar: UI.Toolbar.Toolbar;
-  profileGroups: {};
+  profileGroups: Record<string, ProfileGroup>;
   launcherView: ProfileLauncherView;
   visibleView!: UI.Widget.Widget|undefined;
   readonly profileToView: Array<{

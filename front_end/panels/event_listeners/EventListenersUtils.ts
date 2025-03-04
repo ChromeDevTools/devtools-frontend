@@ -445,7 +445,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {
-        off: Function,
+        off: (...arg: any[]) => void,
       };
       jQueryFunction(node).off(type, selector, handler);
     }

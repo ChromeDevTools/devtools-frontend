@@ -13,7 +13,7 @@ export class LiveHeapProfile implements Common.Runnable.Runnable,
                                         SDK.TargetManager.SDKModelObserver<SDK.HeapProfilerModel.HeapProfilerModel> {
   private running: boolean;
   private sessionId: number;
-  private loadEventCallback: (arg0?: Function|null) => void;
+  private loadEventCallback: (arg0?: () => void|null) => void;
   private readonly setting: Common.Settings.Setting<boolean>;
 
   private constructor() {

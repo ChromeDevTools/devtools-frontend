@@ -884,7 +884,7 @@ export function measurePreferredSize(element: Element, containerElement?: Elemen
 }
 
 class InvokeOnceHandlers {
-  private handlers: Map<Object, Set<Function>>|null;
+  private handlers: Map<object, Set<(...args: any[]) => void>>|null;
   private readonly autoInvoke: boolean;
   constructor(autoInvoke: boolean) {
     this.handlers = null;
@@ -952,7 +952,7 @@ export function invokeOnceAfterBatchUpdate(object: Object, method: () => void): 
 }
 
 export function animateFunction(
-    window: Window, func: Function, params: Array<{
+    window: Window, func: (...args: any[]) => void, params: Array<{
       from: number,
       to: number,
     }>,
@@ -1818,9 +1818,10 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
     return false;
   }
 }
+
 export interface RendererRegistration {
   loadRenderer: () => Promise<Renderer>;
-  contextTypes: () => Function[];
+  contextTypes: () => Array<Platform.Constructor.ConstructorOrAbstract<unknown>>;
 }
 
 export interface ConfirmDialogOptions {

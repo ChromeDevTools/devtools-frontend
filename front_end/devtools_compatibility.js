@@ -1108,6 +1108,14 @@ const InspectorFrontendHostImpl = class {
     DevToolsAPI.sendMessageToEmbedder('recordKeyDown', [keyDownEvent], null);
   }
 
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.SettingAccessEvent} settingAccessEvent
+   */
+  recordSettingAccess(settingAccessEvent) {
+    DevToolsAPI.sendMessageToEmbedder('recordSettingAccess', [settingAccessEvent], null);
+  }
+
   // Backward-compatible methods below this line --------------------------------------------
 
   /**

@@ -55,6 +55,7 @@ interface ViewInput {
   schemeBindingEnabled?: boolean;
   onEdit:
       (event: CustomEvent<{node: HTMLElement, columnId: string, valueBeforeEditing: string, newText: string}>) => void;
+  onCreate: (event: CustomEvent<CookieData>) => void;
   onRefresh: () => void;
   onDelete: (event: CustomEvent<HTMLElement>) => void;
   onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
@@ -184,6 +185,7 @@ export class CookiesTable extends UI.Widget.VBox {
                striped
                ?inline=${input.renderInline}
                @edit=${input.onEdit}
+               @create=${input.onCreate}
                @refresh=${input.onRefresh}
                @delete=${input.onDelete}
                @contextmenu=${input.onContextMenu}
@@ -355,6 +357,7 @@ export class CookiesTable extends UI.Widget.VBox {
       portBindingEnabled: this.portBindingEnabled,
       onEdit: event => this.onUpdateCookie(
           event.detail.node, event.detail.columnId, event.detail.valueBeforeEditing, event.detail.newText),
+      onCreate: event => this.onCreateCookie(event.detail),
       onRefresh: () => this.refresh(),
       onDelete: event => this.onDeleteCookie(event.detail),
       onSelect: event => this.onSelect(event.detail),

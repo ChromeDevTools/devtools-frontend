@@ -18,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("ai_assistance") {
   sources = [
+    "AgentProject.ts",
     "AiAssistancePanel.ts",
     "AiHistoryStorage.ts",
     "ChangeManager.ts",
@@ -96,6 +97,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AgentProject.test.ts",
     "AiAssistancePanel.test.ts",
     "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",

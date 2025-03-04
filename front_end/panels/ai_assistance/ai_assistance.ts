@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 export * from './debug.js';
+export * from './AgentProject.js';
 export * from './agents/AiAgent.js';
 export * from './agents/FileAgent.js';
 export * from './agents/NetworkAgent.js';

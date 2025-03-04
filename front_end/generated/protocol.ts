@@ -6216,6 +6216,41 @@ export namespace DeviceOrientation {
  */
 export namespace Emulation {
 
+  export interface SafeAreaInsets {
+    /**
+     * Overrides safe-area-inset-top.
+     */
+    top?: integer;
+    /**
+     * Overrides safe-area-max-inset-top.
+     */
+    topMax?: integer;
+    /**
+     * Overrides safe-area-inset-left.
+     */
+    left?: integer;
+    /**
+     * Overrides safe-area-max-inset-left.
+     */
+    leftMax?: integer;
+    /**
+     * Overrides safe-area-inset-bottom.
+     */
+    bottom?: integer;
+    /**
+     * Overrides safe-area-max-inset-bottom.
+     */
+    bottomMax?: integer;
+    /**
+     * Overrides safe-area-inset-right.
+     */
+    right?: integer;
+    /**
+     * Overrides safe-area-max-inset-right.
+     */
+    rightMax?: integer;
+  }
+
   export const enum ScreenOrientationType {
     PortraitPrimary = 'portraitPrimary',
     PortraitSecondary = 'portraitSecondary',
@@ -6422,6 +6457,10 @@ export namespace Emulation {
      * cleared.
      */
     color?: DOM.RGBA;
+  }
+
+  export interface SetSafeAreaInsetsOverrideRequest {
+    insets: SafeAreaInsets;
   }
 
   export interface SetDeviceMetricsOverrideRequest {

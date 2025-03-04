@@ -46,6 +46,7 @@ export const enum IssueCode {
   PREFLIGHT_MISSING_PRIVATE_NETWORK_ACCESS_NAME = 'CorsIssue::PreflightMissingPrivateNetworkAccessName',
   PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE = 'CorsIssue::PrivateNetworkAccessPermissionUnavailable',
   PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED = 'CorsIssue::PrivateNetworkAccessPermissionDenied',
+  LOCAL_NETWORK_ACCESS_PERMISSION_DENIED = 'CorsIssue::LocalNetworkAccessPermissionDenied',
 }
 
 function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
@@ -105,6 +106,8 @@ function getIssueCode(details: Protocol.Audits.CorsIssueDetails): IssueCode {
       return IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE;
     case Protocol.Network.CorsError.PrivateNetworkAccessPermissionDenied:
       return IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED;
+    case Protocol.Network.CorsError.LocalNetworkAccessPermissionDenied:
+      return IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED;
   }
 }
 
@@ -249,6 +252,7 @@ export class CorsIssue extends Issue<IssueCode> {
       case IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS:
       case IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE:
       case IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED:
+      case IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
         return null;
     }
   }

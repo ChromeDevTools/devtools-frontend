@@ -752,7 +752,6 @@ export const generatedProperties = [
    "view-timeline-axis",
    "view-timeline-inset",
    "view-timeline-name",
-   "view-transition-capture-mode",
    "view-transition-class",
    "view-transition-group",
    "view-transition-name",
@@ -4388,13 +4387,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "flat",
-   "layered"
-  ],
-  "name": "view-transition-capture-mode"
- },
- {
-  "keywords": [
    "none"
   ],
   "name": "view-transition-class"
@@ -6611,12 +6603,6 @@ export const generatedPropertyValues = {
    "text-top",
    "text-bottom",
    "middle"
-  ]
- },
- "view-transition-capture-mode": {
-  "values": [
-   "flat",
-   "layered"
   ]
  },
  "view-transition-class": {

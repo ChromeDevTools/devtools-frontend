@@ -8833,6 +8833,7 @@ export namespace Network {
     PreflightMissingPrivateNetworkAccessName = 'PreflightMissingPrivateNetworkAccessName',
     PrivateNetworkAccessPermissionUnavailable = 'PrivateNetworkAccessPermissionUnavailable',
     PrivateNetworkAccessPermissionDenied = 'PrivateNetworkAccessPermissionDenied',
+    LocalNetworkAccessPermissionDenied = 'LocalNetworkAccessPermissionDenied',
   }
 
   export interface CorsErrorStatus {
@@ -9665,6 +9666,7 @@ export namespace Network {
     WarnFromInsecureToMorePrivate = 'WarnFromInsecureToMorePrivate',
     PreflightBlock = 'PreflightBlock',
     PreflightWarn = 'PreflightWarn',
+    PermissionBlock = 'PermissionBlock',
   }
 
   export const enum IPAddressSpace {

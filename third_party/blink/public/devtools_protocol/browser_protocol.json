@@ -13294,7 +13294,8 @@
                         "PreflightMissingPrivateNetworkAccessId",
                         "PreflightMissingPrivateNetworkAccessName",
                         "PrivateNetworkAccessPermissionUnavailable",
-                        "PrivateNetworkAccessPermissionDenied"
+                        "PrivateNetworkAccessPermissionDenied",
+                        "LocalNetworkAccessPermissionDenied"
                     ]
                 },
                 {
@@ -14378,7 +14379,8 @@
                         "BlockFromInsecureToMorePrivate",
                         "WarnFromInsecureToMorePrivate",
                         "PreflightBlock",
-                        "PreflightWarn"
+                        "PreflightWarn",
+                        "PermissionBlock"
                     ]
                 },
                 {

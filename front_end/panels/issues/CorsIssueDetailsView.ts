@@ -223,8 +223,9 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
                                  IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL|
                                  IssuesManager.CorsIssue.IssueCode.INVALID_PRIVATE_NETWORK_ACCESS|
                                  IssuesManager.CorsIssue.IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS|IssuesManager
-                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE|
-                                 IssuesManager.CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
+                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE|IssuesManager
+                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED|
+                                 IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
     }
 
     this.affectedResources.appendChild(header);
@@ -477,8 +478,9 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
                                  IssuesManager.CorsIssue.IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL|
                                  IssuesManager.CorsIssue.IssueCode.INVALID_PRIVATE_NETWORK_ACCESS|
                                  IssuesManager.CorsIssue.IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS|IssuesManager
-                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE|
-                                 IssuesManager.CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
+                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE|IssuesManager
+                                     .CorsIssue.IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED|
+                                 IssuesManager.CorsIssue.IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED>(issueCode);
         break;
     }
 

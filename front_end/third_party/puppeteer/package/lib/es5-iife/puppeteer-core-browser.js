@@ -2835,7 +2835,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '24.3.0';
+  const packageVersion = '24.3.1';
 
   /**
    * @license
@@ -24379,8 +24379,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '133.0.6943.126',
-    'chrome-headless-shell': '133.0.6943.126',
+    chrome: '133.0.6943.141',
+    'chrome-headless-shell': '133.0.6943.141',
     firefox: 'stable_135.0.1'
   });
 

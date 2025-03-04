@@ -210,11 +210,11 @@ export const getTextContent =
   return text ?? undefined;
 };
 
-export const getAllTextContents =
-    async(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'): Promise<Array<string|null>> => {
-  const allElements = await $$(selector, root, handler);
-  return await Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
-};
+export async function getAllTextContents(
+    selector: string, root?: puppeteer.JSHandle, handler = 'pierce'): Promise<Array<string|null>> {
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  return await devToolsPage.getAllTextContents(selector, root, handler);
+}
 
 /**
  * Match multiple elements based on a selector and return their textContents, but only for those
@@ -270,10 +270,11 @@ export const waitForAriaNone = (selector: string, root?: puppeteer.ElementHandle
   return waitForNone(selector, root, asyncScope, 'aria');
 };
 
-export const waitForElementWithTextContent =
-    (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {
-      return waitFor(textContent, root, asyncScope, 'pierceShadowText');
-    };
+export function waitForElementWithTextContent(
+    textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
+  const {devToolsPage} = getBrowserAndPagesWrappers();
+  return devToolsPage.waitForElementWithTextContent(textContent, root, asyncScope);
+}
 
 export const waitForElementsWithTextContent =
     (textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) => {

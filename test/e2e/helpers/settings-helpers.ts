@@ -39,18 +39,19 @@ export async function openPanelViaMoreTools(panelTitle: string, frontend?: DevTo
   await frontend.waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 }
 
-export const openSettingsTab = async (tabTitle: string) => {
+export async function openSettingsTab(tabTitle: string, frontend?: DevToolsFronendPage) {
+  frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
   const gearIconSelector = 'devtools-button[aria-label="Settings"]';
   const settingsMenuSelector = `.tabbed-pane-header-tab[aria-label="${tabTitle}"]`;
   const panelSelector = `.view-container[aria-label="${tabTitle} panel"]`;
 
   // Click on the Settings Gear toolbar icon.
-  await click(gearIconSelector);
+  await frontend.click(gearIconSelector);
 
   // Click on the Settings tab and wait for the panel to appear.
-  await click(settingsMenuSelector);
-  await waitFor(panelSelector);
-};
+  await frontend.click(settingsMenuSelector);
+  await frontend.waitFor(panelSelector);
+}
 
 export const closeSettings = async () => {
   await click('.dialog-close-button');

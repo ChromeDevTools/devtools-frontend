@@ -56,7 +56,7 @@ function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightMo
 
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DuplicateJavaScriptInsightModel {
-  const scriptEntries = [...parsedTrace.Scripts.scripts].filter(([_, script]) => {
+  const scripts = parsedTrace.Scripts.scripts.filter(script => {
     if (!context.navigation) {
       return false;
     }
@@ -68,6 +68,6 @@ export function generateInsight(
     return Helpers.Timing.timestampIsInBounds(context.bounds, script.ts);
   });
 
-  const duplication = Extras.ScriptDuplication.computeScriptDuplication({scripts: new Map(scriptEntries)});
+  const duplication = Extras.ScriptDuplication.computeScriptDuplication({scripts});
   return finalize({duplication});
 }

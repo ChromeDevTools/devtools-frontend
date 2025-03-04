@@ -175,7 +175,7 @@ function computeLastGeneratedColumnMap(map: SDK.SourceMap.SourceMap): Map<SDK.So
  */
 export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scripts.ScriptsData): ScriptDuplication {
   const sizesMap = new Map<Handlers.ModelHandlers.Scripts.Script, GeneratedFileSizes>();
-  for (const script of scriptsData.scripts.values()) {
+  for (const script of scriptsData.scripts) {
     if (script.content && script.sourceMap) {
       sizesMap.set(script, computeGeneratedFileSizes(script));
     }

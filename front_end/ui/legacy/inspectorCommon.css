@@ -740,7 +740,7 @@ devtools-toolbar {
 
   & > devtools-issue-counter {
     margin-top: -4px;
-    padding-left: 1px;
+    padding: 0 1px;
   }
 
   devtools-adorner.fix-perf-icon {

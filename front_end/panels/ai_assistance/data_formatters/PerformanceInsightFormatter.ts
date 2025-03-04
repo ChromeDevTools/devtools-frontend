@@ -44,20 +44,41 @@ ${this.#details()}`;
 
   #details(): string {
     if (Trace.Insights.Models.LCPPhases.isLCPPhases(this.#insight)) {
-      const {phases, lcpMs} = this.#insight;
+      const {phases, lcpMs, lcpRequest} = this.#insight;
       if (!lcpMs) {
         return '';
       }
 
+      // Text based LCP has TTFB & Render delay
+      // Image based has TTFB, Load delay, Load time and Render delay
+      // Note that we expect every trace + LCP to have TTFB + Render delay, but
+      // very old traces are missing the data, so we have to code defensively
+      // in case the phases are not present.
+      const phaseBulletPoints: Array<{name: string, value: string}> = [];
+      if (phases?.ttfb) {
+        phaseBulletPoints.push({name: 'Time to first byte', value: formatMilli(phases.ttfb)});
+      }
+      if (phases?.loadDelay) {
+        phaseBulletPoints.push({name: 'Load delay', value: formatMilli(phases.loadDelay)});
+      }
+      if (phases?.loadTime) {
+        phaseBulletPoints.push({name: 'Load time', value: formatMilli(phases.loadTime)});
+      }
+      if (phases?.renderDelay) {
+        phaseBulletPoints.push({name: 'Render delay', value: formatMilli(phases.renderDelay)});
+      }
+
+      let lcpRequestText = '';
+      if (lcpRequest) {
+        lcpRequestText = `\nThe LCP resource was downloaded from: ${lcpRequest.args.data.url}.`;
+      }
+
       return `All time units given to you are in milliseconds.
-The actual LCP time is ${formatMilli(lcpMs)};
+The actual LCP time is ${formatMilli(lcpMs)}.${lcpRequestText}
 
-We can break this time down into the 4 phases that combine to make up the LCP time:
+We can break this time down into the ${phaseBulletPoints.length} phases that combine to make up the LCP time:
 
-- Time to first byte: ${formatMilli(phases?.ttfb)}
-- Load delay: ${formatMilli(phases?.loadDelay)}
-- Load time: ${formatMilli(phases?.loadTime)}
-- Render delay: ${formatMilli(phases?.renderDelay)}`;
+${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`;
     }
     return '';
   }
@@ -97,6 +118,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
         return '';
     }
   }
+
   #description(): string {
     switch (this.#insight.insightKey) {
       case 'CLSCulprits':
@@ -118,7 +140,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
       case 'LCPDiscovery':
         return '';
       case 'LCPPhases':
-        return 'This insight is used to analyse the loading of the LCP resource and identify which of the 4 phases are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
+        return 'This insight is used to analyse the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
       case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':

@@ -100,10 +100,11 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
       return;
     }
 
-    const insightTitle = activeContext.getItem().title();
+    const activeInsight = activeContext.getItem();
+    const insightTitle = activeInsight.title();
     const title = `Analyzing insight: ${insightTitle}`;
     // The details are the exact text sent to the LLM to allow the user to inspect it.
-    const formatter = new PerformanceInsightFormatter(activeContext.getItem().insight);
+    const formatter = new PerformanceInsightFormatter(activeInsight.insight);
     const titleDetail: ContextDetail = {
       // Purposefully use the raw title in the details view, we don't need to repeat "Analyzing insight"
       title: insightTitle,
@@ -213,7 +214,8 @@ The fields are:
     if (!selectedInsight) {
       return query;
     }
-    const formatter = new PerformanceInsightFormatter(selectedInsight.getItem().insight);
+    const {insight} = selectedInsight.getItem();
+    const formatter = new PerformanceInsightFormatter(insight);
     const extraQuery = `${formatter.formatInsight()}\n\n# User request:\n`;
 
     const finalQuery = `${extraQuery}${query}`;

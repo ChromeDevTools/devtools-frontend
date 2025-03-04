@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
+import type {DevToolsFronendPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 // Corresponds to the type in front_end/ui/visual_logging/Debugging.ts
 interface TestImpressionLogEntry {
@@ -154,13 +156,13 @@ export async function dumpVeEvents(label: string) {
 
 // Verifies that VE events contains all the expected events in given order.
 // Unexpected VE events are ignored.
-export async function expectVeEvents(expectedEvents: TestLogEntry[], root?: string) {
+export async function expectVeEvents(
+    expectedEvents: TestLogEntry[], root?: string, devToolsPage?: DevToolsFronendPage) {
   collapseConsecutiveImpressions(expectedEvents);
   prependRoot(expectedEvents, root);
-
-  const {frontend} = getBrowserAndPages();
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   // @ts-expect-error
-  await frontend.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
+  await devToolsPage.evaluate(async expectedEvents => await globalThis.expectVeEvents(expectedEvents), expectedEvents);
 }
 
 function collapseConsecutiveImpressions(events: TestLogEntry[]) {

@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
+import type {DevToolsFronendPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   $,
   $$,
@@ -17,6 +18,7 @@ import {
   waitFor,
   waitForFunction
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
 import {
   expectVeEvents,
@@ -187,22 +189,22 @@ export async function maybeGetCurrentConsoleMessages(withAnchor = false, callbac
   return result;
 }
 
-export async function getStructuredConsoleMessages() {
-  const {frontend} = getBrowserAndPages();
+export async function getStructuredConsoleMessages(devToolsPage?: DevToolsFronendPage) {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   const asyncScope = new AsyncScope();
 
-  await navigateToConsoleTab();
+  await navigateToConsoleTab(devToolsPage);
 
   // Get console messages that were logged.
-  await waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
+  await devToolsPage.waitFor(CONSOLE_MESSAGES_SELECTOR, undefined, asyncScope);
 
   // Ensure all messages are populated.
-  await asyncScope.exec(() => frontend.waitForFunction((selector: string) => {
+  await asyncScope.exec(() => devToolsPage.page.waitForFunction((selector: string) => {
     return Array.from(document.querySelectorAll(selector)).every(message => message.childNodes.length > 0);
   }, {timeout: 0}, CONSOLE_ALL_MESSAGES_SELECTOR));
-  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot());
+  await expectVeEvents([veImpressionForConsoleMessage()], await veRoot(devToolsPage), devToolsPage);
 
-  return frontend.evaluate(selector => {
+  return devToolsPage.evaluate(selector => {
     return Array.from(document.querySelectorAll(selector)).map(wrapper => {
       const message = wrapper.querySelector('.console-message-text')?.textContent;
       const source = wrapper.querySelector('.devtools-link')?.textContent;
@@ -305,14 +307,15 @@ export async function unifyLogVM(actualLog: string, expectedLog: string) {
   return expectedLogArray.join('\n');
 }
 
-export async function navigateToConsoleTab() {
+export async function navigateToConsoleTab(devToolsPage?: DevToolsFronendPage) {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   // Locate the button for switching to the console tab.
-  if ((await $$(CONSOLE_VIEW_SELECTOR)).length) {
+  if ((await devToolsPage.$$(CONSOLE_VIEW_SELECTOR)).length) {
     return;
   }
-  await click(CONSOLE_TAB_SELECTOR);
-  await waitFor(CONSOLE_PROMPT_SELECTOR);
-  await expectVeEvents([veImpressionForConsolePanel()]);
+  await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+  await devToolsPage.waitFor(CONSOLE_PROMPT_SELECTOR);
+  await expectVeEvents([veImpressionForConsolePanel()], undefined, devToolsPage);
 }
 
 export async function waitForConsoleInfoMessageAndClickOnLink() {
@@ -459,6 +462,7 @@ function veImpressionForConsoleMessageContextMenu(expectedItem: string) {
   return veImpression('Menu', undefined, [...menuItems].map(i => veImpression('Action', i)));
 }
 
-async function veRoot(): Promise<string> {
-  return (await $$(CONSOLE_VIEW_IN_DRAWER_SELECTOR)).length ? 'Drawer > Panel: console' : 'Panel: console';
+async function veRoot(devToolsPage?: DevToolsFronendPage): Promise<string> {
+  devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
+  return (await devToolsPage.$$(CONSOLE_VIEW_IN_DRAWER_SELECTOR)).length ? 'Drawer > Panel: console' : 'Panel: console';
 }

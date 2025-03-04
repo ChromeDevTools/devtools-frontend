@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 
@@ -14,26 +15,10 @@ import {debugLog} from './debug.js';
  */
 export class AgentProject {
   #project: Workspace.Workspace.Project;
+  #ignoredFolderNames = new Set(['node_modules']);
 
   constructor(project: Workspace.Workspace.Project) {
     this.#project = project;
-  }
-
-  #indexFiles(): {files: string[], map: Map<string, Workspace.UISourceCode.UISourceCode>} {
-    const files = [];
-    const map = new Map();
-    for (const uiSourceCode of this.#project.uiSourceCodes()) {
-      // fullDisplayName includes the project name. TODO: a better
-      // getter for a relative file path is needed.
-      let path = uiSourceCode.fullDisplayName();
-      const idx = path.indexOf('/');
-      if (idx !== -1) {
-        path = path.substring(idx + 1);
-      }
-      files.push(path);
-      map.set(path, uiSourceCode);
-    }
-    return {files, map};
   }
 
   /**
@@ -99,5 +84,30 @@ export class AgentProject {
       }
     }
     return matches;
+  }
+
+  #shouldSkipPath(pathParts: string[]): boolean {
+    for (const part of pathParts) {
+      if (this.#ignoredFolderNames.has(part)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  #indexFiles(): {files: string[], map: Map<string, Workspace.UISourceCode.UISourceCode>} {
+    const files = [];
+    const map = new Map();
+    // TODO: this could be optimized and cached.
+    for (const uiSourceCode of this.#project.uiSourceCodes()) {
+      const pathParths = Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+      if (this.#shouldSkipPath(pathParths)) {
+        continue;
+      }
+      const path = pathParths.join('/');
+      files.push(path);
+      map.set(path, uiSourceCode);
+    }
+    return {files, map};
   }
 }

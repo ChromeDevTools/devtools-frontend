@@ -88,21 +88,18 @@ When testing presenters, rely on observable effects such as view updates or mode
 #### View stubbing
 
 ```ts
-// ✅ recommended: stub the view function.
-const view = sinon.stub();
+// ✅ recommended: stub the view function using createViewFunctionStub.
+import {createViewFunctionStub} from './ViewFunctionHelpers.js';
+const view = createViewFunctionStub(Presenter);
 const presenter = new Presenter(view);
 
 // ✅ recommended: expect a view stub call in response to presenter behavior.
-const viewCall = expectCall(view);
 present.show();
-const [{onEvent}] = await viewCall;
+const input = await view.nextInput;
 
 // ✅ recommended: expect a view stub call in response to an event from the view.
-const viewCall2 = expectCall(view);
-onEvent();
-const [{data}] = await viewCall2;
-// ✅ recommended: check view input data from the expected call.
-assert.deepStrictEqual(data, {});
+input.onEvent();
+assert.deepStrictEqual(await view.nextInput, {});
 
 // ❌ not recommended: Widget.updateComplete only reports a current view update
 // operation status and might create flakiness depending on doSomething() implementation.
@@ -128,7 +125,7 @@ const cssModel = sinon.createStubInstance(SDK.CSSModel.CSSModel);
 
 const presenter = new Presenter();
 // ✅ recommended: expect model calls as the result of invoking
-// present's logic.
+// presenter's logic.
 const modelCall = expectCall(cssModel.headersForSourceURL, {
   fakeFn: () => {
     return false,
@@ -136,7 +133,7 @@ const modelCall = expectCall(cssModel.headersForSourceURL, {
 });
 // ✅ recommended: expect view calls to result in output based
 // on the mocked model.
-const viewCall = expectCall(view);
+const viewCall = view.nextInput;
 
 presenter.doSomething();
 
@@ -144,11 +141,10 @@ presenter.doSomething();
 const [url] = await modelCall;
 assert.strictEqual(url, '...');
 
-const [{headersForSourceURL}] = await viewCall;
-assert.deepStrictEqual(headersForSourceURL, [{...}]);
+assert.deepStrictEqual((await viewCall).headersForSourceURL, [{...}]);
 
 // ❌ not recommended: mocking CDP responses to make the models behave in a certain way
-// is fragile.
+// while testing a presenter is fragile.
 setMockConnectionResponseHandler('CSS.getHeaders', () => ({}));
 const presenter = new Presenter();
 presenter.doSomething();

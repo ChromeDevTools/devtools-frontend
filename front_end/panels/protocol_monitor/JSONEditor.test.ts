@@ -13,6 +13,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Menus from '../../ui/components/menus/menus.js';
 import type * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
 
@@ -488,15 +489,15 @@ describeWithEnvironment('JSONEditor', () => {
           value: 'test',
         },
       ];
-      const view = sinon.stub().callsFake((_i, o, _t) => {
-        o.editorWidget = jsonEditor;
+      const view = createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {
+        editorWidget: jsonEditor,
       });
       const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
       await protocolMonitor.updateComplete;
-      view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
       await protocolMonitor.updateComplete;
 
-      assert.deepEqual(view.lastCall.firstArg.command, '{"command":"Test.test","parameters":{"test":"test"}}');
+      assert.deepEqual(view.input.command, '{"command":"Test.test","parameters":{"test":"test"}}');
     });
 
     it('should update the selected target inside the input bar', async () => {
@@ -506,15 +507,14 @@ describeWithEnvironment('JSONEditor', () => {
         {id: () => 'value1'} as SDK.Target.Target,
         {id: () => 'value2'} as SDK.Target.Target,
       ]);
-      const view = sinon.stub().callsFake((_i, o, _t) => {
-        o.editorWidget = jsonEditor;
-      });
+      const view =
+          createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {editorWidget: jsonEditor});
       const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
       await protocolMonitor.updateComplete;
-      view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
       await protocolMonitor.updateComplete;
 
-      assert.deepEqual(view.lastCall.firstArg.selectedTargetId, 'value2');
+      assert.deepEqual(view.input.selectedTargetId, 'value2');
     });
 
     // Flaky test.
@@ -523,15 +523,14 @@ describeWithEnvironment('JSONEditor', () => {
         async () => {
           const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
           jsonEditor.command = '';
-          const view = sinon.stub().callsFake((_i, o, _t) => {
-            o.editorWidget = jsonEditor;
-          });
+          const view =
+              createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {editorWidget: jsonEditor});
           const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
           await protocolMonitor.updateComplete;
-          view.lastCall.firstArg.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
+          view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
           await protocolMonitor.updateComplete;
 
-          assert.deepEqual(view.lastCall.firstArg.command, '');
+          assert.deepEqual(view.input.command, '');
         });
   });
   describe('Descriptions', () => {

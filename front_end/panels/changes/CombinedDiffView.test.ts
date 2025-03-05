@@ -10,8 +10,8 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
-import {expectCall} from '../../testing/ExpectStubCall.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as CombinedDiffView from './CombinedDiffView.js';
 
@@ -43,27 +43,15 @@ function createWorkspaceDiff({workspace}: {workspace: Workspace.Workspace.Worksp
 }
 
 async function createCombinedDiffView({workspaceDiff}: {workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl}) {
-  const view = sinon.stub<[CombinedDiffView.ViewInput, unknown, HTMLElement]>();
+  const view = createViewFunctionStub(CombinedDiffView.CombinedDiffView);
   const combinedDiffView = new CombinedDiffView.CombinedDiffView(undefined, view);
   combinedDiffView.workspaceDiff = workspaceDiff;
 
-  /**
-   * Triggers the action and returns args of the next view function
-   * call.
-   */
-  async function expectViewUpdate(action: () => void) {
-    const result = expectCall(view);
-    action();
-    const viewArgs = await result;
-    return viewArgs[0];
-  }
+  combinedDiffView.markAsRoot();
+  combinedDiffView.show(document.body);
+  await view.nextInput;
 
-  const initialViewInput = await expectViewUpdate(() => {
-    combinedDiffView.markAsRoot();
-    combinedDiffView.show(document.body);
-  });
-
-  return {initialViewInput, combinedDiffView, view, expectViewUpdate};
+  return {combinedDiffView, view};
 }
 
 describeWithEnvironment('CombinedDiffView', () => {
@@ -80,29 +68,26 @@ describeWithEnvironment('CombinedDiffView', () => {
 
   it('should render modified UISourceCode from a workspaceDiff on initial render', async () => {
     uiSourceCode.setWorkingCopy('const data={original:false}');
-    const {initialViewInput} = await createCombinedDiffView({workspaceDiff});
+    const {view} = await createCombinedDiffView({workspaceDiff});
 
-    assert.lengthOf(initialViewInput.singleDiffViewInputs, 1);
+    assert.lengthOf(view.input.singleDiffViewInputs, 1);
   });
 
   it('should render newly modified UISourceCode from a workspaceDiff', async () => {
-    const {initialViewInput, expectViewUpdate} = await createCombinedDiffView({workspaceDiff});
-    assert.lengthOf(initialViewInput.singleDiffViewInputs, 0);
+    const {view} = await createCombinedDiffView({workspaceDiff});
+    assert.lengthOf(view.input.singleDiffViewInputs, 0);
 
-    const viewInput = await expectViewUpdate(() => {
-      uiSourceCode.setWorkingCopy('const data={original:false}');
-    });
+    uiSourceCode.setWorkingCopy('const data={original:false}');
 
-    assert.lengthOf(viewInput.singleDiffViewInputs, 1);
+    assert.lengthOf((await view.nextInput).singleDiffViewInputs, 1);
   });
 
   it('should re-render modified UISourceCode from a workspaceDiff', async () => {
     uiSourceCode.setWorkingCopy('const data={original:false}');
-    const {initialViewInput, expectViewUpdate} = await createCombinedDiffView({workspaceDiff});
-    assert.lengthOf(initialViewInput.singleDiffViewInputs, 1);
+    const {view} = await createCombinedDiffView({workspaceDiff});
+    assert.lengthOf(view.input.singleDiffViewInputs, 1);
 
-    await expectViewUpdate(() => {
-      uiSourceCode.setWorkingCopy('const data={modified:true}');
-    });
+    uiSourceCode.setWorkingCopy('const data={modified:true}');
+    await view.nextInput;
   });
 });

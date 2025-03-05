@@ -15,8 +15,8 @@ import {findMenuItemWithLabel, getMenu} from './ContextMenuHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
-import {expectCall} from './ExpectStubCall.js';
 import {createContentProviderUISourceCodes} from './UISourceCodeHelpers.js';
+import {createViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.AidaClient.AidaClient {
   const fetchStub = sinon.stub();
@@ -170,7 +170,7 @@ export async function createAiAssistancePanel(options?: {
 }) {
   let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
 
-  const view = sinon.stub<[AiAssistance.ViewInput, unknown, HTMLElement]>();
+  const view = createViewFunctionStub(AiAssistance.AiAssistancePanel);
   const aidaClient = options?.aidaClient ?? mockAidaClient();
   const checkAccessPreconditionsStub =
       sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions').callsFake(() => {
@@ -183,21 +183,9 @@ export async function createAiAssistancePanel(options?: {
   });
   panels.push(panel);
 
-  /**
-   * Triggers the action and returns args of the next view function
-   * call.
-   */
-  async function expectViewUpdate(action: () => void) {
-    const result = expectCall(view);
-    action();
-    const viewArgs = await result;
-    return viewArgs[0];
-  }
-
-  const initialViewInput = await expectViewUpdate(() => {
-    panel.markAsRoot();
-    panel.show(document.body);
-  });
+  panel.markAsRoot();
+  panel.show(document.body);
+  await view.nextInput;
 
   const stubAidaCheckAccessPreconditions = (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => {
     aidaAvailabilityForStub = aidaAvailability;
@@ -205,11 +193,9 @@ export async function createAiAssistancePanel(options?: {
   };
 
   return {
-    initialViewInput,
     panel,
     view,
     aidaClient,
-    expectViewUpdate,
     stubAidaCheckAccessPreconditions,
   };
 }
@@ -222,35 +208,21 @@ let patchWidgets: AiAssistance.PatchWidget.PatchWidget[] = [];
 export async function createPatchWidget(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
 }) {
-  const view = sinon.stub<[AiAssistance.PatchWidget.ViewInput, unknown, HTMLElement]>();
+  const view = createViewFunctionStub(AiAssistance.PatchWidget.PatchWidget);
   const aidaClient = options?.aidaClient ?? mockAidaClient();
   const widget = new AiAssistance.PatchWidget.PatchWidget(undefined, view, {
     aidaClient,
   });
   patchWidgets.push(widget);
 
-  /**
-   * Triggers the action and returns args of the next view function
-   * call.
-   */
-  async function expectViewUpdate(action: () => void) {
-    const result = expectCall(view);
-    action();
-    const viewArgs = await result;
-    return viewArgs[0];
-  }
-
-  const initialViewInput = await expectViewUpdate(() => {
-    widget.markAsRoot();
-    widget.show(document.body);
-  });
+  widget.markAsRoot();
+  widget.show(document.body);
+  await view.nextInput;
 
   return {
-    initialViewInput,
     panel: widget,
     view,
     aidaClient,
-    expectViewUpdate,
   };
 }
 

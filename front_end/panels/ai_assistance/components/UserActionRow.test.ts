@@ -6,14 +6,13 @@ import * as Host from '../../../core/host/host.js';
 import {
   describeWithEnvironment,
 } from '../../../testing/EnvironmentHelpers.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../../testing/ViewFunctionHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describeWithEnvironment('UserActionRow', () => {
-  function createComponent(props: AiAssistance.UserActionRowWidgetParams): [
-    sinon.SinonStub<[AiAssistance.UserActionRowViewInput, AiAssistance.ViewOutput, HTMLElement], void>,
-    AiAssistance.UserActionRow
-  ] {
-    const view = sinon.stub<[AiAssistance.UserActionRowViewInput, AiAssistance.ViewOutput, HTMLElement]>();
+  function createComponent(props: AiAssistance.UserActionRowWidgetParams):
+      [ViewFunctionStub<typeof AiAssistance.UserActionRow>, AiAssistance.UserActionRow] {
+    const view = createViewFunctionStub(AiAssistance.UserActionRow);
     const component = new AiAssistance.UserActionRow(undefined, view);
     Object.assign(component, props);
     component.wasShown();
@@ -28,18 +27,16 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.isTrue(view.calledOnce);
+    assert.strictEqual(view.callCount, 1);
 
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isShowingFeedbackForm).equals(false);
-      viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
+      expect(view.input.isShowingFeedbackForm).equals(false);
+      view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.isTrue(view.calledTwice);
+    assert.strictEqual(view.callCount, 2);
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isShowingFeedbackForm).equals(true);
+      expect(view.input.isShowingFeedbackForm).equals(true);
     }
   });
 
@@ -51,18 +48,16 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.isTrue(view.calledOnce);
+    assert.strictEqual(view.callCount, 1);
 
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isShowingFeedbackForm).equals(false);
-      viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
+      expect(view.input.isShowingFeedbackForm).equals(false);
+      view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.isTrue(view.calledTwice);
+    assert.strictEqual(view.callCount, 2);
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isShowingFeedbackForm).equals(false);
+      expect(view.input.isShowingFeedbackForm).equals(false);
     }
   });
 
@@ -74,31 +69,27 @@ describeWithEnvironment('UserActionRow', () => {
       onFeedbackSubmit: sinon.stub(),
     });
 
-    assert.isTrue(view.calledOnce);
+    assert.strictEqual(view.callCount, 1);
 
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isSubmitButtonDisabled).equals(true);
-      viewInput.onRatingClick(Host.AidaClient.Rating.POSITIVE);
+      expect(view.input.isSubmitButtonDisabled).equals(true);
+      view.input.onRatingClick(Host.AidaClient.Rating.POSITIVE);
     }
 
-    assert.isTrue(view.calledTwice);
+    assert.strictEqual(view.callCount, 2);
 
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isShowingFeedbackForm).equals(true);
-      viewInput.onInputChange('test');
-    }
-
-    {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isSubmitButtonDisabled).equals(false);
-      viewInput.onSubmit(new SubmitEvent('submit'));
+      expect(view.input.isShowingFeedbackForm).equals(true);
+      view.input.onInputChange('test');
     }
 
     {
-      const [viewInput] = view.lastCall.args;
-      expect(viewInput.isSubmitButtonDisabled).equals(true);
+      expect(view.input.isSubmitButtonDisabled).equals(false);
+      view.input.onSubmit(new SubmitEvent('submit'));
+    }
+
+    {
+      expect(view.input.isSubmitButtonDisabled).equals(true);
     }
   });
 });

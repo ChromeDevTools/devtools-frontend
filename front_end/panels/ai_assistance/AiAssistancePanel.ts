@@ -267,11 +267,11 @@ interface ToolbarViewInput {
 }
 
 export type ViewInput = ChatViewProps&ToolbarViewInput;
-interface ViewOutput {
+export interface PanelViewOutput {
   chatView?: ChatView;
 }
 
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => void;
 
 function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
   // clang-format off
@@ -331,7 +331,7 @@ function toolbarView(input: ToolbarViewInput): Lit.LitTemplate {
   // clang-format on
 }
 
-function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
+function defaultView(input: ViewInput, output: PanelViewOutput, target: HTMLElement): void {
   // clang-format off
   Lit.render(html`
     ${toolbarView(input)}
@@ -405,7 +405,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
   #aidaClient: Host.AidaClient.AidaClient;
-  #viewOutput: ViewOutput = {};
+  #viewOutput: PanelViewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();

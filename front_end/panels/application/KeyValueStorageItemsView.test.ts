@@ -8,13 +8,14 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
 
 describeWithEnvironment('KeyValueStorageItemsView', () => {
   let keyValueStorageItemsView: Application.KeyValueStorageItemsView.KeyValueStorageItemsView;
-  let viewFunction: sinon.SinonStub;
+  let viewFunction: ViewFunctionStub<typeof Application.KeyValueStorageItemsView.KeyValueStorageItemsView>;
 
   const MOCK_ITEMS = [
     {key: 'foo', value: 'value1'},
@@ -53,12 +54,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     container.markAsRoot();
     container.show(div);
 
-    viewFunction = sinon.stub();
-    viewFunction.callsFake((_input, output, _target) => {
-      output.splitWidget = sinon.createStubInstance(UI.SplitWidget.SplitWidget);
-      output.preview = new UI.Widget.VBox();
-      output.resizer = sinon.createStubInstance(HTMLElement);
-    });
+    viewFunction = createViewFunctionStub(Application.KeyValueStorageItemsView.KeyValueStorageItemsView);
     keyValueStorageItemsView =
         new TestKeyValueStorageItemsView('Items', 'key-value-storage-items-view', true, viewFunction);
 
@@ -69,26 +65,29 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     keyValueStorageItemsView.detach();
   });
 
+  function createSelectEvent(key: string, value?: string): CustomEvent<HTMLElement|null> {
+    return new CustomEvent('select', {detail: {dataset: {key, value}} as unknown as HTMLElement});
+  }
+
   it('updates preview when key selected', async () => {
     const {key, value} = MOCK_ITEMS[0];
 
     const createPreviewPromise = expectCreatePreviewCalled(key, value);
 
     // Select the first item by key.
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key, value}}}));
+    viewFunction.input.onSelect(createSelectEvent(key, value));
 
     // Check createPreview function was called.
     await createPreviewPromise;
-    assert.include(viewFunction.lastCall.firstArg.preview.element.innerText, `${key}:${value}`);
+    assert.include(viewFunction.input.preview.element.innerText, `${key}:${value}`);
   });
 
   it('shows empty preview when no row is selected', async () => {
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: MOCK_ITEMS[0].key}}}));
+    viewFunction.input.onSelect(createSelectEvent(MOCK_ITEMS[0].key));
     await raf();
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: null}));
+    viewFunction.input.onSelect(new CustomEvent('select', {detail: null}));
     // Check preview was updated.
-    assert.include(
-        viewFunction.lastCall.firstArg.preview.element.innerText, 'No value selectedSelect a value to preview');
+    assert.include(viewFunction.input.preview.element.innerText, 'No value selectedSelect a value to preview');
   });
 
   it('preview changed when value changes', async () => {
@@ -97,7 +96,7 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
     let createPreviewPromise = expectCreatePreviewCalled(key, value);
 
     // Select the first item.
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key, value}}}));
+    viewFunction.input.onSelect(createSelectEvent(key, value));
 
     // Check createPreview function was called.
     await createPreviewPromise;
@@ -116,6 +115,6 @@ describeWithEnvironment('KeyValueStorageItemsView', () => {
 
     // Check preview was updated.
     await raf();
-    assert.include(viewFunction.lastCall.firstArg.preview.element.innerText, `${key}:newValue`);
+    assert.include(viewFunction.input.preview.element.innerText, `${key}:newValue`);
   });
 });

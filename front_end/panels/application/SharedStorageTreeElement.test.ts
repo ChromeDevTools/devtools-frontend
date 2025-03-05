@@ -11,6 +11,7 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
+import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -105,7 +106,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
     panel.markAsRoot();
     panel.show(document.body);
 
-    const viewFunction = sinon.stub();
+    const viewFunction = createViewFunctionStub(Application.SharedStorageItemsView.SharedStorageItemsView);
     const treeElement = new Application.SharedStorageTreeElement.SharedStorageTreeElement(panel, sharedStorage);
     treeElement.view =
         await Application.SharedStorageItemsView.SharedStorageItemsView.createView(sharedStorage, viewFunction);
@@ -128,7 +129,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
     assert.isTrue(getMetadataSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: SECURITY_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     panel.detach();
   });

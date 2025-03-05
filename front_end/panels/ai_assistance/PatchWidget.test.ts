@@ -35,10 +35,8 @@ describeWithMockConnection('workspace', () => {
         patching: false,
       },
     });
-    const {
-      initialViewInput,
-    } = await createPatchWidget();
-    assert.isUndefined(initialViewInput.projectName);
+    const {view} = await createPatchWidget();
+    assert.isUndefined(view.input.projectName);
   });
 
   it('reports a current workspace project', async () => {
@@ -49,10 +47,8 @@ describeWithMockConnection('workspace', () => {
         patching: true,
       },
     });
-    const {
-      initialViewInput,
-    } = await createPatchWidget();
-    assert.strictEqual(initialViewInput.projectName, 'test');
+    const {view} = await createPatchWidget();
+    assert.strictEqual(view.input.projectName, 'test');
   });
 
   it('reports an updated project', async () => {
@@ -63,13 +59,11 @@ describeWithMockConnection('workspace', () => {
         patching: true,
       },
     });
-    const {initialViewInput, expectViewUpdate} = await createPatchWidget();
-    assert.strictEqual(initialViewInput.projectName, 'test');
+    const {view} = await createPatchWidget();
+    assert.strictEqual(view.input.projectName, 'test');
 
-    const updatedViewInput = await expectViewUpdate(() => {
-      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      createTestFilesystem('file://test2');
-    });
-    assert.strictEqual(updatedViewInput.projectName, 'test2');
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    createTestFilesystem('file://test2');
+    assert.strictEqual((await view.nextInput).projectName, 'test2');
   });
 });

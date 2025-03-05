@@ -14,6 +14,7 @@ import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
+import {createViewFunctionStub, type ViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -254,9 +255,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.strictEqual(sharedStorage.securityOrigin, TEST_ORIGIN);
   });
 
-  async function createView(): Promise<
-      {view: View.SharedStorageItemsView, itemsListener: SharedStorageItemsListener, viewFunction: sinon.SinonStub}> {
-    const viewFunction = sinon.stub();
+  async function createView(): Promise<{
+    view: View.SharedStorageItemsView,
+    itemsListener: SharedStorageItemsListener,
+    viewFunction: ViewFunctionStub<typeof View.SharedStorageItemsView>,
+  }> {
+    const viewFunction = createViewFunctionStub(View.SharedStorageItemsView);
     const view = await View.SharedStorageItemsView.createView(sharedStorage, viewFunction);
     const itemsListener = new SharedStorageItemsListener(view.sharedStorageItemsDispatcher);
     await RenderCoordinator.done({waitForWork: true});
@@ -280,7 +284,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     const {view, viewFunction} = await createView();
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     const metadataView = view.metadataView;
     assert.isNotNull(metadataView.shadowRoot);
@@ -316,7 +320,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     const {view, viewFunction} = await createView();
 
-    assert.lengthOf(viewFunction.lastCall.firstArg.items, 0);
+    assert.lengthOf(viewFunction.input.items, 0);
 
     const metadataView = view.metadataView;
     assert.isNotNull(metadataView.shadowRoot);
@@ -357,8 +361,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
 
     const {viewFunction} = await createView();
 
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.EmptyWidget.EmptyWidget);
+    assert.instanceOf(viewFunction.input.preview, UI.EmptyWidget.EmptyWidget);
   });
+
+  function createMockElement(key: string, value?: string): HTMLElement {
+    return {dataset: {key, value}} as unknown as HTMLElement;
+  }
 
   it('updates sidebarWidget upon receiving SelectedNode Event', async () => {
     assert.exists(sharedStorageModel);
@@ -378,10 +386,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     const {viewFunction} = await createView();
 
     // Select the second row.
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
+    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
     await raf();
 
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
+    assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
   });
 
   it('refreshes when "Refresh" is clicked', async () => {
@@ -399,7 +407,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Clicking "Refresh" will cause `getMetadata()` and `getEntries()` to be called.
     itemsListener.resetRefreshed();
@@ -412,7 +420,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
   });
 
   it('clears entries when "Delete All" is clicked', async () => {
@@ -447,7 +455,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Clicking "Delete All" will cause `clear()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForItemsCleared();
@@ -460,7 +468,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
+    assert.deepEqual(viewFunction.input.items, []);
   });
 
   it('clears filtered entries when "Delete All" is clicked with a filter set', async () => {
@@ -511,7 +519,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Adding a filter to the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
@@ -525,7 +533,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     // Only the filtered entries are displayed.
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_1);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_1);
 
     // Clicking "Delete All" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const clearedPromise = itemsListener.waitForFilteredItemsCleared();
@@ -539,7 +547,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
     // The filtered entries are cleared.
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
+    assert.deepEqual(viewFunction.input.items, []);
 
     // Changing the filter in the text box will cause `getMetadata()`, and `getEntries()` to be called.
     itemsListener.resetRefreshed();
@@ -552,7 +560,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.strictEqual(getEntriesSpy.callCount, 4);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_2);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_2);
   });
 
   it('deletes selected entry when "Delete Selected" is clicked', async () => {
@@ -587,10 +595,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Select the second row.
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
+    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
 
     // Clicking "Delete Selected" will cause `deleteEntry()`, `getMetadata()`, and `getEntries()` to be called.
     const deletedPromise = itemsListener.waitForItemsDeletedTotal(1);
@@ -603,7 +611,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, []);
+    assert.deepEqual(viewFunction.input.items, []);
     assert.deepEqual(itemsListener.deletedKeys, ['key2']);
   });
 
@@ -646,11 +654,11 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+    viewFunction.input.onEdit(new CustomEvent('edit', {
       detail: {
-        node: {dataset: {key: 'key2', value: 'b'}},
+        node: createMockElement('key2', 'b'),
         columnId: 'key',
         valueBeforeEditing: 'key2',
         newText: 'key0',
@@ -668,7 +676,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledThrice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_KEY_EDITED_1);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_KEY_EDITED_1);
   });
 
   it('edits key of selected entry to a preexisting key', async () => {
@@ -710,11 +718,11 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+    viewFunction.input.onEdit(new CustomEvent('edit', {
       detail: {
-        node: {dataset: {key: 'key2', value: 'b'}},
+        node: createMockElement('key2', 'b'),
         columnId: 'key',
         valueBeforeEditing: 'key2',
         newText: 'key1',
@@ -730,10 +738,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledThrice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_KEY_EDITED_2);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_KEY_EDITED_2);
 
     // Verify that the preview loads.
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
+    assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
   });
 
   it('edits value of selected entry to a new value', async () => {
@@ -771,11 +779,11 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+    viewFunction.input.onEdit(new CustomEvent('edit', {
       detail: {
-        node: {dataset: {key: 'key2', value: 'b'}},
+        node: createMockElement('key2', 'b'),
         columnId: 'value',
         valueBeforeEditing: 'b',
         newText: 'd',
@@ -791,10 +799,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_VALUE_EDITED);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_VALUE_EDITED);
 
     // Verify that the preview loads.
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
+    assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
   });
 
   it('adds an entry when the key cell of the empty data row is edited', async () => {
@@ -832,9 +840,9 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.lastCall.firstArg.onCreate(new CustomEvent('edit', {
+    viewFunction.input.onCreate(new CustomEvent('edit', {
       detail: {
         key: 'key4',
         value: 'e',
@@ -850,10 +858,10 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES_NEW_KEY);
+    assert.deepEqual(viewFunction.input.items, ENTRIES_NEW_KEY);
 
     // Verify that the preview loads.
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
+    assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
   });
 
   it('attempting to edit key of selected entry to an empty key cancels the edit', async () => {
@@ -877,12 +885,12 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getMetadataSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
     assert.isTrue(getEntriesSpy.calledOnceWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
-    viewFunction.lastCall.firstArg.onSelect(new CustomEvent('select', {detail: {dataset: {key: 'key2', value: 'b'}}}));
-    viewFunction.lastCall.firstArg.onEdit(new CustomEvent('edit', {
+    viewFunction.input.onSelect(new CustomEvent('select', {detail: createMockElement('key2', 'b')}));
+    viewFunction.input.onEdit(new CustomEvent('edit', {
       detail: {
-        node: {dataset: {key: 'key2', value: 'b'}},
+        node: createMockElement('key2', 'b'),
         columnId: 'key',
         valueBeforeEditing: 'key2',
         newText: '',
@@ -897,9 +905,9 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     assert.isTrue(getEntriesSpy.calledTwice);
     assert.isTrue(getEntriesSpy.alwaysCalledWithExactly({ownerOrigin: TEST_ORIGIN}));
 
-    assert.deepEqual(viewFunction.lastCall.firstArg.items, ENTRIES);
+    assert.deepEqual(viewFunction.input.items, ENTRIES);
 
     // Verify that the preview loads.
-    assert.instanceOf(viewFunction.lastCall.firstArg.preview, UI.SearchableView.SearchableView);
+    assert.instanceOf(viewFunction.input.preview, UI.SearchableView.SearchableView);
   });
 });

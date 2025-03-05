@@ -2,15 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {html, render} from '../../lit/lit.js';
+import './IconButton.js';
+
+import {Directives, html, render} from '../../lit/lit.js';
 
 import fileSourceIconStyles from './fileSourceIcon.css.js';
-import {create} from './Icon.js';
+
+const {classMap, styleMap} = Directives;
 
 export interface FileSourceIconData {
   contentType?: string;
   hasDotBadge?: boolean;
   isDotPurple?: boolean;
+  width?: number;
+  height?: number;
 }
 
 export class FileSourceIcon extends HTMLElement {
@@ -20,6 +25,8 @@ export class FileSourceIcon extends HTMLElement {
   #contentType?: string;
   #hasDotBadge?: boolean;
   #isDotPurple?: boolean;
+  #width?: number;
+  #height?: number;
 
   constructor(iconType: string) {
     super();
@@ -30,6 +37,17 @@ export class FileSourceIcon extends HTMLElement {
     this.#contentType = data.contentType;
     this.#hasDotBadge = data.hasDotBadge;
     this.#isDotPurple = data.isDotPurple;
+    this.#width = data.width;
+    this.#height = data.height;
+
+    if (this.#width !== undefined) {
+      this.style.width = `${this.#width}px`;
+    }
+
+    if (this.#height !== undefined) {
+      this.style.height = `${this.#height}px`;
+    }
+
     this.#render();
   }
 
@@ -38,6 +56,8 @@ export class FileSourceIcon extends HTMLElement {
       contentType: this.#contentType,
       hasDotBadge: this.#hasDotBadge,
       isDotPurple: this.#isDotPurple,
+      width: this.#width,
+      height: this.#height,
     };
   }
 
@@ -46,18 +66,21 @@ export class FileSourceIcon extends HTMLElement {
   }
 
   #render(): void {
-    let iconStyles: string[] = [];
-    if (this.#hasDotBadge) {
-      iconStyles = this.#isDotPurple ? ['dot', 'purple'] : ['dot', 'green'];
-    }
-    if (this.#contentType) {
-      iconStyles.push(this.#contentType);
-    }
-    const icon = create(this.#iconType, iconStyles.join(' '));
+    const iconClasses = classMap({
+      dot: Boolean(this.#hasDotBadge),
+      purple: Boolean(this.#hasDotBadge && this.#isDotPurple),
+      green: Boolean(this.#hasDotBadge && !this.#isDotPurple),
+      ...(this.#contentType ? {[this.#contentType]: this.#contentType} : null)
+    });
+
+    const iconStyles = styleMap({
+      width: this.#width ? `${this.#width}px` : undefined,
+      height: this.#height ? `${this.#height}px` : undefined,
+    });
 
     // clang-format off
     render(
-      html`<style>${fileSourceIconStyles.cssContent}</style>${icon}`,
+      html`<style>${fileSourceIconStyles.cssContent}</style><devtools-icon .name=${this.#iconType} class=${iconClasses} style=${iconStyles}></devtools-icon>`,
       this.#shadow, {
       host: this,
     });

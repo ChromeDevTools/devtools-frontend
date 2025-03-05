@@ -225,8 +225,10 @@ export class PanelUtils {
     return {iconName: 'file-generic', color: 'var(--icon-default)'};
   }
 
-  static getIconForSourceFile(uiSourceCode: Workspace.UISourceCode.UISourceCode):
-      IconButton.FileSourceIcon.FileSourceIcon {
+  static getIconForSourceFile(uiSourceCode: Workspace.UISourceCode.UISourceCode, options: {
+    width?: number,
+    height?: number,
+  } = {}): IconButton.FileSourceIcon.FileSourceIcon {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
     let iconType = 'document';
@@ -250,6 +252,8 @@ export class PanelUtils {
       contentType: uiSourceCode.contentType().name(),
       hasDotBadge,
       isDotPurple,
+      width: options.width,
+      height: options.height,
     };
 
     if (binding) {

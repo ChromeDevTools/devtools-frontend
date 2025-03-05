@@ -152,7 +152,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
                 diff: diff as Diff.Diff.DiffArray,  // We already filter above the ones that does not have `diff`.
                 fileName: `${uiSourceCode.isDirty() ? '*' : ''}${uiSourceCode.displayName()}`,
                 mimeType: uiSourceCode.mimeType(),
-                icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode),
+                icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),
                 onCopy: this.#onCopyDiff.bind(this),
               };
             })

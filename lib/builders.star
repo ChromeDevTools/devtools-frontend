@@ -198,7 +198,7 @@ def bucket(
 
 def shadow_constraints(pool_name, service_accounts):
     return luci.bucket_constraints(
-        pools = ["pool/luci.devtools-frontend.%s" % pool_name],
+        pools = ["luci.devtools-frontend.%s" % pool_name],
         service_accounts = service_accounts,
     )
 

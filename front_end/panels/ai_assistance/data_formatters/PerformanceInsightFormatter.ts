@@ -155,6 +155,10 @@ ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`
   }
 }
 
+export interface NetworkRequestFormatOptions {
+  verbose: boolean;
+}
+
 export class TraceEventFormatter {
   /**
    * This is the data passed to a network request when the Performance Insights
@@ -165,7 +169,8 @@ export class TraceEventFormatter {
    * talk to jacktfranklin@.
    */
   static networkRequest(
-      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace): string {
+      request: Trace.Types.Events.SyntheticNetworkRequest, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      options: NetworkRequestFormatOptions): string {
     const {url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData} =
         request.args.data;
 
@@ -187,10 +192,19 @@ export class TraceEventFormatter {
       requestSent: syntheticData.sendStartTime - baseTime,
       downloadComplete: syntheticData.finishTime - baseTime,
       processingComplete: request.ts + request.dur - baseTime,
-
     } as const;
 
+    const mainThreadProcessingDuration =
+        startTimesForLifecycle.processingComplete - startTimesForLifecycle.downloadComplete;
+
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
+
+    if (!options.verbose) {
+      return `## Network request: ${url}
+- Start time: ${formatMicro(startTimesForLifecycle.start)}
+- Duration: ${formatMicro(request.dur)}
+- MIME type: ${mimeType}${renderBlocking ? '\n- This request was render blocking' : ''}`;
+    }
 
     return `## Network request: ${url}
 Timings:
@@ -198,8 +212,10 @@ Timings:
 - Queued at: ${formatMicro(startTimesForLifecycle.queueing)}
 - Request sent at: ${formatMicro(startTimesForLifecycle.requestSent)}
 - Download complete at: ${formatMicro(startTimesForLifecycle.downloadComplete)}
-- Fully completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
-- Total request duration: ${formatMicro(request.dur)}
+- Completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
+Durations:
+- Main thread processing duration: ${formatMicro(mainThreadProcessingDuration)}
+- Total duration: ${formatMicro(request.dur)}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
 Priority:

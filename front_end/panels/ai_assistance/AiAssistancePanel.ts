@@ -253,7 +253,7 @@ function getEmptyStateSuggestions(conversationType: ConversationType): string[] 
       ];
     case ConversationType.PERFORMANCE_INSIGHT:
       // TODO(b/393061683): Define these.
-      return ['Placeholder', 'Suggestions', 'For now'];
+      return ['Help me optimize my LCP', 'Suggestions', 'For now'];
   }
 }
 

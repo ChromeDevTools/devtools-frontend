@@ -65,6 +65,18 @@ export class AIQueries {
   }
 
   /**
+   * Returns the single network request. We do not check to filter this by the
+   * bounds of the insight, because the only way that the LLM has found this
+   * request is by first inspecting a summary of relevant network requests for
+   * the given insight. So if it then looks up a request by URL, we know that
+   * is a valid and relevant request.
+   */
+  static networkRequest(parsedTrace: Trace.Handlers.Types.ParsedTrace, url: string):
+      Trace.Types.Events.SyntheticNetworkRequest|null {
+    return parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === url) ?? null;
+  }
+
+  /**
    * Returns an AI Call Tree representing the activity on the main thread for
    * the relevant time range of the given insight.
    */

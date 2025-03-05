@@ -73,20 +73,22 @@ We can break this time down into the 2 phases that combine to make up the LCP ti
   });
 
   describe('Formatting TraceEvents', () => {
-    it('formats network requests', async function() {
+    it('formats network requests in verbose mode', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
       const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
       assert.isOk(request);
-      const output = TraceEventFormatter.networkRequest(request, parsedTrace);
+      const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
       const expected = `## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
 Timings:
 - Start time: 37.62 ms
 - Queued at: 43.24 ms
 - Request sent at: 41.71 ms
 - Download complete at: 48.04 ms
-- Fully completed at: 51.55 ms
-- Total request duration: 13.93 ms
+- Completed at: 51.55 ms
+Durations:
+- Main thread processing duration: 3.51 ms
+- Total duration: 13.93 ms
 Status code: 200
 MIME Type: text/css
 Priority:
@@ -110,6 +112,20 @@ Response headers
 - link: <https://fonts.gstatic.com>; rel=preconnect; crossorigin
 - x-xss-protection: 0
 - expires: Thu, 07 Mar 2024 21:17:02 GMT`;
+
+      assert.strictEqual(output, expected);
+    });
+    it('formats network requests in non-verbose mode', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+      const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
+      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: false});
+      const expected = `## Network request: https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800
+- Start time: 37.62 ms
+- Duration: 13.93 ms
+- MIME type: text/css
+- This request was render blocking`;
 
       assert.strictEqual(output, expected);
     });

@@ -49,6 +49,11 @@
 
       .summary-right {
         flex-shrink: 0;
+
+        .copied {
+          padding-right: var(--sys-size-4);
+          font: var(--sys-typescale-body5-regular);
+        }
       }
 
       &::marker {

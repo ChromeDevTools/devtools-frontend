@@ -25,6 +25,7 @@ devtools_module("changes") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",

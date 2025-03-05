@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -14,14 +16,28 @@ import * as PanelUtils from '../utils/utils.js';
 
 import combinedDiffViewStyles from './combinedDiffView.css.js';
 
+const COPIED_TO_CLIPBOARD_TEXT_TIMEOUT_MS = 1000;
+
 const {html} = Lit;
+
+const UIStrings = {
+  /**
+   * @description The title of the button after it was pressed and the text was copied to clipboard.
+   */
+  copied: 'Copied to clipboard',
+} as const;
+
+const str_ = i18n.i18n.registerUIStrings('panels/changes/CombinedDiffView.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface SingleDiffViewInput {
   fileName: string;
+  fileUrl: string;
   mimeType: string;
   icon: HTMLElement;
   diff: Diff.Diff.DiffArray;
-  onCopy: (diff: Diff.Diff.DiffArray) => void;
+  copied: boolean;
+  onCopy: (fileUrl: string, diff: Diff.Diff.DiffArray) => void;
 }
 
 export interface ViewInput {
@@ -31,7 +47,8 @@ export interface ViewInput {
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.TemplateResult {
-  const {fileName, mimeType, icon, diff, onCopy} = singleDiffViewInput;
+  const {fileName, fileUrl, mimeType, icon, diff, copied, onCopy} = singleDiffViewInput;
+
   return html`
     <details open>
       <summary>
@@ -41,13 +58,15 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
           <span class="file-name">${fileName}</span>
         </div>
         <div class="summary-right">
-          <devtools-button
-            title=${'Copy'}
-            .size=${Buttons.Button.Size.SMALL}
-            .iconName=${'copy'}
-            .jslogContext=${'combined-diff-view.copy'}
-            .variant=${Buttons.Button.Variant.ICON}
-            @click=${() => onCopy(diff)}></devtools-button>
+          ${copied ? html`<span class="copied">${i18nString(UIStrings.copied)}</span>` : html`
+            <devtools-button
+              title=${'Copy'}
+              .size=${Buttons.Button.Size.SMALL}
+              .iconName=${'copy'}
+              .jslogContext=${'combined-diff-view.copy'}
+              .variant=${Buttons.Button.Variant.ICON}
+              @click=${() => onCopy(fileUrl, diff)}></devtools-button>
+          `}
         </div>
       </summary>
       <div class='diff-view-container'>
@@ -62,6 +81,7 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
 export class CombinedDiffView extends UI.Widget.Widget {
   #workspaceDiff?: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   #modifiedUISourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
+  #copiedFiles: Record<string, boolean> = {};
   #view: View;
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
     Lit.render(
@@ -94,8 +114,15 @@ export class CombinedDiffView extends UI.Widget.Widget {
     void this.#initializeModifiedUISourceCodes();
   }
 
-  #onCopyDiff(): void {
-    // TODO(ergunsh): Implement copying diff
+  async #onCopyDiff(fileUrl: string, diff: Diff.Diff.DiffArray): Promise<void> {
+    const changes = await PanelUtils.PanelUtils.formatCSSChangesFromDiff(diff);
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(changes);
+    this.#copiedFiles[fileUrl] = true;
+    this.requestUpdate();
+    setTimeout(() => {
+      delete this.#copiedFiles[fileUrl];
+      this.requestUpdate();
+    }, COPIED_TO_CLIPBOARD_TEXT_TIMEOUT_MS);
   }
 
   async #initializeModifiedUISourceCodes(): Promise<void> {
@@ -151,8 +178,10 @@ export class CombinedDiffView extends UI.Widget.Widget {
               return {
                 diff: diff as Diff.Diff.DiffArray,  // We already filter above the ones that does not have `diff`.
                 fileName: `${uiSourceCode.isDirty() ? '*' : ''}${uiSourceCode.displayName()}`,
+                fileUrl: uiSourceCode.url(),
                 mimeType: uiSourceCode.mimeType(),
                 icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),
+                copied: this.#copiedFiles[uiSourceCode.url()],
                 onCopy: this.#onCopyDiff.bind(this),
               };
             })

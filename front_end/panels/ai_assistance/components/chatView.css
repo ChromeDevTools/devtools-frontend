@@ -831,37 +831,37 @@ main {
     --code-block-background-color: var(--sys-color-surface1);
   }
 
-  .workspace {
+  .footer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: var(--sys-size-5);
-  }
+    margin: var(--sys-size-5) 0;
 
-  .selected-folder {
-    margin: var(--sys-size-3) var(--sys-size-3) 0 0;
-  }
-
-  .change-workspace {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .apply-to-workspace-container {
-    display: flex;
-    align-items: center;
-    gap: var(--sys-size-3);
-
-    devtools-icon {
-      /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */
-      width: 18px;
-      height: 18px;
-      margin-left: var(--sys-size-2);
+    .disclaimer-link {
+      align-self: center;
     }
-  }
 
-  .patch-tmp-message {
-    padding: var(--sys-size-4);
+    .selected-folder {
+      margin: var(--sys-size-3) var(--sys-size-3) 0 0;
+    }
+
+    .change-workspace {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .apply-to-workspace-container {
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-3);
+
+      devtools-icon {
+        /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */
+        width: 18px;
+        height: 18px;
+        margin-left: var(--sys-size-2);
+      }
+    }
   }
 }
 

@@ -2890,6 +2890,7 @@ export const knownContextValues = new Set([
   'rotate',
   'row-gap',
   'row-rule-break',
+  'row-rule-color',
   'row-rule-outset',
   'row-rule-style',
   'row-rule-width',

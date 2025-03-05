@@ -639,6 +639,7 @@ export const generatedProperties = [
    "rotate",
    "row-gap",
    "row-rule-break",
+   "row-rule-color",
    "row-rule-outset",
    "row-rule-style",
    "row-rule-width",
@@ -3539,6 +3540,12 @@ export const generatedProperties = [
   "name": "row-rule-break"
  },
  {
+  "keywords": [
+   "currentcolor"
+  ],
+  "name": "row-rule-color"
+ },
+ {
   "inherited": false,
   "name": "row-rule-outset"
  },
@@ -6120,6 +6127,11 @@ export const generatedPropertyValues = {
    "none",
    "spanning-item",
    "intersection"
+  ]
+ },
+ "row-rule-color": {
+  "values": [
+   "currentcolor"
   ]
  },
  "row-rule-style": {

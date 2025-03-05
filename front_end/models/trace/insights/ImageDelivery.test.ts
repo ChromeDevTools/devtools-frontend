@@ -102,4 +102,27 @@ describeWithEnvironment('ImageDelivery', function() {
         ],
     );
   });
+
+  it('handles responsive image exceptions', async () => {
+    const {data, insights} = await processTrace(this, 'byte-efficiency.json.gz');
+
+    const insight =
+        getInsightOrError('ImageDelivery', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assert.deepEqual(
+        insight.optimizableImages.map(o => o.request.args.data.url).sort(),
+        [
+          // Several additional images would be in this list if we did not ignore them
+          // - A <picture> image
+          // - An image with `srcset`
+          // - CSS background images
+          'http://localhost:10200/byte-efficiency/lighthouse-1024x680.jpg',
+          'http://localhost:10200/byte-efficiency/lighthouse-480x320.jpg',
+          'http://localhost:10200/byte-efficiency/lighthouse-480x320.jpg?attributesized',
+          'http://localhost:10200/byte-efficiency/lighthouse-480x320.webp',
+          // TODO(b/400518751): Assume 2 viewport size for image that isn't rendered.
+          // https://github.com/GoogleChrome/lighthouse/issues/7236
+          // 'localhost:10200/byte-efficiency/lighthouse-2048x1356.webp?size0'
+        ],
+    );
+  });
 });

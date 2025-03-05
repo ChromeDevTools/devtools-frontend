@@ -266,3 +266,7 @@ A page that loads an image as the LCP resource with fetchpriority=high set.
 ### lcp-discovery-delay
 
 A page that has an LCP image but is delayed by main thread blocking JS. Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-discovery-delay.
+
+### byte-efficiency
+
+A recording of a page load of the Lighthouse byte-efficiency tester. https://github.com/GoogleChrome/lighthouse/blob/main/cli/test/fixtures/byte-efficiency/tester.html

@@ -12,6 +12,7 @@ copy_to_gen("traces") {
     "basic-stack.json.gz",
     "basic.cpuprofile.gz",
     "basic.json.gz",
+    "byte-efficiency.json.gz",
     "changing-priority.json.gz",
     "cls-cluster-max-duration.json.gz",
     "cls-cluster-max-timeout.json.gz",

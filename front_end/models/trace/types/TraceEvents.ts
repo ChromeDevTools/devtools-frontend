@@ -2362,8 +2362,13 @@ export interface PaintImage extends Complete {
       width: number,
       x: number,
       y: number,
+      isCSS: boolean,
+      isPicture?: boolean,
+      loadingAttribute?: string,
+      srcsetAttribute?: string,
       url?: string, srcHeight: number, srcWidth: number,
       nodeId?: Protocol.DOM.BackendNodeId,
+      frame?: string,
     },
   };
 }

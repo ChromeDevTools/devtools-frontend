@@ -91,8 +91,7 @@ interface ViewInput {
   timings: SelectorTiming[];
   onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
 }
-interface ViewOutput {}
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
@@ -109,7 +108,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #view: View;
   #timings: SelectorTiming[] = [];
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, view: View = (input, output, target) => {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, view: View = (input, _, target) => {
     render(
         html`
       <devtools-data-grid striped name=${i18nString(UIStrings.selectorStats)}

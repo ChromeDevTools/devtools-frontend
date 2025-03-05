@@ -7,7 +7,7 @@ import type * as ModelHandlers from './ModelHandlers.js';
 
 export interface Handler {
   reset(): void;
-  handleEvent(data: {}): void;
+  handleEvent(data: object): void;
   finalize(options?: Types.Configuration.ParseOptions): Promise<void>;
   data(): unknown;
   deps?(): HandlerName[];

@@ -756,7 +756,7 @@ export class VersionController {
       const newName = settingNames[oldName];
       const oldNameH = oldName + 'H';
 
-      let newValue: {}|null = null;
+      let newValue: object|null = null;
       const oldSetting = Settings.instance().createSetting(oldName, empty);
       if (oldSetting.get() !== empty) {
         newValue = newValue || {};

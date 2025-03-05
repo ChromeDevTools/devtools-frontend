@@ -61,8 +61,7 @@ interface ViewInput {
   onContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
   onSelect: (event: CustomEvent<HTMLElement|null>) => void;
 }
-interface ViewOutput {}
-type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+type ViewFunction = (input: ViewInput, output: object, target: HTMLElement) => void;
 type AttributeWithIcon = SDK.Cookie.Attribute.NAME|SDK.Cookie.Attribute.VALUE|SDK.Cookie.Attribute.DOMAIN|
                          SDK.Cookie.Attribute.PATH|SDK.Cookie.Attribute.SECURE|SDK.Cookie.Attribute.SAME_SITE;
 
@@ -176,7 +175,7 @@ export class CookiesTable extends UI.Widget.VBox {
       deleteCallback?: ((arg0: SDK.Cookie.Cookie, arg1: () => void) => void), view?: ViewFunction) {
     super();
     if (!view) {
-      view = (input, output, target) => {
+      view = (input, _, target) => {
         // clang-format off
         render(html`
           <devtools-data-grid

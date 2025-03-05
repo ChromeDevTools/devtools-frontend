@@ -109,7 +109,7 @@ export interface CallFrame {
   url: string;
 }
 
-export function objectIsCallFrame(object: {}): object is CallFrame {
+export function objectIsCallFrame(object: object): object is CallFrame {
   return ('functionName' in object && typeof object.functionName === 'string') &&
       ('scriptId' in object && (typeof object.scriptId === 'string' || typeof object.scriptId === 'number')) &&
       ('columnNumber' in object && typeof object.columnNumber === 'number') &&

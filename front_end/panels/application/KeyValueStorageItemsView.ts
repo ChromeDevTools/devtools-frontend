@@ -85,9 +85,7 @@ export interface ViewInput {
   onDelete: (event: CustomEvent<HTMLElement>) => void;
 }
 
-export interface ViewOutput {}
-
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 /**
  * A helper typically used in the Application panel. Renders a split view
  * between a DataGrid displaying key-value pairs and a preview Widget.
@@ -106,7 +104,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
       title: string, id: string, editable: boolean, view?: View,
       metadataView?: ApplicationComponents.StorageMetadataView.StorageMetadataView) {
     if (!view) {
-      view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
+      view = (input: ViewInput, _, target: HTMLElement) => {
         // clang-format off
         render(html `
             <devtools-split-view direction="column" sidebar-position="second" name="${id}-split-view-state">

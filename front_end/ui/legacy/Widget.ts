@@ -68,7 +68,7 @@ export function widgetConfig<WidgetT extends Widget&WidgetParams, WidgetParams>(
   return new WidgetConfig(widgetClass, widgetParams);
 }
 
-export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = {}> extends HTMLElement {
+export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = object> extends HTMLElement {
   #widgetClass?: WidgetConstructor<WidgetT, WidgetParams>;
   #widgetParams?: WidgetParams;
   createWidget(): WidgetT {

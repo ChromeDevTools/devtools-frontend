@@ -23,11 +23,10 @@ export interface ViewInput {
   finalResult: Node[]|undefined;
   onToggle: () => void;
 }
-export interface ViewOutput {}
 
 export type View = (
     input: ViewInput,
-    output: ViewOutput,
+    output: object,
     target: HTMLElement,
     ) => void;
 
@@ -38,7 +37,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
   #substitutions: Node[][] = [];
 
   constructor(
-      view: View = (input, output, target):
+      view: View = (input, _, target):
           void => {
             const substitutionIcon = html`<span class=trace-line-icon aria-label="resolved to">\u21B3</span>`;
             const evalIcon = html`<span class=trace-line-icon aria-label="is equal to">\u003D</span>`;

@@ -80,7 +80,7 @@ describe('FrameManager', () => {
   function setupEventSink(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       frameManager: FrameManager, events: SDK.FrameManager.Events[]): Array<{type: string, data: any}> {
-    const dispatchedEvents: Array<{type: string, data: {}}> = [];
+    const dispatchedEvents: Array<{type: string, data: object}> = [];
     for (const event of events) {
       frameManager.addEventListener(event, e => dispatchedEvents.push({type: event || '', data: e.data}));
     }

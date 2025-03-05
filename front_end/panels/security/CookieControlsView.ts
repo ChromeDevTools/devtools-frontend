@@ -120,9 +120,8 @@ export interface ViewInput {
   inputChanged: (newValue: boolean, setting: Common.Settings.Setting<boolean>) => void;
   openChromeCookieSettings: () => void;
 }
-export interface ViewOutput {}
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export function showInfobar(): void {
   UI.InspectorView.InspectorView.instance().displayDebuggedTabReloadRequiredWarning(
@@ -134,7 +133,7 @@ export class CookieControlsView extends UI.Widget.VBox {
   #isGracePeriodActive: boolean;
   #thirdPartyControlsDict: Root.Runtime.HostConfig['thirdPartyCookieControls'];
 
-  constructor(element?: HTMLElement, view: View = (input, output, target) => {
+  constructor(element?: HTMLElement, view: View = (input, _, target) => {
     // createSetting() allows us to initialize the settings with the UI binding values the first
     // time that the browser starts, and use the existing setting value for all subsequent uses.
     const enterpriseEnabledSetting = Common.Settings.Settings.instance().createSetting(

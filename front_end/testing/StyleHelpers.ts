@@ -88,6 +88,7 @@ export function ruleMatch(
       selectorList,
       origin,
       style: createCSSStyle(cssProperties, range, styleSheetId),
+      styleSheetId,
     },
     matchingSelectors,
   };

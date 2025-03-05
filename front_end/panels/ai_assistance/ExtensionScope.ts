@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type {ChangeManager} from './ChangeManager.js';
@@ -208,6 +209,26 @@ export class ExtensionScope {
         .join('.');
   }
 
+  static getSourceLocation(styleRule: SDK.CSSRule.CSSStyleRule): string|undefined {
+    if (!styleRule.styleSheetId) {
+      return;
+    }
+    const styleSheetHeader = styleRule.cssModel().styleSheetHeaderForId(styleRule.styleSheetId);
+    if (!styleSheetHeader) {
+      return;
+    }
+
+    const range = styleRule.selectorRange();
+    if (!range) {
+      return;
+    }
+    const lineNumber = styleSheetHeader.lineNumberInSource(range.startLine);
+    const columnNumber = styleSheetHeader.columnNumberInSource(range.startLine, range.startColumn);
+    const location = new SDK.CSSModel.CSSLocation(styleSheetHeader, lineNumber, columnNumber);
+    const uiLocation = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().rawLocationToUILocation(location);
+    return uiLocation?.linkText(/* skipTrim= */ true, /* showColumnNumber= */ true);
+  }
+
   async #computeContextFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<{
     selector: string,
     sourceLocation?: string,
@@ -252,6 +273,7 @@ export class ExtensionScope {
 
       return {
         selector,
+        sourceLocation: ExtensionScope.getSourceLocation(styleRule),
       };
     } catch {
       // no-op to allow the fallback below to run.

@@ -72,5 +72,6 @@ luci.gitiles_poller(
         "extensions/cxx_debugging/.+",
         "node_modules/.+",
         "third_party/.+",
+        "build/.+",
     ],
 )

@@ -199,8 +199,6 @@ cq_builders = struct(
         "dtf_mac_arm64_rel": 100,
     },
     includable_only_builders = [
-        "cpp_debug_extension_e2e_dbg",
-        "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
         "devtools_frontend_shuffled_linux_rel",
         "devtools_frontend_shuffled_mac_rel",
@@ -221,14 +219,26 @@ def branch_verifiers(with_chromium = True):
             disable_reuse = ("presubmit" in builder),
             experiment_percentage = experiment_builder(builder),
             includable_only = includable_only_builder(builder),
-            location_filters = None if includable_only_builder(builder) else [
-                cq.location_filter(path_regexp = "docs/.+", exclude = True),
-                cq.location_filter(path_regexp = ".+\\.md", exclude = True),
-            ],
+            location_filters = custom_locationsfilters(builder),
         )
         for builder in cq_builders.devtools_builders + (
             cq_builders.chromium_builders if with_chromium else []
         )
+    ]
+
+def custom_locationsfilters(builder):
+    if includable_only_builder(builder):
+        return None
+    if builder.startswith("cpp_debug_extension"):
+        return [
+            cq.location_filter(path_regexp = "extensions/cxx_debugging/.+", exclude = False),
+            cq.location_filter(path_regexp = "node_modules/.+", exclude = False),
+            cq.location_filter(path_regexp = "third_party/.+", exclude = False),
+            cq.location_filter(path_regexp = "build/.+", exclude = False),
+        ]
+    return [
+        cq.location_filter(path_regexp = "docs/.+", exclude = True),
+        cq.location_filter(path_regexp = ".+\\.md", exclude = True),
     ]
 
 luci.cq_group(

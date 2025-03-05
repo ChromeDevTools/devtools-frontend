@@ -201,7 +201,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
           // Ensure directory exists
           if (parentDirectory.length > 1) {
             // TypeScript doesn't know about createPath
-            // @ts-expect-error
+            // @ts-expect-error doesn't exit on types
             backend.FS.createPath('/', parentDirectory.substring(1), true, true);
           }
 
@@ -216,7 +216,7 @@ export class DWARFLanguageExtensionPlugin implements Chrome.DevTools.LanguageExt
               void this.hostInterface.reportResourceLoad(dwoURL, {success: false, errorMessage: (e as Error).message});
               // Rethrow any error fetching the content as errno 44 (EEXIST)
               // TypeScript doesn't know about the ErrnoError constructor
-              // @ts-expect-error
+              // @ts-expect-error doesn't exit on types
               throw new backend.FS.ErrnoError(44);
             }
           };
@@ -601,6 +601,7 @@ export async function createPlugin(
                                      .join(', ');
                 // eslint-disable-next-line no-console
                 console.info(`${key}(${jsonArgs})`);
+                // @ts-expect-error TypeScript does not play well with `arguments`
                 return (target[key] as (...args: any[]) => void).apply(target, arguments);
               } as unknown as DWARFLanguageExtensionPlugin[Key];
             }

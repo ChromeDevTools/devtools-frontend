@@ -1071,8 +1071,8 @@ class AgentPrototype {
  * so that there is only one map per domain that is shared among all DispatcherManagers.
  */
 class DispatcherManager<Domain extends ProtocolDomainName> {
-  #eventArgs: ReadonlyEventParameterNames;
-  #dispatchers: Array<ProtocolProxyApi.ProtocolDispatchers[Domain]> = [];
+  readonly #eventArgs: ReadonlyEventParameterNames;
+  readonly #dispatchers: Array<ProtocolProxyApi.ProtocolDispatchers[Domain]> = [];
 
   constructor(eventArgs: ReadonlyEventParameterNames) {
     this.#eventArgs = eventArgs;
@@ -1101,14 +1101,13 @@ class DispatcherManager<Domain extends ProtocolDomainName> {
       return;
     }
 
-    const messageParams = {...messageObject.params};
     for (let index = 0; index < this.#dispatchers.length; ++index) {
       const dispatcher = this.#dispatchers[index];
 
       if (event in dispatcher) {
         const f = dispatcher[event as string as keyof ProtocolProxyApi.ProtocolDispatchers[Domain]];
         // @ts-expect-error Can't type check the dispatch.
-        f.call(dispatcher, messageParams);
+        f.call(dispatcher, messageObject.params);
       }
     }
   }

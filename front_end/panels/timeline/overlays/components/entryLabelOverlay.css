@@ -10,6 +10,49 @@
   align-items: center;
 }
 
+.label-button-input-wrapper {
+  display: flex;
+  position: relative;
+  overflow: visible;
+}
+
+.ai-label-button {
+  /* position the button on the very right of the label */
+  position: absolute;
+  left: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  pointer-events: auto;
+  gap: var(--sys-size-4);
+  padding: var(--sys-size-3);
+  /* when the button is not hovered, set the max width to only fit the pen icon */
+  max-width: var(--sys-size-12);
+  height: var(--sys-size-12);
+  overflow: hidden;
+  border: none;
+  border-radius: var(--sys-shape-corner-medium-small);
+  background: var(--sys-color-surface3);
+  box-shadow: var(--drop-shadow);
+}
+
+.ai-label-button:focus,
+.ai-label-button:hover {
+  width: fit-content;
+  max-width: 200px;
+  height: var(--sys-size-13);
+  padding: 10px;
+  transition:
+    all var(--sys-motion-duration-long2) var(--sys-motion-easing-emphasized);
+  overflow: hidden;
+  top: -2px;
+}
+
+.generate-label-text {
+  white-space: nowrap;
+  color: var(--color-primary);
+}
+
 .input-field {
   background-color: var(--color-background-inverted);
   color: var(--color-background);

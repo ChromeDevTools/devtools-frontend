@@ -2,14 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
-import {html, render} from '../../../../ui/lit/lit.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import stylesRaw from './entryLabelOverlay.css.js';
+
+const {html} = Lit;
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
@@ -24,6 +28,10 @@ const UIStrings = {
    *@description Accessible label used to prompt the user to input text into the field.
    */
   inputTextPrompt: 'Enter an annotation label',
+  /**
+   *@description Text displayed on a button that generates an AI label.
+   */
+  generateLabelButton: 'Generate label',
 
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
@@ -336,22 +344,48 @@ export class EntryLabelOverlay extends HTMLElement {
     }
   }
 
+  #renderAiButton(): Lit.TemplateResult {
+    // clang-format on
+    return html`
+      <!-- TODO: On button click generate a label -->
+      <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->
+      <button
+        class="ai-label-button"
+        @click=${(): void => {}}
+        @mousedown=${(e: Event) => e.preventDefault()}>
+          <devtools-icon
+          class="pen-icon"
+          .name=${'pen-spark'}
+          .data=${{
+      iconName: 'pen-spark', color: '#0B57D0', width: '20px'
+    }
+    }
+          ></devtools-icon>
+          <span class="generate-label-text">${i18nString(UIStrings.generateLabelButton)}</span>
+      </button>
+    `;
+  }
+
   #render(): void {
     // clang-format off
-    render(
+    Lit.render(
         html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <span
-            class="input-field"
-            role="textbox"
-            @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
-            @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
-            @keydown=${this.#handleLabelInputKeyDown}
-            @paste=${this.#handleLabelInputPaste}
-            @keyup=${this.#handleLabelInputKeyUp}
-            contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
-            jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
-          ></span>
+            class="label-button-input-wrapper">
+            <span
+              class="input-field"
+              role="textbox"
+              @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
+              @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
+              @keydown=${this.#handleLabelInputKeyDown}
+              @paste=${this.#handleLabelInputPaste}
+              @keyup=${this.#handleLabelInputKeyUp}
+              contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
+              jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
+            ></span>
+            <!-- ${this.#renderAiButton()} -->
+          </span>
           <svg class="connectorContainer">
             <line/>
             <circle/>

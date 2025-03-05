@@ -1002,15 +1002,6 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
-   * @param {string} pageId
-   * @param {string} action
-   */
-  performActionOnRemotePage(pageId, action) {
-    DevToolsAPI.sendMessageToEmbedder('performActionOnRemotePage', [pageId, action], null);
-  }
-
-  /**
-   * @override
    * @param {string} browserId
    * @param {string} url
    */

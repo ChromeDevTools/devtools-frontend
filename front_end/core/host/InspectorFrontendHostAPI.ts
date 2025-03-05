@@ -339,8 +339,6 @@ export interface InspectorFrontendHostAPI {
 
   setDevicesUpdatesEnabled(enabled: boolean): void;
 
-  performActionOnRemotePage(pageId: string, action: string): void;
-
   openRemotePage(browserId: string, url: string): void;
 
   openNodeFrontend(): void;

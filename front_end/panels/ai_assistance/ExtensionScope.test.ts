@@ -35,7 +35,13 @@ async function getSelector(
     ...payload,
   });
 
-  return ExtensionScope.ExtensionScope.getSelectorForRule(matchedStyles);
+  const styleRule = ExtensionScope.ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+
+  if (!styleRule) {
+    return '';
+  }
+
+  return ExtensionScope.ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
 }
 
 describe('ExtensionScope', () => {

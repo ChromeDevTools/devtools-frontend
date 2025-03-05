@@ -140,7 +140,8 @@ export class ExtensionScope {
     return response;
   }
 
-  static getSelectorForRule(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string {
+  static getStyleRuleFromMatchesStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): SDK.CSSRule.CSSStyleRule
+      |undefined {
     let styleRule: SDK.CSSRule.CSSStyleRule|undefined;
     for (const style of matchedStyles.nodeStyles()) {
       // Ignore inline as we can't override them
@@ -156,19 +157,20 @@ export class ExtensionScope {
         break;
       }
       if (rule instanceof SDK.CSSRule.CSSStyleRule) {
-        // If the rule we created was our own return directly
-        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
-          // We know that the last character will be & so remove it
-          const text = rule.selectors[0].text;
-          return text.at(-1) === '&' ? text.slice(0, -1) : text;
-        }
         styleRule = rule;
         break;
       }
     }
+    return styleRule;
+  }
 
-    if (!styleRule) {
-      return '';
+  static getSelectorsFromStyleRule(
+      styleRule: SDK.CSSRule.CSSStyleRule, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string {
+    // If the rule we created was our own return directly
+    if (styleRule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
+      // We know that the last character will be & so remove it
+      const text = styleRule.selectors[0].text;
+      return text.at(-1) === '&' ? text.slice(0, -1) : text;
     }
 
     const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
@@ -206,7 +208,10 @@ export class ExtensionScope {
         .join('.');
   }
 
-  async #computeSelectorFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<string> {
+  async #computeContextFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<{
+    selector: string,
+    sourceLocation?: string,
+  }> {
     if (!remoteObject.objectId) {
       throw new Error('DOMModel is not found');
     }
@@ -230,17 +235,32 @@ export class ExtensionScope {
       const matchedStyles = await cssModel.getMatchedStyles(node.id);
 
       if (!matchedStyles) {
-        throw new Error('No Matching styles');
+        throw new Error('No matching styles');
       }
 
-      const selector = ExtensionScope.getSelectorForRule(matchedStyles);
-      if (selector) {
-        return selector;
+      const styleRule = ExtensionScope.getStyleRuleFromMatchesStyles(matchedStyles);
+
+      if (!styleRule) {
+        throw new Error('No style rule found');
       }
+
+      const selector = ExtensionScope.getSelectorsFromStyleRule(styleRule, matchedStyles);
+
+      if (!selector) {
+        throw new Error('No selector found');
+      }
+
+      return {
+        selector,
+      };
     } catch {
+      // no-op to allow the fallback below to run.
     }
 
-    return ExtensionScope.getSelectorForNode(node);
+    // Fallback
+    return {
+      selector: ExtensionScope.getSelectorForNode(node),
+    };
   }
 
   async #bindingCalled(executionContext: SDK.RuntimeModel.ExecutionContext, event: {
@@ -267,9 +287,9 @@ export class ExtensionScope {
       const arg = JSON.parse(args.object.value) as Omit<FreestyleCallbackArgs, 'element'>;
 
       // TODO: Should this a be a *?
-      let selector = '';
+      let context = {selector: ''};
       try {
-        selector = await this.#computeSelectorFromElement(element.object);
+        context = await this.#computeContextFromElement(element.object);
       } catch (err) {
         console.error(err);
       } finally {
@@ -278,7 +298,7 @@ export class ExtensionScope {
 
       const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
         groupId: this.#agentId,
-        selector,
+        selector: context.selector,
         className: arg.className,
         styles: arg.styles,
       });

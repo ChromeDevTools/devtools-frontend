@@ -66,6 +66,9 @@ export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePain
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
 }
 
+export function isLCPDiscovery(model: InsightModel): model is LCPDiscoveryInsightModel {
+  return model.insightKey === 'LCPDiscovery';
+}
 export type LCPDiscoveryInsightModel = InsightModel<typeof UIStrings, {
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
   /** The network request for the LCP image, if there was one. */

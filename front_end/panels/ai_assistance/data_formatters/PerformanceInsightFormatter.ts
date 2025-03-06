@@ -30,7 +30,8 @@ export class PerformanceInsightFormatter {
 
   formatInsight(): string {
     const {title} = this.#insight;
-    return `## Insight title: ${title}
+    return `*IMPORTANT*: all time units given to you are in milliseconds.
+## Insight title: ${title}
 
 ## Insight Description:
 ${this.#description()}
@@ -73,12 +74,36 @@ ${this.#details()}`;
         lcpRequestText = `\nThe LCP resource was downloaded from: ${lcpRequest.args.data.url}.`;
       }
 
-      return `All time units given to you are in milliseconds.
-The actual LCP time is ${formatMilli(lcpMs)}.${lcpRequestText}
+      return `The actual LCP time is ${formatMilli(lcpMs)}.${lcpRequestText}
 
 We can break this time down into the ${phaseBulletPoints.length} phases that combine to make up the LCP time:
 
 ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`;
+    }
+    if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(this.#insight)) {
+      const {checklist, lcpEvent, lcpRequest, earliestDiscoveryTimeTs} = this.#insight;
+      if (!checklist || !lcpEvent || !lcpRequest || !earliestDiscoveryTimeTs) {
+        return '';
+      }
+
+      const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
+      checklistBulletPoints.push({
+        name: checklist.priorityHinted.label,
+        passed: checklist.priorityHinted.value,
+      });
+      checklistBulletPoints.push({
+        name: checklist.eagerlyLoaded.label,
+        passed: checklist.eagerlyLoaded.value,
+      });
+      checklistBulletPoints.push({
+        name: checklist.requestDiscoverable.label,
+        passed: checklist.requestDiscoverable.value,
+      });
+
+      return `The LCP resource URL is: ${lcpRequest.args.data.url}.
+
+The result of the checks for this insight are:
+${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
     }
     return '';
   }
@@ -102,7 +127,8 @@ ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`
       case 'InteractionToNextPaint':
         return '';
       case 'LCPDiscovery':
-        return '';
+        return `- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp`;
       case 'LCPPhases':
         return `- https://web.dev/articles/lcp
 - https://web.dev/articles/optimize-lcp`;
@@ -138,9 +164,14 @@ ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`
       case 'InteractionToNextPaint':
         return '';
       case 'LCPDiscovery':
-        return '';
+        return `This insight analyzes the time taken to discover the LCP resource and request it on the network. It only applies if LCP element was a resource like an image that has to be fetched over the network. There are 3 checks this insight makes:
+1. Did the resource have \`fetchpriority=high\` applied?
+2. Was the resource discoverable in the initial document, rather than injected from a script or stylesheet?
+3. The resource was not lazy loaded as this can delay the browser loading the resource.
+
+It is important that all of these checks pass to minimize the delay between the initial page load and the LCP resource being loaded.`;
       case 'LCPPhases':
-        return 'This insight is used to analyse the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
+        return 'This insight is used to analyze the time spent that contributed to the final LCP time and identify which of the 4 phases (or 2 if there was no LCP resource) are contributing most to the delay in rendering the LCP element. For this insight it can be useful to get a list of all network requests that happened before the LCP time and look for slow requests. You can also look for main thread activity during the phases, in particular the load delay and render delay phases.';
       case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':

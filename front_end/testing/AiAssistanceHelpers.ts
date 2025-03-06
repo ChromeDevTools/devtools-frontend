@@ -7,8 +7,11 @@ import * as Host from '../core/host/host.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
+import * as Bindings from '../models/bindings/bindings.js';
+import * as Breakpoints from '../models/breakpoints/breakpoints.js';
 import * as Logs from '../models/logs/logs.js';
-import type * as Workspace from '../models/workspace/workspace.js';
+import * as Persistence from '../models/persistence/persistence.js';
+import * as Workspace from '../models/workspace/workspace.js';
 import * as AiAssistance from '../panels/ai_assistance/ai_assistance.js';
 
 import {findMenuItemWithLabel, getMenu} from './ContextMenuHelpers.js';
@@ -224,6 +227,23 @@ export async function createPatchWidget(options?: {
     view,
     aidaClient,
   };
+}
+
+export function initializePersistenceImplForTests(): void {
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    forceNew: true,
+    targetManager: SDK.TargetManager.TargetManager.instance(),
+    resourceMapping:
+        new Bindings.ResourceMapping.ResourceMapping(SDK.TargetManager.TargetManager.instance(), workspace),
+  });
+  const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+    forceNew: true,
+    targetManager: SDK.TargetManager.TargetManager.instance(),
+    workspace,
+    debuggerWorkspaceBinding,
+  });
+  Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
 }
 
 export function cleanup() {

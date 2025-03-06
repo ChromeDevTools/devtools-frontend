@@ -7,12 +7,17 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
   createPatchWidget,
+  initializePersistenceImplForTests,
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 describeWithMockConnection('workspace', () => {
+  beforeEach(() => {
+    initializePersistenceImplForTests();
+  });
+
   afterEach(() => {
     cleanup();
   });

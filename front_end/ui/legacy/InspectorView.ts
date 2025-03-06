@@ -72,7 +72,7 @@ const UIStrings = {
   /**
    *@description Title of an action that reloads the tab currently being debugged by DevTools
    */
-  reloadDebuggedTab: 'Reload',
+  reloadDebuggedTab: 'Reload page',
   /**
    *@description Title of an action that reloads the DevTools
    */
@@ -492,7 +492,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               },
               dismiss: false,
               buttonVariant: Buttons.Button.Variant.PRIMARY,
-              icon: 'refresh',
               jslogContext: 'main.debug-reload',
             },
           ],
@@ -522,6 +521,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               highlight: true,
               delegate: () => reloadDevTools(),
               dismiss: false,
+              buttonVariant: Buttons.Button.Variant.PRIMARY,
               jslogContext: 'main.debug-reload',
             },
           ],
@@ -545,6 +545,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
               highlight: true,
               delegate: () => callback(),
               dismiss: true,
+              buttonVariant: Buttons.Button.Variant.TONAL,
               jslogContext: 'select-folder',
             },
           ],

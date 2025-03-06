@@ -119,7 +119,7 @@ const UIStrings = {
    * @description Button description in Workspaces tab in the Sources panel
    *              to connect to an automatic workspace folder.
    */
-  automaticWorkspaceFolderConnect: 'Connect...',
+  automaticWorkspaceFolderConnect: 'Connect',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

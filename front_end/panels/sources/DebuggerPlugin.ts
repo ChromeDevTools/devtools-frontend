@@ -429,13 +429,6 @@ export class DebuggerPlugin extends Plugin {
         UI.Infobar.Type.WARNING, i18nString(UIStrings.thisScriptIsOnTheDebuggersIgnore),
         [
           {
-            text: i18nString(UIStrings.removeFromIgnoreList),
-            highlight: false,
-            delegate: unIgnoreList,
-            dismiss: true,
-            jslogContext: 'remove-from-ignore-list',
-          },
-          {
             text: i18nString(UIStrings.configure),
             highlight: false,
             delegate:
@@ -443,6 +436,14 @@ export class DebuggerPlugin extends Plugin {
             dismiss: false,
             jslogContext: 'configure',
           },
+          {
+            text: i18nString(UIStrings.removeFromIgnoreList),
+            highlight: false,
+            delegate: unIgnoreList,
+            buttonVariant: Buttons.Button.Variant.TONAL,
+            dismiss: true,
+            jslogContext: 'remove-from-ignore-list',
+          }
         ],
         undefined, 'script-on-ignore-list');
     this.ignoreListInfobar = infobar;

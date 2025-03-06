@@ -81,36 +81,34 @@ export class Infobar {
     ARIAUtils.markAsAlert(this.infoText);
 
     this.actionContainer = this.infoContainer.createChild('div', 'infobar-info-actions');
+
+    let defaultActionButtonVariant = Buttons.Button.Variant.OUTLINED;
+    this.disableSetting = disableSetting || null;
+    if (disableSetting) {
+      const disableButton = createTextButton(
+          i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), {className: 'infobar-button'});
+      this.actionContainer.appendChild(disableButton);
+
+      // If we have a disable button, make the other buttons tonal (if not otherwise specified).
+      defaultActionButtonVariant = Buttons.Button.Variant.TONAL;
+    }
     if (actions) {
       this.contentElement.setAttribute('role', 'group');
 
       for (const action of actions) {
         const actionCallback = this.actionCallbackFactory(action);
-        let buttonClass = 'infobar-button';
-        if (action.highlight) {
-          buttonClass += ' primary-button';
-        }
-
-        const buttonVariant = action.buttonVariant ?? Buttons.Button.Variant.OUTLINED;
+        const buttonVariant = action.buttonVariant ?? defaultActionButtonVariant;
 
         const button = createTextButton(action.text, actionCallback, {
-          className: buttonClass,
+          className: 'infobar-button',
           jslogContext: action.jslogContext,
           variant: buttonVariant,
-          icon: action.icon,
         });
         if (action.highlight && !this.#firstFocusableElement) {
           this.#firstFocusableElement = button;
         }
         this.actionContainer.appendChild(button);
       }
-    }
-
-    this.disableSetting = disableSetting || null;
-    if (disableSetting) {
-      const disableButton = createTextButton(
-          i18nString(UIStrings.dontShowAgain), this.onDisable.bind(this), {className: 'infobar-button'});
-      this.actionContainer.appendChild(disableButton);
     }
 
     this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
@@ -243,7 +241,6 @@ export interface InfobarAction {
   delegate: (() => void)|null;
   dismiss: boolean;
   buttonVariant?: Buttons.Button.Variant;
-  icon?: string;
   jslogContext?: string;
 }
 

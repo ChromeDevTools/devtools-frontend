@@ -813,7 +813,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
 
   #getChangeSummary(): string|undefined {
     return (isAiAssistancePatchingEnabled() && this.#conversationAgent && !this.#conversation?.isReadOnly) ?
-        this.#changeManager.formatChanges(this.#conversationAgent.id, /* includeSourceLocation= */ true) :
+        this.#changeManager.formatChangesForPatching(this.#conversationAgent.id, /* includeSourceLocation= */ true) :
         undefined;
   }
 

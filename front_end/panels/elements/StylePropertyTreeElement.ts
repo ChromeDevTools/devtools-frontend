@@ -589,12 +589,10 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
 export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMixMatch) {
   // clang-format on
   readonly #pane: StylesSidebarPane;
-  readonly #treeElement: StylePropertyTreeElement|null;
 
-  constructor(pane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null) {
+  constructor(pane: StylesSidebarPane) {
     super();
     this.#pane = pane;
-    this.#treeElement = treeElement;
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.ColorMixMatch, context: RenderingContext): Node[] {
@@ -644,7 +642,7 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 
     if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
       const initialColor = Common.Color.parse('#000') as Common.Color.Color;
-      const swatch = new ColorRenderer(this.#pane, this.#treeElement).renderColorSwatch(initialColor);
+      const swatch = new ColorRenderer(this.#pane, null).renderColorSwatch(initialColor);
       context.addControl('color', swatch);
       const nodeId = this.#pane.node()?.id;
       if (nodeId !== undefined) {
@@ -1500,7 +1498,7 @@ export function getPropertyRenderers(
   return [
     new VariableRenderer(stylesPane, treeElement, matchedStyles, computedStyles),
     new ColorRenderer(stylesPane, treeElement),
-    new ColorMixRenderer(stylesPane, treeElement),
+    new ColorMixRenderer(stylesPane),
     new URLRenderer(style.parentRule, stylesPane.node()),
     new AngleRenderer(treeElement),
     new LinkableNameRenderer(matchedStyles, stylesPane),

@@ -30,47 +30,62 @@ export type View = (
     target: HTMLElement,
     ) => void;
 
+function defaultView(input: ViewInput, _: unknown, target: HTMLElement): void {
+  const [firstEvaluation, ...intermediateEvaluations] = input.evaluations;
+  render(
+      // clang-format off
+    html`
+      <div class="css-value-trace monospace">
+        ${input.substitutions.map(
+          line =>
+            html`<span class="trace-line-icon" aria-label="is equal to">↳</span
+              ><span class="trace-line">${line}</span>`,
+        )}
+        ${firstEvaluation && intermediateEvaluations.length === 0
+          ? html`<span class="trace-line-icon" aria-label="is equal to">↳</span
+              ><span class="trace-line">${firstEvaluation}</span>`
+          : html`<details
+              @toggle=${input.onToggle}
+              ?hidden=${!firstEvaluation ||
+              intermediateEvaluations.length === 0}
+            >
+              <summary>
+                <span class="trace-line-icon" aria-label="is equal to">↳</span
+                ><devtools-icon class="marker"></devtools-icon
+                ><span class="trace-line">${firstEvaluation}</span>
+              </summary>
+              <div>
+                ${intermediateEvaluations.map(
+                  evaluation =>
+                    html`<span class="trace-line-icon" aria-label="is equal to"
+                        >↳</span
+                      ><span class="trace-line">${evaluation}</span>`,
+                )}
+              </div>
+            </details>`}
+        ${!input.finalResult
+          ? ''
+          : html`<span class="trace-line-icon" aria-label="is equal to">↳</span
+              ><span class="trace-line">${input.finalResult}</span>`}
+      </div>
+    `,
+      // clang-format on
+      target,
+  );
+}
+
 export class CSSValueTraceView extends UI.Widget.VBox {
   #view: View;
   #finalResult: Node[]|undefined = undefined;
   #evaluations: Node[][] = [];
   #substitutions: Node[][] = [];
 
-  constructor(
-      view: View = (input, _, target):
-          void => {
-            const substitutionIcon = html`<span class=trace-line-icon aria-label="resolved to">\u21B3</span>`;
-            const evalIcon = html`<span class=trace-line-icon aria-label="is equal to">\u003D</span>`;
-            const [firstEvaluation, ...intermediateEvaluations] = input.evaluations;
-            render(
-                // clang-format off
-        html`
-<div class="css-value-trace monospace">
-  ${input.substitutions.map(line => html`${substitutionIcon}<span class="trace-line">${line}</span>`)}
-  ${
-    firstEvaluation && intermediateEvaluations.length === 0
-      ? html`${evalIcon}<span class="trace-line">${firstEvaluation}</span>`
-      : html`<details
-                  @toggle=${input.onToggle}
-                  ?hidden=${!firstEvaluation || intermediateEvaluations.length === 0}>
-    <summary>
-       ${evalIcon}<devtools-icon class=marker></devtools-icon><span class="trace-line">${firstEvaluation}</span>
-    </summary>
-    <div>
-      ${intermediateEvaluations.map(evaluation => html`${evalIcon}<span class="trace-line">${evaluation}</span>`)}
-    </div>
-  </details>`
-  }
-  ${!input.finalResult ? '' : html`${evalIcon}<span class="trace-line">${input.finalResult}</span>`}
-</div>
-`,
-                // clang-format on
-                target,
-            );
-          },
-  ) {
+  constructor(view: View = defaultView) {
     super(true);
-    this.registerRequiredCSS(cssValueTraceViewStyles, stylePropertiesTreeOutlineStyles);
+    this.registerRequiredCSS(
+        cssValueTraceViewStyles,
+        stylePropertiesTreeOutlineStyles,
+    );
     this.#view = view;
     this.requestUpdate();
   }

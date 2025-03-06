@@ -14,14 +14,12 @@ import {
   getPropertiesWithHints,
   waitForAndClickTreeElementWithPartialText,
   waitForElementsStyleSection,
-  waitForPartialContentOfSelectedElementsNode,
   waitForStyleRule,
 } from '../helpers/elements-helpers.js';
 
 const goToResourceAndWaitForStyleSection = async (path: string) => {
   await goToResource(path);
   await waitForElementsStyleSection();
-  await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
 };
 
 describe('CSS hints in the Styles panel', () => {

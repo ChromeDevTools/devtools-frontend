@@ -71,7 +71,7 @@ import {
   StylePropertiesSection,
 } from './StylePropertiesSection.js';
 import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
-import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import type {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import {WebCustomData} from './WebCustomData.js';
 
@@ -85,14 +85,6 @@ const UIStrings = {
    *@description Text to announce the result of the filter input in the Styles Sidebar Pane of the Elements panel
    */
   visibleSelectors: '{n, plural, =1 {# visible selector listed below} other {# visible selectors listed below}}',
-  /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
-   */
-  invalidPropertyValue: 'Invalid property value',
-  /**
-   *@description Text in Styles Sidebar Pane of the Elements panel
-   */
-  unknownPropertyName: 'Unknown property name',
   /**
    *@description Separator element text content in Styles Sidebar Pane of the Elements panel
    *@example {scrollbar-corner} PH1
@@ -122,13 +114,6 @@ const UIStrings = {
   incrementdecrementWithMousewheelHundred:
       'Increment/decrement with mousewheel or up/down keys. {PH1}: ±100, Shift: ±10, {PH2}: ±0.1',
   /**
-   *@description Announcement string for invalid properties.
-   *@example {Invalid property value} PH1
-   *@example {font-size} PH2
-   *@example {invalidValue} PH3
-   */
-  invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
-  /**
    *@description Tooltip text that appears when hovering over the rendering button in the Styles Sidebar Pane of the Elements panel
    */
   toggleRenderingEmulations: 'Toggle common rendering emulations',
@@ -152,11 +137,6 @@ const UIStrings = {
    *@description Tooltip text for the link in the sidebar pane layer separators that reveals the layer in the layer tree view.
    */
   clickToRevealLayer: 'Click to reveal layer in layer tree',
-  /**
-   *@description Text displayed in tooltip that shows specificity information.
-   *@example {(0,0,1)} PH1
-   */
-  specificity: 'Specificity: {PH1}',
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylesSidebarPane.ts', UIStrings);
@@ -223,10 +203,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   private readonly imagePreviewPopover: ImagePreviewPopover;
   #webCustomData?: WebCustomData;
-  #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
-  #genericPopoverHelper: UI.PopoverHelper.PopoverHelper;
-  #elementPopoverHooks =
-      new WeakMap<Node, {contents: () => HTMLElement | UI.Widget.Widget | undefined, jslogContext?: string}>();
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker = new Map<Platform.DevToolsPath.UrlString, ChangeTracker>();
@@ -283,6 +259,9 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.resizeThrottler = new Common.Throttler.Throttler(100);
     this.resetUpdateThrottler = new Common.Throttler.Throttler(500);
     this.computedStyleUpdateThrottler = new Common.Throttler.Throttler(500);
+    if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover')) {
+      this.#webCustomData = WebCustomData.create();
+    }
 
     this.boundOnScroll = this.onScroll.bind(this);
     this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, event => {
@@ -294,118 +273,10 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }, () => this.node());
 
     this.activeCSSAngle = null;
-
-    const showDocumentationSetting =
-        Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover');
-
-    this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
-      const hoveredNode = event.composedPath()[0];
-      // This is a workaround to fix hint popover not showing after icon update.
-      // Previously our `.hint` element was an icon itself and `composedPath()[0]` was referring to it.
-      // However, our `Icon` component now is an element with shadow root and `event.composedPath()[0]`
-      // refers to the markup inside shadow root. Though we want a reference to the `.hint` element itself.
-      // So we trace back and reach to the possible `.hint` element from inside the shadow root.
-      const possibleHintNodeFromHintIcon = event.composedPath()[2];
-
-      if (!hoveredNode || !(hoveredNode instanceof Element)) {
-        return null;
-      }
-
-      if (possibleHintNodeFromHintIcon instanceof Element && possibleHintNodeFromHintIcon.matches('.hint')) {
-        const hint = activeHints.get(possibleHintNodeFromHintIcon);
-
-        if (hint) {
-          this.#hintPopoverHelper.jslogContext = 'elements.css-hint';
-          return {
-            box: hoveredNode.boxInWindow(),
-            show: async (popover: UI.GlassPane.GlassPane) => {
-              const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint);
-              popover.contentElement.appendChild(popupElement);
-              return true;
-            },
-          };
-        }
-      }
-
-      if (showDocumentationSetting.get() && hoveredNode.matches('.webkit-css-property')) {
-        if (!this.#webCustomData) {
-          this.#webCustomData = WebCustomData.create();
-        }
-
-        const cssPropertyName = hoveredNode.textContent;
-        const cssProperty = cssPropertyName && this.#webCustomData.findCssProperty(cssPropertyName);
-
-        if (cssProperty) {
-          this.#hintPopoverHelper.jslogContext = 'elements.css-property-doc';
-          return {
-            box: hoveredNode.boxInWindow(),
-            show: async (popover: UI.GlassPane.GlassPane) => {
-              const popupElement = new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty);
-              popover.contentElement.appendChild(popupElement);
-              return true;
-            },
-          };
-        }
-      }
-
-      if (hoveredNode.matches('.simple-selector')) {
-        const specificity = StylePropertiesSection.getSpecificityStoredForNodeElement(hoveredNode);
-        this.#hintPopoverHelper.jslogContext = 'elements.css-selector-specificity';
-        return {
-          box: hoveredNode.boxInWindow(),
-          show: async (popover: UI.GlassPane.GlassPane) => {
-            popover.setIgnoreLeftMargin(true);
-            const element = document.createElement('span');
-            element.textContent = i18nString(
-                UIStrings.specificity,
-                {PH1: specificity ? `(${specificity.a},${specificity.b},${specificity.c})` : '(?,?,?)'});
-            popover.contentElement.appendChild(element);
-            return true;
-          },
-        };
-      }
-
-      return null;
-    });
-
-    this.#hintPopoverHelper.setDisableOnClick(true);
-    this.#hintPopoverHelper.setTimeout(300);
-    this.#hintPopoverHelper.setHasPadding(true);
-
-    this.#genericPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
-      for (let e = event.composedPath().length - 1; e >= 0; --e) {
-        const element = event.composedPath()[e] as Element;
-        const hook = this.#elementPopoverHooks.get(element);
-        const contents = hook ? hook.contents() : undefined;
-        if (contents) {
-          return {
-            box: element.boxInWindow(),
-            show: async (popover: UI.GlassPane.GlassPane) => {
-              popover.setJsLog(`${
-                  VisualLogging.popover(`${hook?.jslogContext ?? 'elements.generic-sidebar-popover'}`)
-                      .parent('popoverParent')}`);
-              popover.contentElement.classList.add('borderless-popover');
-              if (contents instanceof HTMLElement) {
-                popover.contentElement.appendChild(contents);
-              } else {
-                contents.show(popover.contentElement);
-              }
-              return true;
-            },
-          };
-        }
-      }
-      return null;
-    }, 'elements.generic-sidebar-popover');
-    this.#genericPopoverHelper.setDisableOnClick(true);
-    this.#genericPopoverHelper.setTimeout(500, 200);
   }
 
-  addPopover(element: Node, popover: {
-    contents: () => UI.Widget.Widget | HTMLElement | undefined,
-    jslogContext?: string,
-  }): void {
-    this.#elementPopoverHooks.set(element, popover);
+  get webCustomData(): WebCustomData|undefined {
+    return this.#webCustomData;
   }
 
   private onScroll(_event: Event): void {
@@ -418,26 +289,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
   setUserOperation(userOperation: boolean): void {
     this.userOperation = userOperation;
-  }
-
-  createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
-    const exclamationElement = document.createElement('span');
-    exclamationElement.classList.add('exclamation-mark');
-    const invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
-        i18nString(UIStrings.invalidPropertyValue) :
-        i18nString(UIStrings.unknownPropertyName);
-    if (title === null) {
-      UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
-    } else {
-      this.addPopover(exclamationElement, {contents: () => title});
-    }
-    const invalidString =
-        i18nString(UIStrings.invalidString, {PH1: invalidMessage, PH2: property.name, PH3: property.value});
-
-    // Storing the invalidString for future screen reader support when editing the property
-    property.setDisplayedStringForInvalidProperty(invalidString);
-
-    return exclamationElement;
   }
 
   static ignoreErrorsForProperty(property: SDK.CSSProperty.CSSProperty): boolean {
@@ -1493,9 +1344,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       this.activeCSSAngle.minify();
       this.activeCSSAngle = null;
     }
-
-    this.#hintPopoverHelper?.hidePopover();
-    this.#genericPopoverHelper?.hidePopover();
   }
 
   getSectionBlockByName(name: string): SectionBlock|undefined {

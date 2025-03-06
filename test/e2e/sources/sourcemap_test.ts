@@ -27,7 +27,6 @@ import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
-  waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
@@ -701,7 +700,6 @@ describe('The Elements Tab', () => {
     await goToResource('sources/sourcemap-css-inline-relative.html');
     await step('Prepare elements tab', async () => {
       await waitForElementsStyleSection();
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
       await focusElementsTree();
       await clickNthChildOfSelectedElementNode(1);
     });
@@ -713,7 +711,6 @@ describe('The Elements Tab', () => {
     await goToResource('sources/sourcemap-css-dynamic-link.html');
     await step('Prepare elements tab', async () => {
       await waitForElementsStyleSection();
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
       await focusElementsTree();
       await clickNthChildOfSelectedElementNode(1);
     });
@@ -725,7 +722,6 @@ describe('The Elements Tab', () => {
     await goToResource('sources/sourcemap-css-dynamic.html');
     await step('Prepare elements tab', async () => {
       await waitForElementsStyleSection();
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
       await focusElementsTree();
       await clickNthChildOfSelectedElementNode(1);
     });
@@ -737,7 +733,6 @@ describe('The Elements Tab', () => {
     await goToResource('sources/sourcemap-css-dynamic-link.html');
     await step('Prepare elements tab', async () => {
       await waitForElementsStyleSection();
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
       await focusElementsTree();
       await clickNthChildOfSelectedElementNode(1);
     });

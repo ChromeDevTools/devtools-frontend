@@ -12,7 +12,6 @@ import {
   waitForAdornerOnSelectedNode,
   waitForAdorners,
   waitForAndClickTreeElementWithPartialText,
-  waitForContentOfSelectedElementsNode,
   waitForElementsStyleSection,
   waitForNoAdornersOnSelectedNode,
   waitForPartialContentOfSelectedElementsNode,
@@ -20,7 +19,6 @@ import {
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();
-  await waitForContentOfSelectedElementsNode('<body>\u200B');
   await expandSelectedNodeRecursively();
 };
 

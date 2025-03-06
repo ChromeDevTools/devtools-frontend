@@ -41,9 +41,10 @@ const documents: Document[] = [];
 const pendingResize = new Map<Element, DOMRect>();
 const pendingChange = new Set<Element>();
 
-function observeMutations(roots: Node[]): void {
+function observeMutations(roots: Array<HTMLElement|ShadowRoot>): void {
   for (const root of roots) {
     mutationObserver.observe(root, {attributes: true, childList: true, subtree: true});
+    root.querySelectorAll('[popover]')?.forEach(e => e.addEventListener('toggle', scheduleProcessing));
   }
 }
 

@@ -8,43 +8,47 @@ import * as Protocol from '../../generated/protocol.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {getMatchedStylesWithStylesheet} from '../../testing/StyleHelpers.js';
+import {getMatchedStylesWithBlankRule, getMatchedStylesWithStylesheet} from '../../testing/StyleHelpers.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 
 import * as Elements from './elements.js';
-
-describe('StylePropertiesSection', () => {
-  it('contains specificity information', async () => {
-    const specificity = {a: 0, b: 1, c: 0};
-    const selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
-        [{text: '.child', specificity}], [true], new WeakMap());
-    assert.deepEqual(selectorElement.textContent, '.child');
-    assert.deepEqual(
-        Elements.StylePropertiesSection.StylePropertiesSection.getSpecificityStoredForNodeElement(
-            (selectorElement.firstChild as Element)),
-        specificity);
-  });
-
-  it('renders selectors correctly', async () => {
-    let selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
-        [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '.item', specificity: {a: 0, b: 2, c: 0}}], [true],
-        new WeakMap());
-    assert.deepEqual(selectorElement.textContent, '.child, .item');
-    selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
-        [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}], [true],
-        new WeakMap());
-    assert.deepEqual(selectorElement.textContent, '.child, & .item');
-    selectorElement = Elements.StylePropertiesSection.StylePropertiesSection.renderSelectors(
-        [{text: '&.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}],
-        [true], new WeakMap());
-    assert.deepEqual(selectorElement.textContent, '&.child, & .item');
-  });
-});
 
 describeWithMockConnection('StylesPropertySection', () => {
   let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   beforeEach(() => {
     computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+  });
+
+  it('contains specificity information', async () => {
+    const specificity = {a: 0, b: 1, c: 0};
+    const matchedStyles = await getMatchedStylesWithBlankRule(new SDK.CSSModel.CSSModel(createTarget()));
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
+    section.renderSelectors([{text: '.child', specificity}], [true], new WeakMap());
+    const selectorElement = section.element.querySelector('.selector');
+    assert.strictEqual(selectorElement?.textContent, '.child');
+    assert.deepEqual(section.element?.querySelector('devtools-tooltip')?.textContent?.trim(), 'Specificity: (0,1,0)');
+  });
+
+  it('renders selectors correctly', async () => {
+    const matchedStyles = await getMatchedStylesWithBlankRule(new SDK.CSSModel.CSSModel(createTarget()));
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel), matchedStyles,
+        matchedStyles.nodeStyles()[0], 0, new Map(), new Map());
+    section.renderSelectors(
+        [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '.item', specificity: {a: 0, b: 2, c: 0}}], [true],
+        new WeakMap());
+    const selectorElement = section.element.querySelector('.selector');
+    assert.deepEqual(selectorElement?.textContent, '.child, .item');
+    section.renderSelectors(
+        [{text: '.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}], [true],
+        new WeakMap());
+    assert.deepEqual(selectorElement?.textContent, '.child, & .item');
+    section.renderSelectors(
+        [{text: '&.child', specificity: {a: 0, b: 2, c: 0}}, {text: '& .item', specificity: {a: 0, b: 2, c: 0}}],
+        [true], new WeakMap());
+    assert.deepEqual(selectorElement?.textContent, '&.child, & .item');
   });
 
   it('displays the proper sourceURL origin for constructed stylesheets', async () => {

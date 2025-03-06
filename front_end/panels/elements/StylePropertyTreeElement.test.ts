@@ -10,15 +10,15 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
   getMatchedStylesWithBlankRule,
 } from '../../testing/StyleHelpers.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
+import type * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
-import type * as UI from '../../ui/legacy/legacy.js';
 import * as LegacyUI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
@@ -63,7 +63,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance(
         {forceNew: true, resourceMapping, targetManager: SDK.TargetManager.TargetManager.instance()});
 
-    stubNoopSettings();
     setMockConnectionResponseHandler('CSS.enable', () => ({}));
     cssModel = new SDK.CSSModel.CSSModel(createTarget());
     await cssModel.resumeModel();
@@ -215,31 +214,31 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       it('shows a popover with it\'s computed color as RGB if possible', () => {
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, red 50%, yellow)');
+        stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
 
-        const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
         stylePropertyTreeElement.updateTitle();
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
         assert.exists(colorMixSwatch);
-        renderElementIntoDOM(colorMixSwatch);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement as HTMLElement);
 
-        assert.isTrue(addPopoverSpy.calledOnce);
-        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
-        assert.strictEqual((addPopoverSpy.args[0][1].contents() as HTMLElement | undefined)?.textContent, '#ff8000');
+        const tooltip: Tooltips.Tooltip.Tooltip|null|undefined =
+            stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+        assert.exists(tooltip);
+        tooltip.showPopover();
+        assert.strictEqual(tooltip.textContent, '#ff8000');
       });
 
       it('shows a popover with it\'s computed color as wide gamut if necessary', () => {
         const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, oklch(.5 .5 .5) 50%, yellow)');
 
-        const addPopoverSpy = sinon.spy(stylesSidebarPane, 'addPopover');
         stylePropertyTreeElement.updateTitle();
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
         assert.exists(colorMixSwatch);
-        renderElementIntoDOM(colorMixSwatch);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement as HTMLElement);
 
-        assert.isTrue(addPopoverSpy.calledOnce);
-        assert.strictEqual(addPopoverSpy.args[0][0], colorMixSwatch);
-        assert.strictEqual(
-            (addPopoverSpy.args[0][1].contents() as HTMLElement | undefined)?.textContent, 'color(srgb 1 0.24 0.17)');
+        const tooltip = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+        tooltip?.showPopover();
+        assert.strictEqual(tooltip?.textContent, 'color(srgb 1 0.24 0.17)');
       });
 
       it('propagates updates to outer color-mixes', () => {
@@ -254,7 +253,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         assert.exists(outerColorMix);
         assert.exists(innerColorMix);
         const handler = sinon.fake();
-        outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.Events.COLOR_CHANGED, handler);
+        outerColorMix.addEventListener(InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName, handler);
         assert.strictEqual(outerColorMix.getText(), 'color-mix(in srgb, color-mix(in oklch, red, green), blue)');
         assert.strictEqual(innerColorMix.getText(), 'color-mix(in oklch, red, green)');
         innerColorMix.setFirstColor('blue');
@@ -530,12 +529,6 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     });
 
     it('linkifies property definition to registrations', async () => {
-      const addElementPopoverHook = sinon.stub(stylesSidebarPane, 'addPopover');
-      const stylePropertyTreeElement = getTreeElement('--prop', 'value');
-      stylePropertyTreeElement.updateTitle();
-
-      assert.isTrue(addElementPopoverHook.calledOnce);
-
       const registration = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSRegisteredProperty);
       sinon.stub(matchedStyles, 'getRegisteredProperty')
           .callsFake(name => name === '--prop' ? registration : undefined);
@@ -543,7 +536,13 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         value: 'computedvalue',
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
       });
-      const popoverContents = addElementPopoverHook.args[0][1].contents();
+
+      const stylePropertyTreeElement = getTreeElement('--prop', 'value');
+      stylePropertyTreeElement.treeOutline = new LegacyUI.TreeOutline.TreeOutline();
+      stylePropertyTreeElement.updateTitle();
+
+      const popoverContents =
+          stylePropertyTreeElement.listItemElement.querySelector('devtools-tooltip > devtools-css-variable-value-view');
       assert.instanceOf(popoverContents, ElementsComponents.CSSVariableValueView.CSSVariableValueView);
       const {details} = popoverContents;
       assert.exists(details);
@@ -1620,16 +1619,17 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const node = new SDK.DOMModel.DOMNode(domModel);
       node.id = 0 as Protocol.DOM.NodeId;
       LegacyUI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
+      const addPopoverPromise = Promise.withResolvers<void>();
+      sinon.stub(Elements.StylePropertyTreeElement.LengthRenderer.prototype, 'popOverAttachedForTest')
+          .callsFake(() => addPopoverPromise.resolve());
       const stylePropertyTreeElement = getTreeElement('margin', '5px 2em');
-      const addPopoverPromise = Promise.withResolvers<() => HTMLElement | UI.Widget.Widget | undefined>();
-      sinon.stub(stylePropertyTreeElement.parentPane(), 'addPopover')
-          .callsFake((element, popover) => addPopoverPromise.resolve(popover.contents));
       setMockConnectionResponseHandler('CSS.getComputedStyleForNode', () => ({computedStyle: {}}));
 
       await stylePropertyTreeElement.onpopulate();
       stylePropertyTreeElement.updateTitle();
-      const popover = (await addPopoverPromise.promise)();
-      assert.strictEqual((popover as HTMLElement | undefined)?.textContent, '15px');
+      await addPopoverPromise.promise;
+      const popover = stylePropertyTreeElement.valueElement?.querySelector('devtools-tooltip');
+      assert.strictEqual(popover?.textContent, '15px');
     });
   });
 

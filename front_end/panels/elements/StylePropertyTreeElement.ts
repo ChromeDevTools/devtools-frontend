@@ -12,6 +12,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -25,7 +26,7 @@ import {
   ShadowSwatchPopoverHelper,
 } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
-import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
+import {cssRuleValidatorsMap} from './CSSRuleValidator.js';
 import {CSSValueTraceView} from './CSSValueTraceView.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {
@@ -49,8 +50,6 @@ import {
 const ASTUtils = SDK.CSSPropertyParser.ASTUtils;
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
-
-export const activeHints = new WeakMap<Element, Hint>();
 
 const UIStrings = {
   /**
@@ -118,6 +117,26 @@ const UIStrings = {
    *@description Title of the link in Styles panel to jump to the Animations panel.
    */
   jumpToAnimationsPanel: 'Jump to Animations panel',
+  /**
+   *@description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
+   *@example {--my-custom-property-name} PH1
+   */
+  sIsNotDefined: '{PH1} is not defined',
+  /**
+   *@description Text in Styles Sidebar Pane of the Elements panel
+   */
+  invalidPropertyValue: 'Invalid property value',
+  /**
+   *@description Text in Styles Sidebar Pane of the Elements panel
+   */
+  unknownPropertyName: 'Unknown property name',
+  /**
+   *@description Announcement string for invalid properties.
+   *@example {Invalid property value} PH1
+   *@example {font-size} PH2
+   *@example {invalidValue} PH3
+   */
+  invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -132,6 +151,11 @@ interface StylePropertyTreeElementParams {
   inherited: boolean;
   overloaded: boolean;
   newProperty: boolean;
+}
+
+let nextTooltipId = 0;
+function swatchTooltipId(): string {
+  return `swatch-tooltip-${nextTooltipId++}`;
 }
 
 // clang-format off
@@ -272,17 +296,18 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
       UI.UIUtils.createTextChild(varSwatch, match.text);
     }
 
-    if (varSwatch.link) {
-      this.#stylesPane.addPopover(varSwatch.link, {
-        contents: () =>
-            this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null),
-        jslogContext: 'elements.css-var',
-      });
-    }
+    const tooltipId = swatchTooltipId();
+    varSwatch.setAttribute('aria-details', tooltipId);
+    const tooltip = new Tooltips.Tooltip.Tooltip(
+        {anchor: varSwatch, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var'});
+    tooltip.appendChild(
+        (varSwatch.link &&
+         this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null)) ||
+        document.createTextNode(i18nString(UIStrings.sIsNotDefined, {PH1: match.name})));
 
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
-      return [varSwatch];
+      return [varSwatch, tooltip];
     }
 
     const colorSwatch = new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, varSwatch);
@@ -295,7 +320,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           }));
     }
 
-    return [colorSwatch];
+    return [colorSwatch, tooltip];
   }
 
   #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {
@@ -564,7 +589,8 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
 export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMixMatch) {
   // clang-format on
   readonly #pane: StylesSidebarPane;
-  #treeElement: StylePropertyTreeElement|null;
+  readonly #treeElement: StylePropertyTreeElement|null;
+
   constructor(pane: StylesSidebarPane, treeElement: StylePropertyTreeElement|null) {
     super();
     this.#pane = pane;
@@ -580,7 +606,8 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
               InlineEditor.ColorSwatch.ColorChangedEvent.eventName,
               ev => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString()));
         } else {
-          node.addEventListener(InlineEditor.ColorMixSwatch.Events.COLOR_CHANGED, ev => onChange(ev.data.text));
+          node.addEventListener(
+              InlineEditor.ColorMixSwatch.ColorMixChangedEvent.eventName, ev => onChange(ev.data.text));
         }
         const color = node.getText();
         if (color) {
@@ -640,27 +667,30 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     }
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
-    this.#pane.addPopover(swatch, {
-      contents: () => {
-        const color = swatch.mixedColor();
-        if (!color) {
-          return undefined;
-        }
-        const span = document.createElement('span');
-        span.style.padding = '11px 7px';
-        const rgb = color.as(Common.Color.Format.HEX);
-        const text = rgb.isGamutClipped() ? color.asString() : rgb.asString();
-        if (!text) {
-          return undefined;
-        }
-        span.appendChild(document.createTextNode(text));
-        return span;
-      },
+
+    const tooltipId = swatchTooltipId();
+    swatch.setAttribute('aria-details', tooltipId);
+    const tooltip = new Tooltips.Tooltip.Tooltip({
+      id: tooltipId,
+      variant: 'rich',
+      anchor: swatch,
       jslogContext: 'elements.css-color-mix',
     });
+    const colorTextSpan = tooltip.appendChild(document.createElement('span'));
+    tooltip.onbeforetoggle = e => {
+      if ((e as ToggleEvent).newState !== 'open') {
+        return;
+      }
+      const color = swatch.mixedColor();
+      if (!color) {
+        return;
+      }
+      const rgb = color.as(Common.Color.Format.HEX);
+      colorTextSpan.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
+    };
 
     context.addControl('color', swatch);
-    return [swatch, contentChild];
+    return [swatch, contentChild, tooltip];
   }
 }
 
@@ -1216,7 +1246,8 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
   }
 
   override render(match: SDK.CSSPropertyParserMatchers.LengthMatch, context: RenderingContext): Node[] {
-    const valueElement = document.createElement('span');
+    const container = document.createElement('span');
+    const valueElement = container.createChild('span');
     valueElement.textContent = match.text;
 
     if (context.tracing?.applyEvaluation([])) {
@@ -1252,15 +1283,16 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
       return;
     }
 
-    this.#stylesPane.addPopover(valueElement, {
-      contents: () => {
-        const contents = document.createElement('span');
-        contents.style.margin = '4px';
-        contents.appendChild(document.createTextNode(pixelValue[0]));
-        return contents;
-      },
-      jslogContext: 'length-popover'
-    });
+    const tooltipId = swatchTooltipId();
+    valueElement.setAttribute('aria-details', tooltipId);
+    const tooltip = new Tooltips.Tooltip.Tooltip(
+        {anchor: valueElement, variant: 'rich', id: tooltipId, jslogContext: 'length-popover'});
+    tooltip.appendChild(document.createTextNode(pixelValue[0]));
+    valueElement.insertAdjacentElement('afterend', tooltip);
+    this.popOverAttachedForTest();
+  }
+
+  popOverAttachedForTest(): void {
   }
 }
 
@@ -1674,7 +1706,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (!this.nameElement || !this.valueElement) {
       return '';
     }
-    return this.nameElement.textContent + ': ' + this.valueElement.textContent;
+    return this.nameElement.innerText + ': ' + this.valueElement.innerText;
   }
 
   private updateState(): void {
@@ -1918,21 +1950,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
     this.valueElement = Renderer.renderValueElement(this.name, this.value, matchedResult, renderers).valueElement;
     this.nameElement = Renderer.renderNameElement(this.name);
-    if (this.property.name.startsWith('--') && this.nameElement) {
-      this.parentPaneInternal.addPopover(this.nameElement, {
-        contents: () => {
-          if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled) {
-            return this.parentPaneInternal.getVariablePopoverContents(
-                this.matchedStyles(), this.property.name,
-                this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null);
-          }
-          const view = new CSSValueTraceView();
-          view.showTrace(this.property, this.matchedStyles(), this.computedStyles, renderers);
-          return view;
-        },
-        jslogContext: 'elements.css-var',
-      });
-    }
+
     if (!this.treeOutline) {
       return;
     }
@@ -1941,9 +1959,47 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     UI.UIUtils.createTextChild(
         this.listItemElement.createChild('span', 'styles-clipboard-only'),
         indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? '/* ' : ''));
-    if (this.nameElement) {
-      this.listItemElement.appendChild(this.nameElement);
+    this.listItemElement.appendChild(this.nameElement);
+
+    if (this.property.name.startsWith('--')) {
+      let contents;
+      if (!Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled) {
+        contents = this.parentPaneInternal.getVariablePopoverContents(
+            this.matchedStyles(), this.property.name,
+            this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+      } else {
+        contents = new CSSValueTraceView();
+        contents.showTrace(this.property, this.matchedStyles(), this.computedStyles, renderers);
+      }
+      if (contents) {
+        const tooltipId = swatchTooltipId();
+        this.nameElement.setAttribute('aria-details', tooltipId);
+        const tooltip = new Tooltips.Tooltip.Tooltip(
+            {anchor: this.nameElement, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var'});
+        if (contents instanceof UI.Widget.Widget) {
+          contents.show(tooltip, null, true);
+        } else {
+          tooltip.appendChild(contents);
+        }
+        this.listItemElement.appendChild(tooltip);
+      }
+    } else if (Common.Settings.Settings.instance().moduleSetting('show-css-property-documentation-on-hover')) {
+      const cssProperty = this.parentPaneInternal.webCustomData?.findCssProperty(this.name);
+
+      if (cssProperty) {
+        const tooltipId = swatchTooltipId();
+        this.nameElement.setAttribute('aria-details', tooltipId);
+        const tooltip = new Tooltips.Tooltip.Tooltip({
+          anchor: this.nameElement,
+          variant: 'rich',
+          id: tooltipId,
+          jslogContext: 'elements.css-property-doc',
+        });
+        tooltip.appendChild(new ElementsComponents.CSSPropertyDocsView.CSSPropertyDocsView(cssProperty));
+        this.listItemElement.appendChild(tooltip);
+      }
     }
+
     if (this.valueElement) {
       const lineBreakValue =
           this.valueElement.firstElementChild && this.valueElement.firstElementChild.tagName === 'BR';
@@ -1969,7 +2025,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.listItemElement.classList.add('not-parsed-ok');
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
-          this.parentPaneInternal.createExclamationMark(
+          this.createExclamationMark(
               this.property, this.parentPaneInternal.getVariableParserError(this.matchedStyles(), this.property.name)),
           this.listItemElement.firstChild);
 
@@ -2013,11 +2069,40 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
+  createExclamationMark(property: SDK.CSSProperty.CSSProperty, title: HTMLElement|null): Element {
+    const container = document.createElement('span');
+    const exclamationElement = container.createChild('span');
+    exclamationElement.classList.add('exclamation-mark');
+    const invalidMessage = SDK.CSSMetadata.cssMetadata().isCSSPropertyName(property.name) ?
+        i18nString(UIStrings.invalidPropertyValue) :
+        i18nString(UIStrings.unknownPropertyName);
+    if (title === null) {
+      UI.Tooltip.Tooltip.install(exclamationElement, invalidMessage);
+    } else {
+      const tooltipId = swatchTooltipId();
+      exclamationElement.setAttribute('aria-details', tooltipId);
+      const tooltip = new Tooltips.Tooltip.Tooltip({
+        anchor: exclamationElement,
+        variant: 'rich',
+        id: tooltipId,
+        jslogContext: 'elements.invalid-property-decl-popover'
+      });
+      tooltip.appendChild(title);
+      container.appendChild(tooltip);
+    }
+    const invalidString =
+        i18nString(UIStrings.invalidString, {PH1: invalidMessage, PH2: property.name, PH3: property.value});
+
+    // Storing the invalidString for future screen reader support when editing the property
+    property.setDisplayedStringForInvalidProperty(invalidString);
+
+    return container;
+  }
+
   updateAuthoringHint(): void {
     this.listItemElement.classList.remove('inactive-property');
     const existingElement = this.listItemElement.querySelector('.hint');
     if (existingElement) {
-      activeHints.delete(existingElement);
       existingElement?.closest('.hint-wrapper')?.remove();
     }
     const propertyName = this.property.name;
@@ -2047,9 +2132,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         hintIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '14px', height: '14px'};
         hintIcon.classList.add('hint');
         wrapper.append(hintIcon);
-        activeHints.set(hintIcon, hint);
         this.listItemElement.append(wrapper);
         this.listItemElement.classList.add('inactive-property');
+        const tooltipId = swatchTooltipId();
+        hintIcon.setAttribute('aria-details', tooltipId);
+        const tooltip = new Tooltips.Tooltip.Tooltip(
+            {anchor: hintIcon, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-hint'});
+        tooltip.appendChild(new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint));
+        this.listItemElement.appendChild(tooltip);
         break;
       }
     }

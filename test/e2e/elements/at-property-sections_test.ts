@@ -43,8 +43,9 @@ describe('The styles pane', () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
     await hover('.invalid-property-value:has(> [aria-label="CSS property name: --my-color"]) .exclamation-mark');
 
-    const popover = await waitFor('.variable-value-popup-wrapper');
-    const popoverContents = (await popover.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
+    const popover = await waitFor(':popover-open devtools-css-variable-parser-error');
+    const firstSection = await waitFor('.variable-value-popup-wrapper', popover);
+    const popoverContents = (await firstSection.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
 
     assert.deepEqual(popoverContents, 'Invalid property value, expected type "<color>", View registered property');
   });
@@ -130,7 +131,8 @@ describe('The styles pane', () => {
         await hover(`aria/CSS property name: ${label}`);
       }
 
-      const firstSection = await waitFor('.variable-value-popup-wrapper');
+      const popover = await waitFor(':popover-open devtools-css-variable-value-view');
+      const firstSection = await waitFor('.variable-value-popup-wrapper', popover);
       const textContent = await firstSection.evaluate((e: Element|null) => {
         const results = [];
         while (e) {
@@ -142,7 +144,7 @@ describe('The styles pane', () => {
       const popoverContents = textContent.join(' ').trim().replaceAll(/\s\s+/g, ', ');
 
       await hover(ELEMENTS_PANEL_SELECTOR);
-      await waitForNone('.variable-value-popup-wrapper');
+      await waitForNone(':popover-open devtools-css-variable-value-view');
 
       return popoverContents;
     }

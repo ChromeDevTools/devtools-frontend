@@ -15,15 +15,18 @@ colorMixSwatchStyles.replaceSync(colorMixSwatchStylesRaw.cssContent);
 
 const {html, render, Directives: {ref}} = Lit;
 
-export const enum Events {
-  COLOR_CHANGED = 'colorChanged',
+export class ColorMixChangedEvent extends Event {
+  static readonly eventName = 'colormixchanged';
+
+  data: {text: string};
+
+  constructor(text: string) {
+    super(ColorMixChangedEvent.eventName, {});
+    this.data = {text};
+  }
 }
 
-export interface EventTypes {
-  [Events.COLOR_CHANGED]: {text: string};
-}
-
-export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, typeof HTMLElement>(HTMLElement) {
+export class ColorMixSwatch extends HTMLElement {
   private readonly shadow = this.attachShadow({mode: 'open'});
   private colorMixText = '';     // color-mix(in srgb, hotpink, white)
   private firstColorText = '';   // hotpink
@@ -51,7 +54,7 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.colorMixText = this.colorMixText.replace(this.firstColorText, text);
     }
     this.firstColorText = text;
-    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
+    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
     this.#render();
   }
 
@@ -63,13 +66,13 @@ export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.colorMixText = Platform.StringUtilities.replaceLast(this.colorMixText, this.secondColorText, text);
     }
     this.secondColorText = text;
-    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
+    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
     this.#render();
   }
 
   setColorMixText(text: string): void {
     this.colorMixText = text;
-    this.dispatchEventToListeners(Events.COLOR_CHANGED, {text: this.colorMixText});
+    this.dispatchEvent(new ColorMixChangedEvent(this.colorMixText));
     this.#render();
   }
 
@@ -108,5 +111,9 @@ customElements.define('devtools-color-mix-swatch', ColorMixSwatch);
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-color-mix-swatch': ColorMixSwatch;
+  }
+
+  interface HTMLElementEventMap {
+    [ColorMixChangedEvent.eventName]: ColorMixChangedEvent;
   }
 }

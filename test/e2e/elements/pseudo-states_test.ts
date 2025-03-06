@@ -32,10 +32,6 @@ describe('The Elements tab', () => {
 
     await waitForElementsStyleSection();
 
-    await step('Ensure the correct node is selected after opening a file', async () => {
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
-    });
-
     await step('Select div that we can focus', async () => {
       await frontend.keyboard.press('ArrowRight');
       await waitForContentOfSelectedElementsNode('<div id=\u200B"hover">\u200B…\u200B</div>\u200B');
@@ -56,10 +52,6 @@ describe('The Elements tab', () => {
     await goToResource('elements/target.html');
 
     await waitForElementsStyleSection();
-
-    await step('Ensure the correct node is selected after opening a file', async () => {
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
-    });
 
     await step('Select element that we can target', async () => {
       await frontend.keyboard.press('ArrowRight');
@@ -82,10 +74,6 @@ describe('The Elements tab', () => {
     await goToResource('elements/focus.html');
 
     await waitForElementsStyleSection();
-
-    await step('Ensure the correct node is selected after opening a file', async () => {
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
-    });
 
     await step('Select div that we can focus', async () => {
       await frontend.keyboard.press('ArrowRight');
@@ -110,10 +98,6 @@ describe('The Elements tab', () => {
     await goToResource('elements/focus.html');
 
     await waitForElementsStyleSection();
-
-    await step('Ensure the correct node is selected after opening a file', async () => {
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
-    });
 
     await step('Select div that we can focus', async () => {
       await frontend.keyboard.press('ArrowRight');
@@ -145,10 +129,6 @@ describe('The Elements tab', () => {
 
     await goToResource('elements/dissapearing-popup.html');
     await waitForElementsStyleSection();
-
-    await step('Ensure the correct node is selected after opening a file', async () => {
-      await waitForContentOfSelectedElementsNode('<body>\u200B');
-    });
 
     await step('Navigate to #query input', async () => {
       await frontend.keyboard.press('ArrowRight');

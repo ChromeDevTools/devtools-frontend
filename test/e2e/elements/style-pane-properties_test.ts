@@ -13,6 +13,7 @@ import {
   goToHtml,
   hover,
   waitFor,
+  waitForAria,
   waitForFunction,
   waitForMany,
 } from '../../shared/helper.js';
@@ -33,11 +34,11 @@ import {
   waitForContentOfSelectedElementsNode,
   waitForCSSPropertyValue,
   waitForElementsStyleSection,
-  waitForPartialContentOfSelectedElementsNode,
   waitForPropertyToHighlight,
   waitForStyleRule,
 } from '../helpers/elements-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
+import {expectVeEvents, veImpression, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';
@@ -52,7 +53,6 @@ const SIDEBAR_SEPARATOR_SELECTOR = '.sidebar-separator';
 
 const prepareElementsTab = async () => {
   await waitForElementsStyleSection();
-  await waitForContentOfSelectedElementsNode('<body>\u200B');
   await expandSelectedNodeRecursively();
 };
 
@@ -165,6 +165,128 @@ describe('The Styles pane', () => {
     const propertyValueText = await propertyValue.evaluate(node => node.textContent);
     assert.strictEqual(
         propertyValueText, 'var( --move-final-width)', 'CSS variable in @keyframes rule is not correctly rendered');
+  });
+
+  it('Shows a CSS hint popover', async () => {
+    await goToHtml(`
+       <style>
+         body {
+           grid-column-end: 4;
+         }
+       </style>`);
+    await waitForElementsStyleSection();
+
+    await hover('.hint-wrapper');
+
+    const infobox = await waitFor(':popover-open');
+    const textContent: string = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(
+        textContent.replaceAll(/\s+/g, ' ').trim(),
+        'The display: block property prevents grid-column-end from having an effect. Try setting display to something other than block.');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: grid-column-end',
+        [veImpression('Popover', 'elements.css-hint')])]);
+  });
+
+  it('Shows a syntax error popover for registered property', async () => {
+    await goToHtml(`
+       <style>
+         body {
+           --color: 2px;
+         }
+         @property --color {
+           syntax: "<color>";
+           inherits: false;
+           initial-value: green;
+         }
+       </style>`);
+    await waitForElementsStyleSection();
+
+    await hover('.exclamation-mark');
+
+    const infobox = await waitFor(':popover-open');
+    const textContent: string = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(
+        textContent.replaceAll(/\s+/g, ' ').trim(),
+        'Invalid property value, expected type "<color>" View registered property');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: custom-property',
+        [veImpression('Popover', 'elements.invalid-property-decl-popover')])]);
+  });
+
+  it('shows variable values in a popover for property values', async () => {
+    await goToResourceAndWaitForStyleSection('elements/css-variables.html');
+
+    // Select div that we will inspect the CSS variables for
+    await waitForAndClickTreeElementWithPartialText('properties-to-inspect');
+    await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');
+
+    const testElementRule = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
+    await hover('.link-swatch-link', {root: testElementRule});
+
+    const infobox = await waitFor('[aria-label="CSS property value: var(--title-color)"] :popover-open');
+    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(textContent.trim(), 'black');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
+        [veImpression('Popover', 'elements.css-var')])]);
+  });
+
+  it('shows variable values in a popover for property names', async () => {
+    await goToHtml(`
+       <style>
+         body {
+           --color: red;
+         }
+       </style>`);
+    await waitForElementsStyleSection();
+
+    await hover('aria/CSS property name: --color');
+
+    const infobox = await waitFor('.tree-outline :popover-open');
+    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(textContent.trim(), 'red');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: custom-property > Key',
+        [veImpression('Popover', 'elements.css-var')])]);
+  });
+
+  it('shows mixed colors in a popover', async () => {
+    await goToHtml(`
+       <style>
+         body {
+           color: color-mix(in srgb, red, blue);
+         }
+       </style>`);
+    await waitForElementsStyleSection();
+
+    await hover('devtools-color-mix-swatch');
+
+    const infobox = await waitFor('[aria-label="CSS property value: color-mix(in srgb, red, blue)"] :popover-open');
+    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(textContent.trim(), '#800080');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
+        [veImpression('Popover', 'elements.css-color-mix')])]);
+  });
+
+  it('shows absolute length units in a popover', async () => {
+    await goToHtml(`
+       <style>
+         body {
+           width: 1em;
+         }
+       </style>`);
+    await waitForElementsStyleSection();
+
+    await hover('text/1em', {root: await waitForAria('CSS property value: 1em')});
+
+    const infobox = await waitFor('[aria-label="CSS property value: 1em"] :popover-open');
+    const textContent = await infobox.evaluate(e => e.deepTextContent());
+    assert.strictEqual(textContent.trim(), '16px');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: width > Value',
+        [veImpression('Popover', 'length-popover')])]);
   });
 
   it('can remove a CSS property when its name or value is deleted', async () => {
@@ -1247,12 +1369,13 @@ describe('The Styles pane', () => {
     await hover('.selector-matches', {root: testElementRule});
 
     // Check if an infobox is shown or not. If not, this will throw
-    const infobox = await waitFor('body > .vbox.flex-auto');
+    const infobox = await waitFor('.styles-selector :popover-open');
+    await expectVeEvents([veImpressionsUnder(
+        'Panel: elements > Pane: styles > Section: style-properties > CSSRuleHeader: selector',
+        [veImpression('Popover', 'elements.css-selector-specificity')])]);
 
     // Make sure it’s the specificity infobox
-    const innerText = await infobox.evaluate(node => {
-      return node.shadowRoot?.querySelector('span')?.innerText;
-    });
+    const innerText = await infobox.evaluate(node => (node as HTMLElement).innerText);
     assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
   });
 
@@ -1328,7 +1451,6 @@ describe('The Styles pane', () => {
      }
      </style>`);
     await waitForElementsStyleSection();
-    await waitForPartialContentOfSelectedElementsNode('<body>\u200B');
 
     const {target} = getBrowserAndPages();
 

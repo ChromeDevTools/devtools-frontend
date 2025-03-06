@@ -52,7 +52,6 @@ describe('ObjectWrapper', () => {
     });
 
     it('fires event listeners with data', done => {
-      const count = 0;
       const callback = (evt: {data: {bar: string}}) => {
         assert.strictEqual(evt.data.bar, 'baz');
         done();
@@ -60,11 +59,9 @@ describe('ObjectWrapper', () => {
 
       obj.addEventListener('foo', callback);
       obj.dispatchEventToListeners('foo', {bar: 'baz'});
-      assert.strictEqual(count, 2);
     });
 
     it('fires event listeners with source', done => {
-      const count = 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const callback = (evt: Common.EventTarget.EventTargetEvent<any, any>) => {
         assert.strictEqual(evt.source, obj);
@@ -73,7 +70,6 @@ describe('ObjectWrapper', () => {
 
       obj.addEventListener('foo', callback);
       obj.dispatchEventToListeners('foo');
-      assert.strictEqual(count, 2);
     });
 
     it('handles removal of non-existent listener', () => {

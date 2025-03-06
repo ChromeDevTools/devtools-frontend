@@ -591,7 +591,6 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
     await goToResource('elements/css-variables.html');
     await navigateToSidePane('Styles');
     await waitForElementsStyleSection();
-    await waitForContentOfSelectedElementsNode('<body>\u200B');
     await focusElementsTree();
   });
 

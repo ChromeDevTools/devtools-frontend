@@ -678,6 +678,7 @@ export async function expectVeEvents(expectedEvents: TestLogEntry[]): Promise<vo
 
   const timeout = setTimeout(() => {
     if (pendingEventExpectation?.missingEvents) {
+      console.error('Available VE events:', JSON.stringify(veDebugEventsLog, null, ' '));
       pendingEventExpectation.fail(new Error(
           'Missing VE Events: ' +
           pendingEventExpectation.missingEvents

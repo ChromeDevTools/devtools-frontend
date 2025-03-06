@@ -113,6 +113,7 @@ export class ObjectWrapper<Events> implements EventTarget<Events> {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function eventMixin<Events, Base extends Platform.Constructor.Constructor<object>>(base: Base) {
+  console.assert(base !== (HTMLElement as Platform.Constructor.Constructor<object>));
   return class EventHandling extends base implements EventTarget<Events> {
     #events = new ObjectWrapper<Events>();
 

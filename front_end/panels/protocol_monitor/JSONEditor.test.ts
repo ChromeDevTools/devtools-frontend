@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import {
   dispatchClickEvent,
   dispatchKeyDownEvent,
@@ -13,7 +12,6 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as Menus from '../../ui/components/menus/menus.js';
 import type * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
 
@@ -476,63 +474,6 @@ describeWithEnvironment('JSONEditor', () => {
     });
   });
 
-  describe('Display command written in editor inside input bar', () => {
-    it('should display the command edited inside the CDP editor into the input bar', async () => {
-      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
-      jsonEditor.command = 'Test.test';
-      jsonEditor.parameters = [
-        {
-          name: 'test',
-          type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
-          description: 'test',
-          optional: false,
-          value: 'test',
-        },
-      ];
-      const view = createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {
-        editorWidget: jsonEditor,
-      });
-      const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
-      await protocolMonitor.updateComplete;
-      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
-      await protocolMonitor.updateComplete;
-
-      assert.deepEqual(view.input.command, '{"command":"Test.test","parameters":{"test":"test"}}');
-    });
-
-    it('should update the selected target inside the input bar', async () => {
-      const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
-      jsonEditor.targetId = 'value2';
-      sinon.stub(SDK.TargetManager.TargetManager.instance(), 'targets').returns([
-        {id: () => 'value1'} as SDK.Target.Target,
-        {id: () => 'value2'} as SDK.Target.Target,
-      ]);
-      const view =
-          createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {editorWidget: jsonEditor});
-      const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
-      await protocolMonitor.updateComplete;
-      view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
-      await protocolMonitor.updateComplete;
-
-      assert.deepEqual(view.input.selectedTargetId, 'value2');
-    });
-
-    // Flaky test.
-    it.skip(
-        '[crbug.com/1484534]: should not display the command into the input bar if the command is empty string',
-        async () => {
-          const jsonEditor = new ProtocolMonitor.JSONEditor.JSONEditor(document.createElement('div'));
-          jsonEditor.command = '';
-          const view =
-              createViewFunctionStub(ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl, {editorWidget: jsonEditor});
-          const protocolMonitor = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorImpl(view);
-          await protocolMonitor.updateComplete;
-          view.input.onSplitChange(new CustomEvent('change', {detail: 'OnlyMain'}));
-          await protocolMonitor.updateComplete;
-
-          assert.deepEqual(view.input.command, '');
-        });
-  });
   describe('Descriptions', () => {
     it('should show the popup with the correct description for the description of parameters', async () => {
       const inputParameters = [

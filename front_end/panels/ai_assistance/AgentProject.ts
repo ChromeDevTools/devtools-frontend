@@ -5,6 +5,7 @@
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Diff from '../../third_party/diff/diff.js';
 
 import {debugLog} from './debug.js';
 
@@ -16,9 +17,22 @@ import {debugLog} from './debug.js';
 export class AgentProject {
   #project: Workspace.Workspace.Project;
   #ignoredFolderNames = new Set(['node_modules']);
+  #filesChanged = new Set<string>();
+  #linesChanged = 0;
 
-  constructor(project: Workspace.Workspace.Project) {
+  readonly #maxFilesChanged: number;
+  readonly #maxLinesChanged: number;
+
+  constructor(project: Workspace.Workspace.Project, options: {
+    maxFilesChanged: number,
+    maxLinesChanged: number,
+  } = {
+    maxFilesChanged: 5,
+    maxLinesChanged: 200,
+  }) {
     this.#project = project;
+    this.#maxFilesChanged = options.maxFilesChanged;
+    this.#maxLinesChanged = options.maxLinesChanged;
   }
 
   /**
@@ -52,6 +66,30 @@ export class AgentProject {
     if (!uiSourceCode) {
       throw new Error(`UISourceCode ${filepath} not found`);
     }
+    const currentContent = this.readFile(filepath);
+    const lineEndRe = /\r\n?|\n/;
+    let linesChanged = 0;
+    if (currentContent) {
+      const diff = Diff.Diff.DiffWrapper.lineDiff(currentContent.split(lineEndRe), content.split(lineEndRe));
+      for (const item of diff) {
+        if (item[0] !== Diff.Diff.Operation.Equal) {
+          linesChanged++;
+        }
+      }
+    } else {
+      linesChanged += content.split(lineEndRe).length;
+    }
+
+    if (this.#linesChanged + linesChanged > this.#maxLinesChanged) {
+      throw new Error('Too many lines changed');
+    }
+
+    this.#filesChanged.add(filepath);
+    if (this.#filesChanged.size > this.#maxFilesChanged) {
+      this.#filesChanged.delete(filepath);
+      throw new Error('Too many files changed');
+    }
+    this.#linesChanged += linesChanged;
     uiSourceCode.setWorkingCopy(content);
   }
 

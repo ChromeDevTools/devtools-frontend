@@ -24,6 +24,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/*",
     "../../models/workspace_diff/*",
+    "../../panels/ai_assistance/*",
     "../../panels/changes/*",
     "../../panels/sources/*",
     "../../panels/utils:unittests",

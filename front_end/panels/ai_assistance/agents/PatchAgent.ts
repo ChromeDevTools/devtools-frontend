@@ -123,7 +123,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
       },
       handler: async args => {
         debugLog('updateFiles', args.files);
-        for (const file of args.files.slice(0, 3)) {
+        for (const file of args.files) {
           debugLog('updating', file);
           const content = this.#project.readFile(file);
           if (content === undefined) {

@@ -225,7 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
+    receivers: ["CredentialsContainer","AILanguageModelFactory","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
   },
   {
     name: "create",
@@ -7302,16 +7302,12 @@ export const NativeFunctions = [
   {
     name: "availability",
     signatures: [["?options"]],
-    receivers: ["AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
+    receivers: ["AILanguageModelFactory","AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
   },
   {
     name: "availability",
     signatures: [["options"]],
     receivers: ["AITranslatorFactory"]
-  },
-  {
-    name: "createOptionsAvailable",
-    signatures: [["options"]]
   },
   {
     name: "languageAvailable",

@@ -219,10 +219,6 @@ export const UIStrings = {
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.",
   /**
-   * @description Warning displayed to developers when the Web SQL API is used to let them know this API is deprecated.
-   */
-  WebSQL: "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database",
-  /**
    * @description Warning displayed to developers that they are using `XMLHttpRequest` API in a way that they expect an unsupported character encoding `UTF-16` could be used in the server reply.
    */
   XHRJSONEncodingDetection: "UTF-16 is not supported by response json in `XMLHttpRequest`",
@@ -345,10 +341,6 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96
-  },
-  "WebSQL": {
-    "chromeStatusFeature": 5134293578285056,
-    "milestone": 115
   },
   "XHRJSONEncodingDetection": {
     "milestone": 93

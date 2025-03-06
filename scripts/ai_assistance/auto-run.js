@@ -447,9 +447,9 @@ class Example {
         await sidebarButton.click();
       }
 
-      this.log(`[Info]: expanding Insight "${insight}"`);
-      // Now find the header for the right insight, and click to expand it.
-      await devtoolsPage.locator(`aria/View details for ${insight}`).setTimeout(5000).click();
+      this.log(`[Info]: expanding Insight ${insight}`);
+      // Now find the header for the right insight, and click to expand it. We JSON.parse to remove the surrounding double quotes.
+      await devtoolsPage.locator(`aria/View details for ${JSON.parse(insight)}`).setTimeout(5000).click();
     }
 
     this.log('[Info]: Locating AI assistance tab');

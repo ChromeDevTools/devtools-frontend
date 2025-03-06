@@ -1374,7 +1374,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!isEnhancedTrace ||
         !Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_COMPILED_SOURCES)) {
       traceEvents = traceEvents.filter(event => {
-        return event.cat !== 'devtools.v8-source-rundown-sources';
+        return event.cat !== 'disabled-by-default-devtools.v8-source-rundown-sources';
       });
     }
 

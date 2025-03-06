@@ -127,12 +127,11 @@ Timings:
 Durations:
 - Main thread processing duration: 3.51 ms
 - Total duration: 13.93 ms
+Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
 Status code: 200
 MIME Type: text/css
-Priority:
-- Initial: VeryHigh
-- Final: VeryHigh
-Render blocking?: Yes
+Priority: VeryHigh
+Render blocking: Yes
 From a service worker: No
 Response headers
 - date: Thu, 07 Mar 2024 21:17:02 GMT

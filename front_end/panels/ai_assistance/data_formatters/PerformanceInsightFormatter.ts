@@ -230,6 +230,16 @@ export class TraceEventFormatter {
 
     const renderBlocking = Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(request);
 
+    const initiator = parsedTrace.NetworkRequests.eventToInitiator.get(request);
+
+    const priorityLines = [];
+    if (initialPriority === priority) {
+      priorityLines.push(`Priority: ${priority}`);
+    } else {
+      priorityLines.push(`Initial priority: ${initialPriority}`);
+      priorityLines.push(`Final priority: ${priority}`);
+    }
+
     if (!options.verbose) {
       return `## Network request: ${url}
 - Start time: ${formatMicro(startTimesForLifecycle.start)}
@@ -246,13 +256,11 @@ Timings:
 - Completed at: ${formatMicro(startTimesForLifecycle.processingComplete)}
 Durations:
 - Main thread processing duration: ${formatMicro(mainThreadProcessingDuration)}
-- Total duration: ${formatMicro(request.dur)}
+- Total duration: ${formatMicro(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
-Priority:
-- Initial: ${initialPriority}
-- Final: ${priority}
-Render blocking?: ${renderBlocking ? 'Yes' : 'No'}
+${priorityLines.join('\n')}
+Render blocking: ${renderBlocking ? 'Yes' : 'No'}
 From a service worker: ${fromServiceWorker ? 'Yes' : 'No'}
 ${NetworkRequestFormatter.formatHeaders('Response headers', responseHeaders, true)}`;
   }

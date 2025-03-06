@@ -328,7 +328,14 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
         <div class="insight-description">${md(insightModel.description)}</div>
         <div class="insight-content">${content}</div>
         ${this.#insightsAskAiEnabled ? html`
-          <devtools-button data-ask-ai @click=${this.#askAIButtonClick}>Ask AI (placeholder UX)</devtools-button>
+          <div class="ask-ai-btn-wrap">
+            <devtools-button class="ask-ai"
+              .variant=${Buttons.Button.Variant.OUTLINED}
+              .iconName=${'smart-assistant'}
+              data-insights-ask-ai
+              @click=${this.#askAIButtonClick}
+            >Ask AI</devtools-button>
+          </div>
         `: Lit.nothing}
       </div>`;
     // clang-format on

@@ -178,3 +178,10 @@ dd.dl-title {
 .timeline-link.invalid-link {
   color: var(--sys-color-state-disabled);
 }
+
+.ask-ai-btn-wrap {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding-top: var(--sys-size-5);
+  margin-top: var(--sys-size-5);
+  text-align: center;
+}

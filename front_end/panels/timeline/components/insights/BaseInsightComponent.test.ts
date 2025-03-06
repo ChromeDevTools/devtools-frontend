@@ -117,7 +117,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent();
       assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-ask-ai]');
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
     });
 
@@ -130,7 +130,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent();
       assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-ask-ai]');
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
       sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
           .withArgs(sinon.match(/drjones\.performance-insight-context/))
@@ -165,7 +165,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent();
       assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-ask-ai]');
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
     });
 
@@ -178,7 +178,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       });
       const component = await renderComponent();
       assert.isOk(component.shadowRoot);
-      const button = component.shadowRoot.querySelector('devtools-button[data-ask-ai]');
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
     });
   });

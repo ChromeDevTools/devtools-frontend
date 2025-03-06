@@ -460,7 +460,7 @@ class Example {
     // panel, and then open the AI Assistance panel.
     if (userArgs.testTarget === 'performance-insights') {
       // Now click the "Ask AI" button to open up the AI assistance panel
-      await devtoolsPage.locator(':scope >>> devtools-button[data-ask-ai]').setTimeout(5000).click();
+      await devtoolsPage.locator(':scope >>> devtools-button[data-insights-ask-ai]').setTimeout(5000).click();
       this.log('[Info]: Opened AI assistance tab');
     } else {
       await devtoolsPage.locator('aria/Customize and control DevTools').click();

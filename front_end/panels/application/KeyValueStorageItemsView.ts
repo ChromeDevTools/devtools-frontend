@@ -109,7 +109,7 @@ export abstract class KeyValueStorageItemsView extends StorageItemsView {
       view = (input: ViewInput, output: ViewOutput, target: HTMLElement) => {
         // clang-format off
         render(html `
-            <devtools-split-view direction="column" sidebar-position="second" name="${id}-split-view-state">
+            <devtools-split-view sidebar-position="second" name="${id}-split-view-state">
                <devtools-widget
                   slot="main"
                   .widgetConfig=${widgetConfig(VBox, {minimumSize: new Size(0, 50)})}>

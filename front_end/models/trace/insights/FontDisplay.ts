@@ -75,17 +75,21 @@ export function generateInsight(
       continue;
     }
 
-    let wastedTime = Types.Timing.Milli(0);
-
-    if (/^(block|fallback|auto)$/.test(remoteFont.display)) {
-      const wastedTimeMicro = Types.Timing.Micro(
-          request.args.data.syntheticData.finishTime - request.args.data.syntheticData.sendStartTime);
-      // TODO(crbug.com/352244504): should really end at the time of the next Commit trace event.
-      wastedTime =
-          Platform.NumberUtilities.floor(Helpers.Timing.microToMilli(wastedTimeMicro), 1 / 5) as Types.Timing.Milli;
-      // All browsers wait for no more than 3s.
-      wastedTime = Math.min(wastedTime, 3000) as Types.Timing.Milli;
+    if (!/^(block|fallback|auto)$/.test(remoteFont.display)) {
+      continue;
     }
+
+    const wastedTimeMicro =
+        Types.Timing.Micro(request.args.data.syntheticData.finishTime - request.args.data.syntheticData.sendStartTime);
+    // TODO(crbug.com/352244504): should really end at the time of the next Commit trace event.
+    let wastedTime =
+        Platform.NumberUtilities.floor(Helpers.Timing.microToMilli(wastedTimeMicro), 1 / 5) as Types.Timing.Milli;
+    if (wastedTime === 0) {
+      continue;
+    }
+
+    // All browsers wait for no more than 3s.
+    wastedTime = Math.min(wastedTime, 3000) as Types.Timing.Milli;
 
     fonts.push({
       name: remoteFont.name,

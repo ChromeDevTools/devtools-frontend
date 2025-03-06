@@ -6,24 +6,14 @@ import type * as UI from '../ui/legacy/legacy.js';
 
 type WidgetConstructor = abstract new (...args: any[]) => UI.Widget.Widget|HTMLElement;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ViewFunctionLike = ((input: any, output: any, target: HTMLElement) => void)|undefined;
+type ViewFunctionLike = ((input: any, output: any, target: HTMLElement) => void);
 
-// clang-format off
-type FindViewFunction<ParametersT extends readonly unknown[]> =
-    ParametersT[0] extends ViewFunctionLike ? ParametersT[0] :
-    ParametersT[1] extends ViewFunctionLike ? ParametersT[1] :
-    ParametersT[2] extends ViewFunctionLike ? ParametersT[2] :
-    ParametersT[3] extends ViewFunctionLike ? ParametersT[3] :
-    ParametersT[4] extends ViewFunctionLike ? ParametersT[4] :
-    ParametersT[5] extends ViewFunctionLike ? ParametersT[5] :
-    ParametersT[6] extends ViewFunctionLike ? ParametersT[6] :
-    ParametersT[7] extends ViewFunctionLike ? ParametersT[7] :
-    ParametersT[8] extends ViewFunctionLike ? ParametersT[8] :
-    ParametersT[9] extends ViewFunctionLike ? ParametersT[9] :
+type FindViewFunction<ParametersT extends readonly unknown[]> = ParametersT extends [infer Head, ...infer Tail] ?
+    Head extends ViewFunctionLike ? Head : FindViewFunction<Tail>:
     never;
 
 type ViewFunction<WidgetConstructorT extends WidgetConstructor> =
-    FindViewFunction<ConstructorParameters<WidgetConstructorT>>;
+    FindViewFunction<Required<ConstructorParameters<WidgetConstructorT>>>;
 
 type ViewFunctionParameters<WidgetConstructorT extends WidgetConstructor> =
     Parameters<ViewFunction<WidgetConstructorT>>;
@@ -35,18 +25,25 @@ export type ViewOutput<WidgetConstructorT extends WidgetConstructor> =
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     {} extends ViewFunctionParameters<WidgetConstructorT>[1] ? never :
     ViewFunctionParameters<WidgetConstructorT>[1];
-// clang-format on
 
-export type ViewFunctionStub<WidgetConstructorT extends WidgetConstructor> = ViewFunction<WidgetConstructorT>&{
-  input: ViewInput<WidgetConstructorT>,
-  nextInput: Promise<ViewInput<WidgetConstructorT>>,
-  callCount: number,
-};
+interface ViewStubExtensions<WidgetConstructorT extends WidgetConstructor> {
+  input: ViewInput<WidgetConstructorT>;
+  nextInput: Promise<ViewInput<WidgetConstructorT>>;
+  callCount: number;
+}
+
+interface InternalViewStubExtensions<WidgetConstructorT extends WidgetConstructor> extends
+    ViewStubExtensions<WidgetConstructorT> {
+  invoked?: (input: ViewInput<WidgetConstructorT>) => void;
+}
+
+export type ViewFunctionStub<WidgetConstructorT extends WidgetConstructor> =
+    ViewFunction<WidgetConstructorT>&ViewStubExtensions<WidgetConstructorT>;
 
 export function createViewFunctionStub<WidgetConstructorT extends WidgetConstructor>(
     constructor: WidgetConstructorT,
     outputValues?: ViewOutput<WidgetConstructorT>): ViewFunctionStub<WidgetConstructorT> {
-  const result: ViewFunctionStub<WidgetConstructorT> =
+  const result: InternalViewStubExtensions<WidgetConstructorT> =
       ((input: ViewInput<WidgetConstructorT>, output: ViewOutput<WidgetConstructorT>, _target: HTMLElement) => {
         ++result.callCount;
         result.input = input;
@@ -63,5 +60,5 @@ export function createViewFunctionStub<WidgetConstructorT extends WidgetConstruc
       });
     }
   });
-  return result;
+  return result as ViewFunctionStub<WidgetConstructorT>;
 }

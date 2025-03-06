@@ -199,6 +199,7 @@ export class FilesNavigatorView extends NavigatorView {
 
   constructor() {
     super('navigator-files');
+    this.registerRequiredCSS(sourcesNavigatorStyles);
     const placeholder =
         new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
     this.setPlaceholder(placeholder);
@@ -268,6 +269,7 @@ export class FilesNavigatorView extends NavigatorView {
           'automatic-workspace-folders',
       );
       if (this.#infobar) {
+        this.#infobar.element.classList.add('automatic-workspace-infobar');
         this.contentElement.append(this.#infobar.element);
       }
     }

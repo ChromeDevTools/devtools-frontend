@@ -6,6 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import infobarStyles from './infobar.css.js';
@@ -72,8 +73,8 @@ export class Infobar {
 
     this.infoMessage = this.infoContainer.createChild('div', 'infobar-info-message');
 
-    // Icon is in separate file and included via CSS.
-    this.infoMessage.createChild('div', type + '-icon icon');
+    const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + '-icon');
+    this.infoMessage.appendChild(icon);
 
     this.infoText = this.infoMessage.createChild('div', 'infobar-info-text');
     this.infoText.textContent = text;
@@ -120,6 +121,7 @@ export class Infobar {
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('dt-close-button', 'close-button');
     this.closeButton.setTabbable(true);
+    this.closeButton.setSize(Buttons.Button.Size.SMALL);
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
 
@@ -251,3 +253,10 @@ export const enum Type {
   ISSUE = 'issue',
   ERROR = 'error',
 }
+
+const TYPE_TO_ICON = {
+  [Type.WARNING]: 'warning',
+  [Type.INFO]: 'info',
+  [Type.ISSUE]: 'issue-text-filled',
+  [Type.ERROR]: 'cross-circle',
+};

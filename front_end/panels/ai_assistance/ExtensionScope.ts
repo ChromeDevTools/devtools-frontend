@@ -18,6 +18,11 @@ import {
   injectedFunctions
 } from './injected.js';
 
+interface ElementContext {
+  selector: string;
+  sourceLocation?: string;
+}
+
 /**
  * Injects Freestyler extension functions in to the isolated world.
  */
@@ -229,10 +234,7 @@ export class ExtensionScope {
     return uiLocation?.linkText(/* skipTrim= */ true, /* showColumnNumber= */ true);
   }
 
-  async #computeContextFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<{
-    selector: string,
-    sourceLocation?: string,
-  }> {
+  async #computeContextFromElement(remoteObject: SDK.RemoteObject.RemoteObject): Promise<ElementContext> {
     if (!remoteObject.objectId) {
       throw new Error('DOMModel is not found');
     }
@@ -308,8 +310,10 @@ export class ExtensionScope {
 
       const arg = JSON.parse(args.object.value) as Omit<FreestyleCallbackArgs, 'element'>;
 
-      // TODO: Should this a be a *?
-      let context = {selector: ''};
+      let context: ElementContext = {
+        // TODO: Should this a be a *?
+        selector: ''
+      };
       try {
         context = await this.#computeContextFromElement(element.object);
       } catch (err) {
@@ -320,6 +324,7 @@ export class ExtensionScope {
 
       const styleChanges = await this.#changeManager.addChange(cssModel, this.frameId, {
         groupId: this.#agentId,
+        sourceLocation: context.sourceLocation,
         selector: context.selector,
         className: arg.className,
         styles: arg.styles,

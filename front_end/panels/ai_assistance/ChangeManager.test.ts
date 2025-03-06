@@ -206,5 +206,25 @@ describe('ChangeManager', () => {
   background-color: green;
 }`);
     });
+
+    it('formats source location', async () => {
+      const changeManager = new AiAssistance.ChangeManager();
+      const cssModel = createModel();
+      await changeManager.addChange(cssModel, frameId, {
+        groupId: agentId,
+        sourceLocation: 'button.scss:1:1',
+        selector: 'div',
+        className: 'ai-style-change-1',
+        styles: {color: 'blue', 'background-color': 'green'},
+      });
+
+      assert.strictEqual(
+          changeManager.formatChanges(agentId, /* includeSourceLocation=*/ true),
+          `/* related resource: button.scss:1:1 */
+div {
+  color: blue;
+  background-color: green;
+}`);
+    });
   });
 });

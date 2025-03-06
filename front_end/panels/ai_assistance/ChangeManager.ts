@@ -9,6 +9,8 @@ import type * as Protocol from '../../generated/protocol.js';
 
 export interface Change {
   groupId: string;
+  // Optional about where in the source the selector was defined.
+  sourceLocation?: string;
   selector: string;
   className: string;
   styles: Record<string, string>;
@@ -98,21 +100,28 @@ export class ChangeManager {
     } else {
       changes.push(change);
     }
-    await cssModel.setStyleSheetText(stylesheetId, this.buildChanges(changes), true);
+    await cssModel.setStyleSheetText(stylesheetId, this.buildChangesForInspectoStylesheet(changes), true);
     this.#stylesheetChanges.set(stylesheetId, changes);
-    return this.buildChanges(changes);
+    return this.buildChangesForInspectoStylesheet(changes);
   }
 
-  formatChanges(groupId: string): string {
+  formatChange(change: Change, includeSourceLocation = false): string {
+    const sourceLocation =
+        includeSourceLocation && change.sourceLocation ? `/* related resource: ${change.sourceLocation} */\n` : '';
+    return `${sourceLocation}${change.selector} {
+${formatStyles(change.styles)}
+}`;
+  }
+
+  formatChanges(groupId: string, includeSourceLocation = false): string {
     return Array.from(this.#stylesheetChanges.values())
         .flatMap(
-            changesPerStylesheet =>
-                changesPerStylesheet.filter(change => change.groupId === groupId).map(change => `${change.selector} {
-${formatStyles(change.styles)}
-}`)).join('\n\n');
+            changesPerStylesheet => changesPerStylesheet.filter(change => change.groupId === groupId)
+                                        .map(change => this.formatChange(change, includeSourceLocation)))
+        .join('\n\n');
   }
 
-  buildChanges(changes: Change[]): string {
+  buildChangesForInspectoStylesheet(changes: Change[]): string {
     return changes
         .map(change => {
           return `.${change.className} {

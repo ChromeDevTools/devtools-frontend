@@ -332,27 +332,29 @@ export class NetworkRequestDetails extends HTMLElement {
 
     // clang-format off
     const output = html`
-      ${this.#renderTitle()}
-      ${this.#renderURL()}
-      ${await this.#renderPreviewElement()}
-      <div class="network-request-details-cols">
-        <div class="network-request-details-col">
-          ${this.#renderRow(i18nString(UIStrings.requestMethod), networkData.requestMethod)}
-          ${this.#renderRow(i18nString(UIStrings.priority), NetworkRequestTooltip.renderPriorityValue(this.#networkRequest))}
-          ${this.#renderRow(i18nString(UIStrings.mimeType), networkData.mimeType)}
-          ${this.#renderEncodedDataLength()}
-          ${this.#renderRow(i18nString(UIStrings.decodedBody), i18n.ByteUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
-          ${this.#renderBlockingRow()}
-          ${this.#renderFromCache()}
-          ${this.#renderThirdPartyEntity()}
-        </div>
-        <div class="network-request-details-col">
-          <div class="timing-rows">
-            ${NetworkRequestTooltip.renderTimings(this.#networkRequest)}
+      <div class="network-request-details-content">
+        ${this.#renderTitle()}
+        ${this.#renderURL()}
+        ${await this.#renderPreviewElement()}
+        <div class="network-request-details-cols">
+          <div class="network-request-details-col">
+            ${this.#renderRow(i18nString(UIStrings.requestMethod), networkData.requestMethod)}
+            ${this.#renderRow(i18nString(UIStrings.priority), NetworkRequestTooltip.renderPriorityValue(this.#networkRequest))}
+            ${this.#renderRow(i18nString(UIStrings.mimeType), networkData.mimeType)}
+            ${this.#renderEncodedDataLength()}
+            ${this.#renderRow(i18nString(UIStrings.decodedBody), i18n.ByteUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
+            ${this.#renderBlockingRow()}
+            ${this.#renderFromCache()}
+            ${this.#renderThirdPartyEntity()}
+          </div>
+          <div class="network-request-details-col">
+            <div class="timing-rows">
+              ${NetworkRequestTooltip.renderTimings(this.#networkRequest)}
+            </div>
           </div>
         </div>
+        ${this.#renderInitiatedBy()}
       </div>
-      ${this.#renderInitiatedBy()}
     `; // The last items are outside the 2 column layout because InitiatedBy can be very wide
     // clang-format on
     Lit.render(output, this.#shadow, {host: this});

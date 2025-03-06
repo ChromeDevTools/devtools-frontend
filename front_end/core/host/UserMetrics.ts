@@ -1134,8 +1134,9 @@ export enum IssueCreated {
   'SRIMessageSignatureIssue::ValidationFailedSignatureExpired' = 108,
   'SRIMessageSignatureIssue::ValidationFailedInvalidLength' = 109,
   'SRIMessageSignatureIssue::ValidationFailedSignatureMismatch' = 110,
+  'CorsIssue::LocalNetworkAccessPermissionDenied' = 111,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 111,
+  MAX_VALUE = 112,
 }
 
 export const enum DeveloperResourceLoaded {

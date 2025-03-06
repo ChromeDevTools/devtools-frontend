@@ -11,6 +11,10 @@ import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 const UIStrings = {
   /**
+   *@description Label for the link for CORS Local Network Access issues
+   */
+  corsLocalNetworkAccess: 'Local Network Access',
+  /**
    *@description Label for the link for CORS private network issues
    */
   corsPrivateNetworkAccess: 'Private Network Access',
@@ -246,13 +250,20 @@ export class CorsIssue extends Issue<IssueCode> {
             linkTitle: i18nString(UIStrings.corsPrivateNetworkAccess),
           }],
         };
+      case IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
+        return {
+          file: 'corsLocalNetworkAccessPermissionDenied.md',
+          links: [{
+            link: 'https://chromestatus.com/feature/5152728072060928',
+            linkTitle: i18nString(UIStrings.corsLocalNetworkAccess),
+          }],
+        };
       case IssueCode.PREFLIGHT_MISSING_ALLOW_EXTERNAL:
       case IssueCode.PREFLIGHT_INVALID_ALLOW_EXTERNAL:
       case IssueCode.INVALID_PRIVATE_NETWORK_ACCESS:
       case IssueCode.UNEXPECTED_PRIVATE_NETWORK_ACCESS:
       case IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_UNAVAILABLE:
       case IssueCode.PRIVATE_NETWORK_ACCESS_PERMISSION_DENIED:
-      case IssueCode.LOCAL_NETWORK_ACCESS_PERMISSION_DENIED:
         return null;
     }
   }

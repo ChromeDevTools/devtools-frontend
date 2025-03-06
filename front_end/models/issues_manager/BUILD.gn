@@ -103,6 +103,7 @@ devtools_issue_description_files = [
   "corsHeaderDisallowedByPreflightResponse.md",
   "corsInsecurePrivateNetwork.md",
   "corsInvalidHeaderValues.md",
+  "corsLocalNetworkAccessPermissionDenied.md",
   "corsMethodDisallowedByPreflightResponse.md",
   "corsNoCorsRedirectModeNotFollow.md",
   "corsOriginMismatch.md",

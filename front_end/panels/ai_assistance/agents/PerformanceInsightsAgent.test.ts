@@ -133,8 +133,12 @@ What is this?`;
       assert.strictEqual(titleResponse.title, 'Investigating network activity…');
 
       assert.exists(action);
-      assert.deepEqual(
-          action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
+      assert.deepEqual(action, {
+        type: 'action' as ActionResponse['type'],
+        output: expectedOutput,
+        code: 'getNetworkActivitySummary()',
+        canceled: false
+      });
     });
 
     it('can call getNetworkRequestDetail to get detail about a single request', async function() {
@@ -164,8 +168,12 @@ What is this?`;
       const expectedOutput = JSON.stringify({request: expectedRequestOutput});
 
       assert.exists(action);
-      assert.deepEqual(
-          action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
+      assert.deepEqual(action, {
+        type: 'action' as ActionResponse['type'],
+        output: expectedOutput,
+        code: `getNetworkRequestDetail('${requestUrl}')`,
+        canceled: false
+      });
     });
 
     it('calls getMainThreadActivity', async function() {
@@ -192,8 +200,12 @@ What is this?`;
       assert.isOk(expectedTree);
       const expectedOutput = JSON.stringify({activity: expectedTree.serialize()});
 
-      assert.deepEqual(
-          action, {type: 'action' as ActionResponse['type'], output: expectedOutput, code: undefined, canceled: false});
+      assert.deepEqual(action, {
+        type: 'action' as ActionResponse['type'],
+        output: expectedOutput,
+        code: 'getMainThreadActivity()',
+        canceled: false
+      });
     });
   });
 });

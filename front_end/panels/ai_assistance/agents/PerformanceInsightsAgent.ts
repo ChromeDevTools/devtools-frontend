@@ -147,7 +147,10 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         properties: {},
       },
       displayInfoFromArgs: () => {
-        return {title: lockedString(UIStringsNotTranslated.networkActivitySummary)};
+        return {
+          title: lockedString(UIStringsNotTranslated.networkActivitySummary),
+          action: 'getNetworkActivitySummary()'
+        };
       },
       handler: async () => {
         debugLog('Function call: getNetworkActivitySummary');
@@ -182,7 +185,10 @@ export class PerformanceInsightsAgent extends AiAgent<TimelineUtils.InsightAICon
         },
       },
       displayInfoFromArgs: params => {
-        return {title: lockedString(`Investigating network request ${params.url}…`)};
+        return {
+          title: lockedString(`Investigating network request ${params.url}…`),
+          action: `getNetworkRequestDetail('${params.url}')`
+        };
       },
       handler: async params => {
         debugLog('Function call: getNetworkRequestDetail', params);
@@ -228,7 +234,7 @@ The fields are:
         properties: {},
       },
       displayInfoFromArgs: () => {
-        return {title: lockedString(UIStringsNotTranslated.mainThreadActivity)};
+        return {title: lockedString(UIStringsNotTranslated.mainThreadActivity), action: 'getMainThreadActivity()'};
       },
       handler: async () => {
         debugLog('Function call: getMainThreadActivity');

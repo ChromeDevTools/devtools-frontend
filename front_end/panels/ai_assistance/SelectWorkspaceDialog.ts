@@ -29,6 +29,10 @@ const UIStringsNotTranslate = {
    */
   select: 'Select',
   /*
+   *@description Button text for adding a workspace folder.
+   */
+  addFolder: 'Add folder',
+  /*
    *@description Explainer stating that selected folder's contents are being sent to Google.
    */
   sourceCodeSent: 'Source code from the selected folder is sent to Google to generate code suggestions'
@@ -45,6 +49,7 @@ interface ViewInput {
   onProjectSelected: (index: number) => void;
   onSelectButtonClick: () => void;
   onCancelButtonClick: () => void;
+  onAddFolderButtonClick: () => void;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
@@ -99,15 +104,22 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
             <devtools-button
               title=${lockedString(UIStringsNotTranslate.cancel)}
               aria-label="Cancel"
-              .jslogContext=${'freestyler.new-chat'}
+              .jslogContext=${'cancel'}
               @click=${input.onCancelButtonClick}
               .variant=${Buttons.Button.Variant.OUTLINED}>${lockedString(UIStringsNotTranslate.cancel)}</devtools-button>
             <devtools-button
+              class="add-folder-button"
+              title=${lockedString(UIStringsNotTranslate.addFolder)}
+              aria-label="Add folder"
+              .iconName=${'plus'}
+              .jslogContext=${'add-folder'}
+              @click=${input.onAddFolderButtonClick}
+              .variant=${Buttons.Button.Variant.TONAL}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
+            <devtools-button
               title=${lockedString(UIStringsNotTranslate.select)}
-              class="select-button"
               aria-label="Select"
               @click=${input.onSelectButtonClick}
-              .jslogContext=${'freestyler.new-chat'}
+              .jslogContext=${'select'}
               .variant=${Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
           </div>
         `,
@@ -122,11 +134,13 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   override wasShown(): void {
     const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
     document.addEventListener('keydown', this.#boundOnKeyDown, true);
+    this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
   }
 
   override willHide(): void {
     const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
     document.removeEventListener('keydown', this.#boundOnKeyDown, true);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
   }
 
   #onKeyDown(event: KeyboardEvent): void {
@@ -161,6 +175,9 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       },
       onCancelButtonClick: () => {
         this.#dialog.hide();
+      },
+      onAddFolderButtonClick: () => {
+        void Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
       }
     };
 
@@ -173,5 +190,10 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
             project => project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem &&
                 project.fileSystem().type() ===
                     Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT);
+  }
+
+  #onProjectAdded(): void {
+    this.#projects = this.#getProjects();
+    this.requestUpdate();
   }
 }

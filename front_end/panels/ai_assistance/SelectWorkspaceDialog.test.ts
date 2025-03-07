@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Persistence from '../../models/persistence/persistence.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
 import {dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
@@ -71,5 +71,20 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     input = await view.nextInput;
     assert.strictEqual(view.callCount, 3);
     assert.strictEqual(input.selectedIndex, 0);
+  });
+
+  it('can add projects', async () => {
+    const addProjectSpy =
+        sinon.spy(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem');
+    const {view} = createComponent();
+    assert.strictEqual(view.callCount, 1);
+    assert.lengthOf(view.input.projects, 2);
+    view.input.onAddFolderButtonClick();
+    assert.isTrue(addProjectSpy.calledOnce);
+
+    createTestFilesystem('file://test3');
+    const input = await view.nextInput;
+    assert.strictEqual(view.callCount, 2);
+    assert.lengthOf(input.projects, 3);
   });
 });

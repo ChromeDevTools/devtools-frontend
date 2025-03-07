@@ -11,6 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "layerDetailsView.css",
+    "layerTreeOutline.css",
     "layers3DView.css",
     "paintProfiler.css",
   ]

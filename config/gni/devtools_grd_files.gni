@@ -1532,6 +1532,7 @@ grd_files_debug_sources = [
   "front_end/panels/layer_viewer/PaintProfilerView.js",
   "front_end/panels/layer_viewer/TransformController.js",
   "front_end/panels/layer_viewer/layerDetailsView.css.js",
+  "front_end/panels/layer_viewer/layerTreeOutline.css.js",
   "front_end/panels/layer_viewer/layers3DView.css.js",
   "front_end/panels/layer_viewer/paintProfiler.css.js",
   "front_end/panels/layers/LayerPaintProfilerView.js",

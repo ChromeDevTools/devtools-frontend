@@ -165,6 +165,10 @@ export abstract class ConversationContext<T> {
   async refresh(): Promise<void> {
     return;
   }
+
+  getSuggestions(): [string, ...string[]]|undefined {
+    return;
+  }
 }
 
 export type FunctionCallHandlerResult<Result> = {

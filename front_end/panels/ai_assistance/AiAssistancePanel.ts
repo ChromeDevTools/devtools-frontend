@@ -225,7 +225,20 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-function getEmptyStateSuggestions(conversationType: ConversationType): string[] {
+function getEmptyStateSuggestions(
+    context: ConversationContext<unknown>|null, conversationType?: ConversationType): string[] {
+  if (context) {
+    const specialSuggestions = context.getSuggestions();
+
+    if (specialSuggestions) {
+      return specialSuggestions;
+    }
+  }
+
+  if (!conversationType) {
+    return [];
+  }
+
   switch (conversationType) {
     case ConversationType.STYLING:
       return [
@@ -837,7 +850,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           imageInput: this.#imageInput,
           isDeleteHistoryButtonVisible: Boolean(this.#conversation && !this.#conversation.isEmpty),
           isTextInputDisabled: this.#isTextInputDisabled(),
-          emptyStateSuggestions: this.#conversation ? getEmptyStateSuggestions(this.#conversation.type) : [],
+          emptyStateSuggestions: getEmptyStateSuggestions(this.#selectedContext, this.#conversation?.type),
           inputPlaceholder: this.#getChatInputPlaceholder(),
           disclaimerText: this.#getDisclaimerText(),
           isTextInputEmpty: this.#isTextInputEmpty,

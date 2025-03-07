@@ -2,16 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
   createPatchWidget,
+  createTestFilesystem,
   initializePersistenceImplForTests,
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 describeWithMockConnection('workspace', () => {
   beforeEach(() => {
@@ -21,16 +20,6 @@ describeWithMockConnection('workspace', () => {
   afterEach(() => {
     cleanup();
   });
-
-  function createTestFilesystem(fileSystemPath: string) {
-    const {project, uiSourceCode} = createFileSystemUISourceCode({
-      url: Platform.DevToolsPath.urlString`file:///example.html`,
-      mimeType: 'text/html',
-      content: 'content',
-      fileSystemPath,
-    });
-    return {project, uiSourceCode};
-  }
 
   it('does not report a workspace project if disabled', async () => {
     createTestFilesystem('file://test');

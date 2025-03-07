@@ -18,7 +18,7 @@ import {findMenuItemWithLabel, getMenu} from './ContextMenuHelpers.js';
 import {
   createTarget,
 } from './EnvironmentHelpers.js';
-import {createContentProviderUISourceCodes} from './UISourceCodeHelpers.js';
+import {createContentProviderUISourceCodes, createFileSystemUISourceCode} from './UISourceCodeHelpers.js';
 import {createViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.AidaClient.AidaClient {
@@ -269,4 +269,27 @@ export function openHistoryContextMenu(
     contextMenu,
     id: freestylerEntry?.id(),
   };
+}
+
+export function createTestFilesystem(fileSystemPath: string, files?: Array<{
+                                       path: string,
+                                       content: string,
+                                     }>) {
+  const {project, uiSourceCode} = createFileSystemUISourceCode({
+    url: Platform.DevToolsPath.urlString`${fileSystemPath}/index.html`,
+    mimeType: 'text/html',
+    content: 'content',
+    fileSystemPath,
+  });
+
+  uiSourceCode.setWorkingCopy('content');
+
+  for (const file of files ?? []) {
+    const uiSourceCode = project.createUISourceCode(
+        Platform.DevToolsPath.urlString`${fileSystemPath}/${file.path}`, Common.ResourceType.resourceTypes.Script);
+    project.addUISourceCode(uiSourceCode);
+    uiSourceCode.setWorkingCopy(file.content);
+  }
+
+  return {project, uiSourceCode};
 }

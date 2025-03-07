@@ -9,6 +9,7 @@ import '../../ui/components/tooltips/tooltips.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -21,6 +22,7 @@ import * as ChangesPanel from '../changes/changes.js';
 
 import {type ResponseData, ResponseType} from './agents/AiAgent.js';
 import {PatchAgent} from './agents/PatchAgent.js';
+import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 
 /*
 * Strings that don't need to be translated at this time.
@@ -76,18 +78,14 @@ export interface ViewInput {
   patchSuggestion?: string;
   patchSuggestionLoading?: boolean;
   projectName?: string;
+  projectPath: Platform.DevToolsPath.UrlString;
   onApplyToWorkspace?: () => void;
   onDiscard: () => void;
   onSaveAll: () => void;
+  onChangeWorkspaceClick: () => void;
 }
 
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
-
-async function onChangeWorkspaceClick(): Promise<void> {
-  await UI.UIUtils.ConfirmDialog.show(
-      'Changing workspace is not implemented yet', 'Change workspace', undefined,
-      {jslogContext: 'change-workspace-dialog'});
-}
 
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
@@ -192,10 +190,10 @@ export class PatchWidget extends UI.Widget.Widget {
         <div class="footer">
           <div class="change-workspace">
             <div class="selected-folder">
-              ${lockedString(UIStringsNotTranslate.selectedFolder)} ${input.projectName}
+              ${lockedString(UIStringsNotTranslate.selectedFolder)} <span title=${input.projectPath}>${input.projectName}</span>
             </div>
             <devtools-button
-              @click=${onChangeWorkspaceClick}
+              @click=${input.onChangeWorkspaceClick}
               .jslogContext=${'change-workspace'}
               .variant=${Buttons.Button.Variant.TEXT}>
                 ${lockedString(UIStringsNotTranslate.change)}
@@ -237,6 +235,22 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  #onChangeWorkspaceClick(): void {
+    const dialog = new UI.Dialog.Dialog('select-workspace');
+    dialog.setMaxContentSize(new UI.Geometry.Size(384, 340));
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
+    dialog.setDimmed(true);
+
+    const handleProjectSelected = (project: Workspace.Workspace.Project): void => {
+      this.#project = project;
+      this.requestUpdate();
+    };
+
+    new SelectWorkspaceDialog({dialog, handleProjectSelected, currentProject: this.#project})
+        .show(dialog.contentElement);
+    dialog.show();
+  }
+
   override performUpdate(): void {
     const viewInput = {
       workspaceDiff: this.#workspaceDiff,
@@ -244,16 +258,19 @@ export class PatchWidget extends UI.Widget.Widget {
       patchSuggestion: this.#patchSuggestion,
       patchSuggestionLoading: this.#patchSuggestionLoading,
       projectName: this.#project?.displayName(),
+      projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+          (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
       onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
       onDiscard: this.#onDiscard.bind(this),
       onSaveAll: this.#onSaveAll.bind(this),
+      onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),
     };
     this.#view(viewInput, undefined, this.contentElement);
   }
 
   override wasShown(): void {
     super.wasShown();
-    this.#selectProject();
+    this.#selectDefaultProject();
 
     if (isAiAssistancePatchingEnabled()) {
       this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
@@ -274,7 +291,7 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
-  #selectProject(): void {
+  #selectDefaultProject(): void {
     if (isAiAssistancePatchingEnabled()) {
       // TODO: this is temporary code that should be replaced with
       // workflow selection flow. For now it picks the first Workspace
@@ -299,7 +316,7 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   #onProjectAddedOrRemoved(): void {
-    this.#selectProject();
+    this.#selectDefaultProject();
   }
 
   async #onApplyToWorkspace(): Promise<void> {

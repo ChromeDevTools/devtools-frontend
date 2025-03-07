@@ -13,6 +13,7 @@ generate_css("css_files") {
     "./aiAssistancePanel.css",
     "./components/chatView.css",
     "./components/userActionRow.css",
+    "./selectWorkspaceDialog.css",
   ]
 }
 
@@ -25,6 +26,7 @@ devtools_module("ai_assistance") {
     "EvaluateAction.ts",
     "ExtensionScope.ts",
     "PatchWidget.ts",
+    "SelectWorkspaceDialog.ts",
     "agents/AiAgent.ts",
     "agents/FileAgent.ts",
     "agents/NetworkAgent.ts",
@@ -107,6 +109,7 @@ ts_library("unittests") {
     "EvaluateAction.test.ts",
     "ExtensionScope.test.ts",
     "PatchWidget.test.ts",
+    "SelectWorkspaceDialog.test.ts",
     "agents/AiAgent.test.ts",
     "agents/FileAgent.test.ts",
     "agents/NetworkAgent.test.ts",

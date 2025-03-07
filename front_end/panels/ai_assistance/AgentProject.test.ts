@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
+import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
@@ -19,23 +17,7 @@ describeWithEnvironment('AgentProject', () => {
         maxFilesChanged: number,
         maxLinesChanged: number,
       }) {
-    const {project, uiSourceCode} = createFileSystemUISourceCode({
-      url: Platform.DevToolsPath.urlString`file:///path/to/project/index.html`,
-      fileSystemPath: Platform.DevToolsPath.urlString`file:///path/to/project`,
-      mimeType: 'text/html',
-      content: 'content',
-    });
-
-    uiSourceCode.setWorkingCopy('content');
-
-    for (const file of files ?? []) {
-      const uiSourceCode = project.createUISourceCode(
-          Platform.DevToolsPath.urlString`file:///path/to/project/${file.path}`,
-          Common.ResourceType.resourceTypes.Script);
-      project.addUISourceCode(uiSourceCode);
-      uiSourceCode.setWorkingCopy(file.content);
-    }
-
+    const {project, uiSourceCode} = createTestFilesystem('file:///path/to/project', files);
     return {project: new AiAssistance.AgentProject(project, options), uiSourceCode};
   }
 

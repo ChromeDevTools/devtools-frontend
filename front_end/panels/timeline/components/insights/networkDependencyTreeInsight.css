@@ -6,9 +6,14 @@
 
 .insight-body {
   --override-timeline-link-text-decoration: none;
+  --override-timeline-link-text-color: var(--sys-color-on-surface);
 
   .max-time {
     text-align: center;
+
+    .longest {
+      color: var(--sys-color-error);
+    }
   }
 
   .tree-view {
@@ -21,16 +26,16 @@
     }
 
     ul:not(:first-child){
-      border-left: var(--sys-size-1) solid var(--sys-color-divider);
+      border-left: var(--sys-size-1) solid var(--sys-color-tonal-outline);
       list-style: none;
       padding-left: var(--sys-size-5)
     }
 
     li {
-      border-left: var(--sys-size-1) solid var(--sys-color-divider);
+      border-left: var(--sys-size-1) solid var(--sys-color-tonal-outline);
       list-style: none;
-      padding-left: var(--sys-size-5);
       min-height: var(--sys-size-8);
+      padding: var(--sys-size-2) 0 var(--sys-size-2) var(--sys-size-5);
 
       .request {
         display: flex;

@@ -121,7 +121,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
         <div class="max-time">
           ${i18nString(UIStrings.maxCriticalPathLatency)}
           <br>
-          ${i18n.TimeUtilities.formatMicroSecondsTime((this.model.maxTime))}
+          <span class='longest'> ${i18n.TimeUtilities.formatMicroSecondsTime((this.model.maxTime))}</span>
         </div>
 
         <!-- a divider is added here, through |tree-view| element's border-top -->

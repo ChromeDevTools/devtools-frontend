@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -13,7 +14,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -32,10 +32,6 @@ export const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function deps(): ['Meta', 'NetworkRequests', 'LayoutShifts'] {
-  return ['Meta', 'NetworkRequests', 'LayoutShifts'];
-}
 
 interface RemoteFont {
   name?: string;
@@ -61,7 +57,7 @@ function finalize(partialModel: PartialInsightModel<FontDisplayInsightModel>): F
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): FontDisplayInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): FontDisplayInsightModel {
   const fonts: RemoteFont[] = [];
   for (const remoteFont of parsedTrace.LayoutShifts.remoteFonts) {
     const event = remoteFont.beginRemoteFontLoadEvent;

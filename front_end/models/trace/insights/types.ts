@@ -4,7 +4,6 @@
 
 import type * as Common from '../../../core/common/common.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import type * as Handlers from '../handlers/handlers.js';
 import type * as Lantern from '../lantern/lantern.js';
 import type * as Types from '../types/types.js';
 
@@ -132,12 +131,6 @@ export type InsightModels = {
  * navigation to map it to. In this case `Types.Events.NO_NAVIGATION` is used for the key.
  */
 export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
-
-/**
- * Represents the narrow set of dependencies defined by an insight's `deps()` function. `Meta` is always included regardless of `deps()`.
- */
-export type RequiredData<D extends() => Array<keyof typeof Handlers.ModelHandlers>> =
-    Handlers.Types.EnabledHandlerDataWithMeta<Pick<typeof Handlers.ModelHandlers, ReturnType<D>[number]>>;
 
 export const enum InsightKeys {
   LCP_PHASES = 'LCPPhases',

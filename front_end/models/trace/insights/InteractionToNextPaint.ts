@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
@@ -12,7 +13,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -56,10 +56,6 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/InteractionToNextPaint.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function deps(): ['UserInteractions'] {
-  return ['UserInteractions'];
-}
-
 export type INPInsightModel = InsightModel<typeof UIStrings, {
   longestInteractionEvent?: SyntheticInteractionPair,
   highPercentileInteractionEvent?: SyntheticInteractionPair,
@@ -77,7 +73,7 @@ function finalize(partialModel: PartialInsightModel<INPInsightModel>): INPInsigh
   };
 }
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightModel {
+export function generateInsight(parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): INPInsightModel {
   const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });

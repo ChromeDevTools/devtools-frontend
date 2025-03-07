@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Extras from '../extras/extras.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 
 import {
@@ -12,7 +13,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -34,10 +34,6 @@ export type DuplicateJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   duplication: Extras.ScriptDuplication.ScriptDuplication,
 }>;
 
-export function deps(): ['Scripts', 'NetworkRequests'] {
-  return ['Scripts', 'NetworkRequests'];
-}
-
 function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
   const requests = [...partialModel.duplication.values().flatMap(array => array.map(v => v.script.request))].filter(
       e => !!e);  // eslint-disable-line no-implicit-coercion
@@ -55,7 +51,7 @@ function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightMo
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DuplicateJavaScriptInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DuplicateJavaScriptInsightModel {
   const scripts = parsedTrace.Scripts.scripts.filter(script => {
     if (!context.navigation) {
       return false;

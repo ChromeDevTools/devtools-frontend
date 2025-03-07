@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Lantern from '../lantern/lantern.js';
 import * as Types from '../types/types.js';
@@ -16,7 +17,6 @@ import {
   type InsightSetContextWithNavigation,
   type PartialInsightModel,
   type RelatedEventsMap,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -70,10 +70,6 @@ export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
   maxTime: Types.Timing.Micro,
 }>;
 
-export function deps(): ['NetworkRequests'] {
-  return ['NetworkRequests'];
-}
-
 function finalize(partialModel: PartialInsightModel<NetworkDependencyTreeInsightModel>):
     NetworkDependencyTreeInsightModel {
   return {
@@ -122,7 +118,7 @@ function isCritical(request: Types.Events.SyntheticNetworkRequest, context: Insi
 }
 
 export function generateInsight(
-    _parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): NetworkDependencyTreeInsightModel {
+    _parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): NetworkDependencyTreeInsightModel {
   if (!context.navigation) {
     return finalize({
       rootNodes: [],

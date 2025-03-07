@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
@@ -13,7 +14,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -97,10 +97,6 @@ const BYTE_SAVINGS_THRESHOLD = 4096;
 
 // Ignore up to 12KB of waste for responsive images if an effort was made with breakpoints.
 const BYTE_SAVINGS_THRESHOLD_RESPONSIVE_BREAKPOINTS = 12288;
-
-export function deps(): ['NetworkRequests', 'Meta', 'ImagePainting'] {
-  return ['NetworkRequests', 'Meta', 'ImagePainting'];
-}
 
 export enum ImageOptimizationType {
   ADJUST_COMPRESSION = 'ADJUST_COMPRESSION',
@@ -190,7 +186,7 @@ function getPixelCounts(paintImage: Types.Events.PaintImage): {displayedPixels: 
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ImageDeliveryInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ImageDeliveryInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const contextRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);

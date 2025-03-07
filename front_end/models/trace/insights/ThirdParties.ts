@@ -15,7 +15,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -41,10 +40,6 @@ export const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ThirdParties.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'] {
-  return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
-}
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   eventsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.Event[]>,
@@ -84,7 +79,7 @@ function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): 
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ThirdPartiesInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ThirdPartiesInsightModel {
   const networkRequests = parsedTrace.NetworkRequests.byTime.filter(event => {
     if (!context.navigation) {
       return false;

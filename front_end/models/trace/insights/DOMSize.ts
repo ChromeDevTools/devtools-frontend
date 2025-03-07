@@ -13,7 +13,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -69,10 +68,6 @@ export type DOMSizeInsightModel = InsightModel<typeof UIStrings, {
   maxDOMStats?: Types.Events.DOMStats,
 }>;
 
-export function deps(): ['Renderer', 'AuctionWorklets', 'DOMStats'] {
-  return ['Renderer', 'AuctionWorklets', 'DOMStats'];
-}
-
 function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSizeInsightModel {
   const relatedEvents = [...partialModel.largeLayoutUpdates, ...partialModel.largeStyleRecalcs];
   return {
@@ -88,7 +83,7 @@ function finalize(partialModel: PartialInsightModel<DOMSizeInsightModel>): DOMSi
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DOMSizeInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DOMSizeInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const mainTid = context.navigation?.tid;

@@ -15,7 +15,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -81,10 +80,6 @@ export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
   /** The top 3 shift root causes for each cluster. */
   topCulpritsByCluster: Map<Types.Events.SyntheticLayoutShiftCluster, Platform.UIString.LocalizedString[]>,
 }>;
-
-export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
-  return ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'];
-}
 
 export const enum AnimationFailureReasons {
   ACCELERATED_ANIMATIONS_DISABLED = 'ACCELERATED_ANIMATIONS_DISABLED',
@@ -544,7 +539,7 @@ function finalize(partialModel: PartialInsightModel<CLSCulpritsInsightModel>): C
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): CLSCulpritsInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): CLSCulpritsInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const compositeAnimationEvents = parsedTrace.Animations.animations.filter(isWithinContext);

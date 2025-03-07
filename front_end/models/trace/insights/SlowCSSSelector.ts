@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
@@ -13,7 +14,6 @@ import {
   type InsightModel,
   type InsightSetContext,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -56,10 +56,6 @@ export const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/SlowCSSSelector.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function deps(): ['SelectorStats'] {
-  return ['SelectorStats'];
-}
 
 export type SlowCSSSelectorInsightModel = InsightModel<typeof UIStrings, {
   totalElapsedMs: Types.Timing.Milli,
@@ -114,7 +110,7 @@ function finalize(partialModel: PartialInsightModel<SlowCSSSelectorInsightModel>
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): SlowCSSSelectorInsightModel {
   const selectorStatsData = parsedTrace.SelectorStats;
 
   if (!selectorStatsData) {

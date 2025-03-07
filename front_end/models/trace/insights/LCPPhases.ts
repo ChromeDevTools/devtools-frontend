@@ -14,7 +14,6 @@ import {
   type InsightSetContext,
   InsightWarning,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -63,10 +62,6 @@ export const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPPhases.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
-  return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
-}
 
 interface LCPPhases {
   /**
@@ -174,7 +169,7 @@ function finalize(partialModel: PartialInsightModel<LCPPhasesInsightModel>): LCP
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPPhasesInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LCPPhasesInsightModel {
   if (!context.navigation) {
     return finalize({});
   }

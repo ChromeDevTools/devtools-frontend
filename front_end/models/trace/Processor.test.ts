@@ -258,8 +258,9 @@ describeWithEnvironment('TraceProcessor', function() {
     });
 
     it('captures errors thrown by insights', async function() {
-      sinon.stub(Trace.Processor.TraceProcessor, 'getEnabledInsightRunners').callsFake(() => {
+      sinon.stub(Trace.Processor.TraceProcessor, 'getInsightRunners').callsFake(() => {
         return {
+          ...Trace.Insights.Models,
           RenderBlocking: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             UIStrings: {} as any,
@@ -268,7 +269,6 @@ describeWithEnvironment('TraceProcessor', function() {
             generateInsight: () => {
               throw new Error('forced error');
             },
-            deps: Trace.Insights.Models.RenderBlocking.deps,
           },
         };
       });
@@ -285,27 +285,6 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.lengthOf(insights, 2);
       assert.instanceOf(insights[1].model.RenderBlocking, Error, 'RenderBlocking did not throw an error');
       assert.strictEqual(insights[1].model.RenderBlocking.message, 'forced error');
-    });
-
-    it('skips insights that are missing one or more dependencies', async function() {
-      const processor = new Trace.Processor.TraceProcessor({
-        Animations: Trace.Handlers.ModelHandlers.Animations,
-      });
-      const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
-
-      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
-      if (!processor.insights) {
-        throw new Error('No insights');
-      }
-
-      assert.deepEqual([...processor.insights.keys()], [
-        Trace.Types.Events.NO_NAVIGATION,
-        '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
-      ]);
-
-      const insights = Array.from(processor.insights.values());
-      assert.isUndefined(insights[0].model.RenderBlocking);
-      assert.isUndefined(insights[1].model.RenderBlocking);
     });
 
     it('returns insights for a navigation', async function() {

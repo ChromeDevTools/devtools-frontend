@@ -18,7 +18,6 @@ import {
   InsightWarning,
   type LanternContext,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -59,10 +58,6 @@ export type RenderBlockingInsightModel = InsightModel<typeof UIStrings, {
 // can be falsely flagged as blocking. Therefore, ignore stylesheets that loaded fast enough
 // to possibly be non-blocking (and they have minimal impact anyway).
 const MINIMUM_WASTED_MS = 50;
-
-export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint'] {
-  return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint'];
-}
 
 /**
  * Given a simulation's nodeTimings, return an object with the nodes/timing keyed by network URL
@@ -114,12 +109,12 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
   return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0)) as Types.Timing.Milli;
 }
 
-function hasImageLCP(parsedTrace: RequiredData<typeof deps>, context: InsightSetContextWithNavigation): boolean {
+function hasImageLCP(parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation): boolean {
   return parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation) !== undefined;
 }
 
 function computeSavings(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContextWithNavigation,
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation,
     renderBlockingRequests: Types.Events.SyntheticNetworkRequest[]):
     Pick<RenderBlockingInsightModel, 'metricSavings'|'requestIdToWastedMs'>|undefined {
   if (!context.lantern) {
@@ -177,7 +172,7 @@ function finalize(partialModel: PartialInsightModel<RenderBlockingInsightModel>)
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): RenderBlockingInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): RenderBlockingInsightModel {
   if (!context.navigation) {
     return finalize({
       renderBlockingRequests: [],

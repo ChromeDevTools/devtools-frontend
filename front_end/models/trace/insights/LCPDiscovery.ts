@@ -15,7 +15,6 @@ import {
   type InsightSetContext,
   InsightWarning,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -62,10 +61,6 @@ export const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPDiscovery.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
-  return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
-}
-
 export function isLCPDiscovery(model: InsightModel): model is LCPDiscoveryInsightModel {
   return model.insightKey === 'LCPDiscovery';
 }
@@ -99,7 +94,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPDiscoveryInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LCPDiscoveryInsightModel {
   if (!context.navigation) {
     return finalize({});
   }

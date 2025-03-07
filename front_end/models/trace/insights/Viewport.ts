@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
@@ -13,7 +14,6 @@ import {
   type InsightSetContext,
   InsightWarning,
   type PartialInsightModel,
-  type RequiredData,
 } from './types.js';
 
 export const UIStrings = {
@@ -28,10 +28,6 @@ export const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/Viewport.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function deps(): ['Meta', 'UserInteractions'] {
-  return ['Meta', 'UserInteractions'];
-}
 
 export type ViewportInsightModel = InsightModel<typeof UIStrings, {
   mobileOptimized: boolean | null,
@@ -51,7 +47,7 @@ function finalize(partialModel: PartialInsightModel<ViewportInsightModel>): View
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ViewportInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ViewportInsightModel {
   const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {
     if (event.args.data.frame !== context.frameId) {
       return false;

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
@@ -14,7 +15,6 @@ import {
   type InsightSetContext,
   InsightWarning,
   type PartialInsightModel,
-  type RequiredData
 } from './types.js';
 
 export const UIStrings = {
@@ -85,10 +85,6 @@ export type DocumentLatencyInsightModel = InsightModel<typeof UIStrings, {
                    checklist: Checklist<'noRedirects'|'serverResponseIsFast'|'usesCompression'>,
   },
 }>;
-
-export function deps(): ['Meta', 'NetworkRequests'] {
-  return ['Meta', 'NetworkRequests'];
-}
 
 function getServerResponseTime(request: Types.Events.SyntheticNetworkRequest): Types.Timing.Milli|null {
   const timing = request.args.data.timing;
@@ -183,7 +179,7 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DocumentLatencyInsightModel {
+    parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DocumentLatencyInsightModel {
   if (!context.navigation) {
     return finalize({});
   }

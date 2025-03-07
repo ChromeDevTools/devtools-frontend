@@ -202,12 +202,12 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
       this.#currentlyLoadingPerTarget.set(target.id(), currentCount + 1);
     }
     if (this.#currentlyLoading > this.#maxConcurrentLoads) {
-      const entry: LoadQueueEntry = {resolve: () => {}, reject: (): void => {}};
-      const waitForCapacity = new Promise<void>((resolve, reject) => {
-        entry.resolve = resolve;
-        entry.reject = reject;
-      });
-      this.#queuedLoads.push(entry);
+      const {
+        promise: waitForCapacity,
+        resolve,
+        reject,
+      } = Promise.withResolvers<void>();
+      this.#queuedLoads.push({resolve, reject});
       await waitForCapacity;
     }
   }
@@ -345,8 +345,8 @@ export class PageResourceLoader extends Common.ObjectWrapper.ObjectWrapper<Event
     return result;
   }
 
-  private getDeveloperResourceScheme(parsedURL: Common.ParsedURL.ParsedURL|
-                                     null): Host.UserMetrics.DeveloperResourceScheme {
+  private getDeveloperResourceScheme(parsedURL: Common.ParsedURL.ParsedURL|null):
+      Host.UserMetrics.DeveloperResourceScheme {
     if (!parsedURL || parsedURL.scheme === '') {
       return Host.UserMetrics.DeveloperResourceScheme.UKNOWN;
     }

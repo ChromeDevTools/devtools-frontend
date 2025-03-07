@@ -193,9 +193,11 @@
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  height: 15px;
-  width: 15px;
-  line-height: 15px;
+  height: var(--sys-size-7);
+  min-width: var(--sys-size-7);
+  width: fit-content;
+  padding: 0 var(--sys-size-3);
+  line-height: var(--sys-size-7);
   border-radius: var(--sys-shape-corner-full);
   margin-left: var(--sys-size-2);
   background-color: var(--sys-color-primary);

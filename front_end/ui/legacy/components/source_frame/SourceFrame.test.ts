@@ -104,7 +104,7 @@ describeWithEnvironment('SourceFrame', () => {
     input.value = 'allow pasting';
     dispatchInputEvent(input, {inputType: 'insertText', data: 'allow pasting', bubbles: true, composed: true});
 
-    const allowButton = dialogShadowRoot.querySelector('.button')?.children[1];
+    const allowButton = dialogShadowRoot.querySelector('.button')?.children[0];
     assert.deepEqual(allowButton?.textContent, 'Allow');
     assert.instanceOf(allowButton, Buttons.Button.Button);
     allowButton.click();

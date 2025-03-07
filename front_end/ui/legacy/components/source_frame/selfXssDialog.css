@@ -34,7 +34,8 @@
   margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-8) var(--sys-size-8);
   gap: var(--sys-size-5);
   display: flex;
-  justify-content: flex-end;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 
 .button button {

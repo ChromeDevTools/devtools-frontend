@@ -1088,12 +1088,14 @@ export class SelfXssWarningDialog {
       const buttonsBar = content.createChild('div', 'button');
       const cancelButton =
           UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'});
-      buttonsBar.appendChild(cancelButton);
+
       const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
         resolve(input.value === i18nString(UIStrings.allowPasting));
       }, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
       allowButton.disabled = true;
+
       buttonsBar.appendChild(allowButton);
+      buttonsBar.appendChild(cancelButton);
 
       input.addEventListener('input', () => {
         allowButton.disabled = !Boolean(input.value);

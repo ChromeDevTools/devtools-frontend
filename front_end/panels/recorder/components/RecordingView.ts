@@ -868,14 +868,17 @@ export class RecordingView extends HTMLElement {
     const currentConverter = this.#getCurrentConverter();
     const converterFormatName = currentConverter?.getFormatName();
     // clang-format off
-    return !this.#showCodeView
-      ? this.#renderSections()
-      : html`
-        <devtools-split-view direction="column" sidebar-position="second">
+    return html`
+        <devtools-split-view
+          direction="column"
+          sidebar-position="second"
+          sidebar-visibility=${this.#showCodeView ? '' : 'hidden'}
+        >
           <div slot="main">
             ${this.#renderSections()}
           </div>
           <div slot="sidebar" jslog=${VisualLogging.pane('source-code').track({resize: true})}>
+            ${this.#showCodeView ? html`
             <div class="section-toolbar" jslog=${VisualLogging.toolbar()}>
               <devtools-select-menu
                 @selectmenuselected=${this.#onCodeFormatChange}
@@ -922,7 +925,8 @@ export class RecordingView extends HTMLElement {
                 jslog=${VisualLogging.close().track({click: true})}
               ></devtools-button>
             </div>
-            ${this.#renderTextEditor()}
+            ${this.#renderTextEditor()}`
+            : Lit.nothing}
           </div>
         </devtools-split-view>
       `;

@@ -16,7 +16,6 @@ import {
   waitForAnimationFrame,
   waitForAria,
   waitForFunction,
-  waitForNone,
 } from '../../../test/shared/helper.js';
 
 import {
@@ -303,16 +302,20 @@ describe('Recorder', function() {
 
     describe('Shortcuts', () => {
       it('should toggle code view with shortcut', async () => {
-        let noSplitView = await waitForNone('devtools-split-view');
-        assert.isTrue(noSplitView);
+        async function getSplitWidgetVisibility() {
+          const splitView = await waitFor('devtools-split-view');
+          return await splitView.evaluate(el => {
+            return el.getAttribute('sidebar-visibility');
+          });
+        }
+        assert.strictEqual(await getSplitWidgetVisibility(), 'hidden');
 
         await toggleCodeView();
-        const splitView = await waitFor('devtools-split-view');
-        assert.isOk(splitView);
+
+        assert.notStrictEqual(await getSplitWidgetVisibility(), 'hidden');
 
         await toggleCodeView();
-        noSplitView = await waitForNone('devtools-split-view');
-        assert.isTrue(noSplitView);
+        assert.strictEqual(await getSplitWidgetVisibility(), 'hidden');
       });
     });
   });

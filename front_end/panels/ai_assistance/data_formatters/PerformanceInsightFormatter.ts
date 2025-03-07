@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
+import type * as TimelineUtils from '../../timeline/utils/utils.js';
 
 import {
   NetworkRequestFormatter,
@@ -24,8 +25,10 @@ function formatMicro(x: number|undefined): string {
 
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
-  constructor(insight: Trace.Insights.Types.InsightModel) {
-    this.#insight = insight;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  constructor(activeInsight: TimelineUtils.InsightAIContext.ActiveInsight) {
+    this.#insight = activeInsight.insight;
+    this.#parsedTrace = activeInsight.parsedTrace;
   }
 
   formatInsight(): string {
@@ -80,6 +83,7 @@ We can break this time down into the ${phaseBulletPoints.length} phases that com
 
 ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`;
     }
+
     if (Trace.Insights.Models.LCPDiscovery.isLCPDiscovery(this.#insight)) {
       const {checklist, lcpEvent, lcpRequest, earliestDiscoveryTimeTs} = this.#insight;
       if (!checklist || !lcpEvent || !lcpRequest || !earliestDiscoveryTimeTs) {
@@ -104,6 +108,15 @@ ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`
 
 The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
+    }
+
+    if (Trace.Insights.Models.RenderBlocking.isRenderBlocking(this.#insight)) {
+      const requestSummary = this.#insight.renderBlockingRequests.map(
+          r => TraceEventFormatter.networkRequest(r, this.#parsedTrace, {verbose: false}));
+
+      return `Here is a list of the network requests that were render blocking on this page and their duration:
+
+${requestSummary.join('\n\n')}`;
     }
     return '';
   }
@@ -135,7 +148,8 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
       case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':
-        return '';
+        return `- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp`;
       case 'SlowCSSSelector':
         return '';
       case 'ThirdParties':
@@ -175,7 +189,7 @@ It is important that all of these checks pass to minimize the delay between the 
       case 'NetworkDependencyTree':
         return '';
       case 'RenderBlocking':
-        return '';
+        return 'This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.';
       case 'SlowCSSSelector':
         return '';
       case 'ThirdParties':

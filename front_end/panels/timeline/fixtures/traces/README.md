@@ -270,3 +270,13 @@ A page that has an LCP image but is delayed by main thread blocking JS. Generate
 ### byte-efficiency
 
 A recording of a page load of the Lighthouse byte-efficiency tester. https://github.com/GoogleChrome/lighthouse/blob/main/cli/test/fixtures/byte-efficiency/tester.html
+
+### render-blocking-requests
+
+A page that has a few render blocking requests:
+
+- jQuery from a CDN
+- a stylesheet
+- a script including some blocking `sleepFor` call that blocks the main thread
+
+All of which delays the LCP image from rendering.

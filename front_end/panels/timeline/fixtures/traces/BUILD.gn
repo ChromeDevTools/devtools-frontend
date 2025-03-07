@@ -90,6 +90,7 @@ copy_to_gen("traces") {
     "reload-no-tti.json.gz",
     "render-blocking-body.json.gz",
     "render-blocking-in-iframe.json.gz",
+    "render-blocking-requests.json.gz",
     "scheduler-post-task.json.gz",
     "scripts/coursehero-bundle-1.js.gz",
     "scripts/coursehero-bundle-1.js.map.gz",

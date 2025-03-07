@@ -5,7 +5,10 @@
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance.js';
+
+const {ActiveInsight} = TimelineUtils.InsightAIContext;
 
 describeWithEnvironment('PerformanceInsightFormatter', () => {
   describe('LCP by Phase', () => {
@@ -14,8 +17,7 @@ describeWithEnvironment('PerformanceInsightFormatter', () => {
       assert.isOk(insights);
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPPhases', insights, firstNav);
-
-      const formatter = new PerformanceInsightFormatter(insight);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);
@@ -49,7 +51,7 @@ We can break this time down into the 4 phases that combine to make up the LCP ti
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(insight);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
       const output = formatter.formatInsight();
       const expected = `*IMPORTANT*: all time units given to you are in milliseconds.
 ## Insight title: LCP by phase
@@ -72,6 +74,49 @@ We can break this time down into the 2 phases that combine to make up the LCP ti
     });
   });
 
+  describe('Render blocking requests', () => {
+    it('serializes the correct details', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'render-blocking-requests.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('RenderBlocking', insights, firstNav);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+      const output = formatter.formatInsight();
+
+      const expected = `*IMPORTANT*: all time units given to you are in milliseconds.
+## Insight title: Render blocking requests
+
+## Insight Description:
+This insight identifies network requests that were render blocking. Render blocking requests are impactful because they are deemed critical to the page and therefore the browser stops rendering the page until it has dealt with these resources. For this insight make sure you fully inspect the details of each render blocking network request and prioritize your suggestions to the user based on the impact of each render blocking request.
+
+## External resources:
+- https://web.dev/articles/lcp
+- https://web.dev/articles/optimize-lcp
+
+## Insight details:
+Here is a list of the network requests that were render blocking on this page and their duration:
+
+## Network request: https://code.jquery.com/jquery-3.7.1.js
+- Start time: 581.40 ms
+- Duration: 1,362.65 ms
+- MIME type: application/javascript
+- This request was render blocking
+
+## Network request: http://localhost:8000/render-blocking-stylesheet.css
+- Start time: 581.60 ms
+- Duration: 611.56 ms
+- MIME type: text/css
+- This request was render blocking
+
+## Network request: http://localhost:8000/render-blocking-script.js
+- Start time: 581.56 ms
+- Duration: 596.30 ms
+- MIME type: text/javascript
+- This request was render blocking`;
+      assert.strictEqual(output, expected);
+    });
+  });
+
   describe('LCP Request discovery', () => {
     it('serializes the correct details', async function() {
       const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-discovery-delay.json.gz');
@@ -79,7 +124,7 @@ We can break this time down into the 2 phases that combine to make up the LCP ti
       const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
 
-      const formatter = new PerformanceInsightFormatter(insight);
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
       const output = formatter.formatInsight();
 
       assert.isOk(insight.lcpRequest);

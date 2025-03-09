@@ -2775,7 +2775,7 @@ export class MoreFiltersDropDownUI extends Common.ObjectWrapper.ObjectWrapper<UI
     if (this.selectedFilters().length) {
       this.dropDownButton.setTitle(this.selectedFilters().join(', '));
     } else {
-      this.dropDownButton.setTitle(UIStrings.showOnlyHideRequests);
+      this.dropDownButton.setTitle(i18nString(UIStrings.showOnlyHideRequests));
     }
   }
 

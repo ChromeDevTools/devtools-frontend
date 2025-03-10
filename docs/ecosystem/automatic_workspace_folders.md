@@ -3,7 +3,8 @@
 [goo.gle/devtools-automatic-workspace-folders][self-link]
 
 We recently added a new feature to Chromium (available with M-135 and later),
-which improves the ergonomics and discoverability of the [Workspace] feature,
+which improves the ergonomics and discoverability of the
+[Workspace][workspace-doc] feature,
 and it's called "Automatic Workspace Folders".
 
 **Googlers-only:** Check out the internal resources at

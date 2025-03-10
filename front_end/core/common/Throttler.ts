@@ -74,20 +74,11 @@ export class Throttler {
     if (this.#processTimeout && !forceTimerUpdate) {
       return;
     }
-    if (this.#processTimeout) {
-      this.#clearTimeout(this.#processTimeout);
-    }
+
+    clearTimeout(this.#processTimeout);
 
     const timeout = this.#asSoonAsPossible ? 0 : this.#timeout;
-    this.#processTimeout = this.#setTimeout(this.#onTimeout.bind(this), timeout);
-  }
-
-  #clearTimeout(timeoutId: number): void {
-    clearTimeout(timeoutId);
-  }
-
-  #setTimeout(operation: () => void, timeout: number): number {
-    return window.setTimeout(operation, timeout);
+    this.#processTimeout = window.setTimeout(this.#onTimeout.bind(this), timeout);
   }
 
   #getTime(): number {

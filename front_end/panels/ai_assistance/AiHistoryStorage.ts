@@ -126,7 +126,6 @@ export class AiHistoryStorage {
   #maxStorageSize: number;
 
   constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
-    // This should not throw as we should be creating the setting in the `-meta.ts` file
     this.#historySetting = Common.Settings.Settings.instance().createSetting('ai-assistance-history-entries', []);
     this.#imageHistorySettings = Common.Settings.Settings.instance().createSetting(
         'ai-assistance-history-images',

@@ -144,24 +144,6 @@ Common.Settings.registerSettingExtension({
   },
 });
 
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  settingName: 'ai-assistance-history-entries',
-  settingType: Common.Settings.SettingType.ARRAY,
-  title: i18nLazyString(UIStrings.enableAiAssistance),
-  defaultValue: [],
-  condition: isAnyFeatureAvailable,
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
-  settingName: 'ai-assistance-history-images',
-  settingType: Common.Settings.SettingType.ARRAY,
-  title: i18nLazyString(UIStrings.enableAiAssistance),
-  defaultValue: [],
-  condition: isAnyFeatureAvailable,
-});
-
 UI.ActionRegistration.registerActionExtension({
   actionId: 'freestyler.elements-floating-button',
   contextTypes(): [] {

@@ -31,7 +31,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {ActionDelegate} from './ActionRegistration.js';
@@ -81,7 +80,6 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
   private readonly lastDockStateSetting: Common.Settings.Setting<DockState>;
   private dockSideInternal: DockState|undefined = undefined;
   private titles?: Common.UIString.LocalizedString[];
-  private savedFocus?: Element|null;
 
   constructor(canDock: boolean) {
     super();
@@ -175,7 +173,6 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
       this.lastDockStateSetting.set(this.dockSideInternal);
     }
 
-    this.savedFocus = Platform.DOMUtilities.deepActiveElement(document);
     const eventData = {from: this.dockSideInternal, to: dockSide};
     this.dispatchEventToListeners(Events.BEFORE_DOCK_SIDE_CHANGED, eventData);
     console.timeStamp('DockController.setIsDocked');
@@ -189,10 +186,6 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper<EventType
 
   private setIsDockedResponse(eventData: ChangeEvent): void {
     this.dispatchEventToListeners(Events.AFTER_DOCK_SIDE_CHANGED, eventData);
-    if (this.savedFocus) {
-      (this.savedFocus as HTMLElement).focus();
-      this.savedFocus = null;
-    }
   }
 
   toggleDockSide(): void {

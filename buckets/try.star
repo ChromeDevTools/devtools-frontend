@@ -234,7 +234,7 @@ def custom_locationsfilters(builder):
             cq.location_filter(path_regexp = "extensions/cxx_debugging/.+", exclude = False),
             cq.location_filter(path_regexp = "node_modules/.+", exclude = False),
             cq.location_filter(path_regexp = "third_party/.+", exclude = False),
-            cq.location_filter(path_regexp = "build/.+", exclude = False),
+            cq.location_filter(path_regexp = "build", exclude = False),
         ]
     return [
         cq.location_filter(path_regexp = "docs/.+", exclude = True),

@@ -76,3 +76,11 @@ export type NoUnion<T> = [T] extends [IntersectionFromUnion<T>] ? T : never;
 export type RecursivePartial<T> = {
   [P in keyof T]?: RecursivePartial<T[P]>;
 };
+
+/**
+ * Note this does not recursively
+ * make Array items readonly at the moment
+ */
+export type RecursiveReadonly<T> = {
+  [P in keyof T]: Readonly<RecursiveReadonly<T[P]>>;
+};

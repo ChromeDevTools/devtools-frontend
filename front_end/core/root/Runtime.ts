@@ -481,7 +481,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
  * Object.assign(Root.runtime.hostConfig, config);
  * ```
  */
-export const hostConfig: HostConfig = Object.create(null);
+export const hostConfig: Platform.TypeScriptUtilities.RecursiveReadonly<HostConfig> = Object.create(null);
 
 /**
  * When defining conditions make sure that objects used by the function have

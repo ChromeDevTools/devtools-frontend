@@ -266,8 +266,7 @@ export class AidaBlockError extends Error {}
 
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
-    const {hostConfig} = Root.Runtime;
-    const disallowLogging = hostConfig.aidaAvailability?.disallowLogging ?? true;
+    const disallowLogging = Root.Runtime.hostConfig.aidaAvailability?.disallowLogging ?? true;
     const chromeVersion = Root.Runtime.getChromeVersion();
     if (!chromeVersion) {
       throw new Error('Cannot determine Chrome version');
@@ -285,9 +284,9 @@ export class AidaClient {
 
     let temperature = -1;
     let modelId;
-    if (hostConfig.devToolsConsoleInsights?.enabled) {
-      temperature = hostConfig.devToolsConsoleInsights.temperature ?? -1;
-      modelId = hostConfig.devToolsConsoleInsights.modelId;
+    if (Root.Runtime.hostConfig.devToolsConsoleInsights?.enabled) {
+      temperature = Root.Runtime.hostConfig.devToolsConsoleInsights.temperature ?? -1;
+      modelId = Root.Runtime.hostConfig.devToolsConsoleInsights.modelId;
     }
     if (temperature >= 0) {
       request.options ??= {};

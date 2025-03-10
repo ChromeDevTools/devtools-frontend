@@ -436,6 +436,5 @@ export class PatchWidget extends UI.Widget.Widget {
 }
 
 export function isAiAssistancePatchingEnabled(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return Boolean(hostConfig.devToolsFreestyler?.patching);
+  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.patching);
 }

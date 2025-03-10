@@ -146,8 +146,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
      * This behaviour has been approved by Chrome Privacy as part of the launch
      * review.
      */
-    const {hostConfig} = Root.Runtime;
-    const useSessionStorage = !hostConfig || hostConfig.isOffTheRecord === true;
+    const useSessionStorage = Root.Runtime.hostConfig.isOffTheRecord === true;
     const storageTypeForConsent =
         useSessionStorage ? Common.Settings.SettingStorageType.SESSION : Common.Settings.SettingStorageType.GLOBAL;
 

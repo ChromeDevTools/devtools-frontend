@@ -562,7 +562,6 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if ((this.#conversationAgent && this.#conversation && !this.#conversation.isEmpty) || this.#isLoading) {
       return;
     }
-
     const {hostConfig} = Root.Runtime;
     const isElementsPanelVisible =
         Boolean(UI.Context.Context.instance().flavor(ElementsPanel.ElementsPanel.ElementsPanel));
@@ -1464,16 +1463,13 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 }
 
 function isAiAssistanceMultimodalInputEnabled(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return Boolean(hostConfig.devToolsFreestyler?.multimodal);
+  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.multimodal);
 }
 
 function isAiAssistanceServerSideLoggingEnabled(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return !hostConfig.aidaAvailability?.disallowLogging;
+  return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 
 function isAiAssistanceStylingWithFunctionCallingEnabled(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return Boolean(hostConfig.devToolsFreestyler?.functionCalling);
+  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.functionCalling);
 }

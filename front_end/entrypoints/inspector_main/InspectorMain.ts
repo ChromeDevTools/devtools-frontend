@@ -119,14 +119,13 @@ export class InspectorMainImpl implements Common.Runnable.Runnable {
         });
 
     // Skip possibly showing the cookie control reload banner if devtools UI is not enabled or if there is an enterprise policy blocking third party cookies
-    const {hostConfig} = Root.Runtime;
-    if (!hostConfig.devToolsPrivacyUI?.enabled ||
-        hostConfig.thirdPartyCookieControls?.managedBlockThirdPartyCookies === true) {
+    if (!Root.Runtime.hostConfig.devToolsPrivacyUI?.enabled ||
+        Root.Runtime.hostConfig.thirdPartyCookieControls?.managedBlockThirdPartyCookies === true) {
       return;
     }
 
     // Third party cookie control settings according to the browser
-    const browserCookieControls = hostConfig.thirdPartyCookieControls;
+    const browserCookieControls = Root.Runtime.hostConfig.thirdPartyCookieControls;
 
     // Devtools cookie controls settings
     const cookieControlOverrideSetting =

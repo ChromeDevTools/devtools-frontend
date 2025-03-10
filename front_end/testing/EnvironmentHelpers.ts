@@ -517,7 +517,7 @@ export function restoreUserAgentForTesting(): void {
 
 export function resetHostConfig() {
   for (const key of Object.keys(Root.Runtime.hostConfig)) {
-    // @ts-expect-error
+    // @ts-expect-error TypeScript does not deduce the correct type
     delete Root.Runtime.hostConfig[key];
   }
 }

@@ -409,8 +409,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         reasons.push(i18nString(UIStrings.offline));
       case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
         // No age check if there is no logged in user. Age check would always fail in that case.
-        const {hostConfig} = Root.Runtime;
-        if (hostConfig?.aidaAvailability?.blockedByAge === true) {
+        if (Root.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
           reasons.push(i18nString(UIStrings.ageRestricted));
         }
       }

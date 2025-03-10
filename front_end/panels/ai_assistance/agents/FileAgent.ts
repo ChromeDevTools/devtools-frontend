@@ -110,13 +110,11 @@ export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier(): string|undefined {
-    const {hostConfig} = Root.Runtime;
-    return hostConfig.devToolsAiAssistanceFileAgent?.userTier;
+    return Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options(): RequestOptions {
-    const {hostConfig} = Root.Runtime;
-    const temperature = hostConfig.devToolsAiAssistanceFileAgent?.temperature;
-    const modelId = hostConfig.devToolsAiAssistanceFileAgent?.modelId;
+    const temperature = Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.modelId;
 
     return {
       temperature,

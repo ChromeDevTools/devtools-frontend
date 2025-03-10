@@ -301,6 +301,5 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 }
 
 function shouldRenderCombinedDiffView(): boolean {
-  const {hostConfig} = Root.Runtime;
-  return Boolean(hostConfig.devToolsFreestyler?.patching);
+  return Boolean(Root.Runtime.hostConfig.devToolsFreestyler?.patching);
 }

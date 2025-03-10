@@ -131,13 +131,11 @@ export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier(): string|undefined {
-    const {hostConfig} = Root.Runtime;
-    return hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
+    return Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options(): RequestOptions {
-    const {hostConfig} = Root.Runtime;
-    const temperature = hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
-    const modelId = hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
+    const temperature = Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.modelId;
 
     return {
       temperature,

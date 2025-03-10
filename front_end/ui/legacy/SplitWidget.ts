@@ -76,6 +76,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   private savedHorizontalMainSize: number|null;
   private showModeInternal: string;
   private savedShowMode: string;
+  private autoAdjustOrientation: boolean;
 
   constructor(
       isVertical: boolean, secondIsSidebar: boolean, settingName?: string, defaultSidebarWidth?: number,
@@ -151,6 +152,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
     // Should be called after isVertical has the right value.
     this.installResizer(this.resizerElementInternal);
+    this.autoAdjustOrientation = false;
   }
 
   isVertical(): boolean {
@@ -167,6 +169,11 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (this.isShowing()) {
       this.updateLayout();
     }
+  }
+
+  setAutoAdjustOrientation(autoAdjustOrientation: boolean): void {
+    this.autoAdjustOrientation = autoAdjustOrientation;
+    this.maybeAutoAdjustOrientation();
   }
 
   private innerSetVertical(isVertical: boolean): void {
@@ -690,6 +697,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   override onResize(): void {
+    this.maybeAutoAdjustOrientation();
     this.updateLayout();
   }
 
@@ -718,6 +726,18 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     mainConstraints = mainConstraints.heightToMax(min).addHeight(1);  // 1 for splitter
     sidebarConstraints = sidebarConstraints.heightToMax(min);
     return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
+  }
+
+  private maybeAutoAdjustOrientation(): void {
+    if (this.autoAdjustOrientation) {
+      const width = this.isVertical() ? this.totalSizeCSS : this.totalSizeOtherDimensionCSS;
+      const height = this.isVertical() ? this.totalSizeOtherDimensionCSS : this.totalSizeCSS;
+      if (width <= 600 && height >= 600) {
+        this.setVertical(false);
+      } else {
+        this.setVertical(true);
+      }
+    }
   }
 
   private onResizeStart(): void {
@@ -902,14 +922,18 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
 
   override createWidget(): SplitWidget {
     const vertical = this.getAttribute('direction') === 'column';
+    const autoAdjustOrientation = this.getAttribute('direction') === 'auto';
     const secondIsSidebar = this.getAttribute('sidebar-position') === 'second';
     const settingName = this.getAttribute('name') ?? undefined;
     const sidebarSize = parseInt(this.getAttribute('sidebar-initial-size') || '', 10);
-    const defaultSidebarWidth = vertical && !isNaN(sidebarSize) ? sidebarSize : undefined;
-    const defaultSidebarHeight = vertical || isNaN(sidebarSize) ? undefined : sidebarSize;
+    const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : undefined;
+    const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : undefined;
     const widget = new SplitWidget(
         vertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight,
         /* constraintsInDip=*/ false, this);
+    if (autoAdjustOrientation) {
+      widget.setAutoAdjustOrientation(true);
+    }
     const sidebarHidden = this.getAttribute('sidebar-visibility') === 'hidden';
     if (sidebarHidden) {
       widget.hideSidebar();
@@ -928,6 +952,7 @@ export class SplitWidgetElement extends WidgetElement<SplitWidget> {
     }
     if (name === 'direction') {
       widget.setVertical(newValue === 'column');
+      widget.setAutoAdjustOrientation(newValue === 'auto');
     } else if (name === 'sidebar-position') {
       widget.setSecondIsSidebar(newValue === 'second');
     } else if (name === 'sidebar-visibility') {

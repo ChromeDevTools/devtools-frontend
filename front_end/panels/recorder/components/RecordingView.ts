@@ -870,8 +870,9 @@ export class RecordingView extends HTMLElement {
     // clang-format off
     return html`
         <devtools-split-view
-          direction="column"
+          direction="auto"
           sidebar-position="second"
+          sidebar-initial-size="300"
           sidebar-visibility=${this.#showCodeView ? '' : 'hidden'}
         >
           <div slot="main">

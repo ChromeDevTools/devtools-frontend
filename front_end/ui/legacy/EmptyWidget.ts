@@ -33,6 +33,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import emptyWidgetStyles from './emptyWidget.css.js';
+import {addReferrerToURLIfNecessary} from './UIUtils.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
@@ -62,7 +63,13 @@ export class EmptyWidget extends VBox {
   }
 
   appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
-    const learnMoreLink = XLink.create(link, i18nString(UIStrings.learnMore), undefined, undefined, 'learn-more');
+    const learnMoreLink = XLink.create(
+        addReferrerToURLIfNecessary(link),
+        i18nString(UIStrings.learnMore),
+        undefined,
+        undefined,
+        'learn-more',
+    );
     this.#textElement.insertAdjacentElement('afterend', learnMoreLink);
     return learnMoreLink;
   }

@@ -202,7 +202,7 @@ export class FilesNavigatorView extends NavigatorView {
     const placeholder =
         new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noWorkspace), i18nString(UIStrings.explainWorkspace));
     this.setPlaceholder(placeholder);
-    placeholder.appendLink('https://goo.gle/devtools-workspace' as Platform.DevToolsPath.UrlString);
+    placeholder.appendLink('https://developer.chrome.com/docs/devtools/workspaces/' as Platform.DevToolsPath.UrlString);
 
     const toolbar = document.createElement('devtools-toolbar');
     toolbar.classList.add('navigator-toolbar');
@@ -283,7 +283,7 @@ export class OverridesNavigatorView extends NavigatorView {
     const placeholder = new UI.EmptyWidget.EmptyWidget(
         i18nString(UIStrings.noLocalOverrides), i18nString(UIStrings.explainLocalOverrides));
     this.setPlaceholder(placeholder);
-    placeholder.appendLink('https://goo.gle/devtools-overrides' as Platform.DevToolsPath.UrlString);
+    placeholder.appendLink('https://developer.chrome.com/docs/devtools/overrides/' as Platform.DevToolsPath.UrlString);
 
     this.toolbar = document.createElement('devtools-toolbar');
     this.toolbar.classList.add('navigator-toolbar');
@@ -390,7 +390,8 @@ export class SnippetsNavigatorView extends NavigatorView {
     super('navigator-snippets');
     const placeholder = new UI.EmptyWidget.EmptyWidget(UIStrings.noSnippets, UIStrings.explainSnippets);
     this.setPlaceholder(placeholder);
-    placeholder.appendLink('https://goo.gle/devtools-snippets' as Platform.DevToolsPath.UrlString);
+    placeholder.appendLink(
+        'https://developer.chrome.com/docs/devtools/javascript/snippets/' as Platform.DevToolsPath.UrlString);
 
     const toolbar = document.createElement('devtools-toolbar');
     toolbar.classList.add('navigator-toolbar');

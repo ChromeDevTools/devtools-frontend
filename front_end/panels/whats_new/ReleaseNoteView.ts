@@ -78,7 +78,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
             <devtools-button
                   .variant=${Buttons.Button.Variant.PRIMARY}
                   .jslogContext=${'learn-more'}
-                  @click=${() => input.openNewTab(releaseNote.link)}
+                  @click=${() => input.openNewTab(UI.UIUtils.addReferrerToURLIfNecessary(releaseNote.link as Platform.DevToolsPath.UrlString))}
               >${i18nString(UIStrings.seeFeatures)}</devtools-button>
           </div>
 
@@ -87,7 +87,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
               ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
                 return html`
                   <x-link
-                  href=${value.link}
+                  href=${UI.UIUtils.addReferrerToURLIfNecessary(value.link)}
                   jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
                     <div class="video">
                       <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>

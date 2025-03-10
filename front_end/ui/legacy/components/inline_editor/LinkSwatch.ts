@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
 import * as Lit from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -26,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/Lin
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html, Directives: {ifDefined, classMap}} = Lit;
 
-interface BaseLinkSwatchRenderData {
+export interface BaseLinkSwatchRenderData {
   text: string;
   title: string;
   showTitle: boolean;
@@ -41,11 +42,22 @@ class BaseLinkSwatch extends HTMLElement {
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [linkSwatchStyles, textButtonStyles];
+    this.tabIndex = -1;
+    this.addEventListener('focus', () => {
+      const link = this.shadow.querySelector<HTMLElement>('[role="link"]');
+
+      if (link) {
+        link.focus();
+      }
+    });
   }
 
   set data(data: BaseLinkSwatchRenderData) {
     this.onLinkActivate = (linkText: string, event: MouseEvent|KeyboardEvent) => {
       if (event instanceof MouseEvent && event.button !== 0) {
+        return;
+      }
+      if (event instanceof KeyboardEvent && event.key !== Platform.KeyboardUtilities.ENTER_KEY && event.key !== ' ') {
         return;
       }
 
@@ -75,72 +87,14 @@ class BaseLinkSwatch extends HTMLElement {
     // only provide the data-title for the popover to get the data.
     const {startNode} = render(
         html`<button .disabled=${!isDefined} class=${classes}
-                     title=${ifDefined(data.showTitle ? title : undefined)}
-                     data-title=${ifDefined(!data.showTitle ? title : undefined)}
-                     @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
+        type="button"
+        title=${ifDefined(data.showTitle ? title : undefined)}
+        data-title=${ifDefined(!data.showTitle ? title : undefined)}
+        @keydown=${onActivate}  @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
         this.shadow, {host: this});
     if (startNode?.nextSibling instanceof HTMLButtonElement) {
       this.#linkElement = startNode?.nextSibling;
     }
-  }
-}
-
-interface CSSVarSwatchRenderData {
-  variableName: string;
-  computedValue: string|null;
-  fromFallback: boolean;
-  fallbackText: string|null;
-  onLinkActivate: (linkText: string) => void;
-}
-
-export class CSSVarSwatch extends HTMLElement {
-  protected readonly shadow = this.attachShadow({mode: 'open'});
-  #link: BaseLinkSwatch|undefined;
-
-  constructor() {
-    super();
-
-    this.tabIndex = -1;
-
-    this.addEventListener('focus', () => {
-      const link = this.shadow.querySelector<HTMLElement>('[role="link"]');
-
-      if (link) {
-        link.focus();
-      }
-    });
-  }
-
-  set data(data: CSSVarSwatchRenderData) {
-    this.render(data);
-  }
-
-  get link(): BaseLinkSwatch|undefined {
-    return this.#link;
-  }
-
-  protected render(data: CSSVarSwatchRenderData): void {
-    const {variableName, fromFallback, computedValue, onLinkActivate} = data;
-
-    const isDefined = computedValue !== null && !fromFallback;
-    const title = isDefined ? computedValue ?? '' : i18nString(UIStrings.sIsNotDefined, {PH1: variableName});
-
-    this.#link = new BaseLinkSwatch();
-    this.#link.data = {
-      title,
-      showTitle: false,
-      text: variableName,
-      isDefined,
-      onLinkActivate,
-    };
-    this.#link.classList.add('css-var-link');
-    // clang-format off
-    render(
-        html`<span data-title=${data.computedValue || ''}
-          jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
-        >var(${this.#link}<slot name="fallback">${data.fallbackText ? `, ${data.fallbackText}` : ''}</slot>)</span>`,
-        this.shadow, {host: this});
-    // clang-format on
   }
 }
 
@@ -175,12 +129,10 @@ export class LinkSwatch extends HTMLElement {
 
 customElements.define('devtools-base-link-swatch', BaseLinkSwatch);
 customElements.define('devtools-link-swatch', LinkSwatch);
-customElements.define('devtools-css-var-swatch', CSSVarSwatch);
 
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-base-link-swatch': BaseLinkSwatch;
     'devtools-link-swatch': LinkSwatch;
-    'devtools-css-var-swatch': CSSVarSwatch;
   }
 }

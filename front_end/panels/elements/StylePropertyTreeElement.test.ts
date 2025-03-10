@@ -169,10 +169,10 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         const colorMixSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-mix-swatch');
         const cssVarSwatches =
-            Array.from(stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch') || []);
+            Array.from(stylePropertyTreeElement.valueElement?.querySelectorAll('.css-var-link') || []);
         assert.exists(colorMixSwatch);
-        assert.exists(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--a)'));
-        assert.exists(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === 'var(--b)'));
+        assert.exists(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === '--a'));
+        assert.exists(cssVarSwatches.find(cssVarSwatch => cssVarSwatch.textContent === '--b'));
       });
 
       it('should not show color mix swatch when color-mix is used with an unknown variable as color', () => {
@@ -519,12 +519,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const varSwatch =
           renderValueSpy.returnValues
-                  .find(value => value.valueElement.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
-                  ?.valueElement.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
-          undefined;
+              .map(fragment => Array.from(fragment.valueElement.querySelectorAll('devtools-base-link-swatch')))
+              .flat()[0];
       assert.exists(varSwatch);
       const revealPropertySpy = sinon.spy(stylesSidebarPane, 'revealProperty');
-      varSwatch.link?.linkElement?.click();
+      varSwatch.linkElement?.click();
       assert.isTrue(revealPropertySpy.calledWith(cssCustomPropertyDef));
     });
 
@@ -566,12 +565,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const varSwatch =
           renderValueSpy.returnValues
-                  .find(value => value.valueElement.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
-                  ?.valueElement.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
-          undefined;
+              .map(fragment => Array.from(fragment.valueElement.querySelectorAll('devtools-base-link-swatch')))
+              .flat()[0];
       assert.exists(varSwatch);
       const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
-      varSwatch.link?.linkElement?.click();
+      varSwatch.linkElement?.click();
       assert.isTrue(jumpToPropertySpy.calledWith(
           'initial-value', '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
     });
@@ -583,11 +581,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
-      assert.exists(cssVarSwatch);
-
-      const linkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
       assert.exists(linkSwatch);
+
+      const cssVarSwatch = linkSwatch.parentElement;
+      assert.exists(cssVarSwatch);
 
       assert.strictEqual(cssVarSwatch.textContent, 'var(--a)');
       assert.strictEqual(linkSwatch.shadowRoot?.textContent, '--a');
@@ -599,11 +597,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
-      assert.exists(cssVarSwatch);
-
-      const linkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
       assert.exists(linkSwatch);
+
+      const cssVarSwatch = linkSwatch.parentElement;
+      assert.exists(cssVarSwatch);
 
       assert.strictEqual(linkSwatch.shadowRoot?.textContent, '--not-existing');
       assert.strictEqual(cssVarSwatch.deepTextContent(), 'var(--not-existing, red)');
@@ -615,12 +613,15 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
+      const [firstLinkSwatch, secondLinkSwatch] =
+          stylePropertyTreeElement.valueElement?.querySelectorAll('.css-var-link');
+      assert.exists(firstLinkSwatch);
+      assert.exists(secondLinkSwatch);
+      const cssVarSwatch = firstLinkSwatch.parentElement;
       assert.exists(cssVarSwatch);
+      const insideCssVarSwatch = secondLinkSwatch.parentElement;
+      assert.exists(insideCssVarSwatch);
 
-      const firstLinkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
-      const insideCssVarSwatch = cssVarSwatch.querySelector('devtools-css-var-swatch');
-      const secondLinkSwatch = insideCssVarSwatch?.shadowRoot?.querySelector('devtools-base-link-swatch');
       assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, 'var(--not-existing, var(--a))');
       assert.strictEqual(firstLinkSwatch?.shadowRoot?.textContent, '--not-existing');
       assert.strictEqual(cssVarSwatch.textContent, 'var(--not-existing, var(--a))');
@@ -633,13 +634,13 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
+      assert.exists(linkSwatch);
+      const cssVarSwatch = linkSwatch.parentElement;
       assert.exists(cssVarSwatch);
 
-      const firstLinkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
-
       assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, 'var(--not-existing, calc(15px + 20px))');
-      assert.strictEqual(firstLinkSwatch?.shadowRoot?.textContent, '--not-existing');
+      assert.strictEqual(linkSwatch?.shadowRoot?.textContent, '--not-existing');
       assert.strictEqual(cssVarSwatch.textContent, 'var(--not-existing, calc(15px + 20px))');
     });
 
@@ -649,17 +650,17 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         stylePropertyTreeElement.updateTitle();
         assert.exists(stylePropertyTreeElement.valueElement);
 
-        const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
-        assert.exists(cssVarSwatch);
-
-        const colorSwatch = cssVarSwatch.querySelector('devtools-color-swatch');
+        const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
         assert.exists(colorSwatch);
         assert.isTrue(InlineEditor.ColorSwatch.ColorSwatch.isColorSwatch(colorSwatch));
 
-        const firstLinkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
+        const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
+        assert.exists(linkSwatch);
+        const cssVarSwatch = linkSwatch.parentElement;
+        assert.exists(cssVarSwatch);
 
         assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, `var(${varName}, var(--blue))`);
-        assert.strictEqual(firstLinkSwatch?.shadowRoot?.textContent, varName);
+        assert.strictEqual(linkSwatch?.shadowRoot?.textContent, varName);
         assert.strictEqual(cssVarSwatch.textContent, `var(${varName}, var(--blue))`);
       }
     });
@@ -668,22 +669,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement = getTreeElement('--shadow', 'var(--a) var(--b)');
       stylePropertyTreeElement.updateTitle();
 
-      const cssVarSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch');
+      const cssVarSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('.css-var-link');
       assert.strictEqual(cssVarSwatches?.length, 2);
-    });
-
-    it('should render a CSSVarSwatch for var() with spaces', () => {
-      const stylePropertyTreeElement = getTreeElement('color', 'var( --test    )');
-      stylePropertyTreeElement.updateTitle();
-      assert.exists(stylePropertyTreeElement.valueElement);
-
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
-      assert.exists(cssVarSwatch);
-
-      const linkSwatch = cssVarSwatch.shadowRoot?.querySelector('devtools-base-link-swatch');
-      assert.strictEqual(linkSwatch?.shadowRoot?.textContent, '--test');
-      assert.strictEqual(cssVarSwatch.textContent, 'var( --test    )');
-      assert.strictEqual(stylePropertyTreeElement.valueElement.textContent, 'var( --test    )');
     });
 
     it('connects nested color swatches', () => {
@@ -691,8 +678,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
+      assert.exists(linkSwatch);
+      const cssVarSwatch = linkSwatch.parentElement;
       assert.exists(cssVarSwatch);
+
       const outerColorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assert.exists(outerColorSwatch);
       const innerColorSwatch = cssVarSwatch.querySelector('devtools-color-swatch');
@@ -708,8 +698,11 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement);
 
-      const cssVarSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch');
+      const linkSwatch = stylePropertyTreeElement.valueElement?.querySelector('.css-var-link');
+      assert.exists(linkSwatch);
+      const cssVarSwatch = linkSwatch.parentElement;
       assert.exists(cssVarSwatch);
+
       const outerColorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assert.exists(outerColorSwatch);
       const innerColorSwatch = cssVarSwatch.querySelector('devtools-color-swatch');
@@ -757,7 +750,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     it('layers correctly with the font renderer', () => {
       const stylePropertyTreeElement = getTreeElement('font-size', 'calc(1 + var(--no))');
       stylePropertyTreeElement.updateTitle();
-      assert.exists(stylePropertyTreeElement.valueElement?.querySelector('devtools-css-var-swatch'));
+      assert.exists(stylePropertyTreeElement.valueElement?.querySelector('.css-var-link'));
     });
   });
 
@@ -772,7 +765,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.exists(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(Common.Color.Format.HEX), '#ff0000');
 
-      const varSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-css-var-swatch');
+      const varSwatches = stylePropertyTreeElement.valueElement?.querySelectorAll('.css-var-link');
       assert.exists(varSwatches);
       assert.lengthOf(varSwatches, 2);
     });

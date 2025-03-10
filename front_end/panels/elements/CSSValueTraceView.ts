@@ -80,8 +80,8 @@ export class CSSValueTraceView extends UI.Widget.VBox {
   #evaluations: Node[][] = [];
   #substitutions: Node[][] = [];
 
-  constructor(view: View = defaultView) {
-    super(true);
+  constructor(element?: HTMLElement, view: View = defaultView) {
+    super(true, false, element);
     this.registerRequiredCSS(
         cssValueTraceViewStyles,
         stylePropertiesTreeOutlineStyles,

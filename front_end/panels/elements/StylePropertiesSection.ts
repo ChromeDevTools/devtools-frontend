@@ -1454,7 +1454,7 @@ export class StylePropertiesSection {
 
   startEditingSelector(): void {
     const element = this.selectorElement;
-    if (UI.UIUtils.isBeingEdited(element)) {
+    if (UI.UIUtils.isBeingEdited(element) || this.titleElement.classList.contains('hidden')) {
       return;
     }
 

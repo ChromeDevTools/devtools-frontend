@@ -16,6 +16,7 @@ import * as Tooltips from '../../ui/components/tooltips/tooltips.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
@@ -253,6 +254,9 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const {declaration, value: variableValue} = match.resolveVariable() ?? {};
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
+    const onLinkActivate = (name: string): void => this.#handleVarDefinitionActivate(declaration ?? name);
+    const linkTitle = computedValue ?? i18nString(UIStrings.sIsNotDefined, {PH1: match.name});
+    const varSwatch = document.createElement('span');
 
     const substitution = context.tracing?.substitution();
     if (substitution) {
@@ -273,41 +277,57 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     }
 
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
-
-    const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    varSwatch.data = {
-      computedValue,
-      variableName: match.name,
-      fromFallback,
-      fallbackText: match.fallback.map(n => context.ast.text(n)).join(' '),
-      onLinkActivate: name => this.#handleVarDefinitionActivate(declaration ?? name),
+    let traceWidget: CSSValueTraceView|undefined;
+    let tooltipContents;
+    if (Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled &&
+        declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
+      tooltipContents = html`<devtools-widget
+            .widgetConfig=${UI.Widget.widgetConfig(CSSValueTraceView, {})}
+            ${UI.Widget.widgetRef(CSSValueTraceView, e => {
+        traceWidget = e;
+      })}
+            ></devtools-widget>`;
+    } else {
+      tooltipContents =
+          this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
+    }
+    const toggleTooltip = (e: ToggleEvent): void => {
+      if (e.newState === 'open' && Root.Runtime.hostConfig.devToolsCssValueTracing?.enabled &&
+          declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
+        const property = declaration.declaration;
+        traceWidget?.showTrace(
+            property, this.#matchedStyles, this.#computedStyles,
+            getPropertyRenderers(
+                property.ownerStyle, this.#stylesPane, this.#matchedStyles, this.#treeElement, this.#computedStyles));
+      }
     };
 
-    if (renderedFallback?.nodes.length) {
-      // When slotting someting into the fallback slot, also emit text children so that .textContent produces the
-      // correct var value.
-      varSwatch.appendChild(document.createTextNode(`var(${match.name}`));
-      const span = varSwatch.appendChild(document.createElement('span'));
-      span.appendChild(document.createTextNode(', '));
-      span.slot = 'fallback';
-      renderedFallback.nodes.forEach(n => span.appendChild(n));
-      varSwatch.appendChild(document.createTextNode(')'));
-    } else {
-      UI.UIUtils.createTextChild(varSwatch, match.text);
-    }
-
     const tooltipId = swatchTooltipId();
-    varSwatch.setAttribute('aria-details', tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip(
-        {anchor: varSwatch, variant: 'rich', id: tooltipId, jslogContext: 'elements.css-var'});
-    tooltip.appendChild(
-        (varSwatch.link &&
-         this.#stylesPane.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null)) ||
-        document.createTextNode(i18nString(UIStrings.sIsNotDefined, {PH1: match.name})));
+    render(
+        html`<span data-title=${computedValue || ''}
+          jslog=${VisualLogging.link('css-variable').track({
+          click: true,
+          hover: true
+        })}>var(<devtools-base-link-swatch
+        class=css-var-link
+        aria-details=${tooltipId}
+        .data=${{
+          text: match.name,
+          isDefined: computedValue !== null && !fromFallback,
+          title: linkTitle,
+          showTitle: false,
+          onLinkActivate,
+        } as InlineEditor.LinkSwatch.BaseLinkSwatchRenderData}>${match.name}</devtools-base-link-swatch>${
+            renderedFallback?.nodes.length ? html`, ${renderedFallback.nodes}` : nothing})</span><devtools-tooltip
+            variant=rich
+            id=${tooltipId}
+            @beforetoggle=${toggleTooltip}
+            jslogContext=elements.css-var>${tooltipContents}</devtools-tooltip>`,
+        varSwatch);
 
     const color = computedValue && Common.Color.parse(computedValue);
     if (!color) {
-      return [varSwatch, tooltip];
+      return [varSwatch];
     }
 
     const colorSwatch = new ColorRenderer(this.#stylesPane, this.#treeElement).renderColorSwatch(color, varSwatch);
@@ -320,7 +340,7 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           }));
     }
 
-    return [colorSwatch, tooltip];
+    return [colorSwatch];
   }
 
   #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {

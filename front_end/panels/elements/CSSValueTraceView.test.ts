@@ -67,7 +67,7 @@ async function showTrace(
     treeElement: Elements.StylePropertyTreeElement.StylePropertyTreeElement):
     Promise<Elements.CSSValueTraceView.ViewInput> {
   const viewFunction = createViewFunctionStub(Elements.CSSValueTraceView.CSSValueTraceView);
-  const view = new Elements.CSSValueTraceView.CSSValueTraceView(viewFunction);
+  const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, viewFunction);
   await viewFunction.nextInput;
   view.showTrace(
       property, matchedStyles, new Map(),

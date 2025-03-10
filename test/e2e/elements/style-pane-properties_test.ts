@@ -164,7 +164,7 @@ describe('The Styles pane', () => {
     const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     const propertyValueText = await propertyValue.evaluate(node => node.textContent);
     assert.strictEqual(
-        propertyValueText, 'var( --move-final-width)', 'CSS variable in @keyframes rule is not correctly rendered');
+        propertyValueText, 'var(--move-final-width)', 'CSS variable in @keyframes rule is not correctly rendered');
   });
 
   it('Shows a CSS hint popover', async () => {
@@ -228,7 +228,7 @@ describe('The Styles pane', () => {
     const textContent = await infobox.evaluate(e => e.deepTextContent());
     assert.strictEqual(textContent.trim(), 'black');
     await expectVeEvents([veImpressionsUnder(
-        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value',
+        'Panel: elements > Pane: styles > Section: style-properties > Tree > TreeItem: color > Value > Link: css-variable',
         [veImpression('Popover', 'elements.css-var')])]);
   });
 

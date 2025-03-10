@@ -2239,35 +2239,24 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
-    const styles = await node.domModel().cssModel().getComputedStyle(nodeId);
+    const layout = await node.domModel().cssModel().getLayoutPropertiesFromComputedStyle(nodeId);
     for (const styleAdorner of this.tagTypeContext.styleAdorners) {
       this.removeAdorner(styleAdorner, this.tagTypeContext);
     }
-    if (!styles) {
+    if (!layout) {
       return;
     }
 
-    const display = styles.get('display');
-    const isGrid = display === 'grid' || display === 'inline-grid';
-    const isFlex = display === 'flex' || display === 'inline-flex';
-    const isSubgrid = (isGrid &&
-                       (styles.get('grid-template-columns')?.startsWith('subgrid') ||
-                        styles.get('grid-template-rows')?.startsWith('subgrid'))) ??
-        false;
-
-    const containerType = styles.get('container-type');
-    const isContainer = containerType && containerType !== '' && containerType !== 'normal';
-
-    if (isGrid) {
-      this.pushGridAdorner(this.tagTypeContext, isSubgrid);
+    if (layout.isGrid) {
+      this.pushGridAdorner(this.tagTypeContext, layout.isSubgrid);
     }
-    if (isFlex) {
+    if (layout.isFlex) {
       this.pushFlexAdorner(this.tagTypeContext);
     }
-    if (styles.get('scroll-snap-type') && styles.get('scroll-snap-type') !== 'none') {
+    if (layout.hasScroll) {
       this.pushScrollSnapAdorner(this.tagTypeContext);
     }
-    if (isContainer) {
+    if (layout.isContainer) {
       this.pushContainerAdorner(this.tagTypeContext);
     }
 

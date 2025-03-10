@@ -262,7 +262,8 @@ export class GenericSettingsTab extends SettingsTab {
     this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
     this.containerElement.classList.add('settings-multicolumn-card-container');
 
-    // GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
+    // AI, GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
+    // AI settings are displayed in their own tab.
     const explicitSectionOrder: Common.Settings.SettingCategory[] = [
       Common.Settings.SettingCategory.NONE,
       Common.Settings.SettingCategory.APPEARANCE,

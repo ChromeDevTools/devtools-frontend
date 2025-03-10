@@ -14,6 +14,10 @@ const UIStrings = {
    */
   elements: 'Elements',
   /**
+   *@description Text for DevTools AI
+   */
+  ai: 'AI',
+  /**
    *@description Text for DevTools appearance
    */
   appearance: 'Appearance',
@@ -128,6 +132,7 @@ export function maybeRemoveSettingExtension(settingName: string): boolean {
 export const enum SettingCategory {
   NONE = '',  // `NONE` must be a falsy value. Legacy code uses if-checks for the category.
   ELEMENTS = 'ELEMENTS',
+  AI = 'AI',
   APPEARANCE = 'APPEARANCE',
   SOURCES = 'SOURCES',
   NETWORK = 'NETWORK',
@@ -151,6 +156,8 @@ export function getLocalizedSettingsCategory(category: SettingCategory): Platfor
   switch (category) {
     case SettingCategory.ELEMENTS:
       return i18nString(UIStrings.elements);
+    case SettingCategory.AI:
+      return i18nString(UIStrings.ai);
     case SettingCategory.APPEARANCE:
       return i18nString(UIStrings.appearance);
     case SettingCategory.SOURCES:

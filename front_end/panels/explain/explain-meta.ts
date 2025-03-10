@@ -97,7 +97,7 @@ function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
 }
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.NONE,
+  category: Common.Settings.SettingCategory.AI,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),

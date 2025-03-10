@@ -35,88 +35,93 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/common/common.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function showFreDialog({
-  header,
-  reminderItems,
-  learnMoreHref,
-}: {
-  header: {
-    iconName: string,
-    text: Platform.UIString.LocalizedString,
-  },
-  reminderItems: Array<{
-    iconName: string,
-    content: Platform.UIString.LocalizedString | Lit.LitTemplate,
-  }>,
-  learnMoreHref: Platform.DevToolsPath.UrlString,
-}): Promise<boolean> {
-  const dialog = new UI.Dialog.Dialog();
-  const result = Promise.withResolvers<boolean>();
-  // clang-format off
-  Lit.render(html`
-    <div class="fre-disclaimer">
-      <style>
-        ${commonStyles.cssContent}
-      </style>
-      <header>
-        <div class="header-icon-container">
-          <devtools-icon name=${header.iconName}></devtools-icon>
-        </div>
-        <h2 tabindex="-1">
-          ${header.text}
-        </h2>
-      </header>
-      <main class="reminder-container">
-        <h3>${i18nString(UIStrings.thingsToConsider)}</h3>
-        ${reminderItems.map(reminderItem => html`
-          <div class="reminder-item">
-            <devtools-icon class="reminder-icon" name=${reminderItem.iconName}></devtools-icon>
-            <span>${reminderItem.content}</span>
+export class FreDialog {
+  static show({
+    header,
+    reminderItems,
+    learnMoreHref,
+  }: {
+    header: {
+      iconName: string,
+      text: Platform.UIString.LocalizedString,
+    },
+    reminderItems: Array<{
+      iconName: string,
+      content: Platform.UIString.LocalizedString|Lit.LitTemplate,
+    }>,
+    learnMoreHref: Platform.DevToolsPath.UrlString,
+  }): Promise<boolean> {
+    const dialog = new UI.Dialog.Dialog();
+    const result = Promise.withResolvers<boolean>();
+    // clang-format off
+    Lit.render(html`
+      <div class="fre-disclaimer">
+        <style>
+          ${commonStyles.cssContent}
+        </style>
+        <header>
+          <div class="header-icon-container">
+            <devtools-icon name=${header.iconName}></devtools-icon>
           </div>
-        `)}
-      </main>
-      <footer>
-        <devtools-button
-          @click=${() => {
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(learnMoreHref);
-          }}
-          .jslogContext=${'fre-disclaimer.learn-more'}
-          .variant=${Buttons.Button.Variant.OUTLINED}>
-          ${i18nString(UIStrings.learnMore)}
-        </devtools-button>
-        <div class="right-buttons">
+          <h2 tabindex="-1">
+            ${header.text}
+          </h2>
+        </header>
+        <main class="reminder-container">
+          <h3>${i18nString(UIStrings.thingsToConsider)}</h3>
+          ${reminderItems.map(reminderItem => html`
+            <div class="reminder-item">
+              <devtools-icon class="reminder-icon" name=${reminderItem.iconName}></devtools-icon>
+              <span>${reminderItem.content}</span>
+            </div>
+          `)}
+        </main>
+        <footer>
           <devtools-button
             @click=${() => {
-              dialog.hide();
-              result.resolve(false);
+              Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(learnMoreHref);
             }}
-            .jslogContext=${'fre-disclaimer.cancel'}
-            .variant=${Buttons.Button.Variant.TONAL}>
-            ${i18nString(UIStrings.cancel)}
+            .jslogContext=${'fre-disclaimer.learn-more'}
+            .variant=${Buttons.Button.Variant.OUTLINED}>
+            ${i18nString(UIStrings.learnMore)}
           </devtools-button>
-          <devtools-button
-            @click=${() => {
-              dialog.hide();
-              result.resolve(true);
-            }}
-            .jslogContext=${'fre-disclaimer.continue'}
-            .variant=${Buttons.Button.Variant.PRIMARY}>
-            ${i18nString(UIStrings.gotIt)}
-          </devtools-button>
-        </div>
-      </footer>
-    </div>`, dialog.contentElement);
-  // clang-format on
+          <div class="right-buttons">
+            <devtools-button
+              @click=${() => {
+                dialog.hide();
+                result.resolve(false);
+              }}
+              .jslogContext=${'fre-disclaimer.cancel'}
+              .variant=${Buttons.Button.Variant.TONAL}>
+              ${i18nString(UIStrings.cancel)}
+            </devtools-button>
+            <devtools-button
+              @click=${() => {
+                dialog.hide();
+                result.resolve(true);
+              }}
+              .jslogContext=${'fre-disclaimer.continue'}
+              .variant=${Buttons.Button.Variant.PRIMARY}>
+              ${i18nString(UIStrings.gotIt)}
+            </devtools-button>
+          </div>
+        </footer>
+      </div>`, dialog.contentElement);
+    // clang-format on
 
-  dialog.setOutsideClickCallback(ev => {
-    ev.consume();
-    dialog.hide();
-    result.resolve(false);
-  });
-  dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-  dialog.setMaxContentSize(new UI.Geometry.Size(448, 600));
-  dialog.setDimmed(true);
-  dialog.show();
+    dialog.setOutsideClickCallback(ev => {
+      ev.consume();
+      dialog.hide();
+      result.resolve(false);
+    });
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    dialog.setMaxContentSize(new UI.Geometry.Size(448, 600));
+    dialog.setDimmed(true);
+    dialog.show();
 
-  return result.promise;
+    return result.promise;
+  }
+
+  private constructor() {
+  }
 }

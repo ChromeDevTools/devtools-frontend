@@ -7,6 +7,7 @@ import '../../ui/components/markdown_view/markdown_view.js';
 import '../../ui/components/spinners/spinners.js';
 import '../../ui/components/tooltips/tooltips.js';
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -97,7 +98,7 @@ export interface ViewInput {
   patchSuggestionLoading?: boolean;
   projectName?: string;
   projectPath: Platform.DevToolsPath.UrlString;
-  onApplyToWorkspace?: () => void;
+  onApplyToWorkspace: () => void;
   onCancel: () => void;
   onDiscard: () => void;
   onSaveAll: () => void;
@@ -109,8 +110,9 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
 
-  // TODO: Mark it as always false for now.
-  #shouldShowFreDisclaimer = false;
+  // Whether the user completed first run experience dialog or not.
+  #aiPatchingFreCompletedSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
   #view: View;
   #aidaClient: Host.AidaClient.AidaClient;
   #project?: Workspace.Workspace.Project;
@@ -316,8 +318,13 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
-  #showFreDisclaimer(): Promise<boolean> {
-    return PanelCommon.showFreDialog({
+  async #showFreDisclaimerIfNeeded(): Promise<boolean> {
+    const isAiPatchingFreCompleted = this.#aiPatchingFreCompletedSetting.get();
+    if (isAiPatchingFreCompleted) {
+      return true;
+    }
+
+    const result = await PanelCommon.FreDialog.show({
       header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: [
         {
@@ -344,6 +351,11 @@ export class PatchWidget extends UI.Widget.Widget {
       // TODO: Update this href to be the correct link.
       learnMoreHref: Platform.DevToolsPath.EmptyUrlString
     });
+
+    if (result) {
+      this.#aiPatchingFreCompletedSetting.set(true);
+    }
+    return result;
   }
 
   #selectDefaultProject(): void {
@@ -385,7 +397,8 @@ export class PatchWidget extends UI.Widget.Widget {
 
     // Show the FRE dialog if needed and only continue when
     // the user accepted the disclaimer.
-    if (this.#shouldShowFreDisclaimer && !(await this.#showFreDisclaimer())) {
+    const freDisclaimerCompleted = await this.#showFreDisclaimerIfNeeded();
+    if (!freDisclaimerCompleted) {
       return;
     }
 

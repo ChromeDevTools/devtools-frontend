@@ -102,12 +102,12 @@ const UIStringsNotTranslate = {
    */
   noAgentStateText: 'Explore AI assistance',
   /**
-   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   * @description The error message when the request to the LLM failed for some reason.
    */
   systemError:
       'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue.',
   /**
-   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   * @description The error message when the LLM gets stuck in a loop (max steps reached).
    */
   maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
   /**

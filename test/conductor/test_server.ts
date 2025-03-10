@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {spawn, type ChildProcess} from 'child_process';
+import {type ChildProcess, spawn} from 'child_process';
 import * as path from 'path';
 
 const HOSTED_MODE_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'hosted_mode', 'server.js');
 const COMPONENT_DOCS_SERVER_PATH = path.join(__dirname, '..', '..', 'scripts', 'component_server', 'server.js');
 const cwd = path.join(__dirname, '..', '..');
-let runningServer: ChildProcess;
+let runningServer: ChildProcess|undefined;
 
 // Starts a hosted mode server on any available port and returns the port number
 // once the server is ready to receive requests.
@@ -51,5 +51,5 @@ export function startServer(server: 'hosted-mode'|'component-docs', commandLineA
 
 process.on('exit', stopServer);
 export function stopServer() {
-  runningServer.kill();
+  runningServer?.kill();
 }

@@ -10,10 +10,19 @@ import type {InspectedPage} from './shared/target-helper.js';
 declare global {
   namespace Mocha {
     export interface TestFunction {
-      (title: string, fn: E2E.TestCallbackWithState): void;
+      (title: string, fn: E2E.TestAsyncCallbackWithState): void;
 
       skipOnPlatforms: (platforms: Platform[], title: string, fn: Mocha.AsyncFunc) => void;
     }
+
+    export interface ExclusiveTestFunction {
+      (title: string, fn: E2E.TestAsyncCallbackWithState): void;
+    }
+
+    export interface PendingTestFunction {
+      (title: string, fn: E2E.TestAsyncCallbackWithState): void;
+    }
+
     export interface Suite {
       settings: E2E.SuiteSettings;
       state: E2E.State;
@@ -30,7 +39,6 @@ declare global {
       browser: BrowserWrapper;
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    export type TestCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<any>;
+    export type TestAsyncCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<unknown>;
   }
 }

@@ -209,6 +209,8 @@ export default [
       'no-return-assign': ['error', 'always'],
       'no-implicit-coercion': 'error',
 
+      'no-array-constructor': 'error',
+
       // es2015 features
       'require-yield': 'error',
       '@stylistic/template-curly-spacing': ['error', 'never'],
@@ -548,6 +550,9 @@ export default [
           allowInterfaces: 'with-single-extends',
         },
       ],
+
+      'no-array-constructor': 'off',
+      '@typescript-eslint/no-array-constructor': 'error',
 
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/inline-type-imports': 'error',

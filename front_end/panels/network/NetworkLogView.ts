@@ -1095,8 +1095,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private showRecordingHint(): void {
     this.hideRecordingHint();
 
+    const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
     const actionName = this.recording ? 'inspector-main.reload' : 'network.toggle-recording';
-    const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionName);
+    const action = actionRegistry.hasAction(actionName) ? actionRegistry.getAction(actionName) : null;
     const shortcutTitle = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(actionName) ?? '';
 
     const header = this.recording ? i18nString(UIStrings.recordingNetworkActivity) :
@@ -1114,11 +1115,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.recordingHint.element.classList.add('network-status-pane');
     this.recordingHint.appendLink(
         'https://developer.chrome.com/docs/devtools/network/' as Platform.DevToolsPath.UrlString);
-    const button = UI.UIUtils.createTextButton(buttonText, () => action.execute(), {
-      jslogContext: actionName,
-      variant: Buttons.Button.Variant.TONAL,
-    });
-    this.recordingHint.contentElement.appendChild(button);
+    if (shortcutTitle && action) {
+      const button = UI.UIUtils.createTextButton(buttonText, () => action.execute(), {
+        jslogContext: actionName,
+        variant: Buttons.Button.Variant.TONAL,
+      });
+      this.recordingHint.contentElement.appendChild(button);
+    }
 
     this.recordingHint.show(this.element);
     this.setHidden(true);

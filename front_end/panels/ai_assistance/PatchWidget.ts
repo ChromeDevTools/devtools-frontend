@@ -30,9 +30,9 @@ import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 */
 const UIStringsNotTranslate = {
   /**
-   *@description Text displayed for showing change summary view.
+   *@description Text displayed for showing patch widget view.
    */
-  changeSummary: 'Changes summary',
+  unsavedChanges: 'Unsaved changes',
   /**
    *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
    */
@@ -147,7 +147,7 @@ export class PatchWidget extends UI.Widget.Widget {
         return html`
           <devtools-icon class="difference-icon" .name=${'pen-spark'}></devtools-icon>
           <span class="header-text">
-            ${lockedString(UIStringsNotTranslate.changeSummary)}
+            ${lockedString(UIStringsNotTranslate.unsavedChanges)}
           </span>
         `;
       }

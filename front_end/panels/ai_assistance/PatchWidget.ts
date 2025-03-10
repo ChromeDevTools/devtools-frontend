@@ -9,7 +9,7 @@ import '../../ui/components/tooltips/tooltips.js';
 
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -19,6 +19,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ChangesPanel from '../changes/changes.js';
+import * as PanelCommon from '../common/common.js';
 
 import {type ResponseData, ResponseType} from './agents/AiAgent.js';
 import {PatchAgent} from './agents/PatchAgent.js';
@@ -67,11 +68,28 @@ const UIStringsNotTranslate = {
   /**
    *@description Tooltip text for the info icon beside the "Apply to workspace" button
    */
-  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions'
+  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  /**
+   *@description Header text for the AI-powered code suggestions disclaimer dialog.
+   */
+  freDisclaimerHeader: 'Get AI-powered code suggestions for your workspace',
+  /**
+   *@description First disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextAiWontAlwaysGetItRight: 'This feature uses AI and won’t always get it right',
+  /**
+   *@description Second disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  /**
+   *@description Third disclaimer item text for the fre dialog.
+   */
+  freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
 
+const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/13505487';
 export interface ViewInput {
   workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   changeSummary?: string;
@@ -90,6 +108,8 @@ type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
 
+  // TODO: Mark it as always false for now.
+  #shouldShowFreDisclaimer = false;
   #view: View;
   #aidaClient: Host.AidaClient.AidaClient;
   #project?: Workspace.Workspace.Project;
@@ -291,6 +311,36 @@ export class PatchWidget extends UI.Widget.Widget {
     }
   }
 
+  #showFreDisclaimer(): Promise<boolean> {
+    return PanelCommon.showFreDialog({
+      header: {iconName: 'smart-assistant', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
+      reminderItems: [
+        {
+          iconName: 'psychiatry',
+          content: lockedString(UIStringsNotTranslate.freDisclaimerTextAiWontAlwaysGetItRight),
+        },
+        {
+          iconName: 'google',
+          content: lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
+        },
+        {
+          iconName: 'warning',
+          // clang-format off
+          content: html`<x-link
+            href=${CODE_SNIPPET_WARNING_URL}
+            class="link"
+            jslog=${VisualLogging.link('code-snippets-explainer.patch-widget').track({
+              click: true
+            })}
+          >${lockedString(UIStringsNotTranslate.freDisclaimerTextUseWithCaution)}</x-link>`,
+          // clang-format on
+        }
+      ],
+      // TODO: Update this href to be the correct link.
+      learnMoreHref: Platform.DevToolsPath.EmptyUrlString
+    });
+  }
+
   #selectDefaultProject(): void {
     if (isAiAssistancePatchingEnabled()) {
       // TODO: this is temporary code that should be replaced with
@@ -328,9 +378,16 @@ export class PatchWidget extends UI.Widget.Widget {
       throw new Error('Change summary does not exist');
     }
 
+    // Show the FRE dialog if needed and only continue when
+    // the user accepted the disclaimer.
+    if (this.#shouldShowFreDisclaimer && !(await this.#showFreDisclaimer())) {
+      return;
+    }
+
     this.#patchSuggestionLoading = true;
     this.requestUpdate();
     const response = await this.#applyPatch(changeSummary);
+    // TODO: Handle error state
     this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
     this.#patchSuggestionLoading = false;
     this.requestUpdate();

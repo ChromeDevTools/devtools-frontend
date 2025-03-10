@@ -19,6 +19,7 @@ import {
   ResponseType,
 } from './AiAgent.js';
 
+// Sync with the server-side.
 /* clang-format off */
 const preamble = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.

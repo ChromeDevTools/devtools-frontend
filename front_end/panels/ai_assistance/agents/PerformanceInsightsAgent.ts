@@ -33,6 +33,8 @@ const UIStringsNotTranslated = {
   mainThreadActivity: 'Investigating main thread activity…',
 } as const;
 const lockedString = i18n.i18n.lockedString;
+
+// Sync with the server-side.
 /* clang-format off */
 const preamble = `You are a performance expert deeply integrated within Chrome DevTools. You specialize in analyzing web application behaviour captured by Chrome DevTools Performance Panel.
 

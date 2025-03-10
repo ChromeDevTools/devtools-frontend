@@ -18,6 +18,12 @@ import {
   ResponseType,
 } from './AiAgent.js';
 
+// Sync with the server-side.
+/* clang-format off */
+const preamble = `You are a highly skilled software engineer with expertise in various programming languages and frameworks.
+`;
+/* clang-format on */
+
 export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
   #project: AgentProject;
   #fileUpdateAgent: FileUpdateAgent;
@@ -31,7 +37,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
   }
 
   override readonly type = AgentType.PATCH;
-  readonly preamble = undefined;
+  readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 
   get userTier(): string|undefined {
@@ -196,7 +202,7 @@ export class FileUpdateAgent extends AiAgent<Workspace.Workspace.Project> {
   }
 
   override readonly type = AgentType.PATCH;
-  readonly preamble = undefined;
+  readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 
   get userTier(): string|undefined {

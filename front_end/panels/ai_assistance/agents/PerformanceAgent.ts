@@ -19,6 +19,7 @@ import {
   ResponseType,
 } from './AiAgent.js';
 
+// Sync with the server-side.
 /**
  * Preamble clocks in at ~950 tokens.
  *   The prose is around 4.5 chars per token.

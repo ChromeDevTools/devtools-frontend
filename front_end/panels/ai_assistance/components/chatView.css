@@ -842,12 +842,15 @@ main {
     }
 
     .selected-folder {
-      margin: var(--sys-size-3) var(--sys-size-3) 0 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sys-size-3);
     }
 
     .change-workspace {
       display: flex;
       flex-direction: row;
+      gap: var(--sys-size-2);
     }
 
     .apply-to-workspace-container {

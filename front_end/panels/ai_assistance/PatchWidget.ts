@@ -58,10 +58,6 @@ const UIStringsNotTranslate = {
    */
   loading: 'Loading...',
   /**
-   *@description Label for the selected workspace/folder
-   */
-  selectedFolder: 'Selected folder:',
-  /**
    *@description Disclaimer text shown for using code snippets with caution
    */
   codeDisclaimer: 'Use code snippets with caution',
@@ -210,7 +206,7 @@ export class PatchWidget extends UI.Widget.Widget {
         <div class="footer">
           <div class="change-workspace">
             <div class="selected-folder">
-              ${lockedString(UIStringsNotTranslate.selectedFolder)} <span title=${input.projectPath}>${input.projectName}</span>
+              <devtools-icon .name=${'folder'}></devtools-icon> <span title=${input.projectPath}>${input.projectName}</span>
             </div>
             <devtools-button
               @click=${input.onChangeWorkspaceClick}

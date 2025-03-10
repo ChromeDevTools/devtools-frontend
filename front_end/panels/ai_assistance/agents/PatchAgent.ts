@@ -101,10 +101,11 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
           }
         },
       },
-      handler: async params => {
+      handler: async (args, options) => {
         return {
           result: {
-            matches: await this.#project.searchFiles(params.query, params.caseSensitive, params.isRegex),
+            matches: await this.#project.searchFiles(
+                args.query, args.caseSensitive, args.isRegex, {signal: options?.signal}),
           }
         };
       },
@@ -170,7 +171,9 @@ ${content}
     });
   }
 
-  async * applyChanges(changeSummary: string): AsyncGenerator<ResponseData, void, void> {
+  async *
+      applyChanges(changeSummary: string, {signal}: {signal?: AbortSignal} = {}):
+          AsyncGenerator<ResponseData, void, void> {
     this.#changeSummary = changeSummary;
     const prompt =
         `I have applied the following CSS changes to my page in Chrome DevTools, what are the files in my source code that I need to change to apply the same change?
@@ -184,9 +187,7 @@ Consider updating files containing styles like CSS files first!
 Call the updateFiles with the list of files to be updated once you are done.
 `;
 
-    yield* this.run(prompt, {
-      selected: null,
-    });
+    yield* this.run(prompt, {selected: null, signal});
   }
 }
 

@@ -97,15 +97,20 @@ export class AgentProject {
    * This method searches in files for the agent and provides the
    * matches to the agent.
    */
-  async searchFiles(query: string, caseSensitive?: boolean, isRegex?: boolean): Promise<Array<{
-    filepath: string,
-    lineNumber: number,
-    columnNumber: number,
-    matchLength: number,
-  }>> {
+  async searchFiles(query: string, caseSensitive?: boolean, isRegex?: boolean, {signal}: {signal?: AbortSignal} = {}):
+      Promise<Array<{
+        filepath: string,
+        lineNumber: number,
+        columnNumber: number,
+        matchLength: number,
+      }>> {
     const {map} = this.#indexFiles();
     const matches = [];
     for (const [filepath, file] of map.entries()) {
+      if (signal?.aborted) {
+        break;
+      }
+
       await file.requestContentData();
       debugLog('searching in', filepath, 'for', query);
       const content = file.isDirty() ? file.workingCopyContentData() : await file.requestContentData();

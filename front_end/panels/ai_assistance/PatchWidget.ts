@@ -115,6 +115,7 @@ export class PatchWidget extends UI.Widget.Widget {
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
   #view: View;
   #aidaClient: Host.AidaClient.AidaClient;
+  #applyPatchAbortController?: AbortController;
   #project?: Workspace.Workspace.Project;
   #patchSuggestion?: string;
   #patchSuggestionLoading?: boolean;
@@ -286,7 +287,7 @@ export class PatchWidget extends UI.Widget.Widget {
           (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
       onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
       onCancel: () => {
-          // TODO: Handle cancelling applying to workspace
+        this.#applyPatchAbortController?.abort();
       },
       onDiscard: this.#onDiscard.bind(this),
       onSaveAll: this.#onSaveAll.bind(this),
@@ -406,7 +407,9 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
     const response = await this.#applyPatch(changeSummary);
     // TODO: Handle error state
-    this.#patchSuggestion = response?.type === ResponseType.ANSWER ? response.text : 'Could not update files';
+    if (response?.type === ResponseType.ANSWER) {
+      this.#patchSuggestion = response.text;
+    }
     this.#patchSuggestionLoading = false;
     this.requestUpdate();
   }
@@ -425,12 +428,14 @@ export class PatchWidget extends UI.Widget.Widget {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
+    this.#applyPatchAbortController = new AbortController();
     const agent = new PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
       project: this.#project,
     });
-    const responses = await Array.fromAsync(agent.applyChanges(changeSummary));
+    const responses =
+        await Array.fromAsync(agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal}));
     return responses.at(-1);
   }
 }

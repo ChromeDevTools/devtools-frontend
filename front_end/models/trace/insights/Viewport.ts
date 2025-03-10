@@ -73,6 +73,7 @@ export function generateInsight(
   if (!compositorEvents.length) {
     // Trace doesn't have the data we need.
     return finalize({
+      frameId: context.frameId,
       mobileOptimized: null,
       warnings: [InsightWarning.NO_LAYOUT],
     });
@@ -82,6 +83,7 @@ export function generateInsight(
   for (const event of compositorEvents) {
     if (!event.args.is_mobile_optimized) {
       return finalize({
+        frameId: context.frameId,
         mobileOptimized: false,
         viewportEvent,
         metricSavings: {INP: 300 as Types.Timing.Milli},
@@ -90,6 +92,7 @@ export function generateInsight(
   }
 
   return finalize({
+    frameId: context.frameId,
     mobileOptimized: true,
     viewportEvent,
   });

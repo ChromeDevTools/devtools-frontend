@@ -33,8 +33,8 @@ This insight is used to analyze the time spent that contributed to the final LCP
 - https://web.dev/articles/optimize-lcp
 
 ## Insight details:
-The actual LCP time is 129.21 ms.
-The LCP resource was downloaded from: ${insight.lcpRequest.args.data.url}.
+The Largest Contentful Paint (LCP) time for this navigation was 129.21 ms.
+The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
 
 We can break this time down into the 4 phases that combine to make up the LCP time:
 
@@ -64,7 +64,8 @@ This insight is used to analyze the time spent that contributed to the final LCP
 - https://web.dev/articles/optimize-lcp
 
 ## Insight details:
-The actual LCP time is 106.48 ms.
+The Largest Contentful Paint (LCP) time for this navigation was 106.48 ms.
+The LCP is text based and was not fetched from the network.
 
 We can break this time down into the 2 phases that combine to make up the LCP time:
 
@@ -145,7 +146,8 @@ It is important that all of these checks pass to minimize the delay between the 
 - https://web.dev/articles/optimize-lcp
 
 ## Insight details:
-The LCP resource URL is: ${insight.lcpRequest.args.data.url}.
+The Largest Contentful Paint (LCP) time for this navigation was 1,077.06 ms.
+The LCP resource was fetched from \`${insight.lcpRequest.args.data.url}\`.
 
 The result of the checks for this insight are:
 - fetchpriority=high should be applied: FAILED

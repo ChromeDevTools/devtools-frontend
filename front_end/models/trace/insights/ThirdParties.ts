@@ -100,6 +100,7 @@ export function generateInsight(
       Handlers.Helpers.makeUpEntity(thirdPartySummary.madeUpEntityCache, firstPartyUrl);
 
   return finalize({
+    frameId: context.frameId,
     relatedEvents: getRelatedEvents(thirdPartySummary, firstPartyEntity),
     eventsByEntity: thirdPartySummary.eventsByEntity,
     summaryByEntity: thirdPartySummary.byEntity,

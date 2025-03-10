@@ -165,6 +165,7 @@ export function generateInsight(
   }
 
   return finalize({
+    frameId: context.frameId,
     largeLayoutUpdates,
     largeStyleRecalcs,
     maxDOMStats,

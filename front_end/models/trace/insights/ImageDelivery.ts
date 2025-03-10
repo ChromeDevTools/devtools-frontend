@@ -309,6 +309,7 @@ export function generateInsight(
   });
 
   return finalize({
+    frameId: context.frameId,
     optimizableImages,
     totalByteSavings: optimizableImages.reduce((total, img) => total + img.byteSavings, 0),
     metricSavings: metricSavingsForWastedBytes(wastedBytesByRequestId, context),

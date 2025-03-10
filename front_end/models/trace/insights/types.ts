@@ -81,6 +81,7 @@ export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIStrin
 export type InsightModel<UIStrings extends Record<string, string> = Record<string, string>,
                                            ExtraDetail extends Record<string, unknown> = Record<string, unknown>> =
     ExtraDetail&{
+      frameId: string,
       /** Used internally to identify the type of a model, not shown visibly to users **/
       insightKey: keyof InsightModelsType,
       /** Not used within DevTools - this is for external consumers (like Lighthouse). */

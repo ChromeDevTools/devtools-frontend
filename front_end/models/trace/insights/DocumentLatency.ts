@@ -181,13 +181,13 @@ function finalize(partialModel: PartialInsightModel<DocumentLatencyInsightModel>
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): DocumentLatencyInsightModel {
   if (!context.navigation) {
-    return finalize({});
+    return finalize({frameId: context.frameId});
   }
 
   const documentRequest =
       parsedTrace.NetworkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!documentRequest) {
-    return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
+    return finalize({frameId: context.frameId, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
   const serverResponseTime = getServerResponseTime(documentRequest);
@@ -217,6 +217,7 @@ export function generateInsight(
   const usesCompression = uncompressedResponseBytes === 0;
 
   return finalize({
+    frameId: context.frameId,
     relatedEvents: [documentRequest],
     data: {
       serverResponseTime,

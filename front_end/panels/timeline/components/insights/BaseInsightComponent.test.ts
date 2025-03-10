@@ -40,6 +40,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
         state: 'fail',
+        frameId: '123',
       };
       renderElementIntoDOM(component);
 
@@ -65,6 +66,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
         description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
         state: 'fail',
+        frameId: '123',
       };
       renderElementIntoDOM(component);
 
@@ -95,6 +97,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
       description: 'some description' as Common.UIString.LocalizedString,
       category: Trace.Insights.Types.InsightCategory.ALL,
       state: 'fail',
+      frameId: '123',
     } as const;
     async function renderComponent(): Promise<TestInsightComponent> {
       const component = new TestInsightComponent();

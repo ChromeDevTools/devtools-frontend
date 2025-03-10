@@ -26,6 +26,7 @@ const FAKE_LCP_MODEL = {
   description: 'some description' as Common.UIString.LocalizedString,
   category: Trace.Insights.Types.InsightCategory.ALL,
   state: 'fail',
+  frameId: '123',
 } as const;
 const FAKE_PARSED_TRACE = {} as unknown as Trace.Handlers.Types.ParsedTrace;
 

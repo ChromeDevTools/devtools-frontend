@@ -179,6 +179,7 @@ export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): RenderBlockingInsightModel {
   if (!context.navigation) {
     return finalize({
+      frameId: context.frameId,
       renderBlockingRequests: [],
     });
   }
@@ -189,6 +190,7 @@ export function generateInsight(
                            ?.event?.ts;
   if (!firstPaintTs) {
     return finalize({
+      frameId: context.frameId,
       renderBlockingRequests: [],
       warnings: [InsightWarning.NO_FP],
     });
@@ -238,6 +240,7 @@ export function generateInsight(
   });
 
   return finalize({
+    frameId: context.frameId,
     relatedEvents: renderBlockingRequests,
     renderBlockingRequests,
     ...savings,

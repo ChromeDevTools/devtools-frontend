@@ -140,6 +140,7 @@ export function generateInsight(
   });
 
   return finalize({
+    frameId: context.frameId,
     // TODO: should we identify UpdateLayout events as linked to this insight?
     relatedEvents: [],
     totalElapsedMs: Types.Timing.Milli(totalElapsedUs / 1000.0),

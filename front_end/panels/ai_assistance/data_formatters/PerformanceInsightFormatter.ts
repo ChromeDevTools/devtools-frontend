@@ -23,12 +23,78 @@ function formatMicro(x: number|undefined): string {
   return formatMilli(Trace.Helpers.Timing.microToMilli(x as Trace.Types.Timing.Micro));
 }
 
+/**
+ * For a given frame ID and navigation, returns the LCP Event and the LCP Request, if the resource was an image.
+ */
+function getLCPData(
+    parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: string, navigation: Trace.Types.Events.NavigationStart): {
+  lcpEvent: Trace.Types.Events.LargestContentfulPaintCandidate,
+  metricScore: Trace.Handlers.ModelHandlers.PageLoadMetrics.LCPMetricScore,
+  lcpRequest?: Trace.Types.Events.SyntheticNetworkRequest,
+}|null {
+  if (!navigation.args.data?.navigationId) {
+    return null;
+  }
+
+  const navMetrics =
+      parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigation.args.data?.navigationId);
+  if (!navMetrics) {
+    return null;
+  }
+
+  const metric = navMetrics.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+  if (!metric || !Trace.Handlers.ModelHandlers.PageLoadMetrics.metricIsLCP(metric)) {
+    return null;
+  }
+  const lcpEvent = metric?.event;
+  if (!lcpEvent || !Trace.Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
+    return null;
+  }
+
+  return {
+    lcpEvent,
+    lcpRequest: parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(navigation),
+    metricScore: metric,
+  };
+}
+
 export class PerformanceInsightFormatter {
   #insight: Trace.Insights.Types.InsightModel;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   constructor(activeInsight: TimelineUtils.InsightAIContext.ActiveInsight) {
     this.#insight = activeInsight.insight;
     this.#parsedTrace = activeInsight.parsedTrace;
+  }
+
+  /**
+   * Information about LCP which we pass to the LLM for all insights that relate to LCP.
+   */
+  #lcpMetricSharedContext(): string {
+    if (!this.#insight.navigationId) {
+      // No navigation ID = no LCP.
+      return '';
+    }
+    const navigation = this.#parsedTrace.Meta.navigationsByNavigationId.get(this.#insight.navigationId);
+    if (!navigation) {
+      return '';
+    }
+
+    const data = getLCPData(this.#parsedTrace, this.#insight.frameId, navigation);
+    if (!data) {
+      return '';
+    }
+    const {metricScore, lcpRequest} = data;
+
+    const parts: string[] = [
+      `The Largest Contentful Paint (LCP) time for this navigation was ${formatMicro(metricScore.timing)}.`,
+    ];
+    if (lcpRequest) {
+      parts.push(`The LCP resource was fetched from \`${lcpRequest.args.data.url}\`.`);
+    } else {
+      parts.push('The LCP is text based and was not fetched from the network.');
+    }
+
+    return parts.join('\n');
   }
 
   formatInsight(): string {
@@ -48,7 +114,7 @@ ${this.#details()}`;
 
   #details(): string {
     if (Trace.Insights.Models.LCPPhases.isLCPPhases(this.#insight)) {
-      const {phases, lcpMs, lcpRequest} = this.#insight;
+      const {phases, lcpMs} = this.#insight;
       if (!lcpMs) {
         return '';
       }
@@ -72,12 +138,7 @@ ${this.#details()}`;
         phaseBulletPoints.push({name: 'Render delay', value: formatMilli(phases.renderDelay)});
       }
 
-      let lcpRequestText = '';
-      if (lcpRequest) {
-        lcpRequestText = `\nThe LCP resource was downloaded from: ${lcpRequest.args.data.url}.`;
-      }
-
-      return `The actual LCP time is ${formatMilli(lcpMs)}.${lcpRequestText}
+      return `${this.#lcpMetricSharedContext()}
 
 We can break this time down into the ${phaseBulletPoints.length} phases that combine to make up the LCP time:
 
@@ -104,7 +165,7 @@ ${phaseBulletPoints.map(phase => `- ${phase.name}: ${phase.value}`).join('\n')}`
         passed: checklist.requestDiscoverable.value,
       });
 
-      return `The LCP resource URL is: ${lcpRequest.args.data.url}.
+      return `${this.#lcpMetricSharedContext()}
 
 The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;

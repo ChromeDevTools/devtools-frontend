@@ -15,6 +15,7 @@ import {
   InsightCategory,
   InsightKeys,
   type InsightModel,
+  type InsightSetContext,
   type PartialInsightModel,
 } from './types.js';
 
@@ -199,7 +200,8 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
   };
 }
 
-export function generateInsight(traceParsedData: Handlers.Types.ParsedTrace): ForcedReflowInsightModel {
+export function generateInsight(
+    traceParsedData: Handlers.Types.ParsedTrace, context: InsightSetContext): ForcedReflowInsightModel {
   const warningsData = traceParsedData.Warnings;
   const entryToNodeMap = traceParsedData.Renderer.entryToNode;
 
@@ -215,6 +217,7 @@ export function generateInsight(traceParsedData: Handlers.Types.ParsedTrace): Fo
       aggregateForcedReflow(warningsData.perWarning, entryToNodeMap);
 
   return finalize({
+    frameId: context.frameId,
     relatedEvents: topLevelFunctionCallData?.topLevelFunctionCallEvents,
     topLevelFunctionCallData,
     aggregatedBottomUpData,

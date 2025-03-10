@@ -9699,6 +9699,31 @@ export namespace Network {
     Zstd = 'zstd',
   }
 
+  export const enum DirectSocketDnsQueryType {
+    Ipv4 = 'ipv4',
+    Ipv6 = 'ipv6',
+  }
+
+  export interface DirectTCPSocketOptions {
+    /**
+     * TCP_NODELAY option
+     */
+    noDelay: boolean;
+    /**
+     * Expected to be unsigned integer.
+     */
+    keepAliveDelay?: number;
+    /**
+     * Expected to be unsigned integer.
+     */
+    sendBufferSize?: number;
+    /**
+     * Expected to be unsigned integer.
+     */
+    receiveBufferSize?: number;
+    dnsQueryType?: DirectSocketDnsQueryType;
+  }
+
   export const enum PrivateNetworkRequestPolicy {
     Allow = 'Allow',
     BlockFromInsecureToMorePrivate = 'BlockFromInsecureToMorePrivate',
@@ -10805,6 +10830,56 @@ export namespace Network {
     /**
      * Timestamp.
      */
+    timestamp: MonotonicTime;
+  }
+
+  /**
+   * Fired upon direct_socket.TCPSocket creation.
+   */
+  export interface DirectTCPSocketCreatedEvent {
+    identifier: RequestId;
+    remoteAddr: string;
+    /**
+     * Unsigned int 16.
+     */
+    remotePort: integer;
+    options: DirectTCPSocketOptions;
+    timestamp: MonotonicTime;
+    initiator?: Initiator;
+  }
+
+  /**
+   * Fired when direct_socket.TCPSocket connection is opened.
+   */
+  export interface DirectTCPSocketOpenedEvent {
+    identifier: RequestId;
+    remoteAddr: string;
+    /**
+     * Expected to be unsigned integer.
+     */
+    remotePort: integer;
+    timestamp: MonotonicTime;
+    localAddr?: string;
+    /**
+     * Expected to be unsigned integer.
+     */
+    localPort?: integer;
+  }
+
+  /**
+   * Fired when direct_socket.TCPSocket is aborted.
+   */
+  export interface DirectTCPSocketAbortedEvent {
+    identifier: RequestId;
+    errorMessage: string;
+    timestamp: MonotonicTime;
+  }
+
+  /**
+   * Fired when direct_socket.TCPSocket is closed.
+   */
+  export interface DirectTCPSocketClosedEvent {
+    identifier: RequestId;
     timestamp: MonotonicTime;
   }
 
@@ -17860,6 +17935,9 @@ export namespace Preload {
     PrefetchNotEligibleSchemeIsNotHttps = 'PrefetchNotEligibleSchemeIsNotHttps',
     PrefetchNotEligibleUserHasCookies = 'PrefetchNotEligibleUserHasCookies',
     PrefetchNotEligibleUserHasServiceWorker = 'PrefetchNotEligibleUserHasServiceWorker',
+    PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler = 'PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler',
+    PrefetchNotEligibleRedirectFromServiceWorker = 'PrefetchNotEligibleRedirectFromServiceWorker',
+    PrefetchNotEligibleRedirectToServiceWorker = 'PrefetchNotEligibleRedirectToServiceWorker',
     PrefetchNotEligibleBatterySaverEnabled = 'PrefetchNotEligibleBatterySaverEnabled',
     PrefetchNotEligiblePreloadingDisabled = 'PrefetchNotEligiblePreloadingDisabled',
     PrefetchNotFinishedInTime = 'PrefetchNotFinishedInTime',
@@ -18223,6 +18301,17 @@ export namespace BluetoothEmulation {
   }
 
   export interface EnableRequest {
+    /**
+     * State of the simulated central.
+     */
+    state: CentralState;
+    /**
+     * If the simulated central supports low-energy.
+     */
+    leSupported: boolean;
+  }
+
+  export interface SetSimulatedCentralStateRequest {
     /**
      * State of the simulated central.
      */

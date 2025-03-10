@@ -3494,7 +3494,8 @@ export const generatedProperties = [
    "flex-flow",
    "grid-rows",
    "grid-columns",
-   "grid-order"
+   "grid-order",
+   "source-order"
   ],
   "name": "reading-flow"
  },
@@ -6099,7 +6100,8 @@ export const generatedPropertyValues = {
    "flex-flow",
    "grid-rows",
    "grid-columns",
-   "grid-order"
+   "grid-order",
+   "source-order"
   ]
  },
  "resize": {

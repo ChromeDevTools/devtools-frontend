@@ -7136,7 +7136,7 @@ export const NativeFunctions = [
     signatures: [["element"]]
   },
   {
-    name: "replaceWithChildrenElement",
+    name: "replaceElementWithChildren",
     signatures: [["element"]]
   },
   {

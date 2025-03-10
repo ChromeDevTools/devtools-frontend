@@ -436,6 +436,9 @@ export const PrefetchReasonDescription: {[key: string]: {name: () => Platform.UI
   PrefetchEvictedAfterCandidateRemoved: {name: i18nLazyString(UIStrings.PrefetchEvictedAfterCandidateRemoved)},
   PrefetchNotEligibleBatterySaverEnabled: {name: i18nLazyString(UIStrings.PrefetchNotEligibleBatterySaverEnabled)},
   PrefetchNotEligiblePreloadingDisabled: {name: i18nLazyString(UIStrings.PrefetchNotEligiblePreloadingDisabled)},
+  PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler: {name: () => i18n.i18n.lockedString('Unknown')},
+  PrefetchNotEligibleRedirectFromServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
+  PrefetchNotEligibleRedirectToServiceWorker: {name: () => i18n.i18n.lockedString('Unknown')},
 };
 
 // Decoding PrefetchFinalStatus prefetchAttempt to failure description.
@@ -510,6 +513,12 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
       return PrefetchReasonDescription['PrefetchNotEligibleBatterySaverEnabled'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchNotEligiblePreloadingDisabled:
       return PrefetchReasonDescription['PrefetchNotEligiblePreloadingDisabled'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler:
+      return PrefetchReasonDescription['PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleRedirectFromServiceWorker:
+      return PrefetchReasonDescription['PrefetchNotEligibleRedirectFromServiceWorker'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleRedirectToServiceWorker:
+      return PrefetchReasonDescription['PrefetchNotEligibleRedirectToServiceWorker'].name();
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

@@ -14437,6 +14437,50 @@
                     ]
                 },
                 {
+                    "id": "DirectSocketDnsQueryType",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "ipv4",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "id": "DirectTCPSocketOptions",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "noDelay",
+                            "description": "TCP_NODELAY option",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "keepAliveDelay",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "sendBufferSize",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "receiveBufferSize",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "number"
+                        },
+                        {
+                            "name": "dnsQueryType",
+                            "optional": true,
+                            "$ref": "DirectSocketDnsQueryType"
+                        }
+                    ]
+                },
+                {
                     "id": "PrivateNetworkRequestPolicy",
                     "experimental": true,
                     "type": "string",
@@ -16086,6 +16130,108 @@
                         {
                             "name": "timestamp",
                             "description": "Timestamp.",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketCreated",
+                    "description": "Fired upon direct_socket.TCPSocket creation.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "remoteAddr",
+                            "type": "string"
+                        },
+                        {
+                            "name": "remotePort",
+                            "description": "Unsigned int 16.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "options",
+                            "$ref": "DirectTCPSocketOptions"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        },
+                        {
+                            "name": "initiator",
+                            "optional": true,
+                            "$ref": "Initiator"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketOpened",
+                    "description": "Fired when direct_socket.TCPSocket connection is opened.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "remoteAddr",
+                            "type": "string"
+                        },
+                        {
+                            "name": "remotePort",
+                            "description": "Expected to be unsigned integer.",
+                            "type": "integer"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        },
+                        {
+                            "name": "localAddr",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "localPort",
+                            "description": "Expected to be unsigned integer.",
+                            "optional": true,
+                            "type": "integer"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketAborted",
+                    "description": "Fired when direct_socket.TCPSocket is aborted.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "errorMessage",
+                            "type": "string"
+                        },
+                        {
+                            "name": "timestamp",
+                            "$ref": "MonotonicTime"
+                        }
+                    ]
+                },
+                {
+                    "name": "directTCPSocketClosed",
+                    "description": "Fired when direct_socket.TCPSocket is closed.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "identifier",
+                            "$ref": "RequestId"
+                        },
+                        {
+                            "name": "timestamp",
                             "$ref": "MonotonicTime"
                         }
                     ]
@@ -26995,6 +27141,9 @@
                         "PrefetchNotEligibleSchemeIsNotHttps",
                         "PrefetchNotEligibleUserHasCookies",
                         "PrefetchNotEligibleUserHasServiceWorker",
+                        "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler",
+                        "PrefetchNotEligibleRedirectFromServiceWorker",
+                        "PrefetchNotEligibleRedirectToServiceWorker",
                         "PrefetchNotEligibleBatterySaverEnabled",
                         "PrefetchNotEligiblePreloadingDisabled",
                         "PrefetchNotFinishedInTime",
@@ -27673,6 +27822,22 @@
                 {
                     "name": "enable",
                     "description": "Enable the BluetoothEmulation domain.",
+                    "parameters": [
+                        {
+                            "name": "state",
+                            "description": "State of the simulated central.",
+                            "$ref": "CentralState"
+                        },
+                        {
+                            "name": "leSupported",
+                            "description": "If the simulated central supports low-energy.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
+                    "name": "setSimulatedCentralState",
+                    "description": "Set the state of the simulated central.",
                     "parameters": [
                         {
                             "name": "state",

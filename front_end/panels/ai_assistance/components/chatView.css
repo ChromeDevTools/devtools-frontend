@@ -853,6 +853,14 @@ main {
       gap: var(--sys-size-2);
     }
 
+    .loading-text-container {
+      margin-right: var(--sys-size-3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--sys-size-3);
+    }
+
     .apply-to-workspace-container {
       display: flex;
       align-items: center;

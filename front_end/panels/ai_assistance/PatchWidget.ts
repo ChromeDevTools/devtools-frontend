@@ -36,7 +36,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Loading text displayed as a summary title when the patch suggestion is getting loaded
    */
-  loadingPatchSuggestion: 'Applying to workspace…',
+  applyingToWorkspace: 'Applying to workspace…',
   /**
    *@description Button text for staging changes to workspace.
    */
@@ -45,6 +45,10 @@ const UIStringsNotTranslate = {
    *@description Button text to change the selected workspace
    */
   change: 'Change',
+  /*
+   *@description Button text to cancel applying to workspace
+   */
+  cancel: 'Cancel',
   /*
    *@description Button text to discard the suggested changes and not save them to file system
    */
@@ -94,6 +98,7 @@ export interface ViewInput {
   projectName?: string;
   projectPath: Platform.DevToolsPath.UrlString;
   onApplyToWorkspace?: () => void;
+  onCancel: () => void;
   onDiscard: () => void;
   onSaveAll: () => void;
   onChangeWorkspaceClick: () => void;
@@ -126,15 +131,6 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderHeader(): LitTemplate {
-        if (input.patchSuggestionLoading) {
-          return html`
-            <devtools-spinner></devtools-spinner>
-            <span class="header-text">
-              ${lockedString(UIStringsNotTranslate.loadingPatchSuggestion)}
-            </span>
-          `;
-        }
-
         if (input.patchSuggestion) {
           return html`
             <devtools-icon class="difference-icon" .name=${'difference'}></devtools-icon>
@@ -171,10 +167,6 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderFooter(): LitTemplate {
-        if (input.patchSuggestionLoading) {
-          return nothing;
-        }
-
         if (input.patchSuggestion) {
           return html`
           <div class="footer">
@@ -216,13 +208,27 @@ export class PatchWidget extends UI.Widget.Widget {
             </devtools-button>
           </div>
           <div class="apply-to-workspace-container">
-            <devtools-button
-              class="apply-to-workspace"
-              @click=${input.onApplyToWorkspace}
-              .jslogContext=${'stage-to-workspace'}
+            ${input.patchSuggestionLoading ? html`
+              <div class="loading-text-container">
+                <devtools-spinner></devtools-spinner>
+                <span>
+                  ${lockedString(UIStringsNotTranslate.applyingToWorkspace)}
+                </span>
+              </div>
+            ` : html`
+              <devtools-button
+                @click=${input.onApplyToWorkspace}
+                .jslogContext=${'stage-to-workspace'}
+                .variant=${Buttons.Button.Variant.OUTLINED}>
+                ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
+              </devtools-button>
+            `}
+            ${input.patchSuggestionLoading ? html`<devtools-button
+              @click=${input.onCancel}
+              .jslogContext=${'cancel'}
               .variant=${Buttons.Button.Variant.OUTLINED}>
-              ${lockedString(UIStringsNotTranslate.applyToWorkspace)}
-            </devtools-button>
+              ${lockedString(UIStringsNotTranslate.cancel)}
+            </devtools-button>` : nothing}
             <devtools-icon aria-describedby="info-tooltip" .name=${'info'}></devtools-icon>
             <devtools-tooltip id="info-tooltip">${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}</devtools-tooltip>
           </div>
@@ -277,6 +283,9 @@ export class PatchWidget extends UI.Widget.Widget {
       projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
           (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
       onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
+      onCancel: () => {
+          // TODO: Handle cancelling applying to workspace
+      },
       onDiscard: this.#onDiscard.bind(this),
       onSaveAll: this.#onSaveAll.bind(this),
       onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),

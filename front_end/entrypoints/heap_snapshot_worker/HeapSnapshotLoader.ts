@@ -45,13 +45,14 @@ export class HeapSnapshotLoader {
   #array!: Platform.TypedArrayUtilities.BigUint32Array|null;
   #arrayIndex!: number;
   #json = '';
+  parsingComplete: Promise<void>;
   constructor(dispatcher: HeapSnapshotWorkerDispatcher) {
     this.#reset();
     this.#progress = new HeapSnapshotProgress(dispatcher);
     this.#buffer = [];
     this.#dataCallback = null;
     this.#done = false;
-    void this.#parseInput();
+    this.parsingComplete = this.#parseInput();
   }
 
   dispose(): void {
@@ -254,7 +255,7 @@ export class HeapSnapshotLoader {
     const stringsTokenIndex = await this.#findToken('"strings"');
     const bracketIndex = await this.#findToken('[', stringsTokenIndex);
     this.#json = this.#json.slice(bracketIndex);
-    while (!this.#done) {
+    while (this.#buffer.length > 0 || !this.#done) {
       this.#json += await this.#fetchChunk();
     }
     this.#parseStringsArray();

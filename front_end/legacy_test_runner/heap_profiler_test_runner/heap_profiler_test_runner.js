@@ -59,7 +59,8 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
           trace_node_fields: ['id', 'function_info_index', 'count', 'size', 'children']
         },
         node_count: 6,
-        edge_count: 7
+        edge_count: 7,
+        trace_function_count: 1
       },
 
       nodes: [
@@ -82,6 +83,9 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   HeapProfilerTestRunner.postprocessHeapSnapshotMock = function(mock) {
     mock.nodes = new Uint32Array(mock.nodes);
     mock.edges = new Uint32Array(mock.edges);
+    if (mock.trace_function_infos) {
+      mock.trace_function_infos = new Uint32Array(mock.trace_function_infos);
+    }
     mock.nodes.getValue = mock.edges.getValue = function(i) {
       return this[i];
     };

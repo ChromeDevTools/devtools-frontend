@@ -937,7 +937,6 @@ export abstract class HeapSnapshot {
     this.buildSamples();
     this.#progress.updateStatus('Building locations…');
     this.buildLocationMap();
-    this.#progress.updateStatus('Finished processing.');
 
     if (this.profile.snapshot.trace_function_count) {
       this.#progress.updateStatus('Building allocation statistics…');
@@ -962,8 +961,9 @@ export abstract class HeapSnapshot {
         stats.ids.push(node.id());
       }
       this.#allocationProfile = new AllocationProfile(this.profile, liveObjects);
-      this.#progress.updateStatus('done');
     }
+
+    this.#progress.updateStatus('Finished processing.');
   }
 
   private buildEdgeIndexes(): void {

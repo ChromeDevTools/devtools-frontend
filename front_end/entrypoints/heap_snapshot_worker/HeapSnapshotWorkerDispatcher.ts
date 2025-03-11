@@ -59,7 +59,7 @@ export class HeapSnapshotWorkerDispatcher {
     this.#postMessage({eventName: name, data});
   }
 
-  dispatchMessage({data}: {data: HeapSnapshotModel.HeapSnapshotModel.WorkerCommand}): void {
+  async dispatchMessage({data}: {data: HeapSnapshotModel.HeapSnapshotModel.WorkerCommand}): Promise<void> {
     const response: DispatcherResponse =
         {callId: data.callId, result: null, error: undefined, errorCallStack: undefined, errorMethodName: undefined};
     try {
@@ -102,7 +102,7 @@ export class HeapSnapshotWorkerDispatcher {
             };
             // @ts-expect-error
             globalThis.HeapSnapshotModel = HeapSnapshotModel;
-            response.result = self.eval(data.source);
+            response.result = await self.eval(data.source);
           } catch (error) {
             response.result = error.toString();
           }

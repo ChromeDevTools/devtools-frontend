@@ -93,8 +93,8 @@ To check if your setup is correct, you can try out Benedikt’s
 ## Vite
 
 There's also a proof-of-concept plugin for [vite](http://vite.dev) available at
-[bmeurer/vite-plugin-devtools-json](https://github.com/bmeurer/vite-plugin-devtools-json),
-which you can easily add to your existing project.
+[ChromeDevTools/vite-plugin-devtools-json][vite-plugin], which you can easily
+add to your existing project.
 
 [self-link]: http://goo.gle/devtools-automatic-workspace-folders
 [design-doc]: http://go/chrome-devtools:automatic-workspace-folders-design
@@ -103,3 +103,4 @@ which you can easily add to your existing project.
 [workspaces-announcement]: https://developer.chrome.com/blog/new-in-devtools-63#workspaces
 [design-doc-json]: https://goo.gle/devtools-json-design
 [hello-world]: https://github.com/bmeurer/automatic-workspace-folders-hello-world
+[vite-plugin]: https://github.com/ChromeDevTools/vite-plugin-devtools-json

@@ -12,7 +12,7 @@ import type {ContextMenu, Provider} from './ContextMenu.js';
 import {html as xhtml} from './Fragment.js';
 import {Tooltip} from './Tooltip.js';
 import {
-  addReferrerToURLIfNecessary,
+  addUTMParametersToURLIfNecessary,
   copyLinkAddressLabel,
   MaxLengthForDisplayedURLs,
   openLinkExternallyLabel,
@@ -94,7 +94,7 @@ export class XLink extends XElement {
       let href: Platform.DevToolsPath.UrlString|null = null;
       let url: URL|null = null;
       try {
-        url = new URL(addReferrerToURLIfNecessary(newValue as Platform.DevToolsPath.UrlString));
+        url = new URL(addUTMParametersToURLIfNecessary(newValue as Platform.DevToolsPath.UrlString));
         href = url.toString() as Platform.DevToolsPath.UrlString;
       } catch {
       }

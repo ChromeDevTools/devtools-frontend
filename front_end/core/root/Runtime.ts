@@ -338,6 +338,8 @@ export interface AidaAvailability {
   enterprisePolicyValue: number;
 }
 
+type Channel = 'stable'|'beta'|'dev'|'canary';
+
 export interface HostConfigConsoleInsights {
   modelId: string;
   temperature: number;
@@ -442,6 +444,7 @@ interface CSSValueTracing {
  */
 export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   aidaAvailability: AidaAvailability,
+  channel: Channel,
   devToolsConsoleInsights: HostConfigConsoleInsights,
   devToolsFreestyler: HostConfigFreestyler,
   devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent,

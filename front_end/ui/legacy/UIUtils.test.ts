@@ -3,49 +3,82 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 
 import * as UI from './legacy.js';
 
 const {urlString} = Platform.DevToolsPath;
 
 describe('UIUtils', () => {
-  describe('addReferrerToURL', () => {
-    it('correctly adds referrer info to URLs', () => {
+  describe('addUTMParametersToURL', () => {
+    const {addUTMParametersToURL} = UI.UIUtils;
+
+    it('correctly adds `utm_source` to URLs', () => {
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route`),
           'https://www.domain.com/route?utm_source=devtools');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route#anchor`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route#anchor`),
           'https://www.domain.com/route?utm_source=devtools#anchor');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route?key=value`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value`),
           'https://www.domain.com/route?key=value&utm_source=devtools');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route?key=value#anchor`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value#anchor`),
           'https://www.domain.com/route?key=value&utm_source=devtools#anchor');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route?utm_source=devtools#anchor`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route?utm_source=devtools#anchor`),
           'https://www.domain.com/route?utm_source=devtools#anchor');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURL(urlString`https://www.domain.com/route?key=value&utm_source=devtools#anchor`),
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value&utm_source=devtools#anchor`),
           'https://www.domain.com/route?key=value&utm_source=devtools#anchor');
+    });
+
+    it('correctly adds `utm_campaign` to URLs', () => {
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route`, 'stable'),
+          'https://www.domain.com/route?utm_source=devtools&utm_campaign=stable');
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route#anchor`, 'canary'),
+          'https://www.domain.com/route?utm_source=devtools&utm_campaign=canary#anchor');
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value`, 'beta'),
+          'https://www.domain.com/route?key=value&utm_source=devtools&utm_campaign=beta');
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value#anchor`, 'dev'),
+          'https://www.domain.com/route?key=value&utm_source=devtools&utm_campaign=dev#anchor');
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route?utm_source=devtools#anchor`, 'stable'),
+          'https://www.domain.com/route?utm_source=devtools&utm_campaign=stable#anchor');
+      assert.strictEqual(
+          addUTMParametersToURL(urlString`https://www.domain.com/route?key=value&utm_source=devtools#anchor`, 'beta'),
+          'https://www.domain.com/route?key=value&utm_source=devtools&utm_campaign=beta#anchor');
     });
   });
 
-  describe('addReferrerToURLIfNecessary', () => {
-    it('correctly adds referrer for web.dev and developers.google.com', () => {
+  describe('addUTMParametersToURLIfNecessary', () => {
+    const {addUTMParametersToURLIfNecessary} = UI.UIUtils;
+
+    it('correctly adds `utm_source` for web.dev and developers.google.com', () => {
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURLIfNecessary(urlString`https://web.dev/route`),
+          addUTMParametersToURLIfNecessary(urlString`https://web.dev/route`),
           'https://web.dev/route?utm_source=devtools');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURLIfNecessary(urlString`https://developers.google.com/route#anchor`),
+          addUTMParametersToURLIfNecessary(urlString`https://developers.google.com/route#anchor`),
           'https://developers.google.com/route?utm_source=devtools#anchor');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURLIfNecessary(urlString`https://www.domain.com/web.dev/route`),
+          addUTMParametersToURLIfNecessary(urlString`https://www.domain.com/web.dev/route`),
           'https://www.domain.com/web.dev/route');
       assert.strictEqual(
-          UI.UIUtils.addReferrerToURLIfNecessary(urlString`https://foo.developers.google.com/route#anchor`),
+          addUTMParametersToURLIfNecessary(urlString`https://foo.developers.google.com/route#anchor`),
           'https://foo.developers.google.com/route#anchor');
+    });
+
+    it('correctly adds `utm_source` and `utm_campaign` for developer.chrome.com', () => {
+      updateHostConfig({channel: 'beta'});
+      assert.strictEqual(
+          addUTMParametersToURLIfNecessary(urlString`https://developer.chrome.com/docs/devtools/workspaces`),
+          'https://developer.chrome.com/docs/devtools/workspaces?utm_source=devtools&utm_campaign=beta');
     });
   });
 

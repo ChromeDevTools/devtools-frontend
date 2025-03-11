@@ -38,6 +38,7 @@ import './Toolbar.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Buttons from '../components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
@@ -1560,29 +1561,49 @@ export function measureTextWidth(context: CanvasRenderingContext2D, text: string
 let measureTextWidthCache: Map<string, Map<string, number>>|null = null;
 
 /**
- * Adds a 'utm_source=devtools' as query parameter to the url.
+ * Adds 'utm_source' and optionally 'utm_campaign' search parameters to the `url`.
+ *
+ * If the `url` doesn't have an 'utm_source' search parameter already, we'll add
+ * 'utm_source=devtools' to the `url`.
+ *
+ * If the `url` doesn't have an 'utm_campaign' search parameter already and the
+ * optional `channel` parameter (which defaults to the Chrome release channel
+ * inferred from the `HostConfig`) is not undefined, we'll append a new search
+ * parameter 'utm_campagin=<channel>' to the `url`.
+ *
+ * @param url the URL to enrich.
+ * @param channel the optional channel, which defaults to the channel information
+ *                from the `HostConfig` for branded Chrome builds.
+ * @return the `url` with the additional UTM parameters.
+ * @see https://en.wikipedia.org/wiki/UTM_parameters
  */
-export function addReferrerToURL(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
-  if (/(\?|&)utm_source=devtools/.test(url)) {
-    return url;
+export function addUTMParametersToURL(
+    url: URL|Platform.DevToolsPath.UrlString,
+    channel = Root.Runtime.hostConfig.channel): Platform.DevToolsPath.UrlString {
+  const urlObject = new URL(url);
+  if (!urlObject.searchParams.has('utm_source')) {
+    urlObject.searchParams.append('utm_source', 'devtools');
   }
-  if (url.indexOf('?') === -1) {
-    // If the URL does not contain a query, add the referrer query after path
-    // and before (potential) anchor.
-    return url.replace(/^([^#]*)(#.*)?$/g, '$1?utm_source=devtools$2') as Platform.DevToolsPath.UrlString;
+  if (!urlObject.searchParams.has('utm_campaign') && typeof channel === 'string') {
+    urlObject.searchParams.append('utm_campaign', channel);
   }
-  // If the URL already contains a query, add the referrer query after the last query
-  // and before (potential) anchor.
-  return url.replace(/^([^#]*)(#.*)?$/g, '$1&utm_source=devtools$2') as Platform.DevToolsPath.UrlString;
+  return Platform.DevToolsPath.urlString`${urlObject}`;
 }
 
 /**
- * We want to add a referrer query param to every request to
- * 'web.dev' or 'developers.google.com'.
+ * Wrapper around `addUTMParametersToURL`, which only updates URLs to Google
+ * owned properties.
+ *
+ * We only enrich `url` if the host is one of 'web.dev', 'developers.google.com',
+ * or 'developer.chrome.com'.
+ *
+ * @param url the URL to enrich.
+ * @return the `url` with the additional UTM parameters.
  */
-export function addReferrerToURLIfNecessary(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString {
+export function addUTMParametersToURLIfNecessary(url: Platform.DevToolsPath.UrlString):
+    Platform.DevToolsPath.UrlString {
   if (/(\/\/developers.google.com\/|\/\/web.dev\/|\/\/developer.chrome.com\/)/.test(url)) {
-    return addReferrerToURL(url);
+    return addUTMParametersToURL(url);
   }
   return url;
 }

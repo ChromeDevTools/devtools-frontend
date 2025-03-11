@@ -369,7 +369,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private static showHelp(): void {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(UI.UIUtils.addReferrerToURL(
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(UI.UIUtils.addUTMParametersToURL(
         'https://web.dev/color-and-contrast-accessibility/' as Platform.DevToolsPath.UrlString));
   }
 

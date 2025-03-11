@@ -9,7 +9,7 @@ import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
-import {describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
@@ -58,8 +58,6 @@ describeWithEnvironment('CombinedDiffView', () => {
   let workspaceDiff: WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl;
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
   beforeEach(() => {
-    // This is needed for tracking file system UI source codes.
-    updateHostConfig({devToolsImprovedWorkspaces: {enabled: true}});
     const workspace = createWorkspace();
     workspaceDiff = createWorkspaceDiff({workspace});
     ({uiSourceCode} =

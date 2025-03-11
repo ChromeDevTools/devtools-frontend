@@ -391,10 +391,6 @@ export interface HostConfigAutomaticFileSystems {
   enabled: boolean;
 }
 
-export interface HostConfigImprovedWorkspaces {
-  enabled: boolean;
-}
-
 export interface HostConfigVeLogging {
   enabled: boolean;
   testing: boolean;
@@ -452,7 +448,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
   devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsAutomaticFileSystems: HostConfigAutomaticFileSystems,
-  devToolsImprovedWorkspaces: HostConfigImprovedWorkspaces,
   devToolsVeLogging: HostConfigVeLogging,
   devToolsWellKnown: HostConfigWellKnown,
   devToolsPrivacyUI: HostConfigPrivacyUI,

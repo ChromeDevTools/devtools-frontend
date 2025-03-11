@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as FormatterModule from '../formatter/formatter.js';
 import * as Persistence from '../persistence/persistence.js';
@@ -112,20 +111,18 @@ export class WorkspaceDiffImpl extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   #shouldTrack(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    // We track differences for all Network resources.
-    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network) {
-      return true;
-    }
+    switch (uiSourceCode.project().type()) {
+      case Workspace.Workspace.projectTypes.Network:
+        // We track differences for all Network resources.
+        return true;
 
-    // Additionally we also track differences for FileSystem resources that don't have
-    // a binding (as part of the kDevToolsImprovedWorkspaces feature).
-    if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
-        this.#persistence.binding(uiSourceCode) === null &&
-        Root.Runtime.hostConfig.devToolsImprovedWorkspaces?.enabled) {
-      return true;
-    }
+      case Workspace.Workspace.projectTypes.FileSystem:
+        // We track differences for FileSystem resources without bindings.
+        return this.#persistence.binding(uiSourceCode) === null;
 
-    return false;
+      default:
+        return false;
+    }
   }
 
   private async updateModifiedState(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {

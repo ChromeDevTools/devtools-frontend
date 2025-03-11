@@ -48,7 +48,7 @@ const UIStrings = {
   /**
    *@description Message to display if a setting change requires a reload of DevTools
    */
-  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
+  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/SettingsUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

@@ -533,7 +533,7 @@ describe('The Debugger Language Plugins', () => {
     await waitFor(RESUME_BUTTON);
     await addDummyExternalDWARFInfo('unreachable.wasm');
 
-    const incompleteMessage = `Failed to load any debug info for ${getResourcesPath()}/sources/wasm/unreachable.wasm.`;
+    const incompleteMessage = `Failed to load any debug info for ${getResourcesPath()}/sources/wasm/unreachable.wasm`;
     const infoBar = await waitFor(`.infobar-error[aria-label="${incompleteMessage}"`);
     const details = await waitFor('.infobar-details-rows', infoBar);
     const text = await details.evaluate(e => e.textContent);

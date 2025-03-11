@@ -91,7 +91,7 @@ const UIStrings = {
    * The placeholder is the current Chrome language.
    * @example {German} PH1
    */
-  devToolsLanguageMissmatch: 'DevTools is now available in {PH1}!',
+  devToolsLanguageMissmatch: 'DevTools is now available in {PH1}',
   /**
    * @description An option the user can select when we notice that DevTools
    * is configured with a different locale than Chrome. This option means DevTools will
@@ -125,7 +125,7 @@ const UIStrings = {
    * @description Request for the user to select a local file system folder for DevTools
    * to store local overrides in.
    */
-  selectOverrideFolder: 'Select a folder to store override files in.',
+  selectOverrideFolder: 'Select a folder to store override files in',
   /**
    *@description Label for a button which opens a file picker.
    */

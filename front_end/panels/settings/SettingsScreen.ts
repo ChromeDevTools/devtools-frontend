@@ -80,7 +80,7 @@ const UIStrings = {
   /**
    *@description Message to display if a setting change requires a reload of DevTools
    */
-  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
+  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect',
   /**
    * @description Label for a filter text input that controls which experiments are shown.
    */

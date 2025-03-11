@@ -116,7 +116,7 @@ const UIStrings = {
   /**
    *@description Text in Debugger Plugin of the Sources panel
    */
-  sourceMapLoaded: 'Source map loaded.',
+  sourceMapLoaded: 'Source map loaded',
   /**
    *@description Title of the Filtered List WidgetProvider of Quick Open
    *@example {Ctrl+P Ctrl+O} PH1
@@ -134,11 +134,11 @@ const UIStrings = {
   /**
    *@description Text in Debugger Plugin of the Sources panel
    */
-  sourceMapSkipped: 'Source map skipped for this file.',
+  sourceMapSkipped: 'Source map skipped for this file',
   /**
    *@description Text in Debugger Plugin of the Sources panel
    */
-  sourceMapFailed: 'Source map failed to load.',
+  sourceMapFailed: 'Source map failed to load',
   /**
    *@description Text in Debugger Plugin of the Sources panel
    */
@@ -162,7 +162,7 @@ const UIStrings = {
    *@description Error message that is displayed when no debug info could be loaded
    *@example {app.wasm} PH1
    */
-  debugInfoNotFound: 'Failed to load any debug info for {PH1}.',
+  debugInfoNotFound: 'Failed to load any debug info for {PH1}',
   /**
    *@description Text of a button to open up details on a request when no debug info could be loaded
    */

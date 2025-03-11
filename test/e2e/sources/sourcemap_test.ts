@@ -456,7 +456,7 @@ describe('The Sources Tab', function() {
     await step('Get infobar text', async () => {
       await openFileInEditor('sourcemap-origin.min.js');
       const infobarText = await waitForTextContent(INFOBAR_TEXT);
-      assert.strictEqual(infobarText, 'Source map loaded.');
+      assert.strictEqual(infobarText, 'Source map loaded');
     });
   });
 
@@ -475,7 +475,7 @@ describe('The Sources Tab', function() {
 
     await step('Get infobar text', async () => {
       const infobarText = await waitForTextContent(INFOBAR_TEXT);
-      assert.strictEqual(infobarText, 'Source map loaded.');
+      assert.strictEqual(infobarText, 'Source map loaded');
     });
   });
 
@@ -489,7 +489,7 @@ describe('The Sources Tab', function() {
       await waitFor('.infobar-info');
       const infobarTexts = await getVisibleTextContents(INFOBAR_TEXT);
       assert.deepEqual(
-          infobarTexts, ['This script is on the debugger\'s ignore list', 'Source map skipped for this file.']);
+          infobarTexts, ['This script is on the debugger\'s ignore list', 'Source map skipped for this file']);
     });
   });
 
@@ -508,7 +508,7 @@ describe('The Sources Tab', function() {
 
     await step('Get infobar text', async () => {
       const infobarText = await waitForTextContent(INFOBAR_TEXT);
-      assert.strictEqual(infobarText, 'Source map failed to load.');
+      assert.strictEqual(infobarText, 'Source map failed to load');
     });
   });
 

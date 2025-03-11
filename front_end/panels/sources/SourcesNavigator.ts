@@ -114,7 +114,7 @@ const UIStrings = {
    *              workspace folder is detected.
    * @example {/path/to/foo} PH1
    */
-  automaticWorkspaceFolderDetected: 'Workspace folder {PH1} detected.',
+  automaticWorkspaceFolderDetected: 'Workspace folder {PH1} detected',
   /**
    * @description Button description in Workspaces tab in the Sources panel
    *              to connect to an automatic workspace folder.

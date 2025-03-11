@@ -197,6 +197,9 @@ Try searching using the selectors and if nothing matches, try to find a semantic
 Consider updating files containing styles like CSS files first! If a selector is not found in a suitable file, try to find an existing
 file to add a new style rule.
 Call the updateFiles with the list of files to be updated once you are done.
+
+CRITICAL: before searching always call listFiles first.
+CRITICAL: never call updateFiles with files that do not need updates.
 `;
 
     yield* this.run(prompt, {selected: null, signal});

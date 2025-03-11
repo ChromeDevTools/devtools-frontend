@@ -114,7 +114,7 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
 }
 
 function hasImageLCP(parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContextWithNavigation): boolean {
-  return parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation) !== undefined;
+  return parsedTrace.LargestImagePaint.lcpRequestByNavigationId.has(context.navigationId);
 }
 
 function computeSavings(

@@ -24,20 +24,14 @@ function formatMicro(x: number|undefined): string {
 }
 
 /**
- * For a given frame ID and navigation, returns the LCP Event and the LCP Request, if the resource was an image.
+ * For a given frame ID and navigation ID, returns the LCP Event and the LCP Request, if the resource was an image.
  */
-function getLCPData(
-    parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: string, navigation: Trace.Types.Events.NavigationStart): {
+function getLCPData(parsedTrace: Trace.Handlers.Types.ParsedTrace, frameId: string, navigationId: string): {
   lcpEvent: Trace.Types.Events.LargestContentfulPaintCandidate,
   metricScore: Trace.Handlers.ModelHandlers.PageLoadMetrics.LCPMetricScore,
   lcpRequest?: Trace.Types.Events.SyntheticNetworkRequest,
 }|null {
-  if (!navigation.args.data?.navigationId) {
-    return null;
-  }
-
-  const navMetrics =
-      parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigation.args.data?.navigationId);
+  const navMetrics = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(frameId)?.get(navigationId);
   if (!navMetrics) {
     return null;
   }
@@ -53,7 +47,7 @@ function getLCPData(
 
   return {
     lcpEvent,
-    lcpRequest: parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(navigation),
+    lcpRequest: parsedTrace.LargestImagePaint.lcpRequestByNavigationId.get(navigationId),
     metricScore: metric,
   };
 }
@@ -74,15 +68,11 @@ export class PerformanceInsightFormatter {
       // No navigation ID = no LCP.
       return '';
     }
-    const navigation = this.#parsedTrace.Meta.navigationsByNavigationId.get(this.#insight.navigationId);
-    if (!navigation) {
-      return '';
-    }
-    if (!this.#insight.frameId) {
+    if (!this.#insight.frameId || !this.#insight.navigationId) {
       return '';
     }
 
-    const data = getLCPData(this.#parsedTrace, this.#insight.frameId, navigation);
+    const data = getLCPData(this.#parsedTrace, this.#insight.frameId, this.#insight.navigationId);
     if (!data) {
       return '';
     }

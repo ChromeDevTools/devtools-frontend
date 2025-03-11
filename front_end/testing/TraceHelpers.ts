@@ -203,8 +203,8 @@ export function prettyPrint(
     indentation = 2, delimiter = ' ', prefix = '-', newline = '\n', out = ''): string {
   let skipped = false;
   return printNodes(tree.roots);
-  function printNodes(nodes: Set<Trace.Helpers.TreeHelpers.TraceEntryNode>|
-                      Trace.Helpers.TreeHelpers.TraceEntryNode[]): string {
+  function printNodes(nodes: Set<Trace.Helpers.TreeHelpers.TraceEntryNode>|Trace.Helpers.TreeHelpers.TraceEntryNode[]):
+      string {
     for (const node of nodes) {
       const event = node.entry;
       if (!predicate(node, event)) {
@@ -690,7 +690,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       timestampEvents: [],
       measureTraceByTraceId: new Map(),
     },
-    LargestImagePaint: {lcpRequestByNavigation: new Map()},
+    LargestImagePaint: {lcpRequestByNavigationId: new Map()},
     LargestTextPaint: new Map(),
     AuctionWorklets: {
       worklets: new Map(),

@@ -195,7 +195,7 @@ export function generateInsight(
   const lcpMs = Helpers.Timing.microToMilli(metricScore.timing);
   // This helps position things on the timeline's UI accurately for a trace.
   const lcpTs = metricScore.event?.ts ? Helpers.Timing.microToMilli(metricScore.event?.ts) : undefined;
-  const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation);
+  const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigationId.get(context.navigationId);
 
   const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!docRequest) {

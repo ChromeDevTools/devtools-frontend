@@ -18,10 +18,10 @@ describeWithEnvironment('LargestImagePaintHandler', function() {
     // There is only one main frame navigation in this trace.
     assert.lengthOf(mainFrameNavigations, 1);
     const mainNavigation = mainFrameNavigations.at(0);
-    assert.isOk(mainNavigation);
+    assert.isOk(mainNavigation?.args.data?.navigationId);
 
-    const {lcpRequestByNavigation} = parsedTrace.LargestImagePaint;
-    const lcpRequest = lcpRequestByNavigation.get(mainNavigation);
+    const {lcpRequestByNavigationId} = parsedTrace.LargestImagePaint;
+    const lcpRequest = lcpRequestByNavigationId.get(mainNavigation.args.data?.navigationId);
     assert.isOk(lcpRequest);
     assert.strictEqual(lcpRequest.args.data.url, 'https://via.placeholder.com/2000.jpg');
   });
@@ -35,10 +35,10 @@ describeWithEnvironment('LargestImagePaintHandler', function() {
     // There is only one main frame navigation in this trace.
     assert.lengthOf(mainFrameNavigations, 1);
     const mainNavigation = mainFrameNavigations.at(0);
-    assert.isOk(mainNavigation);
+    assert.isOk(mainNavigation?.args.data?.navigationId);
 
-    const {lcpRequestByNavigation} = parsedTrace.LargestImagePaint;
-    const lcpRequest = lcpRequestByNavigation.get(mainNavigation);
+    const {lcpRequestByNavigationId} = parsedTrace.LargestImagePaint;
+    const lcpRequest = lcpRequestByNavigationId.get(mainNavigation.args.data.navigationId);
     assert.isOk(lcpRequest);
     assert.strictEqual(lcpRequest.args.data.url, 'https://placehold.co/1000.jpg');
   });
@@ -50,10 +50,10 @@ describeWithEnvironment('LargestImagePaintHandler', function() {
     // There is only one main frame navigation in this trace.
     assert.lengthOf(mainFrameNavigations, 1);
     const mainNavigation = mainFrameNavigations.at(0);
-    assert.isOk(mainNavigation);
+    assert.isOk(mainNavigation?.args.data?.navigationId);
 
-    const {lcpRequestByNavigation} = parsedTrace.LargestImagePaint;
-    const lcpRequest = lcpRequestByNavigation.get(mainNavigation);
+    const {lcpRequestByNavigationId} = parsedTrace.LargestImagePaint;
+    const lcpRequest = lcpRequestByNavigationId.get(mainNavigation.args.data.navigationId);
 
     // There is a largest image paint event, but it happens after the LCP candidate
     // so it's ignored. The actual LCP is text.

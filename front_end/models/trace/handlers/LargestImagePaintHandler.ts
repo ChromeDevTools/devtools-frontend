@@ -32,7 +32,7 @@ import type {HandlerName} from './types.js';
  **/
 const imagePaintsByNodeIdAndProcess =
     new Map<Types.Events.ProcessID, Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate>>();
-const lcpRequestByNavigation = new Map<Types.Events.NavigationStart|null, Types.Events.SyntheticNetworkRequest>();
+const lcpRequestByNavigationId = new Map<string, Types.Events.SyntheticNetworkRequest>();
 
 export function reset(): void {
   imagePaintsByNodeIdAndProcess.clear();
@@ -90,17 +90,17 @@ export async function finalize(): Promise<void> {
     }
 
     if (lcpRequest) {
-      lcpRequestByNavigation.set(navigation, lcpRequest);
+      lcpRequestByNavigationId.set(navigationId, lcpRequest);
     }
   }
 }
 
 export interface LargestImagePaintData {
-  lcpRequestByNavigation: Map<Types.Events.NavigationStart|null, Types.Events.SyntheticNetworkRequest>;
+  lcpRequestByNavigationId: Map<string, Types.Events.SyntheticNetworkRequest>;
 }
 
 export function data(): LargestImagePaintData {
-  return {lcpRequestByNavigation};
+  return {lcpRequestByNavigationId};
 }
 
 export function deps(): HandlerName[] {

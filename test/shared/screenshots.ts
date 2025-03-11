@@ -83,12 +83,22 @@ export const assertElementScreenshotUnchanged = async (
       element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
 };
 
+function getFrontend() {
+  // Outside e2e or interaction tests the frontend can be undefined.
+  try {
+    const {frontend} = getBrowserAndPages();
+    return frontend;
+  } catch {
+    return;
+  }
+}
+
 const assertScreenshotUnchangedWithRetries = async (
     elementOrPage: puppeteer.ElementHandle|puppeteer.Page, fileName: string, maximumDiffThreshold: number,
     maximumRetries: number, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
-  const {frontend} = getBrowserAndPages();
+  const frontend = getFrontend();
   try {
-    await frontend.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
+    await frontend?.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
     /**
      * You can call the helper with a path for the golden - e.g.
      * accordion/basic.png. So we split on `/` and then join on path.sep to
@@ -125,7 +135,7 @@ const assertScreenshotUnchangedWithRetries = async (
       maximumRetries,
     });
   } finally {
-    await frontend.evaluate(() => window.dispatchEvent(new Event('showcomponentdocsui')));
+    await frontend?.evaluate(() => window.dispatchEvent(new Event('showcomponentdocsui')));
   }
 };
 

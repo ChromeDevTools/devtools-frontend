@@ -3776,6 +3776,7 @@ export const knownContextValues = new Set([
   'web+coffee',
   'web+pwinter',
   'web-audio',
+  'web-socket',
   'web-socket-frames',
   'web-socket-messages',
   'web-workers',

@@ -163,6 +163,11 @@ export class ExtensionScope {
         break;
       }
       if (rule instanceof SDK.CSSRule.CSSStyleRule) {
+        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
+          // If the rule we created was our continue to get the correct location
+          continue;
+        }
+
         styleRule = rule;
         break;
       }
@@ -172,13 +177,6 @@ export class ExtensionScope {
 
   static getSelectorsFromStyleRule(
       styleRule: SDK.CSSRule.CSSStyleRule, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string {
-    // If the rule we created was our own return directly
-    if (styleRule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
-      // We know that the last character will be & so remove it
-      const text = styleRule.selectors[0].text;
-      return text.at(-1) === '&' ? text.slice(0, -1) : text;
-    }
-
     const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
     // TODO: Compute the selector when nested selector is present
     const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).sort((a, b) => {

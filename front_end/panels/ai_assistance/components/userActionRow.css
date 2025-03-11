@@ -94,6 +94,7 @@
     height: var(--sys-size-11);
     padding: 0 var(--sys-size-5);
     background-color: var(--sys-color-surface3);
+    width: auto;
   }
 
   .feedback-input::placeholder {

@@ -258,6 +258,8 @@ export class ConsoleInsight extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 
+  disableAnimations = false;
+
   #promptBuilder: PublicPromptBuilder;
   #aidaClient: PublicAidaClient;
   #renderer: MarkdownView.MarkdownView.MarkdownInsightRenderer;
@@ -772,7 +774,7 @@ export class ConsoleInsight extends HTMLElement {
         <main jslog=${jslog}>
           ${
             this.#state.validMarkdown ? html`<devtools-markdown-view
-              .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: true} as MarkdownView.MarkdownView.MarkdownViewData}>
+              .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: !this.disableAnimations} as MarkdownView.MarkdownView.MarkdownViewData}>
             </devtools-markdown-view>`: this.#state.explanation
           }
           ${this.#state.timedOut ? html`<p class="error-message">${i18nString(UIStrings.timedOut)}</p>` : Lit.nothing}

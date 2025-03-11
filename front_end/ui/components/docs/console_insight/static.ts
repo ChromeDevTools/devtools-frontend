@@ -80,4 +80,5 @@ Images: ![https://example.com](https://example.com)
     },
 
     Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+component.disableAnimations = true;
 document.getElementById('container')?.appendChild(component);

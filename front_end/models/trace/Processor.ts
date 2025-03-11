@@ -441,6 +441,7 @@ export class TraceProcessor extends EventTarget {
       let insightResult;
       try {
         insightResult = insight.generateInsight(parsedTrace, context);
+        insightResult.frameId = context.frameId;
         const navId = context.navigation?.args.data?.navigationId;
         if (navId) {
           insightResult.navigationId = navId;

@@ -96,10 +96,7 @@ function finalize(partialModel: PartialInsightModel<LCPDiscoveryInsightModel>): 
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): LCPDiscoveryInsightModel {
   if (!context.navigation) {
-    return finalize({
-
-      frameId: context.frameId,
-    });
+    return finalize({});
   }
 
   const networkRequests = parsedTrace.NetworkRequests;
@@ -116,17 +113,17 @@ export function generateInsight(
   const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
   const lcpEvent = metricScore?.event;
   if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
-    return finalize({frameId: context.frameId, warnings: [InsightWarning.NO_LCP]});
+    return finalize({warnings: [InsightWarning.NO_LCP]});
   }
 
   const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!docRequest) {
-    return finalize({frameId: context.frameId, lcpEvent, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
+    return finalize({warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
   const lcpRequest = parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation);
   if (!lcpRequest) {
-    return finalize({frameId: context.frameId, lcpEvent});
+    return finalize({lcpEvent});
   }
 
   const initiatorUrl = lcpRequest.args.data.initiator?.url;
@@ -147,7 +144,6 @@ export function generateInsight(
   const priorityHintFound = imageFetchPriorityHint === 'high';
 
   return finalize({
-    frameId: context.frameId,
     lcpEvent,
     lcpRequest,
     earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.Micro(earliestDiscoveryTime) : undefined,

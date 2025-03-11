@@ -81,7 +81,6 @@ export type Checklist<Keys extends string> = Record<Keys, {label: Common.UIStrin
 export type InsightModel<UIStrings extends Record<string, string> = Record<string, string>,
                                            ExtraDetail extends Record<string, unknown> = Record<string, unknown>> =
     ExtraDetail&{
-      frameId: string,
       /** Used internally to identify the type of a model, not shown visibly to users **/
       insightKey: keyof InsightModelsType,
       /** Not used within DevTools - this is for external consumers (like Lighthouse). */
@@ -93,6 +92,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
       relatedEvents?: RelatedEventsMap | Types.Events.Event[],
       warnings?: InsightWarning[],
       metricSavings?: MetricSavings,
+      frameId?: string,
       /**
        * If this insight is attached to a navigation, this stores its ID.
        */
@@ -100,7 +100,7 @@ export type InsightModel<UIStrings extends Record<string, string> = Record<strin
     };
 
 export type PartialInsightModel<T> =
-    Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'>;
+    Omit<T, 'strings'|'title'|'description'|'category'|'state'|'insightKey'|'navigationId'|'frameId'>;
 
 /**
  * Contains insights for a specific navigation. If a trace began after a navigation already started,

@@ -201,7 +201,7 @@ function finalize(partialModel: PartialInsightModel<ForcedReflowInsightModel>): 
 }
 
 export function generateInsight(
-    traceParsedData: Handlers.Types.ParsedTrace, context: InsightSetContext): ForcedReflowInsightModel {
+    traceParsedData: Handlers.Types.ParsedTrace, _context: InsightSetContext): ForcedReflowInsightModel {
   const warningsData = traceParsedData.Warnings;
   const entryToNodeMap = traceParsedData.Renderer.entryToNode;
 
@@ -217,7 +217,6 @@ export function generateInsight(
       aggregateForcedReflow(warningsData.perWarning, entryToNodeMap);
 
   return finalize({
-    frameId: context.frameId,
     relatedEvents: topLevelFunctionCallData?.topLevelFunctionCallEvents,
     topLevelFunctionCallData,
     aggregatedBottomUpData,

@@ -65,5 +65,5 @@ export function generateInsight(
   });
 
   const duplication = Extras.ScriptDuplication.computeScriptDuplication({scripts});
-  return finalize({frameId: context.frameId, duplication});
+  return finalize({duplication});
 }

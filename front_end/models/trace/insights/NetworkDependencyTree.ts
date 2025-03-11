@@ -121,7 +121,6 @@ export function generateInsight(
     _parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): NetworkDependencyTreeInsightModel {
   if (!context.navigation) {
     return finalize({
-      frameId: context.frameId,
       rootNodes: [],
       maxTime: Types.Timing.Micro(0),
     });
@@ -220,7 +219,6 @@ export function generateInsight(
   }
 
   return finalize({
-    frameId: context.frameId,
     rootNodes,
     maxTime,
     relatedEvents,

@@ -78,6 +78,9 @@ export class PerformanceInsightFormatter {
     if (!navigation) {
       return '';
     }
+    if (!this.#insight.frameId) {
+      return '';
+    }
 
     const data = getLCPData(this.#parsedTrace, this.#insight.frameId, navigation);
     if (!data) {

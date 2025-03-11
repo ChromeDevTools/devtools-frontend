@@ -582,7 +582,6 @@ export function generateInsight(
   }
 
   return finalize({
-    frameId: context.frameId,
     relatedEvents,
     animationFailures,
     shifts: rootCausesByShift,

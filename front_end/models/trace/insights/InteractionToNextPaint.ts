@@ -80,10 +80,7 @@ export function generateInsight(parsedTrace: Handlers.Types.ParsedTrace, context
 
   if (!interactionEvents.length) {
     // A valid result, when there is no user interaction.
-    return finalize({
-
-      frameId: context.frameId,
-    });
+    return finalize({});
   }
 
   const longestByInteractionId = new Map<number, SyntheticInteractionPair>();
@@ -104,7 +101,6 @@ export function generateInsight(parsedTrace: Handlers.Types.ParsedTrace, context
   const highPercentileIndex = Math.min(9, Math.floor(normalizedInteractionEvents.length / 50));
 
   return finalize({
-    frameId: context.frameId,
     relatedEvents: [normalizedInteractionEvents[0]],
     longestInteractionEvent: normalizedInteractionEvents[0],
     highPercentileInteractionEvent: normalizedInteractionEvents[highPercentileIndex],

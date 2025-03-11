@@ -4,7 +4,7 @@
 
 import * as Trace from '../../../models/trace/trace.js';
 import {dispatchClickEvent} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {
   makeInstantEvent,
   microsecondsTraceWindow,
@@ -14,6 +14,7 @@ import {
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as PanelCommon from '../../common/common.js';
 import * as Timeline from '../timeline.js';
 
 import * as Components from './components/components.js';
@@ -64,7 +65,9 @@ function createCharts(parsedTrace?: Trace.Handlers.Types.ParsedTrace): Overlays.
 }
 
 describeWithEnvironment('Overlays', () => {
+  let showFreDialogStub: sinon.SinonStub<Parameters<typeof PanelCommon.FreDialog.show>, Promise<boolean>>;
   beforeEach(() => {
+    showFreDialogStub = sinon.stub(PanelCommon.FreDialog, 'show');
     setupIgnoreListManagerEnvironment();
   });
 
@@ -430,6 +433,54 @@ describeWithEnvironment('Overlays', () => {
         entry: event,
         label: 'entry label',
       });
+    });
+
+    // TODO: update to check if the fre is completed and make the dialog visible dependant on that
+    it('should show FRE dialog on the ai suggestion button click', async function() {
+      updateHostConfig({
+        devToolsAiGeneratedTimelineLabels: {
+          enabled: true,
+        }
+      });
+
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const charts = createCharts(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+
+      // Since ENTRY_LABEL is AnnotationOverlay, create it through ModificationsManager
+      Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+        type: 'ENTRY_LABEL',
+        label: '',
+        entry: event,
+      });
+
+      await overlays.update();
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+      const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
+      assert.isOk(component?.shadowRoot);
+      const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
+      assert.isOk(elementsWrapper);
+      const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
+
+      // Double click on the label box to make it editable and focus on it
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+
+      const aiLabelButtonWrapper =
+          elementsWrapper.querySelector<HTMLElement>('.ai-label-button-wrapper') as HTMLSpanElement;
+      assert.isOk(aiLabelButtonWrapper);
+      const aiButton = aiLabelButtonWrapper.querySelector<HTMLElement>('.ai-label-button') as HTMLSpanElement;
+      assert.isOk(aiButton);
+
+      // This dialog should not be visible unless the `generate annotation` button is clicked
+      assert.isFalse(showFreDialogStub.called, 'Expected FreDialog to be not shown but it\'s shown');
+      aiButton.dispatchEvent(new FocusEvent('click', {bubbles: true}));
+
+      // This dialog should be visible
+      assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
     });
 
     it('toggles overlays container display', async function() {

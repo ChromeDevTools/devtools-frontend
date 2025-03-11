@@ -117,7 +117,7 @@ describe('DomState', () => {
     ]);
   });
 
-  it('walks slots in the assigned order', () => {
+  it('walks slots in the assigned order and ignores the rest of light DOM', () => {
     class TestComponent extends HTMLElement {
       private render() {
         const shadow = this.attachShadow({mode: 'open'});
@@ -138,7 +138,8 @@ describe('DomState', () => {
           <div jslog="TreeItem" id="11" slot="slot-1">
             <div id="111" jslog="TreeItem"></div>
           </div>
-          <div id="12" slot="slot-2" jslog="TreeItem">
+          <div id="12" slot="slot-2" jslog="TreeItem"></div>
+          <div id="13" jslog="TreeItem"></div>
         </ve-test-component>
       </div>`;
     const {loggables} = VisualLogging.DomState.getDomState([document]);
@@ -152,6 +153,19 @@ describe('DomState', () => {
       {element: el('c2', shadow), parent: el('1')},
       {element: el('12'), parent: el('c2', shadow)},
     ]);
+  });
+
+  it('ignores template elements', () => {
+    container.innerHTML = `
+      <template jslog="TreeItem">
+        <div jslog="TreeItem" id="11" slot="slot-1">
+          <div id="111" jslog="TreeItem"></div>
+        </div>
+        <div id="12" slot="slot-2" jslog="TreeItem">
+        <div id="13" jslog="TreeItem">
+      </div>`;
+    const {loggables} = VisualLogging.DomState.getDomState([document]);
+    assert.isEmpty(loggables);
   });
 
   it('returns shadow roots', () => {

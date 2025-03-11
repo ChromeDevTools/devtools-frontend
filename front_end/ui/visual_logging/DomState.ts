@@ -14,9 +14,9 @@ export function getDomState(documents: Document[]): {loggables: ElementWithParen
   const loggables: ElementWithParent[] = [];
   const shadowRoots: ShadowRoot[] = [];
   const queue: ElementWithParent[] = [];
-  const enqueue = (children: HTMLCollection|Element[], parent?: Element, slot?: Element): void => {
+  const enqueue = (children: HTMLCollection|Element[], parent?: Element): void => {
     for (const child of children) {
-      queue.push({element: child, parent, slot});
+      queue.push({element: child, parent});
     }
   };
   for (const document of documents) {
@@ -30,23 +30,22 @@ export function getDomState(documents: Document[]): {loggables: ElementWithParen
     if (!top) {
       break;
     }
-    const {element, slot} = top;
-    let {parent} = top;
-    if (element.assignedSlot && element.assignedSlot !== slot) {
+    const {element} = top;
+    if (element.localName === 'template') {
       continue;
     }
+    let {parent} = top;
     if (needsLogging(element)) {
       loggables.push({element, parent});
       parent = element;
     }
     if (element.localName === 'slot' && (element as HTMLSlotElement).assignedElements().length) {
-      enqueue((element as HTMLSlotElement).assignedElements(), parent, element);
-    } else {
-      enqueue(element.children, parent);
-    }
-    if (element.shadowRoot) {
+      enqueue((element as HTMLSlotElement).assignedElements(), parent);
+    } else if (element.shadowRoot) {
       shadowRoots.push(element.shadowRoot);
       enqueue(element.shadowRoot.children, parent);
+    } else {
+      enqueue(element.children, parent);
     }
   }
   return {loggables, shadowRoots};

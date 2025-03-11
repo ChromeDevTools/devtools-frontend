@@ -767,6 +767,10 @@ main {
   margin: 0 var(--sys-size-5);
   padding: 0 var(--sys-size-5);
 
+  &.saved-to-disk {
+    pointer-events: none;
+  }
+
   summary {
     display: flex;
     align-items: center;
@@ -781,10 +785,17 @@ main {
       margin-right: var(--sys-size-3);
     }
 
-    & .difference-icon {
-      color: var(--sys-color-on-tonal-container);
+    & devtools-icon {
       width: var(--sys-size-8);
       height: var(--sys-size-8);
+    }
+
+    & .green-bright-icon {
+      color: var(--sys-color-green-bright);
+    }
+
+    & .on-tonal-icon {
+      color: var(--sys-color-on-tonal-container);
     }
 
     & .header-text {
@@ -813,7 +824,7 @@ main {
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 
-  &[open] {
+  &[open]:not(.saved-to-disk) {
     &::details-content {
       height: fit-content;
       padding: var(--sys-size-2) 0;

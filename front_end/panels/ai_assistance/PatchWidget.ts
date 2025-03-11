@@ -17,7 +17,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
+import {Directives, html, type LitTemplate, nothing, render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ChangesPanel from '../changes/changes.js';
 import * as PanelCommon from '../common/common.js';
@@ -25,6 +25,8 @@ import * as PanelCommon from '../common/common.js';
 import {type ResponseData, ResponseType} from './agents/AiAgent.js';
 import {PatchAgent} from './agents/PatchAgent.js';
 import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
+
+const {classMap} = Directives;
 
 /*
 * Strings that don't need to be translated at this time.
@@ -63,6 +65,10 @@ const UIStringsNotTranslate = {
    */
   loading: 'Loading...',
   /**
+   *@description Header text after the user saved the changes to the disk.
+   */
+  savedToDisk: 'Saved to disk',
+  /**
    *@description Disclaimer text shown for using code snippets with caution
    */
   codeDisclaimer: 'Use code snippets with caution',
@@ -97,6 +103,7 @@ export interface ViewInput {
   patchSuggestion?: string;
   patchSuggestionLoading?: boolean;
   projectName?: string;
+  savedToDisk?: boolean;
   projectPath: Platform.DevToolsPath.UrlString;
   onApplyToWorkspace: () => void;
   onCancel: () => void;
@@ -119,6 +126,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #project?: Workspace.Workspace.Project;
   #patchSuggestion?: string;
   #patchSuggestionLoading?: boolean;
+  #savedToDisk?: boolean;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
@@ -134,25 +142,42 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderHeader(): LitTemplate {
-        if (input.patchSuggestion) {
+        if (input.savedToDisk) {
           return html`
-            <devtools-icon class="difference-icon" .name=${'difference'}></devtools-icon>
+            <devtools-icon class="green-bright-icon" .name=${'check-circle'}></devtools-icon>
             <span class="header-text">
-              ${lockedString(`File changes in ${input.projectName}`)}
+              ${lockedString(UIStringsNotTranslate.savedToDisk)}
             </span>
           `;
         }
 
+        if (input.patchSuggestion) {
+          return html`
+            <devtools-icon class="on-tonal-icon" .name=${'difference'}></devtools-icon>
+            <span class="header-text">
+              ${lockedString(`File changes in ${input.projectName}`)}
+            </span>
+            <devtools-icon
+              class="arrow"
+              .name=${'chevron-down'}
+            ></devtools-icon>
+          `;
+        }
+
         return html`
-          <devtools-icon class="difference-icon" .name=${'pen-spark'}></devtools-icon>
+          <devtools-icon class="on-tonal-icon" .name=${'pen-spark'}></devtools-icon>
           <span class="header-text">
             ${lockedString(UIStringsNotTranslate.unsavedChanges)}
           </span>
+          <devtools-icon
+            class="arrow"
+            .name=${'chevron-down'}
+          ></devtools-icon>
         `;
       }
 
       function renderContent(): LitTemplate {
-        if (!input.changeSummary) {
+        if (!input.changeSummary || input.savedToDisk) {
           return nothing;
         }
 
@@ -170,6 +195,10 @@ export class PatchWidget extends UI.Widget.Widget {
       }
 
       function renderFooter(): LitTemplate {
+        if (input.savedToDisk) {
+          return nothing;
+        }
+
         if (input.patchSuggestion) {
           return html`
           <div class="footer">
@@ -240,13 +269,12 @@ export class PatchWidget extends UI.Widget.Widget {
 
       render(
         html`
-          <details class="change-summary">
+          <details class=${classMap({
+            'change-summary': true,
+            'saved-to-disk': Boolean(input.savedToDisk)
+          })}>
             <summary>
               ${renderHeader()}
-              <devtools-icon
-                class="arrow"
-                .name=${'chevron-down'}
-              ></devtools-icon>
             </summary>
             ${renderContent()}
             ${renderFooter()}
@@ -285,6 +313,7 @@ export class PatchWidget extends UI.Widget.Widget {
       projectName: this.#project?.displayName(),
       projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
           (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
+      savedToDisk: this.#savedToDisk,
       onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
       onCancel: () => {
         this.#applyPatchAbortController?.abort();
@@ -422,6 +451,8 @@ export class PatchWidget extends UI.Widget.Widget {
 
   #onSaveAll(): void {
     // TODO: Handle saving all the files.
+    this.#savedToDisk = true;
+    this.requestUpdate();
   }
 
   async #applyPatch(changeSummary: string): Promise<ResponseData|undefined> {

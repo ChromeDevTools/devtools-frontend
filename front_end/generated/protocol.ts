@@ -13732,6 +13732,12 @@ export namespace Page {
 
   export interface SetInterceptFileChooserDialogRequest {
     enabled: boolean;
+    /**
+     * If true, cancels the dialog by emitting relevant events (if any)
+     * in addition to not showing it if the interception is enabled
+     * (default: false).
+     */
+    cancel?: boolean;
   }
 
   export interface SetPrerenderingAllowedRequest {

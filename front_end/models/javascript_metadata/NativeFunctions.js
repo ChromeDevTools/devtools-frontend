@@ -7324,10 +7324,6 @@ export const NativeFunctions = [
     receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
   },
   {
-    name: "languagePairAvailable",
-    signatures: [["sourceLanguage","targetLanguage"]]
-  },
-  {
     name: "registerAnimator",
     signatures: [["name","animatorCtor"]]
   },
@@ -7475,10 +7471,6 @@ export const NativeFunctions = [
     signatures: [["options"]]
   },
   {
-    name: "CanvasFilter",
-    signatures: [["init"]]
-  },
-  {
     name: "beginLayer",
     signatures: [["?options"]]
   },
@@ -7497,6 +7489,10 @@ export const NativeFunctions = [
   {
     name: "drawMesh",
     signatures: [["vertex_buffer","uv_buffer","index_buffer","image"]]
+  },
+  {
+    name: "CanvasFilter",
+    signatures: [["init"]]
   },
   {
     name: "placeElement",

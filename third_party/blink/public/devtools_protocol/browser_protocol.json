@@ -20572,6 +20572,13 @@
                         {
                             "name": "enabled",
                             "type": "boolean"
+                        },
+                        {
+                            "name": "cancel",
+                            "description": "If true, cancels the dialog by emitting relevant events (if any)\nin addition to not showing it if the interception is enabled\n(default: false).",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

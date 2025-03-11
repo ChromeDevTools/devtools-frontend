@@ -133,14 +133,17 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
           }
         },
       },
-      handler: async args => {
+      handler: async (args, options) => {
         debugLog('updateFiles', args.files);
         for (const file of args.files) {
           debugLog('updating', file);
           const content = this.#project.readFile(file);
           if (content === undefined) {
             debugLog(file, 'not found');
-            continue;
+            return {
+              success: false,
+              error: `Updating file ${file} failed. File does not exist. Only update existing files.`
+            };
           }
           const prompt = `I have applied the following CSS changes to my page in Chrome DevTools.
 
@@ -155,13 +158,16 @@ CRITICAL: Output the entire file with changes without any other modifications! D
 ${content}
 `;
           let response;
-          for await (response of this.#fileUpdateAgent.run(prompt, {selected: null})) {
+          for await (response of this.#fileUpdateAgent.run(prompt, {selected: null, signal: options?.signal})) {
             // Get the last response
           }
           debugLog('response', response);
           if (response?.type !== ResponseType.ANSWER) {
             debugLog('wrong response type', response);
-            continue;
+            return {
+              success: false,
+              error: `Updating file ${file} failed. Perhaps the file is too large. Try another file.`
+            };
           }
           const updated = response.text;
           this.#project.writeFile(file, updated);
@@ -188,7 +194,8 @@ ${changeSummary}
 \`\`\`
 
 Try searching using the selectors and if nothing matches, try to find a semantically appropriate place to change.
-Consider updating files containing styles like CSS files first!
+Consider updating files containing styles like CSS files first! If a selector is not found in a suitable file, try to find an existing
+file to add a new style rule.
 Call the updateFiles with the list of files to be updated once you are done.
 `;
 

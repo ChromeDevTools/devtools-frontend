@@ -131,7 +131,7 @@ export class AgentProject {
 
   #shouldSkipPath(pathParts: string[]): boolean {
     for (const part of pathParts) {
-      if (this.#ignoredFolderNames.has(part)) {
+      if (this.#ignoredFolderNames.has(part) || part.startsWith('.')) {
         return true;
       }
     }

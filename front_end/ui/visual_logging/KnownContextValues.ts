@@ -330,6 +330,7 @@ export const knownContextValues = new Set([
   'affected-raw-cookies',
   'affected-requests',
   'affected-sources',
+  'ai-annotations-enabled',
   'ai-assistance-enabled',
   'ai-assistance-history-entries',
   'ai-assistance-history-images',

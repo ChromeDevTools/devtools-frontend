@@ -429,6 +429,10 @@ interface CSSValueTracing {
   enabled: boolean;
 }
 
+interface AiGeneratedTimelineLabels {
+  enabled: boolean;
+}
+
 /**
  * The host configuration that we expect from the DevTools back-end.
  *
@@ -463,6 +467,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
   thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
   devToolsCssValueTracing: CSSValueTracing,
+  devToolsAiGeneratedTimelineLabels: AiGeneratedTimelineLabels,
 }>;
 
 /**

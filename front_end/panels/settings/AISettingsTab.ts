@@ -63,6 +63,10 @@ const UIStrings = {
    */
   helpUnderstandConsole: 'Helps you understand and fix console warnings and errors',
   /**
+   *@description Text describing the 'Console Insights' feature
+   */
+  getAIAnnotationsSuggestions: 'Get AI suggestions for performance panel annotations',
+  /**
    *@description Label for a button to expand an accordion
    */
   showMore: 'Show more',
@@ -151,6 +155,16 @@ const UIStrings = {
   freestylerSendsDataNoLogging:
       'Any user query and data the inspected page can access via Web APIs, network requests, files, and performance traces are sent to Google to generate explanations. This data will not be used to improve Google’s AI models.',
   /**
+   *@description Explainer for which data is being sent by the AI generated annotations feature
+   */
+  generatedAiAnnotationsSendData:
+      'Your performance trace is sent to Google to generate an explanation. This data will be used to improve Google’s AI models.',
+  /**
+   *@description Explainer for which data is being sent by the AI assistance feature
+   */
+  generatedAiAnnotationsSendDataNoLogging:
+      'Your performance trace is sent to Google to generate an explanation. This data will not be used to improve Google’s AI models.',
+  /**
    *@description Label for a link to the terms of service
    */
   termsOfService: 'Google Terms of Service',
@@ -166,6 +180,10 @@ const UIStrings = {
    *@description Label for a toggle to enable the AI assistance feature
    */
   enableAiAssistance: 'Enable AI assistance',
+  /**
+   *@description Label for a toggle to enable the AI assistance feature
+   */
+  enableAiSuggestedAnnotations: 'Enable AI suggestions for performance panel annotations',
   /**
    * @description Message shown to the user if the age check is not successful.
    */
@@ -204,6 +222,7 @@ interface AiSettingParams {
 export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
+  #aiAnnotationsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceHistorySetting?: Common.Settings.Setting<unknown[]>;
   #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
@@ -231,6 +250,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     } catch {
       this.#aiAssistanceHistorySetting = undefined;
     }
+
+    if (Root.Runtime.hostConfig.devToolsAiGeneratedTimelineLabels?.enabled) {
+      // Get an existing setting or, if it does not exist, create a new one.
+      this.#aiAnnotationsSetting = Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
+    }
+
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#initSettings();
   }
@@ -301,6 +326,31 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       };
 
       this.#settingToParams.set(this.#aiAssistanceSetting, aiAssistanceData);
+    }
+
+    if (this.#aiAnnotationsSetting) {
+      const aiAssistanceData: AiSettingParams = {
+        settingName: i18n.i18n.lockedString('AI annotations'),
+        iconName: 'pen-spark',
+        settingDescription: i18nString(UIStrings.getAIAnnotationsSuggestions),
+        enableSettingText: i18nString(UIStrings.enableAiSuggestedAnnotations),
+        settingItems: [
+          {iconName: 'pen', text: i18nString(UIStrings.getAIAnnotationsSuggestions)},
+        ],
+        toConsiderSettingItems: [{
+          iconName: 'google',
+          text: noLogging ? i18nString(UIStrings.generatedAiAnnotationsSendDataNoLogging) :
+                            i18nString(UIStrings.generatedAiAnnotationsSendData)
+        }],
+        // TODO: Add a relevant link
+        learnMoreLink: {url: '', linkJSLogContext: 'learn-more.ai-annotations'},
+        settingExpandState: {
+          isSettingExpanded: false,
+          expandSettingJSLogContext: 'freestyler.accordion',
+        },
+      };
+
+      this.#settingToParams.set(this.#aiAnnotationsSetting, aiAssistanceData);
     }
   }
 

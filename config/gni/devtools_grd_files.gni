@@ -2513,7 +2513,6 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/components/source_frame/imageView.css.js",
   "front_end/ui/legacy/components/source_frame/jsonView.css.js",
   "front_end/ui/legacy/components/source_frame/resourceSourceFrame.css.js",
-  "front_end/ui/legacy/components/source_frame/selfXssDialog.css.js",
   "front_end/ui/legacy/components/source_frame/xmlTree.css.js",
   "front_end/ui/legacy/components/source_frame/xmlView.css.js",
   "front_end/ui/legacy/components/utils/ImagePreview.js",

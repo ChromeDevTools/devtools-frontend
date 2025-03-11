@@ -22,7 +22,10 @@ devtools_entrypoint("bundle") {
     "../../ui/lit:bundle",
   ]
 
-  visibility = [ "../*" ]
+  visibility = [
+    "../*",
+    "../../ui/legacy/components/source_frame/*",
+  ]
 
   visibility += devtools_panels_visibility
 }

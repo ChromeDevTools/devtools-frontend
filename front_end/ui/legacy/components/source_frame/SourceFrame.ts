@@ -36,14 +36,12 @@ import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as PanelCommon from '../../../../panels/common/common.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
-import * as Buttons from '../../../components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../components/code_highlighter/code_highlighter.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
-
-import selfXssDialogStyles from './selfXssDialog.css.js';
 
 const UIStrings = {
   /**
@@ -101,14 +99,6 @@ const UIStrings = {
    *@description Text a user needs to type in order to confirm that they are aware of the danger of pasting code into the DevTools console.
    */
   allowPasting: 'allow pasting',
-  /**
-   *@description Button text for canceling an action
-   */
-  cancel: 'Cancel',
-  /**
-   *@description Button text for allowing an action
-   */
-  allow: 'Allow',
   /**
    *@description Input box placeholder which instructs the user to type 'allow pasing' into the input box.
    *@example {allow pasting} PH1
@@ -345,7 +335,16 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     // dialog if pasting via keyboard.
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    const allowPasting = await SelfXssWarningDialog.show();
+    const allowPasting = await PanelCommon.TypeToAllowDialog.show({
+      jslogContext: {
+        dialog: 'self-xss-warning',
+        input: 'allow-pasting',
+      },
+      header: i18nString(UIStrings.doYouTrustThisCode),
+      message: i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)}),
+      typePhrase: i18nString(UIStrings.allowPasting),
+      inputPlaceholder: i18nString(UIStrings.typeAllowPasting, {PH1: i18nString(UIStrings.allowPasting)})
+    });
     if (allowPasting) {
       this.selfXssWarningDisabledSetting.set(true);
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssAllowPastingInDialog);
@@ -1053,65 +1052,6 @@ class SearchMatch {
       }
       return this.match[Number.parseInt(selector, 10)] || '';
     });
-  }
-}
-
-export class SelfXssWarningDialog {
-  static async show(): Promise<boolean> {
-    const dialog = new UI.Dialog.Dialog('self-xss-warning');
-    dialog.setMaxContentSize(new UI.Geometry.Size(504, 340));
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
-    dialog.setDimmed(true);
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: selfXssDialogStyles});
-    const content = shadowRoot.createChild('div', 'widget');
-
-    const result = await new Promise<boolean>(resolve => {
-      const header = content.createChild('div', 'header');
-      header.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
-
-      const closeButton = header.createChild('dt-close-button', 'dialog-close-button');
-      closeButton.setTabbable(true);
-      self.onInvokeElement(closeButton, event => {
-        dialog.hide();
-        event.consume(true);
-        resolve(false);
-      });
-      closeButton.setSize(Buttons.Button.Size.SMALL);
-
-      content.createChild('div', 'message').textContent =
-          i18nString(UIStrings.doNotPaste, {PH1: i18nString(UIStrings.allowPasting)});
-
-      const input = UI.UIUtils.createInput('text-input', 'text', 'allow-pasting');
-      input.placeholder = i18nString(UIStrings.typeAllowPasting, {PH1: i18nString(UIStrings.allowPasting)});
-      content.appendChild(input);
-
-      const buttonsBar = content.createChild('div', 'button');
-      const cancelButton =
-          UI.UIUtils.createTextButton(i18nString(UIStrings.cancel), () => resolve(false), {jslogContext: 'cancel'});
-
-      const allowButton = UI.UIUtils.createTextButton(i18nString(UIStrings.allow), () => {
-        resolve(input.value === i18nString(UIStrings.allowPasting));
-      }, {jslogContext: 'confirm', variant: Buttons.Button.Variant.PRIMARY});
-      allowButton.disabled = true;
-
-      buttonsBar.appendChild(allowButton);
-      buttonsBar.appendChild(cancelButton);
-
-      input.addEventListener('input', () => {
-        allowButton.disabled = !Boolean(input.value);
-      }, false);
-      input.addEventListener('paste', e => e.preventDefault());
-      input.addEventListener('drop', e => e.preventDefault());
-
-      dialog.setOutsideClickCallback(event => {
-        event.consume();
-        resolve(false);
-      });
-      dialog.show();
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.SelfXssWarningDialogShown);
-    });
-    dialog.hide();
-    return result;
   }
 }
 

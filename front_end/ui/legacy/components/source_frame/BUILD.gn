@@ -14,7 +14,6 @@ generate_css("css_files") {
     "imageView.css",
     "jsonView.css",
     "resourceSourceFrame.css",
-    "selfXssDialog.css",
     "xmlTree.css",
     "xmlView.css",
   ]
@@ -42,6 +41,7 @@ devtools_module("source_frame") {
     "../../../../models/formatter:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
+    "../../../../panels/common:bundle",
     "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../third_party/diff:bundle",
     "../../../../ui/components/text_editor:bundle",

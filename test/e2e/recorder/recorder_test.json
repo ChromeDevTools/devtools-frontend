@@ -506,21 +506,11 @@
         "type": "click",
         "target": "main",
         "selectors": [
-          [
-            "aria/Test Button"
-          ],
-          [
-            "#test"
-          ],
-          [
-            "xpath///*[@id=\"test\"]"
-          ],
-          [
-            "pierce/#test"
-          ],
-          [
-            "text/Test Button"
-          ]
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
         ]
       },
       {
@@ -533,21 +523,11 @@
         "type": "click",
         "target": "main",
         "selectors": [
-          [
-            "aria/Test Button"
-          ],
-          [
-            "#test"
-          ],
-          [
-            "xpath///*[@id=\"test\"]"
-          ],
-          [
-            "pierce/#test"
-          ],
-          [
-            "text/Test Button"
-          ]
+          ["aria/Test Button"],
+          ["#test"],
+          ["xpath///*[@id=\"test\"]"],
+          ["pierce/#test"],
+          ["text/Test Button"]
         ]
       }
     ]
@@ -1311,18 +1291,12 @@
       {
         "type": "click",
         "target": "main",
-        "selectors": [
-          ["custom-input", "input"],
-          ["pierce/input"]
-        ]
+        "selectors": [["custom-input", "input"], ["pierce/input"]]
       },
       {
         "type": "change",
         "value": "works",
-        "selectors": [
-          ["custom-input", "input"],
-          ["pierce/input"]
-        ],
+        "selectors": [["custom-input", "input"], ["pierce/input"]],
         "target": "main"
       }
     ]
@@ -1353,12 +1327,6 @@
     ]
   },
   "Recorder should edit the type while recording - 1": {
-    "type": "emulateNetworkConditions",
-    "download": 1000,
-    "latency": 25,
-    "upload": 1000
-  },
-  "Recorder should edit the type while recording - 2": {
     "title": "New Recording",
     "steps": [
       {

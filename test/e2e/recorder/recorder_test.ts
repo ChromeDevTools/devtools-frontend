@@ -15,7 +15,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
-import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
 
 import {
   assertRecordingMatchesSnapshot,
@@ -574,7 +573,12 @@ describe('Recorder', function() {
     await frontend.keyboard.type('emulateNetworkConditions');
     await frontend.keyboard.press('Enter');
 
-    assertMatchesJSONSnapshot(await eventPromise);
+    assert.deepEqual(await eventPromise, {
+      download: 1000,
+      latency: 25,
+      type: 'emulateNetworkConditions',
+      upload: 1000,
+    });
 
     const recording = await stopRecording();
     assertRecordingMatchesSnapshot(recording);

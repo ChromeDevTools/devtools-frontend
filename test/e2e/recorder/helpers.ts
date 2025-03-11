@@ -162,7 +162,7 @@ interface RecordingSnapshotOptions {
   offsets?: boolean;
 }
 
-const preprocessRecording = (
+export const preprocessRecording = (
     recording: unknown,
     options: RecordingSnapshotOptions = {},
     ) => {

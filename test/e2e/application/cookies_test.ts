@@ -12,7 +12,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-import {assertMatchesJSONSnapshot} from '../../shared/snapshots.js';
 import {
   clearStorageItems,
   clearStorageItemsFilter,
@@ -45,7 +44,12 @@ describe('The Application Tab', () => {
         await navigateToCookiesForTopDomain();
 
         const dataGridRowValues = await getStorageItemsData(['name', 'value']);
-        assertMatchesJSONSnapshot(dataGridRowValues);
+        assert.deepEqual(dataGridRowValues, [
+          {name: 'urlencoded', value: 'Hello%2BWorld!'},
+          {name: '__Host-foo3', value: 'bar'},
+          {name: 'foo2', value: 'bar'},
+          {name: 'foo', value: 'bar'},
+        ]);
       });
 
   it('shows a preview of the cookie value (crbug.com/462370)', async () => {

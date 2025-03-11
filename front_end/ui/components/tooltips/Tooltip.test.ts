@@ -14,6 +14,7 @@ interface RenderProps {
   variant?: Tooltips.Tooltip.TooltipVariant;
   attribute?: 'aria-describedby'|'aria-details';
   useClick?: boolean;
+  useHotkey?: boolean;
   jslogContext?: string;
 }
 
@@ -21,6 +22,7 @@ function renderTooltip({
   variant = 'simple',
   attribute = 'aria-describedby',
   useClick = false,
+  useHotkey = false,
   jslogContext = undefined,
 }: RenderProps = {}) {
   const container = document.createElement('div');
@@ -30,7 +32,13 @@ function renderTooltip({
       html`<button aria-details="tooltip-id">Button</button>` :
       html`<button aria-describedby="tooltip-id">Button</button>`
     }
-    <devtools-tooltip id="tooltip-id" variant=${variant} ?use-click=${useClick} jslogContext=${jslogContext??nothing}>
+    <devtools-tooltip
+     id="tooltip-id"
+     variant=${variant}
+     ?use-click=${useClick}
+     ?use-hotkey=${useHotkey}
+     jslogContext=${jslogContext??nothing}
+     >
       ${variant === 'rich' ? html`<p>Rich content</p>` : 'Simple content'}
     </devtools-tooltip>
   `, container);
@@ -123,6 +131,25 @@ describe('Tooltip', () => {
     button?.click();
 
     assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should open with hotkey if use-hotkey is set', () => {
+    const container = renderTooltip({useHotkey: true});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new KeyboardEvent('keydown', {altKey: true, key: 'ArrowDown'}));
+
+    assert.isTrue(container.querySelector('devtools-tooltip')?.open);
+  });
+
+  it('should not open on focus if use-hotkey is set', async () => {
+    const container = renderTooltip({useHotkey: true});
+
+    const button = container.querySelector('button');
+    button?.dispatchEvent(new FocusEvent('focus'));
+
+    await checkForPendingActivity();
+    assert.isFalse(container.querySelector('devtools-tooltip')?.open);
   });
 
   const eventsNotToPropagate = ['click', 'mouseup'];

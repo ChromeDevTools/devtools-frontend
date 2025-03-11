@@ -21,13 +21,16 @@ export interface TooltipProperties {
 /**
  * @attr id - Id of the tooltip. Used for searching an anchor element with aria-describedby.
  * @attr hover-delay - Hover length in ms before the tooltip is shown and hidden.
- * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background,
- *                 `"rich"` for interactive content, background according to theme's surface.
+ * @attr variant - Variant of the tooltip, `"simple"` for strings only, inverted background, `"rich"` for interactive
+ *                 content, background according to theme's surface.
  * @attr use-click - If present, the tooltip will be shown on click instead of on hover.
+ * @attr use-hotkey - If present, the tooltip will be shown on hover but not when receiving focus. Requires a hotkey to
+ *                    open when fosed (Alt-down). When `"use-click"` is present as well, use-click takes precedence.
  * @prop {String} id - reflects the `"id"` attribute.
  * @prop {Number} hoverDelay - reflects the `"hover-delay"` attribute.
  * @prop {String} variant - reflects the `"variant"` attribute.
  * @prop {Boolean} useClick - reflects the `"click"` attribute.
+ * @prop {Boolean} useHotkey - reflects the `"use-hotkey"` attribute.
  */
 export class Tooltip extends HTMLElement {
   static readonly observedAttributes = ['id', 'variant', 'jslogcontext'];
@@ -40,6 +43,17 @@ export class Tooltip extends HTMLElement {
 
   get open(): boolean {
     return this.matches(':popover-open');
+  }
+
+  get useHotkey(): boolean {
+    return this.hasAttribute('use-hotkey') ?? false;
+  }
+  set useHotkey(useHotkey: boolean) {
+    if (useHotkey) {
+      this.setAttribute('use-hotkey', '');
+    } else {
+      this.removeAttribute('use-hotkey');
+    }
   }
 
   get useClick(): boolean {
@@ -143,7 +157,8 @@ export class Tooltip extends HTMLElement {
       window.clearTimeout(this.#timeout);
     }
     // Don't hide a rich tooltip when hovering over the tooltip itself.
-    if (this.variant === 'rich' && event.relatedTarget === this) {
+    if (this.variant === 'rich' &&
+        (event.relatedTarget === this || (event.relatedTarget as Element)?.parentElement === this)) {
       return;
     }
     this.#timeout = window.setTimeout(() => {
@@ -192,13 +207,24 @@ export class Tooltip extends HTMLElement {
     }
   };
 
+  #keyDown = (event: KeyboardEvent): void => {
+    if ((event.altKey && event.key === 'ArrowDown') || (event.key === 'Escape' && this.open)) {
+      this.toggle();
+      event.stopPropagation();
+    }
+  };
+
   #registerEventListeners(): void {
     if (this.#anchor) {
       if (this.useClick) {
         this.#anchor.addEventListener('click', this.toggle);
       } else {
         this.#anchor.addEventListener('mouseenter', this.showTooltip);
-        this.#anchor.addEventListener('focus', this.showTooltip);
+        if (this.useHotkey) {
+          this.#anchor.addEventListener('keydown', this.#keyDown);
+        } else {
+          this.#anchor.addEventListener('focus', this.showTooltip);
+        }
         this.#anchor.addEventListener('blur', this.hideTooltip);
         this.#anchor.addEventListener('mouseleave', this.hideTooltip);
         this.addEventListener('mouseleave', this.hideTooltip);
@@ -220,6 +246,7 @@ export class Tooltip extends HTMLElement {
       this.#anchor.removeEventListener('mouseenter', this.showTooltip);
       this.#anchor.removeEventListener('focus', this.showTooltip);
       this.#anchor.removeEventListener('blur', this.hideTooltip);
+      this.#anchor.removeEventListener('keydown', this.#keyDown);
       this.#anchor.removeEventListener('mouseleave', this.hideTooltip);
     }
     this.removeEventListener('mouseleave', this.hideTooltip);

@@ -58,11 +58,13 @@ export class Settings {
   #eventSupport: ObjectWrapper<GenericEvents>;
   #registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
+  #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
 
   private constructor(
       readonly syncedStorage: SettingsStorage,
       readonly globalStorage: SettingsStorage,
       readonly localStorage: SettingsStorage,
+      logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
   ) {
     this.#sessionStorage = new SettingsStorage({});
 
@@ -73,6 +75,7 @@ export class Settings {
     this.#eventSupport = new ObjectWrapper<GenericEvents>();
     this.#registry = new Map();
     this.moduleSettings = new Map();
+    this.#logSettingAccess = logSettingAccess;
 
     for (const registration of this.getRegisteredSettings()) {
       const {settingName, defaultValue, storageType} = registration;
@@ -107,14 +110,15 @@ export class Settings {
     syncedStorage: SettingsStorage|null,
     globalStorage: SettingsStorage|null,
     localStorage: SettingsStorage|null,
+    logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>,
   } = {forceNew: null, syncedStorage: null, globalStorage: null, localStorage: null}): Settings {
-    const {forceNew, syncedStorage, globalStorage, localStorage} = opts;
+    const {forceNew, syncedStorage, globalStorage, localStorage, logSettingAccess} = opts;
     if (!settingsInstance || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
       }
 
-      settingsInstance = new Settings(syncedStorage, globalStorage, localStorage);
+      settingsInstance = new Settings(syncedStorage, globalStorage, localStorage, logSettingAccess);
     }
 
     return settingsInstance;
@@ -192,7 +196,7 @@ export class Settings {
     const storage = this.storageFromType(storageType);
     let setting = (this.#registry.get(key) as Setting<T>);
     if (!setting) {
-      setting = new Setting(key, defaultValue, this.#eventSupport, storage);
+      setting = new Setting(key, defaultValue, this.#eventSupport, storage, this.#logSettingAccess);
       this.#registry.set(key, setting);
     }
     return setting;
@@ -206,7 +210,10 @@ export class Settings {
       RegExpSetting {
     if (!this.#registry.get(key)) {
       this.#registry.set(
-          key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), regexFlags));
+          key,
+          new RegExpSetting(
+              key, defaultValue, this.#eventSupport, this.storageFromType(storageType), regexFlags,
+              this.#logSettingAccess));
     }
     return this.#registry.get(key) as RegExpSetting;
   }
@@ -368,11 +375,15 @@ export class Setting<V> {
   #hadUserAction?: boolean;
   #disabled?: boolean;
   #deprecation: Deprecation|null = null;
+  #loggedInitialAccess = false;
+  #logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>;
 
   constructor(
       readonly name: string, readonly defaultValue: V, private readonly eventSupport: ObjectWrapper<GenericEvents>,
-      readonly storage: SettingsStorage) {
+      readonly storage: SettingsStorage,
+      logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>) {
     storage.register(this.name);
+    this.#logSettingAccess = logSettingAccess;
   }
 
   setSerializer(serializer: Serializer<unknown, V>): void {
@@ -438,12 +449,30 @@ export class Setting<V> {
     this.eventSupport.dispatchEventToListeners(this.name);
   }
 
+  #maybeLogAccess(value: V): void {
+    const valueToLog = typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' ?
+        value :
+        this.#serializer?.stringify(value);
+    if (valueToLog !== undefined && this.#logSettingAccess) {
+      void this.#logSettingAccess(this.name, valueToLog);
+    }
+  }
+
+  #maybeLogInitialAccess(value: V): void {
+    if (!this.#loggedInitialAccess) {
+      this.#maybeLogAccess(value);
+      this.#loggedInitialAccess = true;
+    }
+  }
+
   get(): V {
     if (this.#requiresUserAction && !this.#hadUserAction) {
+      this.#maybeLogInitialAccess(this.defaultValue);
       return this.defaultValue;
     }
 
     if (typeof this.#value !== 'undefined') {
+      this.#maybeLogInitialAccess(this.#value);
       return this.#value;
     }
 
@@ -455,6 +484,7 @@ export class Setting<V> {
         this.storage.remove(this.name);
       }
     }
+    this.#maybeLogInitialAccess(this.#value);
     return this.#value;
   }
 
@@ -485,10 +515,12 @@ export class Setting<V> {
       this.eventSupport.dispatchEventToListeners(this.name, this.#value);
     }
 
+    this.#maybeLogInitialAccess(this.#value);
     return this.#value;
   }
 
   set(value: V): void {
+    this.#maybeLogAccess(value);
     this.#hadUserAction = true;
     this.#value = value;
     try {
@@ -600,8 +632,8 @@ export class RegExpSetting extends Setting<any> {
 
   constructor(
       name: string, defaultValue: string, eventSupport: ObjectWrapper<GenericEvents>, storage: SettingsStorage,
-      regexFlags?: string) {
-    super(name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage);
+      regexFlags?: string, logSettingAccess?: (name: string, value: number|string|boolean) => Promise<void>) {
+    super(name, defaultValue ? [{pattern: defaultValue}] : [], eventSupport, storage, logSettingAccess);
     this.#regexFlags = regexFlags;
   }
 

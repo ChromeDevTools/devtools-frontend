@@ -273,7 +273,8 @@ export class MainImpl {
     // setting can't change storage buckets during a single DevTools session.
     const syncedStorage = new Common.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
     const globalStorage = new Common.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
-    Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage});
+    Common.Settings.Settings.instance(
+        {forceNew: true, syncedStorage, globalStorage, localStorage, logSettingAccess: VisualLogging.logSettingAccess});
 
     if (!Host.InspectorFrontendHost.isUnderTest()) {
       new Common.Settings.VersionController().updateVersion();

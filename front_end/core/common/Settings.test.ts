@@ -619,3 +619,45 @@ describe('updateVersionFrom37To38', () => {
     assert.isFalse(onboardingFinished.get());
   });
 });
+
+describe('access logging', () => {
+  let settings: Common.Settings.Settings;
+  let logSettingAccess!: sinon.SinonSpy;
+
+  beforeEach(() => {
+    const mockStore = new MockStore();
+    const syncedStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    const globalStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    const localStorage = new Common.Settings.SettingsStorage({}, mockStore);
+    logSettingAccess = sinon.spy();
+    settings = Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage,
+      globalStorage,
+      localStorage,
+      logSettingAccess,
+    });
+  });
+
+  it('logs access on the first read', async () => {
+    const setting = settings.createSetting('test-setting', false);
+    assert.isFalse(logSettingAccess.called);
+
+    setting.get();
+    assert.isTrue(logSettingAccess.calledOnceWith('test-setting', false));
+
+    setting.get();
+    assert.isTrue(logSettingAccess.calledOnce);
+  });
+
+  it('logs access on the every write', async () => {
+    const setting = settings.createSetting('test-setting', false);
+
+    setting.set(true);
+    assert.isTrue(logSettingAccess.calledOnceWith('test-setting', true));
+
+    setting.set(false);
+    assert.isTrue(logSettingAccess.calledTwice);
+    assert.deepEqual(logSettingAccess.secondCall.args, ['test-setting', false]);
+  });
+});

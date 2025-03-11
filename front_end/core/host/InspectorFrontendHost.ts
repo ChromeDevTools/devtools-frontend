@@ -55,6 +55,7 @@ import {
   type KeyDownEvent,
   type LoadNetworkResourceResult,
   type ResizeEvent,
+  type SettingAccessEvent,
   type ShowSurveyResult,
   type SyncInformation,
 } from './InspectorFrontendHostAPI.js';
@@ -548,6 +549,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   recordChange(event: ChangeEvent): void {
   }
   recordKeyDown(event: KeyDownEvent): void {
+  }
+  recordSettingAccess(event: SettingAccessEvent): void {
   }
 }
 

@@ -126,7 +126,7 @@ function processElementForDebugging(element: HTMLElement, loggingState: LoggingS
   }
 }
 
-type EventType = 'Click'|'Drag'|'Hover'|'Change'|'KeyDown'|'Resize';
+type EventType = 'Click'|'Drag'|'Hover'|'Change'|'KeyDown'|'Resize'|'SettingAccess';
 export function processEventForDebugging(
     event: EventType, state: LoggingState|null, extraInfo?: EventAttributes): void {
   const format = localStorage.getItem('veDebugLoggingEnabled');
@@ -163,7 +163,9 @@ export function processEventForIntuitiveDebugging(
 
 export function processEventForTestDebugging(
     event: EventType, state: LoggingState|null, _extraInfo?: EventAttributes): void {
-  lastImpressionLogEntry = null;
+  if (event !== 'SettingAccess') {
+    lastImpressionLogEntry = null;
+  }
   maybeLogDebugEvent(
       {interaction: `${event}: ${veTestKeys.get(state?.veid || 0) || (state?.veid ? '<UNKNOWN>' : '')}`});
   checkPendingEventExpectation();
@@ -194,6 +196,9 @@ export interface EventAttributes {
   height?: number;
   mouseButton?: number;
   doubleClick?: boolean;
+  name?: string;
+  numericValue?: number;
+  stringValue?: string;
 }
 
 interface VisualElementAttributes {

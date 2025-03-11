@@ -199,6 +199,12 @@ export interface KeyDownEvent {
   context?: number;
 }
 
+export interface SettingAccessEvent {
+  name: string;
+  numericValue?: number;
+  stringValue?: string;
+}
+
 // While `EventDescriptors` are used to dynamically dispatch host binding events,
 // the `EventTypes` "type map" is used for type-checking said events by TypeScript.
 // `EventTypes` is not used at runtime.
@@ -384,6 +390,7 @@ export interface InspectorFrontendHostAPI {
   recordDrag(event: DragEvent): void;
   recordChange(event: ChangeEvent): void;
   recordKeyDown(event: KeyDownEvent): void;
+  recordSettingAccess(event: SettingAccessEvent): void;
 }
 
 export interface AcceleratorDescriptor {

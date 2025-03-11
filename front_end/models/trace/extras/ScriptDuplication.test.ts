@@ -247,30 +247,50 @@ describeWithEnvironment('ScriptDuplication', function() {
       };
 
       const results = Object.fromEntries(
-          Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData).entries().map(([key, value]) => {
-            return [key, value.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.resourceSize}))];
+          [...Trace.Extras.ScriptDuplication.computeScriptDuplication(scriptsData).entries()].map(([key, data]) => {
+            return [
+              key, data.duplicates.map(v => ({scriptId: v.script.scriptId as string, resourceSize: v.attributedSize}))
+            ];
           }));
       assert.deepEqual(results, {
         'coursehero:///Control/assets/js/vendor/ng/select/select.js': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 48513},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 48513}
         ],
+        'coursehero:///js/src/search/results/store/filter-store.ts': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 12717},
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 12650}
+        ],
         'coursehero:///Control/assets/js/vendor/ng/select/angular-sanitize.js': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 9135},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 9135}
         ],
-        'node_modules/@babel/runtime/helpers/inherits.js': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 528}, {scriptId: '1.coursehero-bundle-2', resourceSize: 528}
+        'coursehero:///js/src/common/component/school-search.tsx': [
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 5840},
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 5316}
         ],
-        'node_modules/@babel/runtime/helpers/typeof.js': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 992}, {scriptId: '1.coursehero-bundle-2', resourceSize: 992}
+        'coursehero:///js/src/search/results/view/filter/autocomplete-filter.tsx': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 3823},
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 3812}
+        ],
+        'coursehero:///js/src/common/component/search/abstract-taxonomy-search.tsx': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 3103},
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 3098}
+        ],
+        'coursehero:///js/src/search/results/view/filter/autocomplete-filter-with-icon.tsx': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 2696},
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 2693}
         ],
         'coursehero:///js/src/utils/service/amplitude-service.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 1348},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 1325}
         ],
-        'coursehero:///js/src/utils/service/gsa-inmeta-tags.ts': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 591}, {scriptId: '1.coursehero-bundle-2', resourceSize: 563}
+        'coursehero:///js/src/search/results/view/filter/autocomplete-list.tsx': [
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 1143},
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 1134}
+        ],
+        'node_modules/@babel/runtime/helpers/typeof.js': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 992}, {scriptId: '1.coursehero-bundle-2', resourceSize: 992}
         ],
         'coursehero:///js/src/search/results/store/filter-actions.ts': [
           {scriptId: '1.coursehero-bundle-2', resourceSize: 956}, {scriptId: '1.coursehero-bundle-1', resourceSize: 946}
@@ -278,32 +298,14 @@ describeWithEnvironment('ScriptDuplication', function() {
         'coursehero:///js/src/search/results/store/item/resource-types.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 783}, {scriptId: '1.coursehero-bundle-2', resourceSize: 775}
         ],
-        'coursehero:///js/src/search/results/store/filter-store.ts': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 12717},
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 12650}
+        'coursehero:///js/src/utils/service/gsa-inmeta-tags.ts': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 591}, {scriptId: '1.coursehero-bundle-2', resourceSize: 563}
         ],
-        'coursehero:///js/src/search/results/view/filter/autocomplete-list.tsx': [
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 1143},
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 1134}
-        ],
-        'coursehero:///js/src/search/results/view/filter/autocomplete-filter.tsx': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 3823},
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 3812}
-        ],
-        'coursehero:///js/src/search/results/view/filter/autocomplete-filter-with-icon.tsx': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 2696},
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 2693}
+        'node_modules/@babel/runtime/helpers/inherits.js': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 528}, {scriptId: '1.coursehero-bundle-2', resourceSize: 528}
         ],
         'coursehero:///js/src/search/results/service/api/filter-api-service.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 554}, {scriptId: '1.coursehero-bundle-2', resourceSize: 534}
-        ],
-        'coursehero:///js/src/common/component/school-search.tsx': [
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 5840},
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 5316}
-        ],
-        'coursehero:///js/src/common/component/search/abstract-taxonomy-search.tsx': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 3103},
-          {scriptId: '1.coursehero-bundle-2', resourceSize: 3098}
         ],
         'coursehero:///js/src/common/component/search/course-search.tsx': [
           {scriptId: '1.coursehero-bundle-2', resourceSize: 545}, {scriptId: '1.coursehero-bundle-1', resourceSize: 544}
@@ -313,28 +315,46 @@ describeWithEnvironment('ScriptDuplication', function() {
   });
 
   describe('normalizeDuplication', () => {
+    function makeDuplication(entries: Array<{source: string, resourceSize: number}>):
+        Trace.Extras.ScriptDuplication.ScriptDuplication {
+      const duplication = new Map();
+
+      for (const {source, resourceSize} of entries) {
+        const data = duplication.get(source) ?? {estimatedWastedBytes: 0, duplicates: []};
+        duplication.set(source, data);
+        data.duplicates.push({resourceSize});
+      }
+
+      return duplication;
+    }
+
     it('removes entries with just one value', () => {
-      const duplication = new Map([['1', [{resourceSize: 100}]]]) as Trace.Extras.ScriptDuplication.ScriptDuplication;
+      const duplication = makeDuplication([{source: '1', resourceSize: 100}]);
       Trace.Extras.ScriptDuplication.normalizeDuplication(duplication);
       const results = Object.fromEntries(duplication);
       assert.deepEqual(results, {});
     });
 
     it('sorts entries based on resource size', () => {
-      const duplication = new Map([
-                            ['1', [{resourceSize: 250}, {resourceSize: 200}]],
-                            ['2', [{resourceSize: 200}, {resourceSize: 250}]],
-                          ]) as Trace.Extras.ScriptDuplication.ScriptDuplication;
+      const duplication = makeDuplication([
+        {source: '1', resourceSize: 250},
+        {source: '1', resourceSize: 200},
+        {source: '2', resourceSize: 200},
+        {source: '2', resourceSize: 250},
+      ]);
       Trace.Extras.ScriptDuplication.normalizeDuplication(duplication);
       const results = Object.fromEntries(duplication);
       assert.deepEqual(results, {});
     });
 
     it('removes duplication if size is much smaller than the largest', () => {
-      const duplication = new Map([
-                            ['1', [{resourceSize: 200}, {resourceSize: 1}, {resourceSize: 250}]],
-                            ['2', [{resourceSize: 250}, {resourceSize: 1}]],
-                          ]) as Trace.Extras.ScriptDuplication.ScriptDuplication;
+      const duplication = makeDuplication([
+        {source: '1', resourceSize: 200},
+        {source: '1', resourceSize: 1},
+        {source: '1', resourceSize: 250},
+        {source: '2', resourceSize: 250},
+        {source: '2', resourceSize: 1},
+      ]);
       Trace.Extras.ScriptDuplication.normalizeDuplication(duplication);
       const results = Object.fromEntries(duplication);
       assert.deepEqual(results, {});

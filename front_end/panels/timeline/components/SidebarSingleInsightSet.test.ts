@@ -163,7 +163,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
-    // Includes "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'Layout shift culprits',
@@ -178,6 +177,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Document request latency',
       'Optimize viewport for mobile',
       'Optimize DOM size',
+      'Duplicated JavaScript',
       'CSS Selector costs',
       'Forced reflow',
     ]);
@@ -192,6 +192,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Document request latency',
       'Optimize viewport for mobile',
       'Optimize DOM size',
+      'Duplicated JavaScript',
       'CSS Selector costs',
       'Forced reflow',
     ]);

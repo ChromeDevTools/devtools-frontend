@@ -7,6 +7,7 @@ import * as Checklist from './Checklist.js';
 import * as CLSCulprits from './CLSCulprits.js';
 import * as DocumentLatency from './DocumentLatency.js';
 import * as DOMSize from './DOMSize.js';
+import * as DuplicatedJavaScript from './DuplicatedJavaScript.js';
 import * as EventRef from './EventRef.js';
 import * as FontDisplay from './FontDisplay.js';
 import * as ForcedReflow from './ForcedReflow.js';
@@ -32,6 +33,7 @@ export {
   CLSCulprits,
   DocumentLatency,
   DOMSize,
+  DuplicatedJavaScript,
   EventRef,
   FontDisplay,
   ForcedReflow,

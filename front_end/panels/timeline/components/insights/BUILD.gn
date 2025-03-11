@@ -23,6 +23,7 @@ devtools_module("insights") {
     "Checklist.ts",
     "DOMSize.ts",
     "DocumentLatency.ts",
+    "DuplicatedJavaScript.ts",
     "EventRef.ts",
     "FontDisplay.ts",
     "ForcedReflow.ts",

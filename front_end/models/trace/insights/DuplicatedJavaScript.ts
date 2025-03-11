@@ -19,24 +19,29 @@ export const UIStrings = {
   /**
    * @description Title of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
-  title: 'Duplicate JavaScript',
+  title: 'Duplicated JavaScript',
   /**
    * @description Description of an insight that identifies multiple copies of the same JavaScript sources, and recommends removing the duplication.
    */
   description:
       'Remove large, duplicate JavaScript modules from bundles to reduce unnecessary bytes consumed by network activity.',
+  /** Label for a column in a data table; entries will be the locations of JavaScript or CSS code, e.g. the name of a Javascript package or module. */
+  columnSource: 'Source',
+  /** Label for a column in a data table; entries will be the file size of a web resource in kilobytes. */
+  columnResourceSize: 'Resource size',
 } as const;
 
-const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DuplicateJavaScript.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DuplicatedJavaScript.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type DuplicateJavaScriptInsightModel = InsightModel<typeof UIStrings, {
   duplication: Extras.ScriptDuplication.ScriptDuplication,
+  scriptsWithDuplication: Handlers.ModelHandlers.Scripts.Script[],
 }>;
 
 function finalize(partialModel: PartialInsightModel<DuplicateJavaScriptInsightModel>): DuplicateJavaScriptInsightModel {
-  const requests = [...partialModel.duplication.values().flatMap(array => array.map(v => v.script.request))].filter(
-      e => !!e);  // eslint-disable-line no-implicit-coercion
+  const requests = partialModel.scriptsWithDuplication.map(script => script.request)
+                       .filter(e => !!e);  // eslint-disable-line no-implicit-coercion
 
   return {
     insightKey: InsightKeys.DUPLICATE_JAVASCRIPT,
@@ -65,5 +70,9 @@ export function generateInsight(
   });
 
   const duplication = Extras.ScriptDuplication.computeScriptDuplication({scripts});
-  return finalize({duplication});
+  const scriptsWithDuplication = [...duplication.values().flatMap(data => data.duplicates.map(d => d.script))];
+  return finalize({
+    duplication,
+    scriptsWithDuplication: [...new Set(scriptsWithDuplication)],
+  });
 }

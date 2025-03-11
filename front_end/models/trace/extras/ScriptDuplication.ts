@@ -5,8 +5,10 @@
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Handlers from '../handlers/handlers.js';
 
-const RELATIVE_SIZE_THRESHOLD = 0.1;
+// Ignore modules smaller than an absolute threshold.
 const ABSOLUTE_SIZE_THRESHOLD_BYTES = 1024 * 0.5;
+// Ignore modules smaller than a % size of largest copy of the module.
+const RELATIVE_SIZE_THRESHOLD = 0.1;
 
 type GeneratedFileSizes = {
   errorMessage: string,
@@ -113,44 +115,64 @@ function shouldIgnoreSource(source: string): boolean {
 }
 
 /**
- * The key is a source map `sources` entry, but normalized via `normalizeSource`.
+ * The key is a source map `sources` entry (these are URLs/file paths), but normalized
+ * via `normalizeSource`.
  *
- * The value is an array with an entry for every script that has a source map which
+ * The value is an object with an entry for every script that has a source map which
  * denotes that this source was used, along with the estimated resource size it takes
  * up in the script.
  */
-export type ScriptDuplication =
-    Map<string, Array<{script: Handlers.ModelHandlers.Scripts.Script, resourceSize: number}>>;
+export type ScriptDuplication = Map<string, {
+  /**
+   * This is the sum of all (but one) `attributedSize` in `scripts`.
+   *
+   * One copy of this module is treated as the canonical version - the rest will
+   * have non-zero `wastedBytes`. The canonical copy is the first entry of
+   * `scripts`.
+   *
+   * In the case of all copies being the same version, all sizes are
+   * equal and the selection doesn't matter (ignoring compression ratios). When
+   * the copies are different versions, it does matter. Ideally the newest
+   * version would be the canonical copy, but version information is not present.
+   * Instead, size is used as a heuristic for latest version. This makes the
+   * value here conserative in its estimation.
+   */
+  estimatedDuplicateBytes: number,
+  duplicates: Array<{
+    script: Handlers.ModelHandlers.Scripts.Script,
+    /** The number of bytes in the script bundle that map back to this module. */
+    attributedSize: number,
+  }>,
+}>;
 
 /**
- * Sorts each array within @see ScriptDuplication by resource size, and drops information
- * on sources that are too small.
+ * Sorts each array within @see ScriptDuplication by attributedSize, drops information
+ * on sources that are too small, and calculates esimatedDuplicateBytes.
  */
 export function normalizeDuplication(duplication: ScriptDuplication): void {
-  for (const [key, originalSourceData] of duplication.entries()) {
-    let sourceData = originalSourceData;
-
+  for (const [key, data] of duplication) {
     // Sort by resource size.
-    sourceData.sort((a, b) => b.resourceSize - a.resourceSize);
+    data.duplicates.sort((a, b) => b.attributedSize - a.attributedSize);
 
-    // Remove modules smaller than a % size of largest.
-    if (sourceData.length > 1) {
-      const largestResourceSize = sourceData[0].resourceSize;
-      sourceData = sourceData.filter(data => {
-        const percentSize = data.resourceSize / largestResourceSize;
+    // Ignore modules smaller than a % size of largest.
+    if (data.duplicates.length > 1) {
+      const largestResourceSize = data.duplicates[0].attributedSize;
+      data.duplicates = data.duplicates.filter(duplicate => {
+        const percentSize = duplicate.attributedSize / largestResourceSize;
         return percentSize >= RELATIVE_SIZE_THRESHOLD;
       });
     }
 
-    // Remove modules smaller than an absolute threshold.
-    sourceData = sourceData.filter(data => data.resourceSize >= ABSOLUTE_SIZE_THRESHOLD_BYTES);
+    // Ignore modules smaller than an absolute threshold.
+    data.duplicates = data.duplicates.filter(duplicate => duplicate.attributedSize >= ABSOLUTE_SIZE_THRESHOLD_BYTES);
 
-    // Delete any that now don't have multiple source data entries.
-    if (sourceData.length > 1) {
-      duplication.set(key, sourceData);
-    } else {
+    // Delete any that now don't have multiple entries.
+    if (data.duplicates.length <= 1) {
       duplication.delete(key);
+      continue;
     }
+
+    data.estimatedDuplicateBytes = data.duplicates.slice(1).reduce((acc, cur) => acc + cur.attributedSize, 0);
   }
 }
 
@@ -211,21 +233,23 @@ export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scr
     }
   }
 
-  const moduleNameToSourceData: ScriptDuplication = new Map();
+  const duplication: ScriptDuplication = new Map();
   for (const [script, sourceDataArray] of sourceDatasMap) {
     for (const sourceData of sourceDataArray) {
-      let data = moduleNameToSourceData.get(sourceData.source);
+      let data = duplication.get(sourceData.source);
       if (!data) {
-        data = [];
-        moduleNameToSourceData.set(sourceData.source, data);
+        data = {estimatedDuplicateBytes: 0, duplicates: []};
+        duplication.set(sourceData.source, data);
       }
-      data.push({
+      data.duplicates.push({
         script,
-        resourceSize: sourceData.resourceSize,
+        attributedSize: sourceData.resourceSize,
       });
     }
   }
 
-  normalizeDuplication(moduleNameToSourceData);
-  return moduleNameToSourceData;
+  normalizeDuplication(duplication);
+
+  // Sort by estimated savings.
+  return new Map([...duplication].sort((a, b) => b[1].estimatedDuplicateBytes - a[1].estimatedDuplicateBytes));
 }

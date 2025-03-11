@@ -126,7 +126,7 @@ export const enum InsightKeys {
   THIRD_PARTIES = 'ThirdParties',
   DOCUMENT_LATENCY = 'DocumentLatency',
   DOM_SIZE = 'DOMSize',
-  DUPLICATE_JAVASCRIPT = 'DuplicateJavaScript',
+  DUPLICATE_JAVASCRIPT = 'DuplicatedJavaScript',
   FONT_DISPLAY = 'FontDisplay',
   FORCED_REFLOW = 'ForcedReflow',
   IMAGE_DELIVERY = 'ImageDelivery',

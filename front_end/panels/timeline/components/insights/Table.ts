@@ -50,6 +50,7 @@ export interface TableData {
 export interface TableDataRow {
   values: Array<number|string|Lit.LitTemplate>;
   overlays?: Overlays.Overlays.TimelineOverlay[];
+  subRows?: TableDataRow[];
 }
 
 export class Table extends HTMLElement {
@@ -58,7 +59,10 @@ export class Table extends HTMLElement {
   #insight?: BaseInsightComponent;
   #state?: TableState;
   #headers?: string[];
+  /** The rows as given as by the user, which may include recursive rows via subRows. */
   #rows?: TableDataRow[];
+  /** All rows/subRows, in the order that they appear visually. This is the result of traversing `#rows` and any subRows found. */
+  #flattenedRows?: TableDataRow[];
   #interactive = false;
   #currentHoverIndex: number|null = null;
 
@@ -116,7 +120,7 @@ export class Table extends HTMLElement {
 
     // If the desired overlays consist of just a single ENTRY_OUTLINE, then
     // it is more intuitive to just select the target event.
-    const overlays = this.#rows?.[index]?.overlays;
+    const overlays = this.#flattenedRows?.[index]?.overlays;
     if (overlays?.length === 1 && overlays[0].type === 'ENTRY_OUTLINE') {
       this.dispatchEvent(new EventReferenceClick(overlays[0].entry));
       return;
@@ -136,7 +140,7 @@ export class Table extends HTMLElement {
     sticky?: boolean,
     isHover?: boolean,
   } = {}): void {
-    if (!this.#rows || !this.#state || !this.#insight) {
+    if (!this.#flattenedRows || !this.#state || !this.#insight) {
       return;
     }
 
@@ -151,7 +155,7 @@ export class Table extends HTMLElement {
     }
 
     if (rowEl && rowIndex !== null) {
-      const overlays = this.#rows[rowIndex].overlays;
+      const overlays = this.#flattenedRows[rowIndex].overlays;
       if (overlays) {
         this.#insight.toggleTemporaryOverlays(overlays, {updateTraceWindow: !opts.isHover});
       }
@@ -170,6 +174,29 @@ export class Table extends HTMLElement {
       return;
     }
 
+    const flattenedRows: TableDataRow[] = [];
+    const rowEls: Lit.TemplateResult[] = [];
+    function traverse(row: TableDataRow, depth = 0): void {
+      const styles = Lit.Directives.styleMap({
+        paddingLeft: `calc(${depth} * var(--sys-size-5))`,
+        borderLeft: depth ? 'var(--sys-size-1) solid var(--sys-color-divider)' : '',
+      });
+      const columnEls = row.values.map(
+          (value, i) => i === 0 ? html`<th scope="row" style=${styles}>${value}</th>` : html`<td>${value}</td>`);
+      rowEls.push(html`<tr>${columnEls}</tr>`);
+
+      flattenedRows.push(row);
+
+      for (const subRow of row.subRows ?? []) {
+        traverse(subRow, depth + 1);
+      }
+    }
+    for (const row of this.#rows) {
+      traverse(row);
+    }
+
+    this.#flattenedRows = flattenedRows;
+
     Lit.render(
         html`<table
           class=${Lit.Directives.classMap({
@@ -184,13 +211,7 @@ export class Table extends HTMLElement {
         <tbody
           @mouseover=${this.#interactive ? this.#onHoverRow : null}
           @click=${this.#interactive ? this.#onClickRow : null}
-        >
-          ${this.#rows.map(row => {
-          const rowsEls =
-              row.values.map((value, i) => i === 0 ? html`<th scope="row">${value}</th>` : html`<td>${value}</td>`);
-          return html`<tr>${rowsEls}</tr>`;
-        })}
-        </tbody>
+        >${rowEls}</tbody>
       </table>`,
         this.#shadow, {host: this});
   }

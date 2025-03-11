@@ -209,7 +209,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
         return '- https://web.dev/articles/optimize-ttfb';
       case 'DOMSize':
         return '';
-      case 'DuplicateJavaScript':
+      case 'DuplicatedJavaScript':
         return '';
       case 'FontDisplay':
         return '';
@@ -252,7 +252,7 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
 3. Was there compression applied to the response to minimize the transfer size?`;
       case 'DOMSize':
         return '';
-      case 'DuplicateJavaScript':
+      case 'DuplicatedJavaScript':
         return '';
       case 'FontDisplay':
         return '';

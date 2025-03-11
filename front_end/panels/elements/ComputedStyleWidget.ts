@@ -118,7 +118,7 @@ function renderPropertyContents(
   name.slot = 'name';
   const value = Renderer
                     .renderValueElement(
-                        propertyName, propertyValue, matchProperty(propertyName, propertyValue),
+                        {name: propertyName, value: propertyValue}, matchProperty(propertyName, propertyValue),
                         [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()])
                     .valueElement;
   value.slot = 'value';
@@ -158,7 +158,7 @@ const createTraceElement =
       const trace = new ElementsComponents.ComputedStyleTrace.ComputedStyleTrace();
 
       const {valueElement} = Renderer.renderValueElement(
-          property.name, property.value, matchProperty(property.name, property.value),
+          property, matchProperty(property.name, property.value),
           [new ColorRenderer(), new URLRenderer(null, node), new StringRenderer()]);
       valueElement.slot = 'trace-value';
       trace.appendChild(valueElement);

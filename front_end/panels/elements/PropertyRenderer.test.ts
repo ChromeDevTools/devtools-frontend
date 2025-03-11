@@ -12,7 +12,7 @@ import * as Elements from './elements.js';
 describeWithEnvironment('PropertyRenderer', () => {
   function renderValueElement(name: string, value: string) {
     return Elements.PropertyRenderer.Renderer.renderValueElement(
-        name, value, SDK.CSSPropertyParser.matchDeclaration(name, value, []), []);
+        {name, value}, SDK.CSSPropertyParser.matchDeclaration(name, value, []), []);
   }
 
   describe('Renderer', () => {
@@ -48,7 +48,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const tree = cssParser.parse(rule).topNode;
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
-      const context = new Elements.PropertyRenderer.RenderingContext(ast, new Map(), matchedResult);
+      const context = new Elements.PropertyRenderer.RenderingContext(ast, null, new Map(), matchedResult);
       assert.deepEqual(
           textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), rule,
           Printer.walk(ast).get());
@@ -62,8 +62,8 @@ describeWithEnvironment('PropertyRenderer', () => {
       const matchedResult =
           SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, [new SDK.CSSPropertyParserMatchers.BinOpMatcher()]);
       const renderer = new Elements.PropertyRenderer.BinOpRenderer();
-      const context =
-          new Elements.PropertyRenderer.RenderingContext(ast, new Map([[renderer.matchType, renderer]]), matchedResult);
+      const context = new Elements.PropertyRenderer.RenderingContext(
+          ast, null, new Map([[renderer.matchType, renderer]]), matchedResult);
       assert.deepEqual(
           textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''),
           '*{--property: calc((50 - (0 * 4)) * 1vmin);}', Printer.walk(ast).get());
@@ -76,7 +76,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       assert.exists(tree);
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
-      const context = new Elements.PropertyRenderer.RenderingContext(ast, new Map(), matchedResult);
+      const context = new Elements.PropertyRenderer.RenderingContext(ast, null, new Map(), matchedResult);
       assert.deepEqual(
           textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), property,
           Printer.walk(ast).get());

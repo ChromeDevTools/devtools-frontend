@@ -10,7 +10,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {createTarget} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {expectCall, spyCall} from '../../testing/ExpectStubCall.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {
@@ -283,7 +283,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const context = new Elements.PropertyRenderer.TracingContext();
         assert.isTrue(context.nextEvaluation());
         const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
-            property.name, property.value, matchedResult,
+            property, matchedResult,
             Elements.StylePropertyTreeElement.getPropertyRenderers(
                 matchedStyles.nodeStyles()[0], stylesSidebarPane, matchedStyles, null, new Map()),
             context);
@@ -294,6 +294,18 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         assert.strictEqual(setColorTextCall.args[0].asString(), '#808080');
         assert.strictEqual(valueElement.textContent, '#808080');
+      });
+
+      it('shows a value tracing tooltip on the var function', async () => {
+        updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+        const stylePropertyTreeElement = getTreeElement('color', 'color-mix(in srgb, yellow, green)');
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+        const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+        assert.exists(tooltip);
+        const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
+        assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
       });
     });
 
@@ -751,6 +763,18 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement = getTreeElement('font-size', 'calc(1 + var(--no))');
       stylePropertyTreeElement.updateTitle();
       assert.exists(stylePropertyTreeElement.valueElement?.querySelector('.css-var-link'));
+    });
+
+    it('shows a value tracing tooltip on the var function', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      const stylePropertyTreeElement = getTreeElement('color', 'var(--blue)');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      renderElementIntoDOM(stylePropertyTreeElement.valueElement);
+      const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+      assert.exists(tooltip);
+      const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
+      assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
     });
   });
 
@@ -1646,6 +1670,20 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.lengthOf(args, 3);
       assert.deepEqual(
           Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [true, false, true]);
+    });
+
+    it('shows a value tracing tooltip on the calc function', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      for (const property of ['calc(1px + 2px)', 'min(1px, 2px)', 'max(3px, 1px)']) {
+        const stylePropertyTreeElement = getTreeElement('width', property);
+        stylePropertyTreeElement.updateTitle();
+        assert.exists(stylePropertyTreeElement.valueElement);
+        renderElementIntoDOM(stylePropertyTreeElement.valueElement, {allowMultipleChildren: true});
+        const tooltip = stylePropertyTreeElement.valueElement.querySelector('devtools-tooltip');
+        assert.exists(tooltip);
+        const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
+        assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
+      }
     });
   });
 

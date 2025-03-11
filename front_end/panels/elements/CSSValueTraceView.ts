@@ -92,15 +92,27 @@ export class CSSValueTraceView extends UI.Widget.VBox {
 
   showTrace(
       property: SDK.CSSProperty.CSSProperty,
+      subexpression: string|null,
       matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>|null,
       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
       ): void {
-    const matchedResult = property.parseValue(matchedStyles, computedStyles);
+    const matchedResult = subexpression === null ?
+        property.parseValue(matchedStyles, computedStyles) :
+        property.parseExpression(subexpression, matchedStyles, computedStyles);
     if (!matchedResult) {
       return undefined;
     }
+    return this.#showTrace(property, matchedResult, matchedStyles, computedStyles, renderers);
+  }
 
+  #showTrace(
+      property: SDK.CSSProperty.CSSProperty,
+      matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      computedStyles: Map<string, string>|null,
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
+      ): void {
     const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
 
     // Compute all trace lines
@@ -111,6 +123,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     while (tracing.nextSubstitution()) {
       const context = new RenderingContext(
           matchedResult.ast,
+          property,
           rendererMap,
           matchedResult,
           /* cssControls */ undefined,
@@ -126,6 +139,7 @@ export class CSSValueTraceView extends UI.Widget.VBox {
     while (tracing.nextEvaluation()) {
       const context = new RenderingContext(
           matchedResult.ast,
+          property,
           rendererMap,
           matchedResult,
           /* cssControls */ undefined,

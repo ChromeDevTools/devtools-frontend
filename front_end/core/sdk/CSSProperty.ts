@@ -12,7 +12,13 @@ import * as Root from '../root/root.js';
 import type {CSSMatchedStyles} from './CSSMatchedStyles.js';
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import type {Edit} from './CSSModel.js';
-import {type BottomUpTreeMatching, matchDeclaration, stripComments} from './CSSPropertyParser.js';
+import {
+  type BottomUpTreeMatching,
+  type Match,
+  matchDeclaration,
+  type Matcher,
+  stripComments
+} from './CSSPropertyParser.js';
 import {
   AnchorFunctionMatcher,
   AngleMatcher,
@@ -114,10 +120,7 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return result;
   }
 
-  parseValue(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): BottomUpTreeMatching|null {
-    if (!this.parsedOk) {
-      return null;
-    }
+  #matchers(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
     const matchers = [
       new VariableMatcher(matchedStyles, this.ownerStyle),
       new ColorMatcher(() => computedStyles?.get('color') ?? null),
@@ -145,7 +148,24 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     if (Root.Runtime.experiments.isEnabled('font-editor')) {
       matchers.push(new FontMatcher());
     }
-    return matchDeclaration(this.name, this.value, matchers);
+    return matchers;
+  }
+
+  parseExpression(expression: string, matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null):
+      BottomUpTreeMatching|null {
+    if (!this.parsedOk) {
+      return null;
+    }
+
+    return matchDeclaration(this.name, expression, this.#matchers(matchedStyles, computedStyles));
+  }
+
+  parseValue(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): BottomUpTreeMatching|null {
+    if (!this.parsedOk) {
+      return null;
+    }
+
+    return matchDeclaration(this.name, this.value, this.#matchers(matchedStyles, computedStyles));
   }
 
   private ensureRanges(): void {

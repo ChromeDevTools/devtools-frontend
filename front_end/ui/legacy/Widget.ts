@@ -102,12 +102,16 @@ export class WidgetElement<WidgetT extends Widget&WidgetParams, WidgetParams = o
     this.#widgetParams = config.widgetParams;
   }
 
+  getWidget(): WidgetT|undefined {
+    return Widget.get(this) as WidgetT | undefined;
+  }
+
   connectedCallback(): void {
-    // When using <devtools-widget> we suppress
-    // suppressOrphanWidgetError and allow the Widget instance to be
-    // treated as a root instance if no root widget was found.
-    Widget.getOrCreateWidget(this).show(
-        this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
+    const widget = Widget.getOrCreateWidget(this);
+    if (!widget.element.parentElement) {
+      widget.markAsRoot();
+    }
+    widget.show(this.parentElement as HTMLElement, undefined, /* suppressOrphanWidgetError= */ true);
   }
 
   override appendChild<T extends Node>(child: T): T {

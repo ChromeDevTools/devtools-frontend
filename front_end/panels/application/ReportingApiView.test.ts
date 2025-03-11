@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -38,15 +39,64 @@ describeWithMockConnection('ReportingApiView', () => {
         endpointsGridData.set, {endpoints: new Map([[ORIGIN_1, ENDPOINTS_1], [ORIGIN_2, ENDPOINTS_2]])});
   });
 
-  it('shows reports (main element) and endpoints (sidebar element)', () => {
+  it('shows placeholder if no report or endpoint data is available yet', () => {
     const target = createTarget();
     const networkManager = target.model(SDK.NetworkManager.NetworkManager);
     assert.exists(networkManager);
     const endpointsGrid = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
     const view = new Application.ReportingApiView.ReportingApiView(endpointsGrid);
 
+    assert.exists(view.element.querySelector('.empty-state'));
+    assert.deepEqual(view.element.querySelector('.empty-state-header')?.textContent, 'No report or endpoint');
+    assert.deepEqual(
+        view.element.querySelector('.empty-state-description > span')?.textContent,
+        'On this page you will be able to inspect Reporting API reports and endpoints.');
+  });
+
+  it('shows reports (main element) and endpoints (sidebar element) if endpoint appears', () => {
+    const target = createTarget();
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const endpointsGrid = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
+    const view = new Application.ReportingApiView.ReportingApiView(endpointsGrid);
+
+    networkManager.dispatchEventToListeners(
+        SDK.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, {origin: 'dummy', endpoints: []});
     assert.isTrue(view.showMode() === UI.SplitWidget.ShowMode.BOTH);
     assert.isNotNull(view.mainWidget());
+    assert.instanceOf(view.mainWidget(), Application.ReportingApiReportsView.ReportingApiReportsView);
+    assert.isNotNull(view.sidebarElement());
+  });
+
+  it('shows reports (main element) and endpoints (sidebar element) if report appears', () => {
+    const target = createTarget();
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    assert.exists(networkManager);
+    const endpointsGrid = new ApplicationComponents.EndpointsGrid.EndpointsGrid();
+    const view = new Application.ReportingApiView.ReportingApiView(endpointsGrid);
+
+    const report = {
+      id: 'some_id' as Protocol.Network.ReportId,
+      initiatorUrl: 'https://example.com/script.js',
+      destination: 'main-endpoint',
+      type: 'deprecation',
+      timestamp: 1,
+      depth: 1,
+      completedAttempts: 0,
+      body: {
+        columnNumber: 8,
+        id: 'PrefixedStorageInfo',
+        lineNumber: 15,
+        message: '',
+        sourceFile: 'https://example.com/script.js',
+      },
+      status: Protocol.Network.ReportStatus.Queued,
+    };
+
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.ReportingApiReportAdded, report);
+    assert.isTrue(view.showMode() === UI.SplitWidget.ShowMode.BOTH);
+    assert.isNotNull(view.mainWidget());
+    assert.instanceOf(view.mainWidget(), Application.ReportingApiReportsView.ReportingApiReportsView);
     assert.isNotNull(view.sidebarElement());
   });
 });

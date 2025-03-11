@@ -96,6 +96,7 @@ module.exports = function(config: any) {
       {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'inspector_overlay/**/*.js.map'), served: true, included: false},
       {pattern: path.join(GEN_DIR, 'front_end/**/fixtures/**/*'), served: true, included: false},
+      {pattern: path.join(GEN_DIR, 'front_end/ui/components/docs/**/*'), served: true, included: false},
     ],
 
     reporters: [...reporters()],

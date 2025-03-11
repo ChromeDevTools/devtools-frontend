@@ -76,7 +76,10 @@ devtools_entrypoint("meta") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "RecorderController.test.ts" ]
+  sources = [
+    "RecorderController.test.ts",
+    "injected.test.ts",
+  ]
 
   deps = [
     ":bundle",

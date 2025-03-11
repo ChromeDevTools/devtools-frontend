@@ -468,6 +468,11 @@ const filterValuePresetMap = new Map([
   ['url', 'url(||)'],
 ]);
 
+const cornerShapeValuePresetMap = new Map([
+  ['superellipse(0.5)', 'superellipse(|0.5|)'],
+  ['superellipse(infinity)', 'superellipse(|infinity|)'],
+]);
+
 const valuePresets = new Map([
   ['filter', filterValuePresetMap],
   ['backdrop-filter', filterValuePresetMap],
@@ -499,6 +504,7 @@ const valuePresets = new Map([
       ['perspective', 'perspective(|10px|)'],
     ]),
   ],
+  ['corner-shape', cornerShapeValuePresetMap],
 ]);
 
 const distanceProperties = new Set<string>([
@@ -1369,6 +1375,19 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'text alphabetic',
       'cap alphabetic',
       'ex alphabetic',
+    ]),
+  ],
+  [
+    'corner-shape',
+    new Set([
+      'round',
+      'scoop',
+      'bevel',
+      'notch',
+      'straight',
+      'squircle',
+      'superellipse(0.5)',
+      'superellipse(infinity)',
     ]),
   ],
 ]);

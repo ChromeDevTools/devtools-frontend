@@ -1848,9 +1848,25 @@ export const generatedProperties = [
   "name": "content-visibility"
  },
  {
+  "keywords": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ],
   "name": "corner-bottom-left-shape"
  },
  {
+  "keywords": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ],
   "name": "corner-bottom-right-shape"
  },
  {
@@ -1875,9 +1891,25 @@ export const generatedProperties = [
   "name": "corner-start-start-shape"
  },
  {
+  "keywords": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ],
   "name": "corner-top-left-shape"
  },
  {
+  "keywords": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ],
   "name": "corner-top-right-shape"
  },
  {
@@ -5175,6 +5207,46 @@ export const generatedPropertyValues = {
    "visible",
    "auto",
    "hidden"
+  ]
+ },
+ "corner-bottom-left-shape": {
+  "values": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ]
+ },
+ "corner-bottom-right-shape": {
+  "values": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ]
+ },
+ "corner-top-left-shape": {
+  "values": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
+  ]
+ },
+ "corner-top-right-shape": {
+  "values": [
+   "round",
+   "scoop",
+   "bevel",
+   "notch",
+   "straight",
+   "squircle"
   ]
  },
  "counter-increment": {

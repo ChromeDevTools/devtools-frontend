@@ -69,6 +69,10 @@ export interface ParseOptions {
   isCPUProfile?: boolean;
   metadata?: File.MetaData;
   resolveSourceMap?: (params: ResolveSourceMapParams) => Promise<SDK.SourceMap.SourceMap|null>;
+  logger?: {
+    start: (id: string) => void,
+    end: (id: string) => void,
+  };
 }
 
 export interface ResolveSourceMapParams {

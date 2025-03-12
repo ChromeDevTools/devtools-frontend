@@ -43,6 +43,7 @@ button {
   cursor: inherit;
   display: inline-flex;
   position: relative;
+  font-family: var(--default-font-family);
   font-size: var(--sys-typescale-body4-size);
   font-weight: var(--ref-typeface-weight-medium);
   line-height: var(--sys-typescale-body4-line-height);

@@ -8,6 +8,7 @@
   margin: 2px;
   height: 24px;
   font-size: 12px;
+  font-family: var(--default-font-family);
   border: 1px solid var(--sys-color-tonal-outline);
   border-radius: 12px;
   padding: 0 12px;

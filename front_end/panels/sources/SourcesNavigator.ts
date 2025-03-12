@@ -389,7 +389,8 @@ export class ContentScriptsNavigatorView extends NavigatorView {
 export class SnippetsNavigatorView extends NavigatorView {
   constructor() {
     super('navigator-snippets');
-    const placeholder = new UI.EmptyWidget.EmptyWidget(UIStrings.noSnippets, UIStrings.explainSnippets);
+    const placeholder =
+        new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noSnippets), i18nString(UIStrings.explainSnippets));
     this.setPlaceholder(placeholder);
     placeholder.appendLink(
         'https://developer.chrome.com/docs/devtools/javascript/snippets/' as Platform.DevToolsPath.UrlString);

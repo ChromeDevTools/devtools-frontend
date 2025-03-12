@@ -28,7 +28,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;
   override internalName = 'long-critical-network-tree';
 
-  hoveredChain: Trace.Types.Events.SyntheticNetworkRequest[] = [];
+  #relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>|null = null;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -46,17 +46,19 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     return overlays;
   }
 
-  #createOverlayForChain(chain: Trace.Types.Events.SyntheticNetworkRequest[]): Overlays.Overlays.EntryOutline[] {
-    return chain.map(entry => ({
-                       type: 'ENTRY_OUTLINE',
-                       entry,
-                       outlineReason: 'ERROR',
-                     }));
+  #createOverlayForChain(requests: Set<Trace.Types.Events.SyntheticNetworkRequest>): Overlays.Overlays.EntryOutline[] {
+    const overlays: Overlays.Overlays.EntryOutline[] = [];
+    requests.forEach(entry => overlays.push({
+      type: 'ENTRY_OUTLINE',
+      entry,
+      outlineReason: 'ERROR',
+    }));
+    return overlays;
   }
 
-  #onMouseOver(chain: Trace.Types.Events.SyntheticNetworkRequest[]|undefined): void {
-    this.hoveredChain = chain ?? [];
-    const overlays = this.#createOverlayForChain(this.hoveredChain);
+  #onMouseOver(relatedRequests: Set<Trace.Types.Events.SyntheticNetworkRequest>): void {
+    this.#relatedRequests = relatedRequests;
+    const overlays = this.#createOverlayForChain(this.#relatedRequests);
     this.toggleTemporaryOverlays(overlays, {
       // The trace window doesn't need to be updated because the request is being hovered.
       updateTraceWindow: false,
@@ -65,7 +67,7 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
   }
 
   #onMouseOut(): void {
-    this.hoveredChain = [];
+    this.#relatedRequests = null;
     this.toggleTemporaryOverlays(null, {
       updateTraceWindow: false,
     });
@@ -79,20 +81,20 @@ export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependenc
     // clang-format off
     return html`
       <ul>
-        ${nodes.map(({request, timeFromInitialRequest, children, isLongest, chain}) => {
+        ${nodes.map(({request, timeFromInitialRequest, children, isLongest, relatedRequests}) => {
           const hasChildren = children.length > 0;
 
           const requestClasses = Lit.Directives.classMap({
             request: true,
             longest: Boolean(isLongest),
-            highlighted: this.hoveredChain.includes(request),
+            highlighted: this.#relatedRequests?.has(request) ?? false,
           });
 
           return html`
             <li>
               <div class=${requestClasses}
-                   @mouseover=${hasChildren ? null : this.#onMouseOver.bind(this, chain)}
-                   @mouseout=${hasChildren ? null : this.#onMouseOut.bind(this)}>
+                   @mouseover=${this.#onMouseOver.bind(this, relatedRequests)}
+                   @mouseout=${this.#onMouseOut.bind(this)}>
                 <span class="url">${eventRef(request)}</span>
                 <span class="chain-time">
                   ${i18n.TimeUtilities.formatMicroSecondsTime(Trace.Types.Timing.Micro(timeFromInitialRequest))}

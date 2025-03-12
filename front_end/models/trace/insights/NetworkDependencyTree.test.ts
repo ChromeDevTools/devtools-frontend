@@ -62,7 +62,7 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.isNotTrue(child0.isLongest);
   });
 
-  it('Store the chain in the last request of the chain', () => {
+  it('Store the all parents and children events for all requests', () => {
     const root = insight.rootNodes[0];
     const [child0, child1] = root.children;
 
@@ -70,12 +70,15 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     //   |index.html(root)|
     //   |index.html(root) -> app.css(child0)|
     //   |index.html(root) -> app.js(child1)|
-    assert.deepEqual(root.chain, [root.request]);
-    assert.deepEqual(child0.chain, [root.request, child0.request]);
-    assert.deepEqual(child1.chain, [root.request, child1.request]);
+    // Both child0 and child1 are related to the root
+    assert.deepEqual([...root.relatedRequests], [root.request, child0.request, child1.request]);
+    // Only root and child0 are related to the child0
+    assert.deepEqual([...child0.relatedRequests], [root.request, child0.request]);
+    // Only root and child1 are related to the child1
+    assert.deepEqual([...child1.relatedRequests], [root.request, child1.request]);
   });
 
-  it('Calculates the related events', async () => {
+  it('Calculates the relatedEvents map (event to warning map)', async () => {
     // Need to load a file with longer dependency chain for this test.
     // Only those requests whose depth >= 2 will be added to the related events.
     const {data, insights} = await processTrace(this, 'web-dev-screenshot-source-ids.json.gz');

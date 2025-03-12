@@ -23,6 +23,7 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
   'application/javascript',
   'application/json',
   'application/json+protobuf',
+  'application/mpegurl',
   'application/vnd.apple.mpegurl',
   'application/vnd.dart',
   'application/xml',
@@ -30,7 +31,9 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
   'application/x-javascript',
   'application/x-jsp',
   'application/x-httpd-php',
+  'application/x-mpegurl',
   'audio/mpegurl',
+  'audio/x-mpegurl',
 ]);
 
 /**

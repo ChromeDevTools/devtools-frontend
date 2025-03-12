@@ -2335,7 +2335,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const computedStyleWidget = ElementsPanel.instance().getComputedStyleWidget();
 
     if (!computedStyleWidget.isShowing()) {
-      await UI.ViewManager.ViewManager.instance().showView('Computed');
+      await UI.ViewManager.ViewManager.instance().showView('computed');
     }
 
     let propertyNamePattern = '';

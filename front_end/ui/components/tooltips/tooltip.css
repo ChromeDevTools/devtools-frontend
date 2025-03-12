@@ -15,7 +15,7 @@
   position-area: bottom;
   position-visibility: anchors-visible;
   justify-self: anchor-center;
-  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  position-try-fallbacks: flip-block;
 
   & .container {
     width: max-content;
@@ -33,7 +33,7 @@
   justify-self: unset;
   margin: 0 var(--tooltip-viewport-distance) var(--tooltip-viewport-distance) 0;
   position-area: bottom span-right;
-  position-try-fallbacks: --bottom-left, --top-right, --top-left;
+  position-try-fallbacks: --bottom-left, --bottom-center, --top-right, --top-left, --top-center;
 
   & .container {
     margin-inline: 0;
@@ -58,4 +58,16 @@
 @position-try --top-left {
   position-area: top span-left;
   margin: var(--tooltip-viewport-distance) 0 0 var(--tooltip-viewport-distance);
+}
+
+@position-try --bottom-center {
+  justify-self: anchor-center;
+  position-area: bottom;
+  margin: 0 var(--tooltip-viewport-distance) var(--tooltip-viewport-distance) var(--tooltip-viewport-distance);
+}
+
+@position-try --top-center {
+  justify-self: anchor-center;
+  position-area: top;
+  margin: var(--tooltip-viewport-distance) var(--tooltip-viewport-distance) 0 var(--tooltip-viewport-distance);
 }

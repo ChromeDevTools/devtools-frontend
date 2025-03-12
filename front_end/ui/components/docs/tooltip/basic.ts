@@ -41,6 +41,7 @@ Lit.render(
         id="removable"
         @click=${() => document.getElementById('removable')?.remove()}
         class="anchor"
+        aria-details="programatic"
         style="position: absolute; left: 16px; top: 216px;"
       >
         Click to remove anchor

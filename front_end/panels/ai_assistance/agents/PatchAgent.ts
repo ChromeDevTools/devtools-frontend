@@ -183,9 +183,10 @@ ${content}
     });
   }
 
-  async *
-      applyChanges(changeSummary: string, {signal}: {signal?: AbortSignal} = {}):
-          AsyncGenerator<ResponseData, void, void> {
+  async applyChanges(changeSummary: string, {signal}: {signal?: AbortSignal} = {}): Promise<{
+    responses: ResponseData[],
+    processedFiles: string[],
+  }> {
     this.#changeSummary = changeSummary;
     const prompt =
         `I have applied the following CSS changes to my page in Chrome DevTools, what are the files in my source code that I need to change to apply the same change?
@@ -203,7 +204,11 @@ CRITICAL: before searching always call listFiles first.
 CRITICAL: never call updateFiles with files that do not need updates.
 `;
 
-    yield* this.run(prompt, {selected: null, signal});
+    const responses = await Array.fromAsync(this.run(prompt, {selected: null, signal}));
+    return {
+      responses,
+      processedFiles: this.#project.getProcessedFiles(),
+    };
   }
 }
 

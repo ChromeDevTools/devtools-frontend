@@ -22,6 +22,7 @@ export class AgentProject {
 
   readonly #maxFilesChanged: number;
   readonly #maxLinesChanged: number;
+  readonly #processedFiles = new Set<string>();
 
   constructor(project: Workspace.Workspace.Project, options: {
     maxFilesChanged: number,
@@ -33,6 +34,14 @@ export class AgentProject {
     this.#project = project;
     this.#maxFilesChanged = options.maxFilesChanged;
     this.#maxLinesChanged = options.maxLinesChanged;
+  }
+
+  /**
+   * Returns a list of files from the project that has been used for
+   * processing.
+   */
+  getProcessedFiles(): string[] {
+    return Array.from(this.#processedFiles);
   }
 
   /**
@@ -52,6 +61,7 @@ export class AgentProject {
     if (!uiSourceCode) {
       return;
     }
+    this.#processedFiles.add(filepath);
     // TODO: needs additional handling for binary files.
     return uiSourceCode.workingCopyContentData().text;
   }

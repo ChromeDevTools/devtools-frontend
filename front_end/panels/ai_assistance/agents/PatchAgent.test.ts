@@ -37,7 +37,9 @@ describeWithEnvironment('PatchAgent', () => {
       })
     });
 
-    return await Array.fromAsync(agent.applyChanges('summary'));
+    const {responses} = await agent.applyChanges('summary');
+
+    return responses;
   }
 
   it('calls listFiles', async () => {

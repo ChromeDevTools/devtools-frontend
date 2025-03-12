@@ -465,8 +465,7 @@ export class PatchWidget extends UI.Widget.Widget {
       serverSideLoggingEnabled: false,
       project: this.#project,
     });
-    const responses =
-        await Array.fromAsync(agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal}));
+    const {responses} = await agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal});
     return responses.at(-1);
   }
 }

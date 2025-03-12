@@ -21,7 +21,7 @@ import {
   waitForAria,
 } from '../../../test/shared/helper.js';
 
-const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller';
+const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller' as const;
 const TEST_RECORDING_NAME = 'New Recording';
 const ControlOrMeta = platform === 'mac' ? 'Meta' : 'Control';
 

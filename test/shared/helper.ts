@@ -199,21 +199,26 @@ export const pasteText = async (text: string) => {
   await drainFrontendTaskQueue();
 };
 
+type DeducedElementType<ElementType extends Element|null, Selector extends string> =
+    ElementType extends null ? puppeteer.NodeFor<Selector>: ElementType;
+
 // Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
-export const $ = async<ElementType extends Element = Element>(
-    selector: string, root?: puppeteer.ElementHandle, handler = 'pierce') => {
+export const $ = async<ElementType extends Element|null = null, Selector extends string = string>(
+    selector: Selector, root?: puppeteer.ElementHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root : frontend;
-  const element = await rootElement.$(`${handler}/${selector}`) as puppeteer.ElementHandle<ElementType>;
+  const element = await rootElement.$(`${handler}/${selector}`) as
+      puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>;
   return element;
 };
 
 // Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
-export const $$ =
-    async<ElementType extends Element = Element>(selector: string, root?: puppeteer.JSHandle, handler = 'pierce') => {
+export const $$ = async<ElementType extends Element|null = null, Selector extends string = string>(
+    selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce') => {
   const {frontend} = getBrowserAndPages();
   const rootElement = root ? root.asElement() || frontend : frontend;
-  const elements = await rootElement.$$(`${handler}/${selector}`) as Array<puppeteer.ElementHandle<ElementType>>;
+  const elements = await rootElement.$$(`${handler}/${selector}`) as
+      Array<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>>;
   return elements;
 };
 
@@ -241,7 +246,7 @@ export const timeout = (duration: number) => new Promise<void>(resolve => setTim
 
 export const getTextContent =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.ElementHandle) => {
-  const text = await (await $<ElementType>(selector, root))?.evaluate(node => node.textContent);
+  const text = await (await $<ElementType, typeof selector>(selector, root))?.evaluate(node => node.textContent);
   return text ?? undefined;
 };
 
@@ -268,7 +273,7 @@ export const getVisibleTextContents = async (selector: string) => {
 export const waitFor = async<ElementType extends Element = Element>(
     selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const element = await $<ElementType>(selector, root, handler);
+                                 const element = await $<ElementType, typeof selector>(selector, root, handler);
                                  return (element || undefined);
                                }, asyncScope), `Waiting for element matching selector '${selector}'`);
 };
@@ -276,7 +281,7 @@ export const waitFor = async<ElementType extends Element = Element>(
 export const waitForVisible = async<ElementType extends Element = Element>(
     selector: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope(), handler?: string) => {
   return await asyncScope.exec(() => waitForFunction(async () => {
-                                 const element = await $<ElementType>(selector, root, handler);
+                                 const element = await $<ElementType, typeof selector>(selector, root, handler);
                                  const visible = await element.evaluate(node => node.checkVisibility());
                                  return visible ? element : undefined;
                                }, asyncScope), `Waiting for element matching selector '${selector}' to be visible`);

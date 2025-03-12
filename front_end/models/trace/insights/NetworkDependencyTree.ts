@@ -62,7 +62,9 @@ export interface CriticalRequestNode {
   timeFromInitialRequest: Types.Timing.Micro;
   children: CriticalRequestNode[];
   isLongest?: boolean;
-  chain?: Types.Events.SyntheticNetworkRequest[];
+  // Store all the requests that appear in any chains this request appears in.
+  // Use set to avoid duplication.
+  relatedRequests: Set<Types.Events.SyntheticNetworkRequest>;
 }
 
 export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
@@ -161,13 +163,13 @@ export function generateInsight(
           request,
           timeFromInitialRequest,
           children: [],
+          relatedRequests: new Set(),
         };
         currentNodes.push(found);
       }
 
-      if (request === lastRequest) {
-        found.chain = path;
-      }
+      path.forEach(request => found?.relatedRequests.add(request));
+
       // TODO(b/372897712) Switch the UIString to markdown.
       relatedEvents.set(request, depth < 2 ? [] : [i18nString(UIStrings.warningDescription)]);
 

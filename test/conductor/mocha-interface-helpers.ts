@@ -125,6 +125,10 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
               if (abortController.signal.aborted) {
                 return;
               }
+              if (err instanceof ScreenshotError) {
+                reject(err);
+                return;
+              }
               reject(await createScreenshotError(err));
             })
         .finally(() => {

@@ -148,7 +148,6 @@ export class ExtensionScope {
 
   static getStyleRuleFromMatchesStyles(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): SDK.CSSRule.CSSStyleRule
       |undefined {
-    let styleRule: SDK.CSSRule.CSSStyleRule|undefined;
     for (const style of matchedStyles.nodeStyles()) {
       // Ignore inline as we can't override them
       if (style.type === 'Inline') {
@@ -168,11 +167,10 @@ export class ExtensionScope {
           continue;
         }
 
-        styleRule = rule;
-        break;
+        return rule;
       }
     }
-    return styleRule;
+    return;
   }
 
   static getSelectorsFromStyleRule(
@@ -199,8 +197,16 @@ export class ExtensionScope {
       return b.specificity.b - a.specificity.b;
     });
 
+    const selector = selectors.at(0);
+    if (!selector) {
+      return '';
+    }
     // See https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector
-    return selectors.at(0)?.text.replace(':visited', '') ?? '';
+    let cssSelector = selector.text.replaceAll(':visited', '');
+    // See https://www.w3.org/TR/css-nesting-1/#nest-selector
+    cssSelector = cssSelector.replaceAll('&', '');
+
+    return cssSelector.trim();
   }
 
   static getSelectorForNode(node: SDK.DOMModel.DOMNode): string {

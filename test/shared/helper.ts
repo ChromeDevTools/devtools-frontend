@@ -237,7 +237,7 @@ export const $$textContent = async (textContent: string, root?: puppeteer.Elemen
   return await $$(textContent, root, 'pierceShadowText');
 };
 
-export const timeout = (duration: number) => new Promise(resolve => setTimeout(resolve, duration));
+export const timeout = (duration: number) => new Promise<void>(resolve => setTimeout(resolve, duration));
 
 export const getTextContent =
     async<ElementType extends Element = Element>(selector: string, root?: puppeteer.ElementHandle) => {

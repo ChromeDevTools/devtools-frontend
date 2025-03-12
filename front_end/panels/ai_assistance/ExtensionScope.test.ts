@@ -233,6 +233,27 @@ describe('ExtensionScope', () => {
       const selector = await getSelector({matchedPayload});
       assert.strictEqual(selector, '.test');
     });
+
+    it('should work with nested selector and strip the &', async () => {
+      // Order is reversed we know that specificity order will
+      // be returned correctly
+      // front_end/core/sdk/CSSMatchedStyles.ts:373
+      const matchedPayload = [
+        ruleMatch('.test', MOCK_STYLE),
+        ruleMatch(
+            {
+              selectors: [{text: 'div&'}],
+              text: 'div&',
+            },
+            MOCK_STYLE,
+            {
+              nestingSelectors: ['.my-parent-selector'],
+            },
+            )
+      ];
+      const selector = await getSelector({matchedPayload});
+      assert.strictEqual(selector, 'div');
+    });
   });
 
   describeWithMockConnection('getSourceLocation', () => {

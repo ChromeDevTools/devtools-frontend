@@ -333,6 +333,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
               .variant=${Buttons.Button.Variant.OUTLINED}
               .iconName=${'smart-assistant'}
               data-insights-ask-ai
+              jslog=${VisualLogging.action(`timeline.insight-ask-ai.${this.internalName}`).track({click: true})}
               @click=${this.#askAIButtonClick}
             >Ask AI</devtools-button>
           </div>

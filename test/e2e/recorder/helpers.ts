@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assert} from 'chai';
 import type {ElementHandle, Page} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
@@ -19,7 +20,6 @@ import {
   waitFor,
   waitForAria,
 } from '../../../test/shared/helper.js';
-import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
 
 const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller';
 const TEST_RECORDING_NAME = 'New Recording';
@@ -96,10 +96,10 @@ async function createRecording(name: string, selectorAttribute?: string) {
 }
 
 export async function createAndStartRecording(
-    name: string,
+    name?: string,
     selectorAttribute?: string,
 ) {
-  await createRecording(name, selectorAttribute);
+  await createRecording(name ?? TEST_RECORDING_NAME, selectorAttribute);
   const onRecordingStarted = onRecordingStateChanged();
   await click('devtools-control-button');
   await waitFor('devtools-recording-view');
@@ -160,31 +160,71 @@ interface RecordingSnapshotOptions {
    * @defaultValue `false`
    */
   offsets?: boolean;
+  /**
+   * @defaultValue `true`
+   */
+  expectCommon?: boolean;
+  resource?: string;
 }
 
-export const preprocessRecording = (
+export const processAndVerifyBaseRecording = (
     recording: unknown,
     options: RecordingSnapshotOptions = {},
     ) => {
+  const {
+    offsets = false,
+    expectCommon = true,
+    resource = 'recorder/recorder.html',
+  } = options;
+
   let value = JSON.stringify(recording).replaceAll(
       `:${getTestServerPort()}`,
       ':<test-port>',
   );
   value = value.replaceAll('\u200b', '');
-  if (!options.offsets) {
+  if (!offsets) {
     value = value.replaceAll(
         /,?"(?:offsetY|offsetX)":[0-9]+(?:\.[0-9]+)?/g,
         '',
     );
   }
-  return JSON.parse(value.trim());
-};
 
-export const assertRecordingMatchesSnapshot = (
-    recording: unknown,
-    options: RecordingSnapshotOptions = {},
-    ) => {
-  assertMatchesJSONSnapshot(preprocessRecording(recording, options));
+  const parsed = JSON.parse(value.trim());
+  if (expectCommon) {
+    assert.strictEqual(
+        parsed.title,
+        'New Recording',
+    );
+    delete parsed.title;
+    assert.deepEqual(
+        parsed.steps[0],
+        {
+          type: 'setViewport',
+          width: 1280,
+          height: 720,
+          deviceScaleFactor: 1,
+          isMobile: false,
+          hasTouch: false,
+          isLandscape: false
+        },
+    );
+    assert.deepEqual(
+        parsed.steps[1],
+        {
+          type: 'navigate',
+          url: `https://localhost:<test-port>/test/e2e/resources/${resource}`,
+          assertedEvents: [{
+            type: 'navigation',
+            url: `https://localhost:<test-port>/test/e2e/resources/${resource}`,
+            title: '',
+          }]
+        },
+    );
+
+    parsed.steps = parsed.steps.slice(2);
+  }
+
+  return parsed;
 };
 
 async function setCode(flow: string) {
@@ -257,7 +297,7 @@ export async function setupRecorderWithScriptAndReplay(
   await onceFinished;
 }
 
-export async function getCurrentRecording(): Promise<unknown> {
+export async function getCurrentRecording() {
   const {frontend} = getBrowserAndPages();
   await frontend.bringToFront();
   const controller = await $(RECORDER_CONTROLLER_TAG_NAME);

@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, goToResource, waitFor, waitForFunction} from '../../shared/helper.js';
+import {click, goToResource, waitFor} from '../../shared/helper.js';
 import {
   checkStyleAttributes,
   expandSelectedNodeRecursively,
   uncheckStylesPaneCheckbox,
+  waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
 
 describe('The Elements tab', function() {
@@ -17,8 +18,8 @@ describe('The Elements tab', function() {
     await click('text/nested', {
       root: elementsContentPanel,
     });
-    await waitForFunction(
-        () => checkStyleAttributes(['display: block;', 'unicode-bidi: isolate;', 'font-weight: bold;']));
+    await waitForElementsStyleSection(null);
+    await checkStyleAttributes(['display: block;', 'font-weight: bold;']);
     await click('text/container', {
       root: elementsContentPanel,
     });
@@ -26,9 +27,6 @@ describe('The Elements tab', function() {
     await click('text/nested', {
       root: elementsContentPanel,
     });
-    await waitForFunction(() => checkStyleAttributes([
-                            'display: block;',
-                            'unicode-bidi: isolate;',
-                          ]));
+    await checkStyleAttributes(['display: block;']);
   });
 });

@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
 import metricCardStylesRaw from './metricCard.css.js';
@@ -629,7 +629,7 @@ export class MetricCard extends HTMLElement {
             title=${this.#getHelpTooltip()}
             .iconName=${'help'}
             .variant=${Buttons.Button.Variant.ICON}
-            @click=${() => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(helpLink)}
+            @click=${() => UI.UIUtils.openInNewTab(helpLink)}
           ></devtools-button>
         </h3>
         <div tabindex="0" class="metric-values-section"

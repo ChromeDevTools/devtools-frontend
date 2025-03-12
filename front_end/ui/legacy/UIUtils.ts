@@ -1560,54 +1560,6 @@ export function measureTextWidth(context: CanvasRenderingContext2D, text: string
 
 let measureTextWidthCache: Map<string, Map<string, number>>|null = null;
 
-/**
- * Adds 'utm_source' and optionally 'utm_campaign' search parameters to the `url`.
- *
- * If the `url` doesn't have an 'utm_source' search parameter already, we'll add
- * 'utm_source=devtools' to the `url`.
- *
- * If the `url` doesn't have an 'utm_campaign' search parameter already and the
- * optional `channel` parameter (which defaults to the Chrome release channel
- * inferred from the `HostConfig`) is not undefined, we'll append a new search
- * parameter 'utm_campagin=<channel>' to the `url`.
- *
- * @param url the URL to enrich.
- * @param channel the optional channel, which defaults to the channel information
- *                from the `HostConfig` for branded Chrome builds.
- * @return the `url` with the additional UTM parameters.
- * @see https://en.wikipedia.org/wiki/UTM_parameters
- */
-export function addUTMParametersToURL(
-    url: URL|Platform.DevToolsPath.UrlString,
-    channel = Root.Runtime.hostConfig.channel): Platform.DevToolsPath.UrlString {
-  const urlObject = new URL(url);
-  if (!urlObject.searchParams.has('utm_source')) {
-    urlObject.searchParams.append('utm_source', 'devtools');
-  }
-  if (!urlObject.searchParams.has('utm_campaign') && typeof channel === 'string') {
-    urlObject.searchParams.append('utm_campaign', channel);
-  }
-  return Platform.DevToolsPath.urlString`${urlObject}`;
-}
-
-/**
- * Wrapper around `addUTMParametersToURL`, which only updates URLs to Google
- * owned properties.
- *
- * We only enrich `url` if the host is one of 'web.dev', 'developers.google.com',
- * or 'developer.chrome.com'.
- *
- * @param url the URL to enrich.
- * @return the `url` with the additional UTM parameters.
- */
-export function addUTMParametersToURLIfNecessary(url: Platform.DevToolsPath.UrlString):
-    Platform.DevToolsPath.UrlString {
-  if (/(\/\/developers.google.com\/|\/\/web.dev\/|\/\/developer.chrome.com\/)/.test(url)) {
-    return addUTMParametersToURL(url);
-  }
-  return url;
-}
-
 export function loadImage(url: string): Promise<HTMLImageElement|null> {
   return new Promise(fulfill => {
     const image = new Image();
@@ -1961,4 +1913,36 @@ export function measuredScrollbarWidth(document?: Document|null): number {
   cachedMeasuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
   document.body.removeChild(scrollDiv);
   return cachedMeasuredScrollbarWidth;
+}
+
+/**
+ * Opens the given `url` in a new Chrome tab.
+ *
+ * If the `url` is a Google owned documentation page (currently that includes
+ * `web.dev`, `developers.google.com`, and `developer.chrome.com`), the `url`
+ * will also be checked for UTM parameters:
+ *
+ * - If no `utm_source` search parameter is present, this method will add a new
+ *   search parameter `utm_source=devtools` to `url`.
+ * - If no `utm_campaign` search parameter is present, and DevTools is running
+ *   within a branded build, this method will add `utm_campaign=<channel>` to
+ *   the search parameters, with `<channel>` being the release channel of
+ *   Chrome ("stable", "beta", "dev", or "canary").
+ *
+ * @param url the URL to open in a new tab.
+ * @throws TypeError if `url` is not a valid URL.
+ * @see https://en.wikipedia.org/wiki/UTM_parameters
+ */
+export function openInNewTab(url: URL|string): void {
+  url = new URL(`${url}`);
+  if (['developer.chrome.com', 'developers.google.com', 'web.dev'].includes(url.hostname)) {
+    if (!url.searchParams.has('utm_source')) {
+      url.searchParams.append('utm_source', 'devtools');
+    }
+    const {channel} = Root.Runtime.hostConfig;
+    if (!url.searchParams.has('utm_campaign') && typeof channel === 'string') {
+      url.searchParams.append('utm_campaign', channel);
+    }
+  }
+  Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(Platform.DevToolsPath.urlString`${url}`);
 }

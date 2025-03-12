@@ -82,9 +82,7 @@ export class FreDialog {
         </main>
         <footer>
           <devtools-button
-            @click=${() => {
-              Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(learnMoreHref);
-            }}
+            @click=${() => UI.UIUtils.openInNewTab(learnMoreHref)}
             .jslogContext=${'fre-disclaimer.learn-more'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
             ${i18nString(UIStrings.learnMore)}

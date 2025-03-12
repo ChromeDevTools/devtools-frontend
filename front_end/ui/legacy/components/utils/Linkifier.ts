@@ -818,7 +818,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
         section: 'reveal',
         title: UI.UIUtils.openLinkExternallyLabel(),
         jslogContext: 'open-in-new-tab',
-        handler: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url),
+        handler: () => UI.UIUtils.openInNewTab(url),
       });
       result.push({
         section: 'clipboard',

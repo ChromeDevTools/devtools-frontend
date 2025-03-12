@@ -12,9 +12,9 @@ import type {ContextMenu, Provider} from './ContextMenu.js';
 import {html as xhtml} from './Fragment.js';
 import {Tooltip} from './Tooltip.js';
 import {
-  addUTMParametersToURLIfNecessary,
   copyLinkAddressLabel,
   MaxLengthForDisplayedURLs,
+  openInNewTab,
   openLinkExternallyLabel,
 } from './UIUtils.js';
 import {XElement} from './XElement.js';
@@ -55,7 +55,7 @@ export class XLink extends XElement {
     this.onClick = (event: Event) => {
       event.consume(true);
       if (this.hrefInternal) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);
+        openInNewTab(this.hrefInternal);
       }
       this.dispatchEvent(new Event('x-link-invoke'));
     };
@@ -63,7 +63,7 @@ export class XLink extends XElement {
       if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
         event.consume(true);
         if (this.hrefInternal) {
-          Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.hrefInternal);
+          openInNewTab(this.hrefInternal);
         }
       }
       this.dispatchEvent(new Event('x-link-invoke'));
@@ -92,14 +92,12 @@ export class XLink extends XElement {
         newValue = '';
       }
       let href: Platform.DevToolsPath.UrlString|null = null;
-      let url: URL|null = null;
       try {
-        url = new URL(addUTMParametersToURLIfNecessary(newValue as Platform.DevToolsPath.UrlString));
-        href = url.toString() as Platform.DevToolsPath.UrlString;
+        const url = new URL(newValue);
+        if (url.protocol !== 'javascript:') {
+          href = Platform.DevToolsPath.urlString`${url}`;
+        }
       } catch {
-      }
-      if (url && url.protocol === 'javascript:') {
-        href = null;
       }
 
       this.hrefInternal = href;
@@ -145,7 +143,7 @@ export class ContextMenuProvider implements Provider<Node> {
     const node: XLink = targetNode;
     contextMenu.revealSection().appendItem(openLinkExternallyLabel(), () => {
       if (node.href) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(node.href);
+        openInNewTab(node.href);
       }
     }, {jslogContext: 'open-in-new-tab'});
     contextMenu.revealSection().appendItem(copyLinkAddressLabel(), () => {

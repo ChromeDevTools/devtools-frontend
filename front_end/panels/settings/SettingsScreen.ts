@@ -33,7 +33,6 @@ import '../../ui/components/cards/cards.js';
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Cards from '../../ui/components/cards/cards.js';
@@ -504,8 +503,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
         jslogContext: `${experiment.name}-documentation`,
         title: i18nString(UIStrings.learnMore),
       };
-      linkButton.addEventListener(
-          'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(experimentLink));
+      linkButton.addEventListener('click', () => UI.UIUtils.openInNewTab(experimentLink));
       linkButton.classList.add('link-icon');
 
       p.appendChild(linkButton);
@@ -555,8 +553,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         void SettingsScreen.showSettingsScreen({focusTabHeader: true} as ShowSettingsScreenOptions);
         return true;
       case 'settings.documentation':
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(UI.UIUtils.addUTMParametersToURL(
-            'https://developer.chrome.com/docs/devtools/' as Platform.DevToolsPath.UrlString));
+        UI.UIUtils.openInNewTab('https://developer.chrome.com/docs/devtools/');
         return true;
       case 'settings.shortcuts':
         void SettingsScreen.showSettingsScreen({name: 'keybinds', focusTabHeader: true});

@@ -5,9 +5,7 @@
 import '../../ui/components/cards/cards.js';
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -140,8 +138,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     };
     automaticallyIgnoreLinkButton.addEventListener(
         'click',
-        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-            'http://goo.gle/skip-third-party' as Platform.DevToolsPath.UrlString));
+        () => UI.UIUtils.openInNewTab(
+            'https://developer.chrome.com/docs/devtools/settings/ignore-list/#skip-third-party'));
     automaticallyIgnoreList.appendChild(automaticallyIgnoreLinkButton);
 
     const ignoreListAnonymousScripts = generalExclusionGroup.createChild('div', 'ignore-list-option');

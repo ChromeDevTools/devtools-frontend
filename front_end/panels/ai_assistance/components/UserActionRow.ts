@@ -302,7 +302,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
         {
           onSuggestionClick: this.onSuggestionClick,
           onRatingClick: this.#handleRateClick.bind(this),
-          onReportClick: () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL),
+          onReportClick: () => UI.UIUtils.openInNewTab(REPORT_URL),
           scrollSuggestionsScrollContainer: this.#scrollSuggestionsScrollContainer.bind(this),
           onSuggestionsScrollOrResize: this.#handleSuggestionsScrollOrResize.bind(this),
           onSubmit: this.#handleSubmit.bind(this),

@@ -60,7 +60,7 @@ import {isAiAssistancePatchingEnabled} from './PatchWidget.js';
 const {html} = Lit;
 
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
-const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
+const AI_ASSISTANCE_HELP = 'https://developer.chrome.com/docs/devtools/ai-assistance';
 const SCREENSHOT_QUALITY = 100;
 const SHOW_LOADING_STATE_TIMEOUT = 100;
 
@@ -857,7 +857,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onHistoryClick: this.#onHistoryClicked.bind(this),
           onDeleteClick: this.#onDeleteClicked.bind(this),
           onHelpClick: () => {
-            Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
+            UI.UIUtils.openInNewTab(AI_ASSISTANCE_HELP);
           },
           onSettingsClick: () => {
             void UI.ViewManager.ViewManager.instance().showView('chrome-ai');

@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {getReleaseNote} from './ReleaseNoteText.js';
@@ -70,8 +69,7 @@ let releaseNotesActionDelegateInstance: ReleaseNotesActionDelegate;
 export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     const releaseNote = getReleaseNote();
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-        releaseNote.link as Platform.DevToolsPath.UrlString);
+    UI.UIUtils.openInNewTab(releaseNote.link);
     return true;
   }
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReleaseNotesActionDelegate {
@@ -87,8 +85,7 @@ export class ReleaseNotesActionDelegate implements UI.ActionRegistration.ActionD
 let reportIssueActionDelegateInstance: ReportIssueActionDelegate;
 export class ReportIssueActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-        'https://goo.gle/devtools-bug' as Platform.DevToolsPath.UrlString);
+    UI.UIUtils.openInNewTab('https://goo.gle/devtools-bug');
     return true;
   }
   static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ReportIssueActionDelegate {

@@ -45,7 +45,7 @@ describe('The Privacy and security panel', function() {
 
     // Allow time for infobar to animate in before clicking the button
     await new Promise<void>(resolve => setTimeout(resolve, 550));
-    await click('.infobar-main-row .close-button', {root: infoBar});
+    await click('dt-close-button', {root: infoBar});
 
     // Infobar should be gone after clicking the close button
     infoBar.evaluate(el => assert.isNotNull(el));

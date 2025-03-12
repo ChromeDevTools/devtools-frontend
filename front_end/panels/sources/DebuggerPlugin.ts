@@ -430,7 +430,6 @@ export class DebuggerPlugin extends Plugin {
         [
           {
             text: i18nString(UIStrings.configure),
-            highlight: false,
             delegate:
                 UI.ViewManager.ViewManager.instance().showView.bind(UI.ViewManager.ViewManager.instance(), 'blackbox'),
             dismiss: false,
@@ -438,7 +437,6 @@ export class DebuggerPlugin extends Plugin {
           },
           {
             text: i18nString(UIStrings.removeFromIgnoreList),
-            highlight: false,
             delegate: unIgnoreList,
             buttonVariant: Buttons.Button.Variant.TONAL,
             dismiss: true,

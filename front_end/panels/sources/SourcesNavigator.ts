@@ -260,7 +260,6 @@ export class FilesNavigatorView extends NavigatorView {
           i18nString(UIStrings.automaticWorkspaceFolderDetected, {PH1: automaticFileSystem.root}),
           [{
             text: i18nString(UIStrings.automaticWorkspaceFolderConnect),
-            highlight: true,
             delegate: () => this.#automaticFileSystemManager.connectAutomaticFileSystem(/* addIfMissing= */ true),
             dismiss: true,
             jslogContext: 'automatic-workspace-folders.connect',

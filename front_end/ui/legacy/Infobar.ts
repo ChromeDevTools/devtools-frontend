@@ -20,10 +20,6 @@ const UIStrings = {
    */
   dontShowAgain: 'Don\'t show again',
   /**
-   *@description Text that indicates that a short message can be expanded to a detailed message
-   */
-  showMore: 'Show more',
-  /**
    *@description Text to close something
    */
   close: 'Close',
@@ -35,21 +31,16 @@ export class Infobar {
   element: HTMLElement;
   private readonly shadowRoot: ShadowRoot;
   private readonly contentElement: HTMLDivElement;
-  private readonly mainRow: HTMLElement;
-  private readonly detailsRows: HTMLElement;
-  private hasDetails: boolean;
-  private detailsMessage: string|Element;
+  private detailsRows?: HTMLElement;
   private readonly infoContainer: HTMLElement;
   private readonly infoMessage: HTMLElement;
   private infoText: HTMLElement;
   private readonly actionContainer: HTMLElement;
   private readonly disableSetting: Common.Settings.Setting<boolean>|null;
-  private readonly closeContainer: HTMLElement;
-  private readonly toggleElement: Buttons.Button.Button;
   private readonly closeButton: DevToolsCloseButton;
   private closeCallback: (() => void)|null;
-  #firstFocusableElement: HTMLElement|null = null;
   private parentView?: Widget;
+  mainRow: HTMLElement;
 
   constructor(
       type: Type, text: string, actions?: InfobarAction[], disableSetting?: Common.Settings.Setting<boolean>,
@@ -63,18 +54,12 @@ export class Infobar {
     this.shadowRoot = createShadowRootWithCoreStyles(this.element, {cssFile: infobarStyles});
 
     this.contentElement = this.shadowRoot.createChild('div', 'infobar infobar-' + type);
+    const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + '-icon');
+    this.contentElement.createChild('div', 'icon-container').appendChild(icon);
 
     this.mainRow = this.contentElement.createChild('div', 'infobar-main-row');
-    this.detailsRows = this.contentElement.createChild('div', 'infobar-details-rows hidden');
-    this.hasDetails = false;
-    this.detailsMessage = '';
-
     this.infoContainer = this.mainRow.createChild('div', 'infobar-info-container');
-
     this.infoMessage = this.infoContainer.createChild('div', 'infobar-info-message');
-
-    const icon = IconButton.Icon.create(TYPE_TO_ICON[type], type + '-icon');
-    this.infoMessage.appendChild(icon);
 
     this.infoText = this.infoMessage.createChild('div', 'infobar-info-text');
     this.infoText.textContent = text;
@@ -104,20 +89,11 @@ export class Infobar {
           jslogContext: action.jslogContext,
           variant: buttonVariant,
         });
-        if (action.highlight && !this.#firstFocusableElement) {
-          this.#firstFocusableElement = button;
-        }
         this.actionContainer.appendChild(button);
       }
     }
 
-    this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
-    this.toggleElement = createTextButton(
-        i18nString(UIStrings.showMore), this.onToggleDetails.bind(this),
-        {className: 'hidden show-more', jslogContext: 'show-more', variant: Buttons.Button.Variant.TEXT});
-    this.toggleElement.setAttribute('role', 'link');
-    this.closeContainer.appendChild(this.toggleElement);
-    this.closeButton = this.closeContainer.createChild('dt-close-button', 'close-button');
+    this.closeButton = this.contentElement.createChild('dt-close-button', 'icon-container');
     this.closeButton.setTabbable(true);
     this.closeButton.setSize(Buttons.Button.Size.SMALL);
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
@@ -130,16 +106,6 @@ export class Infobar {
     this.contentElement.addEventListener('keydown', event => {
       if (event.keyCode === Keys.Esc.code) {
         this.dispose();
-        event.consume();
-        return;
-      }
-
-      if (event.target !== this.contentElement) {
-        return;
-      }
-
-      if (event.key === 'Enter' && this.hasDetails) {
-        this.onToggleDetails();
         event.consume();
         return;
       }
@@ -208,23 +174,16 @@ export class Infobar {
     this.dispose();
   }
 
-  private onToggleDetails(): void {
-    this.detailsRows.classList.remove('hidden');
-    this.toggleElement.remove();
-    this.onResize();
-    ARIAUtils.alert(
-        typeof this.detailsMessage === 'string' ? this.detailsMessage : this.detailsMessage.textContent || '');
-    if (this.#firstFocusableElement) {
-      this.#firstFocusableElement.focus();
-    } else {
-      this.closeButton.focus();
-    }
-  }
-
   createDetailsRowMessage(message: Element|string): Element {
-    this.hasDetails = true;
-    this.detailsMessage = message;
-    this.toggleElement.classList.remove('hidden');
+    if (!this.detailsRows) {
+      const details = document.createElement('details');
+      const summary = details.createChild('summary');
+      const triangleIcon = IconButton.Icon.create('arrow-drop-down');
+      summary.createChild('div', 'icon-container').appendChild(triangleIcon);
+      this.contentElement.insertBefore(details, this.mainRow);
+      summary.appendChild(this.mainRow);
+      this.detailsRows = details.createChild('div', 'infobar-details-rows');
+    }
     const infobarDetailsRow = this.detailsRows.createChild('div', 'infobar-details-row');
     const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
     if (typeof message === 'string') {
@@ -237,7 +196,6 @@ export class Infobar {
 }
 export interface InfobarAction {
   text: string;
-  highlight: boolean;
   delegate: (() => void)|null;
   dismiss: boolean;
   buttonVariant?: Buttons.Button.Variant;

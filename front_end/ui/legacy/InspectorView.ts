@@ -485,7 +485,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
           [
             {
               text: i18nString(UIStrings.reloadDebuggedTab),
-              highlight: true,
               delegate: () => {
                 reloadDebuggedTab();
                 this.removeDebuggedTabReloadRequiredWarning();
@@ -518,7 +517,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
           [
             {
               text: i18nString(UIStrings.reloadDevtools),
-              highlight: true,
               delegate: () => reloadDevTools(),
               dismiss: false,
               buttonVariant: Buttons.Button.Variant.PRIMARY,
@@ -542,7 +540,6 @@ export class InspectorView extends VBox implements ViewLocationResolver {
           [
             {
               text: i18nString(UIStrings.selectFolder),
-              highlight: true,
               delegate: () => callback(),
               dismiss: true,
               buttonVariant: Buttons.Button.Variant.TONAL,
@@ -608,7 +605,6 @@ function createLocaleInfobar(): Infobar {
       [
         {
           text: i18nString(UIStrings.setToBrowserLanguage),
-          highlight: true,
           delegate: () => {
             languageSetting.set('browserLanguage');
             getDisableLocaleInfoBarSetting().set(true);
@@ -619,7 +615,6 @@ function createLocaleInfobar(): Infobar {
         },
         {
           text: i18nString(UIStrings.setToSpecificLanguage, {PH1: closestSupportedLanguageInCurrentLocale}),
-          highlight: true,
           delegate: () => {
             languageSetting.set(closestSupportedLocale);
             getDisableLocaleInfoBarSetting().set(true);

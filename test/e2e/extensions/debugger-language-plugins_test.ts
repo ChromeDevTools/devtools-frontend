@@ -652,12 +652,9 @@ describe('The Debugger Language Plugins', () => {
     const incompleteMessage = 'The debug information for function $Main is incomplete';
     const infoBar = await waitFor(`.infobar-error[aria-label="${incompleteMessage}"`);
 
-    assert.deepEqual(await getTextContent('devtools-button', infoBar), 'Show more');
+    await click('summary', {root: infoBar});
+    assert.deepEqual(await getTextContent('devtools-button', infoBar), 'Show request');
     await click('devtools-button', {root: infoBar});
-
-    const detailsRowMessage = await waitFor('.infobar-row-message');
-    assert.deepEqual(await getTextContent('devtools-button', detailsRowMessage), 'Show request');
-    await click('devtools-button', {root: detailsRowMessage});
 
     await checkIfTabExistsInDrawer(DEVELOPER_RESOURCES_TAB_SELECTOR);
 

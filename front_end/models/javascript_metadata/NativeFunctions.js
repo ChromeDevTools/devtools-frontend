@@ -2042,7 +2042,7 @@ export const NativeFunctions = [
   },
   {
     name: "write",
-    signatures: [["...text"],["text"]],
+    signatures: [["...text"],["text"],["text1","...text"]],
     receivers: ["Document"]
   },
   {
@@ -2421,7 +2421,7 @@ export const NativeFunctions = [
   },
   {
     name: "writeln",
-    signatures: [["...text"],["text"]]
+    signatures: [["...text"],["text"],["text1","...text"]]
   },
   {
     name: "elementFromPoint",

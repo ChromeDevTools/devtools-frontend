@@ -6,9 +6,11 @@ import '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -188,6 +190,9 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface ViewInput {
   cookieRows: IssuesManager.CookieIssue.CookieReportInfo[];
   filterItems: UI.FilterBar.Item[];
+  filters: TextUtils.TextUtils.ParsedFilter[];
+  searchText: string;
+  onSearchFilterChanged: (e: CustomEvent<string>) => void;
   onFilterChanged: () => void;
   onSortingChanged: () => void;
   populateContextMenu: (event: CustomEvent<{menu: UI.ContextMenu.ContextMenu, element: HTMLElement}>) => void;
@@ -213,6 +218,7 @@ export class CookieReportView extends UI.Widget.VBox {
   #cookieRows = new Map<string, IssuesManager.CookieIssue.CookieReportInfo>();
   #view: View;
   filterItems: UI.FilterBar.Item[] = [];
+  searchText: string;
 
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
     // clang-format off
@@ -224,21 +230,32 @@ export class CookieReportView extends UI.Widget.VBox {
             </div>
             ${input.cookieRows.length > 0 ?
               html`
-                <devtools-named-bit-set-filter
-                  class="filter"
-                  aria-label="Third-party cookie status filters"
-                  @filterChanged=${input.onFilterChanged}
-                  .options=${{items: input.filterItems}}
-                  ${ref((el?: Element) => {
-                    if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
-                      output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
-                    }
-                  })}
-                ></devtools-named-bit-set-filter>
+                <div class="filters-container">
+                  <devtools-toolbar>
+                    <devtools-toolbar-input
+                      type="filter"
+                      style="flex-grow: 0.4;"
+                      @change=${input.onSearchFilterChanged}
+                      value=${input.searchText}
+                    ></devtools-toolbar-input>
+                  </devtools-toolbar>
+                  <devtools-named-bit-set-filter
+                    class="filter"
+                    aria-label="Third-party cookie status filters"
+                    @filterChanged=${input.onFilterChanged}
+                    .options=${{items: input.filterItems}}
+                    ${ref((el?: Element) => {
+                      if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
+                        output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
+                      }
+                    })}
+                  ></devtools-named-bit-set-filter>
+                </div>
                 <!-- @ts-ignore -->
                 <devtools-data-grid
                   name=${i18nString(UIStrings.report)}
                   striped
+                  .filters=${input.filters}
                   @sort=${input.onSortingChanged}
                   @contextmenu=${input.populateContextMenu.bind(input)}
                 >
@@ -287,6 +304,7 @@ export class CookieReportView extends UI.Widget.VBox {
     super(true, undefined, element);
     this.#view = view;
     this.registerRequiredCSS(cookieReportViewStyles);
+    this.searchText = Common.Settings.Settings.instance().createSetting('cookie-report-search-query', '').get();
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
@@ -313,7 +331,14 @@ export class CookieReportView extends UI.Widget.VBox {
         }
         return true;
       }),
+      filters: [{
+        key: 'name,domain',
+        regex: RegExp(Platform.StringUtilities.escapeForRegExp(this.searchText), 'i'),
+        negative: false,
+      }],
+      searchText: this.searchText,
       filterItems: this.filterItems,
+      onSearchFilterChanged: (e: CustomEvent<string>) => this.onSearchFilterChanged(e),
       onFilterChanged: () => this.requestUpdate(),
       onSortingChanged: () => this.requestUpdate(),
       populateContextMenu: this.populateContextMenu.bind(this),
@@ -342,6 +367,12 @@ export class CookieReportView extends UI.Widget.VBox {
     if (info) {
       this.#cookieRows.set(issue.cookieId(), info);
     }
+  }
+
+  onSearchFilterChanged(e: CustomEvent<string>): void {
+    this.searchText = e.detail ? e.detail : '';
+    Common.Settings.Settings.instance().createSetting('cookie-report-search-query', '').set(this.searchText);
+    this.requestUpdate();
   }
 
   #buildFilterItems(): UI.FilterBar.Item[] {

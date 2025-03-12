@@ -876,6 +876,7 @@ export const knownContextValues = new Set([
   'cookie-flag-controls',
   'cookie-preview',
   'cookie-report',
+  'cookie-report-search-query',
   'cookie-view-show-decoded',
   'cookies',
   'cookies-data',

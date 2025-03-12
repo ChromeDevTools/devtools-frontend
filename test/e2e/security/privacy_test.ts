@@ -1,10 +1,12 @@
 // Copyright 2020 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, waitForAria} from '../../shared/helper.js';
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
+import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
   navigateToSecurityTab,
 } from '../helpers/security-helpers.js';
@@ -49,5 +51,60 @@ describe('The Privacy and security panel', function() {
 
     // Infobar should be gone after clicking the close button
     infoBar.evaluate(el => assert.isNotNull(el));
+  });
+
+  it('filters rows when the search filter is populated', async () => {
+    await navigateToSecurityTab(/* privcayEnabled=*/ true);
+    await click('[aria-label="Third-party cookies"]');
+
+    // Populate with test issues to be filtered
+    const {frontend} = getBrowserAndPages();
+    frontend.evaluate(() => {
+      const issue1 = {
+        code: 'CookieIssue',
+        details: {
+          cookieIssueDetails: {
+            cookie: {
+              name: 'a',
+              path: '/',
+              domain: 'a.test',
+            },
+            cookieExclusionReasons: ['ExcludeThirdPartyPhaseout'],
+            cookieWarningReasons: [],
+            operation: 'ReadCookie',
+            cookieUrl: 'a.test',
+          },
+        },
+      };
+      // @ts-expect-error
+      window.addIssueForTest(issue1);
+
+      const issue2 = {
+        code: 'CookieIssue',
+        details: {
+          cookieIssueDetails: {
+            cookie: {
+              name: 'b',
+              path: '/',
+              domain: 'b.test',
+            },
+            cookieExclusionReasons: ['ExcludeThirdPartyPhaseout'],
+            cookieWarningReasons: [],
+            operation: 'ReadCookie',
+            cookieUrl: 'b.test',
+          },
+        },
+      };
+      // @ts-expect-error
+      window.addIssueForTest(issue2);
+    });
+    assert.lengthOf(await getDataGridRows(2, undefined, true), 2);
+
+    const searchFilter = await waitForAria('Filter');
+    searchFilter.evaluate(el => assert.isNotNull(el));
+    searchFilter.type('a.test');
+
+    // The second issue should be filtered out.
+    assert.lengthOf(await getDataGridRows(1, undefined, true), 1);
   });
 });

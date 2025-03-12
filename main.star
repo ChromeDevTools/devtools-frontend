@@ -40,6 +40,22 @@ def analysis_bindings():
         ),
     ]
 
+def rdb_baseline_bindings():
+    return [
+        luci.binding(
+            roles = "role/resultdb.baselineWriter",
+            users = [
+                "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com",
+            ],
+        ),
+        luci.binding(
+            roles = "role/resultdb.baselineReader",
+            users = [
+                "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com",
+            ],
+        ),
+    ]
+
 luci.project(
     name = "devtools-frontend",
     buildbucket = "cr-buildbucket.appspot.com",
@@ -94,7 +110,7 @@ luci.project(
                 "chrome-gold@chops-service-accounts.iam.gserviceaccount.com",
             ],
         ),
-    ] + analysis_bindings(),
+    ] + analysis_bindings() + rdb_baseline_bindings(),
 )
 
 lucicfg.emit(

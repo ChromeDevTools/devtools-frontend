@@ -413,7 +413,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
                 SPECULATION_EXPLANATION_URL, i18nString(UIStrings.learnMore), 'x-link', undefined, 'learn-more')}
           </div>
         </div>
-        <devtools-split-view .horizontal=${true} style="--min-sidebar-size: 0px">
+        <devtools-split-view sidebar-position="second">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.preloadingGrid}
           </div>

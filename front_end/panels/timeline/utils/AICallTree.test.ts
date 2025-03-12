@@ -239,7 +239,12 @@ Node: 5 – Compile code`.trim());
     });
     assert.isOk(interaction);
     const timings = Trace.Helpers.Timing.eventTimingsMicroSeconds(interaction);
-    const tree = Utils.AICallTree.AICallTree.fromTime(timings.startTime, timings.endTime, parsedTrace);
+    const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(timings.startTime, timings.endTime);
+    const tree = Utils.AICallTree.AICallTree.fromTimeOnThread({
+      thread: {pid: interaction.pid, tid: interaction.tid},
+      parsedTrace,
+      bounds,
+    });
     assert.isOk(tree);
     const output = tree.serialize();
     const totalNodes = output.split('\n').filter(l => l.startsWith('Node:')).length;

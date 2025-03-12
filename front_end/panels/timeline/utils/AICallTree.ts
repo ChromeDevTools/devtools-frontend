@@ -19,6 +19,11 @@ function depthFirstWalk(
   }
 }
 
+export interface FromTimeOnThreadOptions {
+  thread: {pid: Trace.Types.Events.ProcessID, tid: Trace.Types.Events.ThreadID};
+  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  bounds: Trace.Types.Timing.TraceWindowMicro;
+}
 export class AICallTree {
   constructor(
       public selectedNode: Trace.Extras.TraceTree.Node|null,
@@ -29,36 +34,17 @@ export class AICallTree {
   }
 
   /**
-   * Builds a call tree representing all calls within the given timeframe.
-   * Only includes events that:
-   * 1. Are on the main thread
-   * 2. Are known to the Renderer / Samples handler.
-   * 3. Are at least 0.05% in duration of the total range.
+   * Builds a call tree representing all calls within the given timeframe for
+   * the provided thread.
+   * Events that are less than 0.05% of the range duration are removed.
    */
-  static fromTime(
-      start: Trace.Types.Timing.Micro, end: Trace.Types.Timing.Micro,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace): AICallTree|null {
-    const threads = Trace.Handlers.Threads.threadsInTrace(parsedTrace);
-    let mainThread = threads.find(thread => {
-      return thread.type === Trace.Handlers.Threads.ThreadType.MAIN_THREAD;
-    });
-    if (!mainThread) {
-      // Pull out the first (and most likely only) CPU Profile to support Node CPU Profiles
-      mainThread = threads.find(thread => {
-        return thread.type === Trace.Handlers.Threads.ThreadType.CPU_PROFILE;
-      });
-    }
-    if (!mainThread) {
-      return null;
-    }
-
-    const selectedEventBounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(start, end);
-    const threadEvents = parsedTrace.Renderer.processes.get(mainThread.pid)?.threads.get(mainThread.tid)?.entries;
+  static fromTimeOnThread({thread, parsedTrace, bounds}: FromTimeOnThreadOptions): AICallTree|null {
+    const threadEvents = parsedTrace.Renderer.processes.get(thread.pid)?.threads.get(thread.tid)?.entries;
 
     if (!threadEvents) {
       return null;
     }
-    const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, selectedEventBounds));
+    const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, bounds));
 
     const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
 
@@ -70,15 +56,14 @@ export class AICallTree {
     // or tweak it based on range size rather than using a blanket value. Or we
     // could consider limiting the depth when we serialize. Or some
     // combination!
-    const rangeDuration = end - start;
-    const minDuration = Trace.Types.Timing.Micro(rangeDuration * 0.005);
+    const minDuration = Trace.Types.Timing.Micro(bounds.range * 0.005);
     const minDurationFilter = new MinDurationFilter(minDuration);
     const compileCodeFilter = new ExcludeCompileCodeFilter();
     // Build a tree bounded by the selected event's timestamps, and our other filters applied
     const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(overlappingEvents, {
-      filters: [compileCodeFilter, visibleEventsFilter, minDurationFilter],
-      startTime: Trace.Helpers.Timing.microToMilli(start),
-      endTime: Trace.Helpers.Timing.microToMilli(end),
+      filters: [minDurationFilter, compileCodeFilter, visibleEventsFilter],
+      startTime: Trace.Helpers.Timing.microToMilli(bounds.min),
+      endTime: Trace.Helpers.Timing.microToMilli(bounds.max),
       doNotAggregate: true,
       includeInstantEvents: true,
     });

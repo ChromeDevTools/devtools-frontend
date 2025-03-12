@@ -19,11 +19,11 @@ import {
 } from '../../../test/shared/helper.js';
 
 import {
+  assertRecordingMatchesSnapshot,
   clickSelectButtonItem,
   createAndStartRecording,
   enableAndOpenRecorderPanel,
   getCurrentRecording,
-  processAndVerifyBaseRecording,
   stopRecording,
   toggleCodeView,
 } from './helpers.js';
@@ -56,7 +56,7 @@ describe('Recorder', function() {
   describe('UI', () => {
     beforeEach(async () => {
       await enableAndOpenRecorderPanel('recorder/recorder.html');
-      await createAndStartRecording();
+      await createAndStartRecording('Test');
     });
 
     describe('Record', () => {
@@ -144,7 +144,7 @@ describe('Recorder', function() {
         });
 
         const recording = await getCurrentRecording();
-        assert.strictEqual(recording.title, 'New Recording with Hello world');
+        assertRecordingMatchesSnapshot(recording);
       });
 
       describe('Selector picker', () => {
@@ -191,24 +191,7 @@ describe('Recorder', function() {
           await expandStep(frontend, 2);
           await pickSelectorsForQuery('#test-button', frontend, target);
           const recording = await getCurrentRecording();
-          assert.deepEqual(processAndVerifyBaseRecording(recording), {
-            steps: [{
-              type: 'click',
-              assertedEvents: [{
-                type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
-                title: ''
-              }],
-              target: 'main',
-              selectors: [
-                'aria/Test button',
-                '#test-button',
-                'xpath///*[@id="test-button"]',
-                'pierce/#test-button',
-                'text/Test button',
-              ]
-            }]
-          });
+          assertRecordingMatchesSnapshot(recording);
         });
 
         // Flaky test
@@ -229,24 +212,7 @@ describe('Recorder', function() {
           await pickSelectorsForQuery('#test-button', frontend, target);
 
           let recording = await getCurrentRecording();
-          assert.deepEqual(processAndVerifyBaseRecording(recording), {
-            steps: [{
-              type: 'click',
-              assertedEvents: [{
-                type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
-                title: ''
-              }],
-              target: 'main',
-              selectors: [
-                'aria/Test button',
-                '#test-button',
-                'xpath///*[@id="test-button"]',
-                'pierce/#test-button',
-                'text/Test button',
-              ]
-            }]
-          });
+          assertRecordingMatchesSnapshot(recording);
 
           await pickSelectorsForQuery(
               'a[href="recorder.html"]',
@@ -255,24 +221,7 @@ describe('Recorder', function() {
           );
 
           recording = await getCurrentRecording();
-          assert.deepEqual(processAndVerifyBaseRecording(recording), {
-            steps: [{
-              type: 'click',
-              assertedEvents: [{
-                type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
-                title: ''
-              }],
-              target: 'main',
-              selectors: [
-                'aria/Back to Page 1',
-                'a',
-                'xpath//html/body/a',
-                'pierce/a',
-                'text/Back to Page',
-              ]
-            }]
-          });
+          assertRecordingMatchesSnapshot(recording);
         });
 
         it('should select through the selector picker during recording', async () => {
@@ -292,27 +241,7 @@ describe('Recorder', function() {
           await stopRecording();
 
           const recording = await getCurrentRecording();
-          assert.deepEqual(
-              processAndVerifyBaseRecording(recording),
-              {
-                steps: [{
-                  type: 'click',
-                  assertedEvents: [{
-                    type: 'navigation',
-                    url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder2.html',
-                    title: ''
-                  }],
-                  target: 'main',
-                  selectors: [
-                    'aria/Test button',
-                    '#test-button',
-                    'xpath///*[@id="test-button"]',
-                    'pierce/#test-button',
-                    'text/Test button',
-                  ]
-                }]
-              },
-          );
+          assertRecordingMatchesSnapshot(recording);
         });
       });
     });
@@ -341,47 +270,7 @@ describe('Recorder', function() {
         await waitForAnimationFrame();
 
         const recording = await getCurrentRecording();
-
-        assert.deepEqual(processAndVerifyBaseRecording(recording, {expectCommon: false}), {
-          title: 'New Recording',
-          steps: [
-            {
-              type: 'emulateNetworkConditions',
-              download: 50000,
-              upload: 50000,
-              latency: 2000,
-            },
-            {
-              type: 'setViewport',
-              width: 1280,
-              height: 720,
-              deviceScaleFactor: 1,
-              isMobile: false,
-              hasTouch: false,
-              isLandscape: false
-            },
-            {
-              type: 'navigate',
-              url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
-              assertedEvents: [{
-                type: 'navigation',
-                url: 'https://localhost:<test-port>/test/e2e/resources/recorder/recorder.html',
-                title: ''
-              }]
-            },
-            {
-              type: 'click',
-              target: 'main',
-              selectors: [
-                ['aria/Test Button'],
-                ['#test'],
-                ['xpath///*[@id="test"]'],
-                ['pierce/#test'],
-                ['text/Test Button'],
-              ]
-            }
-          ]
-        });
+        assertRecordingMatchesSnapshot(recording);
       });
 
       it('should change the user flow timeout', async () => {
@@ -457,7 +346,7 @@ describe('Recorder', function() {
   describe('Recording list', () => {
     beforeEach(async () => {
       await enableAndOpenRecorderPanel('recorder/recorder.html');
-      await createAndStartRecording();
+      await createAndStartRecording('Test');
     });
 
     it('can delete a recording from the list', async () => {

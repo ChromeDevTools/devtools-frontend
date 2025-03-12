@@ -120,7 +120,8 @@ const UIStrings = {
    */
   jumpToAnimationsPanel: 'Jump to Animations panel',
   /**
-   *@description Text displayed in a tooltip shown when hovering over a var() CSS function in the Styles pane when the custom property in this function does not exist. The parameter is the name of the property.
+   *@description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
+   *             defined and can't be linked to.
    *@example {--my-custom-property-name} PH1
    */
   sIsNotDefined: '{PH1} is not defined',
@@ -217,6 +218,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
     UI.UIUtils.createTextChild(swatch, match.text);
     swatch.data = {
       text: match.text,
+      title: resolvedProperty ? undefined : i18nString(UIStrings.sIsNotDefined, {PH1: match.text}),
       isDefined: Boolean(resolvedProperty),
       onLinkActivate: () => resolvedProperty && this.#stylesPane.jumpToDeclaration(resolvedProperty),
       jslogContext: 'css-wide-keyword-link',
@@ -287,7 +289,6 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? match.fallbackValue();
     const onLinkActivate = (name: string): void => this.#handleVarDefinitionActivate(declaration ?? name);
-    const linkTitle = computedValue ?? i18nString(UIStrings.sIsNotDefined, {PH1: match.name});
     const varSwatch = document.createElement('span');
 
     const substitution = context.tracing?.substitution();
@@ -318,19 +319,17 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         html`<span
           data-title=${computedValue || ''}
           jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
-          >${varCall}(<devtools-base-link-swatch
+          >${varCall}(<devtools-link-swatch
             class=css-var-link
             aria-details=${tooltipId}
             .data=${{
               text: match.name,
               isDefined: computedValue !== null && !fromFallback,
-              title: linkTitle,
-              showTitle: false,
+              title: undefined,
               onLinkActivate,
-            } as InlineEditor.LinkSwatch.BaseLinkSwatchRenderData}
-            >${match.name}</devtools-base-link-swatch>${
+            } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
+            ></devtools-link-swatch>${
               renderedFallback?.nodes.length ? html`, ${renderedFallback.nodes}` : nothing})</span><devtools-tooltip
-              ?hidden=${!tooltipContents}
               variant=rich
               id=${tooltipId}
               jslogContext=elements.css-var
@@ -835,10 +834,10 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
 
   override render(match: SDK.CSSPropertyParserMatchers.LinkableNameMatch): Node[] {
     const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
-    UI.UIUtils.createTextChild(swatch, match.text);
     const {metric, jslogContext, ruleBlock, isDefined} = this.#getLinkData(match);
     swatch.data = {
       text: match.text,
+      title: isDefined ? undefined : i18nString(UIStrings.sIsNotDefined, {PH1: match.text}),
       isDefined,
       onLinkActivate: (): void => {
         metric && Host.userMetrics.swatchActivated(metric);
@@ -887,7 +886,6 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
     super();
     this.#treeElement = treeElement;
   }
-
   override render(match: SDK.CSSPropertyParserMatchers.BezierMatch): Node[] {
     return [this.renderSwatch(match)];
   }

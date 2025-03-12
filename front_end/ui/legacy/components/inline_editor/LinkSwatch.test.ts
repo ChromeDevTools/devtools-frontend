@@ -12,10 +12,8 @@ function assertLinkSwatch(swatch: InlineEditor.LinkSwatch.LinkSwatch, expected: 
   title: string|null,
   isDefined: boolean,
 }) {
-  const container = swatch.shadowRoot!.querySelector('span');
-  const link = container!.querySelector('devtools-base-link-swatch')!.shadowRoot!.querySelector('.link-swatch-link');
+  const link = swatch!.querySelector('button');
 
-  assert.strictEqual(container!.getAttribute('title'), expected.text, 'The text appears as a tooltip');
   assert.strictEqual(
       link!.classList.contains('undefined'), !expected.isDefined,
       'The link only has the class undefined when the property is undefined');
@@ -35,6 +33,7 @@ describeWithLocale('LinkSwatch', () => {
     const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
+      title: undefined,
       isDefined: true,
       onLinkActivate: () => {},
       jslogContext: 'test',
@@ -43,7 +42,7 @@ describeWithLocale('LinkSwatch', () => {
 
     assertLinkSwatch(component, {
       text: 'test',
-      title: 'test',
+      title: null,
       isDefined: true,
     });
   });
@@ -52,6 +51,7 @@ describeWithLocale('LinkSwatch', () => {
     const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
+      title: 'test is not defined',
       isDefined: false,
       onLinkActivate: () => {},
       jslogContext: 'test',
@@ -70,6 +70,7 @@ describeWithLocale('LinkSwatch', () => {
     let callbackCalled = false;
     component.data = {
       text: 'testHandler',
+      title: undefined,
       isDefined: true,
       onLinkActivate: () => {
         callbackCalled = true;
@@ -77,9 +78,7 @@ describeWithLocale('LinkSwatch', () => {
       jslogContext: 'test',
     };
 
-    const element = renderElementIntoDOM(component)
-                        .shadowRoot!.querySelector('devtools-base-link-swatch')!.shadowRoot!.querySelector(
-                            '.link-swatch-link') as HTMLButtonElement;
+    const element = renderElementIntoDOM(component).querySelector('button') as HTMLButtonElement;
     element.click();
 
     assert.isTrue(callbackCalled);

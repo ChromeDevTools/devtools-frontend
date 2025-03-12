@@ -136,7 +136,7 @@ describe('The Styles pane', () => {
     // Specifying 10px from the left of the value to click on the word var rather than in the middle which would jump to
     // the property definition.
     await propertyValue.click();
-    const editedValueText = await propertyValue.evaluate(node => node.textContent);
+    const editedValueText = await propertyValue.evaluate(node => (node as HTMLElement).innerText);
     assert.strictEqual(editedValueText, 'var(--title-color)', 'The value is incorrect when being edited');
   });
 
@@ -162,7 +162,7 @@ describe('The Styles pane', () => {
 
     const propertiesSection = await getStyleRule(KEYFRAMES_100_PERCENT_RULE_SELECTOR);
     const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
-    const propertyValueText = await propertyValue.evaluate(node => node.textContent);
+    const propertyValueText = await propertyValue.evaluate(node => (node as HTMLElement).innerText);
     assert.strictEqual(
         propertyValueText, 'var(--move-final-width)', 'CSS variable in @keyframes rule is not correctly rendered');
   });

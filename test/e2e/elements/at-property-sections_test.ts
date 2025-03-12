@@ -50,12 +50,6 @@ describe('The styles pane', () => {
     assert.deepEqual(popoverContents, 'Invalid property value, expected type "<color>", View registered property');
   });
 
-  it('correctly determines the computed value for non-overriden properties', async () => {
-    await goToResourceAndWaitForStyleSection('elements/at-property.html');
-    const myColorProp = await waitForAria('CSS property value: var(--my-cssom-color)');
-    await waitFor('.link-swatch-link[data-title="orange"]', myColorProp);
-  });
-
   it('shows registered properties', async () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
     assert.deepEqual(await getStyleRuleProperties('--my-color', 3), {

@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../testing/MockConnection.js';
 import {getMatchedStylesWithBlankRule} from '../../testing/StyleHelpers.js';
@@ -77,6 +78,21 @@ async function showTrace(
   return await viewFunction.nextInput;
 }
 
+function getLineText(line: Node[][]) {
+  for (const node of line.flat()) {
+    if (node instanceof HTMLElement) {
+      renderElementIntoDOM(node, {allowMultipleChildren: true});
+    }
+  }
+  return line.map(
+      nodes => nodes
+                   .map(
+                       node =>
+                           (node instanceof HTMLElement ? node.innerText :
+                                                          (node.nodeType === Node.TEXT_NODE ? node.textContent : '')))
+                   .join());
+}
+
 describeWithMockConnection('CSSValueTraceView', () => {
   beforeEach(() => {
     setMockConnectionResponseHandler('CSS.resolveValues', ({values}) => {
@@ -108,9 +124,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
 
       const input = await showTrace(property, matchedStyles, treeElement);
 
-      const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
-      const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
-      const result = input.finalResult?.map(node => node.textContent ?? '').join();
+      const substitutions = getLineText(input.substitutions);
+      const evaluations = getLineText(input.evaluations);
+      const result = getLineText([input.finalResult ?? []])[0];
       assert.deepEqual(substitutions, []);
       assert.deepEqual(evaluations, []);
       assert.deepEqual(result, value);
@@ -122,9 +138,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const {property, treeElement} =
         await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w)', {'--w': {value: '40px'}});
     const input = await showTrace(property, matchedStyles, treeElement);
-    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    const result = getLineText([input.finalResult ?? []])[0];
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, []);
     assert.deepEqual(result, '40px');
@@ -135,9 +151,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const {property, treeElement} =
         await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w, 10px)', {'--w': {value: '40px'}});
     const input = await showTrace(property, matchedStyles, treeElement);
-    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    const result = getLineText([input.finalResult ?? []])[0];
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, []);
     assert.deepEqual(result, '40px');
@@ -147,9 +163,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const {matchedStyles, stylesPane} = await setUpStyles();
     const {property, treeElement} = await getTreeElement(matchedStyles, stylesPane, 'width', 'var(--w, 10px)');
     const input = await showTrace(property, matchedStyles, treeElement);
-    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    const result = getLineText([input.finalResult ?? []])[0];
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, []);
     assert.deepEqual(result, '10px');
@@ -160,9 +176,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
     const {property, treeElement} = await getTreeElement(
         matchedStyles, stylesPane, 'width', 'var(--v)', {'--w': {value: '40px'}, '--v': {value: 'var(--w)'}});
     const input = await showTrace(property, matchedStyles, treeElement);
-    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join());
-    const result = input.finalResult?.map(node => node.textContent ?? '').join();
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    const result = getLineText([input.finalResult ?? []])[0];
     assert.deepEqual(substitutions, ['var(--w)']);
     assert.deepEqual(evaluations, []);
     assert.deepEqual(result, '40px');
@@ -174,9 +190,9 @@ describeWithMockConnection('CSSValueTraceView', () => {
         matchedStyles, stylesPane, 'fond-size', 'calc(clamp(16px, calc(1vw + 1em), 24px) + 3.2px)');
     const resolveValuesSpy = sinon.spy(treeElement.parentPane().cssModel()!.resolveValues);
     const input = await showTrace(property, matchedStyles, treeElement);
-    const substitutions = input.substitutions.map(nodes => nodes.map(node => node.textContent ?? '').join(''));
-    const evaluations = input.evaluations.map(nodes => nodes.map(node => node.textContent ?? '').join(''));
-    const result = input.finalResult?.map(node => node.textContent ?? '').join('');
+    const substitutions = getLineText(input.substitutions);
+    const evaluations = getLineText(input.evaluations);
+    const result = getLineText([input.finalResult ?? []])[0];
     await Promise.all(resolveValuesSpy.returnValues);
     assert.deepEqual(substitutions, []);
     assert.deepEqual(evaluations, [

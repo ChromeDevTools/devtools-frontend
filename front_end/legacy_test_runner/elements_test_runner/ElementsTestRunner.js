@@ -726,7 +726,7 @@ ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printIn
     const children = treeItem.children();
 
     for (let i = 0; children && i < children.length; ++i) {
-      ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth);
+      ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth, printInnerText);
     }
   }
 };

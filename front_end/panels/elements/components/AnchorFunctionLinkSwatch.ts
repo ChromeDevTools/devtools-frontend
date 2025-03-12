@@ -21,6 +21,12 @@ const UIStrings = {
    *@description Title in the styles tab for the icon button for jumping to the anchor node.
    */
   jumpToAnchorNode: 'Jump to anchor node',
+  /**
+   *@description Text displayed in a tooltip shown when hovering over a CSS property value references a name that's not
+   *             defined and can't be linked to.
+   *@example {--my-anchor-name} PH1
+   */
+  sIsNotDefined: '{PH1} is not defined',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/AnchorFunctionLinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -76,48 +82,41 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
     this.#data.onLinkActivate();
   }
 
-  #renderIdentifierLink(): Lit.LitTemplate {
-    // clang-format off
-    return html`<devtools-link-swatch
-      @mouseenter=${this.#data.onMouseEnter}
-      @mouseleave=${this.#data.onMouseLeave}
-      .data=${{
-        text: this.#data.identifier,
-        isDefined: Boolean(this.#data.anchorNode),
-        jslogContext: 'anchor-link',
-        onLinkActivate: this.#data.onLinkActivate,
-      } as InlineEditor.LinkSwatch.LinkSwatchRenderData}></devtools-link-swatch>`;
-    // clang-format on
-  }
-
-  #renderIconLink(): Lit.LitTemplate {
-    // clang-format off
-    return html`<devtools-icon
-      role='button'
-      title=${i18nString(UIStrings.jumpToAnchorNode)}
-      class='icon-link'
-      name='open-externally'
-      jslog=${VisualLogging.action('jump-to-anchor-node').track({click: true})}
-      @mouseenter=${this.#data.onMouseEnter}
-      @mouseleave=${this.#data.onMouseLeave}
-      @mousedown=${(ev: MouseEvent) => ev.stopPropagation()}
-      @click=${this.#handleIconClick}
-    ></devtools-icon>`;
-    // clang-format on
-  }
-
   protected render(): void {
     if (!this.#data.identifier && !this.#data.anchorNode) {
       return;
     }
 
     if (this.#data.identifier) {
-      // clang-format off
-      render(html`${this.#renderIdentifierLink()}${this.#data.needsSpace ? ' ' : ''}`, this.#shadow, {host: this});
-      // clang-format on
+      render(
+          // clang-format off
+          html`<devtools-link-swatch
+                @mouseenter=${this.#data.onMouseEnter}
+                @mouseleave=${this.#data.onMouseLeave}
+                .data=${{
+                  text: this.#data.identifier,
+                  title: this.#data.anchorNode ? undefined :
+                    i18nString(UIStrings.sIsNotDefined, {PH1: this.#data.identifier}),
+                  isDefined: Boolean(this.#data.anchorNode),
+                  jslogContext: 'anchor-link',
+                  onLinkActivate: this.#data.onLinkActivate,
+                } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
+                ></devtools-link-swatch>${this.#data.needsSpace ? ' ' : ''}`,
+          // clang-format on
+          this.#shadow, {host: this});
     } else {
       // clang-format off
-      render(html`${this.#renderIconLink()}${this.#data.needsSpace ? ' ' : ''}`, this.#shadow, {host: this});
+      render(html`<devtools-icon
+                   role='button'
+                   title=${i18nString(UIStrings.jumpToAnchorNode)}
+                   class='icon-link'
+                   name='open-externally'
+                   jslog=${VisualLogging.action('jump-to-anchor-node').track({click: true})}
+                   @mouseenter=${this.#data.onMouseEnter}
+                   @mouseleave=${this.#data.onMouseLeave}
+                   @mousedown=${(ev: MouseEvent) => ev.stopPropagation()}
+                   @click=${this.#handleIconClick}
+                  ></devtools-icon>${this.#data.needsSpace ? ' ' : ''}`, this.#shadow, {host: this});
       // clang-format on
     }
   }

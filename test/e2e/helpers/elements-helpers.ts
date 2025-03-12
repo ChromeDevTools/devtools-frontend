@@ -806,7 +806,8 @@ export async function waitForCSSPropertyValue(selector: string, name: string, va
       return undefined;
     }
 
-    const matches = await valueHandle.evaluate((node, value) => node.textContent === value, value);
+    const matches = await valueHandle.evaluate(
+        (node, value) => ((node instanceof HTMLElement ? node.innerText : '') || node.textContent) === value, value);
     if (matches) {
       return valueHandle;
     }

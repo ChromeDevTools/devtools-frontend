@@ -1,3 +1,7 @@
+# 7.1.0
+
+- feat: insert(Before|After) support multiple new node
+
 # 7.0.0
 
 - Feat: make insertions during iteration safe (major)

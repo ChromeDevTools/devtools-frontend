@@ -40,11 +40,13 @@
 }
 
 path.animation-keyframe {
+  /* stylelint-disable-next-line declaration-property-value-no-unknown */
   fill-opacity: 20%;
 }
 
 .animation-node-selected path.animation-keyframe,
 svg.animation-ui g:first-child:hover path.animation-keyframe {
+  /* stylelint-disable-next-line declaration-property-value-no-unknown */
   fill-opacity: 40%;
 }
 
@@ -110,7 +112,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-timeline-header::after {
-  content: "";
+  content: '';
   height: calc(100% - 48px - 28px);
   position: absolute;
   width: var(--timeline-controls-width);
@@ -144,8 +146,7 @@ circle.animation-keyframe-point:active {
   cursor: pointer;
 }
 
-.animation-timeline-buffer
- {
+.animation-timeline-buffer {
   height: 48px;
   flex: 0 0 auto;
   border-bottom: 1px solid var(--sys-color-divider);
@@ -183,7 +184,13 @@ circle.animation-keyframe-point:active {
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, var(--sys-color-error) 5px, var(--sys-color-error) 6px, transparent 6px);
+  background: linear-gradient(
+    to right,
+    transparent 5px,
+    var(--sys-color-error) 5px,
+    var(--sys-color-error) 6px,
+    transparent 6px
+  );
   position: absolute;
   top: -28px;
   height: 28px;
@@ -362,7 +369,10 @@ text.animation-timeline-grid-label {
   display: none;
 }
 
-.animation-timeline-buffer:not(:empty) ~ .animation-timeline-rows:empty ~.animation-timeline-buffer-hint:not(:empty) ~ .animation-timeline-rows-hint,
+.animation-timeline-buffer:not(:empty)
+  ~ .animation-timeline-rows:empty
+  ~ .animation-timeline-buffer-hint:not(:empty)
+  ~ .animation-timeline-rows-hint,
 .animation-timeline-buffer:empty ~ .animation-timeline-buffer-hint {
   font-size: 14px;
   display: flex;
@@ -451,7 +461,7 @@ text.animation-timeline-grid-label {
 
 .animation-paused::before,
 .animation-paused::after {
-  content: "";
+  content: '';
   background: var(--sys-color-cdt-base-container);
   width: 7px;
   height: 20px;
@@ -469,7 +479,9 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected > svg > line {
-  stroke: var(--sys-color-on-tonal-container) !important; /* stylelint-disable-line declaration-no-important */
+  stroke: var(
+    --sys-color-on-tonal-container
+  ) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 @keyframes newGroupAnim {

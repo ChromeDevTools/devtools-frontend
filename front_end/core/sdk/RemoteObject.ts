@@ -576,8 +576,11 @@ export class RemoteObjectImpl extends RemoteObject {
       silent: true,
       returnByValue: true,
     });
+    if (response.getError() || response.exceptionDetails) {
+      return null as T;
+    }
 
-    return response.getError() || response.exceptionDetails ? null : response.result.value;
+    return response.result.value;
   }
 
   override release(): void {

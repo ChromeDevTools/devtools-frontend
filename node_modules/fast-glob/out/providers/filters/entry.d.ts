@@ -11,6 +11,7 @@ export default class EntryFilter {
     private _createIndexRecord;
     private _onlyFileFilter;
     private _onlyDirectoryFilter;
-    private _isSkippedByAbsoluteNegativePatterns;
+    private _isMatchToPatternsSet;
+    private _isMatchToAbsoluteNegative;
     private _isMatchToPatterns;
 }

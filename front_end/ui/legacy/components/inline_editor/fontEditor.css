@@ -77,7 +77,8 @@ input::-webkit-inner-spin-button {
 
 .preview-text {
   max-width: 300px;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: anywhere;
   display: block;
 }
 

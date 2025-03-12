@@ -394,7 +394,7 @@ Indicates whether to traverse descendants of symbolic link directories when expa
 * Type: `FileSystemAdapter`
 * Default: `fs.*`
 
-Custom implementation of methods for working with the file system.
+Custom implementation of methods for working with the file system. Supports objects with enumerable properties only.
 
 ```ts
 export interface FileSystemAdapter {

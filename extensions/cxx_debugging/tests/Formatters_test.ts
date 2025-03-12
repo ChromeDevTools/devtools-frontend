@@ -44,7 +44,8 @@ describe('Formatters', () => {
     // short string
 
     const shortString = 'abcdef\0';
-    const shortStringValue = new TestValue(new DataView(new TextEncoder().encode(shortString).buffer), 'char');
+    const shortStringValue =
+        new TestValue(new DataView(new TextEncoder().encode(shortString).buffer as ArrayBuffer), 'char');
     assert.deepEqual(
         Formatters.formatCString(wasm, TestValue.pointerTo(shortStringValue, Formatters.Constants.SAFE_HEAP_START)),
         'abcdef');
@@ -60,7 +61,8 @@ describe('Formatters', () => {
 
     // long string
     const longString = `${new Array(Formatters.Constants.PAGE_SIZE / 4).fill('abcdefg').join('')}\0`;
-    const longStringValue = new TestValue(new DataView(new TextEncoder().encode(longString).buffer), 'char');
+    const longStringValue =
+        new TestValue(new DataView(new TextEncoder().encode(longString).buffer as ArrayBuffer), 'char');
     assert.deepEqual(
         Formatters.formatCString(wasm, TestValue.pointerTo(longStringValue, Formatters.Constants.SAFE_HEAP_START)),
         longString.substr(0, longString.length - 1));
@@ -96,7 +98,8 @@ describe('Formatters', () => {
     });
 
     // short char8_t
-    __s.members.__data_ = new TestValue(new DataView(new TextEncoder().encode(shortString).buffer), 'char');
+    __s.members.__data_ =
+        new TestValue(new DataView(new TextEncoder().encode(shortString).buffer as ArrayBuffer), 'char');
     __s_union.members.__size_ = shortFlag;
 
     assert.deepEqual(Formatters.formatLibCXX8String(wasm, str), {size: shortString.length, string: shortString});

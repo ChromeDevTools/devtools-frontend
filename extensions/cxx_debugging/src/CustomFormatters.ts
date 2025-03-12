@@ -53,7 +53,7 @@ export interface Value {
   asInt64: () => bigint;
   asFloat32: () => number;
   asFloat64: () => number;
-  asDataView: (offset?: number, size?: number) => DataView;
+  asDataView: (offset?: number, size?: number) => DataView<ArrayBuffer>;
   $: (member: string|number) => Value;
   getMembers(): string[];
 }
@@ -97,7 +97,7 @@ export class MemorySlice {
     return this.length + this.begin;
   }
 
-  view(begin: number, length: number): DataView {
+  view(begin: number, length: number): DataView<ArrayBuffer> {
     return new DataView(this.buffer, begin - this.begin, length);
   }
 }
@@ -174,7 +174,7 @@ export class WasmMemoryView {
     return {page, offset, count};
   }
 
-  private getPages(page: number, count: number): DataView {
+  private getPages(page: number, count: number): DataView<ArrayBuffer> {
     if (page & (WasmMemoryView.PAGE_SIZE - 1)) {
       throw new Error('Not a valid page');
     }
@@ -240,7 +240,7 @@ export class WasmMemoryView {
     const view = this.getPages(page, count);
     return view.getBigUint64(offset, littleEndian);
   }
-  asDataView(byteOffset: number, byteLength: number): DataView {
+  asDataView(byteOffset: number, byteLength: number): DataView<ArrayBuffer> {
     const {offset, page, count} = this.page(byteOffset, byteLength);
     const view = this.getPages(page, count);
     return new DataView(view.buffer, view.byteOffset + offset, byteLength);
@@ -251,7 +251,7 @@ export class CXXValue implements Value, LazyObject {
   readonly location: number;
   private readonly type: TypeInfo;
   private readonly data?: number[];
-  private readonly memoryOrDataView: DataView|WasmMemoryView;
+  private readonly memoryOrDataView: DataView<ArrayBuffer>|WasmMemoryView;
   private readonly wasm: WasmInterface;
   private readonly typeMap: Map<unknown, TypeInfo>;
   private readonly memoryView: WasmMemoryView;
@@ -419,7 +419,7 @@ export class CXXValue implements Value, LazyObject {
   asFloat64(): number {
     return this.memoryOrDataView.getFloat64(this.location, true);
   }
-  asDataView(offset?: number, size?: number): DataView {
+  asDataView(offset?: number, size?: number): DataView<ArrayBuffer> {
     offset = this.location + (offset ?? 0);
     size = size ?? this.size;
     if (this.memoryOrDataView instanceof DataView) {

@@ -57,7 +57,7 @@ li.storage-group-list-item::before {
   height: 26px;
   width: 125px;
   min-width: 125px;
-  text-overflow: elipsis;
+  text-overflow: ellipsis;
   padding: 0 10px;
   border-right: 1px solid var(--sys-color-divider);
   overflow: hidden;

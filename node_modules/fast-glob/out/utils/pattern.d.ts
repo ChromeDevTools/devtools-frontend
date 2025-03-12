@@ -44,4 +44,6 @@ export declare function matchAny(entry: string, patternsRe: PatternRe[]): boolea
  * Because of this, we cannot use the standard `path.normalize` method, because on Windows platform it will use of backslashes.
  */
 export declare function removeDuplicateSlashes(pattern: string): string;
+export declare function partitionAbsoluteAndRelative(patterns: Pattern[]): Pattern[][];
+export declare function isAbsolute(pattern: string): boolean;
 export {};

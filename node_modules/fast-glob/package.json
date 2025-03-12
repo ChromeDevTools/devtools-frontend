@@ -1,6 +1,6 @@
 {
   "name": "fast-glob",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "It's a very fast and efficient glob library for Node.js",
   "license": "MIT",
   "repository": "mrmlnc/fast-glob",
@@ -39,7 +39,7 @@
     "eslint-config-mrmlnc": "^1.1.0",
     "execa": "^7.1.1",
     "fast-glob": "^3.0.4",
-    "fdir": "^6.0.1",
+    "fdir": "6.0.1",
     "glob": "^10.0.0",
     "hereby": "^1.8.1",
     "mocha": "^6.2.1",
@@ -53,7 +53,7 @@
     "@nodelib/fs.walk": "^1.2.3",
     "glob-parent": "^5.1.2",
     "merge2": "^1.3.0",
-    "micromatch": "^4.0.4"
+    "micromatch": "^4.0.8"
   },
   "scripts": {
     "clean": "rimraf out",
@@ -65,7 +65,7 @@
     "test:e2e:async": "mocha \"out/**/*.e2e.js\" -s 0 --grep \"\\(async\\)\"",
     "test:e2e:stream": "mocha \"out/**/*.e2e.js\" -s 0 --grep \"\\(stream\\)\"",
     "build": "npm run clean && npm run compile && npm run lint && npm test",
-    "watch": "npm run clean && npm run compile -- --sourceMap --watch",
+    "watch": "npm run clean && npm run compile -- -- --sourceMap --watch",
     "bench:async": "npm run bench:product:async && npm run bench:regression:async",
     "bench:stream": "npm run bench:product:stream && npm run bench:regression:stream",
     "bench:sync": "npm run bench:product:sync && npm run bench:regression:sync",

@@ -270,7 +270,8 @@
   width: 100%;
   padding: var(--sys-size-7) var(--sys-size-5);
   font-size: 12px;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: anywhere;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   &:last-of-type {

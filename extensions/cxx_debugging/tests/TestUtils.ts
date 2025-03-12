@@ -110,7 +110,7 @@ export class TestWasmInterface implements WasmInterface {
 }
 
 export class TestValue implements Value {
-  private dataView: DataView;
+  private dataView: DataView<ArrayBuffer>;
   members: {[key: string]: TestValue, [key: number]: TestValue};
   location: number;
   size: number;
@@ -213,7 +213,7 @@ export class TestValue implements Value {
   asFloat64(): number {
     return this.dataView.getFloat64(0, true);
   }
-  asDataView(offset?: number, size?: number): DataView {
+  asDataView(offset?: number, size?: number): DataView<ArrayBuffer> {
     offset = this.location + (offset ?? 0);
     size = Math.min(size ?? this.size, this.size - Math.max(0, offset));
     return new DataView(this.dataView.buffer, offset, size);
@@ -233,7 +233,9 @@ export class TestValue implements Value {
     return value;
   }
 
-  constructor(content: DataView, typeName: string, members?: {[key: string]: TestValue, [key: number]: TestValue}) {
+  constructor(
+      content: DataView<ArrayBuffer>, typeName: string,
+      members?: {[key: string]: TestValue, [key: number]: TestValue}) {
     this.location = 0;
     this.size = content.byteLength;
     this.typeNames = [typeName];

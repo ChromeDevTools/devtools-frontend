@@ -32,7 +32,7 @@ self.Flatted = (function (exports) {
   var Primitives = function Primitives(_, value) {
     return _typeof(value) === primitive ? new Primitive(value) : value;
   };
-  var revive = function revive(input, parsed, output, $) {
+  var _revive = function revive(input, parsed, output, $) {
     var lazy = [];
     for (var ke = keys(output), length = ke.length, y = 0; y < length; y++) {
       var k = ke[y];
@@ -53,7 +53,7 @@ self.Flatted = (function (exports) {
       var _lazy$i = lazy[i],
         _k = _lazy$i.k,
         a = _lazy$i.a;
-      output[_k] = $.call(output, _k, revive.apply(null, a));
+      output[_k] = $.call(output, _k, _revive.apply(null, a));
     }
     return output;
   };
@@ -73,7 +73,7 @@ self.Flatted = (function (exports) {
     var input = $parse(text, Primitives).map(primitives);
     var value = input[0];
     var $ = reviver || noop;
-    var tmp = _typeof(value) === object && value ? revive(input, new Set(), value, $) : value;
+    var tmp = _typeof(value) === object && value ? _revive(input, new Set(), value, $) : value;
     return $.call({
       '': tmp
     }, '', tmp);

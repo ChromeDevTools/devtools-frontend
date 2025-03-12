@@ -96,13 +96,11 @@ function formatLibCXXString<T extends CharArrayConstructor>(
 
     const copyLen = Math.min(stringSize * charSize, Constants.MAX_STRING_LEN);
     const bytes = wasm.readMemory(data, copyLen);
-    // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
     const text = new charType(bytes.buffer, bytes.byteOffset, stringSize) as InstanceType<T>;
     return {size: stringSize, string: decode(text)};
   }
 
   const bytes = shortString.$('__data_').asDataView(0, size * charSize);
-  // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
   const text = new charType(bytes.buffer, bytes.byteOffset, size) as InstanceType<T>;
   return {size, string: decode(text)};
 }
@@ -167,7 +165,6 @@ function formatRawString<T extends CharArrayConstructor>(
     // Copy PAGE_SIZE bytes
     const buffer = deref.asDataView(bufferSize, Constants.PAGE_SIZE);
     // Convert to charType
-    // @ts-expect-error https://github.com/microsoft/TypeScript/pull/60934
     const substr = new charType(buffer.buffer, buffer.byteOffset, buffer.byteLength / charSize);
     const strlen = substr.indexOf(0);
     if (strlen >= 0) {

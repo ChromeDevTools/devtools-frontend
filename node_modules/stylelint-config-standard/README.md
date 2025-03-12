@@ -4,7 +4,7 @@
 
 > The standard shareable config for Stylelint.
 
-It extends [`stylelint-config-recommended`](https://github.com/stylelint/stylelint-config-recommended) and turns on additional rules to enforce modern conventions found in the [CSS specifications](https://www.w3.org/Style/CSS/current-work).
+It extends [`stylelint-config-recommended`](https://github.com/stylelint/stylelint-config-recommended) and turns on additional rules to enforce modern conventions found in the [CSS specifications](https://www.w3.org/Style/CSS/current-work) and within [Baseline Widely Available](https://web.dev/baseline).
 
 To see the rules that this config uses, please read the [config itself](./index.js).
 

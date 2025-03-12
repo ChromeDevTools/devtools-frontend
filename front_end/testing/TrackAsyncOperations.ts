@@ -197,6 +197,7 @@ const BasePromise: Omit<PromiseConstructor, UntrackedPromiseMethod> = {
   reject: Promise.reject,
   resolve: Promise.resolve,
   withResolvers: Promise.withResolvers,
+  try: Promise.try,
 };
 
 // We can't subclass native Promise here as this will cause all derived promises

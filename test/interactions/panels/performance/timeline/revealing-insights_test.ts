@@ -57,6 +57,8 @@ describe('Performance panel insights', () => {
 
     // Take a screenshot to ensure that the overlays are positioned and the UI was zoomed correctly.
     const pane = await waitFor('.timeline');
-    await assertElementScreenshotUnchanged(pane, 'performance/insights-lcp-request-discovery.png', 3);
+    // TODO: .timeline is not a solid indication that rendering finished.
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await assertElementScreenshotUnchanged(pane, 'performance/insights-lcp-request-discovery.png');
   });
 });

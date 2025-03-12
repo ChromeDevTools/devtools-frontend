@@ -23,8 +23,7 @@ describe('ButtonDialog screenshot tests', () => {
     const animationEndPromise = waitForDialogAnimationEnd();
     await button.click();
     await animationEndPromise;
-    // Have a larger threshold here: the font rendering is slightly different on CQ.
-    await assertElementScreenshotUnchanged(container, 'dialog/button_dialog_open.png', 3);
+    await assertElementScreenshotUnchanged(container, 'dialog/button_dialog_open.png');
   });
 
   itScreenshot('click the close button and close the button dialog', async () => {

@@ -491,6 +491,12 @@
     --source-code-font-family: monospace;
   }
 
+  &.platform-screenshot-test {
+    --default-font-family: roboto;
+    --monospace-font-family: roboto;
+    --source-code-font-family: roboto;
+  }
+
   --ref-typeface-weight-regular: 400;
   --ref-typeface-weight-medium: 500;
   --ref-typeface-weight-bold: 700;

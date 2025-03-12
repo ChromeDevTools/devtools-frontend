@@ -19,12 +19,12 @@ describe('Rasterizer tracks', function() {
   itScreenshot('renders all the tracks correctly expanded', async () => {
     await loadComponentDocExample(`${urlForTest}&expanded=true`);
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/rasterizer_tracks_expanded.png', 4);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/rasterizer_tracks_expanded.png');
   });
 
   itScreenshot('renders all the tracks correctly in collapsed mode', async () => {
     await loadComponentDocExample(`${urlForTest}&expanded=false`);
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/rasterizer_tracks_collapsed.png', 4);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/rasterizer_tracks_collapsed.png');
   });
 });

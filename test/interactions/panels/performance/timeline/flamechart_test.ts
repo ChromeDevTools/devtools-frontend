@@ -24,24 +24,24 @@ describe('FlameChart', function() {
   itScreenshot('renders some events onto the timeline', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#basic');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png', 1);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_1.png');
   });
 
   itScreenshot('can add decorations to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#decorations');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_decorations.png', 0.75);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/flame_chart_decorations.png');
   });
 
   itScreenshot('can add initiators to events', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#initiators');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.75);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png');
   });
 
   itScreenshot('renders the extension events color palette corectly', async () => {
     await loadComponentDocExample('performance_panel/flamechart.html');
     const flameChart = await getFlameChartContainerWhenReady('#extension');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/extension_palette.png', 0.75);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/extension_palette.png');
   });
 });

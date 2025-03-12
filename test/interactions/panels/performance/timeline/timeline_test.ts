@@ -19,7 +19,7 @@ describe('Performance panel', function() {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline.png', 3);
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline.png');
   });
 
   itScreenshot('renders correctly the Bottom Up datagrid', async () => {
@@ -33,7 +33,7 @@ describe('Performance panel', function() {
       const height = await datagrid.evaluate(elem => elem.clientHeight);
       return height > 150;
     });
-    await assertElementScreenshotUnchanged(datagrid, 'performance/bottomUp.png', 3);
+    await assertElementScreenshotUnchanged(datagrid, 'performance/bottomUp.png');
   });
 
   itScreenshot('renders correctly the Call Tree datagrid', async () => {
@@ -47,7 +47,7 @@ describe('Performance panel', function() {
       const height = await datagrid.evaluate(elem => elem.clientHeight);
       return height > 150;
     });
-    await assertElementScreenshotUnchanged(datagrid, 'performance/callTree.png', 3);
+    await assertElementScreenshotUnchanged(datagrid, 'performance/callTree.png');
   });
 
   // Flaky on linux
@@ -62,14 +62,14 @@ describe('Performance panel', function() {
         await virtualScrollBar.evaluate(el => {
           el.scrollTop = 200;
         });
-        await assertElementScreenshotUnchanged(panel, 'performance/timeline_canvas_scrolldown.png', 3);
+        await assertElementScreenshotUnchanged(panel, 'performance/timeline_canvas_scrolldown.png');
       });
 
   itScreenshot('loads a cpuprofile and renders it in non-node mode', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile.png', 3);
+    await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile.png');
   });
 
   itScreenshot(
@@ -77,14 +77,14 @@ describe('Performance panel', function() {
         await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
         await waitFor('.timeline-flamechart');
         const panel = await waitFor('body');
-        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png', 3);
+        await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node.png');
       });
 
   itScreenshot('candy stripes long tasks', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png');
   });
 
   itScreenshot('renders screenshots in the frames track', async () => {
@@ -96,8 +96,7 @@ describe('Performance panel', function() {
       const height = await mainFlameChart.evaluate(elem => elem.clientHeight);
       return height > 500;
     });
-    // With some changes made to timeline-details-view it passes with a diff of 1.98 so reduce it to 1.
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png');
   });
 
   // Flaking.
@@ -111,12 +110,11 @@ describe('Performance panel', function() {
         // Click to expand the network track.
         await frontend.mouse.click(27, 131);
         await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png', 1);
+        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png');
         // Click to select a network event.
         await frontend.mouse.click(104, 144);
         await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-        await assertElementScreenshotUnchanged(
-            panel, 'performance/timeline-expand-network-panel-and-select-event.png', 1);
+        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png');
       });
 
   it('renders the window range bounds correctly when loading multiple profiles', async () => {
@@ -157,9 +155,9 @@ describe('Performance panel', function() {
       panel.getFlameChart().getNetworkFlameChart().toggleGroupExpand(networkTrackIndex);
     });
     const timeline = await waitFor('.widget.vbox[slot="main"]');
-    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-before-extension-toggle.png', 3);
+    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-before-extension-toggle.png');
     await click('[aria-label="Capture settings"]');
     await click('input[title="Show data added by extensions of the Performance panel"]');
-    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-after-extension-toggle.png', 3);
+    await assertElementScreenshotUnchanged(timeline, 'performance/timeline-after-extension-toggle.png');
   });
 });

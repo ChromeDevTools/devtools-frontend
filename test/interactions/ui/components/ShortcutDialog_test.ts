@@ -23,8 +23,7 @@ describe('Shortcut dialog screenshot tests', () => {
     const animationEndPromise = waitForDialogAnimationEnd();
     await showButton.click();
     await animationEndPromise;
-    // Have a larger threshold here: the font rendering is slightly different on CQ.
-    await assertElementScreenshotUnchanged(container, 'dialog/shortcut_dialog_open.png', 3);
+    await assertElementScreenshotUnchanged(container, 'dialog/shortcut_dialog_open.png');
   });
 
   itScreenshot('click the close button and close the shortcut dialog', async () => {

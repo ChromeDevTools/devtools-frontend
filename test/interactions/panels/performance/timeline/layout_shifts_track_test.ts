@@ -12,12 +12,12 @@ describe('Layout shifts track', function() {
   itScreenshot('renders the layout shifts track correctly', async () => {
     await loadComponentDocExample(`${urlForTest}`);
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track.png', 2);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track.png');
   });
 
   itScreenshot('renders the track (dark mode)', async () => {
     await loadComponentDocExample(`${urlForTest}&expanded=true&darkMode=true`);
     const flameChart = await waitFor('.flame-chart-main-pane');
-    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track_dark_mode.png', 2);
+    await assertElementScreenshotUnchanged(flameChart, 'performance/layout_shifts_track_dark_mode.png');
   });
 });

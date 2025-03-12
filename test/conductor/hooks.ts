@@ -82,6 +82,10 @@ function launchChrome() {
     '--site-per-process',  // Default on Desktop anyway, but ensure that we always use out-of-process frames when we intend to.
     '--host-resolver-rules=MAP *.test 127.0.0.1',
     '--disable-gpu',
+    '--disable-font-subpixel-positioning',
+    '--disable-lcd-text',
+    '--force-device-scale-factor=1',
+    '--hide-scrollbars',
     '--enable-blink-features=CSSContainerQueries,HighlightInheritance',  // TODO(crbug.com/1218390) Remove globally enabled flags and conditionally enable them
     '--disable-blink-features=WebAssemblyJSPromiseIntegration',  // TODO(crbug.com/325123665) Remove once heap snapshots work again with JSPI
     `--disable-features=${disabledFeatures.join(',')}`,
@@ -99,7 +103,7 @@ function launchChrome() {
 
   // Always set the default viewport because setting only the window size for
   // headful mode would result in much smaller actual viewport.
-  opts.defaultViewport = {width: viewportWidth, height: viewportHeight};
+  opts.defaultViewport = {width: viewportWidth, height: viewportHeight, deviceScaleFactor: 1};
   // Toggle either viewport or window size depending on headless vs not.
   if (!headless) {
     launchArgs.push(`--window-size=${windowWidth},${windowHeight}`);

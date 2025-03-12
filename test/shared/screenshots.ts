@@ -60,17 +60,15 @@ const defaultScreenshotOpts: puppeteer.ScreenshotOptions = {
   captureBeyondViewport: false,
 };
 
-const DEFAULT_RETRIES_COUNT = 5;
+const DEFAULT_RETRIES_COUNT = 1;
 const DEFAULT_MS_BETWEEN_RETRIES = 150;
 
 // Percentage difference when comparing golden vs new screenshot that is
 // acceptable and will not fail the test.
-const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 4;
+const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0.1;
 
 export const assertElementScreenshotUnchanged = async (
-    element: puppeteer.ElementHandle|null, fileName: string,
-    maximumDiffThreshold = DEFAULT_SCREENSHOT_THRESHOLD_PERCENT,
-    options: Partial<puppeteer.ScreenshotOptions> = {}) => {
+    element: puppeteer.ElementHandle|null, fileName: string, options: Partial<puppeteer.ScreenshotOptions> = {}) => {
   if (!element) {
     assert.fail(`Given element for test ${fileName} was not found.`);
   }
@@ -80,7 +78,7 @@ export const assertElementScreenshotUnchanged = async (
     return;
   }
   return await assertScreenshotUnchangedWithRetries(
-      element, fileName, maximumDiffThreshold, DEFAULT_RETRIES_COUNT, options);
+      element, fileName, DEFAULT_SCREENSHOT_THRESHOLD_PERCENT, DEFAULT_RETRIES_COUNT, options);
 };
 
 function getFrontend() {

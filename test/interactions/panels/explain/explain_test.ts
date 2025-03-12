@@ -11,20 +11,20 @@ describe('ConsoleInsight', function() {
   itScreenshot('renders the opt-in teaser', async () => {
     await loadComponentDocExample('console_insight/optin.html');
     await assertElementScreenshotUnchanged(
-        await waitFor('devtools-console-insight'), 'explain/console_insight_optin.png', 3);
+        await waitFor('devtools-console-insight'), 'explain/console_insight_optin.png');
   });
 
   // eslint-disable-next-line rulesdir/no-screenshot-test-outside-perf-panel
   itScreenshot('renders the consent reminder', async () => {
     await loadComponentDocExample('console_insight/reminder.html');
     await assertElementScreenshotUnchanged(
-        await waitFor('devtools-console-insight'), 'explain/console_insight_reminder.png', 3);
+        await waitFor('devtools-console-insight'), 'explain/console_insight_reminder.png');
   });
 
   // eslint-disable-next-line rulesdir/no-screenshot-test-outside-perf-panel
   itScreenshot('renders the insight', async () => {
     await loadComponentDocExample('console_insight/static.html');
-    await assertElementScreenshotUnchanged(await waitFor('devtools-console-insight'), 'explain/console_insight.png', 3);
+    await assertElementScreenshotUnchanged(await waitFor('devtools-console-insight'), 'explain/console_insight.png');
   });
 
   // eslint-disable-next-line rulesdir/no-screenshot-test-outside-perf-panel
@@ -45,6 +45,6 @@ describe('ConsoleInsight', function() {
     });
 
     await assertElementScreenshotUnchanged(
-        await waitFor('devtools-console-insight'), 'explain/console_insight_references.png', 3);
+        await waitFor('devtools-console-insight'), 'explain/console_insight_references.png');
   });
 });

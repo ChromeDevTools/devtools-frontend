@@ -15,6 +15,6 @@ describe('Timeline History Manager tracks', function() {
   itScreenshot('renders minimap for parsed profiles in the HistoryManager', async () => {
     await loadComponentDocExample('performance_panel/timeline_history_manager.html');
     const dropDown = await waitFor('.drop-down');
-    await assertElementScreenshotUnchanged(dropDown, 'performance/history_dropdown.png', 1);
+    await assertElementScreenshotUnchanged(dropDown, 'performance/history_dropdown.png');
   });
 });

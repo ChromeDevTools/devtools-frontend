@@ -333,7 +333,13 @@ export async function finalize(): Promise<void> {
   // each particular renderer started and stopped being the main renderer
   // process.
   for (const [, processWindows] of rendererProcessesByFrameId) {
-    const processWindowValues = [...processWindows.values()].flat();
+    // Sort the windows by time; we cannot assume by default they arrive via
+    // events in time order. Because we set the window bounds per-process based
+    // on the time of the current + next window, we need them sorted in ASC
+    // order.
+    const processWindowValues = [...processWindows.values()].flat().sort((a, b) => {
+      return a.window.min - b.window.min;
+    });
     for (let i = 0; i < processWindowValues.length; i++) {
       const currentWindow = processWindowValues[i];
       const nextWindow = processWindowValues[i + 1];

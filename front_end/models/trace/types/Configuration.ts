@@ -5,6 +5,7 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import type * as Lantern from '../lantern/lantern.js';
 
 import type * as File from './File.js';
 
@@ -73,6 +74,7 @@ export interface ParseOptions {
     start: (id: string) => void,
     end: (id: string) => void,
   };
+  lanternSettings?: Omit<Lantern.Types.Simulation.Settings, 'networkAnalysis'>;
 }
 
 export interface ResolveSourceMapParams {

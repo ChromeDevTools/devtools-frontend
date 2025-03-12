@@ -10,7 +10,7 @@ import("../../../visibility.gni")
 devtools_module("types") {
   sources = [ "Lantern.ts" ]
 
-  deps = [ "../../types:bundle" ]
+  deps = [ "../../../../generated" ]
 }
 
 devtools_entrypoint("bundle") {

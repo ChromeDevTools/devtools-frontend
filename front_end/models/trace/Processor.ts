@@ -287,7 +287,7 @@ export class TraceProcessor extends EventTarget {
 
   #createLanternContext(
       parsedTrace: Handlers.Types.ParsedTrace, traceEvents: readonly Types.Events.Event[], frameId: string,
-      navigationId: string): Insights.Types.LanternContext|undefined {
+      navigationId: string, options: Types.Configuration.ParseOptions): Insights.Types.LanternContext|undefined {
     // Check for required handlers.
     if (!parsedTrace.NetworkRequests || !parsedTrace.Workers || !parsedTrace.PageLoadMetrics) {
       return;
@@ -321,13 +321,15 @@ export class TraceProcessor extends EventTarget {
       return;
     }
 
+    const lanternSettings: Lantern.Types.Simulation.Settings = {
+      // TODO(crbug.com/372674229): if devtools throttling was on, does this network analysis capture
+      // that? Do we need to set 'devtools' throttlingMethod?
+      networkAnalysis,
+      throttlingMethod: 'provided',
+      ...options.lanternSettings,
+    };
     const simulator: Lantern.Simulation.Simulator<Types.Events.SyntheticNetworkRequest> =
-        Lantern.Simulation.Simulator.createSimulator({
-          // TODO(crbug.com/372674229): if devtools throttling was on, does this network analysis capture
-          // that? Do we need to set 'devtools' throttlingMethod?
-          networkAnalysis,
-          throttlingMethod: 'provided',
-        });
+        Lantern.Simulation.Simulator.createSimulator(lanternSettings);
 
     const computeData = {graph, simulator, processedNavigation};
     const fcpResult = Lantern.Metrics.FirstContentfulPaint.compute(computeData);
@@ -541,7 +543,7 @@ export class TraceProcessor extends EventTarget {
       let lantern;
       try {
         options.logger?.start('insights:createLanternContext');
-        lantern = this.#createLanternContext(parsedTrace, traceEvents, frameId, navigationId);
+        lantern = this.#createLanternContext(parsedTrace, traceEvents, frameId, navigationId, options);
       } catch (e) {
         // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.
         // Log unexpected errors, but suppress anything that occurs from a trace being too old.

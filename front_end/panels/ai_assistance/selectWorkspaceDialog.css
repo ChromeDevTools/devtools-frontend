@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+ .dialog-container {
+  width: 100%;
+ }
+
 .dialog-header {
   margin: var(--sys-size-6) var(--sys-size-8) var(--sys-size-5);
   font: var(--sys-typescale-headline5);

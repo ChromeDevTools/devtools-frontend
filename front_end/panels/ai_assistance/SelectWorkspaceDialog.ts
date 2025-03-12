@@ -71,6 +71,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       },
       view?: View) {
     super();
+    this.element.classList.add('dialog-container');
     this.registerRequiredCSS(selectWorkspaceDialogStyles);
     this.#boundOnKeyDown = this.#onKeyDown.bind(this);
     this.#handleProjectSelected = options.handleProjectSelected;

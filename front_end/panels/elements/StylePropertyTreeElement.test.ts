@@ -281,7 +281,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                 ({results: request.values.map(v => v === property.value ? 'grey' : v)}));
         const matchedResult = property.parseValue(matchedStyles, new Map());
 
-        const context = new Elements.PropertyRenderer.TracingContext();
+        const context = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting());
         assert.isTrue(context.nextEvaluation());
         const {valueElement} = Elements.PropertyRenderer.Renderer.renderValueElement(
             property, matchedResult,
@@ -1631,7 +1631,8 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const stylePropertyTreeElement =
           getTreeElement('position-try', '/* comment */ most-height --top, --left, --bottom');
       stylePropertyTreeElement.updateTitle();
-      const values = stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span');
+      const values =
+          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span:has(> devtools-link-swatch)');
       assert.exists(values);
       assert.strictEqual(values?.length, 3);
       assert.isTrue(values[0].classList.contains('inactive-value'));
@@ -1709,17 +1710,19 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
 
       let args = stylePropertyTreeElement.valueElement?.querySelectorAll('span') as NodeListOf<HTMLSpanElement>;
-      assert.lengthOf(args, 3);
+      assert.lengthOf(args, 5);
       assert.deepEqual(
-          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, false, true]);
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')),
+          [false, false, false, true, false]);
 
       stylePropertyTreeElement.setComputedStyles(new Map([['appearance', 'base-select']]));
       stylePropertyTreeElement.updateTitle();
 
       args = stylePropertyTreeElement.valueElement?.querySelectorAll('span') as NodeListOf<HTMLSpanElement>;
-      assert.lengthOf(args, 3);
+      assert.lengthOf(args, 5);
       assert.deepEqual(
-          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')), [false, true, false]);
+          Array.from(args.values()).map(arg => arg.classList.contains('inactive-value')),
+          [false, true, false, false, false]);
     });
   });
 

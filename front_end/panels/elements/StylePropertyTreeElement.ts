@@ -295,7 +295,8 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     if (substitution) {
       if (declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
         const {valueElement, cssControls} = Renderer.renderValueElement(
-            declaration.declaration, declaration.declaration.parseValue(this.#matchedStyles, this.#computedStyles),
+            declaration.declaration,
+            substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
             getPropertyRenderers(
                 declaration.declaration.ownerStyle, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
             substitution);
@@ -706,6 +707,11 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
     }
     swatch.tabIndex = -1;
     swatch.setColorMixText(colorMixText);
+    context.addControl('color', swatch);
+
+    if (context.tracing) {
+      return [swatch, contentChild];
+    }
 
     const tooltipId = swatchTooltipId();
     swatch.setAttribute('aria-details', tooltipId);
@@ -728,7 +734,6 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
       colorTextSpan.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
     };
 
-    context.addControl('color', swatch);
     return [swatch, contentChild, tooltip];
   }
 }
@@ -1291,7 +1296,7 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
 
     if (context.tracing?.applyEvaluation([])) {
       void this.#applyEvaluation(valueElement, match.text);
-    } else {
+    } else if (!context.tracing) {
       void this.#attachPopover(valueElement, match.text);
     }
 

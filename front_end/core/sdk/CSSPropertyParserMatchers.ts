@@ -165,7 +165,9 @@ export class TextMatch implements Match {
     }
   }
   render(): Node[] {
-    return [document.createTextNode(this.text)];
+    const span = document.createElement('span');
+    span.appendChild(document.createTextNode(this.text));
+    return [span];
   }
 }
 

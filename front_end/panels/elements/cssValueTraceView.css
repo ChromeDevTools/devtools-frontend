@@ -67,3 +67,7 @@
     grid-column: 2 / 3;
   }
 }
+
+::highlight(css-value-tracing) {
+  background-color: var(--sys-color-tonal-container);
+}

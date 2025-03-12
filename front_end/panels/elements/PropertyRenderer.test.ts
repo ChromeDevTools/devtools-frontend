@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {Printer} from '../../testing/PropertyParser.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
@@ -100,21 +101,24 @@ describe('TracingContext', () => {
   it('assumes no substitutions by default', () => {
     const matchedResult = sinon.createStubInstance(SDK.CSSPropertyParser.BottomUpTreeMatching);
     matchedResult.hasMatches.returns(false);
-    const context = new Elements.PropertyRenderer.TracingContext(matchedResult);
+    const context =
+        new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
     assert.isFalse(context.nextSubstitution());
 
     matchedResult.hasMatches.returns(true);
-    const context2 = new Elements.PropertyRenderer.TracingContext(matchedResult);
+    const context2 =
+        new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
     assert.isTrue(context2.nextSubstitution());
 
-    const context3 = new Elements.PropertyRenderer.TracingContext();
+    const context3 = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting());
     assert.isFalse(context3.nextSubstitution());
   });
 
   it('controls substitution by creating "nested" tracing contexts', () => {
     const matchedResult = sinon.createStubInstance(SDK.CSSPropertyParser.BottomUpTreeMatching);
     matchedResult.hasMatches.returns(true);
-    const context = new Elements.PropertyRenderer.TracingContext(matchedResult);
+    const context =
+        new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
 
     assert.isTrue(context.nextSubstitution());
     assert.exists(context.substitution());
@@ -140,7 +144,8 @@ describe('TracingContext', () => {
   it('does not allow tracing evaluations until substitutions are exhausted', () => {
     const matchedResult = sinon.createStubInstance(SDK.CSSPropertyParser.BottomUpTreeMatching);
     matchedResult.hasMatches.returns(true);
-    const context = new Elements.PropertyRenderer.TracingContext(matchedResult);
+    const context =
+        new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
 
     assert.throw(() => context.nextEvaluation());
     context.nextSubstitution();
@@ -150,7 +155,8 @@ describe('TracingContext', () => {
   it('controls evaluations creating nested context', () => {
     const matchedResult = sinon.createStubInstance(SDK.CSSPropertyParser.BottomUpTreeMatching);
     matchedResult.hasMatches.returns(false);
-    const context = new Elements.PropertyRenderer.TracingContext(matchedResult);
+    const context =
+        new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting(), matchedResult);
 
     // Evaluations are applied bottom up
     assert.isTrue(context.nextEvaluation());
@@ -214,8 +220,76 @@ describe('TracingContext', () => {
   });
 
   it('can inject itself into a RenderingContext', () => {
-    const tracingContext = new Elements.PropertyRenderer.TracingContext();
+    const tracingContext = new Elements.PropertyRenderer.TracingContext(new Elements.PropertyRenderer.Highlighting());
     const renderingContext = sinon.createStubInstance(Elements.PropertyRenderer.RenderingContext);
     assert.strictEqual(tracingContext.renderingContext(renderingContext).tracing, tracingContext);
+  });
+});
+
+describe('Highlighting', () => {
+  const node = (id: string) => {
+    const span = document.createElement('span');
+    span.textContent = id;
+    span.id = `node-${id}`;
+    renderElementIntoDOM(span, {allowMultipleChildren: true});
+    return span;
+  };
+
+  beforeEach(() => {
+    const highlighting = new Elements.PropertyRenderer.Highlighting();
+    const match1 = sinon.createStubInstance(SDK.CSSPropertyParserMatchers.TextMatch);
+    const match2 = sinon.createStubInstance(SDK.CSSPropertyParserMatchers.TextMatch);
+    highlighting.addMatch(match1, [node('1'), node('2'), node('3')]);
+    highlighting.addMatch(match1, [node('4'), node('5'), node('6'), node('7')]);
+    highlighting.addMatch(match1, [node('8')]);
+    highlighting.addMatch(match2, [node('a'), node('b'), node('c')]);
+  });
+
+  it('adds highlights on mouseenter', () => {
+    const registry = CSS.highlights.get(Elements.PropertyRenderer.Highlighting.REGISTRY_NAME);
+    assert.exists(registry);
+
+    document.querySelector('#node-6')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(
+        Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['123', '4567', '8']);
+  });
+
+  it('removes highlights on mouseexit', () => {
+    const registry = CSS.highlights.get(Elements.PropertyRenderer.Highlighting.REGISTRY_NAME);
+    assert.exists(registry);
+
+    document.querySelector('#node-6')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(
+        Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['123', '4567', '8']);
+    document.querySelector('#node-6')?.dispatchEvent(new MouseEvent('mouseleave'));
+    assert.deepEqual(Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), []);
+  });
+
+  it('replaces highlights on subsequent mouseenter', () => {
+    const registry = CSS.highlights.get(Elements.PropertyRenderer.Highlighting.REGISTRY_NAME);
+    assert.exists(registry);
+
+    document.querySelector('#node-6')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(
+        Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['123', '4567', '8']);
+
+    document.querySelector('#node-a')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['abc']);
+  });
+
+  it('restores previous highlights on mouseexit', () => {
+    const registry = CSS.highlights.get(Elements.PropertyRenderer.Highlighting.REGISTRY_NAME);
+    assert.exists(registry);
+
+    document.querySelector('#node-6')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(
+        Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['123', '4567', '8']);
+
+    document.querySelector('#node-a')?.dispatchEvent(new MouseEvent('mouseenter'));
+    assert.deepEqual(Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['abc']);
+
+    document.querySelector('#node-a')?.dispatchEvent(new MouseEvent('mouseleave'));
+    assert.deepEqual(
+        Array.from(registry.keys().map(value => (value as Range).cloneContents().textContent)), ['123', '4567', '8']);
   });
 });

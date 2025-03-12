@@ -8,6 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import cssValueTraceViewStyles from './cssValueTraceView.css.js';
 import {
+  Highlighting,
   type MatchRenderer,
   Renderer,
   RenderingContext,
@@ -75,7 +76,8 @@ function defaultView(input: ViewInput, _: unknown, target: HTMLElement): void {
 }
 
 export class CSSValueTraceView extends UI.Widget.VBox {
-  #view: View;
+  #highlighting: Highlighting|undefined;
+  readonly #view: View;
   #finalResult: Node[]|undefined = undefined;
   #evaluations: Node[][] = [];
   #substitutions: Node[][] = [];
@@ -113,13 +115,14 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       computedStyles: Map<string, string>|null,
       renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
       ): void {
+    this.#highlighting = new Highlighting();
     const rendererMap = new Map(renderers.map(r => [r.matchType, r]));
 
     // Compute all trace lines
     // 1st: Apply substitutions for var() functions
     const substitutions = [];
     const evaluations = [];
-    const tracing = new TracingContext(matchedResult);
+    const tracing = new TracingContext(this.#highlighting, matchedResult);
     while (tracing.nextSubstitution()) {
       const context = new RenderingContext(
           matchedResult.ast,

@@ -26,6 +26,7 @@ copy_to_gen("traces") {
     "dom-size-overlap.json.gz",
     "dom-size.json.gz",
     "enhanced-traces.json.gz",
+    "example-dot-com.json.gz",
     "extension-tracks-and-marks.json.gz",
     "fenced-frame-fledge.json.gz",
     "font-display.json.gz",

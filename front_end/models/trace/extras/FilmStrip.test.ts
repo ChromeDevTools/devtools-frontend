@@ -46,13 +46,13 @@ describeWithEnvironment('FilmStrip', function() {
 
   describe('using the new screenshot format', () => {
     it('identifies the frames from a trace', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-screenshot-source-ids.json.gz');
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'example-dot-com.json.gz');
       const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
-      assert.lengthOf(filmStrip.frames, 20);
+      assert.lengthOf(filmStrip.frames, 2);
     });
 
     it('has an array of new screenshot events', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-screenshot-source-ids.json.gz');
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'example-dot-com.json.gz');
       const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
       assert.isTrue(filmStrip.frames.every(f => Trace.Types.Events.isScreenshot(f.screenshotEvent)));
     });

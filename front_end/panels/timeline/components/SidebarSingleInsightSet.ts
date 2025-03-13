@@ -115,6 +115,7 @@ const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   ThirdParties: Insights.ThirdParties.ThirdParties,
   ForcedReflow: Insights.ForcedReflow.ForcedReflow,
   Viewport: Insights.Viewport.Viewport,
+  UseCache: Insights.UseCache.UseCache,
 };
 
 export class SidebarSingleInsightSet extends HTMLElement {

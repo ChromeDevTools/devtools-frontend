@@ -38,6 +38,7 @@ devtools_module("insights") {
     "SlowCSSSelector.ts",
     "Table.ts",
     "ThirdParties.ts",
+    "UseCache.ts",
     "Viewport.ts",
     "types.ts",
   ]

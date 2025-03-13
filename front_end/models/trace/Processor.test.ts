@@ -396,6 +396,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DuplicateJavaScript',
         'SlowCSSSelector',
         'ForcedReflow',
+        'UseCache',
       ]);
 
       const orderWithMetadata = await getInsightOrder(true);
@@ -416,6 +417,7 @@ describeWithEnvironment('TraceProcessor', function() {
         'DuplicateJavaScript',
         'SlowCSSSelector',
         'ForcedReflow',
+        'UseCache',
       ]);
     });
   });

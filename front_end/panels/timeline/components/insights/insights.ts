@@ -23,6 +23,7 @@ import * as SlowCSSSelector from './SlowCSSSelector.js';
 import * as Table from './Table.js';
 import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
+import * as UseCache from './UseCache.js';
 import * as Viewport from './Viewport.js';
 
 export {
@@ -47,5 +48,6 @@ export {
   Table,
   ThirdParties,
   Types,
+  UseCache,
   Viewport,
 };

@@ -194,7 +194,7 @@ export class Settings {
    */
   createSetting<T>(key: string, defaultValue: T, storageType?: SettingStorageType): Setting<T> {
     const storage = this.storageFromType(storageType);
-    let setting = (this.#registry.get(key) as Setting<T>);
+    let setting = this.#registry.get(key) as Setting<T>;
     if (!setting) {
       setting = new Setting(key, defaultValue, this.#eventSupport, storage, this.#logSettingAccess);
       this.#registry.set(key, setting);

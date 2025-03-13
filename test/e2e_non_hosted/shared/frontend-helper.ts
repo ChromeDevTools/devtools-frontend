@@ -101,7 +101,9 @@ export interface DevtoolsSettings {
 
 export const DEFAULT_DEVTOOLS_SETTINGS = {
   enabledDevToolsExperiments: [],
-  devToolsSettings: {},
+  devToolsSettings: {
+    isUnderTest: true,
+  },
   dockingMode: 'UNDOCKED',
 };
 

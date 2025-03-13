@@ -290,7 +290,11 @@ export class PatchWidget extends UI.Widget.Widget {
               .variant=${Buttons.Button.Variant.OUTLINED}>
               ${lockedString(UIStringsNotTranslate.cancel)}
             </devtools-button>` : nothing}
-            <devtools-icon aria-describedby="info-tooltip" .name=${'info'}></devtools-icon>
+            <devtools-button
+              aria-details="info-tooltip"
+              .iconName=${'info'}
+              .variant=${Buttons.Button.Variant.ICON}
+              ></devtools-button>
             <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
               <div class="info-tooltip-container">
                 ${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}

@@ -51,6 +51,7 @@ const traceBounds: Types.Timing.TraceWindowMicro = {
  */
 const navigationsByFrameId = new Map<string, Types.Events.NavigationStart[]>();
 const navigationsByNavigationId = new Map<string, Types.Events.NavigationStart>();
+const finalDisplayUrlByNavigationId = new Map<string, string>();
 const mainFrameNavigations: Types.Events.NavigationStart[] = [];
 
 // Represents all the threads in the trace, organized by process. This is mostly for internal
@@ -82,6 +83,7 @@ const CHROME_WEB_TRACE_EVENTS = new Set([
 export function reset(): void {
   navigationsByFrameId.clear();
   navigationsByNavigationId.clear();
+  finalDisplayUrlByNavigationId.clear();
   processNames.clear();
   mainFrameNavigations.length = 0;
 
@@ -303,6 +305,7 @@ export function handleEvent(event: Types.Events.Event): void {
       return;
     }
     navigationsByNavigationId.set(navigationId, event);
+    finalDisplayUrlByNavigationId.set(navigationId, event.args.data.documentLoaderURL);
 
     const frameId = event.args.frame;
     const existingFrameNavigations = navigationsByFrameId.get(frameId) || [];
@@ -311,6 +314,34 @@ export function handleEvent(event: Types.Events.Event): void {
     if (frameId === mainFrameId) {
       mainFrameNavigations.push(event);
     }
+    return;
+  }
+
+  // Update `finalDisplayUrlByNavigationId` to reflect the latest redirect for each navigation.
+  if (Types.Events.isResourceSendRequest(event)) {
+    if (event.args.data.resourceType !== 'Document') {
+      return;
+    }
+
+    const maybeNavigationId = event.args.data.requestId;
+    const navigation = navigationsByNavigationId.get(maybeNavigationId);
+    if (!navigation) {
+      return;
+    }
+
+    finalDisplayUrlByNavigationId.set(maybeNavigationId, event.args.data.url);
+    return;
+  }
+
+  // Update `finalDisplayUrlByNavigationId` to reflect history API navigations.
+  if (Types.Events.isDidCommitSameDocumentNavigation(event)) {
+    if (event.args.render_frame_host.frame_type !== 'PRIMARY_MAIN_FRAME') {
+      return;
+    }
+
+    const navigation = mainFrameNavigations.at(-1);
+    const key = navigation?.args.data?.navigationId ?? '';
+    finalDisplayUrlByNavigationId.set(key, event.args.url);
     return;
   }
 }
@@ -405,6 +436,19 @@ export interface MetaHandlerData {
   gpuProcessId: Types.Events.ProcessID;
   navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>;
   navigationsByNavigationId: Map<string, Types.Events.NavigationStart>;
+  /**
+   * The user-visible URL displayed to users in the address bar.
+   * This captures:
+   *  - resolving all redirects
+   *  - history API pushState
+   *
+   * Given no redirects or history API usages, this is just the navigation event's documentLoaderURL.
+   *
+   * Note: empty string special case denotes the duration of the trace between the start
+   * and the first navigation. If there is no history API navigation during this time,
+   * there will be no value for empty string.
+   **/
+  finalDisplayUrlByNavigationId: Map<string, string>;
   threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>;
   mainFrameId: string;
   mainFrameURL: string;
@@ -457,6 +501,7 @@ export function data(): MetaHandlerData {
     mainFrameURL,
     navigationsByFrameId,
     navigationsByNavigationId,
+    finalDisplayUrlByNavigationId,
     threadsInProcess,
     rendererProcessesByFrame: rendererProcessesByFrameId,
     topLevelRendererIds,

@@ -630,6 +630,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       threadsInProcess: new Map(),
       navigationsByFrameId: new Map(),
       navigationsByNavigationId: new Map(),
+      finalDisplayUrlByNavigationId: new Map(),
       mainFrameId: '',
       mainFrameURL: '',
       rendererProcessesByFrame: new Map(),

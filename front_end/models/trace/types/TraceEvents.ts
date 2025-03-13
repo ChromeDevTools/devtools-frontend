@@ -2248,6 +2248,20 @@ export function isNavigationStart(event: Event): event is NavigationStart {
   return event.name === 'navigationStart' && (event as NavigationStart).args?.data?.documentLoaderURL !== '';
 }
 
+export interface DidCommitSameDocumentNavigation extends Complete {
+  name: 'RenderFrameHostImpl::DidCommitSameDocumentNavigation';
+  args: Args&{
+    url: string,
+    render_frame_host: {
+      frame_type: string,
+    },
+  };
+}
+
+export function isDidCommitSameDocumentNavigation(event: Event): event is DidCommitSameDocumentNavigation {
+  return event.name === 'RenderFrameHostImpl::DidCommitSameDocumentNavigation';
+}
+
 export function isMainFrameViewport(
     event: Event,
     ): event is MainFrameViewport {

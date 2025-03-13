@@ -34,8 +34,7 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div>
-      <div>
-      </div>
+      <div></div>
     </div>\`,
     target, {host: input});
 };
@@ -63,6 +62,56 @@ class SomeWidget extends UI.Widget.Widget {
 export const DEFAULT_VIEW = (input, _output, target) => {
   render(html\`
     <div class="some-class" aria-label="some-label">some-text</div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.classList.add('some-class');
+    this.contentElement.addEventListener('click', this.onClick.bind(this));
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div class="some-class" @click=\${this.onClick.bind(this)}></div>\`,
+    target, {host: input});
+};
+
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+  }
+}`,
+      errors: [{messageId: 'preferTemplateLiterals'}],
+    },
+    {
+      filename: 'front_end/ui/components/component/file.ts',
+      code: `
+class SomeWidget extends UI.Widget.Widget {
+  constructor() {
+    super();
+    this.contentElement.style.width = '100%';
+    this.contentElement.style.marginLeft = '10px';
+  }
+}`,
+      output: `
+
+export const DEFAULT_VIEW = (input, _output, target) => {
+  render(html\`
+    <div style="width:100%; margin-left:10px"></div>\`,
     target, {host: input});
 };
 

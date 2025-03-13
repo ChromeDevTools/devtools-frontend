@@ -48,6 +48,8 @@ class DomFragment {
   /** @type {string|undefined} */ tagName;
   /** @type {Node[]} */ classList = [];
   /** @type {{key: string, value: Node}[]} */ attributes = [];
+  /** @type {{key: string, value: Node}[]} */ style = [];
+  /** @type {{key: string, value: Node}[]} */ eventListeners = [];
   /** @type {Node} */ textContent;
   /** @type {DomFragment[]} */ children = [];
   /** @type {DomFragment|undefined} */ parent;
@@ -97,13 +99,20 @@ class DomFragment {
     for (const attribute of this.attributes || []) {
       appendExpression(`${attribute.key}=${attributeValue(toOutputString(attribute.value))}`);
     }
+    for (const eventListener of this.eventListeners || []) {
+      appendExpression(`@${eventListener.key}=${attributeValue(toOutputString(eventListener.value))}`);
+    }
+    if (this.style.length) {
+      const style = this.style.map(s => `${s.key}:${toOutputString(s.value)}`).join('; ');
+      appendExpression(`style="${style}"`);
+    }
     if (lineLength > MAX_LINE_LENGTH) {
       components.push(`\n${' '.repeat(indent)}`);
     }
     components.push('>');
     if (this.textContent) {
       components.push(toOutputString(this.textContent));
-    } else {
+    } else if (this.children?.length) {
       for (const child of this.children || []) {
         components.push(...child.toTemplateLiteral(sourceCode, indent + 2));
       }
@@ -172,7 +181,17 @@ module.exports = {
       const isMethodCall = isAccessed && grandParent.type === 'CallExpression' && grandParent.callee === parent;
       const firstArg = isMethodCall ?  /** @type {Node} */(grandParent.arguments[0]) : null;
       const secondArg = isMethodCall ? /** @type {Node} */(grandParent.arguments[1]) : null;
-
+      const grandGrandParent = grandParent.parent;
+      const isPropertyMethodCall = isAccessed && grandParent.type === 'MemberExpression' &&
+          grandParent.object === parent && grandGrandParent.type === 'CallExpression' &&
+          grandGrandParent.callee === grandParent;
+      const propertyMethodArgument = isPropertyMethodCall ? /** @type {Node} */ (grandGrandParent.arguments[0]) : null;
+      const isSubpropertyAssignment = isAccessed && grandParent.type === 'MemberExpression' &&
+          grandParent.object === parent && grandParent.property.type === 'Identifier' &&
+          grandGrandParent.type === 'AssignmentExpression' && grandGrandParent.left === grandParent;
+      const subproperty =
+          isSubpropertyAssignment && grandParent.property.type === 'Identifier' ? grandParent.property : null;
+      const subpropertyValue = isSubpropertyAssignment ? /** @type {Node} */ (grandGrandParent.right) : null;
       reference.processed = true;
       if (isPropertyAssignment && isIdentifier(property, 'className')) {
         domFragment.classList.push(propertyValue);
@@ -182,9 +201,23 @@ module.exports = {
         const attribute = firstArg;
         const value = secondArg;
         if (attribute.type === 'Literal' && value.type !== 'SpreadElement') {
-          domFragment.attributes.push({
-            key: attribute.value.toString(),
-            value,
+          domFragment.attributes.push({key: attribute.value.toString(), value});
+        }
+      } else if (isMethodCall && isIdentifier(property, 'addEventListener')) {
+        const event = firstArg;
+        const value = secondArg;
+        if (event.type === 'Literal' && value.type !== 'SpreadElement') {
+          domFragment.eventListeners.push({key: event.value.toString(), value});
+        }
+      } else if (
+          isPropertyMethodCall && isIdentifier(property, 'classList') && isIdentifier(grandParent.property, 'add')) {
+        domFragment.classList.push(propertyMethodArgument);
+      } else if (isSubpropertyAssignment && isIdentifier(property, 'style')) {
+        const property = subproperty.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+        if (subpropertyValue.type !== 'SpreadElement') {
+          domFragment.style.push({
+            key: property,
+            value: subpropertyValue,
           });
         }
       } else if (isMethodCall && isIdentifier(property, 'appendChild')) {

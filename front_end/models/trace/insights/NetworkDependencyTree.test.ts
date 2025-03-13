@@ -78,6 +78,19 @@ describeWithEnvironment('NetworkDependencyTree', function() {
     assert.deepEqual([...child1.relatedRequests], [root.request, child1.request]);
   });
 
+  it('Fail the audit when there at least one chain with at least two requests', () => {
+    assert.isTrue(insight.fail);
+  });
+
+  it('Does not fail the audit when there is only main doc request', async () => {
+    // Need to load a file with only main doc in the the critical requests chains.
+    const {data, insights} = await processTrace(this, 'image-delivery.json.gz');
+    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    insight = getInsightOrError('NetworkDependencyTree', insights, firstNav);
+
+    assert.isFalse(insight.fail);
+  });
+
   it('Calculates the relatedEvents map (event to warning map)', async () => {
     // Need to load a file with longer dependency chain for this test.
     // Only those requests whose depth >= 2 will be added to the related events.

@@ -848,8 +848,14 @@ main {
     flex-direction: row;
     justify-content: space-between;
     margin: var(--sys-size-5) 0;
+    gap: var(--sys-size-6);
 
     .disclaimer-link {
+      align-self: center;
+    }
+
+    .sources-link {
+      flex-grow: 1;
       align-self: center;
     }
 

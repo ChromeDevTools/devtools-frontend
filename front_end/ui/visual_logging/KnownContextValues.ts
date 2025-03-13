@@ -1445,6 +1445,7 @@ export const knownContextValues = new Set([
   'fil',
   'fileMappingEntries',
   'fileSystemMapping',
+  'files-used-in-patching',
   'fill',
   'fill-opacity',
   'fill-rule',

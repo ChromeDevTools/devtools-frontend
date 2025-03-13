@@ -96,6 +96,15 @@ const UIStringsNotTranslate = {
    *@description Third disclaimer item text for the fre dialog.
    */
   freDisclaimerTextUseWithCaution: 'Use generated code snippets with caution',
+  /**
+   * @description Title of the link opening data that was used to
+   * produce a code suggestion.
+   */
+  viewUploadedFiles: 'View data sent to Google',
+  /**
+   * @description Text indicating that a link opens in a new tab (for a11y).
+   */
+  opensInNewTab: '(opens in a new tab)',
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -106,6 +115,7 @@ export interface ViewInput {
   changeSummary?: string;
   patchSuggestion?: string;
   patchSuggestionLoading?: boolean;
+  sources?: string;
   projectName?: string;
   savedToDisk?: boolean;
   projectPath: Platform.DevToolsPath.UrlString;
@@ -135,6 +145,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #applyPatchAbortController?: AbortController;
   #project?: Workspace.Workspace.Project;
   #patchSuggestion?: string;
+  #patchSources?: string;
   #patchSuggestionLoading?: boolean;
   #savedToDisk?: boolean;
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
@@ -219,6 +230,13 @@ export class PatchWidget extends UI.Widget.Widget {
               })}>
               ${lockedString(UIStringsNotTranslate.codeDisclaimer)}
             </x-link>
+            ${input.sources ? html`<x-link
+              class="link sources-link"
+              title="${UIStringsNotTranslate.viewUploadedFiles} ${UIStringsNotTranslate.opensInNewTab}"
+              href="data:text/plain,${encodeURIComponent(input.sources)}"
+              jslog=${VisualLogging.link('files-used-in-patching').track({click: true})}>
+              ${UIStringsNotTranslate.viewUploadedFiles}
+            </x-link>`: nothing}
             <div class="save-or-discard-buttons">
               <devtools-button
                 @click=${input.onDiscard}
@@ -333,25 +351,27 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
-    const viewInput = {
-      workspaceDiff: this.#workspaceDiff,
-      changeSummary: this.changeSummary,
-      patchSuggestion: this.#patchSuggestion,
-      patchSuggestionLoading: this.#patchSuggestionLoading,
-      projectName: this.#project?.displayName(),
-      projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
-          (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
-      savedToDisk: this.#savedToDisk,
-      onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
-      onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
-      onCancel: () => {
-        this.#applyPatchAbortController?.abort();
-      },
-      onDiscard: this.#onDiscard.bind(this),
-      onSaveAll: this.#onSaveAll.bind(this),
-      onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),
-    };
-    this.#view(viewInput, this.#viewOutput, this.contentElement);
+    this.#view(
+        {
+          workspaceDiff: this.#workspaceDiff,
+          changeSummary: this.changeSummary,
+          patchSuggestion: this.#patchSuggestion,
+          patchSuggestionLoading: this.#patchSuggestionLoading,
+          sources: this.#patchSources,
+          projectName: this.#project?.displayName(),
+          projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+              (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
+          savedToDisk: this.#savedToDisk,
+          onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
+          onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
+          onCancel: () => {
+            this.#applyPatchAbortController?.abort();
+          },
+          onDiscard: this.#onDiscard.bind(this),
+          onSaveAll: this.#onSaveAll.bind(this),
+          onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),
+        },
+        this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {
@@ -463,11 +483,14 @@ export class PatchWidget extends UI.Widget.Widget {
 
     this.#patchSuggestionLoading = true;
     this.requestUpdate();
-    const response = await this.#applyPatch(changeSummary);
+    const {response, processedFiles} = await this.#applyPatch(changeSummary);
     // TODO: Handle error state
     if (response?.type === ResponseType.ANSWER) {
       this.#patchSuggestion = response.text;
     }
+    this.#patchSources = `Filenames in ${this.#project?.displayName()}.
+Files:
+${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
     this.#patchSuggestionLoading = false;
     this.requestUpdate();
   }
@@ -475,6 +498,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #onDiscard(): void {
     // TODO: Remove changes from the working copies as well.
     this.#patchSuggestion = undefined;
+    this.#patchSources = undefined;
     this.requestUpdate();
   }
 
@@ -484,7 +508,10 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  async #applyPatch(changeSummary: string): Promise<ResponseData|undefined> {
+  async #applyPatch(changeSummary: string): Promise<{
+    response: ResponseData | undefined,
+    processedFiles: string[],
+  }> {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
@@ -494,8 +521,12 @@ export class PatchWidget extends UI.Widget.Widget {
       serverSideLoggingEnabled: false,
       project: this.#project,
     });
-    const {responses} = await agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal});
-    return responses.at(-1);
+    const {responses, processedFiles} =
+        await agent.applyChanges(changeSummary, {signal: this.#applyPatchAbortController.signal});
+    return {
+      response: responses.at(-1),
+      processedFiles,
+    };
   }
 }
 

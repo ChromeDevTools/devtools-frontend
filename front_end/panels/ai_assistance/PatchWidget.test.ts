@@ -10,6 +10,7 @@ import {
   createPatchWidget,
   createTestFilesystem,
   initializePersistenceImplForTests,
+  mockAidaClient,
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
@@ -56,6 +57,24 @@ describeWithMockConnection('PatchWidget', () => {
       view.input.onApplyToWorkspace();
 
       assert.isFalse(showFreDialogStub.called, 'Expected FreDialog to be not shown but it\'s shown');
+    });
+
+    it('should show files uploaded', async () => {
+      Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(true);
+      const {view, panel} = await createPatchWidget({
+        aidaClient: mockAidaClient([
+          [{explanation: '', functionCalls: [{name: 'updateFiles', args: {files: ['index.html']}}]}], [{
+            explanation: 'done',
+          }]
+        ]),
+      });
+      panel.changeSummary = 'body { background-color: red; }';
+
+      view.input.onApplyToWorkspace();
+
+      assert.strictEqual((await view.nextInput).sources, `Filenames in test.
+Files:
+* index.html`);
     });
   });
 

@@ -12944,6 +12944,7 @@ export namespace Page {
     RequestedByWebViewClient = 'RequestedByWebViewClient',
     PostMessageByWebViewClient = 'PostMessageByWebViewClient',
     CacheControlNoStoreDeviceBoundSessionTerminated = 'CacheControlNoStoreDeviceBoundSessionTerminated',
+    CacheLimitPruned = 'CacheLimitPruned',
   }
 
   /**

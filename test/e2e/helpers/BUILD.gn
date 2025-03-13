@@ -35,11 +35,11 @@ node_ts_library("helpers") {
     "sources-helpers.ts",
     "style-property-editor-helpers.ts",
     "visual-logging-helpers.ts",
-    "webaudio-helpers.ts",
   ]
 
   deps = [
     "../../../extension-api",
+    "../../e2e_non_hosted/shared",
     "../../shared",
   ]
 }

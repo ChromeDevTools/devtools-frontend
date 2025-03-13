@@ -4,11 +4,10 @@
 
 import("../../../scripts/build/typescript/typescript.gni")
 
-node_ts_library("webaudio") {
+ts_e2e_library("webaudio") {
   sources = [ "webaudio_test.ts" ]
-
   deps = [
-    "../../shared",
-    "../helpers",
+    "../../e2e/helpers",
+    "../conductor:implementation",
   ]
 }

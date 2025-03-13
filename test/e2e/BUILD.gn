@@ -48,7 +48,6 @@ node_ts_library("tests") {
     "sources",
     "targets",
     "throttling",
-    "webaudio",
   ]
   sources = [ "mocharc.ts" ]
 }

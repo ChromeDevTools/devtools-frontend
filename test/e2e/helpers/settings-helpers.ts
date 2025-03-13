@@ -2,45 +2,42 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {DevToolsFronendPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
-  $,
   click,
   clickElement,
-  getBrowserAndPages,
-  hover,
   scrollElementIntoView,
   waitFor,
-  waitForAria,
   waitForFunction,
 } from '../../shared/helper.js';
+import {getBrowserAndPagesWrappers} from '../../shared/non_hosted_wrappers.js';
 
-export const openPanelViaMoreTools = async (panelTitle: string) => {
-  const {frontend} = getBrowserAndPages();
-
+export async function openPanelViaMoreTools(panelTitle: string, frontend?: DevToolsFronendPage) {
+  frontend = frontend || getBrowserAndPagesWrappers().devToolsPage;
   await frontend.bringToFront();
 
   // Head to the triple dot menu.
-  await click('aria/Customize and control DevTools');
+  await frontend.click('aria/Customize and control DevTools');
 
-  await waitForFunction(async () => {
+  await frontend.waitForFunction(async () => {
     // Open the “More Tools” option.
-    await hover('aria/More tools[role="menuitem"]');
-    return await $(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
+    await frontend.hover('aria/More tools[role="menuitem"]');
+    return await frontend.$(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
   });
 
   // Click the desired menu item
-  await click(`aria/${panelTitle}[role="menuitem"]`);
+  await frontend.click(`aria/${panelTitle}[role="menuitem"]`);
 
   // Wait for the triple dot menu to be collapsed.
-  const button = await waitForAria('Customize and control DevTools');
-  await waitForFunction(async () => {
+  const button = await frontend.waitForAria('Customize and control DevTools');
+  await frontend.waitForFunction(async () => {
     const expanded = await button.evaluate(el => el.getAttribute('aria-expanded'));
     return expanded === null;
   });
 
   // Wait for the corresponding panel to appear.
-  await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
-};
+  await frontend.waitForAria(`${panelTitle} panel[role="tabpanel"]`);
+}
 
 export const openSettingsTab = async (tabTitle: string) => {
   const gearIconSelector = 'devtools-button[aria-label="Settings"]';

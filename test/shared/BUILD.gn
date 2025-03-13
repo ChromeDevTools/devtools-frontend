@@ -9,8 +9,12 @@ node_ts_library("shared") {
     "debug-check.ts",
     "helper.ts",
     "mocha-resultsdb-reporter.ts",
+    "non_hosted_wrappers.ts",
     "screenshots.ts",
   ]
 
-  deps = [ "../conductor:implementation" ]
+  deps = [
+    "../conductor:implementation",
+    "../e2e_non_hosted/shared",
+  ]
 }

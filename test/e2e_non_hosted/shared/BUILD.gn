@@ -5,10 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("shared") {
-  deps = [
-    "../../conductor:implementation",
-    "../../shared",
-  ]
+  deps = [ "../../conductor:implementation" ]
   sources = [
     "browser-helper.ts",
     "frontend-helper.ts",

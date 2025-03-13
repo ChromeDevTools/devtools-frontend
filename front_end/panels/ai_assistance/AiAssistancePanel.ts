@@ -824,9 +824,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   }
 
   #getChangeSummary(): string|undefined {
-    return (isAiAssistancePatchingEnabled() && this.#conversationAgent && !this.#conversation?.isReadOnly) ?
-        this.#changeManager.formatChangesForPatching(this.#conversationAgent.id, /* includeSourceLocation= */ true) :
-        undefined;
+    if (!isAiAssistancePatchingEnabled() || !this.#conversationAgent || this.#conversation?.isReadOnly) {
+      return;
+    }
+
+    return this.#changeManager.formatChangesForPatching(this.#conversationAgent.id, /* includeSourceLocation= */ true);
   }
 
   override async performUpdate(): Promise<void> {

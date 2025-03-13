@@ -887,7 +887,7 @@ describeWithMockConnection('AI Assistance Panel', () => {
 
   describe('auto agent selection for panels', () => {
     const tests: Array<{
-      panel: {new (...args: any[]): UI.Panel.Panel},
+      panel: Platform.Constructor.Constructor<UI.Panel.Panel>,
       expectedConversationType: AiAssistance.ConversationType,
       featureFlagName: string,
     }> =

@@ -429,8 +429,8 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
 
   #execJs: typeof executeJsCode;
 
-  changes: ChangeManager;
-  createExtensionScope: CreateExtensionScopeFunction;
+  #changes: ChangeManager;
+  #createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
     super({
@@ -439,14 +439,17 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       confirmSideEffectForTest: opts.confirmSideEffectForTest,
     });
 
-    this.changes = opts.changeManager || new ChangeManager();
+    this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
-    this.createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
-                                  return new ExtensionScope(changes, this.id);
-                                });
+    this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
+                                   return new ExtensionScope(changes, this.id);
+                                 });
     SDK.TargetManager.TargetManager.instance().addModelListener(
-        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-        this.onPrimaryPageChanged, this);
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.onPrimaryPageChanged,
+        this,
+    );
 
     this.declareFunction<{
       title: string,
@@ -500,7 +503,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 
   onPrimaryPageChanged(): void {
-    void this.changes.clear();
+    void this.#changes.clear();
   }
 
   protected override emulateFunctionCall(aidaResponse: Host.AidaClient.AidaResponse):
@@ -697,7 +700,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       };
     }
 
-    const scope = this.createExtensionScope(this.changes);
+    const scope = this.#createExtensionScope(this.#changes);
     await scope.install();
     try {
       let throwOnSideEffect = true;

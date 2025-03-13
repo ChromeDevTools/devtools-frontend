@@ -37,6 +37,12 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
     result = getForExtensionEntry(event, parsedTrace);
   } else if (Types.Events.isUserTiming(event)) {
     result = getForUserTiming(event, parsedTrace);
+  } else if (Types.Events.isLayout(event) || Types.Events.isUpdateLayoutTree(event)) {
+    const node = parsedTrace.Renderer.entryToNode.get(event);
+    const parent = node?.parent?.entry;
+    if (parent) {
+      result = get(parent, parsedTrace);
+    }
   }
   if (result) {
     cacheForTrace.set(event, result);

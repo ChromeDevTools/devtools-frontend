@@ -28,8 +28,8 @@ describeWithEnvironment('ForcedReflow', function() {
     assert.strictEqual(insight.topLevelFunctionCallData?.totalReflowTime, 26052);
 
     const callStack = insight.aggregatedBottomUpData[1];
-    assert.strictEqual(callStack.bottomUpData.columnNumber, 137906);
-    assert.strictEqual(callStack.bottomUpData.lineNumber, 6);
+    assert.strictEqual(callStack.bottomUpData!.columnNumber, 197203);
+    assert.strictEqual(callStack.bottomUpData!.lineNumber, 32);
     assert.lengthOf(callStack.relatedEvents, 2);
   });
 });

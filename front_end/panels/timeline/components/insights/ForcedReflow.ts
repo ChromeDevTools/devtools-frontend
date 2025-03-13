@@ -18,13 +18,18 @@ import type {TableData} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.ForcedReflow;
 
-const {html} = Lit;
+const {html, nothing} = Lit;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
   override internalName = 'forced-reflow';
 
-  #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame): Lit.LitTemplate {
+  #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame|null): Lit.LitTemplate {
+    if (!callFrame) {
+      // TODO: Remove this style hack.
+      return html`<div style="margin: 4px 10px; font-style: italic">${i18nString(UIStrings.unattributed)}</div>`;
+    }
+
     const linkifier = new LegacyComponents.Linkifier.Linkifier();
     const stackTrace: Protocol.Runtime.StackTrace = {
       callFrames: [
@@ -44,26 +49,33 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
   }
 
   override renderContent(): Lit.LitTemplate {
-    if (!this.model || !this.model.topLevelFunctionCallData) {
+    if (!this.model) {
       return Lit.nothing;
     }
 
-    const topLevelFunctionCallData = this.model.topLevelFunctionCallData.topLevelFunctionCall;
-    const totalReflowTime = this.model.topLevelFunctionCallData.totalReflowTime;
+    const topLevelFunctionCallData = this.model.topLevelFunctionCallData;
     const bottomUpCallStackData = this.model.aggregatedBottomUpData;
     const time = (us: Trace.Types.Timing.Micro): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
     // clang-format off
     return html`
-      <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
-            rows: [{values:[this.#linkifyUrl(topLevelFunctionCallData), time(Trace.Types.Timing.Micro(totalReflowTime))]}],
-          } as TableData}>
-        </devtools-performance-table>
-      </div>
+      ${topLevelFunctionCallData ? html`
+        <div class="insight-section">
+          <devtools-performance-table
+            .data=${{
+              insight: this,
+              headers: [i18nString(UIStrings.topTimeConsumingFunctionCall), i18nString(UIStrings.totalReflowTime)],
+              rows: [{
+                values: [
+                  this.#linkifyUrl(topLevelFunctionCallData.topLevelFunctionCall),
+                  time(Trace.Types.Timing.Micro(topLevelFunctionCallData.totalReflowTime)),
+                ],
+                overlays: this.#createOverlayForEvents(topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
+              }],
+            } as TableData}>
+          </devtools-performance-table>
+        </div>
+      ` : nothing}
       <div class="insight-section">
         <devtools-performance-table
           .data=${{
@@ -84,14 +96,19 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
       return [];
     }
 
-    return this.#createOverlayForEvents(this.model.topLevelFunctionCallData.topLevelFunctionCallEvents);
+    const allBottomUpEvents = [...this.model.aggregatedBottomUpData.values().flatMap(data => data.relatedEvents)];
+    return [
+      ...this.#createOverlayForEvents(this.model.topLevelFunctionCallData.topLevelFunctionCallEvents, 'INFO'),
+      ...this.#createOverlayForEvents(allBottomUpEvents),
+    ];
   }
 
-  #createOverlayForEvents(events: Trace.Types.Events.Event[]): Overlays.Overlays.TimelineOverlay[] {
+  #createOverlayForEvents(events: Trace.Types.Events.Event[], outlineReason: 'ERROR'|'INFO' = 'ERROR'):
+      Overlays.Overlays.TimelineOverlay[] {
     return events.map(e => ({
                         type: 'ENTRY_OUTLINE',
                         entry: e,
-                        outlineReason: 'INFO',
+                        outlineReason,
                       }));
   }
 }

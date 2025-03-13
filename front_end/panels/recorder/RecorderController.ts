@@ -17,9 +17,6 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import type * as Menus from '../../ui/components/menus/menus.js';
-// inspectorCommonStyles is imported for the empty state styling that is used for the start view
-// eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -33,10 +30,6 @@ import * as Models from './models/models.js';
 import * as Actions from './recorder-actions/recorder-actions.js';
 import recorderControllerStylesRaw from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const recorderControllerStyles = new CSSStyleSheet();
@@ -188,7 +181,7 @@ const CONVERTER_ID_TO_METRIC: Record<string, Host.UserMetrics.RecordingExported|
 
 @customElement('devtools-recorder-controller')
 export class RecorderController extends LitElement {
-  static override readonly styles = [recorderControllerStyles, inspectorCommonStyles];
+  static override readonly styles = [recorderControllerStyles];
 
   @state() declare private currentRecordingSession?: Models.RecordingSession.RecordingSession;
   @state() declare private currentRecording: StoredRecording|undefined;

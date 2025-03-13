@@ -893,6 +893,7 @@ main {
       display: flex;
       align-items: center;
       gap: var(--sys-size-3);
+      margin-left: auto;
 
       devtools-icon {
         /* var(--sys-size-8) is too small and var(--sys-size-9) is too big. */

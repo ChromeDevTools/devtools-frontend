@@ -59,14 +59,14 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
   #projects: Workspace.Workspace.Project[] = [];
   #selectedIndex = 0;
-  #handleProjectSelected: (project: Workspace.Workspace.Project) => void;
+  #onProjectSelected: (project: Workspace.Workspace.Project) => void;
   #boundOnKeyDown: (event: KeyboardEvent) => void;
   #dialog: UI.Dialog.Dialog;
 
   constructor(
       options: {
         dialog: UI.Dialog.Dialog,
-        handleProjectSelected: (project: Workspace.Workspace.Project) => void,
+        onProjectSelected: (project: Workspace.Workspace.Project) => void,
         currentProject?: Workspace.Workspace.Project,
       },
       view?: View) {
@@ -74,7 +74,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     this.element.classList.add('dialog-container');
     this.registerRequiredCSS(selectWorkspaceDialogStyles);
     this.#boundOnKeyDown = this.#onKeyDown.bind(this);
-    this.#handleProjectSelected = options.handleProjectSelected;
+    this.#onProjectSelected = options.onProjectSelected;
     this.#projects = this.#getProjects();
     this.#dialog = options.dialog;
 
@@ -172,7 +172,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       },
       onSelectButtonClick: () => {
         this.#dialog.hide();
-        this.#handleProjectSelected(this.#projects[this.#selectedIndex]);
+        this.#onProjectSelected(this.#projects[this.#selectedIndex]);
       },
       onCancelButtonClick: () => {
         this.#dialog.hide();
@@ -196,5 +196,17 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
   #onProjectAdded(): void {
     this.#projects = this.#getProjects();
     this.requestUpdate();
+  }
+
+  static show(
+      onProjectSelected: (project: Workspace.Workspace.Project) => void,
+      currentProject?: Workspace.Workspace.Project): void {
+    const dialog = new UI.Dialog.Dialog('select-workspace');
+    dialog.setMaxContentSize(new UI.Geometry.Size(384, 340));
+    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
+    dialog.setDimmed(true);
+
+    new SelectWorkspaceDialog({dialog, onProjectSelected, currentProject}).show(dialog.contentElement);
+    dialog.show();
   }
 }

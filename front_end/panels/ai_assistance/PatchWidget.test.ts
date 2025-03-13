@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import type * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
 import {
@@ -14,6 +15,8 @@ import {
 } from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+
+import * as AiAssistance from './ai_assistance.js';
 
 describeWithMockConnection('PatchWidget', () => {
   let showFreDialogStub: sinon.SinonStub<Parameters<typeof PanelCommon.FreDialog.show>, Promise<boolean>>;
@@ -31,6 +34,7 @@ describeWithMockConnection('PatchWidget', () => {
   describe('applyToWorkspace', () => {
     beforeEach(() => {
       createTestFilesystem('file://test');
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -79,8 +83,19 @@ Files:
   });
 
   describe('workspace', () => {
-    it('does not report a workspace project if disabled', async () => {
-      createTestFilesystem('file://test');
+    let project: Persistence.FileSystemWorkspaceBinding.FileSystem;
+
+    beforeEach(() => {
+      project = createTestFilesystem('file://test').project;
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          patching: true,
+        },
+      });
+    });
+
+    it('does not select a workspace project if patching is disabled', async () => {
       updateHostConfig({
         devToolsFreestyler: {
           enabled: true,
@@ -91,32 +106,74 @@ Files:
       assert.isUndefined(view.input.projectName);
     });
 
-    it('reports a current workspace project', async () => {
-      createTestFilesystem('file://test');
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-          patching: true,
-        },
-      });
+    it('does not select a workspace project if setting does not exist', async () => {
+      const {view} = await createPatchWidget();
+      assert.isUndefined(view.input.projectName);
+    });
+
+    it('selects a workspace project matching the setting', async () => {
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
       const {view} = await createPatchWidget();
       assert.strictEqual(view.input.projectName, 'test');
     });
 
-    it('reports an updated project', async () => {
-      const {project} = createTestFilesystem('file://test');
-      updateHostConfig({
-        devToolsFreestyler: {
-          enabled: true,
-          patching: true,
-        },
-      });
+    it('removes a selected workspace project upon workspace removal', async () => {
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
       const {view} = await createPatchWidget();
       assert.strictEqual(view.input.projectName, 'test');
 
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
-      createTestFilesystem('file://test2');
-      assert.strictEqual((await view.nextInput).projectName, 'test2');
+      const input = await view.nextInput;
+      assert.isUndefined(input.projectName);
+    });
+
+    it('selection is triggered by applyToWorkspace click if no workspace is (pre-)selected', async () => {
+      let handler: (project: Workspace.Workspace.Project) => void = () => {};
+      const showSelectWorkspaceDialogStub =
+          sinon.stub(AiAssistance.SelectWorkspaceDialog, 'show').callsFake((handleProjectSelected, _project) => {
+            handler = handleProjectSelected;
+          });
+      const {view, panel} = await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'suggested patch'}]])});
+      panel.changeSummary = 'body { background-color: red; }';
+      assert.isUndefined(view.input.projectName);
+
+      // Simulate clicking the "Apply to workspace" button
+      view.input.onApplyToWorkspace();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
+
+      // Simulate selecting a workspace with the SelectWorkspaceDialog
+      handler(project);
+      const input = await view.nextInput;
+
+      // Assert that a patch has been generated and a project has been selected
+      assert.strictEqual(input.patchSuggestion, 'suggested patch');
+      assert.strictEqual(input.projectName, 'test');
+    });
+
+    it('selection is triggered by the "change"-button if a workspace is already (pre-)selected', async () => {
+      const {project: project2} = createTestFilesystem('file://test2');
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', 'file://test');
+      let handler: (project: Workspace.Workspace.Project) => void = () => {};
+      const showSelectWorkspaceDialogStub =
+          sinon.stub(AiAssistance.SelectWorkspaceDialog, 'show').callsFake((onProjectSelected, _project) => {
+            handler = onProjectSelected;
+          });
+      const {view, panel} = await createPatchWidget();
+      panel.changeSummary = 'body { background-color: red; }';
+      assert.strictEqual(view.input.projectName, 'test');
+
+      // Simulate clicking the "Change" button
+      assert.isTrue(showSelectWorkspaceDialogStub.notCalled);
+      view.input.onChangeWorkspaceClick();
+      assert.isTrue(showSelectWorkspaceDialogStub.calledOnce);
+
+      // Simulate selecting a different workspace with the SelectWorkspaceDialog
+      handler(project2);
+      const input = await view.nextInput;
+
+      // Assert that the project has been updated
+      assert.strictEqual(input.projectName, 'test2');
     });
   });
 });

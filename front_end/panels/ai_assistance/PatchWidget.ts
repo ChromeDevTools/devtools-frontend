@@ -139,6 +139,8 @@ export class PatchWidget extends UI.Widget.Widget {
   // Whether the user completed first run experience dialog or not.
   #aiPatchingFreCompletedSetting =
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
+  #projectIdSetting =
+      Common.Settings.Settings.instance().createSetting('ai-assistance-patching-selected-project-id', '');
   #view: View;
   #viewOutput: ViewOutput = {};
   #aidaClient: Host.AidaClient.AidaClient;
@@ -156,6 +158,7 @@ export class PatchWidget extends UI.Widget.Widget {
   }) {
     super(false, false, element);
     this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
+
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
       if (!input.changeSummary) {
@@ -257,17 +260,19 @@ export class PatchWidget extends UI.Widget.Widget {
 
         return html`
         <div class="footer">
-          <div class="change-workspace">
-            <div class="selected-folder">
-              <devtools-icon .name=${'folder'}></devtools-icon> <span title=${input.projectPath}>${input.projectName}</span>
+          ${input.projectName ? html`
+            <div class="change-workspace">
+              <div class="selected-folder">
+                <devtools-icon .name=${'folder'}></devtools-icon> <span title=${input.projectPath}>${input.projectName}</span>
+              </div>
+              <devtools-button
+                @click=${input.onChangeWorkspaceClick}
+                .jslogContext=${'change-workspace'}
+                .variant=${Buttons.Button.Variant.TEXT}>
+                  ${lockedString(UIStringsNotTranslate.change)}
+              </devtools-button>
             </div>
-            <devtools-button
-              @click=${input.onChangeWorkspaceClick}
-              .jslogContext=${'change-workspace'}
-              .variant=${Buttons.Button.Variant.TEXT}>
-                ${lockedString(UIStringsNotTranslate.change)}
-            </devtools-button>
-          </div>
+          ` : nothing}
           <div class="apply-to-workspace-container">
             ${input.patchSuggestionLoading ? html`
               <div class="loading-text-container">
@@ -333,22 +338,6 @@ export class PatchWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
-  #onChangeWorkspaceClick(): void {
-    const dialog = new UI.Dialog.Dialog('select-workspace');
-    dialog.setMaxContentSize(new UI.Geometry.Size(384, 340));
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
-    dialog.setDimmed(true);
-
-    const handleProjectSelected = (project: Workspace.Workspace.Project): void => {
-      this.#project = project;
-      this.requestUpdate();
-    };
-
-    new SelectWorkspaceDialog({dialog, handleProjectSelected, currentProject: this.#project})
-        .show(dialog.contentElement);
-    dialog.show();
-  }
-
   #onLearnMoreTooltipClick(): void {
     this.#viewOutput.tooltipRef?.value?.hidePopover();
     void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
@@ -373,7 +362,7 @@ export class PatchWidget extends UI.Widget.Widget {
           },
           onDiscard: this.#onDiscard.bind(this),
           onSaveAll: this.#onSaveAll.bind(this),
-          onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),
+          onChangeWorkspaceClick: this.#showSelectWorkspaceDialog.bind(this, {applyPatch: false}),
         },
         this.#viewOutput, this.contentElement);
   }
@@ -383,8 +372,7 @@ export class PatchWidget extends UI.Widget.Widget {
     this.#selectDefaultProject();
 
     if (isAiAssistancePatchingEnabled()) {
-      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
-      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
 
       // @ts-expect-error temporary global function for local testing.
       window.aiAssistanceTestPatchPrompt = async (changeSummary: string) => {
@@ -395,9 +383,7 @@ export class PatchWidget extends UI.Widget.Widget {
 
   override willHide(): void {
     if (isAiAssistancePatchingEnabled()) {
-      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAddedOrRemoved, this);
-      this.#workspace.removeEventListener(
-          Workspace.Workspace.Events.ProjectRemoved, this.#onProjectAddedOrRemoved, this);
+      this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
     }
   }
 
@@ -443,40 +429,41 @@ export class PatchWidget extends UI.Widget.Widget {
   }
 
   #selectDefaultProject(): void {
-    if (isAiAssistancePatchingEnabled()) {
-      // TODO: this is temporary code that should be replaced with
-      // workflow selection flow. For now it picks the first Workspace
-      // project that is not Snippets.
-      const projects = this.#workspace.projectsForType(Workspace.Workspace.projectTypes.FileSystem);
+    const project = this.#workspace.project(this.#projectIdSetting.get());
+    if (project) {
+      this.#project = project;
+    } else {
       this.#project = undefined;
-      for (const project of projects) {
-        // This is for TypeScript to narrow the types. projectsForType()
-        // probably only returns instances of
-        // Persistence.FileSystemWorkspaceBinding.FileSystem.
-        if (!(project instanceof Persistence.FileSystemWorkspaceBinding.FileSystem)) {
-          continue;
-        }
-        if (project.fileSystem().type() !== Persistence.PlatformFileSystem.PlatformFileSystemType.WORKSPACE_PROJECT) {
-          continue;
-        }
-        this.#project = project;
-        this.requestUpdate();
-        break;
-      }
+      this.#projectIdSetting.set('');
+    }
+    this.requestUpdate();
+  }
+
+  #onProjectRemoved(): void {
+    if (this.#project && !this.#workspace.project(this.#project.id())) {
+      this.#projectIdSetting.set('');
+      this.#project = undefined;
+      this.requestUpdate();
     }
   }
 
-  #onProjectAddedOrRemoved(): void {
-    this.#selectDefaultProject();
+  #showSelectWorkspaceDialog(options: {applyPatch: boolean} = {applyPatch: false}): void {
+    const onProjectSelected = (project: Workspace.Workspace.Project): void => {
+      this.#project = project;
+      this.#projectIdSetting.set(project.id());
+      if (options.applyPatch) {
+        void this.#applyPatchAndUpdateUI();
+      } else {
+        this.requestUpdate();
+      }
+    };
+
+    SelectWorkspaceDialog.show(onProjectSelected, this.#project);
   }
 
   async #onApplyToWorkspace(): Promise<void> {
     if (!isAiAssistancePatchingEnabled()) {
       return;
-    }
-    const changeSummary = this.changeSummary;
-    if (!changeSummary) {
-      throw new Error('Change summary does not exist');
     }
 
     // Show the FRE dialog if needed and only continue when
@@ -484,6 +471,19 @@ export class PatchWidget extends UI.Widget.Widget {
     const freDisclaimerCompleted = await this.#showFreDisclaimerIfNeeded();
     if (!freDisclaimerCompleted) {
       return;
+    }
+
+    if (this.#project) {
+      await this.#applyPatchAndUpdateUI();
+    } else {
+      this.#showSelectWorkspaceDialog({applyPatch: true});
+    }
+  }
+
+  async #applyPatchAndUpdateUI(): Promise<void> {
+    const changeSummary = this.changeSummary;
+    if (!changeSummary) {
+      throw new Error('Change summary does not exist');
     }
 
     this.#patchSuggestionLoading = true;

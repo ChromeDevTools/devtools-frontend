@@ -70,6 +70,7 @@ export interface CriticalRequestNode {
 export type NetworkDependencyTreeInsightModel = InsightModel<typeof UIStrings, {
   rootNodes: CriticalRequestNode[],
   maxTime: Types.Timing.Micro,
+  fail: boolean,
 }>;
 
 function finalize(partialModel: PartialInsightModel<NetworkDependencyTreeInsightModel>):
@@ -80,7 +81,7 @@ function finalize(partialModel: PartialInsightModel<NetworkDependencyTreeInsight
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
-    state: partialModel.rootNodes.length > 0 ? 'fail' : 'pass',
+    state: partialModel.fail ? 'fail' : 'pass',
     ...partialModel,
   };
 }
@@ -125,18 +126,23 @@ export function generateInsight(
     return finalize({
       rootNodes: [],
       maxTime: Types.Timing.Micro(0),
+      fail: false,
     });
   }
 
   const rootNodes: CriticalRequestNode[] = [];
   const relatedEvents: RelatedEventsMap = new Map();
   let maxTime = Types.Timing.Micro(0);
+  let fail = false;
 
   let longestChain: Types.Events.SyntheticNetworkRequest[] = [];
 
   function addChain(path: Types.Events.SyntheticNetworkRequest[]): void {
     if (path.length === 0) {
       return;
+    }
+    if (path.length >= 2) {
+      fail = true;
     }
     const initialRequest = path[0];
     const lastRequest = path[path.length - 1];
@@ -223,6 +229,7 @@ export function generateInsight(
   return finalize({
     rootNodes,
     maxTime,
+    fail,
     relatedEvents,
   });
 }

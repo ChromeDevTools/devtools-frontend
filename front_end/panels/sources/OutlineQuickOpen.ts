@@ -175,7 +175,9 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
           let title = state.sliceDoc(cursor.from, cursor.to);
           const {lineNumber, columnNumber} = toLineColumn(cursor.from);
           while (cursor.name as string !== 'Equals') {
-            cursor.next();
+            if (!cursor.next()) {
+              return items;
+            }
           }
           if (!cursor.nextSibling()) {
             break;

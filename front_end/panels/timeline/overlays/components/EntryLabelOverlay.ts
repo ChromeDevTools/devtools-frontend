@@ -4,6 +4,7 @@
 
 import '../../../../ui/components/icon_button/icon_button.js';
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
@@ -379,8 +380,28 @@ export class EntryLabelOverlay extends HTMLElement {
     }
   }
 
+  // Generate the AI label suggestion if:
+  // 1. the user has already already seen the fre dialog and confirmed the feature usage
+  // or
+  // 2. turned on the `generate AI labels` setting through the AI settings panel
+  //
+  // Otherwise, show the fre dialog with a 'Got it' button that turns the setting on.
   async #handleAiButtonClick(): Promise<void> {
-    await PanelCommon.FreDialog.show({
+    // Creates or gets the setting if it exists.
+    const onboardingCompleteSetting =
+        Common.Settings.Settings.instance().createSetting('ai-annotations-enabled', false);
+
+    if (onboardingCompleteSetting.get()) {
+      // TODO: Actually generate the ai label
+      if (this.#inputField) {
+        this.#label = 'ai generated label';
+        this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
+        this.#inputField.innerText = this.#label;
+      }
+      return;
+    }
+
+    const userConsented = await PanelCommon.FreDialog.show({
       header: {iconName: 'pen-spark', text: lockedString(UIStringsNotTranslate.freDisclaimerHeader)},
       reminderItems: [
         {
@@ -411,12 +432,15 @@ export class EntryLabelOverlay extends HTMLElement {
       // TODO: Update this href to be the correct link.
       learnMoreHref: Platform.DevToolsPath.EmptyUrlString
     });
+
+    if (userConsented) {
+      onboardingCompleteSetting.set(true);
+    }
   }
 
   #renderAiButton(): Lit.TemplateResult {
     // clang-format off
     return html`
-      <!-- TODO: On button click generate a label -->
       <!-- 'preventDefault' on the AI label button to prevent the label removal on blur  -->
       <span
         class="ai-label-button-wrapper"

@@ -9,6 +9,7 @@ import * as PanelCommon from '../../panels/common/common.js';
 import {
   cleanup,
   createPatchWidget,
+  createPatchWidgetWithDiffView,
   createTestFilesystem,
   initializePersistenceImplForTests,
   mockAidaClient,
@@ -174,6 +175,53 @@ Files:
 
       // Assert that the project has been updated
       assert.strictEqual(input.projectName, 'test2');
+    });
+  });
+
+  describe('diff view', () => {
+    let commitWorkingCopyStub:
+        sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.commitWorkingCopy>>;
+    let resetWorkingCopyStub:
+        sinon.SinonStub<Parameters<typeof Workspace.UISourceCode.UISourceCode.prototype.resetWorkingCopy>>;
+
+    beforeEach(() => {
+      createTestFilesystem('file://test');
+      updateHostConfig({
+        devToolsFreestyler: {
+          enabled: true,
+          patching: true,
+        },
+      });
+
+      commitWorkingCopyStub =
+          sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'commitWorkingCopy').callThrough();
+      resetWorkingCopyStub =
+          sinon.stub(Workspace.UISourceCode.UISourceCode.prototype, 'resetWorkingCopy').callThrough();
+    });
+
+    it('save all should commit the working copy of the changed UI codes to the disk and render savedToDisk view',
+       async () => {
+         const {uiSourceCode} = createTestFilesystem('file://test');
+         const {view} = await createPatchWidgetWithDiffView();
+
+         uiSourceCode.setWorkingCopy('working copy');
+         view.input.onSaveAll();
+         const nextInput = await view.nextInput;
+
+         assert.isTrue(nextInput.savedToDisk);
+         assert.isTrue(commitWorkingCopyStub.called, 'Expected commitWorkingCopy to be called but it is not called');
+       });
+
+    it('discard should discard the working copy and render the view without patchSuggestion', async () => {
+      const {uiSourceCode} = createTestFilesystem('file://test');
+      const {view} = await createPatchWidgetWithDiffView();
+      uiSourceCode.setWorkingCopy('working copy');
+
+      view.input.onDiscard();
+      const nextInput = await view.nextInput;
+
+      assert.notExists(nextInput.patchSuggestion);
+      assert.isTrue(resetWorkingCopyStub.called, 'Expected resetWorkingCopy to be called but it is not called');
     });
   });
 });

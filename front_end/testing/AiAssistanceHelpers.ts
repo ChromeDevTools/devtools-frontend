@@ -229,6 +229,16 @@ export async function createPatchWidget(options?: {
   };
 }
 
+export async function createPatchWidgetWithDiffView() {
+  const {view, panel, aidaClient} =
+      await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
+  panel.changeSummary = 'body { background-color: red; }';
+  view.input.onApplyToWorkspace();
+  assert.exists((await view.nextInput).patchSuggestion);
+
+  return {panel, view, aidaClient};
+}
+
 export function initializePersistenceImplForTests(): void {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({

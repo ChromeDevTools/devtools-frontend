@@ -141,7 +141,7 @@ module.exports = {
     const queue = [];
     const sourceCode = context.getSourceCode();
 
-    /** @type {Map<string, DomFragment>} */
+    /** @type {Map<string|Variable, DomFragment>} */
     const domFragments = new Map();
 
     /**
@@ -149,21 +149,54 @@ module.exports = {
      * @return {DomFragment}
      */
     function getOrCreateDomFragment(node) {
-      const key = sourceCode.getText(node);
+      const variable = getEnclosingVariable(node);
+      const key = variable ?? sourceCode.getText(node);
 
       let result = domFragments.get(key);
       if (!result) {
         result = new DomFragment();
         queue.push(result);
         domFragments.set(key, result);
-        result.expression = sourceCode.getText(node);
-        const classDeclaration = getEnclosingClassDeclaration(node);
-        if (classDeclaration) {
-          result.replacementLocation = classDeclaration;
+        if (variable) {
+          result.references = variable.references.map(r => ({node: /** @type {Node} */ (r.identifier)}));
+        } else {
+          result.expression = sourceCode.getText(node);
+          const classDeclaration = getEnclosingClassDeclaration(node);
+          if (classDeclaration) {
+            result.replacementLocation = classDeclaration;
+          }
         }
       }
-      result.references.push({node});
+      if (!variable) {
+        result.references.push({node});
+      }
       return result;
+    }
+
+    /**
+     * @param {Node} node
+     * @return {Variable|null}
+     */
+    function getEnclosingVariable(node) {
+      if (node.type === 'Identifier') {
+        let scope = sourceCode.getScope(node);
+        const variableName = node.name;
+        while (scope) {
+          const variable = scope.variables.find(v => v.name === variableName);
+          if (variable) {
+            return variable;
+          }
+          scope = scope.upper;
+        }
+      }
+      if (node.parent.type === 'VariableDeclarator') {
+        const variables = sourceCode.getDeclaredVariables(node.parent);
+        if (variables.length > 1) {
+          return null;  // Destructuring assignment
+        }
+        return variables[0];
+      }
+      return null;
     }
 
     /**

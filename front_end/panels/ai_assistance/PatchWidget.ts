@@ -169,7 +169,7 @@ export class PatchWidget extends UI.Widget.Widget {
       function renderHeader(): LitTemplate {
         if (input.savedToDisk) {
           return html`
-            <devtools-icon class="green-bright-icon" .name=${'check-circle'}></devtools-icon>
+            <devtools-icon class="green-bright-icon summary-badge" .name=${'check-circle'}></devtools-icon>
             <span class="header-text">
               ${lockedString(UIStringsNotTranslate.savedToDisk)}
             </span>
@@ -178,7 +178,7 @@ export class PatchWidget extends UI.Widget.Widget {
 
         if (input.patchSuggestion) {
           return html`
-            <devtools-icon class="on-tonal-icon" .name=${'difference'}></devtools-icon>
+            <devtools-icon class="on-tonal-icon summary-badge" .name=${'difference'}></devtools-icon>
             <span class="header-text">
               ${lockedString(`File changes in ${input.projectName}`)}
             </span>
@@ -190,7 +190,7 @@ export class PatchWidget extends UI.Widget.Widget {
         }
 
         return html`
-          <devtools-icon class="on-tonal-icon" .name=${'pen-spark'}></devtools-icon>
+          <devtools-icon class="on-tonal-icon summary-badge" .name=${'pen-spark'}></devtools-icon>
           <span class="header-text">
             ${lockedString(UIStringsNotTranslate.unsavedChanges)}
           </span>

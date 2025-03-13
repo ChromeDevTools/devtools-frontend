@@ -4,8 +4,9 @@
  * found in the LICENSE file.
  */
 
- .dialog-container {
+ .widget.dialog-container {
   width: 100%;
+  box-shadow: none;
  }
 
 .dialog-header {

@@ -786,7 +786,7 @@ main {
       margin-right: var(--sys-size-3);
     }
 
-    & devtools-icon {
+    & devtools-icon.summary-badge {
       width: var(--sys-size-8);
       height: var(--sys-size-8);
     }
@@ -847,7 +847,7 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: var(--sys-size-5) 0;
+    margin: var(--sys-size-5) 0 var(--sys-size-5) var(--sys-size-2);
     gap: var(--sys-size-6);
 
     .disclaimer-link {

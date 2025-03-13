@@ -12,8 +12,6 @@ import {
   cssMetadata,
   type CSSWideKeyword,
   CubicBezierKeywordValues,
-  FontFamilyRegex,
-  FontPropertiesRegex
 } from './CSSMetadata.js';
 import type {CSSProperty} from './CSSProperty.js';
 import {
@@ -662,13 +660,18 @@ export class FontMatcher extends matcherBase(FontMatch) {
     if (node.name !== 'Declaration') {
       return null;
     }
-    const regex = matching.ast.propertyName === 'font-family' ? FontFamilyRegex : FontPropertiesRegex;
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
     if (valueNodes.length === 0) {
       return null;
     }
+    const validNodes = matching.ast.propertyName === 'font-family' ? ['ValueName', 'StringLiteral', 'Comment', ','] :
+                                                                     ['Comment', 'ValueName', 'NumberLiteral'];
+
+    if (valueNodes.some(node => !validNodes.includes(node.name))) {
+      return null;
+    }
     const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
-    return regex.test(valueText) ? new FontMatch(valueText, node) : null;
+    return new FontMatch(valueText, node);
   }
 }
 

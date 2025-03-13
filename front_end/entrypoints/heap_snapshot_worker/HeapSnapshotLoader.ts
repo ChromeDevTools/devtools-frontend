@@ -71,11 +71,12 @@ export class HeapSnapshotLoader {
     }
   }
 
-  buildSnapshot(): JSHeapSnapshot {
+  async buildSnapshot(secondWorker: MessagePort): Promise<JSHeapSnapshot> {
     this.#snapshot = this.#snapshot || {};
 
     this.#progress.updateStatus('Processing snapshot…');
     const result = new JSHeapSnapshot((this.#snapshot as Profile), this.#progress);
+    await result.initialize(secondWorker);
     this.#reset();
     return result;
   }

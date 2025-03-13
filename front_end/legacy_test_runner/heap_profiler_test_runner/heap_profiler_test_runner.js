@@ -286,10 +286,9 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       return rawSnapshot;
     },
 
-    createJSHeapSnapshot: function() {
+    createJSHeapSnapshot: async function() {
       const parsedSnapshot = HeapProfilerTestRunner.postprocessHeapSnapshotMock(this.generateSnapshot());
-      return new HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot(
-          parsedSnapshot, new HeapSnapshotWorker.HeapSnapshot.HeapSnapshotProgress());
+      return await HeapSnapshotWorker.HeapSnapshot.createJSHeapSnapshotForTesting(parsedSnapshot);
     },
 
     registerNode: function(node) {

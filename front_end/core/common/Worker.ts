@@ -47,10 +47,10 @@ export class WorkerWrapper {
     return new WorkerWrapper(url);
   }
 
-  postMessage(message: unknown): void {
+  postMessage(message: unknown, transfer?: Transferable[]): void {
     void this.#workerPromise.then(worker => {
       if (!this.#disposed) {
-        worker.postMessage(message);
+        worker.postMessage(message, transfer ?? []);
       }
     });
   }

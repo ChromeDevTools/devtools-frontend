@@ -137,15 +137,20 @@ export interface BitVector {
   clearBit(index: number): void;
   // Returns the last bit before `index` which is set, or -1 if there are none.
   previous(index: number): number;
+  get buffer(): ArrayBuffer;
 }
 
-export function createBitVector(length: number): BitVector {
-  return new BitVectorImpl(length);
+export function createBitVector(lengthOrBuffer: number|ArrayBuffer): BitVector {
+  return new BitVectorImpl(lengthOrBuffer);
 }
 
 class BitVectorImpl extends Uint8Array {
-  constructor(length: number) {
-    super(Math.ceil(length / 8));
+  constructor(lengthOrBuffer: number|ArrayBuffer) {
+    if (typeof lengthOrBuffer === 'number') {
+      super(Math.ceil(lengthOrBuffer / 8));
+    } else {
+      super(lengthOrBuffer);
+    }
   }
   getBit(index: number): boolean {
     const value = this[index >> 3] & (1 << (index & 7));

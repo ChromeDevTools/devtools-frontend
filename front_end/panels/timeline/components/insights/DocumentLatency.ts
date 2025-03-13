@@ -18,6 +18,7 @@ const {html} = Lit;
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-document-latency`;
   override internalName = 'document-latency';
+  protected override hasAskAISupport = true;
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model?.data?.documentRequest) {

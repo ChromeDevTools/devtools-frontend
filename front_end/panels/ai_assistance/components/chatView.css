@@ -865,6 +865,16 @@ main {
       gap: var(--sys-size-2);
     }
 
+    .info-tooltip-container {
+      max-width: var(--sys-size-28);
+
+      .tooltip-link {
+        display: block;
+        margin-top: var(--sys-size-4);
+        color: var(--sys-color-primary);
+      }
+    }
+
     .loading-text-container {
       margin-right: var(--sys-size-3);
       display: flex;

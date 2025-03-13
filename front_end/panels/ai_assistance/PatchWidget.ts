@@ -75,7 +75,11 @@ const UIStringsNotTranslate = {
   /**
    *@description Tooltip text for the info icon beside the "Apply to workspace" button
    */
-  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions.',
+  /**
+   *@description Tooltip link for the navigating to "AI innovations" page in settings.
+   */
+  learnMore: 'Learn more',
   /**
    *@description Header text for the AI-powered code suggestions disclaimer dialog.
    */
@@ -105,6 +109,7 @@ export interface ViewInput {
   projectName?: string;
   savedToDisk?: boolean;
   projectPath: Platform.DevToolsPath.UrlString;
+  onLearnMoreTooltipClick: () => void;
   onApplyToWorkspace: () => void;
   onCancel: () => void;
   onDiscard: () => void;
@@ -112,7 +117,11 @@ export interface ViewInput {
   onChangeWorkspaceClick: () => void;
 }
 
-type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export interface ViewOutput {
+  tooltipRef?: Directives.Ref<HTMLElement>;
+}
+
+type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export class PatchWidget extends UI.Widget.Widget {
   changeSummary = '';
@@ -121,6 +130,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #aiPatchingFreCompletedSetting =
       Common.Settings.Settings.instance().createSetting('ai-assistance-patching-fre-completed', false);
   #view: View;
+  #viewOutput: ViewOutput = {};
   #aidaClient: Host.AidaClient.AidaClient;
   #applyPatchAbortController?: AbortController;
   #project?: Workspace.Workspace.Project;
@@ -140,6 +150,7 @@ export class PatchWidget extends UI.Widget.Widget {
       if (!input.changeSummary) {
         return;
       }
+      output.tooltipRef = output.tooltipRef ?? Directives.createRef<HTMLElement>();
 
       function renderHeader(): LitTemplate {
         if (input.savedToDisk) {
@@ -262,7 +273,19 @@ export class PatchWidget extends UI.Widget.Widget {
               ${lockedString(UIStringsNotTranslate.cancel)}
             </devtools-button>` : nothing}
             <devtools-icon aria-describedby="info-tooltip" .name=${'info'}></devtools-icon>
-            <devtools-tooltip id="info-tooltip">${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}</devtools-tooltip>
+            <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
+              <div class="info-tooltip-container">
+                ${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}
+                <button
+                  class="link tooltip-link"
+                  role="link"
+                  jslog=${VisualLogging.link('open-ai-settings').track({
+                    click: true,
+                  })}
+                  @click=${input.onLearnMoreTooltipClick}
+                >${lockedString(UIStringsNotTranslate.learnMore)}</button>
+              </div>
+            </devtools-tooltip>
           </div>
         </div>`;
       }
@@ -304,6 +327,11 @@ export class PatchWidget extends UI.Widget.Widget {
     dialog.show();
   }
 
+  #onLearnMoreTooltipClick(): void {
+    this.#viewOutput.tooltipRef?.value?.hidePopover();
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+  }
+
   override performUpdate(): void {
     const viewInput = {
       workspaceDiff: this.#workspaceDiff,
@@ -314,6 +342,7 @@ export class PatchWidget extends UI.Widget.Widget {
       projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
           (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
       savedToDisk: this.#savedToDisk,
+      onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
       onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
       onCancel: () => {
         this.#applyPatchAbortController?.abort();
@@ -322,7 +351,7 @@ export class PatchWidget extends UI.Widget.Widget {
       onSaveAll: this.#onSaveAll.bind(this),
       onChangeWorkspaceClick: this.#onChangeWorkspaceClick.bind(this),
     };
-    this.#view(viewInput, undefined, this.contentElement);
+    this.#view(viewInput, this.#viewOutput, this.contentElement);
   }
 
   override wasShown(): void {

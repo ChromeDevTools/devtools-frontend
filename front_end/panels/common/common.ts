@@ -43,7 +43,7 @@ export class FreDialog {
   static show({
     header,
     reminderItems,
-    learnMoreHref,
+    onLearnMoreClick,
   }: {
     header: {
       iconName: string,
@@ -53,7 +53,7 @@ export class FreDialog {
       iconName: string,
       content: Platform.UIString.LocalizedString|Lit.LitTemplate,
     }>,
-    learnMoreHref: Platform.DevToolsPath.UrlString,
+    onLearnMoreClick: () => void,
   }): Promise<boolean> {
     const dialog = new UI.Dialog.Dialog();
     const result = Promise.withResolvers<boolean>();
@@ -82,7 +82,7 @@ export class FreDialog {
         </main>
         <footer>
           <devtools-button
-            @click=${() => UI.UIUtils.openInNewTab(learnMoreHref)}
+            @click=${onLearnMoreClick}
             .jslogContext=${'fre-disclaimer.learn-more'}
             .variant=${Buttons.Button.Variant.OUTLINED}>
             ${i18nString(UIStrings.learnMore)}

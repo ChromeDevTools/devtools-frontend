@@ -429,8 +429,8 @@ export class EntryLabelOverlay extends HTMLElement {
           // clang-format on
         }
       ],
-      // TODO: Update this href to be the correct link.
-      learnMoreHref: Platform.DevToolsPath.EmptyUrlString
+      // TODO: Update this to handle learn more click.
+      onLearnMoreClick: () => {}
     });
 
     if (userConsented) {

@@ -2930,6 +2930,7 @@
                         "idleDetection",
                         "keyboardLock",
                         "localFonts",
+                        "localNetworkAccess",
                         "midi",
                         "midiSysex",
                         "nfc",
@@ -3067,6 +3068,15 @@
                                 "$ref": "Bucket"
                             }
                         }
+                    ]
+                },
+                {
+                    "id": "PrivacySandboxAPI",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "BiddingAndAuctionServices",
+                        "TrustedKeyValue"
                     ]
                 }
             ],
@@ -3403,6 +3413,30 @@
                         {
                             "name": "url",
                             "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "name": "addPrivacySandboxCoordinatorKeyConfig",
+                    "description": "Configures encryption keys used with a given privacy sandbox API to talk\nto a trusted coordinator.  Since this is intended for test automation only,\ncoordinatorOrigin must be a .test domain. No existing coordinator\nconfiguration for the origin may exist.",
+                    "parameters": [
+                        {
+                            "name": "api",
+                            "$ref": "PrivacySandboxAPI"
+                        },
+                        {
+                            "name": "coordinatorOrigin",
+                            "type": "string"
+                        },
+                        {
+                            "name": "keyConfig",
+                            "type": "string"
+                        },
+                        {
+                            "name": "browserContextId",
+                            "description": "BrowserContext to perform the action in. When omitted, default browser\ncontext is used.",
+                            "optional": true,
+                            "$ref": "BrowserContextID"
                         }
                     ]
                 }
@@ -14490,7 +14524,8 @@
                         "WarnFromInsecureToMorePrivate",
                         "PreflightBlock",
                         "PreflightWarn",
-                        "PermissionBlock"
+                        "PermissionBlock",
+                        "PermissionWarn"
                     ]
                 },
                 {

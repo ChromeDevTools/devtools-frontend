@@ -1939,6 +1939,7 @@ export namespace Browser {
     IdleDetection = 'idleDetection',
     KeyboardLock = 'keyboardLock',
     LocalFonts = 'localFonts',
+    LocalNetworkAccess = 'localNetworkAccess',
     Midi = 'midi',
     MidiSysex = 'midiSysex',
     Nfc = 'nfc',
@@ -2046,6 +2047,11 @@ export namespace Browser {
      * Buckets.
      */
     buckets: Bucket[];
+  }
+
+  export const enum PrivacySandboxAPI {
+    BiddingAndAuctionServices = 'BiddingAndAuctionServices',
+    TrustedKeyValue = 'TrustedKeyValue',
   }
 
   export interface SetPermissionRequest {
@@ -2254,6 +2260,17 @@ export namespace Browser {
 
   export interface AddPrivacySandboxEnrollmentOverrideRequest {
     url: string;
+  }
+
+  export interface AddPrivacySandboxCoordinatorKeyConfigRequest {
+    api: PrivacySandboxAPI;
+    coordinatorOrigin: string;
+    keyConfig: string;
+    /**
+     * BrowserContext to perform the action in. When omitted, default browser
+     * context is used.
+     */
+    browserContextId?: BrowserContextID;
   }
 
   /**
@@ -9731,6 +9748,7 @@ export namespace Network {
     PreflightBlock = 'PreflightBlock',
     PreflightWarn = 'PreflightWarn',
     PermissionBlock = 'PermissionBlock',
+    PermissionWarn = 'PermissionWarn',
   }
 
   export const enum IPAddressSpace {

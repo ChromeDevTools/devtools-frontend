@@ -21,7 +21,7 @@ import {
 
 /**
  * WARNING: preamble defined in code is only used when userTier is
- * TESTERS. Otherwise, a serve-side preamble is used (see
+ * TESTERS. Otherwise, a server-side preamble is used (see
  * chrome_preambles.gcl). Sync local changes with the server-side.
  */
 const preamble =

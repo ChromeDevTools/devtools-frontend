@@ -235,7 +235,7 @@ export abstract class AiAgent<T> {
   abstract readonly type: AgentType;
   /**
    * WARNING: preamble defined in code is only used when userTier is
-   * TESTERS. Otherwise, a serve-side preamble is used (see
+   * TESTERS. Otherwise, a server-side preamble is used (see
    * chrome_preambles.gcl).
    */
   abstract readonly preamble: string|undefined;

@@ -157,7 +157,61 @@ The result of the checks for this insight are:
     });
   });
 
+  describe('Document request latency', () => {
+    it('serializes the correct details', async function() {
+      const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      assert.isOk(insights);
+      const firstNav = getFirstOrError(parsedTrace.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('DocumentLatency', insights, firstNav);
+
+      const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
+      const output = formatter.formatInsight();
+
+      const expected = `*IMPORTANT*: all time units given to you are in milliseconds.
+## Insight title: Document request latency
+
+## Insight Description:
+This insight checks that the first request is responded to promptly. We use the following criteria to check this:
+1. Was the initial request redirected?
+2. Did the server respond in 600ms or less? We want developers to aim for as close to 100ms as possible, but our threshold for this insight is 600ms.
+3. Was there compression applied to the response to minimize the transfer size?
+
+## External resources:
+- https://web.dev/articles/optimize-ttfb
+
+## Insight details:
+The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
+The LCP is text based and was not fetched from the network.
+
+The result of the checks for this insight are:
+- The request was not redirected: FAILED
+- Server responded quickly: FAILED
+- Compression was applied: FAILED`;
+
+      assert.strictEqual(output, expected);
+    });
+  });
+
   describe('Formatting TraceEvents', () => {
+    it('formats network requests that have redirects', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'bad-document-request-latency.json.gz');
+      const requestUrl = 'http://localhost:3000/redirect3';
+      const request = parsedTrace.NetworkRequests.byTime.find(r => r.args.data.url === requestUrl);
+      assert.isOk(request);
+      const output = TraceEventFormatter.networkRequest(request, parsedTrace, {verbose: true});
+      assert.include(output, `Redirects:
+#### Redirect 1: http://localhost:3000/
+- Start time: 3.04 ms
+- Duration: 512.02 ms
+#### Redirect 2: http://localhost:3000/redirect1
+- Start time: 515.06 ms
+- Duration: 505.67 ms
+#### Redirect 3: http://localhost:3000/redirect2
+- Start time: 1,020.73 ms
+- Duration: 507.09 ms
+`);
+    });
+
     it('formats network requests in verbose mode', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
       const requestUrl = 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@1,800';
@@ -175,6 +229,7 @@ Durations:
 - Main thread processing duration: 3.51 ms
 - Total duration: 13.93 ms
 Initiator: https://chromedevtools.github.io/performance-stories/lcp-large-image/index.html
+Redirects: no redirects
 Status code: 200
 MIME Type: text/css
 Priority: VeryHigh

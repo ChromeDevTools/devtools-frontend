@@ -9,6 +9,7 @@ copy_to_gen("traces") {
     "about-blank-first.json.gz",
     "animation.json.gz",
     "async-js-calls.json.gz",
+    "bad-document-request-latency.json.gz",
     "basic-stack.json.gz",
     "basic.cpuprofile.gz",
     "basic.json.gz",

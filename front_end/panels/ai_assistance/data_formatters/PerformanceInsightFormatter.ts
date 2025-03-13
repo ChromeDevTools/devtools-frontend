@@ -1,6 +1,7 @@
 // Copyright 2025 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as TimelineUtils from '../../timeline/utils/utils.js';
@@ -172,6 +173,31 @@ ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED'
 
 ${requestSummary.join('\n\n')}`;
     }
+
+    if (Trace.Insights.Models.DocumentLatency.isDocumentLatency(this.#insight)) {
+      if (!this.#insight.data) {
+        return '';
+      }
+      const {checklist} = this.#insight.data;
+      const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
+      checklistBulletPoints.push({
+        name: 'The request was not redirected',
+        passed: checklist.noRedirects.value,
+      });
+      checklistBulletPoints.push({
+        name: 'Server responded quickly',
+        passed: checklist.serverResponseIsFast.value,
+      });
+      checklistBulletPoints.push({
+        name: 'Compression was applied',
+        passed: checklist.usesCompression.value,
+      });
+      return `${this.#lcpMetricSharedContext()}
+
+The result of the checks for this insight are:
+${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
+    }
+
     return '';
   }
 
@@ -180,7 +206,7 @@ ${requestSummary.join('\n\n')}`;
       case 'CLSCulprits':
         return '';
       case 'DocumentLatency':
-        return '';
+        return '- https://web.dev/articles/optimize-ttfb';
       case 'DOMSize':
         return '';
       case 'DuplicateJavaScript':
@@ -218,7 +244,10 @@ ${requestSummary.join('\n\n')}`;
       case 'CLSCulprits':
         return '';
       case 'DocumentLatency':
-        return '';
+        return `This insight checks that the first request is responded to promptly. We use the following criteria to check this:
+1. Was the initial request redirected?
+2. Did the server respond in 600ms or less? We want developers to aim for as close to 100ms as possible, but our threshold for this insight is 600ms.
+3. Was there compression applied to the response to minimize the transfer size?`;
       case 'DOMSize':
         return '';
       case 'DuplicateJavaScript':
@@ -308,6 +337,13 @@ export class TraceEventFormatter {
       priorityLines.push(`Final priority: ${priority}`);
     }
 
+    const redirects = request.args.data.redirects.map((redirect, index) => {
+      const startTime = redirect.ts - baseTime;
+      return `#### Redirect ${index + 1}: ${redirect.url}
+- Start time: ${formatMicro(startTime)}
+- Duration: ${formatMicro(redirect.dur)}`;
+    });
+
     if (!options.verbose) {
       return `## Network request: ${url}
 - Start time: ${formatMicro(startTimesForLifecycle.start)}
@@ -325,6 +361,7 @@ Timings:
 Durations:
 - Main thread processing duration: ${formatMicro(mainThreadProcessingDuration)}
 - Total duration: ${formatMicro(request.dur)}${initiator ? `\nInitiator: ${initiator.args.data.url}` : ''}
+Redirects:${redirects.length ? '\n' + redirects.join('\n') : ' no redirects'}
 Status code: ${statusCode}
 MIME Type: ${mimeType}
 ${priorityLines.join('\n')}

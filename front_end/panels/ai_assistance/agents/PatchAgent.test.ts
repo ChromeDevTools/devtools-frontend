@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import {mockAidaClient, type MockAidaResponse} from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {createFileSystemUISourceCode} from '../../../testing/UISourceCodeHelpers.js';
 import {type ActionResponse, FileUpdateAgent, PatchAgent, type ResponseData, ResponseType} from '../ai_assistance.js';
 
@@ -98,5 +99,30 @@ describeWithEnvironment('PatchAgent', () => {
     assert.deepEqual(
         action,
         {type: 'action' as ActionResponse['type'], output: '{"success":true}', code: undefined, canceled: false});
+  });
+
+  it('builds a request with a user tier', async () => {
+    updateHostConfig({
+      devToolsFreestyler: {
+        userTier: 'PUBLIC',
+      },
+    });
+    const {project} = createFileSystemUISourceCode({
+      url: Platform.DevToolsPath.urlString`file:///path/to/overrides/example.html`,
+      fileSystemPath: Platform.DevToolsPath.urlString`file:///path/to/overrides`,
+      mimeType: 'text/html',
+      content: 'content',
+    });
+    const agent = new PatchAgent({
+      aidaClient: mockAidaClient(),
+      project,
+      fileUpdateAgent: new FileUpdateAgent({
+        aidaClient: mockAidaClient(),
+      })
+    });
+    assert.strictEqual(
+        agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER).metadata?.user_tier,
+        3,
+    );
   });
 });

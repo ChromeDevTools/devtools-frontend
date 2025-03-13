@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as Root from '../../../core/root/root.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import {AgentProject} from '../AgentProject.js';
 import {debugLog} from '../debug.js';
@@ -46,7 +47,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 
   get userTier(): string|undefined {
-    return 'TESTERS';
+    return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
 
   get options(): RequestOptions {
@@ -222,7 +223,7 @@ export class FileUpdateAgent extends AiAgent<Workspace.Workspace.Project> {
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_PATCH_AGENT;
 
   get userTier(): string|undefined {
-    return 'TESTERS';
+    return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }
 
   get options(): RequestOptions {

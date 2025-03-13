@@ -45,7 +45,7 @@ class AiAgentMock extends AiAgent<unknown> {
   }
 
   clientFeature: Host.AidaClient.ClientFeature = 0;
-  userTier: undefined;
+  userTier: undefined|string;
 
   options: AiAssistance.RequestOptions = {
     temperature: 1,
@@ -140,13 +140,25 @@ describeWithEnvironment('AiAgent', () => {
       assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
     });
 
-    it('builds a request with preamble', async () => {
+    it('builds a request with preamble if user tier is TESTERS', async () => {
       const agent = new AiAgentMock({
         aidaClient: mockAidaClient(),
       });
+      agent.userTier = 'TESTERS';
       const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
       assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.strictEqual(request.preamble, 'preamble');
+      assert.isUndefined(request.historical_contexts);
+    });
+
+    it('builds a request without preamble if user tier is not TESTERS', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(),
+      });
+      agent.userTier = 'PUBLIC';
+      const request = agent.buildRequest({text: 'test input'}, Host.AidaClient.Role.USER);
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.isUndefined(request.preamble);
       assert.isUndefined(request.historical_contexts);
     });
 

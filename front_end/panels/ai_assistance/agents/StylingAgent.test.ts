@@ -522,7 +522,6 @@ c`;
         }]]),
         serverSideLoggingEnabled: true,
       });
-      sinon.stub(agent, 'preamble').value('preamble');
       await Array.fromAsync(agent.run('question', {selected: null}));
 
       setUserAgentForTesting();
@@ -535,7 +534,7 @@ c`;
           {
             current_message: {role: Host.AidaClient.Role.USER, parts: [{text: 'test input'}]},
             client: 'CHROME_DEVTOOLS',
-            preamble: 'preamble',
+            preamble: undefined,
             historical_contexts: [
               {
                 role: 1,

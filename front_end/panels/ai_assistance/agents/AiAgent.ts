@@ -233,6 +233,11 @@ interface AidaFetchResult {
 export abstract class AiAgent<T> {
   /** Subclasses need to define these. */
   abstract readonly type: AgentType;
+  /**
+   * WARNING: preamble defined in code is only used when userTier is
+   * TESTERS. Otherwise, a serve-side preamble is used (see
+   * chrome_preambles.gcl).
+   */
   abstract readonly preamble: string|undefined;
   abstract readonly options: RequestOptions;
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
@@ -295,11 +300,13 @@ export abstract class AiAgent<T> {
       return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
     }
     const enableAidaFunctionCalling = declarations.length && !this.functionCallEmulationEnabled;
+    const userTier = Host.AidaClient.convertToUserTierEnum(this.userTier);
+    const premable = userTier === Host.AidaClient.UserTier.TESTERS ? this.preamble : undefined;
     const request: Host.AidaClient.AidaRequest = {
       client: Host.AidaClient.CLIENT_NAME,
 
       current_message: currentMessage,
-      preamble: this.preamble,
+      preamble: premable,
 
       historical_contexts: history.length ? history : undefined,
 
@@ -311,7 +318,7 @@ export abstract class AiAgent<T> {
       metadata: {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
         string_session_id: this.#sessionId,
-        user_tier: Host.AidaClient.convertToUserTierEnum(this.userTier),
+        user_tier: userTier,
         client_version: Root.Runtime.getChromeVersion(),
       },
 

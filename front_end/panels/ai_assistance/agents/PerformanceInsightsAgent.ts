@@ -34,7 +34,11 @@ const UIStringsNotTranslated = {
 } as const;
 const lockedString = i18n.i18n.lockedString;
 
-// Sync with the server-side.
+/**
+ * WARNING: preamble defined in code is only used when userTier is
+ * TESTERS. Otherwise, a serve-side preamble is used (see
+ * chrome_preambles.gcl). Sync local changes with the server-side.
+ */
 /* clang-format off */
 const preamble = `You are a performance expert deeply integrated within Chrome DevTools. You specialize in analyzing web application behaviour captured by Chrome DevTools Performance Panel.
 

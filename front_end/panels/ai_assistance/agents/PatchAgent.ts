@@ -19,7 +19,11 @@ import {
   ResponseType,
 } from './AiAgent.js';
 
-// Sync with the server-side.
+/**
+ * WARNING: preamble defined in code is only used when userTier is
+ * TESTERS. Otherwise, a serve-side preamble is used (see
+ * chrome_preambles.gcl). Sync local changes with the server-side.
+ */
 /* clang-format off */
 const preamble = `You are a highly skilled software engineer with expertise in web development.
 The user asks you to apply changes to a source code folder.

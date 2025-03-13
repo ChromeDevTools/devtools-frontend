@@ -52,8 +52,9 @@ export class SnippetFileSystem extends Persistence.PlatformFileSystem.PlatformFi
     return savedSnippets.map(snippet => escapeSnippetName(snippet.name));
   }
 
-  override async createFile(_path: Platform.DevToolsPath.EncodedPathString, _name: Platform.DevToolsPath.RawPathString|null):
-      Promise<Platform.DevToolsPath.EncodedPathString|null> {
+  override async createFile(
+      _path: Platform.DevToolsPath.EncodedPathString,
+      _name: Platform.DevToolsPath.RawPathString|null): Promise<Platform.DevToolsPath.EncodedPathString|null> {
     const nextId = this.lastSnippetIdentifierSetting.get() + 1;
     this.lastSnippetIdentifierSetting.set(nextId);
 
@@ -205,7 +206,8 @@ export function isSnippetsUISourceCode(uiSourceCode: Workspace.UISourceCode.UISo
 
 export function isSnippetsProject(project: Workspace.Workspace.Project): boolean {
   return project.type() === Workspace.Workspace.projectTypes.FileSystem &&
-      Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) === 'snippets';
+      Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(project) ===
+      Persistence.PlatformFileSystem.PlatformFileSystemType.SNIPPETS;
 }
 
 export function findSnippetsProject(): Workspace.Workspace.Project {

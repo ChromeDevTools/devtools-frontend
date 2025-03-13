@@ -35,7 +35,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {Events, type IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {PlatformFileSystem, type PlatformFileSystemType} from './PlatformFileSystem.js';
+import {PlatformFileSystem, PlatformFileSystemType} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
@@ -543,7 +543,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override canExcludeFolder(path: Platform.DevToolsPath.EncodedPathString): boolean {
-    return Boolean(path) && this.type() !== 'overrides';
+    return Boolean(path) && this.type() !== PlatformFileSystemType.OVERRIDES;
   }
 
   // path not typed as Branded Types as here we are interested in extention only
@@ -572,7 +572,7 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   }
 
   override supportsAutomapping(): boolean {
-    return this.type() !== 'overrides';
+    return this.type() !== PlatformFileSystemType.OVERRIDES;
   }
 }
 

@@ -75,7 +75,7 @@ export class PlatformFileSystem {
     throw new Error('Not implemented');
   }
 
-  type(): string {
+  type(): PlatformFileSystemType {
     return this.#type;
   }
 

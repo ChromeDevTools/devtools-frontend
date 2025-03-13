@@ -166,8 +166,8 @@ export class IsolatedFileSystemManager extends Common.ObjectWrapper.ObjectWrappe
 
   removeFileSystem(fileSystem: PlatformFileSystem): void {
     Host.userMetrics.actionTaken(
-        fileSystem.type() === 'overrides' ? Host.UserMetrics.Action.OverrideTabRemoveFolder :
-                                            Host.UserMetrics.Action.WorkspaceTabRemoveFolder);
+        fileSystem.type() === PlatformFileSystemType.OVERRIDES ? Host.UserMetrics.Action.OverrideTabRemoveFolder :
+                                                                 Host.UserMetrics.Action.WorkspaceTabRemoveFolder);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.removeFileSystem(fileSystem.embedderPath());
   }
 

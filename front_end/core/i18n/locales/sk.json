@@ -1238,6 +1238,9 @@
   "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
     "message": "Pole dailyUpdateUrl položky InterestGroups odovzdané položke joinAdInterestGroup() bolo premenované na updateUrl, aby presnejšie vyjadrovalo vlastné správanie."
   },
+  "generated/Deprecation.ts | IntlV8BreakIterator": {
+    "message": "Podpora volania Intl.v8BreakIterator bola ukončená. Namiesto neho použite volanie Intl.Segmenter."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "Šablóny CSS nie je možné načítať z webových adries file:, pokiaľ sa nekončia príponou súboru .css."
   },
@@ -1257,7 +1260,7 @@
     "message": "Povolenie pre rozhranie Notification API už nie je možné požadovať z prvku iframe od iných zdrojov. Namiesto toho by ste mali zvážiť požadovanie povolenia z rámu najvyššej úrovne alebo otvorenie nového okna."
   },
   "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
-    "message": "Podpora možnosti imageOrientation: 'none' v nástroji createImageBitmap bola ukončená. Namiesto nej používajte nástroj createImageBitmap pomocou možnosti {imageOrientation: 'from-image'}."
+    "message": "Podpora možnosti imageOrientation: 'none' v nástroji createImageBitmap bola ukončená. Použite namiesto nej nástroj createImageBitmap pomocou možnosti {imageOrientation: 'from-image'}."
   },
   "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
     "message": "Váš partner používa zastaranú verziu (D)TLS. Požiadajte ho, aby tento problém odstránil."
@@ -1334,20 +1337,11 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Rozšírenia by sa mali prihlásiť do izolovania od iných zdrojov, ak chcú ďalej používať funkciu SharedArrayBuffer. Prejdite na https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
-  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
-    "message": "Podpora limitu WebGPU maxInterStageShaderComponents bola ukončená. Použite namiesto neho WebGPU maxInterStageShaderVariables."
-  },
-  "generated/Deprecation.ts | WebSQL": {
-    "message": "Podpora jazyka Web SQL bola ukončená. Použite SQLite WebAssembly alebo indexovanú databázu."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "JSON odpovede nepodporuje kódovanie UTF‑16 v rámci funkcie XMLHttpRequest"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Podpora synchrónnej funkcie XMLHttpRequest v hlavnom vlákne bola ukončená pre nepriaznivé účinky na prostredie koncového používateľa. Viac sa dozviete na https://xhr.spec.whatwg.org/."
-  },
-  "generated/Deprecation.ts | XRSupportsSession": {
-    "message": "Podpora funkcie supportsSession() bola ukončená. Namiesto toho použite značku isSessionSupported() a skontrolujte vybranú logickú hodnotu."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Neznáma chyba pri načítavaní súboru"
@@ -1574,6 +1568,12 @@
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Režim kompatibility dokumentu"
   },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | httpMessageSignatures": {
+    "message": "Podpisy správ HTTP (RFC9421)"
+  },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
+    "message": "Integrita založená na podpise"
+  },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Aktivuje sa SharedArrayBuffer"
   },
@@ -1582,6 +1582,9 @@
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Simulácia nového zariadenia po načítaní stránky môže ovplyvniť vykreslenie najväčšieho prvku. Ak chcete získať presné údaje o vykreslení najväčšieho prvku, po simulácii nového zariadenia stránku znova načítajte."
+  },
+  "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
+    "message": "Hodnota vykreslenia najväčšieho prvku môže byť nafúknutá, pretože stránka sa začala načítavať na pozadí."
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<anonymné>"
@@ -1697,6 +1700,9 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Zakázať prepisovanie požiadaviek siete"
   },
+  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
+    "message": "Povoliť automatické priečinky pracovného priestoru"
+  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Povoliť miestne prepísania"
   },
@@ -1724,56 +1730,182 @@
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Pracovný priestor"
   },
+  "models/trace/insights/CLSCulprits.ts | animation": {
+    "message": "Animácia"
+  },
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "Zmeny rozloženia sa vyskytujú, keď sa prvky pohnú bez interakcie používateľa. [Vyšetrite príčiny zmien rozloženia](https://web.dev/articles/optimize-cls), ako sú pridávanie, odstraňovanie prvkov alebo zmena ich písiem pri načítavaní stránky."
+  },
+  "models/trace/insights/CLSCulprits.ts | fontRequest": {
+    "message": "Žiadosť o písmo"
+  },
+  "models/trace/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "Vložený prvok iframe"
+  },
+  "models/trace/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "Klaster zmeny rozloženia @ {PH1}"
+  },
+  "models/trace/insights/CLSCulprits.ts | noCulprits": {
+    "message": "Nepodarilo sa rozpoznať žiadne príčiny zmien rozloženia"
+  },
+  "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "Žiadne zmeny rozloženia"
   },
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Príčiny zmien rozloženia"
   },
+  "models/trace/insights/CLSCulprits.ts | topCulprits": {
+    "message": "Najčastejšie príčiny zmien rozloženia"
+  },
+  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
+    "message": "Obrázky nezatriedené podľa veľkosti"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstCluster": {
+    "message": "Najhorší klaster"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "Najhorší klaster zmeny rozloženia"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Rozsiahly model DOM môže predĺžiť výpočty štýlov a preformátovaní rozložení, čím ovplyvní responzívnosť stránky. Okrem toho zvýši využitie pamäte. [Ako sa vyhnúť nadmernej veľkosti modelu DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)"
+  },
+  "models/trace/insights/DOMSize.ts | element": {
+    "message": "Prvok"
+  },
+  "models/trace/insights/DOMSize.ts | maxChildren": {
+    "message": "Najviac podradených položiek"
+  },
+  "models/trace/insights/DOMSize.ts | maxDOMDepth": {
+    "message": "Hĺbka modelu DOM"
+  },
+  "models/trace/insights/DOMSize.ts | statistic": {
+    "message": "Štatistika"
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "Optimalizácia veľkosti modelu DOM"
   },
+  "models/trace/insights/DOMSize.ts | totalElements": {
+    "message": "Celkový počet prvkov"
+  },
+  "models/trace/insights/DOMSize.ts | value": {
+    "message": "Hodnota"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "Vaša prvá požiadavka siete je najdôležitejšia.  Zabráňte presmerovaniam, zaistite rýchlu odozvu servera a povoľte kompresiou textu, aby ste znížili latenciu."
+  },
+  "models/trace/insights/DocumentLatency.ts | failedRedirects": {
+    "message": "Obsahovala presmerovania"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
+    "message": "Server odpovedal pomaly"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
+    "message": "Nebola použitá žiadna kompresia"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingRedirects": {
+    "message": "Vyhýba sa presmerovaniam"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
+    "message": "Server odpovedá rýchlo"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
+    "message": "Používa sa kompresia textu"
+  },
+  "models/trace/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "Presmerovania"
+  },
+  "models/trace/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "Čas odpovede servera"
   },
   "models/trace/insights/DocumentLatency.ts | title": {
     "message": "Latencia žiadosti o dokument"
   },
+  "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "Neskomprimovaný súbor na stiahnutie"
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | description": {
+    "message": "Odstráňte z balíčkov veľké duplicitné moduly JavaScriptu, aby ste zredukovali nepotrebné bajty spotrebované aktivitou siete."
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | title": {
+    "message": "Duplicitný zdroj JavaScriptu"
+  },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "Zvážte nastavenie písma [font-display](https://developer.chrome.com/blog/font-display) na swap alebo optional, aby bol text konzistentne viditeľný. swap je možné ďalej optimalizovať a zjemniť tak zmeny rozloženia [prepísaním metriky písma](https://developer.chrome.com/blog/font-fallbacks)."
+  },
+  "models/trace/insights/FontDisplay.ts | fontColumn": {
+    "message": "Písmo"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Zobrazenie písma"
   },
+  "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "Stratený čas"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Mnohé rozhrania API, ktoré zvyčajne čítajú geometriu rozloženia, nútia vykresľovací modul pozastaviť spustenie skriptu, aby mohli vypočítať štýl a rozloženie. [Ďalšie informácie o vynútenom preformátovaní a jeho zmierňovaní](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)"
+  },
+  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
+    "message": "Sledovanie zásobníka"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Vynútené preformátovanie"
   },
+  "models/trace/insights/ForcedReflow.ts | topTimeConsumingFunctionCall": {
+    "message": "Najčastejšie volanie funkcie"
+  },
+  "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
+    "message": "Celkový čas preformátovania"
+  },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Znížením času sťahovania obrázkov môžete zlepšiť registrovaný čas načítania stránky a vykreslenie najväčšieho prvku. [Ďalšie informácie o optimalizácii veľkosti obrázkov](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
+    "message": "{PH1} (odhad. {PH2})"
+  },
+  "models/trace/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "Žiadne optimalizovateľné obrázky"
+  },
+  "models/trace/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Optimalizácia veľkosti súboru"
+  },
+  "models/trace/insights/ImageDelivery.ts | others": {
+    "message": "ďalšie ({PH1})"
   },
   "models/trace/insights/ImageDelivery.ts | title": {
     "message": "Zlepšenie zobrazovania obrázkov"
   },
   "models/trace/insights/ImageDelivery.ts | useCompression": {
-    "message": "Zvýšením faktora kompresie obrázka sa môže zlepšiť jeho veľkosť pri sťahovaní. (Predpoklad. {PH1})"
+    "message": "Zvýšením faktora kompresie obrázka sa môže zlepšiť jeho veľkosť na stiahnutie."
   },
   "models/trace/insights/ImageDelivery.ts | useModernFormat": {
-    "message": "Veľkosť tohto obrázka na stiahnutie by sa mohla zlepšiť použitím moderného formátu obrázka (WebP, AVIF) alebo zvýšením kompresie obrázka. (Predpoklad. {PH1})"
+    "message": "Veľkosť tohto obrázka na stiahnutie by sa mohla zlepšiť použitím moderného formátu obrázka (WebP, AVIF) alebo zvýšením kompresie obrázka."
   },
   "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
-    "message": "Tento súbor obrázka je väčší, než má byť ({PH2}) vzhľadom na jeho zobrazené rozmery ({PH3}). Znížte veľkosť obrázka na stiahnutie použitím responzívnych obrázkov. (Predpoklad. {PH1})"
+    "message": "Tento súbor obrázka je väčší, než má byť ({PH1}) vzhľadom na jeho zobrazené rozmery ({PH2}). Znížte veľkosť obrázka na stiahnutie použitím responzívnych obrázkov."
   },
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
-    "message": "Používanie videoformátov namiesto súborov GIF môže zlepšiť veľkosť animovaného obsahu na stiahnutie. (Predpoklad. {PH1})"
+    "message": "Používanie videoformátov namiesto gifov môže zlepšiť veľkosť animovaného obsahu na stiahnutie."
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Začnite skúmať najdlhšiu fázu. [Oneskorenia sa dajú minimalizovať](https://web.dev/articles/optimize-inp#optimize_interactions). Ak chcete skrátiť čas spracovania, [optimalizujte náklady hlavného vlákna](https://web.dev/articles/optimize-long-tasks), vo väčšine prípadov JS."
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+    "message": "Trvanie"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
+    "message": "Oneskorenie vstupu"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "Neboli zistené žiadne interakcie"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | phase": {
+    "message": "Fáza"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
+    "message": "Oneskorenie prezentácie"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
+    "message": "Trvanie spracovania"
   },
   "models/trace/insights/InteractionToNextPaint.ts | title": {
     "message": "Oneskorenie vykreslenia po interakcii podľa fázy"
@@ -1781,23 +1913,86 @@
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "Optimalizujte vykreslenie najväčšieho prvku tým, že jeho obrázok okamžite [zviditeľníte](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) v jazyku HTML a [zabránite lenivému načítaniu](https://web.dev/articles/lcp-lazy-loading)"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "prioritanačítania=použitá možnosť Vysoká"
+  },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
+    "message": "Mala by byť použitá hodnota fetchpriority=high"
+  },
+  "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "lenivé načítanie nebolo použité"
+  },
+  "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Obrázok vykreslenia najväčšieho prvku bol načítaný {PH1} po najskoršom začatí."
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcp": {
+    "message": "Nebolo zistené žiadne vykreslenie najväčšieho prvku"
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "Nebol zistený žiadny zdroj vykreslenia najväčšieho prvku, pretože vykreslenie najväčšieho prvku nie je obrázok"
+  },
+  "models/trace/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Žiadosť je viditeľná v pôvodnom dokumente"
+  },
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "Nepriame vyhľadávanie žiadostí o vykreslenie najväčšieho prvku"
   },
   "models/trace/insights/LCPPhases.ts | description": {
     "message": "Každá [fáza má špecifické stratégie zlepšenia](https://web.dev/articles/optimize-lcp#lcp-breakdown). V ideálnom prípade by väčšina času vykreslenia najväčšieho prvku mala byť vynaložená na načítanie zdrojov, ktoré nie sú v rozsahu oneskorenia."
   },
+  "models/trace/insights/LCPPhases.ts | duration": {
+    "message": "Trvanie"
+  },
+  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
+    "message": "Oneskorenie vykreslenia prvku"
+  },
+  "models/trace/insights/LCPPhases.ts | fieldDuration": {
+    "message": "75. percentil poľa"
+  },
+  "models/trace/insights/LCPPhases.ts | noLcp": {
+    "message": "Nebolo zistené žiadne vykreslenie najväčšieho prvku"
+  },
+  "models/trace/insights/LCPPhases.ts | phase": {
+    "message": "Fáza"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
+    "message": "Oneskorenie načítania zdroja"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Trvanie načítania zdroja"
+  },
+  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
+    "message": "Oneskorenie prvého bajtu"
+  },
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "Vykreslenie najväčšieho prvku podľa fázy"
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | description": {
+  "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Vyhnite sa zreťazeniu kľúčových žiadostí](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) skrátením dĺžky reťazcov, aby ste znížili veľkosť sťahovaných zdrojov, alebo odložte sťahovanie nepotrebných zdrojov, čím zlepšíte načítanie stránky."
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | title": {
-    "message": "Dlhý kľúčový strom siete"
+  "models/trace/insights/NetworkDependencyTree.ts | maxCriticalPathLatency": {
+    "message": "Maximálna latencia kľúčovej cesty:"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | noNetworkDependencyTree": {
+    "message": "Žiadne úlohy vykresľovania ovplyvnené dependenciami siete"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | title": {
+    "message": "Strom dependencií siete"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
+    "message": "Predíďte zreťazeniu kľúčových žiadostí skrátením dĺžky reťazcov, aby ste znížili veľkosť sťahovaných zdrojov, alebo odložte sťahovanie nepotrebných zdrojov, čím zlepšíte načítanie stránky."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
     "message": "Požiadavky blokujú počiatočné vykreslenie stránky, čo môže spôsobiť oneskorenie vykreslenia najväčšieho prvku. [Oneskorením alebo vložením](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) môžete tieto požiadavky na sieť presunúť mimo kritickej cesty."
+  },
+  "models/trace/insights/RenderBlocking.ts | duration": {
+    "message": "Trvanie"
+  },
+  "models/trace/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "Pre túto navigáciu nie sú k dispozícii žiadne požiadavky na blokovanie vykreslenia"
+  },
+  "models/trace/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "Žiadosť"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
     "message": "Žiadosti o blokovanie vykreslenia"
@@ -1805,11 +2000,41 @@
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "Ak sú náklady na prepočítanie štýlu stále vysoké, optimalizáciou selektora ich môžete znížiť. [Optimalizujte selektory](https://developer.chrome.com/docs/devtools/performance/selector-stats) s dlhým časom uplynutia a vysokým percentom pomalej cesty. Jednoduchšie selektory, menej selektorov, menší model DOM a plytší model DOM znížia náklady na párovanie."
   },
+  "models/trace/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "Uplynutý čas"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "Nenašli sa žiadne údaje selektora CSS. Štatistické údaje selektora CSS je potrebné povoliť v nastaveniach panela výkonnosti."
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "Pokusy o zhodu"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "Počet zhôd"
+  },
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "Náklady selektora CSS"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "Najčastejšie selektory"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | total": {
+    "message": "Celkove"
+  },
+  "models/trace/insights/ThirdParties.ts | columnMainThreadTime": {
+    "message": "Čas hlavného vlákna"
+  },
+  "models/trace/insights/ThirdParties.ts | columnThirdParty": {
+    "message": "Tretia strana"
+  },
+  "models/trace/insights/ThirdParties.ts | columnTransferSize": {
+    "message": "Veľkosť prenosu"
+  },
   "models/trace/insights/ThirdParties.ts | description": {
     "message": "Kód tretej strany môže výrazne ovplyvniť výkonnosť načítavania. [Zredukujte a odložte načítanie kódu tretej strany](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/), aby sa priorizoval obsah vašej stránky."
+  },
+  "models/trace/insights/ThirdParties.ts | noThirdParties": {
+    "message": "Nenašli sa žiadne tretie strany"
   },
   "models/trace/insights/ThirdParties.ts | title": {
     "message": "Tretie strany"
@@ -2252,11 +2477,17 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Odstrániť miestny čet"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
+    "message": "Ak chcete položiť otázku, postupujte podľa krokov vyššie"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | help": {
     "message": "Pomocník"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | history": {
     "message": "História"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | inputDisclaimerForEmptyState": {
+    "message": "Toto je experimentálna funkcia umelej inteligencie a nie vždy sa to podarí."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
     "message": "Nový čet"
@@ -2294,12 +2525,6 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Ak chcete používať túto funkciu, nastavte v nastaveniach nástrojov pre vývojárov predvoľbu jazyka na angličtinu."
   },
-  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
-    "message": "Ak chcete položiť otázku, postupujte podľa krokov vyššie"
-  },
-  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
-    "message": "Toto je experimentálna funkcia umelej inteligencie a nie vždy sa to podarí."
-  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Ďalšie informácie o umelej inteligencii v nástrojoch pre vývojárov"
   },
@@ -2324,6 +2549,9 @@
   "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Zapnite {PH1} a získate pomoc so štýlmi, požiadavkami siete, výkonom a súbormi"
   },
+  "panels/animation/AnimationTimeline.ts | animationDescription": {
+    "message": "Na tejto stránke môžete kontrolovať a upravovať animácie."
+  },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Ukážka animácie {PH1}"
   },
@@ -2332,6 +2560,9 @@
   },
   "panels/animation/AnimationTimeline.ts | clearAll": {
     "message": "Vymazať všetko"
+  },
+  "panels/animation/AnimationTimeline.ts | noEffectSelected": {
+    "message": "Nie je vybraný žiadny efekt animácie"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
     "message": "Pozastaviť"
@@ -2358,13 +2589,13 @@
     "message": "Obnoviť všetko"
   },
   "panels/animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
-    "message": "Výberom efektu vyššie ho môžete skontrolovať a zmeniť."
+    "message": "Hore vyberte efekt, ktorý chcete skontrolovať a zmeniť"
   },
   "panels/animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Nastaviť rýchlosť na {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | waitingForAnimations": {
-    "message": "Čaká sa na animácie..."
+    "message": "Momentálne sa čaká na animácie"
   },
   "panels/animation/AnimationUI.ts | animationEndpointSlider": {
     "message": "Posúvač koncového bodu animácie"
@@ -2810,8 +3041,14 @@
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Identifikátor inštancie"
   },
+  "panels/application/BackgroundServiceView.ts | noEventSelected": {
+    "message": "Nie je vybraná žiadna udalosť"
+  },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Žiadne metadáta pre túto udalosť"
+  },
+  "panels/application/BackgroundServiceView.ts | noRecording": {
+    "message": "Zatiaľ žiadny záznam"
   },
   "panels/application/BackgroundServiceView.ts | notifications": {
     "message": "Upozornenia"
@@ -2834,8 +3071,8 @@
   "panels/application/BackgroundServiceView.ts | saveEvents": {
     "message": "Uložiť udalosti"
   },
-  "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
-    "message": "Výberom záznamu zobrazíte metadáta"
+  "panels/application/BackgroundServiceView.ts | selectAnEventToViewMetadata": {
+    "message": "Výberom udalosti zobrazíte jej metadáta"
   },
   "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
     "message": "Zobrazovať udalosti z iných oddielov priestoru"
@@ -2845,6 +3082,9 @@
   },
   "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
     "message": "Spustiť zaznamenávanie udalostí"
+  },
+  "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
+    "message": "Začnite ladiť služby na pozadí pomocou tlačidla {PH1} alebo stlačením klávesov {PH2}."
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Zastavenie nahrávania udalostí"
@@ -2909,8 +3149,14 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Zbaliť"
   },
+  "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
+    "message": "Chcete odstrániť databázu {PH1}?"
+  },
   "panels/application/IndexedDBViews.ts | dataMayBeStale": {
     "message": "Údaje môžu byť neaktuálne"
+  },
+  "panels/application/IndexedDBViews.ts | databaseWillBeRemoved": {
+    "message": "Vybraná databáza a údaje, ktoré obsahuje, budú odstránené."
   },
   "panels/application/IndexedDBViews.ts | deleteDatabase": {
     "message": "Odstrániť databázu"
@@ -2970,13 +3216,34 @@
     "message": "Verzia"
   },
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
-    "message": "Kliknutím na ľubovoľnú udalosť záujmovej skupiny zobrazte aktuálny stav tejto skupiny"
+    "message": "Vyberte ľubovoľnú udalosť záujmovej skupiny a zobrazte aktuálny stav tejto skupiny"
   },
   "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
-    "message": "Pre vybranú záujmovú skupinu nie sú k dispozícii žiadne podrobnosti. Prehliadajúca osoba ju možno opustila."
+    "message": "Nie sú k dispozícii žiadne podrobnosti"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataDescription": {
+    "message": "Prehliadač možno skupinu opustil."
+  },
+  "panels/application/InterestGroupStorageView.ts | noValueSelected": {
+    "message": "Nie je vybraná žiadna záujmová skupina"
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "Záujmové skupiny"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | key": {
+    "message": "Kľúč"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | noPreviewSelected": {
+    "message": "Nebola vybraná žiadna hodnota"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | numberEntries": {
+    "message": "Počet záznamov zobrazených v tabuľke: {PH1}"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Vyberte hodnotu, ktorej ukážku chcete zobraziť"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | value": {
+    "message": "Hodnota"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Prístup k otváraciemu nástroju"
@@ -3043,6 +3310,9 @@
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Kliknutím na ľubovoľný prehľad zobrazíte jeho obsah"
+  },
+  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
+    "message": "Nie je vybraný žiadny report"
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
@@ -3225,7 +3495,10 @@
     "message": "Obsluha: {PH1}"
   },
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
-    "message": "Kliknutím na ľubovoľnú udalosť zdieľaného ukladacieho priestoru zobrazte jej parametre."
+    "message": "Kliknutím na ľubovoľnú udalosť zdieľaného ukladacieho priestoru zobrazte jej parametre"
+  },
+  "panels/application/SharedStorageEventsView.ts | noEventSelected": {
+    "message": "Nie je vybraná žiadna udalosť zdieľaného ukladacieho priestoru"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Zdieľaný ukladací priestor"
@@ -3255,7 +3528,7 @@
     "message": "Segmenty úložiska"
   },
   "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
-    "message": "Na tejto stránke môžete zobrazovať a odstraňovať kontajnery ukladacieho priestoru a s nimi spojené rozhrania storageAPI."
+    "message": "Na tejto stránke môžete zobrazovať a odstraňovať kontajnery ukladacieho priestoru a s nimi spojené rozhrania Storage APIs."
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Vymazať všetko"
@@ -3839,6 +4112,9 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Stav bol odstránený v prípade nasledujúcich webov:"
   },
+  "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
+    "message": "Tu nájdete zoznam koncových bodov, ktoré dostávajú reporty"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Nie sú k dispozícii žiadne koncové body"
   },
@@ -4007,8 +4283,11 @@
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Vlastník"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | interestGroupDescription": {
+    "message": "Na tejto stránke môžete kontrolovať a analyzovať záujmové skupiny"
+  },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
-    "message": "Neboli zaznamenané žiadne udalosti záujmových skupín."
+    "message": "Neboli zistené žiadne udalosti záujmových skupín"
   },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Čas vypršania platnosti"
@@ -4103,8 +4382,14 @@
   "panels/application/components/ReportsGrid.ts | generatedAt": {
     "message": "Časová pečiatka vygenerovania"
   },
+  "panels/application/components/ReportsGrid.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Nie sú k dispozícii žiadne prehľady"
+  },
+  "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
+    "message": "Tu nájdete reporty rozhrania Reporting API, ktoré generuje stránka."
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Stav"
@@ -4121,14 +4406,20 @@
   "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
     "message": "Typ prístupu"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
-    "message": "Neboli zaznamenané žiadne udalosti zdieľaného ukladacieho priestoru"
+    "message": "Neboli zistené žiadne udalosti zdieľaného ukladacieho priestoru"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "Pôvod vlastníka"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Zdieľaný ukladací priestor"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorageDescription": {
+    "message": "Na tejto stránke môžete zobraziť, pridať, upraviť a odstrániť páry kľúča a hodnoty zdieľaného ukladacieho priestoru a zobraziť udalosti zdieľaného ukladacieho priestoru."
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Zostávajúci únik dát v bitoch entropie povolený v období 24 hodín v prípade tohto zdroja"
@@ -4168,6 +4459,9 @@
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Názov segmentu"
+  },
+  "panels/application/components/StorageMetadataView.ts | bucketWillBeRemoved": {
+    "message": "Vybraný kontajner ukladacieho priestoru a údaje, ktoré obsahuje, budú odstránené."
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
     "message": "Chcete segment {PH1} odstrániť?"
@@ -4238,11 +4532,20 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Vydavateľ"
   },
+  "panels/application/components/TrustTokensView.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/application/components/TrustTokensView.ts | noTrustTokens": {
+    "message": "Neboli zistené žiadne tokeny súkromného stavu"
+  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Počet uložených tokenov"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Tokeny súkromného stavu"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
+    "message": "Na tejto stránke si môžete pozrieť všetky dostupné tokeny súkromného stavu v aktuálnom kontexte prehliadania."
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Všetky špekulatívne načítania"
@@ -4250,11 +4553,26 @@
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtrovanie podľa skupiny pravidiel"
   },
+  "panels/application/preloading/PreloadingView.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/application/preloading/PreloadingView.ts | noPrefetchAttempts": {
+    "message": "Nebola zistená žiadna špekulácia"
+  },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "žiadne skupiny pravidiel"
   },
+  "panels/application/preloading/PreloadingView.ts | noRulesDetected": {
+    "message": "Neboli rozpoznané žiadne pravidlá"
+  },
+  "panels/application/preloading/PreloadingView.ts | prefetchDescription": {
+    "message": "Na tejto stránke sa budú zobrazovať podrobnosti o špekulatívnych načítaniach."
+  },
   "panels/application/preloading/PreloadingView.ts | prettyPrint": {
     "message": "Formátovať komplexný kód"
+  },
+  "panels/application/preloading/PreloadingView.ts | rulesDescription": {
+    "message": "Na tejto stránke sa budú zobrazovať pravidlá špekulácie používanej na predbežné načítavanie a predbežné vykresľovanie navigácie na stránkach."
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Nepodarilo sa"
@@ -4357,6 +4675,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Stav"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
+    "message": "Nie je vybraný žiadny prvok"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Výberom prvku zobrazíte ďalšie podrobnosti"
@@ -4682,6 +5003,12 @@
   "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
     "message": "Podarilo sa"
   },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | noElementSelected": {
+    "message": "Nie je vybraný žiadny prvok"
+  },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | selectAnElementForMoreDetails": {
+    "message": "Výberom prvku zobrazíte ďalšie podrobnosti"
+  },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
     "message": "Zobraziť špekulatívne načítania spojené s touto skupinou pravidiel"
   },
@@ -4795,6 +5122,9 @@
   },
   "panels/autofill/AutofillView.ts | learnMore": {
     "message": "Ďalšie informácie"
+  },
+  "panels/autofill/AutofillView.ts | noAutofill": {
+    "message": "Nebolo zistené žiadne automatické dopĺňanie"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Predpokladaná hodnota automatického dopĺňania"
@@ -4923,7 +5253,7 @@
     "message": "Zoznam zlomových bodov DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Nie sú nastavené žiadne zlomové body DOM"
+    "message": "Žiadne zlomové body DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Uzol bol odstránený"
@@ -5544,10 +5874,10 @@
     "message": "Vyberte podrobnosti pokrytia: „na základe funkcie“ má nízku hornú hodnotu, „na základe blokovania“ má významnú hornú hodnotu."
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Ak chcete začať zaznamenávať pokrytie, kliknite na tlačidlo nahrávania {PH1}."
+    "message": "Ak chcete začať zaznamenávať pokrytie, kliknite na tlačidlo {PH1}."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Kliknutím na tlačidlo opätovného načítania {PH1} znova načítate a spustíte nahrávanie pokrytia."
+    "message": "Kliknutím na tlačidlo {PH1} znova načítajte a spustíte zaznamenávanie pokrytia."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Skripty obsahu"
@@ -5570,17 +5900,26 @@
   "panels/coverage/CoverageView.ts | javascript": {
     "message": "JavaScript"
   },
+  "panels/coverage/CoverageView.ts | noCoverageData": {
+    "message": "Žiadne údaje o pokrytí"
+  },
   "panels/coverage/CoverageView.ts | perBlock": {
     "message": "Na základe blokovania"
   },
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Na základe funkcie"
   },
+  "panels/coverage/CoverageView.ts | reloadPage": {
+    "message": "Znova načítajte stránku"
+  },
   "panels/coverage/CoverageView.ts | reloadPrompt": {
     "message": "Kliknutím na tlačidlo opätovného načítania {PH1} znova načítajte stránku a získajte pokrytie."
   },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Zatiaľ využité: {PH1} z {PH2} ({PH3} %). Nevyužité: {PH4}."
+  },
+  "panels/coverage/CoverageView.ts | startRecording": {
+    "message": "Spustiť nahrávanie"
   },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Vymazať pokrytie"
@@ -5771,6 +6110,9 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
     "message": "Zdroje pre vývojárov"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | duration": {
+    "message": "Trvanie"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | error": {
     "message": "Chyba"
   },
@@ -5887,6 +6229,51 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<uzol>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
+    "message": "Neplatný prvok alebo textový uzol v prvku <optgroup>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedSelectChild": {
+    "message": "Neplatný prvok alebo textový uzol v prvku <select>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
+    "message": "Atribút aria-labelledby nezodpovedá žiadnemu prvku id"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
+    "message": "Nesprávne použitie atribútu automatického dopĺňania"
+  },
+  "panels/elements/ElementIssueUtils.ts | formDuplicateIdForInputError": {
+    "message": "Duplicitný identifikátor poľa formulára v rovnakom formulári"
+  },
+  "panels/elements/ElementIssueUtils.ts | formEmptyIdAndNameAttributesForInputError": {
+    "message": "Prvok poľa formulára musí mať atribút id alebo name"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputAssignedAutocompleteValueToIdOrNameAttributeError": {
+    "message": "Prvok nemá atribút automatického dopĺňania"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputHasWrongButWellIntendedAutocompleteValueError": {
+    "message": "Neštandardná hodnota atribútu automatického dopĺňania"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputWithNoLabelError": {
+    "message": "Pole formulára bez platného atribútu aria-labelledby alebo spojeného štítka"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForMatchesNonExistingIdError": {
+    "message": "Nesprávne použitie štítka <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForNameError": {
+    "message": "Nesprávne použitie štítka <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
+    "message": "S poľom formulára nie je spojený žiadny štítok"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
+    "message": "Interaktívny prvok v prvku <legend>"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
+    "message": "Interaktívny prvok v prvku <option>"
+  },
+  "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
+    "message": "V prvku <option> je použitý prvok, ktorý nie je výraz"
   },
   "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
     "message": "Emulovať zameranú stránku"
@@ -6058,6 +6445,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Zobraziť podrobnosti pre iframe"
+  },
+  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
+    "message": "Zobraziť cieľ záujmu"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "Zobraziť cieľ vyskakovacieho okna"
@@ -6269,12 +6659,6 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Zdedené zo zdroja "
   },
-  "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
-    "message": "Neplatná hodnota vlastnosti"
-  },
-  "panels/elements/StylesSidebarPane.ts | invalidString": {
-    "message": "{PH1}, názov vlastnosti: {PH2}, hodnota vlastnosti: {PH3}"
-  },
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Vrstva"
   },
@@ -6284,14 +6668,8 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Prvok Pseudo ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | specificity": {
-    "message": "Špecifickosť: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Prepnúť bežné emulácie vykresľovania"
-  },
-  "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
-    "message": "Neznámy názov vlastnosti"
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n,plural, =1{# viditeľný selektor uvedený nižšie}few{# viditeľné selektory uvedené nižšie}many{# visible selectors listed below}other{# viditeľných selektorov uvedených nižšie}}"
@@ -6629,6 +7007,9 @@
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Odstrániť prijímač udalostí"
   },
+  "panels/event_listeners/EventListenersView.ts | eventListenersExplanation": {
+    "message": "Na tejto stránke nájdete registrované prijímače udalostí"
+  },
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Žiadne prijímače udalostí"
   },
@@ -6775,6 +7156,12 @@
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Cesta"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
+    "message": "Nepovolené podradené prvky"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
+    "message": "{n,plural, =1{ podradený prvok}few{ podradené prvky}many{ descendants}other{ podradených prvkov}}"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "blokované"
@@ -7100,17 +7487,20 @@
   "panels/issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Zahrnúť problémy so súbormi cookie tretej strany"
   },
+  "panels/issues/IssuesPane.ts | issuesPanelDescription": {
+    "message": "Na tejto stránke nájdete upozornenia z prehliadača."
+  },
   "panels/issues/IssuesPane.ts | lowTextContrast": {
     "message": "Nízky kontrast textu"
   },
   "panels/issues/IssuesPane.ts | mixedContent": {
     "message": "Zmiešaný obsah"
   },
-  "panels/issues/IssuesPane.ts | noIssuesDetectedSoFar": {
-    "message": "Zatiaľ neboli rozpoznané žiadne problémy"
+  "panels/issues/IssuesPane.ts | noIssues": {
+    "message": "Neboli zistené žiadne problémy"
   },
   "panels/issues/IssuesPane.ts | onlyThirdpartyCookieIssues": {
-    "message": "Zatiaľ sa zistili iba problémy so súbormi cookie tretích strán"
+    "message": "Zistili sa iba problémy so súbormi cookie tretích strán"
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Iné"
@@ -7227,7 +7617,7 @@
     "message": "Zobraziť interné vrstvy"
   },
   "panels/layer_viewer/Layers3DView.ts | cantDisplayLayers": {
-    "message": "Nie je možné zobraziť vrstvy,"
+    "message": "Vrstvy sa nedajú zobraziť"
   },
   "panels/layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
     "message": "Ak chcete zistiť možné príčiny, skontrolujte položku {PH1}."
@@ -7235,8 +7625,11 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Zobrazenie 3D vrstiev"
   },
-  "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
-    "message": "Informácia o vrstvách zatiaľ nie je dostupná."
+  "panels/layer_viewer/Layers3DView.ts | layerExplanation": {
+    "message": "Na tejto stránke si budete môcť zobraziť a preskúmať vrstvy dokumentu."
+  },
+  "panels/layer_viewer/Layers3DView.ts | noLayerInformation": {
+    "message": "Zatiaľ neboli rozpoznané žiadne vrstvy"
   },
   "panels/layer_viewer/Layers3DView.ts | paints": {
     "message": "Vykresľovať"
@@ -7577,8 +7970,11 @@
   "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
     "message": "Ukončiť časový rozsah"
   },
+  "panels/lighthouse/LighthouseTimespanView.ts | interactWithPage": {
+    "message": "Interagujte so stránkou."
+  },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
-    "message": "Časový rozsah bol spustený, interagujte so stránkou"
+    "message": "Časový rozsah bol spustený"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
     "message": "Spúšťa sa časový rozsah…"
@@ -7591,6 +7987,12 @@
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Otvoriť na paneli Nástroj na kontrolu pamäte"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | memoryInspectorExplanation": {
+    "message": "Na tejto stránke môžete skontrolovať údaje binárneho programu."
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Žiadne otvorené kontroly"
@@ -7672,6 +8074,18 @@
   },
   "panels/media/EventTimelineView.ts | playbackStatus": {
     "message": "Stav prehrávania"
+  },
+  "panels/media/MainView.ts | mediaPlayerDescription": {
+    "message": "Na tejto stránke môžete zobraziť a exportovať podrobnosti o prehrávači médií."
+  },
+  "panels/media/MainView.ts | noMediaPlayer": {
+    "message": "Žiadny prehrávač médií"
+  },
+  "panels/media/MainView.ts | noPlayerDetailsSelected": {
+    "message": "Nie je vybraný žiadny prehrávač médií"
+  },
+  "panels/media/MainView.ts | selectToViewDetails": {
+    "message": "Vyberte prehrávač médií a skontrolujte jeho podrobnosti."
   },
   "panels/media/PlayerDetailView.ts | events": {
     "message": "Udalosti"
@@ -8114,6 +8528,9 @@
   "panels/network/BlockedURLsPane.ts | addPattern": {
     "message": "Pridať vzor"
   },
+  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
+    "message": "Pridajte vzor na blokovanie požiadaviek siete kliknutím na tlačidlo {PH1}."
+  },
   "panels/network/BlockedURLsPane.ts | dBlocked": {
     "message": "Blokované: {PH1}"
   },
@@ -8123,8 +8540,11 @@
   "panels/network/BlockedURLsPane.ts | itemDeleted": {
     "message": "Položka bola úspešne odstránená"
   },
-  "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
-    "message": "Požiadavky siete nie sú blokované. {PH1}"
+  "panels/network/BlockedURLsPane.ts | learnMore": {
+    "message": "Ďalšie informácie"
+  },
+  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
+    "message": "Žiadne blokované požiadavky siete"
   },
   "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
     "message": "Vzor už existuje."
@@ -8555,9 +8975,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Invertuje filter vyhľadávania"
   },
-  "panels/network/NetworkLogView.ts | learnMore": {
-    "message": "Ďalšie informácie"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Načítať: {PH1}"
   },
@@ -8566,6 +8983,9 @@
   },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "K dispozícii sú údaje siete"
+  },
+  "panels/network/NetworkLogView.ts | noNetworkActivityRecorded": {
+    "message": "Nebola zaznamenaná žiadna aktivita siete"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Zobraziť iba blokované požiadavky"
@@ -8580,13 +9000,16 @@
     "message": "Prepísať hlavičky"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Vykonajte požiadavku alebo stlačte {PH1} a zaznamenajte tak opätovné načítanie."
+    "message": "Vykonajte požiadavku alebo znova načítajte stránku pomocou tlačidla {PH1} alebo stlačením klávesov {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Nahraním sieťového denníka ({PH1}) zobraziť aktivitu siete."
+    "message": "Ak chcete zobraziť aktivitu siete, pomocou tlačidla {PH1} alebo stlačením klávesov {PH2} nahrajte sieťový denník."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
-    "message": "Zaznamenáva sa aktivita siete…"
+    "message": "Momentálne sa zaznamenáva aktivita siete"
+  },
+  "panels/network/NetworkLogView.ts | reloadPage": {
+    "message": "Znova načítať stránku"
   },
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Znova prehrať XHR"
@@ -8626,6 +9049,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Zobraziť iba alebo skryť žiadosti"
+  },
+  "panels/network/NetworkLogView.ts | startRecording": {
+    "message": "Spustiť nahrávanie"
   },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Požiadavky tretích strán"
@@ -8766,16 +9192,13 @@
     "message": "Exportovať HAR (s citlivými údajmi)…"
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Načítavajú sa rámy…"
+    "message": "Momentálne sa načítavajú rámy"
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Zoskupiť podľa rámu"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Zoskupiť žiadosti podľa rámca požiadavky najvyššej úrovne"
-  },
-  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Stlačte {PH1} a tak znova načítajte a zaznamenajte pás miniatúr."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Importovať súbor HAR..."
@@ -8796,7 +9219,7 @@
     "message": "Zachovať denník"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "Zaznamenávajú sa rámy…"
+    "message": "Momentálne sa zaznamenávajú rámy"
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Vyhľadávanie"
@@ -10112,6 +10535,12 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Profil nie je možné načítať, kým sa nahráva iný."
   },
+  "panels/profiler/ProfilesPanel.ts | failReason": {
+    "message": "Dôvod: {PH1}"
+  },
+  "panels/profiler/ProfilesPanel.ts | profileLoadingFailed": {
+    "message": "Profil sa nepodarilo načítať"
+  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Profily"
   },
@@ -10174,12 +10603,6 @@
   },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCtrlEnter": {
     "message": "Odoslať príkaz – Ctrl + Enter"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
-    "message": "Editor príkazov CDP je skrytý"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
-    "message": "Editor príkazov CDP je zobrazený"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Vymazať všetko"
@@ -10350,7 +10773,7 @@
     "message": "Typy selektorov, ktoré sa majú zaznamenať"
   },
   "panels/recorder/components/CreateRecordingView.ts | startRecording": {
-    "message": "Spustiť zaznamenávanie"
+    "message": "Spustiť nahrávanie"
   },
   "panels/recorder/components/ExtensionView.ts | closeView": {
     "message": "Zavrieť"
@@ -10686,7 +11109,10 @@
     "message": "Indexovanie bolo prerušené."
   },
   "panels/search/SearchView.ts | noMatchesFound": {
-    "message": "Neboli nájdené žiadne zhody."
+    "message": "Nenašli sa žiadne zhody"
+  },
+  "panels/search/SearchView.ts | nothingMatchedTheQuery": {
+    "message": "Pre váš vyhľadávací dopyt sa nič nenašlo"
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Obnoviť"
@@ -11499,10 +11925,10 @@
     "message": "Porozumejte štýlom CSS, aktivite siete, kritickým miestam výkonnosti a pôvodom súborov pomocou štatistík využívajúcich umelú inteligenciu"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Akékoľvek údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu môžu byť odoslané Googlu na generovanie vysvetlení. Môžu ich prezerať kontrolóri s cieľom zlepšiť túto funkciu. Nepoužívajte na stránkach s osobnými alebo citlivými údajmi."
+    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu môžu byť odoslané Googlu na generovanie vysvetlení. Tieto údaje môžu prezerať kontrolóri s cieľom zlepšiť túto funkciu. Nepoužívajte na stránkach s osobnými alebo citlivými údajmi."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Akékoľvek údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu sa odosielajú Googlu, aby vygeneroval vysvetlenia. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
+    "message": "Akékoľvek dopyty používateľov a údaje, ku ktorým má kontrolovaná stránka prístup prostredníctvom webových rozhraní API, žiadostí siete, súborov a stôp výkonu môžu byť odoslané Googlu na generovanie vysvetlení. Pomocou týchto údajov sa nebudú zlepšovať modely umelej inteligencie od Googlu."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Pomôžu vám porozumieť upozorneniam a chybám konzoly a vyriešiť ich"
@@ -12242,6 +12668,12 @@
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Odstrániť"
   },
+  "panels/sources/NavigatorView.ts | deleteFolder": {
+    "message": "Chcete odstrániť tento priečinok a jeho obsah?"
+  },
+  "panels/sources/NavigatorView.ts | deleteThisFile": {
+    "message": "Chcete tento súbor odstrániť?"
+  },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Nasadené"
   },
@@ -12250,6 +12682,12 @@
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Vylúčiť z pracovného priestoru"
+  },
+  "panels/sources/NavigatorView.ts | excludeThisFolder": {
+    "message": "Chcete vylúčiť tento priečinok?"
+  },
+  "panels/sources/NavigatorView.ts | folderWillNotBeShown": {
+    "message": "Tento priečinok a jeho obsah sa v pracovnom priestore nebudú zobrazovať."
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Vytvoriť kópiu…"
@@ -12331,6 +12769,12 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
+    "message": "Pripojiť…"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
+    "message": "Bol zistený priečinok pracovného priestoru {PH1}."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Vymazať konfiguráciu"
@@ -13004,8 +13448,8 @@
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Prvá alebo tretia strana"
   },
-  "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
-    "message": "Individuálny čas"
+  "panels/timeline/ThirdPartyTreeView.ts | mainThreadTime": {
+    "message": "Čas hlavného vlákna"
   },
   "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
     "message": "Veľkosť prenosu"
@@ -13467,7 +13911,7 @@
     "message": "Podrobnosti o položke získate jej výberom."
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
-    "message": "Individuálny čas"
+    "message": "Čas jednej aktivity"
   },
   "panels/timeline/TimelineTreeView.ts | showHeaviestStack": {
     "message": "Zobraziť najväčší zásobník"
@@ -13613,9 +14057,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Tretia strana"
-  },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(záznam je skrytý)"
   },
@@ -13687,6 +14128,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Uzly, ktoré potrebujú rozloženie"
+  },
+  "panels/timeline/TimelineUIUtils.ts | origin": {
+    "message": "Pôvod"
   },
   "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
     "message": "(mimo rozsahu popisu cesty)"
@@ -13780,6 +14224,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Veľkosť"
+  },
+  "panels/timeline/TimelineUIUtils.ts | source": {
+    "message": "Zdroj"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "Sledovanie zásobníka"
@@ -14228,9 +14675,6 @@
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Vezmite do úvahy miestne podmienky testovania"
   },
-  "panels/timeline/components/MetricCard.ts | duration": {
-    "message": "Miestne trvanie (ms)"
-  },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "75. percentil poľa"
   },
@@ -14569,6 +15013,12 @@
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
     "message": "Zobraziť podrobnosti položky {PH1}"
+  },
+  "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
+    "message": "Štatistiku sa nepodarilo skontrolovať: {PH1}"
+  },
+  "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
+    "message": "Štatistika prešla kontrolou: {PH1}"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} – pole ({PH2})"
@@ -15059,6 +15509,9 @@
   "panels/web_audio/AudioContextSelector.ts | noRecordings": {
     "message": "(žiadne záznamy)"
   },
+  "panels/web_audio/WebAudioView.ts | noWebAudio": {
+    "message": "Nebolo zistené žiadne používanie rozhrania Web Audio API"
+  },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Otvorte stránku, ktorá využíva rozhranie Web Audio API, a začnite monitorovať."
   },
@@ -15107,14 +15560,14 @@
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Je v pamäti"
   },
-  "panels/webauthn/WebauthnPane.ts | learnMore": {
-    "message": "Ďalšie informácie"
-  },
   "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
     "message": "Nový overovateľ"
   },
   "panels/webauthn/WebauthnPane.ts | no": {
     "message": "Nie"
+  },
+  "panels/webauthn/WebauthnPane.ts | noAuthenticator": {
+    "message": "Nie je nastavený žiadny overovateľ"
   },
   "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
     "message": "Žiadne prihlasovacie údaje. Skúste zavolať parameter {PH1} zo svojho webu."
@@ -15153,7 +15606,7 @@
     "message": "Prenos"
   },
   "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
-    "message": "Použiť WebAuthn na overenie odolné voči phishingu"
+    "message": "Na overenie odolné voči phishingu použite WebAuthn."
   },
   "panels/webauthn/WebauthnPane.ts | userHandle": {
     "message": "Rukoväť používateľa"
@@ -15401,9 +15854,6 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Už nezobrazovať"
   },
-  "ui/legacy/Infobar.ts | showMore": {
-    "message": "Zobraziť viac"
-  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Zavrieť vysúvací panel"
   },
@@ -15473,8 +15923,11 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Uložiť"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
+    "message": "Dôvod: {PH1}"
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Pripojenie ladenia bolo ukončené. Dôvod: "
+    "message": "Pripojenie ladenia bolo ukončené"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Znova pripojiť DevTools"
@@ -15929,9 +16382,6 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Jednotky"
   },
-  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
-    "message": "Vlastnosť {PH1} nie je definovaná"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Zobraziť ako objekt JavaScript"
   },
@@ -16184,9 +16634,6 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Nájsť"
   },
-  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
-    "message": "Povoliť"
-  },
   "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
     "message": "povoliť prilepovanie"
   },
@@ -16195,9 +16642,6 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Pozícia bajtkódu 0x{PH1}"
-  },
-  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
-    "message": "Zrušiť"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "Vybrané znaky: {PH1}"

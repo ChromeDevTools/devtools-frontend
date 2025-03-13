@@ -1238,6 +1238,9 @@
   "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
     "message": "Полето dailyUpdateUrl на InterestGroups што продолжува на joinAdInterestGroup() е преименувано во updateUrl, за да го прикажува неговото однесување попрецизно."
   },
+  "generated/Deprecation.ts | IntlV8BreakIterator": {
+    "message": "Intl.v8BreakIterator не се поддржува. Наместо тоа, користете Intl.Segmenter."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "CSS не може да се вчита од URL-адреси на file:, освен ако не завршуваат со екстензијата на датотека .css."
   },
@@ -1257,7 +1260,7 @@
     "message": "Веќе не може да се бара дозвола за API за известувања од iframe со вкрстено потекло. Наместо тоа, размислете да побарате дозвола од рамка од највисоко ниво или отворете нов прозорец."
   },
   "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
-    "message": "Опцијата imageOrientation: 'none' во createImageBitmap не се поддржува. Наместо тоа, користете createImageBitmap со опција {imageOrientation: \"from-image\"}."
+    "message": "Опцијата imageOrientation: 'none' во createImageBitmap не се поддржува. Наместо тоа, користете createImageBitmap со опција „{imageOrientation: 'from-image'}“."
   },
   "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
     "message": "Вашиот партнер преговара со застарена верзија на (D)TLS. Проверете со партнерот за да го поправи ова."
@@ -1334,20 +1337,11 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Екстензиите треба да прифатат изолација со вкрстено потекло за да продолжат со користење на SharedArrayBuffer. Видете на https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
-  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
-    "message": "Ограничувањето на WebGPU maxInterStageShaderComponents не се поддржува. Наместо тоа, користете го ограничувањето на WebGPU maxInterStageShaderVariables."
-  },
-  "generated/Deprecation.ts | WebSQL": {
-    "message": "Веб-SQL е неподдржан. Користете SQLite WebAssembly или индексирана база на податоци"
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "UTF-16 не е подржано со одговор json во XMLHttpRequest"
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Синхронизираното XMLHttpRequest на главната низа не се поддржува поради неговите штетни ефекти врз доживувањето на крајниот корисник. За повеќе помош, проверете на https://xhr.spec.whatwg.org/."
-  },
-  "generated/Deprecation.ts | XRSupportsSession": {
-    "message": "supportsSession() не се поддржува. Наместот тоа, користете isSessionSupported() и проверете ја решената булова вредност."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Непозната грешка при вчитувањето на датотеката"
@@ -1574,6 +1568,12 @@
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим за компатибилност на документи"
   },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | httpMessageSignatures": {
+    "message": "Потписи на HTTP-пораки (RFC9421)"
+  },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
+    "message": "Интегритет заснован на потпис"
+  },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Се овозможува SharedArrayBuffer"
   },
@@ -1582,6 +1582,9 @@
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Симулирањето нов уред откако ќе се вчита страницата може да влијае на LCP. Вчитајте ја страницата повторно откако ќе симулирате нов уред за точни податоци за LCP."
+  },
+  "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
+    "message": "Вредноста на LCP може да биде претерана бидејќи страницата започна да се вчитува во заднина."
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимно>"
@@ -1697,6 +1700,9 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Оневозможи барања за отфрлање мрежа"
   },
+  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
+    "message": "Овозможете автоматски папки на работен простор"
+  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Овозможи локални отфрлања"
   },
@@ -1724,56 +1730,182 @@
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Работен простор"
   },
+  "models/trace/insights/CLSCulprits.ts | animation": {
+    "message": "Анимација"
+  },
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "Промени на изгледот се појавуваат кога елементите се преместуваат без интеракција од корисниците. [Истражете ги причините за промените на изгледот](https://web.dev/articles/optimize-cls), како додавање и отстранување елементи или променување на нивните фонтови додека се вчитува страницата."
+  },
+  "models/trace/insights/CLSCulprits.ts | fontRequest": {
+    "message": "Барање за фонт"
+  },
+  "models/trace/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "Вметната iframe"
+  },
+  "models/trace/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "Група промени на изгледот @ {PH1}"
+  },
+  "models/trace/insights/CLSCulprits.ts | noCulprits": {
+    "message": "Не можеше да се откријат причинители на промени на изгледот"
+  },
+  "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "Нема промени на изгледот"
   },
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Причинители на промени на изгледот"
   },
+  "models/trace/insights/CLSCulprits.ts | topCulprits": {
+    "message": "Најголеми причинители на промени на изгледот"
+  },
+  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
+    "message": "Неизмерени слики"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstCluster": {
+    "message": "Најлоша група"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "Најлоша група промени на изгледот"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Голем DOM може да го зголеми времетраењето на пресметките на стиловите и преуредувањата на изгледот, што влијае на приспособливоста на страницата. Голем DOM ќе ја зголеми и искористената меморија. [Дознајте како да избегнете прекумерна големина на DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "models/trace/insights/DOMSize.ts | element": {
+    "message": "Елемент"
+  },
+  "models/trace/insights/DOMSize.ts | maxChildren": {
+    "message": "Повеќето подредени елементи"
+  },
+  "models/trace/insights/DOMSize.ts | maxDOMDepth": {
+    "message": "Длабочина на DOM"
+  },
+  "models/trace/insights/DOMSize.ts | statistic": {
+    "message": "Статистика"
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "Оптимизирајте ја големината на DOM"
   },
+  "models/trace/insights/DOMSize.ts | totalElements": {
+    "message": "Вкупно елементи"
+  },
+  "models/trace/insights/DOMSize.ts | value": {
+    "message": "Вредност"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "Вашето прво мрежно барање е најважно.  Намалете ја неговата латенција со избегнување пренасочувања, гарантирање брз одговор на серверот и овозможување компримирање текст."
+  },
+  "models/trace/insights/DocumentLatency.ts | failedRedirects": {
+    "message": "Имаше пренасочувања"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
+    "message": "Серверот одговори бавно"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
+    "message": "Не е извршено компримирање"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingRedirects": {
+    "message": "Избегнува пренасочувања"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
+    "message": "Серверот одговара брзо"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
+    "message": "Применува компримирање на текст"
+  },
+  "models/trace/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "Пренасочувања"
+  },
+  "models/trace/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "Време на одговор на серверот"
   },
   "models/trace/insights/DocumentLatency.ts | title": {
     "message": "Латенција на барање на документ"
   },
+  "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "Некомпримирано преземање"
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | description": {
+    "message": "Отстранете ги големите, дупликат JavaScript-модули од пакетите за да ги намалите непотребните бајти што ги троши мрежната активност."
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | title": {
+    "message": "Дупликат JavaScript"
+  },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "Размислете да поставите [font-display](https://developer.chrome.com/blog/font-display) на swap или optional за да се погрижите текстот да биде видлив постојано. swap може да се оптимизира дополнително за да ги ублажува промените на изгледот со [отфрлања на метриката на фонтовите](https://developer.chrome.com/blog/font-fallbacks)."
+  },
+  "models/trace/insights/FontDisplay.ts | fontColumn": {
+    "message": "Фонт"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Приказ на фонтови"
   },
+  "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "Потрошено време"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Многу API, што обично ја читаат геометријата на изгледот, го принудуваат софтверот за обработка да го паузира извршувањето на скриптата за да ги пресмета стилот и изгледот. Дознајте повеќе за [принудното преуредување](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts) и неговите олеснувања."
+  },
+  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
+    "message": "Stack trace"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Принудно преуредување"
   },
+  "models/trace/insights/ForcedReflow.ts | topTimeConsumingFunctionCall": {
+    "message": "Функциски повик што троши најмногу време"
+  },
+  "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
+    "message": "Вкупно време на преуредување"
+  },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Намалувањето на времето на преземање слики може да го подобри забележаното време на вчитување на страницата и LCP. [Дознајте повеќе за оптимизирањето на големината на сликата](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)"
+  },
+  "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
+    "message": "{PH1} (Проц. {PH2})"
+  },
+  "models/trace/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "Нема слики што може да се оптимизираат"
+  },
+  "models/trace/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Оптимизирајте ја големината на датотеката"
+  },
+  "models/trace/insights/ImageDelivery.ts | others": {
+    "message": "{PH1} други"
   },
   "models/trace/insights/ImageDelivery.ts | title": {
     "message": "Подобрете го доставувањето слики"
   },
   "models/trace/insights/ImageDelivery.ts | useCompression": {
-    "message": "Зголемувањето на факторот на компримирање на сликата може да ја подобри големината на преземање на сликава. (Проц. {PH1})"
+    "message": "Зголемувањето на факторот на компримирање на сликата може да ја подобри големината на преземање на сликава."
   },
   "models/trace/insights/ImageDelivery.ts | useModernFormat": {
-    "message": "Користењето модерен формат на слика (WebP, AVIF) или зголемувањето на компримирањето на сликата може да ја подобри големината на преземање на сликава. (Проц. {PH1})"
+    "message": "Користењето модерен формат на слика (WebP, AVIF) или зголемувањето на компримирањето на сликата може да ја подобри големината на преземање на сликава."
   },
   "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
-    "message": "Датотекава со слика е поголема отколку што треба да биде ({PH2}) за своите прикажани димензии ({PH3}). Користете приспособливи слики за да ја намалите големината на преземање на сликата. (Проц. {PH1})"
+    "message": "Датотекава со слика е поголема отколку што треба да биде ({PH1}) за своите прикажани димензии ({PH2}). Користете приспособливи слики за да ја намалите големината на преземање на сликата."
   },
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
-    "message": "Користењето видеоформати наместо GIF-датотеки може да ја подобри големината на преземање на анимираните содржини. (Проц. {PH1})"
+    "message": "Користењето видеоформати наместо GIF-датотеки може да ја подобри големината на преземање на анимираните содржини."
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Започнете да истражувате со најдолгата фаза. [Доцнењата може да се минимизираат](https://web.dev/articles/optimize-inp#optimize_interactions). За да се намали времетраењето на обработката, [оптимизирајте ги трошоците за главната низа](https://web.dev/articles/optimize-long-tasks), често JS."
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+    "message": "Времетраење"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
+    "message": "Доцнење на влезните податоци"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "Не се откриени интеракции"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | phase": {
+    "message": "Фаза"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
+    "message": "Доцнење на презентацијата"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
+    "message": "Времетраење на обработката"
   },
   "models/trace/insights/InteractionToNextPaint.ts | title": {
     "message": "INP според фаза"
@@ -1781,23 +1913,86 @@
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "Оптимизирајте го LCP така што ќе ја направите LCP-сликата [достапна](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) од HTML веднаш и [ќе избегнете мрзливо вчитување](https://web.dev/articles/lcp-lazy-loading)"
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "Применето: fetchpriority=high"
+  },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
+    "message": "Треба да се примени fetchpriority=high"
+  },
+  "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "не е применето мрзливо вчитување"
+  },
+  "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "LCP-сликата се вчитуваше {PH1} по најраното време на започнување."
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcp": {
+    "message": "Не е откриена LCP"
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "Не е откриен ресурс на LCP бидејќи LCP не е слика"
+  },
+  "models/trace/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Барањето е достапно во првичниот документ"
+  },
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "Откривање LCP-барање"
   },
   "models/trace/insights/LCPPhases.ts | description": {
     "message": "Секоја [фаза има конкретни стратегии на подобрување](https://web.dev/articles/optimize-lcp#lcp-breakdown). Идеално, поголемиот дел од времето на LCP треба да се потроши на вчитување на ресурсите, а не на доцнења."
   },
+  "models/trace/insights/LCPPhases.ts | duration": {
+    "message": "Времетраење"
+  },
+  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
+    "message": "Доцнење при прикажувањето елементи"
+  },
+  "models/trace/insights/LCPPhases.ts | fieldDuration": {
+    "message": "75 проценти од податоците од вистински корисници на терен"
+  },
+  "models/trace/insights/LCPPhases.ts | noLcp": {
+    "message": "Не е откриена LCP"
+  },
+  "models/trace/insights/LCPPhases.ts | phase": {
+    "message": "Фаза"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
+    "message": "Доцнење при вчитувањето ресурси"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Времетраење на вчитувањето на ресурсот"
+  },
+  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
+    "message": "Време до првиот бајт"
+  },
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "LCP по фаза"
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | description": {
+  "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Избегнувајте поврзување на критичните барања](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) со намалување на должината на синџирите, намалување на големината на преземање на ресурсите или одложување на преземањето на непотребните ресурси за да се подобри вчитувањето на страницата."
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | title": {
-    "message": "Долго дрво важни мрежи"
+  "models/trace/insights/NetworkDependencyTree.ts | maxCriticalPathLatency": {
+    "message": "Максимална критична латенција на патека:"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | noNetworkDependencyTree": {
+    "message": "Мрежните зависности не влијаат на задачите за прикажување"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | title": {
+    "message": "Дрво на мрежна зависност"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
+    "message": "Избегнувајте поврзување на критичните барања со намалување на должината на синџирите, намалување на големината на преземање на ресурсите или одложување на преземањето на непотребните ресурси за да се подобри вчитувањето на страницата."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
     "message": "Барањата го блокираат првичното прикажување на страницата, што може да ја забави LCP. [Одложувањето или подредувањето во линии](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) може да ги премести овие барања на мрежата надвор од критичната патека."
+  },
+  "models/trace/insights/RenderBlocking.ts | duration": {
+    "message": "Времетраење"
+  },
+  "models/trace/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "Нема барања за блокирање на прикажувањето за навигацијава"
+  },
+  "models/trace/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "Барање"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
     "message": "Прикажување барања за блокирање"
@@ -1805,11 +2000,41 @@
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "Ако трошоците за пресметување на стилот повторно останат високи, оптимизацијата на избирачите може да ги намали. [Оптимизирајте ги избирачите](https://developer.chrome.com/docs/devtools/performance/selector-stats) и со многу поминато време и со висока бавна патека %. Поедноставни избирачи, помалку избирачи, помал DOM и поплиток DOM ќе ги намалат трошоците за совпаѓање."
   },
+  "models/trace/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "Изминато време"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "Не се најдени податоци за CSS-избирач. Статистичките податоци за CSS-избирач треба да се овозможат во поставките на таблата за изведба."
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "Обиди за совпаѓање"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "Број на совпаѓања"
+  },
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "Трошоци за CSS-избирачи"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "Највредни избирачи"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | total": {
+    "message": "Вкупно"
+  },
+  "models/trace/insights/ThirdParties.ts | columnMainThreadTime": {
+    "message": "Време на главната низа"
+  },
+  "models/trace/insights/ThirdParties.ts | columnThirdParty": {
+    "message": "Трета страна"
+  },
+  "models/trace/insights/ThirdParties.ts | columnTransferSize": {
+    "message": "Големина на префрлање"
+  },
   "models/trace/insights/ThirdParties.ts | description": {
     "message": "Кодот од трети страни може значително да влијае на изведбата при вчитување. [Намалете и одложете го вчитувањето код од трети страни](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) за да се даде приоритет на содржините на страницата."
+  },
+  "models/trace/insights/ThirdParties.ts | noThirdParties": {
+    "message": "Не се најдени трети страни"
   },
   "models/trace/insights/ThirdParties.ts | title": {
     "message": "Трети страни"
@@ -2100,7 +2325,7 @@
     "message": "Притиснато"
   },
   "panels/accessibility/AccessibilityStrings.ts | readonlyString": {
-    "message": "Само за читање"
+    "message": "Само за преглед"
   },
   "panels/accessibility/AccessibilityStrings.ts | relatedElement": {
     "message": "Поврзан елемент"
@@ -2252,11 +2477,17 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Избриши го локалниот разговор"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
+    "message": "Следете ги чекорите погоре за да поставите прашање"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | help": {
     "message": "Помош"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | history": {
     "message": "Историја"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | inputDisclaimerForEmptyState": {
+    "message": "Ова е експериментална AI-функција, па нема секогаш да прикажува точни информации."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
     "message": "Нов разговор"
@@ -2294,12 +2525,6 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "За да ја користите функцијава, поставете го вашиот претпочитан јазик на англиски во DevTools."
   },
-  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
-    "message": "Следете ги чекорите погоре за да поставите прашање"
-  },
-  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
-    "message": "Ова е експериментална AI-функција, па нема секогаш да прикажува точни информации."
-  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Дознајте повеќе за AI во „Алатки за програмери“"
   },
@@ -2324,6 +2549,9 @@
   "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Вклучете {PH1} за да добивате помош со стилови, мрежни барања, изведба и датотеки"
   },
+  "panels/animation/AnimationTimeline.ts | animationDescription": {
+    "message": "На страницава може да проверувате и менувате анимации."
+  },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Преглед на анимација {PH1}"
   },
@@ -2332,6 +2560,9 @@
   },
   "panels/animation/AnimationTimeline.ts | clearAll": {
     "message": "Избриши ги сите"
+  },
+  "panels/animation/AnimationTimeline.ts | noEffectSelected": {
+    "message": "Не е избран ефект на анимација"
   },
   "panels/animation/AnimationTimeline.ts | pause": {
     "message": "Паузирај"
@@ -2358,13 +2589,13 @@
     "message": "Продолжи ги сите"
   },
   "panels/animation/AnimationTimeline.ts | selectAnEffectAboveToInspectAnd": {
-    "message": "Изберете ефект погоре за проверка и менување."
+    "message": "Изберете ефект погоре за проверување и менување"
   },
   "panels/animation/AnimationTimeline.ts | setSpeedToS": {
     "message": "Постави ја брзината на {PH1}"
   },
   "panels/animation/AnimationTimeline.ts | waitingForAnimations": {
-    "message": "Се чекаат анимации…"
+    "message": "Се чекаат анимации во моментов"
   },
   "panels/animation/AnimationUI.ts | animationEndpointSlider": {
     "message": "Лизгач за крајни точки на анимацијата"
@@ -2810,8 +3041,14 @@
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "ID на примерок"
   },
+  "panels/application/BackgroundServiceView.ts | noEventSelected": {
+    "message": "Не е избран настан"
+  },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Нема метаподатоци за настанов"
+  },
+  "panels/application/BackgroundServiceView.ts | noRecording": {
+    "message": "Сѐ уште нема снимка"
   },
   "panels/application/BackgroundServiceView.ts | notifications": {
     "message": "Известувања"
@@ -2834,8 +3071,8 @@
   "panels/application/BackgroundServiceView.ts | saveEvents": {
     "message": "Зачувајте ги настаните"
   },
-  "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
-    "message": "Изберете запис за да се прикажат метаподатоците"
+  "panels/application/BackgroundServiceView.ts | selectAnEventToViewMetadata": {
+    "message": "Изберете настан за да ги прегледате неговите метаподатоци"
   },
   "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
     "message": "Прикажи настани од други партиции на капацитетот"
@@ -2845,6 +3082,9 @@
   },
   "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
     "message": "Започни со снимање настани"
+  },
+  "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
+    "message": "Започнете да отстранувате грешки од заднинските услуги користејќи го копчето „{PH1}“ или притискајќи {PH2}."
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Запрете го снимањето настани"
@@ -2909,8 +3149,14 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Собери"
   },
+  "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
+    "message": "Да се избрише базата на податоци „{PH1}“?"
+  },
   "panels/application/IndexedDBViews.ts | dataMayBeStale": {
     "message": "Податоците можеби се стари"
+  },
+  "panels/application/IndexedDBViews.ts | databaseWillBeRemoved": {
+    "message": "Ќе се отстранат избраната база на податоци и податоците што ги содржи."
   },
   "panels/application/IndexedDBViews.ts | deleteDatabase": {
     "message": "Избриши ја базата на податоци"
@@ -2970,13 +3216,34 @@
     "message": "Верзија"
   },
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
-    "message": "Кликнете на кој било настан на група од интерес за приказ на моменталната состојба на групата"
+    "message": "Изберете некој настан на интересна група за да се прикаже тековната состојба на групата"
   },
   "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
-    "message": "Нема детали за избраната група од интерес. Прелистувачот можеби ја напуштил групата."
+    "message": "Не се достапни детали"
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataDescription": {
+    "message": "Прелистувачот може да ја напуштил групата."
+  },
+  "panels/application/InterestGroupStorageView.ts | noValueSelected": {
+    "message": "Не е избрана интересна група"
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "Интересни групи"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | key": {
+    "message": "Клуч"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | noPreviewSelected": {
+    "message": "Не е избрана вредност"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | numberEntries": {
+    "message": "Број на записи што се прикажуваат во табелата: {PH1}"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Изберете вредност за преглед"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | value": {
+    "message": "Вредност"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Пристап до алатката за отворање"
@@ -3043,6 +3310,9 @@
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Кликнете на која било пријава за се прикажат нејзините содржини"
+  },
+  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
+    "message": "Не е избрана пријава"
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "API за пријавување"
@@ -3225,7 +3495,10 @@
     "message": "Работник: {PH1}"
   },
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
-    "message": "Кликнете на кој било настан за споделен простор за да се прикажат параметрите на настанот."
+    "message": "Кликнете на некој настан на споделен простор за да се прикажат параметрите на настанот"
+  },
+  "panels/application/SharedStorageEventsView.ts | noEventSelected": {
+    "message": "Не е избран настан на споделен простор"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Споделен простор"
@@ -3255,7 +3528,7 @@
     "message": "Корпи на простор"
   },
   "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
-    "message": "На страницава може да гледате и бришете корпи за складирање и нивните поврзани API за простор."
+    "message": "На страницава може да гледате и бришете корпи за складирање и нивните поврзани Storage APIs."
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Избриши ги сите"
@@ -3839,6 +4112,9 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Состојбата е избришана за следниве сајтови:"
   },
+  "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
+    "message": "Овде ќе го најдете списокот на крајни точки што ги примаат пријавите"
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Нема крајни точки за прикажување"
   },
@@ -4007,8 +4283,11 @@
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Сопственик"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | interestGroupDescription": {
+    "message": "На страницава може да проверувате и анализирате интересни групи"
+  },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
-    "message": "Не се снимени настани на група од интерес."
+    "message": "Не се откриени настани на интересна група"
   },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Време на истекување"
@@ -4103,8 +4382,14 @@
   "panels/application/components/ReportsGrid.ts | generatedAt": {
     "message": "Генерирано на"
   },
+  "panels/application/components/ReportsGrid.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Нема пријави за прикажување"
+  },
+  "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
+    "message": "Овде ќе ги најдете пријавите до Reporting API што ги генерирала страницата."
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Статус"
@@ -4121,14 +4406,20 @@
   "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
     "message": "Тип пристап"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
-    "message": "Не се снимени настани на споделен простор."
+    "message": "Не се откриени настани на споделен простор"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "Потекло на сопственик"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Споделен простор"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorageDescription": {
+    "message": "На страницава може да гледате, додавате, изменувате и бришете парови со клучни вредности во споделен простор и да гледате настани на споделен простор."
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Преостанато дозволено протекување на податоци во период од 24 часа за ова потекло во битови ентропија"
@@ -4168,6 +4459,9 @@
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Име на кофа"
+  },
+  "panels/application/components/StorageMetadataView.ts | bucketWillBeRemoved": {
+    "message": "Ќе се отстранат корпата за складирање и податоците што ги содржи."
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
     "message": "Да се избрише корпата „{PH1}“?"
@@ -4238,11 +4532,20 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Издавач"
   },
+  "panels/application/components/TrustTokensView.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/application/components/TrustTokensView.ts | noTrustTokens": {
+    "message": "Не се откриени токени за автентичност"
+  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Број на складирани токени"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Токени за автентичност"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
+    "message": "На страницава може да ги гледате сите достапни токени за автентичност во контекстот на тековното прелистување."
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Сите шпекулативни вчитувања"
@@ -4250,11 +4553,26 @@
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Филтрирај по комплетот правила"
   },
+  "panels/application/preloading/PreloadingView.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/application/preloading/PreloadingView.ts | noPrefetchAttempts": {
+    "message": "Не е откриено шпекулирање"
+  },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "нема групи правила"
   },
+  "panels/application/preloading/PreloadingView.ts | noRulesDetected": {
+    "message": "Не се откриени правила"
+  },
+  "panels/application/preloading/PreloadingView.ts | prefetchDescription": {
+    "message": "На страницава ќе гледате детали за шпекулативните вчитувања."
+  },
   "panels/application/preloading/PreloadingView.ts | prettyPrint": {
     "message": "Форматиран приказ"
+  },
+  "panels/application/preloading/PreloadingView.ts | rulesDescription": {
+    "message": "На страницава ќе ги гледате правилата за шпекулирање што се користат за преземање однапред и претходно прикажување навигации на страницата."
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Неуспешно"
@@ -4357,6 +4675,9 @@
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Статус"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
+    "message": "Не е избран елемент"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Изберете елемент за повеќе детали"
@@ -4682,6 +5003,12 @@
   "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
     "message": "Успешно"
   },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | noElementSelected": {
+    "message": "Не е избран елемент"
+  },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | selectAnElementForMoreDetails": {
+    "message": "Изберете елемент за повеќе детали"
+  },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
     "message": "Откриј ги обидите за шпекулативно вчитување поврзани со комплетов правила"
   },
@@ -4795,6 +5122,9 @@
   },
   "panels/autofill/AutofillView.ts | learnMore": {
     "message": "Дознајте повеќе"
+  },
+  "panels/autofill/AutofillView.ts | noAutofill": {
+    "message": "Не е откриено автоматско пополнување"
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Предвидена вредност на автоматско пополнување"
@@ -4923,7 +5253,7 @@
     "message": "Список со точки на прекин на DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Не се поставени точки на прекин на DOM"
+    "message": "Нема точки на прекин на DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Јазолот е отстранет"
@@ -5544,10 +5874,10 @@
     "message": "Изберете грануларност на опфатеноста: според функција има мало надминување, според блок има значително надминување."
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Притиснете го копчето за снимање {PH1} за да започне да се снима опфатеноста."
+    "message": "Кликнете го копчето „{PH1}“ за да започне да се снима опфатеноста."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Притиснете го копчето за повторно вчитување {PH1} за да се вчита повторно и да започне да се снима опфатеноста."
+    "message": "Притиснете го копчето „{PH1}“ за да се вчита повторно и да започне да се снима опфатеноста."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Содржински скрипти"
@@ -5570,17 +5900,26 @@
   "panels/coverage/CoverageView.ts | javascript": {
     "message": "JavaScript"
   },
+  "panels/coverage/CoverageView.ts | noCoverageData": {
+    "message": "Нема податоци за опфатеноста"
+  },
   "panels/coverage/CoverageView.ts | perBlock": {
     "message": "По блок"
   },
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "По функција"
   },
+  "panels/coverage/CoverageView.ts | reloadPage": {
+    "message": "Вчитај ја страницата повторно"
+  },
   "panels/coverage/CoverageView.ts | reloadPrompt": {
     "message": "Притиснете го копчето за повторно вчитување {PH1} за да се вчита повторно и да се добие опфатеност."
   },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} од {PH2} ({PH3} %) искористени досега, {PH4} неискористени."
+  },
+  "panels/coverage/CoverageView.ts | startRecording": {
+    "message": "Започни со снимање"
   },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Бришење на податоците"
@@ -5771,6 +6110,9 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
     "message": "Ресурси за програмери"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | duration": {
+    "message": "Времетраење"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | error": {
     "message": "Грешка"
   },
@@ -5887,6 +6229,51 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<јазол>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
+    "message": "Неважечки јазол со елемент или текст во <optgroup>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedSelectChild": {
+    "message": "Неважечки јазол со елемент или текст во <select>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
+    "message": "Атрибут за aria-labelledby не се совпаѓа со ниеден ID на елемент"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
+    "message": "Неточно користење на атрибутот за автоматско довршување"
+  },
+  "panels/elements/ElementIssueUtils.ts | formDuplicateIdForInputError": {
+    "message": "ID на дупликат поле во формулар во истиот формулар"
+  },
+  "panels/elements/ElementIssueUtils.ts | formEmptyIdAndNameAttributesForInputError": {
+    "message": "Елемент на поле во формулар треба да има атрибут за ID или име"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputAssignedAutocompleteValueToIdOrNameAttributeError": {
+    "message": "Елемент нема атрибут за автоматско довршување"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputHasWrongButWellIntendedAutocompleteValueError": {
+    "message": "Нестандардна вредност на атрибутот за автоматско довршување"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputWithNoLabelError": {
+    "message": "Поле во формулар без важечки атрибут за aria-labelledby или поврзана етикета"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForMatchesNonExistingIdError": {
+    "message": "Неточно користење на <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForNameError": {
+    "message": "Неточно користење на <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
+    "message": "Нема етикета поврзана со поле во формулар"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
+    "message": "Интерактивен елемент во елемент на <legend>"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
+    "message": "Интерактивен елемент во елемент на <option>"
+  },
+  "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
+    "message": "Нефразирачки содржини што се користат во елемент на <option>"
   },
   "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
     "message": "Емулирај фокусирана страница"
@@ -6058,6 +6445,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Прикажи детали за iframe"
+  },
+  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
+    "message": "Прикажи ја целта на интересот"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "Прикажи ја целта во прозорец што се прикажува одозгора"
@@ -6269,12 +6659,6 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Наследено од "
   },
-  "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
-    "message": "Погрешна вредност за својство"
-  },
-  "panels/elements/StylesSidebarPane.ts | invalidString": {
-    "message": "{PH1}, име на својството: {PH2}, вредност на својството: {PH3}"
-  },
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Слој"
   },
@@ -6284,14 +6668,8 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Псевдо ::{PH1} елемент"
   },
-  "panels/elements/StylesSidebarPane.ts | specificity": {
-    "message": "Особеност: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Вклучете/исклучете чести емулации за обработка"
-  },
-  "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
-    "message": "Непознато име на својство"
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n,plural, =1{# видлив избирач е наведен подолу}one{# видлив избирач се наведени подолу}other{# видливи избирачи се наведени подолу}}"
@@ -6629,6 +7007,9 @@
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Избриши го слушателот на настанот"
   },
+  "panels/event_listeners/EventListenersView.ts | eventListenersExplanation": {
+    "message": "На страницава ќе ги најдете регистрираните слушатели на настанот"
+  },
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Нема слушатели на настанот"
   },
@@ -6775,6 +7156,12 @@
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Патека"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
+    "message": "Потомокот е недозволен"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
+    "message": "{n,plural, =1{ потомок}one{ потомок}other{ потомци}}"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "блокиран"
@@ -7100,17 +7487,20 @@
   "panels/issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Вклучи проблеми со колачиња од трети страни"
   },
+  "panels/issues/IssuesPane.ts | issuesPanelDescription": {
+    "message": "На страницава може да најдете предупредувања од прелистувачот."
+  },
   "panels/issues/IssuesPane.ts | lowTextContrast": {
     "message": "Низок контраст на текстот"
   },
   "panels/issues/IssuesPane.ts | mixedContent": {
     "message": "Комбинирани содржини"
   },
-  "panels/issues/IssuesPane.ts | noIssuesDetectedSoFar": {
-    "message": "Не се откриени проблеми досега"
+  "panels/issues/IssuesPane.ts | noIssues": {
+    "message": "Не се откриени проблеми"
   },
   "panels/issues/IssuesPane.ts | onlyThirdpartyCookieIssues": {
-    "message": "Засега се откриени проблеми само со колачиња од трети страни"
+    "message": "Откриени се проблеми само со колачиња од трети страни"
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Друго"
@@ -7227,7 +7617,7 @@
     "message": "Прикажи внатрешни слоеви"
   },
   "panels/layer_viewer/Layers3DView.ts | cantDisplayLayers": {
-    "message": "Не може да се прикажат слоевите,"
+    "message": "Не може да се прикажат слоевите"
   },
   "panels/layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
     "message": "Проверете го {PH1} за можни причини."
@@ -7235,8 +7625,11 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Приказ на 3D-слоеви"
   },
-  "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
-    "message": "Информациите за слојот уште не се достапни."
+  "panels/layer_viewer/Layers3DView.ts | layerExplanation": {
+    "message": "На страницава ќе може да ги гледате и проверувате слоевите документи."
+  },
+  "panels/layer_viewer/Layers3DView.ts | noLayerInformation": {
+    "message": "Сè уште не се откриени слоеви"
   },
   "panels/layer_viewer/Layers3DView.ts | paints": {
     "message": "Обојува"
@@ -7577,8 +7970,11 @@
   "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
     "message": "Заврши ја временската рамка"
   },
+  "panels/lighthouse/LighthouseTimespanView.ts | interactWithPage": {
+    "message": "Стапувајте во интеракција со страницата."
+  },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
-    "message": "Временската рамка започна, комуницирајте со страницата"
+    "message": "Режимот „Временска рамка“ е стартуван"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
     "message": "Временската рамка започнува…"
@@ -7591,6 +7987,12 @@
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Отвори во таблата Memory Inspector"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | memoryInspectorExplanation": {
+    "message": "На страницава може да ги проверувате бинарните податоци."
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Нема отворени инспекции"
@@ -7672,6 +8074,18 @@
   },
   "panels/media/EventTimelineView.ts | playbackStatus": {
     "message": "Статус на репродукција"
+  },
+  "panels/media/MainView.ts | mediaPlayerDescription": {
+    "message": "На страницава може да гледате и извезувате детали за плеерот."
+  },
+  "panels/media/MainView.ts | noMediaPlayer": {
+    "message": "Нема плеер"
+  },
+  "panels/media/MainView.ts | noPlayerDetailsSelected": {
+    "message": "Не е избран плеер"
+  },
+  "panels/media/MainView.ts | selectToViewDetails": {
+    "message": "Изберете некој плеер за да ги проверите неговите детали."
   },
   "panels/media/PlayerDetailView.ts | events": {
     "message": "Настани"
@@ -8114,6 +8528,9 @@
   "panels/network/BlockedURLsPane.ts | addPattern": {
     "message": "Додајте шема"
   },
+  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
+    "message": "Додајте шема за да ги блокирате мрежните барања така што ќе го кликнете копчето „{PH1}“."
+  },
   "panels/network/BlockedURLsPane.ts | dBlocked": {
     "message": "{PH1} е блокирана"
   },
@@ -8123,8 +8540,11 @@
   "panels/network/BlockedURLsPane.ts | itemDeleted": {
     "message": "Ставката е успешно избришана"
   },
-  "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
-    "message": "Мрежните барања не се блокирани. {PH1}"
+  "panels/network/BlockedURLsPane.ts | learnMore": {
+    "message": "Дознајте повеќе"
+  },
+  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
+    "message": "Нема блокирани барања за мрежата"
   },
   "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
     "message": "Шемата веќе постои."
@@ -8555,9 +8975,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Врши инверзија на филтерот за пребарување"
   },
-  "panels/network/NetworkLogView.ts | learnMore": {
-    "message": "Дознајте повеќе"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Вчитување: {PH1}"
   },
@@ -8566,6 +8983,9 @@
   },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "Достапни се мрежни податоци"
+  },
+  "panels/network/NetworkLogView.ts | noNetworkActivityRecorded": {
+    "message": "Не е евидентирана мрежна активност"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Прикажи ги само блокираните барања"
@@ -8580,13 +9000,16 @@
     "message": "Отфрли ги заглавијата"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Извршете го барањето или притиснете {PH1} за да ја снимите повторно вчитаната секвенца."
+    "message": "Извршете барање или вчитајте ја страницата повторно користејќи го копчето „{PH1}“ или притискајќи {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Снимете мрежна евиденција ({PH1}) за прикажување на мрежната активност."
+    "message": "Водете мрежна евиденција за да се прикажува мрежната активност користејќи го копчето „{PH1}“ или притискајќи {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
-    "message": "Се снима мрежната активност…"
+    "message": "Тековно се евидентира мрежната активност"
+  },
+  "panels/network/NetworkLogView.ts | reloadPage": {
+    "message": "Вчитај ја страницата повторно"
   },
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Пушти го XHR-барањето повторно"
@@ -8626,6 +9049,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Само прикажи/скриј ги барањата"
+  },
+  "panels/network/NetworkLogView.ts | startRecording": {
+    "message": "Започни со снимање"
   },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Барања од трети страни"
@@ -8766,16 +9192,13 @@
     "message": "Извези HAR (со чувствителни податоци)..."
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Се преземаат рамки…"
+    "message": "Се преземаат кадри во моментов"
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Групирај според рамка"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Групни барања од рамка со барања од највисоко ниво"
-  },
-  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Притиснете {PH1} за повторно да ја вчитате и снимите секвенцата."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Увези датотека HAR…"
@@ -8796,7 +9219,7 @@
     "message": "Задржи ја евиденцијата"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
-    "message": "Се снимаат кадри…"
+    "message": "Се снимаат кадри во моментов"
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Пребарување"
@@ -10112,6 +10535,12 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Не може да се вчита профилот додека се снима друг профил."
   },
+  "panels/profiler/ProfilesPanel.ts | failReason": {
+    "message": "Причина: {PH1}."
+  },
+  "panels/profiler/ProfilesPanel.ts | profileLoadingFailed": {
+    "message": "Вчитувањето на профилот не успеа"
+  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профили"
   },
@@ -10174,12 +10603,6 @@
   },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCtrlEnter": {
     "message": "Испрати наредба - Ctrl+Enter"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
-    "message": "„Уредувачот на CDP-наредби“ е скриен"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
-    "message": "„Уредувачот на CDP-наредби“ е прикажан"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Избриши ги сите"
@@ -10686,7 +11109,10 @@
     "message": "Индексирањето е прекинато."
   },
   "panels/search/SearchView.ts | noMatchesFound": {
-    "message": "Не се најдени совпаѓања."
+    "message": "Не се најдени совпаѓања"
+  },
+  "panels/search/SearchView.ts | nothingMatchedTheQuery": {
+    "message": "Ништо не се совпадна со вашиот поим за пребарување"
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Освежи"
@@ -11499,10 +11925,10 @@
     "message": "Разберете ги CSS-стиловите, мрежната активност, отежнувањата на изведбата и потеклата на датотеките со увидите овозможени од AI"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Сите податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите за изведба се испраќаат до Google за да се генерираат објаснувања. За да се подобри функцијава, овие податоци може да ги гледаат и прегледувачи. Не користете на страници со лични или чувствителни податоци."
+    "message": "Сите кориснички барања и податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите на изведба се испраќаат до Google за да се генерираат објаснувања. За да се подобри функцијава, овие податоци може да ги гледаат и прегледувачи. Не користете на страници со лични или чувствителни податоци."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Сите податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите на изведба се испраќаат до Google за да се генерираат објаснувања. Податоциве нема да се користат за да се подобруваат AI-моделите на Google."
+    "message": "Сите кориснички барања и податоци до кои може да пристапи проверената страница преку API на интернет, барањата за мрежа, датотеките и трагите на изведба се испраќаат до Google за да се генерираат објаснувања. Податоциве нема да се користат за да се подобруваат AI-моделите на Google."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Ви помага да ги разберете и да ги решите предупредувањата и грешките во конзолата"
@@ -12242,6 +12668,12 @@
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Избриши"
   },
+  "panels/sources/NavigatorView.ts | deleteFolder": {
+    "message": "Да се избришат папкава и нејзините содржини?"
+  },
+  "panels/sources/NavigatorView.ts | deleteThisFile": {
+    "message": "Да се избрише датотекава?"
+  },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Од прелистувачот"
   },
@@ -12250,6 +12682,12 @@
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Изостави од работниот простор"
+  },
+  "panels/sources/NavigatorView.ts | excludeThisFolder": {
+    "message": "Да се изземе папкава?"
+  },
+  "panels/sources/NavigatorView.ts | folderWillNotBeShown": {
+    "message": "Папкава и нејзините содржини нема да се прикажуваат во работниот простор."
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Направи копија…"
@@ -12331,6 +12769,12 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘+Enter"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
+    "message": "Поврзи се…"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
+    "message": "Откриена е папката на работен простор {PH1}."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Исчисти ја конфигурацијата"
@@ -13004,8 +13448,8 @@
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Прва/Трета страна"
   },
-  "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
-    "message": "Време на една активност"
+  "panels/timeline/ThirdPartyTreeView.ts | mainThreadTime": {
+    "message": "Време на главната низа"
   },
   "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
     "message": "Големина на префрлање"
@@ -13613,9 +14057,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Трета страна"
-  },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(записот е скриен)"
   },
@@ -13687,6 +14128,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Јазли на коишто им треба распоред"
+  },
+  "panels/timeline/TimelineUIUtils.ts | origin": {
+    "message": "Потекло"
   },
   "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
     "message": "(надвор од опсегот на breadcrumb)"
@@ -13780,6 +14224,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Големина"
+  },
+  "panels/timeline/TimelineUIUtils.ts | source": {
+    "message": "Извор"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "Stack trace"
@@ -14228,9 +14675,6 @@
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Имајте ги предвид локалните услови за тестирање"
   },
-  "panels/timeline/components/MetricCard.ts | duration": {
-    "message": "Локално времетраење (ms)"
-  },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "75 проценти од податоците од вистински корисници на терен"
   },
@@ -14569,6 +15013,12 @@
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
     "message": "Прегледајте ги деталите за {PH1}"
+  },
+  "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
+    "message": "Проверката на увидите не успеа: {PH1}"
+  },
+  "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
+    "message": "Проверката на увидите успеа: {PH1}"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} – податоци од вистински корисници на терен ({PH2})"
@@ -15059,6 +15509,9 @@
   "panels/web_audio/AudioContextSelector.ts | noRecordings": {
     "message": "(нема снимки)"
   },
+  "panels/web_audio/WebAudioView.ts | noWebAudio": {
+    "message": "Не е откриено користење на Web Audio API"
+  },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Отворете страница што користи API за веб-аудио за да започнете со следење."
   },
@@ -15107,14 +15560,14 @@
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Е резидентен"
   },
-  "panels/webauthn/WebauthnPane.ts | learnMore": {
-    "message": "Дознајте повеќе"
-  },
   "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
     "message": "Нов автентификатор"
   },
   "panels/webauthn/WebauthnPane.ts | no": {
     "message": "Не"
+  },
+  "panels/webauthn/WebauthnPane.ts | noAuthenticator": {
+    "message": "Не е поставена апликација за автентицирање"
   },
   "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
     "message": "Нема акредитиви. Обидете се да повикате {PH1} од вашата веб-страница."
@@ -15153,7 +15606,7 @@
     "message": "Транспорт"
   },
   "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
-    "message": "Користи WebAuthn за автентикација отпорна на фишинг"
+    "message": "Користете WebAuthn за автентикација отпорна на фишинг."
   },
   "panels/webauthn/WebauthnPane.ts | userHandle": {
     "message": "Клуч на корисникот"
@@ -15401,9 +15854,6 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Не прикажувај повторно"
   },
-  "ui/legacy/Infobar.ts | showMore": {
-    "message": "Прикажи повеќе"
-  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Затвори ја фиоката"
   },
@@ -15473,8 +15923,11 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Зачувај"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
+    "message": "Причина: {PH1}."
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Врската за отстранување грешка беше затворена. Причина: "
+    "message": "Врската за отстранување грешки е затворена"
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Поврзи DevTools повторно"
@@ -15929,9 +16382,6 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Единици"
   },
-  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
-    "message": "Недефинирано: {PH1}"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Прикажи како објект на JavaScript"
   },
@@ -16184,9 +16634,6 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Најди"
   },
-  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
-    "message": "Дозволи"
-  },
   "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
     "message": "дозволи лепење"
   },
@@ -16195,9 +16642,6 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Положба на бајткод 0x{PH1}"
-  },
-  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
-    "message": "Откажи"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "Избрани знаци: {PH1}"

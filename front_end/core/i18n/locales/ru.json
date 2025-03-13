@@ -1238,6 +1238,9 @@
   "generated/Deprecation.ts | InterestGroupDailyUpdateUrl": {
     "message": "Поле dailyUpdateUrl в структуре InterestGroups, переданное в joinAdInterestGroup(), было переименовано в updateUrl, чтобы лучше отражать его поведение."
   },
+  "generated/Deprecation.ts | IntlV8BreakIterator": {
+    "message": "Intl.v8BreakIterator больше не поддерживается. Вместо него используйте Intl.Segmenter."
+  },
   "generated/Deprecation.ts | LocalCSSFileExtensionRejected": {
     "message": "Загрузить CSS с помощью URL в формате file: можно, только если у имени файла расширение .css."
   },
@@ -1257,7 +1260,7 @@
     "message": "Из окон iframe в других источниках больше нельзя запрашивать разрешение на использование Notification API. Запросите разрешение у фрейма верхнего уровня или откройте новое окно."
   },
   "generated/Deprecation.ts | ObsoleteCreateImageBitmapImageOrientationNone": {
-    "message": "Для метода createImageBitmap параметр {imageOrientation: 'none'} больше не поддерживается. Используйте этот метод с параметром {imageOrientation: 'from-image'}."
+    "message": "Для метода createImageBitmap свойство {imageOrientation: 'none'} больше не поддерживается. Используйте createImageBitmap со свойством \"{imageOrientation: 'from-image'}\"."
   },
   "generated/Deprecation.ts | ObsoleteWebRtcCipherSuite": {
     "message": "Ваш партнер обменивается данными с использованием устаревшей версии (D)TLS. Сообщите ему о необходимости это исправить."
@@ -1334,20 +1337,11 @@
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Теперь, чтобы использовать объект SharedArrayBuffer, в расширениях необходимо включить изоляцию от междоменных источников. Подробнее: https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
   },
-  "generated/Deprecation.ts | WebGPULimitMaxInterStageShaderComponents": {
-    "message": "Поддержка ограничения WebGPU maxInterStageShaderComponents прекращена, используйте вместо него ограничение WebGPU maxInterStageShaderVariables."
-  },
-  "generated/Deprecation.ts | WebSQL": {
-    "message": "Web SQL больше не поддерживается. Используйте SQLite WebAssembly или индексированную базу данных."
-  },
   "generated/Deprecation.ts | XHRJSONEncodingDetection": {
     "message": "В объекте JSON ответа XMLHttpRequest не поддерживает UTF-16."
   },
   "generated/Deprecation.ts | XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload": {
     "message": "Синхронные вызовы метода XMLHttpRequest в основном потоке больше не поддерживаются, так как они отрицательно влияют на удобство работы пользователей. Подробнее: https://xhr.spec.whatwg.org/."
-  },
-  "generated/Deprecation.ts | XRSupportsSession": {
-    "message": "Метод supportsSession() больше не поддерживается. Вместо него используйте метод isSessionSupported() и получайте результат в виде логического значения."
   },
   "models/bindings/ContentProviderBasedProject.ts | unknownErrorLoadingFile": {
     "message": "Неизвестная ошибка при загрузке файла."
@@ -1574,6 +1568,12 @@
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим совместимости с документом"
   },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | httpMessageSignatures": {
+    "message": "Подписи сообщений HTTP (RFC9421)"
+  },
+  "models/issues_manager/SRIMessageSignatureIssue.ts | signatureBasedIntegrity": {
+    "message": "Проверка целостности на основе подписи"
+  },
   "models/issues_manager/SharedArrayBufferIssue.ts | enablingSharedArrayBuffer": {
     "message": "Включение объекта SharedArrayBuffer"
   },
@@ -1582,6 +1582,9 @@
   },
   "models/live-metrics/LiveMetrics.ts | lcpEmulationWarning": {
     "message": "Имитация нового устройства после загрузки страницы может повлиять на значение LCP. Чтобы получить точные данные об этом показателе, обновите страницу, когда измените имитируемое устройство."
+  },
+  "models/live-metrics/LiveMetrics.ts | lcpVisibilityWarning": {
+    "message": "Значение LCP может быть завышено из-за того, что загрузка страницы началась в фоновом режиме."
   },
   "models/logs/NetworkLog.ts | anonymous": {
     "message": "<анонимный>"
@@ -1697,6 +1700,9 @@
   "models/persistence/persistence-meta.ts | disableOverrideNetworkRequests": {
     "message": "Отключить сетевые запросы на переопределение"
   },
+  "models/persistence/persistence-meta.ts | enableAutomaticWorkspaceFolders": {
+    "message": "Включить автоматическое создание папок в рабочей области"
+  },
   "models/persistence/persistence-meta.ts | enableLocalOverrides": {
     "message": "Разрешить локальное переопределение"
   },
@@ -1724,56 +1730,182 @@
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Рабочая область"
   },
+  "models/trace/insights/CLSCulprits.ts | animation": {
+    "message": "Анимация"
+  },
   "models/trace/insights/CLSCulprits.ts | description": {
     "message": "Смещение макета происходит, когда элементы передвигаются без взаимодействия с пользователем. Это может быть связано с добавлением и удалением элементов или изменением их шрифтов при загрузке страницы. [Выясните причины сдвигов.](https://web.dev/articles/optimize-cls)"
+  },
+  "models/trace/insights/CLSCulprits.ts | fontRequest": {
+    "message": "Запрос шрифта"
+  },
+  "models/trace/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "Внедрение окна iframe"
+  },
+  "models/trace/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "Кластер смещения макета (начало: {PH1})"
+  },
+  "models/trace/insights/CLSCulprits.ts | noCulprits": {
+    "message": "Не удалось выявить причины смещений макета"
+  },
+  "models/trace/insights/CLSCulprits.ts | noLayoutShifts": {
+    "message": "Смещений макета не обнаружено"
   },
   "models/trace/insights/CLSCulprits.ts | title": {
     "message": "Причины смещения макета"
   },
+  "models/trace/insights/CLSCulprits.ts | topCulprits": {
+    "message": "Основные причины смещения макета"
+  },
+  "models/trace/insights/CLSCulprits.ts | unsizedImages": {
+    "message": "Изображения с незаданными размерами"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstCluster": {
+    "message": "Худший кластер"
+  },
+  "models/trace/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "Худший кластер смещения макета"
+  },
   "models/trace/insights/DOMSize.ts | description": {
     "message": "Из-за большого размера дерева DOM может замедляться расчет стиля и компоновка макета. Это повлияет на скорость отклика страницы и увеличит объем используемой памяти. Узнайте, [как уменьшить размер дерева DOM](https://developer.chrome.com/docs/lighthouse/performance/dom-size/)."
+  },
+  "models/trace/insights/DOMSize.ts | element": {
+    "message": "Элемент"
+  },
+  "models/trace/insights/DOMSize.ts | maxChildren": {
+    "message": "Больше всего дочерних элементов"
+  },
+  "models/trace/insights/DOMSize.ts | maxDOMDepth": {
+    "message": "Глубина DOM"
+  },
+  "models/trace/insights/DOMSize.ts | statistic": {
+    "message": "Статистические показатели"
   },
   "models/trace/insights/DOMSize.ts | title": {
     "message": "Оптимизация размера DOM-дерева"
   },
+  "models/trace/insights/DOMSize.ts | totalElements": {
+    "message": "Всего элементов"
+  },
+  "models/trace/insights/DOMSize.ts | value": {
+    "message": "Значение"
+  },
   "models/trace/insights/DocumentLatency.ts | description": {
     "message": "Ваш первый сетевой запрос – самый важный.  Уменьшайте задержку, избегая переадресации, ускоряя ответ сервера и используя сжатие текста."
+  },
+  "models/trace/insights/DocumentLatency.ts | failedRedirects": {
+    "message": "Были переадресации"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedServerResponseTime": {
+    "message": "Сервер отвечает медленно"
+  },
+  "models/trace/insights/DocumentLatency.ts | failedTextCompression": {
+    "message": "Без сжатия"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingRedirects": {
+    "message": "Не используются переадресации"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingServerResponseTime": {
+    "message": "Сервер отвечает быстро"
+  },
+  "models/trace/insights/DocumentLatency.ts | passingTextCompression": {
+    "message": "Применяется сжатие текста"
+  },
+  "models/trace/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "Перенаправления"
+  },
+  "models/trace/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "Время ответа сервера"
   },
   "models/trace/insights/DocumentLatency.ts | title": {
     "message": "Задержка при запросе документа"
   },
+  "models/trace/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "Скачивание несжатого файла"
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | description": {
+    "message": "Чтобы сократить расход трафика, удалите из пакетов большие повторяющиеся модули JavaScript."
+  },
+  "models/trace/insights/DuplicateJavaScript.ts | title": {
+    "message": "Повторяющиеся модули JavaScript"
+  },
   "models/trace/insights/FontDisplay.ts | description": {
     "message": "Рекомендуем использовать свойство [font-display](https://developer.chrome.com/blog/font-display) со значением swap или optional, чтобы весь текст был одинаково виден. Значение swap можно дополнительно оптимизировать, чтобы с помощью [переопределения показателей шрифта](https://developer.chrome.com/blog/font-fallbacks) уменьшить смещения макета."
+  },
+  "models/trace/insights/FontDisplay.ts | fontColumn": {
+    "message": "Шрифт"
   },
   "models/trace/insights/FontDisplay.ts | title": {
     "message": "Используемые шрифты"
   },
+  "models/trace/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "Потери времени"
+  },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Многие API, прежде всего считывающие геометрию макета, принуждают движок отрисовки приостановить выполнение скриптов, чтобы рассчитать стиль и макет страницы. Подробнее [о принудительной компоновке и способах ее избежать](https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts)…"
+  },
+  "models/trace/insights/ForcedReflow.ts | relatedStackTrace": {
+    "message": "Трассировка стека"
   },
   "models/trace/insights/ForcedReflow.ts | title": {
     "message": "Принудительная компоновка"
   },
+  "models/trace/insights/ForcedReflow.ts | topTimeConsumingFunctionCall": {
+    "message": "Самый времязатратный вызов функции"
+  },
+  "models/trace/insights/ForcedReflow.ts | totalReflowTime": {
+    "message": "Общее время компоновки"
+  },
   "models/trace/insights/ImageDelivery.ts | description": {
     "message": "Если изображения будут быстрее скачиваться, то время загрузки страницы и значение LCP могут стать меньше. Узнайте, [как оптимизировать размер изображений](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/)."
+  },
+  "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
+    "message": "{PH1} (около {PH2})."
+  },
+  "models/trace/insights/ImageDelivery.ts | noOptimizableImages": {
+    "message": "Изображения нельзя оптимизировать"
+  },
+  "models/trace/insights/ImageDelivery.ts | optimizeFile": {
+    "message": "Оптимизация размера файла"
+  },
+  "models/trace/insights/ImageDelivery.ts | others": {
+    "message": "Ещё {PH1}"
   },
   "models/trace/insights/ImageDelivery.ts | title": {
     "message": "Улучшите загрузку изображений"
   },
   "models/trace/insights/ImageDelivery.ts | useCompression": {
-    "message": "Если увеличить коэффициент сжатия изображения, размер файла будет меньше (около {PH1})."
+    "message": "Если увеличить коэффициент сжатия изображения, размер файла будет меньше."
   },
   "models/trace/insights/ImageDelivery.ts | useModernFormat": {
-    "message": "Если использовать современный графический формат (WebP или AVIF) или увеличить коэффициент сжатия изображения, размер файла будет меньше (около {PH1})."
+    "message": "Если использовать современный графический формат (WebP или AVIF) или увеличить коэффициент сжатия изображения, размер файла будет меньше."
   },
   "models/trace/insights/ImageDelivery.ts | useResponsiveSize": {
-    "message": "Размер изображения ({PH2}) превышает размер контейнера ({PH3}). Используйте адаптивный стиль, чтобы размер графического файла был меньше (около {PH1})."
+    "message": "Размер изображения ({PH1}) превышает размер контейнера ({PH2}). Используйте адаптивный стиль, чтобы размер графического файла был меньше."
   },
   "models/trace/insights/ImageDelivery.ts | useVideoFormat": {
-    "message": "Если использовать не GIF, а видеоформаты, размер файла с анимированным контентом будет меньше (около {PH1})."
+    "message": "Если использовать не GIF, а видеоформаты, размер файла с анимированным контентом будет меньше."
   },
   "models/trace/insights/InteractionToNextPaint.ts | description": {
     "message": "Начните анализ с самого длинного этапа. Задержки [можно уменьшить](https://web.dev/articles/optimize-inp#optimize_interactions). Чтобы сократить продолжительность обработки, [оптимизируйте затраты основного потока](https://web.dev/articles/optimize-long-tasks). Обычно они относятся к JS."
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | duration": {
+    "message": "Продолжительность"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | inputDelay": {
+    "message": "Задержка ввода"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | noInteractions": {
+    "message": "Взаимодействия не обнаружены"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | phase": {
+    "message": "Этап"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | presentationDelay": {
+    "message": "Задержка вывода ответа на экран"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | processingDuration": {
+    "message": "Длительность обработки"
   },
   "models/trace/insights/InteractionToNextPaint.ts | title": {
     "message": "INP по этапам"
@@ -1781,23 +1913,86 @@
   "models/trace/insights/LCPDiscovery.ts | description": {
     "message": "Оптимизируйте LCP, сделав возможным [находить](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) самое крупное изображение прямо из HTML-кода. Также советуем [избегать отложенной загрузки](https://web.dev/articles/lcp-lazy-loading)."
   },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
+    "message": "Свойству fetchpriority присвоено значение \"high\""
+  },
+  "models/trace/insights/LCPDiscovery.ts | fetchPriorityShouldBeApplied": {
+    "message": "Требуется значение fetchpriority=high."
+  },
+  "models/trace/insights/LCPDiscovery.ts | lazyLoadNotApplied": {
+    "message": "Не удалось применить отложенную загрузку."
+  },
+  "models/trace/insights/LCPDiscovery.ts | lcpLoadDelay": {
+    "message": "Время загрузки самого крупного изображения: {PH1}."
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcp": {
+    "message": "Значение LCP не обнаружено"
+  },
+  "models/trace/insights/LCPDiscovery.ts | noLcpResource": {
+    "message": "Ресурс LCP не найден, так как с ним связано не изображение"
+  },
+  "models/trace/insights/LCPDiscovery.ts | requestDiscoverable": {
+    "message": "Запрос можно найти в исходном документе"
+  },
   "models/trace/insights/LCPDiscovery.ts | title": {
     "message": "Информация об LCP и связанных запросах"
   },
   "models/trace/insights/LCPPhases.ts | description": {
     "message": "Для каждого этапа [есть стратегии улучшения](https://web.dev/articles/optimize-lcp#lcp-breakdown). В идеале большая часть времени, требуемого на полную отрисовку элементов LCP, должна тратиться на загрузку ресурсов, а не на задержки."
   },
+  "models/trace/insights/LCPPhases.ts | duration": {
+    "message": "Продолжительность"
+  },
+  "models/trace/insights/LCPPhases.ts | elementRenderDelay": {
+    "message": "Задержка при отрисовке элемента"
+  },
+  "models/trace/insights/LCPPhases.ts | fieldDuration": {
+    "message": "75-й процентиль в наблюдаемых данных"
+  },
+  "models/trace/insights/LCPPhases.ts | noLcp": {
+    "message": "Значение LCP не обнаружено"
+  },
+  "models/trace/insights/LCPPhases.ts | phase": {
+    "message": "Этап"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDelay": {
+    "message": "Задержка загрузки ресурса"
+  },
+  "models/trace/insights/LCPPhases.ts | resourceLoadDuration": {
+    "message": "Продолжительность загрузки ресурса"
+  },
+  "models/trace/insights/LCPPhases.ts | timeToFirstByte": {
+    "message": "Time to First Byte"
+  },
   "models/trace/insights/LCPPhases.ts | title": {
     "message": "LCP по этапам"
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | description": {
+  "models/trace/insights/NetworkDependencyTree.ts | description": {
     "message": "[Старайтесь избегать цепочек критических запросов.](https://developer.chrome.com/docs/lighthouse/performance/critical-request-chains) Чтобы ускорить загрузку страницы, сократите количество запросов, уменьшите размер скачиваемых ресурсов или отложите скачивание ненужных ресурсов."
   },
-  "models/trace/insights/LongCriticalNetworkTree.ts | title": {
-    "message": "Крупное дерево критических запросов"
+  "models/trace/insights/NetworkDependencyTree.ts | maxCriticalPathLatency": {
+    "message": "Максимальная задержка критического пути:"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | noNetworkDependencyTree": {
+    "message": "Нет задач отрисовки, на которые повлияло дерево зависимостей в сети."
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | title": {
+    "message": "Дерево зависимостей в сети"
+  },
+  "models/trace/insights/NetworkDependencyTree.ts | warningDescription": {
+    "message": "Избегайте цепочек критических запросов. Чтобы ускорить загрузку страниц, рекомендуется сократить количество запросов, уменьшить размер скачиваемых ресурсов или отложить скачивание ненужных ресурсов."
   },
   "models/trace/insights/RenderBlocking.ts | description": {
     "message": "Запросы блокируют обработку при первоначальной загрузке страницы. Это может привести к увеличению значения LCP. [Отсрочка или встраивание](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) могут избавить от негативного воздействия этих сетевых запросов."
+  },
+  "models/trace/insights/RenderBlocking.ts | duration": {
+    "message": "Продолжительность"
+  },
+  "models/trace/insights/RenderBlocking.ts | noRenderBlocking": {
+    "message": "Запросов, блокирующих обработку страницы, не обнаружено"
+  },
+  "models/trace/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "Запрос"
   },
   "models/trace/insights/RenderBlocking.ts | title": {
     "message": "Запросы, блокирующие отрисовку страницы"
@@ -1805,11 +2000,41 @@
   "models/trace/insights/SlowCSSSelector.ts | description": {
     "message": "Если затраты на повторный расчет стиля остаются высокими, оптимизация селектора может их снизить. [Оптимизируйте селекторы](https://developer.chrome.com/docs/devtools/performance/selector-stats) с большим временем выполнения и высоким процентом медленного пути. Затраты на сопоставление можно снижать, используя более простые селекторы и сокращая их количество, а также за счет более компактной структуры DOM."
   },
+  "models/trace/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "Прошедшее время"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | enableSelectorData": {
+    "message": "Данные селектора CSS не обнаружены. Включите этот параметр в настройках панели производительности."
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "Попытки найти совпадение"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "Совпадения"
+  },
   "models/trace/insights/SlowCSSSelector.ts | title": {
     "message": "Затраты на селектор CSS"
   },
+  "models/trace/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "Основные селекторы"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | total": {
+    "message": "Всего"
+  },
+  "models/trace/insights/ThirdParties.ts | columnMainThreadTime": {
+    "message": "Время выполнения в основном потоке"
+  },
+  "models/trace/insights/ThirdParties.ts | columnThirdParty": {
+    "message": "Сторонний поставщик"
+  },
+  "models/trace/insights/ThirdParties.ts | columnTransferSize": {
+    "message": "Объем передаваемых данных"
+  },
   "models/trace/insights/ThirdParties.ts | description": {
-    "message": "Сторонний код может сильно замедлить загрузку страницы. [Сократите и отсрочьте загрузку стороннего кода,](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) чтобы ускорить показ своего контента."
+    "message": "Сторонний код может сильно замедлить загрузку страниц сайта. [Сократите и отсрочьте загрузку стороннего кода,](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) чтобы ускорить показ своего контента."
+  },
+  "models/trace/insights/ThirdParties.ts | noThirdParties": {
+    "message": "Сторонний контент не найден"
   },
   "models/trace/insights/ThirdParties.ts | title": {
     "message": "Сторонний код"
@@ -2252,11 +2477,17 @@
   "panels/ai_assistance/AiAssistancePanel.ts | deleteChat": {
     "message": "Удалить чат на устройстве"
   },
+  "panels/ai_assistance/AiAssistancePanel.ts | followTheSteps": {
+    "message": "Чтобы задать вопрос, следуйте инструкциям выше"
+  },
   "panels/ai_assistance/AiAssistancePanel.ts | help": {
     "message": "Справка"
   },
   "panels/ai_assistance/AiAssistancePanel.ts | history": {
     "message": "История"
+  },
+  "panels/ai_assistance/AiAssistancePanel.ts | inputDisclaimerForEmptyState": {
+    "message": "Это экспериментальная ИИ-функция, которая не всегда работает корректно."
   },
   "panels/ai_assistance/AiAssistancePanel.ts | newChat": {
     "message": "Новый чат"
@@ -2294,12 +2525,6 @@
   "panels/ai_assistance/ai_assistance-meta.ts | wrongLocale": {
     "message": "Чтобы пользоваться этой функцией, в настройках инструментов разработчика выберите английский язык."
   },
-  "panels/ai_assistance/components/ChatView.ts | followTheSteps": {
-    "message": "Чтобы задать вопрос, следуйте инструкциям выше"
-  },
-  "panels/ai_assistance/components/ChatView.ts | inputDisclaimerForEmptyState": {
-    "message": "Это экспериментальная ИИ-функция, которая не всегда работает корректно."
-  },
   "panels/ai_assistance/components/ChatView.ts | learnAbout": {
     "message": "Узнайте больше об ИИ в инструментах разработчика"
   },
@@ -2324,6 +2549,9 @@
   "panels/ai_assistance/components/ChatView.ts | turnOnForStylesRequestsPerformanceAndFiles": {
     "message": "Если вам нужна помощь со стилями, сетевыми запросами, производительностью или файлами, включите {PH1}."
   },
+  "panels/animation/AnimationTimeline.ts | animationDescription": {
+    "message": "На этой странице можно посмотреть или изменить анимации."
+  },
   "panels/animation/AnimationTimeline.ts | animationPreviewS": {
     "message": "Предпросмотр анимации {PH1}"
   },
@@ -2332,6 +2560,9 @@
   },
   "panels/animation/AnimationTimeline.ts | clearAll": {
     "message": "Очистить все"
+  },
+  "panels/animation/AnimationTimeline.ts | noEffectSelected": {
+    "message": "Эффект анимации не выбран."
   },
   "panels/animation/AnimationTimeline.ts | pause": {
     "message": "Приостановить"
@@ -2810,8 +3041,14 @@
   "panels/application/BackgroundServiceView.ts | instanceId": {
     "message": "Идентификатор экземпляра"
   },
+  "panels/application/BackgroundServiceView.ts | noEventSelected": {
+    "message": "События не выбраны."
+  },
   "panels/application/BackgroundServiceView.ts | noMetadataForThisEvent": {
     "message": "Для этого события нет метаданных."
+  },
+  "panels/application/BackgroundServiceView.ts | noRecording": {
+    "message": "Записи нет."
   },
   "panels/application/BackgroundServiceView.ts | notifications": {
     "message": "Уведомления"
@@ -2834,8 +3071,8 @@
   "panels/application/BackgroundServiceView.ts | saveEvents": {
     "message": "Сохранить события"
   },
-  "panels/application/BackgroundServiceView.ts | selectAnEntryToViewMetadata": {
-    "message": "Чтобы посмотреть метаданные, выберите запись"
+  "panels/application/BackgroundServiceView.ts | selectAnEventToViewMetadata": {
+    "message": "Выберите событие, чтобы посмотреть его метаданные."
   },
   "panels/application/BackgroundServiceView.ts | showEventsForOtherStorageKeys": {
     "message": "Показывать события из других сегментов хранилища"
@@ -2845,6 +3082,9 @@
   },
   "panels/application/BackgroundServiceView.ts | startRecordingEvents": {
     "message": "Начать запись событий"
+  },
+  "panels/application/BackgroundServiceView.ts | startRecordingToDebug": {
+    "message": "Чтобы начать отладку фоновых служб, нажмите кнопку \"{PH1}\" или {PH2}."
   },
   "panels/application/BackgroundServiceView.ts | stopRecordingEvents": {
     "message": "Остановить запись событий"
@@ -2909,8 +3149,14 @@
   "panels/application/IndexedDBViews.ts | collapse": {
     "message": "Свернуть"
   },
+  "panels/application/IndexedDBViews.ts | confirmDeleteDatabase": {
+    "message": "Удалить базу данных \"{PH1}\"?"
+  },
   "panels/application/IndexedDBViews.ts | dataMayBeStale": {
     "message": "Данные могут быть неактивны"
+  },
+  "panels/application/IndexedDBViews.ts | databaseWillBeRemoved": {
+    "message": "Выбранная база данных будет удалена вместе со всем содержимым."
   },
   "panels/application/IndexedDBViews.ts | deleteDatabase": {
     "message": "Удалить базу данных"
@@ -2970,13 +3216,34 @@
     "message": "Версия"
   },
   "panels/application/InterestGroupStorageView.ts | clickToDisplayBody": {
-    "message": "Нажмите на событие группы по интересам, чтобы показать текущее состояние группы"
+    "message": "Выберите любое событие группы по интересам, чтобы посмотреть ее текущее состояние."
   },
   "panels/application/InterestGroupStorageView.ts | noDataAvailable": {
-    "message": "Для выбранной группы по интересам нет доступных сведений. Возможно, браузер не состоит в этой группе."
+    "message": "Подробной информации нет."
+  },
+  "panels/application/InterestGroupStorageView.ts | noDataDescription": {
+    "message": "Возможно, браузер не состоит в этой группе."
+  },
+  "panels/application/InterestGroupStorageView.ts | noValueSelected": {
+    "message": "Группа по интересам не выбрана."
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
     "message": "Группы по интересам"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | key": {
+    "message": "Ключ"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | noPreviewSelected": {
+    "message": "Значение не выбрано"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | numberEntries": {
+    "message": "Записей в таблице: {PH1}"
+  },
+  "panels/application/KeyValueStorageItemsView.ts | selectAValueToPreview": {
+    "message": "Выберите значение для просмотра."
+  },
+  "panels/application/KeyValueStorageItemsView.ts | value": {
+    "message": "Значение"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Доступ к открывающей странице"
@@ -3043,6 +3310,9 @@
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Чтобы посмотреть отчет, нажмите на него."
+  },
+  "panels/application/ReportingApiReportsView.ts | noReportSelected": {
+    "message": "Отчет не выбран."
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
@@ -3227,6 +3497,9 @@
   "panels/application/SharedStorageEventsView.ts | clickToDisplayBody": {
     "message": "Чтобы посмотреть параметры события, нажмите на любое событие общего хранилища."
   },
+  "panels/application/SharedStorageEventsView.ts | noEventSelected": {
+    "message": "Событие общего хранилища не выбрано."
+  },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
     "message": "Общее хранилище"
   },
@@ -3255,7 +3528,7 @@
     "message": "Сегменты хранилища"
   },
   "panels/application/StorageBucketsTreeElement.ts | storageBucketsDescription": {
-    "message": "На этой странице можно посмотреть или удалить сегменты хранилища и связанные с ними API."
+    "message": "На этой странице можно посмотреть или удалить сегменты хранилища и связанные с ними Storage APIs."
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Очистить все"
@@ -3839,6 +4112,9 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | stateDeletedFor": {
     "message": "Состояние удалено для следующих сайтов:"
   },
+  "panels/application/components/EndpointsGrid.ts | endpointsDescription": {
+    "message": "Здесь показывается список конечных точек для отчетов."
+  },
   "panels/application/components/EndpointsGrid.ts | noEndpointsToDisplay": {
     "message": "Нет конечных точек."
   },
@@ -4007,8 +4283,11 @@
   "panels/application/components/InterestGroupAccessGrid.ts | groupOwner": {
     "message": "Владелец"
   },
+  "panels/application/components/InterestGroupAccessGrid.ts | interestGroupDescription": {
+    "message": "На этой странице можно посмотреть или проанализировать группы по интересам."
+  },
   "panels/application/components/InterestGroupAccessGrid.ts | noEvents": {
-    "message": "Нет записанных событий для групп по интересам."
+    "message": "События для групп по интересам не найдены."
   },
   "panels/application/components/OriginTrialTreeView.ts | expiryTime": {
     "message": "Срок действия"
@@ -4103,8 +4382,14 @@
   "panels/application/components/ReportsGrid.ts | generatedAt": {
     "message": "Время создания"
   },
+  "panels/application/components/ReportsGrid.ts | learnMore": {
+    "message": "Подробнее…"
+  },
   "panels/application/components/ReportsGrid.ts | noReportsToDisplay": {
     "message": "Нет отчетов."
+  },
+  "panels/application/components/ReportsGrid.ts | reportingApiDescription": {
+    "message": "Здесь показываются отчеты Reporting API, сгенерированные страницей."
   },
   "panels/application/components/ReportsGrid.ts | status": {
     "message": "Статус"
@@ -4121,14 +4406,20 @@
   "panels/application/components/SharedStorageAccessGrid.ts | eventType": {
     "message": "Тип доступа"
   },
+  "panels/application/components/SharedStorageAccessGrid.ts | learnMore": {
+    "message": "Подробнее…"
+  },
   "panels/application/components/SharedStorageAccessGrid.ts | noEvents": {
-    "message": "Нет записанных событий общего хранилища."
+    "message": "События общего хранилища не обнаружены."
   },
   "panels/application/components/SharedStorageAccessGrid.ts | ownerOrigin": {
     "message": "Источник-владелец"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
     "message": "Общее хранилище"
+  },
+  "panels/application/components/SharedStorageAccessGrid.ts | sharedStorageDescription": {
+    "message": "На этой странице можно посмотреть, изменить или удалить пары \"ключ-значение\" из общего хранилища, а также посмотреть его события."
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Допустимая утечка данных в течение 24 часов для этого источника в битах энтропии"
@@ -4168,6 +4459,9 @@
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Название сегмента"
+  },
+  "panels/application/components/StorageMetadataView.ts | bucketWillBeRemoved": {
+    "message": "Выбранный сегмент хранилища будет удален вместе со всем содержимым."
   },
   "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
     "message": "Удалить сегмент \"{PH1}\"?"
@@ -4238,11 +4532,20 @@
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Издатель"
   },
+  "panels/application/components/TrustTokensView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/application/components/TrustTokensView.ts | noTrustTokens": {
+    "message": "Личные токены состояния не обнаружены."
+  },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Число сохраненных токенов"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Личные токены состояния"
+  },
+  "panels/application/components/TrustTokensView.ts | trustTokensDescription": {
+    "message": "На этой странице можно посмотреть все доступные личные токены состояния в текущем поисковом контексте."
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
     "message": "Все спекулятивные загрузки"
@@ -4250,11 +4553,26 @@
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Фильтр по набору правил"
   },
+  "panels/application/preloading/PreloadingView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/application/preloading/PreloadingView.ts | noPrefetchAttempts": {
+    "message": "Упреждающая загрузка не обнаружена."
+  },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "наборов правил нет"
   },
+  "panels/application/preloading/PreloadingView.ts | noRulesDetected": {
+    "message": "Правила не обнаружены."
+  },
+  "panels/application/preloading/PreloadingView.ts | prefetchDescription": {
+    "message": "На этой странице вы найдете информацию об упреждающей загрузке."
+  },
   "panels/application/preloading/PreloadingView.ts | prettyPrint": {
     "message": "Автоформатировать"
+  },
+  "panels/application/preloading/PreloadingView.ts | rulesDescription": {
+    "message": "На этой странице вы найдете правила упреждающей загрузки, которые используются для предзагрузки и предварительной отрисовки навигации по страницам."
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Ошибка"
@@ -4358,8 +4676,11 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Статус"
   },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | noElementSelected": {
+    "message": "Элемент не выбран."
+  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
-    "message": "Выберите элемент, чтобы посмотреть дополнительные сведения о нем"
+    "message": "Выберите элемент, чтобы посмотреть дополнительные сведения о нем."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
     "message": "Спекулятивная загрузка отключена, так как в операционной системе включен режим энергосбережения."
@@ -4682,6 +5003,12 @@
   "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
     "message": "Готово"
   },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | noElementSelected": {
+    "message": "Элемент не выбран."
+  },
+  "panels/application/preloading/components/RuleSetDetailsView.ts | selectAnElementForMoreDetails": {
+    "message": "Выберите элемент, чтобы посмотреть дополнительные сведения о нем."
+  },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
     "message": "Показать спекулятивные загрузки, связанные с этим набором правил"
   },
@@ -4795,6 +5122,9 @@
   },
   "panels/autofill/AutofillView.ts | learnMore": {
     "message": "Подробнее…"
+  },
+  "panels/autofill/AutofillView.ts | noAutofill": {
+    "message": "Данные автозаполнения не обнаружены."
   },
   "panels/autofill/AutofillView.ts | predictedAutofillValue": {
     "message": "Прогнозируемое значение автозаполнения"
@@ -4923,7 +5253,7 @@
     "message": "Список точек останова DOM"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | noBreakpoints": {
-    "message": "Точек останова DOM не установлено"
+    "message": "Точки останова DOM отсутствуют."
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | nodeRemoved": {
     "message": "Узел удален"
@@ -5544,10 +5874,10 @@
     "message": "Выберите гранулярность покрытия: вариант \"по функциям\" имеет низкое ресурсопотребление, \"по блокам\" – значительное ресурсопотребление"
   },
   "panels/coverage/CoverageView.ts | clickTheRecordButtonSToStart": {
-    "message": "Чтобы записать покрытие, нажмите кнопку записи {PH1}."
+    "message": "Чтобы начать запись области захвата, нажмите кнопку \"{PH1}\"."
   },
   "panels/coverage/CoverageView.ts | clickTheReloadButtonSToReloadAnd": {
-    "message": "Нажмите на значок {PH1}, чтобы перезагрузить страницу и начать запись области захвата."
+    "message": "Чтобы обновить страницу и начать запись области захвата, нажмите кнопку \"{PH1}\"."
   },
   "panels/coverage/CoverageView.ts | contentScripts": {
     "message": "Скрипты содержимого"
@@ -5570,17 +5900,26 @@
   "panels/coverage/CoverageView.ts | javascript": {
     "message": "JavaScript"
   },
+  "panels/coverage/CoverageView.ts | noCoverageData": {
+    "message": "Нет данных области захвата."
+  },
   "panels/coverage/CoverageView.ts | perBlock": {
     "message": "По блокам"
   },
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "По функциям"
   },
+  "panels/coverage/CoverageView.ts | reloadPage": {
+    "message": "Обновить страницу"
+  },
   "panels/coverage/CoverageView.ts | reloadPrompt": {
     "message": "Чтобы обновить страницу и получить информацию об используемом коде, нажмите кнопку перезагрузки {PH1}."
   },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Использовано: {PH1} из {PH2} ({PH3} %), не использовано: {PH4}."
+  },
+  "panels/coverage/CoverageView.ts | startRecording": {
+    "message": "Начать запись"
   },
   "panels/coverage/coverage-meta.ts | clearCoverage": {
     "message": "Удалить данные"
@@ -5771,6 +6110,9 @@
   "panels/developer_resources/DeveloperResourcesListView.ts | developerResources": {
     "message": "Ресурсы для разработчиков"
   },
+  "panels/developer_resources/DeveloperResourcesListView.ts | duration": {
+    "message": "Продолжительность"
+  },
   "panels/developer_resources/DeveloperResourcesListView.ts | error": {
     "message": "Ошибка"
   },
@@ -5887,6 +6229,51 @@
   },
   "panels/elements/DOMLinkifier.ts | node": {
     "message": "<узел>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
+    "message": "Недопустимый элемент или текстовый узел внутри тегов <optgroup>"
+  },
+  "panels/elements/ElementIssueUtils.ts | disallowedSelectChild": {
+    "message": "Недопустимый элемент или текстовый узел внутри тегов <select>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
+    "message": "Атрибут aria-labelledby не соответствует ни одному идентификатору элемента"
+  },
+  "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
+    "message": "Неверно использован атрибут autocomplete"
+  },
+  "panels/elements/ElementIssueUtils.ts | formDuplicateIdForInputError": {
+    "message": "В форме дважды использован один и тот же идентификатор поля"
+  },
+  "panels/elements/ElementIssueUtils.ts | formEmptyIdAndNameAttributesForInputError": {
+    "message": "У поля формы должен быть атрибут id или name"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputAssignedAutocompleteValueToIdOrNameAttributeError": {
+    "message": "У элемента нет атрибута autocomplete"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputHasWrongButWellIntendedAutocompleteValueError": {
+    "message": "Нестандартное значение атрибута autocomplete"
+  },
+  "panels/elements/ElementIssueUtils.ts | formInputWithNoLabelError": {
+    "message": "У поля формы нет действительного атрибута aria-labelledby или ярлыка"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForMatchesNonExistingIdError": {
+    "message": "Неверно использован тег <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelForNameError": {
+    "message": "Неверно использован тег <label for=FORM_ELEMENT>"
+  },
+  "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
+    "message": "С полем формы не связано ни одного ярлыка"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentLegendChild": {
+    "message": "Интерактивный элемент внутри элемента <legend>"
+  },
+  "panels/elements/ElementIssueUtils.ts | interactiveContentOptionChild": {
+    "message": "Интерактивный элемент внутри тегов <option>"
+  },
+  "panels/elements/ElementIssueUtils.ts | nonPhrasingContentOptionChild": {
+    "message": "Внутри элемента <option> использован нетекстовый контент"
   },
   "panels/elements/ElementStatePaneWidget.ts | emulateFocusedPage": {
     "message": "Эмулировать страницу в фокусе"
@@ -6058,6 +6445,9 @@
   },
   "panels/elements/ElementsTreeElement.ts | showFrameDetails": {
     "message": "Показать сведения: iframe"
+  },
+  "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
+    "message": "Показать целевую аудиторию по интересам"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
     "message": "Показать атрибут popovertarget"
@@ -6269,12 +6659,6 @@
   "panels/elements/StylesSidebarPane.ts | inheritedFroms": {
     "message": "Унаследовано от "
   },
-  "panels/elements/StylesSidebarPane.ts | invalidPropertyValue": {
-    "message": "Недопустимое значение свойства"
-  },
-  "panels/elements/StylesSidebarPane.ts | invalidString": {
-    "message": "{PH1} (имя свойства: {PH2}, значение свойства: {PH3})"
-  },
   "panels/elements/StylesSidebarPane.ts | layer": {
     "message": "Слой"
   },
@@ -6284,14 +6668,8 @@
   "panels/elements/StylesSidebarPane.ts | pseudoSElement": {
     "message": "Псевдоэлемент ::{PH1}"
   },
-  "panels/elements/StylesSidebarPane.ts | specificity": {
-    "message": "Специфичность: {PH1}"
-  },
   "panels/elements/StylesSidebarPane.ts | toggleRenderingEmulations": {
     "message": "Включить или отключить распространенные эмуляции отрисовки"
-  },
-  "panels/elements/StylesSidebarPane.ts | unknownPropertyName": {
-    "message": "Неизвестное имя свойства"
   },
   "panels/elements/StylesSidebarPane.ts | visibleSelectors": {
     "message": "{n,plural, =1{Ниже показан # видимый селектор}one{Ниже показан # видимый селектор}few{Ниже показано # видимых селектора}many{Ниже показано # видимых селекторов}other{Ниже показано # видимого селектора}}"
@@ -6629,6 +7007,9 @@
   "panels/event_listeners/EventListenersView.ts | deleteEventListener": {
     "message": "Удалить прослушиватель событий"
   },
+  "panels/event_listeners/EventListenersView.ts | eventListenersExplanation": {
+    "message": "На этой странице показываются зарегистрированные прослушиватели событий."
+  },
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Нет прослушивателей событий"
   },
@@ -6775,6 +7156,12 @@
   },
   "panels/issues/AffectedCookiesView.ts | path": {
     "message": "Путь"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | disallowedNode": {
+    "message": "Запрещенный потомок"
+  },
+  "panels/issues/AffectedDescendantsWithinSelectElementView.ts | nDescendants": {
+    "message": "{n,plural, =1{ потомок}one{ потомок}few{ потомка}many{ потомков}other{ потомка}}"
   },
   "panels/issues/AffectedDirectivesView.ts | blocked": {
     "message": "заблокировано"
@@ -7100,17 +7487,20 @@
   "panels/issues/IssuesPane.ts | includeThirdpartyCookieIssues": {
     "message": "Добавить проблемы, вызванные сторонними файлами cookie"
   },
+  "panels/issues/IssuesPane.ts | issuesPanelDescription": {
+    "message": "На этой странице можно посмотреть предупреждения в браузере."
+  },
   "panels/issues/IssuesPane.ts | lowTextContrast": {
     "message": "Низкая контрастность текста"
   },
   "panels/issues/IssuesPane.ts | mixedContent": {
     "message": "Смешанный контент"
   },
-  "panels/issues/IssuesPane.ts | noIssuesDetectedSoFar": {
-    "message": "Проблем не обнаружено"
+  "panels/issues/IssuesPane.ts | noIssues": {
+    "message": "Проблем не обнаружено."
   },
   "panels/issues/IssuesPane.ts | onlyThirdpartyCookieIssues": {
-    "message": "Найдены проблемы только со сторонними файлами cookie"
+    "message": "Найдены проблемы только со сторонними файлами cookie."
   },
   "panels/issues/IssuesPane.ts | other": {
     "message": "Другое"
@@ -7227,7 +7617,7 @@
     "message": "Показать внутренние слои"
   },
   "panels/layer_viewer/Layers3DView.ts | cantDisplayLayers": {
-    "message": "Невозможно показать слои,"
+    "message": "Не удалось показать слои."
   },
   "panels/layer_viewer/Layers3DView.ts | checkSForPossibleReasons": {
     "message": "Проверить {PH1} на наличие причин."
@@ -7235,8 +7625,11 @@
   "panels/layer_viewer/Layers3DView.ts | dLayersView": {
     "message": "Вид трехмерных слоев"
   },
-  "panels/layer_viewer/Layers3DView.ts | layerInformationIsNotYet": {
-    "message": "Информация о слоях пока недоступна."
+  "panels/layer_viewer/Layers3DView.ts | layerExplanation": {
+    "message": "На этой странице можно просматривать слои документов."
+  },
+  "panels/layer_viewer/Layers3DView.ts | noLayerInformation": {
+    "message": "Слои не обнаружены."
   },
   "panels/layer_viewer/Layers3DView.ts | paints": {
     "message": "Окрашивает"
@@ -7577,8 +7970,11 @@
   "panels/lighthouse/LighthouseTimespanView.ts | endTimespan": {
     "message": "Остановить анализ временного диапазона"
   },
+  "panels/lighthouse/LighthouseTimespanView.ts | interactWithPage": {
+    "message": "Взаимодействуйте со страницей."
+  },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarted": {
-    "message": "Анализ временного диапазона запущен, начните взаимодействовать со страницей"
+    "message": "Анализ временного диапазона запущен"
   },
   "panels/lighthouse/LighthouseTimespanView.ts | timespanStarting": {
     "message": "Запуск анализа временного диапазона…"
@@ -7591,6 +7987,12 @@
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Открыть на панели \"Инспектор памяти\""
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | memoryInspectorExplanation": {
+    "message": "На этой странице можно посмотреть двоичные данные."
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Нет открытых проверок"
@@ -7672,6 +8074,18 @@
   },
   "panels/media/EventTimelineView.ts | playbackStatus": {
     "message": "Статус воспроизведения"
+  },
+  "panels/media/MainView.ts | mediaPlayerDescription": {
+    "message": "На этой странице можно посмотреть или экспортировать сведения о медиапроигрывателе."
+  },
+  "panels/media/MainView.ts | noMediaPlayer": {
+    "message": "Медиапроигрыватель отсутствует."
+  },
+  "panels/media/MainView.ts | noPlayerDetailsSelected": {
+    "message": "Медиапроигрыватель не выбран."
+  },
+  "panels/media/MainView.ts | selectToViewDetails": {
+    "message": "Выберите медиапроигрыватель, чтобы посмотреть сведения о нем."
   },
   "panels/media/PlayerDetailView.ts | events": {
     "message": "Посмотреть события"
@@ -8114,6 +8528,9 @@
   "panels/network/BlockedURLsPane.ts | addPattern": {
     "message": "Добавить шаблон"
   },
+  "panels/network/BlockedURLsPane.ts | addPatternToBlock": {
+    "message": "Добавьте шаблон для блокировки сетевых запросов, нажав кнопку \"{PH1}\"."
+  },
   "panels/network/BlockedURLsPane.ts | dBlocked": {
     "message": "Заблокировано: {PH1}"
   },
@@ -8123,8 +8540,11 @@
   "panels/network/BlockedURLsPane.ts | itemDeleted": {
     "message": "Пункт списка успешно удален"
   },
-  "panels/network/BlockedURLsPane.ts | networkRequestsAreNotBlockedS": {
-    "message": "Сетевые запросы не заблокированы. {PH1}"
+  "panels/network/BlockedURLsPane.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/network/BlockedURLsPane.ts | noNetworkRequestsBlocked": {
+    "message": "Заблокированных сетевых запросов нет."
   },
   "panels/network/BlockedURLsPane.ts | patternAlreadyExists": {
     "message": "Шаблон уже используется."
@@ -8555,9 +8975,6 @@
   "panels/network/NetworkLogView.ts | invertsFilter": {
     "message": "Инвертировать фильтр поиска"
   },
-  "panels/network/NetworkLogView.ts | learnMore": {
-    "message": "Подробнее…"
-  },
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Загрузить: {PH1}"
   },
@@ -8566,6 +8983,9 @@
   },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "Доступны данные сети"
+  },
+  "panels/network/NetworkLogView.ts | noNetworkActivityRecorded": {
+    "message": "Записей сетевой активности нет."
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Показывать только заблокированные запросы"
@@ -8580,13 +9000,16 @@
     "message": "Переопределить заголовки"
   },
   "panels/network/NetworkLogView.ts | performARequestOrHitSToRecordThe": {
-    "message": "Чтобы записать перезагрузку, выполните запрос или нажмите {PH1}."
+    "message": "Выполните запрос или обновите страницу, нажав кнопку \"{PH1}\" или {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordToDisplayNetworkActivity": {
-    "message": "Чтобы показать действия в сети, запишите сетевой журнал ({PH1})."
+    "message": "Чтобы посмотреть сетевую активность, начните записывать сетевой журнал, нажав кнопку \"{PH1}\" или {PH2}."
   },
   "panels/network/NetworkLogView.ts | recordingNetworkActivity": {
-    "message": "Запись действий в сети…"
+    "message": "Запись сетевой активности…"
+  },
+  "panels/network/NetworkLogView.ts | reloadPage": {
+    "message": "Обновить страницу"
   },
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Повторить запрос XHR"
@@ -8626,6 +9049,9 @@
   },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "Показать только/скрыть запросы"
+  },
+  "panels/network/NetworkLogView.ts | startRecording": {
+    "message": "Начать запись"
   },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Сторонние запросы"
@@ -8766,16 +9192,13 @@
     "message": "Экспортировать HAR (с конфиденциальными данными)..."
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
-    "message": "Загрузка фреймов…"
+    "message": "Получение фреймов…"
   },
   "panels/network/NetworkPanel.ts | groupByFrame": {
     "message": "Группировка по фреймам"
   },
   "panels/network/NetworkPanel.ts | groupRequestsByTopLevelRequest": {
     "message": "Сгруппировать запросы по фрейму с запросом высшего уровня"
-  },
-  "panels/network/NetworkPanel.ts | hitSToReloadAndCaptureFilmstrip": {
-    "message": "Нажмите {PH1}, чтобы перезагрузить ленту и сделать ее снимок."
   },
   "panels/network/NetworkPanel.ts | importHarFile": {
     "message": "Импортировать файл HAR"
@@ -10112,6 +10535,12 @@
   "panels/profiler/ProfilesPanel.ts | cantLoadProfileWhileAnother": {
     "message": "Не удалось загрузить профиль. Идет запись другого профиля."
   },
+  "panels/profiler/ProfilesPanel.ts | failReason": {
+    "message": "Причина: {PH1}."
+  },
+  "panels/profiler/ProfilesPanel.ts | profileLoadingFailed": {
+    "message": "Не удалось загрузить профиль."
+  },
   "panels/profiler/ProfilesPanel.ts | profiles": {
     "message": "Профили"
   },
@@ -10174,12 +10603,6 @@
   },
   "panels/protocol_monitor/JSONEditor.ts | sendCommandCtrlEnter": {
     "message": "Отправить команду (Ctrl + Ввод)"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
-    "message": "Редактор команд CDP скрыт"
-  },
-  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
-    "message": "Редактор команд CDP показан"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Очистить все"
@@ -10687,6 +11110,9 @@
   },
   "panels/search/SearchView.ts | noMatchesFound": {
     "message": "Совпадений не найдено."
+  },
+  "panels/search/SearchView.ts | nothingMatchedTheQuery": {
+    "message": "По вашему поисковому запросу ничего не найдено."
   },
   "panels/search/SearchView.ts | refresh": {
     "message": "Обновить"
@@ -11499,10 +11925,10 @@
     "message": "Анализируйте CSS-стили, сетевую активность, проблемы с производительностью, а также источники файлов, опираясь на подсказки от ИИ."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Любые данные, к которым проверяемая страница обращается через веб-API, сетевые запросы, файлы и трассировку производительности, отправляются в Google для генерации объяснений. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию. Не указывайте на страницах личную и конфиденциальную информацию."
+    "message": "Любые пользовательские запросы и данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию. Не указывайте на страницах личную и конфиденциальную информацию."
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsDataNoLogging": {
-    "message": "Любые данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей."
+    "message": "Любые пользовательские запросы и данные, к которым проверяемая страница обращается через Web API (сетевые запросы, файлы и трассировки производительности), передаются в Google для генерации интерпретаций. Google не использует эти данные для улучшения ИИ-моделей."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Эта функция поможет вам понять консольные предупреждения и ошибки, а также устранить проблемы."
@@ -12242,6 +12668,12 @@
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Удалить"
   },
+  "panels/sources/NavigatorView.ts | deleteFolder": {
+    "message": "Удалить папку вместе со всем содержимым?"
+  },
+  "panels/sources/NavigatorView.ts | deleteThisFile": {
+    "message": "Удалить этот файл?"
+  },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Развернутые"
   },
@@ -12250,6 +12682,12 @@
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
     "message": "Исключить из рабочей области"
+  },
+  "panels/sources/NavigatorView.ts | excludeThisFolder": {
+    "message": "Исключить эту папку?"
+  },
+  "panels/sources/NavigatorView.ts | folderWillNotBeShown": {
+    "message": "Эта папка и ее содержимое не будут показываться в рабочей области."
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Создать копию…"
@@ -12331,6 +12769,12 @@
   },
   "panels/sources/SnippetsPlugin.ts | enter": {
     "message": "⌘ + Ввод"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderConnect": {
+    "message": "Подключиться"
+  },
+  "panels/sources/SourcesNavigator.ts | automaticWorkspaceFolderDetected": {
+    "message": "Обнаружена папка рабочей группы: {PH1}."
   },
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Очистить настройки"
@@ -13004,8 +13448,8 @@
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Собственные или сторонние объекты"
   },
-  "panels/timeline/ThirdPartyTreeView.ts | selfTime": {
-    "message": "Собственное время"
+  "panels/timeline/ThirdPartyTreeView.ts | mainThreadTime": {
+    "message": "Время выполнения в основном потоке"
   },
   "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
     "message": "Объем передаваемых данных"
@@ -13613,9 +14057,6 @@
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
   },
-  "panels/timeline/TimelineUIUtils.ts | entity": {
-    "message": "Сторонний объект"
-  },
   "panels/timeline/TimelineUIUtils.ts | entryIsHidden": {
     "message": "(запись скрыта)"
   },
@@ -13687,6 +14128,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Узлы, для которых нужны макеты"
+  },
+  "panels/timeline/TimelineUIUtils.ts | origin": {
+    "message": "Источник"
   },
   "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
     "message": "(вне диапазона строки навигации)"
@@ -13780,6 +14224,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "Размер"
+  },
+  "panels/timeline/TimelineUIUtils.ts | source": {
+    "message": "Источник"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "Трассировка стека"
@@ -14228,11 +14675,8 @@
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Учтите локальные условия для теста"
   },
-  "panels/timeline/components/MetricCard.ts | duration": {
-    "message": "Длительность в локальной среде (мс)"
-  },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
-    "message": "75-ый процентиль в наблюдаемых данных"
+    "message": "75-й процентиль в наблюдаемых данных"
   },
   "panels/timeline/components/MetricCard.ts | good": {
     "message": "Хорошо"
@@ -14569,6 +15013,12 @@
   },
   "panels/timeline/components/insights/BaseInsightComponent.ts | viewDetails": {
     "message": "Показать подробные сведения для объекта \"{PH1}\""
+  },
+  "panels/timeline/components/insights/Checklist.ts | failedAriaLabel": {
+    "message": "Не удалось проверить статистику: {PH1}"
+  },
+  "panels/timeline/components/insights/Checklist.ts | successAriaLabel": {
+    "message": "Проверка статистики пройдена: {PH1}"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1}: поле ({PH2})"
@@ -15059,6 +15509,9 @@
   "panels/web_audio/AudioContextSelector.ts | noRecordings": {
     "message": "(записей нет)"
   },
+  "panels/web_audio/WebAudioView.ts | noWebAudio": {
+    "message": "Web Audio API не используется."
+  },
   "panels/web_audio/WebAudioView.ts | openAPageThatUsesWebAudioApiTo": {
     "message": "Чтобы начать мониторинг, откройте страницу, которая использует Web Audio API."
   },
@@ -15107,14 +15560,14 @@
   "panels/webauthn/WebauthnPane.ts | isResident": {
     "message": "Это резидент"
   },
-  "panels/webauthn/WebauthnPane.ts | learnMore": {
-    "message": "Подробнее…"
-  },
   "panels/webauthn/WebauthnPane.ts | newAuthenticator": {
     "message": "Новая программа для аутентификации"
   },
   "panels/webauthn/WebauthnPane.ts | no": {
     "message": "Нет"
+  },
+  "panels/webauthn/WebauthnPane.ts | noAuthenticator": {
+    "message": "Программа для аутентификации не настроена."
   },
   "panels/webauthn/WebauthnPane.ts | noCredentialsTryCallingSFromYour": {
     "message": "Нет учетных данных. Вызовите функцию {PH1} с сайта."
@@ -15153,7 +15606,7 @@
     "message": "Способ отправки запроса"
   },
   "panels/webauthn/WebauthnPane.ts | useWebauthnForPhishingresistant": {
-    "message": "Используйте WebAuthn для аутентификации, устойчивой к фишингу"
+    "message": "Аутентификация через WebAuthn устойчива к фишингу."
   },
   "panels/webauthn/WebauthnPane.ts | userHandle": {
     "message": "Имя пользователя"
@@ -15401,9 +15854,6 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Больше не показывать"
   },
-  "ui/legacy/Infobar.ts | showMore": {
-    "message": "Показать больше"
-  },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Закрыть выдвигающуюся панель"
   },
@@ -15473,8 +15923,11 @@
   "ui/legacy/ListWidget.ts | saveString": {
     "message": "Сохранить"
   },
+  "ui/legacy/RemoteDebuggingTerminatedScreen.ts | connectionClosedReason": {
+    "message": "Причина: {PH1}."
+  },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | debuggingConnectionWasClosed": {
-    "message": "Подключение, используемое для отладки, закрыто. Причина: "
+    "message": "Подключение, используемое для отладки, закрыто."
   },
   "ui/legacy/RemoteDebuggingTerminatedScreen.ts | reconnectDevtools": {
     "message": "Повторно подключить DevTools"
@@ -15929,9 +16382,6 @@
   "ui/legacy/components/inline_editor/FontEditor.ts | units": {
     "message": "Единицы измерения"
   },
-  "ui/legacy/components/inline_editor/LinkSwatch.ts | sIsNotDefined": {
-    "message": "Свойство {PH1} не определено"
-  },
   "ui/legacy/components/object_ui/CustomPreviewComponent.ts | showAsJavascriptObject": {
     "message": "Показать как объект JavaScript"
   },
@@ -16184,9 +16634,6 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Найти"
   },
-  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
-    "message": "Разрешить"
-  },
   "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
     "message": "разрешить вставку"
   },
@@ -16195,9 +16642,6 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Позиция байт-кода: 0x{PH1}"
-  },
-  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
-    "message": "Отмена"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "Выбрано символов: {PH1}"

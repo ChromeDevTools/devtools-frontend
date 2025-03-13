@@ -18,7 +18,7 @@ const {html} = Lit;
 
 describeWithEnvironment('BaseInsightComponent', () => {
   const {BaseInsightComponent} = Insights.BaseInsightComponent;
-  class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
+  class TestInsightComponentNoAISupport extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
     override internalName = 'test-insight';
     override createOverlays(): TimelineOverlay[] {
       return [];
@@ -27,11 +27,22 @@ describeWithEnvironment('BaseInsightComponent', () => {
       return html`<div>test content</div>`;
     }
   }
-  customElements.define('test-insight-component', TestInsightComponent);
+  class TestInsightComponentWithAISupport extends BaseInsightComponent<Trace.Insights.Types.InsightModel> {
+    override internalName = 'test-insight';
+    protected override hasAskAISupport = true;
+    override createOverlays(): TimelineOverlay[] {
+      return [];
+    }
+    override renderContent(): Lit.LitTemplate {
+      return html`<div>test content</div>`;
+    }
+  }
+  customElements.define('test-insight-component-no-ai-support', TestInsightComponentNoAISupport);
+  customElements.define('test-insight-component-ai-support', TestInsightComponentWithAISupport);
 
   describe('sidebar insight component rendering', () => {
     it('renders insight title even when not active', async () => {
-      const component = new TestInsightComponent();
+      const component = new TestInsightComponentNoAISupport();
       component.selected = false;
       component.model = {
         insightKey: 'LCPPhases',
@@ -57,7 +68,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     });
 
     it('renders title, description and content when toggled', async () => {
-      const component = new TestInsightComponent();
+      const component = new TestInsightComponentNoAISupport();
       component.selected = true;
       component.model = {
         insightKey: 'LCPPhases',
@@ -99,8 +110,10 @@ describeWithEnvironment('BaseInsightComponent', () => {
       state: 'fail',
       frameId: '123',
     } as const;
-    async function renderComponent(): Promise<TestInsightComponent> {
-      const component = new TestInsightComponent();
+    async function renderComponent({insightHasAISupport}: {insightHasAISupport: boolean}):
+        Promise<TestInsightComponentNoAISupport|TestInsightComponentWithAISupport> {
+      const component =
+          insightHasAISupport ? new TestInsightComponentWithAISupport() : new TestInsightComponentNoAISupport();
       component.selected = true;
       component.model = FAKE_LCP_MODEL;
       // We don't need a real trace for these tests.
@@ -111,17 +124,30 @@ describeWithEnvironment('BaseInsightComponent', () => {
       return component;
     }
 
-    it('renders the "Ask AI" button when perf insights AI is enabled', async () => {
+    it('renders the "Ask AI" button when perf insights AI is enabled and the Insight supports it', async () => {
       updateHostConfig({
         devToolsAiAssistancePerformanceAgent: {
           enabled: true,
           insightsEnabled: true,
         }
       });
-      const component = await renderComponent();
+      const component = await renderComponent({insightHasAISupport: true});
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
+    });
+
+    it('does not show the button if the feature is enabled but the Insight does not support it', async () => {
+      updateHostConfig({
+        devToolsAiAssistancePerformanceAgent: {
+          enabled: true,
+          insightsEnabled: true,
+        }
+      });
+      const component = await renderComponent({insightHasAISupport: false});
+      assert.isOk(component.shadowRoot);
+      const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
+      assert.isNull(button);
     });
 
     it('sets the context when the user clicks the button', async () => {
@@ -131,7 +157,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
           insightsEnabled: true,
         }
       });
-      const component = await renderComponent();
+      const component = await renderComponent({insightHasAISupport: true});
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isOk(button);
@@ -152,7 +178,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('clears the active context when it gets toggled shut', async () => {
       const FAKE_ACTIVE_INSIGHT = {} as unknown as Utils.InsightAIContext.ActiveInsight;
       UI.Context.Context.instance().setFlavor(Utils.InsightAIContext.ActiveInsight, FAKE_ACTIVE_INSIGHT);
-      const component = await renderComponent();
+      const component = await renderComponent({insightHasAISupport: true});
       const header = component.shadowRoot?.querySelector('header');
       assert.isOk(header);
       dispatchClickEvent(header);
@@ -166,7 +192,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
           enabled: false,
         }
       });
-      const component = await renderComponent();
+      const component = await renderComponent(
+          {insightHasAISupport: true});  // The Insight supports it, but the feature is not enabled
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);
@@ -179,7 +206,7 @@ describeWithEnvironment('BaseInsightComponent', () => {
           insightsEnabled: false,
         }
       });
-      const component = await renderComponent();
+      const component = await renderComponent({insightHasAISupport: true});
       assert.isOk(component.shadowRoot);
       const button = component.shadowRoot.querySelector('devtools-button[data-insights-ask-ai]');
       assert.isNull(button);

@@ -66,12 +66,19 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
 
   protected readonly shadow = this.attachShadow({mode: 'open'});
 
+  // Flipped to true for Insights that have support for the "Ask AI" Insights
+  // experience. The "Ask AI" button will only be shown for an Insight if this
+  // is true and if the feature has been enabled by the user and they meet the
+  // requirements to use AI.
+  protected readonly hasAskAISupport: boolean = false;
+  // This flag tracks if the Insights AI feature is enabled within Chrome for
+  // the active user.
+  #insightsAskAiEnabled = false;
+
   #selected = false;
   #model: T|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #fieldMetrics: Trace.Insights.Common.CrUXFieldMetricResults|null = null;
-
-  #insightsAskAiEnabled = false;
 
   get model(): T|null {
     return this.#model;
@@ -315,6 +322,10 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
     void action.execute();
   }
 
+  #canShowAskAI(): boolean {
+    return this.#insightsAskAiEnabled && this.hasAskAISupport;
+  }
+
   #renderInsightContent(insightModel: T): Lit.LitTemplate {
     if (!this.#selected) {
       return Lit.nothing;
@@ -327,7 +338,7 @@ export abstract class BaseInsightComponent<T extends InsightModel> extends HTMLE
       <div class="insight-body">
         <div class="insight-description">${md(insightModel.description)}</div>
         <div class="insight-content">${content}</div>
-        ${this.#insightsAskAiEnabled ? html`
+        ${this.#canShowAskAI() ? html`
           <div class="ask-ai-btn-wrap">
             <devtools-button class="ask-ai"
               .variant=${Buttons.Button.Variant.OUTLINED}

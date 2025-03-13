@@ -62,6 +62,7 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-lcp-discovery`;
   override internalName = 'lcp-discovery';
+  protected override hasAskAISupport = true;
 
   #renderDiscoveryDelay(delay: Trace.Types.Timing.Micro): Element {
     const timeWrapper = document.createElement('span');

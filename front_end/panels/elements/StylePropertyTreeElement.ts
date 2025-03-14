@@ -218,7 +218,7 @@ export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMa
     UI.UIUtils.createTextChild(swatch, match.text);
     swatch.data = {
       text: match.text,
-      title: resolvedProperty ? undefined : i18nString(UIStrings.sIsNotDefined, {PH1: match.text}),
+      tooltip: resolvedProperty ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: match.text})},
       isDefined: Boolean(resolvedProperty),
       onLinkActivate: () => resolvedProperty && this.#stylesPane.jumpToDeclaration(resolvedProperty),
       jslogContext: 'css-wide-keyword-link',
@@ -340,11 +340,10 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
           jslog=${VisualLogging.link('css-variable').track({click: true, hover: true})}
           >${varCall}(<devtools-link-swatch
             class=css-var-link
-            aria-details=${tooltipId}
             .data=${{
+              tooltip: {tooltipId},
               text: match.name,
               isDefined: computedValue !== null && !fromFallback,
-              title: undefined,
               onLinkActivate,
             } as InlineEditor.LinkSwatch.LinkSwatchRenderData}
             ></devtools-link-swatch>${
@@ -860,7 +859,7 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
     const {metric, jslogContext, ruleBlock, isDefined} = this.#getLinkData(match);
     swatch.data = {
       text: match.text,
-      title: isDefined ? undefined : i18nString(UIStrings.sIsNotDefined, {PH1: match.text}),
+      tooltip: isDefined ? undefined : {title: i18nString(UIStrings.sIsNotDefined, {PH1: match.text})},
       isDefined,
       onLinkActivate: (): void => {
         metric && Host.userMetrics.swatchActivated(metric);

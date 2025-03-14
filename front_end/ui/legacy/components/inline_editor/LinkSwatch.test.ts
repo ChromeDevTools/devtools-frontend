@@ -33,7 +33,7 @@ describeWithLocale('LinkSwatch', () => {
     const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
-      title: undefined,
+      tooltip: undefined,
       isDefined: true,
       onLinkActivate: () => {},
       jslogContext: 'test',
@@ -51,7 +51,7 @@ describeWithLocale('LinkSwatch', () => {
     const component = new InlineEditor.LinkSwatch.LinkSwatch();
     component.data = {
       text: 'test',
-      title: 'test is not defined',
+      tooltip: {title: 'test is not defined'},
       isDefined: false,
       onLinkActivate: () => {},
       jslogContext: 'test',
@@ -70,7 +70,7 @@ describeWithLocale('LinkSwatch', () => {
     let callbackCalled = false;
     component.data = {
       text: 'testHandler',
-      title: undefined,
+      tooltip: undefined,
       isDefined: true,
       onLinkActivate: () => {
         callbackCalled = true;

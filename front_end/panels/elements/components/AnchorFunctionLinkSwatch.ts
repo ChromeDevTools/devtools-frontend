@@ -95,8 +95,8 @@ export class AnchorFunctionLinkSwatch extends HTMLElement {
                 @mouseleave=${this.#data.onMouseLeave}
                 .data=${{
                   text: this.#data.identifier,
-                  title: this.#data.anchorNode ? undefined :
-                    i18nString(UIStrings.sIsNotDefined, {PH1: this.#data.identifier}),
+                  tooltip: this.#data.anchorNode ? undefined :
+                   {title:  i18nString(UIStrings.sIsNotDefined, {PH1: this.#data.identifier})},
                   isDefined: Boolean(this.#data.anchorNode),
                   jslogContext: 'anchor-link',
                   onLinkActivate: this.#data.onLinkActivate,

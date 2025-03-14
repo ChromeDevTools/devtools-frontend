@@ -111,7 +111,152 @@ export interface UserActionRowWidgetParams {
   canShowFeedbackForm: boolean;
 }
 
-export type View = (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement) => void;
+export const DEFAULT_VIEW = (input: UserActionRowViewInput, output: ViewOutput, target: HTMLElement): void => {
+  // clang-format off
+  Lit.render(html`
+    <style>${Input.textInputStylesRaw.cssContent}</style>
+    <style>${userActionRowStyles.cssContent}</style>
+    <div class="ai-assistance-feedback-row">
+      <div class="rate-buttons">
+        ${input.showRateButtons ? html`
+          <devtools-button
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'thumb-up',
+              toggledIconName: 'thumb-up-filled',
+              toggled: input.currentRating === Host.AidaClient.Rating.POSITIVE,
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              title: lockedString(UIStringsNotTranslate.thumbsUp),
+              jslogContext: 'thumbs-up',
+            } as Buttons.Button.ButtonData}
+            @click=${() => input.onRatingClick(Host.AidaClient.Rating.POSITIVE)}
+          ></devtools-button>
+          <devtools-button
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'thumb-down',
+              toggledIconName: 'thumb-down-filled',
+              toggled: input.currentRating === Host.AidaClient.Rating.NEGATIVE,
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              title: lockedString(UIStringsNotTranslate.thumbsDown),
+              jslogContext: 'thumbs-down',
+            } as Buttons.Button.ButtonData}
+            @click=${() => input.onRatingClick(Host.AidaClient.Rating.NEGATIVE)}
+          ></devtools-button>
+          <div class="vertical-separator"></div>
+        `: Lit.nothing}
+        <devtools-button
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              title: lockedString(UIStringsNotTranslate.report),
+              iconName: 'report',
+              jslogContext: 'report',
+            } as Buttons.Button.ButtonData
+          }
+          @click=${input.onReportClick}
+        ></devtools-button>
+      </div>
+      ${input.suggestions ? html`<div class="suggestions-container">
+        <div class="scroll-button-container left hidden" ${ref(element => { output.suggestionsLeftScrollButtonContainer = element; } )}>
+          <devtools-button
+            class='scroll-button'
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'chevron-left',
+              title: lockedString(UIStringsNotTranslate.scrollToPrevious),
+              jslogContext: 'chevron-left',
+            } as Buttons.Button.ButtonData}
+            @click=${() => input.scrollSuggestionsScrollContainer('left')}
+          ></devtools-button>
+        </div>
+        <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref(element => { output.suggestionsScrollContainer = element; })}>
+          ${input.suggestions.map(suggestion => html`<devtools-button
+            class='suggestion'
+            .data=${{
+              variant: Buttons.Button.Variant.OUTLINED,
+              title: suggestion,
+              jslogContext: 'suggestion',
+            } as Buttons.Button.ButtonData}
+            @click=${() => input.onSuggestionClick(suggestion)}
+          >${suggestion}</devtools-button>`)}
+        </div>
+        <div class="scroll-button-container right hidden" ${ref(element => { output.suggestionsRightScrollButtonContainer = element; })}>
+          <devtools-button
+            class='scroll-button'
+            .data=${{
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              iconName: 'chevron-right',
+              title: lockedString(UIStringsNotTranslate.scrollToNext),
+              jslogContext: 'chevron-right',
+            } as Buttons.Button.ButtonData}
+            @click=${() => input.scrollSuggestionsScrollContainer('right')}
+          ></devtools-button>
+        </div>
+      </div>` : Lit.nothing}
+    </div>
+    ${input.isShowingFeedbackForm ? html`
+      <form class="feedback-form" @submit=${input.onSubmit}>
+        <div class="feedback-header">
+          <h4 class="feedback-title">${lockedString(
+              UIStringsNotTranslate.whyThisRating,
+          )}</h4>
+          <devtools-button
+            aria-label=${lockedString(UIStringsNotTranslate.close)}
+            @click=${input.onClose}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ICON,
+                iconName: 'cross',
+                size: Buttons.Button.Size.SMALL,
+                title: lockedString(UIStringsNotTranslate.close),
+                jslogContext: 'close',
+              } as Buttons.Button.ButtonData
+            }
+          ></devtools-button>
+        </div>
+        <input
+          type="text"
+          class="devtools-text-input feedback-input"
+          @input=${(event: KeyboardEvent) => input.onInputChange((event.target as HTMLInputElement).value)}
+          placeholder=${lockedString(
+          UIStringsNotTranslate.provideFeedbackPlaceholder,
+          )}
+          jslog=${VisualLogging.textField('feedback').track({ keydown: 'Enter' })}
+        >
+        <span class="feedback-disclaimer">${
+          lockedString(UIStringsNotTranslate.disclaimer)
+        }</span>
+        <div>
+          <devtools-button
+          aria-label=${lockedString(UIStringsNotTranslate.submit)}
+          .data=${
+            {
+                type: 'submit',
+                disabled: input.isSubmitButtonDisabled,
+                variant: Buttons.Button.Variant.OUTLINED,
+                size: Buttons.Button.Size.SMALL,
+                title: lockedString(UIStringsNotTranslate.submit),
+                jslogContext: 'send',
+              } as Buttons.Button.ButtonData
+            }
+          >${
+            lockedString(UIStringsNotTranslate.submit)
+          }</devtools-button>
+        </div>
+      </div>
+    </form>
+    ` : Lit.nothing}
+  `, target, {host: target});
+  // clang-format on
+};
+
+export type View = typeof DEFAULT_VIEW;
 
 /**
  * This presenter has too many responsibilities (rating buttons, feedback
@@ -132,159 +277,12 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
   #isShowingFeedbackForm = false;
   #isSubmitButtonDisabled = true;
 
-  #view: View;
+  view: View;
   #viewOutput: ViewOutput = {};
 
   constructor(element?: HTMLElement, view?: View) {
     super(false, false, element);
-    this.registerRequiredCSS(Input.textInputStylesRaw);
-    this.registerRequiredCSS(userActionRowStyles);
-    // clang-format off
-    this.#view = view ?? ((input, output, target) => {
-      Lit.render(
-        html`
-          <div class="ai-assistance-feedback-row">
-            <div class="rate-buttons">
-              ${input.showRateButtons ? html`
-                <devtools-button
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    iconName: 'thumb-up',
-                    toggledIconName: 'thumb-up-filled',
-                    toggled: input.currentRating === Host.AidaClient.Rating.POSITIVE,
-                    toggleType: Buttons.Button.ToggleType.PRIMARY,
-                    title: lockedString(UIStringsNotTranslate.thumbsUp),
-                    jslogContext: 'thumbs-up',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => input.onRatingClick(Host.AidaClient.Rating.POSITIVE)}
-                ></devtools-button>
-                <devtools-button
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    iconName: 'thumb-down',
-                    toggledIconName: 'thumb-down-filled',
-                    toggled: input.currentRating === Host.AidaClient.Rating.NEGATIVE,
-                    toggleType: Buttons.Button.ToggleType.PRIMARY,
-                    title: lockedString(UIStringsNotTranslate.thumbsDown),
-                    jslogContext: 'thumbs-down',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => input.onRatingClick(Host.AidaClient.Rating.NEGATIVE)}
-                ></devtools-button>
-                <div class="vertical-separator"></div>
-              `: Lit.nothing}
-              <devtools-button
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    title: lockedString(UIStringsNotTranslate.report),
-                    iconName: 'report',
-                    jslogContext: 'report',
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${input.onReportClick}
-              ></devtools-button>
-            </div>
-            ${input.suggestions ? html`<div class="suggestions-container">
-              <div class="scroll-button-container left hidden" ${ref(element => { output.suggestionsLeftScrollButtonContainer = element; } )}>
-                <devtools-button
-                  class='scroll-button'
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    iconName: 'chevron-left',
-                    title: lockedString(UIStringsNotTranslate.scrollToPrevious),
-                    jslogContext: 'chevron-left',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => input.scrollSuggestionsScrollContainer('left')}
-                ></devtools-button>
-              </div>
-              <div class="suggestions-scroll-container" @scroll=${input.onSuggestionsScrollOrResize} ${ref(element => { output.suggestionsScrollContainer = element; })}>
-                ${input.suggestions.map(suggestion => html`<devtools-button
-                  class='suggestion'
-                  .data=${{
-                    variant: Buttons.Button.Variant.OUTLINED,
-                    title: suggestion,
-                    jslogContext: 'suggestion',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => input.onSuggestionClick(suggestion)}
-                >${suggestion}</devtools-button>`)}
-              </div>
-              <div class="scroll-button-container right hidden" ${ref(element => { output.suggestionsRightScrollButtonContainer = element; })}>
-                <devtools-button
-                  class='scroll-button'
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    iconName: 'chevron-right',
-                    title: lockedString(UIStringsNotTranslate.scrollToNext),
-                    jslogContext: 'chevron-right',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => input.scrollSuggestionsScrollContainer('right')}
-                ></devtools-button>
-              </div>
-            </div>` : Lit.nothing}
-          </div>
-          ${input.isShowingFeedbackForm ? html`
-            <form class="feedback-form" @submit=${input.onSubmit}>
-              <div class="feedback-header">
-                <h4 class="feedback-title">${lockedString(
-                    UIStringsNotTranslate.whyThisRating,
-                )}</h4>
-                <devtools-button
-                  aria-label=${lockedString(UIStringsNotTranslate.close)}
-                  @click=${input.onClose}
-                  .data=${
-                    {
-                      variant: Buttons.Button.Variant.ICON,
-                      iconName: 'cross',
-                      size: Buttons.Button.Size.SMALL,
-                      title: lockedString(UIStringsNotTranslate.close),
-                      jslogContext: 'close',
-                    } as Buttons.Button.ButtonData
-                  }
-                ></devtools-button>
-              </div>
-              <input
-                type="text"
-                class="devtools-text-input feedback-input"
-                @input=${(event: KeyboardEvent) => input.onInputChange((event.target as HTMLInputElement).value)}
-                placeholder=${lockedString(
-                UIStringsNotTranslate.provideFeedbackPlaceholder,
-                )}
-                jslog=${VisualLogging.textField('feedback').track({ keydown: 'Enter' })}
-              >
-              <span class="feedback-disclaimer">${
-                lockedString(UIStringsNotTranslate.disclaimer)
-              }</span>
-              <div>
-                <devtools-button
-                aria-label=${lockedString(UIStringsNotTranslate.submit)}
-                .data=${
-                  {
-                      type: 'submit',
-                      disabled: input.isSubmitButtonDisabled,
-                      variant: Buttons.Button.Variant.OUTLINED,
-                      size: Buttons.Button.Size.SMALL,
-                      title: lockedString(UIStringsNotTranslate.submit),
-                      jslogContext: 'send',
-                    } as Buttons.Button.ButtonData
-                  }
-                >${
-                  lockedString(UIStringsNotTranslate.submit)
-                }</devtools-button>
-              </div>
-            </div>
-          </form>
-          ` : Lit.nothing}
-        `,
-        target,
-        {host: target}
-      );
-    }) as View;
-    // clang-format on
+    this.view = view ?? DEFAULT_VIEW;
   }
 
   override wasShown(): void {
@@ -298,7 +296,7 @@ export class UserActionRow extends UI.Widget.Widget implements UserActionRowWidg
   }
 
   override performUpdate(): Promise<void>|void {
-    this.#view(
+    this.view(
         {
           onSuggestionClick: this.onSuggestionClick,
           onRatingClick: this.#handleRateClick.bind(this),

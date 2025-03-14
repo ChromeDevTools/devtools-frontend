@@ -6,6 +6,7 @@
 
 
 .ai-assistance-feedback-row {
+  font-family: var(--default-font-family);
   width: 100%;
   display: flex;
   gap: var(--sys-size-8);

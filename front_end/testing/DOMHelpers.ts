@@ -307,3 +307,23 @@ export function querySelectorErrorOnMissing<T extends HTMLElement = HTMLElement>
   }
   return elem;
 }
+
+/**
+ * Given a filename in the format "<folder>/<image.png>"
+ * this function asserts that a screenshot taken from the element
+ * identified by the TEST_CONTAINER_ID matches a screenshot
+ * in test/interactions/goldens/linux/<folder>/<image.png>.
+ *
+ * Currently, it only asserts screenshots match goldens on Linux.
+ * The function relies on the bindings exposed via the karma config.
+ */
+export async function assertScreenshot(filename: string) {
+  // To avoid a lot of empty space in the screenshot.
+  document.getElementById(TEST_CONTAINER_ID)!.style.width = 'fit-content';
+  await raf();
+  // @ts-expect-error see karma config.
+  const result = await window.assertScreenshot(`#${TEST_CONTAINER_ID}`, filename);
+  if (result) {
+    throw new Error(result);
+  }
+}

@@ -18,6 +18,8 @@ const yargsObject =
 const shouldRemoveFiles = yargsObject['remove-files'] === true;
 const SOURCE_ROOT = path.resolve(__dirname, path.join('..', '..'));
 const interactionTestRoot = path.join(SOURCE_ROOT, 'test', 'interactions');
+// TODO: grep seems slow on the entire front_end folder.
+const unitTestRoot = path.join(SOURCE_ROOT, 'front_end', 'panels');
 const GOLDENS_LOCATION = path.join(interactionTestRoot, 'goldens');
 
 function findScreenshotsToCheck(folder) {
@@ -35,6 +37,34 @@ function findScreenshotsToCheck(folder) {
   return filesToCheck;
 }
 
+async function checkFolder(relativeGoldenPath, searchRoot) {
+  // Filepaths in screenshot tests assertions are used using forward slashes.
+  // If this is executed in windows `relativeGoldenPath` will come with
+  // backward slashes, so the path needs to be fixed.
+  const unixRelativeGoldenPath = relativeGoldenPath.replace(/\\/g, '/');
+  const isWin = process.platform === 'win32';
+  if (isWin) {
+    // Currently, we do not assert screenshots on Windows.
+    // Eventually, if we support all platforms we can remove this early
+    // exit.
+    return true;
+  }
+  const textSearchCommand = isWin ?
+      `GET-CHILDITEM ${searchRoot}* -recurs | Select-String -Pattern "${unixRelativeGoldenPath}" -CaseSensitive` :
+      `grep -r ${unixRelativeGoldenPath} ${searchRoot}`;
+  try {
+    // If this doesn't throw, that means we found a match and we're fine.
+    await exec(textSearchCommand, isWin ? {shell: 'powershell.exe'} : undefined);
+    return true;
+  } catch (error) {
+    if (error.code === 1) {
+      return false;
+    }
+    console.warn(error);
+    return false;
+  }
+}
+
 async function checkGoldensForPlatform(platform) {
   const obsoleteImages = [];
 
@@ -42,25 +72,11 @@ async function checkGoldensForPlatform(platform) {
   const goldens = findScreenshotsToCheck(platformRoot);
   for await (const golden of goldens) {
     const relativeGoldenPath = path.relative(platformRoot, golden);
-    // Filepaths in screenshot tests assertions are used using forward slashes.
-    // If this is excecuted in windows `relativeGoldenPath` will come with
-    // backward slashes, so the path needs to be fixed.
-    const unixRelativeGoldenPath = relativeGoldenPath.replace(/\\/g, '/');
-    const isWin = process.platform === 'win32';
-    try {
-      const textSearchCommand = isWin ? `GET-CHILDITEM ${interactionTestRoot}* -recurs | Select-String -Pattern "${
-                                            unixRelativeGoldenPath}" -CaseSensitive` :
-                                        `grep -r ${unixRelativeGoldenPath} ${interactionTestRoot}`;
-      // If this doesn't throw, that means we found a match and we're fine.
-      await exec(textSearchCommand, isWin ? {shell: 'powershell.exe'} : undefined);
-    } catch (error) {
-      if (error.code === 1) {
-        // This is what grep returns when the image is missing
-        obsoleteImages.push(path.join(platform, relativeGoldenPath));
-      } else {
-        // Unexpected error, so throw.
-        throw new Error(`Unexpected error when checking obsolete screenshots: ${error.message}`);
-      }
+    const interactions = await checkFolder(relativeGoldenPath, interactionTestRoot);
+    const units = await checkFolder(relativeGoldenPath, unitTestRoot);
+
+    if (!interactions && !units) {
+      obsoleteImages.push(path.join(platform, relativeGoldenPath));
     }
   }
 

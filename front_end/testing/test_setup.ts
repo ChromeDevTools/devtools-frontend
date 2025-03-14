@@ -22,6 +22,12 @@ import {
   stopTrackingAsyncActivity,
 } from './TrackAsyncOperations.js';
 
+const style = document.createElement('style');
+style.innerText =
+    '@import url(\'https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap\');';
+document.head.append(style);
+document.documentElement.classList.add('platform-screenshot-test');
+
 beforeEach(async () => {
   resetHostConfig();
   await setupTestDOM();

@@ -17,7 +17,7 @@ export * from './ChangeManager.js';
 export * from './components/ChatView.js';
 export * from './components/MarkdownRendererWithCodeBlock.js';
 export * from './SelectWorkspaceDialog.js';
-export * from './components/UserActionRow.js';
+export * as UserActionRow from './components/UserActionRow.js';
 export * from './EvaluateAction.js';
 export * from './ExtensionScope.js';
 export * as PatchWidget from './PatchWidget.js';

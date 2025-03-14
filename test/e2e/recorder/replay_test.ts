@@ -101,6 +101,19 @@ describe('Recorder', function() {
       assert.isTrue(await target.evaluate(() => document.querySelector('input')?.checked));
     });
 
+    it('should not be able to navigate to chrome URLs', async () => {
+      expectError('Replay error Not allowed to replay on chrome:// URLs');
+      await setupRecorderWithScriptAndReplay({
+        title: 'Test Recording',
+        steps: [
+          {
+            type: 'navigate' as StepType.Navigate,
+            url: 'chrome://version',
+          },
+        ],
+      });
+    });
+
     it('should be able to replay keyboard events', async () => {
       const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({

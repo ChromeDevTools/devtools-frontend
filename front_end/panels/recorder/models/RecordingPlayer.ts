@@ -269,6 +269,10 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
             (step.type === 'setViewport' || step.type === 'navigate')) {
           return;
         }
+        if (step.type === 'navigate' &&
+            Common.ParsedURL.schemeIs(step.url as Platform.DevToolsPath.UrlString, 'chrome:')) {
+          throw new Error('Not allowed to replay on chrome:// URLs');
+        }
         // Focus the target in case it's not focused.
         await this.page.bringToFront();
         await super.runStep(step, flow);

@@ -541,6 +541,8 @@ export class RecorderController extends LitElement {
       } else {
         Host.userMetrics.recordingReplayFinished(Host.UserMetrics.RecordingReplayFinished.OTHER_ERROR);
       }
+      // Dispatch an event for e2e testing.
+      this.dispatchEvent(new Events.ReplayFinishedEvent());
     });
 
     this.recordingPlayer.addEventListener(Models.RecordingPlayer.Events.DONE, () => {

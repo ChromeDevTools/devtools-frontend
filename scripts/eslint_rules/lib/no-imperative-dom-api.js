@@ -13,6 +13,10 @@ function isIdentifier(node, name) {
   return node.type === 'Identifier' && (Array.isArray(name) ? name.includes(node.name) : node.name === name);
 }
 
+function isMemberExpression(node, objectPredicate, propertyPredicate) {
+  return node.type === 'MemberExpression' && objectPredicate(node.object) && propertyPredicate(node.property);
+}
+
 function getEnclosingExpression(node) {
   while (node.parent) {
     if (node.parent.type === 'BlockStatement') {
@@ -200,6 +204,24 @@ module.exports = {
     }
 
     /**
+     * @param {Node} event
+     * @return {string|null}
+     */
+    function getEvent(event) {
+      switch (sourceCode.getText(event)) {
+        case 'UI.Toolbar.ToolbarInput.Event.TEXT_CHANGED':
+          return 'change';
+        case 'UI.Toolbar.ToolbarInput.Event.ENTER_PRESSED':
+          return 'submit';
+        default:
+          if (event.type === 'Literal') {
+            return event.value.toString();
+          }
+          return null;
+      }
+    }
+
+    /**
      *  @param {DomFragmentReference} reference
      *  @param {DomFragment} domFragment
      */
@@ -237,11 +259,15 @@ module.exports = {
           domFragment.attributes.push({key: attribute.value.toString(), value});
         }
       } else if (isMethodCall && isIdentifier(property, 'addEventListener')) {
-        const event = firstArg;
+        const event = getEvent(firstArg);
         const value = secondArg;
-        if (event.type === 'Literal' && value.type !== 'SpreadElement') {
-          domFragment.eventListeners.push({key: event.value.toString(), value});
+        if (event && value.type !== 'SpreadElement') {
+          domFragment.eventListeners.push({key: event, value});
         }
+      } else if (isMethodCall && isIdentifier(property, 'appendToolbarItem')) {
+        const childFragment = getOrCreateDomFragment(firstArg);
+        childFragment.parent = domFragment;
+        domFragment.children.push(childFragment);
       } else if (
           isPropertyMethodCall && isIdentifier(property, 'classList') && isIdentifier(grandParent.property, 'add')) {
         domFragment.classList.push(propertyMethodArgument);
@@ -252,6 +278,16 @@ module.exports = {
             key: property,
             value: subpropertyValue,
           });
+        }
+      } else if (isMethodCall && isIdentifier(property, 'createChild')) {
+        if (firstArg?.type === 'Literal') {
+          const childFragment = getOrCreateDomFragment(grandParent);
+          childFragment.tagName = String(firstArg.value);
+          childFragment.parent = domFragment;
+          domFragment.children.push(childFragment);
+          if (secondArg) {
+            childFragment.classList.push(secondArg);
+          }
         }
       } else if (isMethodCall && isIdentifier(property, 'appendChild')) {
         const childFragment = getOrCreateDomFragment(firstArg);
@@ -307,6 +343,53 @@ export const DEFAULT_VIEW = (input, _output, target) => {
           const domFragment = getOrCreateDomFragment(node.parent);
           if (node.parent.arguments.length >= 1 && node.parent.arguments[0].type === 'Literal') {
             domFragment.tagName = node.parent.arguments[0].value;
+          }
+        }
+      },
+      NewExpression(node) {
+        if (isMemberExpression(
+                node.callee, n => isMemberExpression(n, n => isIdentifier(n, 'UI'), n => isIdentifier(n, 'Toolbar')),
+                n => isIdentifier(n, 'ToolbarFilter'))) {
+          const domFragment = getOrCreateDomFragment(node);
+          domFragment.tagName = 'devtools-toolbar-input';
+          domFragment.attributes.push({
+            key: 'type',
+            value: /** @type {Node} */ ({type: 'Literal', value: 'filter'}),
+          });
+          const placeholder = node.arguments[0];
+          const flexGrow = node.arguments[1];
+          const flexShrink = node.arguments[2];
+          const title = node.arguments[3];
+          const jslogContext = node.arguments[6];
+          if (placeholder && !isIdentifier(placeholder, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'placeholder',
+              value: placeholder,
+            });
+          }
+          if (flexGrow && !isIdentifier(flexGrow, 'undefined')) {
+            domFragment.style.push({
+              key: 'flex-grow',
+              value: flexGrow,
+            });
+          }
+          if (flexShrink && !isIdentifier(flexShrink, 'undefined')) {
+            domFragment.style.push({
+              key: 'flex-shrink',
+              value: flexShrink,
+            });
+          }
+          if (title && !isIdentifier(title, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'title',
+              value: title,
+            });
+          }
+          if (jslogContext && !isIdentifier(jslogContext, 'undefined')) {
+            domFragment.attributes.push({
+              key: 'id',
+              value: jslogContext,
+            });
           }
         }
       },

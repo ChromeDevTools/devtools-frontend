@@ -304,8 +304,8 @@ export interface UISourceCodeDiffEventTypes {
 
 let workspaceDiffImplInstance: WorkspaceDiffImpl|null = null;
 
-export function workspaceDiff(): WorkspaceDiffImpl {
-  if (!workspaceDiffImplInstance) {
+export function workspaceDiff({forceNew}: {forceNew?: boolean} = {}): WorkspaceDiffImpl {
+  if (!workspaceDiffImplInstance || forceNew) {
     workspaceDiffImplInstance = new WorkspaceDiffImpl(Workspace.Workspace.WorkspaceImpl.instance());
   }
   return workspaceDiffImplInstance;

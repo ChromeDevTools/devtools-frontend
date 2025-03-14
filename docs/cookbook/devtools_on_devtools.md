@@ -37,9 +37,11 @@ editing in your IDE (e.g. VS Code or Cider-G). With M-135, a new feature called
 [Automatic Workspace folders][automatic-workspace-folders-documentation] was
 introduced, which can be used to make debugging and developing DevTools easier.
 
+As of 2025-03-16, the feature is enabled by default in M-136 and later version.
 Follow the steps [here](../ecosystem/automatic_workspace_folders.md#setup) to
-set up your Chrome or Chromium instance. Then in your `devtools-frontend`
-checkout, use
+set up your Chrome or Chromium instance for earlier versions of M-136 and M-135.
+
+Then in your `devtools-frontend` checkout, use
 
 ```
 ./third_party/chrome/chrome-linux/chrome \

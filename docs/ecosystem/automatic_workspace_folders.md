@@ -68,9 +68,10 @@ the origin of the inspected page is `localhost`.
 
 ## Setup
 
-In M-135, which is in Canary channel at the time of this writing, and probably
-M-136 too, this feature is disabled by default. To use it, you need to turn on
-two feature flags in `about:flags`:
+In M-136, which is in Canary channel at the time of this writing, the relevant
+flags have been enabled by default (as of 2025-03-16). In earlier versions of
+M-136 and in M-135, this feature is disabled by default. To use it, you need to
+turn on two feature flags in `about:flags`:
 
 -   [chrome://flags#devtools-project-settings](chrome://flags#devtools-project-settings)
 -   [chrome://flags#devtools-automatic-workspace-folders](chrome://flags#devtools-automatic-workspace-folders)

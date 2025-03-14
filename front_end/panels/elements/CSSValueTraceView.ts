@@ -16,7 +16,7 @@ import {
 } from './PropertyRenderer.js';
 import stylePropertiesTreeOutlineStyles from './stylePropertiesTreeOutline.css.js';
 
-const {html, render} = Lit;
+const {html, render, Directives: {ref, ifDefined}} = Lit;
 
 export interface ViewInput {
   substitutions: Node[][];
@@ -25,18 +25,32 @@ export interface ViewInput {
   onToggle: () => void;
 }
 
+export interface ViewOutput {
+  defaultFocusedElement?: Element;
+}
+
 export type View = (
     input: ViewInput,
-    output: object,
+    output: ViewOutput,
     target: HTMLElement,
     ) => void;
 
-function defaultView(input: ViewInput, _: unknown, target: HTMLElement): void {
+function defaultView(input: ViewInput, output: ViewOutput, target: HTMLElement): void {
   const [firstEvaluation, ...intermediateEvaluations] = input.evaluations;
+
+  const hiddenSummary = !firstEvaluation || intermediateEvaluations.length === 0;
+  const summaryTabIndex = hiddenSummary ? undefined : 0;
   render(
       // clang-format off
     html`
-      <div class="css-value-trace monospace">
+      <div
+       role=dialog
+       ${ref(e => {
+         output.defaultFocusedElement = (e as HTMLDivElement)?.querySelector('[tabindex]') ?? undefined;
+       })}
+       class="css-value-trace monospace"
+       @keydown=${onKeyDown}
+       >
         ${input.substitutions.map(
           line =>
             html`<span class="trace-line-icon" aria-label="is equal to">↳</span
@@ -47,10 +61,9 @@ function defaultView(input: ViewInput, _: unknown, target: HTMLElement): void {
               ><span class="trace-line">${firstEvaluation}</span>`
           : html`<details
               @toggle=${input.onToggle}
-              ?hidden=${!firstEvaluation ||
-              intermediateEvaluations.length === 0}
+              ?hidden=${hiddenSummary}
             >
-              <summary>
+              <summary tabindex=${ifDefined(summaryTabIndex)}>
                 <span class="trace-line-icon" aria-label="is equal to">↳</span
                 ><devtools-icon class="marker"></devtools-icon
                 ><span class="trace-line">${firstEvaluation}</span>
@@ -73,6 +86,34 @@ function defaultView(input: ViewInput, _: unknown, target: HTMLElement): void {
       // clang-format on
       target,
   );
+
+  function onKeyDown(this: HTMLDivElement, e: KeyboardEvent): void {
+    // prevent styles-tab keyboard navigation
+    if (!e.altKey) {
+      if (e.key.startsWith('Arrow') || e.key === ' ' || e.key === 'Enter') {
+        e.consume();
+      }
+    }
+
+    // Capture tab focus within
+    if (e.key === 'Tab') {
+      const tabstops = this.querySelectorAll('[tabindex]') ?? [];
+      const firstTabStop = tabstops[0];
+      const lastTabStop = tabstops[tabstops.length - 1];
+      if (e.target === lastTabStop && !e.shiftKey) {
+        e.consume(true);
+        if (firstTabStop instanceof HTMLElement) {
+          firstTabStop.focus();
+        }
+      }
+      if (e.target === firstTabStop && e.shiftKey) {
+        e.consume(true);
+        if (lastTabStop instanceof HTMLElement) {
+          lastTabStop.focus();
+        }
+      }
+    }
+  }
 }
 
 export class CSSValueTraceView extends UI.Widget.VBox {
@@ -168,7 +209,8 @@ export class CSSValueTraceView extends UI.Widget.VBox {
       finalResult: this.#finalResult,
       onToggle: () => this.onResize(),
     };
-    const viewOutput = {};
+    const viewOutput: ViewOutput = {};
     this.#view(viewInput, viewOutput, this.contentElement);
+    this.setDefaultFocusedElement(viewOutput.defaultFocusedElement ?? null);
   }
 }

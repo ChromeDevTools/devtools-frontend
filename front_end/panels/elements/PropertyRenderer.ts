@@ -68,8 +68,8 @@ export class Highlighting {
   readonly #nodesForMatches = new Map<SDK.CSSPropertyParser.Match, Node[][]>();
   readonly #matchesForNodes = new Map<Node, SDK.CSSPropertyParser.Match[]>();
   readonly #registry: Highlight;
-  readonly #boundOnEnter: (ev: MouseEvent) => void;
-  readonly #boundOnExit: (ev: MouseEvent) => void;
+  readonly #boundOnEnter: (e: Event) => void;
+  readonly #boundOnExit: (e: Event) => void;
 
   constructor() {
     const registry = CSS.highlights.get(Highlighting.REGISTRY_NAME);
@@ -100,11 +100,14 @@ export class Highlighting {
       if (node instanceof HTMLElement) {
         node.onmouseenter = this.#boundOnEnter;
         node.onmouseleave = this.#boundOnExit;
+        node.onfocus = this.#boundOnEnter;
+        node.onblur = this.#boundOnExit;
+        node.tabIndex = 0;
       }
     }
   }
 
-  * #nodeRangesHitByMouseEvent(e: MouseEvent): Generator<Node[]> {
+  * #nodeRangesHitByMouseEvent(e: Event): Generator<Node[]> {
     for (const node of e.composedPath()) {
       const matches = this.#matchesForNodes.get(node as Node);
       if (matches) {
@@ -116,15 +119,19 @@ export class Highlighting {
     }
   }
 
-  #onEnter(e: MouseEvent): void {
+  #onEnter(e: Event): void {
     this.#registry.clear();
     this.#activeHighlights.push([]);
     for (const nodeRange of this.#nodeRangesHitByMouseEvent(e)) {
       const range = new Range();
-      range.setStartBefore(nodeRange[0]);
-      range.setEndAfter(nodeRange[nodeRange.length - 1]);
-      this.#activeHighlights[this.#activeHighlights.length - 1].push(range);
-      this.#registry.add(range);
+      const begin = nodeRange[0];
+      const end = nodeRange[nodeRange.length - 1];
+      if (begin.parentNode && end.parentNode) {
+        range.setStartBefore(begin);
+        range.setEndAfter(end);
+        this.#activeHighlights[this.#activeHighlights.length - 1].push(range);
+        this.#registry.add(range);
+      }
     }
   }
 
@@ -413,10 +420,19 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         })}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: property.value}));
     valueElement.className = 'value';
+    const {nodes, cssControls} = this.renderValueNodes(property, matchedResult, renderers, tracing);
+    nodes.forEach(node => valueElement.appendChild(node));
+    valueElement.normalize();
+    return {valueElement, cssControls};
+  }
 
+  static renderValueNodes(
+      property: SDK.CSSProperty.CSSProperty|{name: string, value: string},
+      matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
+      renderers: Array<MatchRenderer<SDK.CSSPropertyParser.Match>>,
+      tracing?: TracingContext): {nodes: Node[], cssControls: SDK.CSSPropertyParser.CSSControlMap} {
     if (!matchedResult) {
-      valueElement.appendChild(document.createTextNode(property.value));
-      return {valueElement, cssControls: new Map()};
+      return {nodes: [document.createTextNode(property.value)], cssControls: new Map()};
     }
     const rendererMap = new Map<
         Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>, MatchRenderer<SDK.CSSPropertyParser.Match>>();
@@ -427,10 +443,7 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
     const context = new RenderingContext(
         matchedResult.ast, property instanceof SDK.CSSProperty.CSSProperty ? property : null, rendererMap,
         matchedResult, undefined, {}, tracing);
-    const {nodes, cssControls} = Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
-    nodes.forEach(node => valueElement.appendChild(node));
-    valueElement.normalize();
-    return {valueElement, cssControls};
+    return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 }
 

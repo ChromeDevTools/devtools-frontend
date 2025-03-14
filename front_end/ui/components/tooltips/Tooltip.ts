@@ -89,6 +89,10 @@ export class Tooltip extends HTMLElement {
     this.#updateJslog();
   }
 
+  get anchor(): HTMLElement|null {
+    return this.#anchor;
+  }
+
   constructor(properties?: TooltipProperties) {
     super();
     if (properties) {
@@ -152,12 +156,12 @@ export class Tooltip extends HTMLElement {
     }, this.hoverDelay);
   };
 
-  hideTooltip = (event: MouseEvent|FocusEvent): void => {
+  hideTooltip = (event?: MouseEvent|FocusEvent): void => {
     if (this.#timeout) {
       window.clearTimeout(this.#timeout);
     }
     // Don't hide a rich tooltip when hovering over the tooltip itself.
-    if (this.variant === 'rich' &&
+    if (event && this.variant === 'rich' &&
         (event.relatedTarget === this || (event.relatedTarget as Element)?.parentElement === this)) {
       return;
     }

@@ -7326,10 +7326,6 @@ export const NativeFunctions = [
     receivers: ["AITranslatorFactory"]
   },
   {
-    name: "languageAvailable",
-    signatures: [["languageTag"]]
-  },
-  {
     name: "detect",
     signatures: [["input","?options"]],
     receivers: ["AILanguageDetector"]

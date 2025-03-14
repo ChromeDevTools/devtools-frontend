@@ -77,6 +77,11 @@ const UIStringsNotTranslate = {
    */
   applyToWorkspaceTooltip: 'Source code from the selected folder is sent to Google to generate code suggestions.',
   /**
+   *@description Tooltip text for the info icon beside the "Apply to workspace" button when enterprise logging is off
+   */
+  applyToWorkspaceTooltipNoLogging:
+      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
+  /**
    *@description Tooltip link for the navigating to "AI innovations" page in settings.
    */
   learnMore: 'Learn more',
@@ -92,6 +97,11 @@ const UIStringsNotTranslate = {
    *@description Second disclaimer item text for the fre dialog.
    */
   freDisclaimerTextPrivacy: 'Source code from the selected folder is sent to Google to generate code suggestions',
+  /**
+   *@description Second disclaimer item text for the fre dialog when enterprise logging is off.
+   */
+  freDisclaimerTextPrivacyNoLogging:
+      'Source code from the selected folder is sent to Google to generate code suggestions. This data will not be used to improve Google’s AI models.',
   /**
    *@description Third disclaimer item text for the fre dialog.
    */
@@ -119,6 +129,7 @@ export interface ViewInput {
   projectName?: string;
   savedToDisk?: boolean;
   projectPath: Platform.DevToolsPath.UrlString;
+  applyToWorkspaceTooltipText: Platform.UIString.LocalizedString;
   onLearnMoreTooltipClick: () => void;
   onApplyToWorkspace: () => void;
   onCancel: () => void;
@@ -150,6 +161,7 @@ export class PatchWidget extends UI.Widget.Widget {
   #patchSources?: string;
   #patchSuggestionLoading?: boolean;
   #savedToDisk?: boolean;
+  #noLogging: boolean;  // Whether the enterprise setting is `ALLOW_WITHOUT_LOGGING` or not.
   #workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();
   #workspace = Workspace.Workspace.WorkspaceImpl.instance();
 
@@ -158,6 +170,8 @@ export class PatchWidget extends UI.Widget.Widget {
   }) {
     super(false, false, element);
     this.#aidaClient = opts?.aidaClient ?? new Host.AidaClient.AidaClient();
+    this.#noLogging = Root.Runtime.hostConfig.aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
@@ -302,7 +316,7 @@ export class PatchWidget extends UI.Widget.Widget {
               ></devtools-button>
             <devtools-tooltip variant="rich" id="info-tooltip" ${Directives.ref(output.tooltipRef)}>
               <div class="info-tooltip-container">
-                ${lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip)}
+                ${input.applyToWorkspaceTooltipText}
                 <button
                   class="link tooltip-link"
                   role="link"
@@ -355,6 +369,9 @@ export class PatchWidget extends UI.Widget.Widget {
           projectPath: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
               (this.#project?.id() || '') as Platform.DevToolsPath.UrlString),
           savedToDisk: this.#savedToDisk,
+          applyToWorkspaceTooltipText: this.#noLogging ?
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltipNoLogging) :
+              lockedString(UIStringsNotTranslate.applyToWorkspaceTooltip),
           onLearnMoreTooltipClick: this.#onLearnMoreTooltipClick.bind(this),
           onApplyToWorkspace: this.#onApplyToWorkspace.bind(this),
           onCancel: () => {
@@ -402,7 +419,8 @@ export class PatchWidget extends UI.Widget.Widget {
         },
         {
           iconName: 'google',
-          content: lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
+          content: this.#noLogging ? lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacyNoLogging) :
+                                     lockedString(UIStringsNotTranslate.freDisclaimerTextPrivacy),
         },
         {
           iconName: 'warning',

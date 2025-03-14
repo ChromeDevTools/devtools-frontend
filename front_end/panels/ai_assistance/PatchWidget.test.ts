@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Root from '../../core/root/root.js';
 import type * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as PanelCommon from '../../panels/common/common.js';
@@ -41,6 +42,81 @@ describeWithMockConnection('PatchWidget', () => {
           enabled: true,
           patching: true,
         },
+      });
+    });
+
+    describe('enterprise text cases', () => {
+      it('should FRE text include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
+           updateHostConfig({
+             devToolsFreestyler: {
+               enabled: true,
+               patching: true,
+             },
+             aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING}
+           });
+           const {view, panel} = await createPatchWidget();
+           panel.changeSummary = 'body { background-color: red; }';
+
+           view.input.onApplyToWorkspace();
+
+           assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
+           assert.exists(showFreDialogStub.lastCall.args[0].reminderItems.find(
+               reminderItem => reminderItem.content.toString().includes(
+                   'This data will not be used to improve Google’s AI models.')));
+         });
+
+      it('should FRE text not include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
+           updateHostConfig({
+             devToolsFreestyler: {
+               enabled: true,
+               patching: true,
+             },
+             aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW}
+           });
+           const {view, panel} = await createPatchWidget();
+           panel.changeSummary = 'body { background-color: red; }';
+
+           view.input.onApplyToWorkspace();
+
+           assert.isTrue(showFreDialogStub.called, 'Expected FreDialog to be shown but it\'s not shown');
+           assert.notExists(showFreDialogStub.lastCall.args[0].reminderItems.find(
+               reminderItem => reminderItem.content.toString().includes(
+                   'This data will not be used to improve Google’s AI models.')));
+         });
+
+      it('should tooltip text include no logging case when the enterprise policy value is ALLOW_WITHOUT_LOGGING',
+         async () => {
+           Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
+           updateHostConfig({
+             devToolsFreestyler: {
+               enabled: true,
+               patching: true,
+             },
+             aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING}
+           });
+           const {view} = await createPatchWidget();
+
+           assert.include(
+               view.input.applyToWorkspaceTooltipText, 'This data will not be used to improve Google’s AI models.');
+         });
+
+      it('should tooltip text not include no logging case when the enterprise policy value is ALLOW', async () => {
+        Common.Settings.moduleSetting('ai-assistance-patching-fre-completed').set(false);
+        updateHostConfig({
+          devToolsFreestyler: {
+            enabled: true,
+            patching: true,
+          },
+          aidaAvailability: {enterprisePolicyValue: Root.Runtime.GenAiEnterprisePolicyValue.ALLOW}
+        });
+        const {view} = await createPatchWidget();
+
+        assert.notInclude(
+            view.input.applyToWorkspaceTooltipText, 'This data will not be used to improve Google’s AI models.');
       });
     });
 

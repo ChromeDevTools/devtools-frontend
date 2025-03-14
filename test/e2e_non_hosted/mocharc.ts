@@ -15,7 +15,7 @@ module.exports = {
   timeout : TestConfig.debug ? 0 : 10_000,
   retries : TestConfig.retries,
   reporter : path.join(path.dirname(__dirname), 'shared', 'mocha-resultsdb-reporter'),
-  suiteName : 'e2e',
+  suiteName : 'e2e_non_hosted',
   slow : 1000, ...TestConfig.mochaGrep,
   exit : true,
 };

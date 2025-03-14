@@ -501,21 +501,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   #onDiscard(): void {
-    this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      modifiedUISourceCode.resetWorkingCopy();
-    });
-
+    // TODO: Remove changes from the working copies as well.
     this.#patchSuggestion = undefined;
     this.#patchSources = undefined;
     this.requestUpdate();
   }
 
   #onSaveAll(): void {
-    // TODO: What should we do for the inspector stylesheet?
-    this.#workspaceDiff.modifiedUISourceCodes().forEach(modifiedUISourceCode => {
-      modifiedUISourceCode.commitWorkingCopy();
-    });
-
+    // TODO: Handle saving all the files.
     this.#savedToDisk = true;
     this.requestUpdate();
   }

@@ -16,7 +16,8 @@
   overflow: visible;
 }
 
-.ai-label-button-wrapper {
+.ai-label-button-wrapper,
+.ai-label-disabled-button-wrapper {
   /* position the button wrapper on the very right of the label */
   position: absolute;
   left: 100%;
@@ -60,11 +61,18 @@
 .ai-label-button {
   display: flex;
   align-items: center;
-  background: var(--sys-color-surface3);
   gap: var(--sys-size-4);
   padding: var(--sys-size-3) var(--sys-size-5);
   border: 1px solid var(--color-primary);
   border-radius: var(--sys-shape-corner-large);
+
+  &.enabled {
+    background: var(--sys-color-surface3);
+  }
+
+  &.disabled {
+    background: var(--sys-color-surface5);
+  }
 }
 
 .generate-label-text {

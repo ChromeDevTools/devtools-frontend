@@ -4,7 +4,6 @@
 import {importMetaAssets} from '@web/rollup-plugin-import-meta-assets';
 import {optimize} from 'svgo';
 
-// eslint-disable-next-line import/no-default-export
 export default {
   treeshake: false,
   output: [{

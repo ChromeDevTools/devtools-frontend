@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable import/no-default-export */
-
 import stylisticPlugin from '@stylistic/eslint-plugin';
 import typescriptPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
@@ -839,6 +837,15 @@ export default [
     rules: {
       // Not a useful rule for .d.ts files where we are
       // representing an existing module.
+      'import/no-default-export': 'off',
+    },
+  },
+  {
+    name: 'Config files',
+    files: ['eslint.config.mjs', '**/*/rollup.config.mjs'],
+    rules: {
+      // The config operate on the default export
+      // So allow it for them
       'import/no-default-export': 'off',
     },
   },

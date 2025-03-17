@@ -40,6 +40,7 @@ const flags = yargs(hideBin(process.argv))
         'scripts',
         'test',
         'extensions',
+        'extension-api',
       ],
     });
   })

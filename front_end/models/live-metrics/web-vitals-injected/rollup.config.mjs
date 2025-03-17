@@ -13,7 +13,6 @@ function isEnvVarTrue(envVar) {
   return envVar === 'true';
 }
 
-// eslint-disable-next-line import/no-default-export
 export default {
   treeshake: true,
   output: [{format: 'iife'}],

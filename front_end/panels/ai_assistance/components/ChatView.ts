@@ -105,7 +105,7 @@ const UIStringsNotTranslate = {
    * @description The error message when the request to the LLM failed for some reason.
    */
   systemError:
-      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue.',
+      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue. If this keeps happening, update Chrome to the latest version.',
   /**
    * @description The error message when the LLM gets stuck in a loop (max steps reached).
    */

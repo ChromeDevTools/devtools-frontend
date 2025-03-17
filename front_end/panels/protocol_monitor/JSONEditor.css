@@ -17,8 +17,8 @@
   height: 100%;
 }
 
-.target-select-menu {
-  max-width: 180px;
+.target-selector {
+  max-width: var(--sys-size-21);
 }
 
 .warning-icon {

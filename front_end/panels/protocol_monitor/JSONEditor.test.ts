@@ -12,7 +12,6 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import * as Menus from '../../ui/components/menus/menus.js';
 import type * as SuggestionInput from '../../ui/components/suggestion_input/suggestion_input.js';
 
 import * as ProtocolMonitor from './protocol_monitor.js';
@@ -1085,14 +1084,19 @@ describeWithEnvironment('JSONEditor', () => {
     const jsonEditor = renderJSONEditor();
     await jsonEditor.updateComplete;
     const targetId = 'target1';
-    const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent('target1');
 
     const shadowRoot = jsonEditor.contentElement;
-    const selectMenu = shadowRoot.querySelector('devtools-select-menu');
-    selectMenu?.dispatchEvent(event);
-    const expectedId = jsonEditor.targetId;
+    const selectElement = shadowRoot.querySelector<HTMLSelectElement>('select');
 
-    assert.deepEqual(targetId, expectedId);
+    const option = document.createElement('option');
+    option.value = targetId;
+    selectElement?.appendChild(option);
+
+    selectElement!.selectedIndex = 0;
+    selectElement!.dispatchEvent(new Event('change'));
+
+    const actualId = jsonEditor.targetId;
+    assert.deepEqual(actualId, targetId);
   });
 
   it('should copy the CDP command to clipboard via copy event', async () => {

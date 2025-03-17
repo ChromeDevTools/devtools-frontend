@@ -267,10 +267,6 @@ interface NamedBitSetFilterUIOptions {
   setting?: Common.Settings.Setting<{[key: string]: boolean}>;
 }
 
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const filterStyleSheet = new CSSStyleSheet();
-filterStyleSheet.replaceSync(filterStyles.cssText);
-
 export class NamedBitSetFilterUIElement extends HTMLElement {
   #options: NamedBitSetFilterUIOptions = {items: []};
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -296,6 +292,9 @@ export class NamedBitSetFilterUIElement extends HTMLElement {
     const namedBitSetFilterUI = new NamedBitSetFilterUI(this.#options.items, this.#options.setting);
     namedBitSetFilterUI.element().classList.add('named-bitset-filter');
 
+    const styleElement = this.#shadow.createChild('style');
+    styleElement.textContent = filterStyles.cssText;
+
     const disclosureElement = this.#shadow.createChild('div', 'named-bit-set-filter-disclosure');
     disclosureElement.appendChild(namedBitSetFilterUI.element());
 
@@ -305,12 +304,6 @@ export class NamedBitSetFilterUIElement extends HTMLElement {
 
     this.#namedBitSetFilterUI = namedBitSetFilterUI;
     return this.#namedBitSetFilterUI;
-  }
-
-  connectedCallback(): void {
-    // TODO(crbug.com/391381439): We cannot simply add a `<style>` element here, because
-    // the `options` setter above clears the shadow DOM.
-    this.#shadow.adoptedStyleSheets = [filterStyleSheet];
   }
 
   #filterChanged(): void {

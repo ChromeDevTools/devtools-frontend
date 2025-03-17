@@ -32,7 +32,8 @@
   background-color: var(--sys-color-cdt-base-container);
   z-index: 0;
   position: relative;
-  container: sections / inline-size; /* stylelint-disable-line property-no-unknown */
+  /* stylelint-disable-next-line property-no-unknown */
+  container: sections / inline-size;
 }
 
 .section {
@@ -64,7 +65,8 @@
 .screenshot-wrapper {
   flex: 0 0 80px;
   padding-top: 32px;
-  z-index: 2; /* We want this to be on top of `.step-overlay` */
+  /* We want this to be on top of `.step-overlay` */
+  z-index: 2;
 }
 
 /* stylelint-disable-next-line at-rule-no-unknown */
@@ -231,6 +233,7 @@
 .settings {
   margin-top: 4px;
   display: flex;
+  flex-wrap: wrap;
   font-size: 12px;
   line-height: 20px;
   letter-spacing: 0.03em;
@@ -339,7 +342,7 @@ devtools-split-view {
 }
 
 [slot="main"] {
-  overflow: hidden;
+  overflow: hidden auto;
 }
 
 [slot="sidebar"] {

@@ -1369,9 +1369,7 @@ export class RecorderController extends LitElement {
               .showSelectedItem=${false}
               .open=${this.exportMenuExpanded}
             >
-              <devtools-menu-group .name=${i18nString(
-      UIStrings.export,
-    )}>
+              <devtools-menu-group .name=${i18nString(UIStrings.export)}>
                 ${Lit.Directives.repeat(
                   this.#builtInConverters,
                   converter => {
@@ -1385,9 +1383,7 @@ export class RecorderController extends LitElement {
                   },
                 )}
               </devtools-menu-group>
-              <devtools-menu-group .name=${i18nString(
-      UIStrings.exportViaExtensions,
-    )}>
+              <devtools-menu-group .name=${i18nString(UIStrings.exportViaExtensions)}>
                 ${Lit.Directives.repeat(
                   this.extensionConverters,
                   converter => {

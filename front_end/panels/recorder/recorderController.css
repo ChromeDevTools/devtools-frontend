@@ -38,12 +38,10 @@ devtools-create-recording-view {
 .header {
   background-color: var(--sys-color-cdt-base-container);
   display: flex;
-  flex-direction: row;
+  flex-flow: row wrap;
   align-items: center;
   border-bottom: 1px solid var(--sys-color-divider);
   padding: 0 5px;
-  min-height: 29px;
-  max-height: 29px;
   gap: 3px;
 }
 
@@ -60,7 +58,7 @@ select {
   border: none;
   border-radius: var(--sys-shape-corner-extra-small);
   height: var(--sys-size-9);
-  max-width: 180px;
+  max-width: 140px;
   min-width: 140px;
   padding: 0 var(--sys-size-6) 0 var(--sys-size-5);
   position: relative;
@@ -80,12 +78,15 @@ select {
   }
 
   &:hover:active {
-    /* stylelint-disable plugin/use_theme_colors */
-    background:
-      var(--combobox-dropdown-arrow),
-      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
-      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
-    /* stylelint-enable plugin/use_theme_colors */
+    background: var(--combobox-dropdown-arrow),
+      linear-gradient(
+        var(--sys-color-state-hover-on-subtle),
+        var(--sys-color-state-hover-on-subtle)
+      ),
+      linear-gradient(
+        var(--sys-color-state-ripple-neutral-on-subtle),
+        var(--sys-color-state-ripple-neutral-on-subtle)
+      );
     background-position: right center;
     background-repeat: no-repeat;
   }
@@ -166,7 +167,8 @@ devtools-recording-list-view {
     font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-on-surface-subtle);
 
-    > x-link {  /* stylelint-disable-line selector-type-no-unknown */
+    /* stylelint-disable-next-line selector-type-no-unknown */
+    > x-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);
     }

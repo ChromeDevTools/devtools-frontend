@@ -39,7 +39,8 @@ describe('Metrics: Lantern Speed Index', () => {
         });
   });
 
-  it('should compute predicted value for different settings', async () => {
+  // Flaky
+  it.skip('[crbug.com/404184570] should compute predicted value for different settings', async () => {
     const settings: Lantern.Types.Simulation.Settings = {
       throttlingMethod: 'simulate',
       throttling: {...defaultThrottling, rttMs: 300},

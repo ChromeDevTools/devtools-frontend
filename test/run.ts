@@ -116,7 +116,7 @@ class Tests {
     ];
     if (options['debug-driver']) {
       argumentsForNode.unshift('--inspect-brk');
-    } else if (options['debug']) {
+    } else if (options['debug'] && !argumentsForNode.includes('--inspect-brk')) {
       argumentsForNode.unshift('--inspect');
     }
 
@@ -148,15 +148,19 @@ class MochaTests extends Tests {
 
 class NonHostedMochaTests extends Tests {
   override run(tests: PathPair[]) {
+    const args = [
+      path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
+      '--config',
+      path.join(this.suite.buildPath, 'mocharc.js'),
+      '-u',
+      path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
+    ];
+    if (options['debug']) {
+      args.unshift('--inspect-brk');
+    }
     return super.run(
         tests,
-        [
-          path.join(SOURCE_ROOT, 'node_modules', 'mocha', 'bin', 'mocha'),
-          '--config',
-          path.join(this.suite.buildPath, 'mocharc.js'),
-          '-u',
-          path.join(this.suite.buildPath, 'conductor', 'mocha-interface.js'),
-        ],
+        args,
         /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
                                           // that by passing the tests as dashed args instead.
     );

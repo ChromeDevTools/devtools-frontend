@@ -15,32 +15,6 @@ import {setupInspectedPage} from '../shared/target-helper.js';
 
 import type {TestCallbackWithState} from './mocha-interface-helpers.js';
 
-class DebugModeNotice {
-  /* eslint-disable no-console */
-  noticeDelivered = false;
-
-  async notice() {
-    // Pause when running interactively in debug mode. This is mututally
-    // exclusive with parallel mode.
-    // We need to pause after `resetPagesBetweenTests`, otherwise the DevTools
-    // and target tab are not available to us to set breakpoints in.
-    // We still only want to pause once, so we remember that we did pause.
-    if (TestConfig.debug && !this.noticeDelivered) {
-      this.noticeDelivered = true;
-      console.log('Running in debug mode.');
-      console.log(' - Press enter to run the test.');
-      console.log(' - Press ctrl + c to quit.');
-      await new Promise<void>(resolve => {
-        const {stdin} = process;
-        stdin.on('data', () => {
-          stdin.pause();
-          resolve();
-        });
-      });
-    }
-  }
-}
-
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,
   ...DEFAULT_DEVTOOLS_SETTINGS
@@ -49,13 +23,11 @@ const DEFAULT_SETTINGS = {
 export class StateProvider {
   static instance = new StateProvider();
 
-  debugNotice: DebugModeNotice;
   settingsCallbackMap: Map<Mocha.Suite, E2E.SuiteSettings>;
   browserMap: Map<string, BrowserWrapper>;
   static serverPort: number;
 
   private constructor() {
-    this.debugNotice = new DebugModeNotice();
     this.settingsCallbackMap = new Map();
     this.browserMap = new Map();
   }
@@ -65,9 +37,10 @@ export class StateProvider {
   }
 
   async callWithState(suite: Mocha.Suite, testFn: TestCallbackWithState) {
-    await this.debugNotice.notice();
     const {state, browsingContext} = await this.getState(suite);
     try {
+      /* eslint-disable-next-line no-debugger */
+      debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
       return await testFn(state);
     } finally {
       await browsingContext.close();

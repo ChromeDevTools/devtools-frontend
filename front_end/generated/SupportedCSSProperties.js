@@ -2019,8 +2019,8 @@ export const generatedProperties = [
   "inherited": true,
   "keywords": [
    "standard",
-   "high",
-   "constrained-high"
+   "no-limit",
+   "constrained"
   ],
   "name": "dynamic-range-limit"
  },
@@ -5295,8 +5295,8 @@ export const generatedPropertyValues = {
  "dynamic-range-limit": {
   "values": [
    "standard",
-   "high",
-   "constrained-high"
+   "no-limit",
+   "constrained"
   ]
  },
  "empty-cells": {

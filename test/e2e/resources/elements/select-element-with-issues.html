@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      select, ::picker(select) {
+        appearance: base-select;
+      }
+    </style>
+  </head>
+  <body>
+    <select id="interactive-content-legend-child">
+        <optgroup>
+            <legend>
+              <button></button>
+            </legend>
+        </optgroup>
+    </select>
+    <select id="disallowed-select-child">
+      <optgroup>
+        <legend>
+          <label tabindex="1"></label>
+        </legend>
+      </optgroup>
+    </select>
+  </body>
+</html>

@@ -54,6 +54,7 @@ copy_to_gen("elements") {
     "page-error.html",
     "quirks-mode-iframes.html",
     "quirks-mode.html",
+    "select-element-with-issues.html",
     "selection-after-delete.html",
     "shadow-dom-modify-chardata.html",
     "shadow-roots.html",

@@ -31,9 +31,7 @@ export class SelectElementAccessibilityIssue extends Issue {
   }
 
   getDescription(): MarkdownIssueDescription|null {
-    if (this.issueDetails.hasDisallowedAttributes &&
-        (this.issueDetails.selectElementAccessibilityIssueReason !==
-         Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild)) {
+    if (this.isInteractiveContentAttributesSelectDescendantIssue()) {
       return {
         file: 'selectElementAccessibilityInteractiveContentAttributesSelectDescendant.md',
         links: [],
@@ -56,6 +54,12 @@ export class SelectElementAccessibilityIssue extends Issue {
 
   details(): Protocol.Audits.SelectElementAccessibilityIssueDetails {
     return this.issueDetails;
+  }
+
+  isInteractiveContentAttributesSelectDescendantIssue(): boolean {
+    return this.issueDetails.hasDisallowedAttributes &&
+        (this.issueDetails.selectElementAccessibilityIssueReason !==
+         Protocol.Audits.SelectElementAccessibilityIssueReason.InteractiveContentOptionChild);
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

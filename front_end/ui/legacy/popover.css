@@ -22,3 +22,19 @@
 .widget.has-padding {
   padding: 6px;
 }
+
+.squiggles-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.squiggles-content-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  & devtools-icon {
+    cursor: pointer;
+  }
+}

@@ -1292,6 +1292,7 @@ export const knownContextValues = new Set([
   'elements.hide-element',
   'elements.image-preview',
   'elements.invalid-property-decl-popover',
+  'elements.issue',
   'elements.jump-to-style',
   'elements.layout',
   'elements.length-popover',

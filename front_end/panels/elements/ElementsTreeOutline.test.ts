@@ -173,6 +173,30 @@ describeWithMockConnection('ElementsTreeOutline', () => {
       tagElement.classList.remove('violating-element');
     }
 
+    // Test that multiple issues being added to the tree element.
+    {
+      const inspectorIssue = {
+        code: Protocol.Audits.InspectorIssueCode.GenericIssue,
+        details: {
+          genericIssueDetails: {
+            errorType: Protocol.Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError,
+            frameId: 'main' as Protocol.Page.FrameId,
+            violatingNodeId: 2 as Protocol.DOM.BackendNodeId,
+          },
+        },
+      };
+      const issue = IssuesManager.GenericIssue.GenericIssue.fromInspectorIssue(mockModel, inspectorIssue)[0];
+      issuesManager.dispatchEventToListeners(
+          IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});
+      await deferredDOMNodeStub();
+      const tagElement = treeElement.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
+      assert.isTrue(tagElement.classList.contains('violating-element'));
+      const issues = treeElement.issuesByNodeElement.get(tagElement);
+      assert.strictEqual(issues?.length, 3);
+      // Reset tag to prepare for subsequent tests.
+      tagElement.classList.remove('violating-element');
+    }
+
     // Test that non-supported issue won't be added to the tree element.
     {
       const inspectorIssue = {

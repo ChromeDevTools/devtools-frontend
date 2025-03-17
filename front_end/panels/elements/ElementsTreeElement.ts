@@ -264,7 +264,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private aiButtonContainer?: HTMLElement;
   private contentElement: HTMLElement;
   #elementIssues = new Map<string, IssuesManager.Issue.Issue>();
-  #nodeElementToIssue = new Map<Element, IssuesManager.Issue.Issue>();
+  #nodeElementToIssue = new Map<Element, IssuesManager.Issue.Issue[]>();
   #highlights: Range[] = [];
 
   readonly tagTypeContext: TagTypeContext;
@@ -457,7 +457,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue> {
+  get issuesByNodeElement(): Map<Element, IssuesManager.Issue.Issue[]> {
     return this.#nodeElementToIssue;
   }
 
@@ -468,7 +468,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       if (attribute.getElementsByClassName('webkit-html-attribute-name')[0].textContent === name) {
         const attributeElement = attribute.getElementsByClassName('webkit-html-attribute-name')[0];
         attributeElement.classList.add('violating-element');
-        this.#nodeElementToIssue.set(attributeElement, issue);
+        this.#updateNodeElementToIssue(attributeElement, issue);
       }
     }
   }
@@ -476,7 +476,15 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   #highlightTagAsViolating(issue: IssuesManager.Issue.Issue): void {
     const tagElement = this.listItemElement.getElementsByClassName('webkit-html-tag-name')[0];
     tagElement.classList.add('violating-element');
-    this.#nodeElementToIssue.set(tagElement, issue);
+    this.#updateNodeElementToIssue(tagElement, issue);
+  }
+
+  #updateNodeElementToIssue(nodeElement: Element, issue: IssuesManager.Issue.Issue): void {
+    if (!this.#nodeElementToIssue.has(nodeElement)) {
+      this.#nodeElementToIssue.set(nodeElement, [issue]);
+      return;
+    }
+    this.#nodeElementToIssue.get(nodeElement)?.push(issue);
   }
 
   expandedChildrenLimit(): number {

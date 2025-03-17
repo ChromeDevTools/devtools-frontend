@@ -1867,8 +1867,7 @@ export function injectCoreStyles(elementOrShadowRoot: Element|ShadowRoot): void 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
  */
 export function createShadowRootWithCoreStyles(
-    element: Element,
-    options: {cssFile?: Array<{cssContent: string}>|{cssContent: string}, delegatesFocus?: boolean} = {
+    element: Element, options: {cssFile?: Array<{cssText: string}>|{cssText: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,
       cssFile: undefined,
     }): ShadowRoot {

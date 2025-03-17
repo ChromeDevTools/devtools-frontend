@@ -13,7 +13,7 @@ import valueInterpreterSettingsStylesRaw from './valueInterpreterSettings.css.js
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const valueInterpreterSettingsStyles = new CSSStyleSheet();
-valueInterpreterSettingsStyles.replaceSync(valueInterpreterSettingsStylesRaw.cssContent);
+valueInterpreterSettingsStyles.replaceSync(valueInterpreterSettingsStylesRaw.cssText);
 
 const {render, html} = Lit;
 

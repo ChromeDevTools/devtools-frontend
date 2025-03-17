@@ -14,7 +14,7 @@ import shortcutDialogStylesRaw from './shortcutDialog.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const shortcutDialogStyles = new CSSStyleSheet();
-shortcutDialogStyles.replaceSync(shortcutDialogStylesRaw.cssContent);
+shortcutDialogStyles.replaceSync(shortcutDialogStylesRaw.cssText);
 
 const UIStrings = {
 

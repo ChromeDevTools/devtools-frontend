@@ -18,7 +18,7 @@ import type {DOMNode} from './Helper.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsBreadcrumbsStyles = new CSSStyleSheet();
-elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssContent);
+elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssText);
 
 const {html} = Lit;
 

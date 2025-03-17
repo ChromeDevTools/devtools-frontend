@@ -13,7 +13,7 @@ import stylePropertyEditorStylesRaw from './stylePropertyEditor.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const stylePropertyEditorStyles = new CSSStyleSheet();
-stylePropertyEditorStyles.replaceSync(stylePropertyEditorStylesRaw.cssContent);
+stylePropertyEditorStyles.replaceSync(stylePropertyEditorStylesRaw.cssText);
 
 const UIStrings = {
   /**

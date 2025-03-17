@@ -16,7 +16,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const buttonDialogStyles = new CSSStyleSheet();
-buttonDialogStyles.replaceSync(buttonDialogStylesRaw.cssContent);
+buttonDialogStyles.replaceSync(buttonDialogStylesRaw.cssText);
 
 export interface ButtonDialogData {
   openOnRender?: boolean;

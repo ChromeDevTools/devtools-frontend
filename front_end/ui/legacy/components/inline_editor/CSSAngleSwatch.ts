@@ -9,7 +9,7 @@ import {type Angle, AngleUnit, get2DTranslationsForAngle} from './CSSAngleUtils.
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssAngleSwatchStyles = new CSSStyleSheet();
-cssAngleSwatchStyles.replaceSync(cssAngleSwatchStylesRaw.cssContent);
+cssAngleSwatchStyles.replaceSync(cssAngleSwatchStylesRaw.cssText);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;

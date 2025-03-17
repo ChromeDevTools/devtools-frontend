@@ -14,7 +14,7 @@ import cssOverviewStartViewStylesRaw from './cssOverviewStartView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssOverviewStartViewStyles = new CSSStyleSheet();
-cssOverviewStartViewStyles.replaceSync(cssOverviewStartViewStylesRaw.cssContent);
+cssOverviewStartViewStyles.replaceSync(cssOverviewStartViewStylesRaw.cssText);
 
 const UIStrings = {
   /**

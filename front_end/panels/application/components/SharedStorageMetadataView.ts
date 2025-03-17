@@ -14,7 +14,7 @@ import {StorageMetadataView} from './StorageMetadataView.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const sharedStorageMetadataViewStyles = new CSSStyleSheet();
-sharedStorageMetadataViewStyles.replaceSync(sharedStorageMetadataViewStylesRaw.cssContent);
+sharedStorageMetadataViewStyles.replaceSync(sharedStorageMetadataViewStylesRaw.cssText);
 
 const {html} = Lit;
 

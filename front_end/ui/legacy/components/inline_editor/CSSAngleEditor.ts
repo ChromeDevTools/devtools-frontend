@@ -18,7 +18,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssAngleEditorStyles = new CSSStyleSheet();
-cssAngleEditorStyles.replaceSync(cssAngleEditorStylesRaw.cssContent);
+cssAngleEditorStyles.replaceSync(cssAngleEditorStylesRaw.cssText);
 
 const {render, html} = Lit;
 const styleMap = Lit.Directives.styleMap;

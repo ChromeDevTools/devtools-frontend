@@ -18,7 +18,7 @@ import createRecordingViewStylesRaw from './createRecordingView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const createRecordingViewStyles = new CSSStyleSheet();
-createRecordingViewStyles.replaceSync(createRecordingViewStylesRaw.cssContent);
+createRecordingViewStyles.replaceSync(createRecordingViewStylesRaw.cssText);
 
 const {html, Directives: {ifDefined}} = Lit;
 

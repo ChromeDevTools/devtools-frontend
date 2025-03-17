@@ -12,7 +12,7 @@ import linearMemoryNavigatorStylesRaw from './linearMemoryNavigator.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryNavigatorStyles = new CSSStyleSheet();
-linearMemoryNavigatorStyles.replaceSync(linearMemoryNavigatorStylesRaw.cssContent);
+linearMemoryNavigatorStyles.replaceSync(linearMemoryNavigatorStylesRaw.cssText);
 
 const UIStrings = {
   /**

@@ -85,7 +85,7 @@ export class Card extends HTMLElement {
   #render(): void {
     render(
         html`
-        <style>${cardStyles.cssContent}</style>
+        <style>${cardStyles.cssText}</style>
         <div id="card">
           <div id="heading">
             <slot name="heading-prefix"></slot>

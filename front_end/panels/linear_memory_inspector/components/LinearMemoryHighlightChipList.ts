@@ -13,7 +13,7 @@ import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryHighlightChipListStyles = new CSSStyleSheet();
-linearMemoryHighlightChipListStyles.replaceSync(linearMemoryHighlightChipListStylesRaw.cssContent);
+linearMemoryHighlightChipListStyles.replaceSync(linearMemoryHighlightChipListStylesRaw.cssText);
 
 const UIStrings = {
   /**

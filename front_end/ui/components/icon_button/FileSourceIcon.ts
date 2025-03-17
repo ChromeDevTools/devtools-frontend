@@ -80,7 +80,7 @@ export class FileSourceIcon extends HTMLElement {
 
     // clang-format off
     render(
-      html`<style>${fileSourceIconStyles.cssContent}</style><devtools-icon .name=${this.#iconType} class=${iconClasses} style=${iconStyles}></devtools-icon>`,
+      html`<style>${fileSourceIconStyles.cssText}</style><devtools-icon .name=${this.#iconType} class=${iconClasses} style=${iconStyles}></devtools-icon>`,
       this.#shadow, {
       host: this,
     });

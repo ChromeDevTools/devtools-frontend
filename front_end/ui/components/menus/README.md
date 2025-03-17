@@ -43,7 +43,7 @@ import exampleStylesRaw from './example.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const exampleStyles = new CSSStyleSheet();
-exampleStyles.replaceSync(exampleStylesRaw.cssContent);
+exampleStyles.replaceSync(exampleStylesRaw.cssText);
 export class Example extends HTMLElement{
 
 …
@@ -91,7 +91,7 @@ import exampleStylesRaw from './example.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const exampleStyles = new CSSStyleSheet();
-exampleStyles.replaceSync(exampleStylesRaw.cssContent);
+exampleStyles.replaceSync(exampleStylesRaw.cssText);
 export class Example extends HTMLElement{
   private currentValue = 0;
 

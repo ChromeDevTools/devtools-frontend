@@ -11,7 +11,7 @@ import * as LinkifierUtils from './LinkifierUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linkifierImplStyles = new CSSStyleSheet();
-linkifierImplStyles.replaceSync(linkifierImplStylesRaw.cssContent);
+linkifierImplStyles.replaceSync(linkifierImplStylesRaw.cssText);
 
 const {html} = Lit;
 

@@ -9,7 +9,7 @@ import computedStylePropertyStylesRaw from './computedStyleProperty.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const computedStylePropertyStyles = new CSSStyleSheet();
-computedStylePropertyStyles.replaceSync(computedStylePropertyStylesRaw.cssContent);
+computedStylePropertyStyles.replaceSync(computedStylePropertyStylesRaw.cssText);
 
 export class NavigateToSourceEvent extends Event {
   static readonly eventName = 'onnavigatetosource';

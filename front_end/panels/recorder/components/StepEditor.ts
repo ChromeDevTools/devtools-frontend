@@ -31,7 +31,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const stepEditorStyles = new CSSStyleSheet();
-stepEditorStyles.replaceSync(stepEditorStylesRaw.cssContent);
+stepEditorStyles.replaceSync(stepEditorStylesRaw.cssText);
 
 const {html, Decorators, Directives, LitElement} = Lit;
 const {customElement, property, state} = Decorators;

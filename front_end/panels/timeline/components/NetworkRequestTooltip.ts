@@ -16,7 +16,7 @@ import {colorForNetworkRequest, networkResourceCategory} from './Utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const networkRequestTooltipStyles = new CSSStyleSheet();
-networkRequestTooltipStyles.replaceSync(networkRequestTooltipStylesRaw.cssContent);
+networkRequestTooltipStyles.replaceSync(networkRequestTooltipStylesRaw.cssText);
 
 const {html} = Lit;
 

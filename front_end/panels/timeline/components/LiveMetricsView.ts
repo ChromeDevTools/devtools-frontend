@@ -35,11 +35,11 @@ import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const liveMetricsViewStyles = new CSSStyleSheet();
-liveMetricsViewStyles.replaceSync(liveMetricsViewStylesRaw.cssContent);
+liveMetricsViewStyles.replaceSync(liveMetricsViewStylesRaw.cssText);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const metricValueStyles = new CSSStyleSheet();
-metricValueStyles.replaceSync(metricValueStylesRaw.cssContent);
+metricValueStyles.replaceSync(metricValueStylesRaw.cssText);
 
 const {html, nothing} = Lit;
 

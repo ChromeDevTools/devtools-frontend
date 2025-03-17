@@ -185,7 +185,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
-        <style>${backForwardCacheViewStyles.cssContent}</style>
+        <style>${backForwardCacheViewStyles.cssText}</style>
         <devtools-report .data=${
             {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
         } jslog=${VisualLogging.pane('back-forward-cache')}>

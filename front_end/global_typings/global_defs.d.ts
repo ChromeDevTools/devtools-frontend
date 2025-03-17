@@ -3,6 +3,6 @@
 // found in the LICENSE file.
 
 declare module '*.css.js' {
-  const styles: {cssContent: string};
+  const styles: {cssText: string};
   export default styles;
 }

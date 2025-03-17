@@ -97,7 +97,7 @@ export class Badge extends HTMLElement {
 
     Lit.render(
         html`
-      <style>${badgeStyles.cssContent}</style>
+      <style>${badgeStyles.cssText}</style>
       ${this.#adorner}
     `,
         this.#shadow, {host: this});
@@ -304,7 +304,7 @@ export class OriginTrialTokenRows extends HTMLElement {
 
     Lit.render(
         html`
-      <style>${originTrialTokenRowsStyles.cssContent}</style>
+      <style>${originTrialTokenRowsStyles.cssText}</style>
       <div class="content">
         ${tokenDetailRows}
       </div>
@@ -330,7 +330,7 @@ export class OriginTrialTreeView extends HTMLElement {
     if (!trials.length) {
       Lit.render(
           html`
-    <style>${originTrialTreeViewStyles.cssContent}</style>
+    <style>${originTrialTreeViewStyles.cssText}</style>
     <span class="status-badge">
       <devtools-icon
           .data=${{
@@ -349,7 +349,7 @@ export class OriginTrialTreeView extends HTMLElement {
 
     Lit.render(
         html`
-      <style>${originTrialTreeViewStyles.cssContent}</style>
+      <style>${originTrialTreeViewStyles.cssText}</style>
       <devtools-tree-outline .data=${{
           tree: trials.map(constructOriginTrialTree),
           defaultRenderer,

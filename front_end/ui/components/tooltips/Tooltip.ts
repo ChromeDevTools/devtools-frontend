@@ -133,7 +133,7 @@ export class Tooltip extends HTMLElement {
 
     // clang-format off
     Lit.render(html`
-      <style>${tooltipStyles.cssContent}</style>
+      <style>${tooltipStyles.cssText}</style>
       <!-- Wrapping it into a container, so that the tooltip doesn't disappear when the mouse moves from the anchor to the tooltip. -->
       <div class="container">
         <slot></slot>

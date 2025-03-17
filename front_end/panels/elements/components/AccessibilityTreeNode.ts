@@ -12,7 +12,7 @@ import accessibilityTreeNodeStylesRaw from './accessibilityTreeNode.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const accessibilityTreeNodeStyles = new CSSStyleSheet();
-accessibilityTreeNodeStyles.replaceSync(accessibilityTreeNodeStylesRaw.cssContent);
+accessibilityTreeNodeStyles.replaceSync(accessibilityTreeNodeStylesRaw.cssText);
 
 const UIStrings = {
   /**

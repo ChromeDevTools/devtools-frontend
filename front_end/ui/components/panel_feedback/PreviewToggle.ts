@@ -13,7 +13,7 @@ import previewToggleStylesRaw from './previewToggle.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const previewToggleStyles = new CSSStyleSheet();
-previewToggleStyles.replaceSync(previewToggleStylesRaw.cssContent);
+previewToggleStyles.replaceSync(previewToggleStylesRaw.cssText);
 
 export interface PreviewToggleData {
   name: string;

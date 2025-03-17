@@ -34,7 +34,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryInspectorStyles = new CSSStyleSheet();
-linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssContent);
+linearMemoryInspectorStyles.replaceSync(linearMemoryInspectorStylesRaw.cssText);
 
 const UIStrings = {
   /**

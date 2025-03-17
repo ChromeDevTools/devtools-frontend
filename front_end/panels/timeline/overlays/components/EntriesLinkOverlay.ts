@@ -22,7 +22,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssContent);
+styles.replaceSync(stylesRaw.cssText);
 
 export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';

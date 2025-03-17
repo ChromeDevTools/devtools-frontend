@@ -9,7 +9,7 @@ import elementsPanelLinkStylesRaw from './elementsPanelLink.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsPanelLinkStyles = new CSSStyleSheet();
-elementsPanelLinkStyles.replaceSync(elementsPanelLinkStylesRaw.cssContent);
+elementsPanelLinkStyles.replaceSync(elementsPanelLinkStylesRaw.cssText);
 
 export interface ElementsPanelLinkData {
   onElementRevealIconClick: (event?: Event) => void;

@@ -22,7 +22,7 @@ const {html} = Lit;
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const networkDependencyTreeInsightComponentStyles = new CSSStyleSheet();
-networkDependencyTreeInsightComponentStyles.replaceSync(networkDependencyTreeInsightRaw.cssContent);
+networkDependencyTreeInsightComponentStyles.replaceSync(networkDependencyTreeInsightRaw.cssText);
 
 export class NetworkDependencyTree extends BaseInsightComponent<NetworkDependencyTreeInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-long-critical-network-tree`;

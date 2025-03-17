@@ -8,7 +8,7 @@ import controlButtonStylesRaw from './controlButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const controlButtonStyles = new CSSStyleSheet();
-controlButtonStyles.replaceSync(controlButtonStylesRaw.cssContent);
+controlButtonStyles.replaceSync(controlButtonStylesRaw.cssText);
 
 const {html, Decorators, LitElement} = Lit;
 const {customElement, property} = Decorators;

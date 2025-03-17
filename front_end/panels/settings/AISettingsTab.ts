@@ -20,7 +20,7 @@ import aiSettingsTabStylesRaw from './aiSettingsTab.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const aiSettingsTabStyles = new CSSStyleSheet();
-aiSettingsTabStyles.replaceSync(aiSettingsTabStylesRaw.cssContent);
+aiSettingsTabStyles.replaceSync(aiSettingsTabStylesRaw.cssText);
 
 const {html, Directives: {ifDefined, classMap}} = Lit;
 

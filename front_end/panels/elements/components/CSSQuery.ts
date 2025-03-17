@@ -11,11 +11,11 @@ import cssQueryStylesRaw from './cssQuery.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssQueryStyles = new CSSStyleSheet();
-cssQueryStyles.replaceSync(cssQueryStylesRaw.cssContent);
+cssQueryStyles.replaceSync(cssQueryStylesRaw.cssText);
 
 const {render, html} = Lit;
 

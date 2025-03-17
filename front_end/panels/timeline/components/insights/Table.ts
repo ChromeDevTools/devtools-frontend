@@ -14,7 +14,7 @@ import tableStylesRaw from './table.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const tableStyles = new CSSStyleSheet();
-tableStyles.replaceSync(tableStylesRaw.cssContent);
+tableStyles.replaceSync(tableStylesRaw.cssText);
 
 const {html} = Lit;
 

@@ -8,7 +8,7 @@ import spinnerStylesRaw from './spinner.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const spinnerStyles = new CSSStyleSheet();
-spinnerStyles.replaceSync(spinnerStylesRaw.cssContent);
+spinnerStyles.replaceSync(spinnerStylesRaw.cssText);
 
 export class Spinner extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});

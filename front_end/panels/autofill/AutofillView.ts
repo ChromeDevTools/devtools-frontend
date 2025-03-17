@@ -24,11 +24,11 @@ import autofillViewStylesRaw from './autofillView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const autofillViewStyles = new CSSStyleSheet();
-autofillViewStyles.replaceSync(autofillViewStylesRaw.cssContent);
+autofillViewStyles.replaceSync(autofillViewStylesRaw.cssText);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
 
 const {html, render, Directives: {styleMap}} = Lit;
 const {FillingStrategy} = Protocol.Autofill;

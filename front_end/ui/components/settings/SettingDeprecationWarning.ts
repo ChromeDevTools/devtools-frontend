@@ -11,7 +11,7 @@ import settingDeprecationWarningRaw from './settingDeprecationWarning.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const settingDeprecationWarning = new CSSStyleSheet();
-settingDeprecationWarning.replaceSync(settingDeprecationWarningRaw.cssContent);
+settingDeprecationWarning.replaceSync(settingDeprecationWarningRaw.cssText);
 
 const {html} = Lit;
 

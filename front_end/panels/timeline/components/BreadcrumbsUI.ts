@@ -14,7 +14,7 @@ import breadcrumbsUIStylesRaw from './breadcrumbsUI.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const breadcrumbsUIStyles = new CSSStyleSheet();
-breadcrumbsUIStyles.replaceSync(breadcrumbsUIStylesRaw.cssContent);
+breadcrumbsUIStyles.replaceSync(breadcrumbsUIStylesRaw.cssText);
 
 const {render, html} = Lit;
 

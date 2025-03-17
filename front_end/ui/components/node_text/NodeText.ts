@@ -8,7 +8,7 @@ import nodeTextStylesRaw from './nodeText.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const nodeTextStyles = new CSSStyleSheet();
-nodeTextStyles.replaceSync(nodeTextStylesRaw.cssContent);
+nodeTextStyles.replaceSync(nodeTextStylesRaw.cssText);
 
 const {render, html} = Lit;
 

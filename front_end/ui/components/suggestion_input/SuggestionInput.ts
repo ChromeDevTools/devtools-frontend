@@ -11,11 +11,11 @@ import contentEditableStylesRaw from './suggestionInput.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const codeHighlighterStyles = new CSSStyleSheet();
-codeHighlighterStyles.replaceSync(codeHighlighterStylesRaw.cssContent);
+codeHighlighterStyles.replaceSync(codeHighlighterStylesRaw.cssText);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const contentEditableStyles = new CSSStyleSheet();
-contentEditableStyles.replaceSync(contentEditableStylesRaw.cssContent);
+contentEditableStyles.replaceSync(contentEditableStylesRaw.cssText);
 
 const mod = (a: number, n: number): number => {
   return ((a % n) + n) % n;

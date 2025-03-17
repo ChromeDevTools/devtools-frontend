@@ -98,8 +98,8 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     await RenderCoordinator.write('Render TrustTokensView', () => {
       // clang-format off
       Lit.render(html`
-        <style>${trustTokensViewStyles.cssContent}</style>
-        <style>${inspectorCommonStyles.cssContent}</style>
+        <style>${trustTokensViewStyles.cssText}</style>
+        <style>${inspectorCommonStyles.cssText}</style>
         ${this.#renderGridOrNoDataMessage(tokens)}
       `, this.#shadow, {host: this});
       // clang-format on

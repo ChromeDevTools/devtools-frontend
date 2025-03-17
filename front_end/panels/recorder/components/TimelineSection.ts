@@ -8,7 +8,7 @@ import timelineSectionStylesRaw from './timelineSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const timelineSectionStyles = new CSSStyleSheet();
-timelineSectionStyles.replaceSync(timelineSectionStylesRaw.cssContent);
+timelineSectionStyles.replaceSync(timelineSectionStylesRaw.cssText);
 
 const {html} = Lit;
 

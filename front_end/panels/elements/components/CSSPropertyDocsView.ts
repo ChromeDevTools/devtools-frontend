@@ -14,7 +14,7 @@ import CSSPropertyDocsViewStylesRaw from './cssPropertyDocsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const CSSPropertyDocsViewStyles = new CSSStyleSheet();
-CSSPropertyDocsViewStyles.replaceSync(CSSPropertyDocsViewStylesRaw.cssContent);
+CSSPropertyDocsViewStyles.replaceSync(CSSPropertyDocsViewStylesRaw.cssText);
 
 const UIStrings = {
   /**

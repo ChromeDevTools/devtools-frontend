@@ -11,7 +11,7 @@ import cssHintDetailsViewStylesRaw from './cssHintDetailsView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const cssHintDetailsViewStyles = new CSSStyleSheet();
-cssHintDetailsViewStyles.replaceSync(cssHintDetailsViewStylesRaw.cssContent);
+cssHintDetailsViewStyles.replaceSync(cssHintDetailsViewStylesRaw.cssText);
 
 const UIStrings = {
   /**

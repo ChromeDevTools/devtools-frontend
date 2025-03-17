@@ -269,7 +269,7 @@ interface NamedBitSetFilterUIOptions {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const filterStyleSheet = new CSSStyleSheet();
-filterStyleSheet.replaceSync(filterStyles.cssContent);
+filterStyleSheet.replaceSync(filterStyles.cssText);
 
 export class NamedBitSetFilterUIElement extends HTMLElement {
   #options: NamedBitSetFilterUIOptions = {items: []};

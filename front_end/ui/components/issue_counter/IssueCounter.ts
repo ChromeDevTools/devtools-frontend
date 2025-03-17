@@ -201,7 +201,7 @@ export class IssueCounter extends HTMLElement {
     };
     render(
         html`
-        <style>${issueCounterStyles.cssContent}</style>
+        <style>${issueCounterStyles.cssText}</style>
         <icon-button .data=${data} .accessibleName=${this.#accessibleName}></icon-button>
         `,
         this.#shadow, {host: this});

@@ -86,8 +86,8 @@ export class InterestGroupAccessGrid extends HTMLElement {
     }
     // clang-format off
     Lit.render(html`
-      <style>${interestGroupAccessGridStyles.cssContent}</style>
-      <style>${inspectorCommonStyles.cssContent}</style>
+      <style>${interestGroupAccessGridStyles.cssText}</style>
+      <style>${inspectorCommonStyles.cssText}</style>
       <div>
         <span class="heading">Interest Groups</span>
         <devtools-icon class="info-icon"

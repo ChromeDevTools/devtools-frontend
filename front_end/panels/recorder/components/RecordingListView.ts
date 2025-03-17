@@ -16,7 +16,7 @@ import recordingListViewStylesRaw from './recordingListView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const recordingListViewStyles = new CSSStyleSheet();
-recordingListViewStyles.replaceSync(recordingListViewStylesRaw.cssContent);
+recordingListViewStyles.replaceSync(recordingListViewStylesRaw.cssText);
 
 const {html} = Lit;
 

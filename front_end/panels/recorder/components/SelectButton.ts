@@ -19,7 +19,7 @@ import selectButtonStylesRaw from './selectButton.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const selectButtonStyles = new CSSStyleSheet();
-selectButtonStyles.replaceSync(selectButtonStylesRaw.cssContent);
+selectButtonStyles.replaceSync(selectButtonStylesRaw.cssText);
 
 const {html, Directives: {ifDefined, classMap}} = Lit;
 

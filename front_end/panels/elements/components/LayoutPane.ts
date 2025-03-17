@@ -23,11 +23,11 @@ import type {BooleanSetting, EnumSetting, LayoutElement, Setting} from './Layout
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssText);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const layoutPaneStyles = new CSSStyleSheet();
-layoutPaneStyles.replaceSync(layoutPaneStylesRaw.cssContent);
+layoutPaneStyles.replaceSync(layoutPaneStylesRaw.cssText);
 
 const UIStrings = {
   /**

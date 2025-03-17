@@ -140,7 +140,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <style>${preloadingDisabledInfobarStyles.cssContent}</style>
+      <style>${preloadingDisabledInfobarStyles.cssText}</style>
       <div id='container'>
         <span id='header'>
           ${header}

@@ -64,7 +64,7 @@ import * as Utils from './utils/utils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const imagePreviewStyles = new CSSStyleSheet();
-imagePreviewStyles.replaceSync(imagePreviewStylesRaw.cssContent);
+imagePreviewStyles.replaceSync(imagePreviewStylesRaw.cssText);
 
 const UIStrings = {
   /**

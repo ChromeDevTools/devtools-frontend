@@ -15,7 +15,7 @@ import dialogStylesRaw from './dialog.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const dialogStyles = new CSSStyleSheet();
-dialogStyles.replaceSync(dialogStylesRaw.cssContent);
+dialogStyles.replaceSync(dialogStylesRaw.cssText);
 
 const {html} = Lit;
 

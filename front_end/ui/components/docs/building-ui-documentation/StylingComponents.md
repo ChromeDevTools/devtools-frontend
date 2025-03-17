@@ -14,7 +14,7 @@ import elementsBreadcrumbsStylesRaw from './elementsBreadcrumbs.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsBreadcrumbsStyles = new CSSStyleSheet();
-elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssContent);
+elementsBreadcrumbsStyles.replaceSync(elementsBreadcrumbsStylesRaw.cssText);
 ```
 
 As part of the build tool step, each CSS file is converted into a JS file that exports a `CSSStyleSheet` instance. This is done by Rollup in [`generate_css_js_files`](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/scripts/build/generate_css_js_files.js;l=1;drc=28af9fbe783d82aa64bfa5f9b9509572dc2b3efe).

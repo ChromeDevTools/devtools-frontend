@@ -12,7 +12,7 @@ import elementsTreeExpandButtonStylesRaw from './elementsTreeExpandButton.css.js
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const elementsTreeExpandButtonStyles = new CSSStyleSheet();
-elementsTreeExpandButtonStyles.replaceSync(elementsTreeExpandButtonStylesRaw.cssContent);
+elementsTreeExpandButtonStyles.replaceSync(elementsTreeExpandButtonStylesRaw.cssText);
 
 const UIStrings = {
   /**

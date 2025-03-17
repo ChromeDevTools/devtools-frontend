@@ -71,7 +71,7 @@ export class StackTraceRow extends HTMLElement {
     }
     Lit.render(
         html`
-      <style>${stackTraceRowStyles.cssContent}</style>
+      <style>${stackTraceRowStyles.cssText}</style>
       <div class="stack-trace-row">
               <div class="stack-trace-function-name text-ellipsis" title=${this.#stackTraceRowItem.functionName}>
                 ${this.#stackTraceRowItem.functionName}
@@ -116,7 +116,7 @@ export class StackTraceLinkButton extends HTMLElement {
                                           i18nString(UIStrings.showSMoreFrames, {n: this.#hiddenCallFramesCount});
     Lit.render(
         html`
-      <style>${stackTraceLinkButtonStyles.cssContent}</style>
+      <style>${stackTraceLinkButtonStyles.cssText}</style>
       <div class="stack-trace-row">
           <button class="link" @click=${() => this.#onShowAllClick()}>
             ${linkText}

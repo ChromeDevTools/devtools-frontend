@@ -11,7 +11,7 @@ import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryViewerStyles = new CSSStyleSheet();
-linearMemoryViewerStyles.replaceSync(linearMemoryViewerStylesRaw.cssContent);
+linearMemoryViewerStyles.replaceSync(linearMemoryViewerStylesRaw.cssText);
 
 const {render, html} = Lit;
 

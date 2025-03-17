@@ -91,7 +91,7 @@ export class Toolbar extends HTMLElement {
 
   constructor() {
     super();
-    this.#shadowRoot.createChild('style').textContent = toolbarStyles.cssContent;
+    this.#shadowRoot.createChild('style').textContent = toolbarStyles.cssText;
     this.#shadowRoot.createChild('slot');
   }
 

@@ -7,9 +7,9 @@ import textInputStylesRaw from './textInput.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const checkboxStyles = new CSSStyleSheet();
-checkboxStyles.replaceSync(checkboxStylesRaw.cssContent);
+checkboxStyles.replaceSync(checkboxStylesRaw.cssText);
 const textInputStyles = new CSSStyleSheet();
-textInputStyles.replaceSync(textInputStylesRaw.cssContent);
+textInputStyles.replaceSync(textInputStylesRaw.cssText);
 
 export {
   checkboxStyles,

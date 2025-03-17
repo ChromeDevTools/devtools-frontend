@@ -14,7 +14,7 @@ import anchorFunctionLinkSwatchStylesRaw from './anchorFunctionLinkSwatch.css.js
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const anchorFunctionLinkSwatchStyles = new CSSStyleSheet();
-anchorFunctionLinkSwatchStyles.replaceSync(anchorFunctionLinkSwatchStylesRaw.cssContent);
+anchorFunctionLinkSwatchStyles.replaceSync(anchorFunctionLinkSwatchStylesRaw.cssText);
 
 const UIStrings = {
   /**

@@ -227,7 +227,7 @@ export class PermissionsPolicySection extends HTMLElement {
       // clang-format off
       Lit.render(
         html`
-          <style>${permissionsPolicySectionStyles.cssContent}</style>
+          <style>${permissionsPolicySectionStyles.cssText}</style>
           <devtools-report-section-header>${i18n.i18n.lockedString('Permissions Policy')}</devtools-report-section-header>
           ${this.#renderAllowed()}
           ${Lit.Directives.until(this.#renderDisallowed(), Lit.nothing)}

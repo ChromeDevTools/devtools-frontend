@@ -17,7 +17,7 @@ import HeadersViewStylesRaw from './HeadersView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const HeadersViewStyles = new CSSStyleSheet();
-HeadersViewStyles.replaceSync(HeadersViewStylesRaw.cssContent);
+HeadersViewStyles.replaceSync(HeadersViewStylesRaw.cssText);
 
 const {html} = Lit;
 

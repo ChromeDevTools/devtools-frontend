@@ -118,7 +118,7 @@ export class SurveyLink extends HTMLElement {
     // clang-format off
 
     const output = html`
-      <style>${surveyLinkStyles.cssContent}</style>
+      <style>${surveyLinkStyles.cssText}</style>
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
         <devtools-icon class="link-icon" .data=${{iconName: 'review', color: 'var(--sys-color-primary)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'}}></devtools-icon><!--
       -->${linkText}

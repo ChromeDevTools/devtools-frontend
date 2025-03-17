@@ -17,7 +17,7 @@ import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const linearMemoryValueInterpreterStyles = new CSSStyleSheet();
-linearMemoryValueInterpreterStyles.replaceSync(linearMemoryValueInterpreterStylesRaw.cssContent);
+linearMemoryValueInterpreterStyles.replaceSync(linearMemoryValueInterpreterStylesRaw.cssText);
 
 const UIStrings = {
   /**

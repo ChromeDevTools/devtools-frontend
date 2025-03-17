@@ -19,7 +19,7 @@ import type {OriginMap} from './OriginMap.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const fieldSettingsDialogStyles = new CSSStyleSheet();
-fieldSettingsDialogStyles.replaceSync(fieldSettingsDialogStylesRaw.cssContent);
+fieldSettingsDialogStyles.replaceSync(fieldSettingsDialogStylesRaw.cssText);
 
 const UIStrings = {
   /**

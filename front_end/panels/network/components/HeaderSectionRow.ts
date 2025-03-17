@@ -20,7 +20,7 @@ import headerSectionRowStylesRaw from './HeaderSectionRow.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const headerSectionRowStyles = new CSSStyleSheet();
-headerSectionRowStyles.replaceSync(headerSectionRowStylesRaw.cssContent);
+headerSectionRowStyles.replaceSync(headerSectionRowStylesRaw.cssText);
 
 const {render, html} = Lit;
 

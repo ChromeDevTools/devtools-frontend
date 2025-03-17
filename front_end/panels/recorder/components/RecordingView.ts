@@ -39,7 +39,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const recordingViewStyles = new CSSStyleSheet();
-recordingViewStyles.replaceSync(recordingViewStylesRaw.cssContent);
+recordingViewStyles.replaceSync(recordingViewStylesRaw.cssText);
 
 const {html} = Lit;
 

@@ -16,7 +16,7 @@ import extensionViewStylesRaw from './extensionView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const extensionViewStyles = new CSSStyleSheet();
-extensionViewStyles.replaceSync(extensionViewStylesRaw.cssContent);
+extensionViewStyles.replaceSync(extensionViewStylesRaw.cssText);
 
 const {html} = Lit;
 

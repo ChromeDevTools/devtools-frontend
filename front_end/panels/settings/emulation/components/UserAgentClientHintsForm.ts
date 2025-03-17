@@ -18,7 +18,7 @@ import userAgentClientHintsFormStylesRaw from './userAgentClientHintsForm.css.js
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const userAgentClientHintsFormStyles = new CSSStyleSheet();
-userAgentClientHintsFormStyles.replaceSync(userAgentClientHintsFormStylesRaw.cssContent);
+userAgentClientHintsFormStyles.replaceSync(userAgentClientHintsFormStylesRaw.cssText);
 
 const {html} = Lit;
 

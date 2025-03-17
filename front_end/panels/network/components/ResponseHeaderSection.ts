@@ -35,7 +35,7 @@ import responseHeaderSectionStylesRaw from './ResponseHeaderSection.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const responseHeaderSectionStyles = new CSSStyleSheet();
-responseHeaderSectionStyles.replaceSync(responseHeaderSectionStylesRaw.cssContent);
+responseHeaderSectionStyles.replaceSync(responseHeaderSectionStylesRaw.cssText);
 
 const UIStrings = {
   /**

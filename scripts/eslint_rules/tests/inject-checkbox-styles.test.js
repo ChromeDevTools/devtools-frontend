@@ -31,7 +31,7 @@ import settingCheckboxStylesRaw from './settingCheckbox.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const settingCheckboxStyles = new CSSStyleSheet();
-settingCheckboxStyles.replaceSync(settingCheckboxStylesRaw.cssContent);
+settingCheckboxStyles.replaceSync(settingCheckboxStylesRaw.cssText);
 
 export class SettingCheckbox extends HTMLElement {
   static readonly litTagName = Lit.literal\`setting-checkbox\`;

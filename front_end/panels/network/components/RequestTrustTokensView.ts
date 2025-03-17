@@ -17,7 +17,7 @@ import requestTrustTokensViewStylesRaw from './RequestTrustTokensView.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const requestTrustTokensViewStyles = new CSSStyleSheet();
-requestTrustTokensViewStyles.replaceSync(requestTrustTokensViewStylesRaw.cssContent);
+requestTrustTokensViewStyles.replaceSync(requestTrustTokensViewStylesRaw.cssText);
 
 const {html} = Lit;
 

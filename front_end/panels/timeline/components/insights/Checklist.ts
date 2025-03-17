@@ -35,7 +35,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const checklistStyles = new CSSStyleSheet();
-checklistStyles.replaceSync(checklistStylesRaw.cssContent);
+checklistStyles.replaceSync(checklistStylesRaw.cssText);
 
 const {html} = Lit;
 

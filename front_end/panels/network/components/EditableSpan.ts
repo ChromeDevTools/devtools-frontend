@@ -10,7 +10,7 @@ import editableSpanStylesRaw from './EditableSpan.css.js';
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const editableSpanStyles = new CSSStyleSheet();
-editableSpanStyles.replaceSync(editableSpanStylesRaw.cssContent);
+editableSpanStyles.replaceSync(editableSpanStylesRaw.cssText);
 
 export interface EditableSpanData {
   value: string;

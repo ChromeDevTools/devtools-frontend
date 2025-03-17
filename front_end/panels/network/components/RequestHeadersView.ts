@@ -32,7 +32,7 @@ import {
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const requestHeadersViewStyles = new CSSStyleSheet();
-requestHeadersViewStyles.replaceSync(requestHeadersViewStylesRaw.cssContent);
+requestHeadersViewStyles.replaceSync(requestHeadersViewStylesRaw.cssText);
 
 const RAW_HEADER_CUTOFF = 3000;
 const {render, html} = Lit;

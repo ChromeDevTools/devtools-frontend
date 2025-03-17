@@ -12,6 +12,7 @@ import {
   getBrowserAndPages,
   getResourcesPath,
   renderCoordinatorQueueEmpty,
+  selectOption,
   waitFor,
   waitForAnimationFrame,
   waitForAria,
@@ -334,13 +335,11 @@ describe('Recorder', function() {
         await click('aria/Edit replay settings');
         await waitForAnimationFrame();
 
-        const selectMenu = await click(
-            '.editable-setting devtools-select-menu',
+        const selectMenu = await waitFor(
+            '.editable-setting select',
         );
-        await waitForAnimationFrame();
 
-        await click('devtools-menu-item:nth-child(3)', {root: selectMenu});
-        await waitForAnimationFrame();
+        void selectOption(await selectMenu.toElement('select'), '3G');
 
         const recording = await getCurrentRecording();
 

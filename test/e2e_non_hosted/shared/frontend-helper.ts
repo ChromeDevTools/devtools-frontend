@@ -214,16 +214,6 @@ export class DevToolsFronendPage extends PageWrapper {
         Array<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>>;
     return elements;
   }
-
-  async getAllTextContents(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'):
-      Promise<Array<string|null>> {
-    const allElements = await this.$$(selector, root, handler);
-    return await Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
-  }
-
-  waitForElementWithTextContent(textContent: string, root?: puppeteer.ElementHandle, asyncScope = new AsyncScope()) {
-    return this.waitFor(textContent, root, asyncScope, 'pierceShadowText');
-  }
 }
 
 export interface DevtoolsSettings {

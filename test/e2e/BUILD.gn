@@ -46,6 +46,7 @@ node_ts_library("tests") {
     "settings",
     "snippets",
     "sources",
+    "throttling",
   ]
   sources = [ "mocharc.ts" ]
 }

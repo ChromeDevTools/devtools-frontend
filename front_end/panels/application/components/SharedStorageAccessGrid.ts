@@ -8,20 +8,12 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import sharedStorageAccessGridStylesRaw from './sharedStorageAccessGrid.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const sharedStorageAccessGridStyles = new CSSStyleSheet();
-sharedStorageAccessGridStyles.replaceSync(sharedStorageAccessGridStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
 
 const SHARED_STORAGE_EXPLANATION_URL =
     'https://developers.google.com/privacy-sandbox/private-advertising/shared-storage';
@@ -87,7 +79,6 @@ export class SharedStorageAccessGrid extends HTMLElement {
   #datastores: Protocol.Storage.SharedStorageAccessedEvent[] = [];
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [sharedStorageAccessGridStyles, inspectorCommonStyles];
     this.#render();
   }
 
@@ -98,7 +89,12 @@ export class SharedStorageAccessGrid extends HTMLElement {
   }
 
   #render(): void {
-    render(html`${this.#renderGridOrNoDataMessage()}`, this.#shadow, {host: this});
+    // clang-format off
+    render(html`
+      <style>${sharedStorageAccessGridStyles.cssContent}</style>
+      <style>${inspectorCommonStyles.cssContent}</style>
+      ${this.#renderGridOrNoDataMessage()}`, this.#shadow, {host: this});
+    // clang-format on
   }
 
   #renderGridOrNoDataMessage(): Lit.TemplateResult {

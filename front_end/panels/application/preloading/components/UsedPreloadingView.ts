@@ -22,11 +22,7 @@ import * as PreloadingHelper from '../helper/helper.js';
 
 import type * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
-import usedPreloadingStylesRaw from './usedPreloadingView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const usedPreloadingStyles = new CSSStyleSheet();
-usedPreloadingStyles.replaceSync(usedPreloadingStylesRaw.cssContent);
+import usedPreloadingStyles from './usedPreloadingView.css.js';
 
 const {html} = Lit;
 
@@ -152,10 +148,6 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     currentAttempts: [],
   };
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [usedPreloadingStyles];
-  }
-
   set data(data: UsedPreloadingViewData) {
     this.#data = data;
     void this.#render();
@@ -171,6 +163,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
+      <style>${usedPreloadingStyles.cssContent}</style>
       <devtools-report>
         ${this.#speculativeLoadingStatusForThisPageSections()}
 

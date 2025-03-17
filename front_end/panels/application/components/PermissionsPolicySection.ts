@@ -16,11 +16,7 @@ import * as RenderCoordinator from '../../../ui/components/render_coordinator/re
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import permissionsPolicySectionStylesRaw from './permissionsPolicySection.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const permissionsPolicySectionStyles = new CSSStyleSheet();
-permissionsPolicySectionStyles.replaceSync(permissionsPolicySectionStylesRaw.cssContent);
+import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
 
 const {html} = Lit;
 
@@ -97,10 +93,6 @@ export class PermissionsPolicySection extends HTMLElement {
   set data(data: PermissionsPolicySectionData) {
     this.#permissionsPolicySectionData = data;
     void this.#render();
-  }
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [permissionsPolicySectionStyles];
   }
 
   #toggleShowPermissionsDisallowedDetails(): void {
@@ -235,6 +227,7 @@ export class PermissionsPolicySection extends HTMLElement {
       // clang-format off
       Lit.render(
         html`
+          <style>${permissionsPolicySectionStyles.cssContent}</style>
           <devtools-report-section-header>${i18n.i18n.lockedString('Permissions Policy')}</devtools-report-section-header>
           ${this.#renderAllowed()}
           ${Lit.Directives.until(this.#renderDisallowed(), Lit.nothing)}

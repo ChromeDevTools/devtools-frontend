@@ -8,18 +8,10 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import interestGroupAccessGridStylesRaw from './interestGroupAccessGrid.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const interestGroupAccessGridStyles = new CSSStyleSheet();
-interestGroupAccessGridStyles.replaceSync(interestGroupAccessGridStylesRaw.cssContent);
+import interestGroupAccessGridStyles from './interestGroupAccessGrid.css.js';
 
 const {html} = Lit;
 
@@ -78,7 +70,6 @@ export class InterestGroupAccessGrid extends HTMLElement {
   #datastores: Protocol.Storage.InterestGroupAccessedEvent[] = [];
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [interestGroupAccessGridStyles, inspectorCommonStyles];
     this.#render();
   }
 
@@ -95,6 +86,8 @@ export class InterestGroupAccessGrid extends HTMLElement {
     }
     // clang-format off
     Lit.render(html`
+      <style>${interestGroupAccessGridStyles.cssContent}</style>
+      <style>${inspectorCommonStyles.cssContent}</style>
       <div>
         <span class="heading">Interest Groups</span>
         <devtools-icon class="info-icon"

@@ -16,11 +16,7 @@ import * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
-import preloadingDisabledInfobarStylesRaw from './preloadingDisabledInfobar.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const preloadingDisabledInfobarStyles = new CSSStyleSheet();
-preloadingDisabledInfobarStyles.replaceSync(preloadingDisabledInfobarStylesRaw.cssContent);
+import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js';
 
 const {html} = Lit;
 
@@ -112,7 +108,6 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
   };
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [preloadingDisabledInfobarStyles];
     void this.#render();
   }
 
@@ -145,6 +140,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
+      <style>${preloadingDisabledInfobarStyles.cssContent}</style>
       <div id='container'>
         <span id='header'>
           ${header}

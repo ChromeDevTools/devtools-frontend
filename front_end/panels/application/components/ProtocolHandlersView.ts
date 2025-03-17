@@ -11,18 +11,12 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 // inspectorCommonStyles is imported for the <select> styling that is used for the dropdown
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import protocolHandlersViewStylesRaw from './protocolHandlersView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
-const protocolHandlersViewStyles = new CSSStyleSheet();
-protocolHandlersViewStyles.replaceSync(protocolHandlersViewStylesRaw.cssContent);
+import protocolHandlersViewStyles from './protocolHandlersView.css.js';
 
 const {html} = Lit;
 
@@ -172,19 +166,14 @@ export class ProtocolHandlersView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureTestProtocolClicked);
   };
 
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [
-      protocolHandlersViewStyles,
-      inspectorCommonStyles,
-      Input.textInputStyles,
-    ];
-  }
-
   #render(): void {
     const protocolDocLink = UI.XLink.XLink.create(
         PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations), undefined, undefined, 'learn-more');
     // clang-format off
     Lit.render(html`
+      <style>${protocolHandlersViewStyles.cssContent}</style>
+      <style>${inspectorCommonStyles.cssContent}</style>
+      <style>${Input.textInputStylesRaw.cssContent}</style>
       ${this.#renderStatusMessage()}
       <div class="protocol-handlers-row">
           ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}

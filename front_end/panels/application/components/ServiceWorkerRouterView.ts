@@ -6,21 +6,13 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Lit from '../../../ui/lit/lit.js';
 
-import stylesRaw from './serviceWorkerRouterView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const styles = new CSSStyleSheet();
-styles.replaceSync(stylesRaw.cssContent);
+import serviceWorkerRouterViewStyles from './serviceWorkerRouterView.css.js';
 
 const {html, render} = Lit;
 
 export class ServiceWorkerRouterView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #rules: SDK.ServiceWorkerManager.ServiceWorkerRouterRule[] = [];
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [styles];
-  }
 
   update(rules: SDK.ServiceWorkerManager.ServiceWorkerRouterRule[]): void {
     this.#rules = rules;
@@ -32,6 +24,7 @@ export class ServiceWorkerRouterView extends LegacyWrapper.LegacyWrapper.Wrappab
   #render(): void {
     // clang-format off
     render(html`
+      <style>${serviceWorkerRouterViewStyles.cssContent}</style>
       <ul class="router-rules">
         ${this.#rules.map(this.#renderRouterRule)}
       </ul>

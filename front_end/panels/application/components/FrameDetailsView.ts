@@ -25,17 +25,13 @@ import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import frameDetailsReportViewStylesRaw from './frameDetailsReportView.css.js';
+import frameDetailsReportViewStyles from './frameDetailsReportView.css.js';
 import {OriginTrialTreeView} from './OriginTrialTreeView.js';
 import {
   type PermissionsPolicySectionData,
   renderIconLink,
 } from './PermissionsPolicySection.js';
 import type {StackTraceData} from './StackTrace.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const frameDetailsReportViewStyles = new CSSStyleSheet();
-frameDetailsReportViewStyles.replaceSync(frameDetailsReportViewStylesRaw.cssContent);
 
 const {html} = Lit;
 
@@ -295,7 +291,6 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   connectedCallback(): void {
     this.parentElement?.classList.add('overflow-auto');
     this.#protocolMonitorExperimentEnabled = Root.Runtime.experiments.isEnabled('protocol-monitor');
-    this.#shadow.adoptedStyleSheets = [frameDetailsReportViewStyles];
   }
 
   override async render(): Promise<void> {
@@ -315,6 +310,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
+        <style>${frameDetailsReportViewStyles.cssContent}</style>
         <devtools-report .data=${{reportTitle: this.#frame.displayName()} as ReportView.ReportView.ReportData}
         jslog=${VisualLogging.pane('frames')}>
           ${this.#renderDocumentSection()}

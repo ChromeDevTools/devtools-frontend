@@ -24,11 +24,7 @@ import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
-import backForwardCacheViewStylesRaw from './backForwardCacheView.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const backForwardCacheViewStyles = new CSSStyleSheet();
-backForwardCacheViewStyles.replaceSync(backForwardCacheViewStylesRaw.cssContent);
+import backForwardCacheViewStyles from './backForwardCacheView.css.js';
 
 const {html} = Lit;
 
@@ -182,7 +178,6 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   }
   connectedCallback(): void {
     this.parentElement?.classList.add('overflow-auto');
-    this.#shadow.adoptedStyleSheets = [backForwardCacheViewStyles];
   }
 
   override async render(): Promise<void> {
@@ -190,6 +185,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       Lit.render(html`
+        <style>${backForwardCacheViewStyles.cssContent}</style>
         <devtools-report .data=${
             {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
         } jslog=${VisualLogging.pane('back-forward-cache')}>

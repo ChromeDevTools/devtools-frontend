@@ -8,19 +8,11 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 // inspectorCommonStyles is imported for the empty state styling that is used for the start view
 // eslint-disable-next-line rulesdir/es-modules-import
-import inspectorCommonStylesRaw from '../../../ui/legacy/inspectorCommon.css.js';
+import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import reportingApiGridStylesRaw from './reportingApiGrid.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const reportingApiGridStyles = new CSSStyleSheet();
-reportingApiGridStyles.replaceSync(reportingApiGridStylesRaw.cssContent);
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const inspectorCommonStyles = new CSSStyleSheet();
-inspectorCommonStyles.replaceSync(inspectorCommonStylesRaw.cssContent);
+import reportingApiGridStyles from './reportingApiGrid.css.js';
 
 const UIStrings = {
   /**
@@ -49,7 +41,6 @@ export class EndpointsGrid extends HTMLElement {
   #endpoints = new Map<string, Protocol.Network.ReportingApiEndpoint[]>();
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [reportingApiGridStyles, inspectorCommonStyles];
     this.#render();
   }
 
@@ -62,6 +53,8 @@ export class EndpointsGrid extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
+      <style>${reportingApiGridStyles.cssContent}</style>
+      <style>${inspectorCommonStyles.cssContent}</style>
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`

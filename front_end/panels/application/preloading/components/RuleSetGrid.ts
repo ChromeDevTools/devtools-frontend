@@ -19,11 +19,7 @@ import * as NetworkForward from '../../../network/forward/forward.js';
 import * as PreloadingHelper from '../helper/helper.js';
 
 import * as PreloadingString from './PreloadingString.js';
-import ruleSetGridStylesRaw from './ruleSetGrid.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const ruleSetGridStyles = new CSSStyleSheet();
-ruleSetGridStyles.replaceSync(ruleSetGridStylesRaw.cssContent);
+import ruleSetGridStyles from './ruleSetGrid.css.js';
 
 const {html, Directives: {styleMap}} = Lit;
 
@@ -72,7 +68,6 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
   #data: RuleSetGridData|null = null;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [ruleSetGridStyles];
     this.#render();
   }
 
@@ -130,6 +125,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       Lit.render(html`
+        <style>${ruleSetGridStyles.cssContent}</style>
         <div class="ruleset-container" jslog=${VisualLogging.pane('preloading-rules')}>
           <devtools-data-grid striped @select=${this.#onRowSelected}>
             <table>

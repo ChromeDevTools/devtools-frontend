@@ -10,11 +10,7 @@ import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 
-import preloadingGridStylesRaw from './preloadingGrid.css.js';
-
-// TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
-const preloadingGridStyles = new CSSStyleSheet();
-preloadingGridStyles.replaceSync(preloadingGridStylesRaw.cssContent);
+import preloadingGridStyles from './preloadingGrid.css.js';
 
 const UIStrings = {
   /**
@@ -44,7 +40,6 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: SDK.PreloadingModel.PrerenderAttempt|null = null;
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [preloadingGridStyles];
     this.#render();
   }
 
@@ -64,6 +59,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
       render(html`
+        <style>${preloadingGridStyles.cssContent}</style>
         <div class="preloading-container">
           <devtools-data-grid striped inline>
             <table>

@@ -92,6 +92,7 @@
   --sys-color-state-on-header-hover: var(--ref-palette-primary20);
   --sys-color-state-text-highlight: var(--ref-palette-primary40);
   --sys-color-state-on-text-highlight: var(--ref-palette-neutral-variant100);
+  --sys-color-state-scrim: rgb(0 0 0 / 60%);
 
   /* Surfaces */
 

@@ -13,7 +13,7 @@
 }
 
 :host-context(.dimmed-pane) {
-  background-color: var(--color-background-opacity-50);
+  background-color: var(--sys-color-state-scrim);
 }
 
 :host-context(.no-pointer-events) {

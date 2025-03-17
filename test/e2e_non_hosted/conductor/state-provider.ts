@@ -36,12 +36,12 @@ export class StateProvider {
     this.settingsCallbackMap.set(suite, suiteSettings);
   }
 
-  async callWithState(suite: Mocha.Suite, testFn: TestCallbackWithState) {
+  async callWithState(context: Mocha.Context, suite: Mocha.Suite, testFn: TestCallbackWithState) {
     const {state, browsingContext} = await this.getState(suite);
     try {
       /* eslint-disable-next-line no-debugger */
       debugger;  // If you're paused here while debugging, stepping into the next line will step into your test.
-      return await testFn(state);
+      return await testFn.call(context, state);
     } finally {
       await browsingContext.close();
       dumpCollectedErrors();

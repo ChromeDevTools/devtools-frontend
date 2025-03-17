@@ -108,7 +108,7 @@ function iterationSuffix(iteration: number): string {
 function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: string) {
   function instrumentWithState(fn: TestCallbackWithState) {
     const fnWithState = async function(this: Mocha.Context) {
-      return await StateProvider.instance.callWithState(suite, fn);
+      return await StateProvider.instance.callWithState(this, suite, fn);
     };
     return makeInstrumentedTestFunction(fnWithState, 'test');
   }

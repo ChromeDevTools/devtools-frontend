@@ -18,7 +18,7 @@ export interface State {
 }
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type TestCallbackWithState = (state: State) => PromiseLike<any>;
+export type TestCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<any>;
 
 async function takeScreenshots(state: State): Promise<{target?: string, frontend?: string}> {
   try {

@@ -78,17 +78,9 @@ const UIStringsNotTranslate = {
    */
   requestUrl: 'Request URL',
   /**
-   *@description Title text for request headers.
-   */
-  requestHeaders: 'Request Headers',
-  /**
    *@description Title text for request timing details.
    */
   timing: 'Timing',
-  /**
-   *@description Title text for response headers.
-   */
-  responseHeaders: 'Response Headers',
   /**
    *@description Prefix text for response status.
    */

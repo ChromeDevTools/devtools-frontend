@@ -13,7 +13,7 @@ const TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX = /models\/trace\/insights\/.*\.(
  * Returns true iff the passed expression is of the form `UIStrings.bar`.
  */
 function isStandardUIStringsMemberExpression(expr) {
-  if (expr.object.type !== 'Identifier' || expr.object.name !== 'UIStrings') {
+  if (expr.object.type !== 'Identifier' || !expr.object.name.startsWith('UIStrings')) {
     return false;
   }
 
@@ -31,10 +31,13 @@ module.exports = {
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
-    const filename = (context.filename ?? context.getFilename()).replaceAll('\\', '/');
+  create: function (context) {
+    const filename = (context.filename ?? context.getFilename()).replaceAll(
+      '\\',
+      '/',
+    );
     const sourceCode = context.sourceCode ?? context.getSourceCode();
     const declaredUIStringsKeys = new Map();
     const usedUIStringsKeys = new Set();
@@ -46,7 +49,8 @@ module.exports = {
       // some standard formatting. Otherwise we would have to fiddle a lot
       // with tokens and whitespace.
       let lineToRemoveStart = source.getLocFromIndex(property.range[0]).line;
-      const lineToRemoveEnd = source.getLocFromIndex(property.range[1]).line + 1;
+      const lineToRemoveEnd =
+        source.getLocFromIndex(property.range[1]).line + 1;
 
       // Are there comments in front of the property?
       // Move the line we want to remove to the line of the first comment.
@@ -55,8 +59,14 @@ module.exports = {
         lineToRemoveStart = source.getLocFromIndex(comments[0].range[0]).line;
       }
 
-      const removeStart = source.getIndexFromLoc({line: lineToRemoveStart, column: 0});
-      const removeEnd = source.getIndexFromLoc({line: Math.min(lineToRemoveEnd, source.lines.length), column: 0});
+      const removeStart = source.getIndexFromLoc({
+        line: lineToRemoveStart,
+        column: 0,
+      });
+      const removeEnd = source.getIndexFromLoc({
+        line: Math.min(lineToRemoveEnd, source.lines.length),
+        column: 0,
+      });
       return fixer.removeRange([removeStart, removeEnd]);
     }
 
@@ -70,12 +80,17 @@ module.exports = {
           return;
         }
 
-        if (!l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)) {
+        if (
+          !l10nHelper.isUIStringsVariableDeclarator(context, variableDeclarator)
+        ) {
           return;
         }
 
         for (const property of variableDeclarator.init.expression.properties) {
-          if (property.type !== 'Property' || property.key.type !== 'Identifier') {
+          if (
+            property.type !== 'Property' ||
+            property.key.type !== 'Identifier'
+          ) {
             continue;
           }
           declaredUIStringsKeys.set(property.key.name, property);
@@ -87,7 +102,7 @@ module.exports = {
         }
         usedUIStringsKeys.add(memberExpression.property.name);
       },
-      'Program:exit': function() {
+      'Program:exit': function () {
         for (const usedKey of usedUIStringsKeys) {
           declaredUIStringsKeys.delete(usedKey);
         }
@@ -101,5 +116,5 @@ module.exports = {
         }
       },
     };
-  }
+  },
 };

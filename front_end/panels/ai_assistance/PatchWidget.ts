@@ -44,26 +44,22 @@ const UIStringsNotTranslate = {
    *@description Button text for staging changes to workspace.
    */
   applyToWorkspace: 'Apply to workspace',
-  /*
+  /**
    *@description Button text to change the selected workspace
    */
   change: 'Change',
-  /*
+  /**
    *@description Button text to cancel applying to workspace
    */
   cancel: 'Cancel',
-  /*
+  /**
    *@description Button text to discard the suggested changes and not save them to file system
    */
   discard: 'Discard',
-  /*
+  /**
    *@description Button text to save all the suggested changes to file system
    */
   saveAll: 'Save all',
-  /**
-   *@description Button text while data is being loaded
-   */
-  loading: 'Loading...',
   /**
    *@description Header text after the user saved the changes to the disk.
    */

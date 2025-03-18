@@ -159,10 +159,6 @@ const UIStringsNotTranslate = {
    */
   completed: 'Completed',
   /**
-   *@description Aria label for the loading icon to be read by screen reader
-   */
-  inProgress: 'In progress',
-  /**
    *@description Aria label for the cancel icon to be read by screen reader
    */
   canceled: 'Canceled',
@@ -170,14 +166,6 @@ const UIStringsNotTranslate = {
    *@description Text displayed when the chat input is disabled due to reading past conversation.
    */
   pastConversation: 'You\'re viewing a past conversation.',
-  /**
-   *@description Text displayed for showing change summary view.
-   */
-  changeSummary: 'Changes summary',
-  /**
-   *@description Button text for staging changes to workspace.
-   */
-  applyToWorkspace: 'Apply to workspace',
   /**
    *@description Title for the take screenshot button.
    */
@@ -202,18 +190,6 @@ const UIStringsNotTranslate = {
    *@description Alt text for image when it is not available.
    */
   imageUnavailable: 'Image unavailable',
-  /**
-   *@description Button text to change the selected workspace
-   */
-  change: 'Change',
-  /**
-   *@description Button text while data is being loaded
-   */
-  loading: 'Loading...',
-  /**
-   *@description Label for the selected workspace/folder
-   */
-  selectedFolder: 'Selected folder:'
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ChatView.ts', UIStrings);

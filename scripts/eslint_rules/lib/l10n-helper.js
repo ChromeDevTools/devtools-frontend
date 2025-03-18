@@ -5,7 +5,7 @@
 'use strict';
 
 function isUIStringsIdentifier(node) {
-  return node.type === 'Identifier' && node.name === 'UIStrings';
+  return node.type === 'Identifier' && node.name.startsWith('UIStrings');
 }
 
 function isModuleScope(context, node) {

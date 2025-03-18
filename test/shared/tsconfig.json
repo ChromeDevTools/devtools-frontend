@@ -10,6 +10,9 @@
   "references": [
     {
       "path": "../conductor"
+    },
+    {
+      "path": "../e2e_non_hosted"
     }
   ],
   "extends": "../../config/typescript/tsconfig.base.json"

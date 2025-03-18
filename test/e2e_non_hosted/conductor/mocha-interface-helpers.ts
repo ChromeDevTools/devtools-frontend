@@ -7,20 +7,8 @@ import type * as Mocha from 'mocha';
 import {AsyncScope} from '../../conductor/async-scope.js';
 import {ScreenshotError} from '../../conductor/screenshot-error.js';
 import {TestConfig} from '../../conductor/test_config.js';
-import type {BrowserWrapper} from '../shared/browser-helper.js';
-import type {DevToolsFronendPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
 
-export interface State {
-  devToolsPage: DevToolsFronendPage;
-  inspectedPage: InspectedPage;
-  browser: BrowserWrapper;
-}
-
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export type TestCallbackWithState = (this: Mocha.Context, state: State) => PromiseLike<any>;
-
-async function takeScreenshots(state: State): Promise<{target?: string, frontend?: string}> {
+async function takeScreenshots(state: E2E.State): Promise<{target?: string, frontend?: string}> {
   try {
     const {devToolsPage, inspectedPage} = state;
     const targetScreenshot = await inspectedPage.screenshot();
@@ -42,7 +30,7 @@ async function createScreenshotError(test: Mocha.Runnable|undefined, error: Erro
   if (!TestConfig.debug) {
     try {
       const screenshotTimeout = 5_000;
-      let timer: NodeJS.Timeout;
+      let timer: ReturnType<typeof setTimeout>;
       const {target, frontend} = await Promise.race([
         takeScreenshots(sate).then(result => {
           clearTimeout(timer);

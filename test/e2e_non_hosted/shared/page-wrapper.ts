@@ -9,17 +9,16 @@ export class PageWrapper {
   evaluate: puppeteer.Page['evaluate'];
   bringToFront: puppeteer.Page['bringToFront'];
 
-  constructor(p: puppeteer.Page) {
-    this.page = p;
-    this.evaluate = p.evaluate.bind(p);
-    this.bringToFront = p.bringToFront.bind(p);
+  constructor(page: puppeteer.Page) {
+    this.page = page;
+    this.evaluate = page.evaluate.bind(page);
+    this.bringToFront = page.bringToFront.bind(page);
   }
 
-  async screenshot() {
-    const opts = {
-      encoding: 'base64' as 'base64',
-    };
+  async screenshot(): Promise<string> {
     await this.bringToFront();
-    return await this.page.screenshot(opts);
+    return await this.page.screenshot({
+      encoding: 'base64',
+    });
   }
 }

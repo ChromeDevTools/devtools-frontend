@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
-import type {DevToolsFronendPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
+import type {DevToolsPage} from '../../e2e_non_hosted/shared/frontend-helper.js';
 import {
   $,
   $$,
@@ -189,7 +189,7 @@ export async function maybeGetCurrentConsoleMessages(withAnchor = false, callbac
   return result;
 }
 
-export async function getStructuredConsoleMessages(devToolsPage?: DevToolsFronendPage) {
+export async function getStructuredConsoleMessages(devToolsPage?: DevToolsPage) {
   devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   const asyncScope = new AsyncScope();
 
@@ -307,7 +307,7 @@ export async function unifyLogVM(actualLog: string, expectedLog: string) {
   return expectedLogArray.join('\n');
 }
 
-export async function navigateToConsoleTab(devToolsPage?: DevToolsFronendPage) {
+export async function navigateToConsoleTab(devToolsPage?: DevToolsPage) {
   devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   // Locate the button for switching to the console tab.
   if ((await devToolsPage.$$(CONSOLE_VIEW_SELECTOR)).length) {
@@ -462,7 +462,7 @@ function veImpressionForConsoleMessageContextMenu(expectedItem: string) {
   return veImpression('Menu', undefined, [...menuItems].map(i => veImpression('Action', i)));
 }
 
-async function veRoot(devToolsPage?: DevToolsFronendPage): Promise<string> {
+async function veRoot(devToolsPage?: DevToolsPage): Promise<string> {
   devToolsPage = devToolsPage || getBrowserAndPagesWrappers().devToolsPage;
   return (await devToolsPage.$$(CONSOLE_VIEW_IN_DRAWER_SELECTOR)).length ? 'Drawer > Panel: console' : 'Panel: console';
 }

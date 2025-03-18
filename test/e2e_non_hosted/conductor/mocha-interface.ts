@@ -11,7 +11,7 @@ import * as Path from 'path';
 import {platform, type Platform} from '../../conductor/platform.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {makeInstrumentedTestFunction, type TestCallbackWithState} from './mocha-interface-helpers.js';
+import {makeInstrumentedTestFunction} from './mocha-interface-helpers.js';
 import {StateProvider} from './state-provider.js';
 
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;
@@ -106,7 +106,7 @@ function iterationSuffix(iteration: number): string {
   return ` (#${iteration})`;
 }
 function customIt(testImplementation: TestFunctions, suite: Mocha.Suite, file: string) {
-  function instrumentWithState(fn: TestCallbackWithState) {
+  function instrumentWithState(fn: E2E.TestAsyncCallbackWithState) {
     const fnWithState = async function(this: Mocha.Context) {
       return await StateProvider.instance.callWithState(this, suite, fn);
     };

@@ -4,7 +4,7 @@
 import type {Platform} from '../conductor/platform.js';
 
 import type {BrowserSettings, BrowserWrapper} from './shared/browser-helper.js';
-import type {DevToolsFronendPage, DevtoolsSettings} from './shared/frontend-helper.js';
+import type {DevToolsPage, DevtoolsSettings} from './shared/frontend-helper.js';
 import type {InspectedPage} from './shared/target-helper.js';
 
 declare global {
@@ -34,7 +34,7 @@ declare global {
     export type SuiteSettings = Partial<HarnessSettings>;
 
     export interface State {
-      devToolsPage: DevToolsFronendPage;
+      devToolsPage: DevToolsPage;
       inspectedPage: InspectedPage;
       browser: BrowserWrapper;
     }

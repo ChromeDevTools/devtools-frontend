@@ -25,7 +25,7 @@ const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
 type DeducedElementType<ElementType extends Element|null, Selector extends string> =
     ElementType extends null ? puppeteer.NodeFor<Selector>: ElementType;
 
-export class DevToolsFronendPage extends PageWrapper {
+export class DevToolsPage extends PageWrapper {
   async setExperimentEnabled(experiment: string, enabled: boolean) {
     await this.evaluate(`(async () => {
       const Root = await import('./core/root/root.js');
@@ -62,7 +62,7 @@ export class DevToolsFronendPage extends PageWrapper {
     }
     /* eslint-disable-next-line no-console */
     console.log(`Throttling CPU: ${envThrottleRate}x slowdown`);
-    const client = await this.page.target().createCDPSession();
+    const client = await this.page.createCDPSession();
     await client.send('Emulation.setCPUThrottlingRate', {
       rate: envThrottleRate,
     });
@@ -104,7 +104,9 @@ export class DevToolsFronendPage extends PageWrapper {
     `);
   }
 
-  // Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
+  /**
+   * Get a single element handle. Uses `pierce` handler per default for piercing Shadow DOM.
+   */
   async $<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, root?: puppeteer.ElementHandle, handler = 'pierce') {
     const rootElement = root ? root : this.page;
@@ -184,11 +186,18 @@ export class DevToolsFronendPage extends PageWrapper {
 
   async click(selector: string, options?: ClickOptions) {
     return await this.performActionOnSelector(
-        selector, {root: options?.root}, element => element.click(options?.clickOptions));
+        selector,
+        {root: options?.root},
+        element => element.click(options?.clickOptions),
+    );
   }
 
   async hover(selector: string, options?: {root?: puppeteer.ElementHandle}) {
-    return await this.performActionOnSelector(selector, {root: options?.root}, element => element.hover());
+    return await this.performActionOnSelector(
+        selector,
+        {root: options?.root},
+        element => element.hover(),
+    );
   }
 
   waitForAria<ElementType extends Element = Element>(
@@ -206,7 +215,9 @@ export class DevToolsFronendPage extends PageWrapper {
     }, asyncScope), `Waiting for no elements to match selector '${selector}'`);
   }
 
-  // Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
+  /**
+   * Get multiple element handles. Uses `pierce` handler per default for piercing Shadow DOM.
+   */
   async $$<ElementType extends Element|null = null, Selector extends string = string>(
       selector: Selector, root?: puppeteer.JSHandle, handler = 'pierce') {
     const rootElement = root ? root.asElement() || this.page : this.page;
@@ -237,7 +248,7 @@ export async function setupDevToolsPage(context: puppeteer.BrowserContext, setti
     throw new Error('Unable to find frontend target!');
   }
   installPageErrorHandlers(frontend);
-  const devToolsPage = new DevToolsFronendPage(frontend);
+  const devToolsPage = new DevToolsPage(frontend);
   await devToolsPage.ensureReadyForTesting();
   for (const key in settings.devToolsSettings) {
     await devToolsPage.setDevToolsSetting(key, settings.devToolsSettings[key]);

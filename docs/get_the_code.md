@@ -27,8 +27,7 @@ To build, follow these steps:
 ```bash
 cd devtools-frontend
 gclient sync
-gn gen out/Default
-autoninja -C out/Default
+npm run build
 ```
 
 The resulting build artifacts can be found in `out/Default/gen/front_end`.
@@ -38,6 +37,7 @@ There are two tips to have a faster development workflow:
 * Using watch script for faster incremental builds with CSS hot reload.
 
 #### Disabling type checking
+
 You can disable type checking for TypeScript by using `devtools_skip_typecheck` argument:
 ```bash
 gn gen out/fast-build --args="devtools_skip_typecheck=true"
@@ -86,8 +86,10 @@ npm start
 ```
 
 to build DevTools front-end in `out/Default` (you can change this to `out/foo` by passing `--target=foo` if needed),
-and open Chrome for Testing (in `third_party/chrome`) with the custom DevTools front-end. It'll automatically open
-DevTools for every new tab, you can use
+and open Chrome for Testing (in `third_party/chrome`) with the custom DevTools front-end. This will also monitor the
+source files for changes while Chrome is running and automatically trigger a rebuild whenever source files change.
+
+By default, `npm start` will automatically open DevTools for every new tab, you can use
 
 ```bash
 npm start -- --no-auto-open-devtools-for-tabs

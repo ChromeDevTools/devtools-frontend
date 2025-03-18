@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 # if necessary.
 ENABLE_FEATURES = [
     'DevToolsAutomaticFileSystems',
+    'DevToolsCssValueTracing',
     'DevToolsFreeStyler:patching/true,user_tier/TESTERS',
     'DevToolsWellKnown',
 ]

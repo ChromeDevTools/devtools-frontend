@@ -16,6 +16,7 @@ const allInvalidationTrackingEvents: Types.Events.InvalidationTrackingEvent[] = 
 
 export function reset(): void {
   invalidationsForEvent.clear();
+  invalidationCountForEvent.clear();
   lastRecalcStyleEvent = null;
   allInvalidationTrackingEvents.length = 0;
   hasPainted = false;

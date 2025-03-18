@@ -11,7 +11,8 @@ import * as MobileThrottling from './mobile_throttling.js';
 describeWithEnvironment('ThrottlingManager', () => {
   describe('OfflineToolbarCheckbox', () => {
     it('has initial checked state which depends on throttling setting', () => {
-      const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
+      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      const throttlingManager = MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
 
       SDK.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
           SDK.NetworkManager.OfflineConditions);
@@ -24,7 +25,8 @@ describeWithEnvironment('ThrottlingManager', () => {
     });
 
     it('listens to changes in throttling setting', () => {
-      const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
+      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      const throttlingManager = MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
       const checkbox = throttlingManager.createOfflineToolbarCheckbox();
       assert.isFalse(checkbox.checked());
 
@@ -38,8 +40,8 @@ describeWithEnvironment('ThrottlingManager', () => {
     });
 
     it('updates setting when checkbox is clicked on', () => {
-      const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
-      const multiTargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance();
+      const multiTargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+      const throttlingManager = MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
 
       multiTargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       const checkbox = throttlingManager.createOfflineToolbarCheckbox();
@@ -63,8 +65,9 @@ describeWithEnvironment('ThrottlingManager', () => {
   });
   describe('CPU throttling', () => {
     it('listens to changes in cpu throttling setting', () => {
+      SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
       const cpuThrottlingPresets = MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets;
-      const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
+      const throttlingManager = MobileThrottling.ThrottlingManager.ThrottlingManager.instance({forceNew: true});
       const selector = throttlingManager.createCPUThrottlingSelector().control;
       assert.strictEqual(cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.NoThrottlingOption);
 

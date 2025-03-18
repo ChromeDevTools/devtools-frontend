@@ -32,7 +32,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
@@ -502,19 +501,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
       infobar.setCloseCallback(() => {
         delete this.reloadRequiredInfobar;
       });
-
-      SDK.TargetManager.TargetManager.instance().addModelListener(
-          SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          this.removeDebuggedTabReloadRequiredWarning, this);
     }
   }
 
   removeDebuggedTabReloadRequiredWarning(): void {
     if (this.reloadRequiredInfobar) {
       this.reloadRequiredInfobar.dispose();
-      SDK.TargetManager.TargetManager.instance().removeModelListener(
-          SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
-          this.removeDebuggedTabReloadRequiredWarning, this);
     }
   }
 

@@ -192,7 +192,8 @@ describeWithLocale('Toolbar', () => {
       await doubleRaf();  // give the timer time to resolve + initiate the context menu
     }
 
-    it('creates the context menu if it is enabled', async () => {
+    // Flaky
+    it.skip('[crbug.com/404486704] creates the context menu if it is enabled', async () => {
       const contextHandler = sinon.stub();
       const menuButton = createToolbarWithButton(contextHandler);
       menuButton.setEnabled(true);

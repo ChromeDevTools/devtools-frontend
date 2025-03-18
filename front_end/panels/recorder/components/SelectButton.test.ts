@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as RecorderComponents from './components.js';
@@ -45,12 +44,11 @@ describe('SelectButton', () => {
     await RenderCoordinator.done();
     const dispatcherSpy = sinon.spy(component, 'dispatchEvent');
     const selectMenu = component.shadowRoot?.querySelector(
-        'devtools-select-menu',
+        'select',
     );
     assert.exists(selectMenu);
-    selectMenu.dispatchEvent(
-        new Menus.SelectMenu.SelectMenuItemSelectedEvent('item1'),
-    );
+    selectMenu.value = 'item1';
+    selectMenu.dispatchEvent(new Event('change'));
 
     dispatcherSpy.calledOnceWithExactly(
         RecorderComponents.SelectButton.SelectMenuSelectedEvent as unknown as sinon.SinonMatcher);

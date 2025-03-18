@@ -11,12 +11,11 @@ import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.
 import {
   $,
   click,
-  clickElement,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
   platform,
-  timeout,
+  selectOption,
   waitFor,
   waitForAria,
 } from '../../../test/shared/helper.js';
@@ -234,46 +233,15 @@ async function setCode(flow: string) {
   }, flow);
 }
 
-async function waitForDialogAnimationEnd(root?: ElementHandle) {
-  const ANIMATION_TIMEOUT = 2000;
-  const dialog = await waitFor('dialog[open]', root);
-  const animationPromise = dialog.evaluate((dialog: Element) => {
-    return new Promise<void>(resolve => {
-      dialog.addEventListener('animationend', () => resolve(), {once: true});
-    });
-  });
-  await Promise.race([animationPromise, timeout(ANIMATION_TIMEOUT)]);
-}
-
 export async function clickSelectButtonItem(itemLabel: string, root: string) {
   const selectMenu = await waitFor(root);
   const selectMenuButton = await waitFor(
-      'devtools-select-menu-button',
+      'select',
       selectMenu,
   );
-  const animationEndPromise = waitForDialogAnimationEnd();
-  await click('#arrow', {root: selectMenuButton});
-  await animationEndPromise;
 
-  const selectMenuItems = await selectMenu.$$('pierce/devtools-menu-item');
-  const selectMenuItemIndex =
-      await Promise
-          .all(
-              selectMenuItems.map(
-                  selectMenuItem => selectMenuItem.evaluate(element => element.textContent?.trim()),
-                  ),
-              )
-          .then(
-              elements => elements.findIndex(elementText => elementText === itemLabel),
-          );
+  void selectOption(await selectMenuButton.toElement('select'), itemLabel);
 
-  if (selectMenuItemIndex === -1) {
-    throw new Error(
-        `Select menu item for label "${itemLabel}" is not found in "${root}"`,
-    );
-  }
-
-  await clickElement(selectMenuItems[selectMenuItemIndex]);
   await click('devtools-button', {root: selectMenu});
 }
 

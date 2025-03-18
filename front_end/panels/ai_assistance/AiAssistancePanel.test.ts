@@ -590,6 +590,8 @@ describeWithMockConnection('AI Assistance Panel', () => {
           enabled: true,
         },
       });
+      const aiHistoryStorage = AiAssistance.AiHistoryStorage.instance({forceNew: true});
+      const deleteHistoryEntryStub = sinon.stub(aiHistoryStorage, 'deleteHistoryEntry');
       const {panel, view} = await createAiAssistancePanel(
           {
             aidaClient: mockAidaClient(
@@ -612,13 +614,11 @@ describeWithMockConnection('AI Assistance Panel', () => {
       contextMenu.invokeHandler(id);
       await view.nextInput;
 
-      const stub = sinon.createStubInstance(AiAssistance.AiHistoryStorage);
-      sinon.stub(AiAssistance.AiHistoryStorage, 'instance').returns(stub);
       view.input.onDeleteClick();
 
       assert.deepEqual((await view.nextInput).messages, []);
-      assert.strictEqual(stub.deleteHistoryEntry.callCount, 1);
-      assert.isString(stub.deleteHistoryEntry.lastCall.args[0]);
+      assert.strictEqual(deleteHistoryEntryStub.callCount, 1);
+      assert.isString(deleteHistoryEntryStub.lastCall.args[0]);
 
       const menuAfterDelete = openHistoryContextMenu(view.input, 'User question to Freestyler?');
       assert.isUndefined(menuAfterDelete.id);

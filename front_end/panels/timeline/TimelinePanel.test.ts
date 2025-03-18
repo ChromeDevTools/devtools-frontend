@@ -97,7 +97,7 @@ describeWithEnvironment('TimelinePanel', function() {
     const tracksAfterEnablingSetting = timeline.getFlameChart().getMainDataProvider().timelineData().groups;
     assert.deepEqual(tracksBeforeDisablingSetting, tracksAfterEnablingSetting);
   });
-  it('should keep overlays when the custom tracks setting is toggled', async function() {
+  it('should keep marker overlays when the custom tracks setting is toggled', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
     await timeline.loadingComplete(events, null, null);
     const overlaysBeforeDisablingSetting = timeline.getFlameChart().overlays().allOverlays();
@@ -136,5 +136,34 @@ describeWithEnvironment('TimelinePanel', function() {
     const dimIndicesAfterToggle = timeline.getFlameChart().getMainFlameChart().getDimIndices();
     assert.exists(dimIndicesAfterToggle);
     assert.isAbove(dimIndicesAfterToggle.length, 0);
+  });
+
+  it('keeps annotations after toggling the custom tracks setting', async function() {
+    const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz') as Trace.Types.Events.Event[];
+    await timeline.loadingComplete(events, null, null);
+    const parsedTrace = traceModel.parsedTrace();
+    assert.isOk(parsedTrace?.Meta.traceBounds.min);
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    // Add an annotation
+    modificationsManager.createAnnotation({
+      bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+          parsedTrace.Meta.traceBounds.min, parsedTrace.Meta.traceBounds.max),
+      type: 'TIME_RANGE',
+      label: '',
+    });
+
+    const annotationsBeforeToggle =
+        timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
+    assert.exists(annotationsBeforeToggle);
+    assert.isAbove(annotationsBeforeToggle.length, 0);
+
+    // Toggle the custom track setting and verify annotations remain.
+    Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
+    const annotationsAfterToggle =
+        timeline.getFlameChart().overlays().allOverlays().filter(e => e.type === 'TIME_RANGE');
+    assert.exists(annotationsAfterToggle);
+    assert.isAbove(annotationsAfterToggle.length, 0);
   });
 });

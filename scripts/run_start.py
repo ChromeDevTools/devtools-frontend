@@ -114,8 +114,10 @@ def start(options):
     # Custom flags for CfT.
     if options.browser == 'cft':
         args += ['--disable-infobars']  # Disable the CfT warning infobar.
-        args += ['--use-mock-keychain'
-                 ] if platform.system() == 'Darwin' else []
+
+    # Custom flags for macOS.
+    if platform.system() == 'Darwin':
+        args += ['--use-mock-keychain']
 
     # Disable/Enable experimental features, starting with defaults.
     args += ['--disable-features=%s' % f for f in DISABLE_FEATURES]

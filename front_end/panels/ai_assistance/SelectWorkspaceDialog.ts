@@ -8,7 +8,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {html, render} from '../../ui/lit/lit.js';
+import {html, nothing, render} from '../../ui/lit/lit.js';
 
 import selectWorkspaceDialogStyles from './selectWorkspaceDialog.css.js';
 
@@ -19,7 +19,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Heading of dialog box which asks user to select a workspace folder.
    */
-  selectFolder: 'Select folder',
+  selectFolder: 'Select project root folder',
   /**
    *@description Button text for canceling workspace selection.
    */
@@ -35,7 +35,8 @@ const UIStringsNotTranslate = {
   /*
    *@description Explainer stating that selected folder's contents are being sent to Google.
    */
-  sourceCodeSent: 'Source code from the selected folder is sent to Google to generate code suggestions'
+  sourceCodeSent:
+      'To save patches directly to your project, select the project root folder containing the source files of the inspected page. Relevant code snippets will be sent to Google to generate code suggestions.'
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -84,6 +85,7 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
 
     // clang-format off
     this.#view = view ?? ((input, output, target) => {
+      const hasProjects = input.projects.length > 0;
       render(
         html`
           <div class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</div>
@@ -115,13 +117,15 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
               .iconName=${'plus'}
               .jslogContext=${'add-folder'}
               @click=${input.onAddFolderButtonClick}
-              .variant=${Buttons.Button.Variant.TONAL}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
-            <devtools-button
-              title=${lockedString(UIStringsNotTranslate.select)}
-              aria-label="Select"
-              @click=${input.onSelectButtonClick}
-              .jslogContext=${'select'}
-              .variant=${Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
+              .variant=${hasProjects ? Buttons.Button.Variant.TONAL : Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.addFolder)}</devtools-button>
+            ${hasProjects ? html`
+              <devtools-button
+                title=${lockedString(UIStringsNotTranslate.select)}
+                aria-label="Select"
+                @click=${input.onSelectButtonClick}
+                .jslogContext=${'select'}
+                .variant=${Buttons.Button.Variant.PRIMARY}>${lockedString(UIStringsNotTranslate.select)}</devtools-button>
+            ` : nothing}
           </div>
         `,
         target,

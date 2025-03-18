@@ -14,7 +14,7 @@ import * as Lit from '../../../../ui/lit/lit.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import type {TableData} from './Table.js';
+import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.ForcedReflow;
 
@@ -22,6 +22,21 @@ const {html, nothing} = Lit;
 
 export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-forced-reflow`;
+
+  mapToRow(data: Trace.Insights.Models.ForcedReflow.BottomUpCallStack): TableDataRow {
+    return {
+      values: [this.#linkifyUrl(data.bottomUpData)],
+      overlays: this.#createOverlayForEvents(data.relatedEvents),
+    };
+  }
+
+  createAggregatedTableRow(remaining: Trace.Insights.Models.ForcedReflow.BottomUpCallStack[]): TableDataRow {
+    return {
+      values: [renderOthersLabel(remaining.length)],
+      overlays: remaining.flatMap(r => this.#createOverlayForEvents(r.relatedEvents)),
+    };
+  }
+
   override internalName = 'forced-reflow';
 
   #linkifyUrl(callFrame: Trace.Types.Events.CallFrame|Protocol.Runtime.CallFrame|null): Lit.LitTemplate {
@@ -57,6 +72,9 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
     const bottomUpCallStackData = this.model.aggregatedBottomUpData;
     const time = (us: Trace.Types.Timing.Micro): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
+
+    const rows = createLimitedRows(bottomUpCallStackData, this);
+
     // clang-format off
     return html`
       ${topLevelFunctionCallData ? html`
@@ -81,10 +99,7 @@ export class ForcedReflow extends BaseInsightComponent<ForcedReflowInsightModel>
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.relatedStackTrace)],
-            rows: bottomUpCallStackData.map(data => ({
-              values: [this.#linkifyUrl(data.bottomUpData)],
-              overlays: this.#createOverlayForEvents(data.relatedEvents),
-            })),
+            rows,
         } as TableData}>
         </devtools-performance-table>
       </div>`;

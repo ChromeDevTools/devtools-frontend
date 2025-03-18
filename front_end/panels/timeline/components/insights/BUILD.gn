@@ -80,6 +80,7 @@ ts_library("unittests") {
   sources = [
     "BaseInsightComponent.test.ts",
     "CLSCulprits.test.ts",
+    "Table.test.ts",
   ]
 
   deps = [

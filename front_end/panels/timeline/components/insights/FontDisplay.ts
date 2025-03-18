@@ -12,7 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import type {TableData} from './Table.js';
+import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.FontDisplay;
 
@@ -21,6 +21,25 @@ const {html} = Lit;
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-font-display`;
   override internalName = 'font-display';
+
+  mapToRow(font: Trace.Insights.Models.FontDisplay.RemoteFont): TableDataRow {
+    const overlay = this.#overlayForRequest.get(font.request);
+    return {
+      values: [
+        eventRef(font.request, {text: font.name}),
+        i18n.TimeUtilities.millisToString(font.wastedTime),
+      ],
+      overlays: overlay ? [overlay] : [],
+    };
+  }
+
+  createAggregatedTableRow(remaining: Trace.Insights.Models.FontDisplay.RemoteFont[]): TableDataRow {
+    return {
+      values: [renderOthersLabel(remaining.length), ''],
+      overlays: remaining.map(r => this.#overlayForRequest.get(r.request))
+                    .filter((o): o is Overlays.Overlays.TimelineOverlay => Boolean(o)),
+    };
+  }
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
 
@@ -51,6 +70,8 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
       return Lit.nothing;
     }
 
+    const rows = createLimitedRows(this.model.fonts, this);
+
     // clang-format off
     return html`
       <div class="insight-section">
@@ -58,13 +79,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.fontColumn), i18nString(UIStrings.wastedTimeColumn)],
-            rows: this.model.fonts.map(font => ({
-              values: [
-                eventRef(font.request, {text: font.name}),
-                i18n.TimeUtilities.millisToString(font.wastedTime),
-              ],
-              overlays: [this.#overlayForRequest.get(font.request)],
-            })),
+            rows,
           } as TableData}>
         </devtools-performance-table>`}
       </div>`;

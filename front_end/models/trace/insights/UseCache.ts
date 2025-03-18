@@ -182,9 +182,15 @@ export function cachingDisabled(
   return false;
 }
 
+export interface CacheableRequest {
+  request: Types.Events.SyntheticNetworkRequest;
+  ttl: number;
+  wastedBytes: number;
+}
+
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): UseCacheInsightModel {
-  const results = [];
+  const results: CacheableRequest[] = [];
   const allRequests = parsedTrace.NetworkRequests.byTime;
   let totalWastedBytes = 0;
   const wastedBytesByRequestId = new Map<string, number>();

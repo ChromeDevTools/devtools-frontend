@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../../../../ui/components/icon_button/icon_button.js';
-import './Table.js';
 
 import type {ImageDeliveryInsightModel} from '../../../../models/trace/insights/ImageDelivery.js';
 import * as Trace from '../../../../models/trace/trace.js';
@@ -12,13 +11,11 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {imageRef} from './EventRef.js';
-import type {TableDataRow} from './Table.js';
+import {createLimitedRows, renderOthersLabel, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.ImageDelivery;
 
 const {html} = Lit;
-
-const MAX_REQUESTS = 10;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-image-delivery`;
@@ -41,6 +38,20 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     };
   }
 
+  mapToRow(image: Trace.Insights.Models.ImageDelivery.OptimizableImage): TableDataRow {
+    return {
+      values: [imageRef(image.request)],
+      overlays: [this.#createOverlayForRequest(image.request)],
+    };
+  }
+
+  createAggregatedTableRow(remaining: Trace.Insights.Models.ImageDelivery.OptimizableImage[]): TableDataRow {
+    return {
+      values: [renderOthersLabel(remaining.length)],
+      overlays: remaining.map(r => this.#createOverlayForRequest(r.request)),
+    };
+  }
+
   override getEstimatedSavingsBytes(): number|null {
     return this.model?.totalByteSavings ?? null;
   }
@@ -55,20 +66,7 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     const topImages =
         optimizableImages.sort((a, b) => b.request.args.data.decodedBodyLength - a.request.args.data.decodedBodyLength);
 
-    const remaining = topImages.splice(MAX_REQUESTS);
-    const rows: TableDataRow[] = topImages.map(image => ({
-                                                 values: [imageRef(image.request)],
-                                                 overlays: [this.#createOverlayForRequest(image.request)],
-                                               }));
-
-    if (remaining.length > 0) {
-      const value =
-          remaining.length > 1 ? i18nString(UIStrings.others, {PH1: remaining.length}) : imageRef(remaining[0].request);
-      rows.push({
-        values: [value],
-        overlays: remaining.map(r => this.#createOverlayForRequest(r.request)),
-      });
-    }
+    const rows = createLimitedRows(topImages, this);
 
     if (!rows.length) {
       return html`<div class="insight-section">${i18nString(UIStrings.noOptimizableImages)}</div>`;

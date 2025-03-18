@@ -12,16 +12,29 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import type {TableData, TableDataRow} from './Table.js';
+import {createLimitedRows, renderOthersLabel, type TableData, type TableDataRow} from './Table.js';
 
 const {UIStrings, i18nString} = Trace.Insights.Models.UseCache;
 
 const {html} = Lit;
 
-const MAX_TO_SHOW = 10;
-
 export class UseCache extends BaseInsightComponent<UseCacheInsightModel> {
   static override readonly litTagName = Lit.StaticHtml.literal`devtools-performance-use-cache`;
+
+  mapToRow(req: Trace.Insights.Models.UseCache.CacheableRequest): TableDataRow {
+    return {
+      values: [eventRef(req.request), i18n.TimeUtilities.secondsToString(req.ttl)],
+      overlays: [this.#createOverlayForRequest(req.request)],
+    };
+  }
+
+  createAggregatedTableRow(remaining: Trace.Insights.Models.UseCache.CacheableRequest[]): TableDataRow {
+    return {
+      values: [renderOthersLabel(remaining.length), ''],
+      overlays: remaining.flatMap(r => this.#createOverlayForRequest(r.request)),
+    };
+  }
+
   override internalName = 'use-cache';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -45,20 +58,7 @@ export class UseCache extends BaseInsightComponent<UseCacheInsightModel> {
     const topRequests =
         cacheableRequests.sort((a, b) => b.request.args.data.decodedBodyLength - a.request.args.data.decodedBodyLength);
 
-    const remaining = topRequests.splice(MAX_TO_SHOW);
-    const rows = topRequests.map(req => ({
-                                   values: [eventRef(req.request), i18n.TimeUtilities.secondsToString(req.ttl)],
-                                   overlays: [this.#createOverlayForRequest(req.request)],
-                                 } as TableDataRow));
-
-    if (remaining.length > 0) {
-      const value =
-          remaining.length > 1 ? i18nString(UIStrings.others, {PH1: remaining.length}) : eventRef(remaining[0].request);
-      rows.push({
-        values: [value],
-        overlays: remaining.map(r => this.#createOverlayForRequest(r.request)),
-      });
-    }
+    const rows = createLimitedRows(topRequests, this);
 
     if (!rows.length) {
       return html`<div class="insight-section">${i18nString(UIStrings.noRequestsToCache)}</div>`;

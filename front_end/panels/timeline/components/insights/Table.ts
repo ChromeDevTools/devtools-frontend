@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
@@ -11,6 +12,17 @@ import type * as Overlays from '../../overlays/overlays.js';
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
 import tableStylesRaw from './table.css.js';
+
+const UIStrings = {
+  /**
+   * @description Table row value representing the remaining items not shown in the table due to size constraints. This row will always represent at least 2 items.
+   * @example {5} PH1
+   */
+  others: '{PH1} others',
+} as const;
+
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Table.ts', UIStrings);
+export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // TODO(crbug.com/391381439): Fully migrate off of constructed style sheets.
 const tableStyles = new CSSStyleSheet();
@@ -51,6 +63,40 @@ export interface TableDataRow {
   values: Array<number|string|Lit.LitTemplate>;
   overlays?: Overlays.Overlays.TimelineOverlay[];
   subRows?: TableDataRow[];
+}
+
+export function renderOthersLabel(numOthers: number): string {
+  return i18nString(UIStrings.others, {PH1: numOthers});
+}
+
+export interface RowLimitAggregator<T> {
+  mapToRow: (item: T) => TableDataRow;
+  createAggregatedTableRow: (remaining: T[]) => TableDataRow;
+}
+
+/**
+ * Maps `arr` to a list of `TableDataRow`s  using `aggregator.mapToRow`, but limits the number of `TableDataRow`s to `limit`.
+ * If the length of `arr` is larger than `limit`, any excess rows will be aggregated into the final `TableDataRow` using `aggregator.createAggregatedTableRow`.
+ *
+ * Useful for creating a "N others" row in a data table.
+ *
+ * Example: `arr` is a list of 15 items & `limit` is 10. The first 9 items in `arr` would be mapped to `TableDataRow`s using `aggregator.mapToRow` and
+ * the 10th `TableDataRow` would be created by using `aggregator.createAggregatedTableRow` on the 6 items that were not sent through `aggregator.mapToRow`.
+ */
+export function createLimitedRows<T>(arr: T[], aggregator: RowLimitAggregator<T>, limit = 10): TableDataRow[] {
+  if (arr.length === 0 || limit === 0) {
+    return [];
+  }
+
+  const aggregateStartIndex = limit - 1;
+  const items = arr.slice(0, aggregateStartIndex).map(aggregator.mapToRow.bind(aggregator));
+  if (arr.length > limit) {
+    items.push(aggregator.createAggregatedTableRow(arr.slice(aggregateStartIndex)));
+  } else if (arr.length === limit) {
+    items.push(aggregator.mapToRow(arr[aggregateStartIndex]));
+  }
+
+  return items;
 }
 
 export class Table extends HTMLElement {

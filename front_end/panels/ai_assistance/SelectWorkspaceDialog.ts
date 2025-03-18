@@ -33,10 +33,14 @@ const UIStringsNotTranslate = {
    */
   addFolder: 'Add folder',
   /*
+   *@description Explanation for selecting the correct workspace folder.
+   */
+  selectProjectRoot:
+      'To save patches directly to your project, select the project root folder containing the source files of the inspected page.',
+  /*
    *@description Explainer stating that selected folder's contents are being sent to Google.
    */
-  sourceCodeSent:
-      'To save patches directly to your project, select the project root folder containing the source files of the inspected page. Relevant code snippets will be sent to Google to generate code suggestions.'
+  sourceCodeSent: 'Relevant code snippets will be sent to Google to generate code suggestions.'
 } as const;
 
 const lockedString = i18n.i18n.lockedString;
@@ -89,20 +93,25 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
       render(
         html`
           <div class="dialog-header">${lockedString(UIStringsNotTranslate.selectFolder)}</div>
-          <div class="main-content">${lockedString(UIStringsNotTranslate.sourceCodeSent)}</div>
-          <ul>
-            ${input.projects.map((project, index) => {
-              return html`
-                <li
-                  @click=${() => input.onProjectSelected(index)}
-                  class=${index === input.selectedIndex ? 'selected' : ''}
-                  title=${project.path}
-                >
-                  <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
-                  ${project.name}
-                </li>`;
-            })}
-          </ul>
+          <div class="main-content">
+            <div class="select-project-root">${lockedString(UIStringsNotTranslate.selectProjectRoot)}</div>
+            <div>${lockedString(UIStringsNotTranslate.sourceCodeSent)}</div>
+          </div>
+          ${input.projects.length > 0 ? html`
+            <ul>
+              ${input.projects.map((project, index) => {
+                return html`
+                  <li
+                    @click=${() => input.onProjectSelected(index)}
+                    class=${index === input.selectedIndex ? 'selected' : ''}
+                    title=${project.path}
+                  >
+                    <devtools-icon class="folder-icon" .name=${'folder'}></devtools-icon>
+                    ${project.name}
+                  </li>`;
+              })}
+            </ul>
+          ` : nothing}
           <div class="buttons">
             <devtools-button
               title=${lockedString(UIStringsNotTranslate.cancel)}

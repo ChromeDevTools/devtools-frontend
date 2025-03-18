@@ -63,6 +63,10 @@ li.selected {
   color: var(--icon-file-authored);
 }
 
+.select-project-root {
+  margin-bottom: var(--sys-size-6);
+}
+
 .theme-with-dark-background, :host-context(.theme-with-dark-background) {
   li.selected, .selected .folder-icon {
     color: var(--app-color-navigation-drawer-label-selected);

@@ -5,7 +5,7 @@
 import type * as Protocol from '../../../generated/protocol.js';
 import * as CPUProfile from '../../../models/cpu_profile/cpu_profile.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {makeCompleteEvent} from '../../../testing/TraceHelpers.js';
+import {makeCompleteEvent, makeInstantEvent} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -272,8 +272,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
       const v8Run = makeCompleteEvent('v8.run', 10, 490);
       const consoleTimeStamp =
-          makeCompleteEvent(Trace.Types.Events.Name.CONSOLE_TIME_STAMP, 350, 10) as Trace.Types.Events.ConsoleTimeStamp;
-      consoleTimeStamp.args = {data: {name: 'A timestamp', sampleTraceId: traceId}};
+          makeInstantEvent(Trace.Types.Events.Name.CONSOLE_TIME_STAMP, 350) as Trace.Types.Events.ConsoleTimeStamp;
+      consoleTimeStamp.args = {data: {message: 'A timestamp', sampleTraceId: traceId}};
       const traceEvents = [evaluateScript, v8Run, consoleTimeStamp];
       const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.lengthOf(constructedCalls, 4);

@@ -75,6 +75,45 @@ You can run a [build](#Build) of DevTools frontend in a pre-built Chrome or Chro
 - Use the downloaded Chrome for Testing binary in `third_party/chrome`.
 - Use the latest Chrome Canary. This includes any DevTools features that are only available in regular Chrome builds (`is_official_build` + `is_chrome_branded`), such as GenAI-related features.
 
+#### Using `npm start` script (recommended)
+
+With Chromium 136, we added (back) a `start` script that can be used to easily launch DevTools with pre-built [Chrome
+for Testing](https://developer.chrome.com/blog/chrome-for-testing) or [Chrome Canary](https://www.google.com/chrome/canary/).
+It'll also take care of automatically enabling/disabling experimental features that are actively being worked on. Use
+
+```bash
+npm start
+```
+
+to build DevTools front-end in `out/Default` (you can change this to `out/foo` by passing `--target=foo` if needed),
+and open Chrome for Testing (in `third_party/chrome`) with the custom DevTools front-end. It'll automatically open
+DevTools for every new tab, you can use
+
+```bash
+npm start -- --no-auto-open-devtools-for-tabs
+```
+
+to disable this behavior. You can also use
+
+```bash
+npm start -- --canary
+```
+
+to run in Chrome Canary instead of Chrome for Testing; this requires you to install Chrome Canary manually first
+(Googlers can install `google-chrome-canary` on gLinux). You can use
+
+```bash
+npm start -- --enable-feature=MediaRouter --disable-feature=DevToolsWellKnown
+```
+
+to enable/disable features as needed; the command line flags take precedence over the defaults. And finally use
+
+```bash
+npm start -- http://www.example.com
+```
+
+to automatically open `http://www.example.com` in the newly spawned Chrome tab.
+
 #### Running from file system
 
 This works with Chromium 79 or later.

@@ -100,13 +100,7 @@ npm start -- --canary
 ```
 
 to run in Chrome Canary instead of Chrome for Testing; this requires you to install Chrome Canary manually first
-(Googlers can install `google-chrome-canary` on gLinux). You can use
-
-```bash
-npm start -- --enable-feature=MediaRouter --disable-feature=DevToolsWellKnown
-```
-
-to enable/disable features as needed; the command line flags take precedence over the defaults. And finally use
+(Googlers can install `google-chrome-canary` on gLinux). And finally use
 
 ```bash
 npm start -- http://www.example.com

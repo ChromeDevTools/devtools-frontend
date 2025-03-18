@@ -47,14 +47,6 @@ def parse_options(args):
                         const='canary',
                         dest='browser',
                         help='launch in Chrome Canary')
-    parser.add_argument('--enable-features',
-                        action='append',
-                        default=[],
-                        help='enable experimental Chrome features')
-    parser.add_argument('--disable-features',
-                        action='append',
-                        default=[],
-                        help='disable experimental Chrome features')
     parser.add_argument('--no-auto-open-devtools-for-tabs',
                         action='store_true',
                         help='don\'t automatically open DevTools for new tabs')
@@ -119,11 +111,11 @@ def start(options):
     if platform.system() == 'Darwin':
         args += ['--use-mock-keychain']
 
-    # Disable/Enable experimental features, starting with defaults.
-    args += ['--disable-features=%s' % f for f in DISABLE_FEATURES]
-    args += ['--enable-features=%s' % f for f in ENABLE_FEATURES]
-    args += ['--disable-features=%s' % f for f in options.disable_features]
-    args += ['--enable-features=%s' % f for f in options.enable_features]
+    # Disable/Enable experimental features.
+    if len(DISABLE_FEATURES) > 0:
+        args += ['--disable-features=%s' % ','.join(DISABLE_FEATURES)]
+    if len(ENABLE_FEATURES) > 0:
+        args += ['--enable-features=%s' % ','.join(ENABLE_FEATURES)]
 
     # Open with our freshly built DevTools front-end.
     args += [

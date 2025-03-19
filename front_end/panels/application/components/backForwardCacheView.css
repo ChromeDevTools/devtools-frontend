@@ -17,6 +17,7 @@
   flex: auto;
   overflow-wrap: break-word;
   overflow: hidden;
+  grid-column-start: span 2;
 }
 
 .details-list {
@@ -66,6 +67,10 @@
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
+}
+
+devtools-report-value:has(devtools-tree-outline) {
+  margin-left: var(--sys-size-7);
 }
 
 .tree-outline li .selection {

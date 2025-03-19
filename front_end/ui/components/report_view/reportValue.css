@@ -5,14 +5,15 @@
  */
 
 :host {
-  line-height: 28px;
-  margin: 0 0 8px;
+  margin: var(--sys-size-3) var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
   min-width: 150px;
 }
 
 .value {
+  font: var(--sys-typescale-body4-regular);
   color: var(--sys-color-on-surface);
   margin-inline-start: 0;
   padding: 0 6px;
   overflow-wrap: break-word;
+  line-height: 18px;
 }

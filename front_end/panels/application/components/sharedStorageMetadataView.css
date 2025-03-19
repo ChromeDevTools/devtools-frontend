@@ -12,11 +12,18 @@
 
 devtools-icon {
   vertical-align: text-bottom;
-  margin-left: 2px;
+  margin-left: var(--sys-size-3);
   width: 16px;
   height: 16px;
 }
 
 devtools-button {
   vertical-align: sub;
+  margin-left: var(--sys-size-3);
+}
+
+.entropy-budget {
+  display: flex;
+  align-items: center;
+  height: 18px;
 }

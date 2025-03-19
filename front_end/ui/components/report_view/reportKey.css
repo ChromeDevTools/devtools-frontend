@@ -5,14 +5,16 @@
  */
 
 :host {
-  line-height: 28px;
-  margin: 0 0 8px;
+  margin: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
+  min-width: 150px;
 }
 
 .key {
   color: var(--sys-color-on-surface-subtle);
-  padding: 0 6px;
-  text-align: right;
+  font: var(--sys-typescale-body5-regular);
+  padding-right: var(--sys-size-6);
+  text-align: left;
   white-space: pre;
   user-select: none;
+  line-height: 18px;
 }

@@ -8,6 +8,11 @@
   grid-column-start: span 2;
 }
 
+:host(.subsection-divider) {
+  padding-left: var(--sys-size-9);
+}
+
 .section-divider {
+  margin: var(--sys-size-5) 0;
   border-bottom: 1px solid var(--sys-color-divider);
 }

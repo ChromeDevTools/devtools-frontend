@@ -44,7 +44,7 @@ const UIStrings = {
   /**
    * @description Entry name text in the back/forward cache view of the Application panel
    */
-  url: 'URL:',
+  url: 'URL',
   /**
    * @description Status text for the status of the back/forward cache status
    */
@@ -278,14 +278,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     // clang-format off
     return html`
       ${this.#renderBackForwardCacheStatus(frame.backForwardCacheDetails.restoredFromCache)}
-      <div class="report-line">
-        <div class="report-key">
-          ${i18nString(UIStrings.url)}
-        </div>
-        <div class="report-value" title=${frame.url}>
-          ${frame.url}
-        </div>
-      </div>
+      <devtools-report-key>${i18nString(UIStrings.url)}</devtools-report-key>
+      <devtools-report-value>${frame.url}</devtools-report-value>
       ${this.#maybeRenderFrameTree(frame.backForwardCacheDetails.explanationsTree)}
       <devtools-report-section>
         <devtools-button
@@ -361,20 +355,15 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
 
     // clang-format off
     return html`
-      <div class="report-line"
-      jslog=${VisualLogging.section('frames')}>
-        <div class="report-key">
-          ${i18nString(UIStrings.framesTitle)}
-        </div>
-        <div class="report-value">
-          <devtools-tree-outline .data=${{
-            tree: [root],
-            defaultRenderer: treeNodeRenderer,
-            compact: true,
-          } as TreeOutline.TreeOutline.TreeOutlineData<FrameTreeNodeData>}>
-          </devtools-tree-outline>
-        </div>
-      </div>
+      <devtools-report-key jslog=${VisualLogging.section('frames')}>${i18nString(UIStrings.framesTitle)}</devtools-report-key>
+      <devtools-report-value>
+        <devtools-tree-outline .data=${{
+          tree: [root],
+          defaultRenderer: treeNodeRenderer,
+          compact: true,
+        } as TreeOutline.TreeOutline.TreeOutlineData<FrameTreeNodeData>}>
+        </devtools-tree-outline>
+      </devtools-report-value>
     `;
     // clang-format on
   }

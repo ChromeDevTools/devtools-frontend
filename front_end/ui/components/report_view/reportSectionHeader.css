@@ -9,15 +9,14 @@
 }
 
 .section-header {
-  padding: 12px;
-  margin-left: 18px;
+  font: var(--sys-typescale-headline5);
+  margin: var(--sys-size-4) 0 var(--sys-size-5) var(--sys-size-9);
   display: flex;
   flex-direction: row;
   align-items: center;
   flex: auto;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-weight: bold;
   color: var(--sys-color-on-surface);
   user-select: none;
 }

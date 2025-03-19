@@ -240,6 +240,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   #renderBucketControls(): Lit.TemplateResult {
     // clang-format off
     return html`
+      <devtools-report-divider></devtools-report-divider>
       <devtools-report-section>
         <devtools-button
           aria-label=${i18nString(UIStrings.deleteBucket)}

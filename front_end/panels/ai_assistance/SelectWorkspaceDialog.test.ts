@@ -79,6 +79,8 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const {view} = createComponent();
     assert.strictEqual(view.callCount, 1);
     assert.lengthOf(view.input.projects, 2);
+    assert.strictEqual(view.input.selectedIndex, 0);
+
     view.input.onAddFolderButtonClick();
     assert.isTrue(addProjectSpy.calledOnce);
 
@@ -86,5 +88,7 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     const input = await view.nextInput;
     assert.strictEqual(view.callCount, 2);
     assert.lengthOf(input.projects, 3);
+    assert.strictEqual(input.projects[2].name, 'test3');
+    assert.strictEqual(input.selectedIndex, 2);
   });
 });

@@ -114,7 +114,9 @@ export class SRIMessageSignatureIssue extends Issue {
   constructor(issueDetails: Protocol.Audits.SRIMessageSignatureIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel) {
     super(
         {
-          code: getIssueCode(issueDetails),
+          // Append the signature base to the enum's code in order to prevent
+          // distinct error details from coalescing in the issues panel.
+          code: getIssueCode(issueDetails) + issueDetails.signatureBase,
           umaCode: [
             Protocol.Audits.InspectorIssueCode.SRIMessageSignatureIssue,
             issueDetails.error,
@@ -143,6 +145,9 @@ export class SRIMessageSignatureIssue extends Issue {
     const description = issueDescriptions.get(this.#issueDetails.error);
     if (!description) {
       return null;
+    }
+    if (this.#issueDetails.signatureBase !== '') {
+      description.substitutions = new Map([['PLACEHOLDER_signatureBase', () => this.#issueDetails.signatureBase]]);
     }
     return resolveLazyDescription(description);
   }

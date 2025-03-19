@@ -843,6 +843,17 @@ main {
     --code-block-background-color: var(--sys-color-surface1);
   }
 
+  .error-container {
+    display: flex;
+    align-items: center;
+    gap: var(--sys-size-3);
+    color: var(--sys-color-error);
+
+    devtools-icon {
+      color: var(--sys-color-error);
+    }
+  }
+
   .footer {
     display: flex;
     flex-direction: row;

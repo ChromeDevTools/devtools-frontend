@@ -31,8 +31,16 @@ function createMockAidaClient(fetch: Host.AidaClient.AidaClient['fetch']): Host.
   };
 }
 
-export type MockAidaResponse =
-    Omit<Host.AidaClient.AidaResponse, 'completed'|'metadata'>&{metadata?: Host.AidaClient.AidaResponseMetadata};
+export const MockAidaAbortError = {
+  abortError: true,
+} as const;
+
+export const MockAidaFetchError = {
+  fetchError: true,
+} as const;
+
+export type MockAidaResponse = Omit<Host.AidaClient.AidaResponse, 'completed'|'metadata'>&
+    {metadata?: Host.AidaClient.AidaResponseMetadata}|typeof MockAidaAbortError|typeof MockAidaFetchError;
 
 /**
  * Creates a mock AIDA client that responds using `data`.
@@ -50,8 +58,11 @@ export function mockAidaClient(data: Array<[MockAidaResponse, ...MockAidaRespons
     }
 
     for (const [idx, chunk] of data[callId].entries()) {
-      if (options?.signal?.aborted) {
+      if (options?.signal?.aborted || ('abortError' in chunk)) {
         throw new Host.AidaClient.AidaAbortError();
+      }
+      if ('fetchError' in chunk) {
+        throw new Error('Fetch error');
       }
       const metadata = chunk.metadata ?? {};
       if (metadata?.attributionMetadata?.attributionAction === Host.AidaClient.RecitationAction.BLOCK) {
@@ -235,7 +246,8 @@ export async function createPatchWidgetWithDiffView() {
       await createPatchWidget({aidaClient: mockAidaClient([[{explanation: 'patch applied'}]])});
   panel.changeSummary = 'body { background-color: red; }';
   view.input.onApplyToWorkspace();
-  assert.exists((await view.nextInput).patchSuggestion);
+  assert.strictEqual(
+      (await view.nextInput).patchSuggestionState, AiAssistance.PatchWidget.PatchSuggestionState.SUCCESS);
 
   return {panel, view, aidaClient};
 }

@@ -171,6 +171,10 @@ devtools-recording-list-view {
     > x-link {
       white-space: nowrap;
       margin-left: var(--sys-size-3);
+      cursor: pointer;
+      text-decoration: underline;
+      color: var(--sys-color-primary);
+      outline-offset: var(--sys-size-2);
     }
   }
 

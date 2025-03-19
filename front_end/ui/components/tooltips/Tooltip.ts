@@ -214,7 +214,7 @@ export class Tooltip extends HTMLElement {
   #keyDown = (event: KeyboardEvent): void => {
     if ((event.altKey && event.key === 'ArrowDown') || (event.key === 'Escape' && this.open)) {
       this.toggle();
-      event.stopPropagation();
+      event.consume(true);
     }
   };
 

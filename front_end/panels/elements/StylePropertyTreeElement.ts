@@ -277,7 +277,7 @@ function getTracingTooltip(
             if (e.key === 'Escape' || (e.altKey && e.key === 'ArrowDown')){
               maybeTooltip.hideTooltip();
               maybeTooltip.anchor?.focus();
-              e.consume();
+              e.consume(true);
             }
           }}
           .widgetConfig=${UI.Widget.widgetConfig(CSSValueTraceView, {})}

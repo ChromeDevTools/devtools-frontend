@@ -41,6 +41,7 @@ import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.j
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {AiWarningInfobarPlugin} from './AiWarningInfobarPlugin.js';
 import {CoveragePlugin} from './CoveragePlugin.js';
 import {CSSPlugin} from './CSSPlugin.js';
 import {DebuggerPlugin} from './DebuggerPlugin.js';
@@ -49,20 +50,6 @@ import {MemoryProfilePlugin, PerformanceProfilePlugin} from './ProfilePlugin.js'
 import {ResourceOriginPlugin} from './ResourceOriginPlugin.js';
 import {SnippetsPlugin} from './SnippetsPlugin.js';
 import {SourcesPanel} from './SourcesPanel.js';
-
-function sourceFramePlugins(): Array<typeof Plugin> {
-  // The order of these plugins matters for toolbar items and editor
-  // extension precedence
-  return [
-    CSSPlugin,
-    DebuggerPlugin,
-    SnippetsPlugin,
-    ResourceOriginPlugin,
-    CoveragePlugin,
-    MemoryProfilePlugin,
-    PerformanceProfilePlugin,
-  ];
-}
 
 export class UISourceCodeFrame extends
     Common.ObjectWrapper.eventMixin<EventTypes, typeof SourceFrame.SourceFrame.SourceFrameImpl>(
@@ -342,11 +329,26 @@ export class UISourceCodeFrame extends
     this.updateLanguageMode('').then(() => this.reloadPlugins(), console.error);
   }
 
+  static sourceFramePlugins(): Array<typeof Plugin> {
+    // The order of these plugins matters for toolbar items and editor
+    // extension precedence
+    return [
+      CSSPlugin,
+      DebuggerPlugin,
+      SnippetsPlugin,
+      ResourceOriginPlugin,
+      CoveragePlugin,
+      MemoryProfilePlugin,
+      PerformanceProfilePlugin,
+      AiWarningInfobarPlugin,
+    ];
+  }
+
   private loadPlugins(): void {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
     const pluginUISourceCode = binding ? binding.network : this.uiSourceCodeInternal;
 
-    for (const pluginType of sourceFramePlugins()) {
+    for (const pluginType of UISourceCodeFrame.sourceFramePlugins()) {
       if (pluginType.accepts(pluginUISourceCode)) {
         this.plugins.push(new pluginType(pluginUISourceCode, this));
       }

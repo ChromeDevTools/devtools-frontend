@@ -844,6 +844,7 @@ export const knownContextValues = new Set([
   'container-name',
   'container-query',
   'container-type',
+  'contains-ai-content-warning',
   'content',
   'content-encoding',
   'content-length',

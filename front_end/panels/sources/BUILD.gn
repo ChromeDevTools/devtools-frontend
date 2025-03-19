@@ -28,6 +28,7 @@ generate_css("css_files") {
 devtools_module("sources") {
   sources = [
     "AddSourceMapURLDialog.ts",
+    "AiWarningInfobarPlugin.ts",
     "BreakpointEditDialog.ts",
     "CSSPlugin.ts",
     "CallStackSidebarPane.ts",

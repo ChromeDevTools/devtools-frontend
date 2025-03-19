@@ -311,7 +311,6 @@ export class DebuggerPlugin extends Plugin {
           click: (view, block, event) => this.handleGutterClick(view.state.doc.lineAt(block.from), event as MouseEvent),
         },
       }),
-      infobarState,
       breakpointMarkers,
       TextEditor.ExecutionPositionHighlighter.positionHighlighter('cm-executionLine', 'cm-executionToken'),
       CodeMirror.Prec.lowest(continueToMarkers.field),
@@ -454,13 +453,13 @@ export class DebuggerPlugin extends Plugin {
 
   attachInfobar(bar: UI.Infobar.Infobar): void {
     if (this.editor) {
-      this.editor.dispatch({effects: addInfobar.of(bar)});
+      this.editor.dispatch({effects: SourceFrame.SourceFrame.addInfobar.of(bar)});
     }
   }
 
   removeInfobar(bar: UI.Infobar.Infobar|null): void {
     if (this.editor && bar) {
-      this.editor.dispatch({effects: removeInfobar.of(bar)});
+      this.editor.dispatch({effects: SourceFrame.SourceFrame.removeInfobar.of(bar)});
     }
   }
 
@@ -1793,31 +1792,6 @@ export class BreakpointLocationRevealer implements
     }
   }
 }
-
-// Infobar panel state, used to show additional panels below the editor.
-
-const addInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-const removeInfobar = CodeMirror.StateEffect.define<UI.Infobar.Infobar>();
-
-const infobarState = CodeMirror.StateField.define<UI.Infobar.Infobar[]>({
-  create(): UI.Infobar.Infobar[] {
-    return [];
-  },
-  update(current, tr): UI.Infobar.Infobar[] {
-    for (const effect of tr.effects) {
-      if (effect.is(addInfobar)) {
-        current = current.concat(effect.value);
-      } else if (effect.is(removeInfobar)) {
-        current = current.filter(b => b !== effect.value);
-      }
-    }
-    return current;
-  },
-  provide: (field): CodeMirror.Extension => CodeMirror.showPanel.computeN(
-      [field],
-      (state): Array<() => CodeMirror.Panel> =>
-          state.field(field).map((bar): (() => CodeMirror.Panel) => (): CodeMirror.Panel => ({dom: bar.element}))),
-});
 
 // Enumerate non-breakable lines (lines without a known corresponding
 // position in the UISource).

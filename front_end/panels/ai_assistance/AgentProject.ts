@@ -101,6 +101,7 @@ export class AgentProject {
     }
     this.#linesChanged += linesChanged;
     uiSourceCode.setWorkingCopy(content);
+    uiSourceCode.setContainsAiChanges(true);
   }
 
   /**

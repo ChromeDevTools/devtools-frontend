@@ -72,6 +72,7 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private contentEncodedInternal?: boolean;
   private isKnownThirdPartyInternal: boolean;
   private isUnconditionallyIgnoreListedInternal: boolean;
+  #containsAiChanges = false;
 
   constructor(project: Project, url: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType) {
     super();
@@ -378,12 +379,21 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
   private innerResetWorkingCopy(): void {
     this.workingCopyInternal = null;
     this.workingCopyGetter = null;
+    this.setContainsAiChanges(false);
   }
 
   setWorkingCopy(newWorkingCopy: string): void {
     this.workingCopyInternal = newWorkingCopy;
     this.workingCopyGetter = null;
     this.workingCopyChanged();
+  }
+
+  setContainsAiChanges(containsAiChanges: boolean): void {
+    this.#containsAiChanges = containsAiChanges;
+  }
+
+  containsAiChanges(): boolean {
+    return this.#containsAiChanges;
   }
 
   setContent(content: string, isBase64: boolean): void {

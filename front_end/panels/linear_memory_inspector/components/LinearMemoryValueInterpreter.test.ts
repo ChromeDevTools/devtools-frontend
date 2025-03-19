@@ -8,6 +8,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 
 import * as LinearMemoryInspectorComponents from './components.js';
 
@@ -30,7 +31,7 @@ function assertDisplayRenders(component: HTMLElement) {
 
 function clickSettingsButton(
     component: LinearMemoryInspectorComponents.LinearMemoryValueInterpreter.LinearMemoryValueInterpreter) {
-  const settingsButton = getElementWithinComponent(component, '[data-settings]', HTMLButtonElement);
+  const settingsButton = getElementWithinComponent(component, '[data-settings]', Buttons.Button.Button);
   settingsButton.click();
 }
 

@@ -112,7 +112,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [valueInterpreterDisplayStyles];
+    this.#shadow.adoptedStyleSheets = [inspectorCommonStyles, valueInterpreterDisplayStyles];
   }
 
   set data(data: ValueDisplayData) {
@@ -194,7 +194,6 @@ export class ValueInterpreterDisplay extends HTMLElement {
       <div>
         <select title=${i18nString(UIStrings.changeValueTypeMode)}
           data-mode-settings="true"
-          style="border: none; background-color: transparent; cursor: pointer; color: var(--sys-color-token-subtle);"
           jslog=${VisualLogging.dropDown('linear-memory-inspector.value-type-mode').track({change: true})}
           @change=${this.#onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {

@@ -49,6 +49,7 @@ describeWithLocale('SRIMessageSignatureIssue', () => {
           requestId: 'test-request-id' as Protocol.Network.RequestId,
           url: 'https://example.com/',
         },
+        signatureBase: 'test-signature-base',
       };
       const issue = createProtocolIssue(issueDetails);
       const sriMessageSignatureIssues =

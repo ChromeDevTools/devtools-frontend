@@ -519,6 +519,9 @@ export function prefetchFailureReason({prefetchStatus}: SDK.PreloadingModel.Pref
       return PrefetchReasonDescription['PrefetchNotEligibleRedirectFromServiceWorker'].name();
     case Protocol.Preload.PrefetchStatus.PrefetchNotEligibleRedirectToServiceWorker:
       return PrefetchReasonDescription['PrefetchNotEligibleRedirectToServiceWorker'].name();
+    case Protocol.Preload.PrefetchStatus.PrefetchEvictedAfterBrowsingDataRemoved:
+      // TODO(crbug.com/40262310): Add description.
+      return null;
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

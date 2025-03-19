@@ -1140,6 +1140,7 @@ export namespace Audits {
 
   export interface SRIMessageSignatureIssueDetails {
     error: SRIMessageSignatureError;
+    signatureBase: string;
     request: AffectedRequest;
   }
 
@@ -6534,6 +6535,7 @@ export namespace Emulation {
     /**
      * If set, the display feature of a multi-segment screen. If not set, multi-segment support
      * is turned-off.
+     * Deprecated, use Emulation.setDisplayFeaturesOverride.
      */
     displayFeature?: DisplayFeature;
     /**
@@ -6546,6 +6548,10 @@ export namespace Emulation {
 
   export interface SetDevicePostureOverrideRequest {
     posture: DevicePosture;
+  }
+
+  export interface SetDisplayFeaturesOverrideRequest {
+    features: DisplayFeature[];
   }
 
   export interface SetScrollbarsHiddenRequest {
@@ -17945,6 +17951,7 @@ export namespace Preload {
     PrefetchFailedMIMENotSupported = 'PrefetchFailedMIMENotSupported',
     PrefetchFailedNetError = 'PrefetchFailedNetError',
     PrefetchFailedNon2XX = 'PrefetchFailedNon2XX',
+    PrefetchEvictedAfterBrowsingDataRemoved = 'PrefetchEvictedAfterBrowsingDataRemoved',
     PrefetchEvictedAfterCandidateRemoved = 'PrefetchEvictedAfterCandidateRemoved',
     PrefetchEvictedForNewerPrefetch = 'PrefetchEvictedForNewerPrefetch',
     PrefetchHeldback = 'PrefetchHeldback',

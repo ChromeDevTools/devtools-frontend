@@ -1389,29 +1389,29 @@ export class MathFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         span);
 
     if (childTracingContexts && context.tracing?.applyEvaluation(childTracingContexts)) {
-      void this.#applyEvaluation(span, context.matchedResult.getComputedText(match.node));
+      void this.applyEvaluation(span, context.matchedResult.getComputedText(match.node));
     } else if (match.func !== 'calc') {
       const resolvedArgs =
           match.args.map(arg => context.matchedResult.getComputedTextRange(arg[0], arg[arg.length - 1]));
-      void this.applySelectFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
+      void this.applyMathFunction(renderedArgs, resolvedArgs, context.matchedResult.getComputedText(match.node));
     }
 
     return [span];
   }
 
-  async #applyEvaluation(span: HTMLSpanElement, value: string): Promise<void> {
+  async applyEvaluation(span: HTMLSpanElement, value: string): Promise<void> {
     const nodeId = this.#stylesPane.node()?.id;
     if (nodeId === undefined) {
       return;
     }
     const evaled = await this.#stylesPane.cssModel()?.resolveValues(nodeId, value);
-    if (!evaled || evaled[0] === value) {
+    if (!evaled?.[0] || evaled[0] === value) {
       return;
     }
     span.textContent = evaled[0];
   }
 
-  async applySelectFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
+  async applyMathFunction(renderedArgs: HTMLElement[], values: string[], functionText: string): Promise<void> {
     const nodeId = this.#stylesPane.node()?.id;
     if (nodeId === undefined) {
       return;

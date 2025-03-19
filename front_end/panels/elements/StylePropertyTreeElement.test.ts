@@ -1675,7 +1675,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                 value => value.startsWith('min') ? '4px' : value.trim().replaceAll(/(em|pt)$/g, 'px'))
           }));
       const strikeOutSpy =
-          sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applySelectFunction');
+          sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applyMathFunction');
       const stylePropertyTreeElement = getTreeElement('width', 'min(5em, 4px, 8pt)');
       stylePropertyTreeElement.updateTitle();
 
@@ -1700,6 +1700,27 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         const widget = tooltip.firstElementChild && LegacyUI.Widget.Widget.get(tooltip.firstElementChild);
         assert.instanceOf(widget, Elements.CSSValueTraceView.CSSValueTraceView);
       }
+    });
+
+    it('shows the original text during tracing when evaluation fails', async () => {
+      updateHostConfig({devToolsCssValueTracing: {enabled: true}});
+      setMockConnectionResponseHandler(
+          'CSS.resolveValues',
+          (request: Protocol.CSS.ResolveValuesRequest) => ({results: request.values.map(() => '')}));
+      const evaluationSpy =
+          sinon.spy(Elements.StylePropertyTreeElement.MathFunctionRenderer.prototype, 'applyEvaluation');
+      const property = addProperty('width', 'calc(1 + 1)');
+
+      const view = new Elements.CSSValueTraceView.CSSValueTraceView(undefined, () => {});
+      view.showTrace(
+          property, null, matchedStyles, new Map(),
+          Elements.StylePropertyTreeElement.getPropertyRenderers(
+              property.ownerStyle, stylesSidebarPane, matchedStyles, null, new Map()));
+
+      assert.isTrue(evaluationSpy.calledOnce);
+      const originalText = evaluationSpy.args[0][0].textContent;
+      await evaluationSpy.returnValues[0];
+      assert.strictEqual(originalText, evaluationSpy.args[0][0].textContent);
     });
   });
 

@@ -427,6 +427,55 @@ describeWithEnvironment('TraceTree', () => {
       const eventId = TraceTree.generateEventID(profileCallEntry);
       assert.strictEqual(eventId, 'f:Compile@0');
     });
+    it('correctly groups events with eventGroupIdCallback when using forceGroupIdCallback', () => {
+      // This builds the following tree:
+      // |------------ROOT-----------|
+      // |-----A----| |-----B-----|
+      // |-C-| |-D-|  |-E-|
+
+      // Third party 1
+      const eventC = makeProfileCall('func', 0, 10_000);
+      const eventD = makeCompleteEvent('event D', 10_000, 10_000);
+
+      // Third party 2
+      const eventA = makeProfileCall('func', 0, 40_000);
+      const eventB = makeCompleteEvent('event D', 50_000, 40_000);
+      const eventE = makeCompleteEvent('event D', 50_000, 5_000);
+      // Events must be in order.
+      const events = [
+        eventA,
+        eventC,
+        eventD,
+        eventB,
+        eventE,
+      ];
+      const root = new TraceTree.BottomUpRootNode(events, {
+        textFilter: new Trace.Extras.TraceFilter.InvisibleEventsFilter([]),
+        filters: [],
+        startTime: Trace.Types.Timing.Milli(0),
+        endTime: Trace.Types.Timing.Milli(200_000),
+        eventGroupIdCallback: event => {
+          if (event === eventC || event === eventD) {
+            return 'thirdParty1';
+          }
+          return 'thirdParty2';
+        },
+        forceGroupIdCallback: true,
+      });
+      const rootChildren = root.children();
+      // 2 top nodes for each third party
+      assert.strictEqual(rootChildren.size, 2);
+
+      const children = Array.from(rootChildren.values()) as TraceTree.BottomUpNode[];
+      const first = children[0];
+      const second = children[1];
+
+      assert.strictEqual(first.id, 'thirdParty1');
+      assert.lengthOf(first.events, 2);
+
+      assert.strictEqual(second.id, 'thirdParty2');
+      assert.lengthOf(second.events, 3);
+    });
   });
 
   describe('eventStackFrame', () => {

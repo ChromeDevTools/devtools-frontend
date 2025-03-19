@@ -324,9 +324,10 @@ export class BottomUpRootNode extends Node {
   readonly filter: (e: Types.Events.Event) => boolean;
   readonly startTime: Types.Timing.Milli;
   readonly endTime: Types.Timing.Milli;
-  private eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   override totalTime: number;
+  eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
   private calculateTransferSize?: boolean;
+  private forceGroupIdCallback?: boolean;
 
   constructor(events: Types.Events.Event[], {
     textFilter,
@@ -335,6 +336,7 @@ export class BottomUpRootNode extends Node {
     endTime,
     eventGroupIdCallback,
     calculateTransferSize,
+    forceGroupIdCallback,
   }: {
     textFilter: TraceFilter,
     filters: readonly TraceFilter[],
@@ -342,6 +344,17 @@ export class BottomUpRootNode extends Node {
     endTime: Types.Timing.Milli,
     eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null,
     calculateTransferSize?: boolean,
+    /**
+     * This forces using `eventGroupIdCallback` in combination with generateEventID
+     * to generate the ID of the node.
+     *
+     * This is used in the ThirdPartyTreeView and BottomUpTreeView, where we want to group all events
+     * related to a specific 3P entity together, regardless of the specific event name/type.
+     * There are cases where events under the same event name belong to different entities. But, because
+     * they get grouped first by event name/type, it throws off the 3P groupBy - grouping events of different
+     * 3P entities together.
+     */
+    forceGroupIdCallback?: boolean,
   }) {
     super('', events[0]);
     this.childrenInternal = null;
@@ -353,6 +366,7 @@ export class BottomUpRootNode extends Node {
     this.eventGroupIdCallback = eventGroupIdCallback;
     this.totalTime = endTime - startTime;
     this.calculateTransferSize = calculateTransferSize;
+    this.forceGroupIdCallback = forceGroupIdCallback;
   }
 
   override hasChildren(): boolean {
@@ -388,11 +402,17 @@ export class BottomUpRootNode extends Node {
     const selfTimeStack: number[] = [endTime - startTime];
     const firstNodeStack: boolean[] = [];
     const totalTimeById = new Map<string, number>();
+    // TODO(paulirish): rename to getGroupNodeId
+    const eventGroupIdCallback = this.eventGroupIdCallback;
+    const forceGroupIdCallback = this.forceGroupIdCallback;
 
     // encodedDataLength is provided solely on instant events.
     const sumTransferSizeOfInstantEvent = (e: Types.Events.Event): void => {
       if (Types.Events.isReceivedDataEvent(e)) {
-        const id = generateEventID(e);
+        let id = generateEventID(e);
+        if (this.forceGroupIdCallback && this.eventGroupIdCallback) {
+          id = `${id}-${this.eventGroupIdCallback(e)}`;
+        }
         let node = nodeById.get(id);
         if (!node) {
           node = new BottomUpNode(root, id, e, false, root);
@@ -424,7 +444,10 @@ export class BottomUpRootNode extends Node {
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = generateEventID(e);
+      let id = generateEventID(e);
+      if (forceGroupIdCallback && eventGroupIdCallback) {
+        id = `${id}-${eventGroupIdCallback(e)}`;
+      }
       const noNodeOnStack = !totalTimeById.has(id);
       if (noNodeOnStack) {
         totalTimeById.set(id, duration);
@@ -433,7 +456,10 @@ export class BottomUpRootNode extends Node {
     }
 
     function onEndEvent(event: Types.Events.Event): void {
-      const id = generateEventID(event);
+      let id = generateEventID(event);
+      if (forceGroupIdCallback && eventGroupIdCallback) {
+        id = `${id}-${eventGroupIdCallback(event)}`;
+      }
       let node = nodeById.get(id);
       if (!node) {
         node = new BottomUpNode(root, id, event, false, root);
@@ -628,6 +654,7 @@ export function eventStackFrame(event: Types.Events.Event): Protocol.Runtime.Cal
   return {...topFrame, scriptId: String(topFrame.scriptId) as Protocol.Runtime.ScriptId};
 }
 
+// TODO(paulirish): rename to generateNodeId
 export function generateEventID(event: Types.Events.Event): string {
   if (Types.Events.isProfileCall(event)) {
     const name = SamplesIntegrator.isNativeRuntimeFrame(event.callFrame) ?

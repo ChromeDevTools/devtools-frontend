@@ -1078,6 +1078,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
+  // This is our groupingFunction that returns the eventId in Domain, Subdomain, and ThirdParty groupBy scenarios.
+  // The eventid == the identity of a node that we expect in a bottomUp tree (either without grouping or with the groupBy grouping)
+  // A "top node" (in `ungrouppedTopNodes`) is aggregated by this. (But so are all the other nodes, except the `GroupNode`s)
   private domainByEvent(groupBy: AggregatedTimelineTreeView.GroupBy, event: Trace.Types.Events.Event): string {
     const parsedTrace = this.parsedTrace();
     if (!parsedTrace) {
@@ -1085,6 +1088,21 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
     const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace);
     if (!url) {
+      // We could have receiveDataEvents (that don't have a url), but that have been
+      // attributed to an entity, let's check for these. This is used for ThirdParty grouping.
+      const entity = this.entityMapper()?.entityForEvent(event);
+      if (groupBy === AggregatedTimelineTreeView.GroupBy.ThirdParties && entity) {
+        if (!entity) {
+          return '';
+        }
+        const firstDomain = entity.domains[0];
+        const parsedURL = Common.ParsedURL.ParsedURL.fromString(firstDomain);
+        // chrome-extension check must come before entity.name.
+        if (parsedURL?.scheme === 'chrome-extension') {
+          return `${parsedURL.scheme}://${parsedURL.host}`;
+        }
+        return entity.name;
+      }
       return '';
     }
     if (AggregatedTimelineTreeView.isExtensionInternalURL(url)) {
@@ -1172,6 +1190,11 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
       startTime: this.startTime,
       endTime: this.endTime,
       eventGroupIdCallback: this.groupingFunction(this.groupBySetting.get()),
+      // To include instant events. When this is set to true, instant events are
+      // considered (to calculate transfer size). This then includes these events in tree nodes.
+      calculateTransferSize: true,
+      // We should forceGroupIdCallback if filtering by 3P for correct 3P grouping.
+      forceGroupIdCallback: this.groupBySetting.get() === AggregatedTimelineTreeView.GroupBy.ThirdParties,
     });
   }
 }

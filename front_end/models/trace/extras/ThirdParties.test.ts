@@ -6,44 +6,39 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
+function extractUrlsFromSummaries(summaries: Trace.Extras.ThirdParties.Summary[]): Array<[string, string[]]> {
+  return summaries.map(s => {
+    const uniqueUrls = new Set<string>();
+    s.relatedEvents?.forEach(e => {
+      const url = e.args?.data?.url;
+      if (url) {
+        uniqueUrls.add(url);
+      }
+    });
+    return [s.entity.name, Array.from(uniqueUrls)];
+  });
+}
+
 describeWithEnvironment('ThirdParties', function() {
   describe('byTraceBounds', function() {
     it('full trace bounds', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, parsedTrace.Meta.traceBounds);
 
-      const requests = parsedTrace.NetworkRequests.byTime.filter(
-          request => Trace.Helpers.Timing.eventIsInBounds(request, parsedTrace.Meta.traceBounds));
-      const thirdPartySummary =
-          Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, parsedTrace.Meta.traceBounds, requests);
-
-      const results = [...thirdPartySummary.byEntity.entries()].map(([entity, summary]) => [entity.name, summary]);
+      const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
-        ['localhost', {mainThreadTime: 26381, transferSize: 751}],
-        ['Google Fonts', {mainThreadTime: 0, transferSize: 0}],
+        ['localhost', 24.947999954223633, 2254],
+        ['Google Fonts', 0, 25325],
       ]);
-
-      assert.deepEqual([...thirdPartySummary.byUrl.entries()], [
-        ['extensions::SafeBuiltins', {mainThreadTime: 1448, transferSize: 0}],
-        ['http://localhost:8080/', {mainThreadTime: 21674, transferSize: 751}],
-        ['http://localhost:8080/blocking.js', {mainThreadTime: 2451, transferSize: 0}],
-        ['http://localhost:8080/module.js', {mainThreadTime: 2256, transferSize: 0}],
-        ['https://fonts.googleapis.com/css2?family=Orelega+One&display=swap', {mainThreadTime: 0, transferSize: 0}],
-        ['http://localhost:8080/styles.css', {mainThreadTime: 0, transferSize: 0}],
-        [
-          'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
-          {mainThreadTime: 0, transferSize: 0}
-        ],
-      ]);
-
-      const urls = [...thirdPartySummary.urlsByEntity.entries()].map(([entity, urls]) => [entity.name, [...urls]]);
+      const urls = extractUrlsFromSummaries(summaries);
       assert.deepEqual(urls, [
         [
           'localhost',
           [
             'http://localhost:8080/',
+            'http://localhost:8080/styles.css',
             'http://localhost:8080/blocking.js',
             'http://localhost:8080/module.js',
-            'http://localhost:8080/styles.css',
           ]
         ],
         [
@@ -51,38 +46,6 @@ describeWithEnvironment('ThirdParties', function() {
           [
             'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
             'https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2',
-          ]
-        ],
-      ]);
-    });
-
-    it('works even without network requests', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-
-      const thirdPartySummary =
-          Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, parsedTrace.Meta.traceBounds, []);
-
-      const results = [...thirdPartySummary.byEntity.entries()].map(([entity, summary]) => [entity.name, summary]);
-      assert.deepEqual(results, [
-        // Since network requests were not given, there is no transfer size.
-        ['localhost', {mainThreadTime: 26381, transferSize: 0}],
-      ]);
-
-      assert.deepEqual([...thirdPartySummary.byUrl.entries()], [
-        ['extensions::SafeBuiltins', {mainThreadTime: 1448, transferSize: 0}],
-        ['http://localhost:8080/', {mainThreadTime: 21674, transferSize: 0}],
-        ['http://localhost:8080/blocking.js', {mainThreadTime: 2451, transferSize: 0}],
-        ['http://localhost:8080/module.js', {mainThreadTime: 2256, transferSize: 0}],
-      ]);
-
-      const urls = [...thirdPartySummary.urlsByEntity.entries()].map(([entity, urls]) => [entity.name, [...urls]]);
-      assert.deepEqual(urls, [
-        [
-          'localhost',
-          [
-            'http://localhost:8080/',
-            'http://localhost:8080/blocking.js',
-            'http://localhost:8080/module.js',
           ]
         ],
       ]);
@@ -96,14 +59,12 @@ describeWithEnvironment('ThirdParties', function() {
       const max = Trace.Types.Timing.Micro(1634222320000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
 
-      const requests =
-          parsedTrace.NetworkRequests.byTime.filter(request => Trace.Helpers.Timing.eventIsInBounds(request, bounds));
-      const thirdPartySummary = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds, requests);
+      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds);
 
-      const results = [...thirdPartySummary.byEntity.entries()].map(([entity, summary]) => [entity.name, summary]);
+      const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, [
         // No main thread during given bounds. Some network.
-        ['localhost', {mainThreadTime: 0, transferSize: 751}],
+        ['localhost', 0, 419],
       ]);
     });
 
@@ -113,12 +74,9 @@ describeWithEnvironment('ThirdParties', function() {
       const min = Trace.Types.Timing.Micro(1634230000000);
       const max = Trace.Types.Timing.Micro(1634231000000);
       const bounds = {min, max, range: Trace.Types.Timing.Micro(max - min)};
+      const summaries = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds);
 
-      const requests =
-          parsedTrace.NetworkRequests.byTime.filter(request => Trace.Helpers.Timing.eventIsInBounds(request, bounds));
-      const thirdPartySummary = Trace.Extras.ThirdParties.summarizeThirdParties(parsedTrace, bounds, requests);
-
-      const results = [...thirdPartySummary.byEntity.entries()].map(([entity, summary]) => [entity.name, summary]);
+      const results = summaries.map(s => [s.entity.name, s.mainThreadTime, s.transferSize]);
       assert.deepEqual(results, []);
     });
   });

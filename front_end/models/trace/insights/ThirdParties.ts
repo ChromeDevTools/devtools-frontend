@@ -6,7 +6,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
-import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
 import {
@@ -42,21 +41,17 @@ const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ThirdParties.ts'
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
-  eventsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.Event[]>,
-  summaryByEntity: Map<Extras.ThirdParties.Entity, Extras.ThirdParties.Summary>,
-  summaryByUrl: Map<string, Extras.ThirdParties.Summary>,
-  urlsByEntity: Map<Extras.ThirdParties.Entity, Set<string>>,
   /** The entity for this navigation's URL. Any other entity is from a third party. */
-  firstPartyEntity?: Extras.ThirdParties.Entity,
+  firstPartyEntity?: Extras.ThirdParties.Entity, summaries: Extras.ThirdParties.Summary[],
 }>;
 
 function getRelatedEvents(
-    summaries: Extras.ThirdParties.ThirdPartySummary,
+    summaries: Extras.ThirdParties.Summary[],
     firstPartyEntity: Extras.ThirdParties.Entity|undefined): Types.Events.Event[] {
   const relatedEvents = [];
-
-  for (const [entity, events] of summaries.eventsByEntity.entries()) {
-    if (entity !== firstPartyEntity) {
+  for (const summary of summaries) {
+    if (summary.entity !== firstPartyEntity) {
+      const events = summary.relatedEvents ?? [];
       relatedEvents.push(...events);
     }
   }
@@ -71,40 +66,24 @@ function finalize(partialModel: PartialInsightModel<ThirdPartiesInsightModel>): 
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
-    state: [...partialModel.summaryByEntity.entries()].find(kv => kv[0] !== partialModel.firstPartyEntity) ?
-        'informative' :
-        'pass',
+    state: partialModel.summaries.find(summary => summary.entity !== partialModel.firstPartyEntity) ? 'informative' :
+                                                                                                      'pass',
     ...partialModel,
   };
 }
 
 export function generateInsight(
     parsedTrace: Handlers.Types.ParsedTrace, context: InsightSetContext): ThirdPartiesInsightModel {
-  const networkRequests = parsedTrace.NetworkRequests.byTime.filter(event => {
-    if (!context.navigation) {
-      return false;
-    }
-
-    if (event.args.data.frame !== context.frameId) {
-      return false;
-    }
-
-    return Helpers.Timing.eventIsInBounds(event, context.bounds);
-  });
-
-  const thirdPartySummary = Extras.ThirdParties.summarizeThirdParties(
-      parsedTrace as Handlers.Types.ParsedTrace, context.bounds, networkRequests);
+  const summaries =
+      Extras.ThirdParties.summarizeThirdParties(parsedTrace as Handlers.Types.ParsedTrace, context.bounds);
 
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
-      Handlers.Helpers.makeUpEntity(thirdPartySummary.madeUpEntityCache, firstPartyUrl);
+      Handlers.Helpers.makeUpEntity(parsedTrace.Renderer.entityMappings.createdEntityCache, firstPartyUrl);
 
   return finalize({
-    relatedEvents: getRelatedEvents(thirdPartySummary, firstPartyEntity),
-    eventsByEntity: thirdPartySummary.eventsByEntity,
-    summaryByEntity: thirdPartySummary.byEntity,
-    summaryByUrl: thirdPartySummary.byUrl,
-    urlsByEntity: thirdPartySummary.urlsByEntity,
+    relatedEvents: getRelatedEvents(summaries, firstPartyEntity),
     firstPartyEntity,
+    summaries,
   });
 }

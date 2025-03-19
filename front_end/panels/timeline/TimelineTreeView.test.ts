@@ -264,6 +264,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
         '25D2F12F1818C70B5BD4325CC9ACD8FF',
         '1094B71EC09B8BD3DD48B77D091D6024',
+        '75599398D66E8FE7AAD92D418D92FCE1',
       ]);
     });
 

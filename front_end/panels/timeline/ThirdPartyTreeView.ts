@@ -87,6 +87,8 @@ export class ThirdPartyTreeViewWidget extends TimelineTreeView.TimelineTreeView 
       endTime: this.endTime,
       eventGroupIdCallback: this.groupingFunction.bind(this),
       calculateTransferSize: true,
+      // Ensure we group by 3P alongside eventID for correct 3P grouping.
+      forceGroupIdCallback: true,
     });
     return node;
   }

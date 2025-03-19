@@ -5,8 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Bindings from '../bindings/bindings.js';
 
 import type {ChangeManager} from './ChangeManager.js';
 import {

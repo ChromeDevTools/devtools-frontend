@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../../../models/bindings/bindings.js';
-import type * as Workspace from '../../../models/workspace/workspace.js';
+import * as Bindings from '../../bindings/bindings.js';
+import type * as Workspace from '../../workspace/workspace.js';
 
 import {NetworkRequestFormatter} from './NetworkRequestFormatter.js';
 

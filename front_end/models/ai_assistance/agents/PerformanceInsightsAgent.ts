@@ -4,9 +4,9 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
+import * as PanelUtils from '../../../panels/utils/utils.js';
 import type * as Lit from '../../../ui/lit/lit.js';
-import * as TimelineUtils from '../../timeline/utils/utils.js';
-import * as PanelUtils from '../../utils/utils.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../data_formatters/PerformanceInsightFormatter.js';
 import {debugLog} from '../debug.js';
 

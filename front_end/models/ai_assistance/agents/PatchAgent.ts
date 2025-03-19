@@ -4,7 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import type * as Workspace from '../../../models/workspace/workspace.js';
+import type * as Workspace from '../../workspace/workspace.js';
 import {AgentProject} from '../AgentProject.js';
 import {debugLog} from '../debug.js';
 

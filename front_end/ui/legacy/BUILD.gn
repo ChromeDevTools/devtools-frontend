@@ -135,6 +135,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
+    "../../models/ai_assistance:*",
     "../../models/autofill_manager:*",
     "../../models/emulation:*",
     "../../models/extensions:*",

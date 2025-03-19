@@ -24,6 +24,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/main/*",
+    "../../models/ai_assistance/*",
     "../../panels/*",
     "../../testing/*",
     "../../ui/components/*",

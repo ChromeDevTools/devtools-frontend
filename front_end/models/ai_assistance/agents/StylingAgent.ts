@@ -7,9 +7,9 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as ElementsPanel from '../../../panels/elements/elements.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
-import {linkifyNodeReference} from '../../elements/DOMLinkifier.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {debugLog} from '../debug.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
@@ -252,7 +252,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
     const hiddenClassList =
         this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
     return Lit.Directives.until(
-        linkifyNodeReference(this.#node, {hiddenClassList}),
+        ElementsPanel.DOMLinkifier.linkifyNodeReference(this.#node, {hiddenClassList}),
     );
   }
 }

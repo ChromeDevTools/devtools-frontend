@@ -5,8 +5,8 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import type * as Workspace from '../../../models/workspace/workspace.js';
-import * as PanelUtils from '../../utils/utils.js';
+import * as PanelUtils from '../../../panels/utils/utils.js';
+import type * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {

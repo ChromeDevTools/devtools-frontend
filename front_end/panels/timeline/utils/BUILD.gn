@@ -43,6 +43,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+    "../../../models/ai_assistance/*",
     "../../ai_assistance/*",
     "../../network/*",
     "../components:*",

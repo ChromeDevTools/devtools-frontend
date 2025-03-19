@@ -6,13 +6,13 @@ import * as Host from '../../../core/host/host.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as Logs from '../../../models/logs/logs.js';
+import type * as Network from '../../../panels/network/network.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as Network from '../../network/network.js';
+import * as Logs from '../../logs/logs.js';
 import {
   NetworkAgent,
   RequestContext,

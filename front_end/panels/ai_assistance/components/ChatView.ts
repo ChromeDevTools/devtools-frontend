@@ -8,6 +8,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
+import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -15,8 +16,6 @@ import type * as MarkdownView from '../../../ui/components/markdown_view/markdow
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {type ContextDetail, type ConversationContext, ErrorType} from '../agents/AiAgent.js';
-import {ConversationType, NOT_FOUND_IMAGE_DATA} from '../AiHistoryStorage.js';
 import {PatchWidget} from '../PatchWidget.js';
 
 import stylesRaw from './chatView.css.js';
@@ -207,7 +206,7 @@ export interface Step {
   output?: string;
   canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
-  contextDetails?: [ContextDetail, ...ContextDetail[]];
+  contextDetails?: [AiAssistanceModel.ContextDetail, ...AiAssistanceModel.ContextDetail[]];
 }
 
 interface ConfirmSideEffectDialog {
@@ -236,7 +235,7 @@ export interface ModelChatMessage {
   steps: Step[];
   suggestions?: [string, ...string[]];
   answer?: string;
-  error?: ErrorType;
+  error?: AiAssistanceModel.ErrorType;
   rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
@@ -261,11 +260,11 @@ export interface Props {
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
-  selectedContext: ConversationContext<unknown>|null;
+  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
-  conversationType?: ConversationType;
+  conversationType?: AiAssistanceModel.ConversationType;
   isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
   changeSummary?: string;
@@ -741,14 +740,14 @@ function renderError(message: ModelChatMessage): Lit.LitTemplate {
   if (message.error) {
     let errorMessage;
     switch (message.error) {
-      case ErrorType.UNKNOWN:
-      case ErrorType.BLOCK:
+      case AiAssistanceModel.ErrorType.UNKNOWN:
+      case AiAssistanceModel.ErrorType.BLOCK:
         errorMessage = UIStringsNotTranslate.systemError;
         break;
-      case ErrorType.MAX_STEPS:
+      case AiAssistanceModel.ErrorType.MAX_STEPS:
         errorMessage = UIStringsNotTranslate.maxStepsError;
         break;
-      case ErrorType.ABORT:
+      case AiAssistanceModel.ErrorType.ABORT:
         return html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
             lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
     }
@@ -856,7 +855,7 @@ function renderChatMessage({
 }
 
 function renderImageChatMessage(inlineData: Host.AidaClient.MediaBlob): Lit.LitTemplate {
-  if (inlineData.data === NOT_FOUND_IMAGE_DATA) {
+  if (inlineData.data === AiAssistanceModel.NOT_FOUND_IMAGE_DATA) {
     // clang-format off
     return html`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
@@ -881,16 +880,18 @@ function renderSelection({
   onContextClick,
   onInspectElementClick,
 }: {
-  selectedContext: ConversationContext<unknown>|null,
+  selectedContext: AiAssistanceModel.ConversationContext<unknown>|null,
   inspectElementToggled: boolean,
-  conversationType?: ConversationType, onContextClick: () => void | Promise<void>, onInspectElementClick: () => void,
+  conversationType?: AiAssistanceModel.ConversationType,
+                  onContextClick: () => void | Promise<void>,
+                  onInspectElementClick: () => void,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
   }
 
   // TODO: currently the picker behavior is SDKNode specific.
-  const hasPickerBehavior = conversationType === ConversationType.STYLING;
+  const hasPickerBehavior = conversationType === AiAssistanceModel.ConversationType.STYLING;
 
   const resourceClass = Lit.Directives.classMap({
     'not-selected': !selectedContext,
@@ -1030,7 +1031,7 @@ function renderEmptyState({isTextInputDisabled, suggestions, onSuggestionClick}:
 
 function renderReadOnlySection({onNewConversation, conversationType}: {
   onNewConversation: () => void,
-  conversationType?: ConversationType,
+  conversationType?: AiAssistanceModel.ConversationType,
 }): Lit.LitTemplate {
   if (!conversationType) {
     return Lit.nothing;
@@ -1220,10 +1221,10 @@ function renderChatInput({
   isTextInputDisabled: boolean,
   inputPlaceholder: Platform.UIString.LocalizedString,
   state: State,
-  selectedContext: ConversationContext<unknown> | null,
+  selectedContext: AiAssistanceModel.ConversationContext<unknown> | null,
   inspectElementToggled: boolean,
   multimodalInputEnabled?: boolean,
-  conversationType?: ConversationType,
+  conversationType?: AiAssistanceModel.ConversationType,
   imageInput?: ImageInputData,
   isTextInputEmpty: boolean,
   onContextClick: () => void ,
@@ -1293,8 +1294,8 @@ function renderChatInput({
       </div>
     </div>
   </form>`;
-  // clang-format on
-}
+    // clang-format on
+  }
 
 function renderAidaUnavailableContents(
     aidaAvailability:
@@ -1464,7 +1465,7 @@ function renderMainContents({
   suggestions: string[],
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>,
   markdownRenderer: MarkdownRendererWithCodeBlock,
-  conversationType?: ConversationType,
+  conversationType?: AiAssistanceModel.ConversationType,
   changeSummary?: string,
                onSuggestionClick: (suggestion: string) => void,
                onFeedbackSubmit:

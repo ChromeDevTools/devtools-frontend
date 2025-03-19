@@ -4,8 +4,7 @@
 
 import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-
-import * as AiAssistance from './ai_assistance.js';
+import * as AiAssistanceModel from '../ai_assistance/ai_assistance.js';
 
 describeWithEnvironment('AgentProject', () => {
   async function mockProject(
@@ -18,7 +17,7 @@ describeWithEnvironment('AgentProject', () => {
         maxLinesChanged: number,
       }) {
     const {project, uiSourceCode} = createTestFilesystem('file:///path/to/project', files);
-    return {project: new AiAssistance.AgentProject(project, options), uiSourceCode};
+    return {project: new AiAssistanceModel.AgentProject(project, options), uiSourceCode};
   }
 
   it('can list files', async () => {

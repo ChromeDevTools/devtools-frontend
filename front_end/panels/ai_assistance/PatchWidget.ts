@@ -12,6 +12,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
@@ -22,8 +23,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ChangesPanel from '../changes/changes.js';
 import * as PanelCommon from '../common/common.js';
 
-import {ErrorType, type ResponseData, ResponseType} from './agents/AiAgent.js';
-import {PatchAgent} from './agents/PatchAgent.js';
 import {SelectWorkspaceDialog} from './SelectWorkspaceDialog.js';
 
 const {classMap} = Directives;
@@ -526,9 +525,11 @@ export class PatchWidget extends UI.Widget.Widget {
     this.#patchSuggestionState = PatchSuggestionState.LOADING;
     this.requestUpdate();
     const {response, processedFiles} = await this.#applyPatch(changeSummary);
-    if (response?.type === ResponseType.ANSWER) {
+    if (response?.type === AiAssistanceModel.ResponseType.ANSWER) {
       this.#patchSuggestionState = PatchSuggestionState.SUCCESS;
-    } else if (response?.type === ResponseType.ERROR && response.error === ErrorType.ABORT) {
+    } else if (
+        response?.type === AiAssistanceModel.ResponseType.ERROR &&
+        response.error === AiAssistanceModel.ErrorType.ABORT) {
       // If this is an abort error, we're returning back to the initial state.
       this.#patchSuggestionState = PatchSuggestionState.INITIAL;
     } else {
@@ -561,14 +562,14 @@ ${processedFiles.map(filename => `* ${filename}`).join('\n')}`;
   }
 
   async #applyPatch(changeSummary: string): Promise<{
-    response: ResponseData | undefined,
+    response: AiAssistanceModel.ResponseData | undefined,
     processedFiles: string[],
   }> {
     if (!this.#project) {
       throw new Error('Project does not exist');
     }
     this.#applyPatchAbortController = new AbortController();
-    const agent = new PatchAgent({
+    const agent = new AiAssistanceModel.PatchAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: false,
       project: this.#project,

@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Trace from '../../../models/trace/trace.js';
-import type * as TimelineUtils from '../../timeline/utils/utils.js';
+import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
+import * as Trace from '../../trace/trace.js';
 
 import {
   NetworkRequestFormatter,

@@ -4,12 +4,12 @@
 
 import type * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
-import * as Trace from '../../../models/trace/trace.js';
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TimelineUtils from '../../timeline/utils/utils.js';
+import * as Trace from '../../trace/trace.js';
 import {
   type ActionResponse,
   InsightContext,

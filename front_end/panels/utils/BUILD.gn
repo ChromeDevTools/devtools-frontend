@@ -21,7 +21,10 @@ devtools_entrypoint("bundle") {
     "../snippets:bundle",
   ]
 
-  visibility = [ "../*" ]
+  visibility = [
+    "../*",
+    "../../models/ai_assistance:ai_assistance",
+  ]
 
   visibility += devtools_panels_visibility
 }

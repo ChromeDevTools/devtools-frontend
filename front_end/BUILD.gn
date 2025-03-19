@@ -131,6 +131,7 @@ group("unittests") {
     "entrypoints/inspector_main:unittests",
     "entrypoints/main:unittests",
     "entrypoints/wasmparser_worker:unittests",
+    "models/ai_assistance:unittests",
     "models/autofill_manager:unittests",
     "models/bindings:unittests",
     "models/breakpoints:unittests",

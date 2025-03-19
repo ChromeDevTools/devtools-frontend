@@ -55,6 +55,7 @@ devtools_entrypoint("bundle") {
     "../../ui/legacy/components/perf_ui/*",
     "../../ui/legacy/components/source_frame/*",
     "../../ui/legacy/components/utils/*",
+    "../ai_assistance/*",
     "../bindings/*",
     "../breakpoints/*",
     "../extensions/*",

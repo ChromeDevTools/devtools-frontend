@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import * as Trace from '../../../models/trace/trace.js';
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   describeWithEnvironment,
@@ -12,7 +12,7 @@ import {
   updateHostConfig
 } from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TimelineUtils from '../../timeline/utils/utils.js';
+import * as Trace from '../../trace/trace.js';
 import {CallTreeContext, PerformanceAgent, ResponseType} from '../ai_assistance.js';
 
 describeWithEnvironment('PerformanceAgent', () => {

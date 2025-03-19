@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TimelineUtils from '../../timeline/utils/utils.js';
 import {PerformanceInsightFormatter, TraceEventFormatter} from '../ai_assistance.js';
 
 const {ActiveInsight} = TimelineUtils.InsightAIContext;

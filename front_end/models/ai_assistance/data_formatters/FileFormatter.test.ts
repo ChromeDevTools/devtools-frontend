@@ -6,14 +6,14 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import * as Workspace from '../../../models/workspace/workspace.js';
 import {createNetworkRequest, createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
 import {
   createTarget,
 } from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {loadBasicSourceMapExample} from '../../../testing/SourceMapHelpers.js';
+import * as Bindings from '../../bindings/bindings.js';
+import * as Workspace from '../../workspace/workspace.js';
 import {FileFormatter} from '../ai_assistance.js';
 
 describeWithMockConnection('FileFormatter', () => {

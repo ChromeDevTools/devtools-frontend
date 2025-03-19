@@ -5,12 +5,12 @@
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as Bindings from '../../models/bindings/bindings.js';
-import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
 import {createCSSStyle, getMatchedStyles, ruleMatch} from '../../testing/StyleHelpers.js';
+import * as Bindings from '../bindings/bindings.js';
+import * as Workspace from '../workspace/workspace.js';
 
 import * as ExtensionScope from './ExtensionScope.js';
 import * as Injected from './injected.js';

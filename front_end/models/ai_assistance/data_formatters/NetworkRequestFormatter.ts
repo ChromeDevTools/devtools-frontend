@@ -4,8 +4,8 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as Logs from '../../../models/logs/logs.js';
-import * as Network from '../../network/network.js';
+import * as Network from '../../../panels/network/network.js';
+import * as Logs from '../../logs/logs.js';
 
 const MAX_HEADERS_SIZE = 1000;
 

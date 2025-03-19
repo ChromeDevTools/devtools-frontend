@@ -4,8 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-
-import * as AiAssistance from './ai_assistance.js';
+import * as AiAssistanceModel from '../ai_assistance/ai_assistance.js';
 
 describe('ChangeManager', () => {
   let styleSheetId = 0;
@@ -45,7 +44,7 @@ describe('ChangeManager', () => {
   }
 
   it('can register a change', async () => {
-    const changeManager = new AiAssistance.ChangeManager();
+    const changeManager = new AiAssistanceModel.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
@@ -63,7 +62,7 @@ describe('ChangeManager', () => {
   });
 
   it('can merge multiple changes with same className', async () => {
-    const changeManager = new AiAssistance.ChangeManager();
+    const changeManager = new AiAssistanceModel.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
@@ -92,7 +91,7 @@ describe('ChangeManager', () => {
   });
 
   it('can register multiple changes with the same selector', async () => {
-    const changeManager = new AiAssistance.ChangeManager();
+    const changeManager = new AiAssistanceModel.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
@@ -120,7 +119,7 @@ describe('ChangeManager', () => {
   });
 
   it('creates a stylesheet per frame', async () => {
-    const changeManager = new AiAssistance.ChangeManager();
+    const changeManager = new AiAssistanceModel.ChangeManager();
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
@@ -151,7 +150,7 @@ describe('ChangeManager', () => {
   });
 
   it('can clear changes', async () => {
-    const changeManager = new AiAssistance.ChangeManager();
+    const changeManager = new AiAssistanceModel.ChangeManager();
     let cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       groupId: agentId,
@@ -185,13 +184,13 @@ describe('ChangeManager', () => {
 
   describe('format changes', () => {
     it('returns empty string when there are no changes from the given agent', async () => {
-      const changeManager = new AiAssistance.ChangeManager();
+      const changeManager = new AiAssistanceModel.ChangeManager();
 
       assert.strictEqual(changeManager.formatChangesForPatching(agentId), '');
     });
 
     it('returns formatted changes for an agent without `.ai-style-change` classes', async () => {
-      const changeManager = new AiAssistance.ChangeManager();
+      const changeManager = new AiAssistanceModel.ChangeManager();
       const cssModel = createModel();
 
       await changeManager.addChange(cssModel, frameId, {
@@ -208,7 +207,7 @@ describe('ChangeManager', () => {
     });
 
     it('formats source location', async () => {
-      const changeManager = new AiAssistance.ChangeManager();
+      const changeManager = new AiAssistanceModel.ChangeManager();
       const cssModel = createModel();
       await changeManager.addChange(cssModel, frameId, {
         groupId: agentId,

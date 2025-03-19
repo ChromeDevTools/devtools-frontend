@@ -18,9 +18,9 @@
 }
 
 .inline-icon {
-  margin-inline: 4px;
   width: 16px;
   height: 16px;
+  margin-inline: var(--sys-size-3);
 
   &[name="check-circle"] {
     color: var(--icon-checkmark-green);
@@ -28,6 +28,7 @@
 }
 
 .multiline-value {
+  padding-top: var(--sys-size-5);
   white-space: normal;
 }
 

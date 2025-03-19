@@ -74,19 +74,12 @@ const UIStrings = {
   learnMore: 'Learn more',
   /**
    *@description Explanation why it is advisable to specify an 'id' field in the manifest.
-   *@example {Note:} PH1
-   *@example {id} PH2
-   *@example {start_url} PH3
-   *@example {id} PH4
-   *@example {/index.html} PH5
-   *@example {(button for copying suggested value into clipboard)} PH6
+   *@example {/index.html} PH1
+   *@example {(button for copying suggested value into clipboard)} PH2
    */
   appIdNote:
-      '{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App ID that matches the current identity, set the {PH4} field to {PH5} {PH6}.',
-  /**
-   *@description Label for reminding the user of something important. Is shown in bold and followed by the actual note to show the user.
-   */
-  note: 'Note:',
+      'Note: `id` is not specified in the manifest, `start_url` is used instead. To specify an App ID that matches the current identity, set the `id` field to {PH1} {PH2}.',
+
   /**
    *@description Tooltip text that appears when hovering over a button which copies the previous text to the clipboard.
    */
@@ -691,14 +684,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
       if (!stringProperty('id')) {
         const suggestedIdNote = appIdField.createChild('div', 'multiline-value');
-        const noteSpan = document.createElement('b');
-        noteSpan.textContent = i18nString(UIStrings.note);
-        const idSpan = document.createElement('code');
-        idSpan.textContent = 'id';
-        const idSpan2 = document.createElement('code');
-        idSpan2.textContent = 'id';
-        const startUrlSpan = document.createElement('code');
-        startUrlSpan.textContent = 'start_url';
         const suggestedIdSpan = document.createElement('code');
         suggestedIdSpan.textContent = recommendedId;
 
@@ -715,9 +700,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
           UI.ARIAUtils.alert(i18nString(UIStrings.copiedToClipboard, {PH1: recommendedId}));
           Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(recommendedId);
         });
-        suggestedIdNote.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.appIdNote,
-            {PH1: noteSpan, PH2: idSpan, PH3: startUrlSpan, PH4: idSpan2, PH5: suggestedIdSpan, PH6: copyButton}));
+        suggestedIdNote.appendChild(
+            i18n.i18n.getFormatLocalizedString(str_, UIStrings.appIdNote, {PH1: suggestedIdSpan, PH2: copyButton}));
       }
     } else {
       this.identitySection.removeField(i18nString(UIStrings.computedAppId));
@@ -910,19 +894,18 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     const errorMessages = this.getInstallabilityErrorMessages(installabilityErrors);
     for (const error of errorMessages) {
-      const icon = UI.UIUtils.createIconLabel({title: error, iconName: 'warning-filled', color: 'var(--icon-warning)'});
-      this.installabilitySection.appendRow().appendChild(icon);
+      const msgElement = document.createTextNode(error);
+      this.installabilitySection.appendRow().appendChild(msgElement);
     }
 
     this.errorsSection.element.classList.toggle('hidden', !errors.length && !imageErrors.length && !warnings.length);
     for (const warning of warnings) {
-      const icon =
-          UI.UIUtils.createIconLabel({title: warning, iconName: 'warning-filled', color: 'var(--icon-warning)'});
-      this.errorsSection.appendRow().appendChild(icon);
+      const msgElement = document.createTextNode(warning);
+      this.errorsSection.appendRow().appendChild(msgElement);
     }
     for (const error of imageErrors) {
-      const icon = UI.UIUtils.createIconLabel({title: error, iconName: 'warning-filled', color: 'var(--icon-warning)'});
-      this.errorsSection.appendRow().appendChild(icon);
+      const msgElement = document.createTextNode(error);
+      this.errorsSection.appendRow().appendChild(msgElement);
     }
 
     function stringProperty(name: string): string {

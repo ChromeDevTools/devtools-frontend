@@ -7,6 +7,7 @@
 .service-worker-version {
   display: flex;
   /* The status string can be long, allow this line of the report to wrap. */
+  align-items: center;
   flex-wrap: wrap;
 
   devtools-button {
@@ -138,11 +139,6 @@
 .service-workers-this-origin {
   flex-shrink: 0;
   flex-grow: 0;
-}
-
-.service-worker-has-current .service-workers-other-origin {
-  margin-top: 16px;
-  border-top: 1px solid var(--sys-color-divider);
 }
 
 .devtools-link {

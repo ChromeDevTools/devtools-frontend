@@ -19,7 +19,7 @@
 
 .report-header {
   border-bottom: 1px solid var(--sys-color-divider);
-  padding: 12px 24px;
+  padding: var(--sys-size-7) var(--sys-size-9);
 }
 
 .report-header devtools-toolbar {
@@ -29,7 +29,7 @@
 }
 
 .report-title {
-  font-size: 15px;
+  font: var(--sys-typescale-headline4);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,19 +38,18 @@
 
 .report-url,
 .report-subtitle {
-  font-size: 12px;
-  margin-top: 10px;
+  font: var(--sys-typescale-body4-regular);
 }
 
 .report-section {
   display: flex;
-  padding: 12px;
+  padding: var(--sys-size-7) var(--sys-size-9) 11px var(--sys-size-9);
   border-bottom: 1px solid var(--sys-color-divider);
   flex-direction: column;
 }
 
 .report-section-header {
-  margin-left: 18px;
+  padding-bottom: var(--sys-size-5);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -58,44 +57,54 @@
   devtools-button {
     flex: 0 0 auto;
   }
+
+  &:has(.report-section-title:empty) {
+    padding: 0;
+  }
 }
 
 .report-section-title {
+  font: var(--sys-typescale-headline5);
   flex: 1 1 auto;
   text-overflow: ellipsis;
   overflow: hidden;
   line-height: 16px;
-  font-weight: bold;
   color: var(--sys-color-on-surface);
   min-width: var(--sys-size-21);
   white-space: nowrap;
 }
 
 .report-field {
-  margin-top: 8px;
   display: flex;
-  line-height: 28px;
+  padding: var(--sys-size-3) 0;
 }
 
 .report-row {
-  margin: 10px 0 2px 18px;
+  font: var(--sys-typescale-body4-regular);
+  margin: var(--sys-size-3) 0;
 
-  &:has(dt-checkbox) {
-    margin-top: 7px;
+  > dt-checkbox:first-child {
+    margin-left: calc(var(--sys-size-4) * -1);
+  }
+
+  > devtools-icon:first-child {
+    /* We have inline icons that would otherwise be mis-aligned */
+    margin-inline-start: 0;
   }
 }
 
 .report-field-name {
+  font: var(--sys-typescale-body5-regular);
   color: var(--sys-color-on-surface-subtle);
   flex: 0 0 128px;
-  text-align: right;
-  padding: 0 6px;
+  text-align: left;
   white-space: pre-wrap;
 }
 
 .report-field-value {
+  font: var(--sys-typescale-body4-regular);
   flex: auto;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-6);
   white-space: pre;
   user-select: text;
 }

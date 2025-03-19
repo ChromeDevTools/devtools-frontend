@@ -8,10 +8,13 @@
   display: flex;
   align-items: center;
   white-space: normal;
+
+  &:has(.quota-override-error:empty) {
+    margin: 0;
+  }
 }
 
 .clear-storage-button .report-row {
-  margin: 0 0 0 17px;
   display: flex;
 }
 
@@ -49,7 +52,7 @@
   }
 }
 
-.quota-override-error {
+.quota-override-error:not(:empty) {
   padding-top: 10px;
   color: var(--sys-color-error);
 }

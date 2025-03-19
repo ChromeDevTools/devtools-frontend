@@ -187,7 +187,7 @@ const UIStrings = {
   /**
    *@description Text in App Manifest View of the Application panel
    */
-  appManifest: 'App Manifest',
+  appManifest: 'Manifest',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */

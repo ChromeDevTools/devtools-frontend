@@ -4,6 +4,11 @@
  * found in the LICENSE file.
  */
 
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
 .devtools-link {
   color: var(--sys-color-primary);
   text-decoration: underline;
@@ -28,11 +33,10 @@ input.devtools-text-input[type="text"]::placeholder {
 }
 
 .protocol-handlers-row {
-  margin: 10px 0 2px 18px;
+  margin: var(--sys-size-3) 0;
 }
 
 .inline-icon {
-  margin-inline: 4px;
   width: 16px;
   height: 16px;
 

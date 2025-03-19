@@ -4,36 +4,75 @@
 import {assert} from 'chai';
 
 import {expectError} from '../../conductor/events.js';
-import {click, getBrowserAndPages, waitForAria} from '../../shared/helper.js';
-import {reloadDevTools} from '../helpers/cross-tool-helper.js';
+import {$textContent, click, getBrowserAndPages, reloadDevTools, waitForAria} from '../../shared/helper.js';
 import {getDataGridRows} from '../helpers/datagrid-helpers.js';
 import {
   navigateToSecurityTab,
 } from '../helpers/security-helpers.js';
 
-describe('The Privacy and security panel', function() {
-  let preloadScriptId: string;
+let preloadScriptId: string;
 
-  afterEach(async () => {
-    // The tests end but DevTools might be still doing things resulting
-    // in an error caused by the test runner closing or navigating the
-    // target page.
-    expectError('Inspected target navigated or closed');
-    if (!preloadScriptId) {
-      return;
-    }
-    const {frontend} = getBrowserAndPages();
-    await frontend.removeScriptToEvaluateOnNewDocument(preloadScriptId);
-  });
+async function addPrivacyUIToHostConfig() {
+  const {frontend} = getBrowserAndPages();
+  const {identifier} = await frontend.evaluateOnNewDocument(`globalThis.hostConfigForTesting = {
+    ...globalThis.hostConfigForTesting,
+    devToolsPrivacyUI: {enabled: ${true}},
+  };`);
+  preloadScriptId = identifier;
+}
 
+async function removeScript() {
+  // The tests end but DevTools might be still doing things resulting
+  // in an error caused by the test runner closing or navigating the
+  // target page.
+  expectError('Inspected target navigated or closed');
+  if (!preloadScriptId) {
+    return;
+  }
+  const {frontend} = getBrowserAndPages();
+  await frontend.removeScriptToEvaluateOnNewDocument(preloadScriptId);
+}
+
+describe('The controls tool without the Privacy and security panel open', function() {
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
-    const {identifier} = await frontend.evaluateOnNewDocument(`globalThis.hostConfigForTesting = {
-            ...globalThis.hostConfigForTesting,
-            devToolsPrivacyUI: {enabled: ${true}},
-        };`);
-    preloadScriptId = identifier;
 
+    await addPrivacyUIToHostConfig();
+    await frontend.evaluate(`(async () => {
+      const Common = await import('./core/common/common.js');
+      const setting = Common.Settings.Settings.instance().createSetting('cookie-control-override-enabled', true);
+      setting.set(true);
+    })()`);
+  });
+
+  afterEach(async () => {
+    await removeScript();
+  });
+
+  it('will remove reload bar without privacy module loaded', async () => {
+    // Reload to give toolbar chance to spawn
+    await reloadDevTools();
+
+    // Infobar should be presenet since the setting was set in the before
+    const infoBar = await waitForAria('To apply your updated controls, reload the page');
+    assert.isNotNull(infoBar);
+
+    const {target} = getBrowserAndPages();
+    await target.reload();
+
+    // Infobar should be gone after reloading the page
+    assert.isNull(await $textContent('To apply your updated controls, reload the page'));
+  });
+});
+
+describe('The Privacy and security panel', function() {
+  before(async () => {
+    await addPrivacyUIToHostConfig();
+    await reloadDevTools();
+  });
+
+  after(async () => {
+    await removeScript();
     await reloadDevTools();
   });
 
@@ -43,14 +82,14 @@ describe('The Privacy and security panel', function() {
 
     // Infobar should appear after changing control
     const infoBar = await waitForAria('To apply your updated controls, reload the page');
-    infoBar.evaluate(el => assert.isNotNull(el));
+    assert.isNotNull(infoBar);
 
     // Allow time for infobar to animate in before clicking the button
     await new Promise<void>(resolve => setTimeout(resolve, 550));
     await click('dt-close-button', {root: infoBar});
 
     // Infobar should be gone after clicking the close button
-    infoBar.evaluate(el => assert.isNotNull(el));
+    assert.isNull(await $textContent('To apply your updated controls, reload the page'));
   });
 
   it('filters rows when the search filter is populated', async () => {

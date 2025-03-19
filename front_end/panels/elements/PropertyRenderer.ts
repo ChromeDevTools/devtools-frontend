@@ -498,9 +498,12 @@ export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
 export class BinOpRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch) {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): Node[] {
-    const [lhs, binop, rhs] =
-        SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => Renderer.render(child, context).nodes);
+    const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => {
+      const span = document.createElement('span');
+      Renderer.renderInto(child, context, span);
+      return span;
+    });
 
-    return [lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs].flat();
+    return [lhs, document.createTextNode(' '), binop, document.createTextNode(' '), rhs];
   }
 }

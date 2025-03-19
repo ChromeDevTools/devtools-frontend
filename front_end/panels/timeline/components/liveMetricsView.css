@@ -131,6 +131,8 @@
 }
 
 .local-field-link {
+  display: inline-block;
+  width: fit-content;
   margin-top: 8px;
 }
 

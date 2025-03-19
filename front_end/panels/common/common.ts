@@ -117,7 +117,6 @@ export class FreDialog {
       result.resolve(false);
     });
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    dialog.setMaxContentSize(new UI.Geometry.Size(448, 600));
     dialog.setDimmed(true);
     dialog.show();
 

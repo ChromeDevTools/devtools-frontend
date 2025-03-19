@@ -6,6 +6,7 @@
 
 
 .fre-disclaimer {
+  width: var(--sys-size-33);
   padding: var(--sys-size-9);
 
   header {

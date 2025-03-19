@@ -85,22 +85,27 @@ export function extractConsoleAPIExtensionEntries(): void {
     if (!currentTimeStamp.args.data) {
       continue;
     }
-    const timeStampName = String(currentTimeStamp.args.data.name);
+    const timeStampName = String(currentTimeStamp.args.data.name ?? currentTimeStamp.args.data.message);
     timeStampByName.set(timeStampName, currentTimeStamp);
     const extensionData = extensionDataInConsoleTimeStamp(currentTimeStamp);
-    const startName = currentTimeStamp.args.data.start;
-    const endName = currentTimeStamp.args.data.end;
-    if (!extensionData && !startName && !endName) {
+    const start = currentTimeStamp.args.data.start;
+    const end = currentTimeStamp.args.data.end;
+    if (!extensionData && !start && !end) {
       continue;
     }
-    const startTimeStamp = startName ? timeStampByName.get(String(startName)) : undefined;
-    const endTimeStamp = endName ? timeStampByName.get(String(endName)) : undefined;
-    if (endTimeStamp && !startTimeStamp) {
+    // If the start or end is a number, it's assumed to be a timestamp
+    // from the tracing clock, so we use that directly, otherwise we
+    // assume it's the label of a previous console timestamp, in which
+    // case we use its corresponding timestamp.
+    const startTimeStamp =
+        typeof start === 'number' ? Types.Timing.Micro(start) : timeStampByName.get(String(start))?.ts;
+    const endTimeStamp = typeof end === 'number' ? Types.Timing.Micro(end) : timeStampByName.get(String(end))?.ts;
+    if (endTimeStamp !== undefined && startTimeStamp === undefined) {
       // Invalid data
       continue;
     }
-    const entryStartTime = startTimeStamp?.ts ?? currentTimeStamp.ts;
-    const entryEndTime = endTimeStamp?.ts ?? currentTimeStamp.ts;
+    const entryStartTime = startTimeStamp ?? currentTimeStamp.ts;
+    const entryEndTime = endTimeStamp ?? currentTimeStamp.ts;
     if (extensionData) {
       const unregisteredExtensionEntry: Omit<Types.Extensions.SyntheticExtensionTrackEntry, '_tag'> = {
         ...currentTimeStamp,
@@ -110,6 +115,7 @@ export function extractConsoleAPIExtensionEntries(): void {
         rawSourceEvent: currentTimeStamp,
         dur: Types.Timing.Micro(entryEndTime - entryStartTime),
         ts: entryStartTime,
+        ph: Types.Events.Phase.COMPLETE,
       };
       const extensionEntry =
           Helpers.SyntheticEvents.SyntheticEventsManager.getActiveManager()

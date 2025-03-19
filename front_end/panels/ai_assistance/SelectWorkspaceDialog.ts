@@ -150,12 +150,14 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
     document.addEventListener('keydown', this.#boundOnKeyDown, true);
     this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
+    this.#workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }
 
   override willHide(): void {
     const document = UI.InspectorView.InspectorView.instance().element.ownerDocument;
     document.removeEventListener('keydown', this.#boundOnKeyDown, true);
     this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectAdded, this.#onProjectAdded, this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.ProjectRemoved, this.#onProjectRemoved, this);
   }
 
   #onKeyDown(event: KeyboardEvent): void {
@@ -213,6 +215,25 @@ export class SelectWorkspaceDialog extends UI.Widget.VBox {
     const projectIndex = this.#projects.indexOf(addedProject);
     if (projectIndex !== -1) {
       this.#selectedIndex = projectIndex;
+    }
+    this.requestUpdate();
+  }
+
+  #onProjectRemoved(): void {
+    const selectedProject = (this.#selectedIndex >= 0 && this.#selectedIndex < this.#projects.length) ?
+        this.#projects[this.#selectedIndex] :
+        null;
+    this.#projects = this.#getProjects();
+    if (selectedProject) {
+      const projectIndex = this.#projects.indexOf(selectedProject);
+      // If the previously selected project still exists, select it again.
+      // If the previously selected project has been removed, select the project which is now in its
+      // position. If the previously selected and now removed project was in last position, select
+      // the project which is now in last position.
+      this.#selectedIndex =
+          projectIndex === -1 ? Math.min(this.#projects.length - 1, this.#selectedIndex) : projectIndex;
+    } else {
+      this.#selectedIndex = 0;
     }
     this.requestUpdate();
   }

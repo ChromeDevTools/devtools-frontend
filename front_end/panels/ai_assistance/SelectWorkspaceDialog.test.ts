@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Persistence from '../../models/persistence/persistence.js';
-import type * as Workspace from '../../models/workspace/workspace.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import {createTestFilesystem} from '../../testing/AiAssistanceHelpers.js';
 import {dispatchKeyDownEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -13,6 +13,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as AiAssistance from './ai_assistance.js';
 
 describeWithEnvironment('SelectWorkspaceDialog', () => {
+  afterEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    for (const project of workspace.projects()) {
+      workspace.removeProject(project);
+    }
+  });
+
   function createComponent(): {
     view: ViewFunctionStub<typeof AiAssistance.SelectWorkspaceDialog>,
     component: AiAssistance.SelectWorkspaceDialog,
@@ -90,5 +97,25 @@ describeWithEnvironment('SelectWorkspaceDialog', () => {
     assert.lengthOf(input.projects, 3);
     assert.strictEqual(input.projects[2].name, 'test3');
     assert.strictEqual(input.selectedIndex, 2);
+  });
+
+  it('handles project removal', async () => {
+    const addProjectSpy =
+        sinon.spy(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), 'addFileSystem');
+    const {view, project} = createComponent();
+
+    view.input.onProjectSelected(1);
+    let input = await view.nextInput;
+    assert.strictEqual(view.callCount, 2);
+    assert.lengthOf(input.projects, 2);
+    assert.strictEqual(input.selectedIndex, 1);
+
+    input.onAddFolderButtonClick();
+    assert.isTrue(addProjectSpy.calledOnce);
+
+    Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+    input = await view.nextInput;
+    assert.lengthOf(input.projects, 1);
+    assert.strictEqual(input.selectedIndex, 0);
   });
 });

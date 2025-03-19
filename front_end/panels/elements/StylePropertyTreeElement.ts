@@ -261,13 +261,6 @@ function getTracingTooltip(
                   computedStyles));
           }
         }}
-        @toggle=${function(this: Tooltips.Tooltip.Tooltip,e: ToggleEvent) {
-          if (e.newState === 'open') {
-            (this.querySelector('devtools-widget') as UI.Widget.WidgetElement<CSSValueTraceView>| null)
-              ?.getWidget()
-              ?.focus();
-          }
-        }}
         ><devtools-widget
           @keydown=${(e: KeyboardEvent) => {
             const maybeTooltip = (e.target as Element).parentElement ;

@@ -30,12 +30,21 @@
         align-items: center;
         flex-grow: 0;
 
-        .file-name {
+        .file-name-link {
           padding-left: var(--sys-size-5);
           width: 100%;
           text-overflow: ellipsis;
           overflow: hidden;
           text-wrap-mode: nowrap;
+          border: none;
+          background: none;
+          font: inherit;
+
+          &:hover {
+            color: var(--sys-color-primary);
+            text-decoration: underline;
+            cursor: pointer;
+          }
         }
 
         devtools-icon {

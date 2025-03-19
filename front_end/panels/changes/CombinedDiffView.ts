@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
@@ -38,6 +39,7 @@ interface SingleDiffViewInput {
   diff: Diff.Diff.DiffArray;
   copied: boolean;
   onCopy: (fileUrl: string, diff: Diff.Diff.DiffArray) => void;
+  onFileNameClick: (fileUrl: string) => void;
 }
 
 export interface ViewInput {
@@ -47,7 +49,7 @@ export interface ViewInput {
 type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
 function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.TemplateResult {
-  const {fileName, fileUrl, mimeType, icon, diff, copied, onCopy} = singleDiffViewInput;
+  const {fileName, fileUrl, mimeType, icon, diff, copied, onCopy, onFileNameClick} = singleDiffViewInput;
 
   return html`
     <details open>
@@ -55,7 +57,7 @@ function renderSingleDiffView(singleDiffViewInput: SingleDiffViewInput): Lit.Tem
         <div class="summary-left">
           <devtools-icon class="drop-down-icon" .name=${'arrow-drop-down'}></devtools-icon>
           ${icon}
-          <span class="file-name">${fileName}</span>
+          <button class="file-name-link" @click=${() => onFileNameClick(fileUrl)}>${fileName}</button>
         </div>
         <div class="summary-right">
           ${copied ? html`<span class="copied">${i18nString(UIStrings.copied)}</span>` : html`
@@ -125,6 +127,11 @@ export class CombinedDiffView extends UI.Widget.Widget {
     }, COPIED_TO_CLIPBOARD_TEXT_TIMEOUT_MS);
   }
 
+  #onFileNameClick(fileUrl: string): void {
+    const uiSourceCode = this.#modifiedUISourceCodes.find(uiSourceCode => uiSourceCode.url() === fileUrl);
+    void Common.Revealer.reveal(uiSourceCode);
+  }
+
   async #initializeModifiedUISourceCodes(): Promise<void> {
     if (!this.#workspaceDiff) {
       return;
@@ -183,6 +190,7 @@ export class CombinedDiffView extends UI.Widget.Widget {
                 icon: PanelUtils.PanelUtils.getIconForSourceFile(uiSourceCode, {width: 18, height: 18}),
                 copied: this.#copiedFiles[uiSourceCode.url()],
                 onCopy: this.#onCopyDiff.bind(this),
+                onFileNameClick: this.#onFileNameClick.bind(this),
               };
             })
             .sort((a, b) => Platform.StringUtilities.compare(a.fileName, b.fileName));

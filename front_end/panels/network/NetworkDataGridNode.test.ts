@@ -473,9 +473,9 @@ describeWithEnvironment('NetworkLogView', () => {
         {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
     const el = document.createElement('div');
     networkRequestNode.renderCell(el, 'size');
-    assert.strictEqual(el.innerText, '(ServiceWorker router)4\xa0B');
+    assert.strictEqual(el.innerText, '(ServiceWorker router)0.0\xa0kB');
     const tooltip = el.getAttribute('title')!;
-    const expected = 'Matched to ServiceWorker router#1, 2\xa0B transferred over network, resource size: 4\xa0B';
+    const expected = 'Matched to ServiceWorker router#1, 0.0\xa0kB transferred over network, resource size: 0.0\xa0kB';
     assert.strictEqual(tooltip, expected);
   });
 

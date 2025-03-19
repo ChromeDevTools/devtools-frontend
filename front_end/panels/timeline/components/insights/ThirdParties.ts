@@ -71,14 +71,14 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
 
   #transferSizeAggregator: RowLimitAggregator<Trace.Extras.ThirdParties.Summary> = {
     mapToRow: summary => ({
-      values: [summary.entity.name, i18n.ByteUtilities.bytesToString(summary.transferSize)],
+      values: [summary.entity.name, i18n.ByteUtilities.formatBytesToKb(summary.transferSize)],
       overlays: this.#createOverlaysForSummary(summary),
     }),
     createAggregatedTableRow:
         remaining => {
           const totalBytes = remaining.reduce((acc, summary) => acc + summary.transferSize, 0);
           return {
-            values: [renderOthersLabel(remaining.length), i18n.ByteUtilities.bytesToString(totalBytes)],
+            values: [renderOthersLabel(remaining.length), i18n.ByteUtilities.formatBytesToKb(totalBytes)],
             overlays: remaining.flatMap(summary => this.#createOverlaysForSummary(summary) ?? []),
           };
         },

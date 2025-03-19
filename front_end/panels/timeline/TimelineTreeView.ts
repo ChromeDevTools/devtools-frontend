@@ -841,9 +841,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       textDiv = cell.createChild('div');
       textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(value, 1);
     } else {
-      cell.setAttribute('title', i18n.ByteUtilities.bytesToString(value));
+      cell.setAttribute('title', i18n.ByteUtilities.formatBytesToKb(value));
       textDiv = cell.createChild('div');
-      textDiv.createChild('span').textContent = i18n.ByteUtilities.bytesToString(value);
+      textDiv.createChild('span').textContent = i18n.ByteUtilities.formatBytesToKb(value);
     }
 
     if (showPercents && this.treeView.exposePercentages()) {

@@ -44,6 +44,10 @@ const narrowMegabytesInteger = defineFormatter({
   maximumFractionDigits: 0,
 });
 
+/**
+ * Returns string for bytes with legible units.
+ * If necessary, can convert bytes to Kb or MB.
+ */
 export const bytesToString = (bytes: number): string => {
   if (bytes < 1000) {
     return narrowBytes.format(bytes);
@@ -62,4 +66,17 @@ export const bytesToString = (bytes: number): string => {
     return narrowMegabytesDecimal.format(megabytes);
   }
   return narrowMegabytesInteger.format(megabytes);
+};
+
+/**
+ * Returns a string for bytes converted to Kb.
+ * This is currently used on tables/rows to maintain consistency
+ * and avoid varying units.
+ */
+export const formatBytesToKb = (bytes: number): string => {
+  const kilobytes = bytes / 1000;
+  if (kilobytes < 100) {
+    return narrowKilobytesDecimal.format(kilobytes);
+  }
+  return narrowKilobytesInteger.format(kilobytes);
 };

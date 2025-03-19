@@ -176,6 +176,52 @@ export function normalizeDuplication(duplication: ScriptDuplication): void {
   }
 }
 
+function indexOfOrLength(haystack: string, needle: string, startPosition = 0): number {
+  const index = haystack.indexOf(needle, startPosition);
+  return index === -1 ? haystack.length : index;
+}
+
+export function getNodeModuleName(source: string): string {
+  const sourceSplit = source.split('node_modules/');
+  source = sourceSplit[sourceSplit.length - 1];
+
+  const indexFirstSlash = indexOfOrLength(source, '/');
+  if (source[0] === '@') {
+    return source.slice(0, indexOfOrLength(source, '/', indexFirstSlash + 1));
+  }
+
+  return source.slice(0, indexFirstSlash);
+}
+
+function groupByNodeModules(duplication: ScriptDuplication): ScriptDuplication {
+  const groupedDuplication: ScriptDuplication = new Map();
+  for (const [source, data] of duplication.entries()) {
+    if (!source.includes('node_modules')) {
+      groupedDuplication.set(source, data);
+      continue;
+    }
+
+    const nodeModuleKey = 'node_modules/' + getNodeModuleName(source);
+    const aggregatedData = groupedDuplication.get(nodeModuleKey) ?? {
+      duplicates: [],
+      // This is calculated in normalizeDuplication.
+      estimatedDuplicateBytes: 0,
+    };
+    groupedDuplication.set(nodeModuleKey, aggregatedData);
+
+    for (const {script, attributedSize} of data.duplicates) {
+      let duplicate = aggregatedData.duplicates.find(d => d.script === script);
+      if (!duplicate) {
+        duplicate = {script, attributedSize: 0};
+        aggregatedData.duplicates.push(duplicate);
+      }
+      duplicate.attributedSize += attributedSize;
+    }
+  }
+
+  return groupedDuplication;
+}
+
 function computeLastGeneratedColumnMap(map: SDK.SourceMap.SourceMap): Map<SDK.SourceMap.SourceMapEntry, number> {
   const result = new Map<SDK.SourceMap.SourceMapEntry, number>();
 
@@ -233,7 +279,7 @@ export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scr
     }
   }
 
-  const duplication: ScriptDuplication = new Map();
+  let duplication: ScriptDuplication = new Map();
   for (const [script, sourceDataArray] of sourceDatasMap) {
     for (const sourceData of sourceDataArray) {
       let data = duplication.get(sourceData.source);
@@ -248,6 +294,7 @@ export function computeScriptDuplication(scriptsData: Handlers.ModelHandlers.Scr
     }
   }
 
+  duplication = groupByNodeModules(duplication);
   normalizeDuplication(duplication);
 
   // Sort by estimated savings.

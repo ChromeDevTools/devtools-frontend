@@ -269,6 +269,10 @@ describeWithEnvironment('ScriptDuplication', function() {
           {scriptId: '1.coursehero-bundle-2', resourceSize: 5840},
           {scriptId: '1.coursehero-bundle-1', resourceSize: 5316}
         ],
+        'node_modules/@babel/runtime': [
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 6929},
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 4811},
+        ],
         'coursehero:///js/src/search/results/view/filter/autocomplete-filter.tsx': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 3823},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 3812}
@@ -281,6 +285,10 @@ describeWithEnvironment('ScriptDuplication', function() {
           {scriptId: '1.coursehero-bundle-1', resourceSize: 2696},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 2693}
         ],
+        'node_modules/lodash-es': [
+          {scriptId: '1.coursehero-bundle-2', resourceSize: 4384},
+          {scriptId: '1.coursehero-bundle-1', resourceSize: 2489},
+        ],
         'coursehero:///js/src/utils/service/amplitude-service.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 1348},
           {scriptId: '1.coursehero-bundle-2', resourceSize: 1325}
@@ -288,9 +296,6 @@ describeWithEnvironment('ScriptDuplication', function() {
         'coursehero:///js/src/search/results/view/filter/autocomplete-list.tsx': [
           {scriptId: '1.coursehero-bundle-2', resourceSize: 1143},
           {scriptId: '1.coursehero-bundle-1', resourceSize: 1134}
-        ],
-        'node_modules/@babel/runtime/helpers/typeof.js': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 992}, {scriptId: '1.coursehero-bundle-2', resourceSize: 992}
         ],
         'coursehero:///js/src/search/results/store/filter-actions.ts': [
           {scriptId: '1.coursehero-bundle-2', resourceSize: 956}, {scriptId: '1.coursehero-bundle-1', resourceSize: 946}
@@ -301,15 +306,12 @@ describeWithEnvironment('ScriptDuplication', function() {
         'coursehero:///js/src/utils/service/gsa-inmeta-tags.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 591}, {scriptId: '1.coursehero-bundle-2', resourceSize: 563}
         ],
-        'node_modules/@babel/runtime/helpers/inherits.js': [
-          {scriptId: '1.coursehero-bundle-1', resourceSize: 528}, {scriptId: '1.coursehero-bundle-2', resourceSize: 528}
-        ],
         'coursehero:///js/src/search/results/service/api/filter-api-service.ts': [
           {scriptId: '1.coursehero-bundle-1', resourceSize: 554}, {scriptId: '1.coursehero-bundle-2', resourceSize: 534}
         ],
         'coursehero:///js/src/common/component/search/course-search.tsx': [
           {scriptId: '1.coursehero-bundle-2', resourceSize: 545}, {scriptId: '1.coursehero-bundle-1', resourceSize: 544}
-        ]
+        ],
       });
     });
   });
@@ -374,6 +376,22 @@ describeWithEnvironment('ScriptDuplication', function() {
     ];
     for (const [input, expected] of testCases) {
       assert.strictEqual(Trace.Extras.ScriptDuplication.normalizeSource(input), expected);
+    }
+  });
+
+  it('getNodeModuleName', () => {
+    const testCases = [
+      ['node_modules/package/othermodule.js', 'package'],
+      ['node_modules/somemodule/node_modules/package/othermodule.js', 'package'],
+      [
+        'node_modules/somemodule/node_modules/somemodule2/node_modules/somemodule2/othermodule.js',
+        'somemodule2',
+      ],
+      ['node_modules/@lh/ci', '@lh/ci'],
+      ['node_modules/blahblah/node_modules/@lh/ci', '@lh/ci'],
+    ];
+    for (const [input, expected] of testCases) {
+      assert.strictEqual(Trace.Extras.ScriptDuplication.getNodeModuleName(input), expected);
     }
   });
 });

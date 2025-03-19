@@ -13,7 +13,7 @@
 
   display: grid;
   grid-template-columns: var(--cell-width) 1fr;
-  margin: var(--sys-size-3);
+  margin: 0;
 
   & .trace-line-icon {
     grid-column-start: 1;
@@ -21,7 +21,7 @@
     height: var(--sys-size-9);
     text-align: center;
     color: var(--icon-default);
-    padding-top: var(--sys-size-4);
+    padding-top: var(--sys-size-2);
   }
 
   :focus {
@@ -71,9 +71,10 @@
 
   & .trace-line {
     place-self: center start;
-    margin-top: var(--sys-size-2);
     padding: var(--sys-size-3);
     grid-column: 2 / 3;
+    margin: 0;
+    padding-left: var(--sys-size-4);
   }
 }
 

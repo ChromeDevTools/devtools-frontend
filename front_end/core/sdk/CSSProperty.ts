@@ -19,30 +19,7 @@ import {
   type Matcher,
   stripComments
 } from './CSSPropertyParser.js';
-import {
-  AnchorFunctionMatcher,
-  AngleMatcher,
-  AutoBaseMatcher,
-  BezierMatcher,
-  BinOpMatcher,
-  ColorMatcher,
-  ColorMixMatcher,
-  CSSWideKeywordMatcher,
-  FlexGridMatcher,
-  FontMatcher,
-  GridTemplateMatcher,
-  LengthMatcher,
-  LightDarkColorMatcher,
-  LinearGradientMatcher,
-  LinkableNameMatcher,
-  MathFunctionMatcher,
-  PositionAnchorMatcher,
-  PositionTryMatcher,
-  ShadowMatcher,
-  StringMatcher,
-  URLMatcher,
-  VariableMatcher
-} from './CSSPropertyParserMatchers.js';
+import {CSSWideKeywordMatcher, FontMatcher} from './CSSPropertyParserMatchers.js';
 import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
 export const enum Events {
@@ -120,37 +97,6 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return result;
   }
 
-  #matchers(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
-    const matchers = [
-      new VariableMatcher(matchedStyles, this.ownerStyle),
-      new ColorMatcher(() => computedStyles?.get('color') ?? null),
-      new ColorMixMatcher(),
-      new URLMatcher(),
-      new AngleMatcher(),
-      new LinkableNameMatcher(),
-      new BezierMatcher(),
-      new StringMatcher(),
-      new ShadowMatcher(),
-      new CSSWideKeywordMatcher(this, matchedStyles),
-      new LightDarkColorMatcher(this),
-      new GridTemplateMatcher(),
-      new LinearGradientMatcher(),
-      new AnchorFunctionMatcher(),
-      new PositionAnchorMatcher(),
-      new FlexGridMatcher(),
-      new PositionTryMatcher(),
-      new LengthMatcher(),
-      new MathFunctionMatcher(),
-      new AutoBaseMatcher(),
-      new BinOpMatcher(),
-    ];
-
-    if (Root.Runtime.experiments.isEnabled('font-editor')) {
-      matchers.push(new FontMatcher());
-    }
-    return matchers;
-  }
-
   parseExpression(expression: string, matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null):
       BottomUpTreeMatching|null {
     if (!this.parsedOk) {
@@ -166,6 +112,16 @@ export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
 
     return matchDeclaration(this.name, this.value, this.#matchers(matchedStyles, computedStyles));
+  }
+
+  #matchers(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
+    const matchers = matchedStyles.propertyMatchers(this.ownerStyle, computedStyles);
+
+    matchers.push(new CSSWideKeywordMatcher(this, matchedStyles));
+    if (Root.Runtime.experiments.isEnabled('font-editor')) {
+      matchers.push(new FontMatcher());
+    }
+    return matchers;
   }
 
   private ensureRanges(): void {

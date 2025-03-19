@@ -9,7 +9,30 @@ import {CSSMetadata, cssMetadata, CSSWideKeyword} from './CSSMetadata.js';
 import type {CSSModel} from './CSSModel.js';
 import {CSSProperty} from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
-import {BaseVariableMatcher} from './CSSPropertyParserMatchers.js';
+import type {Match, Matcher} from './CSSPropertyParser.js';
+import {
+  AnchorFunctionMatcher,
+  AngleMatcher,
+  AutoBaseMatcher,
+  BaseVariableMatcher,
+  BezierMatcher,
+  BinOpMatcher,
+  ColorMatcher,
+  ColorMixMatcher,
+  FlexGridMatcher,
+  GridTemplateMatcher,
+  LengthMatcher,
+  LightDarkColorMatcher,
+  LinearGradientMatcher,
+  LinkableNameMatcher,
+  MathFunctionMatcher,
+  PositionAnchorMatcher,
+  PositionTryMatcher,
+  ShadowMatcher,
+  StringMatcher,
+  URLMatcher,
+  VariableMatcher
+} from './CSSPropertyParserMatchers.js';
 import {
   CSSFontPaletteValuesRule,
   CSSKeyframesRule,
@@ -210,6 +233,17 @@ export class CSSRegisteredProperty {
   syntax(): string {
     return this.#registration instanceof CSSPropertyRule ? this.#registration.syntax() :
                                                            `"${this.#registration.syntax}"`;
+  }
+
+  parseValue(matchedStyles: CSSMatchedStyles, computedStyles: Map<string, string>|null):
+      PropertyParser.BottomUpTreeMatching|null {
+    const value = this.initialValue();
+    if (!value) {
+      return null;
+    }
+
+    return PropertyParser.matchDeclaration(
+        this.propertyName(), value, matchedStyles.propertyMatchers(this.style(), computedStyles));
   }
 
   #asCSSProperties(): Protocol.CSS.CSSProperty[] {
@@ -807,6 +841,31 @@ export class CSSMatchedStyles {
     for (const domCascade of this.#customHighlightPseudoDOMCascades.values()) {
       domCascade.reset();
     }
+  }
+
+  propertyMatchers(style: CSSStyleDeclaration, computedStyles: Map<string, string>|null): Array<Matcher<Match>> {
+    return [
+      new VariableMatcher(this, style),
+      new ColorMatcher(() => computedStyles?.get('color') ?? null),
+      new ColorMixMatcher(),
+      new URLMatcher(),
+      new AngleMatcher(),
+      new LinkableNameMatcher(),
+      new BezierMatcher(),
+      new StringMatcher(),
+      new ShadowMatcher(),
+      new LightDarkColorMatcher(style),
+      new GridTemplateMatcher(),
+      new LinearGradientMatcher(),
+      new AnchorFunctionMatcher(),
+      new PositionAnchorMatcher(),
+      new FlexGridMatcher(),
+      new PositionTryMatcher(),
+      new LengthMatcher(),
+      new MathFunctionMatcher(),
+      new AutoBaseMatcher(),
+      new BinOpMatcher(),
+    ];
   }
 }
 

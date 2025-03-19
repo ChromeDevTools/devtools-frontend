@@ -165,7 +165,7 @@ export class TracingContext {
   #appliedEvaluations = 0;
   #hasMoreEvaluations = true;
   readonly #highlighting: Highlighting;
-  #parsedValueCache = new Map<SDK.CSSProperty.CSSProperty, {
+  #parsedValueCache = new Map<SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty, {
     matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
     computedStyles: Map<string, string>,
     parsedValue: SDK.CSSPropertyParser.BottomUpTreeMatching|null,
@@ -282,7 +282,8 @@ export class TracingContext {
   }
 
   cachedParsedValue(
-      declaration: SDK.CSSProperty.CSSProperty, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      declaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       computedStyles: Map<string, string>): SDK.CSSPropertyParser.BottomUpTreeMatching|null {
     const cachedValue = this.#parsedValueCache.get(declaration);
     if (cachedValue?.matchedStyles === matchedStyles && cachedValue?.computedStyles === computedStyles) {

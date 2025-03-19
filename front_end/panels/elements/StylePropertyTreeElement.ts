@@ -311,12 +311,11 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
 
     const substitution = context.tracing?.substitution();
     if (substitution) {
-      if (declaration?.declaration instanceof SDK.CSSProperty.CSSProperty) {
+      if (declaration?.declaration) {
         const {nodes, cssControls} = Renderer.renderValueNodes(
-            declaration.declaration,
+            {name: declaration.name, value: declaration.value ?? ''},
             substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
-            getPropertyRenderers(
-                declaration.declaration.ownerStyle, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
+            getPropertyRenderers(declaration.style, this.#stylesPane, this.#matchedStyles, null, this.#computedStyles),
             substitution);
         cssControls.forEach((value, key) => value.forEach(control => context.addControl(key, control)));
         return nodes;
@@ -606,7 +605,7 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
   // If the element has color-scheme set to both light and dark, we check the prefers-color-scheme media query.
   async #activeColor(match: SDK.CSSPropertyParserMatchers.LightDarkColorMatch):
       Promise<CodeMirror.SyntaxNode[]|undefined> {
-    const activeColorSchemes = this.#matchedStyles.resolveProperty('color-scheme', match.property.ownerStyle)
+    const activeColorSchemes = this.#matchedStyles.resolveProperty('color-scheme', match.style)
                                    ?.parseValue(this.#matchedStyles, new Map())
                                    ?.getComputedPropertyValueText()
                                    .split(' ') ??

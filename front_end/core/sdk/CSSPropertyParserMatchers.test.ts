@@ -432,7 +432,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       const {match, text} = matchSingleValue(
           'color', fail,
           new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(
-              sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
+              sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration)));
       assert.isNull(match, text);
     }
 
@@ -442,7 +442,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       const {ast, match, text} = matchSingleValue(
           'color', succeed,
           new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(
-              sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
+              sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration)));
       assert.exists(ast, text);
       assert.exists(match, text);
 
@@ -456,7 +456,8 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     // light-dark only applies to color properties
     const {match, text} = matchSingleValue(
         'width', 'light-dark(red, blue)',
-        new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)));
+        new SDK.CSSPropertyParserMatchers.LightDarkColorMatcher(
+            sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration)));
     assert.isNull(match, text);
   });
 

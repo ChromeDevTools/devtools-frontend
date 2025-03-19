@@ -76,6 +76,10 @@
     margin: 0;
     padding-left: var(--sys-size-4);
   }
+
+  .full-row {
+    grid-column-start: 1;
+  }
 }
 
 ::highlight(css-value-tracing) {

@@ -150,21 +150,22 @@ export abstract class TreeWalker {
       return;
     }
     if (this.enter(tree)) {
-      ASTUtils.declValue(tree)?.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
+      for (const sibling of ASTUtils.siblings(ASTUtils.declValue(tree))) {
+        sibling.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
+      }
     }
     this.leave(tree);
   }
 
   protected iterate(tree: CodeMirror.SyntaxNode): void {
-    tree.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
+    // Includes siblings of tree.
+    for (const sibling of ASTUtils.siblings(tree)) {
+      sibling.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
+    }
   }
 
   protected iterateExcludingSuccessors(tree: CodeMirror.SyntaxNode): void {
-    // Customize the first step to avoid visiting siblings of `tree`
-    if (this.enter(tree)) {
-      tree.firstChild?.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
-    }
-    this.leave(tree);
+    tree.cursor().iterate(this.enter.bind(this), this.leave.bind(this));
   }
 
   protected enter(_node: SyntaxNodeRef): boolean {

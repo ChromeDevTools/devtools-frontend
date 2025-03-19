@@ -216,7 +216,8 @@ export class TimelineDetailsPane extends
           return;
         }
 
-        // Look for the matching node in the bottom up tree using selected node event data.
+        // Look for the equivalent GroupNode in the bottomUp tree using the node's reference `event`.
+        // Conceivably, we could match using the group ID instead.
         const treeNode = bottomUp.eventToTreeNode.get(node.event);
         if (!treeNode) {
           return;

@@ -34,7 +34,10 @@ devtools_module("trace") {
 devtools_entrypoint("bundle") {
   entrypoint = "trace.ts"
 
-  deps = [ ":trace" ]
+  deps = [
+    ":trace",
+    "types:bundle",
+  ]
 
   visibility = [
     ":*",

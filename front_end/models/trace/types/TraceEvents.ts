@@ -1424,14 +1424,15 @@ export interface ConsoleTimeEnd extends PairableAsyncEnd {
 export type ConsoleTime = ConsoleTimeBegin|ConsoleTimeEnd;
 
 export interface ConsoleTimeStamp extends Event {
-  cat: 'disabled-by-default-v8.inspector';
-  name: Name.CONSOLE_TIME_STAMP;
-  ph: Phase.COMPLETE;
+  cat: 'devtools.timeline';
+  name: Name.TIME_STAMP;
+  ph: Phase.INSTANT;
   args: Args&{
     data?: ArgsData & {
       // The console.timeStamp allows to pass integers as values as well
       // as strings
-      name: string | number,
+      message: string,
+      name?: string|number,
       start?: string|number,
       end?: string|number,
       track?: string|number,
@@ -2323,7 +2324,7 @@ export function isConsoleTime(event: Event): event is ConsoleTime {
 }
 
 export function isConsoleTimeStamp(event: Event): event is ConsoleTimeStamp {
-  return event.ph === Phase.COMPLETE && event.name === Name.CONSOLE_TIME_STAMP;
+  return event.ph === Phase.INSTANT && event.name === Name.TIME_STAMP;
 }
 
 export function isUserTimingMeasure(event: Event): event is UserTimingMeasure {
@@ -2988,7 +2989,7 @@ export const enum Name {
   CONSOLE_TIME = 'ConsoleTime',
   USER_TIMING = 'UserTiming',
   INTERACTIVE_TIME = 'InteractiveTime',
-  CONSOLE_TIME_STAMP = 'V8Console::TimeStamp',
+  TIME_STAMP = 'TimeStamp',
 
   /* Frames */
   BEGIN_FRAME = 'BeginFrame',

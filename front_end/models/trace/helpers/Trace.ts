@@ -727,7 +727,7 @@ export const VISIBLE_TRACE_EVENT_TYPES = new Set<Types.Events.Name>([
   Types.Events.Name.COMPOSITE_LAYERS,
   Types.Events.Name.COMPUTE_INTERSECTION,
   Types.Events.Name.CONSOLE_TIME,
-  Types.Events.Name.CONSOLE_TIME_STAMP,
+  Types.Events.Name.TIME_STAMP,
   Types.Events.Name.CPPGC_SWEEP,
   Types.Events.Name.CRYPTO_DO_DECRYPT,
   Types.Events.Name.CRYPTO_DO_DECRYPT_REPLY,

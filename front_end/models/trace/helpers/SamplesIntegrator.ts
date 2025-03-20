@@ -126,7 +126,7 @@ export class SamplesIntegrator {
       // Because instant trace events have no duration, they don't provide
       // useful information for possible changes in the duration of calls
       // in the JS stack.
-      if (event.ph === Types.Events.Phase.INSTANT) {
+      if (event.ph === Types.Events.Phase.INSTANT && !extractSampleTraceId(event)) {
         continue;
       }
       if (stack.length === 0) {

@@ -212,6 +212,33 @@ describe('ExtensionScope', () => {
       assert.strictEqual(selector, 'div.container > .header');
     });
 
+    it('should skip selector with ai assistance prefix', async () => {
+      // Order is reversed we know that specificity order will
+      // be returned correctly
+      // front_end/core/sdk/CSSMatchedStyles.ts:373
+      const matchedPayload = [
+        ruleMatch('.test', MOCK_STYLE),
+        ruleMatch(`.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`, MOCK_STYLE),
+      ];
+      const selector = await getSelector({matchedPayload});
+      assert.strictEqual(selector, '.test');
+    });
+    it('should skip selector with ai assistance prefix in complex selector', async () => {
+      // Order is reversed we know that specificity order will
+      // be returned correctly
+      // front_end/core/sdk/CSSMatchedStyles.ts:373
+      const matchedPayload = [
+        ruleMatch(
+            {
+              selectors: [{text: `.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1`}, {text: '.test'}],
+              text: `.${Injected.AI_ASSISTANCE_CSS_CLASS_NAME}-1, .test`
+            },
+            MOCK_STYLE),
+      ];
+      const selector = await getSelector({matchedPayload});
+      assert.strictEqual(selector, '.test');
+    });
+
     it('should skip nested selector with ai assistance prefix', async () => {
       // Order is reversed we know that specificity order will
       // be returned correctly

@@ -162,7 +162,8 @@ export class ExtensionScope {
         break;
       }
       if (rule instanceof SDK.CSSRule.CSSStyleRule) {
-        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME)) {
+        if (rule.nestingSelectors?.at(0)?.includes(AI_ASSISTANCE_CSS_CLASS_NAME) ||
+            rule.selectors.every(selector => selector.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))) {
           // If the rule we created was our continue to get the correct location
           continue;
         }
@@ -174,28 +175,36 @@ export class ExtensionScope {
   }
 
   static getSelectorsFromStyleRule(
-      styleRule: SDK.CSSRule.CSSStyleRule, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): string {
+      styleRule: SDK.CSSRule.CSSStyleRule,
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      ): string {
     const selectorIndexes = matchedStyles.getMatchingSelectors(styleRule);
     // TODO: Compute the selector when nested selector is present
-    const selectors = styleRule.selectors.filter((_, index) => selectorIndexes.includes(index)).sort((a, b) => {
-      if (!a.specificity) {
-        return -1;
-      }
+    const selectors = styleRule
+                          .selectors
+                          // Filter out only selector that apply rules
+                          .filter((_, index) => selectorIndexes.includes(index))
+                          // Ignore selector that include AI selector name
+                          .filter(value => !value.text.includes(AI_ASSISTANCE_CSS_CLASS_NAME))
+                          .sort((a, b) => {
+                            if (!a.specificity) {
+                              return -1;
+                            }
 
-      if (!b.specificity) {
-        return 1;
-      }
+                            if (!b.specificity) {
+                              return 1;
+                            }
 
-      if (b.specificity.a !== a.specificity.a) {
-        return b.specificity.a - a.specificity.a;
-      }
+                            if (b.specificity.a !== a.specificity.a) {
+                              return b.specificity.a - a.specificity.a;
+                            }
 
-      if (b.specificity.b !== a.specificity.b) {
-        return b.specificity.b - a.specificity.b;
-      }
+                            if (b.specificity.b !== a.specificity.b) {
+                              return b.specificity.b - a.specificity.b;
+                            }
 
-      return b.specificity.b - a.specificity.b;
-    });
+                            return b.specificity.b - a.specificity.b;
+                          });
 
     const selector = selectors.at(0);
     if (!selector) {

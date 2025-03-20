@@ -178,7 +178,10 @@ ${requestSummary.join('\n\n')}`;
       if (!this.#insight.data) {
         return '';
       }
-      const {checklist} = this.#insight.data;
+      const {checklist, documentRequest} = this.#insight.data;
+      if (!documentRequest) {
+        return '';
+      }
       const checklistBulletPoints: Array<{name: string, passed: boolean}> = [];
       checklistBulletPoints.push({
         name: 'The request was not redirected',
@@ -192,7 +195,13 @@ ${requestSummary.join('\n\n')}`;
         name: 'Compression was applied',
         passed: checklist.usesCompression.value,
       });
+
       return `${this.#lcpMetricSharedContext()}
+
+${TraceEventFormatter.networkRequest(documentRequest, this.#parsedTrace, {
+        verbose: true,
+        customTitle: 'Document network request'
+      })}
 
 The result of the checks for this insight are:
 ${checklistBulletPoints.map(point => `- ${point.name}: ${point.passed ? 'PASSED' : 'FAILED'}`).join('\n')}`;
@@ -289,6 +298,7 @@ It is important that all of these checks pass to minimize the delay between the 
 
 export interface NetworkRequestFormatOptions {
   verbose: boolean;
+  customTitle?: string;
 }
 
 export class TraceEventFormatter {
@@ -305,6 +315,8 @@ export class TraceEventFormatter {
       options: NetworkRequestFormatOptions): string {
     const {url, statusCode, initialPriority, priority, fromServiceWorker, mimeType, responseHeaders, syntheticData} =
         request.args.data;
+
+    const titlePrefix = `## ${options.customTitle ?? 'Network request'}`;
 
     // Note: unlike other agents, we do have the ability to include
     // cross-origins, hence why we do not sanitize the URLs here.
@@ -349,13 +361,13 @@ export class TraceEventFormatter {
     });
 
     if (!options.verbose) {
-      return `## Network request: ${url}
+      return `${titlePrefix}: ${url}
 - Start time: ${formatMicro(startTimesForLifecycle.start)}
 - Duration: ${formatMicro(request.dur)}
 - MIME type: ${mimeType}${renderBlocking ? '\n- This request was render blocking' : ''}`;
     }
 
-    return `## Network request: ${url}
+    return `${titlePrefix}: ${url}
 Timings:
 - Start time: ${formatMicro(startTimesForLifecycle.start)}
 - Queued at: ${formatMicro(startTimesForLifecycle.queueing)}

@@ -167,6 +167,9 @@ The result of the checks for this insight are:
       const formatter = new PerformanceInsightFormatter(new ActiveInsight(insight, parsedTrace));
       const output = formatter.formatInsight();
 
+      const request = insight.data?.documentRequest;
+      assert.isOk(request);
+
       const expected = `*IMPORTANT*: all time units given to you are in milliseconds.
 ## Insight title: Document request latency
 
@@ -182,6 +185,11 @@ This insight checks that the first request is responded to promptly. We use the 
 ## Insight details:
 The Largest Contentful Paint (LCP) time for this navigation was 3,604.15 ms.
 The LCP is text based and was not fetched from the network.
+
+${TraceEventFormatter.networkRequest(request, parsedTrace, {
+        verbose: true,
+        customTitle: 'Document network request'
+      })}
 
 The result of the checks for this insight are:
 - The request was not redirected: FAILED

@@ -39,10 +39,11 @@ details summary input {
 
 .row {
   display: flex;
-  line-height: 20px;
+  line-height: 18px;
   padding-left: 8px;
-  gap: 12px;
+  gap: var(--sys-size-6);
   user-select: text;
+  margin: var(--sys-size-3) 0;
 }
 
 div.raw-headers-row {
@@ -50,16 +51,16 @@ div.raw-headers-row {
 }
 
 .row:first-of-type {
-  margin-top: 2px;
+  margin-top: var(--sys-size-5);
 }
 
 .row:last-child {
-  margin-bottom: 10px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .header-name {
-  color: var(--sys-color-on-surface);
-  font-weight: 400;
+  color: var(--sys-color-on-surface-subtle);
+  font: var(--sys-typescale-body5-medium);
   width: 30%;
   min-width: 160px;
   max-width: 240px;
@@ -72,6 +73,7 @@ div.raw-headers-row {
   display: flex;
   align-items: center;
   gap: 2px;
+  font: var(--sys-typescale-body4-regular);
 }
 
 .header-name,

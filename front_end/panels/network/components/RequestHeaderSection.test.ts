@@ -69,11 +69,11 @@ describeWithEnvironment('RequestHeaderSection', () => {
       ];
     });
     assert.deepEqual(sorted, [
-      ['aa:', 'first'],
-      ['ab:', 'second'],
-      ['abc:', 'third'],
-      ['name:', 'fourth'],
-      ['test:', 'fifth'],
+      ['aa', 'first'],
+      ['ab', 'second'],
+      ['abc', 'third'],
+      ['name', 'fourth'],
+      ['test', 'fifth'],
     ]);
   });
 

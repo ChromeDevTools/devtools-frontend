@@ -505,7 +505,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         name.toLowerCase() === this.#toReveal?.header?.toLowerCase();
     return html`
       <div class="row ${isHighlighted ? 'header-highlight' : ''}">
-        <div class="header-name">${name}:</div>
+        <div class="header-name">${name}</div>
         <div
           class="header-value ${classNames?.join(' ')}"
           @copy=${() => Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue)}

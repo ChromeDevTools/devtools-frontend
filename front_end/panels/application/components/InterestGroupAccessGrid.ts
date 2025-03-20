@@ -80,33 +80,27 @@ export class InterestGroupAccessGrid extends HTMLElement {
   }
 
   #render(): void {
-    if (this.#datastores.length === 0) {
-      Lit.render(this.#renderEmptyState(), this.#shadow, {host: this});
-      return;
-    }
     // clang-format off
     Lit.render(html`
       <style>${interestGroupAccessGridStyles.cssText}</style>
       <style>${inspectorCommonStyles.cssText}</style>
-      <div>
-        <span class="heading">Interest Groups</span>
-        <devtools-icon class="info-icon"
-                       title=${i18nString(UIStrings.allInterestGroupStorageEvents)}
-                       .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
-        </devtools-icon>
-        ${this.#renderGrid()}
-      </div>
+      ${this.#datastores.length === 0 ?
+        html`
+          <div class="empty-state">
+            <span class="empty-state-header">${i18nString(UIStrings.noEvents)}</span>
+            <span class="empty-state-description">${i18nString(UIStrings.interestGroupDescription)}</span>
+          </div>`:
+        html`
+          <div>
+            <span class="heading">Interest Groups</span>
+            <devtools-icon class="info-icon"
+                          title=${i18nString(UIStrings.allInterestGroupStorageEvents)}
+                          .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
+            </devtools-icon>
+            ${this.#renderGrid()}
+          </div>`}
     `, this.#shadow, {host: this});
     // clang-format on
-  }
-
-  #renderEmptyState(): Lit.TemplateResult {
-    return html`
-      <div class="empty-state">
-        <span class="empty-state-header">${i18nString(UIStrings.noEvents)}</span>
-        <span class="empty-state-description">${i18nString(UIStrings.interestGroupDescription)}</span>
-      </div>
-    `;
   }
 
   #renderGrid(): Lit.TemplateResult {

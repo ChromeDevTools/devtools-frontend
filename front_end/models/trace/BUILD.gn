@@ -36,6 +36,11 @@ devtools_entrypoint("bundle") {
 
   deps = [
     ":trace",
+    "extras:bundle",
+    "handlers:bundle",
+    "helpers:bundle",
+    "insights:bundle",
+    "lantern:bundle",
     "types:bundle",
   ]
 

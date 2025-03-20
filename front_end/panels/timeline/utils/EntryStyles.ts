@@ -908,7 +908,7 @@ export function maybeInitSylesMap(): EventStylesMap {
         true,
         ),
 
-    [Trace.Types.Events.Name.TIME_STAMP]:
+    [Trace.Types.Events.Name.CONSOLE_TIME_STAMP]:
         new TimelineRecordStyle(i18nString(UIStrings.timestamp), defaultCategoryStyles.scripting),
 
     [Trace.Types.Events.Name.CONSOLE_TIME]:

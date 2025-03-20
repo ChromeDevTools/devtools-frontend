@@ -77,6 +77,7 @@ export class TimingsTrackAppender implements TrackAppender {
         m => !Trace.Handlers.ModelHandlers.ExtensionTraceData.extensionDataInPerformanceTiming(m));
     const timestampEvents = this.#parsedTrace.UserTimings.timestampEvents;
     const consoleTimings = this.#parsedTrace.UserTimings.consoleTimings;
+
     if (extensionMarkersAreEmpty && performanceMarks.length === 0 && performanceMeasures.length === 0 &&
         timestampEvents.length === 0 && consoleTimings.length === 0) {
       return trackStartLevel;
@@ -243,7 +244,7 @@ export class TimingsTrackAppender implements TrackAppender {
       }
     }
     if (Trace.Types.Events.isConsoleTimeStamp(event)) {
-      return `TimeStamp: ${event.args.data?.message ?? '(name unknown)'}`;
+      return `TimeStamp: ${event.args.data?.name ?? '(name unknown)'}`;
     }
     if (Trace.Types.Events.isPerformanceMark(event)) {
       return `[mark]: ${event.name}`;

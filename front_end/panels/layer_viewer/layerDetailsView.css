@@ -8,12 +8,22 @@
   display: flex;
 }
 
+table {
+  border-spacing: 0;
+}
+
 table td {
-  padding-left: 8px;
+  font: var(--sys-typescale-body4-regular);
+  line-height: 18px;
+  padding: var(--sys-size-3) var(--sys-size-5);
+  vertical-align: top;
 }
 
 table td:first-child {
-  font-weight: bold;
+  color: var(--sys-color-on-surface-subtle);
+  font: var(--sys-typescale-body5-medium);
+  line-height:  18px;
+  white-space: nowrap;
 }
 
 .scroll-rect.active {

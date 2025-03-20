@@ -21,7 +21,7 @@
 }
 
 .authenticators-view {
-  margin: 0 10px;
+  padding: 0 var(--sys-size-9);
   min-height: auto;
   display: none;
 }
@@ -29,16 +29,31 @@
 .webauthn-pane.enabled .authenticators-view {
   display: block;
 }
+
 /* New Authenticator Section */
 .new-authenticator-title {
-  line-height: 24px;
-  font-weight: bold;
   display: block;
+  padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
+  font: var(--sys-typescale-headline5);
+
+  &:has(devtools-button) {
+    padding-top: var(--sys-size-4);
+  }
 }
 
 .new-authenticator-container {
   display: none;
-  margin: 10px;
+  padding-left:  var(--sys-size-9);
+}
+
+.authenticator-option {
+  > select, > devtools-button {
+    margin: 0 var(--sys-size-9) var(--sys-size-3) var(--sys-size-9);
+  }
+
+  > dt-checkbox {
+    margin: 0 var(--sys-size-9) 0 var(--sys-size-8);
+  }
 }
 
 .webauthn-pane.enabled .new-authenticator-container {
@@ -47,9 +62,9 @@
 
 .new-authenticator-form {
   border: none;
-  padding: 10px 0;
   flex: 0 0 auto;
   margin: 0;
+  padding-bottom: var(--sys-size-5);
 }
 
 .webauthn-pane select {
@@ -58,18 +73,21 @@
 /* Active Authenticator Section */
 .authenticator-section {
   display: block;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--sys-color-divider);
+}
+
+.divider {
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  margin: 10px calc(var(--sys-size-9) * -1) 0;
 }
 
 .authenticator-fields {
   border: none;
-  padding: 10px 0;
   flex: 0 0 auto;
-  margin: 0;
+  margin-bottom: 10px;
 }
 
 .authenticator-section-header {
+  margin: var(--sys-size-4) 0 var(--sys-size-5) calc(var(--sys-size-5) * -1);
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -77,15 +95,15 @@
 
 .authenticator-section-title {
   line-height: 24px;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .authenticator-section-title .authenticator-name-field {
   display: inline-block;
-  font-weight: bold;
   border: none;
   animation: save-flash 0.2s;
   text-overflow: ellipsis;
+  font: var(--sys-typescale-headline5);
 }
 
 .authenticator-section-title.editing-name .authenticator-name-field {
@@ -95,7 +113,8 @@
 }
 
 .authenticator-field-value {
-  font-family: monospace;
+  font: var(--sys-typescale-monospace-regular);
+  line-height: 18px;
 }
 
 .authenticator-option-checkbox {
@@ -103,22 +122,23 @@
   top: 2px;
 }
 
+.authenticator-field {
+  margin: var(--sys-size-3) 0;
+}
+
 .authenticator-field,
 .authenticator-option {
   display: flex;
-  padding-bottom: 10px;
   align-items: center;
-  margin: auto;
-
-  &:has(dt-checkbox) {
-    padding-bottom: 4px;
-  }
 }
 
 .authenticator-option-label {
-  text-align: right;
-  width: 200px;
-  padding-right: 10px;
+  color: var(--sys-color-on-surface-subtle);
+  font: var(--sys-typescale-body5-regular);
+  padding-right: var(--sys-size-6);
+  text-align: left;
+  min-width: 150px;
+  line-height: 18px;
 }
 
 td .text-button {
@@ -152,8 +172,10 @@ td .text-button {
 
 .credentials-title {
   display: block;
-  font-weight: bold;
-  margin: 8px 0;
+  font: var(--sys-typescale-headline5);
+  padding: var(--sys-size-7) 0 var(--sys-size-5) 0;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-right: calc(var(--sys-size-9) * -1);
 }
 
 .code {

@@ -745,6 +745,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       this.#model.addEventListener(
           SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, this.#deleteCredential.bind(this, authenticatorId));
     }
+    section.createChild('div', 'divider');
 
     return section;
   }

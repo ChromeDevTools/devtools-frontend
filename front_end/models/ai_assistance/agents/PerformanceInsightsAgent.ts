@@ -17,9 +17,10 @@ import {
   type ContextDetail,
   type ContextResponse,
   ConversationContext,
+  type ParsedResponse,
   type RequestOptions,
   type ResponseData,
-  ResponseType,
+  ResponseType
 } from './AiAgent.js';
 
 const UIStringsNotTranslated = {
@@ -264,6 +265,23 @@ The fields are:
       },
 
     });
+  }
+
+  override parseTextResponse(response: string): ParsedResponse {
+    /**
+     * Sometimes the LLM responds with code chunks that wrap a text based markdown response.
+     * If this happens, we want to remove those before continuing.
+     * See b/405054694 for more details.
+     */
+    const trimmed = response.trim();
+    const FIVE_BACKTICKS = '`````';
+    if (trimmed.startsWith(FIVE_BACKTICKS) && trimmed.endsWith(FIVE_BACKTICKS)) {
+      // Purposefully use the trimmed text here; we might as well remove any
+      // newlines that are at the very start or end.
+      const stripped = trimmed.slice(FIVE_BACKTICKS.length, -FIVE_BACKTICKS.length);
+      return super.parseTextResponse(stripped);
+    }
+    return super.parseTextResponse(response);
   }
 
   override async enhanceQuery(

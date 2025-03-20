@@ -37,6 +37,51 @@ describeWithEnvironment('PerformanceInsightsAgent', () => {
     assert.strictEqual(context.getTitle(), 'Insight: LCP by phase');
   });
 
+  // See b/405054694 for context on why we do this.
+  describe('parsing text responses', () => {
+    it('strips out 5 backticks if the response has them', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse('`````hello world`````');
+      assert.deepEqual(response, {answer: 'hello world'});
+    });
+
+    it('strips any newlines before the backticks', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse('\n\n`````hello world`````');
+      assert.deepEqual(response, {answer: 'hello world'});
+    });
+
+    it('does not strip the backticks if the response does not fully start and end with them', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse('answer: `````hello world`````');
+      assert.deepEqual(response, {answer: 'answer: `````hello world`````'});
+    });
+
+    it('does not strip the backticks in the middle of the response even if the response is also wrapped', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse('`````hello ````` world`````');
+      assert.deepEqual(response, {answer: 'hello ````` world'});
+    });
+
+    it('does not strip out inline code backticks', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse('This is code `console.log("hello")`');
+      assert.deepEqual(response, {answer: 'This is code `console.log("hello")`'});
+    });
+
+    it('does not strip out code block 3 backticks', async () => {
+      const agent = new PerformanceInsightsAgent({aidaClient: mockAidaClient()});
+      const response = agent.parseTextResponse(`\`\`\`
+code
+\`\`\``);
+      assert.deepEqual(response, {
+        answer: `\`\`\`
+code
+\`\`\``
+      });
+    });
+  });
+
   describe('handleContextDetails', () => {
     it('outputs the right context for the initial query from the user', async () => {
       const mockInsight = new TimelineUtils.InsightAIContext.ActiveInsight(FAKE_LCP_MODEL, FAKE_PARSED_TRACE);

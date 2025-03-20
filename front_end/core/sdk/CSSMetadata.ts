@@ -547,10 +547,14 @@ const colorAwareProperties = new Set<string>([
   'border-right-color',
   'border-top',
   'border-top-color',
+  'border-block',
+  'border-block-color',
   'border-block-end',
   'border-block-end-color',
   'border-block-start',
   'border-block-start-color',
+  'border-inline',
+  'border-inline-color',
   'border-inline-end',
   'border-inline-end-color',
   'border-inline-start',
@@ -597,6 +601,10 @@ const colorAwareProperties = new Set<string>([
   '-webkit-text-fill-color',
   '-webkit-text-stroke',
   '-webkit-text-stroke-color',
+  // For SVG
+  'flood-color',
+  'lighting-color',
+  'stop-color',
 ]);
 
 // In addition to `_colorAwareProperties`, the following properties contain CSS <angle> units.
